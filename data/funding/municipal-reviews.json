@@ -67425,5 +67425,212 @@
         "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "07140047",
+    "name": "Hausbay",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hausbay (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) fördert Private über die eigene Energiesparrichtlinie (Ratsbeschluss 08.01.2024, Neufassung ab 01.01.2026, Maßnahmen bis 31.12.2028): Dachanlage 250 €/kWp bis 2.500 €, Speicher 250 €/kWh bis 2.500 €, Balkonkraftwerk 200 €, Wärmepumpe 30 % bis 2.500 €; Dachanlage, Speicher und Wärmepumpe nur für Eigentümer nach vorherigem Energie-Check. Neu katalogisiert als hausbay-energieeinsparung, zwei unabhängige Prüfer (einer adversarial) bestätigen alle Sätze und Bedingungen. VG und Kreis fördern Private derzeit nicht.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft",
+      "Richtlinie, Antragsvordruck (Anlage 2) und Haushalt 2025/26 im Original gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/hausbay/energiesparrichtlinie-anpassung-01-01-2026.pdf?cid=nt7",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage … wird mit einmalig 250 € je kWp … gefördert. Die Förderung ist auf 2.500 € je Anlage und Gebäude begrenzt.“ § 8 (7): „Die Neufassung der Richtlinie tritt zum 01.01.2026 in Kraft.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/hausbay/haushalt-hausbay-2025-2026.pdf?cid=mta",
+        "finding": "Produkt 5110: Für die Energiesparrichtlinie „werden jährlich 30.000 € bereitgestellt“."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140060",
+    "name": "Hungenroth",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hungenroth gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Hungenroth keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Hungenroth“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140093",
+    "name": "Mermuth",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mermuth gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Mermuth keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Mermuth“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140140",
+    "name": "Schwall",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwall gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Schwall keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Schwall“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140014",
+    "name": "Bickenbach",
+    "checkedAt": "2026-09-26T16:55:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bickenbach (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) fördert Private über die Energiesparrichtlinie vom 03.07.2025 (geändert 27.08.2025, unbefristet unter Haushaltsvorbehalt): Dachanlage 150 €/kWp bis 1.500 € und höchstens 20 %, Speicher 1.500 € höchstens 20 %, Balkonkraftwerk 30 % bis 300 €, Heizungsanlage einschließlich Wärmepumpe 2.500 € höchstens 30 %; Dachanlage, Speicher und Heizung nur für Eigentümer mit Energieberatung. Neu katalogisiert als bickenbach-energiespar; ein unabhängiger und ein adversarialer Prüfer bestätigen alle Sätze, die Energieberatung ist nicht zwingend vorher. VG und Kreis fördern Private derzeit nicht.",
+    "searches": [
+      "Gemeindeseite zur Energiesparrichtlinie und Förderantrag gelesen (26.09.2026)",
+      "Gescannte Richtlinie (6 Seiten) im VG-Ortsrecht seitenweise gelesen",
+      "Anlagen 1 (Antrag) durch Gegenprüfer gelesen",
+      "Sitemap und Klimaschutz-Bereich der VG Hunsrück-Mittelrhein durchsucht",
+      "Websuche Energiesparrichtlinie Bickenbach (Gegenprüfer): keine Einstellungsmeldung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/bickenbach/2025-11-18-angepasste-energiesparrichtlinie-og-bickenbach.pdf?cid=ngd",
+        "finding": "§ 5 (6): „Die Neuinstallation einer Photovoltaikanlage … wird einmalig mit 150 € je kWp … gefördert. Die Förderung ist auf 1.500 € je Anlage begrenzt, höchstens jedoch mit 20% der Gesamtkosten.“ § 7 (6): Laufzeit „unbegrenzt, steht aber unter dem Vorbehalt der Finanzierbarkeit“."
+      },
+      {
+        "url": "http://www.bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html",
+        "finding": "Gemeindeseite veröffentlicht die Richtlinie vom 03.07.2025 im Wortlaut und verlinkt direkt den Förderantrag „Energetische Maßnahmen“."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG setzt KIPKI-Mittel vollständig für die Grundschule Halsenbach ein; kein VG-Programm für Private."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html",
+        "disposition": "reviewed",
+        "reason": "Am 26.09.2026 mit HTTP 200 gelesen (Zustand „unerreichbar“ veraltet): Wortlaut der Richtlinie vom 03.07.2025, katalogisiert als bickenbach-energiespar.",
+        "evidenceUrl": "http://www.bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html"
+      }
+    ]
   }
 ]

@@ -330,6 +330,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/amstetten", destination: "/photovoltaik-foerderung/baden-wuerttemberg/amstetten", permanent: true },
       { source: "/photovoltaik-foerderung/neustadt-westerwald", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-westerwald", permanent: true },
       { source: "/photovoltaik-foerderung/neustadt-wied", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-wied", permanent: true },
+      { source: "/photovoltaik-foerderung/bickenbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/bickenbach", permanent: true },
+      { source: "/photovoltaik-foerderung/hausbay", destination: "/photovoltaik-foerderung/rheinland-pfalz/hausbay", permanent: true },
       { source: "/photovoltaik-foerderung/staudt", destination: "/photovoltaik-foerderung/rheinland-pfalz/staudt", permanent: true },
       { source: "/photovoltaik-foerderung/windhagen", destination: "/photovoltaik-foerderung/rheinland-pfalz/windhagen", permanent: true },
       { source: "/photovoltaik-foerderung/koenigswinter", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koenigswinter", permanent: true },

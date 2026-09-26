@@ -7654,6 +7654,101 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // der VG Wirges; die Gemeinde fehlte bis dahin im Katalog.
   },
 
+  "hausbay-energieeinsparung": {
+    id: "hausbay-energieeinsparung", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Hausbay", level: "kommune", region: "Hausbay",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140047",
+    url: "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/hausbay/energiesparrichtlinie-anpassung-01-01-2026.pdf?cid=nt7",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-01-08",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, Pauschale je Balkonkraftwerk, Anteil einer Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 2.500 € Wärmepumpe; insgesamt 7.000 € je Antragsteller und Gebäude in der Förderperiode",
+    rates: [
+      { label: "Photovoltaik", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "250 € je kWh, max. 2.500 €, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Wärmepumpe", value: "30 % der Anschaffungskosten, max. 2.500 €", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "200 € einmalig", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Wärmepumpe setzen einen Energie-Check der Verbraucherzentrale vor Beginn der Maßnahme voraus; beauftragt wird er über den Ortsbürgermeister", nur: ["pv", "waermepumpe"] },
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Hausbay mit erstem Wohnsitz dort", nur: ["pv", "waermepumpe"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen sein", nur: ["waermepumpe"] },
+      { text: "Balkonkraftwerke fördert die Gemeinde auch für Mieter mit erstem Wohnsitz in Hausbay; das Gerät ist mindestens zwei Jahre zu behalten", nur: ["balkon"] },
+      "Der Antrag ist spätestens sechs Monate nach Fertigstellung beim Ortsbürgermeister zu stellen",
+      "Gefördert werden Maßnahmen, die bis 31.12.2028 abgeschlossen sind",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 250, pvCap: 2500, speicherPerKwh: 250, speicherCap: 2500,
+    balkonPauschale: 200,
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 7 sections): council decision
+    // 08.01.2024 for the funding period 2024-2028, new version in force
+    // 01.01.2026 (§ 8 (7)), measures completed by 31.12.2028 (§ 8 (8)/(9)).
+    // § 4 (3) PV "250 € je kWp … auf 2.500 € je Anlage und Gebäude begrenzt";
+    // § 4 (4) storage 250 €/kWh max 2,500 €; § 4 (5) PV with integrated storage
+    // 5,000 € but limited to the same 250 €/kWp + 250 €/kWh, so the two separate
+    // rates reproduce it; § 4 (13) balcony 200 €; § 4 (9) heating incl. heat
+    // pumps max 2,500 € and 30 %; § 4 (16) 7,000 € per applicant and building.
+    // § 3 (1) energy check before the measure for § 1 (3) Nr. 1-12 (PV, storage,
+    // heat pump; not balcony). Guideline and form are silent on other public
+    // funding, so BUND stays. Budget 2025/26: 30,000 € per year (Produkt 5110).
+    // Heat pump deliberately NOT computed: percentage heat-pump grants wait for
+    // the calculator's funding-base rework (tripwire in
+    // waermepumpe-kommunalfoerderung.test.ts). Found through the VG
+    // Hunsrück-Mittelrhein source queue (KIPKI page); the municipality was not
+    // in the catalogue. Two independent verifiers incl. an adversarial one
+    // confirmed every rate and condition.
+  },
+
+  "bickenbach-energiespar": {
+    id: "bickenbach-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Bickenbach", level: "kommune", region: "Bickenbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140014",
+    url: "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/bickenbach/2025-11-18-angepasste-energiesparrichtlinie-og-bickenbach.pdf?cid=ngd",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-07-03",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für Speicher und Heizungsanlage, Anteil eines Balkonkraftwerks — jeweils mit Prozentgrenze",
+    maxFoerderung: "max. 1.500 € Dachanlage, 1.500 € Speicher, 300 € Balkonkraftwerk; insgesamt 5.000 € je Haushalt",
+    rates: [
+      { label: "Photovoltaik", value: "150 € je kWp, max. 1.500 € und höchstens 20 % der Gesamtkosten", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "1.500 €, höchstens 20 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Heizungsanlage (Pellet, Hackschnitzel, Holzvergaser, Wärmepumpe)", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Heizungsanlage setzen die Teilnahme an einer Energieberatung voraus, z. B. der Verbraucherzentrale", nur: ["pv", "waermepumpe"] },
+      { text: "Dachanlage, Speicher und Heizungsanlage nur für Eigentümer mit Hauptwohnsitz in Bickenbach; darüber entscheidet der Gemeinderat", nur: ["pv", "waermepumpe"] },
+      { text: "Balkonkraftwerke fördert die Gemeinde auch für Mieter, die seit mindestens einem Jahr in Bickenbach wohnen (Hauptwohnsitz)", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht vorher mit Angebot oder danach mit Rechnung an den Ortsbürgermeister",
+      "Eine erneute Förderung ist erst nach zehn Jahren (Dachanlage, Speicher, Heizung) bzw. fünf Jahren (Balkonkraftwerk) möglich",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 150, pvCap: 1500,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 26.09.2026 (scanned PDF, 6 pages, read page by
+    // page): council decision 03.07.2025, 1st amendment 27.08.2025 (only § 5 (1),
+    // consultation co-pay 40 €), in force the day after publication, term
+    // unlimited subject to budget (§ 7 (5)/(6)).
+    // § 5 (6) PV "150 € je kWp … auf 1.500 € je Anlage begrenzt, höchstens jedoch
+    // mit 20% der Gesamtkosten": the 20 % cap binds only below 750 €/kWp, far
+    // under the calculator's market prices, so the kWp rate is computed (same
+    // trade-off as the 25 % cap elsewhere in this file). § 5 (7) storage flat
+    // 1,500 € but max 20 % of cost — NOT computed: the percentage binds for
+    // ordinary storage prices below 7,500 € and the model has no storage
+    // percentage. § 5 (8) balcony max 300 €, max 30 % — computed. § 5 (5)
+    // heating systems (Nr. 7 names "Wärmepumpe / Wärmetauscher") 2,500 € max
+    // 30 % — not computed (percentage heat-pump tripwire), and the application
+    // form has no heat-pump box. § 4 (3) requires participation in an energy
+    // consultation for Nr. 2-9, without saying "before"; the condition text says
+    // no more than that. Guideline and form are silent on other public funding.
+    // Adversarial reviewer: every rate confirmed, "before" rejected (fixed).
+  },
+
   "schlierbach-energiespeicher": {
     id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
     traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",

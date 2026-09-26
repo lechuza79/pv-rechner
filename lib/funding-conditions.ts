@@ -631,6 +631,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // existing-building rule and the own-consumption sizing of the roof system have
   // no test form yet (roof system is therefore not computed at all).
   "staudt-energieeffizienz",
+  // Added 26 Sep 2026: guideline read in full; the prior energy check, the
+  // owner-and-first-residence rule and the six-month application window have no
+  // test form yet.
+  "hausbay-energieeinsparung",
+  // Added 26 Sep 2026: scanned guideline read in full; the energy consultation,
+  // the owner rule, the one-year tenancy for balcony devices and the re-funding
+  // blocks have no test form yet.
+  "bickenbach-energiespar",
 ];
 
 /**
