@@ -111,7 +111,7 @@
 .visualTheme{composes: foundation from "./atlas-foundations.module.css";--story-bg:var(--atlas-surface);--story-paper:var(--atlas-card);--story-ink:var(--atlas-text);--story-muted:var(--atlas-secondary);--story-line:var(--atlas-border);--story-accent:var(--atlas-action);background:var(--atlas-card);color:var(--atlas-text)}
 .yieldChart svg{width:100%;height:auto;display:block}.yieldChartLabel{font-size:var(--atlas-label-size);color:var(--story-muted)}.yieldCaption{font-size:var(--atlas-body-size);margin-top:16px}.yieldCaption strong{color:var(--story-accent);font-family:var(--atlas-display);font-size:1.4em}
 
-.visualTheme{--story-peer:var(--atlas-text)}.visualTheme[data-story-scheme=dark]{--story-peer:#fff}
+.visualTheme{--story-peer:var(--atlas-text)}.visualTheme[data-story-scheme=dark]:where(:not([data-sc-export-capture] [data-sc-export-brightest],[data-sc-export-capture] [data-sc-export-brightest] *)){--story-peer:#fff}
 
 .visualTheme{--story-accent-secondary:color-mix(in srgb,var(--story-accent) 45%,var(--story-paper))}
 

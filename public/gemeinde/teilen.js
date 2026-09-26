@@ -66,7 +66,7 @@
       : "Energiewende " + G.name;
     const text = data?.rank
       ? `${G.name} liegt bei „${data.title}“ auf Platz ${data.rank} von ${data.total} Orten ${data.area}. Verglichen wird die Größenklasse ${data.classLabel}; berücksichtigt werden ${data.owner}. Der Wert für ${G.name} beträgt ${data.value} ${data.unit}.`
-      : G.districtOverview ? "Wie entwickelt sich Solarenergie im " + G.name + "? Die Landkreisübersicht zeigt Anlagenbestand, Ausbau und die Gemeinden im Vergleich." : "Wie entwickelt sich die Energiewende in " + G.name + "? Die Ortsübersicht zeigt erneuerbare Energie, Anlagenbestand, Ausbau und Vergleiche mit anderen Orten.";
+      : G.districtOverview ? "Wie entwickelt sich Solarenergie " + (G.ortPhrase || "im " + G.name) + "? Die " + (G.overviewLabel || "Landkreisübersicht") + " zeigt Anlagenbestand, Ausbau und die Regionen im Vergleich." : "Wie entwickelt sich die Energiewende in " + G.name + "? Die Ortsübersicht zeigt erneuerbare Energie, Anlagenbestand, Ausbau und Vergleiche mit anderen Orten.";
     const source =
       "Grundlage: Marktstammdatenregister der Bundesnetzagentur und Einwohnerzahlen von Destatis, dl-de/by-2-0. Datenstand und laufende Übersicht: " +
       url;
@@ -76,7 +76,7 @@
       dialog.querySelector("#ranking-share-title").textContent =
         "Energiewende " + G.name + " teilen";
       dialog.querySelector(".atlas-paper + p").textContent =
-        (G.districtOverview ? "Der Link führt zur Landkreisübersicht: " : "Der Link führt zur Energiewende in ") + G.name + ".";
+        (G.districtOverview ? "Der Link führt zur " + (G.overviewLabel || "Landkreisübersicht") + ": " : "Der Link führt zur Energiewende in ") + G.name + ".";
     }
     dialog.querySelector("h3").textContent = headline;
     dialog.querySelector(".atlas-paper p").textContent = text;

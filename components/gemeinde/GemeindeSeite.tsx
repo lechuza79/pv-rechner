@@ -318,6 +318,8 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                   src={`/embed/gemeinde/${ort.ags}/monitor`}
                   title={`Energiedaten für ${ort.name}`}
                   nachricht="municipal-data-layout"
+                  vollbild
+                  durchreichen={["chart"]}
                   startHoehe={1400}
                 />
               </div>
@@ -375,9 +377,9 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             durch Solar Check zusammengefasst, berechnet und grafisch aufbereitet.
           </p>
           <p>
-            <strong>Wetter heute und modellierte Solarleistung:</strong> {quellen.iconD2Archive.name} ·{" "}
+            <strong>Wetter heute und modellierte Solarleistung:</strong> <a href={quellen.iconD2Archive.url} target="_blank" rel="noopener">{quellen.iconD2Archive.name}</a> ·{" "}
             <a href={quellen.iconD2Archive.licenseUrl} target="_blank" rel="noopener">{quellen.iconD2Archive.license}</a>.{" "}
-            <strong>Historische Tages- und Jahresverläufe:</strong> {quellen.era5Archive.name} ·{" "}
+            <strong>Historische Tages- und Jahresverläufe:</strong> <a href={quellen.era5Archive.url} target="_blank" rel="noopener">{quellen.era5Archive.name}</a> ·{" "}
             <a href={quellen.era5Archive.licenseUrl} target="_blank" rel="noopener">{quellen.era5Archive.license}</a>. Eigene
             Modellrechnung; keine gemessene Stromerzeugung.
           </p>
@@ -386,7 +388,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             <a href={quellen.pvgis.url} target="_blank" rel="noopener">{quellen.pvgis.name}</a>.
           </p>
           <p>
-            <strong>Kartengeometrien:</strong> {quellen.bkg.name},{" "}
+            <strong>Kartengeometrien:</strong> <a href={quellen.bkg.url} target="_blank" rel="noopener">{quellen.bkg.name}</a>,{" "}
             <a href={quellen.bkg.licenseUrl} target="_blank" rel="noopener">{quellen.bkg.license}</a>, vereinfacht.
           </p>
           <p>

@@ -404,7 +404,7 @@ export default function Modal({
           <h2 style={S.h2}>{title}</h2>
           <div ref={setHeader} style={{ marginLeft: "auto" }} />
           <button onClick={onClose} aria-label="Schließen" style={S.close}>
-            <IconClose size={20} />
+            <IconClose size={18} />
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
@@ -423,19 +423,26 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.lg,
     marginBottom: space.xs,
   },
-  h2: {fontFamily: "var(--font-display, Montserrat, sans-serif)", letterSpacing: "-.02em", fontWeight: 700, fontSize: "clamp(20px, 3vw, 24px)", lineHeight: 1.25, margin: 0},
+  h2: {
+    margin: 0,
+    color: v("--color-text-primary"),
+    fontFamily: v("--font-text"),
+    fontSize: v("--font-size-h2"),
+    fontWeight: 700,
+    lineHeight: 1.25,
+  },
   close: {
+    display: "grid",
+    placeItems: "center",
+    width: 40,
+    height: 40,
+    margin: -space.sm,
+    borderRadius: v("--radius-sm"),
     border: "none",
     background: "transparent",
     color: v("--color-text-muted"),
-    fontSize: v("--font-size-h1"),
-    lineHeight: 0.8,
     cursor: "pointer",
-    padding: 8,
-    display: "grid",
-    placeItems: "center",
-    minWidth: 40,
-    minHeight: 40,
+    padding: 0,
     flexShrink: 0,
   },
   // BASIS-GROESSE, nicht Bildunterschrift: Der Intro eines Fensters ist der

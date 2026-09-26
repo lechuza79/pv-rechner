@@ -1,0 +1,17 @@
+/* Independent export palette: tune light-surface contrast here, not per chart. */
+:root{--chart-export-contrast:#163338;--chart-export-background:#fafbf8;--chart-export-surface:#edf0ec;--chart-export-secondary:#52676b}
+[data-sc-export-capture] [data-sc-export-brightest],
+[data-sc-export-capture] [data-sc-export-brightest] *{
+ --atlas-action:var(--chart-export-contrast)!important;
+ --atlas-action-ink:var(--chart-export-background)!important;
+ --atlas-text:var(--chart-export-contrast)!important;
+ --atlas-secondary:var(--chart-export-secondary)!important;
+ --atlas-surface:var(--chart-export-surface)!important;
+ --atlas-card:var(--chart-export-background)!important;
+ --story-accent:var(--chart-export-contrast)!important;
+ --color-accent:var(--chart-export-contrast)!important;
+ --color-brand:var(--chart-export-contrast)!important;
+ --widget-accent:var(--chart-export-contrast)!important;
+ --color-text-primary:var(--chart-export-contrast)!important;
+ --color-text-secondary:var(--chart-export-secondary)!important;
+}

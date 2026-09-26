@@ -1,0 +1,52 @@
+[
+  {
+    "motif": "research",
+    "titel": "Auf Basis von Forschungsdaten",
+    "text": "In den Rechnern nutzen wir die Simulationsdaten der HTW Berlin.",
+    "links": [
+      {
+        "begriff": "HTW Berlin",
+        "url": "https://solar.htw-berlin.de/studien/"
+      }
+    ],
+    "mehr": true,
+    "href": "/methodik"
+  },
+  {
+    "motif": "sources",
+    "titel": "Offizielle Datenquellen",
+    "text": "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere.",
+    "links": [
+      {
+        "begriff": "Bundesnetzagentur",
+        "url": "https://www.marktstammdatenregister.de"
+      },
+      {
+        "begriff": "Fraunhofer ISE",
+        "url": "https://energy-charts.info"
+      },
+      {
+        "begriff": "EU-Kommission",
+        "url": "https://joint-research-centre.ec.europa.eu/pvgis-online-tool_en"
+      }
+    ],
+    "mehr": true,
+    "href": "/datenstand"
+  },
+  {
+    "motif": "updated",
+    "titel": "Regelmäßig geprüft",
+    "text": "Preise, Fördersätze und Rechtsstände prüfen wir regelmäßig gegen die Originalquellen.",
+    "links": [],
+    "mehr": true,
+    "href": "/datenstand"
+  },
+  {
+    "motif": "access",
+    "titel": "Ohne Anmeldung",
+    "text": "Das Ergebnis der Rechner erscheint sofort – ohne Anmeldung und ohne Angabe von Kontaktdaten. Die Berechnung läuft in deinem Browser.",
+    "links": [],
+    "mehr": false,
+    "href": ""
+  }
+]

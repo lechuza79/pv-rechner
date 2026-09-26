@@ -20,9 +20,12 @@ import { v, space } from "../lib/theme";
 export default function ContactPerson({
   note,
   children,
+  beforeName,
 }: {
   /** Kurze Zusage unter dem Namen. */
   note?: string;
+  /** Optional introduction above the signature. */
+  beforeName?: React.ReactNode;
   /** Alternativ zur Zusage: was unter dem Namen stehen soll, z. B. ein Link. */
   children?: React.ReactNode;
 }) {
@@ -30,6 +33,7 @@ export default function ContactPerson({
     <span style={S.row}>
       <img src="/sebastian-schaeder.webp" width={AVATAR_PX} height={AVATAR_PX} alt="" style={S.avatar} />
       <span style={S.text}>
+        {beforeName}
         <strong style={S.name}>Sebastian Schäder</strong>
         {note}
         {children}

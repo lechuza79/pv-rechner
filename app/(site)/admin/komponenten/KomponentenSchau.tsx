@@ -23,6 +23,7 @@ import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
 import ChartActionBar from "../../../../components/ChartActionBar";
+import ChartOptionsMenu from "../../../../components/ChartOptionsMenu";
 import DataSourcesSection from "../../../../components/DataSourcesSection";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
@@ -751,6 +752,16 @@ const BEISPIELE: Record<string, Beispiel> = {
   ErrorBoundary: AbsturzBeispiel,
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
+  ChartOptionsMenu: () => (
+    <Reihe>
+      <Zustand name="Einbetten verfügbar">
+        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+      </Zustand>
+      <Zustand name="Einbetten nicht verfügbar">
+        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
+      </Zustand>
+    </Reihe>
+  ),
   CiteModal: ZitierBeispiel,
   // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
   // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht

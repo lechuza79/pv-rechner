@@ -60111,7 +60111,7 @@
   {
     "regionId": "07133033",
     "name": "Gebroth",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-26T14:05:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60120,7 +60120,8 @@
       "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
       "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
       "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
-      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach",
+      "Neu erfasstes Mitteilungsblatt-PDF (Quelle vom Crawler) am 26.09.2026 erneut im Original gelesen"
     ],
     "evidence": [
       {
@@ -60138,6 +60139,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Mitteilungsblatt-PDF 24.03.2026: Programm seit 01.04.2023, insgesamt 120.000 €, 100 € je Balkonkraftwerk; „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“"
       }
     ],
     "sources": [
@@ -60152,6 +60157,12 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Mitteilungsblatt 24.03.2026 im Original gelesen (26.09.2026): „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ Bestätigt die beendete Balkonförderung (vg-ruedesheim-balkonkraftwerke); keine Neuauflage.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   },
@@ -66539,6 +66550,1259 @@
         "disposition": "reviewed",
         "reason": "Gelesen: EU-/Landesförderung für kommunale Vorhaben, keine Haushaltsförderung.",
         "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
+      }
+    ]
+  },
+  {
+    "regionId": "03351002",
+    "name": "Ahnsbeck",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahnsbeck gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351003",
+    "name": "Beedenbostel",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beedenbostel gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "beedenbostel.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Alte Adresse unerreichbar; dasselbe Programm „Jung kauft Alt“ der Samtgemeinde steht auf lachendorf.de und ist kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351008",
+    "name": "Eldingen",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eldingen gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351015",
+    "name": "Hohne",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohne gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/",
+        "finding": "Am 26.09.2026 gelesen: EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.gemeinde-hohne.de/unsere-gemeinde/foerderblick",
+        "finding": "Am 26.09.2026 gelesen: Gelesen: Download-Liste der Ausgaben des Mitteilungsblatts „Förderblick“, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum",
+        "finding": "Am 26.09.2026 gelesen: Ortsgeschichte Erdölförderung, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "gemeinde-hohne.de/lebenswert/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/"
+      },
+      {
+        "url": "hohne.de/lebenswert/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/"
+      },
+      {
+        "url": "gemeinde-hohne.de/unsere-gemeinde/foerderblick",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Download-Liste der Ausgaben des Mitteilungsblatts „Förderblick“, kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-hohne.de/unsere-gemeinde/foerderblick"
+      },
+      {
+        "url": "gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum",
+        "disposition": "reviewed",
+        "reason": "Ortsgeschichte Erdölförderung, kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum"
+      }
+    ]
+  },
+  {
+    "regionId": "03351016",
+    "name": "Lachendorf",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lachendorf gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351010",
+    "name": "Faßberg",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Faßberg verweist auf ihrer Seite „Förderprogramme“ nur auf die Förderdatenbank des Bundes, die NBank und die LEADER-Region Oberes Örtzetal; der Bereich Nachhaltigkeit und Umwelt (Klimaleitbild, Wärmeplanung, Energiebericht, E-Mobilität, PV-Anlage Rathaus, Beratungsangebot „Energiewende zu Hause“) enthält kein Zuschussprogramm für Haushalte. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Seite „Förderprogramme“ am 26.09.2026 vollständig gelesen",
+      "Navigation Nachhaltigkeit und Umwelt am 26.09.2026 durchgesehen",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/",
+        "finding": "Am 26.09.2026 gelesen: „Die folgende Aufzählung verschafft Ihnen eine erste Übersicht der Möglichkeiten“ — Förderdatenbank des BMWE, NBank, LEADER-Region „Kulturraum Oberes Örtzetal“; kein eigenes Programm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Verweise auf Bundes-, Landes- und LEADER-Förderung, kein eigenes Haushaltsprogramm.",
+        "evidenceUrl": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/"
+      },
+      {
+        "url": "fassberg.de/portal/seiten/foerderprogramme-900000186-29550.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Verweise auf Bundes-, Landes- und LEADER-Förderung, kein eigenes Haushaltsprogramm.",
+        "evidenceUrl": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351023",
+    "name": "Wietze",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Wietze führt im Bereich Umwelt, Klima & Energie Hochwasser- und Starkregenvorsorge, Klimaschutzkonzept, Energieberichte und die kommunale Wärmeplanung; die Seite „Förderung“ darin betrifft die Bundesförderung der Wärmeplanung selbst. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Alle Unterseiten von „Umwelt, Klima & Energie“ am 26.09.2026 aufgelistet, Wärmeplanung/Förderung gelesen",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung/",
+        "finding": "Am 26.09.2026 gelesen: Beteiligung an der Wärmeplanung (Ideenkarte), „Gefördert durch: Bundesministerium für Umwelt … Projektträger Jülich“ — Förderung der Kommune, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.wietze.de/",
+        "finding": "Am 26.09.2026 auf der Startseite als Link-Titel geprüft: Bekanntmachung zum Bebauungsplan an der Steinförder Straße — Treffer nur über den Straßennamen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung der kommunalen Wärmeplanung, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung/"
+      },
+      {
+        "url": "wietze.de/rathaus-politik/amtliche-bekanntmachungen/bauleitplanung-der-gemeinde-wietze-bebauungsplan-wietze-nr-34-und-oertliche-bauvorschrift-an-der-steinfoerder-strasse",
+        "disposition": "reviewed",
+        "reason": "Bebauungsplan („Steinförder Straße“), Treffer nur über den Straßennamen.",
+        "evidenceUrl": "https://www.wietze.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351025",
+    "name": "Eschede",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Eschede nennt unter Wirtschaftsförderung nur Existenzgründer-Förderung (MikroSTARTer, ERP), EU-Förderung und die LEADER-Region Lachte-Lutter-Oker, dazu die Förderkulisse der Dorfentwicklung. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Seiten „Fördermöglichkeiten“ und „Förderkulisse Dorfentwicklung“ am 26.09.2026",
+      "Navigation der Startseite eschede.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie eine Existenzgründung planen, stehen Ihnen unterschiedliche Fördermöglichkeiten zur Verfügung“ — MikroSTARTer, ERP-Gründerkredit, EU-Förderung, LEADER."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html",
+        "finding": "Am 26.09.2026 gelesen: Förderkulisse der Dorfentwicklung (Landesprogramm für Ortsbild und Gebäude), kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Existenzgründer- und EU-Förderung, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html"
+      },
+      {
+        "url": "eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html",
+        "disposition": "reviewed",
+        "reason": "Förderkulisse der Dorfentwicklung (Landesprogramm für Ortsbild und Gebäude), kein Energieprogramm.",
+        "evidenceUrl": "https://www.eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03351026",
+    "name": "Südheide",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Südheide zahlt Mieterinnen und Mietern einmalig 150 € für ein neues Balkonkraftwerk (Richtlinie Balkonkraftwerke, in Kraft seit 01.04.2024, gilt bis die Haushaltsmittel aufgebraucht sind; Online-Antrag im September 2026 erreichbar). Eigentümer, Dachanlagen, Speicher und Wärmepumpen fördert die Gemeinde nicht. Im Katalog als suedheide-balkonkraftwerke, ohne Rechenwert, weil die Richtlinie den Betrag nur für 800 W Nennleistung nennt. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Programmseite und Richtlinie Balkonkraftwerke am 26.09.2026 vollständig gelesen",
+      "Adversariale Gegenprüfung am 26.09.2026 (Seitensuche nach Balkonkraftwerk, Photovoltaik, Solaranlagen, Fördermittel; aktuelle Meldungen) — alles bestätigt, kein Hinweis auf ausgeschöpfte Mittel",
+      "Websuche „Gemeinde Südheide Förderrichtlinie Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-suedheide.de/portal/seiten/foerderung-fuer-solaranlagen-900000199-23600.html",
+        "finding": "Am 26.09.2026 gelesen: „Sie können als Mieter eine Zuwendung in Höhe von 150,00 € beantragen, wenn die gemietete Wohnimmobilie in der Gemeinde Südheide liegt und von Ihnen genutzt wird.“ Online-Antragsformular aktiv."
+      },
+      {
+        "url": "https://www.gemeinde-suedheide.de/downloads/datei/ODZjMjFkNjdjMTFmNzAyYmswMWZHV3NYMHBxYk40cFdYVFMvNW5Qc2MxRnpKN1M2RTFieDVwNU11ZjhkcGZrNTlicnN2Zi8xV3NPMEFUbm9QMUY0dnJtTGEzSGVWL1I3YXhhNCtKc1ZWdTJJSXZVcStGUHRFUmdWUFdqOWdYWVRPRVA2MGNoQ0FrdkZEOGN4eENvdnB4RCsyZ3FXOHMxbWszQ1Zldz09",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 2a „Die Förderung beträgt 150 EUR bei 800 Watt Nennleistung.“; Nr. 4 „Antragsberechtigt sind natürliche Personen (Mieter)“; Nr. 10 „tritt am 01.04.2024 in Kraft und gilt solange, bis die zur Verfügung gestellten Haushaltsmittel aufgebraucht sind.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351001",
+    "name": "Adelheidsdorf",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Adelheidsdorf gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      },
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis/",
+        "finding": "Am 26.09.2026 gelesen: Förderkreis der Städtepartnerschaft Limanowa (Verein), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis",
+        "disposition": "reviewed",
+        "reason": "Förderkreis der Städtepartnerschaft Limanowa (Verein), kein Förderprogramm.",
+        "evidenceUrl": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351018",
+    "name": "Nienhagen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nienhagen gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351021",
+    "name": "Wathlingen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wathlingen gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351012",
+    "name": "Hambühren",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Das vollständige Ortsrecht der Gemeinde Hambühren (am 26.09.2026 gelesen) enthält als Förderrichtlinien nur Zuschüsse an Vereine/Sportförderung und Ehrungsrichtlinien; die Förderrubriken der Website betreffen Jugend- und Wirtschaftsförderung. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Landkreis ohne eigenen Fördertopf; Celler Klimaschutzfonds nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Ortsrecht & Satzungen“ der Gemeinde Hambühren am 26.09.2026 vollständig gelesen",
+      "Startseite hambuehren.de nach Förder-/Klima-/Solar-Links durchsucht (26.09.2026)",
+      "Websuche „Hambühren Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hambuehren.de/rathaus-politik/ortsrecht-satzungen/",
+        "finding": "Am 26.09.2026 gelesen: Förderrichtlinien nur „Richtlinie … über die Gewährung von Zuschüssen an Vereine und Verbände sowie über die Sportförderung“ und Ehrungsrichtlinien."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351004",
+    "name": "Bergen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Rubrik „Umwelt, Klimaschutz & Erneuerbare Energien“ der Stadt Bergen (Kreis Celle) führt kommunale Wärmeplanung, Kriterienkatalog Freiflächen-Photovoltaik, Lärmaktionsplanung und das Projekt „Klimaschutz“ (über die Kommunalrichtlinie geförderte Einstiegsberatung der Stadt 2024/2025); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen besteht nicht. Die Förderrubriken der Website betreffen Unternehmens- und Wirtschaftsförderung. Landkreis ohne eigenen Fördertopf; Celler Klimaschutzfonds nur im Stadtgebiet Celle.",
+    "searches": [
+      "Rubrik „Umwelt, Klimaschutz & Erneuerbare Energien“ und Seite „Projekt Klimaschutz“ am 26.09.2026 gelesen",
+      "Links der Startseite stadt-bergen.de (283) nach Förder-/Klima-/Solarbegriffen gefiltert",
+      "Websuche „Stadt Bergen Kreis Celle Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-bergen.de/bauen-wirtschaft/umwelt-klimaschutz-erneuerbare-energien/projekt-klimaschutz-/",
+        "finding": "Am 26.09.2026 gelesen: „KSI: Einstiegs- und Orientierungsberatung zum Klimaschutz für die Stadt Bergen … Laufzeit: 01.07.2024-31.12.2025“ — Förderung der Stadt selbst, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351024",
+    "name": "Winsen (Aller)",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-10-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Heute kein laufender Zuschuss erkennbar: Das Ortsrecht der Gemeinde (am 26.09.2026 gelesen) führt keine Energie-Förderrichtlinie, die Umwelt-Rubrik nur Hochwasserschutz und Lärmaktionsplan. Offen ist ein früheres Programm: Die Gruppe „Gemeinsam für Winsen“ beantragte am 21.06.2022 eine Einmalprämie von 150 € für Balkonkraftwerke (12 Monate), und die Celler Zeitung titelte „Winser Förderung für Balkonkraftwerke wackelt“ (Artikel hinter Bezahlschranke, nicht gelesen). Ob und wann es lief, ist nicht belegt — ein beendetes Programm wäre aufzunehmen.",
+    "searches": [
+      "Ortsrecht winsen-aller.de am 26.09.2026 vollständig gelesen",
+      "Umwelt-Rubrik winsen-aller.de am 26.09.2026",
+      "Antrag der Gruppe „Gemeinsam für Winsen“ vom 21.06.2022 gelesen",
+      "Websuche „Winsen (Aller) Balkonkraftwerk Förderung 150 Euro Gemeinderat beschlossen“ am 26.09.2026",
+      "Ratsinformationssystem sitzungsdienst-winsen-aller.de: Betreff-Filter griff nicht, nur aktuelle Vorlagen ab 2025 sichtbar"
+    ],
+    "evidence": [
+      {
+        "url": "https://winsen-aller.de/verwaltung-u-politik/ortsrecht.html",
+        "finding": "Am 26.09.2026 gelesen: Förderrichtlinien für Fremdenverkehr, Jugend/Kultur/Sport, Arztniederlassungen, Familienförderung Baugebiete — keine Energie- oder Balkonkraftwerk-Richtlinie."
+      },
+      {
+        "url": "https://spd-winsen.de/uploads/spdOrtsvereinWinsenAller/Antrag-Foerderprogramm.pdf",
+        "finding": "Antrag vom 21.06.2022: „Die Höhe der Einmalprämie beantragen wir mit 150,-€. Der Förderzeitraum sollte zunächst auf 12 Monate festgelegt werden.“"
+      },
+      {
+        "url": "https://www.cz.de/lokales/celle-lk/winser-foerderung-fuer-balkonkraftwerke-wackelt-C3C274F744A5C2AEE5DB42ABAA.html",
+        "finding": "Nur Überschrift gesehen („Winser Förderung für Balkonkraftwerke wackelt“), Text hinter Bezahlschranke nicht gelesen."
+      },
+      {
+        "url": "https://winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html",
+        "finding": "Am 26.09.2026 gelesen: Bauleitplanung für Freiflächen-Photovoltaik, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung für Freiflächen-Photovoltaik, kein Förderprogramm.",
+        "evidenceUrl": "https://winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-10-03T08:00:00Z",
+      "detail": "Ratsinformationssystem Winsen (Aller) für 2022/2023 nach dem Antrag „Balkonkraftwerke“ durchsehen (Bau-, Planungs- und Umweltausschuss, Rat) und den Artikel der Celler Zeitung im echten Browser lesen; wurde ein Programm beschlossen, Laufzeit und Betrag belegen und als beendetes Programm aufnehmen, sonst negativ abschließen."
+    }
+  },
+  {
+    "regionId": "07133028",
+    "name": "Eckenroth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Eckenroth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133085",
+    "name": "Roth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Roth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133095",
+    "name": "Seibersbach",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Seibersbach gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133110",
+    "name": "Warmsroth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Warmsroth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07140047",
+    "name": "Hausbay",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hausbay (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) fördert Private über die eigene Energiesparrichtlinie (Ratsbeschluss 08.01.2024, Neufassung ab 01.01.2026, Maßnahmen bis 31.12.2028): Dachanlage 250 €/kWp bis 2.500 €, Speicher 250 €/kWh bis 2.500 €, Balkonkraftwerk 200 €, Wärmepumpe 30 % bis 2.500 €; Dachanlage, Speicher und Wärmepumpe nur für Eigentümer nach vorherigem Energie-Check. Neu katalogisiert als hausbay-energieeinsparung, zwei unabhängige Prüfer (einer adversarial) bestätigen alle Sätze und Bedingungen. VG und Kreis fördern Private derzeit nicht.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft",
+      "Richtlinie, Antragsvordruck (Anlage 2) und Haushalt 2025/26 im Original gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/hausbay/energiesparrichtlinie-anpassung-01-01-2026.pdf?cid=nt7",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage … wird mit einmalig 250 € je kWp … gefördert. Die Förderung ist auf 2.500 € je Anlage und Gebäude begrenzt.“ § 8 (7): „Die Neufassung der Richtlinie tritt zum 01.01.2026 in Kraft.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/hausbay/haushalt-hausbay-2025-2026.pdf?cid=mta",
+        "finding": "Produkt 5110: Für die Energiesparrichtlinie „werden jährlich 30.000 € bereitgestellt“."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140060",
+    "name": "Hungenroth",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hungenroth gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Hungenroth keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Hungenroth“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140093",
+    "name": "Mermuth",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mermuth gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Mermuth keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Mermuth“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140140",
+    "name": "Schwall",
+    "checkedAt": "2026-09-26T16:45:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwall gehört zur Verbandsgemeinde Hunsrück-Mittelrhein (Rhein-Hunsrück-Kreis). Anders als die Nachbargemeinden Hausbay, Bickenbach und Laudert hat Schwall keine eigene Energiesparrichtlinie; im Ortsrecht stehen nur Haupt-, Beitrags-, Friedhofs- und Steuersatzungen sowie der Haushalt. Die VG fördert Private nicht (KIPKI-Mittel gehen in die Grundschule Halsenbach), das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 26.09.2026). Nicht geprüft: Haushaltspläne auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Sitemap hunsrueckmittelrhein.de (1.703 Adressen, 26.09.2026) nach foerder/zuschuss/balkon/photovolt/solar/speicher/waermepumpe/kipki/energie durchsucht",
+      "Klimaschutz-Bereich der VG gelesen (Aktivitäten, Themen für Verbraucher, Energieberatung, KIPKI)",
+      "Ortsrecht-/Satzungsbereich der VG je Ortsgemeinde durchgesehen: Energiesparrichtlinien nur bei Bickenbach, Hausbay und Laudert",
+      "Websuche nach Energiesparrichtlinie / Förderung Photovoltaik Balkonkraftwerk der Ortsgemeinden (Gegenprüfer, 26.09.2026)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen und im Katalog gegengeprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "„Die Verbandgemeinde Hunsrück-Mittelrhein hat sich … dazu entschieden, die Fördermittel im vollen Umfang in die energetische Sanierung der Grundschule in Halsenbach zu investieren.“"
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/themen-fuer-verbraucher/",
+        "finding": "Themen für Verbraucher: nur kostenlose Energieberatung der Verbraucherzentrale und Seminarangebote; kein Zuschussprogramm der VG."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Schwall“: keine Förderrichtlinie; Energiesparrichtlinien stehen nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Seite der VG gelesen: Die VG setzt die Landesmittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation"
+      }
+    ]
+  },
+  {
+    "regionId": "07140014",
+    "name": "Bickenbach",
+    "checkedAt": "2026-09-26T16:55:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bickenbach (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) fördert Private über die Energiesparrichtlinie vom 03.07.2025 (geändert 27.08.2025, unbefristet unter Haushaltsvorbehalt): Dachanlage 150 €/kWp bis 1.500 € und höchstens 20 %, Speicher 1.500 € höchstens 20 %, Balkonkraftwerk 30 % bis 300 €, Heizungsanlage einschließlich Wärmepumpe 2.500 € höchstens 30 %; Dachanlage, Speicher und Heizung nur für Eigentümer mit Energieberatung. Neu katalogisiert als bickenbach-energiespar; ein unabhängiger und ein adversarialer Prüfer bestätigen alle Sätze, die Energieberatung ist nicht zwingend vorher. VG und Kreis fördern Private derzeit nicht.",
+    "searches": [
+      "Gemeindeseite zur Energiesparrichtlinie und Förderantrag gelesen (26.09.2026)",
+      "Gescannte Richtlinie (6 Seiten) im VG-Ortsrecht seitenweise gelesen",
+      "Anlagen 1 (Antrag) durch Gegenprüfer gelesen",
+      "Sitemap und Klimaschutz-Bereich der VG Hunsrück-Mittelrhein durchsucht",
+      "Websuche Energiesparrichtlinie Bickenbach (Gegenprüfer): keine Einstellungsmeldung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/bickenbach/2025-11-18-angepasste-energiesparrichtlinie-og-bickenbach.pdf?cid=ngd",
+        "finding": "§ 5 (6): „Die Neuinstallation einer Photovoltaikanlage … wird einmalig mit 150 € je kWp … gefördert. Die Förderung ist auf 1.500 € je Anlage begrenzt, höchstens jedoch mit 20% der Gesamtkosten.“ § 7 (6): Laufzeit „unbegrenzt, steht aber unter dem Vorbehalt der Finanzierbarkeit“."
+      },
+      {
+        "url": "http://www.bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html",
+        "finding": "Gemeindeseite veröffentlicht die Richtlinie vom 03.07.2025 im Wortlaut und verlinkt direkt den Förderantrag „Energetische Maßnahmen“."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG setzt KIPKI-Mittel vollständig für die Grundschule Halsenbach ein; kein VG-Programm für Private."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html",
+        "disposition": "reviewed",
+        "reason": "Am 26.09.2026 mit HTTP 200 gelesen (Zustand „unerreichbar“ veraltet): Wortlaut der Richtlinie vom 03.07.2025, katalogisiert als bickenbach-energiespar.",
+        "evidenceUrl": "http://www.bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07140080",
+    "name": "Laudert",
+    "checkedAt": "2026-09-26T17:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Laudert (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat eine eigene Energiesparrichtlinie (08.12.2015, zuletzt geändert 09.02.2026), die aber nur Energieberatung (40 € Eigenanteil), energiesparende Haushaltsgeräte (100 €), Heizungsumwälzpumpen und den hydraulischen Abgleich fördert — keine Photovoltaik, keine Speicher, keine Balkonkraftwerke, keine Wärmepumpen. VG und Kreis fördern Private derzeit nicht. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Energiesparrichtlinie Laudert (Stand 09.02.2026) im Original vollständig gelesen",
+      "Ortsrecht der VG Hunsrück-Mittelrhein je Ortsgemeinde durchgesehen",
+      "Sitemap und Klimaschutz-Bereich der VG durchsucht (26.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/laudert/energiesparrichtlinie-og-laudert-aenderung-stand-09-02-2026.pdf?cid=o0s",
+        "finding": "§ 1 fördert nur Energieberatung, Elektrogeräte („100 € je Gerät und Haushalt“) sowie „Heizungsumwälzpumpen der Effizienzklasse A sowie der hydraulische Abgleich“; keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG setzt KIPKI-Mittel vollständig für die Grundschule Halsenbach ein; kein VG-Programm für Private."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "09183125",
+    "name": "Lohkirchen",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lohkirchen gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183132",
+    "name": "Oberbergkirchen",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberbergkirchen gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183143",
+    "name": "Schönberg",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183151",
+    "name": "Zangberg",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zangberg gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
       }
     ]
   }

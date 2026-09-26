@@ -7,9 +7,11 @@
  * the live solar output reads the weather the parent page already loads
  * (window.atlasWeather, set by GemeindeSzene) — no second weather request.
  */
-import ZubauChart from "../atlas/ZubauChart";
 import { useEffect, useRef, useState } from "react";
-import MonitorComposition from "./MonitorComposition";
+import {MonitorCompositionChart} from "../charts/CompositionChart";
+import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
+import { WIDGETS } from "../../lib/widget-registry";
+import { ExportableWidgetFrame } from "../dashboard/ExportableWidgetFrame";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
 import { MonitorMonthlySolarChart } from "./MonitorMonthlySolarChart";
 import { MunicipalChart } from "../social/MunicipalChart";
@@ -23,8 +25,8 @@ import { ShareDonut, solarCategoryVisual } from "../charts/ShareDonut";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import { WidgetFrame } from "../dashboard/WidgetFrame";
 import { KpiOverview } from "../dashboard/KpiOverview";
-import type { WidgetKind } from "../../lib/dashboard/model";
-import { MastrLiveRadial } from "../MastrLiveRadial";
+import {AnnualGrowth} from "../charts/AnnualGrowthWidget";
+import {CurrentPower, type SolarWeatherSource} from "../charts/CurrentPowerWidget";
 import { MastrMap } from "../MastrMap";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
@@ -37,82 +39,6 @@ const formatDate = dashboardDate;
 const monthLabel = (month: string) =>
   new Date(month + "-15T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 
-
-export type SolarWeatherSource = { load: () => Promise<unknown>; tag?: () => Promise<unknown> };
-
-export function CurrentPower({ installedKwp, compact = false, weatherSource, frameless = false, overview = false }: { installedKwp: number; compact?: boolean; weatherSource?: SolarWeatherSource; frameless?: boolean; overview?: boolean }) {
-  const [reading, setReading] = useState<Any>(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    let active = true;
-    let versuche = 0;
-    const load = () => {
-      const source = weatherSource ?? (parent as Any).atlasWeather;
-      if (!source) {
-        // The frame can be up before the page has set its weather source;
-        // ask again shortly instead of waiting for the five-minute refresh.
-        if (++versuche < 10) setTimeout(() => active && load(), 1000);
-        else setFailed(true);
-        return;
-      }
-      // "Now" comes with the scene's weather, today's curve on its own call
-      // (the scene must not wait for the curve).
-      Promise.all([source.load(), source.tag ? source.tag() : Promise.resolve(null)])
-        .then(([jetzt, tag]: Any[]) => ({ ...jetzt, points: tag?.points ?? jetzt?.points }))
-        .then((result: Any) => {
-          if (!active) return;
-          // "Now" without today's curve would draw an empty dial; say that
-          // the curve is missing and ask again in a minute.
-          if (!result?.points?.length) {
-            setFailed(true);
-            if (++versuche < 10) setTimeout(() => active && load(), 60000);
-            return;
-          }
-          setReading(result);
-          setFailed(false);
-        })
-        .catch(() => {
-          if (active) setFailed(true);
-        });
-    };
-    load();
-    const timer = setInterval(load, 300000);
-    return () => {
-      active = false;
-      clearInterval(timer);
-    };
-  }, [weatherSource]);
-  const points = reading?.points?.map((point: Any) => ({ ts: point.time, mw: ((reading.installedKwp ?? installedKwp) * point.powerPct) / 100000 })) ?? [];
-  const current = points.filter((point: Any) => Date.parse(point.ts) <= Date.now()).at(-1);
-  const asOf = reading?.power?.asOf
-    ? " · Stand " + new Date(reading.power.asOf).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }) + " Uhr"
-    : "";
-  const content = (
-      <div className="monitor-native-chart monitor-current-power">
-        {failed ? (
-          <p>Der Tagesverlauf ist gerade nicht verfügbar.</p>
-        ) : !reading ? (
-          <p>Wetterdaten werden geladen …</p>
-        ) : (
-          <MastrLiveRadial
-            energietraeger="solar"
-            installedKwp={reading.installedKwp ?? installedKwp}
-            injected={points}
-            highlightTs={current?.ts}
-            secondaryBars
-            size={compact ? "compact" : "default"}
-            unit="MW"
-            className="monitor-live-radial"
-            bare
-            fuelltBreite
-            kopfKachel={compact && !frameless}
-            overview={overview}
-          />
-        )}
-      </div>
-  );
-  return frameless ? content : <WidgetFrame title="Solarleistung heute" kind="radial" context={compact ? undefined : <>Aus dem Wetter am Standort simuliert{asOf}</>}>{content}</WidgetFrame>;
-}
 
 /** Mounts its children only once the placeholder comes within reach of the
  *  viewport — the district map brings ≈170 KB of geometry nobody at the top
@@ -166,25 +92,7 @@ function LocalMap({ paket }: { paket: GemeindePaket }) {
   );
 }
 
-const widgetRole = (item: Any) => {
-  const titles: Record<string, string> = {
-    anteilsdonut: "Installierte Solarleistung nach Anlagentyp",
-    "electricity-value": "Wert des Solarstroms",
-    "feed-in-value": "Einspeisevergütung",
-    verlauf: "Zubau pro Monat",
-    radial: "Solarerzeugung im Tagesverlauf",
-    "energy-year": "Solar- und Windpotenzial im Jahresverlauf",
-  };
-  return {
-    title:
-      titles[item.template] ??
-      (item.story.countComparison?.label ? item.story.countComparison.label + ": Anteil an Anzahl und Leistung" : "Anlagenbestand"),
-    kind:
-      ({ anteilsdonut: "donut", anlagenraster: "composition", verlauf: "time-series", "energy-year": "radial", radial: "radial" } as Record<string, WidgetKind>)[
-        item.template
-      ] ?? "number",
-  };
-};
+const widgetRole = (item: Any) => monitorWidgetRole(item.template, item.story);
 
 export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket }) {
   const history = paket.monitorHistory as Any;
@@ -224,8 +132,26 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         }
       : item.story;
   const assumptionDate = periods.valuationAssumptionDate ? formatDate(periods.valuationAssumptionDate) : null;
+  // Visuals migrated to the shared export pipeline name their registry entry in the template catalog.
+  const exportKey = storyVisualTemplateDef(item.template)?.widget
+    ?? ({anteilsdonut: "regionalComposition", "electricity-value": "regionalElectricityValue", "feed-in-value": "regionalFeedInValue"} as const)[item.template as "anteilsdonut" | "electricity-value" | "feed-in-value"];
+  const periodLabel = period === "current" ? "Heute" : new Date(period + "T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+  const Frame = (exportKey ? ExportableWidgetFrame : WidgetFrame) as typeof WidgetFrame;
+  const exportProps = exportKey
+    ? {
+        widget: WIDGETS[exportKey],
+        place: paket.name,
+        // Stock widgets: the chosen month end; others: the story's own data date.
+        stand: formatDate(hasStockPeriod ? (selected?.end ?? paket.registerStand) : (item.story.sourceDate ?? paket.registerStand)),
+        // Charts with their own selectors print their state themselves.
+        stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : isValuation ? monthLabel(chosenValue?.month ?? item.story.period) : undefined,
+        filename: `solar-check-${item.template}-${paket.ags}`,
+        animated: item.template === "radial",
+      }
+    : {};
   return (
-    <WidgetFrame
+    <Frame
+      {...exportProps}
       title={role.title}
       kind={role.kind}
       className={chart.visualTheme}
@@ -287,7 +213,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         <ShareDonut values={values} />
       ) : isComposition ? (
         <div className="monitor-widget-body">
-          <MonitorComposition story={compositionStory} />
+          <MonitorCompositionChart story={compositionStory} />
         </div>
       ) : (
         <div className="monitor-widget-body">
@@ -300,36 +226,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
           )}
         </div>
       )}
-    </WidgetFrame>
-  );
-}
-
-export function AnnualGrowth({ years, stand }: { years: { year: number; count: number }[]; stand: string }) {
-  const [range, setRange] = useState("all");
-  const end = Number(stand.slice(0, 4));
-  return (
-    <WidgetFrame
-      title="Zubau pro Jahr"
-      kind="time-series"
-      help={<p>Solaranlagen nach Inbetriebnahmejahr. Das laufende Jahr ist noch nicht vollständig. Registerstand: {formatDate(stand)}.</p>}
-      settings={
-        <WidgetSetting
-          label="Zeitraum des Zubaus"
-          hideLabel
-          value={range}
-          onChange={setRange}
-          options={[
-            { value: "all", label: "Seit 2014" },
-            { value: "10", label: "Letzte 10 Jahre" },
-            { value: "5", label: "Letzte 5 Jahre" },
-          ]}
-        />
-      }
-    >
-      <div className="monitor-native-chart">
-        <ZubauChart years={years} from={range === "all" ? 2014 : end - Number(range) + 1} asOfYear={end} />
-      </div>
-    </WidgetFrame>
+    </Frame>
   );
 }
 
@@ -344,12 +241,23 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     const computed = getComputedStyle(root.current!);
     const previous = properties.map((property) => [property, document.body.style.getPropertyValue(property)]);
     properties.forEach((property) => document.body.style.setProperty(property, computed.getPropertyValue(property)));
-    const notify = () => parent.postMessage({ type: "municipal-data-layout", height: root.current?.scrollHeight }, location.origin);
+    let lastModal = false;
+    const hasModal = () => Boolean(document.querySelector('[data-chart-detail-open]'));
+    const notify = () => {
+      lastModal = hasModal();
+      parent.postMessage({ type: "municipal-data-layout", height: root.current?.scrollHeight, modal: lastModal }, location.origin);
+    };
+    // Modal portals mount after the widget's effect, outside the monitor root.
+    const modalObserver = new MutationObserver(() => { if (hasModal() !== lastModal) notify(); });
+    modalObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-chart-detail-open"] });
     const observer = new ResizeObserver(notify);
     observer.observe(root.current!);
+    window.addEventListener("chart-detail-change", notify);
     notify();
     return () => {
       observer.disconnect();
+      modalObserver.disconnect();
+      window.removeEventListener("chart-detail-change", notify);
       previous.forEach(([property, value]) => {
         if (value) document.body.style.setProperty(property, value);
         else document.body.style.removeProperty(property);
@@ -360,6 +268,13 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const register = paket.register;
   const charts = paket.charts as Any;
   const installedKwp = ((register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
+  const perYear: Record<number, number> = {};
+  for (const row of (register?.series ?? []) as Any[]) {
+    if (row.energietraeger === "solar") perYear[row.year] = (perYear[row.year] ?? 0) + row.count;
+  }
+  const years = Object.entries(perYear)
+    .map(([year, count]) => ({ year: Number(year), count }))
+    .sort((a, b) => a.year - b.year);
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const sections = ["Anlagenbestand", "Strom und Wert"];
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
@@ -377,9 +292,10 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
           }
         />
       )}
-      <section aria-label="Aktuelle Solarleistung">
+      <section aria-label="Aktuelle Solarleistung und Ausbau">
         <div className="sc-widget-grid">
-          {installedKwp > 0 && <CurrentPower installedKwp={installedKwp} />}
+          {installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} frameless /></ExportableWidgetFrame>}
+          {years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />}
         </div>
       </section>
       {sections.map((section) => {

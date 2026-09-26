@@ -77,6 +77,11 @@ for (const erg of ERGEBNISSE) {
         const anderes = reiterListe.findIndex((r) => !r.aktiv);
         await page.locator('[role="tab"]:visible').nth(anderes).click();
       } else {
+        if (erg.settingsButton) {
+          await page.getByRole("button", { name: erg.settingsButton, exact: true }).click();
+          await expect(page.getByRole("dialog")).toBeVisible();
+          await expect(page.getByRole("dialog").getByRole("button", { name: /bearbeiten$/ }).first()).toBeVisible();
+        }
         const werte = await editierbareWerte(page);
         test.skip(
           werte.length === 0,
@@ -87,6 +92,7 @@ for (const erg of ERGEBNISSE) {
         const alt = Number.parseFloat(roh);
         test.skip(!Number.isFinite(alt) || alt <= 0, `„${ziel.label}" trägt keine lesbare Zahl`);
         await wertSetzen(page, ziel.label, String(Math.round(alt * 1.5)));
+        if (erg.settingsButton) await page.getByRole("dialog").getByRole("button", { name: "Ergebnis neu berechnen", exact: true }).click();
       }
       await ergebnisBereit(page, erg.enthaelt);
       const erwartet = await kernzahlen(page, erg.kernzahlen);
@@ -161,6 +167,11 @@ for (const erg of ERGEBNISSE) {
       await page.goto(erg.pfad);
       await ergebnisBereit(page, erg.enthaelt);
 
+      if (erg.settingsButton) {
+        await page.getByRole("button", { name: erg.settingsButton, exact: true }).click();
+        await expect(page.getByRole("dialog")).toBeVisible();
+        await expect(page.getByRole("dialog").getByRole("button", { name: /bearbeiten$/ }).first()).toBeVisible();
+      }
       const werte = await editierbareWerte(page);
       test.skip(werte.length === 0, "dieses Ergebnis hat keine editierbaren Werte");
 
@@ -174,6 +185,7 @@ for (const erg of ERGEBNISSE) {
       const neuerWert = String(Math.round(alt * 1.5));
 
       await wertSetzen(page, ziel.label, neuerWert);
+      if (erg.settingsButton) await page.getByRole("dialog").getByRole("button", { name: "Ergebnis neu berechnen", exact: true }).click();
       await ergebnisBereit(page, erg.enthaelt);
 
       expect(
@@ -187,6 +199,23 @@ for (const erg of ERGEBNISSE) {
       await page.goto(erg.pfad);
       await ergebnisBereit(page, erg.enthaelt);
 
+      if (erg.scenarioButton) {
+        const results = new Set<string>();
+        for (const label of ["Optimistisch", "Pessimistisch", "Realistisch"]) {
+          await page.getByRole("button", { name: erg.scenarioButton }).click();
+          const modal = page.getByRole("dialog");
+          await expect(modal).toBeVisible();
+          const heading = modal.getByRole("button", { name: /^Angenommene Energiepreise/ });
+          if (await heading.getAttribute("aria-expanded") !== "true") await heading.click();
+          await modal.getByRole("button", { name: new RegExp(`^${label}`) }).click();
+          await modal.getByRole("button", { name: "Ergebnis neu berechnen", exact: true }).click();
+          await ergebnisBereit(page, erg.enthaelt);
+          const values = await kernzahlen(page, erg.kernzahlen);
+          expect(results.has(values), `${label} must change the calculated result`).toBe(false);
+          results.add(values);
+        }
+        return;
+      }
       const liste = await reiter(page);
       test.skip(liste.length === 0, "dieses Ergebnis hat keine Szenario-Reiter");
 

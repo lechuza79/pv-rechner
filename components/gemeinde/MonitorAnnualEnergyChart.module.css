@@ -7,3 +7,6 @@
 /* Keep both labels readable; wrap controls instead of shrinking their text. */
 .settings>div{flex:0 0 auto;}
 .settings :global(.sc-setting-select){min-width:132px;}
+
+/* Image only: the chosen year and energy type replace the selectors. */
+.exportState{margin:0;padding:16px var(--widget-padding) 0;font-size:var(--atlas-label-size);color:var(--atlas-secondary)}

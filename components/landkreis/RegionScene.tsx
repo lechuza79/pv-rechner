@@ -6,7 +6,7 @@ import type { createRegionScene, Season } from "./region-scene";
 import styles from "./landkreis.module.css";
 
 type Props = { heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
-  onHover: (id:string|null)=>void; onSelect: (id:string)=>void; onReady: (ready:boolean)=>void };
+  onHover: (id:string|null)=>void; onSelect: (id:string,touch?:boolean)=>void; onReady: (ready:boolean)=>void };
 export default function RegionScene(props:Props) {
   const host=useRef<HTMLDivElement>(null), current=useRef(props);
   current.current=props;
@@ -29,7 +29,7 @@ export default function RegionScene(props:Props) {
     import("./region-scene").then(({createRegionScene})=>{
       if(disposed||!host.current)return;
       const instance=createRegionScene(host.current,current.current.shapes,{
-        hover:id=>current.current.onHover(id),select:id=>current.current.onSelect(id),pin:setPin,
+        hover:id=>current.current.onHover(id),select:(id,touch)=>current.current.onSelect(id,touch),pin:setPin,
         failed:()=>{setFailed(true);current.current.onReady(false);},
       }, current.current.heightEnvelope);
       scene.current=instance;
@@ -45,8 +45,8 @@ export default function RegionScene(props:Props) {
     <div ref={host} className={styles.sceneHost} data-region-scene />
     {pin&&city&&<button type="button" className={styles.scenePin} data-city-pin={city.id}
       style={{left:pin.x,top:pin.y}} aria-label={`${city.name}: kreisfreie Stadt`}
-      onPointerEnter={()=>props.onHover(city.id)} onPointerLeave={()=>props.onHover(null)}
-      onFocus={()=>props.onHover(city.id)} onBlur={()=>props.onHover(null)} onClick={()=>props.onSelect(city.id)}>
+      onPointerEnter={()=>props.onHover(city.id)} onPointerLeave={e=>{if(e.pointerType!=="touch")props.onHover(null);}}
+      onFocus={()=>props.onHover(city.id)} onBlur={()=>props.onHover(null)} onClick={e=>props.onSelect(city.id,(e.nativeEvent as PointerEvent).pointerType==="touch")}>
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 23C10 20 3 14 3 9A9 9 0 0 1 21 9C21 14 14 20 12 23Z"/><text x="12" y="11.5" textAnchor="middle" fill="#163338" fontFamily="Arial, sans-serif" fontWeight="700" fontSize="7">{city.name.replace(/^Kreisfreie Stadt\s+/, "").slice(0, 2).toLocaleUpperCase("de-DE")}</text></svg>
     </button>}
   </div>;

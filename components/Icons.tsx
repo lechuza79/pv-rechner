@@ -102,7 +102,7 @@ export function IconRefresh({ size = 16, color = "currentColor", style }: IconPr
 
 export function IconChevronDown({ size = 16, color = "currentColor", style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+    <svg data-icon="chevron-down" aria-hidden="true" width={size} height={size} viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
       <path d="M1 1.5l5 5 5-5" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -153,6 +153,30 @@ export function IconHelpCircle({ size = 16, color = "currentColor", style }: Ico
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
       <path d="M6.06 6a2 2 0 0 1 3.887.667c0 1.333-2 2-2 2M8 11.333h.007M14.667 8A6.667 6.667 0 1 1 1.333 8a6.667 6.667 0 0 1 13.334 0Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Warndreieck — für einen Hinweis, der einen Kauf zum Fehlkauf machen kann.
+ *
+ * Bewusst kein Kreis: `IconInfo` daneben ist der ruhigere Fall, und die beiden
+ * müssen sich auf 13 px Höhe auch dann unterscheiden, wenn die Farbe fehlt
+ * (Druck, Bild-Export, Farbsehschwäche).
+ */
+export function IconAlert({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M8 1.83 1.2 13.5a.93.93 0 0 0 .8 1.4h12a.93.93 0 0 0 .8-1.4L8 1.83ZM8 6v3.33M8 12.33h.007" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Info-Kreis — für einen Hinweis, der vor der Bestellung geklärt gehört. */
+export function IconInfo({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M8 10.67V8M8 5.33h.007M14.667 8A6.667 6.667 0 1 1 1.333 8a6.667 6.667 0 0 1 13.334 0Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -390,4 +414,11 @@ export function IconPause({ size = 16, color = "currentColor", style }: IconProp
 /** Awaiting editorial review. */
 export function IconHourglass({ size = 16, color = "currentColor", style }: IconProps) {
   return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, ...style }}><path d="M4 2h8M4 14h8M5 2v3l3 3-3 3v3M11 2v3L8 8l3 3v3" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
+export function IconSettings({ size = 16, color = "currentColor", style }: IconProps) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.7" strokeLinecap="round" aria-hidden="true" style={style}>
+    <path d="M4 7h7m4 0h5M4 17h3m4 0h9" />
+    <circle cx="13" cy="7" r="2" /><circle cx="9" cy="17" r="2" />
+  </svg>;
 }

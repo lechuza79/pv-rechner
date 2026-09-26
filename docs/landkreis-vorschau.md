@@ -38,7 +38,19 @@ so fully grown fallback bars cannot flash before the entrance animation. No fake
 SVG trees remain. The camera uses a flatter view with a fixed initial composition around the actual
 surfaces, bars and trees. The larger map shares the hero stage with the heading;
 only the introduction remains below. Rotation retains a geographic pivot on world Y. Mouse dragging rotates the scene; ordinary
-scrolling remains page scrolling. Touch uses two fingers for rotation.
+scrolling remains page scrolling.
+
+Touch (26.09.2026, measured with real CDP touch sequences at 390 px, not with
+clicks or viewport resizing): one finger sideways rotates, one finger vertically
+scrolls the page (the canvas keeps `touch-action: pan-y pinch-zoom`, and the tilt is
+locked for touch so a vertical swipe cannot tilt the map), two fingers pinch-zoom and
+rotate (`DOLLY_ROTATE`), a tap opens the municipality. Before, the code had
+`TWO = ROTATE`, which OrbitControls does not support for two fingers (treated as
+none), and `touch-action: pan-y` let the browser swallow pinch: live measured no
+zoom (factor 1) and no reliable two-finger rotation, while tap and vertical scroll
+worked. The WebGL-less SVG fallback scrolls, pinch-zooms via the browser and opens
+a municipality on tap. Not verified: real iOS Safari / Android Chrome devices
+(synthetic touch in Chromium only).
 
 EZ Tree generates simplified, seeded deciduous and pine meshes. A denser forest
 grid uses smaller trees with varied sizes; pines retain needles in winter. Three variants

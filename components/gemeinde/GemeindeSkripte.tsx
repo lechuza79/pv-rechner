@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import InfoTooltipBindings from "../InfoTooltipBindings";
 
 declare global {
   interface Window {
@@ -47,5 +48,5 @@ export default function GemeindeSkripte({ daten, navigationOnly=false }: { daten
       }
     })();
   }, [daten,navigationOnly]);
-  return null;
+  return <InfoTooltipBindings />;
 }

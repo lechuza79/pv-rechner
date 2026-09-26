@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../heatpump";
+import { calcHeatPump, calcHeatPumpScenarios, calcInvestBrutto, type HeatPumpInputs } from "../heatpump";
 import { recommend } from "../recommend";
 import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
-import { greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../fossil-reference";
+import { fossilReplacementInvestment, greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../fossil-reference";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../heat-consumption";
 import { INSULATION_BESTAND, WP_FUEL_OPTIONS, FUEL, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
@@ -732,5 +732,16 @@ describe("Modell-Kohärenz: der Kaufblock sagt, wovor er rechnet", () => {
     const block = readFileSync(join(ROOT, "components/BalkonAngebot.tsx"), "utf8");
     expect(block).toMatch(/foerderungEuro > 0 \?/);
     expect(block).toMatch(/vor der Förderung/);
+  });
+});
+
+// All entry points must price the same equipment and building state.
+describe("investment caller coherence", () => {
+  it("shares the capacity estimate across complete calculations and standalone helpers", () => {
+    for (const input of alleEingaben()) {
+      const r = calcHeatPump(input);
+      expect(r.gasInvest).toBe(fossilReplacementInvestment(input.fuelKind ?? "gas", CFG, r.heizlastKw));
+      expect(r.investBrutto).toBe(calcInvestBrutto(input.wpType, r.auslegungKw, false, CFG));
+    }
   });
 });

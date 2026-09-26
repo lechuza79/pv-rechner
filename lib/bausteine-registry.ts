@@ -118,7 +118,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["AccordionField"],
   },
   {
     datei: "components/TriToggle.tsx",
@@ -266,7 +266,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["AccordionField", "PresetNumberInput"],
+    bestehtAus: ["AccordionField", "PresetNumberInput", "OptionCard"],
   },
   {
     datei: "components/StandortField.tsx",
@@ -320,7 +320,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/KlebenderKnopf.tsx",
@@ -345,6 +345,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Modal", "FlowNav"],
     keinBeispielWeil:
       "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
+    datei: "components/InfoTooltipBindings.tsx",
+    name: "InfoTooltipBindings",
+    keinBeispielWeil: "This adapter has no independent visual output: it mounts the existing InfoTooltip into legacy ranking markup. The InfoTooltip gallery example covers its appearance; the municipality ranking exercises the binding lifecycle.",
+    zweck: "Binds legacy explanatory markup to InfoTooltip without separate positioning or interaction logic.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["InfoTooltip"],
   },
   {
     datei: "components/InfoTooltip.tsx",
@@ -574,6 +584,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons"],
   },
   {
+    datei: "components/ChartOptionsMenu.tsx",
+    name: "ChartOptionsMenu",
+    zweck:
+      "Kompaktes Optionsmenü oben rechts an einem Diagramm: Teilen, Download, Einbetten — dieselben Handler wie die Aktionsleiste, nur als Menü.",
+    gruppe: "widget",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ChartExportBar.tsx",
     name: "ChartExportBar",
     zweck: "Die Aktionsleiste über einem Chart, das auf einer eigenen Seite steht.",
@@ -672,7 +692,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["InfoTooltip"],
   },
   {
     datei: "components/Faq.tsx",
@@ -981,6 +1001,15 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/HeatPumpInvestmentAssumptions.tsx",
+    name: "HeatPumpInvestmentAssumptions",
+    zweck: "Zeigt und bearbeitet die Anschaffungskosten hinter dem Heizungsvergleich bei einem anderen Dämmzustand.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["InlineEdit"],
+  },
+  {
     datei: "components/MastrHeroSection.tsx",
     name: "MastrHeroSection",
     zweck:
@@ -1095,7 +1124,19 @@ export const BAUSTEINE: Baustein[] = [
  * Die Liste soll schrumpfen. Sie ist der Arbeitsvorrat, nicht ein Mangel —
  * die Bausteine werden sukzessive entwickelt (Betreiber, 01.09.2026).
  */
-export const NOCH_NICHT_EINGEORDNET: string[] = [];
+export const NOCH_NICHT_EINGEORDNET: string[] = [
+  "BegFundingQuestions",
+  "Collapse",
+  "DesignFooterNavigation",
+  "HeatPumpDesignHeader",
+  "PvSystemQuestions",
+  // Die Geräteempfehlung unter dem Wärmepumpen-Ergebnis (seit 05.09.2026).
+  // Noch kein geteilter Baustein: Sie steht an genau einer Stelle und trägt
+  // Affiliate-Kennzeichnung, Preisangaben und die fachlichen Hinweise, die nur
+  // dort gelten. Ein Eintrag käme, sobald ein zweiter Rechner Geräte empfiehlt.
+  "WpGeraeteEmpfehlung",
+  "WpPvFlow",
+];
 
 /** Nachschlagen über den Anzeigenamen. */
 export function baustein(name: string): Baustein | undefined {
