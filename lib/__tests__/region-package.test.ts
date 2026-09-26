@@ -71,6 +71,14 @@ describe('Bundesland and Deutschland packages',()=>{
     expect(pkg.content.monitor.energy!.valuationAssumptionDate).toBeNull();
   });
 
+  it('a Land carries the site list of all its towns, only when every part has one and no town repeats',()=>{
+    const partSites=[districtOf('15001',a).content.monitor.sites,districtOf('15002',b).content.monitor.sites,[{ags:'15003000',kwp:8}]];
+    const pkg=buildRegionPackage(state,parts(),'fp','now',new Set(),partSites);
+    expect(pkg.content.monitor.sites?.map(s=>s.ags)).toEqual(['15001001','15001002','15002001','15003000']);
+    expect(buildRegionPackage(state,parts(),'fp','now',new Set(),[partSites[0],null,partSites[2]]).content.monitor.sites).toBeNull();
+    expect(buildRegionPackage(state,parts(),'fp','now',new Set(),[partSites[0],partSites[0],partSites[2]]).content.monitor.sites).toBeNull();
+  });
+
   it('refuses a package whose child list differs from the page',()=>{
     const pkg=buildRegionPackage(state,parts(),'fp','now');
     expect(checkRegionPackage(pkg,'15',['15001','15002','15003']).ok).toBe(true);

@@ -50,7 +50,7 @@ Widgets (`LandkreisMonitor` → `KpiOverview` über `monitorKpiGroups`, `Distric
 | Solarerzeugung im Tagesverlauf | `monitor.energy.monthly[].solar` (Tage × 24 h) | |
 | Energieverlauf im Jahr | `monitor.energy.annual[]` | Solar und Wind |
 | Wert des Solarstroms / Einspeisevergütung | `monitor.energy.monthly[].value` | nur Monate mit `value` anbieten (macht `DistrictEnergyWidgets` schon) |
-| Solarleistung heute (live) | **`monitor.sites` ist immer `null`** | siehe Lücken |
+| Solarleistung heute (live) | eigener Endpunkt `/api/region/solartag?ags=15` bzw. `ags=de` | siehe unten |
 | Insights | `stories` ist immer `[]` | |
 
 ## Geprüft (26.09.2026, echter Speicherstand, nur lesend, nichts veröffentlicht)
@@ -100,3 +100,44 @@ Das ändert auch die drei **Kreisseiten** (sie bekommen ihren Monitor) — sicht
 3. **Texte in `LandkreisMonitor`/`DistrictEnergyWidgets`** sprechen von „Landkreis" /
    „aller Gemeinden" — auf Land/Bund anpassen (UI).
 4. Das Jahresprofil enthält nur **2025** (wie auf Kreisebene).
+
+## Solarleistung heute (Land und Deutschland), Stand 26.09.2026
+
+Vorberechnet im stündlichen Wetterlauf (`.github/workflows/wetter-schnappschuss.yml`,
+Schritt „Länder- und Deutschland-Tageskurve“, `npm run wetter:regionen`,
+`lib/region-solar-day.ts`) und abgelegt als **eine** Datei
+`wetter-modell/regionen/solartag.json`. Kein Wetterabruf je Seitenaufruf.
+
+- **Dasselbe Modell wie der Kreis:** je Gemeinde `solarTagAusModell` am Wetterpunkt,
+  gewichtet mit installierter Leistung über `districtSolarCurve`. Gemeindeliste und kWp
+  aus den Landespaketen (`monitor.sites`, Paketversion 2) → identisch mit den Kreispaketen
+  derselben Generation, keine Doppelzählung (Kreise zerlegen das Land; geprüft).
+- **Wetterpunkt je Gemeinde:** `gemeindeWetterpunkt` — eigene PLZ; sonst der nächste
+  PLZ-Punkt zur Mitte der Gemeindegrenze (≤ 20 km); sonst über den amtlichen Vorgänger-
+  schlüssel (Hanau). Gilt seitdem **auch für den Kreis-Endpunkt**: 441 Dörfer ohne eigene
+  PLZ (0,5 % der Leistung) machten bisher ihren ganzen Kreis „nicht verfügbar“.
+- **Nie eine zu kleine Summe:** Fehlt einer Gemeinde Lage oder Tageskurve, ist ihr Land
+  nicht verfügbar; Deutschland braucht alle 16.
+- **Nie eine alte Kurve als heutige:** gespeichert je deutschem Kalendertag (heute und,
+  sobald das Modell ihn abdeckt, morgen — deshalb gibt es auch nach Mitternacht eine
+  Kurve). Der Endpunkt liefert ausschließlich den heutigen Tag, sonst 503.
+  Setzt ein Lauf aus, bleibt die zuletzt vollständige Kurve desselben Tages stehen.
+
+Zugriff: `GET /api/region/solartag?ags=01…16|de`, Antwort wie beim Kreis:
+
+```json
+{"points":[{"time":"2026-09-25T22:00:00.000Z","powerPct":0}, "… 96 Viertelstunden"],
+ "installedKwp":1.2921e8,"towns":10746,"day":"2026-09-26","runInit":"<Modelllauf des Schnappschusses>"}
+```
+
+503 `{"error":…,"reason":"not-today"|"no-file"|"no-sites"|"no-location"|"no-weather"|"incomplete-states"}`.
+Im Widget reicht es, die `weatherSource` auf diese Adresse zu setzen.
+
+Geprüft (lokal, echter Wetter-Schnappschuss vom 26.09.2026, Landespakete im Speicher
+gebaut, nichts geschrieben): alle 16 Länder und Deutschland für heute und morgen
+vollständig; Deutschland 10.746 Gemeinden, 129,21 GWp (Register 129,2 GWp);
+Deutschland 12:00 = nach Leistung gewichtete Länderkurven (37,7436 % beidseitig);
+Rechenzeit ~55 s für zwei Tage.
+
+Zur Aktivierung: Merge auf main → nächster Kreispaket-Lauf baut die Landespakete v2 mit
+Gemeindelisten → nächster stündlicher Wetterlauf schreibt die Datei.

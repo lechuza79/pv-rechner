@@ -42,7 +42,8 @@ import {
 } from "./district-package";
 import type { DistrictLock } from "./district-package-lock";
 import type { EnergyPacket } from "./district-energy";
-import { buildRegionPackage, checkRegionPackage, partFromAggregate, partFromTown, regionFingerprint, type RegionMembership, type RegionPackage } from "./region-package";
+import { buildRegionPackage, checkRegionPackage, partFromAggregate, partFromTown, regionFingerprint, siteFromTown, type RegionMembership, type RegionPackage } from "./region-package";
+import type { DistrictSite } from "./district-package";
 
 export type DistrictStore = {
   /** Parsed JSON, or null when the object does not exist. Throws on read failure. */
@@ -210,9 +211,13 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     for (const r of [...regions].sort((a, b) => (a.level === "de" ? 1 : 0) - (b.level === "de" ? 1 : 0))) {
       await keep(`Region ${r.regionId}`);
       const parts: (EnergyPacket | null)[] = new Array(r.parts.length);
+      const partSites: (DistrictSite[] | null)[] = new Array(r.parts.length).fill(null);
       await pool(r.parts, 6, async (p, i) => {
-        if (p.kind === "town") parts[i] = partFromTown(p.id, await readTown(p.town!));
-        else if (p.kind === "state") parts[i] = partFromAggregate(p.id, results.get(p.id) ?? null);
+        if (p.kind === "town") {
+          const town = await readTown(p.town!);
+          parts[i] = partFromTown(p.id, town);
+          partSites[i] = siteFromTown(town);
+        } else if (p.kind === "state") parts[i] = partFromAggregate(p.id, results.get(p.id) ?? null);
         else {
           const path = pathOf(p.id);
           const back = path ? await store.getBytes(path) : null;
@@ -220,10 +225,11 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
           const check = checkDistrictPackage(JSON.parse(brotliDecompressSync(back).toString("utf8")), p.id, byId.get(p.id)!.members);
           if (!check.ok) throw new Error(`${r.regionId}: Kreispaket ${p.id} abgelehnt (${check.reason}) — Abbruch`);
           parts[i] = partFromAggregate(p.id, check.pkg);
+          partSites[i] = check.pkg.content.monitor.sites;
         }
       });
       const confirmed = r.excluded.length && opts.confirmEmpty ? await opts.confirmEmpty(r.excluded) : new Set<string>();
-      const pkg = buildRegionPackage(r, parts, regionPrints.get(r.regionId)!, builtAt, confirmed);
+      const pkg = buildRegionPackage(r, parts, regionPrints.get(r.regionId)!, builtAt, confirmed, partSites);
       results.set(r.regionId, pkg);
       const json = Buffer.from(JSON.stringify(pkg));
       if (json.length > DISTRICT_PACKAGE_MAX_BYTES) throw new Error(`${r.regionId}: Paket ${json.length} Byte, Grenze ${DISTRICT_PACKAGE_MAX_BYTES}`);
@@ -234,7 +240,7 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
       bytes += br.length;
       regionsRebuilt++;
       const m = pkg.content.monitor;
-      log(`Region ${r.regionId} ${r.name}: ${r.parts.length} Teile, Monitor ${m.status === "ready" ? "vollständig" : `nicht verfügbar (${m.reason})`}, Energie ${m.energy ? `${m.energy.monthly.length} Monate/${m.energy.annual.length} Jahre, Wert ${m.energy.monthly.filter((x) => x.value).length} Monate` : "nicht verfügbar"}${pkg.missing.length ? `, ohne verwertbare Daten: ${pkg.missing.join(" ")}` : ""}`);
+      log(`Region ${r.regionId} ${r.name}: ${r.parts.length} Teile, Monitor ${m.status === "ready" ? "vollständig" : `nicht verfügbar (${m.reason})`}, Energie ${m.energy ? `${m.energy.monthly.length} Monate/${m.energy.annual.length} Jahre, Wert ${m.energy.monthly.filter((x) => x.value).length} Monate` : "nicht verfügbar"}${r.level === "bundesland" ? `, Standorte ${m.sites ? m.sites.length : "keine"}` : ""}${pkg.missing.length ? `, ohne verwertbare Daten: ${pkg.missing.join(" ")}` : ""}`);
     }
     await pool(Object.entries(regionEntries), 6, async ([id, entry]) => {
       const back = await store.getBytes(entry.path);

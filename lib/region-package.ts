@@ -22,18 +22,20 @@
  * one common valuation basis. A part that is incomplete makes the level
  * "unavailable" — never a partial sum shown as a total.
  *
- * Deliberately NOT here: stories (the page shows no insights on these levels)
- * and the site list of the live power widget (for Deutschland it would be
- * ~11,000 weather lookups per request; that widget needs its own approach).
+ * Deliberately NOT here: stories (the page shows no insights on these levels).
+ * A Bundesland carries its town site list (installed kWp per municipality,
+ * v2) for the precomputed live power curve (lib/region-solar-day.ts); the
+ * page never computes weather from it. Deutschland carries none: its towns
+ * are the union of the 16 lists.
  */
 import { createHash } from "node:crypto";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
 import { aggregateDistrictMonitor } from "./district-monitor";
 import { aggregateDistrictEnergy, type EnergyPacket } from "./district-energy";
-import { DISTRICT_PACKAGE_VERSION, isDistrictMember, type DistrictComputed, type DistrictMembership, type DistrictMonitor } from "./district-package";
+import { DISTRICT_PACKAGE_VERSION, isDistrictMember, type DistrictComputed, type DistrictMembership, type DistrictMonitor, type DistrictSite } from "./district-package";
 
 /** Bump when the region package shape or its aggregation changes. */
-export const REGION_PACKAGE_VERSION = 1;
+export const REGION_PACKAGE_VERSION = 2;
 
 export type RegionLevel = "bundesland" | "de";
 /** `district`: a Landkreis package · `town`: the town package of a kreisfreie Stadt · `state`: a Bundesland result (Deutschland only). */
@@ -134,16 +136,27 @@ export function partFromAggregate(id: string, a: { editions: string[]; missing: 
   };
 }
 
-export function computeRegionContent(ids: string[], parts: (EnergyPacket | null)[], name: string): DistrictComputed {
+export function computeRegionContent(ids: string[], parts: (EnergyPacket | null)[], name: string, sites: DistrictSite[] | null = null): DistrictComputed {
   const monitor: DistrictMonitor = {
     ...aggregateDistrictMonitor(ids, parts, parts[0]?.registerStand ?? ""),
     energy: aggregateDistrictEnergy(ids, parts, name),
-    sites: null,
+    sites,
   };
   return { monitor, stories: [] };
 }
 
-export function buildRegionPackage(r: RegionMembership, parts: (EnergyPacket | null)[], fingerprint: string, builtAt: string, confirmedEmpty: ReadonlySet<string> = new Set()): RegionPackage {
+/** The site of a kreisfreie Stadt: its own town package's installed kWp. */
+export function siteFromTown(p: GemeindePaket | null): DistrictSite[] | null {
+  return p?.register ? [{ ags: p.ags, kwp: p.register.own.sums.alle.kwp }] : null;
+}
+
+/**
+ * `partSites[i]`: the site list of part i (a district package's `monitor.sites`,
+ * or `siteFromTown`). A Bundesland gets the concatenation only when every part
+ * has one and the level is complete; one missing list means no list at all —
+ * a live curve over part of a state would read as the whole state.
+ */
+export function buildRegionPackage(r: RegionMembership, parts: (EnergyPacket | null)[], fingerprint: string, builtAt: string, confirmedEmpty: ReadonlySet<string> = new Set(), partSites: (DistrictSite[] | null)[] = []): RegionPackage {
   if (parts.length !== r.parts.length) throw new Error(`${r.regionId}: ${parts.length} Teile für ${r.parts.length} Kinder`);
   const ids = r.parts.map((p) => p.id);
   const unconfirmed = r.excluded.filter((id) => !confirmedEmpty.has(id));
@@ -160,8 +173,16 @@ export function buildRegionPackage(r: RegionMembership, parts: (EnergyPacket | n
     excluded: [...r.excluded],
     fingerprint,
     builtAt,
-    content: ids.length && !unconfirmed.length ? computeRegionContent(ids, parts, r.name) : { monitor: { status: "unavailable", reason: "missing-town", energy: null, sites: null }, stories: [] },
+    content: ids.length && !unconfirmed.length ? computeRegionContent(ids, parts, r.name, stateSites(r, parts, partSites)) : { monitor: { status: "unavailable", reason: "missing-town", energy: null, sites: null }, stories: [] },
   };
+}
+
+function stateSites(r: RegionMembership, parts: (EnergyPacket | null)[], partSites: (DistrictSite[] | null)[]): DistrictSite[] | null {
+  if (r.level !== "bundesland" || partSites.length !== r.parts.length || partSites.some((s) => !s?.length) || parts.some((p) => !p)) return null;
+  if (new Set(parts.map((p) => p!.registerStand)).size !== 1) return null;
+  const sites = partSites.flatMap((s) => s!);
+  // Districts partition the state; a town twice would be counted twice.
+  return new Set(sites.map((s) => s.ags)).size === sites.length ? sites : null;
 }
 
 export type RegionRefusal = "version" | "region" | "membership" | "shape";
