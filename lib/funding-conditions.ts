@@ -160,6 +160,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-bad-kreuznach-balkonkraftwerke",
   // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
   "donauwoerth-kleinst-pv",
+  // Gemeinde Südheide, aufgenommen am 26.09.2026; alle Bedingungen stehen auf
+  // der Karte, der Betrag ist bewusst kein Rechenwert (Nennleistung offen).
+  "suedheide-balkonkraftwerke",
   // Stadt Celle, aufgenommen am 26.09.2026; Antragsfenster 2026 geschlossen
   // (pausiert bis 01.01.2027), die Bedingungen stehen alle auf der Karte.
   "celle-klimaschutzfonds",
