@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { load } from "cheerio";
 import { navigationContent, navigationOwner } from "../../public/shared-nav/nav-content.js";
 import { BUNDESLAENDER } from "../mastr-regions";
+import { slugify } from "../atlas-cities";
 import { RATGEBER } from "../ratgeber";
 
 describe("Shared public navigation", () => {
@@ -54,10 +55,9 @@ describe("Shared public navigation", () => {
     expect(local.find("form, a").first().is('[data-local-search="ort"]')).toBe(true);
     expect(local.find('[data-local-search="kreis"]').length).toBe(1);
     expect(local.find('a[href="/solar-atlas"]').length).toBe(1);
-    // One option per Land, from the shared list, each opening its atlas page.
-    const options = local.find("[data-local-land] select option[value]").filter((_, o) => $(o).attr("value") !== "");
-    expect(options.map((_, o) => $(o).attr("value")).get().sort()).toEqual(BUNDESLAENDER.map(b => b.ags).sort());
-    expect(local.find("[data-local-land]").attr("action")).toBe("/api/atlas/goto");
+    // One link per Land, from the shared list, each a real atlas address.
+    const lands = local.find("[data-local-land] a").map((_, a) => $(a).attr("href")).get();
+    expect(lands.sort()).toEqual(BUNDESLAENDER.map(b => `/solar-atlas/${slugify(b.name)}`).sort());
   });
 
   it("keeps field ids unique when the menu stands twice on a page", () => {

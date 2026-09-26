@@ -9,7 +9,7 @@
 // split is derived, not listed: a word that matches a page is a topic word, the
 // rest is looked up as a place.
 
-import { searchRegions, getRegionById, type RegionHit } from "./atlas";
+import { searchRegions, getRegionById, atlasPathForRegionId, type RegionHit } from "./atlas";
 import { gemeindenZurPlz, gemeindeGeo } from "./atlas-geo";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 import { bundeslandByAgs } from "./mastr-regions";
@@ -268,7 +268,11 @@ export async function ortVorschlaege(qRoh: string, ebene: "ort" | "kreis"): Prom
       gattung: h.name.startsWith(h.label) ? "" : h.label,
       // "Berlin · Berlin" says nothing: a city state is its own Land.
       kontext: await kontextVon(h).then((k) => (k === h.name ? "" : k)),
-      href: `/api/atlas/goto?ags=${seitenSchluessel(h.region_id, h.label)}`,
+      // The page itself, not the redirect route: one hop less, and a link
+      // that says where it goes. The route stays as the fallback.
+      href:
+        (await atlasPathForRegionId(seitenSchluessel(h.region_id, h.label)).catch(() => null)) ??
+        `/api/atlas/goto?ags=${seitenSchluessel(h.region_id, h.label)}`,
     })),
   );
 }

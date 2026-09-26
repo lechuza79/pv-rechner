@@ -454,7 +454,7 @@
 .sc-local{display:grid;gap:28px}
 .sc-local-label{display:block;margin:0 0 12px;font:600 var(--sc-nav-label)/1.4 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-nav-muted)}
 .sc-nav-column .sc-local-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.sc-local-field,.sc-local-select select{background:#e0eae5;border:1px solid transparent;border-radius:14px;box-sizing:border-box;color:inherit}
+.sc-local-field,.sc-local-land-toggle{background:#e0eae5;border:1px solid transparent;border-radius:14px;box-sizing:border-box;color:inherit}
 .sc-local-field{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:68px}
 .sc-local-field svg{flex:none;color:var(--sc-nav-muted)}
 .sc-local-field input{flex:1;min-width:0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;padding:12px 0;outline:none;box-shadow:none}
@@ -464,10 +464,20 @@
 .sc-global-nav .sc-local-field input:focus,.sc-global-nav .sc-local-field input:focus-visible{outline:none;box-shadow:none;border:0}
 .sc-local-search-kreis .sc-local-field{min-height:0;padding:0 16px}
 .sc-local-search-kreis .sc-local-field input{font:600 16px/1.4 'DM Sans',sans-serif;padding:16px 0}
-.sc-local-field:focus-within,.sc-local-select select:focus-visible{border-color:var(--sc-nav-ink);outline:none}
-.sc-local-select{position:relative}
-.sc-local-select select{appearance:none;-webkit-appearance:none;width:100%;padding:16px 44px 16px 16px;font:600 16px/1.4 'DM Sans',sans-serif;cursor:pointer}
-.sc-local-select svg{position:absolute;right:18px;top:50%;transform:translateY(-50%);pointer-events:none}
+.sc-local-field:focus-within,.sc-local-land-toggle:focus-visible{border-color:var(--sc-nav-ink);outline:none}
+.sc-local-land{position:relative}
+.sc-global-nav .sc-local-land-toggle{background:#e0eae5;border:1px solid transparent;border-radius:14px;color:inherit;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px;font:600 16px/1.4 'DM Sans',sans-serif;text-align:left;cursor:pointer;transition:background-color 180ms ease}
+.sc-local-land-toggle svg{flex:none;transition:transform 180ms ease}
+.sc-local-land.is-open .sc-local-land-toggle svg{transform:rotate(180deg)}
+@media(hover:hover){.sc-global-nav .sc-local-land-toggle:hover{background:#d4ff24;color:#132527}}
+.sc-local-land-list{display:grid;gap:2px;margin-top:6px}
+/* In the flow, not floating: the menu panel clips anything that leaves it. */
+.sc-local-land[data-ready] .sc-local-land-list{max-height:296px;overflow:auto;padding:6px;box-sizing:border-box;background:#fff;border-radius:14px;overscroll-behavior:contain}
+.sc-local-land-list[hidden]{display:none}
+.sc-local-land-list>a{display:block;padding:10px 12px;border-radius:10px;color:inherit;text-decoration:none;font-weight:600;line-height:1.35}
+.sc-local-land-list>a:hover,.sc-local-land-list>a:focus-visible{background:#d4ff24;color:#132527;outline:none}
+@media(max-width:1280px){.sc-local-land[data-ready] .sc-local-land-list{max-height:none}}
+@media(prefers-reduced-motion:reduce){.sc-local-land-toggle,.sc-local-land-toggle svg{transition:none}}
 .sc-local-results:not(:empty){margin-top:8px}
 .sc-local-hits>a{margin-bottom:6px}
 .sc-local-note{margin:8px 0 0;color:var(--sc-nav-muted);max-width:60ch}

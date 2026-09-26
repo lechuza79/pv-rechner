@@ -129,7 +129,7 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
 /**
  * "Vor Ort": the town and Landkreis fields suggest places while typing; Enter
  * opens the first suggestion (or, before any has loaded, the search page the
- * form points at). The Bundesland picker opens its Land on selection.
+ * form points at). The Bundesland list opens and closes like a dropdown.
  */
 function mountLocal(nav){
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -137,30 +137,47 @@ function mountLocal(nav){
  const unavailable='<p class="sc-local-note" role="status">Die Ortssuche antwortet gerade nicht. Bitte gleich noch einmal versuchen.</p>';
  const fields=[...nav.querySelectorAll('[data-local-search]')].map(form=>{
   const level=form.dataset.localSearch,input=form.querySelector('input'),results=form.querySelector('.sc-local-results');
-  let timer,controller,hits=[];
-  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];results.innerHTML='';};
-  const run=async q=>{
-   controller?.abort();controller=new AbortController();
-   try{
-    const response=await fetch(`/api/suche/orte?ebene=${level}&q=${encodeURIComponent(q)}`,{signal:controller.signal});
-    if(!response.ok)throw new Error(String(response.status));
-    const data=await response.json();
-    if(input.value.trim()!==q)return;
-    hits=data.orte??[];
-    results.innerHTML=hits.length
-     ?`<div class="sc-nav-column sc-local-hits">${hits.map(h=>`<a href="${esc(h.href)}"><span>${esc(h.name)}<small>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</small></span>${arrow}</a>`).join('')}</div>`
-     :data.nichtVerfuegbar?unavailable
-     :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`;
-   }catch(e){if(e?.name==='AbortError')return;hits=[];results.innerHTML=unavailable;}
+  let timer,controller,hits=[],pending=null;
+  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];pending=null;results.innerHTML='';};
+  const run=q=>{
+   controller?.abort();const own=controller=new AbortController();
+   pending=(async()=>{
+    try{
+     const response=await fetch(`/api/suche/orte?ebene=${level}&q=${encodeURIComponent(q)}`,{signal:own.signal});
+     if(!response.ok)throw new Error(String(response.status));
+     const data=await response.json();
+     if(input.value.trim()!==q)return;
+     hits=data.orte??[];
+     results.innerHTML=hits.length
+      ?`<div class="sc-nav-column sc-local-hits">${hits.map(h=>`<a href="${esc(h.href)}"><span>${esc(h.name)}<small>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</small></span>${arrow}</a>`).join('')}</div>`
+      :data.nichtVerfuegbar?unavailable
+      :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`;
+    }catch(e){if(e?.name==='AbortError')return;hits=[];results.innerHTML=unavailable;}
+   })();
+   return pending;
   };
+  const complete=q=>q.length>=2&&!(/^\d+$/.test(q)&&q.length<5);
   // A postcode only means something once it is complete; "97" is not a miss.
-  input.addEventListener('input',()=>{const q=input.value.trim();clear();if(q.length<2||(/^\d+$/.test(q)&&q.length<5))return;timer=setTimeout(()=>run(q),200);});
-  form.addEventListener('submit',e=>{if(hits[0]){e.preventDefault();location.href=hits[0].href;}});
+  input.addEventListener('input',()=>{const q=input.value.trim();clear();if(!complete(q))return;timer=setTimeout(()=>run(q),200);});
+  // Enter goes to the first place — also when it is pressed before the
+  // suggestions have arrived: then it waits for them instead of leaving.
+  form.addEventListener('submit',async e=>{
+   e.preventDefault();
+   const q=input.value.trim();if(!complete(q))return;
+   if(!hits.length){clearTimeout(timer);await(pending??run(q));}
+   if(hits[0]&&input.value.trim()===q)location.href=hits[0].href;
+  });
   return {reset(){clear();input.value='';},destroy(){clear();}};
  });
- const land=nav.querySelector('[data-local-land] select');
- if(land)land.addEventListener('change',()=>{if(land.value)location.href='/api/atlas/goto?ags='+encodeURIComponent(land.value);});
- return {reset(){fields.forEach(f=>f.reset());if(land)land.value='';},destroy(){fields.forEach(f=>f.destroy());}};
+ // The Land list: a disclosure that closes on a second click, outside or Escape.
+ const land=nav.querySelector('[data-local-land]'),landToggle=land?.querySelector('button'),landList=land?.querySelector('.sc-local-land-list');
+ const setLand=open=>{if(!land)return;landList.hidden=!open;landToggle.setAttribute('aria-expanded',String(open));land.classList.toggle('is-open',open);};
+ if(land)land.dataset.ready='';setLand(false);
+ landToggle?.addEventListener('click',e=>{e.stopPropagation();setLand(landList.hidden);});
+ const landOutside=e=>{if(land&&!land.contains(e.target))setLand(false);};
+ const landEscape=e=>{if(e.key==='Escape'&&land&&!landList.hidden){e.stopPropagation();setLand(false);landToggle.focus();}};
+ document.addEventListener('click',landOutside);land?.addEventListener('keydown',landEscape);
+ return {reset(){fields.forEach(f=>f.reset());setLand(false);},destroy(){fields.forEach(f=>f.destroy());document.removeEventListener('click',landOutside);}};
 }
 
 /**
