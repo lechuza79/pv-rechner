@@ -387,6 +387,15 @@ export const BAUSTEINE: Baustein[] = [
 
   // ─── Struktur ──────────────────────────────────────────────────────────────
   {
+    datei: "components/ResultSettings.tsx",
+    name: "ResultSettings",
+    zweck: "Bearbeitet Rechengrundlagen als Entwurf; erst Neuberechnen übernimmt Änderungen, Abbrechen verwirft sie.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Modal", "FlowNav"],
+  },
+  {
     datei: "components/ResultSection.tsx",
     name: "ResultSection",
     zweck:

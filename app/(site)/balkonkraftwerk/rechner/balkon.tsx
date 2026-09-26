@@ -17,6 +17,10 @@ import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } fro
 import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
+import Toast from "../../../../components/Toast";
+import Switch from "../../../../components/Switch";
+import ResultSection from "../../../../components/ResultSection";
+import ResultSettings from "../../../../components/ResultSettings";
 import ResultFunding from "../../../../components/ResultFunding";
 import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
@@ -69,10 +73,7 @@ export default function Balkon() {
   // gesetzt ist — nudget zur standortgenauen Ertragsrechnung (wie im PV-Rechner).
   const [plzToast, setPlzToast] = useState(false);
   const plzToastShown = useRef(false);
-
-  // Klebt die Auswahl gerade oben? Nur dann bekommt sie einen Schatten (eingefadet).
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
+  const resultCardRef = useRef<HTMLDivElement>(null);
 
   // Editierbare Overrides im Ergebnis
   const [oStrom, setOStrom] = useState<number | null>(null);
@@ -105,24 +106,6 @@ export default function Balkon() {
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzConfirmed, plz]);
-  // Auto-Ausblenden nach 6 s (eigener Effekt, damit der Timer unter StrictMode
-  // korrekt neu gesetzt wird).
-  useEffect(() => {
-    if (!plzToast) return;
-    const t = setTimeout(() => setPlzToast(false), 6000);
-    return () => clearTimeout(t);
-  }, [plzToast]);
-
-  // Schatten der klebenden Auswahl erst zeigen, wenn sie wirklich oben anliegt.
-  useEffect(() => {
-    const el = stickyRef.current;
-    if (!el) return;
-    const onScroll = () => setStuck(el.getBoundingClientRect().top <= 0.5);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isResult]);
-
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
   // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
@@ -205,7 +188,7 @@ export default function Balkon() {
     const gesetzt: string[] = [];
 
     const pe = Number(q.get("pe"));
-    if (Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
+    if (q.get("pe")?.trim() && Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
       setPersonen(pe);
       gesetzt.push("personen");
     }
@@ -256,8 +239,8 @@ export default function Balkon() {
   // dem es erscheint. Der Speicherpreis steckt beim Angebot im Setpreis, deshalb
   // wird `invest` bewusst NICHT durchgereicht.
   const angebotBasis = useMemo(
-    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
-    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
+    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
   );
 
   // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
@@ -500,28 +483,14 @@ export default function Balkon() {
           </div>
         )}
 
-        {/* PLZ-Toast: einmaliger Nudge zur standortgenauen Ertragsrechnung */}
-        {plzToast && (
-          <div
-            className="fu"
-            onClick={() => {
-              const el = document.querySelector<HTMLInputElement>('input[aria-label="Postleitzahl eingeben"]');
-              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
-              setPlzToast(false);
-            }}
-            style={{
-              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-cta'), color: v('--color-text-on-accent'),
-              borderRadius: v("--radius-pill"), padding: "12px 16px",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
-              fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
-            }}
-          >
-            <span style={{ flex: 1 }}>PLZ eingeben für einen standortgenauen Ertrag</span>
-            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
-          </div>
-        )}
+        <Toast alignTo={resultCardRef} open={plzToast} onClose={() => setPlzToast(false)} autoHideMs={6000} onClick={() => {
+          const input = document.querySelector<HTMLInputElement>('input[aria-label="Postleitzahl eingeben"]');
+          input?.scrollIntoView({ behavior: "smooth", block: "center" });
+          input?.focus();
+          setPlzToast(false);
+        }}>
+          PLZ eingeben für einen standortgenauen Ertrag
+        </Toast>
 
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
@@ -532,14 +501,7 @@ export default function Balkon() {
               selected={scenario}
               onSelect={setScenario}
             />
-            {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
-                Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
-            <div ref={stickyRef} style={{
-              position: "sticky", top: 0, zIndex: 20, background: v('--color-bg'),
-              paddingTop: 8, paddingBottom: 10, marginBottom: 6,
-              boxShadow: stuck ? "0 8px 12px -8px rgba(0,0,0,0.12)" : "0 8px 12px -8px rgba(0,0,0,0)",
-              transition: "box-shadow 0.25s ease",
-            }}>
+            <ResultSection title="Dein Balkonkraftwerk" summary={configLabel(active.setId, active.storageId)} defaultOpen>
             {/* 1. Set-Größe — alle drei in einer Reihe. Blauer Rand markiert nur die
                 AKTIVE Wahl; die Empfehlung bleibt über Marker + Erhebung erkennbar. */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
@@ -547,17 +509,9 @@ export default function Balkon() {
                 const selected = active.setId === o.setId;
                 const isRec = o.setId === recommendation.best.setId;
                 return (
-                  <button key={o.setId} onClick={() => selectSize(o.setId)} style={{
-                    padding: "12px 6px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
-                    display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 0,
-                    background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
-                    border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
-                    boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
-                  }}>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
-                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
-                  </button>
+                  <OptionCard key={o.setId} selected={selected} onClick={() => selectSize(o.setId)}
+                    label={setShort(o.setId)}
+                    sub={`~${o.result.savingPerYear.toLocaleString("de-DE")} €/Jahr${isRec ? " · Empfehlung" : ""}`} />
                 );
               })}
             </div>
@@ -574,21 +528,7 @@ export default function Balkon() {
                 ausgeblendet, die zweite Zeile entsteht also nicht erst beim
                 Einschalten. */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", rowGap: 8 }}>
-              <button onClick={toggleStorage} aria-pressed={storageOn} style={{
-                background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
-                display: "inline-flex", alignItems: "center", gap: 6,
-              }}>
-                <span aria-hidden style={{
-                  width: 38, height: 22, borderRadius: v("--radius-pill"), flexShrink: 0, position: "relative", display: "inline-block",
-                  background: storageOn ? v('--color-cta') : v('--color-border-muted'), transition: "background 0.2s",
-                }}>
-                  <span style={{
-                    position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
-                    background: v('--color-bg'), transition: "left 0.2s",
-                  }} />
-                </span>
-                <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
-              </button>
+              <Switch an={storageOn} onChange={toggleStorage} label="Speicher mitrechnen" text="Speicher" />
               <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={iconSizes.sm}>
                 Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
                 extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
@@ -629,7 +569,6 @@ export default function Balkon() {
                 })}
               </div>
             </div>
-            </div>
 
             {/* Beschreibung der aktiven Konfiguration */}
             <div style={{ marginBottom: 16, padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
@@ -648,8 +587,10 @@ export default function Balkon() {
               )}
             </div>
 
+            </ResultSection>
+
             {/* Hero: Gesamt-Ersparnis über die Laufzeit (pro Jahr steht in den Karten) */}
-            <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
+            <div ref={resultCardRef} style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
                 Ersparnis in {CFG.lifetimeYears} Jahren
               </div>
@@ -660,14 +601,23 @@ export default function Balkon() {
                 ~{r.savingPerYear.toLocaleString("de-DE")} €/Jahr · {r.annualYield.toLocaleString("de-DE")} kWh Ertrag/Jahr · davon {r.selfUsedKwh.toLocaleString("de-DE")} kWh selbst genutzt
               </div>
 
-              {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
-              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: v("--font-size-small"), lineHeight: 2 }}>
-                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={bruttoInvest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
-                <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
-                <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
-                <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
-              </div>
             </div>
+            <ResultSettings title="Deine Rechengrundlagen" summary={`${haushaltKwh.toLocaleString("de-DE")} kWh/Jahr · ${Math.round(strompreis * 100)} ct/kWh`}
+              values={{ invest: bruttoInvest, strom: strompreis, verbrauch: haushaltKwh }}
+              onApply={draft => {
+                if (draft.invest !== bruttoInvest) setOInvest(draft.invest);
+                if (draft.strom !== strompreis) setOStrom(draft.strom);
+                if (draft.verbrauch !== haushaltKwh) setOVerbrauch(draft.verbrauch);
+              }}>
+              {(draft, update) => <>
+                <div>{storageOn ? "Set inklusive Speicher" : "Set-Preis"}: <InlineEdit value={draft.invest} onCommit={val => update({ invest: Math.round(val) })} unit=" €" min={100} max={4000} step={50} width={64} /></div>
+                <div>Strompreis: <InlineEdit value={Math.round(draft.strom * 10000) / 100} onCommit={val => update({ strom: val / 100 })} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
+                <div>Haushaltsverbrauch: <InlineEdit value={draft.verbrauch} onCommit={val => update({ verbrauch: Math.round(val) })} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
+              </>}
+            </ResultSettings>
+            <ResultSection title="Standort" summary={plzConfirmed ? plz : "Deutscher Durchschnitt"} defaultOpen={!plzConfirmed}>
+              <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
+            </ResultSection>
 
             <ResultFunding
               loading={foerderQuelle.laedt}
