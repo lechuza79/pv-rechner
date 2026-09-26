@@ -601,7 +601,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // fastenergy, heizoel24) und ein Gesamtpreis-Chart; keine amtliche Statistik
   // und kein Verband führt eine Reihe für den Bio-Anteil. Der Lücken-Hinweis im
   // Öl-Ergebnis bleibt samt seiner benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-24",
+  // 26.09.2026: Chronologie des amtlichen GModG-Portals (gmodg.bund.de) im
+  //   Original gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026,
+  //   kein Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Gegensuche
+  //   erneut ohne Trägerquelle mit Preisreihe.
+  geprueftRechtIso: "2026-09-26",
   reviewBy: "2027-07-25",
 };
 

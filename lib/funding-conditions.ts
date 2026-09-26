@@ -160,6 +160,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-bad-kreuznach-balkonkraftwerke",
   // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
   "donauwoerth-kleinst-pv",
+  // Stadt Celle, aufgenommen am 26.09.2026; Antragsfenster 2026 geschlossen
+  // (pausiert bis 01.01.2027), die Bedingungen stehen alle auf der Karte.
+  "celle-klimaschutzfonds",
+  // Isenbüttel, aufgenommen am 25.09.2026; für 2026 ausgeschöpft, die
+  // vollständigen Bedingungen sind nicht veröffentlicht.
+  "isenbuettel-isi-pv",
   // Stadt Bad Kreuznach, aufgenommen am 24.09.2026. Das Verfahren ist das
   // umgekehrte (Antrag NACH Kauf und Installation, binnen sechs Monaten) —
   // dieselbe Lage wie bei Kandel und Langenlonsheim-Stromberg: Die vorhandenen
@@ -604,6 +610,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
   // one-per-meter and the 3-year operating duty have no test form.
   "holzminden-solarfair",
+  // Added 26 Sep 2026: county programme, same shape as Holzminden — income
+  // condition, approval before purchase, one-per-meter and the 3-year operating
+  // duty have no test form.
+  "schaumburg-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",

@@ -4744,6 +4744,56 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // no combination rule is stated, so none is assumed.
     combinableWith: null,
   },
+  "schaumburg-solarfair": {
+    id: "schaumburg-solarfair", name: "Schaumburg SolarFair – Gemeinsam klimafreundlich leben!",
+    traeger: "Energieagentur Schaumburg gGmbH (aus Mitteln des Landkreises Schaumburg)", level: "landkreis",
+    region: "Landkreis Schaumburg", bundesland: "Niedersachsen", agsCode: "03257",
+    url: "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+    // NEU AUFGENOMMEN 26.09.2026. Found while closing SG Sachsenhagen and SG
+    // Niedernwöhren: the county site search led to the committee agenda of
+    // 15.06.2026, the programme itself sits with the county's energy agency.
+    // Programme page and guideline ("Richtlinie der Energieagentur Schaumburg
+    // zur Förderung von Balkonkraftwerken", Foerderrichtlinie_SolarFair_2026_
+    // final_.pdf) read in full on 26.09.2026, FAQ (Stand 04.08.2026) read.
+    // Nr. 4: "Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk."
+    // Nr. 2: natural persons currently receiving Grundsicherung für
+    // Arbeitssuchende, Wohngeld, Grundsicherung für Nichterwerbsfähige or
+    // Kinderzuschlag, main residence in the county. The programme page also
+    // lists Sozialhilfe and Arbeitslosengeld I; the guideline and the FAQ do
+    // not, and the guideline governs — so they are not named here.
+    // Nr. 5: up to 130 systems in 2026 and possibly 2027, "aus dem Budget des
+    // Landkreises Schaumburg finanziert", first come first served (Nr. 6.3).
+    // Nr. 6.1: purchase only after the confirmation with a funding number.
+    // Nr. 7: payout application by 01.12.2027. Nr. 11: in force 01.09.2026 to
+    // 31.12.2027. FAQ Nr. 11: at most 800 W inverter output.
+    // Adversarial review 26.09.2026: all conditions confirmed; the application
+    // form showed "8 von 130 ausgefüllt" (form submissions, not approvals).
+    // An earlier 2024 round (150 EUR, county + Stadthagen + Westfalen-Weser)
+    // is known only from press so far and is NOT recorded here.
+    // NO STRUCTURED RATE: the grant depends on an income condition the
+    // calculator cannot know (same treatment as holzminden-solarfair).
+    // Key: Landkreis Schaumburg 03257, checked in the register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-09-01", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines neuen Balkonkraftwerks — nur für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag",
+    maxFoerderung: "150 € je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk (nur mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag)", value: "150 € je Anlage" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Personen, die Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag beziehen und ihren Erstwohnsitz im Landkreis Schaumburg haben",
+      "Erst den Zuschuss beantragen und die Bestätigung mit Fördernummer abwarten — wer das Balkonkraftwerk vorher kauft, bekommt nichts",
+      "Die Anlage muss neu gekauft, an der Adresse des Erstwohnsitzes installiert und im Marktstammdatenregister angemeldet sein; Wechselrichter höchstens 800 W",
+      "Höchstens eine Förderung je Stromzähler; die Anlage muss mindestens drei Jahre betrieben werden",
+      "Gefördert werden insgesamt bis zu 130 Anlagen in den Jahren 2026 und 2027, in der Reihenfolge der Anträge; kein Rechtsanspruch",
+      "Der Antrag auf Auszahlung muss bis zum 01.12.2027 gestellt sein; die Richtlinie tritt zum 31.12.2027 außer Kraft",
+    ],
+    // Neither guideline nor FAQ says anything about combining with other
+    // funding, so no rule is assumed.
+    combinableWith: null,
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",
@@ -13717,6 +13767,99 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+  },
+
+  // ─── Aufgenommen am 25.09.2026: Isenbüttel, für 2026 ausgeschöpft ──────────
+  //
+  // Found in the source queue (programme page of the "isi" climate programme).
+  // Read at the source on 25.09.2026: programme page, PV application form
+  // (FID 4149.84), flyer (4149.88, "Stand: Juni 2025") and the full funding
+  // terms (4149.72, "geändert mit Beschluss vom 22.05.2019" — online but not
+  // linked from the page). The page says the funds for budget year 2026 are
+  // exhausted and no funding is possible in 2026; it does not say the
+  // programme has ended. The 2019 terms name no cap per PV system (no. 3.1.7);
+  // the page mentions an updated version that is not published — no
+  // calculation value, and none needed while the budget is exhausted. Heating is funded only inside a separate savings-based
+  // building grant (up to 50 % of the investment, energy advice first), not as
+  // a heat-pump lump sum; that part is not modelled here, hence foerdert pv only.
+  // Adversarial counter-check 25.09.2026: rate, angles, 2026 exhaustion and
+  // procedure confirmed; tenant eligibility for PV unclear (flyer yes, form no).
+  "isenbuettel-isi-pv": {
+    id: "isenbuettel-isi-pv", name: "isi Klimaschutz-Förderprogramm: Solarstrom auf West-/Ostdächern und Fassaden",
+    traeger: "Gemeinde Isenbüttel", level: "kommune", region: "Isenbüttel",
+    bundesland: "Niedersachsen", agsCode: "03151013",
+    url: "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Aufdach-Anlagen in West- oder Ostrichtung und für Fassadenanlagen",
+    rates: [
+      { label: "Aufdach-Anlage in West- oder Ostrichtung, Fassadenanlage", value: "300 €/kWp — Mittel für 2026 ausgeschöpft" },
+    ],
+    conditions: [
+      "Die Gemeinde meldet die Fördermittel für das Haushaltsjahr 2026 als ausgeschöpft; in 2026 ist keine Förderung mehr möglich",
+      "Nur für Einwohnerinnen und Einwohner von Isenbüttel; bei Wohngebäuden natürliche Personen als Eigentümer, Eigentümer- oder Erbengemeinschaften, Mieter nur mit Modernisierungsvereinbarung mit dem Vermieter",
+      "Aufdach-Anlagen müssen zwischen 45° und 150° West bzw. −45° und −150° Ost ausgerichtet sein; der Installateur bestätigt die Ausrichtung",
+      "Antrag mit Kostenvoranschlag vor Beginn; mit der Installation darf erst nach Bewilligung begonnen werden, Auszahlung nach Abschluss gegen Rechnung",
+      "Nur marktfähige, neue Anlagen; Eigenbau, Prototypen und Gebrauchtanlagen sind ausgeschlossen",
+      "Die veröffentlichten Förderbedingungen (Fassung vom 22.05.2019) nennen keinen Höchstbetrag je Anlage; die Gemeinde spricht von einer aktualisierten Fassung, die nicht online steht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+  },
+
+  // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
+  "celle-klimaschutzfonds": {
+    id: "celle-klimaschutzfonds", name: "Klimaschutzfonds Celle",
+    traeger: "Stadt Celle", level: "kommune", region: "Celle",
+    bundesland: "Niedersachsen", agsCode: "03351006",
+    url: "https://www.celle-klimaschutz.de/Klimaschutzaktivit%C3%A4ten-der-Stadt-Celle/Stadt-Celle/Klimaschutzfonds/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-03",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp für Photovoltaik; Anteil der Kosten für Wärmepumpen in Verbindung mit einer eigenen Photovoltaikanlage; Pauschalen für Erdwärme",
+    maxFoerderung: "Photovoltaik höchstens 1.200 € je Grundstück; Wärmepumpe höchstens 3.000 € je Objekt",
+    rates: [
+      { label: "Photovoltaikanlage", value: "200 € je kWp, höchstens 1.200 € je Anlagenstandort", nur: ["pv"] },
+      { label: "Innovatives Heizsystem (z. B. Luft-Wasser- oder Erdwärmepumpe) mit eigener Photovoltaikanlage", value: "10 % der förderfähigen Kosten, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+      { label: "Erdwärme bis 30 kW", value: "1.000 € Erdwärmekollektor, 2.000 € Erdwärmesonde; reversible Anlagen (Heizen und Kühlen) 50 % mehr, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Anträge nur vom 1. Januar bis 31. Mai jedes Jahres (Ausschlussfrist); die Frist für 2026 ist abgelaufen, spätere Anträge nur in begründeten Ausnahmefällen — die nächste reguläre Antragsrunde beginnt am 1. Januar 2027",
+      "Die Maßnahme muss im Stadtgebiet Celle liegen und darf bei Antragstellung nicht begonnen sein; Planung, Angebote und Lieferverträge gelten nicht als Beginn, ein vorzeitiger Beginn braucht eine Zustimmung",
+      { text: "Die Photovoltaikanlage muss weitestgehend verschattungsfrei sein; als Anlagenstandort gilt das Baugrundstück", nur: ["pv"] },
+      { text: "Wärmepumpen werden nur zusammen mit einer vorhandenen Photovoltaikanlage oder dem Nachweis gefördert, sich eine anzuschaffen; Heizkörper, Fußbodenheizungen und Klimaanlagen sind ausgeschlossen", nur: ["waermepumpe"] },
+      "Förderprogramme von Bund und Land sind vorrangig zu nutzen; zusammen darf die Förderung 49 % der förderfähigen Kosten nicht überschreiten",
+      "Zum Antrag gehören ein verbindliches Kostenangebot und die Zustimmung des Eigentümers; über die Anträge entscheidet der Verwaltungsausschuss",
+      "Freiwillige Leistung im Rahmen der verfügbaren Fondsmittel; reichen sie nicht, werden Photovoltaikanlagen in der Reihenfolge des Antragseingangs bedient, abgelehnte Vorhaben können im Folgejahr neu beantragt werden",
+      "Die Maßnahme ist bis zum 30. Juni des Folgejahres abzuschließen, der Zuschuss binnen zwei Monaten danach abzurufen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // NEU AUFGENOMMEN 26.09.2026. Gefunden über die Websuche beim Abschluss der
+    // Samtgemeinde Flotwedel (Landkreis Celle) — die Stadt Celle stand trotz
+    // aktivem Programm nicht im Katalog. Richtlinie im Volltext gelesen
+    // (loadDocument FID 3859.52.1, „Vom 08.12.2022, zuletzt geändert durch
+    // Beschluss des Rates vom 03.12.2025"; Nr. 9.1: „Diese Förderrichtlinien
+    // treten zum 01.01.2026 in Kraft"), dazu die Programmseite. Adversariale
+    // Gegenprüfung am selben Tag: alle Beträge und Bedingungen bestätigt.
+    //
+    // `pausiert`, nicht `aktiv`: Nr. 7.2 „Anträge … können vom 1. Januar bis
+    // 31. Mai der jeweiligen Förderperiode (Ausschlussfrist) … gestellt
+    // werden", Nr. 7.4 weist spätere Anträge „im Regelfall" zurück. Wer heute
+    // plant, kann erst ab dem 01.01.2027 beantragen und darf vorher nicht
+    // beginnen — ein Abzug heute stellte Geld in Aussicht, das es für dieses
+    // Jahr nicht mehr gibt. Dasselbe Muster wie Königswinter (Richtlinie gilt
+    // weiter, keine Antragstellung). WIEDERPRÜFUNG AM 01.01.2027: Öffnet die
+    // Runde, Status auf `aktiv` nach aktuellem Träger-Beleg.
+    //
+    // KEIN Rechenwert, auch nicht für die Zeit ab Januar: Der PV-Satz wäre als
+    // pvPerKwp/pvCap abbildbar, hängt aber an Verschattungsfreiheit und an der
+    // 49-%-Kumulierungsgrenze; die Wärmepumpe setzt eine eigene PV-Anlage
+    // voraus. Das entscheidet die Reaktivierung, nicht diese Aufnahme.
+    //
+    // Balkonkraftwerke und Speicher nennt die Richtlinie nicht. Balkon ist
+    // nach dem Wortlaut (keine Mindestleistung) nicht ausgeschlossen, aber
+    // unbelegt — deshalb NICHT in `foerdert`.
   },
 
   // ─── Aufgenommen am 25.09.2026: Donauwörth, beendetes Programm ─────────────
