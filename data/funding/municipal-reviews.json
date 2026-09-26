@@ -67632,5 +67632,30 @@
         "evidenceUrl": "http://www.bickenbach-hunsrueck.de/seite/800987/energiesparrichtlinie-der-ortsgemeinde-bickenbach.html"
       }
     ]
+  },
+  {
+    "regionId": "07140080",
+    "name": "Laudert",
+    "checkedAt": "2026-09-26T17:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Laudert (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat eine eigene Energiesparrichtlinie (08.12.2015, zuletzt geändert 09.02.2026), die aber nur Energieberatung (40 € Eigenanteil), energiesparende Haushaltsgeräte (100 €), Heizungsumwälzpumpen und den hydraulischen Abgleich fördert — keine Photovoltaik, keine Speicher, keine Balkonkraftwerke, keine Wärmepumpen. VG und Kreis fördern Private derzeit nicht. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Energiesparrichtlinie Laudert (Stand 09.02.2026) im Original vollständig gelesen",
+      "Ortsrecht der VG Hunsrück-Mittelrhein je Ortsgemeinde durchgesehen",
+      "Sitemap und Klimaschutz-Bereich der VG durchsucht (26.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/laudert/energiesparrichtlinie-og-laudert-aenderung-stand-09-02-2026.pdf?cid=o0s",
+        "finding": "§ 1 fördert nur Energieberatung, Elektrogeräte („100 € je Gerät und Haushalt“) sowie „Heizungsumwälzpumpen der Effizienzklasse A sowie der hydraulische Abgleich“; keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG setzt KIPKI-Mittel vollständig für die Grundschule Halsenbach ein; kein VG-Programm für Private."
+      }
+    ],
+    "sources": []
   }
 ]
