@@ -360,7 +360,7 @@ export default function FachbetriebeAnsicht() {
         {laedt ? "lädt …" : `${gesamt.toLocaleString("de-DE")} Treffer`}
         {seiten > 1 && !laedt ? ` · Seite ${seite + 1} von ${seiten}` : ""}
       </p>
-      {fehler && <p style={{ color: v("--color-negative"), marginBottom: space.sm }}>{fehler}</p>}
+      {fehler && <p style={{ color: v("--color-negative-text"), marginBottom: space.sm }}>{fehler}</p>}
 
       {/* ── Kopfzeile ──────────────────────────────────────────────────── */}
       <div
@@ -568,7 +568,7 @@ export default function FachbetriebeAnsicht() {
                 <span
                   style={{
                     flex: "0 0 92px",
-                    color: hatKontaktweg(z) ? v("--color-positive") : v("--color-text-muted"),
+                    color: hatKontaktweg(z) ? v("--color-positive-text") : v("--color-text-muted"),
                   }}
                 >
                   {hatKontaktweg(z) ? "erreichbar" : "kein Kontakt"}
@@ -648,7 +648,7 @@ export default function FachbetriebeAnsicht() {
                               aria-hidden
                               style={{
                                 flex: "0 0 12px",
-                                color: wert ? v("--color-positive") : "transparent",
+                                color: wert ? v("--color-positive-text") : "transparent",
                               }}
                             >
                               ✓

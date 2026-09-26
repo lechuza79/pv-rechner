@@ -31,6 +31,21 @@ const ZUGANG = [
   "CRON_SECRET",
 ];
 
+/**
+ * NICHT NUR ZUGANGSDATEN FEHLEN AUF DEM PRÜFRECHNER, sondern auch ORTE.
+ *
+ * Am 23.09.2026 ist der Lauf trotz dieser Prüfung umgekippt: Der Kostenlauf
+ * scheiterte nicht an einem fehlenden Schlüssel, sondern an einem Ordner, den
+ * es nur auf dem Rechner des Betreibers gibt — und beendete daraufhin den
+ * Prüfprozess. Lokal war alles grün, weil der Ordner hier liegt.
+ *
+ * Ein Pfad, der ins Leere zeigt, stellt lokal denselben Zustand her wie der
+ * Prüfrechner. Wer einen neuen ortsgebundenen Lauf baut, trägt seine Variable
+ * hier ein.
+ */
+const ORTE = ["BUCHHALTUNG_PFAD"];
+const NIRGENDWO = "/gibt-es-auf-keinem-rechner";
+
 /** Die Skripte, die überhaupt ein Test importiert — nur die sind hier gemeint. */
 function importierteSkripte(): string[] {
   const treffer = new Set<string>();
@@ -80,15 +95,37 @@ describe("Skripte, die ein Test importiert", () => {
       gesichert[name] = process.env[name];
       delete process.env[name];
     }
+    for (const name of ORTE) {
+      gesichert[name] = process.env[name];
+      process.env[name] = NIRGENDWO;
+    }
     // Die Zugangsdatei liegt nur lokal; damit der Lauf hier dasselbe sieht wie
     // der Prüfrechner, wird sie über das Arbeitsverzeichnis ausgeblendet.
     const cwd = process.cwd();
     process.chdir(resolve(WURZEL, "lib"));
+
+    // DAS ABBRECHEN WIRD ABGEFANGEN, NICHT ERWARTET. Ein Skript, dessen Ablauf
+    // beim Laden anläuft, ist meist `async`: Der Import ist dann längst
+    // aufgelöst, während der Ablauf noch läuft, und sein `process.exit` trifft
+    // den Prüflauf ERST NACH dem Test. Der meldet dann „alle Tests grün" und
+    // daneben einen Fehler ohne Zuordnung — genau so ist es am 23.09.2026
+    // passiert. Ohne diese Falle ist der Wächter an dieser Stelle blind.
+    const echtesExit = process.exit;
+    let abgebrochen: number | null = null;
+    process.exit = ((code?: number) => {
+      abgebrochen = code ?? 0;
+      return undefined as never;
+    }) as typeof process.exit;
+
     try {
       await expect(import(/* @vite-ignore */ resolve(WURZEL, pfad))).resolves.toBeDefined();
+      // Dem angelaufenen Ablauf Gelegenheit geben, sein Ende zu erreichen.
+      await new Promise((f) => setTimeout(f, 50));
+      expect(abgebrochen, `${pfad} beendet beim Laden den Prozess`).toBeNull();
     } finally {
+      process.exit = echtesExit;
       process.chdir(cwd);
-      for (const name of ZUGANG) {
+      for (const name of [...ZUGANG, ...ORTE]) {
         if (gesichert[name] === undefined) delete process.env[name];
         else process.env[name] = gesichert[name];
       }

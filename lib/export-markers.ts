@@ -21,3 +21,13 @@ export const EXPORT_ONLY_ATTR = 'data-sc-export-only';
  * for framing that helps a still image but would double up on the page
  * (e.g. a box around the chart area). Value is plain CSS text. */
 export const EXPORT_CSS_ATTR = 'data-sc-export-css';
+
+/** Set by the capture on its off-screen wrapper: "this subtree is an image, not
+ * the page". Stylesheets can key export-only rules on it. */
+export const EXPORT_CAPTURE_ATTR = 'data-sc-export-capture';
+
+/** On an exported widget: its own colour scheme (e.g. the dark Atlas scheme)
+ * yields to the default export palette — the brightest day stage for site
+ * tokens, the light Atlas scheme for Atlas tokens. Visuals move to this default
+ * one by one as they join the shared export pipeline. */
+export const EXPORT_BRIGHTEST_ATTR = 'data-sc-export-brightest';

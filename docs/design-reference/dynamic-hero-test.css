@@ -1,0 +1,120 @@
+.atmo-trees{position:absolute;left:0;right:0;bottom:17%;height:48%;opacity:.67;filter:blur(.3px);mask-image:linear-gradient(#000 72%,transparent 99%)}
+.atmo-trees canvas,.atmo-trees img{position:absolute;width:100%;height:100%;inset:0}.atmo-trees img{transform-origin:50% 100%}
+.atmo-dust{position:absolute;inset:50% -20% 8%;background:radial-gradient(ellipse at 30% 65%,#e9f2e759,transparent 44%),radial-gradient(ellipse at 70% 50%,#eaf4f23a,transparent 45%);filter:blur(20px);animation:atmo-fog 24s ease-in-out infinite alternate}
+@keyframes atmo-fog{to{transform:translateX(8%) scaleY(1.25)}}
+.atmo-tools{position:fixed;left:18px;bottom:18px;z-index:60;width:260px;padding:14px 16px;background:#102b38ed;color:#f4f9fa;border:1px solid #ffffff26;border-radius:14px;box-shadow:0 10px 35px #102b3826;backdrop-filter:blur(14px);font:13px 'DM Sans',sans-serif}
+.atmo-tools summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-weight:600}.atmo-tools summary::after{content:'+';font-size:20px}.atmo-tools[open] summary::after{content:'−'}.atmo-tools p{font-size:12px;line-height:1.4;color:#afc5cd;margin:9px 0}.atmo-tools label{display:block;margin:12px 0 4px}.atmo-tools select,.atmo-tools button{font:inherit;color:#eef8fc;background:#294552;border:1px solid #68808d;border-radius:7px;padding:7px 9px}.atmo-tools select{width:100%}.atmo-tools button{width:100%;margin-top:12px;cursor:pointer}.atmo-tools input{width:100%;accent-color:#93c7ed}.atmo-tools a{color:#c9e3f5;font-size:12px;display:inline-block;margin-top:9px}.atmo-tools output{display:block;font-size:11px;line-height:1.6;color:#b9d1dc;margin-top:10px;font-variant-numeric:tabular-nums}
+[data-mode=night] .atmo-trees{filter:brightness(.32) saturate(.45)}[data-mode=dawn] .atmo-trees,[data-mode=dusk] .atmo-trees{filter:brightness(.7) sepia(.2)}[data-moving=false] .atmo-dust{animation-play-state:paused}
+@media(max-width:700px){.atmo-tools{left:12px;bottom:60px;width:240px}.atmo-tools:not([open]){width:190px;padding:9px 12px}.atmo-trees{bottom:16%;height:40%;opacity:.5}}
+@media(prefers-reduced-motion:reduce){.atmo-dust{animation:none}}
+/* Replace the original decorative bokeh only in this separate variant. */
+.scene .particles{display:none!important}
+.cinematic-dust,.cinematic-grain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cinematic-grain{background-repeat:repeat;background-size:192px 192px;mix-blend-mode:soft-light;opacity:.045}
+.atmo-tools{max-height:calc(100svh - 40px);overflow-y:auto}
+@media(max-width:700px){.atmo-tools{max-height:calc(100svh - 85px)}}
+
+.sky-life{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.passing-fly{position:absolute;left:0;top:0;width:2.4px;height:1.6px;background:#23352c;border-radius:50%;box-shadow:1px -1px 1px #67797088;filter:blur(.25px);will-change:transform}
+
+/* Variant C owns a separate rain look; A and B remain untouched. */
+.scene .rain{display:none!important}
+.spatial-rain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+[data-rain-study=rain] .sky-day{background:linear-gradient(#455c71,#7d939f 42%,#b5c1c1 78%,#718687)}
+[data-rain-study=rain] .sun-halo,[data-rain-study=rain] .stars,[data-rain-study=rain] .moon{opacity:0!important}
+[data-rain-study=rain] .clouds{opacity:.8!important}
+[data-rain-study=rain] .cloud{filter:blur(34px) brightness(.75);height:200px}
+[data-rain-study=rain] .panel-layer img{filter:brightness(.62) saturate(.58) contrast(1.12)!important}
+[data-rain-study=rain] .panel-light{opacity:.08!important}
+[data-rain-study=rain] .atmo-trees{opacity:.43;filter:blur(.7px) saturate(.5)}
+[data-rain-study=rain] .atmo-dust{opacity:.8;background:radial-gradient(ellipse at 30% 65%,#cad9df70,transparent 55%),radial-gradient(ellipse at 80% 60%,#b4c7d25c,transparent 50%)}
+[data-rain-study=rain] .hero-copy,[data-rain-study=rain] .site-header{color:#eef5f8}
+[data-rain-study=rain] .hero-description,[data-rain-study=rain] .trust-line{color:#d4e1e7}
+[data-rain-study=rain] .hero-copy h1 span{color:inherit}
+[data-rain-study=rain] .preview-tools{display:none}
+[data-rain-study=dry] .preview-tools{display:none}
+
+/* The fixed sunny example metric is not a calculation for this independent study. */
+.solar-reading{display:none}
+
+/* Theme selection follows the designed background of each scene, not a clock alone. */
+[data-rain-study=rain] .site-header .brand,[data-rain-study=night] .site-header .brand{--color-brand:#80b9ff;--color-brand-deep:#4488da;--color-text-faint:#cfdeee}
+[data-rain-study=rain] .site-header .brand svg>path,[data-rain-study=night] .site-header .brand svg>path{fill:#eff6ff}
+.site-header .brand svg path{transition:fill 1s ease}
+[data-rain-study=rain] .header-cta,[data-rain-study=night] .header-cta{border-color:#c7dbea66;background:#0b192a26;color:#eff6ff}
+.night-layer{position:absolute;inset:0;opacity:0;transition:opacity 1.5s ease;background:radial-gradient(ellipse at 65% 93%,#354550 0,transparent 48%),linear-gradient(#07101f,#111e32 45%,#243443 85%)}
+.night-layer canvas{position:absolute;inset:0;width:100%;height:100%}
+.night-moon{position:absolute;left:79%;top:18%;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 70% 27%,#637483 0,#81919e 37%,#d4dbe0 75%);box-shadow:0 0 22px 8px #abc4ed0d;opacity:.8}
+[data-rain-study=night] .night-layer{opacity:1}
+[data-rain-study=night] .sun-halo,[data-rain-study=night] .moon,[data-rain-study=night] .stars{opacity:0!important}
+[data-rain-study=night] .clouds{opacity:.09!important;filter:brightness(.4)}
+[data-rain-study=night] .horizon-haze{opacity:.18;background:linear-gradient(transparent,#4c667255 55%,#192832)}
+[data-rain-study=night] .mist{opacity:.06!important}
+[data-rain-study=night] .atmo-dust{opacity:.07}
+[data-rain-study=night] .atmo-trees{opacity:.63;filter:brightness(.23) saturate(.35) blur(.3px)}
+[data-rain-study=night] .panel-layer img{filter:brightness(.19) saturate(.25) contrast(1.08)!important}
+[data-rain-study=night] .panel-light{opacity:0!important}
+[data-rain-study=night] .hero-copy,[data-rain-study=night] .site-header{color:#e5ecf5}
+[data-rain-study=night] .hero-description,[data-rain-study=night] .trust-line{color:#c0cddb}
+[data-rain-study=night] .hero-copy h1 span{color:inherit}
+[data-rain-study=night] .preview-tools{display:none}
+[data-rain-study=night] .status-dot{background:#a6bad3;box-shadow:none}
+[data-rain-study=night] .primary-cta{box-shadow:0 4px 24px #00102544}
+@media(max-width:700px){[data-rain-study=night] .navigation.is-open,[data-rain-study=rain] .navigation.is-open{background:#142335;color:#eff6ff;border:1px solid #8aa7c044}}
+
+.atmo-tools input:disabled,.atmo-tools button:disabled{opacity:.35;cursor:default}
+
+/* Moon is a textured sphere projection; the old decorative gradient is removed. */
+.night-layer canvas.night-moon{position:absolute;inset:auto;left:79%;top:18%;width:36px;height:36px;border-radius:0;background:none;box-shadow:none;opacity:.94;filter:drop-shadow(0 0 9px #b9d2f40b)}
+.atmo-tools select:disabled{opacity:.4}
+@media(max-width:700px){.night-layer canvas.night-moon{width:29px;height:29px;left:81%;top:14%}}
+.night-layer canvas.night-moon{mix-blend-mode:screen}
+/* Variant D: one canvas composes trees, the photographic foreground, then rain. */
+.unified-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+[data-unified-ready=true] .panel-layer{visibility:hidden}
+.scene .rain,.scene .stars{display:none!important}
+.preview-tools,.solar-reading{display:none!important}
+.scene .cinematic-dust,.scene .cinematic-grain{z-index:2}
+.scene .night-layer{z-index:0}
+[data-phase=night] .night-layer{opacity:1!important}
+[data-phase=night] .night-layer canvas{opacity:var(--night-visibility,1)}
+[data-phase=dawn] .sky-dawn{opacity:1}
+[data-phase=dusk] .sky-dusk{opacity:1}
+[data-phase=dawn] .panel-light,[data-phase=dusk] .panel-light{opacity:0}
+[data-dark=true] .site-header,[data-dark=true] .hero-copy{color:#eef5ff}
+[data-dark=true] .hero-description,[data-dark=true] .trust-line{color:#d9e6ee}
+[data-dark=true] .site-header .brand{--color-brand:#80b9ff;--color-brand-deep:#4488da;--color-text-faint:#cfdeee}
+[data-dark=true] .site-header .brand svg>path{fill:#eff6ff}
+[data-dark=true] .header-cta{color:#eef5ff;border-color:#d4e8ff66}
+.dynamic-reading{position:absolute;right:5%;bottom:110px;width:310px;padding:20px 22px;border:1px solid #c4d8e433;border-radius:14px;background:#102631eb;color:#edf5f8;backdrop-filter:blur(12px)}
+.dynamic-reading p{margin:0 0 12px;font-size:12px;line-height:1.5}.dynamic-reading #reading-power{font-size:48px;line-height:1.2;margin:10px 0 14px;font-variant-numeric:tabular-nums}.dynamic-reading small{display:block;color:#b7cbd7;font-size:11px;line-height:1.6}.dynamic-reading a{display:inline-block;color:#a7c7dc;font-size:10px;margin-top:10px}
+.atmo-tools input:not([type=range]){box-sizing:border-box;width:100%;border:1px solid #6b8797;border-radius:7px;background:#294552;color:white;padding:8px;font:inherit}.atmo-tools [hidden]{display:none!important}
+.preset-buttons{display:flex;gap:5px}.preset-buttons button{padding:7px 4px;font-size:11px}
+.static-scene .cloud,.static-scene .mist i,.static-scene .atmo-dust{animation-play-state:paused!important}
+@media(max-width:700px){.dynamic-reading{right:6%;bottom:85px;width:250px;padding:14px 16px}.dynamic-reading #reading-power{font-size:35px}.dynamic-reading p{font-size:11px;margin-bottom:8px}.dynamic-reading small{font-size:10px}.atmo-tools:not([open]){bottom:14px;width:210px}[data-dark=true] .navigation.is-open{background:#142335;color:#eff6ff}}
+
+[data-dark=false] .site-header,[data-dark=false] .hero-copy{color:#122c3b}
+[data-dark=false] .hero-description,[data-dark=false] .trust-line{color:#294653}
+[data-dark=false] .site-header .brand svg>path{fill:#193446}
+
+.static-scene .unified-canvas{visibility:hidden}
+
+/* All daytime sky layers are light; only the night palette needs light lettering. */
+[data-dark=false] .header-cta{color:#193446;border-color:#19344655;background:#ffffff0a}
+[data-dark=false] .site-header .brand{--color-brand:#2866c8;--color-brand-deep:#174987;--color-text-faint:#526677}
+/* Preserve the word boundary when the narrow layout hides decorative line breaks. */
+@media(max-width:700px){.feature-intro h2 br{display:initial}}
+/* Optical study: a small solar core with a broad, low-contrast atmospheric aureole. */
+[data-sun-style=natural] .sun-halo,[data-sun-style=flare] .sun-halo{width:clamp(260px,43vw,580px);height:clamp(260px,43vw,580px);background:radial-gradient(circle,rgba(255,248,219,.36) 0%,rgba(255,247,218,.15) 7%,rgba(255,245,220,.055) 25%,transparent 68%)}
+[data-sun-style=natural] .sun-disc,[data-sun-style=flare] .sun-disc{width:clamp(12px,2.1vh,20px);height:clamp(12px,2.1vh,20px);background:var(--solar-core,#fffff6)!important;filter:blur(.25px);box-shadow:0 0 3px 1px #fff7df99,0 0 15px 4px #fff1c630!important}
+.sun-optics{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .8s;z-index:1}
+.optical-veil{position:absolute;inset:0;background:radial-gradient(ellipse at var(--sun-x) var(--sun-y),#fff2cb16,transparent 52%)}
+.optical-ghost{position:absolute;width:clamp(18px,3vw,46px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#a0d8c409 30%,#a0d8c412 62%,transparent 74%);filter:blur(2px)}
+
+
+.wetfilm-compare{position:fixed;top:8px;right:16px;z-index:70;display:flex;gap:5px;align-items:center;padding:7px;background:#102633f2;border:1px solid #abc5d644;border-radius:10px;color:#eef6ff;font:12px system-ui}.wetfilm-compare span{margin:0 8px}.wetfilm-compare button{padding:8px 11px;border:1px solid #adc8d644;border-radius:6px;background:transparent;color:inherit;cursor:pointer}.wetfilm-compare button[aria-pressed=true]{background:#1265e8;border-color:#5599ff}.wetfilm-compare button:focus-visible{outline:2px solid white}@media(max-width:600px){.wetfilm-compare span{display:none}.wetfilm-compare{right:8px}}
+
+.wetfilm-compare{flex-wrap:wrap;max-width:calc(100vw - 32px)}.wetfilm-compare select{background:#203c4b;color:#eef6ff;border:1px solid #adc8d644;border-radius:6px;padding:8px;font:inherit}
+
+/* Remove the decorative dot from the shared dynamic hero. */
+.hero-copy .status-dot{display:none}

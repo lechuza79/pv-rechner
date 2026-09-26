@@ -52,7 +52,17 @@
       this.scrollObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)visible.add(this);else visible.delete(this);});scheduleScroll();});
       this.scrollObserver.observe(this);
       this.addEventListener('pointermove',this.onMove);this.addEventListener('pointerleave',this.onLeave);
-      if(this.getAttribute("loading")==="lazy"){this.loadObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){this.loadObserver.disconnect();this.lazyActivated=true;this.render();}},{rootMargin:"150px"});this.loadObserver.observe(this);}else this.render();
+      if(this.getAttribute("loading")==="lazy"){
+        // Allow selected illustrations to prepare ahead without eager page-wide loading.
+        const requestedMargin=Number(this.getAttribute('loading-margin'));
+        const margin=requestedMargin>0?Math.min(requestedMargin,1600):150;
+        this.loadObserver=new IntersectionObserver(entries=>{
+          if(entries.some(e=>e.isIntersecting)){
+            this.loadObserver.disconnect();this.lazyActivated=true;this.render();
+          }
+        },{rootMargin:`${margin}px 0px`});
+        this.loadObserver.observe(this);
+      }else this.render();
     }
     disconnectedCallback(){
       this.token++;this.loadObserver?.disconnect();this.observer?.disconnect();this.scrollObserver?.disconnect();visible.delete(this);this.fine?.removeEventListener('change',this.onPreference);this.reduced?.removeEventListener('change',this.onPreference);

@@ -3,6 +3,7 @@ import type {StoryConcept} from '../../lib/story-konzepte';
 import {formatStoryDate} from '../../lib/story-format';
 import {rankingHighlights,rankingDistinction,type RankMonthRow} from '../../lib/story-ranking-month';
 import {IconArrowRight,IconArrowUp,IconArrowDown} from '../Icons';
+import {brandAssets} from '../../lib/brand-assets';
 import styles from './RankStoryChart.module.css';
 
 function badge(row:RankMonthRow){
@@ -11,7 +12,8 @@ function badge(row:RankMonthRow){
  if(top)return `/atlas-design-preview/rank-badges/top-${top}.svg`;
  if(row.rank>3)return null;
  const theme=/Balkon/i.test(row.label)?'balcony':/Speicher/i.test(row.label)?'battery':/privat|Dach/i.test(row.label)?'roof':null;
- return theme?`/atlas-design-preview/rank-badges/${theme}-${row.rank}-small.png`:null;
+ // 256-px WebP (≈20 KB) instead of the 512-px PNG (≈300 KB): shown at card size.
+ return theme?`/gemeinde/rank-badges/${theme}-${row.rank}-small.webp`:null;
 }
 function movement(row:RankMonthRow){
  if(row.state==='initial')return 'Erstmals erfasst';
@@ -21,7 +23,7 @@ function movement(row:RankMonthRow){
  return `${count} ${Math.abs(row.delta??0)===1?'Platz':'Plätze'} ${row.state==='up'?'verbessert':'zurückgefallen'}`;
 }
 /** Shared ranking visual: scope, metric and movement always stay attached to the rank. */
-export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact?:boolean}){
+export function RankStoryChart({story,compact=false,ohneBedienung=false}:{story:StoryConcept;compact?:boolean;ohneBedienung?:boolean}){
  const all=story.rankSummary??[];
  const highlights=rankingHighlights(all);
  const rows=highlights.slice(0,compact?1:3);
@@ -29,7 +31,7 @@ export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact
  const artwork=lead?(/Speicher/i.test(lead.label)?'battery':/Balkon/i.test(lead.label)?'balcony-modern':/Dach|privat|Solar/i.test(lead.label)?'house':null):null;
  const rankingHref=rows.find(row=>row.href)?.href??'/solar-atlas/ranking';
  return <div className={styles.chart} data-compact={compact}>
-  {artwork&&<img className={styles.backdrop} src={`/brand/rank-${artwork}.webp`} alt="" aria-hidden="true"/>}
+  {artwork&&<><div className={styles.splash} aria-hidden="true" style={{maskImage:`url(${brandAssets.splashMask})`,WebkitMaskImage:`url(${brandAssets.splashMask})`}}/><img className={styles.backdrop} src={`/brand/rank-${artwork}.webp`} alt="" aria-hidden="true"/></>}
   {!compact&&<header><h2>{highlights.length===1?`Top-Platzierung im ${formatStoryDate(story.period).replace(/^(Jan\.|Feb\.|März|Apr\.|Mai|Juni|Juli|Aug\.|Sept\.|Okt\.|Nov\.|Dez\.)/,month=>({ 'Jan.':'Januar','Feb.':'Februar','März':'März','Apr.':'April','Mai':'Mai','Juni':'Juni','Juli':'Juli','Aug.':'August','Sept.':'September','Okt.':'Oktober','Nov.':'November','Dez.':'Dezember'}[month]??month))}`:story.title}</h2><p>{formatStoryDate(story.period)} · Stand {formatStoryDate(story.sourceDate??story.period)}</p></header>}
   <div className={styles.rows}>{rows.map(row=>{
    const image=badge(row),distinction=rankingDistinction(row.rank,row.size);
@@ -45,6 +47,6 @@ export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact
   })}</div>
   {highlights.length>rows.length&&<p className={styles.more}>{highlights.length-rows.length} weitere bemerkenswerte Platzierungen</p>}
   {!compact&&<a className={styles.rankLink} href={rankingHref}>Alle Platzierungen <IconArrowRight size={16}/></a>}
-  {!compact&&<footer>Quelle: Energie-Atlas · Marktstammdatenregister</footer>}
+  {!compact&&!ohneBedienung&&<footer>Quelle: Energie-Atlas · Marktstammdatenregister</footer>}
  </div>;
 }

@@ -90,12 +90,17 @@ jobs:
     name: ${{ matrix.job.name }}
     needs: aufteilung
     runs-on: ubuntu-latest
-    # 220 statt der früheren 300: Der längste Job ist heute der PV-Rechner mit
-    # 174 bis 182 Minuten. Das Job-Limit muss über der SUMME seiner Schritt-Limits
-    # liegen (10 + 5 + 200 = 215), sonst reißt wieder der Job zuerst und der
-    # Ausgang heißt „cancelled" statt „failure" — festgenagelt von
+    # Der längste Job ist der PV-Rechner mit 174 bis 182 Minuten. Das Job-Limit
+    # muss über der SUMME seiner Schritt-Limits liegen (10 + 5 + 210 = 225),
+    # sonst reißt wieder der Job zuerst und der Ausgang heißt „cancelled" statt
+    # „failure" — festgenagelt von
     # lib/__tests__/workflow-schritt-zeitlimits.test.ts.
-    timeout-minutes: 220
+    #
+    # 230 statt 220 (24.09.2026): Das Schritt-Limit ist auf 210 gestiegen, weil
+    # das TEST-Limit von 195 Minuten darunter passen muss (siehe dort). Keine
+    # dieser Zahlen wird je verbraucht — ein Limit kostet nichts, solange es
+    # nicht reißt; abgerechnet werden die tatsächlich gelaufenen Minuten.
+    timeout-minutes: 230
 
     strategy:
       # Ein gerissener Flow darf die anderen nicht abwürgen: Sie endeten sonst
@@ -176,27 +181,41 @@ jobs:
       # erfolglosen Naechten auf (`laufStumm`), ein gerissenes SCHRITT-Limit
       # endet „failure" und ist am naechsten Morgen rot zu sehen.
       #
-      # 200 Minuten fuer den laengsten Flow. DAS IST KEIN ANGEHOBENES LIMIT:
+      # 210 Minuten fuer den laengsten Flow. DAS IST KEIN ANGEHOBENES LIMIT:
       # Die Gesamtzeit des Laufs sinkt von 258 auf rund 180 Minuten, weil sechs
       # Flows daneben laufen statt danach. Ein blosses Hochsetzen waere der Zug,
       # den das Waechter-Gate verbietet.
       #
       # DIE LUFT IST 10 %, NICHT EIN DRITTEL (nachgemessen 16.09.2026). Hier
       # stand das Drittel, weil die Ausgangsmessung 149 statt 174-182 Minuten
-      # nannte. Zehn Prozent haben von 07. bis 15.09.2026 trotzdem an JEDER
-      # Nacht gereicht: Kein erster Versuch lag je ueber 182 Minuten. Gerissen
-      # ist das Limit ausschliesslich dort, wo Playwright nach einem
-      # Fehlschlag einen zweiten Durchlauf begann — und der passt per Bauart
-      # nie hinein, auch nicht in ein groesseres Limit (siehe `retries` in
-      # playwright.config.ts). Wer hier erneut auf ein zu knappes Limit
-      # schliesst, sucht im Protokoll zuerst nach „(retry #1)".
+      # nannte.
+      #
+      # DIESES LIMIT IST NICHT DAS ENGSTE, UND GENAU DARAN LAG ES (24.09.2026).
+      # Drei Naechte hintereinander war der PV-Job rot, und der Absatz hier hat
+      # in die falsche Richtung gezeigt: Nicht dieses Schritt-Limit riss,
+      # sondern das ZEITLIMIT DES TESTS SELBST (`FLOW_TEST_ZEITLIMIT_MS` in
+      # e2e/flows.ts). Es stand seit dem 18.08.2026 bei 3 Stunden, aus der Zeit
+      # des einen gemeinsamen Jobs, und wurde beim Aufteilen am 07.09. nicht
+      # mitgezogen: aussen 200 Minuten Budget, innen 180. Der Fehler fiel in
+      # allen drei Naechten exakt 3 h 0 m nach dem Teststart und erschien als
+      # „Weiter kam nicht durch" an drei verschiedenen, nicht nachstellbaren
+      # Stellen.
+      #
+      # DER RETRY-VERDACHT, DER HIER STAND, IST WIDERLEGT — nicht
+      # weiterverwenden: Im naechtlichen Lauf steht `retries` auf 0
+      # (playwright.config.ts schaltet die Wiederholung genau bei
+      # FLOW_ALLE_KOMBINATIONEN ab), alle drei Fehlschlaege waren erste
+      # Versuche. Wer hier wieder auf ein zu knappes Limit schliesst, vergleicht
+      # zuerst den Zeitpunkt des Fehlers mit dem Teststart („Running 1 test
+      # using 1 worker"): Ist der Abstand rund die Test-Grenze, war es die
+      # Test-Grenze, und keine Stelle im Baum ist schuld.
       #
       # Die BERICHTSFORM „github,line" bleibt (05.09.2026): „github" schreibt in
       # die Annotationen, „line" nennt jeden Test beim Namen, sobald er startet.
       # Aus diesen Startzeitpunkten stammt die Verteilung oben — ohne sie waere
       # die Aufteilung geraten gewesen.
       - name: Flow walker, alle Kombinationen (production build)
-        timeout-minutes: 200
+        timeout-minutes: 210
         # Auswahl über zwei Umgebungsvariablen, NICHT als interpolierte Zeile:
         # Der Ausdruck enthält selbst Anführungszeichen, und die dann noch der
         # Shell zu überlassen wäre eine Quotierungs-Aufgabe, die niemand im Kopf

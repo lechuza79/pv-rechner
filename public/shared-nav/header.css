@@ -11,7 +11,7 @@ html[data-sc-shell] .site-header :focus-visible{outline:2px solid currentColor;o
  html[data-sc-shell] .sc-nav-toggle{font-size:0!important;width:48px;height:48px;padding:10px;display:grid;place-items:center}
 }
 html[data-sc-shell][data-sc-fonts=pending] :is(.site-header,.hero-copy,.hero-bottom){visibility:hidden}
-html[data-sc-shell][data-sc-fonts=ready] :is(.site-header,.hero-copy,.hero-bottom){animation:sc-shell-enter 950ms cubic-bezier(.22,1,.36,1) both}
+html[data-sc-shell][data-sc-fonts=ready] :is(.site-header,.hero-copy,.hero-bottom){animation:sc-shell-enter 950ms cubic-bezier(.22,1,.36,1) backwards}
 html[data-sc-shell][data-sc-fonts=ready] .hero-copy{animation-delay:90ms}
 html[data-sc-shell][data-sc-fonts=ready] .hero-bottom{animation-delay:180ms}
 @keyframes sc-shell-enter{from{opacity:0}to{opacity:1}}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { space, v } from "../../lib/theme";
 import { SocialKarte } from "./SocialKarte";
 import type { PostBild } from "../../lib/social-posts";
@@ -61,20 +61,35 @@ export function FeedVorschau({
   bild,
   text,
   breite = 500,
+  visual,
+  responsive = false,
 }: {
-  bild: PostBild;
+  bild?: PostBild;
   text: string;
   breite?: number;
+  /** Custom concept visual inside the existing social platform frame. */
+  visual?: ReactNode;
+  responsive?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
+  const frame = useRef<HTMLDivElement>(null);
+  const [measuredWidth, setMeasuredWidth] = useState(breite);
+  useEffect(() => {
+    if (!responsive || !frame.current) return;
+    const observer = new ResizeObserver(([entry]) => setMeasuredWidth(entry.contentRect.width));
+    observer.observe(frame.current);
+    return () => observer.disconnect();
+  }, [responsive]);
   // Die Karte ist 1080 breit; die Skala ergibt sich aus der Feed-Breite, damit
   // das Verhältnis stimmt, statt geraten zu werden.
-  const skala = breite / 1080;
+  const skala = (responsive ? measuredWidth : breite) / 1080;
 
   return (
     <div
+      ref={frame}
       style={{
         width: breite,
+        maxWidth: responsive ? "100%" : undefined,
         background: FEED.grund,
         border: `1px solid ${FEED.rand}`,
         borderRadius: 8,
@@ -138,7 +153,7 @@ export function FeedVorschau({
         </button>
       </div>
 
-      <SocialKarte bild={bild} skala={skala} />
+      {visual ?? (bild && <SocialKarte bild={bild} skala={skala} />)}
     </div>
   );
 }

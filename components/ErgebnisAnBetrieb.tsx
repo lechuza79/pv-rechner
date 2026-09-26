@@ -575,7 +575,7 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.5,
   },
   link: { color: v("--color-accent"), textDecoration: "none" },
-  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.md },
+  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginTop: space.md },
   fertig: {
     display: "flex",
     gap: space.md,

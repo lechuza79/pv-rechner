@@ -1,3 +1,4 @@
+throw new Error('Veralteter Wetterabruf gesperrt. Story-Vorbereitung auf aktuellem main mit ERA5-Archiv verwenden; siehe docs/codex-update-wetter-2026-09-19.md.');
 import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
 import {energyYear} from '../lib/story-energy-year';
 const root='scripts/.cache/story-ranking-month/sources';

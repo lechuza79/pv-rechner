@@ -71,7 +71,6 @@ function serverModulUnter(start: string): { weg: string[] } | null {
   return null;
 }
 
-const ORTSSEITE = ["app", "(site)", "solar-atlas", "[bundesland]", "[kreis]", "[gemeinde]", "page.tsx"];
 // Die geteilte Quelle, aus der BEIDE Redaktionsansichten füllen.
 const REDAKTION = ["lib", "redaktions-quelle.ts"];
 
@@ -90,8 +89,11 @@ const REDAKTION = ["lib", "redaktions-quelle.ts"];
 // getrennt formuliert" — dort hat sie das Projekt schon einmal bezahlt.
 
 describe("Ortsseite und Redaktionstisch teilen eine Kette", () => {
-  it("beide bauen die Beiträge über das geteilte Modul", () => {
-    expect(lies(...ORTSSEITE)).toContain("lib/orts-posts");
+  // SEIT DEM NEUEN DESIGN (09/2026) zeigt die Ortsseite die Geschichten aus
+  // ihrem Datenpaket (lib/gemeinde-paket.ts), nicht mehr diese Kette. Die
+  // Prüfungen der Ortsseite sind deshalb entfallen; der Redaktionstisch
+  // benutzt die Kette weiter.
+  it("der Redaktionstisch baut die Beiträge über das geteilte Modul", () => {
     expect(lies(...REDAKTION)).toContain("orts-beitraege-server");
     // Und beide Ansichten holen sie von dort, statt selbst zu sammeln.
     for (const seite of [
@@ -110,14 +112,6 @@ describe("Ortsseite und Redaktionstisch teilen eine Kette", () => {
     for (const eigen of ["ortsStories(", "fundeFuerOrt(", "vergleichsPlaetze(", "monatsZubau("]) {
       expect(quelle, `Der Redaktionstisch ruft „${eigen}" selbst auf`).not.toContain(eigen);
     }
-  });
-
-  it("die Ortsseite reicht ihre schon geladenen Zahlen herein, statt sie zweimal zu holen", () => {
-    // Sie hat Bestand und Speicher ohnehin für ihre Kacheln. Über den
-    // Schlüssel-Einstieg zu gehen wäre bequemer und kostete ein zweites Mal
-    // dieselben Abfragen auf 11.000 Seiten — eine Seite darf nicht mit den
-    // Daten teurer werden.
-    expect(lies(...ORTSSEITE)).not.toContain("ortsBeitraegeFuerId");
   });
 
   it("die Geschichten-Rechnung bleibt frei von Server-Modulen", () => {

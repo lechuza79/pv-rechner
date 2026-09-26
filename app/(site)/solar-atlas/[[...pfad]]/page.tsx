@@ -34,6 +34,9 @@ import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
+// One membership rule for the district intro, hero, map and district package.
+import { isDistrictMember } from "../../../../lib/district-package";
 
 // Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
 // app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx: Die Zahlen
@@ -163,6 +166,14 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   );
 }
 
+/**
+ * Levels served by the regional page on the accepted district design. Bundesland
+ * and Deutschland switch here; the old page stays intact for any level removed
+ * from this list (its extra sections — per-capita comparison, highlight paragraph,
+ * ranking tiles, international comparison — are not part of the new design).
+ */
+const REGION_DESIGN_LEVELS: ReadonlySet<string> = new Set(["landkreis", "bundesland", "de"]);
+
 async function AtlasBody({
   region,
   childLevel,
@@ -173,6 +184,7 @@ async function AtlasBody({
   pfad: string[] | undefined;
 }) {
   const params: Params = { pfad };
+  const onRegionDesign = REGION_DESIGN_LEVELS.has(region.level);
   const [atlas, children, ancestors, ranking] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),
@@ -211,7 +223,9 @@ async function AtlasBody({
       : region.level === "bundesland"
         ? [{ key: "de", ags: "de" }]
         : [];
-  const refData = await Promise.all(
+  // Per-capita comparison with the parent levels: old page, and kept on the new
+  // design for Bundesland/Deutschland (existing content, removal is a product decision).
+  const refData = region.level === "landkreis" && onRegionDesign ? [] : await Promise.all(
     refChain.map(async (r) => {
       const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
       return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
@@ -277,7 +291,12 @@ async function AtlasBody({
   const defaultRefKey = kpiRefs[0]?.key ?? "";
 
   const kindWort = childNoun(childLevel);
-  const kindWortGezaehlt = childNoun(childLevel, children.length);
+  // Districts count their current municipalities (one rule with hero and map);
+  // other levels as before, without unincorporated areas.
+  const gezaehlteKinder = region.level === "landkreis"
+    ? children.filter(child => isDistrictMember(child, region.region_id)).length
+    : children.filter(child => child.bezeichnung !== "Gemeindefreies Gebiet").length;
+  const kindWortGezaehlt = childNoun(childLevel, gezaehlteKinder);
   const einordnung = buildRegionHighlight({
     level: region.level as "de" | "bundesland" | "landkreis",
     name: region.name,
@@ -326,6 +345,92 @@ async function AtlasBody({
     baseUrl: BASE_URL,
   });
 
+  const intro = <>
+          <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
+          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
+              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
+              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
+              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
+              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
+              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
+              weiter unten am Watt Peak je Einwohner. */}
+          <strong style={S.strong}>
+            {leistungTeile.value}{" "}
+            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
+          </strong>{" "}
+          installierter Leistung
+          sind {ortPhrase(region)} in Betrieb
+          {hatVergleichsgruppe ? `, verteilt auf ${nf(gezaehlteKinder)} ${kindWortGezaehlt}.` : "."}
+          {wPerCapita !== null && (
+            <>
+              {" "}
+              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
+                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
+                  hier bewusst KEIN zweiter Begriff. */}
+              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
+            </>
+          )}{" "}
+          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
+              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
+              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
+              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
+              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
+          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
+          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
+
+  </>;
+
+  // First local design reference only; metadata, structured data and index
+  // policy remain on the existing route and share the existing sources.
+  if (onRegionDesign) {
+    // Bundesland/Deutschland keep the existing extra content of the old page
+    // (highlight paragraph, per-capita comparison, ranking tiles,
+    // international comparison, funding link) until a product decision says otherwise.
+    const keepExtras = region.level !== "landkreis";
+    const einordnungNode = keepExtras && einordnung.length > 0 ? einordnung.map((teil, idx) => {
+      if (typeof teil === "string") return teil;
+      if ("href" in teil) return <Link key={`${teil.href}-${idx}`} href={teil.href}>{teil.text}</Link>;
+      return <strong key={`w-${idx}`}>{teil.text}</strong>;
+    }) : null;
+    const zusatz = keepExtras ? <>
+      <div style={S.section}>
+        <h2 style={S.h2}>Kennzahlen im Vergleich</h2>
+        <AtlasKpiRow groups={[{ tiles: kpiTiles }]} regionPerCap={regionPerCap} references={kpiRefs} defaultRefKey={defaultRefKey} />
+      </div>
+      <div style={S.section}>
+        <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
+        <p style={S.sub}>{`Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune. ${GROESSENKLASSEN_WARUM}`}</p>
+        <div style={S.rangKacheln}>
+          {rankingKategorienGruppiert().buerger.map((k) => (
+            <Link key={k.slug} href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`} style={S.rangKachel}>
+              <span style={S.rangKachelTitel}>{k.thema}</span>
+              <span style={S.rangKachelCta}>Rangliste ansehen <IconArrowRight size={12} /></span>
+            </Link>
+          ))}
+        </div>
+      </div>
+      {region.level === "de" && (
+        <div style={S.section}>
+          <h2 style={S.h2}>Deutschland im internationalen Vergleich</h2>
+          <p style={S.sub}>Wie der deutsche Ausbau gegenüber anderen Ländern dasteht, zeigt der Ländervergleich.</p>
+          <Link href="/laendervergleich" style={S.link}>Photovoltaik-Ausbau im Ländervergleich</Link>
+        </div>
+      )}
+      {region.level === "bundesland" && region.slug && (
+        <div style={S.section}>
+          <h2 style={S.h2}>Förderung</h2>
+          <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
+          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme in {region.name}</Link>
+        </div>
+      )}
+    </> : null;
+    return <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
+      <LandkreisSeite state={region.level === "de" ? {id:"",name:""} : {id:region.region_id.slice(0,2),name:region.level === "bundesland" ? region.name : ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} einordnung={einordnungNode} zusatz={zusatz} />
+    </>;
+  }
+
   return (
     <div style={S.page}>
       {crumbs.length > 1 && (
@@ -344,39 +449,7 @@ async function AtlasBody({
         </div>
 
         <h1 style={S.h1}>{headline(region)}</h1>
-        <p style={S.intro}>
-          <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
-          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
-              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
-              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
-              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
-              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
-              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
-              weiter unten am Watt Peak je Einwohner. */}
-          <strong style={S.strong}>
-            {leistungTeile.value}{" "}
-            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
-          </strong>{" "}
-          installierter Leistung
-          sind {ortPhrase(region)} in Betrieb
-          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
-          {wPerCapita !== null && (
-            <>
-              {" "}
-              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
-                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
-                  hier bewusst KEIN zweiter Begriff. */}
-              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
-            </>
-          )}{" "}
-          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
-              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
-              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
-              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
-              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
-          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
-          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
-        </p>
+        <p style={S.intro}>{intro}</p>
 
         {/* Der Einordnungs-Absatz: Platz unter den Geschwistern, stärkstes
             Untergebiet mit Namen, Zubau als Anteil am Bestand. Je Region andere

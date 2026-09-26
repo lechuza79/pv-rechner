@@ -1,3 +1,4 @@
+throw new Error('Veralteter Wetterabruf gesperrt. Story-Vorbereitung auf aktuellem main mit ERA5-Archiv verwenden; siehe docs/codex-update-wetter-2026-09-19.md.');
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {solarMonth} from '../lib/story-monthly-solar';
 const root='scripts/.cache/story-monthly-solar';mkdirSync(root,{recursive:true});

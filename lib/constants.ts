@@ -1,4 +1,5 @@
 import { v } from "./theme";
+import { OIL_REFERENCE, oilProjectedPricePerKwh } from "./oil-reference";
 
 // ─── Zeitkonstanten ──────────────────────────────────────────────────────────
 // YEAR = current calendar year, used as the projection start year (Chart x-axis,
@@ -94,7 +95,8 @@ export const AUTARKY_GRID = [
 // Begründung samt geprüfter Sackgassen steht in scripts/waermepumpe-verify.md.
 export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: number }> = {
   gas: { price: 0.11, co2PerKwh: 0.20 },   // 11 ct/kWh, 200 g CO2/kWh
-  oil: { price: 0.10, co2PerKwh: 0.266 },  // 10 ct/kWh, 266 g CO2/kWh
+  // UBA nominal projection for the start year, not a supplier quote. Editable.
+  oil: { price: oilProjectedPricePerKwh(YEAR), co2PerKwh: OIL_REFERENCE.co2PerKwh },
 };
 
 // Gas/Öl-Referenzkosten für WP-Vergleich (Preis + CO2 aus FUEL_PRICE).
@@ -103,7 +105,7 @@ export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: numbe
 // dort „heizung" an das Brennstoff-Label geklebt wurde.
 export const FUEL: Record<string, { label: string; refLabel: string; price: number; efficiency: number; co2PerKwh: number }> = {
   gas: { label: "Gas", refLabel: "Gasheizung", price: FUEL_PRICE.gas.price, efficiency: 0.90, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },   // 90% Kessel
-  oil: { label: "Heizöl", refLabel: "Ölheizung", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh }, // 85% Kessel
+  oil: { label: "Heizöl", refLabel: "Ölheizung", price: FUEL_PRICE.oil.price, efficiency: OIL_REFERENCE.existingEfficiency, co2PerKwh: FUEL_PRICE.oil.co2PerKwh }, // 85% Kessel
 };
 
 // ─── Optionen für den Rechner-Flow ──────────────────────────────────────────
@@ -158,12 +160,19 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 // 05.09.2026 nannte er nur den Strompreis, dabei stammte die größere Hälfte
 // des Szenario-Unterschieds aus dem Eigenverbrauch (optimistisch: 6.833 €
 // aus dem EV-Sprung, 6.262 € aus dem Preis).
+//
+// JEDES SZENARIO TRÄGT ZWEI FARBEN, UND DAS IST KEINE DOPPELUNG. `color` ist
+// die Kurvenfarbe — eine Grafikfarbe, die auf hellem Grund als 12-px-Text
+// 1,9:1 erreicht und dort niemand liest. `textColor` ist dieselbe Aussage als
+// LESBARER Text (die Stufen aus lib/theme.ts, ~6:1). Wer einen Szenarionamen
+// als Text setzt, nimmt `textColor`; wer eine Linie, eine Fläche oder einen
+// Balken zeichnet, `color`.
 export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), strom: 0.01, evDelta: -5,
+  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), textColor: v("--color-negative-text"), strom: 0.01, evDelta: -5,
     explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) und du nutzt 5 Prozentpunkte weniger Strom selbst als geschätzt — beides drückt die Ersparnis." },
-  { id: "realistic", label: "Realistisch", color: v("--color-positive"), strom: 0.02, evDelta: 0,
+  { id: "realistic", label: "Realistisch", color: v("--color-positive"), textColor: v("--color-positive-text"), strom: 0.02, evDelta: 0,
     explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
-  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), strom: 0.05, evDelta: 5,
+  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), textColor: v("--color-accent"), strom: 0.05, evDelta: 5,
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker — und du nutzt 5 Prozentpunkte mehr Strom selbst als geschätzt." },
 ];
 
@@ -335,31 +344,9 @@ export const WP_FUEL_OPTIONS: {
   price: number; efficiency: number; co2PerKwh: number; bestandsanlage?: boolean;
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  // Heizöl NEU eingebaut: 0,92 — der gesetzliche MINDESTWERT, auf unsere
-  // Preisskala umgerechnet. Herleitung (19.08.2026, drei adversariale Prüfungen):
-  // Die Ökodesign-Verordnung (EU) 813/2013 verlangt seit dem 26.09.2015 von jedem
-  // Brennstoffkessel bis 70 kW eine jahreszeitbedingte Raumheizungs-Energie-
-  // effizienz von mindestens 86 % — ohne Unterschied zwischen Öl und Gas
-  // (Anhang II; Volltext in docs/quellen/). Diese Größe ist auf den BRENNWERT
-  // bezogen (Art. 2 Nr. 30), unser Ölpreis dagegen auf den Heizwert (10,2 kWh/l);
-  // zwischen beiden liegen bei Heizöl rund 6,6 % (45,4 zu 42,6 MJ/kg). 0,86 × 1,066
-  // ≈ 0,92. Hier stand vorher 0,85 — ein Wert UNTER dem gesetzlichen Minimum, der
-  // also ein Gerät beschreibt, das man gar nicht verkaufen dürfte.
-  //
-  // Es ist bewusst eine UNTERGRENZE, kein Marktwert: Reale Öl-Brennwertkessel
-  // erreichen laut Herstellerdatenblättern 92–93 % (Brennwert). Damit rechnen wir
-  // die Ölheizung weiterhin etwas zu schlecht — und der verbleibende Fehler geht
-  // weiter zugunsten der Wärmepumpe. Der Marktwert selbst steht bewusst NICHT hier,
-  // weil die Labelzahl zu 85 % bei 30 °C Rücklauf gemessen wird (Fußbodenheizung);
-  // an alten Heizkörpern kondensiert ein Ölkessel kaum. Eine einzelne „genauere"
-  // Zahl gibt es für diesen Kessel also gar nicht — sie hängt an der System-
-  // temperatur. Das ist damit eine ABGESCHLOSSENE Modellprämisse, kein offener
-  // Punkt: belegte Untergrenze statt geschätzter Mitte, Fehlerrichtung benannt.
-  // Wieder aufgemacht nur mit echtem Auslöser (Norm im Repo oder Umbau auf
-  // temperaturabhängige Wirkungsgrade), und dann für Gas und Öl GEMEINSAM —
-  // die amtlichen Aufwandszahlen trennen nicht nach Brennstoff. Begründung und
-  // Vorarbeit: scripts/waermepumpe-verify.md.
-  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.92, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // KWW 08/2026 Tab 4, D7: condensing boiler, 93% on lower heating value.
+  // A planning assumption, not an individually measured annual efficiency.
+  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: OIL_REFERENCE.newEfficiency, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
   // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
   // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".
   // Bis 18.08.2026 gab es dafür nur den 30 Jahre alten Kessel mit 80 %: Wer

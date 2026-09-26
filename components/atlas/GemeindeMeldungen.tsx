@@ -51,6 +51,15 @@ export default function GemeindeMeldungen({
   // `null` heißt zu. Der Index bleibt beim Schließen NICHT stehen: Wer die
   // Reihe erneut öffnet, öffnet die Geschichte, die er angetippt hat.
   const [offen, setOffen] = useState<number | null>(null);
+  useEffect(() => {
+    const openSharedStory = () => {
+      const index = beitraege.findIndex(b => window.location.hash === `#story-${b.storyKennung}`);
+      if (index >= 0) setOffen(index);
+    };
+    openSharedStory();
+    window.addEventListener("hashchange", openSharedStory);
+    return () => window.removeEventListener("hashchange", openSharedStory);
+  }, [beitraege]);
 
   if (beitraege.length === 0) return null;
 
@@ -145,7 +154,7 @@ function StoryFenster({
             setStart(null);
           }}
         >
-          <OrtsStoryKarte beitrag={b} name={name} liveUrl={liveUrl} standIso={standIso} />
+          <OrtsStoryKarte beitrag={b} name={name} liveUrl={liveUrl} standIso={b.editionSourceDate ?? standIso} />
 
           {beitraege.length > 1 && (
             <div style={S.navZeile}>

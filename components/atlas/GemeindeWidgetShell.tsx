@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { v } from "../../lib/theme";
+import { v, space } from "../../lib/theme";
 import {
   ExportBox,
   ExportNotesProvider,
@@ -55,6 +55,8 @@ export default function GemeindeWidgetShell({
   nackt = false,
   einbetten,
   sourceBottomInset = 0,
+  showSourceEdge = true,
+  footerSource,
   children,
 }: {
   /** Registry entry, already resolved to this place via `widgetForPlace`. */
@@ -105,6 +107,9 @@ export default function GemeindeWidgetShell({
   /** Shorten the vertical source label at the bottom, so it ends above a footer
    *  row inside the widget body instead of running to the floor. */
   sourceBottomInset?: number;
+  /** Disable when the content already includes its source credit. */
+  showSourceEdge?: boolean;
+  footerSource?: string;
   children: React.ReactNode;
 }) {
   // On our own pages the credit is quiet until someone looks at the card.
@@ -147,7 +152,8 @@ export default function GemeindeWidgetShell({
           </div>
         </div>
 
-        <div style={S.footer}>
+        <div style={{ ...S.footer, ...(footerSource ? { display: "flex", alignItems: "center", gap: space.xl, flexWrap: "wrap" } : {}) }}>
+          {footerSource && <p style={{ flex: "1 1 180px", margin: 0, fontSize: v("--font-size-micro"), lineHeight: 1.5, color: v("--color-text-muted") }}>{footerSource}</p>}
           <WidgetFooter
             widget={widget}
             chartExport={chartExport}
@@ -166,13 +172,13 @@ export default function GemeindeWidgetShell({
             Inhaltsbereich: In einer Karte mit einer kurzen Kachelreihe reichte
             dessen Höhe nicht für eine Zeile, der Vermerk brach in mehrere
             Spalten um und lief quer über die Kennzahlen. */}
-        <div style={{ ...S.sourceLane, bottom: 8 + sourceBottomInset }}>
+        {showSourceEdge && <div style={{ ...S.sourceLane, bottom: 8 + sourceBottomInset }}>
           <WidgetSourceEdge
             widget={widget}
             visible={!onsite || showCredit}
             stand={dataAsOf}
           />
-        </div>
+        </div>}
 
         {/* Image only: legend, the texts behind the "?", brand. */}
         <WidgetExportFooter widget={widget} legend={legend} note={note} branding={branding} />

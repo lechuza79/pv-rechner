@@ -284,7 +284,7 @@ export default function KommunenCockpit() {
       {/* Ergebniszeile */}
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
         {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Gemeinden`}
-        {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
+        {error && <span style={{ color: v("--color-negative-text"), marginLeft: space.sm }}>Fehler: {error}</span>}
       </div>
 
       {/* Tabelle */}
@@ -406,7 +406,7 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             style={{
               fontSize: v("--font-size-caption"),
               marginTop: 3,
-              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive-text") : v("--color-text-muted"),
             }}
           >
             {aboSatz(lead.abo)}
@@ -441,7 +441,7 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
               href={lead.seitenwert.verlinkt_url ?? `https://${""}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ ...linkStyle, color: v("--color-positive") }}
+              style={{ ...linkStyle, color: v("--color-positive-text") }}
             >
               verlinkt uns ↗
             </a>
@@ -466,13 +466,13 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           )}
         </div>
         {lead.verantwortlich_funktion && (
-          <div style={{ fontSize: v("--font-size-caption"), color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: lead.verantwortlich_operativ ? v("--color-positive-text") : v("--color-text-muted") }}>
             {lead.verantwortlich_operativ ? "zuständig: " : "nur Vertretung: "}
             {lead.verantwortlich_funktion}
           </div>
         )}
         {lead.verwaltung_domain && (
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative-text") }} title="Gemeinsame Verwaltung laut Impressum">
             Verbund: {lead.verwaltung_domain}
           </div>
         )}
@@ -770,7 +770,7 @@ function DraftModal({
             der Sperr-Kasten beides. */}
         {blocked && (
           <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
-            Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein weiteres
+            Diese Gemeinde ist <strong style={{ color: v("--color-negative-text") }}>gesperrt</strong> — es wird kein weiteres
             Anschreiben erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
           </div>
         )}
@@ -802,7 +802,7 @@ function DraftModal({
             </div>
 
             {lead.draft_manuell && lead.draft_generated_at && (
-              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative-text") }}>
                 Von Hand bearbeitet am {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — wird nicht automatisch
                 aktualisiert. „Neu generieren" verwirft die Änderungen.
               </div>
@@ -824,7 +824,7 @@ function DraftModal({
               aria-label="Nachricht"
             />
 
-            {genError && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>Fehler: {genError}</div>}
+            {genError && <div style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small") }}>Fehler: {genError}</div>}
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
               <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
@@ -853,7 +853,7 @@ function DraftModal({
                   <option value="telefon">Telefon</option>
                 </SelectField>
                 <button
-                  style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+                  style={{ ...pagerBtn, color: v("--color-positive-text"), fontWeight: 700 }}
                   disabled={busy}
                   onClick={() => setStatus("kontaktiert", kanal)}
                 >
@@ -967,7 +967,7 @@ function Verlauf({
             genau hier, wenn man gerade die Antwort liest. */}
         {lead.outreach_status !== "veroeffentlicht" && (
           <button
-            style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+            style={{ ...pagerBtn, color: v("--color-positive-text"), fontWeight: 700 }}
             disabled={busy}
             onClick={() => onStatus("veroeffentlicht")}
           >

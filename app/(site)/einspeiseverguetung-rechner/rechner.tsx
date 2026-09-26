@@ -547,13 +547,13 @@ export default function EinspeiseRechner() {
               </div>
               <div>
                 <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Vergütung pro Jahr</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                   {geld(jahresverguetung)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Summe über die {FEED_IN_YEARS} Vergütungsjahre</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                   {geld(summeGesamt)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function EinspeiseRechner() {
                   </div>
                   <div>
                     <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Noch ausstehend (geschätzt)</div>
-                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                       {geld(nochAusstehend)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                     </div>
                   </div>

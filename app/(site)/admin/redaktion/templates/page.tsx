@@ -219,7 +219,7 @@ export default async function RedaktionTemplates({
       </p>
 
       {fehler && (
-        <p style={{ color: v("--color-negative"), marginBottom: space.xxl }}>
+        <p style={{ color: v("--color-negative-text"), marginBottom: space.xxl }}>
           Die Zahlen sind gerade nicht abrufbar: {fehler}
         </p>
       )}

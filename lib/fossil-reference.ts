@@ -1,3 +1,4 @@
+import { HEATING_INVESTMENT, gasInvestmentGross } from "./heating-investment";
 // ─── Fossile Referenzheizung — geteilte Annahmen (PV- UND Wärmepumpen-Rechner) ─
 //
 // EINE Stelle für die Frage: „Was kostet es, NICHT auf die Wärmepumpe zu wechseln?"
@@ -27,6 +28,7 @@ import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config"
 import { co2SurchargeOverToday } from "./calc";
 import { gasMixPriceEurForYear } from "./greengas";
 import type { GasScenario } from "./greengas-config";
+import { OIL_REFERENCE, oilPricePerKwh } from "./oil-reference";
 
 /** Vergleichshorizont jeder Heizungs-Rechnung, in Jahren.
  *  Kommt aus der WP-Config (20 J) und gilt bewusst AUCH im PV-Rechner: Der Block dort
@@ -58,7 +60,14 @@ export function greenGasApplies({ fuelKind, fossilInvest }: { fuelKind: FuelKind
  *  Der Grundpreis ist brennstoffabhängig: Gas kommt über einen Netzanschluss mit
  *  Zähler- und Netzgrundpreis, Heizöl aus einem Tank ohne laufende Anschlussgebühr. */
 export function fossilStandingCostPerYear(fuelKind: FuelKind, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
-  return { fix: cfg.fixCostPerYear[fuelKind], wartung: cfg.gasMaintenance };
+  return { fix: cfg.fixCostPerYear[fuelKind], wartung: fuelKind === "oil" ? OIL_REFERENCE.upkeepPerYear : cfg.gasMaintenance };
+}
+
+/** Fuel-specific replacement estimate; a quote or zero still takes precedence. */
+export function fossilReplacementInvestment(fuelKind: FuelKind, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG, heatLoadKw: number = HEATING_INVESTMENT.gas.minKw): number {
+  if (fuelKind === "oil") return OIL_REFERENCE.investment;
+  const ratio = gasInvestmentGross(heatLoadKw) / gasInvestmentGross(HEATING_INVESTMENT.gas.minKw);
+  return Math.round(cfg.fossilErsatzInvest * ratio);
 }
 
 /** Laufende Nebenkosten der Wärmepumpe, €/a (Wartung + Grundpreis des Stromzählers).
@@ -76,7 +85,7 @@ export interface FossilReferenceInputs {
   /** €/kWh Brennstoff, heutiger All-in-Preis (CO₂-Abgabe des laufenden Jahres inklusive). */
   pricePerKwh: number;
   co2PerKwh: number;
-  /** Jährliche Brennstoff-Teuerung (ohne CO₂-Pfad, der kommt separat obendrauf). */
+  /** Gas-only annual escalation. Oil uses its own all-in UBA trajectory. */
   inflation?: number;
   /** Anschaffung einer neuen fossilen Heizung, € (0 = die vorhandene läuft weiter).
    *  Steuert zugleich, ob die Bio-Treppe greift — siehe greenGasApplies(). */
@@ -111,7 +120,11 @@ export function calcFossilReference(inp: FossilReferenceInputs, cfg: HeatPumpCon
 
   const fuelPerYear: number[] = [];
   for (let i = 0; i < years; i++) {
-    if (greenGasApplied) {
+    if (inp.fuelKind === "oil") {
+      // The UBA end-user price already contains CO2 and VAT. A second surcharge
+      // or a gas-network escalation here would count unrelated costs twice.
+      fuelPerYear.push(inp.fuelKwh * oilPricePerKwh(YEAR + i, YEAR, inp.pricePerKwh));
+    } else if (greenGasApplied) {
       // Zeitvariabler GModG-Gas-Mix-Endkundenpreis (€/kWh, brutto, CO₂ bereits
       // enthalten) — deshalb hier KEIN separater CO₂-Aufschlag (Doppelzählung).
       fuelPerYear.push(inp.fuelKwh * gasMixPriceEurForYear(YEAR + i, gasScenario));

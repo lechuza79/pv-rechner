@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Modal from "../Modal";
 import { OrtsTeaser, OrtsStoryKarte } from "./OrtsStoryAnsicht";
 import { v, space } from "../../lib/theme";
@@ -34,19 +34,23 @@ export function SeitenVorschau({
   post,
   orts,
   breite = 440,
+  detailsSichtbar = false,
 }: {
   post: SocialPost;
   orts?: OrtsVorschau;
   /** Dieselbe Breite wie die Feed-Vorschau daneben — sonst springt das Raster
    *  beim Umschalten der Ausgabeform. */
   breite?: number;
+  /** Show thumbnail and full story together at the editorial desk. */
+  detailsSichtbar?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
+  const detail = useRef<HTMLDivElement>(null);
 
   if (orts) {
     return (
       <div style={{ width: breite, maxWidth: "100%" }}>
-        <div style={S.hinweis}>Teaser in der Reihe auf {orts.ortName}s Seite</div>
+        <div style={S.hinweis}>Thumbnail und Teaser · {orts.ortName}</div>
         {/* Die Reihe ist eine Spur mit mehreren Teasern; hier steht einer davon
             in seiner echten Breite. Die Spur selbst nachzubauen zeigte nichts
             über DIESE Geschichte, nur über das Blättern. */}
@@ -54,9 +58,20 @@ export function SeitenVorschau({
             (240 bis 320). Am schmalen Ende beurteilt man einen Ausnahmefall,
             am breiten den bequemsten. */}
         <div style={{ display: "flex", width: 280 }}>
-          <OrtsTeaser beitrag={orts.beitrag} onOeffnen={() => setOffen(true)} />
+          <OrtsTeaser beitrag={orts.beitrag} onOeffnen={() => { if (detailsSichtbar) detail.current?.scrollIntoView({ block: "start", behavior: "smooth" }); else setOffen(true); }} />
         </div>
 
+        {detailsSichtbar ? (
+          <div ref={detail} style={{ marginTop: space.xl }}>
+            <div style={S.hinweis}>Detailansicht · vollständige Story</div>
+          <OrtsStoryKarte
+            beitrag={orts.beitrag}
+            name={orts.ortName}
+            liveUrl={orts.liveUrl}
+            standIso={orts.standIso}
+          />
+          </div>
+        ) : (
         <Modal
           open={offen}
           onClose={() => setOffen(false)}
@@ -71,6 +86,7 @@ export function SeitenVorschau({
             standIso={orts.standIso}
           />
         </Modal>
+        )}
       </div>
     );
   }
@@ -93,10 +109,10 @@ export function SeitenVorschau({
 
   return (
     <div style={{ width: breite, maxWidth: "100%" }}>
-      <div style={S.hinweis}>Auf der Seite</div>
+      <div style={S.hinweis}>Website</div>
       <div style={{ ...S.blatt, color: v("--color-text-secondary") }}>
         <p style={{ ...S.absatz, marginTop: 0 }}>
-          Diesen Beitrag gibt es nur für den Feed. Eine Fassung für eine Seite — ein Abschnitt im
+          Diesen Beitrag gibt es nur als Social-Post. Eine Fassung für eine Seite — ein Abschnitt im
           Fließtext oder eine Geschichte hinter einem Teaser — ist noch nicht geschrieben.
         </p>
       </div>

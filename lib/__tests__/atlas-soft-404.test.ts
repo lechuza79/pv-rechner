@@ -26,7 +26,9 @@ import { join } from "node:path";
 
 const ATLAS_DIR = join(__dirname, "../../app/(site)/solar-atlas");
 const PFAD_PAGE = join(ATLAS_DIR, "[[...pfad]]/page.tsx");
-const GEMEINDE_PAGE = join(ATLAS_DIR, "[bundesland]/[kreis]/[gemeinde]/page.tsx");
+// The town page moved to its own route group with the new design (09/2026).
+const GEMEINDE_DIR = join(__dirname, "../../app/(gemeinde)/solar-atlas");
+const GEMEINDE_PAGE = join(GEMEINDE_DIR, "[bundesland]/[kreis]/[gemeinde]/page.tsx");
 
 /** Alle loading.tsx unterhalb der Atlas-Routen — auf jeder Ebene, nicht nur oben. */
 function loadingDateien(dir: string, gefunden: string[] = []): string[] {
@@ -44,6 +46,7 @@ describe("Energie-Atlas: kein Soft-404", () => {
     // Soft-404. Wer Lade-Feedback will, nimmt AtlasSkeleton in einem <Suspense>
     // INNERHALB der Seite — hinter der Routing-Entscheidung.
     expect(loadingDateien(ATLAS_DIR)).toEqual([]);
+    expect(loadingDateien(GEMEINDE_DIR)).toEqual([]);
   });
 
   it("hält das Lade-Skelett als Komponente bereit", () => {
@@ -51,10 +54,19 @@ describe("Energie-Atlas: kein Soft-404", () => {
     expect(existsSync(join(__dirname, "../../components/atlas/AtlasSkeleton.tsx"))).toBe(true);
   });
 
-  for (const [name, datei] of [
-    ["Übersicht/Bundesland/Kreis", PFAD_PAGE],
-    ["Gemeinde-Detail", GEMEINDE_PAGE],
-  ] as const) {
+  // The new town page renders in one piece (no streaming): the answer is
+  // complete before anything goes out, so notFound() always sets the status.
+  // What must hold is that it decides — and that no <Suspense> sneaks in
+  // before the decision.
+  it("Gemeinde-Detail entscheidet über notFound() vor jedem <Suspense>", () => {
+    const quelle = readFileSync(GEMEINDE_PAGE, "utf8");
+    const entscheidung = quelle.indexOf("notFound()");
+    expect(entscheidung).toBeGreaterThan(-1);
+    const suspense = quelle.indexOf("<Suspense");
+    if (suspense >= 0) expect(entscheidung).toBeLessThan(suspense);
+  });
+
+  for (const [name, datei] of [["Übersicht/Bundesland/Kreis", PFAD_PAGE]] as const) {
     describe(name, () => {
       const quelle = readFileSync(datei, "utf8");
 

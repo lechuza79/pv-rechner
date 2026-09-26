@@ -70,6 +70,6 @@ describe("Seitenfassung der Ortsgeschichten", () => {
   it("wo es keine Seitenfassung gibt, sagt das Werkzeug es", () => {
     // „Nichts anzuzeigen" und „gibt es nicht" sind zwei Auskünfte. Zwölf der
     // vierzehn bundesweiten Beiträge haben bis heute keine.
-    expect(WERKZEUG).toContain("nur für den Feed");
+    expect(WERKZEUG).toContain("nur als Social-Post");
   });
 });

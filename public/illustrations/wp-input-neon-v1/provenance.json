@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "house-large",
+      "svg": "compositions/house-large.svg",
+      "webp": "exports/house-large.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-neon-v2/house-large/splashes.svg",
+      "status": "existing-neon-composition-cleaned",
+      "note": "No new object/stroke generation; previous generic hidden accent removed."
+    },
+    {
+      "id": "house-semi",
+      "svg": "compositions/house-semi.svg",
+      "webp": "exports/house-semi.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-neon-v2/house-semi/splashes.svg",
+      "status": "existing-neon-composition-cleaned",
+      "note": "No new object/stroke generation; previous generic hidden accent removed."
+    },
+    {
+      "id": "house-row-middle",
+      "svg": "compositions/house-row-middle.svg",
+      "webp": "exports/house-row-middle.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-neon-v2/house-row-middle/splashes.svg",
+      "status": "existing-neon-composition-cleaned",
+      "note": "No new object/stroke generation; previous generic hidden accent removed."
+    },
+    {
+      "id": "house-row-end",
+      "svg": "compositions/house-row-end.svg",
+      "webp": "exports/house-row-end.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-neon-v2/house-row-end/splashes.svg",
+      "status": "existing-neon-composition-cleaned",
+      "note": "No new object/stroke generation; previous generic hidden accent removed."
+    },
+    {
+      "id": "heatpump-modern",
+      "svg": "compositions/heatpump-modern.svg",
+      "webp": "exports/heatpump-modern.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-homepage-neon-v2/heatpump-modern/composite.svg",
+      "status": "existing-neon-composition-cleaned",
+      "note": "No new object/stroke generation; previous generic hidden accent removed."
+    }
+  ],
+  "missingBaseMotifs": [
+    "Bestand vs Neubau",
+    "Daemmzustaende",
+    "Heizkoerper",
+    "Fussbodenheizung",
+    "Erdwaermepumpe"
+  ],
+  "approval": "Existing compositions, this optimized package not separately approved"
+}

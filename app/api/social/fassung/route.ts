@@ -4,6 +4,8 @@ import { ladeFassungen, setzeVorlageZurueck, speichereFassung } from "../../../.
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { BILDFORM_NAME, baueAllePosts, type PostBild } from "../../../../lib/social-posts";
 import { istKartenStil } from "../../../../lib/social-karten-stil";
+import { ortsPostTeile } from "../../../../lib/orts-posts";
+import { ortsBeitraegeFuerId } from "../../../../lib/orts-beitraege-server";
 import { pruefeVorlage } from "../../../../lib/social-vorlage";
 
 // Die redaktionelle Fassung einer Story speichern: Text, Farbschema, Bildform.
@@ -51,7 +53,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const posts = baueAllePosts(await socialKennzahlen(), await ladeFassungen());
+    const ort = ortsPostTeile(body.postId);
+    const fassungen = await ladeFassungen();
+    const posts = ort
+      ? (await ortsBeitraegeFuerId(ort.regionId, fassungen))?.beitraege.map(b => b.post) ?? []
+      : baueAllePosts(await socialKennzahlen(), fassungen);
     const post = posts.find((p) => p.id === body.postId);
     if (!post?.platzhalter) {
       return NextResponse.json({ error: "Dieser Post ist nicht auf Vorlagen umgestellt" }, { status: 400 });

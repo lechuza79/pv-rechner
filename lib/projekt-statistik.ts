@@ -87,6 +87,19 @@ export interface Statistiktag {
 export interface Arbeitstag {
   tag: string;
   minuten: number;
+  /**
+   * Davon Minuten, in denen GLEICHZEITIG an einem anderen Projekt gearbeitet
+   * wurde.
+   *
+   * WARUM DAS GETRENNT STEHEN MUSS: Die Vereinigung oben legt parallele Stände
+   * DESSELBEN Projekts zusammen. Wer zwischen zwei Projekten hin- und
+   * herspringt, wird aber in beiden voll gezählt — gemessen am 23.09.2026
+   * liefen 113 von 357 Stunden (32 %) gleichzeitig mit einem anderen Projekt.
+   * „379 Stunden" heißt deshalb „Stunden, in denen dieses Projekt offen war",
+   * nicht „Stunden, die es allein gekostet hat". Der Unterschied ist ein
+   * Drittel, und er fällt niemandem auf, solange nur eine Zahl dasteht.
+   */
+  minutenParallel: number;
 }
 
 /** Der Bestand an einem Stichtag — wächst, statt sich je Tag zu ereignen. */
@@ -128,6 +141,7 @@ export const STATISTIK_DDL = `
     minuten integer not null,
     erfasst_am timestamptz not null default now()
   );
+  alter table projekt_arbeitszeit add column if not exists minuten_parallel integer not null default 0;
   create table if not exists projekt_bestand (
     tag date primary key,
     dateien integer not null,
@@ -262,8 +276,14 @@ export function vereinigeBloecke(bloecke: Block[]): Block[] {
 }
 
 /** Blöcke zusammenlegen und die Minuten auf die deutschen Kalendertage verteilen. */
-export function verteileZeit(bloecke: Block[], tage: Map<string, Arbeitstag>): void {
+export function verteileZeit(
+  bloecke: Block[],
+  tage: Map<string, Arbeitstag>,
+  /** Blöcke anderer Projekte — ihr Überschneidungsanteil wird mitgeschrieben. */
+  fremde: Block[] = [],
+): void {
   const vereint = vereinigeBloecke(bloecke);
+  const fremdVereint = vereinigeBloecke(fremde);
   for (const b of vereint) {
     // Über Mitternacht laufende Blöcke tageweise aufteilen, sonst landet eine
     // Nachtschicht komplett auf dem Vortag. Die Tagesgrenze wird GESUCHT statt
@@ -274,8 +294,9 @@ export function verteileZeit(bloecke: Block[], tage: Map<string, Arbeitstag>): v
     while (von < b.bis) {
       const tag = tagVon(von);
       const bis = tagVon(b.bis) === tag ? b.bis : grenzeNach(von, b.bis);
-      const t = tage.get(tag) ?? { tag, minuten: 0 };
+      const t = tage.get(tag) ?? { tag, minuten: 0, minutenParallel: 0 };
       t.minuten += Math.round((bis - von) / 60000);
+      t.minutenParallel += Math.round(ueberschneidung(von, bis, fremdVereint) / 60000);
       tage.set(tag, t);
       if (bis <= von) break;
       von = bis;
@@ -294,4 +315,15 @@ export function grenzeNach(von: number, bis: number): number {
     else hi = mitte;
   }
   return hi;
+}
+
+/** Millisekunden, die ein Abschnitt mit einer Blockliste gemeinsam hat. */
+export function ueberschneidung(von: number, bis: number, fremde: Block[]): number {
+  let ms = 0;
+  for (const f of fremde) {
+    const a = Math.max(von, f.von);
+    const b = Math.min(bis, f.bis);
+    if (b > a) ms += b - a;
+  }
+  return ms;
 }

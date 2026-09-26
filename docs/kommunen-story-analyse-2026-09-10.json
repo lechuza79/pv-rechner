@@ -1,0 +1,986 @@
+{
+  "coverage": {
+    "rows": 386594,
+    "municipalities_in_registry": 11247,
+    "municipalities_with_monthly_rows": 10724,
+    "unmatched_ids": 0,
+    "from": "2024-08-01",
+    "through": "2026-09-01",
+    "invalid_rows": 0,
+    "duplicate_keys": 0,
+    "segments": {
+      "freiflaeche": 3336,
+      "gewerbe_dach": 55673,
+      "privat_dach": 167882,
+      "steckersolar": 159703
+    }
+  },
+  "largest_count_months": [
+    {
+      "id": "11000000",
+      "name": "Berlin",
+      "population": 3685265,
+      "segment": "steckersolar",
+      "month": "2025-06",
+      "count": 1225,
+      "kwp": 1388.95,
+      "kwp_per_unit": 1.13,
+      "next_highest": 1165.0,
+      "ratio": 1.05,
+      "positive_months": 22
+    },
+    {
+      "id": "11000000",
+      "name": "Berlin",
+      "population": 3685265,
+      "segment": "privat_dach",
+      "month": "2025-07",
+      "count": 528,
+      "kwp": 5849.55,
+      "kwp_per_unit": 11.08,
+      "next_highest": 491.0,
+      "ratio": 1.08,
+      "positive_months": 22
+    },
+    {
+      "id": "02000000",
+      "name": "Hamburg",
+      "population": 1862565,
+      "segment": "steckersolar",
+      "month": "2026-04",
+      "count": 471,
+      "kwp": 618.48,
+      "kwp_per_unit": 1.31,
+      "next_highest": 470.0,
+      "ratio": 1.0,
+      "positive_months": 22
+    },
+    {
+      "id": "02000000",
+      "name": "Hamburg",
+      "population": 1862565,
+      "segment": "privat_dach",
+      "month": "2025-07",
+      "count": 395,
+      "kwp": 4054.12,
+      "kwp_per_unit": 10.26,
+      "next_highest": 357.0,
+      "ratio": 1.11,
+      "positive_months": 22
+    },
+    {
+      "id": "09162000",
+      "name": "München",
+      "population": 1505005,
+      "segment": "steckersolar",
+      "month": "2026-05",
+      "count": 384,
+      "kwp": 420.2,
+      "kwp_per_unit": 1.09,
+      "next_highest": 350.0,
+      "ratio": 1.1,
+      "positive_months": 22
+    },
+    {
+      "id": "05315000",
+      "name": "Köln",
+      "population": 1024621,
+      "segment": "steckersolar",
+      "month": "2025-07",
+      "count": 332,
+      "kwp": 397.87,
+      "kwp_per_unit": 1.2,
+      "next_highest": 286.0,
+      "ratio": 1.16,
+      "positive_months": 22
+    },
+    {
+      "id": "04011000",
+      "name": "Bremen",
+      "population": 586271,
+      "segment": "steckersolar",
+      "month": "2026-04",
+      "count": 272,
+      "kwp": 367.15,
+      "kwp_per_unit": 1.35,
+      "next_highest": 250.0,
+      "ratio": 1.09,
+      "positive_months": 22
+    },
+    {
+      "id": "09162000",
+      "name": "München",
+      "population": 1505005,
+      "segment": "privat_dach",
+      "month": "2024-09",
+      "count": 271,
+      "kwp": 2586.27,
+      "kwp_per_unit": 9.54,
+      "next_highest": 270.0,
+      "ratio": 1.0,
+      "positive_months": 22
+    },
+    {
+      "id": "05913000",
+      "name": "Dortmund",
+      "population": 603462,
+      "segment": "steckersolar",
+      "month": "2025-07",
+      "count": 259,
+      "kwp": 323.2,
+      "kwp_per_unit": 1.25,
+      "next_highest": 243.0,
+      "ratio": 1.07,
+      "positive_months": 22
+    },
+    {
+      "id": "05315000",
+      "name": "Köln",
+      "population": 1024621,
+      "segment": "privat_dach",
+      "month": "2025-12",
+      "count": 254,
+      "kwp": 2893.48,
+      "kwp_per_unit": 11.39,
+      "next_highest": 230.0,
+      "ratio": 1.1,
+      "positive_months": 22
+    },
+    {
+      "id": "08111000",
+      "name": "Stuttgart",
+      "population": 612663,
+      "segment": "steckersolar",
+      "month": "2025-07",
+      "count": 243,
+      "kwp": 269.72,
+      "kwp_per_unit": 1.11,
+      "next_highest": 230.0,
+      "ratio": 1.06,
+      "positive_months": 22
+    },
+    {
+      "id": "14713000",
+      "name": "Leipzig",
+      "population": 611850,
+      "segment": "steckersolar",
+      "month": "2024-08",
+      "count": 226,
+      "kwp": 205.66,
+      "kwp_per_unit": 0.91,
+      "next_highest": 215.0,
+      "ratio": 1.05,
+      "positive_months": 22
+    }
+  ],
+  "largest_capacity_months": [
+    {
+      "id": "13071006",
+      "name": "Bartow",
+      "population": 509,
+      "segment": "freiflaeche",
+      "month": "2025-11",
+      "count": 4,
+      "kwp": 262761.72,
+      "kwp_per_unit": 65690.43,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "12070153",
+      "name": "Halenbeck-Rohlsdorf",
+      "population": 527,
+      "segment": "freiflaeche",
+      "month": "2026-03",
+      "count": 7,
+      "kwp": 143099.73,
+      "kwp_per_unit": 20442.82,
+      "next_highest": 85562.12,
+      "ratio": 1.67,
+      "positive_months": 2
+    },
+    {
+      "id": "15083125",
+      "name": "Calvörde",
+      "population": 3185,
+      "segment": "freiflaeche",
+      "month": "2025-08",
+      "count": 3,
+      "kwp": 132288.3,
+      "kwp_per_unit": 44096.1,
+      "next_highest": 40890.75,
+      "ratio": 3.24,
+      "positive_months": 5
+    },
+    {
+      "id": "12061244",
+      "name": "Kasel-Golzig",
+      "population": 689,
+      "segment": "freiflaeche",
+      "month": "2024-09",
+      "count": 4,
+      "kwp": 121886.64,
+      "kwp_per_unit": 30471.66,
+      "next_highest": 177.89,
+      "ratio": 685.18,
+      "positive_months": 2
+    },
+    {
+      "id": "13071014",
+      "name": "Borrentin",
+      "population": 734,
+      "segment": "freiflaeche",
+      "month": "2024-10",
+      "count": 2,
+      "kwp": 114197.51,
+      "kwp_per_unit": 57098.75,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "09271135",
+      "name": "Moos",
+      "population": 2383,
+      "segment": "freiflaeche",
+      "month": "2025-02",
+      "count": 11,
+      "kwp": 114070.43,
+      "kwp_per_unit": 10370.04,
+      "next_highest": 61136.4,
+      "ratio": 1.87,
+      "positive_months": 2
+    },
+    {
+      "id": "06633028",
+      "name": "Wolfhagen",
+      "population": 12582,
+      "segment": "freiflaeche",
+      "month": "2024-12",
+      "count": 3,
+      "kwp": 97312.0,
+      "kwp_per_unit": 32437.33,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "09678150",
+      "name": "Kolitzheim",
+      "population": 5671,
+      "segment": "freiflaeche",
+      "month": "2025-06",
+      "count": 2,
+      "kwp": 96704.0,
+      "kwp_per_unit": 48352.0,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "12064482",
+      "name": "Vierlinden",
+      "population": 1442,
+      "segment": "freiflaeche",
+      "month": "2026-02",
+      "count": 2,
+      "kwp": 87667.2,
+      "kwp_per_unit": 43833.6,
+      "next_highest": 25613.0,
+      "ratio": 3.42,
+      "positive_months": 2
+    },
+    {
+      "id": "12063148",
+      "name": "Ketzin/Havel",
+      "population": 6684,
+      "segment": "freiflaeche",
+      "month": "2025-11",
+      "count": 1,
+      "kwp": 86919.0,
+      "kwp_per_unit": 86919.0,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "12068426",
+      "name": "Temnitztal",
+      "population": 1465,
+      "segment": "freiflaeche",
+      "month": "2025-05",
+      "count": 2,
+      "kwp": 83030.13,
+      "kwp_per_unit": 41515.07,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    },
+    {
+      "id": "08426067",
+      "name": "Langenenslingen",
+      "population": 3649,
+      "segment": "freiflaeche",
+      "month": "2025-05",
+      "count": 1,
+      "kwp": 80308.8,
+      "kwp_per_unit": 80308.8,
+      "next_highest": 0,
+      "ratio": null,
+      "positive_months": 1
+    }
+  ],
+  "isolated_count_peaks": [
+    {
+      "id": "09189142",
+      "name": "Schnaitsee",
+      "population": 3679,
+      "segment": "gewerbe_dach",
+      "month": "2025-01",
+      "count": 20,
+      "kwp": 714.9,
+      "kwp_per_unit": 35.74,
+      "next_highest": 2.0,
+      "ratio": 10.0,
+      "positive_months": 12
+    },
+    {
+      "id": "05366012",
+      "name": "Dahlem",
+      "population": 4416,
+      "segment": "privat_dach",
+      "month": "2025-01",
+      "count": 49,
+      "kwp": 224.48,
+      "kwp_per_unit": 4.58,
+      "next_highest": 9.0,
+      "ratio": 5.44,
+      "positive_months": 20
+    },
+    {
+      "id": "12067124",
+      "name": "Erkner",
+      "population": 11641,
+      "segment": "privat_dach",
+      "month": "2026-03",
+      "count": 37,
+      "kwp": 160.59,
+      "kwp_per_unit": 4.34,
+      "next_highest": 7.0,
+      "ratio": 5.29,
+      "positive_months": 22
+    },
+    {
+      "id": "07133032",
+      "name": "Fürfeld",
+      "population": 1691,
+      "segment": "steckersolar",
+      "month": "2025-05",
+      "count": 29,
+      "kwp": 30.72,
+      "kwp_per_unit": 1.06,
+      "next_highest": 6.0,
+      "ratio": 4.83,
+      "positive_months": 14
+    },
+    {
+      "id": "15085370",
+      "name": "Wernigerode",
+      "population": 32167,
+      "segment": "gewerbe_dach",
+      "month": "2025-01",
+      "count": 20,
+      "kwp": 222.34,
+      "kwp_per_unit": 11.12,
+      "next_highest": 5.0,
+      "ratio": 4.0,
+      "positive_months": 17
+    },
+    {
+      "id": "03453007",
+      "name": "Friesoythe",
+      "population": 22685,
+      "segment": "gewerbe_dach",
+      "month": "2025-01",
+      "count": 27,
+      "kwp": 2424.98,
+      "kwp_per_unit": 89.81,
+      "next_highest": 7.0,
+      "ratio": 3.86,
+      "positive_months": 20
+    },
+    {
+      "id": "12061540",
+      "name": "Wildau",
+      "population": 10717,
+      "segment": "privat_dach",
+      "month": "2025-08",
+      "count": 25,
+      "kwp": 409.62,
+      "kwp_per_unit": 16.38,
+      "next_highest": 7.0,
+      "ratio": 3.57,
+      "positive_months": 22
+    },
+    {
+      "id": "16073077",
+      "name": "Saalfeld/Saale",
+      "population": 29086,
+      "segment": "steckersolar",
+      "month": "2025-08",
+      "count": 75,
+      "kwp": 76.39,
+      "kwp_per_unit": 1.02,
+      "next_highest": 21.0,
+      "ratio": 3.57,
+      "positive_months": 22
+    },
+    {
+      "id": "09189149",
+      "name": "Tacherting",
+      "population": 5643,
+      "segment": "gewerbe_dach",
+      "month": "2025-01",
+      "count": 20,
+      "kwp": 948.11,
+      "kwp_per_unit": 47.41,
+      "next_highest": 6.0,
+      "ratio": 3.33,
+      "positive_months": 12
+    },
+    {
+      "id": "16070048",
+      "name": "Stadtilm",
+      "population": 8312,
+      "segment": "steckersolar",
+      "month": "2024-12",
+      "count": 28,
+      "kwp": 25.08,
+      "kwp_per_unit": 0.9,
+      "next_highest": 9.0,
+      "ratio": 3.11,
+      "positive_months": 19
+    },
+    {
+      "id": "03455007",
+      "name": "Jever",
+      "population": 14774,
+      "segment": "privat_dach",
+      "month": "2025-12",
+      "count": 74,
+      "kwp": 1302.74,
+      "kwp_per_unit": 17.6,
+      "next_highest": 24.0,
+      "ratio": 3.08,
+      "positive_months": 22
+    },
+    {
+      "id": "06431006",
+      "name": "Einhausen",
+      "population": 6533,
+      "segment": "privat_dach",
+      "month": "2025-11",
+      "count": 20,
+      "kwp": 130.85,
+      "kwp_per_unit": 6.54,
+      "next_highest": 7.0,
+      "ratio": 2.86,
+      "positive_months": 22
+    }
+  ],
+  "jan_may_count_increases": [
+    {
+      "id": "05315000",
+      "name": "Köln",
+      "population": 1024621,
+      "segment": "privat_dach",
+      "count_2025": 673,
+      "count_2026": 1068,
+      "count_change": 395,
+      "kwp_2025": 6909.08,
+      "kwp_2026": 10997.55,
+      "kwp_change": 4088.47
+    },
+    {
+      "id": "05315000",
+      "name": "Köln",
+      "population": 1024621,
+      "segment": "steckersolar",
+      "count_2025": 857,
+      "count_2026": 955,
+      "count_change": 98,
+      "kwp_2025": 965.23,
+      "kwp_2026": 1217.69,
+      "kwp_change": 252.46
+    },
+    {
+      "id": "09162000",
+      "name": "München",
+      "population": 1505005,
+      "segment": "steckersolar",
+      "count_2025": 1118,
+      "count_2026": 1210,
+      "count_change": 92,
+      "kwp_2025": 1149.22,
+      "kwp_2026": 1391.78,
+      "kwp_change": 242.56
+    },
+    {
+      "id": "16053000",
+      "name": "Jena",
+      "population": 109725,
+      "segment": "steckersolar",
+      "count_2025": 111,
+      "count_2026": 202,
+      "count_change": 91,
+      "kwp_2025": 126.17,
+      "kwp_2026": 212.23,
+      "kwp_change": 86.06
+    },
+    {
+      "id": "09161000",
+      "name": "Ingolstadt",
+      "population": 141185,
+      "segment": "steckersolar",
+      "count_2025": 229,
+      "count_2026": 292,
+      "count_change": 63,
+      "kwp_2025": 253.66,
+      "kwp_2026": 362.27,
+      "kwp_change": 108.61
+    },
+    {
+      "id": "03241001",
+      "name": "Hannover",
+      "population": 522131,
+      "segment": "steckersolar",
+      "count_2025": 520,
+      "count_2026": 582,
+      "count_change": 62,
+      "kwp_2025": 559.64,
+      "kwp_2026": 727.99,
+      "kwp_change": 168.35
+    },
+    {
+      "id": "07211000",
+      "name": "Trier",
+      "population": 104342,
+      "segment": "steckersolar",
+      "count_2025": 203,
+      "count_2026": 261,
+      "count_change": 58,
+      "kwp_2025": 223.84,
+      "kwp_2026": 301.07,
+      "kwp_change": 77.23
+    },
+    {
+      "id": "07133006",
+      "name": "Bad Kreuznach",
+      "population": 54168,
+      "segment": "steckersolar",
+      "count_2025": 82,
+      "count_2026": 138,
+      "count_change": 56,
+      "kwp_2025": 94.2,
+      "kwp_2026": 163.72,
+      "kwp_change": 69.52
+    },
+    {
+      "id": "05512000",
+      "name": "Bottrop",
+      "population": 118535,
+      "segment": "steckersolar",
+      "count_2025": 223,
+      "count_2026": 265,
+      "count_change": 42,
+      "kwp_2025": 267.8,
+      "kwp_2026": 367.77,
+      "kwp_change": 99.97
+    },
+    {
+      "id": "09161000",
+      "name": "Ingolstadt",
+      "population": 141185,
+      "segment": "privat_dach",
+      "count_2025": 214,
+      "count_2026": 256,
+      "count_change": 42,
+      "kwp_2025": 2386.43,
+      "kwp_2026": 2863.24,
+      "kwp_change": 476.81
+    }
+  ],
+  "jan_may_count_decreases": [
+    {
+      "id": "11000000",
+      "name": "Berlin",
+      "population": 3685265,
+      "segment": "steckersolar",
+      "count_2025": 3897,
+      "count_2026": 2256,
+      "count_change": -1641,
+      "kwp_2025": 4215.47,
+      "kwp_2026": 2781.76,
+      "kwp_change": -1433.71
+    },
+    {
+      "id": "06611000",
+      "name": "Kassel",
+      "population": 197230,
+      "segment": "steckersolar",
+      "count_2025": 709,
+      "count_2026": 344,
+      "count_change": -365,
+      "kwp_2025": 727.08,
+      "kwp_2026": 422.17,
+      "kwp_change": -304.91
+    },
+    {
+      "id": "05378004",
+      "name": "Bergisch Gladbach",
+      "population": 111361,
+      "segment": "steckersolar",
+      "count_2025": 465,
+      "count_2026": 218,
+      "count_change": -247,
+      "kwp_2025": 509.21,
+      "kwp_2026": 253.64,
+      "kwp_change": -255.57
+    },
+    {
+      "id": "05378032",
+      "name": "Wermelskirchen",
+      "population": 34375,
+      "segment": "steckersolar",
+      "count_2025": 260,
+      "count_2026": 95,
+      "count_change": -165,
+      "kwp_2025": 288.5,
+      "kwp_2026": 138.21,
+      "kwp_change": -150.29
+    },
+    {
+      "id": "07314000",
+      "name": "Ludwigshafen am Rhein",
+      "population": 177222,
+      "segment": "steckersolar",
+      "count_2025": 351,
+      "count_2026": 209,
+      "count_change": -142,
+      "kwp_2025": 394.23,
+      "kwp_2026": 270.53,
+      "kwp_change": -123.7
+    },
+    {
+      "id": "14713000",
+      "name": "Leipzig",
+      "population": 611850,
+      "segment": "privat_dach",
+      "count_2025": 379,
+      "count_2026": 257,
+      "count_change": -122,
+      "kwp_2025": 3477.44,
+      "kwp_2026": 2556.65,
+      "kwp_change": -920.79
+    },
+    {
+      "id": "03241001",
+      "name": "Hannover",
+      "population": 522131,
+      "segment": "privat_dach",
+      "count_2025": 547,
+      "count_2026": 437,
+      "count_change": -110,
+      "kwp_2025": 6492.99,
+      "kwp_2026": 4977.46,
+      "kwp_change": -1515.53
+    },
+    {
+      "id": "15002000",
+      "name": "Halle (Saale)",
+      "population": 226767,
+      "segment": "privat_dach",
+      "count_2025": 257,
+      "count_2026": 147,
+      "count_change": -110,
+      "kwp_2025": 2928.28,
+      "kwp_2026": 1485.96,
+      "kwp_change": -1442.32
+    },
+    {
+      "id": "05913000",
+      "name": "Dortmund",
+      "population": 603462,
+      "segment": "steckersolar",
+      "count_2025": 864,
+      "count_2026": 756,
+      "count_change": -108,
+      "kwp_2025": 989.16,
+      "kwp_2026": 1018.42,
+      "kwp_change": 29.26
+    },
+    {
+      "id": "05111000",
+      "name": "Düsseldorf",
+      "population": 618685,
+      "segment": "privat_dach",
+      "count_2025": 542,
+      "count_2026": 436,
+      "count_change": -106,
+      "kwp_2025": 5498.41,
+      "kwp_2026": 4812.72,
+      "kwp_change": -685.69
+    }
+  ],
+  "jan_may_power_increases": [
+    {
+      "id": "12063208",
+      "name": "Nauen",
+      "population": 19679,
+      "segment": "freiflaeche",
+      "count_2025": 4,
+      "count_2026": 2,
+      "count_change": -2,
+      "kwp_2025": 38489.67,
+      "kwp_2026": 66047.56,
+      "kwp_change": 27557.89
+    },
+    {
+      "id": "12068324",
+      "name": "Neustadt (Dosse)",
+      "population": 3469,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 2,
+      "count_change": 1,
+      "kwp_2025": 299.93,
+      "kwp_2026": 27737.64,
+      "kwp_change": 27437.71
+    },
+    {
+      "id": "15082430",
+      "name": "Zerbst/Anhalt",
+      "population": 21124,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 2,
+      "count_change": 1,
+      "kwp_2025": 5899.08,
+      "kwp_2026": 29989.77,
+      "kwp_change": 24090.69
+    },
+    {
+      "id": "03153012",
+      "name": "Seesen",
+      "population": 18657,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 2,
+      "count_change": 1,
+      "kwp_2025": 18.9,
+      "kwp_2026": 19987.56,
+      "kwp_change": 19968.66
+    },
+    {
+      "id": "16064046",
+      "name": "Mühlhausen/Thüringen",
+      "population": 36353,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 1,
+      "count_change": 0,
+      "kwp_2025": 359.64,
+      "kwp_2026": 20316.29,
+      "kwp_change": 19956.65
+    },
+    {
+      "id": "03405000",
+      "name": "Wilhelmshaven",
+      "population": 75745,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 1,
+      "count_change": 0,
+      "kwp_2025": 99.76,
+      "kwp_2026": 17233.22,
+      "kwp_change": 17133.46
+    },
+    {
+      "id": "06433011",
+      "name": "Riedstadt",
+      "population": 23146,
+      "segment": "gewerbe_dach",
+      "count_2025": 5,
+      "count_2026": 1,
+      "count_change": -4,
+      "kwp_2025": 179.51,
+      "kwp_2026": 16758.22,
+      "kwp_change": 16578.71
+    },
+    {
+      "id": "09174131",
+      "name": "Markt Indersdorf",
+      "population": 10283,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 1,
+      "count_change": 0,
+      "kwp_2025": 1995.84,
+      "kwp_2026": 18558.54,
+      "kwp_change": 16562.7
+    },
+    {
+      "id": "08317059",
+      "name": "Kippenheim",
+      "population": 5559,
+      "segment": "gewerbe_dach",
+      "count_2025": 3,
+      "count_2026": 4,
+      "count_change": 1,
+      "kwp_2025": 63.76,
+      "kwp_2026": 13751.28,
+      "kwp_change": 13687.52
+    },
+    {
+      "id": "08128126",
+      "name": "Weikersheim",
+      "population": 7902,
+      "segment": "freiflaeche",
+      "count_2025": 1,
+      "count_2026": 1,
+      "count_change": 0,
+      "kwp_2025": 17.48,
+      "kwp_2026": 12999.78,
+      "kwp_change": 12982.3
+    }
+  ],
+  "consistency_2025": {
+    "keys": 29146,
+    "mismatching_keys": 1045,
+    "examples": [
+      {
+        "id": "03452019",
+        "segment": "gewerbe_dach",
+        "month_sum": [
+          19,
+          871.0300000000001
+        ],
+        "annual": [
+          20,
+          895.73
+        ]
+      },
+      {
+        "id": "09377154",
+        "segment": "privat_dach",
+        "month_sum": [
+          66,
+          735.45
+        ],
+        "annual": [
+          67,
+          745.25
+        ]
+      },
+      {
+        "id": "05111000",
+        "segment": "privat_dach",
+        "month_sum": [
+          1283,
+          13329.529999999999
+        ],
+        "annual": [
+          1283,
+          13328.42
+        ]
+      },
+      {
+        "id": "05170032",
+        "segment": "steckersolar",
+        "month_sum": [
+          245,
+          333.34000000000003
+        ],
+        "annual": [
+          244,
+          332.32
+        ]
+      },
+      {
+        "id": "08116019",
+        "segment": "privat_dach",
+        "month_sum": [
+          293,
+          3118.9700000000003
+        ],
+        "annual": [
+          292,
+          3105.45
+        ]
+      },
+      {
+        "id": "03455027",
+        "segment": "privat_dach",
+        "month_sum": [
+          91,
+          982.01
+        ],
+        "annual": [
+          91,
+          982.89
+        ]
+      },
+      {
+        "id": "03462003",
+        "segment": "privat_dach",
+        "month_sum": [
+          43,
+          436.21999999999997
+        ],
+        "annual": [
+          44,
+          444.13
+        ]
+      },
+      {
+        "id": "03356011",
+        "segment": "privat_dach",
+        "month_sum": [
+          61,
+          658.8499999999999
+        ],
+        "annual": [
+          62,
+          673.7
+        ]
+      },
+      {
+        "id": "05913000",
+        "segment": "privat_dach",
+        "month_sum": [
+          1616,
+          16821.850000000002
+        ],
+        "annual": [
+          1615,
+          16815.85
+        ]
+      },
+      {
+        "id": "05362008",
+        "segment": "privat_dach",
+        "month_sum": [
+          287,
+          3007.27
+        ],
+        "annual": [
+          286,
+          2999.09
+        ]
+      }
+    ]
+  },
+  "read_date": "2026-09-10",
+  "source_export_date": null
+}

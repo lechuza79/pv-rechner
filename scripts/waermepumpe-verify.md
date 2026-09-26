@@ -50,31 +50,26 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   die Wärmepumpe ihren Ursprung in der Union hat — betragsgleich mit der
   Halbierung. Wer nur die Kürzung prüft und meldet, meldet die halbe Sache. Der
   Rechner fragt den Ursprung deshalb ab, statt ihn anzunehmen.
-- `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
-  `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
-  Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz.** Beide Jahrgänge
-  liegen im Repo: `docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf`
-  und `…_2026-07.pdf` (zweiter Check, veröffentlicht 02.07.2026). Sie ist die
-  einzige uns bekannte Quelle mit echten Angebotspreisen inkl. Leistungsverteilung
-  und Kostenkategorien. Abgleich in dieser Reihenfolge:
-    1. **Median-Gesamtkosten** bei **Median-Leistung** (2025: 34.979 € bei 10 kW;
-       2026: 34.898 €, häufigste Leistungsklasse 10–12 kW)
-       → muss `investLwwpBase + investLwwpPerKw × 10` treffen (±10 %).
-    2. **Summe der leistungsunabhängigen Kategorien** (Montage/Lohn, Elektro,
-       Fundament, hydraulischer Abgleich, Warmwasser, Puffer; 2025: 16.652 €,
-       2026: 15.868 € als Summe der Mittelwerte, Tabelle 5)
-       → das ist `investLwwpBase`.
-    3. **Heizkörpertausch**: Ø-Preis je Heizkörper × ~6 kritische Heizkörper.
-       **Die 2026er Auswertung beziffert ihn nicht** — sie nennt nur die Häufigkeit
-       (36 von 160 Angeboten, 23 %). Der hinterlegte Wert bleibt deshalb auf der
-       2025er Grundlage; das ist ein Befund, kein Versäumnis.
+- Investment model: read `docs/lehren/heating-investment-model.md` first.
+  LWWP uses `investLwwpBase` (calibrated fixed remainder) plus
+  `investLwwpCoreAt10Kw` scaled by KWW absolute core costs. Do not restore a
+  linear total-price slope or treat the remainder as a measured cost subtotal.
+  - KWW Tab 10 rows 6/10: plant INCLUDING associated installation, without its
+    additional-cost row. Interpolate absolute EUR, apply VAT once, no extrapolation.
+  - VZ 2025 pp.7–8 Table 3: 42 offers, EUR 36,011 median, with DHW/balancing/
+    foundation/electrical work and WITHOUT radiators. The 10-kW calibration point
+    is our assumption; the filtered subgroup has no published median capacity.
+  - VZ 2026 Table 1 is UNFILTERED: do not replace the anchor with that median and
+    then add radiator costs again. The national 2026 average excludes heating
+    surfaces and supports the approximate price level, not a measured slope.
+  - Gas: KWW Tab 5 published total-cost regression, full building heat load,
+    minimum 10-kW COST reference. `fossilErsatzInvest` is its 10-kW gross anchor,
+    no longer a constant total for all buildings. Oil remains independent.
+  - Radiator replacement remains a separate assumption based on VZ 2025 per-unit
+    prices. Never add KWW additional costs containing heating surfaces on top.
+  - Preserve quotes and zero. Recalculate subsidies in opposing ±20% investment
+    sensitivity cases; those are stress cases, not a confidence interval.
 
-  **Stand des Laufs vom 17.08.2026 (erster Lauf dieses Wächters überhaupt):**
-  Median 34.898 € gegen unsere 35.000 € im 10-kW-Fall = 0,3 % — bestätigt, kein
-  Wert geändert. Die Kategorien-Summe liegt 3,8 % unter `investLwwpBase`; das ist
-  innerhalb der Streuung zweier Erhebungen und war kein Anlass zu ändern. Wer beim
-  nächsten Lauf doch nachzieht, muss BEIDE Größen zusammen bewegen (Basis runter →
-  Steigung rauf), sonst verfehlt der Median-Fall seinen Anker.
   **Kein Scraping mehr** (2026-07 abgeschaltet): Die frühere Ableitung aus einer
   Portal-Kostenübersicht bezifferte den Einbau mit 3.000–7.500 € und ergab für ein
   kleines Haus 15.020 € — weniger als das **günstigste** von 160 echten Angeboten.
@@ -318,7 +313,7 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 > von solar-check.io gegen offizielle Quellen. Heute ist {DATUM}.
 >
 > Hinterlegt (aus lib/heatpump-config.ts): BEG-Sätze {beg…}, Cap {begMaxCap}/
-> {begMaxRate}; Investition LWWP {investLwwpBase}+{investLwwpPerKw}/kW, SWWP
+> {begMaxRate}; Investition LWWP {investLwwpBase} fixed + KWW core (10 kW: {investLwwpCoreAt10Kw}), SWWP
 > {investSwwpBase}+{investSwwpPerKw}/kW, HK-Tausch {heizkoerperTauschKosten};
 > WP-Tarif {wpTarif}; Gas {gasPriceCtPerKwh} ct/kWh.
 >
@@ -352,7 +347,7 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 
 ### Investition — Auto-Fix erlaubt (seit 27.07.2026)
 
-Betrifft `investLwwpBase`, `investLwwpPerKw`, `investSwwpBase`, `investSwwpPerKw`,
+Betrifft `investLwwpBase`, `investLwwpCoreAt10Kw`, `investSwwpBase`, `investSwwpPerKw`,
 `heizkoerperTauschKosten`. Der Fix wird selbst committet und deployt, **wenn ALLE
 fünf Bedingungen erfüllt sind**:
 
@@ -367,8 +362,9 @@ fünf Bedingungen erfüllt sind**:
 2. **Council-Konsens**, adversarialer Prüfer eingeschlossen.
 3. **Rechenregel eingehalten** (nicht frei geschätzt): Basis = Summe der
    leistungsunabhängigen Kategorien (Montage/Lohn, Elektro, Fundament,
-   hydraulischer Abgleich, Warmwasser, Puffer); Steigung so, dass
-   `Basis + Steigung × Median-kW` den Median-Preis trifft. Ein Handfaktor
+   hydraulischer Abgleich, Warmwasser, Puffer). The current investment rule is
+   documented in `docs/lehren/heating-investment-model.md`; do not reconstruct
+   a linear total-price slope from these categories. Ein Handfaktor
    („wirkt zu hoch/zu niedrig") ist kein zulässiger Fix.
 4. **Sprung ≤ 30 %** je Feld gegenüber dem hinterlegten Wert. Darüber nur
    Vorschlag — ein größerer Sprung ist eher ein Lesefehler als ein Marktereignis.
@@ -408,3 +404,82 @@ SWWP-Invest > LWWP-Invest).
   Tarife geprüft am …, BEG-Förderung am …", `lib/stand.ts`), das jüngere von
   beiden ist das `lastmod` der Seite. Ein Lauf, der an einer Quelle gescheitert
   ist, lässt ihr Datum stehen; `validFrom` bewegt sich nur mit einem Wert.
+
+## Preispfade Strom und Gas
+
+Seit 05.09.2026 eigener Prüfpunkt. Bis dahin standen die drei Pfade ohne
+Quelle im Code — der oberste (+5 % Strom im Jahr) ist in 19 Jahren nie
+vorgekommen, gemessen an den Eurostat-Reihen für deutsche Haushalte.
+
+**Zwei Leitquellen, seit 06.09.2026.** Vorgabe des Betreibers: „nehm die werte
+aus den studien und referenziere darauf. wir müssen nicht aufrunden." Jede der
+sechs Zahlen ist seitdem ein Studienwert, keine gegriffene Zahl mehr.
+
+1. **Kemmler u. a., „Rahmendaten und Endverbrauchspreise für die
+   Treibhausgas-Projektionen 2026"**, 3. Auflage (Mai 2026), Prognos AG im
+   Auftrag des Umweltbundesamtes. Volltext in `docs/quellen/`. Tabelle 3
+   (Preisindex BIP), 12 (Erdgas Haushalte), 13 (Strom Wärmepumpentarif). Sie
+   ist die einzige gefundene AMTLICHE Projektion deutscher
+   Haushalts-Endkundenpreise. Verworfen wurden EU-Referenzszenario, die
+   Folgenabschätzungen der Kommission, der World Energy Outlook und die
+   Langfristszenarien — keine davon nennt deutsche Haushalts-Endkundenpreise.
+2. **Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung / Auswirkungen der
+   Bio-Treppe in § 43"** (23.06.2026, im Auftrag der MVV Energie AG). Volltext
+   in `docs/quellen/`. Folie 17 (Endkundenpreise), 19 (Gas-Zusammensetzung),
+   21 (Netzentgelt-Annahmen), 22 (Strom-Zusammensetzung). Sie liefert das, was
+   die amtliche Projektion NICHT hat: zwei Szenarien statt eines.
+
+**Die Zuordnung — sie steht hier, weil sie nicht offensichtlich ist**
+
+| | Strom | Gas (ohne CO₂, ohne Beimischung) |
+|---|---|---|
+| optimistisch (WP günstig) | amtliche Projektion, WP-Tarif | UBA-Zerlegung, Netzentgelt ×3,64 |
+| realistisch | ISE, unteres Szenario | UBA-Zerlegung unverändert |
+| pessimistisch (WP ungünstig) | ISE, oberes Szenario | UBA-Zerlegung, Netzentgelt konstant |
+
+Beim STROM ist die amtliche Projektion der GÜNSTIGSTE Pfad, nicht die Mitte:
+Sie ist die einzige Quelle, nach der der Wärmepumpentarif real fällt, und
+liegt unter beiden ISE-Szenarien.
+
+**Was zu prüfen ist**
+
+1. Ist eine neue Auflage einer der beiden Quellen erschienen? Die Rahmendaten
+   erscheinen im Frühjahr, der Projektionsbericht alle zwei Jahre.
+2. Die Reihen ablesen: UBA Tabelle 13 Zeile „Haushalte Wärmepumpen-Tarif,
+   Endverbrauchspreis inkl. MwSt." (2025 → 2045), UBA Tabelle 12 die
+   Nettokomponenten von „Erdgas Haushalte (20-200 GJ)".
+3. Die Raten SELBST ausrechnen und mit dem BIP-Deflator derselben Quelle
+   (Tabelle 3) von real auf nominal umrechnen — für UBA über 2025–2045, für
+   ISE über 2026–2045, jeweils mit dem passend interpolierten Index. Der
+   Rechner zinst nominal auf; wer die realen Werte direkt einsetzt,
+   unterschätzt um gut zwei Prozentpunkte.
+4. **Den CO₂-Anteil vom Gaspreis abziehen — NETTO**, bevor der Pfad gesetzt
+   wird. Der Rechner addiert ihn separat; wer den Gesamtpreis nimmt, zählt ihn
+   zweimal. Die MwSt. steht in Tabelle 12 als eigene Zeile: Ohne CO₂ sind es
+   2025 wie 2045 exakt 98 EUR/MWh, der reale Gaspreis ist also konstant. Wer
+   stattdessen vom Bruttopreis den Nettobetrag des CO₂ abzieht, bekommt
+   +0,29 %/a — so stand es einen Tag lang im Code.
+5. **Die ISE-GASKURVEN sind nicht übernehmbar.** Sie enthalten laut Folie 19
+   den CO₂-Preis UND die Grüngas-Beschaffung als eigene Komponenten; beides
+   rechnet dieser Rechner getrennt. Ihre Raten (real +2,45 / +5,74 %/a) zu
+   übernehmen zählt beides ein zweites Mal. Aus ISE kommt beim Gas nur die
+   Netzentgelt-Bandbreite (Folie 21), und zwar als VERHÄLTNIS: 2,2 ct konstant
+   bzw. 8,0 ct in 2045, also Faktor 1,00 bzw. 3,64 auf den UBA-Startwert. Den
+   ISE-Absolutwert einzusetzen mischte zwei Abgrenzungen.
+6. **Die ISE-Strompfade stehen nur als Grafik.** Sie werden aus der
+   800-dpi-Fassung von Folie 17 pixelgenau gemessen (Raster 376,3 px je 5 ct,
+   Nulllinie Zeile 4847,5), nie mit dem Auge abgelesen — der Ablesefehler geht
+   voll in die Rate ein. Am linken Rand verdeckt die helle Kurve die dunkle:
+   Dort gilt der Wert der OBEN liegenden für beide (Gegenprobe Folie 22, die
+   2026er Säulen beider Szenarien sind gleich hoch).
+
+**Grenze der Selbstheilung:** Der Lauf darf die Raten anpassen, wenn die neue
+Auflage der Leitquelle sie hergibt und der Sprung unter 30 % je Feld bleibt.
+Er darf NICHT die Zuordnung ändern (welcher Pfad welcher ist, und welche
+Quelle welchen Rand trägt) und nicht den JAZ-Faktor anfassen — das ist eine
+Annahme über das Gerät, keine über Preise. Insbesondere darf er den MITTLEREN
+Strompfad nicht auf die amtliche Projektion zurückziehen: Dass sie dort NICHT
+steht, ist die Entscheidung vom 06.09.2026, nicht ein Versehen.
+
+Die Herleitung ist in `lib/__tests__/wp-preispfade.test.ts` nachgerechnet —
+wer eine Rate ändert, ändert sie dort mit, sonst wird der Lauf rot.

@@ -432,7 +432,20 @@ export default function Balkon() {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
+                      // `minWidth: 0` ist hier kein Feinschliff, sondern das,
+                      // was die Zeile überhaupt schmaler werden lässt: Ein
+                      // Flex-Kind schrumpft von sich aus nicht unter seine
+                      // Eigenbreite, und ein Eingabefeld bringt die aus seiner
+                      // voreingestellten Zeichenzahl mit — rund 20 Zeichen,
+                      // egal wie schmal das Fenster ist. Zusammen mit dem
+                      // Knopf daneben („Übernehmen", umbruchfrei) brauchte die
+                      // Zeile dadurch 339 px. Auf einem 320-px-Telefon zieht
+                      // der Browser daraufhin die ganze Seite auf 339 px auf,
+                      // und jede Seite des Rechners lässt sich seitwärts
+                      // schieben (gemessen 23.09.2026 auf der Produktion, am
+                      // iPhone-SE-Profil und bei 320 px im Fenster).
+                      flex: 1, minWidth: 0,
+                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
@@ -448,7 +461,7 @@ export default function Balkon() {
                       : "Übernehmen"}
                   </button>
                 </form>
-                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive-text') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
                   {plzConfirmed
                     ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
                     : "Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt."}
@@ -542,7 +555,7 @@ export default function Balkon() {
                     boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
                   }}>
                     <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
+                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
                     {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
                   </button>
                 );
@@ -552,7 +565,15 @@ export default function Balkon() {
             {/* 2. Speicher — Schalter links, Größen rechts daneben, eine Zeile, ohne Box.
                 Der Tooltip steht bewusst NEBEN dem Schalter (Button im Button wäre
                 ungültiges HTML und würde den Schalter mit auslösen). */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {/* UMBRECHEN ERLAUBT: Schalter, Hinweis und die beiden Größen stehen
+                alle auf „nicht umbrechen" und brauchten zusammen 353 px. Auf
+                einem 320-px-Telefon zieht der Browser daraufhin die ganze Seite
+                auf, und jede Seite des Rechners lässt sich seitwärts schieben
+                (gemessen 23.09.2026). Die Höhe bleibt dabei ruhig: Die Größen
+                stehen ohnehin dauerhaft im Baum und werden nur ein- und
+                ausgeblendet, die zweite Zeile entsteht also nicht erst beim
+                Einschalten. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", rowGap: 8 }}>
               <button onClick={toggleStorage} aria-pressed={storageOn} style={{
                 background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
                 display: "inline-flex", alignItems: "center", gap: 6,
@@ -632,7 +653,7 @@ export default function Balkon() {
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
                 Ersparnis in {CFG.lifetimeYears} Jahren
               </div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive-text'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} €
               </div>
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
@@ -724,8 +745,8 @@ export default function Balkon() {
                   </div>
                   <div>
                     Der Speicher nutzt rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.storageAddedKwh.toLocaleString("de-DE")} kWh</strong> Überschuss
-                    zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
-                    kostet aber <strong style={{ color: v('--color-negative'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
+                    zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
+                    kostet aber <strong style={{ color: v('--color-negative-text'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
                   </div>
                   <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (

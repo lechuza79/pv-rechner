@@ -61,6 +61,8 @@ const SICHTEN: { wert: Sicht; text: string }[] = [
 
 export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
   const [offen, setOffen] = useState<string | null>(null);
+  const [einzelbeitrag, setEinzelbeitrag] = useState(false);
+  const kommunen = eintraege.length > 0 && eintraege.every(e => !!e.post.ort);
   const [sicht, setSicht] = useState<Sicht>("alle");
   // WELCHE AUSGABEFORM das Raster zeigt. Über allen Kacheln zugleich, nicht je
   // Kachel: Die Frage im Raster ist, ob die Reihe als EINE Handschrift wirkt —
@@ -104,6 +106,31 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
     display: "inline-block",
   } as const;
 
+  if (kommunen) {
+    return (
+      <>
+        <h2 style={{ fontSize: v("--font-size-h2"), marginBottom: space.sm }}>Story-Templates für Kommunen</h2>
+        <a href="/admin/redaktion/entwicklung-v2" style={{ display: "inline-block", color: v("--color-accent"), marginBottom: space.md }}>Entwicklung V2 öffnen →</a>
+        <p style={{ color: v("--color-text-secondary"), marginBottom: space.xl }}>Wähle einen Story-Typ. Wir entwickeln das Template an einem echten Beispiel; Text und Zahlen kommen aus dem System.</p>
+        <div style={{ display: "grid", gap: space.md }}>
+          {mitStand.map(e => {
+            const label = e.orts?.beitrag.label ?? e.kategorie.name;
+            const chart = e.post.bild ? templateVon(e.post.bild) : undefined;
+            return <button key={e.post.id} type="button" onClick={() => { setEinzelbeitrag(false); setOffen(e.post.id); }} style={{ ...knopf, cursor: "pointer", padding: space.lg, display: "flex", justifyContent: "space-between", alignItems: "center", gap: space.lg, textAlign: "left" }}>
+              <span><strong style={{ display: "block", fontSize: v("--font-size-body") }}>{label}</strong><span style={{ display: "block", marginTop: space.xs }}>Beispiel: {e.post.ort?.name}</span></span>
+              <span style={{ color: v("--color-text-muted") }}>{chart ? "Chart vorhanden" : "Template entwickeln"} →</span>
+            </button>;
+          })}
+        </div>
+        <Modal open={!!aktiv} onClose={() => setOffen(null)} title={aktiv?.orts?.beitrag.label ?? aktiv?.post.titel ?? ""} intro={aktiv ? `Kommunen · Beispiel ${aktiv.post.ort?.name}` : undefined} maxWidth={1180}>
+          {aktiv && <>
+            <StoryTisch key={`${aktiv.post.id}-${einzelbeitrag}`} post={aktiv.post} pruefungen={aktiv.pruefungen} abdruck={aktiv.abdruck} befunde={aktiv.befunde} gesendetAm={aktiv.gesendetAm} orts={aktiv.orts} ohneTitel templateModus={!einzelbeitrag} onModusWechsel={() => setEinzelbeitrag(!einzelbeitrag)} />
+          </>}
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <>
       {/* Der Filter steht ÜBER dem Raster, nicht in der Kategorie-Leiste: Er
@@ -136,10 +163,10 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             eine Lücke, die vorher niemand sehen konnte. */}
         <Umschalter
           eintraege={[
-            { wert: "feed", text: "Feed", zusatz: String(eintraege.length) },
+            { wert: "feed", text: "Social-Post", zusatz: String(eintraege.length) },
             {
               wert: "seite",
-              text: "Auf der Seite",
+              text: "Website",
               zusatz: String(eintraege.filter((e) => e.orts || e.post.onsite).length),
             },
           ]}

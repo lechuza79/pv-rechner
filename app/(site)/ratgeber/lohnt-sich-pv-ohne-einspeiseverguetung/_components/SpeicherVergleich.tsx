@@ -116,7 +116,7 @@ export default function SpeicherVergleich({
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={tileLabel}>Gewinn 25 J</div>
-                  <div style={{ ...tileValue, color: sc.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative") }}>
+                  <div style={{ ...tileValue, color: sc.gewinn25 >= 0 ? v("--color-positive-text") : v("--color-negative-text") }}>
                     {sc.gewinn25 > 0 ? "+" : ""}
                     {sc.gewinn25.toLocaleString("de-DE")} €
                   </div>

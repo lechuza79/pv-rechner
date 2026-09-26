@@ -1,0 +1,8 @@
+import {describe,it,expect} from 'vitest';
+import {CITY_STORY_SETS} from '../story-city-sets';
+describe('Municipal story sets from the September register export',()=>{
+ it('keeps complete uniquely identified stories and at least three entries per city',()=>{for(const set of Object.values(CITY_STORY_SETS)){expect(set.length).toBeGreaterThanOrEqual(3);expect(new Set(set.map(s=>s.id)).size).toBe(set.length);expect(new Set(set.map(s=>s.kind)).size).toBeGreaterThanOrEqual(2);for(const s of set){expect(s.social.length).toBeGreaterThan(100);expect(s.copy.length).toBeGreaterThan(0);expect(s.sources?.[0].url).toContain('20260910');}}});
+ it('retains the two observed Trier months and both funding boundaries',()=>{const s=CITY_STORY_SETS.Trier.find(s=>s.id==='Trier-foerderphase')!;expect(s.values.find(v=>v.label==='2024-08')?.value).toBe(118);expect(s.values.find(v=>v.label==='2026-03')?.value).toBe(116);expect(s.event?.month).toBe('2024-07');expect(s.eventEnd).toBe('2026-03');expect(s.values.at(-1)?.label).toBe('2026-05');});
+ it('does not compare incomplete annual figures to full years',()=>{for(const set of Object.values(CITY_STORY_SETS))for(const s of set.filter(s=>s.kind==='columns'))expect(s.values.map(v=>v.label)).not.toContain('2026');expect(CITY_STORY_SETS.Trier.find(s=>s.id==='Trier-gebaeude')!.values.map(v=>v.value)).toEqual([151,207,508,446,282]);});
+ it('keeps count and capacity denominators distinct',()=>{expect(CITY_STORY_SETS.Trier.find(s=>s.id==='Trier-beteiligung')!.values.map(v=>v.value)).toEqual([37,2.8]);expect(CITY_STORY_SETS.Trier.find(s=>s.id==='Trier-beteiligung')!.comparisonLabel).toContain('Freiflächen ausgeschlossen');});
+});

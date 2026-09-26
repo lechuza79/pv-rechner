@@ -1,0 +1,13 @@
+{
+  "status": "targeted-additive-neon-draft",
+  "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-illustrations-library/wp-input-neon-v1/compositions",
+  "preserved": "all original image, palette, placement and splash layers",
+  "motifs": [
+    "house-large",
+    "house-semi",
+    "house-row-middle",
+    "house-row-end"
+  ],
+  "details": "four individually drawn contour-following highlights per active house, attached to same motion layer; no accents on muted neighbours",
+  "rasterGeneration": false
+}

@@ -15,7 +15,7 @@ function abfrage() {
   // Jede Kettenmethode gibt dieselbe Abfrage zurück; `then` liefert, was der
   // Test gerade vorgibt — eine Antwort, einen Fehler oder gar nichts.
   const q: Record<string, unknown> = {};
-  for (const m of ["select", "order", "limit", "eq", "contains", "or"]) q[m] = () => q;
+  for (const m of ["select", "order", "limit", "range", "eq", "contains", "overlaps", "or"]) q[m] = () => q;
   q.then = (ok: (v: unknown) => unknown, fehl: (e: unknown) => unknown) => {
     const w = antwort.wert;
     if (w instanceof Error) return Promise.reject(w).then(ok, fehl);

@@ -1,0 +1,314 @@
+.page{max-width:1440px;margin:0 auto;padding:0 24px 48px;color:var(--color-text-primary)}
+.hero{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.8fr);align-items:center;gap:24px;margin:32px 0 48px}
+.heroCopy h1{font-family:var(--font-display);font-size:var(--font-size-h1);line-height:1.12;margin:16px 0 24px;letter-spacing:-.04em}
+.heroCopy p{line-height:1.65;max-width:38ch}
+.eyebrow{font-size:var(--font-size-caption);text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--color-text-secondary);margin:0 0 8px}
+.lede{font-size:var(--font-size-h2);font-weight:600;line-height:1.3!important}
+.caption{font-size:var(--font-size-caption);color:var(--color-text-secondary);line-height:1.6}
+.jump{display:inline-flex;margin-top:16px;padding:12px 16px;border:1px solid var(--color-border);border-radius:var(--radius-pill);color:var(--color-text-primary);text-decoration:none;font-weight:600}
+.map{min-width:0;background:radial-gradient(ellipse at 55% 65%,color-mix(in srgb,var(--color-accent) 9%,transparent),transparent 70%)}
+.mapFallback>svg{display:block;width:100%;height:auto;max-height:600px;overflow:visible}
+.mapBase{fill:color-mix(in srgb,var(--color-text-primary) 22%,var(--color-bg-page));stroke:var(--color-border);stroke-width:.6}
+.mapGround path{fill:var(--color-bg-raised);stroke:color-mix(in srgb,var(--color-text-primary) 40%,var(--color-bg-page));stroke-width:.8;cursor:pointer;transition:fill 160ms ease}
+.mapGround path[data-context=true]{fill:var(--color-bg-page);opacity:.4}
+.mapGround path[data-selected=true],.mapGround path[data-hovered=true]{opacity:1;fill:color-mix(in srgb,var(--color-accent) 24%,var(--color-bg-raised));stroke:var(--color-accent);stroke-width:2}
+.bar{fill:var(--color-text-secondary);cursor:pointer}
+.bar[data-selected=true],.bar[data-hovered=true]{fill:var(--color-accent)}
+.barLight{fill:var(--color-bg-page);fill-opacity:.35}
+.barSide{fill:var(--color-text-primary);fill-opacity:.3}
+.mapReading{display:flex;align-items:center;gap:16px;padding:16px;background:var(--color-bg-raised);border:1px solid var(--color-border);border-radius:var(--radius-lg)}
+.mapReading>a{font-size:var(--font-size-small);white-space:nowrap;color:var(--color-text-primary)}
+.value{display:flex;gap:8px;align-items:baseline;white-space:nowrap}
+.value strong{font-size:var(--font-size-h2);font-variant-numeric:tabular-nums}
+.value span{font-size:var(--font-size-caption);color:var(--color-text-secondary)}
+.section{margin:48px 0}
+.sectionHeading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:24px}
+.sectionHeading h2{font-size:var(--font-size-h2);margin:0 0 8px}
+.sectionHeading p:last-child{margin-bottom:0;color:var(--color-text-secondary)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{color:var(--color-text-primary);min-width:0;border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;background:var(--atlas-surface,var(--color-bg-raised))}
+.cardHeading{padding:16px 16px 0}
+.cardHeading h3{font-size:var(--font-size-lead);margin:0;line-height:1.4;min-height:2.8em}
+.cardHeading a{color:var(--color-text-primary);text-decoration:none}
+.cardVisual{height:auto;aspect-ratio:1;min-width:0;overflow:hidden}
+.cardVisual :global(.monitor-hero){height:100%}
+.cardVisual :global(.hero-story){padding:16px}
+.cardVisual :global(.hero-story h3),.cardVisual :global(.sc-widget-head h4){font-size:var(--font-size-small)}
+.cardVisual :global(.hero-story-visual){overflow:hidden}
+.cardFoot{padding:0 16px 16px;margin:0;font-size:var(--font-size-caption);color:var(--color-text-secondary);line-height:1.5}
+.placeholder{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;padding:24px;margin:0;text-align:center;font-size:var(--font-size-small);color:var(--color-text-secondary)}
+.placeholder button{background:transparent;color:var(--color-text-primary);border:1px solid var(--color-border);padding:8px 12px;border-radius:var(--radius-pill);cursor:pointer}
+.sources{font-size:var(--font-size-caption);margin-top:32px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:minmax(240px,.8fr) minmax(0,1.4fr)}}
+@media(max-width:800px){.hero{grid-template-columns:1fr;gap:0}.heroCopy{max-width:600px}.heroCopy p{max-width:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sectionHeading{align-items:stretch;flex-direction:column;gap:16px}}
+@media(max-width:480px){.page{padding:0 16px 32px}.grid{grid-template-columns:1fr}.hero{margin-top:24px}.mapReading{flex-wrap:wrap;gap:12px}.mapReading>span{flex-basis:100%!important}.mapReading>a{margin-left:auto}.cardHeading h3{min-height:0}.section{margin:32px 0}}
+@media(prefers-reduced-motion:reduce){.mapGround path{transition:none}}
+
+.mapCanvas{position:relative}
+.mapTooltip{position:absolute;top:12px;right:12px;display:grid;gap:6px;width:240px;max-width:calc(100% - 24px);box-sizing:border-box;padding:12px 16px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg-raised);color:var(--color-text-primary);box-shadow:0 4px 20px #0002;pointer-events:none;font-size:var(--font-size-small);line-height:1.4}
+.mapTooltip small{color:var(--color-text-secondary);font-size:var(--font-size-caption)}
+.value:has(.contextReading){white-space:normal;min-width:0}
+.contextReading{max-width:30ch;line-height:1.5}
+
+.mapBase path[data-forest=true]{fill:color-mix(in srgb,var(--color-text-primary) 7%,var(--color-bg-page));stroke:none}
+.mapGround path[data-kind="Gemeindefreies Gebiet"]{fill:color-mix(in srgb,var(--color-text-primary) 5%,var(--color-bg-page));opacity:1;stroke:var(--color-border)}
+.mapGround path[data-kind="Gemeindefreies Gebiet"][data-hovered=true],.mapGround path[data-kind="Gemeindefreies Gebiet"][data-selected=true]{stroke:var(--color-accent)}
+.mapGround path[data-kind="Kreisfreie Stadt"]{fill:var(--color-bg-raised);stroke:var(--color-border);stroke-width:.8;opacity:1}
+.cityPin{cursor:pointer;fill:var(--color-text-secondary);stroke:var(--color-bg-raised);stroke-width:2}
+.cityPin text{fill:var(--color-bg-raised);stroke:none;font-family:var(--font-display);font-size:14px;font-weight:700;pointer-events:none}
+.cityPin[data-hovered=true],.cityPin[data-selected=true]{fill:var(--color-accent)}
+
+.heroBand{width:100vw;margin-left:calc(50% - 50vw);background:var(--atlas-surface);--color-bg-page:var(--atlas-surface);--color-bg-raised:var(--atlas-card);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);padding:24px 0 40px}
+.heroInner{max-width:1440px;margin:0 auto;padding:0 24px}
+.heroBand .hero{margin-bottom:0}
+.mapTools{display:flex;justify-content:flex-end;margin-bottom:16px;position:relative;z-index:2}
+.mapBase{fill:color-mix(in srgb,var(--color-text-secondary) 35%,var(--color-bg-page));stroke:none;pointer-events:none}
+.mapBase path[data-forest=true]{fill:color-mix(in srgb,var(--color-text-secondary) 25%,var(--color-bg-page))}
+@media(max-width:480px){.heroInner{padding:0 16px}.mapTools{justify-content:center;margin-top:24px}}
+
+.heroBand{padding-top:0;--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-text-faint:var(--atlas-secondary)}
+.heroHeader{padding:28px var(--header-frame-pad) 40px}
+.mapCanvas{height:580px;isolation:isolate}
+.mapFallback{position:absolute;inset:0}
+.mapFallback[hidden]{display:none}
+.sceneLayer{position:absolute;inset:0}
+.sceneLayer[hidden]{display:none}
+.sceneHost{width:100%;height:100%}
+.sceneHost canvas{display:block;width:100%;height:100%}
+.scenePin{position:absolute;transform:translate(-50%,-100%);border:1px solid var(--atlas-secondary);border-radius:12px 12px 12px 2px;width:23px;height:23px;padding:0;background:var(--atlas-card);color:var(--atlas-text);font-size:9px;font-weight:700;cursor:pointer;line-height:21px}
+.bar{fill:var(--color-brand)}
+.mapTooltip{z-index:3}
+@media(max-width:800px){.mapCanvas{height:480px}}
+@media(max-width:480px){.mapCanvas{height:365px}.heroHeader{padding-bottom:28px}}
+
+.heroHeader :global(.sc-react-header .brand svg){--color-brand:var(--atlas-action);--color-brand-deep:color-mix(in srgb,var(--atlas-action) 70%,var(--atlas-surface));--color-accent:var(--atlas-text)}
+.breadcrumbBand{border-top:1px solid var(--atlas-border);padding:17px 0;color:var(--atlas-text)}
+
+.map{background:none}
+
+.hero{display:flex;flex-direction:column;align-items:stretch;gap:32px}
+.heroCopy{max-width:900px;margin:0 auto;width:100%;padding-bottom:24px}
+.heroCopy p{max-width:65ch}
+.mapTools{justify-content:flex-start}
+.sceneHost::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.045;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}
+@media(max-width:480px){.mapTools{justify-content:flex-start}.heroCopy{max-width:none}}
+
+.todayOverview{margin:48px 0;padding:32px;border-radius:var(--radius-lg);background:var(--atlas-surface);color-scheme:light}
+.todayGrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:12px}
+.miniTown{position:relative;min-width:0;aspect-ratio:1}
+.miniChart{width:100%;height:100%;pointer-events:none;overflow:hidden}
+.miniChart :global(.monitor-native-chart){height:100%;width:100%;padding:0}
+.miniChart :global(.monitor-native-chart)>p,.miniPlaceholder{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;margin:0;font-size:10px;color:var(--atlas-secondary)}
+.miniTrigger{position:absolute;inset:0;width:100%;border:0;background:transparent;border-radius:50%;cursor:pointer}
+.miniTrigger:hover,.miniTrigger:focus-visible{background:color-mix(in srgb,var(--atlas-text) 4%,transparent)}
+.miniTown:has(.miniInfo){z-index:4}
+.miniInfo{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);width:220px;display:grid;gap:6px;padding:14px;border:1px solid var(--atlas-border);border-radius:12px;background:var(--atlas-card);color:var(--atlas-text);box-shadow:0 6px 24px #08191c20;font-size:12px;line-height:1.5}
+.miniInfo strong{font-size:15px}.miniInfo a{color:var(--atlas-action)}
+.miniTown:nth-child(10n+1) .miniInfo{left:0;transform:none}.miniTown:nth-child(10n) .miniInfo{left:auto;right:0;transform:none}
+@media(max-width:1100px){.todayGrid{grid-template-columns:repeat(6,minmax(0,1fr))}.miniTown:nth-child(n) .miniInfo{left:50%;right:auto;transform:translateX(-50%)}.miniTown:nth-child(6n+1) .miniInfo{left:0;transform:none}.miniTown:nth-child(6n) .miniInfo{left:auto;right:0;transform:none}}
+@media(max-width:600px){.todayOverview{padding:16px;margin:32px -8px}.todayGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.miniTown:nth-child(n) .miniInfo{left:50%;right:auto;transform:translateX(-50%);width:190px}.miniTown:nth-child(4n+1) .miniInfo{left:0;transform:none}.miniTown:nth-child(4n) .miniInfo{left:auto;right:0;transform:none}}
+.miniChart{container-type:inline-size;--radial-center-size:clamp(11px,16cqi,20px);--radial-unit-size:clamp(6px,7cqi,9px)}
+.miniTown:nth-child(n) .miniInfo{position:fixed;transform:none;bottom:auto;right:auto;width:220px;box-sizing:border-box}
+.sceneHost::after{opacity:.03;mask-image:radial-gradient(ellipse,black 35%,transparent 72%)}
+
+.heroStage{position:relative;isolation:isolate}
+.heroHeading{position:absolute;top:0;left:0;z-index:2;max-width:900px;text-shadow:0 2px 18px var(--atlas-surface)}
+.heroHeading h1{margin:0 0 22px;font-size:clamp(32px,4vw,56px);line-height:1.12}
+/* Desktop hero title shares the municipality/homepage hero role (capped at 48px), same 851px switch. */
+@media(min-width:851px){.heroHeading h1{font-size:var(--sc-type-hero-size)}}
+.heroHeading .lede{margin:0}
+.heroStage .mapTools{position:absolute;top:220px;left:0;z-index:3;margin:0}
+.heroStage .mapCanvas{height:720px}
+@media(max-width:800px){.heroStage .mapCanvas{height:620px}.heroStage .mapTools{top:200px}}
+@media(max-width:480px){.heroStage .mapCanvas{height:480px}.heroHeading h1{font-size:32px}.heroStage .mapTools{top:210px}.heroHeading .lede{font-size:22px}}
+
+.heroStage .mapCanvas{width:100vw;margin-left:calc(50% - 50vw)}
+.sceneHost::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,var(--atlas-surface),transparent 7%,transparent 93%,var(--atlas-surface)),linear-gradient(0deg,var(--atlas-surface),transparent 12%,transparent 92%,var(--atlas-surface));opacity:.8}
+.sceneHost::after{z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%)}
+
+.heroBand{padding-bottom:104px}
+.todayBand{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:-64px;padding:0 24px 48px;box-sizing:border-box;background:#08191c}
+.todayOverview{max-width:1392px;box-sizing:border-box;margin:0 auto;padding:32px;background:var(--color-bg-page);--atlas-surface:var(--color-bg-page);--widget-muted:#3f5a58;--widget-accent:var(--color-cta);--atlas-action:#132527;border-radius:24px}
+.miniExpanded{position:fixed;width:328px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;z-index:8;border:1px solid var(--atlas-border);border-radius:20px;background:var(--atlas-surface);box-shadow:0 16px 48px #0005;animation:townExpand 160ms ease-out;--radial-center-size:30px;--radial-unit-size:11px}
+.miniExpandedHeading{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 0;gap:12px;font-size:19px}
+.miniExpandedHeading button{border:0;background:transparent;color:var(--atlas-secondary);font-size:24px;cursor:pointer}
+.miniExpanded :global(.sc-widget){border:0;background:transparent}
+.miniExpandedFoot{display:grid;gap:5px;padding:0 20px 20px;font-size:12px;line-height:1.5;color:var(--atlas-secondary)}
+.miniExpandedFoot a{color:var(--atlas-action)}
+.miniTown:has(.miniExpanded){z-index:6}
+@keyframes townExpand{from{opacity:.3;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
+@media(max-width:600px){.todayBand{padding:0 12px 32px}.todayOverview{padding:20px 12px}.miniExpandedHeading{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.miniExpanded{animation:none}}
+.miniExpanded :global(.monitor-hero){height:auto}
+.miniExpanded :global(.monitor-hero>.sc-widget){height:auto}
+.miniExpanded{max-height:min(540px,calc(100dvh - 24px));--widget-accent:var(--color-cta);--widget-muted:var(--atlas-secondary)}
+.expandedLoading{min-height:260px;display:grid;place-items:center;padding:20px;margin:0;color:var(--atlas-secondary);font-size:13px}
+
+.cutVariant .heroBand{position:relative;isolation:isolate;background:transparent;padding-bottom:0}
+.cutVariant .heroBand::before{content:"";position:absolute;inset:0 0 230px;z-index:-1;background:var(--atlas-surface)}
+.cutVariant .sceneHost::before{display:none}
+.cutVariant .todayBand{width:auto;margin:40px 0 0;padding:0;background:transparent}
+.cutVariant .todayOverview{border:1px solid var(--color-border)}
+.lightCopy{max-width:900px;margin:40px auto 48px;background:transparent}
+.lightCopy p{margin:0;max-width:65ch}
+.districtStories{margin:0 0 48px;min-width:0}
+.districtStories>h2{font-size:var(--font-size-h2);margin-bottom:24px}
+.scenePin{width:26px;height:26px;border:0;border-radius:0;padding:0;background:transparent;color:white;opacity:0;pointer-events:none}
+.scenePin:focus-visible{opacity:1;outline:2px solid white;outline-offset:3px}
+@media(max-width:480px){.cutVariant .heroBand::before{bottom:250px}.lightCopy{margin:32px 0}}
+
+.districtStories :global(.story-preview-card small){display:block}
+.districtStories :global(.story-strip .story-preview-card){background:var(--atlas-card)}
+
+/* District teasers keep the shared card and chart, with label above and town below. */
+.districtStories :global(.story-preview-card)>div:last-child{display:contents}
+.districtStories :global(.story-preview-card)>div:last-child h3{order:0;padding:24px 24px 0;margin:0;min-height:52px;box-sizing:content-box}
+.districtStories :global(.story-preview-card .story-visible-widget){order:1;width:100%}
+.districtStories :global(.story-preview-card)>div:last-child small{order:2;padding:0 24px 24px;margin-top:auto}
+.darkVariant .heroBand::before{bottom:0}
+.darkVariant .storyBand{width:100vw;margin-left:calc(50% - 50vw);background:var(--atlas-surface);padding:1px max(24px,calc((100vw - 1392px)/2)) 48px;box-sizing:border-box}
+.darkVariant .lightCopy{color:var(--atlas-text)}
+.darkVariant .districtStories{margin-bottom:0}
+@media(max-width:480px){.darkVariant .storyBand{padding-inline:16px}.darkVariant .heroBand::before{bottom:0}}
+.districtStories :global(.story-preview-card .story-visible-widget){pointer-events:none}
+.districtStories :global(.story-preview-card .story-visible-widget *){pointer-events:none}
+/* An offscreen scene can retain its last projected keyboard pin during resize. */
+.sceneLayer{overflow:clip}
+
+/* The canvas starts at the hero's top, behind the header and breadcrumb. */
+.heroBand{position:relative;isolation:isolate}
+.heroHeader,.breadcrumbBand{position:relative;z-index:5}
+.heroStage .sceneLayer{top:calc(-1 * var(--map-headroom,0px))}
+.heroStage .mapTools{top:0;left:auto;right:0;justify-content:flex-end;font-size:var(--font-size-base);line-height:normal}
+.heroHeading{padding-top:0;max-width:calc(100% - 250px)}
+.mapTools{--color-bg:var(--atlas-surface);--color-text-muted:var(--atlas-secondary)}
+
+/* Municipality content layout, backed by district totals. */
+.page{--atlas-bg:var(--color-bg-page);--atlas-paper:var(--color-bg-raised);--atlas-ink:var(--color-text-primary);--atlas-muted:var(--color-text-secondary);--atlas-line:var(--color-border);--atlas-blue:var(--color-brand)}
+.darkVariant{background:transparent}
+.darkVariant>.storyBand{padding-top:1px}
+.page .subnavRail>:global(.v3-section-nav){z-index:20;margin-top:-24px;margin-bottom:0;--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-line:#b0c8c325}
+.districtIntro{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:80px 0 96px}
+.districtIntro p{margin:0;color:var(--atlas-secondary);font-size:18px;line-height:1.6}
+.districtIntro h2{font-size:var(--font-size-h2);line-height:1.15;margin:24px 0 0}
+.districtIntro strong{font-weight:inherit}
+.districtStories>h2{border-top:1px solid var(--atlas-border);padding-top:32px;margin:0 0 24px;font-size:var(--font-size-h2)}
+.fundingSection{padding:48px 0;--atlas-ink:var(--atlas-text);--atlas-bg:var(--atlas-surface);--atlas-paper:var(--atlas-card);--atlas-muted:var(--atlas-secondary);--atlas-line:var(--atlas-border)}
+.fundingSection :global(.v3-examples-foerderung)>h3{font-size:var(--font-size-h2);margin-bottom:24px}
+.page>:global(.atlas-dialog){--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-line:#b0c8c325}
+.page :global(#atlas-stories),.page :global(#atlas-ranking),.page :global(#atlas-foerderung){scroll-margin-top:88px}
+@media(max-width:700px){.districtIntro{grid-template-columns:1fr;gap:28px;padding:56px 0}.districtIntro p{font-size:16px}.districtIntro h2{margin-top:16px}}
+.page{--theme-font:var(--font-body);--theme-action:var(--color-brand);--theme-action-ink:#132527;--atlas-radius:12px}
+.page :global(.atlas-dialog) button{font:inherit;border:0;background:none;color:inherit}
+.page :global(.atlas-dialog .atlas-roles) button{border:1px solid var(--atlas-line)}
+.page :global(.atlas-dialog .atlas-button){background:var(--theme-action);color:var(--theme-action-ink)}
+.page :global(.atlas-dialog a){color:inherit}
+
+.subnavRail{position:sticky;top:0;z-index:20;width:100vw;margin-left:calc(50% - 50vw);padding:8px 0 24px;background:var(--color-bg-page)}
+.darkVariant .subnavRail{background:#08191c}
+.page .subnavRail>:global(.v3-section-nav){position:relative;top:0;margin:0 auto}
+.page~:global(.atlas-dialog){--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-line:#b0c8c325;--atlas-radius:12px;--theme-font:var(--font-body);--theme-action:var(--color-brand);--theme-action-ink:#132527}
+
+/* Keep the scene continuous behind the section bar, then dissolve into the page. */
+.darkVariant .heroStage .sceneLayer{bottom:-120px;mask-image:linear-gradient(to bottom,#000 0%,#000 73%,transparent 100%)}
+.darkVariant .heroBand::before{bottom:-152px}
+.darkVariant .subnavRail{background:transparent}
+.districtStories :global(#geschichten){border:0;margin:0;padding-top:0}
+.districtRanking{padding:64px 0 24px}
+.districtRanking :global(.ranking-own),.districtRanking :global(.ranking-gap){display:none}
+.districtRanking :global(.atlas-wrap){max-width:none;padding-inline:0}
+.districtRanking :global(button),.districtRanking :global(select){font:inherit;color:inherit}
+.districtRanking :global(button){cursor:pointer}
+@media(max-width:600px){.heroHeading{max-width:100%;padding-top:60px}.heroStage .mapTools{margin-top:0}.districtRanking{padding-top:40px}}
+
+.page :global(#atlas-ranking[data-district-overview] .ranking-choice-position){display:none}
+.page :global(#atlas-ranking[data-district-overview] .ranking-choice){grid-template-columns:minmax(0,1fr) auto}
+
+
+.darkVariant .subnavRail{margin-top:-100px}
+
+/* Dark page with the shared municipality ranking retaining its light surface. */
+:global(html):has(.darkVariant),:global(body):has(.darkVariant){--color-bg-page:#08191c;background:#08191c}
+.page.darkVariant{background:var(--atlas-surface);color:var(--atlas-text);--atlas-bg:var(--atlas-surface);--atlas-paper:var(--atlas-card);--atlas-ink:var(--atlas-text);--atlas-muted:var(--atlas-secondary);--atlas-line:var(--atlas-border);--theme-action:var(--atlas-action);--theme-action-ink:var(--atlas-action-ink)}
+.darkVariant .fundingSection :global(.sc-feature-card){background:transparent!important;color:var(--atlas-text)}
+.darkVariant .fundingSection :global(.sc-feature-visual){--solar-circle:var(--atlas-card)}
+
+.tableDisclosure>summary{display:block;list-style:none;width:fit-content;max-width:100%;margin:0 auto;padding:12px 24px;border:1px solid var(--color-text-secondary,#a7bcbb);border-radius:999px;text-align:center;font-weight:600;cursor:pointer}
+.tableDisclosure>summary::-webkit-details-marker{display:none}
+.tableDisclosure>summary:hover{background:#ffffff0a}
+.tableDisclosure>summary:focus-visible{outline:2px solid var(--color-brand);outline-offset:4px}
+.tableDisclosure[open]>summary{margin-bottom:32px}
+
+
+/* Same post-hero anchor position as the municipality page. */
+.darkVariant .subnavRail{margin-top:0}
+.page :global(#atlas-data){scroll-margin-top:100px}
+@media(max-width:600px){
+  .heroHeading{padding-top:0}
+  .heroStage .map{display:flex;flex-direction:column}
+  .heroStage .mapTools{position:relative;top:auto;left:auto;right:auto;order:2;justify-content:center;margin:12px 0 24px}
+  .heroStage .mapCanvas{order:1}
+  .heroStage .mapReading{order:3}
+}
+
+.districtMonitor :global(.sc-widget[data-widget-kind="composition"]){grid-column:span 1}
+
+/* Use the municipality content role; only scene, background and story track bleed. */
+.page{max-width:none;padding:0 0 48px}
+.page .heroInner,.page>.section,.page>.fundingSection,.page>.sources,
+.page .districtIntro,.page .districtStories{width:min(var(--sc-layout-content),calc(100% - 2 * var(--sc-page-inset)));max-width:none;margin-inline:auto}
+.page .heroInner{padding-inline:0}
+.page.darkVariant .storyBand{padding:1px 0 48px}
+.page .districtIntro{gap:32px}
+
+/* The widget supplies the single light surface; the section only places it. */
+.page :global(#atlas-ranking).raceSection{padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}
+
+/* Like the municipality hero, the initial screen ends before anchor navigation. */
+.page .heroBand{min-height:100svh;}
+/* The control is an intrinsic widget host, not a dashboard layout container. */
+.heroStage .mapTools{container-type:normal;}
+
+/* Only the map control floats directly on its scene. */
+.mapTools :global(.sc-setting-stepper){background:transparent;}
+
+.districtMonitor{display:grid;gap:var(--widget-gap,20px);}
+
+/* Viewport-bound map flag; full-bleed scene must never clip it. */
+.mapTooltip{position:fixed;right:auto;max-width:calc(100vw - 24px);z-index:100;background:#163338;color:#e7efeb;}
+.mapTooltip small{color:#a8bfbd;}
+.map[data-navigating="true"] .mapCanvas{opacity:.45;transform:scale(1.015);transition:opacity 180ms ease,transform 180ms ease;pointer-events:none;}
+@media(prefers-reduced-motion:reduce){.map[data-navigating="true"] .mapCanvas{transform:none;transition:none;}}
+
+/* Match positive labels to this dark surface, independent of the page daylight theme. */
+.darkVariant .districtMonitor{--color-positive-text:#00e65c;}
+.darkVariant .districtMonitor :global(.sc-delta-sign){color:inherit;}
+.darkVariant .districtMonitor :global(.sc-delta-suffix){color:color-mix(in srgb,currentColor 72%,transparent);}
+
+/* The decorative grain belongs to the stable hero, not the measured canvas. */
+.heroBand::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");mix-blend-mode:soft-light;}
+.sceneHost::after{display:none;}
+@media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
+.regionExtras{display:block}
+/* Comparison badges sit on dark cards even when the surrounding site uses daylight mode. */
+.darkVariant .regionExtras{--color-positive:#2BE06E;--color-positive-text:#2BE06E;--color-negative:#F26D6D;--color-negative-text:#F26D6D;}
+
+/* One short gesture demonstration per session; never intercepts input. */
+.mapGestureGuide{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:4;display:grid;justify-items:center;gap:12px;pointer-events:none;color:#fff;text-align:center;animation:gestureAppear 2.3s both}
+.mapGestureGuide span{padding:8px 12px;border-radius:12px;background:#08191ce6;font-size:13px;line-height:1.4;width:max-content;max-width:calc(100vw - 48px)}
+.gestureFingers{position:relative;width:150px;height:76px;filter:drop-shadow(0 2px 8px #0008)}
+.gestureFingers i{position:absolute;top:24px;left:48px;width:24px;height:24px;border:2px solid white;border-radius:50%;background:#ffffff45;box-sizing:border-box}
+.gestureFingers i+i{left:82px}
+.mapGestureGuide[data-gesture="0"] .gestureFingers i{left:63px;animation:gestureTurn 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="1"] .gestureFingers{animation:gestureTilt 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="2"] .gestureFingers i{animation:gestureZoomLeft 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="2"] .gestureFingers i+i{animation:gestureZoomRight 2.3s ease-in-out both}
+@keyframes gestureAppear{0%,100%{opacity:0}12%,85%{opacity:1}}
+@keyframes gestureTurn{0%,15%{transform:translateX(-32px)}65%,100%{transform:translateX(32px)}}
+@keyframes gestureTilt{0%,15%{transform:translateY(20px)}65%,100%{transform:translateY(-20px)}}
+@keyframes gestureZoomLeft{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(-30px)}}
+@keyframes gestureZoomRight{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(30px)}}
+@media(prefers-reduced-motion:reduce){.mapGestureGuide,.mapGestureGuide .gestureFingers,.mapGestureGuide .gestureFingers i{animation:none!important}}
+
+.mapGestureReplay{position:absolute;bottom:12px;right:12px;z-index:4;min-height:44px;padding:8px 12px;border:1px solid #ffffff30;border-radius:20px;background:#08191ccc;color:#fff;font:inherit;font-size:12px;cursor:pointer}
+.mapGestureReplay:focus-visible{outline:2px solid white;outline-offset:3px}

@@ -64,6 +64,7 @@ const p=structuredClone(preset);p.seed=26867+i*91;p.bark.textured=false;p.bark.t
   }
   const started=performance.now(),night=state.phase==='night',warm=state.phase==='dawn'||state.phase==='dusk';
   const light=solarLight(state);
+  treesScene.fog.near=state.fog?75:150;treesScene.fog.far=state.fog?190:600;
   treesScene.fog.color.setHex(night?0x192b3b:state.rain>0?0xa4b6c0:0xc4d2d3);
   ambient.intensity=.35+light.daylight*(state.rain>0?1.05:2.15);sun.intensity=2.4*light.sun*(1-state.cloud*.85);sun.color.setHex(warm?0xffb979:0xffe3b3);sun.position.x=(state.sunX/100-.5)*120;
   trees.forEach((t,i)=>{t.rotation.z=Math.sin(time*.65+i*.8)*.009*wind;t.update(time);t.leavesMesh.visible=state.season!=='winter';t.leavesMesh.material.color.setHex(state.season==='autumn'?0xd7a16b:0x879c7a);const shader=t.leavesMesh.material.userData.shader;if(shader)shader.uniforms.uWindStrength.value.set(wind*1.7,0,Math.abs(wind)*.7);});
@@ -71,7 +72,7 @@ const p=structuredClone(preset);p.seed=26867+i*91;p.bark.textured=false;p.bark.t
   const th=height*(width<700?.4:.48),bottom=height*(width<700?.16:.17);renderer.setViewport(0,0,width,th+bottom);renderer.render(treesScene,treeCamera);if(!timings.firstFrame)timings.treesDraw=Math.round(performance.now()-started);
   renderer.setViewport(0,0,width,height);renderer.clearDepth();
   if(flight){flight.update(time,!night&&state.rain<.01);renderer.render(flight.scene,flight.camera);renderer.clearDepth();}
-  hazeMaterial.uniforms.time.value=time;hazeMaterial.uniforms.strength.value=.12+light.daylight*(state.rain>0?.5:warm?.45:.36);hazeMaterial.uniforms.tint.value.setHex(night?0x233a4a:state.rain>0?0xc4d1d7:0xd4dfd6);renderer.render(hazeScene,hazeCamera);
+  hazeMaterial.uniforms.time.value=time;hazeMaterial.uniforms.strength.value=.035+(state.fog||0)*.5+(state.rain>0?.08:0);hazeMaterial.uniforms.tint.value.setHex(night?0x233a4a:state.rain>0?0xc4d1d7:0xd4dfd6);renderer.render(hazeScene,hazeCamera);
   if(!panelStudy){const r=panelImage.getBoundingClientRect(),base=container.getBoundingClientRect();panelMesh.scale.set(r.width,r.height,1);panelMesh.position.set(r.left-base.left+r.width/2-width/2,height/2-(r.top-base.top+r.height/2),0);}
   const b=.19+light.daylight*(state.rain>0?.43:warm?.51:.81);panelMaterial.color.setRGB(b**2.2,(b*(warm?.9:1))**2.2,(b*(warm?.83:1))**2.2);if(panelStudy){const panelStart=performance.now();panelStudy.update(time,state);if(!timings.firstFrame)timings.panelUpdate=Math.round(performance.now()-panelStart);renderer.setViewport(0,0,width,height);panelStudy.render();if(!timings.firstFrame)timings.panelDraw=Math.round(performance.now()-panelStart);}else renderer.render(panels,panelCamera);
   if(state.rain>.005){renderer.clearDepth();rain.update(time,wind,state.rain);renderer.render(rain.scene,rain.camera);}

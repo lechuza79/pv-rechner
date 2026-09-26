@@ -258,7 +258,7 @@ export default function SimulationPanel({
 
       {/* Error */}
       {error && (
-        <div style={{ padding: "12px 16px", borderRadius: v('--radius-md'), background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, fontSize: v("--font-size-small"), color: v('--color-negative'), marginBottom: 16, textAlign: "center" }}>
+        <div style={{ padding: "12px 16px", borderRadius: v('--radius-md'), background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, fontSize: v("--font-size-small"), color: v('--color-negative-text'), marginBottom: 16, textAlign: "center" }}>
           {error}
         </div>
       )}
@@ -390,7 +390,7 @@ export default function SimulationPanel({
                 )}
               </div>
               <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 4 }}>
-                <span style={{ color: v('--color-positive'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
+                <span style={{ color: v('--color-positive-text'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
               </div>
             </button>
           ))}

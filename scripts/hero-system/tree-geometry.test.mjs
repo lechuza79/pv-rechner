@@ -2,8 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import path from 'node:path';
-const upstream=path.dirname(new URL(import.meta.url).pathname);
-process.chdir(path.resolve(upstream,'../..'));
+const upstream='/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/dynamic-hero';
 const {build}=createRequire(upstream+'/package.json')('esbuild');
 test('Cooperative tree generation preserves every geometry attribute and yields',async()=>{
  const result=await build({stdin:{contents:`export {Tree} from './node_modules/@dgreenheck/ez-tree/src/lib/tree.js';export {createTreeAsync} from './tree-async.js';export {default as preset} from './node_modules/@dgreenheck/ez-tree/src/lib/presets/ash_small.json';`,resolveDir:path.resolve('public/hero-system/source')},bundle:true,write:false,platform:'node',format:'esm',nodePaths:[upstream+'/node_modules'],plugins:[{name:'upstream-package',setup(b){b.onResolve({filter:/^\.\/node_modules\//},args=>({path:path.join(upstream,args.path)}));}},{name:'test-textures',setup(b){b.onResolve({filter:/^\.\/textures$/},()=>({path:'textures',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export const getLeafTexture=()=>null;export const getBarkTexture=()=>null;'}));}}]});

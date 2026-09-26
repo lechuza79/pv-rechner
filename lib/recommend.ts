@@ -65,6 +65,8 @@ export interface RecommendInput {
    *  weglässt, bekommt die grobe Ableitung aus `haustyp` — brauchbar, solange
    *  niemand danach gefragt hat, aber sichtbar schlechter, sobald doch. */
   wpHaustyp?: number;
+  /** Already calculated annual demand from an originating heat-pump calculation. */
+  wpAnnualKwh?: number;
 }
 
 export interface RecommendReasoning {
@@ -172,7 +174,7 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
     : DEFAULT_PRICES.electricityIncrease);
 
   const baseConsumption = PERSONEN[input.personen].verbrauch;
-  const wpKwh = calcWpAnnualElectricity({
+  const wpKwh = input.wpAnnualKwh !== undefined && Number.isFinite(input.wpAnnualKwh) && input.wpAnnualKwh >= 0 ? input.wpAnnualKwh : calcWpAnnualElectricity({
     ...DEFAULT_WP_BUILDING,
     wohnflaeche: input.wpWohnflaeche ?? DEFAULT_WP_BUILDING.wohnflaeche,
     insulationIdx: input.wpInsulation ?? DEFAULT_WP_BUILDING.insulationIdx,
