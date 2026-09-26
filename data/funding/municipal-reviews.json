@@ -66082,5 +66082,464 @@
         "evidenceUrl": "https://www.stadthagen.de/Buergerservice/Rathaus/Stadthagen-wird-gefoerdert.htm"
       }
     ]
+  },
+  {
+    "regionId": "03359014",
+    "name": "Düdenbüttel",
+    "checkedAt": "2026-09-26T04:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Düdenbüttel gehört zur Samtgemeinde Oldendorf-Himmelpforten (Landkreis Stade). Weder Gemeinde noch Samtgemeinde führen einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Seite „Förderprojekte“ listet nur Vorhaben, für die die Kommunen selbst Fördermittel erhalten haben (EFRE-Sanierungen von Rathaus und Kitas, LEADER, KSI-Beleuchtung); die Klimaschutzseite beschreibt Konzept, Wärmeplanung und eigene Liegenschaften und verweist Private auf Beratungsangebote der Klimaschutz- und Energieagentur. Die Volltextsuche findet zu Photovoltaik und Solar nur Bauleitplanung für Solarparks, zu Balkonkraftwerk nichts. Der Klimafonds des Landkreises fördert nur Heizungsoptimierung (Kreisprüfung 21.09.2026).",
+    "searches": [
+      "Seite „Förderprojekte“ der Samtgemeinde am 26.09.2026 vollständig gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 nach Förder-, Zuschuss-, PV-, Balkon- und Wärmepumpen-Stichworten durchsucht",
+      "Volltextsuche oldendorf-himmelpforten.de am 26.09.2026 nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Solar, Solaranlage",
+      "Gemeindeseite Düdenbüttel auf dem Samtgemeindeportal am 26.09.2026",
+      "Websuche „Oldendorf-Himmelpforten Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026 — nur Presse zu Freiflächen und Programme des (anderen) Landkreises Oldenburg",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "finding": "Am 26.09.2026 gelesen: „In den letzten Jahren wurden einige Projekte in unserer Samtgemeinde durch unterschiedliche Förderungen umgesetzt.“ — EFRE „Energetische Sanierung des Rathauses“, Kindergarten Hammah, Krippe Himmelpforten, LEADER-Projekte, KSI-Beleuchtungssanierungen; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: Klimaschutzkonzept, kommunale Wärmeplanung, E-Ladesäulen und Dienstfahrzeuge; „So kommen bei Neubauten in der Regel Wärmepumpen zum Einsatz und einige Dächer sind bereits mit PV-Anlagen versehen“ (eigene Liegenschaften); für Private Verweis auf KEAN-Angebote wie den WärmepumpenCheck."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Am 26.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik nur F-Plan-Änderung „Freiflächen-Photovoltaikanlagen“ und Potenzialflächenanalyse; Solar nur B-Pläne Solarpark Engelschoff/Burweg; Förderprogramm nur Kita-Stipendien des Landkreises; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/mitgliedsgemeinden/duedenbuettel/",
+        "finding": "Gemeindeseite Düdenbüttel am 26.09.2026 gelesen: Ortsvorstellung und Verweis auf das Ratsinformationssystem, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 geschlossen: Klimafonds fördert nur Heizungsoptimierung (hydraulischer Abgleich, Pumpen, Thermostatventile)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste geförderter kommunaler Projekte (EFRE, LEADER, KSI), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03359016",
+    "name": "Estorf",
+    "checkedAt": "2026-09-26T04:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Estorf gehört zur Samtgemeinde Oldendorf-Himmelpforten (Landkreis Stade). Weder Gemeinde noch Samtgemeinde führen einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Seite „Förderprojekte“ listet nur Vorhaben, für die die Kommunen selbst Fördermittel erhalten haben (EFRE-Sanierungen von Rathaus und Kitas, LEADER, KSI-Beleuchtung); die Klimaschutzseite beschreibt Konzept, Wärmeplanung und eigene Liegenschaften und verweist Private auf Beratungsangebote der Klimaschutz- und Energieagentur. Die Volltextsuche findet zu Photovoltaik und Solar nur Bauleitplanung für Solarparks, zu Balkonkraftwerk nichts. Der Klimafonds des Landkreises fördert nur Heizungsoptimierung (Kreisprüfung 21.09.2026).",
+    "searches": [
+      "Seite „Förderprojekte“ der Samtgemeinde am 26.09.2026 vollständig gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 nach Förder-, Zuschuss-, PV-, Balkon- und Wärmepumpen-Stichworten durchsucht",
+      "Volltextsuche oldendorf-himmelpforten.de am 26.09.2026 nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Solar, Solaranlage",
+      "Gemeindeseite Estorf auf dem Samtgemeindeportal am 26.09.2026",
+      "Websuche „Oldendorf-Himmelpforten Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026 — nur Presse zu Freiflächen und Programme des (anderen) Landkreises Oldenburg",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "finding": "Am 26.09.2026 gelesen: „In den letzten Jahren wurden einige Projekte in unserer Samtgemeinde durch unterschiedliche Förderungen umgesetzt.“ — EFRE „Energetische Sanierung des Rathauses“, Kindergarten Hammah, Krippe Himmelpforten, LEADER-Projekte, KSI-Beleuchtungssanierungen; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: Klimaschutzkonzept, kommunale Wärmeplanung, E-Ladesäulen und Dienstfahrzeuge; „So kommen bei Neubauten in der Regel Wärmepumpen zum Einsatz und einige Dächer sind bereits mit PV-Anlagen versehen“ (eigene Liegenschaften); für Private Verweis auf KEAN-Angebote wie den WärmepumpenCheck."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Am 26.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik nur F-Plan-Änderung „Freiflächen-Photovoltaikanlagen“ und Potenzialflächenanalyse; Solar nur B-Pläne Solarpark Engelschoff/Burweg; Förderprogramm nur Kita-Stipendien des Landkreises; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/mitgliedsgemeinden/estorf/",
+        "finding": "Gemeindeseite Estorf am 26.09.2026 gelesen: Ortsvorstellung und Verweis auf das Ratsinformationssystem, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 geschlossen: Klimafonds fördert nur Heizungsoptimierung (hydraulischer Abgleich, Pumpen, Thermostatventile)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste geförderter kommunaler Projekte (EFRE, LEADER, KSI), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03359024",
+    "name": "Heinbockel",
+    "checkedAt": "2026-09-26T04:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heinbockel gehört zur Samtgemeinde Oldendorf-Himmelpforten (Landkreis Stade). Weder Gemeinde noch Samtgemeinde führen einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Seite „Förderprojekte“ listet nur Vorhaben, für die die Kommunen selbst Fördermittel erhalten haben (EFRE-Sanierungen von Rathaus und Kitas, LEADER, KSI-Beleuchtung); die Klimaschutzseite beschreibt Konzept, Wärmeplanung und eigene Liegenschaften und verweist Private auf Beratungsangebote der Klimaschutz- und Energieagentur. Die Volltextsuche findet zu Photovoltaik und Solar nur Bauleitplanung für Solarparks, zu Balkonkraftwerk nichts. Der Klimafonds des Landkreises fördert nur Heizungsoptimierung (Kreisprüfung 21.09.2026).",
+    "searches": [
+      "Seite „Förderprojekte“ der Samtgemeinde am 26.09.2026 vollständig gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 nach Förder-, Zuschuss-, PV-, Balkon- und Wärmepumpen-Stichworten durchsucht",
+      "Volltextsuche oldendorf-himmelpforten.de am 26.09.2026 nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Solar, Solaranlage",
+      "Gemeindeseite Heinbockel auf dem Samtgemeindeportal am 26.09.2026",
+      "Websuche „Oldendorf-Himmelpforten Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026 — nur Presse zu Freiflächen und Programme des (anderen) Landkreises Oldenburg",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "finding": "Am 26.09.2026 gelesen: „In den letzten Jahren wurden einige Projekte in unserer Samtgemeinde durch unterschiedliche Förderungen umgesetzt.“ — EFRE „Energetische Sanierung des Rathauses“, Kindergarten Hammah, Krippe Himmelpforten, LEADER-Projekte, KSI-Beleuchtungssanierungen; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: Klimaschutzkonzept, kommunale Wärmeplanung, E-Ladesäulen und Dienstfahrzeuge; „So kommen bei Neubauten in der Regel Wärmepumpen zum Einsatz und einige Dächer sind bereits mit PV-Anlagen versehen“ (eigene Liegenschaften); für Private Verweis auf KEAN-Angebote wie den WärmepumpenCheck."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Am 26.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik nur F-Plan-Änderung „Freiflächen-Photovoltaikanlagen“ und Potenzialflächenanalyse; Solar nur B-Pläne Solarpark Engelschoff/Burweg; Förderprogramm nur Kita-Stipendien des Landkreises; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/mitgliedsgemeinden/heinbockel/",
+        "finding": "Gemeindeseite Heinbockel am 26.09.2026 gelesen: Ortsvorstellung und Verweis auf das Ratsinformationssystem, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 geschlossen: Klimafonds fördert nur Heizungsoptimierung (hydraulischer Abgleich, Pumpen, Thermostatventile)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste geförderter kommunaler Projekte (EFRE, LEADER, KSI), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03359036",
+    "name": "Oldendorf",
+    "checkedAt": "2026-09-26T04:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oldendorf gehört zur Samtgemeinde Oldendorf-Himmelpforten (Landkreis Stade). Weder Gemeinde noch Samtgemeinde führen einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Seite „Förderprojekte“ listet nur Vorhaben, für die die Kommunen selbst Fördermittel erhalten haben (EFRE-Sanierungen von Rathaus und Kitas, LEADER, KSI-Beleuchtung); die Klimaschutzseite beschreibt Konzept, Wärmeplanung und eigene Liegenschaften und verweist Private auf Beratungsangebote der Klimaschutz- und Energieagentur. Die Volltextsuche findet zu Photovoltaik und Solar nur Bauleitplanung für Solarparks, zu Balkonkraftwerk nichts. Der Klimafonds des Landkreises fördert nur Heizungsoptimierung (Kreisprüfung 21.09.2026).",
+    "searches": [
+      "Seite „Förderprojekte“ der Samtgemeinde am 26.09.2026 vollständig gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 nach Förder-, Zuschuss-, PV-, Balkon- und Wärmepumpen-Stichworten durchsucht",
+      "Volltextsuche oldendorf-himmelpforten.de am 26.09.2026 nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Solar, Solaranlage",
+      "Gemeindeseite Oldendorf auf dem Samtgemeindeportal am 26.09.2026",
+      "Websuche „Oldendorf-Himmelpforten Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026 — nur Presse zu Freiflächen und Programme des (anderen) Landkreises Oldenburg",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "finding": "Am 26.09.2026 gelesen: „In den letzten Jahren wurden einige Projekte in unserer Samtgemeinde durch unterschiedliche Förderungen umgesetzt.“ — EFRE „Energetische Sanierung des Rathauses“, Kindergarten Hammah, Krippe Himmelpforten, LEADER-Projekte, KSI-Beleuchtungssanierungen; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: Klimaschutzkonzept, kommunale Wärmeplanung, E-Ladesäulen und Dienstfahrzeuge; „So kommen bei Neubauten in der Regel Wärmepumpen zum Einsatz und einige Dächer sind bereits mit PV-Anlagen versehen“ (eigene Liegenschaften); für Private Verweis auf KEAN-Angebote wie den WärmepumpenCheck."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Am 26.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik nur F-Plan-Änderung „Freiflächen-Photovoltaikanlagen“ und Potenzialflächenanalyse; Solar nur B-Pläne Solarpark Engelschoff/Burweg; Förderprogramm nur Kita-Stipendien des Landkreises; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/mitgliedsgemeinden/oldendorf/",
+        "finding": "Gemeindeseite Oldendorf am 26.09.2026 gelesen: Ortsvorstellung und Verweis auf das Ratsinformationssystem, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 geschlossen: Klimafonds fördert nur Heizungsoptimierung (hydraulischer Abgleich, Pumpen, Thermostatventile)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste geförderter kommunaler Projekte (EFRE, LEADER, KSI), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03351006",
+    "name": "Celle",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Celle fördert über den Klimaschutzfonds (Richtlinie in Kraft seit 01.01.2026) Photovoltaik mit 200 € je kWp bis 1.200 € je Grundstück, Wärmepumpen in Verbindung mit einer eigenen Photovoltaikanlage mit 10 % bis 3.000 € und Erdwärme pauschal. Anträge nur vom 1. Januar bis 31. Mai; die Frist 2026 ist abgelaufen, im Katalog deshalb als pausiert (celle-klimaschutzfonds), Wiederprüfung zum Beginn der Runde 2027. Speicher und Balkonkraftwerke nennt die Richtlinie nicht. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Programmseite Klimaschutzfonds und Förderrichtlinie ab 2026 (Volltext) am 26.09.2026",
+      "Adversariale Gegenprüfung aller Beträge und Bedingungen am 26.09.2026 (bestätigt; Ausnahmefälle nach Fristende und Vorrang von Bundes-/Landesmitteln ergänzt)",
+      "Websuche „Landkreis Celle Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss 2026“ am 26.09.2026",
+      "Seite „Förderung ländlicher Raum“ der Stadt am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.celle-klimaschutz.de/Klimaschutzaktivit%C3%A4ten-der-Stadt-Celle/Stadt-Celle/Klimaschutzfonds/",
+        "finding": "Am 26.09.2026 gelesen: „Die Förderperiode erstreckt sich vom 01.01. bis zum 31.05. eines jeden Jahres. Darüber hinaus ist eine Antragsstellung nur in begründeten Ausnahmefällen möglich.“ „Der Fördersatz bei Photovoltaik-Anlagen beträgt 200,00 € je kWp installierter Leistung, höchstens 1.200,00 € je Anlagenstandort.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4.2 b „Innovative Heizungssysteme (z. B. Luftwärmepumpen) mit erneuerbaren Energien – 10% der förderfähigen und nachgewiesenen Kosten, höchstens 3.000,00 Euro je Objekt. Voraussetzung ist die Nutzung mit einer vorhandenen Photovoltaik-Anlage …“; Nr. 7.2 „vom 1. Januar bis 31. Mai der jeweiligen Förderperiode (Ausschlussfrist)“; Nr. 9.1 „treten zum 01.01.2026 in Kraft“."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle.de/Stadt/Stadtplanung/Aufgaben/F%C3%B6rderung-l%C3%A4ndlicher-Raum",
+        "finding": "Am 26.09.2026 gelesen: ILE-Region „Lachte - Lutter - Oker“ und LEADER-Region „Aller-Fuhse-Aue“ für ländliche Ortsteile — EU-Förderung kommunaler Projekte, kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "celle.de/Stadt/Stadtplanung/Aufgaben/F%C3%B6rderung-l%C3%A4ndlicher-Raum",
+        "disposition": "reviewed",
+        "reason": "Gelesen: ILE- und LEADER-Regionen für die ländlichen Ortsteile, keine Haushaltsförderung; das Haushaltsprogramm ist der Klimaschutzfonds.",
+        "evidenceUrl": "https://www.celle.de/Stadt/Stadtplanung/Aufgaben/F%C3%B6rderung-l%C3%A4ndlicher-Raum"
+      }
+    ]
+  },
+  {
+    "regionId": "03351",
+    "name": "Landkreis Celle",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Programme der kreisangehörigen Gemeinden gesondert erfasst.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Celle schreibt auf seiner Seite für private Haushalte ausdrücklich, keinen eigenen Fördertopf zu haben, und verweist auf KfW, BAFA und KEAN. Die erfassten Kreisquellen sind Wirtschaftsförderungs-Dienstleistungen (EU-Förderung, Existenzgründer), die Förderung des eigenen Klimaschutzkonzepts durch den Bund, eine einmalige Übernahme der Gründungskosten einer Bürgerenergiegenossenschaft (2023), das EU-Regionalprogramm Zukunftsregion und das Feuchtwiesenschutzprogramm für Landwirte.",
+    "searches": [
+      "Klimaschutzseite und Seite „Fördermöglichkeiten für private Haushalte“ am 26.09.2026",
+      "Alle sechs erfassten Kreisquellen am 26.09.2026 geöffnet",
+      "Websuche auf landkreis-celle.de nach Klimaschutz-Förderung für Bürger, Photovoltaik und Wärmepumpe am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.landkreis-celle.de/index.php?ModID=7&FID=3314.16484.1&object=tx%7C3314.16484.1",
+        "finding": "Am 26.09.2026 gelesen: Der Landkreis übernimmt die Gründungskosten der Bürgerenergie Aller-Fuhse-Aue eG „mit Fördermitteln der Kommunalen Klimaschutz Gesellschaft“ — Einzelförderung einer Genossenschaft, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/EU-F%C3%B6rderung.php?object=tx,3314.2.1&ModID=10&FID=3314.80.1",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie zur Verwirklichung eines gewerblichen Vorhabens EU-Fördermittel in Anspruch nehmen möchten, unterstützt die Wirtschaftsförderung des Landkreises Sie gerne …“"
+      },
+      {
+        "url": "https://www.landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/Existenzgr%C3%BCnderf%C3%B6rderung.php?object=tx,3314.2.1&ModID=10&FID=3314.81.1",
+        "finding": "Am 26.09.2026 gelesen: Unterstützung gewerblicher Vorhaben „bei der Erstellung des Business-Plans oder bei der Suche nach Finanzierungsmöglichkeiten“."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/index.php?La=1&object=tx,3314.16370.1&kuo=2&sub=0",
+        "finding": "Kreisseite „Förderprogramm Zukunftsregion“ laut Websuche 26.09.2026: Zukunftsregion HeiDefinition (Celle, Heidekreis, Uelzen), rund 8 Mio. € EU-Mittel für regionale Projekte bis 2028."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/index.php?ModID=7&FID=3314.16222.1&object=tx%7C3314.16222.1",
+        "finding": "Am 26.09.2026 gelesen: „Für die Erstellung des integrierten Klimaschutzkonzepts erhält der Landkreis für die anfallenden Personal- als auch Sachkosten 75 % Förderung vom Bund.“"
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Verwaltung-Politik/Verwaltung/Amt-f%C3%BCr-Umwelt-und-l%C3%A4ndlichen-Raum/Natur-und-Landschaftsschutz/Weitere-Informationen/F%C3%B6rderm%C3%B6glichkeiten-im-Naturschutz",
+        "finding": "Am 26.09.2026 gelesen: „Bis zu 200,00 € pro Hektar zahlt der Landkreis Celle pro Jahr an entsprechend wirtschaftende Landwirte …“ (Feuchtwiesenschutzprogramm)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Beratung der Wirtschaftsförderung zu EU-Fördermitteln, kein Zuschuss für Haushaltsenergieanlagen.",
+        "evidenceUrl": "https://www.landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/EU-F%C3%B6rderung.php?object=tx,3314.2.1&ModID=10&FID=3314.80.1"
+      },
+      {
+        "url": "landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/Existenzgr%C3%BCnderf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Unterstützung gewerblicher Existenzgründer.",
+        "evidenceUrl": "https://www.landkreis-celle.de/B%C3%BCrgerservice/Dienstleistungen/Existenzgr%C3%BCnderf%C3%B6rderung.php?object=tx,3314.2.1&ModID=10&FID=3314.81.1"
+      },
+      {
+        "url": "landkreis-celle.de/B%C3%BCrgerservice/Mitteilungen/Landkreis-f%C3%B6rdert-Energiegenossenschaften.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen: einmalige Übernahme der Gründungskosten einer Bürgerenergiegenossenschaft (Meldung 03.02.2023), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.landkreis-celle.de/index.php?ModID=7&FID=3314.16484.1&object=tx%7C3314.16484.1"
+      },
+      {
+        "url": "landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderprogramm-Zukunftsregion.php",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm „Zukunftsregionen in Niedersachsen“ (HeiDefinition, EU-Mittel für regionale Projekte bis 2028); unter dieser Kurzadresse ohne Inhalt, Programm über die Kreisseite und Websuche am 26.09.2026 eingeordnet — keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.landkreis-celle.de/index.php?La=1&object=tx,3314.16370.1&kuo=2&sub=0"
+      },
+      {
+        "url": "landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderung-der-Nationalen-Klimaschutzinitiative.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen (Artikelfassung): Bundesförderung für das Klimaschutzkonzept des Landkreises (FKZ 03K17766).",
+        "evidenceUrl": "https://www.landkreis-celle.de/index.php?ModID=7&FID=3314.16222.1&object=tx%7C3314.16222.1"
+      },
+      {
+        "url": "landkreis-celle.de/Verwaltung-Politik/Verwaltung/Amt-f%C3%BCr-Umwelt-und-l%C3%A4ndlichen-Raum/Natur-und-Landschaftsschutz/Weitere-Informationen/F%C3%B6rderm%C3%B6glichkeiten-im-Naturschutz",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Feuchtwiesenschutzprogramm, bis 200 € je Hektar für Landwirte.",
+        "evidenceUrl": "https://www.landkreis-celle.de/Verwaltung-Politik/Verwaltung/Amt-f%C3%BCr-Umwelt-und-l%C3%A4ndlichen-Raum/Natur-und-Landschaftsschutz/Weitere-Informationen/F%C3%B6rderm%C3%B6glichkeiten-im-Naturschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "03351005",
+    "name": "Bröckel",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bröckel gehört zur Samtgemeinde Flotwedel (Landkreis Celle). Die Förderseite der Samtgemeinde nennt nur EU- und Landesförderung für kommunale Vorhaben (ländlicher Wegebau, LEADER, Hochwasserschutz, Regionalmanagement, GRW-Mittel für das Gewerbegebiet Eicklingen); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder bei Gemeinde noch Samtgemeinde verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Fördermaßnahmen in der Samtgemeinde Flotwedel“ am 26.09.2026 vollständig gelesen",
+      "Navigation der Samtgemeinde (Umwelt & Klima: Energiemanagement, Klimaschutzkonzept, Freiflächenphotovoltaik, Wärmeplanung, Quartierskonzepte) am 26.09.2026 durchgesehen — kein Förderprogramm für Haushalte",
+      "Landkreis Celle, Seite „Fördermöglichkeiten für private Haushalte“ am 26.09.2026",
+      "Klimaschutzfonds Stadt Celle, Richtlinie Nr. 6.1 (nur Stadtgebiet Celle) am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013",
+        "finding": "Am 26.09.2026 gelesen: „Fördermaßnahmen in der Samtgemeinde Flotwedel“ — „Ländlicher Wegebau“, „LEADER“, „Hochwasserschutz“, „Regionalmanagement“ sowie GRW-Mittel: „Die Gemeinde Eicklingen bekommt aus dem Förderprogramm 2.495.407,98 €“ für die Erweiterung des Gewerbegebiets."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&amp;brotID=900000208&amp;rubrik=900000013",
+        "disposition": "reviewed",
+        "reason": "Gelesen: EU-/Landesförderung für kommunale Vorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
+      }
+    ]
+  },
+  {
+    "regionId": "03351007",
+    "name": "Eicklingen",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eicklingen gehört zur Samtgemeinde Flotwedel (Landkreis Celle). Die Förderseite der Samtgemeinde nennt nur EU- und Landesförderung für kommunale Vorhaben (ländlicher Wegebau, LEADER, Hochwasserschutz, Regionalmanagement, GRW-Mittel für das Gewerbegebiet Eicklingen); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder bei Gemeinde noch Samtgemeinde verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Fördermaßnahmen in der Samtgemeinde Flotwedel“ am 26.09.2026 vollständig gelesen",
+      "Navigation der Samtgemeinde (Umwelt & Klima: Energiemanagement, Klimaschutzkonzept, Freiflächenphotovoltaik, Wärmeplanung, Quartierskonzepte) am 26.09.2026 durchgesehen — kein Förderprogramm für Haushalte",
+      "Landkreis Celle, Seite „Fördermöglichkeiten für private Haushalte“ am 26.09.2026",
+      "Klimaschutzfonds Stadt Celle, Richtlinie Nr. 6.1 (nur Stadtgebiet Celle) am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013",
+        "finding": "Am 26.09.2026 gelesen: „Fördermaßnahmen in der Samtgemeinde Flotwedel“ — „Ländlicher Wegebau“, „LEADER“, „Hochwasserschutz“, „Regionalmanagement“ sowie GRW-Mittel: „Die Gemeinde Eicklingen bekommt aus dem Förderprogramm 2.495.407,98 €“ für die Erweiterung des Gewerbegebiets."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&amp;brotID=900000208&amp;rubrik=900000013",
+        "disposition": "reviewed",
+        "reason": "Gelesen: EU-/Landesförderung für kommunale Vorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
+      }
+    ]
+  },
+  {
+    "regionId": "03351017",
+    "name": "Langlingen",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langlingen gehört zur Samtgemeinde Flotwedel (Landkreis Celle). Die Förderseite der Samtgemeinde nennt nur EU- und Landesförderung für kommunale Vorhaben (ländlicher Wegebau, LEADER, Hochwasserschutz, Regionalmanagement, GRW-Mittel für das Gewerbegebiet Eicklingen); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder bei Gemeinde noch Samtgemeinde verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Fördermaßnahmen in der Samtgemeinde Flotwedel“ am 26.09.2026 vollständig gelesen",
+      "Navigation der Samtgemeinde (Umwelt & Klima: Energiemanagement, Klimaschutzkonzept, Freiflächenphotovoltaik, Wärmeplanung, Quartierskonzepte) am 26.09.2026 durchgesehen — kein Förderprogramm für Haushalte",
+      "Landkreis Celle, Seite „Fördermöglichkeiten für private Haushalte“ am 26.09.2026",
+      "Klimaschutzfonds Stadt Celle, Richtlinie Nr. 6.1 (nur Stadtgebiet Celle) am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013",
+        "finding": "Am 26.09.2026 gelesen: „Fördermaßnahmen in der Samtgemeinde Flotwedel“ — „Ländlicher Wegebau“, „LEADER“, „Hochwasserschutz“, „Regionalmanagement“ sowie GRW-Mittel: „Die Gemeinde Eicklingen bekommt aus dem Förderprogramm 2.495.407,98 €“ für die Erweiterung des Gewerbegebiets."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&amp;brotID=900000208&amp;rubrik=900000013",
+        "disposition": "reviewed",
+        "reason": "Gelesen: EU-/Landesförderung für kommunale Vorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
+      }
+    ]
+  },
+  {
+    "regionId": "03351022",
+    "name": "Wienhausen",
+    "checkedAt": "2026-09-26T04:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wienhausen gehört zur Samtgemeinde Flotwedel (Landkreis Celle). Die Förderseite der Samtgemeinde nennt nur EU- und Landesförderung für kommunale Vorhaben (ländlicher Wegebau, LEADER, Hochwasserschutz, Regionalmanagement, GRW-Mittel für das Gewerbegebiet Eicklingen); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder bei Gemeinde noch Samtgemeinde verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Fördermaßnahmen in der Samtgemeinde Flotwedel“ am 26.09.2026 vollständig gelesen",
+      "Navigation der Samtgemeinde (Umwelt & Klima: Energiemanagement, Klimaschutzkonzept, Freiflächenphotovoltaik, Wärmeplanung, Quartierskonzepte) am 26.09.2026 durchgesehen — kein Förderprogramm für Haushalte",
+      "Landkreis Celle, Seite „Fördermöglichkeiten für private Haushalte“ am 26.09.2026",
+      "Klimaschutzfonds Stadt Celle, Richtlinie Nr. 6.1 (nur Stadtgebiet Celle) am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013",
+        "finding": "Am 26.09.2026 gelesen: „Fördermaßnahmen in der Samtgemeinde Flotwedel“ — „Ländlicher Wegebau“, „LEADER“, „Hochwasserschutz“, „Regionalmanagement“ sowie GRW-Mittel: „Die Gemeinde Eicklingen bekommt aus dem Förderprogramm 2.495.407,98 €“ für die Erweiterung des Gewerbegebiets."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: Verweise auf KfW, BAFA und KEAN, dann „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&amp;brotID=900000208&amp;rubrik=900000013",
+        "disposition": "reviewed",
+        "reason": "Gelesen: EU-/Landesförderung für kommunale Vorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
+      }
+    ]
   }
 ]

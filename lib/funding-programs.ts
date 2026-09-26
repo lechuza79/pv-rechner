@@ -13807,6 +13807,61 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["pv"],
   },
 
+  // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
+  "celle-klimaschutzfonds": {
+    id: "celle-klimaschutzfonds", name: "Klimaschutzfonds Celle",
+    traeger: "Stadt Celle", level: "kommune", region: "Celle",
+    bundesland: "Niedersachsen", agsCode: "03351006",
+    url: "https://www.celle-klimaschutz.de/Klimaschutzaktivit%C3%A4ten-der-Stadt-Celle/Stadt-Celle/Klimaschutzfonds/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-03",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp für Photovoltaik; Anteil der Kosten für Wärmepumpen in Verbindung mit einer eigenen Photovoltaikanlage; Pauschalen für Erdwärme",
+    maxFoerderung: "Photovoltaik höchstens 1.200 € je Grundstück; Wärmepumpe höchstens 3.000 € je Objekt",
+    rates: [
+      { label: "Photovoltaikanlage", value: "200 € je kWp, höchstens 1.200 € je Anlagenstandort", nur: ["pv"] },
+      { label: "Innovatives Heizsystem (z. B. Luft-Wasser- oder Erdwärmepumpe) mit eigener Photovoltaikanlage", value: "10 % der förderfähigen Kosten, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+      { label: "Erdwärme bis 30 kW", value: "1.000 € Erdwärmekollektor, 2.000 € Erdwärmesonde; reversible Anlagen (Heizen und Kühlen) 50 % mehr, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Anträge nur vom 1. Januar bis 31. Mai jedes Jahres (Ausschlussfrist); die Frist für 2026 ist abgelaufen, spätere Anträge nur in begründeten Ausnahmefällen — die nächste reguläre Antragsrunde beginnt am 1. Januar 2027",
+      "Die Maßnahme muss im Stadtgebiet Celle liegen und darf bei Antragstellung nicht begonnen sein; Planung, Angebote und Lieferverträge gelten nicht als Beginn, ein vorzeitiger Beginn braucht eine Zustimmung",
+      { text: "Die Photovoltaikanlage muss weitestgehend verschattungsfrei sein; als Anlagenstandort gilt das Baugrundstück", nur: ["pv"] },
+      { text: "Wärmepumpen werden nur zusammen mit einer vorhandenen Photovoltaikanlage oder dem Nachweis gefördert, sich eine anzuschaffen; Heizkörper, Fußbodenheizungen und Klimaanlagen sind ausgeschlossen", nur: ["waermepumpe"] },
+      "Förderprogramme von Bund und Land sind vorrangig zu nutzen; zusammen darf die Förderung 49 % der förderfähigen Kosten nicht überschreiten",
+      "Zum Antrag gehören ein verbindliches Kostenangebot und die Zustimmung des Eigentümers; über die Anträge entscheidet der Verwaltungsausschuss",
+      "Freiwillige Leistung im Rahmen der verfügbaren Fondsmittel; reichen sie nicht, werden Photovoltaikanlagen in der Reihenfolge des Antragseingangs bedient, abgelehnte Vorhaben können im Folgejahr neu beantragt werden",
+      "Die Maßnahme ist bis zum 30. Juni des Folgejahres abzuschließen, der Zuschuss binnen zwei Monaten danach abzurufen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // NEU AUFGENOMMEN 26.09.2026. Gefunden über die Websuche beim Abschluss der
+    // Samtgemeinde Flotwedel (Landkreis Celle) — die Stadt Celle stand trotz
+    // aktivem Programm nicht im Katalog. Richtlinie im Volltext gelesen
+    // (loadDocument FID 3859.52.1, „Vom 08.12.2022, zuletzt geändert durch
+    // Beschluss des Rates vom 03.12.2025"; Nr. 9.1: „Diese Förderrichtlinien
+    // treten zum 01.01.2026 in Kraft"), dazu die Programmseite. Adversariale
+    // Gegenprüfung am selben Tag: alle Beträge und Bedingungen bestätigt.
+    //
+    // `pausiert`, nicht `aktiv`: Nr. 7.2 „Anträge … können vom 1. Januar bis
+    // 31. Mai der jeweiligen Förderperiode (Ausschlussfrist) … gestellt
+    // werden", Nr. 7.4 weist spätere Anträge „im Regelfall" zurück. Wer heute
+    // plant, kann erst ab dem 01.01.2027 beantragen und darf vorher nicht
+    // beginnen — ein Abzug heute stellte Geld in Aussicht, das es für dieses
+    // Jahr nicht mehr gibt. Dasselbe Muster wie Königswinter (Richtlinie gilt
+    // weiter, keine Antragstellung). WIEDERPRÜFUNG AM 01.01.2027: Öffnet die
+    // Runde, Status auf `aktiv` nach aktuellem Träger-Beleg.
+    //
+    // KEIN Rechenwert, auch nicht für die Zeit ab Januar: Der PV-Satz wäre als
+    // pvPerKwp/pvCap abbildbar, hängt aber an Verschattungsfreiheit und an der
+    // 49-%-Kumulierungsgrenze; die Wärmepumpe setzt eine eigene PV-Anlage
+    // voraus. Das entscheidet die Reaktivierung, nicht diese Aufnahme.
+    //
+    // Balkonkraftwerke und Speicher nennt die Richtlinie nicht. Balkon ist
+    // nach dem Wortlaut (keine Mindestleistung) nicht ausgeschlossen, aber
+    // unbelegt — deshalb NICHT in `foerdert`.
+  },
+
   // ─── Aufgenommen am 25.09.2026: Donauwörth, beendetes Programm ─────────────
   //
   // Found in the source queue (document page "Förderung Kleinstphotovoltaik –
