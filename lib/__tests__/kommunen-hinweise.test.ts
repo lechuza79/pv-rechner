@@ -158,4 +158,12 @@ describe("Offene Zeilen eines abgelegten Berichts", () => {
     expect(hinweisZeileLesen(kaputt)).toBeNull();
     expect(offeneHinweisZeilen([kaputt], new Map())).toEqual([kaputt]);
   });
+describe("schonVermerkt: domain inside a mail address", () => {
+  it("does not treat the sender domain of a reply as a known publication", () => {
+    const trier = '[2026-09-09] antwort aus Postfach: „AW: PLATZ 1" (steve.utecht@trier.de)';
+    expect(schonVermerkt("trier.de", trier)).toBe(false);
+    expect(schonVermerkt("trier.de", `${trier}\n[2026-09-27] Hinweis geprüft: https://www.trier.de/news/x`)).toBe(true);
+  });
+});
+
 });
