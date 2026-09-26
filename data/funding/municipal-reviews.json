@@ -67971,5 +67971,48 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07140011",
+    "name": "Benzweiler",
+    "checkedAt": "2026-09-26T22:13:33Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Benzweiler (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 05.09.2023, 1. Änderung 09.10.2024, Maßnahmen bis 31.12.2026): Dachanlage bis 30 kWp 250 €/kWp bis 2.500 €, Speicher 2.500 € höchstens 30 %, Balkonkraftwerk 30 % bis 300 € (auch für Mieter), Heizungsanlagen einschließlich Wärmepumpe zusammen bis 2.500 € höchstens 30 %; insgesamt 7.000 €. Dachanlage, Speicher und Heizung nur für Eigentümer mit Erstwohnsitz. Neu katalogisiert als benzweiler-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle gerechneten Werte, vier Textpräzisierungen eingearbeitet. Keine eigene Website der Gemeinde mit weiterem Programm gefunden; Kreisprogramme wie beim Nachbarort Reich.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Benzweiler mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (7 Seiten), am 27.09.2026 neu geladen und bytegleich zur Akte vom 26.09.2026",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/benzweiler/energiesparrichtline-benzweiler-mit-anlagen-benzweiler.pdf?cid=5ly",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 2 wird mit einmalig 250,00 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500,00 € je Anlage und Gebäude begrenzt.“ § 4 (13): Balkonanlage „30 % der Anschaffungskosten, jedoch höchstens 300,00 €“. § 8 (11): Maßnahmen „bis zum 31.12.2026 getätigt bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140076",
+    "name": "Külz (Hunsrück)",
+    "checkedAt": "2026-09-26T22:13:33Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Külz hatte eine Heizungsrichtlinie (Ratsbeschluss 24.02.2014, zuletzt geändert 05.09.2022): bis 4.000 € je Objekt für Wärmepumpen an wasserführender Heizung, Holz/Pellet und Solarthermie. Ihre Förderperiode endete am 31.12.2022 (§ 6 (4)), berücksichtigt wurden Maßnahmen bis 30.06.2023. Als beendetes Programm katalogisiert (kuelz-hunsrueck-heizung-ee). Eine aktuelle Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht veröffentlicht: Der Ortsrecht-Ordner der Verbandsgemeinde führt nur diese Richtlinie, die frühere Unterseite „Regenerative Energien“ auf kuelz.de antwortet mit 404, die Startseite verlinkt nur Dorferneuerungs-Fördergebiete und den Energieatlas.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Külz — nur die Heizungsrichtlinie",
+      "Richtlinie im Original vollständig gelesen (4 Seiten)",
+      "Websuche Külz Förderung Photovoltaik Balkonkraftwerk Zuschuss (27.09.2026)",
+      "kuelz.de: Startseite und Unterseite Regenerative Energien (404) am 27.09.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/kuelz/foerderrichtlinie-kuelz-durchgeschriebene-fassung.pdf?cid=2jp",
+        "finding": "§ 6 (4): „Die Förderperiode der Richtlinie ist bis zum 31.12.2022 begrenzt.“ § 6 (5): nur Maßnahmen, die „bis zum 30.06.2023 getätigt bzw. abgeschlossen sind“."
+      }
+    ],
+    "sources": []
   }
 ]

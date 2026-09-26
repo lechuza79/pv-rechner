@@ -7798,6 +7798,102 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
   },
 
+  "kuelz-hunsrueck-heizung-ee": {
+    id: "kuelz-hunsrueck-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
+    traeger: "Ortsgemeinde Külz (Hunsrück)", level: "kommune", region: "Külz (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140076",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/kuelz/foerderrichtlinie-kuelz-durchgeschriebene-fassung.pdf?cid=2jp",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2014-02-24", endetIso: "2022-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "max. 4.000 € je Objekt",
+    rates: [
+      { label: "Heizungsanlage (Wärmepumpe an wasserführender Heizung, Holz/Pellet, Solarthermie)", value: "ausgelaufen — Förderperiode bis 31.12.2022; zuvor bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Die Förderperiode endete am 31.12.2022; berücksichtigt wurden Maßnahmen, die bis 30.06.2023 abgeschlossen waren. Eine Neuauflage ist nicht bekannt",
+      "Antragsberechtigt waren Eigentümer von Gebäuden in Külz; jedes Gebäude konnte nur einmal gefördert werden",
+      "Gefördert wurden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpen nur an einem wasserführenden Heizungsnetz",
+      "Auch der Anschluss an das örtliche Nahwärmenetz wurde mit 4.000 € je Übergabestation gefördert",
+    ],
+    combinableWith: null,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, saved 26.09.2026
+    // from the VG Simmern-Rheinböllen sitemap): council decision 24.02.2014,
+    // amended 13.04.2015 and 05.09.2022. § 3 (1) Nr. 2 heat pumps "an ein
+    // wasserführendes Heizungsnetz angeschlossen"; § 4 (1) "höchstens
+    // 4.000,00 Euro" per object, amount "richtet sich nach den förderfähigen
+    // Kosten" — no rate, so nothing to compute. § 6 (4) "Förderperiode … bis
+    // zum 31.12.2022 begrenzt", § 6 (5) only measures "bis zum 30.06.2023
+    // getätigt bzw. abgeschlossen". No PV, storage or balcony. Taken in as
+    // ended (operator 17.08.2026: "gab es, ist beendet" is a real answer, and a
+    // relaunch will be noticed). No newer guideline in the Külz folder of the
+    // sitemap. combinableWith null: the guideline says nothing on combination.
+  },
+
+  "benzweiler-energiespar": {
+    id: "benzweiler-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Benzweiler", level: "kommune", region: "Benzweiler",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140011",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/benzweiler/energiesparrichtline-benzweiler-mit-anlagen-benzweiler.pdf?cid=5ly",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-09-05",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Anteil eines Balkonkraftwerks; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 2.500 €, Balkonkraftwerk max. 300 €, Heizungsanlagen zusammen max. 2.500 €; insgesamt 7.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 30 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung)", value: "zusammen bis 2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur mit Erstwohnsitz in Benzweiler; gefördert wird nur an einem privat genutzten Gebäude im Ort",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Benzweiler", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Mieter und Eigentümer beantragen; es muss mindestens vier Jahre im eigenen Eigentum bleiben", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 30 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gibt es bis 5.000 €, begrenzt auf 250 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz und nur nach einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 30 € übernimmt die Gemeinde, bei einem anderen Institut die Hälfte bis 200 €", nur: ["waermepumpe"] },
+      "Eine Doppelförderung derselben Maßnahme ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gibt es für dieselbe Maßnahme eine Förderung von anderer Seite, ist sie zuerst zu nutzen; die Gemeinde zahlt dann nur den Unterschied bis zu ihrem Betrag",
+      "Der Antrag geht spätestens sechs Monate nach Fertigstellung mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Gefördert wird nur, was bis 31.12.2026 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2026-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 30,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 7 pages, byte-identical to
+    // the copy saved 26.09.2026): council meeting 05.09.2023 for the funding
+    // period 2023-2024, signed 05.10.2023, in force retroactively 01.01.2023
+    // (§ 8 (7)), 1st amendment 09.10.2024 extended it: § 8 (10)/(11) period
+    // and measures "bis zum 31.12.2026 getätigt bzw. abgeschlossen", so
+    // endetIso switches the deduction off (Nidda precedent). § 4 (3) PV
+    // "250,00 € je kWp … auf 2.500,00 € je Anlage und Gebäude begrenzt" —
+    // computed; § 1 (3) Nr. 2 roof systems up to 30 kWp, hence pvMax: 30 (the
+    // cap is reached at 10 kWp anyway). § 4 (4) storage 2,500 € max 30 % —
+    // no model form, information only. § 4 (5) combined unit 5,000 € limited
+    // to 250 €/kWp and 30 % of the storage share — text only. § 4 (13)
+    // balcony "30 % der Anschaffungskosten, jedoch höchstens 300,00 €" —
+    // computed. § 4 (9) heating Nr. 8-10 incl. heat pump max 2,500 € and 30 %
+    // — not computed (percentage heat-pump tripwire). § 2 (3): PV, storage and
+    // heating only for owners with first residence; § 2 (5): the balcony
+    // (Nr. 14) for tenants AND owners — hence NO nurWohnform (it would lock
+    // tenants out of the balcony deduction). § 3 (1): the energy check is
+    // required only for Nr. 5-6 and 10-11, i.e. insulation, windows, heat
+    // pump and ventilation — not for PV, storage or balcony. § 8 (4): balcony
+    // kept 4 years. § 8 (8): other funding first, municipality pays the
+    // difference — no federal cash grant exists for PV or a balcony, so BUND
+    // (zero-VAT and a KfW loan) does not reduce the amount; for a heat pump
+    // the BEG grant would take precedence, which is why that part stays
+    // uncomputed. § 8 (9): VG and district programmes are no double funding.
+    // Found through the VG Simmern-Rheinböllen sitemap; the municipality was
+    // not in the catalogue.
+  },
+
   "reich-hunsrueck-energiespar": {
     id: "reich-hunsrueck-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
     traeger: "Ortsgemeinde Reich", level: "kommune", region: "Reich",

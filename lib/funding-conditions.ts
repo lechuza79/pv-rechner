@@ -650,6 +650,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule,
   // the shared PV/storage maximum and the heat-pump limits have no test form yet.
   "reich-hunsrueck-energiespar",
+  // Added 27 Sep 2026: guideline read in full; first residence, the owner rule
+  // for PV/storage/heating, the 4-year balcony holding period and the
+  // subsidiarity clause have no test form yet.
+  "benzweiler-energiespar",
+  // Added 27 Sep 2026: closed historical programme (funding period ended
+  // 31.12.2022); the owner rule and the renewables-only heating rule have no
+  // test form yet.
+  "kuelz-hunsrueck-heizung-ee",
 ];
 
 /**
