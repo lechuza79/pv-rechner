@@ -18,7 +18,11 @@ declare global {
 }
 
 /** Shared widget chrome; the race engine owns only its plot and clock. */
-export default function DistrictRaceWidget({name,stand,rows,history}:{name:string;stand:string;rows:RaceRow[];history:RaceFrame[]}) {
+/** Wording per level; the district texts are the default. */
+export type RaceWording = {title:string;members:string;leaders:string;unit:string};
+export const DISTRICT_RACE_WORDING: RaceWording = {title:"Welche Gemeinde hat die meisten Solaranlagen?",members:"Alle Gemeinden im Landkreis",leaders:"Die zehn führenden Gemeinden",unit:"Orte"};
+
+export default function DistrictRaceWidget({name,stand,rows,history,wording=DISTRICT_RACE_WORDING}:{name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording}) {
   const plot=useRef<HTMLDivElement>(null),clock=useRef<HTMLSpanElement>(null);
   useEffect(()=>{
     let active=true,started=false;
@@ -34,10 +38,10 @@ export default function DistrictRaceWidget({name,stand,rows,history}:{name:strin
     return ()=>{active=false;window.removeEventListener("district-race-ready",start);stage?.replaceChildren();};
   },[rows,history]);
   return <div className={`${foundation.foundation} sc-dashboard district-race-widget`} data-story-scheme="light">
-    <WidgetFrame title="Welche Gemeinde hat die meisten Solaranlagen?" kind="time-series"
+    <WidgetFrame title={wording.title} kind="time-series"
       headingMeta={<span ref={clock}>{history[0]?.year}</span>}
-      context={<>Wir vergleichen <InfoTooltip label={`${rows.length} Orte ${ortPhrase({name})}`} ariaLabel="Verglichene Orte">Alle Gemeinden im Landkreis, unabhängig von ihrer Einwohnerzahl.</InfoTooltip>. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}
-      help={<p>Die zehn führenden Gemeinden im Zeitverlauf. Verglichen werden alle {rows.length} Orte {ortPhrase({name})}, unabhängig von ihrer Einwohnerzahl. Heutiger Anlagenbestand nach Inbetriebnahmejahr. Registerstand: {dashboardDate(stand)}.</p>}>
+      context={<>Wir vergleichen <InfoTooltip label={`${rows.length} ${wording.unit} ${ortPhrase({name})}`} ariaLabel={`Verglichene ${wording.unit}`}>{wording.members}, unabhängig von ihrer Einwohnerzahl.</InfoTooltip>. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}
+      help={<p>{wording.leaders} im Zeitverlauf. Verglichen werden alle {rows.length} {wording.unit} {ortPhrase({name})}, unabhängig von ihrer Einwohnerzahl. Heutiger Anlagenbestand nach Inbetriebnahmejahr. Registerstand: {dashboardDate(stand)}.</p>}>
       <div className="district-race-artwork" aria-hidden="true">
         <div className="district-race-splashes"/>
         <div className="district-race-panels"/>

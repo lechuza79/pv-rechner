@@ -1,6 +1,34 @@
-# Central visual system — inventory, contract, migration plan
+# Central visual system and regional pages — plan
 
-Status: **checkpoint for review (25.09.2026), no broad migration done.** Scope: user
+**SCOPE REDUCED (26.09.2026, user via root).** Priority is Landkreis → Bundesland →
+Deutschland live and performant on the accepted district design. The broad widget
+roadmap below (stages beyond the three migrated municipal visuals, editorial rebuild,
+media library, billing) is **DEFERRED**. The municipality page changes only where a
+concrete BL/DE dependency requires it.
+
+**Division of work (user, 26.09.2026):** Claude implements and tests autonomously
+within this scope up to a visually reviewable BL/DE state and the authorised release
+preparation, continuing after routine steps without waiting. Codex/root does only
+milestone acceptance and genuinely new product decisions from compact evidence. Visual
+user acceptance before release, foreign worktrees and port 4237 stay untouchable.
+
+## BL/DE dependencies (checked in code, 26.09.2026)
+
+| Need | State in code | Action |
+|---|---|---|
+| Route | `solar-atlas/[[...pfad]]` renders the OLD page for Bundesland and Deutschland; only Landkreis uses `LandkreisSeite` | route both levels to the shared regional page |
+| Children + values | `getChildren` / `getRankingData` already deliver Kreise incl. kreisfreie Städte (Bundesland) and the 16 Länder (DE) from the register rollup, per year | reuse (map metrics, race, table) — no summing of Landkreis totals |
+| Geometry | `public/geo/de-landkreise.geo.json` (400, incl. kreisfreie, `bl` field) and `de-bundeslaender.geo.json` (16), same format as the municipality files | loader per level; drop the `Kreisfreie Stadt` kind there (the district map treats it as a non-member pin) |
+| Hero map, race, table, intro, crumbs, metadata, JSON-LD | generic on children/ranking; lede text says "Gemeinden" | level-aware wording |
+| Register widgets (growth, category donut, composition) | computed from ranking cells, no package needed | reuse the district widgets |
+| Monthly KPI history, energy widgets, live power, stories | exist only via municipality/district packages; no state/country package | DEFERRED; needs a state/country package pipeline (decision at milestone) |
+| Funding | `matchFundingForAgs` works on 2-digit keys | show state (and federal) programmes only |
+| Subscription | abo accepts 5/8-digit keys only | not offered on BL/DE |
+| Berlin/Hamburg | one child only | no race/table (as on the old page) |
+| Performance | old BL page ISR on demand, DE prerendered; district page 2.4–3.2 MB HTML mostly geometry | measure HTML size and cold render per level before release |
+
+
+## Earlier (municipal visuals, done)
 brief in `/tmp/atlas-central-visuals-scope.md`. Small fixes already on this branch:
 district hero title on the hero role (48 px desktop cap), shared composition arc.
 

@@ -37,7 +37,10 @@ export function EnergyYearRadial({data, mode, index, compact, layout, labelClass
   const maximum = layout === 'monitor' ? Math.max(20, Math.ceil(peak / 20) * 20) : Math.ceil(peak / 20) * 20;
   const total = data.days.reduce((sum, entry) => sum + value(entry), 0);
   const point = (i: number, v: number) => {const angle = i / data.days.length * Math.PI * 2 - Math.PI / 2, r = 82 + v / maximum * 145; return [260 + Math.cos(angle) * r, 260 + Math.sin(angle) * r];};
-  const segment = (i: number, a: number, b: number) => {const p = point(i, a), q = point(i, b); return `M${p.join(',')} L${q.join(',')}`;};
+  // Two decimals: server and browser trigonometry differ in the last digits, which
+  // otherwise shows up as a hydration mismatch on every day bar (sub-pixel either way).
+  const xy = (p: number[]) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
+  const segment = (i: number, a: number, b: number) => `M${xy(point(i, a))} L${xy(point(i, b))}`;
   const tooltip = (entry: EnergyYear['days'][number]) => layout === 'monitor'
     ? `${formatStoryDate(entry.date)} · Solar ${energieTeile(entry.solarMwh).value} ${energieTeile(entry.solarMwh).unit} · Wind ${energieTeile(entry.windMwh).value} ${energieTeile(entry.windMwh).unit}`
     : `${formatStoryDate(entry.date)} · Solar ${Math.round(entry.solarMwh)} MWh${showWind ? ` · Wind ${Math.round(entry.windMwh)} MWh` : ''}`;

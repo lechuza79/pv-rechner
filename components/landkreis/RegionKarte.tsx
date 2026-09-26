@@ -15,8 +15,10 @@ export type MapValue = { id: string; name: string; value: number | null; formatt
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics }: {
+export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht" }: {
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
+  /** Singular of the mapped unit (link hint) and the name of the table below. */
+  member?: string; overview?: string;
 }) {
   const router=useRouter();
   const tooltip=useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export default function RegionKarte({ shapes, metrics }: {
         hidden on every page: 0.9 MB of duplicated boundary paths for the
         Eifelkreis, never shown while the scene works. */}
     {sceneFailed && <div className={styles.mapFallback}>
-    <svg viewBox={shapes.length ? `${left} ${top} ${right-left} ${bottom-top}` : "0 0 1000 660"} role="img" aria-label={`${metric} auf der Karte. Gebiete und Werte stehen auch in der Gemeindeübersicht.`}>
+    <svg viewBox={shapes.length ? `${left} ${top} ${right-left} ${bottom-top}` : "0 0 1000 660"} role="img" aria-label={`${metric} auf der Karte. Gebiete und Werte stehen auch in der ${overview}.`}>
       <g className={styles.mapBase}>
         {shapes.map(s => <path key={s.id} d={s.sidePath} fillRule="nonzero" data-forest={s.kind === "Gemeindefreies Gebiet"} />)}
       </g>
@@ -126,7 +128,7 @@ export default function RegionKarte({ shapes, metrics }: {
     {hoverShape && createPortal(<div ref={tooltip} role="tooltip" className={styles.mapTooltip} style={flagPosition}>
       <strong>{hoverShape.name}</strong>
       <span>{hoverValue ? `${hoverValue.formatted.value} ${hoverValue.formatted.unit} · ${metric}` : contextDescription(hoverShape)}</span>
-      <small>{hoverValue?.href?"Gemeinde öffnen ↗":null}</small>
+      <small>{hoverValue?.href?`${member} öffnen ↗`:null}</small>
     </div>,document.body)}
     </div>
 

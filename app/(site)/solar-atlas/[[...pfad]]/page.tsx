@@ -166,6 +166,14 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   );
 }
 
+/**
+ * Levels served by the regional page on the accepted district design. Bundesland
+ * and Deutschland switch here; the old page stays intact for any level removed
+ * from this list (its extra sections — per-capita comparison, highlight paragraph,
+ * ranking tiles, international comparison — are not part of the new design).
+ */
+const REGION_DESIGN_LEVELS: ReadonlySet<string> = new Set(["landkreis", "bundesland", "de"]);
+
 async function AtlasBody({
   region,
   childLevel,
@@ -176,6 +184,7 @@ async function AtlasBody({
   pfad: string[] | undefined;
 }) {
   const params: Params = { pfad };
+  const onRegionDesign = REGION_DESIGN_LEVELS.has(region.level);
   const [atlas, children, ancestors, ranking] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),
@@ -214,7 +223,8 @@ async function AtlasBody({
       : region.level === "bundesland"
         ? [{ key: "de", ags: "de" }]
         : [];
-  const refData = await Promise.all(
+  // Old page only: the per-capita comparison with the parent levels.
+  const refData = onRegionDesign ? [] : await Promise.all(
     refChain.map(async (r) => {
       const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
       return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
@@ -262,7 +272,7 @@ async function AtlasBody({
    * Stunde, nicht je Aufruf.
    */
   const geschwister =
-    region.level === "bundesland"
+    region.level === "bundesland" && !onRegionDesign
       ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
       : [];
   const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
@@ -371,11 +381,11 @@ async function AtlasBody({
 
   // First local design reference only; metadata, structured data and index
   // policy remain on the existing route and share the existing sources.
-  if (region.level === "landkreis") {
+  if (onRegionDesign) {
     return <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
-      <LandkreisSeite state={{id:region.region_id.slice(0,2),name:ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} />
+      <LandkreisSeite state={region.level === "de" ? {id:"",name:""} : {id:region.region_id.slice(0,2),name:region.level === "bundesland" ? region.name : ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} />
     </>;
   }
 
