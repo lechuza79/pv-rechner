@@ -449,36 +449,49 @@
 
 /* The search field signals focus with its native caret, not the header ring. */
 .sc-search-panel .sc-search-field input:is(:focus,:focus-visible){outline:none!important;box-shadow:none!important}
-/* "Vor Ort": one place field on top, then Deutschland · Bundesland · Landkreis.
-   Fields take the look of the menu's link cards, so the panel reads as one surface. */
+/* "Vor Ort": one primary place field, then three columns whose controls are
+   the menu's own cards (.sc-nav-column>a): same box, radius, type and second
+   line. The dropdowns take the account menu's look (.sc-account-panel). */
 .sc-local{display:grid;gap:28px}
-.sc-local-label{display:block;margin:0 0 12px;font:600 var(--sc-nav-label)/1.4 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-nav-muted)}
-.sc-nav-column .sc-local-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.sc-local-field,.sc-local-land-toggle{background:#e0eae5;border:1px solid transparent;border-radius:14px;box-sizing:border-box;color:inherit}
-.sc-local-field{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:68px}
+.sc-local-search,.sc-local-land{position:relative}
+.sc-local-label{display:block;margin:0 0 10px;font:600 var(--sc-nav-label)/1.4 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-nav-muted)}
+/* Primary: the site search's field, on the card surface. */
+.sc-local-field{display:flex;align-items:center;gap:12px;min-height:68px;box-sizing:border-box;padding:0 16px;border-radius:14px;background:#e0eae5}
 .sc-local-field svg{flex:none;color:var(--sc-nav-muted)}
-.sc-local-field input{flex:1;min-width:0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;padding:12px 0;outline:none;box-shadow:none}
-.sc-local-field input::placeholder{color:var(--sc-nav-muted);opacity:.7;font-weight:400;font-family:'DM Sans',sans-serif}
-.sc-local-field input::-webkit-search-cancel-button{display:none}
-/* The field's own border shows focus; the header's input outline would box it in twice. */
-.sc-global-nav .sc-local-field input:focus,.sc-global-nav .sc-local-field input:focus-visible{outline:none;box-shadow:none;border:0}
-.sc-local-search-kreis .sc-local-field{min-height:0;padding:0 16px}
-.sc-local-search-kreis .sc-local-field input{font:600 16px/1.4 'DM Sans',sans-serif;padding:16px 0}
-.sc-local-field:focus-within,.sc-local-land-toggle:focus-visible{border-color:var(--sc-nav-ink);outline:none}
-.sc-local-land{position:relative}
-.sc-global-nav .sc-local-land-toggle{background:#e0eae5;border:1px solid transparent;border-radius:14px;color:inherit;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px;font:600 16px/1.4 'DM Sans',sans-serif;text-align:left;cursor:pointer;transition:background-color 180ms ease}
-.sc-local-land-toggle svg{flex:none;transition:transform 180ms ease}
-.sc-local-land.is-open .sc-local-land-toggle svg{transform:rotate(180deg)}
-@media(hover:hover){.sc-global-nav .sc-local-land-toggle:hover{background:#d4ff24;color:#132527}}
-.sc-local-land-list{display:grid;gap:2px;margin-top:6px}
-/* In the flow, not floating: the menu panel clips anything that leaves it. */
-.sc-local-land[data-ready] .sc-local-land-list{max-height:296px;overflow:auto;padding:6px;box-sizing:border-box;background:#fff;border-radius:14px;overscroll-behavior:contain}
-.sc-local-land-list[hidden]{display:none}
-.sc-local-land-list>a{display:block;padding:10px 12px;border-radius:10px;color:inherit;text-decoration:none;font-weight:600;line-height:1.35}
-.sc-local-land-list>a:hover,.sc-local-land-list>a:focus-visible{background:#d4ff24;color:#132527;outline:none}
-@media(max-width:1280px){.sc-local-land[data-ready] .sc-local-land-list{max-height:none}}
-@media(prefers-reduced-motion:reduce){.sc-local-land-toggle,.sc-local-land-toggle svg{transition:none}}
-.sc-local-results:not(:empty){margin-top:8px}
-.sc-local-hits>a{margin-bottom:6px}
-.sc-local-note{margin:8px 0 0;color:var(--sc-nav-muted);max-width:60ch}
-@media(max-width:1280px){.sc-local{gap:20px}.sc-local-field{min-height:56px}.sc-local-field input{font-size:18px}}
+.sc-global-nav .sc-local-field input{flex:1;min-width:0;margin:0;padding:12px 0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;outline:none;box-shadow:none}
+.sc-local-field input::placeholder{color:var(--sc-nav-muted);opacity:1;font-weight:400;font-family:'DM Sans',sans-serif}
+.sc-local-field input::-webkit-search-cancel-button,.sc-local-card input::-webkit-search-cancel-button{display:none}
+/* Secondary: a card. The field's placeholder reads like a card title. */
+.sc-global-nav .sc-local-card{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:68px;box-sizing:border-box;margin:0;padding:16px;border:0;border-radius:14px;background:#e0eae5;color:inherit;font-family:'DM Sans',sans-serif;font-size:inherit;font-weight:600;line-height:1.4;text-align:left;cursor:pointer;transition:background-color 180ms ease}
+.sc-local-card>span{flex:1;min-width:0}
+.sc-global-nav .sc-local-card input{display:block;width:100%;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;outline:none;box-shadow:none}
+.sc-local-card input::placeholder{color:inherit;opacity:1}
+.sc-local-chevron{flex:none;transition:transform 180ms ease}
+.sc-local-land.is-open .sc-local-chevron{transform:rotate(180deg)}
+@media(hover:hover){.sc-global-nav button.sc-local-card:hover{background:#d4ff24;color:#132527}}
+.sc-global-nav button.sc-local-card:focus-visible{outline:none;background:#d4ff24;color:#132527}
+.sc-local-field:focus-within,.sc-local-search .sc-local-card:focus-within{box-shadow:inset 0 0 0 2px var(--sc-nav-ink)}
+/* Dropdowns float over the panel and the page below; the panel stays put. */
+.sc-global-nav .sc-local-drop{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;display:grid;gap:2px;max-height:min(320px,calc(100dvh - 240px));overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:8px;border-radius:14px;background:#edf3ef;color:#153740;box-shadow:0 14px 45px #071d2933}
+.sc-global-nav .sc-local-drop[hidden]{display:none}
+.sc-global-nav .sc-local-drop>a{display:block;margin:0;padding:10px 14px;border:0;border-radius:999px;background:none;color:inherit;font:500 var(--sc-nav-copy)/1.4 'DM Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-local-drop strong{font-weight:600}
+.sc-local-drop strong+span{margin-left:8px;color:var(--sc-nav-muted)}
+.sc-global-nav .sc-local-drop>a:hover,.sc-global-nav .sc-local-drop>a:focus-visible{outline:none;background:#d4ff24;color:#132527}
+.sc-local-drop>a:hover span,.sc-local-drop>a:focus-visible span{color:inherit}
+.sc-local-note{margin:0;padding:10px 14px;color:var(--sc-nav-muted)}
+@media(min-width:1281px){.sc-nav-section-local>.sc-nav-panel{overflow:visible}}
+/* Mobile: the menu is one scrolling column, so a dropdown opens in place
+   instead of floating (the section clips anything outside it). The cards
+   follow the menu cards' compact mobile size. */
+@media(max-width:1280px){
+ .sc-local{gap:16px}
+ .sc-local-label{margin-bottom:8px}
+ .sc-local-field{min-height:56px}
+ .sc-global-nav .sc-local-field input{font-size:18px}
+ .sc-global-nav .sc-local-card{min-height:0;padding:12px;font-size:var(--sc-nav-base)}
+ .sc-global-nav .sc-local-drop{position:static;margin-top:6px;max-height:none;box-shadow:none;border:1px solid var(--sc-nav-line)}
+}
+/* iOS zooms into any field under 16px on focus; only the typed line grows. */
+@media(pointer:coarse){.sc-global-nav .sc-local-card input{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.sc-global-nav .sc-local-card,.sc-local-chevron{transition:none}}

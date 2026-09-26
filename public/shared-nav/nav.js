@@ -128,19 +128,32 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
 
 /**
  * "Vor Ort": the town and Landkreis fields suggest places while typing; Enter
- * opens the first suggestion (or, before any has loaded, the search page the
- * form points at). The Bundesland list opens and closes like a dropdown.
+ * opens the first suggestion (waiting for it if it has not arrived yet). The
+ * Bundesland card opens a list of the Länder. Suggestions and the Länder list
+ * share one dropdown: only one is open, and outside click or Escape closes it
+ * (Escape here does not close the whole menu). Arrow keys move through it.
  */
 function mountLocal(nav){
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const arrow='<svg class="sc-nav-link-arrow" width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
  const unavailable='<p class="sc-local-note" role="status">Die Ortssuche antwortet gerade nicht. Bitte gleich noch einmal versuchen.</p>';
- const fields=[...nav.querySelectorAll('[data-local-search]')].map(form=>{
+ const drops=[];
+ const closeAll=except=>drops.forEach(d=>{if(d!==except)d.close();});
+ // Arrow keys inside an open dropdown; `back` receives focus above the first item.
+ const arrows=(list,back)=>list.addEventListener('keydown',e=>{
+  const items=[...list.querySelectorAll('a')],i=items.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'&&i<items.length-1){e.preventDefault();items[i+1].focus();}
+  else if(e.key==='ArrowUp'){e.preventDefault();(i>0?items[i-1]:back).focus();}
+ });
+ nav.querySelectorAll('[data-local-search]').forEach(form=>{
   const level=form.dataset.localSearch,input=form.querySelector('input'),results=form.querySelector('.sc-local-results');
   let timer,controller,hits=[],pending=null;
-  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];pending=null;results.innerHTML='';};
+  const drop={close(){results.hidden=true;},open(){if(results.innerHTML){closeAll(drop);results.hidden=false;}}};drops.push(drop);
+  const show=html=>{results.innerHTML=html;if(html&&document.activeElement===input)drop.open();else if(!html)drop.close();};
+  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];pending=null;show('');};
   const run=q=>{
    controller?.abort();const own=controller=new AbortController();
+   // A slow answer must not look like a dead field: after a moment, say so.
+   const slow=setTimeout(()=>{if(input.value.trim()===q&&!own.signal.aborted)show('<p class="sc-local-note" role="status">Suche läuft …</p>');},300);
    pending=(async()=>{
     try{
      const response=await fetch(`/api/suche/orte?ebene=${level}&q=${encodeURIComponent(q)}`,{signal:own.signal});
@@ -148,17 +161,23 @@ function mountLocal(nav){
      const data=await response.json();
      if(input.value.trim()!==q)return;
      hits=data.orte??[];
-     results.innerHTML=hits.length
-      ?`<div class="sc-nav-column sc-local-hits">${hits.map(h=>`<a href="${esc(h.href)}"><span>${esc(h.name)}<small>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</small></span>${arrow}</a>`).join('')}</div>`
+     show(hits.length
+      ?hits.map(h=>`<a href="${esc(h.href)}"><strong>${esc(h.name)}</strong><span>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</span></a>`).join('')
       :data.nichtVerfuegbar?unavailable
-      :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`;
-    }catch(e){if(e?.name==='AbortError')return;hits=[];results.innerHTML=unavailable;}
+      :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`);
+    }catch(e){if(e?.name==='AbortError')return;hits=[];show(unavailable);}
+    finally{clearTimeout(slow);}
    })();
    return pending;
   };
-  const complete=q=>q.length>=2&&!(/^\d+$/.test(q)&&q.length<5);
   // A postcode only means something once it is complete; "97" is not a miss.
+  const complete=q=>q.length>=2&&!(/^\d+$/.test(q)&&q.length<5);
   input.addEventListener('input',()=>{const q=input.value.trim();clear();if(!complete(q))return;timer=setTimeout(()=>run(q),200);});
+  input.addEventListener('focus',()=>drop.open());
+  input.addEventListener('keydown',e=>{if(e.key==='ArrowDown'&&!results.hidden){const first=results.querySelector('a');if(first){e.preventDefault();first.focus();}}});
+  arrows(results,input);
+  // Focus first: focusing the field reopens its suggestions.
+  form.addEventListener('keydown',e=>{if(e.key==='Escape'&&!results.hidden){e.stopPropagation();input.focus();drop.close();}});
   // Enter goes to the first place — also when it is pressed before the
   // suggestions have arrived: then it waits for them instead of leaving.
   form.addEventListener('submit',async e=>{
@@ -167,17 +186,22 @@ function mountLocal(nav){
    if(!hits.length){clearTimeout(timer);await(pending??run(q));}
    if(hits[0]&&input.value.trim()===q)location.href=hits[0].href;
   });
-  return {reset(){clear();input.value='';},destroy(){clear();}};
+  drop.reset=()=>{clear();input.value='';};
+  drop.root=form;
  });
- // The Land list: a disclosure that closes on a second click, outside or Escape.
- const land=nav.querySelector('[data-local-land]'),landToggle=land?.querySelector('button'),landList=land?.querySelector('.sc-local-land-list');
- const setLand=open=>{if(!land)return;landList.hidden=!open;landToggle.setAttribute('aria-expanded',String(open));land.classList.toggle('is-open',open);};
- if(land)land.dataset.ready='';setLand(false);
- landToggle?.addEventListener('click',e=>{e.stopPropagation();setLand(landList.hidden);});
- const landOutside=e=>{if(land&&!land.contains(e.target))setLand(false);};
- const landEscape=e=>{if(e.key==='Escape'&&land&&!landList.hidden){e.stopPropagation();setLand(false);landToggle.focus();}};
- document.addEventListener('click',landOutside);land?.addEventListener('keydown',landEscape);
- return {reset(){fields.forEach(f=>f.reset());setLand(false);},destroy(){fields.forEach(f=>f.destroy());document.removeEventListener('click',landOutside);}};
+ const land=nav.querySelector('[data-local-land]');
+ if(land){
+  const toggle=land.querySelector('button'),list=land.querySelector('.sc-local-land-list');
+  const drop={close(){list.hidden=true;toggle.setAttribute('aria-expanded','false');land.classList.remove('is-open');},open(){closeAll(drop);list.hidden=false;toggle.setAttribute('aria-expanded','true');land.classList.add('is-open');},root:land};drops.push(drop);
+  land.dataset.ready='';drop.close();
+  toggle.addEventListener('click',()=>list.hidden?drop.open():drop.close());
+  toggle.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();drop.open();list.querySelector('a')?.focus();}});
+  arrows(list,toggle);
+  land.addEventListener('keydown',e=>{if(e.key==='Escape'&&!list.hidden){e.stopPropagation();drop.close();toggle.focus();}});
+ }
+ const outside=e=>drops.forEach(d=>{if(!d.root.contains(e.target))d.close();});
+ document.addEventListener('click',outside);
+ return {reset(){drops.forEach(d=>{d.reset?.();d.close();});},destroy(){document.removeEventListener('click',outside);drops.forEach(d=>d.reset?.());}};
 }
 
 /**
