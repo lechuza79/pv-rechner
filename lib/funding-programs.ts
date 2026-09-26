@@ -7775,6 +7775,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
+    endetIso: "2026-12-31",
     pvPerKwp: 100, pvCap: 1500,
     balkonPercentOfCost: 0.3, balkonCap: 150,
     // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 6 pages; the copy on
@@ -7791,7 +7792,66 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // including the balcony (Nr. 10), only for owners of a residential building
     // — hence nurWohnform. § 3 (5) energy check required for all of § 1 (3).
     // § 8 (5) funding independent of other grants, so BUND. § 8 (7) term until
-    // 31.12.2026 — a guideline term, not endetIso. Found through the VG
+    // 31.12.2026 bounds the measures ("bis 31.12.2026 abgeschlossen"),
+    // so endetIso switches the deduction off (corrected 26.09.2026, Nidda
+    // precedent; the first entry treated it as a mere guideline term). Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "reich-hunsrueck-energiespar": {
+    id: "reich-hunsrueck-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Reich", level: "kommune", region: "Reich",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140123",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/reich/energiesparrichtlinie-reich-durchgeschrieben.pdf?cid=57d",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-04-10",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp oder Festbetrag für einen Speicher, jeweils mit Prozentgrenze; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage und Speicher zusammen max. 1.500 €; Heizungsanlage max. 1.500 €; insgesamt 5.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "200 € je kWp, max. 1.500 € und höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "1.500 €, höchstens 30 % der Anschaffungskosten — zusammen mit der Dachanlage insgesamt nur einmal bis 1.500 €", nur: ["pv"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung, Austausch Öl/Gas)", value: "bis 1.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes in Reich",
+      "Voraussetzung ist ein Energie-Check vor Ort durch ein anerkanntes Institut, z. B. die Verbraucherzentrale; die Gemeinde übernimmt dafür bis 40 €, sofern die Verbandsgemeinde ihn nicht schon fördert",
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen, je Gebäude wird einer gefördert", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gilt ebenfalls 200 € je kWp bis 1.500 €, zusätzlich höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz und nicht im Neubau", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Gefördert wird nur, was bis 31.12.2026 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    endetIso: "2026-12-31",
+    pvPerKwp: 200, pvCap: 1500, pvMax: 10,
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 8 pages): council decision
+    // 10.04.2018, in force retroactively 01.04.2017 (§ 9 (6)), last amended
+    // 04.03.2026 (9th amendment, energy check 40 €). § 1 (3) Nr. 1 "Photovoltaik-
+    // anlagen auf Dächern bis zu einer Gesamtleistung von 10 kWp je Anlage" —
+    // read as the eligible object, hence pvMax: 10 (the safe direction: the cap
+    // is reached at 7.5 kWp anyway, so only larger systems are affected).
+    // § 4 (2) "200 € je kWp … auf 1.500 € je Anlage und Gebäude begrenzt";
+    // § 4 (4) PV OR storage per funding period, together max 1,500 € and 30 %
+    // of cost. The 30 % limit binds only below 667 €/kWp, far under the
+    // calculator's market prices, so the kWp rate is computed (same trade-off
+    // as Bickenbach/Allendorf). Storage NOT computed: flat 1,500 € max 30 %
+    // has no model form, and it shares the 1,500 € with the PV part. § 4 (8)
+    // heating incl. heat pump (§ 1 (3) Nr. 8, not in new builds) max 1,500 €
+    // and 30 % — not computed (percentage heat-pump tripwire). § 2 (2): owners
+    // only; § 3 (1) energy check for § 1 (3) Nr. 1-10. § 9 (8): federal and
+    // state programmes are no double funding, so BUND. § 9 (9)/(10) term until
+    // 31.12.2026: § 9 (10) accepts only measures "bis zum 31.12.2026 getätigt
+    // bzw. abgeschlossen", so the date bounds the MEASURE, not just the text —
+    // endetIso switches the deduction off (Nidda precedent). The council
+    // extended it before; if it does again, lift endetIso with the new source.
+    // § 4 (5) combined unit: 1,500 € but also max 30 % of the storage share —
+    // text only; the calculator does not know a combined unit. § 9 (7): a VG guideline
+    // would take priority for identical items; the VG's own guideline covers
+    // only appliances and consultation. Found through the VG
     // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
   },
 

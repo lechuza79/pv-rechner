@@ -647,6 +647,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // consultation, the owner rule and the start-after-entry-into-force rule have
   // no test form yet.
   "reckershausen-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule,
+  // the shared PV/storage maximum and the heat-pump limits have no test form yet.
+  "reich-hunsrueck-energiespar",
 ];
 
 /**

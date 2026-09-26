@@ -67928,5 +67928,48 @@
         "evidenceUrl": "https://tiefenbach-hunsrueck.de/foerderprogramme.html"
       }
     ]
+  },
+  {
+    "regionId": "07140123",
+    "name": "Reich",
+    "checkedAt": "2026-09-26T20:07:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Reich (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert Eigentümer über die eigene Energiesparrichtlinie (Ratsbeschluss 10.04.2018, zuletzt geändert 04.03.2026, Maßnahmen bis 31.12.2026): Dachanlage bis 10 kWp 200 €/kWp, Dachanlage oder Speicher zusammen höchstens 1.500 € und 30 % der Kosten, Heizungsanlagen einschließlich Wärmepumpe bis 1.500 €; Voraussetzung Energie-Check vor Ort. Kein Balkonkraftwerk. Neu katalogisiert als reich-hunsrueck-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle Sätze, vier Präzisierungen eingearbeitet. Die Gemeinde hat keine eigene Website; kein Kreisprogramm für Private.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Reich mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (8 Seiten, 9. Änderung vom 04.03.2026)",
+      "Websuche nach eigener Programmseite der Gemeinde: keine gefunden",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/reich/energiesparrichtlinie-reich-durchgeschrieben.pdf?cid=57d",
+        "finding": "§ 4 (2): „Die Neuinstallation einer Photovoltaikanlage nach § 1(3) Nr. 1 wird mit einmalig 200 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 1.500 € je Anlage und Gebäude begrenzt.“ § 9 (10): nur Maßnahmen, die „bis zum 31.12.2026 getätigt bzw. abgeschlossen sind“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140158",
+    "name": "Wahlbach",
+    "checkedAt": "2026-09-26T20:07:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wahlbach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) hat eine eigene Energiesparrichtlinie (zuletzt geändert 28.01.2026, Maßnahmen bis 31.12.2026), die seit der 7. Änderung vom 12.12.2024 nur noch energiesparende Haushaltsgeräte fördert (100 € je Gerätesorte); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen stehen nicht mehr darin. Kein Kreisprogramm für Private. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Wahlbach mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (9 Seiten mit Antrag und Geräteliste)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/wahlbach/richtlinie-energieeinsparung-wahlbach-durchgeschrieben.pdf?cid=3ry",
+        "finding": "§ 1 (2): „Gefördert wird die Beschaffung folgender neuer Elektrogeräte …“ (Kühl-, Gefriergeräte, Waschmaschine, Geschirrspüler, Backofen, Trockner); § 4 (1) 100 € je Gerätesorte — keine weiteren Fördertatbestände."
+      }
+    ],
+    "sources": []
   }
 ]
