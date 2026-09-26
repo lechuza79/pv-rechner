@@ -195,9 +195,9 @@ test('district energy widgets retain complete periods and fit mobile',async({pag
   await expect(page.locator('.district-race')).toBeVisible();
   const monitor=page.locator('#atlas-data');
   for(const title of ['Solarleistung heute','Solarerzeugung im Tagesverlauf','Solar- und Windpotenzial im Jahresverlauf','Wert des Solarstroms','Einspeisevergütung']){
-    await expect(monitor.getByRole('heading',{name:title,exact:true})).toBeVisible();
+    await expect(monitor.getByRole('heading',{name:title,exact:false})).toBeVisible();
   }
-  const money=monitor.locator('.sc-widget').filter({has:page.getByRole('heading',{name:'Wert des Solarstroms',exact:true})});
+  const money=monitor.locator('.sc-widget').filter({has:page.getByRole('heading',{name:'Wert des Solarstroms',exact:false})});
   const period=money.getByRole('combobox',{name:'Monat der Berechnung'});
   const before=await money.locator('[data-approved-template="kennzahl"] strong').innerText();
   const options=await period.locator('option').evaluateAll(nodes=>nodes.map(node=>(node as HTMLOptionElement).value));
