@@ -67064,5 +67064,223 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "03351001",
+    "name": "Adelheidsdorf",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Adelheidsdorf gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      },
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis/",
+        "finding": "Am 26.09.2026 gelesen: Förderkreis der Städtepartnerschaft Limanowa (Verein), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis",
+        "disposition": "reviewed",
+        "reason": "Förderkreis der Städtepartnerschaft Limanowa (Verein), kein Förderprogramm.",
+        "evidenceUrl": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Internationale-St%C3%A4dtepartnerschaften/Limanowa/F%C3%B6rderkreis/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351018",
+    "name": "Nienhagen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nienhagen gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351021",
+    "name": "Wathlingen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wathlingen gehört zur Samtgemeinde Wathlingen (Landkreis Celle). Die Samtgemeinde verweist in ihrem Photovoltaik-Leitfaden nur auf überregionale Förderkredite der KfW; Klimaschutzseite und die gesamte Sitemap (1.663 Seiten, nach Förder-, Klima-, Solar- und Balkonbegriffen durchsucht) nennen keinen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Landkreis hat keinen eigenen Fördertopf; der Klimaschutzfonds der Stadt Celle gilt nur im Stadtgebiet.",
+    "searches": [
+      "Seite „Photovoltaik-FAQ der Samtgemeinde Wathlingen“ am 26.09.2026 gelesen",
+      "Klimaschutzseite der Samtgemeinde am 26.09.2026 gelesen",
+      "Sitemap wathlingen.de (1.663 Adressen) am 26.09.2026 nach förder/klima/solar/balkon/energie/zuschuss gefiltert",
+      "Websuche „Samtgemeinde Wathlingen Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Nienhagen Adelheidsdorf“ und „Nienhagen Landkreis Celle Zuschuss Photovoltaik Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wathlingen.de/Rathaus-Politik/Wir-%C3%BCber-uns/Nachhaltige-Kommune/Infothek-Klimaschutz-Nachhaltigkeit-/Photovoltaik-FAQ-der-Samtgemeinde-Wathlingen/",
+        "finding": "Am 26.09.2026 gelesen: Der Leitfaden „informiert über überregionale Förderkredite der KfW“; kein kommunaler Zuschuss genannt."
+      },
+      {
+        "url": "https://www.wathlingen.de/Bauen-Umwelt/Klima-Umwelt/Klimaschutz/",
+        "finding": "Am 26.09.2026 gelesen: allgemeine Klimaschutzhinweise für Bürger, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351012",
+    "name": "Hambühren",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Das vollständige Ortsrecht der Gemeinde Hambühren (am 26.09.2026 gelesen) enthält als Förderrichtlinien nur Zuschüsse an Vereine/Sportförderung und Ehrungsrichtlinien; die Förderrubriken der Website betreffen Jugend- und Wirtschaftsförderung. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Landkreis ohne eigenen Fördertopf; Celler Klimaschutzfonds nur im Stadtgebiet Celle.",
+    "searches": [
+      "Seite „Ortsrecht & Satzungen“ der Gemeinde Hambühren am 26.09.2026 vollständig gelesen",
+      "Startseite hambuehren.de nach Förder-/Klima-/Solar-Links durchsucht (26.09.2026)",
+      "Websuche „Hambühren Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hambuehren.de/rathaus-politik/ortsrecht-satzungen/",
+        "finding": "Am 26.09.2026 gelesen: Förderrichtlinien nur „Richtlinie … über die Gewährung von Zuschüssen an Vereine und Verbände sowie über die Sportförderung“ und Ehrungsrichtlinien."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351004",
+    "name": "Bergen",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Rubrik „Umwelt, Klimaschutz & Erneuerbare Energien“ der Stadt Bergen (Kreis Celle) führt kommunale Wärmeplanung, Kriterienkatalog Freiflächen-Photovoltaik, Lärmaktionsplanung und das Projekt „Klimaschutz“ (über die Kommunalrichtlinie geförderte Einstiegsberatung der Stadt 2024/2025); ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen besteht nicht. Die Förderrubriken der Website betreffen Unternehmens- und Wirtschaftsförderung. Landkreis ohne eigenen Fördertopf; Celler Klimaschutzfonds nur im Stadtgebiet Celle.",
+    "searches": [
+      "Rubrik „Umwelt, Klimaschutz & Erneuerbare Energien“ und Seite „Projekt Klimaschutz“ am 26.09.2026 gelesen",
+      "Links der Startseite stadt-bergen.de (283) nach Förder-/Klima-/Solarbegriffen gefiltert",
+      "Websuche „Stadt Bergen Kreis Celle Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-bergen.de/bauen-wirtschaft/umwelt-klimaschutz-erneuerbare-energien/projekt-klimaschutz-/",
+        "finding": "Am 26.09.2026 gelesen: „KSI: Einstiegs- und Orientierungsberatung zum Klimaschutz für die Stadt Bergen … Laufzeit: 01.07.2024-31.12.2025“ — Förderung der Stadt selbst, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.celle-klimaschutz.de/loadDocument.phtml?FID=3859.52.1&Ext=PDF",
+        "finding": "Klimaschutzfonds Celle Nr. 6.1: „Die zu fördernden Maßnahmen müssen im Gebiet der Stadt Celle durchgeführt werden.“"
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03351024",
+    "name": "Winsen (Aller)",
+    "checkedAt": "2026-09-26T12:45:00Z",
+    "recheckAt": "2026-10-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Heute kein laufender Zuschuss erkennbar: Das Ortsrecht der Gemeinde (am 26.09.2026 gelesen) führt keine Energie-Förderrichtlinie, die Umwelt-Rubrik nur Hochwasserschutz und Lärmaktionsplan. Offen ist ein früheres Programm: Die Gruppe „Gemeinsam für Winsen“ beantragte am 21.06.2022 eine Einmalprämie von 150 € für Balkonkraftwerke (12 Monate), und die Celler Zeitung titelte „Winser Förderung für Balkonkraftwerke wackelt“ (Artikel hinter Bezahlschranke, nicht gelesen). Ob und wann es lief, ist nicht belegt — ein beendetes Programm wäre aufzunehmen.",
+    "searches": [
+      "Ortsrecht winsen-aller.de am 26.09.2026 vollständig gelesen",
+      "Umwelt-Rubrik winsen-aller.de am 26.09.2026",
+      "Antrag der Gruppe „Gemeinsam für Winsen“ vom 21.06.2022 gelesen",
+      "Websuche „Winsen (Aller) Balkonkraftwerk Förderung 150 Euro Gemeinderat beschlossen“ am 26.09.2026",
+      "Ratsinformationssystem sitzungsdienst-winsen-aller.de: Betreff-Filter griff nicht, nur aktuelle Vorlagen ab 2025 sichtbar"
+    ],
+    "evidence": [
+      {
+        "url": "https://winsen-aller.de/verwaltung-u-politik/ortsrecht.html",
+        "finding": "Am 26.09.2026 gelesen: Förderrichtlinien für Fremdenverkehr, Jugend/Kultur/Sport, Arztniederlassungen, Familienförderung Baugebiete — keine Energie- oder Balkonkraftwerk-Richtlinie."
+      },
+      {
+        "url": "https://spd-winsen.de/uploads/spdOrtsvereinWinsenAller/Antrag-Foerderprogramm.pdf",
+        "finding": "Antrag vom 21.06.2022: „Die Höhe der Einmalprämie beantragen wir mit 150,-€. Der Förderzeitraum sollte zunächst auf 12 Monate festgelegt werden.“"
+      },
+      {
+        "url": "https://www.cz.de/lokales/celle-lk/winser-foerderung-fuer-balkonkraftwerke-wackelt-C3C274F744A5C2AEE5DB42ABAA.html",
+        "finding": "Nur Überschrift gesehen („Winser Förderung für Balkonkraftwerke wackelt“), Text hinter Bezahlschranke nicht gelesen."
+      },
+      {
+        "url": "https://winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html",
+        "finding": "Am 26.09.2026 gelesen: Bauleitplanung für Freiflächen-Photovoltaik, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung für Freiflächen-Photovoltaik, kein Förderprogramm.",
+        "evidenceUrl": "https://winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-10-03T08:00:00Z",
+      "detail": "Ratsinformationssystem Winsen (Aller) für 2022/2023 nach dem Antrag „Balkonkraftwerke“ durchsehen (Bau-, Planungs- und Umweltausschuss, Rat) und den Artikel der Celler Zeitung im echten Browser lesen; wurde ein Programm beschlossen, Laufzeit und Betrag belegen und als beendetes Programm aufnehmen, sonst negativ abschließen."
+    }
   }
 ]
