@@ -21,7 +21,7 @@ describe("Building-state comparison scope", () => {
 
   it("explains why fixed demand or load cannot be carried into a renovated house", () => {
     const text = source();
-    expect(text).toMatch(/oQges !== null \|\| oHeizlast !== null/);
-    expect(text).toContain("Diese Werte müssten für das gedämmte Haus neu bestimmt werden.");
+    expect(text).toMatch(/updateSettings\(\{ \.\.\.patch, oQges: null, oHeizlast: null \}\)/);
+    expect(text).toContain("Bei geänderten Gebäudeangaben werden Wärmebedarf und Heizlast neu geschätzt.");
   });
 });

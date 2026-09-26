@@ -147,7 +147,7 @@ export default async function RootLayout({
               Seite selbst als Top-Padding mit (plus Header-marginBottom), was
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
-          <div style={{ padding: `28px var(--header-frame-pad) ${headerContentGap}px` }}><Header /></div>
+          <div className="site-header-frame" style={{ padding: `28px var(--header-frame-pad) ${headerContentGap}px` }}><Header /></div>
           {children}
           {/* Trust section + footer of the new design, full width, one source
               with the document pages (lib/site-fuss.ts). */}

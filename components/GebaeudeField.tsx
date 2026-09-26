@@ -14,6 +14,7 @@
 // Angabe, die eine Zahl im Ergebnis bewegt, muss vom Ergebnis aus erreichbar
 // sein; vorher war die Wärmepumpe dort nur ein Häkchen ohne jede Detailfrage.
 import { AccordionField, ChoiceButtons, flowWahl } from "./AccordionField";
+import OptionCard from "./OptionCard";
 import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
 import {
@@ -58,6 +59,7 @@ export default function GebaeudeField({
   daemmstufen,
   hinweis,
   onWeissNicht,
+  completedStyle,
 }: {
   werte: GebaeudeWerte;
   setWerte: (patch: Partial<GebaeudeWerte>) => void;
@@ -77,6 +79,8 @@ export default function GebaeudeField({
   /** Gesetzt → „Weiß ich nicht" erscheint. Im Ergebnis weglassen: dort gibt es
    *  nichts zu überspringen, dort wird nachjustiert. */
   onWeissNicht?: () => void;
+  /** Use the boxed, check-mark accordion variant on result settings. */
+  completedStyle?: "check";
 }) {
   const stufen = daemmstufen ?? INSULATION_BESTAND;
   const hat = (k: string) => beantwortet.has(k);
@@ -100,7 +104,11 @@ export default function GebaeudeField({
         answered={hat(F_HAUSTYP)}
         summary={HAUSTYP_WP[werte.haustypIdx].label}
         onEdit={() => setBearbeitet(F_HAUSTYP)}
+        completedStyle={completedStyle}
       >
+        {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
+          {HAUSTYP_WP.map((item, i) => <OptionCard key={i} group="Haustyp" selected={hat(F_HAUSTYP) && werte.haustypIdx === i} onClick={() => waehle(F_HAUSTYP, { haustypIdx: i })} label={item.label} sub={""} />)}
+        </div> : (
         <ChoiceButtons
           options={HAUSTYP_WP}
           columns={2}
@@ -108,6 +116,7 @@ export default function GebaeudeField({
           onSelect={i => waehle(F_HAUSTYP, { haustypIdx: i })}
           render={h => h.label}
         />
+        )}
       </AccordionField>
 
       <AccordionField
@@ -116,6 +125,7 @@ export default function GebaeudeField({
         answered={hat(F_FLAECHE)}
         summary={`${werte.wohnflaeche} m²`}
         onEdit={() => setBearbeitet(F_FLAECHE)}
+        completedStyle={completedStyle}
       >
         <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
           {WP_M2_PRESETS.map((m2, mi) => {
@@ -155,7 +165,11 @@ export default function GebaeudeField({
         answered={hat(F_DAEMMUNG)}
         summary={stufen[werte.insulationIdx]?.label}
         onEdit={() => setBearbeitet(F_DAEMMUNG)}
+        completedStyle={completedStyle}
       >
+        {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
+          {stufen.map((item, i) => <OptionCard key={i} group="Dämmzustand" selected={hat(F_DAEMMUNG) && werte.insulationIdx === i} onClick={() => waehle(F_DAEMMUNG, { insulationIdx: i })} label={item.label} sub={item.sub} />)}
+        </div> : (
         <ChoiceButtons
           options={stufen}
           columns={2}
@@ -163,15 +177,20 @@ export default function GebaeudeField({
           onSelect={i => waehle(F_DAEMMUNG, { insulationIdx: i })}
           render={ins => ins.label}
         />
+        )}
       </AccordionField>
 
       <AccordionField
-        label="Heizsystem"
+        label="Heizflächen"
         open={offen === F_HEIZSYSTEM}
         answered={hat(F_HEIZSYSTEM)}
         summary={HEIZSYSTEM.find(h => h.id === werte.heizsystem)?.label}
         onEdit={() => setBearbeitet(F_HEIZSYSTEM)}
+        completedStyle={completedStyle}
       >
+        {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
+          {HEIZSYSTEM.map((item, i) => <OptionCard key={i} group="Heizflächen" selected={hat(F_HEIZSYSTEM) && werte.heizsystem === item.id} onClick={() => waehle(F_HEIZSYSTEM, { heizsystem: item.id as Heizsystem })} label={item.label} sub={item.sub} />)}
+        </div> : (
         <ChoiceButtons
           options={HEIZSYSTEM}
           columns={3}
@@ -179,6 +198,7 @@ export default function GebaeudeField({
           onSelect={i => waehle(F_HEIZSYSTEM, { heizsystem: HEIZSYSTEM[i].id as Heizsystem })}
           render={h => HEIZSYSTEM_SHORT[h.id]}
         />
+        )}
       </AccordionField>
 
       {hinweis && offen === null && (

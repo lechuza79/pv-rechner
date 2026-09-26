@@ -9,11 +9,13 @@
 //
 // Vorher stand die Mechanik inline im PV-Rechner. Ein zweiter Toast wäre eine
 // zweite Fassung von Position, Farbe, Schließen und Auto-Ausblenden geworden.
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject, type CSSProperties } from "react";
+import { IconClose } from "./Icons";
 import { v, KLEBELEISTE_VAR } from "../lib/theme";
 
 export default function Toast({
   open,
+  alignTo,
   onClose,
   onClick,
   children,
@@ -22,13 +24,15 @@ export default function Toast({
   tone = "accent",
 }: {
   open: boolean;
+  /** Match the horizontal bounds and corner radius of a content card. */
+  alignTo?: RefObject<HTMLElement | null>;
   onClose: () => void;
   /** Optional: Klick auf den Toast führt irgendwohin (z. B. Feld fokussieren). */
   onClick?: () => void;
   children: React.ReactNode;
   autoHideMs?: number;
   /** `accent` = Handlungsaufforderung, `neutral` = reine Auskunft. */
-  tone?: "accent" | "neutral";
+  tone?: "accent" | "neutral" | "awareness";
 }) {
   // Der Effekt hängt an `open`, NICHT am onClose-Callback: die Aufrufer
   // übergeben eine frische Inline-Funktion pro Render, sonst würde der Timer
@@ -50,9 +54,26 @@ export default function Toast({
     return () => clearTimeout(t);
   }, [open, autoHideMs, inhalt]);
 
+  const [alignment, setAlignment] = useState<CSSProperties>({});
+  useLayoutEffect(() => {
+    const target = alignTo?.current;
+    if (!open || !target) return;
+    const update = () => {
+      const rect = target.getBoundingClientRect();
+      setAlignment({ left: rect.left, width: rect.width, maxWidth: "none", transform: "none", borderRadius: getComputedStyle(target).borderRadius });
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(target);
+    window.addEventListener("resize", update);
+    return () => { observer.disconnect(); window.removeEventListener("resize", update); };
+  }, [open, alignTo]);
+
   if (!open) return null;
 
   const accent = tone === "accent";
+  const awareness = tone === "awareness";
+  const foreground = awareness ? v("--color-awareness") : v("--color-text-on-accent");
   return (
     <div
       className="fu"
@@ -68,12 +89,14 @@ export default function Toast({
         transition: "bottom 0.28s ease",
         zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)",
         cursor: onClick ? "pointer" : "default",
-        background: accent ? v("--color-cta") : v("--color-text-primary"),
-        color: v("--color-text-on-accent"),
+        background: awareness ? v("--color-awareness-dim") : accent ? v("--color-cta") : v("--color-text-primary"),
+        color: foreground,
         borderRadius: v("--radius-pill"), padding: "12px 16px",
-        boxShadow: "0 6px 24px rgba(0,0,0,0.25)",
+        boxShadow: v("--shadow-lg"),
         display: "flex", alignItems: "center", gap: 10,
         fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
+        boxSizing: "border-box",
+        ...(alignTo ? alignment : {}),
       }}
     >
       <span style={{ flex: 1 }}>{children}</span>
@@ -81,11 +104,12 @@ export default function Toast({
         onClick={e => { e.stopPropagation(); onClose(); }}
         aria-label="Schließen"
         style={{
-          border: "none", background: "transparent", color: v("--color-text-on-accent"),
-          fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85,
+          border: "none", background: "transparent", color: foreground,
+          width: 32, height: 32, flexShrink: 0, display: "grid", placeItems: "center",
+          borderRadius: v("--radius-pill"), cursor: "pointer", padding: 0, opacity: 0.85,
         }}
       >
-        ×
+        <IconClose size={16} />
       </button>
     </div>
   );

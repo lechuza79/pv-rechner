@@ -23,6 +23,9 @@ const ROOT = join(__dirname, "..", "..");
 
 /** Ein Zustand, in dem JEDE Angabe vom Standard abweicht. */
 const ALLES_ANDERS: WpZustand = {
+  heatingKnown: true,
+  fundingConfirmed: true,
+  fundingAgeUnknown: true,
   situation: "neubau",
   wohnflaeche: 185,
   haustyp: "reihenmitte",
@@ -36,7 +39,7 @@ const ALLES_ANDERS: WpZustand = {
   weg: "saniert",
   selbstnutzer: false,
   altheizung: "oel_kohle",
-  einkommen: "bis30",
+  einkommen: "bis60",
   kindImHaushalt: true,
   euUrsprung: true,
   begStand: "naechste",
@@ -188,6 +191,16 @@ describe("Der Rechner benutzt wirklich diese eine Quelle", () => {
 
   it("leert die Adresse beim Neu-Berechnen", () => {
     // Sonst holt ein Neuladen die gerade verworfene Rechnung zurück.
-    expect(rechner).toMatch(/setStep\(0\);[\s\S]{0,300}history\.replaceState/);
+    expect(rechner).toContain("window.location.assign(window.location.pathname)");
+  });
+});
+
+
+describe("Known heating in shared results", () => {
+  it("preserves heating answers independently of radiator replacement", () => {
+    const state = { ...WP_STANDARD, heatingKnown: true, heizkoerperTausch: false };
+    const restored = wpAusParametern(wpZuParametern(state));
+    expect(restored.heatingKnown).toBe(true);
+    expect(restored.heizkoerperTausch).toBe(false);
   });
 });

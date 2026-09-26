@@ -148,6 +148,8 @@ export interface RaceChartProps {
   fmtKurz: (wert: number) => string;
   /** „?" am Titel (was verglichen wird) und am Zeitraum (was die Linien zählen). */
   showTitle?: boolean;
+  showYAxisLabels?: boolean;
+  valueUnit?: string;
   actions?: boolean;
   initialProgress?: number;
   titelHilfe: { title: string; ariaLabel: string; inhalt: ReactNode };
@@ -188,7 +190,7 @@ export default function RaceChart(props: RaceChartProps) {
 
 function RaceCard({
   widget, kamera, anderer, startJahr, jahre, ersterTag, datumVon, ereignisse, fmt, fmtKurz,
-  showTitle = true, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
+  showTitle = true, showYAxisLabels = true, valueUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
   onsite = false, branding = true, showEmbed = false, autoplay = true, stand: quellenStand,
   tempo: tempoProp, skala: skalaProp, variante = "voll",
 }: RaceChartProps) {
@@ -259,15 +261,15 @@ function RaceCard({
   // Von selbst loslaufen, wenn die Karte zum ersten Mal sichtbar wird — einmal.
   // Bei reduzierter Bewegung bleibt sie stehen; die Zeit wählt man dann selbst.
   useEffect(() => {
-    if (!autoplay || ruhig || gestartet.current || !hostRef.current) return;
+    if (!autoplay || ruhig || gestartet.current || !svgRef.current) return;
     const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting) && !gestartet.current) {
+      if (entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.6) && !gestartet.current) {
         gestartet.current = true;
         setSpielt(true);
         io.disconnect();
       }
     }, { threshold: 0.6 });
-    io.observe(hostRef.current);
+    io.observe(svgRef.current);
     return () => io.disconnect();
   }, [autoplay, ruhig]);
 
@@ -326,7 +328,7 @@ function RaceCard({
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
   const W = plotWidth, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
   // Mini: kein Platz für Achsenzahlen nötig — das Raster allein bleibt.
-  const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
+  const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: showYAxisLabels ? (narrow ? 58 : 56) : 8 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
 
@@ -544,7 +546,7 @@ function RaceCard({
           zu dem, was die Linien zählen, und die Legende daneben. */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: mini ? space.md : space.xl }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
-          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
+          <span className="race-year-range" style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
             {zeitraum(tag === 0 ? startJahr : datum.jahr)}
           </span>
         </span>
@@ -575,7 +577,7 @@ function RaceCard({
           {yTicks.map((val, i) => (
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-              {!mini && (
+              {!mini && showYAxisLabels && (
                 <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                   {yLabels[i]}
                 </text>
@@ -586,7 +588,7 @@ function RaceCard({
           {xJahre.map(({ x, jahr }) => (
             <g key={jahr} className="kr-neu">
               <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-              {!mini && <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>}
+              {!mini && <text className="race-year-label" x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>}
             </g>
           ))}
 
@@ -632,7 +634,7 @@ function RaceCard({
             <g key={s.key}>
               <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
               <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
-                {narrow ? fmtKurz(s.zahl) : fmt(s.zahl)}
+                {valueUnit ? <>{(narrow ? fmtKurz(s.zahl) : fmt(s.zahl)).replace(new RegExp(`\\s*${valueUnit}$`), "")}<tspan fontSize="0.65em" fontWeight={400} opacity={0.7}> {valueUnit}</tspan></> : (narrow ? fmtKurz(s.zahl) : fmt(s.zahl))}
               </text>
             </g>
           ))}
@@ -679,7 +681,7 @@ function RaceCard({
                     {"  ·  "}
                     {aktivesEreignis.label}
                   </div>
-                  <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
+                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 400, lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
                 </div>
               )}
             </div>

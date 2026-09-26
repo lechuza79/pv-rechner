@@ -47,11 +47,13 @@ function datumsText(e: StandEintrag): string {
 export default function StandNoteView({
   seite,
   style,
+  variant = "plain",
 }: {
   /** `undefined` bleibt zulässig: Eine Seite ohne Eintrag zeigt keine Zeile,
    *  statt mit einem erfundenen Stichtag zu antworten. */
   seite: StandSeite | undefined;
   style?: React.CSSProperties;
+  variant?: "plain" | "cards";
 }) {
   // „aktuell" hängt am HEUTIGEN Tag, eine statisch ausgelieferte Seite am Tag
   // ihres Baus. Entschieden wird deshalb erst im Browser, nach dem Laden: So
@@ -118,7 +120,7 @@ export default function StandNoteView({
   }
 
   return (
-    <div style={rahmen}>
+    <div className={variant === "cards" ? "sc-stand-cards" : undefined} style={rahmen}>
       <p style={{ marginBottom: 6 }}>{kopf}</p>
       <ul style={{ listStyle: "none", margin: "0 0 8px", padding: 0 }}>
         {seite.eintraege.map(e => (
@@ -127,8 +129,8 @@ export default function StandNoteView({
                 Breite mal mit um und mal nicht — vorn steht sie in jeder Zeile
                 an derselben Stelle. */}
             {pill(e)}
-            <span style={{ color: v("--color-text-secondary") }}>{e.was}</span>
-            <span>— {datumsText(e)}</span>
+            <span className="sc-stand-label" style={{ color: v("--color-text-secondary") }}>{e.was}</span>
+            <span className="sc-stand-date">{variant === "cards" ? "" : "— "}{datumsText(e)}</span>
           </li>
         ))}
       </ul>

@@ -1,29 +1,117 @@
-/* Scoped input flow, sharing the accepted result palette and type scale. */
-body .wp-input-page{--color-bg-muted:color-mix(in srgb,var(--color-text-primary) 5%,var(--color-bg));--color-accent:var(--color-text-primary);--color-accent-dim:color-mix(in srgb,var(--color-cta) 18%,var(--color-bg));--color-accent-dark:var(--color-text-primary)}
-.wp-input-page .wp-input-step{padding:24px;border-radius:var(--radius-lg);background:var(--color-surface,var(--color-bg-muted))}
-.wp-input-page [data-flow-option]{gap:4px;padding:16px!important;background:var(--color-bg)!important;transition:border-color .15s,background .15s}
-.wp-input-page [data-flow-option][aria-pressed=true]{background:var(--color-accent-dim)!important;border-color:var(--color-text-primary)!important}
-.wp-input-page [data-flow-option]:hover{border-color:var(--color-text-secondary)!important}
+/* Flow roles: reuse the result palette and shared typography, never theme-dependent fills. */
+.wp-input-page,.wp-funding-date-options,.wp-funding-flow{
+  --flow-surface:var(--result-canvas);
+  --flow-option:var(--result-panel);
+  --flow-ink:var(--result-text);
+  --flow-muted:var(--result-muted);
+  --flow-label-size:var(--font-size-body);
+  --flow-copy-size:var(--font-size-small);
+  --flow-artwork-disc:color-mix(in srgb,var(--result-text) 16%,transparent);
+  --flow-disabled-fill:color-mix(in srgb,var(--color-text-primary) 5%,transparent);
+  --flow-disabled-ink:color-mix(in srgb,var(--color-text-primary) 38%,var(--color-bg));
+}
+.wp-input-page>div{max-width:760px!important}
+.wp-input-page .wp-input-step{padding:0;background:transparent}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]{position:relative;min-width:0;font-size:var(--flow-label-size)!important;gap:6px;padding:20px 40px 20px 16px!important;border:0!important;background:var(--flow-option)!important;color:var(--color-text-primary)!important;box-shadow:none;transition:background .18s}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]::after{content:"";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--color-text-primary) 25%,transparent);background:transparent}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option][aria-pressed=true]::after{background:radial-gradient(circle,var(--result-canvas) 0 3px,transparent 3.5px),var(--color-cta)}
 .wp-input-page button:focus-visible,.wp-input-page input:focus-visible{outline:2px solid var(--color-text-primary)!important;outline-offset:4px}
 .wp-input-page [data-flow-next][aria-disabled=false]{background:var(--color-cta)!important;color:var(--color-text-primary)!important;border-color:var(--color-cta)!important}
 .wp-input-page [data-flow-nav]{margin-top:24px}
-.wp-input-page .sc-option-illustration{display:block;width:100%;height:144px;object-fit:contain;margin:0 auto 8px}
-@media(max-width:600px){.wp-input-page .wp-input-step{padding:16px}.wp-input-page [data-flow-option]{padding:12px!important}.wp-input-page .sc-option-illustration{height:112px}}
-@media(prefers-reduced-motion:reduce){.wp-input-page [data-flow-option]{transition:none}}
-
-.wp-input-page>div{max-width:640px!important}
-
-/* One open question at a time; summaries remain quiet and editable. */
-.wp-input-page .sc-acc{margin-bottom:24px!important}
-.wp-input-page button.sc-acc{padding:16px 0!important;border:0!important;border-bottom:1px solid var(--color-border)!important;border-radius:0!important;background:transparent!important}
-.wp-input-page .sc-acc>div:first-child{margin-bottom:12px!important}
-.wp-house-options{display:grid;gap:8px}
-.wp-input-page .wp-house-options [data-flow-option]{display:grid!important;grid-template-columns:88px minmax(0,1fr);grid-template-rows:auto auto;text-align:left!important;column-gap:16px;padding:12px 16px!important;align-items:center!important}
-.wp-input-page .wp-house-options .sc-option-illustration{grid-row:1/3;width:88px;height:80px;margin:0}
-.wp-house-options [data-flow-option]>div:nth-last-child(2){align-self:end}
-.wp-house-options [data-flow-option]>div:last-child{align-self:start}
-.wp-area-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wp-house-options,.wp-area-options,.wp-insulation-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wp-input-page .wp-insulation-options [data-flow-option]{padding:18px 46px 18px 16px!important;justify-content:flex-start;text-align:left!important;align-items:flex-start!important}
+.wp-input-page .wp-insulation-options [data-flow-option]::after{top:14px;transform:none}
+.wp-input-label{font-size:var(--font-size-body);font-weight:700;margin:0 0 16px}
+.wp-question{margin-bottom:16px;border-radius:var(--radius-lg);background:var(--flow-closed-surface,var(--color-surface));box-shadow:var(--shadow-sm);overflow:hidden}
+.wp-question-heading{display:flex;align-items:center;gap:10px;width:100%;padding:16px;border:0;border-radius:var(--radius-md);background:var(--flow-closed-surface,var(--color-surface));color:var(--color-text-primary);font:inherit;font-size:var(--flow-label-size);font-weight:600;text-align:left;cursor:pointer}
+.wp-question-heading:disabled{cursor:default;background:var(--color-surface);color:var(--color-text-secondary)}
+.wp-question-status{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--color-border)}
+.wp-question.is-answered:not(.is-open)>.wp-question-heading .wp-question-status{color:var(--color-positive-text);background:color-mix(in srgb,var(--color-positive-text) 10%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-positive-text) 30%,transparent)}
+.wp-question-summary{margin-left:auto;font-weight:400}
+.wp-question-heading>svg{flex-shrink:0;transition:transform .25s}
+.wp-question.is-open>.wp-question-heading>svg{transform:rotate(180deg)}
+.wp-question.is-open>.wp-question-heading{background:transparent}
+.wp-question.is-open>.wp-question-heading .wp-question-status{background:var(--color-cta);box-shadow:none}
+.wp-question-content{padding:0 16px 16px;margin:0}
 .wp-custom-area{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:16px;color:var(--color-text-secondary);font-size:var(--font-size-small)}
 .wp-secondary-text{border:0;background:none;color:var(--color-text-secondary);font:inherit;cursor:pointer;padding:8px 0;text-align:left}
-.wp-secondary-text:disabled{opacity:.45;cursor:default}
-.wp-custom-area input{width:80px;padding:8px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:transparent;color:inherit;font:inherit}
+.wp-custom-area input{width:88px;padding:10px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-surface);color:inherit;font:inherit}
+.wp-bill-input{margin-top:24px}
+@media(max-width:600px){.wp-house-options,.wp-area-options,.wp-insulation-options{grid-template-columns:repeat(2,minmax(0,1fr))}.wp-input-page .wp-person-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}.wp-question-summary{max-width:45%}}
+@media(max-width:400px){.wp-input-page .wp-paired-options{grid-template-columns:minmax(0,1fr)!important}}
+@media(prefers-reduced-motion:reduce){.wp-question-reveal,.wp-question-heading>svg,:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]{transition:none}}
+
+
+.wp-input-page .wp-insulation-options [data-flow-option]>div:last-child{max-width:27ch;line-height:1.5!important}
+.wp-bill-input{padding:20px;border-radius:var(--radius-md);background:transparent;border:1px solid var(--color-border)}
+.wp-bill-heading{display:flex;align-items:baseline;gap:12px;justify-content:space-between;font-size:var(--font-size-body);font-weight:700}
+.wp-bill-heading>span{font-size:var(--flow-copy-size);font-weight:400;color:var(--color-text-secondary)}
+.wp-bill-description{max-width:55ch;margin:8px 0 16px;font-size:var(--font-size-small);line-height:1.5;color:var(--color-text-secondary)}
+.wp-bill-fields{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.wp-bill-fields input{width:150px!important;min-height:44px;padding:10px 12px!important;background:var(--color-surface)!important;border:1px solid var(--color-border)!important;font-family:var(--font-text)!important;font-weight:500!important;text-align:left!important}
+.wp-bill-fields>div{flex:1;min-width:180px}
+.wp-bill-fields>button{flex-basis:100%;text-align:left;text-decoration:none!important}
+@media(max-width:600px){.wp-house-options{grid-template-columns:minmax(0,1fr)}.wp-bill-input{padding:16px}.wp-bill-fields input{width:100%!important}.wp-bill-fields>div{width:100%}}
+.wp-bill-fields>span{flex:1;min-width:180px}
+.wp-bill-fields select{min-height:44px!important;background:var(--color-surface)!important;font-weight:500!important;font-size:var(--font-size-small)!important;border-radius:var(--radius-sm)!important}
+@media(max-width:600px){.wp-bill-fields>span{width:100%}}
+
+/* Artwork and copy occupy separate grid columns; no image clipping. */
+.wp-input-page .wp-house-options [data-flow-option]{display:grid!important;grid-template-columns:100px minmax(0,1fr);grid-template-rows:1fr 1fr;column-gap:12px;row-gap:4px;padding:16px 36px 16px 12px!important;min-height:112px;align-items:center!important;justify-content:normal;text-align:left!important;overflow:hidden}
+.wp-input-page .wp-house-options [data-flow-option]>div:nth-last-child(2){align-self:end}
+.wp-input-page .wp-house-options [data-flow-option]>div:last-child{align-self:start;margin:0!important;line-height:1.45!important}
+.wp-input-page .wp-house-options [data-flow-option]::after{top:16px;right:12px;transform:none}
+.wp-input-page .sc-option-artwork{position:relative;display:block;grid-row:1/3;width:100px;height:80px}
+.wp-input-page .sc-option-artwork::before{content:"";position:absolute;width:80px;height:80px;left:10px;top:0;border-radius:50%;background:var(--flow-artwork-disc)}
+.wp-input-page .wp-house-options .sc-option-illustration{position:absolute;width:110px;height:110px;max-width:none;object-fit:contain;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;clip-path:none}
+.wp-input-page .wp-house-options .sc-option-illustration[src$="house-semi.webp"]{width:145px;height:145px}
+.wp-input-page .wp-house-options .sc-option-illustration[src$="house-row-end.webp"],.wp-input-page .wp-house-options .sc-option-illustration[src$="house-row-middle.webp"]{width:130px;height:130px}
+
+/* Actions keep their natural position and stick only when below the viewport. */
+.wp-input-page .wp-flow-footer{position:sticky;z-index:30;bottom:0;margin-top:8px;padding:32px 0 calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--color-bg) 38%);pointer-events:none}
+.wp-input-page .wp-flow-footer [data-flow-nav]{max-width:760px;margin:0 auto!important;pointer-events:auto}
+.wp-input-page input,.wp-input-page select,:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]{scroll-margin-bottom:140px}
+
+/* Input choices share the dark result palette, including their local text roles. */
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option],:is(.wp-input-page,.wp-funding-flow) .wp-question.is-open{
+  --color-text-primary:var(--flow-ink);
+  --color-text-secondary:var(--flow-muted);
+  --color-border:var(--result-rule);
+}
+:is(.wp-input-page,.wp-funding-flow) .wp-question.is-open{background:var(--flow-surface)}
+:is(.wp-input-page,.wp-funding-flow) .wp-question.is-open [data-flow-option]{background:var(--flow-option)!important}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]:hover{background:var(--flow-option)!important}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option][aria-pressed=true]{background:var(--flow-option)!important}
+.wp-input-page .sc-fs li[data-zustand=aktiv] .sc-fs-punkt{background:var(--result-canvas);color:var(--result-accent);box-shadow:none}
+:is(.wp-input-page,.wp-funding-flow) .wp-question.is-open .wp-custom-area input{background:var(--flow-option);border-color:color-mix(in srgb,var(--result-muted) 35%,transparent);color:var(--result-text)}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]:focus-visible{outline-color:var(--result-accent)!important}
+
+/* Readable positive foreground on this flow’s light canvas. */
+body .wp-input-page{--color-positive-text:#0c6e2f}
+
+/* Two text sizes throughout choices, labels and supporting copy. */
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]>div{font-size:var(--flow-label-size)!important;line-height:1.35!important}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]>div+div{font-size:var(--flow-copy-size)!important;font-weight:400;line-height:1.45!important}
+.wp-input-page .wp-paired-options,.wp-input-page .wp-person-options{gap:12px!important}
+:is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) [data-flow-option]:hover::after{box-shadow:inset 0 0 0 1.5px var(--flow-muted)}
+.wp-input-page [data-flow-nav] button{min-height:44px;font-size:var(--flow-label-size)!important}
+.wp-input-page [data-flow-next][aria-disabled=true]{background:var(--flow-disabled-fill)!important;color:var(--flow-disabled-ink)!important;border:1px solid var(--color-border)!important;opacity:1!important}
+.wp-input-page [data-flow-nav]>button{border-color:var(--color-border)!important}
+.wp-input-page [data-flow-nav] [role=tooltip]{white-space:normal!important;width:max-content;max-width:min(280px,75vw)}
+
+/* The optional help control shares the same accordion heading and done state. */
+.wp-question-header-with-help{flex-wrap:wrap}
+.wp-question-label-toggle,.wp-question-chevron-toggle{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0}
+.wp-question-label-toggle{text-align:left;min-width:0;max-width:calc(100% - 100px)}
+.wp-question-chevron-toggle{display:flex;flex-shrink:0}
+.wp-question-chevron-toggle svg{transition:transform .25s}
+.wp-question.is-open>.wp-question-heading .wp-question-chevron-toggle svg{transform:rotate(180deg)}
+@media(max-width:600px){
+ .wp-question-heading{flex-wrap:wrap}
+ .wp-question-summary{font-size:var(--font-size-small)}
+ .wp-question-header-with-help .wp-question-summary:not(:empty){order:1;flex-basis:100%;max-width:none;margin:0}
+ .wp-question-header-with-help .wp-question-chevron-toggle{margin-left:auto}
+}
+@media(prefers-reduced-motion:reduce){.wp-question-chevron-toggle svg{transition:none}}
+
+.wp-funding-flow{--color-positive-text:var(--result-accent);--flow-closed-surface:var(--result-control)}

@@ -49,7 +49,7 @@ export const FLOWS: FlowUnterTest[] = [
   {
     name: "Wärmepumpen-Rechner",
     pfad: "/waermepumpe-rechner",
-    ergebnisEnthaelt: "Deine Wärmepumpen-Prognose",
+    ergebnisEnthaelt: "Dein Heizkostenvergleich.",
   },
   {
     name: "Klimaanlagen-Rechner",

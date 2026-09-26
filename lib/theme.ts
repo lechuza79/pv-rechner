@@ -25,6 +25,7 @@ export const tokens = {
   // Ansicht, wo der Balken unter der Kopfzeile endete. Zwei Flächen bekommt das
   // Design erst, wenn die Seiten ihre Inhalte als Karten setzen statt als Band;
   // das gehört ins Detail-Redesign.
+  '--color-page-canvas': '#E8ECE3',    // Fixed v3 canvas, independent of solar conditions.
   '--color-bg-page': '#F6F8F1',         // Seitengrund, NUR am body
   '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
   '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
@@ -832,6 +833,17 @@ export const globalStyles = `
   /* Akkordeon-Felder (Großverbraucher): Übergang zwischen Auswahl- und
      Fertig-Zustand in beide Richtungen. React tauscht dabei das Element
      (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
+  /* Shared disclosure motion for native details and controlled React panels. */
+  :root{--disclosure-duration:280ms;--disclosure-easing:ease}
+  .sc-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing)}
+  .sc-collapse[data-open="true"]{grid-template-rows:1fr;opacity:1}
+  .sc-collapse>div{min-height:0;overflow:hidden}
+  @supports (interpolate-size:allow-keywords){
+    details{interpolate-size:allow-keywords}
+    details::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing),content-visibility var(--disclosure-duration) allow-discrete}
+    details[open]::details-content{block-size:auto;opacity:1}
+  }
+  @media(prefers-reduced-motion:reduce){.sc-collapse,details::details-content{transition:none!important}}
   .sc-acc{animation:sc-reveal .22s ease-out}
   @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
   /* Eine Kalenderwoche, die auf- oder zugeht.

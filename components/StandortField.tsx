@@ -13,10 +13,11 @@ interface StandortFieldProps {
   approximate?: boolean;                   // true = regionaler Näherungswert (~) statt exaktem PVGIS
   onSubmit: () => void;
   label?: string;
+  submitLabel?: string;
 }
 
 export default function StandortField({
-  plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort",
+  plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort", submitLabel,
 }: StandortFieldProps) {
   return (
     // flexWrap/rowGap + flexShrink: auf schmalen Schirmen rutscht das Feld lieber in
@@ -44,12 +45,12 @@ export default function StandortField({
             borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
           }}
         />
-        {plz.length === 5 && !loading && !confirmed && (
-          <button type="submit" aria-label="Standort übernehmen" style={{
+        {(submitLabel || plz.length === 5) && !loading && !confirmed && (
+          <button type="submit" disabled={plz.length !== 5} aria-label={submitLabel ?? "Standort übernehmen"} style={{
             padding: "3px 6px", fontSize: v("--font-size-caption"), fontWeight: 700, lineHeight: 1,
             background: v('--color-cta'), color: v('--color-text-on-accent'),
             border: "none", borderRadius: v("--radius-pill"), cursor: "pointer",
-          }}><IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} /></button>
+          }}>{submitLabel ?? <IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} />}</button>
         )}
         {loading && <span style={{ color: v('--color-accent'), fontSize: v("--font-size-micro") }}>…</span>}
         {confirmed && <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}

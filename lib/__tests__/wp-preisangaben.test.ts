@@ -145,9 +145,9 @@ describe("Pflichtangaben zum Preis", () => {
     // im Browser nichts dazwischenstand. Ein Test, der Kommentarlänge misst,
     // misst die falsche Sache.
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
-    expect(ausgeliefert).toMatch(/Preis vom \$\{preisStand\}/);
+    expect(ausgeliefert).toMatch(/Stand \$\{preisStand\}/);
     // Direkt hinter den Pflichtangaben zum Preis, nicht irgendwo sonst.
-    expect(ausgeliefert).toMatch(/preisZusatz\(g\)[\s\S]{0,120}Preis vom/);
+    expect(ausgeliefert).toMatch(/preisZusatz\(g\)[\s\S]{0,120}Stand/);
   });
 
   it("nennt neben dem Datum, welcher Preis gilt", () => {
@@ -160,7 +160,7 @@ describe("Pflichtangaben zum Preis", () => {
     // der Kommentar daneben weiter behauptete, er stehe da. Dieser Test liest
     // deshalb den ausgelieferten Text, nicht den Kommentar.
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
-    expect(ausgeliefert).toMatch(/es gilt der Preis im Shop/);
+    expect(ausgeliefert).toMatch(/Shoppreis gilt/);
   });
 
   it("nennt den Preisstand konkret, nicht als Haftungsformel", () => {

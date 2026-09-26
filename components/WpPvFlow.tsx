@@ -11,7 +11,7 @@ import OptionCard from "./OptionCard";
 import { wpPvRecommendation, type WpPvContext } from "../lib/wp-pv-recommend";
 import type { TiltOrientation } from "../lib/tilt-config";
 
-export default function WpPvFlow({ context, initial, onApply }: { context: WpPvContext; initial?: { kwp: number; storage: number }; onApply: (values: { kwp: number; storage: number }) => void }) {
+export default function WpPvFlow({ context, initial, onApply, onCancel }: { context: WpPvContext; initial?: { kwp: number; storage: number }; onApply: (values: { kwp: number; storage: number }) => void; onCancel: () => void }) {
   const [roofSkipped, setRoofSkipped] = useState(false);
   const [mode, setMode] = useState<"known" | "recommend" | null>(null);
   const [step, setStep] = useState(0);
@@ -55,19 +55,19 @@ export default function WpPvFlow({ context, initial, onApply }: { context: WpPvC
     </>}
     {step === 2 && recommended && <><p className="wp-pv-recommended"><strong>{recommended.kwp.toLocaleString("de-DE")} kWp</strong> · {recommended.speicherKwh.toLocaleString("de-DE")} kWh Speicher</p><p>Berechnet mit der bestehenden PV-Empfehlung und deinem Wärmepumpenbedarf.</p><p className="wp-pv-flow-note">{roof === null ? "Dachform und Ausrichtung geschätzt. " : ""}{roofM2 ? "Dachfläche aus deiner Angabe. " : "Nutzbare Dachfläche nach Haustyp geschätzt. "}Solarertrag: Bundesdurchschnitt.</p></>}
     <p className="wp-pv-flow-note">Im Wärmepumpenergebnis zählt nur der zusätzliche Solarstrom-Nutzen, abzüglich entgangener Einspeisevergütung. Anschaffung und weiterer Nutzen der Solaranlage sind nicht enthalten.</p>
-    <FlowNav weiterAktiv={step === 0 ? roof !== null && orientation !== null && (!roofM2 || (Number(roofM2) >= 5 && Number(roofM2) <= 500)) : step === 1 ? usage !== null : recommended !== null} weiterLabel={step === 0 ? "Weiter" : step === 1 ? "Empfehlung anzeigen" : "Solaranlage übernehmen"} onZurueck={() => step === 0 ? setMode(null) : setStep(step - 1)} onWeiter={() => {
+    <FlowNav weiterAktiv={step === 0 ? roof !== null && orientation !== null && (!roofM2 || (Number(roofM2) >= 5 && Number(roofM2) <= 500)) : step === 1 ? usage !== null : (recommended !== null && (!initial || recommended.kwp !== initial.kwp || recommended.speicherKwh !== initial.storage))} weiterLabel={step === 0 ? "Weiter" : step === 1 ? "Empfehlung anzeigen" : "Ergebnis neu berechnen"} zurueckLabel={step === 2 ? "Abbrechen" : "Zurück"} onZurueck={() => step === 2 ? onCancel() : step === 0 ? setMode(null) : setStep(step - 1)} onWeiter={() => {
       if (step === 0) setStep(1);
       else if (step === 1) { setRecommended(wpPvRecommendation(context, { dachart: roof ?? undefined, ausrichtung: orientation, neigung: tilt, nutzung: usage ?? 1, roofM2: roofM2 ? Number(roofM2) : undefined, ea, klima })); setStep(2); }
       else if (recommended) onApply({ kwp: recommended.kwp, storage: recommended.speicherKwh });
     }} inaktivHinweis={step === 0 ? (roofM2 && !(Number(roofM2) >= 5 && Number(roofM2) <= 500) ? "Bitte die Dachfläche prüfen." : "Bitte Dachform und Ausrichtung wählen oder überspringen.") : "Bitte dein Nutzungsprofil wählen."} />
   </div>;
   return <div className="wp-pv-flow">
-    <p className="wp-pv-flow-progress">Schritt {step + 1} von 2</p>
+    <FlowSchritte schritte={["Anlagengröße", "Speicher"]} aktiv={step} onSprung={setStep} />
     <h3>{step === 0 ? "Wie groß soll die Anlage werden?" : "Batteriespeicher?"}</h3>
     {step === 0
       ? <PvSizeQuestion answered={kwp !== null} selected={selectedSize} customKwp={kwp ?? 10} onSelect={i => setKwp(ANLAGEN[i].kwp)} onCustom={value => setKwp(Math.round(value))} />
       : <PvStorageQuestion answered={storage !== null} selected={selectedStorage} onSelect={i => setStorage(SPEICHER[i].kwh)} />}
     <p className="wp-pv-flow-note">Hier zählt nur der zusätzliche Solarstrom-Nutzen deiner Wärmepumpe, abzüglich entgangener Einspeisevergütung. Anschaffung und weiterer Nutzen der Solaranlage sind nicht enthalten.</p>
-    <FlowNav weiterAktiv={step === 0 ? kwp !== null : storage !== null} weiterLabel={step === 0 ? "Weiter" : "Solaranlage übernehmen"} onWeiter={() => { if (step === 0) setStep(1); else if (kwp !== null && storage !== null) onApply({ kwp, storage }); }} onZurueck={() => step > 0 ? setStep(0) : setMode(null)} inaktivHinweis={step === 0 ? "Bitte erst eine Anlagengröße wählen." : "Bitte eine Speichergröße oder „Kein Speicher“ wählen."} />
+    <FlowNav weiterAktiv={step === 0 ? kwp !== null : storage !== null && (!initial || kwp !== initial.kwp || storage !== initial.storage)} weiterLabel={step === 0 ? "Weiter" : "Ergebnis neu berechnen"} onWeiter={() => { if (step === 0) setStep(1); else if (kwp !== null && storage !== null) onApply({ kwp, storage }); }} zurueckLabel={step === 1 ? "Abbrechen" : "Zurück"} onZurueck={() => step === 1 ? onCancel() : setMode(null)} inaktivHinweis={step === 0 ? "Bitte erst eine Anlagengröße wählen." : storage === null ? "Bitte eine Speichergröße oder „Kein Speicher“ wählen." : "Ändere zuerst eine Angabe."} />
   </div>;
 }

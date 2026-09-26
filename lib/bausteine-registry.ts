@@ -266,7 +266,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["AccordionField", "PresetNumberInput"],
+    bestehtAus: ["AccordionField", "PresetNumberInput", "OptionCard"],
   },
   {
     datei: "components/StandortField.tsx",
@@ -287,7 +287,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
     gegenprobe: {
       muster: 'role="dialog"',
       bedeutet:
@@ -302,7 +302,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/KlebenderKnopf.tsx",
@@ -1068,6 +1068,8 @@ export const BAUSTEINE: Baustein[] = [
  * die Bausteine werden sukzessive entwickelt (Betreiber, 01.09.2026).
  */
 export const NOCH_NICHT_EINGEORDNET: string[] = [
+  "BegFundingQuestions",
+  "Collapse",
   "DesignFooterNavigation",
   "HeatPumpDesignHeader",
   "PvSystemQuestions",

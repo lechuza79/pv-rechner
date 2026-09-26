@@ -22,7 +22,7 @@ const ERGEBNIS =
 
 /** Wartet, bis die Geräte wirklich da sind — sie kommen nachgeladen. */
 async function geraeteAbwarten(page: Page): Promise<boolean> {
-  const kennzeichnung = page.getByText(/^Anzeige —/);
+  const kennzeichnung = page.getByText("ANZEIGE", { exact: true });
   try {
     await kennzeichnung.first().waitFor({ state: "visible", timeout: 20_000 });
     return true;
@@ -64,15 +64,15 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     expect(text).not.toMatch(/\d+\s*Tage\s*Widerruf/i);
 
     // Provision offengelegt, Preisstand am Preis.
-    expect(text).toMatch(/Wir erhalten eine Provision/);
-    expect(text).toMatch(/Preis vom \d{2}\.\d{2}\.\d{4}/);
+    expect(text).toMatch(/erhalten wir eine Provision/);
+    expect(text).toMatch(/Stand \d{2}\.\d{2}\.\d{4}/);
 
     // Der Kennzeichnungs-Absatz selbst bleibt kurz: Kennzeichnung, ein
     // Händler, Provision. Anschrift und Widerruf stehen unter den Kacheln,
     // der Preisstand an der Kachel. Eine frühere Fassung hatte alles in
     // einem Absatz — 70 Wörter, die niemand liest.
-    const absatz = await page.locator("p", { hasText: /^Anzeige —/ }).first().innerText();
-    expect(absatz).toMatch(/Sortiment eines einzelnen Händlers/);
+    const absatz = await page.locator(".wp-product-disclosure").innerText();
+    expect(absatz).toMatch(/nicht aus dem gesamten Markt/);
     expect(absatz).not.toMatch(/Stolzenmorgen/);
     expect(absatz).not.toMatch(/Widerrufsrecht/);
     expect(
@@ -81,7 +81,7 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     ).toBeLessThan(45);
 
     // Und die Reihenfolge: Kennzeichnung oben, Preis darunter.
-    const kennzeichnungY = await obereKante(page, "text=/^Anzeige —/");
+    const kennzeichnungY = await obereKante(page, "text=ANZEIGE");
     const preisY = await obereKante(page, "text=/inkl\\. MwSt/");
     expect(
       kennzeichnungY,
@@ -127,7 +127,7 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     // Auf schmalem Schirm stehen die Kacheln in einer Wischleiste. Genau dort
     // war die Kennzeichnung in einer früheren Fassung unter allen Kacheln
     // gelandet — erreichbar erst nach dem Wischen, also nach dem Kaufknopf.
-    const kennzeichnungY = await obereKante(page, "text=/^Anzeige —/");
+    const kennzeichnungY = await obereKante(page, "text=ANZEIGE");
     const preisY = await obereKante(page, "text=/inkl\\. MwSt/");
     expect(kennzeichnungY).toBeLessThan(preisY);
   });
@@ -143,8 +143,8 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     // Vorlauf und Preis bestimmt. Dass alle Geräte aus einem Sortiment stammen,
     // steht in der Kennzeichnung darüber, nicht im Versprechen.
     expect(text).not.toMatch(/nie nach unserer Provision/);
-    expect(text).toMatch(/Welches Gerät wir dir empfehlen/);
-    expect(text).toMatch(/kein Marktüberblick/);
+    expect(text).toMatch(/nach Preis und passender Heizleistung/);
+    expect(text).toMatch(/nicht aus dem gesamten Markt/);
   });
 
   test("widerspricht dem Produktnamen nicht", async ({ page }) => {

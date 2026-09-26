@@ -35,7 +35,7 @@ import { WP_M2_MAX, WP_M2_MIN } from "./constants";
 
 export type WpFuelId = string;
 export type WpAltheizung = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
-export type WpEinkommen = "none" | "bis50" | "bis40" | "bis30";
+export type WpEinkommen = "none" | "bis60" | "bis50" | "bis40" | "bis30";
 export type WpBegStand = "jetzt" | "naechste";
 
 /**
@@ -67,6 +67,9 @@ export interface WpZustand {
   szenario: string;
   weg: string;
   // Förderung
+  fundingConfirmed?: boolean;
+  fundingAgeUnknown?: boolean;
+  heatingKnown?: boolean;
   selbstnutzer: boolean;
   altheizung: WpAltheizung;
   einkommen: WpEinkommen;
@@ -111,6 +114,9 @@ export const WP_STANDARD: WpZustand = {
   heizkoerperTausch: false,
   szenario: "gruengas",
   weg: "ist",
+  fundingConfirmed: false,
+  fundingAgeUnknown: false,
+  heatingKnown: false,
   selbstnutzer: true,
   altheizung: "gas_alt",
   einkommen: "none",
@@ -152,6 +158,9 @@ const FELD = {
   heizkoerperTausch: "hk",
   szenario: "sc",
   weg: "wg",
+  fundingConfirmed: "fc",
+  fundingAgeUnknown: "fa",
+  heatingKnown: "ha",
   selbstnutzer: "sn",
   altheizung: "ah",
   einkommen: "ek",
@@ -243,9 +252,12 @@ export function wpAusParametern(params: URLSearchParams): WpZustand {
     heizkoerperTausch: jaNein(g(FELD.heizkoerperTausch), WP_STANDARD.heizkoerperTausch),
     szenario: g(FELD.szenario) ?? WP_STANDARD.szenario,
     weg: g(FELD.weg) ?? WP_STANDARD.weg,
+    fundingConfirmed: jaNein(g(FELD.fundingConfirmed), false),
+    fundingAgeUnknown: jaNein(g(FELD.fundingAgeUnknown), false),
+    heatingKnown: jaNein(g(FELD.heatingKnown), false),
     selbstnutzer: jaNein(g(FELD.selbstnutzer), WP_STANDARD.selbstnutzer),
     altheizung: ausListe(g(FELD.altheizung), ["oel_kohle", "gas_alt", "gas_neu", "andere"] as const, WP_STANDARD.altheizung),
-    einkommen: ausListe(g(FELD.einkommen), ["none", "bis50", "bis40", "bis30"] as const, WP_STANDARD.einkommen),
+    einkommen: ausListe(g(FELD.einkommen), ["none", "bis60", "bis50", "bis40", "bis30"] as const, WP_STANDARD.einkommen),
     kindImHaushalt: jaNein(g(FELD.kindImHaushalt), WP_STANDARD.kindImHaushalt),
     euUrsprung: jaNein(g(FELD.euUrsprung), WP_STANDARD.euUrsprung),
     begStand: ausListe(g(FELD.begStand), ["jetzt", "naechste"] as const, WP_STANDARD.begStand),

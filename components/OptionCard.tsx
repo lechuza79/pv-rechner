@@ -21,7 +21,7 @@ export default function OptionCard({ selected, onClick, icon = null, label, sub,
       border: selected ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
       color: v('--color-text-primary'), textAlign: "center", minHeight: 78, width: "100%",
     }}>
-      {illustration && <img className="sc-option-illustration" src={illustration} alt="" width={240} height={160} />}
+      {illustration && <span className="sc-option-artwork" aria-hidden="true"><img className="sc-option-illustration" src={illustration} alt="" width={240} height={160} /></span>}
       {icon && <div style={{ fontSize: v("--font-size-h3"), marginBottom: 3 }}>{icon}</div>}
       <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary') }}>{label}</div>
       {sub && <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), marginTop: 2, lineHeight: 1.3 }}>{sub}</div>}

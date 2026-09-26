@@ -146,3 +146,34 @@ VERWENDUNG, nie das bloße Vorhandensein.
   lässt sich über die Adresse öffnen, dann entfällt der Klick); Frist steht im
   Test.
 - **Die Trennung Entwurf/React** (Punkt 1) ist beschrieben, nicht entschieden.
+
+## Collapsible content
+
+All expandable content uses the shared disclosure transition, including closing.
+Native `details` elements use the global rule in `lib/theme.ts`; controlled React
+panels use `components/Collapse.tsx`. Keep content mounted while closing and inert
+when closed. Reuse `--disclosure-duration` and `--disclosure-easing`, rather than
+adding component-specific timings. Respect `prefers-reduced-motion`. Browsers
+without intrinsic-size transitions retain the native, immediately usable disclosure.
+
+## Heat pump result and release checks (26 September 2026)
+
+The existing-heating question can be deferred with “Später im Fördercheck beantworten”.
+Unconfirmed answers never add a personal funding bonus: the initial result uses base
+funding only. The funding modal and the editable result overview share
+`BegFundingQuestions`; income options come from `beg-funding-options.ts`, including
+the family-only band up to EUR 60,000. Income uses the tax-assessment average for
+the second and third years before application, for owners and their partners.
+Source checked: KfW programme 458 partner page, income bonus and household-income
+definition (26 September 2026). Rates and model coefficients remain unchanged.
+
+Building, price and PV settings keep draft answers until explicitly recalculated;
+cancel discards the draft. Applying a change restarts the result count and race.
+A manually entered net investment is no longer accepted by this UI: gross cost,
+funding and net cost must remain reconcilable. Legacy share URLs remain readable.
+
+Release coverage: full Vitest suite and production build, plus scoped browser tests
+for the initial flow, deferred funding, explicit confirmation and advertising
+labels. Check the actual production build at desktop and narrow phone widths.
+The seller address and withdrawal notice must remain visible below the products;
+showing them only in a details modal is insufficient.

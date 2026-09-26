@@ -5,6 +5,15 @@ import { DEFAULT_HEATPUMP_CONFIG } from '../heatpump-config';
 
 const base: HeatPumpInputs = { situation: 'bestand', wohnflaeche: 140, insulationIdx: 1, personen: 4, heizsystem: 'hk_neu', wpType: 'lwwp', haustypFaktor: 1 };
 describe('Personal heat cost race', () => {
+  it('accumulates more heating costs in January than July', () => {
+    const result = calcHeatPump(base, DEFAULT_HEATPUMP_CONFIG, heatPumpScenarioAdj('realistic'));
+    const race = heatPumpRace(result, 2026);
+    const day = (month: number) => (Date.UTC(2026, month, 1) - Date.UTC(2026, 0, 1)) / 86400000;
+    for (const costs of [race.wp, race.fossil]) {
+      expect(costs[day(1)] - costs[0]).toBeGreaterThan(costs[day(7)] - costs[day(6)]);
+      expect(Array.from(costs).every(Number.isFinite)).toBe(true);
+    }
+  });
   for (const situation of ['bestand', 'neubau'] as const) {
     for (const scenario of ['pessimistic', 'realistic', 'optimistic']) {
       it(`agrees with every annual balance and final costs: ${situation}, ${scenario}`, () => {

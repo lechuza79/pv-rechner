@@ -20,6 +20,7 @@ import { ReactNode, useId, useState } from "react";
 import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconChevronDown } from "./Icons";
 import Switch from "./Switch";
+import Collapse from "./Collapse";
 
 export interface ResultSectionProps {
   /** Überschrift des Abschnitts — benennt das Thema, nicht die Aktion. */
@@ -87,7 +88,7 @@ export default function ResultSection({
              Hing die Angabe an `open`, meldete die Kopfzeile weiter „erweitert"
              und `aria-controls` zeigte auf eine ID, die es im DOM nicht gab. */
           aria-expanded={inhaltSichtbar}
-          aria-controls={inhaltSichtbar ? panelId : undefined}
+          aria-controls={panelId}
           style={{
             display: "flex", alignItems: "center", gap: space.md, flex: 1, minWidth: 0,
             padding: 0, background: "transparent", border: "none", cursor: "pointer", textAlign: "left",
@@ -116,12 +117,12 @@ export default function ResultSection({
         </button>
       </div>
 
-      {inhaltSichtbar && (
+      <Collapse open={inhaltSichtbar}>
         <div
           id={panelId}
           role="region"
           aria-labelledby={headId}
-          className="sc-acc"
+
           style={{
             padding: pad("lg", "xl"),
             borderTop: `1px dashed ${v("--color-border")}`,
@@ -129,7 +130,7 @@ export default function ResultSection({
         >
           {children}
         </div>
-      )}
+      </Collapse>
     </div>
   );
 }

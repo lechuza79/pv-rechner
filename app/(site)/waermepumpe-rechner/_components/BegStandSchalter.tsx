@@ -25,6 +25,7 @@
 // Ministerium kann sie ohne parlamentarisches Verfahren ändern — genau das ist
 // am 17.07.2026 passiert, als sie die Fassung von 2023 ersetzte. Und einen
 // Rechtsanspruch auf die Förderung gibt es nicht (Nr. 7.2).
+import OptionCard from "../../../../components/OptionCard";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import { v, space } from "../../../../lib/theme";
 import {
@@ -51,32 +52,6 @@ export interface BegStandSchalterProps {
   betragNaechsteMitEu: number;
 }
 
-function Schalter({ aktiv, onClick, titel, unter }: {
-  aktiv: boolean; onClick: () => void; titel: string; unter: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-pressed={aktiv}
-      style={{
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: v("--radius-sm"),
-        border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
-        background: aktiv ? v("--color-bg-accent") : "transparent",
-        color: aktiv ? v("--color-accent-dark") : v("--color-text-secondary"),
-        fontWeight: aktiv ? 700 : 500,
-        fontSize: v("--font-size-small"),
-        cursor: "pointer",
-        lineHeight: 1.3,
-      }}
-    >
-      {titel}
-      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, opacity: 0.8 }}>{unter}</div>
-    </button>
-  );
-}
-
 export default function BegStandSchalter({
   stand, setStand, jetzt, naechste, euUrsprung, setEuUrsprung,
   betragJetzt, betragNaechsteOhneEu, betragNaechsteMitEu,
@@ -94,64 +69,27 @@ export default function BegStandSchalter({
 
   return (
     <div style={{ marginBottom: space.md }}>
-      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
-        Nach welchem Förderstand soll gerechnet werden?
-      </div>
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 10 }}>
         Die Förderung ändert sich zu festen Stichtagen. Maßgeblich ist, wann der Antrag eingeht —
         nicht, wann eingebaut wird.
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-        <Schalter
-          aktiv={!kuenftig}
+      <div className="wp-funding-date-options">
+        <OptionCard
+          selected={!kuenftig}
           onClick={() => setStand("jetzt")}
-          titel="Heute"
-          unter={`${Math.round(jetzt.grundfoerderung * 100)} % Grundförderung`}
+          group="funding-date" label="Heute"
+          sub={`${Math.round(jetzt.grundfoerderung * 100)} % Grundförderung`}
         />
-        <Schalter
-          aktiv={kuenftig}
+        <OptionCard
+          selected={kuenftig}
           onClick={() => setStand("naechste")}
-          titel={naechste.bezeichnung.replace(/^./, (c) => c.toUpperCase())}
-          unter={`${Math.round(naechste.grundfoerderung * 100)} % Grundförderung`}
+          group="funding-date" label={naechste.bezeichnung.replace(/^./, (c) => c.toUpperCase())}
+          sub={`${Math.round(naechste.grundfoerderung * 100)} % Grundförderung`}
         />
       </div>
 
-      <div style={{
-        fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.7,
-        borderTop: `1px dashed ${v("--color-border")}`, paddingTop: 10,
-      }}>
-        {naechste.aenderung}
-        {/* Der Unterschied gehört in EURO an den Schalter, nicht in
-            Prozentpunkten. Wer nur die Punkte liest, verrechnet sich
-            systematisch: Der Fördersatz ist bei 70 % bzw. 80 % gekappt, und wer
-            heute über die Kappung kommt, verliert weniger als die vollen 15
-            Punkte. Für einen selbstnutzenden Haushalt mit niedrigem Einkommen
-            sind es 11 %, für einen ohne Einkommens-Bonus ein Drittel und für
-            einen ganz ohne Boni tatsächlich die Hälfte. Nur der Euro-Betrag
-            stimmt für alle. */}
-        {bonusLaeuft ? (
-          <>
-            {" "}Gleichzeitig kommt ein Bonus von{" "}
-            {Math.round(BEG_WERTSCHOEPFUNGS_BONUS.satz * 100)} Prozentpunkten für Wärmepumpen mit
-            Ursprung in der EU hinzu — genau so viel, wie die Halbierung wegnimmt.
-            <InfoTooltip title="Bonus für Wärmepumpen aus der EU" ariaLabel="Bonus für Wärmepumpen aus der EU">
-              Die Förderrichtlinie gibt ab dem ersten Quartal 2027 zusätzlich 15 Prozentpunkte,
-              wenn die Wärmepumpe ihren Ursprung in der EU hat. Weil der Grundsatz zum selben
-              Zeitpunkt um 15 Punkte sinkt, ändert sich für ein solches Gerät am Fördersatz
-              nichts — die Kürzung trifft nur Geräte von außerhalb.
-              Ob ein bestimmtes Gerät den Bonus bekommt, können wir nicht für dich beantworten,
-              und zwar aus zwei Gründen: Die amtlichen Gerätelisten führen dazu kein Feld —
-              und woran sich der Ursprung überhaupt entscheidet, legt die Richtlinie nicht
-              selbst fest, sondern verweist auf ein gesondertes Infoblatt, das bislang nicht
-              vorliegt. Vom Markennamen lässt sich jedenfalls nicht darauf schließen. Frag
-              deinen Fachbetrieb nach dem konkreten Gerät, sobald die Abgrenzung
-              veröffentlicht ist. Anders als Klima- und Einkommens-Bonus setzt dieser Bonus
-              keine Selbstnutzung voraus.
-            </InfoTooltip>
-          </>
-        ) : null}
-      </div>
+
 
       {kuenftig && bonusLaeuft && (
         <div style={{
@@ -209,6 +147,51 @@ export default function BegStandSchalter({
         </div>
       )}
 
+
+    </div>
+  );
+}
+
+export function BegStandHilfe({ stand, naechste }: Pick<BegStandSchalterProps, "stand" | "naechste">) {
+  if (!naechste) return null;
+  const kuenftig = stand === "naechste";
+  const bonusLaeuft = naechste.abIso >= BEG_WERTSCHOEPFUNGS_BONUS.abIso;
+  return (<InfoTooltip title="Förderung nach Antragstermin" ariaLabel="Förderung nach Antragstermin">
+      <div style={{
+        fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.7,
+        borderTop: `1px dashed ${v("--color-border")}`, paddingTop: 10,
+      }}>
+        {naechste.aenderung}
+        {/* Der Unterschied gehört in EURO an den Schalter, nicht in
+            Prozentpunkten. Wer nur die Punkte liest, verrechnet sich
+            systematisch: Der Fördersatz ist bei 70 % bzw. 80 % gekappt, und wer
+            heute über die Kappung kommt, verliert weniger als die vollen 15
+            Punkte. Für einen selbstnutzenden Haushalt mit niedrigem Einkommen
+            sind es 11 %, für einen ohne Einkommens-Bonus ein Drittel und für
+            einen ganz ohne Boni tatsächlich die Hälfte. Nur der Euro-Betrag
+            stimmt für alle. */}
+        {bonusLaeuft ? (
+          <>
+            {" "}Gleichzeitig kommt ein Bonus von{" "}
+            {Math.round(BEG_WERTSCHOEPFUNGS_BONUS.satz * 100)} Prozentpunkten für Wärmepumpen mit
+            Ursprung in der EU hinzu — genau so viel, wie die Halbierung wegnimmt.
+            <p>
+              Die Förderrichtlinie gibt ab dem ersten Quartal 2027 zusätzlich 15 Prozentpunkte,
+              wenn die Wärmepumpe ihren Ursprung in der EU hat. Weil der Grundsatz zum selben
+              Zeitpunkt um 15 Punkte sinkt, ändert sich für ein solches Gerät am Fördersatz
+              nichts — die Kürzung trifft nur Geräte von außerhalb.
+              Ob ein bestimmtes Gerät den Bonus bekommt, können wir nicht für dich beantworten,
+              und zwar aus zwei Gründen: Die amtlichen Gerätelisten führen dazu kein Feld —
+              und woran sich der Ursprung überhaupt entscheidet, legt die Richtlinie nicht
+              selbst fest, sondern verweist auf ein gesondertes Infoblatt, das bislang nicht
+              vorliegt. Vom Markennamen lässt sich jedenfalls nicht darauf schließen. Frag
+              deinen Fachbetrieb nach dem konkreten Gerät, sobald die Abgrenzung
+              veröffentlicht ist. Anders als Klima- und Einkommens-Bonus setzt dieser Bonus
+              keine Selbstnutzung voraus.
+            </p>
+          </>
+        ) : null}
+      </div>
       <div style={{
         marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v("--color-border")}`,
         fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.6,
@@ -222,7 +205,7 @@ export default function BegStandSchalter({
             gilt — anders als bei einem Gesetzentwurf ist dafür kein weiterer Beschluss nötig.
             Einen tagesgenauen Termin nennt sie für die Wärmepumpen-Sätze allerdings nicht,
             sondern nur das erste Quartal 2027.{" "}
-            <InfoTooltip title="Was ab 2027 sonst noch gilt" ariaLabel="Was ab 2027 sonst noch gilt">
+            <p>
               Zwei weitere Änderungen zum selben Zeitpunkt rechnen wir nicht mit, weil sie von
               Angaben abhängen, die dieser Rechner nicht kennt: Wer schon eine geförderte
               Anlage im Haus hat — eine Pelletheizung, eine Wärmepumpe, unter Umständen auch
@@ -234,13 +217,12 @@ export default function BegStandSchalter({
               werden nur noch Wärmepumpen mit natürlichen Kältemitteln gefördert, und wo eine
               Gemeinde den Anschluss an ein Wärmenetz beschlossen hat, wird nur dieser
               gefördert.
-            </InfoTooltip>
+            </p>
           </>
         ) : (
           <>Diese Sätze gelten für Anträge bis {naechste.bezeichnung.replace(/^ab /i, "vor ")}.</>
         )}{" "}
         Ein Rechtsanspruch auf die Förderung besteht nicht; entschieden wird über den Antrag.
       </div>
-    </div>
-  );
+      </InfoTooltip>);
 }

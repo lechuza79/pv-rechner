@@ -2,18 +2,21 @@
 import "./result-design.css";
 import "./input-design.css";
 import { AccordionField } from "../../../components/AccordionField";
+import { BEG_EINKOMMEN_OPTIONS, confirmedBegBonuses } from "../../../lib/beg-funding-options";
+import { BegFundingQuestions, type BegFundingScreen } from "../../../components/BegFundingQuestions";
 import FlowSchritte from "../../../components/FlowSchritte";
 import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
+import Toast from "../../../components/Toast";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
 import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
-import { calcHeatPumpInvestmentSensitivity, calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, calcBegSubsidy, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
+import {  calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, calcBegSubsidy, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import {
   DEFAULT_HEATPUMP_CONFIG,
   begStufeAm,
@@ -21,7 +24,8 @@ import {
   type BegStand,
 } from "../../../lib/heatpump-config";
 import PersonalHeatRace from "./_components/PersonalHeatRace";
-import BegStandSchalter from "./_components/BegStandSchalter";
+import { useResultIntro } from "./_components/useResultIntro";
+import BegStandSchalter, { BegStandHilfe } from "./_components/BegStandSchalter";
 import { BEG_ANTRAG_KURZ, BEG_ANTRAG_HREF } from "../../../lib/beg-antrag";
 import { greenGasApplies, fossilReplacementInvestment, kesselDerAblesung, referenzFuerEinheit } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
@@ -34,11 +38,12 @@ import WpGeraeteEmpfehlung, { WpAuswahlHeading } from "../../../components/WpGer
 import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import StandortField from "../../../components/StandortField";
+import KfwFoerderpraxis from "../../../components/KfwFoerderpraxis";
+import { useKfwKreis } from "../../../lib/use-kfw-kreis";
+import { useSharedPlz } from "../../../lib/location";
 import ResultFunding from "../../../components/ResultFunding";
 import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
 import { useFoerderung } from "../../../lib/use-foerderung";
-import KfwFoerderpraxis, { kfwPraxisZusammenfassung } from "../../../components/KfwFoerderpraxis";
-import { useKfwKreis } from "../../../lib/use-kfw-kreis";
 import { type HeizungsfoerderungBund } from "../../../lib/kfw-format";
 import {
   istGeteilterLink,
@@ -48,13 +53,12 @@ import {
 } from "../../../lib/wp-share-state";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
 import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
-import Modal, { ModalSticky } from "../../../components/Modal";
+import Modal from "../../../components/Modal";
 import WpPvFlow from "../../../components/WpPvFlow";
 import { wpPvRecommendation } from "../../../lib/wp-pv-recommend";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconSettings, IconArrowRight, IconRefresh, IconChevronDown, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
-import HeatPumpInvestmentAssumptions from "../../../components/HeatPumpInvestmentAssumptions";
+import { IconAlert, IconSettings, IconRefresh, IconCheck, IconCopy, IconPlus, IconShare, IconWhatsApp } from "../../../components/Icons";
 import { v, iconSizes, tokens } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
@@ -91,9 +95,35 @@ export default function Waermepumpe({
   // ── Step state ───────────────────────────────────────────────
   const router = useRouter();
   const [step, setStep] = useState(0);
+  const [heatingKnown, setHeatingKnown] = useState(false);
+  const [heatingScreen, setHeatingScreen] = useState<BegFundingScreen>("heizung");
+  const [fundingConfirmed, setFundingConfirmed] = useState(false);
+  const [fundingAgeUnknown, setFundingAgeUnknown] = useState(false);
+  const [fundingQuestion, setFundingQuestion] = useState<BegFundingScreen>("heizung");
+  const [fundingTimingConfirmed, setFundingTimingConfirmed] = useState(false);
+  const resumeFundingAge = useRef(false);
+  const fundingCategory = useRef<"fossil" | "gas" | "other">("gas");
+  const [fundingNotice, setFundingNotice] = useState(false);
+  const [fundingPromptDismissed, setFundingPromptDismissed] = useState(false);
+  const [fundingEditorVersion, setFundingEditorVersion] = useState(0);
+  const [fundingCheckOpen, setFundingCheckOpen] = useState(false);
+  const [fundingCheckStage, setFundingCheckStage] = useState<"timing" | "questions" | "review">("timing");
+  const [fundingDraftQuestion, setFundingDraftQuestion] = useState<BegFundingScreen>("heizung");
+  const [fundingDraft, setFundingDraft] = useState({ stand: "jetzt" as BegStand, eu: false, heating: "gas_neu" as AltheizungKey, ageUnknown: false, income: "none" as EinkommenKey, child: false });
+  const fundingDraftCategory = useRef<"fossil" | "gas" | "other">("gas");
+
+  const fundingEdited = useRef(false);
+  const previousFunding = useRef<number | null>(null);
+  const [fundingStep, setFundingStep] = useState<string | null>(null);
   const [inputEditing, setInputEditing] = useState<string | null>(null);
-  const [customAreaOpen, setCustomAreaOpen] = useState(false);
-  const inputOpen = (key: string, previous?: string) => inputEditing === key || (inputEditing === null && !beantwortet.has(key) && (!previous || beantwortet.has(previous)));
+  const activeInput = inputEditing ?? (step === 1 ? "haustyp" : step === 4 ? "heizsystem" : "daemmung");
+  const [inputExpanded, setInputExpanded] = useState<Set<string>>(new Set());
+  const inputOpen = (key: string, _previous?: string) => activeInput === key || inputExpanded.has(key);
+  const toggleInput = (key: string) => setInputExpanded(previous => {
+    const next = new Set(previous);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
   // Welche Fragen wirklich beantwortet sind. Die Werte darunter behalten ihre
   // Startwerte (die Rechnung braucht sie), geben sich aber nicht mehr als
   // Auswahl aus — Flow-Konvention: keine Vorauswahl, Weiter erst nach echter
@@ -138,7 +168,6 @@ export default function Waermepumpe({
   const [oStromPrice, setOStromPrice] = useState<number | null>(null);
   const [oFuel, setOFuel] = useState<string>("gas_neu");
   const [oJaz, setOJaz] = useState<number | null>(null);
-  const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   // Gemessener Jahresverbrauch statt Schätzung aus Fläche × Kennwert. Er schreibt
   // auf denselben Override wie das Eingabefeld im Ergebnis (oQges) — eine Größe,
@@ -175,7 +204,6 @@ export default function Waermepumpe({
   // eine Kürzung, die es für ein EU-Gerät gar nicht gibt.
   const [euUrsprung, setEuUrsprung] = useState(false);
   const begStufe = begStand === "naechste" && stufeNaechste ? stufeNaechste : stufeJetzt;
-  const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   // ── Kommunale Förderung ──────────────────────────────────────
   // Der Wohnort wird bewusst NICHT im Frageweg erhoben: Er ändert nichts am
   // Gebäude und nichts an der Wärmepumpe, sondern nur daran, ob die Gemeinde
@@ -184,9 +212,21 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState("");
   const foerderQuelle = useFoerderung("waermepumpe");
+  const [checkedPlz, setCheckedPlz] = useState("");
+  const lookupFunding = (value: string) => {
+    setCheckedPlz(value);
+    void foerderQuelle.ausPlz(value);
+  };
+  useSharedPlz(plz, remembered => {
+    // An explicit shared-link location wins over this device's remembered location.
+    const params = new URLSearchParams(window.location.search);
+    if (istGeteilterLink(params) && wpAusParametern(params).plz) return;
+    setPlz(remembered);
+    lookupFunding(remembered);
+  });
+  const kfwKreis = useKfwKreis(foerderQuelle.ags);
   // Der Kreisbezug hängt am Ort, den der Fördercheck ohnehin schon aufgelöst
   // hat — keine zweite Ortsfrage, kein Abruf ohne Ort.
-  const kfwKreis = useKfwKreis(foerderQuelle.ags);
   const [fundingEnabled, setFundingEnabled] = useState(true);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
   //  "gruengas"                       = beschlossenes Heizungsgesetz (GModG Bio-Treppe),
@@ -247,7 +287,6 @@ export default function Waermepumpe({
   const [preisExpanded, setPreisExpanded] = useState(false);
   // Ziel des Verweises unter der großen Zahl — dort steht die Erklärung der
   // Preismodelle samt Umschalter.
-  const preisBlockRef = useRef<HTMLDivElement>(null);
 
   // ── Geteilter Link ───────────────────────────────────────────
   //
@@ -286,7 +325,11 @@ export default function Waermepumpe({
     setOFuel(z.brennstoff);
     setHeizkoerperTausch(z.heizkoerperTausch);
     setScenario(z.szenario);
-    setWegId(z.weg);
+    setFundingConfirmed(z.fundingConfirmed ?? false);
+    if (z.fundingConfirmed) setFundingQuestion("result");
+    setFundingAgeUnknown(z.fundingAgeUnknown ?? false);
+    setHeatingKnown(z.heatingKnown || z.fundingConfirmed || false);
+    if (z.heatingKnown || z.fundingConfirmed) { setHeatingScreen("result"); setFundingQuestion(z.fundingConfirmed ? "result" : "einkommen"); }
     setSelbstnutzer(z.selbstnutzer);
     setAltheizung(z.altheizung);
     setEinkommen(z.einkommen);
@@ -301,11 +344,10 @@ export default function Waermepumpe({
     setOGasPrice(z.gaspreis);
     setOStromPrice(z.strompreis);
     setOJaz(z.jaz);
-    setOInvest(z.investition);
     setOQges(z.heizwaerme);
     setOHeizlast(z.heizlast);
     setOFossilInvest(z.fossilInvest);
-    if (z.plz) { setPlz(z.plz); void foerderQuelle.ausPlz(z.plz); }
+    if (z.plz) { setPlz(z.plz); lookupFunding(z.plz); }
     // Ein geteilter Link ZEIGT ein Ergebnis — er stellt keine Fragen noch
     // einmal. Alle Antworten gelten damit als gegeben; ohne das stünde der
     // Empfänger vor einem Flow, dessen Weiter-Knopf gesperrt ist, obwohl alle
@@ -327,7 +369,10 @@ export default function Waermepumpe({
     brennstoff: oFuel,
     heizkoerperTausch,
     szenario: scenario,
-    weg: wegId,
+    weg: "ist",
+    fundingConfirmed,
+    heatingKnown,
+    fundingAgeUnknown,
     selbstnutzer,
     altheizung,
     einkommen,
@@ -343,7 +388,7 @@ export default function Waermepumpe({
     gaspreis: oGasPrice,
     strompreis: oStromPrice,
     jaz: oJaz,
-    investition: oInvest,
+    investition: null,
     heizwaerme: oQges,
     heizlast: oHeizlast,
     fossilInvest: oFossilInvest,
@@ -366,12 +411,32 @@ export default function Waermepumpe({
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pricesOpen, setPricesOpen] = useState(false);
-  const openSettings = () => setSettingsOpen(true);
+  const [productHints, setProductHints] = useState<import("../../../lib/wp-hinweise").Hinweis[]>([]);
+  const heatingAnswers: Partial<Record<BegFundingScreen, string>> = heatingKnown ? {
+    heizung: altheizung === "oel_kohle" ? "Öl, Kohle, Gas-Etage oder Nachtspeicher" : altheizung === "andere" ? "Etwas anderes" : "Gas-Zentralheizung, Holz oder Pellets",
+    ...((altheizung === "gas_alt" || altheizung === "gas_neu") ? { alter: fundingAgeUnknown ? "Weiß ich nicht" : altheizung === "gas_alt" ? "20 Jahre oder älter" : "Jünger als 20 Jahre" } : {}),
+  } : {};
+
+  const settingsValues = () => ({ haustypIdx, wohnflaeche, insulationIdx, heizsystem, wpType, oQges, oHeizlast, oJaz, oFossilInvest });
+  const [settingsDraft, setSettingsDraft] = useState<ReturnType<typeof settingsValues> | null>(null);
+  const settingsInitial = useRef<ReturnType<typeof settingsValues> | null>(null);
+  const openSettings = () => { const values = settingsValues(); settingsInitial.current = values; setSettingsDraft(values); setSettingsOpen(true); };
+  const updateSettings = (patch: Partial<ReturnType<typeof settingsValues>>) => setSettingsDraft(previous => previous ? { ...previous, ...patch } : previous);
+  const settingsChanged = settingsDraft !== null && JSON.stringify(settingsDraft) !== JSON.stringify(settingsInitial.current);
+  const priceValues = () => ({ oGasPrice, oStromPrice, scenario });
+  const [priceDraft, setPriceDraft] = useState<ReturnType<typeof priceValues> | null>(null);
+  const priceInitial = useRef<ReturnType<typeof priceValues> | null>(null);
+  const openPrices = () => { const values = priceValues(); priceInitial.current = values; setPriceDraft(values); setPricesOpen(true); };
+  const updatePrices = (patch: Partial<ReturnType<typeof priceValues>>) => setPriceDraft(previous => previous ? { ...previous, ...patch } : previous);
+  const pricesChanged = priceDraft !== null && JSON.stringify(priceDraft) !== JSON.stringify(priceInitial.current);
   const [resultDetailsOpen, setResultDetailsOpen] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [forwardOpen, setForwardOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
   const shareBtnStyle = (aktiv?: boolean) => ({
-    width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer" as const,
+    width: 40, height: 40, borderRadius: v('--radius-pill'), cursor: "pointer" as const,
     background: aktiv ? v('--color-accent-dim') : v('--color-bg'),
     border: `1px solid ${aktiv ? v('--color-accent') : v('--color-border-accent')}`,
     color: v('--color-accent'),
@@ -391,12 +456,53 @@ export default function Waermepumpe({
     trackEvent("waermepumpe_geteilt");
     try { await navigator.share({ title: "Solar Check – Meine Wärmepumpen-Rechnung", text: shareText(), url: buildShareUrl() }); } catch {}
   };
+  const resetCalculation = () => { window.location.assign(window.location.pathname); };
+  const saveResult = () => {
+    const content = ["Solar Check – Wärmepumpen-Rechnung", new Date().toLocaleDateString("de-DE"), "", shareText(), `Eigenanteil nach Förderung: ${result.investNetto.toLocaleString("de-DE")} €`, `Bundesförderung: ${result.beg.amount.toLocaleString("de-DE")} €`, "", "Berechnung mit allen Angaben wieder öffnen:", buildShareUrl(), "", "Modellrechnung. Preise und Förderbedingungen können sich ändern."].join("\n");
+    const url = URL.createObjectURL(new Blob([content], { type: "text/plain;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url; link.download = "solar-check-waermepumpe.txt";
+    document.body.appendChild(link); link.click(); link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setSaveOpen(false);
+  };
   const handleWhatsApp = () => {
     trackEvent("waermepumpe_geteilt");
     window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText()}\n${buildShareUrl()}`)}`, "_blank");
   };
 
   const isResult = step >= STEPS.length;
+  const [resultRevision, setResultRevision] = useState(0);
+  const resultIntro = useResultIntro(isResult, resultRevision);
+  const overviewRef = useRef<HTMLDivElement>(null);
+  const actionbarRef = useRef<HTMLDivElement>(null);
+  const [actionsStuck, setActionsStuck] = useState(false);
+  useEffect(() => {
+    if (!isResult) return;
+    const update = () => {
+      const bar = actionbarRef.current;
+      if (bar) setActionsStuck(bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [isResult]);
+  const fundingNoticeRef = useRef<HTMLElement>(null);
+  const [fundingNoticeRevealed, setFundingNoticeRevealed] = useState(false);
+  useEffect(() => {
+    const notice = fundingNoticeRef.current;
+    if (!isResult || !notice) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setFundingNoticeRevealed(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+    observer.observe(notice);
+    return () => observer.disconnect();
+  }, [isResult, situation]);
+
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
   // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
@@ -429,8 +535,8 @@ export default function Waermepumpe({
     { erfuellt: beantwortet.has("daemmung"), hinweis: "Bitte erst den Dämmstandard wählen." },
     { erfuellt: beantwortet.has("personen"), hinweis: "Bitte erst die Haushaltsgröße wählen." },
     {
-      erfuellt: beantwortet.has("heizsystem") && beantwortet.has("wptyp"),
-      hinweis: beantwortet.has("heizsystem")
+      erfuellt: beantwortet.has("heizsystem") && beantwortet.has("wptyp") && (situation === "neubau" || heatingKnown),
+      hinweis: situation === "bestand" && !heatingKnown ? "Bitte die vorhandene Heizung angeben." : beantwortet.has("heizsystem")
         ? "Bitte noch den Wärmepumpen-Typ wählen."
         : "Bitte bestehendes Heizsystem und Wärmepumpen-Typ wählen.",
     },
@@ -476,7 +582,6 @@ export default function Waermepumpe({
       qGes: oQges ?? undefined,
       heizlast: oHeizlast ?? undefined,
       jaz: oJaz ?? undefined,
-      investNetto: oInvest ?? undefined,
       stromPrice: oStromPrice ?? undefined,
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
@@ -484,14 +589,12 @@ export default function Waermepumpe({
       fossilErsatzInvest: oFossilInvest ?? undefined,
       // Beide Boni setzen Selbstnutzung voraus (KfW 458) — als Vermieter bleibt
       // nur die Grundförderung, deshalb hier weder Klima noch Einkommen.
-      klimaBonus: selbstnutzer && altheizungKlima(altheizung),
-      haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
-      kindImHaushalt: selbstnutzer && kindImHaushalt,
+      ...confirmedBegBonuses(fundingConfirmed, selbstnutzer, altheizungKlima(altheizung), fundingAgeUnknown, einkommenIncome(einkommen), kindImHaushalt),
       // Nicht an die Selbstnutzung gebunden — anders als Klima- und
       // Einkommens-Bonus verlangt der Wertschöpfungs-Bonus sie nicht.
       euUrsprung,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt, begStufe, euUrsprung]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oStromPrice, oGasPrice, oFossilInvest, fuel, fundingConfirmed, fundingAgeUnknown, selbstnutzer, altheizung, einkommen, kindImHaushalt, begStufe, euUrsprung]);
 
   // ── Kommunaler Zuschuss ──────────────────────────────────────
   // Henne und Ei: Der Zuschuss kann von der Investition abhängen (Prozentsätze),
@@ -528,7 +631,7 @@ export default function Waermepumpe({
   // voraus, und die BEG gibt es im Neubau ohnehin nicht. Sobald ein Programm
   // auftaucht, das den Neubau fördert, gehört diese Bedingung ins Programm statt
   // hierher — der Katalog kennt dafür heute kein Feld.
-  const foerderAktiv = fundingEnabled && oInvest === null && situation === "bestand";
+  const foerderAktiv = fundingEnabled && situation === "bestand";
   const inputs: HeatPumpInputs = useMemo(
     () => ({ ...inputsOhneFoerderung, kommunalFoerderung: foerderAktiv ? foerderStack.total : 0 }),
     [inputsOhneFoerderung, foerderAktiv, foerderStack.total],
@@ -541,54 +644,7 @@ export default function Waermepumpe({
   // Sanierungskosten (Dämmung) werden NICHT der WP zugerechnet — sie zahlen aufs
   // Gebäude ein (Komfort, Werterhalt, Heizkosten unabhängig vom System). Der
   // Heizkörpertausch bleibt drin, den macht man nur für die Wärmepumpe.
-  type Weg = {
-    id: string; titel: string;
-    /**
-     * Der Titel für die Reiterzeile über der Zahl.
-     *
-     * Vier Reiter teilen sich 480 px, also rund 105 px je Reiter.
-     * „Schrittweise Sanierung" braucht dort drei Zeilen und schiebt die Reihe
-     * auseinander; gekürzt trägt es eine. Der volle Titel bleibt die Identität
-     * des Wegs und steht in seinem Erklär-Fenster — der Reiter ist eine
-     * Beschriftung, kein Ersatz dafür.
-     */
-    reiter: string;
-    kurz: string; sanierung: boolean;
-    patch: Partial<Pick<HeatPumpInputs, "insulationIdx" | "heizsystem" | "heizkoerperTausch">>;
-  };
-  const wege: Weg[] = useMemo(() => {
-    if (situation !== "bestand") return [];
-    const list: Weg[] = [
-      { id: "ist", titel: "So wie jetzt", reiter: "Jetzt", kurz: "Ohne weitere Maßnahmen", sanierung: false, patch: {} },
-    ];
-    if (heizsystem === "hk_alt") {
-      list.push({ id: "heizung", titel: "Heizkörper fit machen", reiter: "Heizkörper", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
-    }
-    // Ein Schritt die Dämm-Leiter hinauf — von unsaniert auf teilsaniert bzw. von
-    // teilsaniert auf gut saniert.
-    if (oQges === null && oHeizlast === null && insulationIdx <= 1) {
-      list.push({ id: "teil", titel: "Besser gedämmtes Haus", reiter: "Besser gedämmt", kurz: "Heizungsvergleich bei besserer Dämmung. Kosten und Förderung der Dämmung sind nicht enthalten.", sanierung: true, patch: { insulationIdx: insulationIdx + 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
-    }
-    if (oQges === null && oHeizlast === null && insulationIdx < INSULATION_BESTAND.length - 1) {
-      // Zielstufe ist die oberste (vollsaniert), nicht mehr die dritte — sonst hieße
-      // der Weg „Vollsanierung" und landete doch nur bei „gut saniert".
-      // Niedertemperatur-Heizkörper statt Gratis-Fußbodenheizung: deren Kosten
-      // zählen (ehrlich), sonst stünde die Vollsanierung künstlich zu gut da.
-      list.push({ id: "voll", titel: "Vollständig gedämmtes Haus", reiter: "Voll gedämmt", kurz: "Heizungsvergleich bei vollständiger Dämmung. Kosten und Förderung der Dämmung sind nicht enthalten.", sanierung: true, patch: { insulationIdx: INSULATION_BESTAND.length - 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
-    }
-    return list;
-  }, [situation, heizsystem, insulationIdx, oQges, oHeizlast]);
-
-  // Wege-Vergleich (und die Ist-Konklusion) mit dem gewählten Szenario rechnen,
-  // damit sie nicht dem oben gewählten Szenario widersprechen. Die editierbaren
-  // Detailwerte laufen weiter über `result` (Basisfall).
-  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(effScenario, cfg)) })), [wege, inputs, cfg, effScenario]);
-  // Keep renovation alternatives available independently of the result.
-  const zeigeWege = situation === "bestand" && wege.length > 1;
-
-  const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
-  const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
-  const investmentSensitivity = useMemo(() => calcHeatPumpInvestmentSensitivity(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)), [activeInputs, cfg, greenGas, effScenario]);
+  const activeInputs = inputs;
   // MIT dem gewählten Szenario rechnen — sonst zeigen die editierbaren Kernannahmen
   // (Arbeitszahl, Brennstoffpreis) und die Aufschlüsselung „Rechnung im Detail" einen
   // anderen Fall als die große Zahl darüber. Bis 28.07.2026 lief `result` ohne
@@ -600,6 +656,40 @@ export default function Waermepumpe({
     () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
     [activeInputs, cfg, effScenario, greenGas],
   );
+
+  useEffect(() => {
+    if (fundingEdited.current && previousFunding.current !== null && previousFunding.current !== result.investNetto) setFundingNotice(true);
+    previousFunding.current = result.investNetto;
+  }, [result.investNetto]);
+  const showUpdatedResult = () => {
+    setResultRevision(revision => revision + 1);
+    setFundingNotice(false);
+    document.getElementById("wp-ueberblick")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  };
+
+  const openFundingCheck = () => {
+    setFundingDraft({ stand: begStand, eu: euUrsprung, heating: altheizung, ageUnknown: fundingAgeUnknown, income: einkommen, child: kindImHaushalt });
+    fundingDraftCategory.current = "gas";
+    setFundingDraftQuestion(heatingKnown ? "einkommen" : "heizung");
+    setFundingCheckStage("timing");
+    setFundingPromptDismissed(true);
+    setFundingCheckOpen(true);
+  };
+  const applyFundingCheck = () => {
+    fundingEdited.current = false;
+    setBegStand(fundingDraft.stand); setEuUrsprung(fundingDraft.eu);
+    setAltheizung(fundingDraft.heating); setFundingAgeUnknown(fundingDraft.ageUnknown);
+    setEinkommen(fundingDraft.income); setKindImHaushalt(fundingDraft.child);
+    setHeatingKnown(true); setFundingConfirmed(true); setFundingEditorVersion(version => version + 1); setFundingTimingConfirmed(true); setFundingQuestion("result");
+     setFundingStep(null); setFundingCheckOpen(false);
+    showUpdatedResult();
+  };
+  const fundingDraftStage = fundingDraft.stand === "naechste" && stufeNaechste ? stufeNaechste : stufeJetzt;
+  const draftFundingFor = (stufe: typeof stufeJetzt, euUrsprung: boolean) => calcBegSubsidy(situation, wpType, result.investBrutto, {
+    ...confirmedBegBonuses(true, selbstnutzer, altheizungKlima(fundingDraft.heating), fundingDraft.ageUnknown, einkommenIncome(fundingDraft.income), fundingDraft.child),
+    stufe, euUrsprung,
+  }, cfg);
+  const fundingDraftResult = draftFundingFor(fundingDraftStage, fundingDraft.eu);
 
   // Was der Wechsel des Förderstands in EURO ausmacht — beide Stände auf
   // derselben Investition gerechnet.
@@ -614,9 +704,7 @@ export default function Waermepumpe({
   // vollen 15. Nur der Euro-Betrag stimmt für beide.
   const begVergleich = useMemo(() => {
     const opts = {
-      klimaBonus: selbstnutzer && altheizungKlima(altheizung),
-      haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
-      kindImHaushalt: selbstnutzer && kindImHaushalt,
+      ...confirmedBegBonuses(fundingConfirmed, selbstnutzer, altheizungKlima(altheizung), fundingAgeUnknown, einkommenIncome(einkommen), kindImHaushalt),
     };
     const fuer = (stufe: typeof stufeJetzt, eu: boolean) =>
       calcBegSubsidy(situation, wpType, result.investBrutto, { ...opts, stufe, euUrsprung: eu }, cfg).amount;
@@ -626,7 +714,7 @@ export default function Waermepumpe({
       naechsteOhneEu: stufeNaechste ? fuer(stufeNaechste, false) : 0,
       naechsteMitEu: stufeNaechste ? fuer(stufeNaechste, true) : 0,
     };
-  }, [situation, wpType, result.investBrutto, cfg, selbstnutzer, altheizung, einkommen, kindImHaushalt, stufeJetzt, stufeNaechste]);
+  }, [situation, wpType, result.investBrutto, cfg, fundingConfirmed, fundingAgeUnknown, selbstnutzer, altheizung, einkommen, kindImHaushalt, stufeJetzt, stufeNaechste]);
 
   // Der Betrag, der neben der BEG noch Platz hat — die Anspruchshöhe, nicht die
   // Anzeige-Entscheidung. `kappung` hängt deshalb bewusst NICHT an `foerderAktiv`:
@@ -645,16 +733,13 @@ export default function Waermepumpe({
   );
 
   const foerderHinweis = useMemo(() => {
-    if (oInvest !== null) {
-      return "Die Investition ist von Hand gesetzt — darin steckt der Preis, den du tatsächlich zahlst, also samt Förderung. Der Zuschuss wird deshalb nicht noch einmal abgezogen.";
-    }
     if (!fundingEnabled || foerderStack.total === 0) return undefined;
     if (kappung >= foerderStack.total) return undefined;
     const grenze = Math.round(DEFAULT_HEATPUMP_CONFIG.begKumulierungsGrenze * 100);
     return result.kommunal.spielraum === 0
       ? `Bundesförderung und kommunaler Zuschuss zusammen dürfen ${grenze} % der geförderten Kosten nicht übersteigen. Deine BEG-Förderung schöpft das bereits aus, deshalb ist der kommunale Zuschuss hier nicht eingerechnet — beantragen kannst du ihn trotzdem, entschieden wird es im Bescheid.`
       : `Bundesförderung und kommunaler Zuschuss zusammen dürfen ${grenze} % der geförderten Kosten nicht übersteigen. Neben deiner BEG-Förderung bleiben davon ${result.kommunal.spielraum.toLocaleString("de-DE")} € — mehr wird nicht angerechnet.`;
-  }, [oInvest, fundingEnabled, foerderStack.total, kappung, result.kommunal.spielraum]);
+  }, [fundingEnabled, foerderStack.total, kappung, result.kommunal.spielraum]);
   // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
   // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
@@ -743,16 +828,11 @@ export default function Waermepumpe({
     [fuel.efficiency, gruengasResult.jaz, oStromPrice, cfg, pvCoverageForChart]
   );
 
-  // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
-  const selectWeg = (id: string) => {
-    setWegId(id);
-    setOQges(null); setOJaz(null); setOInvest(null); setOHeizlast(null);
-  };
-
   const insulationOptions = situation === "bestand" ? INSULATION_BESTAND : INSULATION_NEUBAU;
   // ── Render ───────────────────────────────────────────────────
   return (
     <div className={isResult ? "wp-calculator-page wp-result-page" : "wp-calculator-page wp-input-page"} style={{ ...({ "--wp-chevron-size": `${iconSizes.sm}px`, "--wp-positive": tokens["--color-positive"] } as React.CSSProperties), background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
+      <style>{`:root:has(.wp-calculator-page){${Object.entries(tokens).filter(([key]) => key.startsWith("--color-") || key.startsWith("--shadow-")).map(([key,value]) => `${key}:${value}!important`).join(";")}}`}</style>
       <div style={{ maxWidth: embedded ? "100%" : isResult ? 1240 : v('--page-max-width'), margin: "0 auto" }}>
         {!embedded && (
           <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: 24 }}>
@@ -763,7 +843,7 @@ export default function Waermepumpe({
             {isResult && <><nav className="wp-section-nav" aria-label="Dein Ergebnis"><a href="#wp-ueberblick" aria-current="location">Überblick</a><a href="#wp-geraete">Passende Geräte</a><button type="button" onClick={() => openSettings()}>Einstellungen</button></nav></>}
             {!isResult && (
               <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-                Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+                Fünf Schritte, ehrlich berechnet. Keine Anmeldung.
               </p>
             )}
           </div>
@@ -773,11 +853,12 @@ export default function Waermepumpe({
 
         {/* ── STEPS ── */}
         {!isResult && (
+          <>
           <div className="fu wp-input-step" key={step}>
 
             {/* 0: Situation */}
             {step === 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div className="wp-paired-options" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {SITUATION.map(s => (
                   <OptionCard key={s.id} selected={beantwortet.has("situation") && situation === s.id} onClick={() => {
                     setSituation(s.id as "bestand" | "neubau");
@@ -790,22 +871,29 @@ export default function Waermepumpe({
 
             {/* House questions use the same progressive disclosure as the other flows. */}
             {step === 1 && <div>
-              <AccordionField label="Haustyp" open={inputOpen("haustyp")} answered={beantwortet.has("haustyp")} summary={HAUSTYP_WP[haustypIdx].label} onEdit={() => setInputEditing("haustyp")}>
+              <AccordionField completedStyle="check" label="Haustyp" open={inputOpen("haustyp")} answered={beantwortet.has("haustyp")} summary={HAUSTYP_WP[haustypIdx].label} onEdit={() => toggleInput("haustyp")}>
                 <div className="wp-house-options">
-                  {HAUSTYP_WP.map((h, i) => <OptionCard key={h.id} illustration={`/illustrations/wp-input-neon-v2/${HOUSE_ILLUSTRATIONS[h.id]}.webp`} group="haustyp" selected={beantwortet.has("haustyp") && haustypIdx === i} onClick={() => { setHaustypIdx(i); markBeantwortet("haustyp"); setInputEditing(null); }} label={h.label} sub={h.sub} />)}
+                  {HAUSTYP_WP.map((h, i) => <OptionCard key={h.id} illustration={`/illustrations/wp-input-neon-v2/${HOUSE_ILLUSTRATIONS[h.id]}.webp`} group="haustyp" selected={beantwortet.has("haustyp") && haustypIdx === i} onClick={() => { setHaustypIdx(i); markBeantwortet("haustyp"); setInputEditing("flaeche"); setInputExpanded(previous => { const next = new Set(previous); next.delete("haustyp"); return next; }); }} label={h.label} sub={h.sub} />)}
                 </div>
               </AccordionField>
-              <AccordionField label="Wohnfläche" open={inputOpen("flaeche", "haustyp")} answered={beantwortet.has("flaeche")} summary={`${wohnflaeche} m²`} onEdit={() => setInputEditing("flaeche")}>
+              <AccordionField completedStyle="check" label="Wohnfläche" available={activeInput === "flaeche" || beantwortet.has("flaeche")} open={inputOpen("flaeche", "haustyp")} answered={beantwortet.has("flaeche")} summary={`${wohnflaeche} m²`} onEdit={() => toggleInput("flaeche")}>
                 <div className="wp-area-options">
-                  {WOHNFLAECHEN.map((f, i) => <OptionCard key={i} group="flaeche" selected={beantwortet.has("flaeche") && customFlaeche === null && flaecheIdx === i} onClick={() => { setFlaecheIdx(i); setCustomFlaeche(null); setCustomFlaecheDraft(""); markBeantwortet("flaeche"); setInputEditing(null); }} label={f.label} sub={f.sub} />)}
+                  {WOHNFLAECHEN.map((f, i) => <OptionCard key={i} group="flaeche" selected={beantwortet.has("flaeche") && customFlaeche === null && flaecheIdx === i} onClick={() => { setFlaecheIdx(i); setCustomFlaeche(null); setCustomFlaecheDraft(""); markBeantwortet("flaeche"); setInputEditing("done"); setInputExpanded(previous => { const next = new Set(previous); next.delete("flaeche"); return next; }); }} label={f.label} sub={f.sub} />)}
                 </div>
                 <div className="wp-custom-area">
-                  {!customAreaOpen ? <button type="button" className="wp-secondary-text" onClick={() => setCustomAreaOpen(true)}>Eigene Wohnfläche eingeben</button> : <>
-                    <label htmlFor="wp-custom-area">Eigene Wohnfläche</label>
-                    <input id="wp-custom-area" type="number" min={WP_M2_MIN} max={WP_M2_MAX} value={customFlaecheDraft} onChange={e => setCustomFlaecheDraft(e.target.value)} />
-                    <span>m²</span>
-                    <button type="button" className="wp-secondary-text" disabled={!(Number(customFlaecheDraft) >= WP_M2_MIN && Number(customFlaecheDraft) <= WP_M2_MAX)} onClick={() => { setCustomFlaeche(Number(customFlaecheDraft)); markBeantwortet("flaeche"); setInputEditing(null); }}>Übernehmen</button>
-                  </>}
+                  <label htmlFor="wp-custom-area">Eigene Wohnfläche</label>
+                  <input id="wp-custom-area" type="number" min={WP_M2_MIN} max={WP_M2_MAX} value={customFlaecheDraft} placeholder="m²" onChange={e => {
+                    const raw = e.target.value;
+                    setCustomFlaecheDraft(raw);
+                    const value = Number(raw);
+                    if (raw && value >= WP_M2_MIN && value <= WP_M2_MAX) {
+                      setCustomFlaeche(value); markBeantwortet("flaeche");
+                    } else {
+                      setCustomFlaeche(null);
+                      setBeantwortet(previous => { const next = new Set(previous); next.delete("flaeche"); return next; });
+                    }
+                  }} />
+                  <span>m²</span>
                 </div>
               </AccordionField>
             </div>}
@@ -813,33 +901,29 @@ export default function Waermepumpe({
             {/* 2: Dämmstandard */}
             {step === 2 && (
               <div>
-                <AccordionField label="Dämmstandard" open={inputOpen("daemmung")} answered={beantwortet.has("daemmung")} summary={insulationOptions[insulationIdx].label} onEdit={() => setInputEditing("daemmung")}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+                <div className="wp-insulation-question">
+                <div className="wp-insulation-options">
                   {insulationOptions.map((opt, i) => (
                     // Angezeigt wird der erwartete VERBRAUCH, nicht der Norm-Bedarf:
                     // Diese Zahl kann ein Bewohner mit seiner Abrechnung vergleichen,
                     // die Normzahl nicht (siehe lib/heat-consumption.ts).
-                    <OptionCard key={i} selected={beantwortet.has("daemmung") && insulationIdx === i} onClick={() => { setInsulationIdx(i); markBeantwortet("daemmung"); setInputEditing(null); }} label={opt.label} sub={`${opt.sub} · ~${verbrauchSpecKwh(situation, i, cfg)} kWh/m²·a`} />
+                    <OptionCard key={i} selected={beantwortet.has("daemmung") && insulationIdx === i} onClick={() => { setInsulationIdx(i); markBeantwortet("daemmung"); }} label={opt.label} sub={`${opt.sub} · ~${verbrauchSpecKwh(situation, i, cfg)} kWh/m²·a`} />
                   ))}
                 </div>
 
-                </AccordionField>
+                </div>
 
                 {/* Wer seine Abrechnung kennt, muss nicht schätzen. Der gemessene
                     Verbrauch schlägt jeden Kennwert — er ersetzt den Jahresbedarf,
                     NICHT die Heizlast (die Anlagengröße bleibt am Dämmstandard). */}
-                {situation === "bestand" && beantwortet.has("daemmung") && (
-                  <AccordionField label="Jahresverbrauch" open={inputEditing === "verbrauch"} answered summary={verbrauchKwh !== null ? `${verbrauchDraft} ${verbrauchEinheit === "oel" ? "Liter Öl" : "kWh Gas"}` : "Optional: Abrechnung nutzen"} onEdit={() => setInputEditing("verbrauch")}>
+                {situation === "bestand" && (
+                  <div className="wp-bill-input">
                   <div>
-                    <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, marginBottom: 4 }}>
-                      Du kennst deinen Verbrauch? Dann rechnen wir damit.
-                    </div>
-                    <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
-                      Der Wert von deiner letzten Jahresabrechnung ist genauer als jede Schätzung aus Fläche und Baujahr. Warmwasser ist mit drin, wenn deine Heizung es macht.
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <div className="wp-bill-heading"><label htmlFor="wp-annual-consumption">Verbrauch laut Abrechnung</label><span>Optional</span></div>
+                    <p className="wp-bill-description">Mit deinem Jahresverbrauch rechnen wir genauer. Einschließlich Warmwasser, wenn es über deine Heizung läuft.</p>
+                    <div className="wp-bill-fields">
                       <input
-                        type="text" inputMode="numeric"
+                        id="wp-annual-consumption" type="text" inputMode="numeric"
                         placeholder={verbrauchEinheit === "oel" ? "z. B. 2000" : "z. B. 18000"}
                         value={verbrauchDraft}
                         onChange={e => {
@@ -884,7 +968,7 @@ export default function Waermepumpe({
                       </div>
                     )}
                   </div>
-                  </AccordionField>
+                  </div>
                 )}
               </div>
             )}
@@ -892,8 +976,8 @@ export default function Waermepumpe({
             {/* 3: Haushalt */}
             {step === 3 && (
               <div>
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+                <div className="wp-input-label">Personen im Haushalt</div>
+                <div className="wp-person-options" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
                   {PERSONEN.map((p, i) => {
                     const aktiv = beantwortet.has("personen") && personen === i;
                     return (
@@ -918,59 +1002,81 @@ export default function Waermepumpe({
             {/* 4: Heizsystem + WP-Typ */}
             {step === 4 && (
               <div>
-                <AccordionField label="Heizflächen" open={inputOpen("heizsystem")} answered={beantwortet.has("heizsystem")} summary={HEIZSYSTEM.find(h => h.id === heizsystem)?.label} onEdit={() => setInputEditing("heizsystem")}>
+                <AccordionField completedStyle="check" label="Heizflächen" open={inputOpen("heizsystem")} answered={beantwortet.has("heizsystem")} summary={HEIZSYSTEM.find(h => h.id === heizsystem)?.label} onEdit={() => toggleInput("heizsystem")}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 18 }}>
                   {HEIZSYSTEM.map(h => (
-                    <OptionCard key={h.id} group="heizsystem" selected={beantwortet.has("heizsystem") && heizsystem === h.id} onClick={() => { setHeizsystem(h.id as typeof heizsystem); markBeantwortet("heizsystem"); setInputEditing(null); }} label={h.label} sub={h.sub} />
+                    <OptionCard key={h.id} group="heizsystem" selected={beantwortet.has("heizsystem") && heizsystem === h.id} onClick={() => { setHeizsystem(h.id as typeof heizsystem); markBeantwortet("heizsystem"); setInputEditing("wptyp"); setInputExpanded(previous => { const next = new Set(previous); next.delete("heizsystem"); return next; }); }} label={h.label} sub={h.sub} />
                   ))}
                 </div>
                 </AccordionField>
-                <AccordionField label="Wärmepumpen-Typ" open={inputOpen("wptyp", "heizsystem")} answered={beantwortet.has("wptyp")} summary={WP_TYPE.find(w => w.id === wpType)?.label} onEdit={() => setInputEditing("wptyp")}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <AccordionField completedStyle="check" label="Wärmepumpen-Typ" available={activeInput === "wptyp" || beantwortet.has("wptyp")} open={inputOpen("wptyp", "heizsystem")} answered={beantwortet.has("wptyp")} summary={WP_TYPE.find(w => w.id === wpType)?.label} onEdit={() => toggleInput("wptyp")}>
+                <div className="wp-paired-options" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {WP_TYPE.map(w => (
-                    <OptionCard key={w.id} group="wptyp" selected={beantwortet.has("wptyp") && wpType === w.id} onClick={() => { setWpType(w.id as typeof wpType); markBeantwortet("wptyp"); setInputEditing(null); }} label={w.label} sub={w.sub} />
+                    <OptionCard key={w.id} group="wptyp" selected={beantwortet.has("wptyp") && wpType === w.id} onClick={() => { setWpType(w.id as typeof wpType); markBeantwortet("wptyp"); setInputEditing("done"); setInputExpanded(previous => { const next = new Set(previous); next.delete("wptyp"); return next; }); }} label={w.label} sub={w.sub} />
                   ))}
                 </div>
                 </AccordionField>
+                {situation === "bestand" && beantwortet.has("wptyp") && <BegFundingQuestions progressive unknownAgeBonus={false}
+                  initialAnswers={heatingAnswers} screen={heatingScreen} onEditScreen={setHeatingScreen} stufe={stufeJetzt}
+                  go={next => { if (next === "alter") setHeatingScreen(next); else { setHeatingScreen("result"); setHeatingKnown(true); setFundingQuestion("einkommen"); } }}
+                  setNeubau={() => {}} setSelbstnutzer={() => {}} setEinkommen={() => {}} setKind={() => {}}
+                  onHeatingCategory={category => { fundingCategory.current = category; setHeatingKnown(false); }}
+                  setFossil={enabled => setAltheizung(fundingCategory.current === "fossil" ? "oel_kohle" : fundingCategory.current === "other" ? "andere" : enabled ? "gas_alt" : "gas_neu")}
+                  setAlterUnbekannt={setFundingAgeUnknown}
+                />}
               </div>
             )}
 
-            {/* Nav */}
-            <div style={{ marginTop: 24 }}>
+          </div>
+            {/* Keep viewport navigation outside the animated step. */}
+            <div className="wp-flow-footer">
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
-                onWeiter={() => { setInputEditing(null); next(); }}
+                nebenWeiter={step === 4 && situation === "bestand" && !heatingKnown && beantwortet.has("heizsystem") && beantwortet.has("wptyp") ? (
+                  <button type="button" className="wp-selection-details-link" onClick={() => {
+                    setFundingConfirmed(false);
+                    setFundingQuestion("heizung");
+                    next();
+                  }}>Später im Fördercheck beantworten</button>
+                ) : undefined}
+                onWeiter={() => {
+                  setInputExpanded(new Set());
+                  setInputEditing(null); next();
+                }}
                 // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
                 // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? () => { setInputEditing(null); back(); } : () => router.push("/")}
+                onZurueck={step > 0 ? () => {
+                  setInputExpanded(new Set()); setInputEditing(null); back();
+                } : () => router.push("/")}
                 inaktivHinweis={stepHinweis}
               />
             </div>
-          </div>
+          </>
         )}
 
         {/* ── RESULT ── */}
         {isResult && (
           // Keep the calculation and product comparison in separate sections.
-          <div className="fu wp-ergebnis">
+          <div className="wp-ergebnis">
           <div className="wp-result-main">
           <div className="wp-result-layout">
           <div className="wp-result-primary">
             <section id="wp-ueberblick" className="wp-overview" aria-label="Dein Ergebnis">
               <div className="wp-overview-top">
             <div className="wp-result-column">
-              <div className="wp-result-hero">
+              <div ref={overviewRef} className="wp-result-hero">
               <div className="wp-overview-head">
                 <div className="wp-result-label">
                   <span className="wp-result-label-copy"><strong className="wp-result-label-title">{sel.tcoEinsparung >= 0 ? "Einsparungen" : "Mehrkosten"} über {DEFAULT_HEATPUMP_CONFIG.years} Jahre</strong> mit{" "}
-                  <button type="button" className="wp-assumptions-trigger" onClick={() => { setPricesOpen(true); setPreisExpanded(true); }}>
+                  <button type="button" className="wp-assumptions-trigger" onClick={() => { openPrices(); setPreisExpanded(true); }}>
                     {greenGas || effScenario === "realistic" ? "realistischer" : effScenario === "optimistic" ? "optimistischer" : "pessimistischer"} Preisentwicklung
                   </button></span>
                   <div className="wp-result-tools"><button className="wp-result-details-link" type="button" onClick={() => setResultDetailsOpen(true)}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" title="Einstellungen" onClick={() => openSettings()}><IconSettings size={iconSizes.xl} /></button></div>
                   <Modal open={resultDetailsOpen} onClose={() => setResultDetailsOpen(false)} title="Dein Heizkostenvergleich im Detail" intro="So setzt sich die Einsparung über 20 Jahre zusammen." maxWidth={640}>
-                    <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
+                    <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={false} refLabel={fuel.refLabel} />
                     <div className="wp-calculation-details">
+                      <p>Die Beträge vergleichen Wärmepumpe und Vergleichsheizung im jeweiligen Gebäudezustand. Dämmkosten und Dämmförderung fehlen; ob sich die Dämmung lohnt, wird hier nicht berechnet.</p>
                       <ResultSection title="Technische Rechenwerte" summary="Wärme- und Strombedarf">
                         <DetailGrid items={[
                           ["Heizwärme pro Jahr", `${sel.qHeiz.toLocaleString("de-DE")} kWh`],
@@ -992,10 +1098,11 @@ export default function Waermepumpe({
                 <span className="wp-profit-illustration" aria-hidden="true"><img src="/illustrations/funding-check-neon.svg" alt="" width={1024} height={1024} /></span>
                 <div className="wp-profit-content">
               <div className="wp-profit-row">
-              <div className="wp-result-value" style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
-                {sel.tcoEinsparung > 0 && <span className="wp-result-plus" style={{ color: tokens["--color-positive"] }} aria-label="Plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true"><path d="M12 4v16M4 12h16" /></svg></span>}{Math.abs(sel.tcoEinsparung).toLocaleString("de-DE")} <span className="wp-result-currency">€</span>
+              <div ref={resultIntro.anchor} className="wp-result-value" style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+                {sel.tcoEinsparung > 0 && <span className="wp-result-plus" style={{ color: tokens["--color-positive"] }} aria-label="Plus"><IconPlus size={iconSizes.md} /></span>}<span className="wp-result-count"><span className="wp-result-count-space" aria-hidden="true">{Math.abs(sel.tcoEinsparung).toLocaleString("de-DE")}</span><span className="wp-result-count-live">{Math.round(Math.abs(sel.tcoEinsparung) * resultIntro.progress).toLocaleString("de-DE")}</span></span> <span className="wp-result-currency">€</span>
               </div>
                 <div className="wp-pv-toggle-group">
+                  {resultIntro.stage === "solar" && <span className="wp-solar-pointer" aria-hidden="true" />}
                 <Switch className="wp-pv-switch" an={pvStatus !== "nein"} onChange={togglePv} label="Mit Solaranlage" text="Mit Solaranlage" />
 
                 </div>
@@ -1006,7 +1113,7 @@ export default function Waermepumpe({
                   onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }}>
                   {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.displayLabel}</option>)}
                 </SelectField></span>
-                {situation === "neubau" ? "(Neubau)" : null}
+
 
               </div>
                 </div>
@@ -1021,20 +1128,6 @@ export default function Waermepumpe({
                   : <>Über {DEFAULT_HEATPUMP_CONFIG.years} Jahre kostet dich die Wärmepumpe <strong>{Math.abs(sel.tcoEinsparung).toLocaleString("de-DE")} € mehr</strong> als {ersatzInvest > 0 ? "eine neue" : "deine vorhandene"} {referenceDevice}.</>}
                 {" "}Anschaffung nach Förderung, Betrieb und Wartung sind eingerechnet.
               </p>
-              {activeWeg?.sanierung && <HeatPumpInvestmentAssumptions
-                wpInvestment={sel.investNetto}
-                fuelKind={fuel.kind}
-                wpType={wpType}
-                heatLoadKw={sel.heizlastKw}
-                costClassKw={sel.auslegungKw}
-                sensitivity={investmentSensitivity}
-                referenceInvestment={sel.gasInvest}
-                referenceLabel={referenceDevice}
-                wpInvestmentEntered={oInvest !== null}
-                referenceInvestmentEntered={oFossilInvest !== null}
-                onWpInvestmentChange={setOInvest}
-                onReferenceInvestmentChange={setOFossilInvest}
-              />}
               {fuel.kind === "oil" && <p className="wp-building-comparison-note">Ölvergleich: UBA-Preisprojektion statt aktuellem Marktpreis. Die Kostenreferenz umfasst eine neue Komplettanlage mit Tank; Instandhaltung und Prüfungen sind eingerechnet. Zusätzliche Kosten für Bioheizöl fehlen.</p>}
               {/* WELCHE ANNAHME hinter der Zahl steht — nicht, wie weit sie
                   streuen könnte.
@@ -1068,9 +1161,9 @@ export default function Waermepumpe({
                   anderen." */}
 
             <Modal open={pvSettingsOpen} onClose={() => setPvSettingsOpen(false)} title="Solaranlage einrechnen" maxWidth={640}>
-              {pvSettingsOpen && <WpPvFlow context={{ personen, haustyp: haustypIdx, wohnflaeche, annualKwh: result.eWp }} initial={pvConfigured || pvStatus !== "nein" ? { kwp: pvKwp, storage: pvSpeicher } : undefined} onApply={({ kwp, storage }) => {
+              {pvSettingsOpen && <WpPvFlow onCancel={() => setPvSettingsOpen(false)} context={{ personen, haustyp: haustypIdx, wohnflaeche, annualKwh: result.eWp }} initial={pvConfigured || pvStatus !== "nein" ? { kwp: pvKwp, storage: pvSpeicher } : undefined} onApply={({ kwp, storage }) => {
                 setPvKwp(kwp); setPvSpeicher(storage); setPvStatus("vorhanden");
-                setPvConfigured(true); setPvSettingsOpen(false);
+                setPvConfigured(true); setPvSettingsOpen(false); showUpdatedResult();
               }} />}
             </Modal>
 
@@ -1082,23 +1175,20 @@ export default function Waermepumpe({
             </div>
             {/* Chart */}
             <div className="wp-result-chart">
-              <PersonalHeatRace result={sel} reference={fuel.refLabel} />
+              <PersonalHeatRace key={resultRevision} result={sel} reference={fuel.refLabel} autoplay={resultIntro.stage === "race"} />
 
             </div>
 
               </div>
             {/* Sekundäre Stats */}
             <div className="wp-result-stats" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-              {/* „Amortisation" war hier eine Lüge in einem Wort (31.07.2026): Amortisiert
-                  wird NICHT die Investition, sondern der Mehrpreis gegenüber der fossilen
-                  Alternative. Bei kleinen Häusern liegt der nahe null oder darunter — dann
-                  stand dort „1 J" oder „0 J", und wer das las, verstand „die Anlage hat
-                  sich nach einem Jahr bezahlt". In 33 von 84 durchgerechneten Fällen. */}
+              {/* Payback refers to the additional cost compared with the alternative. */}
               <StatCard
-                label={mehrkosten > 0 ? "Mehrkosten drin nach" : "Mehrkosten"}
+                label={mehrkosten > 0 ? "Amortisation" : "Mehrkosten"}
                 value={mehrkosten <= 0
                   ? "keine"
-                  : sel.amortisationsJahre !== null ? `${sel.amortisationsJahre} J` : "> 20 J"}
+                  : sel.amortisationsJahre !== null ? `${sel.amortisationsJahre}` : "> 20"}
+                unit={mehrkosten > 0 ? (sel.amortisationsJahre === 1 ? "Jahr" : "Jahre") : undefined}
                 positive={mehrkosten <= 0 || (sel.amortisationsJahre !== null && sel.amortisationsJahre <= 15)}
                 helpTitle="Worauf sich diese Zahl bezieht"
                 helpAriaLabel="Worauf bezieht sich die Amortisation?"
@@ -1106,40 +1196,35 @@ export default function Waermepumpe({
                   ? `Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} € — das ist ${Math.abs(mehrkosten).toLocaleString("de-DE")} € WENIGER als die ${sel.gasInvest.toLocaleString("de-DE")} € für eine neue ${fuel.refLabel}. Es gibt also keine Mehrkosten, die sich erst rechnen müssten; die Ersparnis beim Heizen kommt oben drauf. Achtung: Das heißt nicht, dass die Anlage nichts kostet — du zahlst die ${sel.investNetto.toLocaleString("de-DE")} € trotzdem.`
                   : `Nicht die ganze Investition, sondern nur der Unterschied zur Alternative. Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} €, eine neue ${fuel.refLabel} ${sel.gasInvest.toLocaleString("de-DE")} € — bleiben ${mehrkosten.toLocaleString("de-DE")} € Mehrkosten. Die sind nach dieser Zeit durch die niedrigeren Heizkosten wieder eingespielt. Steht bei dir gar kein Heizungstausch an, setz die neue ${fuel.refLabel} oben auf 0; dann rechnet sich die volle Investition gegen den Weiterbetrieb.`}
               />
-              <StatCard label="⌀ Ersparnis/Jahr" value={`${sel.einsparungProJahr.toLocaleString("de-DE")} €`} positive={sel.einsparungProJahr > 0} />
+              <StatCard label="⌀ Ersparnis/Jahr" value={sel.einsparungProJahr.toLocaleString("de-DE")} unit="€" positive={sel.einsparungProJahr > 0} />
               <StatCard
-                label="CO₂ 20 J"
-                value={`${Math.round(sel.co2Einsparung / 1000).toLocaleString("de-DE")} t`}
+                label="CO₂ eingespart"
+                value={Math.round(sel.co2Einsparung / 1000).toLocaleString("de-DE")} unit="t"
                 positive={sel.co2Einsparung > 0}
                 helpTitle="CO₂-Einsparung"
                 helpAriaLabel="Was bedeutet die CO₂-Zahl?"
                 help="Vermiedener CO₂-Ausstoß über 20 Jahre: die Emissionen der fossilen Heizung minus die Emissionen aus dem Strom, den die Wärmepumpe verbraucht (deutscher Strommix). Es ist also netto eingespartes CO₂, nicht ausgestoßenes — der Stromverbrauch der Wärmepumpe ist schon abgezogen."
               />
             </div>
-
             </section>
-            <div className="wp-result-toolbar">
-              <span className="wp-toolbar-label">{zeigeWege ? "Gebäudezustand vergleichen" : "Dein Gebäudezustand"}</span>
-              {zeigeWege && (
-                <WegReiter
-                  wege={wegeResults}
-                  aktivId={activeWeg?.id}
-                  onSelect={selectWeg}
-                  situation={situation}
-                  refLabel={fuel.refLabel}
-                />
-              )}
-            </div>
-
-            {situation === "bestand" && <p className="wp-building-comparison-note">
-              {oQges !== null || oHeizlast !== null
-                ? "Mit fest eingegebenem Wärmebedarf oder fester Heizlast zeigen wir keine zusätzlichen Dämmzustände: Diese Werte müssten für das gedämmte Haus neu bestimmt werden."
-                : "Die Beträge vergleichen Wärmepumpe und Vergleichsheizung im jeweiligen Gebäudezustand. Dämmkosten und Dämmförderung fehlen – ob sich die Dämmung lohnt, wird hier nicht berechnet."}
-            </p>}
 
 </div>
+            <div ref={actionbarRef} className={`wp-result-actionbar${actionsStuck ? " is-stuck" : ""}`} role="region" aria-label="Ergebnisaktionen">
+              <div className="wp-result-actionbar-inner">
+                <div className="wp-result-actionbar-secondary">
+                  <button type="button" className="wp-forward-secondary" onClick={() => canShare ? handleNativeShare() : setForwardOpen(true)}><IconShare size={iconSizes.md} /> Weiterleiten</button>
+                  <div className="wp-result-share">
+                    <button type="button" onClick={handleCopy} title="Link kopieren" aria-label="Link zu diesem Ergebnis kopieren" style={shareBtnStyle(copied)}>{copied ? <IconCheck size={iconSizes.md} /> : <IconCopy size={iconSizes.md} />}</button>
+                    <button type="button" onClick={handleWhatsApp} title="WhatsApp" aria-label="Ergebnis per WhatsApp teilen" style={shareBtnStyle()}><IconWhatsApp size={iconSizes.md} /></button>
+                    <button type="button" onClick={() => setResetOpen(true)} title="Neu berechnen" aria-label="Neu berechnen" style={shareBtnStyle()}><IconRefresh size={iconSizes.md} /></button>
+                  </div>
+                </div>
+                <button type="button" className="wp-save-primary" onClick={() => setSaveOpen(true)}>Speichern</button>
+                <span className="wp-actionbar-status" role="status">{copied ? "Link kopiert" : ""}</span>
+              </div>
+            </div>
 <aside className="wp-geraete-spalte" aria-label="Passende Geräte" id="wp-geraete">
-<WpAuswahlHeading
+<WpAuswahlHeading hints={productHints}
   auslegungKw={result.auslegungKw} vorlaufC={result.flowTemp} wpType={wpType}
   situation={activeInputs.situation} heizsystem={activeInputs.heizsystem}
   personen={activeInputs.personen} heizkoerperTausch={activeInputs.heizkoerperTausch ?? false}
@@ -1150,15 +1235,16 @@ export default function Waermepumpe({
                   machen" gewählt hat, bekäme sonst einen Hinweis, der ihm genau
                   das noch einmal vorschlägt — und die Vorlauftemperatur daneben
                   käme aus dem Weg, der Hinweis aus der Rohantwort. */}
-              <WpGeraeteEmpfehlung
+              <WpGeraeteEmpfehlung onHintsChange={setProductHints}
                 buildShareUrl={buildShareUrl}
                 fundingEstimate={situation === "bestand" ? {
                   gross: Math.round(result.investBrutto), net: Math.round(result.investBrutto - result.beg.amount), grant: result.beg.amount,
-                  assumptions: `Angenommen: ${selbstnutzer ? "Selbstnutzung" : "keine Selbstnutzung"}, ${altheizung === "gas_alt" ? "Gas-, Holz- oder Pelletheizung ab 20 Jahren" : altheizung === "gas_neu" ? "Gas-, Holz- oder Pelletheizung unter 20 Jahren" : "Heizung gemäß Förderangaben"}${einkommen === "none" ? ", kein Einkommensbonus" : ", Einkommen gemäß Förderangaben"}.`,
+                  assumptions: !fundingConfirmed ? "Nur Grundförderung; persönliche Boni noch nicht geprüft." : `Angenommen: ${selbstnutzer ? "Selbstnutzung" : "keine Selbstnutzung"}, ${altheizung === "gas_alt" ? "Gas-, Holz- oder Pelletheizung ab 20 Jahren" : altheizung === "gas_neu" ? "Gas-, Holz- oder Pelletheizung unter 20 Jahren" : "Heizung gemäß Förderangaben"}${einkommen === "none" ? ", kein Einkommensbonus" : ", Einkommen gemäß Förderangaben"}.`,
                 } : undefined}
                 onFundingDetails={() => {
-                  const details = document.getElementById("wp-investment-details") as HTMLDetailsElement | null;
-                  if (details) { details.open = true; details.scrollIntoView({ behavior: "smooth", block: "start" }); details.querySelector("summary")?.focus(); }
+                  const section = document.getElementById("wp-investment-details");
+                  section?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  setFundingStep("timing");
                 }}
                 auslegungKw={result.auslegungKw}
                 vorlaufC={result.flowTemp}
@@ -1170,137 +1256,82 @@ export default function Waermepumpe({
               />
             </aside>
             <section className="wp-adjustments wp-investment-section" aria-label="Investition und Förderung">
-              <details id="wp-investment-details" className="wp-disclosure" open>
-                <summary><span>Investition &amp; Förderung</span><span className="wp-disclosure-value">{result.investNetto.toLocaleString("de-DE")} € nach Förderung</span><span className="wp-disclosure-icon" aria-hidden><IconChevronDown size={iconSizes.sm} /></span></summary>
+              <div id="wp-investment-details">
                 <div className="wp-disclosure-body">
-<div className="wp-investment-balance">
-                  <p className="wp-investment-eyebrow">Deine Wärmepumpe als komplette Anlage</p>
-                  {oInvest === null ? <>
-                    <div className="wp-investment-row"><span>Anlage inklusive Installation <small>Modellschätzung</small></span><strong>{result.investBrutto.toLocaleString("de-DE")} €</strong></div>
-                    {result.beg.amount > 0 && <div className="wp-investment-row"><span>Bundesförderung <small>Nach deinen Förderangaben</small></span><strong>−{result.beg.amount.toLocaleString("de-DE")} €</strong></div>}
-                    {result.kommunal.angerechnet > 0 && <div className="wp-investment-row"><span>Zusätzliche örtliche Förderung</span><strong>−{result.kommunal.angerechnet.toLocaleString("de-DE")} €</strong></div>}
-                  </> : <p className="wp-investment-manual-note">Du hast deinen Eigenanteil selbst eingetragen. Förderung wird davon nicht noch einmal abgezogen.</p>}
-                  <div className="wp-investment-total"><span>{oInvest === null ? "Dein geschätzter Eigenanteil" : "Dein eingetragener Eigenanteil"}</span><strong>{result.investNetto.toLocaleString("de-DE")} <small>€</small></strong></div>
-                  <details className="wp-investment-override">
-                    <summary>Eigenanteil selbst eintragen <IconChevronDown size={iconSizes.sm} /></summary>
-                    <p>Wenn du den Endbetrag nach allen Zuschüssen bereits kennst, kannst du ihn hier für den Vergleich verwenden.</p>
-                    <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={110} />
-                    {oInvest !== null && <button type="button" onClick={() => setOInvest(null)}>Zur Modellschätzung zurück</button>}
-                  </details>
-                </div>
-                <div className="wp-settings-fields wp-reference-cost">
-                <div>
-                  Neue {fuel.refLabel}: <InlineEdit value={result.gasInvest} onCommit={v => setOFossilInvest(v)} unit=" €" min={0} max={40000} step={500} width={80} />
-                {fuel.kind === "oil" && <p className="wp-building-comparison-note">KWW-Komplettreferenz für 20 kW: 25.704 € inkl. MwSt., Tank, Abgasweg und Puffer. Wenn vorhandene Teile bleiben, trage den tatsächlichen Angebotspreis ein. Instandhaltung und Prüfungen: 476 €/Jahr; der Umfang ist breiter als die Wartungspauschale der Wärmepumpe.</p>}
-                  <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
-                    Der Rechner vergleicht zwei Entscheidungen, die <strong>jetzt</strong> anstehen: Wärmepumpe oder neue fossile Heizung. Beide werden im ersten Jahr bezahlt, deshalb steht die Anschaffung auf der fossilen Seite — man spart sie sich mit der Wärmepumpe. Sie ist zugleich der Grund, warum die Beimischungspflicht greift: Die gilt nur für Heizungen, die neu eingebaut werden. <strong>Steht bei dir gar keine Entscheidung an, weil die Heizung noch lange läuft? Dann trag hier 0 ein</strong> — dann rechnet der Vergleich gegen den Weiterbetrieb, ohne Anschaffung und ohne Beimischungspflicht.
-                  </InfoTooltip>
-                </div>
-</div>
-            {/* 2. Förder-Settings — nach der Konklusion, sie bestimmen alle Zahlen */}
-            {situation === "bestand" && (
-              <div className="wp-funding-inputs">
-                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
-                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700 }}>Deine Förderangaben</span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: v("--font-size-body"), color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
-                </div>
-                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
-                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
-                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
-                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginBottom: 10 }}>
-                  {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
-                  {stufeNaechste
-                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
-                    : null}
-                  {result.investBrutto > begStufe.maxCap
-                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
-                    : null}
-                </div>
-                <ResultSection title="Zeitpunkt der Antragstellung" summary={begStand === "naechste" ? stufeNaechste?.bezeichnung : "Heute"}>
-                <BegStandSchalter
-                  stand={begStand}
-                  setStand={s => { setBegStand(s); setOInvest(null); }}
-                  jetzt={stufeJetzt}
-                  naechste={stufeNaechste}
-                  euUrsprung={euUrsprung}
-                  setEuUrsprung={b => { setEuUrsprung(b); setOInvest(null); }}
-                  betragJetzt={begVergleich.jetzt}
-                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
-                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
-                />
-                </ResultSection>
-                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
-                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
-                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
-                    wird, während die Rechnung daneben längst richtig rechnet. */}
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
-                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
-                  Grundförderung im Modell: {Math.round(begStufe.grundfoerderung * 100)} %
-                </div>
-                <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
-                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von {Math.round(begStufe.grundfoerderung * 100)} %. Der Bonus für Wärmepumpen aus der EU ist dagegen nicht an die Selbstnutzung gebunden. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
-                </BonusToggle>
-                {selbstnutzer ? (
-                  <>
-                    {/* Ab dem 1. August 2028 gibt es den Klima-Geschwindigkeits-Bonus
-                        nicht mehr. Die Frage nach der alten Heizung dann trotzdem
-                        anzubieten, hieße eine Wahl anzubieten, die nichts bewirkt. */}
-                    {begStufe.klimaBonus === 0 ? (
-                      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 4 }}>
-                        Den Klima-Geschwindigkeits-Bonus für den Austausch einer alten fossilen Heizung
-                        gibt es zu diesem Zeitpunkt nicht mehr.
-                      </div>
-                    ) : (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Alte Heizung
-                        <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
-                          {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
-                        </InfoTooltip>
-                      </span>
-                      <SelectField value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
-                        ariaLabel="Alte Heizung" size="sm">
-                        {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </SelectField>
-                    </div>
-                    )}
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Einkommens-Bonus
-                        <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
-                          Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
-                        </InfoTooltip>
-                      </span>
-                      <SelectField value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                        ariaLabel="Einkommens-Bonus" size="sm">
-                        {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </SelectField>
-                    </div>
-                    {einkommen !== "none" && (
-                      <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
-                        <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
-                        Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
-                      </label>
-                    )}
-                  </>
-                ) : (
-                  <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
-                    Als Vermieter bleibt es bei der Grundförderung — Klima- und Einkommens-Bonus sind an die Selbstnutzung gebunden.
-                  </div>
-                )}
-                {oInvest !== null && (
-                  <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 6 }}>Eigenanteil selbst eingetragen. Wenn du die Förderangaben änderst, rechnet der Rechner wieder mit der Modellschätzung.</div>
-                )}
-                {/* Die Bedingung gehört an den Betrag, nicht in den Rechtstext am
-                    Seitenende: Eine Zahl ohne diesen Satz sagt, wie viel es gibt,
-                    und verschweigt das Einzige, was sie kosten kann. Wortlaut aus
-                    lib/beg-antrag.ts — derselbe Satz steht im Förder-Check. */}
-                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
+<div className="wp-investment-balance" onChangeCapture={() => { fundingEdited.current = true; }}>
+
+                  <p className="wp-investment-eyebrow">Investition &amp; Förderung</p>
+            {situation === "bestand" && <section ref={fundingNoticeRef} className={`wp-funding-action${fundingNoticeRevealed ? " is-revealed" : ""}`}><header className="wp-funding-notice-heading"><span className="wp-important"><span className="wp-funding-notice-icon" aria-hidden="true"><IconAlert size={20} /></span>Wichtig</span><h3>Vor Auftragsbeginn beantragen</h3></header>
+                <div className="wp-funding-next" style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
                   {BEG_ANTRAG_KURZ}{" "}
                   <a href={BEG_ANTRAG_HREF} style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none" }}>
                     Die Reihenfolge Schritt für Schritt
                   </a>
                 </div>
+            </section>}
+            {/* 2. Förder-Settings — nach der Konklusion, sie bestimmen alle Zahlen */}
+            {situation === "bestand" && (
+              <div className="wp-funding-flow">
+              <AccordionField completedStyle="check" label="Zeitpunkt der Antragstellung" headerHelp={<BegStandHilfe stand={begStand} naechste={stufeNaechste} />} open={fundingStep === "timing"} answered={fundingTimingConfirmed} summary={begStand === "naechste" ? stufeNaechste?.bezeichnung : "Heute"} onEdit={() => setFundingStep(fundingStep === "timing" ? null : "timing")}>
+                <div className="wp-funding-timing-box">
+
+                <div className="wp-funding-timing">
+                <BegStandSchalter
+                  stand={begStand}
+                  setStand={s => { fundingEdited.current = true; setBegStand(s);  }}
+                  jetzt={stufeJetzt}
+                  naechste={stufeNaechste}
+                  euUrsprung={euUrsprung}
+                  setEuUrsprung={b => { setEuUrsprung(b);  }}
+                  betragJetzt={begVergleich.jetzt}
+                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
+                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
+                />
+                </div>
+                </div>
+                <FlowNav weiterAktiv onWeiter={() => { setFundingTimingConfirmed(true); setFundingStep("personal"); }} />
+              </AccordionField>
+              <AccordionField completedStyle="check" label="Förderdetails ergänzen" open={fundingStep === "personal"} answered={fundingConfirmed && !fundingAgeUnknown} summary={fundingConfirmed ? "Angaben übernommen" : "Für einen genaueren Zuschuss"} onEdit={() => { setFundingStep(fundingStep === "personal" ? null : "personal"); resumeFundingAge.current = fundingAgeUnknown && fundingConfirmed; if (fundingAgeUnknown) setFundingQuestion("alter"); }}>
+                <div className="wp-shared-funding-questions" id="wp-funding-questions">
+                  <p>Gebäude und Wärmepumpen-Typ übernehmen wir aus deiner Rechnung. Für diesen Vergleich gehen wir von Selbstnutzung aus.</p>
+                  <BegFundingQuestions key={fundingEditorVersion}
+                    progressive
+                    unknownAgeBonus={false}
+                    initialAnswers={{ ...heatingAnswers, ...(fundingConfirmed ? {
+                      heizung: altheizung === "oel_kohle" ? "Öl, Kohle, Gas-Etage oder Nachtspeicher" : altheizung === "andere" ? "Etwas anderes" : "Gas-Zentralheizung, Holz oder Pellets",
+                      ...((altheizung === "gas_alt" || altheizung === "gas_neu") ? { alter: fundingAgeUnknown ? "Weiß ich nicht" : altheizung === "gas_alt" ? "20 Jahre oder älter" : "Jünger als 20 Jahre" } : {}),
+                      einkommen: BEG_EINKOMMEN_OPTIONS.find(option => option.key === (einkommen === "bis30" ? "t30000" : einkommen === "bis40" ? "t40000" : einkommen === "bis50" ? "t50000" : einkommen === "bis60" ? "t60000" : "none"))?.label,
+                      ...(einkommen !== "none" ? { kind: kindImHaushalt ? "Ja" : "Nein" } : {}),
+                    } : {})}}
+                    onEditScreen={setFundingQuestion}
+                    screen={fundingQuestion}
+                    stufe={begStufe}
+                    go={next => {
+                      if (resumeFundingAge.current && next === "einkommen") {
+                        resumeFundingAge.current = false; setFundingStep("local"); return;
+                      }
+                      setFundingQuestion(next);
+                      setFundingConfirmed(next === "result");
+                      if (next === "result") { setHeatingKnown(true); setFundingConfirmed(true); setFundingStep("local"); }
+                    }}
+                    setNeubau={() => {}}
+                    setSelbstnutzer={setSelbstnutzer}
+                    onHeatingCategory={category => { fundingCategory.current = category; }}
+                    setFossil={enabled => {
+                      fundingEdited.current = true;
+
+                      setAltheizung(fundingCategory.current === "fossil" ? "oel_kohle" : fundingCategory.current === "other" ? "andere" : enabled ? "gas_alt" : "gas_neu");
+                    }}
+                    setAlterUnbekannt={setFundingAgeUnknown}
+                    setEinkommen={key => {
+                      fundingEdited.current = true;
+                      setEinkommen(key === "t30000" ? "bis30" : key === "t40000" ? "bis40" : key === "t50000" ? "bis50" : key === "t60000" ? "bis60" : "none");
+                      if (key === "none") setKindImHaushalt(false);
+                    }}
+                    setKind={value => { fundingEdited.current = true; setKindImHaushalt(value);  }}
+                  />
+                </div>
+              </AccordionField>
               </div>
             )}
 
@@ -1319,14 +1350,19 @@ export default function Waermepumpe({
                  der BEG, weil die Karte `total` davon abzieht und das Ergebnis
                  „Investition nach Förderung" nennt; mit dem Bruttopreis stünde
                  dort dieselbe Zeile mit einem anderen Betrag als oben. */}
-            {situation === "bestand" && (
+            <div className="wp-funding-flow">
+            <AccordionField completedStyle="check" label="Förderung vor Ort" open={fundingStep === "local" || situation === "neubau"} answered={!!foerderQuelle.ags && plz === checkedPlz} summary={plz} onEdit={() => setFundingStep(fundingStep === "local" ? null : "local")}>
+            <div className="wp-funding-local">
               <ResultFunding
+                title=""
+                showInvestmentTotal={false}
+                federalFundingIncluded={situation === "bestand"}
                 loading={foerderQuelle.laedt}
                 candidates={foerderQuelle.kandidaten}
                 chosenAgs={foerderQuelle.ags}
                 onChooseAgs={foerderQuelle.waehleOrt}
                 programs={foerderQuelle.programme}
-                applied={foerderZeilen}
+                applied={situation === "bestand" ? foerderZeilen : []}
                 total={kappung}
                 enabled={foerderAktiv}
                 onToggle={setFundingEnabled}
@@ -1336,53 +1372,74 @@ export default function Waermepumpe({
                 kopf={
                   <>
                     <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
-                      Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
+                      {situation === "bestand" ? "Mit deiner Postleitzahl suchen wir nach zusätzlichen Programmen. Nur anrechenbare Zuschüsse werden oben vom Eigenanteil abgezogen." : "Finde Förderprogramme an deinem Wohnort. Im Neubau dient diese Suche zur Information; Zuschüsse werden hier nicht automatisch abgezogen."}
                     </div>
-                    <div style={{ fontSize: v("--font-size-small") }}>
+                    <div className="wp-funding-location" style={{ fontSize: v("--font-size-small") }}>
                       <StandortField
                         plz={plz}
                         onPlzChange={setPlz}
                         loading={foerderQuelle.laedt}
-                        confirmed={!!foerderQuelle.ags}
-                        onSubmit={() => foerderQuelle.ausPlz(plz)}
+                        confirmed={!!foerderQuelle.ags && plz === checkedPlz}
+                        onSubmit={() => lookupFunding(plz)}
                         label="Postleitzahl"
+                        submitLabel="Förderung prüfen"
                       />
                     </div>
                   </>
                 }
               />
-            )}
+            </div>
 
-            {/* Was aus der Bundesförderung wirklich geworden ist.
+            </AccordionField>
+            </div>
 
-                Alles darüber beschreibt, was die Förderung HERGIBT — Sätze, Boni,
-                Höchstbetrag. Die Frage, mit der die meisten herkommen, ist eine
-                andere: „bekomme ich das auch?" Darauf antwortet nur das, was
-                das Amt gezählt hat. Der Abschnitt steht deshalb direkt unter dem
-                Förderblock und nicht am Seitenende.
+                  {situation === "bestand" && <div className="wp-funding-assumptions">
+                    <strong>{fundingConfirmed ? "Deine Förderangaben" : "Grundförderung eingerechnet"}</strong>
+                    {!fundingConfirmed && <button type="button" onClick={openFundingCheck}>Fördercheck machen →</button>}
+                    {!fundingConfirmed && <p>Mit {Math.round(begStufe.grundfoerderung * 100)} % Grundförderung gerechnet. Weitere Boni prüfen wir im Fördercheck.</p>}
+                    {fundingAgeUnknown && <p>Heizungsalter offen: Ein Austauschbonus ist noch nicht eingerechnet.</p>}
+                  </div>}
+                  {<>
+                    <div className="wp-investment-row"><span>Anlage inklusive Installation <small>Modellschätzung</small></span><strong>{result.investBrutto.toLocaleString("de-DE")} €</strong></div>
+                    {result.beg.amount > 0 && <div className="wp-investment-row"><span>Bundesförderung <InfoTooltip title="So wird dein Zuschuss berechnet" ariaLabel="Berechnung der Bundesförderung">                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
+                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
+                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
+                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginBottom: 10 }}>
+                  {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
+                  {stufeNaechste
+                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
+                    : null}
+                  {result.investBrutto > begStufe.maxCap
+                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
+                    : null}
+                </div>
+                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
+                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
+                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
+                    wird, während die Rechnung daneben längst richtig rechnet. */}
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                  Grundförderung im Modell: {Math.round(begStufe.grundfoerderung * 100)} %
+                </div>
+                </InfoTooltip><small>{fundingConfirmed && !fundingAgeUnknown ? "Nach deinen Förderangaben" : "Schätzung · Förderdetails ergänzen"}</small></span><strong>−{result.beg.amount.toLocaleString("de-DE")} €</strong></div>}
+                    {result.kommunal.angerechnet > 0 && <div className="wp-investment-row"><span>Zusätzliche örtliche Förderung</span><strong>−{result.kommunal.angerechnet.toLocaleString("de-DE")} €</strong></div>}
+                  </>}
+                  <div className="wp-investment-total"><span>Dein geschätzter Eigenanteil</span><strong>{result.investNetto.toLocaleString("de-DE")} <small>€</small></strong></div>
 
-                Nur im Bestand: Im Neubau gibt es diese Förderung nicht, und
-                Zahlen zu einer Förderung zu zeigen, die der gerechnete Fall gar
-                nicht bekommt, wäre die Sorte Zahl, die zur falschen Erwartung
-                führt. */}
-            {situation === "bestand" && kfw && (
-              <ResultSection
-                title="Wer bekommt die Förderung wirklich?"
-                summary={kfwPraxisZusammenfassung(kfw)}
-              >
-                <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
-              </ResultSection>
-            )}
+            </div>
+            {situation === "bestand" && kfw && <ResultSection title="Wer bekommt die Förderung wirklich?" summary="">
+              <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
+            </ResultSection>}
+
 
                 </div>
-              </details>
+              </div>
             </section>
-            <Modal open={pricesOpen} onClose={() => setPricesOpen(false)} title="Preise und Preisentwicklung" intro="Künftige Energiepreise kennt niemand. Passe die heutigen Tarife und die angenommene Entwicklung über 20 Jahre an." maxWidth={640}>
-              <div className="wp-price-settings"><div className="wp-assumptions-content">
-<div className="wp-settings-fields">                <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas
+            <Modal open={pricesOpen} onClose={() => setPricesOpen(false)} title="Preise und Preisentwicklung" intro="Heutige Tarife und Annahmen für die nächsten 20 Jahre. Änderungen werden erst beim Neuberechnen übernommen." maxWidth={640}>
+              {priceDraft && <div className="wp-price-settings"><div className="wp-assumptions-content">
+<div className="wp-settings-fields wp-price-tariffs">                <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {(priceDraft.scenario === "gruengas")
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem gewählten Grüngas-Pfad</span>
-                  : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
-                <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
+                  : <InlineEdit value={Math.round((priceDraft.oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => updatePrices({ oGasPrice: v / 100 })} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
+                <div>WP-Strompreis: <InlineEdit value={Math.round((priceDraft.oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => updatePrices({ oStromPrice: v / 100 })} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
 </div>
             {/* Womit gerechnet wird — Rechtslage und Preispfad zusammen. */}
             <div style={{ marginBottom: 16 }}>
@@ -1397,16 +1454,9 @@ export default function Waermepumpe({
                   „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
                   Kachel-Klick nicht zugleich das Szenario umstellt). */}
               {gruengasVerfuegbar ? (
-              <div role="button" tabIndex={0} aria-pressed={greenGas}
-                onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
-                onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
-                style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
-                <span style={{ display: "inline-block", fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
-                <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
-                  <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
-                  <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: v("--font-size-small"), fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
-                </div>
+              <div>
+                <OptionCard selected={priceDraft.scenario === "gruengas"} onClick={() => { updatePrices({ scenario: "gruengas" }); setPreisExpanded(false); }} label="Grüngas-Pflicht ab 2029" sub="Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer" />
+                <button className="wp-selection-details-link" onClick={() => setShowGasInfo(true)}>Mehr erfahren</button>
               </div>
               ) : (
                 /* Heizöl: Die Bio-Treppe des Heizungsgesetzes gilt zwar auch für Öl,
@@ -1440,51 +1490,28 @@ export default function Waermepumpe({
                 </div>
               )}
 
-              {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
-              <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
-                <button ref={preisBlockRef as unknown as React.RefObject<HTMLButtonElement>} onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
-                  style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
-                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
-                    Angenommene Energiepreise{!greenGas ? ` · ${sel.label}` : ""}
-                  </span>
-                  <span style={{ display: "inline-flex", transform: preisExpanded ? "rotate(180deg)" : "none", transition: "transform .15s", color: v('--color-text-muted') }}><IconChevronDown size={iconSizes.sm} /></span>
-                </button>
-                {preisExpanded && (
-                  <div style={{ padding: "0 14px 12px" }}>
-                    <p style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), lineHeight: 1.55, margin: "0 0 10px" }}>
-                      {fuel.kind === "oil" ? "Alle drei Modelle verwenden denselben UBA-Ölpreispfad. Sie unterscheiden sich beim Strompreis und der Effizienz der Wärmepumpe. Zusätzliche Bioheizöl-Kosten sind nicht enthalten." : <>Ohne Grüngas-Pflicht: Die drei Modelle zeigen unterschiedliche Entwicklungen von Strom- und Gaspreis über {DEFAULT_HEATPUMP_CONFIG.years} Jahre – von ungünstig bis günstig für die Wärmepumpe.</>}
-                    </p>
-                    <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
-                      {scenariosPlain.map(s => {
-                        const on = !greenGas && s.id === effScenario;
-                        return (
-                          <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
-                            style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
-                            <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v('--color-accent') : v('--color-text-muted') }}>{s.label}</div>
-                            <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), fontFamily: v('--font-mono'), marginTop: 2 }}>{s.sub}</div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {!greenGas && (
-                      // Bewusst selPrice statt sel: dieser Block erklärt IMMER das
-                      // gewählte Preis-Modell. Über sel wäre der Text im Grüngas-Fall
-                      // stumm — genau die Falle, in die eine Textkorrektur am
-                      // 29.07.2026 lief (geändert wurde ein Satz, der nie erscheint).
-                      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{selPrice.explain}</div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <AccordionField completedStyle="check" label="Angenommene Energiepreise" open={preisExpanded} answered={priceDraft.scenario !== "gruengas"} summary={scenariosPlain.find(item => item.id === priceDraft.scenario)?.label} onEdit={() => setPreisExpanded(p => !p)}>
+                <p>Ohne Grüngas-Pflicht: Wähle deine Annahme zur Entwicklung der Energiepreise.</p>
+                <div className="wp-price-options">
+                  {scenariosPlain.map(item => <OptionCard key={item.id} selected={priceDraft.scenario === item.id} label={item.label} sub={item.sub} onClick={() => updatePrices({ scenario: item.id })} />)}
+                </div>
+                {priceDraft.scenario !== "gruengas" && <p>{scenariosPlain.find(item => item.id === priceDraft.scenario)?.explain}</p>}
+                {fuel.kind === "oil" && <p>Die Modelle verwenden denselben UBA-Ölpreispfad. Zusätzliche Bioheizöl-Kosten sind nicht enthalten.</p>}
+              </AccordionField>
             </div>
 
             </div>
                             </div>
               </div>
-              <ModalSticky><button type="button" className="wp-settings-done" onClick={() => setPricesOpen(false)}>Ergebnis ansehen</button></ModalSticky>
+              }
+              <FlowNav zurueckLabel="Abbrechen" onZurueck={() => setPricesOpen(false)} weiterLabel="Ergebnis neu berechnen" weiterAktiv={pricesChanged} inaktivHinweis="Ändere zuerst eine Angabe." onWeiter={() => {
+                if (!priceDraft) return;
+                setOGasPrice(priceDraft.oGasPrice); setOStromPrice(priceDraft.oStromPrice); setScenario(priceDraft.scenario);
+                setPricesOpen(false); showUpdatedResult();
+              }} />
             </Modal>
-            <Modal open={settingsOpen} onClose={() => setSettingsOpen(false)} title="Gebäude und Heiztechnik" intro="Änderungen werden direkt in deine Rechnung übernommen." maxWidth={720}>
-              <div className="wp-settings">
+            <Modal open={settingsOpen} onClose={() => setSettingsOpen(false)} title="Gebäude und Heiztechnik" intro="Passe deine Angaben an und übernimm sie anschließend in die Rechnung." maxWidth={720}>
+              {settingsDraft && <div className="wp-calculator-page wp-settings wp-funding-flow wp-funding-modal">
               {/* Das Gebäude — dieselbe Abfrage wie im Flow, hier zum
                   Nachjustieren. Bis 08.08.2026 waren im Ergebnis nur die
                   ABGELEITETEN Größen editierbar (Heizwärme, Heizlast): Wer
@@ -1498,18 +1525,11 @@ export default function Waermepumpe({
                   Ein gemessener Wert schlägt jede Schätzung. */}
               <section className="wp-settings-section">
                 <h3>Dein Gebäude</h3>
+                <p>Bei geänderten Gebäudeangaben werden Wärmebedarf und Heizlast neu geschätzt.</p>
                   <GebaeudeField
-                    werte={{ haustypIdx, wohnflaeche, insulationIdx, heizsystem }}
-                    setWerte={patch => {
-                      if (patch.haustypIdx !== undefined) setHaustypIdx(patch.haustypIdx);
-                      if (patch.wohnflaeche !== undefined) setCustomFlaeche(patch.wohnflaeche);
-                      if (patch.insulationIdx !== undefined) setInsulationIdx(patch.insulationIdx);
-                      if (patch.heizsystem !== undefined) setHeizsystem(patch.heizsystem);
-                      // Von Hand gesetzte Ableitungen zurücknehmen: Sie beschreiben
-                      // das ALTE Gebäude und würden die neue Angabe stumm schalten.
-                      setOQges(null);
-                      setOHeizlast(null);
-                    }}
+                    completedStyle="check"
+                    werte={settingsDraft}
+                    setWerte={patch => updateSettings({ ...patch, oQges: null, oHeizlast: null })}
                     beantwortet={new Set(GEBAEUDE_FIELDS)}
                     /* Alle vier Fragen gelten hier als beantwortet (der Flow hat
                        sie gestellt), zu markieren gibt es also nichts — aber die
@@ -1524,10 +1544,21 @@ export default function Waermepumpe({
                   />
               </section>
 
+              <section className="wp-settings-section"><h3>Kosten der Vergleichsheizung</h3>
+                <div className="wp-settings-fields wp-reference-cost">
+                <div>
+                  Neue {fuel.refLabel}: <InlineEdit value={settingsDraft.oFossilInvest ?? result.gasInvest} onCommit={v => updateSettings({ oFossilInvest: v })} unit=" €" min={0} max={40000} step={500} width={80} />
+                {fuel.kind === "oil" && <p className="wp-building-comparison-note">KWW-Komplettreferenz für 20 kW: 25.704 € inkl. MwSt., Tank, Abgasweg und Puffer. Wenn vorhandene Teile bleiben, trage den tatsächlichen Angebotspreis ein. Instandhaltung und Prüfungen: 476 €/Jahr; der Umfang ist breiter als die Wartungspauschale der Wärmepumpe.</p>}
+                  <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
+                    Der Rechner vergleicht zwei Entscheidungen, die <strong>jetzt</strong> anstehen: Wärmepumpe oder neue fossile Heizung. Beide werden im ersten Jahr bezahlt, deshalb steht die Anschaffung auf der fossilen Seite — man spart sie sich mit der Wärmepumpe. Sie ist zugleich der Grund, warum die Beimischungspflicht greift: Die gilt nur für Heizungen, die neu eingebaut werden. <strong>Steht bei dir gar keine Entscheidung an, weil die Heizung noch lange läuft? Dann trag hier 0 ein</strong> — dann rechnet der Vergleich gegen den Weiterbetrieb, ohne Anschaffung und ohne Beimischungspflicht.
+                  </InfoTooltip>
+                </div>
+</div>
+              </section>
               {/* Editable model assumptions use the same field rhythm as the building inputs. */}
               <section className="wp-settings-section"><h3>Wärmebedarf und Wärmepumpe</h3><div className="wp-settings-fields">
                 <div>
-                  Wärmebedarf inkl. Warmwasser: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
+                  Wärmebedarf inkl. Warmwasser: <InlineEdit value={settingsDraft.oQges ?? result.qGes} onCommit={v => updateSettings({ oQges: v })} unit=" kWh" min={1000} max={80000} step={500} width={90} />
                   <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
                     Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
                     <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(kesselDerAblesung("gas", fuel) * 100)} % (Nutzungsgrad deiner vorhandenen Gastherme; bei Öl {Math.round(kesselDerAblesung("oel", fuel) * 100)} %) — derselbe Faktor, mit dem der Schritt „Dämmstandard" rechnet. Ein gemessener Wert schlägt jede Schätzung.<br /><br />
@@ -1535,7 +1566,7 @@ export default function Waermepumpe({
                   </InfoTooltip>
                 </div>
                 <div>
-                  Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
+                  Heizlast: <InlineEdit value={settingsDraft.oHeizlast ?? result.heizlastKw} onCommit={v => updateSettings({ oHeizlast: v })} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
                   <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>
                     {" "}· Anlage {result.auslegungKw.toLocaleString("de-DE")} kW
                   </span>
@@ -1546,63 +1577,74 @@ export default function Waermepumpe({
                 </div>
                 <div>
                   Wärmepumpe:{" "}
-                  <SelectField value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} ariaLabel="Bauart der Wärmepumpe" size="sm" ton="akzent">
+                  <SelectField value={settingsDraft.wpType} onChange={e => { updateSettings({ wpType: e.target.value as "lwwp" | "swwp", oJaz: null }); }} ariaLabel="Bauart der Wärmepumpe" size="sm" ton="akzent">
                     {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
                   </SelectField>
                 </div>
-                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
+                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={settingsDraft.oJaz ?? result.jaz} onCommit={v => updateSettings({ oJaz: v })} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
 
               </div>
 
               </section>
               </div>
-              <ModalSticky><button type="button" className="wp-settings-done" onClick={() => setSettingsOpen(false)}>Ergebnis ansehen</button></ModalSticky>
+              }
+              <FlowNav zurueckLabel="Abbrechen" onZurueck={() => setSettingsOpen(false)} weiterLabel="Ergebnis neu berechnen" weiterAktiv={settingsChanged} inaktivHinweis="Ändere zuerst eine Angabe." onWeiter={() => {
+                if (!settingsDraft) return;
+                setHaustypIdx(settingsDraft.haustypIdx); setCustomFlaeche(settingsDraft.wohnflaeche); setInsulationIdx(settingsDraft.insulationIdx); setHeizsystem(settingsDraft.heizsystem); setWpType(settingsDraft.wpType);
+                setOQges(settingsDraft.oQges); setOHeizlast(settingsDraft.oHeizlast); setOJaz(settingsDraft.oJaz); setOFossilInvest(settingsDraft.oFossilInvest);
+                setSettingsOpen(false); showUpdatedResult();
+              }} />
             </Modal>
           </div>
 
 
-            <div className="wp-result-foot">
-            {/* Teilen — der Link trägt die ganze Rechnung, auch den Förderstand.
-                Ohne ihn bekäme der Empfänger unsere Förderannahme auf seine
-                eigenen Gebäudewerte gerechnet. */}
-            <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 8 }}>
-              <button
-                onClick={handleCopy}
-                title={copied ? "Kopiert!" : "Link kopieren"}
-                aria-label="Link zu diesem Ergebnis kopieren"
-                style={shareBtnStyle(copied)}
-              >
-                {copied ? <IconCheck size={iconSizes.md} /> : <IconLink size={iconSizes.md} />}
-              </button>
-              {canShare && (
-                <button onClick={handleNativeShare} title="Teilen" aria-label="Ergebnis teilen" style={shareBtnStyle()}>
-                  <IconShare size={iconSizes.md} />
-                </button>
-              )}
-              <button onClick={handleWhatsApp} title="WhatsApp" aria-label="Ergebnis per WhatsApp teilen" style={shareBtnStyle()}>
-                <IconWhatsApp size={iconSizes.md} />
-              </button>
-              <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginLeft: 4 }}>
-                {copied ? "Link kopiert — er enthält deine ganze Rechnung." : "Ergebnis teilen"}
+            <div className="wp-result-controls">
+            <Modal open={fundingCheckOpen} onClose={() => setFundingCheckOpen(false)} title="Dein Fördercheck" intro="Wir prüfen mögliche zusätzliche Boni. Deine Rechnung wird erst beim Übernehmen geändert." maxWidth={640}>
+              <div className="wp-calculator-page wp-funding-flow wp-funding-modal">
+                {fundingCheckStage === "timing" && <>
+                  <h3>Zeitpunkt der Antragstellung</h3>
+                  <BegStandSchalter stand={fundingDraft.stand} setStand={stand => setFundingDraft(previous => ({ ...previous, stand }))}
+                    betragJetzt={draftFundingFor(stufeJetzt, false).amount} betragNaechsteOhneEu={stufeNaechste ? draftFundingFor(stufeNaechste, false).amount : 0} betragNaechsteMitEu={stufeNaechste ? draftFundingFor(stufeNaechste, true).amount : 0}
+                    jetzt={stufeJetzt} naechste={stufeNaechste} euUrsprung={fundingDraft.eu} setEuUrsprung={eu => setFundingDraft(previous => ({ ...previous, eu }))} />
+                  <FlowNav weiterAktiv onWeiter={() => setFundingCheckStage("questions")} />
+                </>}
+                {fundingCheckStage === "questions" && <BegFundingQuestions progressive unknownAgeBonus={false}
+                  screen={fundingDraftQuestion} onEditScreen={setFundingDraftQuestion}
+                  stufe={fundingDraftStage} go={next => { setFundingDraftQuestion(next); if (next === "result") setFundingCheckStage("review"); }}
+                  setNeubau={() => {}} setSelbstnutzer={() => {}}
+                  onHeatingCategory={category => { fundingDraftCategory.current = category; }}
+                  setFossil={enabled => setFundingDraft(previous => ({ ...previous, heating: fundingDraftCategory.current === "fossil" ? "oel_kohle" : fundingDraftCategory.current === "other" ? "andere" : enabled ? "gas_alt" : "gas_neu" }))}
+                  setAlterUnbekannt={ageUnknown => setFundingDraft(previous => ({ ...previous, ageUnknown }))}
+                  setEinkommen={key => setFundingDraft(previous => ({ ...previous, income: key === "t30000" ? "bis30" : key === "t40000" ? "bis40" : key === "t50000" ? "bis50" : key === "t60000" ? "bis60" : "none", child: key === "none" ? false : previous.child }))}
+                  setKind={child => setFundingDraft(previous => ({ ...previous, child }))} />}
+                {fundingCheckStage === "review" && <>
+                  <p>Nach deinen Angaben: <strong>{Math.round(fundingDraftResult.rate * 100)} % Förderung · {fundingDraftResult.amount.toLocaleString("de-DE")} €</strong></p>
+                  {fundingDraft.ageUnknown && <p>Ohne bestätigtes Heizungsalter rechnen wir keinen Austauschbonus ein.</p>}
+                  <FlowNav weiterAktiv weiterLabel="Ergebnis neu berechnen" onWeiter={applyFundingCheck} onZurueck={() => { setFundingDraftQuestion("heizung"); setFundingCheckStage("questions"); }} />
+                </>}
+              </div>
+            </Modal>
+            <Toast alignTo={overviewRef} tone="awareness" open={isResult && situation === "bestand" && !fundingConfirmed && resultIntro.progress === 1 && !fundingPromptDismissed && !fundingCheckOpen && !fundingNotice} onClose={() => setFundingPromptDismissed(true)}>
+              <span className="wp-funding-toast-content">Eventuell mehr Förderung möglich
+                <button type="button" onClick={openFundingCheck}>Fördercheck machen</button>
               </span>
-            </div>
+            </Toast>
+            <Toast alignTo={overviewRef} tone="awareness" open={fundingNotice} onClose={() => setFundingNotice(false)}>
+              <span className="wp-funding-toast-content">Förderung geändert · Ergebnis aktualisiert
+                <button type="button" onClick={showUpdatedResult}>Zum neuen Ergebnis</button>
+              </span>
+            </Toast>
 
-            {/* Aktionen */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
-                PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
-              </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); /* Die Adresse mitleeren: Sonst stehen die Angaben des geteilten Links noch darin, und ein Neuladen holt die gerade verworfene Rechnung zurück. */ if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
-              </button>
-            </div>
+            <Modal open={saveOpen} onClose={() => setSaveOpen(false)} title="Ergebnis speichern" intro="Lade eine Textdatei mit deinem Ergebnis und einem Link zu allen Angaben herunter. Damit kannst du die Berechnung später wieder öffnen.">
+              <div className="wp-result-actions"><button type="button" className="wp-save-primary" onClick={saveResult}>Datei herunterladen</button></div>
+            </Modal>
+            <Modal open={resetOpen} onClose={() => setResetOpen(false)} title="Neu berechnen?" intro="Aktuelle Infos gehen verloren. Speichere dein Ergebnis, wenn du es behalten möchtest.">
+              <div className="wp-result-actions"><button type="button" onClick={() => setResetOpen(false)}>Abbrechen</button><button type="button" onClick={resetCalculation}>Neu berechnen</button></div>
+            </Modal>
+            <Modal open={forwardOpen} onClose={() => setForwardOpen(false)} title="Ergebnis weiterleiten" intro="Der Link enthält deine Angaben und öffnet direkt die Berechnung.">
+              <div className="wp-result-actions"><button type="button" onClick={handleCopy}>{copied ? "Link kopiert" : "Link kopieren"}</button><a href={`mailto:?subject=${encodeURIComponent("Meine Wärmepumpen-Rechnung")}&body=${encodeURIComponent(shareText()+"\n"+(typeof window !== "undefined" ? buildShareUrl() : ""))}`}>Per E-Mail weiterleiten</a></div>
+            </Modal>
 
-            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "8px 0" }}>
-              {/* „±15 %" stand zwei Zeilen unter einer selbst ausgewiesenen Spanne von
-                  Faktor 15 — zwei Genauigkeitsaussagen, die einander widersprachen.
-                  Die ehrliche ist die Spanne im Ergebnis. */}
-              Gerechnet mit Durchschnittswerten über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. Die Energiepreis-Annahmen kannst du unter „Energiepreise & Vergleich“ ändern.
-            </div>
             </div>
             {/* Modal: alle erklärenden Grüngas-Texte gebündelt (Modal-Baustein →
                 Transitions/Fokus/Bottom-Sheet kommen aus components/Modal.tsx). */}
@@ -1645,7 +1687,7 @@ export default function Waermepumpe({
             dahinter läge hinter einer leeren Fläche und wäre praktisch
             unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
             einbettende Seite die Quellenangabe. */}
-        {!embedded && <StandNoteView seite={stand} />}
+        {!embedded && <StandNoteView seite={stand} variant="cards" />}
       </div>
     </div>
   );
@@ -1712,14 +1754,14 @@ function TcoBreakdown({ r, jahre, sanierungHinweis, refLabel }: { r: HeatPumpRes
   );
 }
 
-function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { label: string; value: string; positive: boolean; help?: ReactNode; helpTitle?: string; helpAriaLabel?: string }) {
+function StatCard({ label, value, unit, positive, help, helpTitle, helpAriaLabel }: { label: string; value: string; unit?: string; positive: boolean; help?: ReactNode; helpTitle?: string; helpAriaLabel?: string }) {
   return (
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
         {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
-      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
+      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}{unit && <> <span className="wp-stat-unit">{unit}</span></>}</div>
     </div>
   );
 }
@@ -1727,9 +1769,10 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
 // BEG Einkommens-Bonus (KfW 458 ab 21.07.2026): gestaffelt nach zu versteuerndem
 // Haushaltsjahreseinkommen. Das repräsentative Einkommen pro Stufe reicht, weil die
 // Rechen-Engine (calcBegSubsidy) daraus die Stufe + den Familienzuschlag ableitet.
-type EinkommenKey = "none" | "bis50" | "bis40" | "bis30";
+type EinkommenKey = "none" | "bis60" | "bis50" | "bis40" | "bis30";
 const EINKOMMEN_OPTIONS: { key: EinkommenKey; label: string; income?: number }[] = [
-  { key: "none",  label: "über 50.000 € / kein Bonus" },
+  { key: "none",  label: "über 60.000 € / kein Bonus" },
+  { key: "bis60", label: "bis 60.000 € (Familienzuschlag prüfen)", income: 60000 },
   { key: "bis50", label: "bis 50.000 € (+10 %)", income: 50000 },
   { key: "bis40", label: "bis 40.000 € (+30 %)", income: 40000 },
   { key: "bis30", label: "bis 30.000 € (+40 %)", income: 30000 },
@@ -1749,156 +1792,13 @@ type AltheizungKey = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
 // gerechnet — ein Fehler, den man dem Ergebnis nicht ansieht, weil die Zahl
 // einfach kleiner ist. Deshalb nennen die Gas-Zeilen jetzt ausdrücklich die
 // ZENTRALheizung: „Gas" allein ließ beide Lesarten zu.
-const ALTHEIZUNG_OPTIONS: { key: AltheizungKey; label: string; klima: boolean }[] = [
+const ALTHEIZUNG_OPTIONS: { key: AltheizungKey; label: string; shortLabel?: string; klima: boolean }[] = [
   { key: "oel_kohle", label: "Öl, Kohle, Nachtspeicher oder Gas-Etagenheizung", klima: true },
-  { key: "gas_alt",   label: "Gas-Zentralheizung, Holz oder Pellets — 20 Jahre oder älter", klima: true },
-  { key: "gas_neu",   label: "Gas-Zentralheizung, Holz oder Pellets — jünger als 20 Jahre", klima: false },
+  { key: "gas_alt", shortLabel: "Gas/Holz/Pellets: ab 20 Jahre", label: "Gas-Zentralheizung, Holz oder Pellets — 20 Jahre oder älter", klima: true },
+  { key: "gas_neu", shortLabel: "Gas/Holz/Pellets: unter 20 Jahre", label: "Gas-Zentralheizung, Holz oder Pellets — jünger als 20 Jahre", klima: false },
   { key: "andere",    label: "Etwas anderes (z. B. schon Strom/Wärmepumpe)", klima: false },
 ];
 const altheizungKlima = (k: AltheizungKey): boolean => ALTHEIZUNG_OPTIONS.find(o => o.key === k)?.klima ?? false;
-
-function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked: boolean; onChange: (c: boolean) => void; label: string; tipTitle: string; children: ReactNode }) {
-  return (
-    <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
-      <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} style={{ cursor: "pointer" }} />
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-        {label}
-        <InfoTooltip title={tipTitle} ariaLabel={tipTitle}>{children}</InfoTooltip>
-      </span>
-    </label>
-  );
-}
-
-// Die frühere `WegCard` stand hier — vier volle Karten VOR dem Ergebnis, je
-// mit Titel, Beschreibung und Betrag. Sie ist am 05.09.2026 entfallen: Die
-// Wege stehen jetzt als Reiterzeile über der Zahl (siehe `WegReiter`), und
-// zwei Darstellungen derselben Sache nebeneinander wären genau die Drift,
-// gegen die dieses Projekt seine Bausteine führt.
-
-/**
- * Ein Betrag, der in einen 105 px breiten Reiter passt.
- *
- * Tausender wären die naheliegende Rundung und erzeugen unter 1.000 € Anzeigen
- * ohne Aussage: 400 € Gewinn wurden zu „+0k €", 400 € Verlust zu „-0k €". Der
- * Bereich ist real — der Rechner hat für knappe Fälle einen eigenen Zweig —,
- * und vier Reiter, von denen mehrere „0k €" tragen, sind keine Auswahl.
- */
-function reiterBetrag(euro: number): string {
-  if (Math.abs(euro) < 1000) {
-    const hundert = Math.round(euro / 100) * 100;
-    return `${hundert > 0 ? "+" : ""}${hundert.toLocaleString("de-DE")} €`;
-  }
-  const tausend = Math.round(euro / 1000);
-  return `${tausend > 0 ? "+" : ""}${tausend.toLocaleString("de-DE")}k €`;
-}
-
-/**
- * Die Wege als Reiterzeile über der Einsparung.
- *
- * Bis 27.08.2026 stand hier eine Liste aus vier großen Karten VOR dem Ergebnis:
- * 360 px Eingabe, bevor die Antwort kam, die selbst erst bei 658 px begann. Auf
- * dem Handy war die Seite dadurch 14.820 px lang.
- *
- * Die naheliegende Reparatur — Wege einklappen, Zahl nach oben — wurde
- * verworfen: Die Zahl HÄNGT am gewählten Weg. Steht sie darüber und der Weg
- * eingeklappt darunter, behauptet die Seite ein Ergebnis ohne die Bedingung, zu
- * der es gehört, und der stärkste Inhalt der Seite verschwindet hinter einem
- * Dreieck. Also beides zusammen: Die Zahl steht in ihrer Karte, und die vier
- * Wege stehen als Reiter darüber — man sieht auf einen Blick, dass es vier gibt,
- * was sie einbringen und welcher gerade gilt.
- *
- * WAS DER REITER NICHT KANN, gibt er ab: Die Beschreibung („Dach/Fassade dämmen
- * + passende Heizflächen") passt nicht in 105 px. Sie steht im Erklär-Fenster
- * hinter dem Fragezeichen, zusammen mit der Rechnung — Betreiber-Entscheidung
- * vom 27.08.2026 („die wege können wir ergänzend über ? erklären").
- *
- * Am 05.09.2026 aus einem überholten Zweig zurückgeholt: Beim Zusammenführen
- * mit dem Hauptstand war sie als Beiwerk zum Teilen-Link mit ausgebaut worden,
- * und die vier Karten standen wieder vor dem Ergebnis.
- */
-function WegReiter({
-  wege,
-  aktivId,
-  onSelect,
-  situation,
-  refLabel,
-}: {
-  wege: { id: string; titel: string; reiter: string; kurz: string; sanierung: boolean; r: HeatPumpResult }[];
-  aktivId: string | undefined;
-  onSelect: (id: string) => void;
-  situation: "bestand" | "neubau";
-  refLabel: string;
-}) {
-  return (
-    <div className="wp-way-tabs">
-      {wege.map(w => {
-        const aktiv = w.id === aktivId;
-        const pos = w.r.tcoEinsparung >= 0;
-        return (
-          <div
-            key={w.id}
-            className="wp-way-tab"
-            role="button"
-            tabIndex={0}
-            aria-pressed={aktiv}
-            onClick={() => onSelect(w.id)}
-            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(w.id); } }}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              cursor: "pointer",
-              textAlign: "center",
-              padding: "12px 4px",
-              borderRadius: v("--radius-md"),
-              background: v("--color-bg"),
-              border: aktiv ? `2px solid ${v("--color-accent")}` : `1px solid ${v("--color-border")}`,
-            }}
-          >
-            <div
-              style={{
-                fontSize: v("--font-size-caption"),
-                fontWeight: 700,
-                lineHeight: 1.25,
-                color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 2,
-              }}
-            >
-              <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{w.reiter}</span>
-              {/* Das Fragezeichen trägt, was der Reiter nicht fassen kann.
-                  `stopPropagation`, sonst wählt ein Klick darauf den Weg mit. */}
-              <span
-                onClick={e => e.stopPropagation()}
-                onKeyDown={e => e.stopPropagation()}
-                style={{ display: "inline-flex", flexShrink: 0 }}
-              >
-                <InfoTooltip title={w.titel} ariaLabel={`Was bedeutet „${w.titel}"?`}>
-                  <p style={{ margin: "0 0 16px", fontSize: v("--font-size-small"), lineHeight: 1.55, color: v("--color-text-secondary") }}>
-                    {w.kurz}
-                  </p>
-                  <TcoBreakdown r={w.r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={w.sanierung} refLabel={refLabel} />
-                </InfoTooltip>
-              </span>
-            </div>
-            <div
-              style={{
-                fontFamily: v("--font-mono"),
-                fontSize: v("--font-size-small"),
-                fontWeight: 700,
-                marginTop: 4,
-                color: pos ? v("--color-positive-text") : v("--color-negative-text"),
-              }}
-            >
-              {reiterBetrag(w.r.tcoEinsparung)}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 function DetailGrid({ items }: { items: [string, string][] }) {
   return (

@@ -132,15 +132,15 @@ describe("Bandbreite unter der Einsparung", () => {
     expect(t).not.toMatch(/Je nach Annahme sind es/);
     expect(t).not.toMatch(/spanne\.min|spanne\.max/);
     // Und der Ersatz ist wirklich da — sonst stünde die Zahl nackt.
-    expect(t).toMatch(/Gerechnet mit/);
-    expect(t).toMatch(/Künftige Energiepreise kennt niemand/);
+    expect(t).toMatch(/Preisentwicklung/);
+    expect(t).toMatch(/Wähle deine Annahme zur Entwicklung der Energiepreise/);
   });
 
   it("verweist auf den Block, in dem die Modelle erklärt und umschaltbar sind", () => {
     // Ohne den Verweis wäre die Angabe „gerechnet mit Modell X" eine Sackgasse:
     // Der Leser erführe, dass es Annahmen gibt, aber nicht, wo er sie sieht.
     const t = quelle();
-    expect(t).toMatch(/preisBlockRef/);
-    expect(t).toMatch(/setPreisExpanded\(true\)/);
+    expect(t).toMatch(/openPrices\(\)/);
+    expect(t).toMatch(/title="Preise und Preisentwicklung"/);
   });
 });

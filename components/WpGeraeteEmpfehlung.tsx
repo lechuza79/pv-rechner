@@ -7,7 +7,7 @@ import Modal from "./Modal";
 import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad, iconSizes } from "../lib/theme";
-import { IconExternal, IconAlert, IconInfo, IconShare, IconCopy, IconChevronDown } from "./Icons";
+import { IconExternal, IconAlert, IconInfo, IconShare, IconCopy, IconChevronDown, IconChevronLeft, IconChevronRight } from "./Icons";
 import ResultSection from "./ResultSection";
 import {
   geraetLeistungTeile,
@@ -16,6 +16,7 @@ import {
   preisZusatz,
   umfangText,
   WP_HAENDLER,
+  haendlerAnschrift,
   leistungAnzeigbar,
   type WpGeraet,
 } from "../lib/wp-katalog";
@@ -56,6 +57,7 @@ import {
  * einmal vorschlägt.
  */
 interface Props extends WpHinweisFall {
+  onHintsChange?: (hints: Hinweis[]) => void;
   buildShareUrl: () => string;
   onFundingDetails: () => void;
   fundingEstimate?: { gross: number; net: number; grant: number; assumptions: string };
@@ -218,7 +220,7 @@ function HinweisBloecke({ hinweise }: { hinweise: Hinweis[] }) {
   </div>;
 }
 
-export function WpAuswahlHeading(fall: WpHinweisFall) {
+export function WpAuswahlHeading(fall: WpHinweisFall & { hints?: Hinweis[] }) {
   const [open, setOpen] = useState(false);
   return <>
     <div className="wp-section-heading wp-products-heading">
@@ -230,6 +232,7 @@ export function WpAuswahlHeading(fall: WpHinweisFall) {
         <p>Die Vorauswahl richtet sich nach deiner berechneten Auslegung: <strong>{fall.auslegungKw.toLocaleString("de-DE")} kW · {fall.vorlaufC} °C Vorlauf.</strong> Die passenden Geräte werden nach Preis sortiert.</p>
       </div>
       <HinweisBloecke hinweise={fallHinweise(fall)} />
+      {!!fall.hints?.length && <div className="wp-selection-explanation"><h3>Aufstellung und Betrieb</h3><ul>{fall.hints.map(h => <li key={h.id}><HinweisZeile hinweis={h} /></li>)}</ul></div>}
     </Modal>
   </>;
 }
@@ -424,7 +427,7 @@ Vielen Dank!`);
             aus dem Hinweis einen „klaren gegenteiligen Hinweis" im Sinne der
             Espressomaschinen-Entscheidung — ohne sie bleibt die Erwartung
             höchstmöglicher Aktualität unwidersprochen. */}
-        {preisStand ? ` · Preis vom ${preisStand}; es gilt der Preis im Shop.` : null}
+        {preisStand ? ` · Stand ${preisStand}. Shoppreis gilt.` : null}
       </div>
 
       {fundingFraction > 0 && <div className="wp-product-funded-price">
@@ -515,15 +518,28 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   const [antwort, setAntwort] = useState<Antwort | null>(null);
   const [laedt, setLaedt] = useState(true);
   const [selectionDetailsOpen, setSelectionDetailsOpen] = useState(false);
+  useEffect(() => {
+    const devices = (antwort?.empfehlungen ?? []).map(e => e.geraet);
+    fall.onHintsChange?.(gemeinsameHinweise(devices, fall).filter(h => !h.id.startsWith("umfang-")));
+  }, [antwort, fall.onHintsChange, fall.auslegungKw, fall.vorlaufC, fall.wpType, fall.situation, fall.heizsystem, fall.personen, fall.heizkoerperTausch]);
 
   // Wischleiste auf schmalen Schirmen, ab der Seitenspalte abgeschaltet — die
   // Umschaltung macht Embla selbst über seine Breakpoint-Option, damit es nur
   // EINEN Umschaltpunkt gibt und nicht zwei, die auseinanderlaufen können.
-  const [emblaRef] = useEmblaCarousel({
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
-    breakpoints: { "(min-width: 1200px)": { active: false } },
+    breakpoints: { "(min-width: 1440px)": { active: false } },
   });
+
+  const [scrollState, setScrollState] = useState({ prev: false, next: false });
+  useEffect(() => {
+    if (!emblaApi) return;
+    const sync = () => setScrollState({ prev: emblaApi.canScrollPrev(), next: emblaApi.canScrollNext() });
+    sync();
+    emblaApi.on("select", sync).on("reInit", sync);
+    return () => { emblaApi.off("select", sync).off("reInit", sync); };
+  }, [emblaApi]);
 
   useEffect(() => {
     let abgebrochen = false;
@@ -584,7 +600,6 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
     );
   }
 
-  const alternativ = antwort?.alternativ ?? [];
   // Hinweise, die an jeder Kachel gleich stünden — sie stehen einmal über der
   // Liste und werden an den Kacheln ausgelassen.
   const gemeinsam = gemeinsameHinweise(treffer.map((e) => e.geraet), fall);
@@ -628,7 +643,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   const paketLage = antwort?.paketLage;
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", minWidth: 0, overflow: "hidden", overflowWrap: "anywhere", gap: space.md }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", minWidth: 0, overflowWrap: "anywhere", gap: space.md }}>
       {/* Werbekennzeichnung — Stelle und Wortlaut sind geprüft, nicht gewählt.
 
           DREI STELLEN, NICHT EIN ABSATZ. Eine frühere Fassung packte alle fünf
@@ -696,8 +711,13 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         </Modal>
       </div></div>
 
-      {/* One product list: swipe on mobile, three columns on desktop. */}
-      <div ref={emblaRef} style={{ overflow: "hidden" }}>
+      <div className="wp-product-carousel-frame" data-scroll-prev={scrollState.prev} data-scroll-next={scrollState.next}>
+      {(scrollState.prev || scrollState.next) && <nav className="wp-product-navigation" aria-label="Weitere Wärmepumpen">
+        <button type="button" aria-label="Vorherige Wärmepumpen" disabled={!scrollState.prev} onClick={() => emblaApi?.scrollPrev()}><IconChevronLeft size={iconSizes.sm} /></button>
+        <button type="button" aria-label="Weitere Wärmepumpen" disabled={!scrollState.next} onClick={() => emblaApi?.scrollNext()}><IconChevronRight size={iconSizes.sm} /></button>
+      </nav>}
+      {/* One product list: horizontal carousel until the desktop sidebar. */}
+      <div ref={emblaRef} className="wp-product-carousel" style={{ overflow: "hidden" }}>
         <ul
           className="wp-geraete-reihe"
           style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", gap: space.md }}
@@ -710,39 +730,16 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         </ul>
       </div>
 
-      {alternativ.length > 0 && (
-        <div
-          style={{
-            borderTop: `1px solid ${v("--color-border")}`,
-            paddingTop: space.md,
-            display: "grid",
-            gap: space.sm,
-          }}
-        >
-          <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>
-            <strong style={{ color: v("--color-text-primary") }}>Nur die Wärmepumpe</strong> — wenn
-            Speicher und Regelung schon da sind oder getrennt gekauft werden.
-          </p>
-          <ul
-            className="wp-geraete-reihe"
-            style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", gap: space.md }}
-          >
-            {alternativ.map((e) => (
-              <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
-                <Karte e={e} rang={-1} fall={fall} preisStand={preisStand} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      </div>
 
       <div className="wp-product-trust">
         <ContactPerson beforeName={<span className="wp-product-promise"><strong>Mein Versprechen:</strong> Die Empfehlungen sind nach Preis und passender Heizleistung für deinen Bedarf ausgewählt – nicht nach unserer Provision.</span>} />
         <p className="wp-product-disclosure">Die Geräte stammen von unserem Partner {WP_HAENDLER.kurz}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</p>
+        <p className="wp-product-seller" style={{ margin: `${space.sm}px 0 0` }}>Verkäufer: {haendlerAnschrift()}. Beim Kauf im Shop besteht ein Widerrufsrecht.</p>
       </div>
 
       {/* Shared safety restrictions stay visible; longer cost explanations are optional. */}
-      {gemeinsam.filter((h) => !h.id.startsWith("umfang-")).map((h) => <HinweisZeile key={h.id} hinweis={h} />)}
+
 
 
     </div>
