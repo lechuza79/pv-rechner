@@ -67657,5 +67657,153 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "09183125",
+    "name": "Lohkirchen",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lohkirchen gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183132",
+    "name": "Oberbergkirchen",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberbergkirchen gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183143",
+    "name": "Schönberg",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09183151",
+    "name": "Zangberg",
+    "checkedAt": "2026-09-26T17:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zangberg gehört zur Verwaltungsgemeinschaft Oberbergkirchen (Landkreis Mühldorf a. Inn). Weder die Gemeinde noch die Verwaltungsgemeinschaft oder der Landkreis fördern private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ratsprotokolle 2019-2026 nennen nur Freiflächen- und Agri-PV, Bürgerbeteiligung, kommunale Anlagen und Vereinszuschüsse; das Kommunale Förderprogramm der Städtebauförderung fördert Gestaltung im Sanierungsgebiet. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Volltextsuche oberbergkirchen.de (26.09.2026) nach förderprogramm, förderung, zuschuss, photovoltaik, solar, speicher, wärmepumpe, balkonkraftwerk: 90 Beiträge, v. a. Ratsprotokolle der vier Mitgliedsgemeinden 2019-2026",
+      "Alle 90 Treffer abgerufen und nach Zuschuss-/Förderstellen mit Bezug zu Privaten, Anträgen oder Beträgen durchsucht",
+      "Kommunales Förderprogramm (Städtebauförderung) Oberbergkirchen gelesen",
+      "Landratsamt Mühldorf a. Inn: Seiten zu eigener PV-Anlage und Energieberatung gelesen; Websuche Landkreis Mühldorf Förderprogramm PV/Balkonkraftwerk/Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Suchseite 2 zu „förderprogramm“: Ratsprotokolle (u. a. 15.06.2023, 23.05.2023); Seite 1 Gigabit- und Städtebauförderung — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.oberbergkirchen.de/oberbergkirchen/kommunales-foerderprogramm-staedtebaufoerderung/",
+        "finding": "Kommunales Förderprogramm der Städtebauförderung: nur gestalterische Maßnahmen an Gebäuden im Sanierungs- oder Fördergebiet — keine Energietechnik."
+      },
+      {
+        "url": "https://www.lra-mue.de/umwelt-klimaschutz-und-energie/klima-und-energiemanagement/eigene-pv-und-solaranlage-planen/",
+        "finding": "Landkreis Mühldorf a. Inn bietet Solarpotenzialkataster und Energieberatung, kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite 2 der VG (Ratsprotokolle 2023) gelesen; zusammen mit allen 90 Suchtreffern ohne Zuschuss für private Energietechnik.",
+        "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
+      }
+    ]
   }
 ]
