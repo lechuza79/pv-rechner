@@ -162,3 +162,118 @@ test.describe("Heizkosten-Rennen", () => {
     if (OUT_DIR) await download.saveAs(`${OUT_DIR}/heizkostenrennen-export.png`);
   });
 });
+
+// First visual of the central Atlas pipeline (template "anlagenraster"): the
+// monitor widget exports through the same registry footer, source edge and
+// capture as every other widget. Needs the prepared municipality package.
+test.describe("Gemeinde-Monitor: Anlagenraster", () => {
+  test("Download liefert ein Bild mit Zustand, Ort, Quelle und Marke, ohne Bedienung", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Ein Rechteck steht für"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+
+    // The period selector and the action row stay out of the image; the chosen state is text in it.
+    await expect(widget.locator("[data-sc-export-ignore]").first()).toBeAttached();
+    const exportOnly = widget.locator("[data-sc-export-only]");
+    await expect(exportOnly.filter({ hasText: "Anlagenbestand: Heute" })).toHaveCount(1);
+    // Nested export-only wrappers (padding frame + footer) both contain the note.
+    await expect(exportOnly.filter({ hasText: "Ort: Veitshöchheim" }).first()).toBeAttached();
+    await expect(exportOnly.first()).toBeHidden();
+
+    // Full attribution at the edge: provider, licence, change note, data date.
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(kante).toContainText("dl-de/by-2-0");
+    await expect(kante).toContainText("Stand:");
+    // Default export palette: the widget opts into the brightest-stage rule.
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByRole("button", { name: /^Optionen für/ }).click();
+    await widget.getByRole("menuitem", { name: "Download" }).click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(buf.readUInt32BE(16)).toBeGreaterThan(600);
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-anlagenraster.png`, buf));
+  });
+});
+
+test.describe("Gemeinde-Monitor: Jahresprofil", () => {
+  test("Download liefert ein Bild mit Jahr, Energieart, Legende, beiden Quellen und Marke", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Modellierte Tageserträge"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+    await expect(widget.locator("[data-sc-export-only]").filter({ hasText: /^2025 · Solar \+ Wind$/ })).toHaveCount(1);
+    // Legend hidden until hover on the page, forced into the image.
+    await expect(widget.locator('[data-sc-export-css*="visibility:visible"]')).toContainText("Solar");
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("ERA5");
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByRole("button", { name: /^Optionen für/ }).click();
+    await widget.getByRole("menuitem", { name: "Download" }).click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-energie-jahr.png`, buf));
+  });
+});
+
+test.describe("Gemeinde-Monitor: Monatsrückblick", () => {
+  test("Download liefert ein Bild mit Monat, beiden Quellen und Marke, ohne Tagesbedienung", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Tageslinien"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+    await expect(widget.locator("[data-sc-export-only]").filter({ hasText: /^[A-Z][a-zä]+\.? 20\d\d/ }).first()).toBeAttached();
+    // Month stepper, day navigation and playback stay out of the image.
+    await expect(widget.locator('[data-sc-export-ignore] button[aria-label="Monat abspielen"]')).toHaveCount(1);
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("ERA5");
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByRole("button", { name: /^Optionen für/ }).click();
+    await widget.getByRole("menuitem", { name: "Aktueller Stand als Bild" }).click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-solar-monat.png`, buf));
+  });
+});
+
+// The monitor options menu: exactly Link kopieren, Download, Einbetten; keyboard, focus, Escape, outside tap.
+test.describe("Gemeinde-Monitor: Optionsmenü", () => {
+  test("Tastatur, Fokus, Escape und Tippen daneben; Einbetten ehrlich als nicht verfügbar", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Ein Rechteck steht für"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+    const button = widget.getByRole("button", { name: /^Optionen für/ });
+    // No footer action row any more; help sits in the headline.
+    await expect(widget.locator(".sc-widget-actions")).toHaveCount(0);
+    await expect(widget.locator("h4 .sc-widget-title-help")).toHaveCount(1);
+
+    await button.focus();
+    await page.keyboard.press("Enter");
+    const items = widget.getByRole("menuitem");
+    await expect(items).toHaveText([/Link kopieren/, /Download/, /Einbetten/]);
+    await expect(items.first()).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+    await expect(items.nth(1)).toBeFocused();
+    await page.keyboard.press("End");
+    await expect(items.nth(2)).toBeFocused();
+    await expect(items.nth(2)).toHaveAttribute("aria-disabled", "true");
+    await expect(items.nth(2)).toContainText("noch nicht verfügbar");
+    await page.keyboard.press("Escape");
+    await expect(widget.getByRole("menu")).toHaveCount(0);
+    await expect(button).toBeFocused();
+
+    await button.click();
+    await expect(widget.getByRole("menu")).toBeVisible();
+    await page.mouse.click(5, 5);
+    await expect(widget.getByRole("menu")).toHaveCount(0);
+  });
+});

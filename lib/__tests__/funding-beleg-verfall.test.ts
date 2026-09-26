@@ -3,6 +3,7 @@ import {
   fundingAmount,
   fundingBelegAktuell,
   fundingZaehlt,
+  fundingVorbei,
   stackFunding,
   fundingStandLabel,
   FOERDER_BESTAETIGUNG_MAX_TAGE,
@@ -165,5 +166,22 @@ describe("Prozentualer Zuschuss mit Höchstbetrag", () => {
 
   it("ohne Deckel bleibt es beim reinen Prozentsatz", () => {
     expect(fundingAmount(prozent(), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE).total).toBe(4000);
+  });
+});
+
+// ─── Ein Enddatum stoppt das Geld (24.09.2026) ───────────────────────────────
+// Bis heute las niemand `endetIso`; ein Kommentar behauptete das Gegenteil.
+describe("Enddatum", () => {
+  const frisch = { lastVerified: HEUTE, pageSeenAt: HEUTE };
+  it("zählt bis einschließlich zum letzten Tag, danach nicht mehr", () => {
+    expect(fundingZaehlt(programm({ ...frisch, endetIso: HEUTE }), HEUTE)).toBe(true);
+    expect(fundingZaehlt(programm({ ...frisch, endetIso: vorTagen(1) }), HEUTE)).toBe(false);
+  });
+  it("ein Monat gilt bis zu seinem letzten Tag", () => {
+    expect(fundingVorbei("2026-08", "2026-08-31")).toBe(false);
+    expect(fundingVorbei("2026-08", "2026-09-01")).toBe(true);
+  });
+  it("ohne Enddatum ändert sich nichts", () => {
+    expect(fundingVorbei(undefined, HEUTE)).toBe(false);
   });
 });

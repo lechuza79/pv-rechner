@@ -41,5 +41,5 @@ export function searchResultsHtml(ergebnis) {
 
 /** The form. Works without JavaScript: it submits to /suche. */
 export function searchFormHtml(q = '', id = 'sc-search-input') {
-  return `<form class="sc-search-form" action="/suche" method="get" role="search"><label class="sc-search-label" for="${id}">Suche</label><div class="sc-search-field"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input id="${id}" name="q" type="search" value="${esc(q)}" placeholder="Ort, Postleitzahl oder Thema" autocomplete="off" enterkeyhint="search" maxlength="80"></div></form>`;
+  return `<form class="sc-search-form" action="/suche" method="get" role="search"><label class="sc-search-label" for="${id}">Suche</label><div class="sc-search-field"><input id="${id}" name="q" type="search" value="${esc(q)}" placeholder="Ort, Postleitzahl oder Thema" autocomplete="off" enterkeyhint="search" maxlength="80"></div></form>`;
 }

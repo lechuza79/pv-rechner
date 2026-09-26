@@ -1,0 +1,30 @@
+/* Plot geometry is independent of its host page; chrome belongs to WidgetFrame. */
+.district-race-widget{--widget-surface:var(--atlas-surface);--atlas-ink:var(--atlas-text);--atlas-muted:var(--atlas-secondary);color-scheme:light;}
+.district-race-widget .sc-widget-head h4{font-size:18px;}
+.district-race-widget .sc-widget-heading-meta{font-size:clamp(32px,4vw,40px);line-height:1.1;}
+.district-race-widget .sc-widget-context{max-width:calc(60ch + 2 * var(--widget-padding));font-size:16px;line-height:1.5;}
+@media(min-width:1000px){.district-race-layout{width:80%;margin-inline:auto;}}
+.district-race-plot{min-height:476px;padding:12px var(--widget-padding) var(--widget-padding);}
+.district-race{position:relative;overflow:hidden;text-align:left;min-height:440px;}
+.district-race-row{position:absolute;inset:0 0 auto;display:grid;grid-template-columns:32px minmax(0,1fr) auto;grid-template-rows:16px 8px;gap:4px 8px;align-items:center;font-size:13px;line-height:1.2;transition:transform 220ms linear,opacity 180ms;will-change:transform;}
+.district-race-name{grid-column:2;grid-row:1;color:var(--widget-ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;padding:0 0 0 8px;}
+.district-race-value{grid-column:3;grid-row:1;font-size:13px;font-variant-numeric:tabular-nums;}
+.district-race-track{grid-column:2/4;grid-row:2;height:8px;overflow:hidden;contain:paint;}
+.district-race-bar{width:100%;height:100%;background:var(--widget-ink);border-radius:0 999px 999px 0;transform-origin:left;}
+.district-race::before{content:"";position:absolute;left:40px;top:20px;bottom:10px;width:1px;background:var(--widget-muted);opacity:.45;pointer-events:none;}
+.district-race-positions{position:absolute;inset:0 auto 0 0;width:32px;z-index:1;pointer-events:none;}
+.district-race-rank{position:absolute;left:2px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--widget-ink);font-weight:700;text-align:center;line-height:1;font-variant-numeric:tabular-nums;}
+@container(max-width:340px){.district-race-plot{padding-inline:16px;}}
+@media(prefers-reduced-motion:reduce){.district-race-row{transition:none;}}
+
+/* Reuse the monthly solar chart artwork without affecting plot contrast or hit targets. */
+.district-race-widget.sc-widget{position:relative;isolation:isolate;overflow:hidden;}
+/* Composite the opaque panel over the splashes before fading the entire artwork. */
+.district-race-artwork{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.16;mask-image:linear-gradient(#000 45%,transparent);}
+.district-race-artwork>div{position:absolute;inset:0;background-repeat:no-repeat;}
+.district-race-panels{background-image:url("/brand/pv-modules-mono-contained.svg");background-position:center;background-size:115% auto;}
+.district-race-splashes{background-image:url("/brand/feed-in-v4-splashes.svg");background-position:center;background-size:125% auto;filter:grayscale(1) brightness(.3);}
+@media(max-width:600px){
+ .district-race-panels{background-size:auto 105%;background-position:0% 65%;}
+ .district-race-splashes{background-size:auto 120%;background-position:0% center;}
+}

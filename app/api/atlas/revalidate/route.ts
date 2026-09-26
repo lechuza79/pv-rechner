@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { baueAuszeichnungen } from "../../../../lib/awards-server";
-import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG } from "../../../../lib/atlas-revalidate-routen";
+import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG, KREIS_PAKET_TAG } from "../../../../lib/atlas-revalidate-routen";
 
 /**
  * ATLAS-SEITEN NACH DEM DATENLAUF FÜR UNGÜLTIG ERKLÄREN.
@@ -95,6 +95,20 @@ export async function POST(req: NextRequest) {
 
   const erledigt: string[] = [];
   const fehler: { schritt: string; grund: string }[] = [];
+
+  // Narrow scope for a new district-package generation (scripts/kreis-paket.ts):
+  // no new town data, so no ranking snapshot and no 11,000-page invalidation —
+  // only what reads the district packages (district pages, their power endpoint).
+  if (req.nextUrl.searchParams.get("umfang") === "kreise") {
+    try {
+      revalidateTag(KREIS_PAKET_TAG);
+      erledigt.push(`tag:${KREIS_PAKET_TAG}`);
+    } catch (e) {
+      fehler.push({ schritt: `tag:${KREIS_PAKET_TAG}`, grund: e instanceof Error ? e.message : String(e) });
+    }
+    const ok = fehler.length === 0;
+    return NextResponse.json({ ok, erledigt, fehler }, { status: ok ? 200 : 500 });
+  }
 
   // Prepare a complete, fresh ranking generation before exposing new pages.
   // A failed batch leaves the previous snapshot and page caches untouched.

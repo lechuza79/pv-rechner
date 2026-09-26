@@ -118,7 +118,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["AccordionField"],
   },
   {
     datei: "components/TriToggle.tsx",
@@ -280,6 +280,24 @@ export const BAUSTEINE: Baustein[] = [
 
   // ─── Rückmeldung ───────────────────────────────────────────────────────────
   {
+    datei: "components/StatusBadge.tsx",
+    name: "StatusBadge",
+    zweck: "Compact status label with semantic colors and an optional active pulse.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/FormError.tsx",
+    name: "FormError",
+    zweck: "Accessible validation or submission feedback above form fields.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
     datei: "components/Modal.tsx",
     name: "Modal",
     zweck:
@@ -327,6 +345,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Modal", "FlowNav"],
     keinBeispielWeil:
       "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
+    datei: "components/InfoTooltipBindings.tsx",
+    name: "InfoTooltipBindings",
+    keinBeispielWeil: "This adapter has no independent visual output: it mounts the existing InfoTooltip into legacy ranking markup. The InfoTooltip gallery example covers its appearance; the municipality ranking exercises the binding lifecycle.",
+    zweck: "Binds legacy explanatory markup to InfoTooltip without separate positioning or interaction logic.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["InfoTooltip"],
   },
   {
     datei: "components/InfoTooltip.tsx",
@@ -445,6 +473,16 @@ export const BAUSTEINE: Baustein[] = [
     keinBeispielWeil: "Der Seitenrahmen selbst; die lokale Startseitenvorschau zeigt seine Desktop- und Mobilansicht.",
   },
   {
+    datei: "components/SiteHeaderFrame.tsx",
+    name: "SiteHeaderFrame",
+    zweck: "Platziert die gemeinsame Navigation im Seitenrahmen; besitzt der Hero selbst den Header, bleibt der äußere Rahmen frei.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["SharedSiteHeader"],
+    keinBeispielWeil: "Steuert den Seitenrahmen anhand der aktuellen Route und enthält keine eigene Navigation. Sichtbar auf den Seiten selbst.",
+  },
+  {
     datei: "components/DesignHeader.tsx",
     name: "DesignHeader",
     zweck:
@@ -546,6 +584,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons"],
   },
   {
+    datei: "components/ChartOptionsMenu.tsx",
+    name: "ChartOptionsMenu",
+    zweck:
+      "Kompaktes Optionsmenü oben rechts an einem Diagramm: Teilen, Download, Einbetten — dieselben Handler wie die Aktionsleiste, nur als Menü.",
+    gruppe: "widget",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ChartExportBar.tsx",
     name: "ChartExportBar",
     zweck: "Die Aktionsleiste über einem Chart, das auf einer eigenen Seite steht.",
@@ -561,6 +609,15 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/DataSourcesSection.tsx",
+    name: "DataSourcesSection",
+    zweck: "Gemeinsamer Quellenabschnitt unter dem Vertrauensbereich auf Orts- und Landkreis-Seiten.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
     bestehtAus: [],
   },
   {
@@ -635,7 +692,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["InfoTooltip"],
   },
   {
     datei: "components/Faq.tsx",
@@ -801,7 +858,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Icons", "Modal", "SelectField"],
+    bestehtAus: ["FormError", "Icons", "Modal", "SelectField"],
   },
   {
     datei: "components/KontaktTeaser.tsx",
@@ -901,7 +958,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["InfoTooltip"],
+    bestehtAus: ["InfoTooltip", "StatusBadge"],
   },
   {
     datei: "components/FundingTechnikTabs.tsx",

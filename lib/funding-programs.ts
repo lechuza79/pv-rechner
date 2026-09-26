@@ -4317,19 +4317,31 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "rhein-erft-energieoffensive", name: "Energieoffensive Rhein-Erft-Kreis",
     traeger: "Rhein-Erft-Kreis", level: "landkreis", region: "Rhein-Erft-Kreis", bundesland: "Nordrhein-Westfalen", agsCode: "05362",
     url: "https://www.rhein-erft-kreis.de/infrastruktur/energieoffensive.php",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // Programme page read in a real browser on 24.09.2026 (kdvz computes a
+    // proof-of-work, nothing clicked): still "Fördermittel ausgeschöpft",
+    // closed since 18 March. The page lists five modules; the catalogue only
+    // carried two, so the balcony line and the two modules without a
+    // technique of their own are added as information. The guideline PDF was
+    // not retrievable (redirect on fetch, 403 on navigation) and is not read;
+    // the rates come from the county's own summary ("Förderhöhen im Überblick").
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale für PV + Speicher (Jahresprogramm)",
+    coveredCosts: "Pauschalen je Baustein (Jahresprogramm)",
     maxFoerderung: "max. 1.500 € je Haushalt",
     rates: [
-      { label: "PV-Anlage (ab 5 kWp)", value: "1.000 €" },
-      { label: "Batteriespeicher", value: "500 €" },
+      { label: "PV-Anlage (ab 5 kWp)", value: "1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher (ab 5 kWh)", value: "500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk (ab 150 VA)", value: "bis zu 200 €", nur: ["balkon"] },
+      { label: "Solarthermie", value: "500 €", nur: ["pv"] },
+      { label: "Wallbox", value: "200 €", nur: ["pv"] },
     ],
     conditions: [
       "Jahresprogramm — Budget 2026 (1 Mio. €) seit 18.03.2026 erschöpft (Förderampel rot)",
       "Antrag vor Maßnahmenbeginn; Neuauflage üblicherweise zum Jahresbeginn",
+      "Das Angebot darf bei Antragstellung höchstens sechs Monate alt sein; nach dem Bescheid ist die Anlage binnen eines Jahres fertigzustellen",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
   },
   "rheinisch-bergisch-balkonsolar": {
     id: "rheinisch-bergisch-balkonsolar", name: "Förderprogramm Balkonsolaranlagen",
@@ -4731,6 +4743,105 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // einer Doppelförderung", Nr. 7.1 item 6) without naming which programmes;
     // no combination rule is stated, so none is assumed.
     combinableWith: null,
+  },
+  "schaumburg-solarfair": {
+    id: "schaumburg-solarfair", name: "Schaumburg SolarFair – Gemeinsam klimafreundlich leben!",
+    traeger: "Energieagentur Schaumburg gGmbH (aus Mitteln des Landkreises Schaumburg)", level: "landkreis",
+    region: "Landkreis Schaumburg", bundesland: "Niedersachsen", agsCode: "03257",
+    url: "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+    // NEU AUFGENOMMEN 26.09.2026. Found while closing SG Sachsenhagen and SG
+    // Niedernwöhren: the county site search led to the committee agenda of
+    // 15.06.2026, the programme itself sits with the county's energy agency.
+    // Programme page and guideline ("Richtlinie der Energieagentur Schaumburg
+    // zur Förderung von Balkonkraftwerken", Foerderrichtlinie_SolarFair_2026_
+    // final_.pdf) read in full on 26.09.2026, FAQ (Stand 04.08.2026) read.
+    // Nr. 4: "Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk."
+    // Nr. 2: natural persons currently receiving Grundsicherung für
+    // Arbeitssuchende, Wohngeld, Grundsicherung für Nichterwerbsfähige or
+    // Kinderzuschlag, main residence in the county. The programme page also
+    // lists Sozialhilfe and Arbeitslosengeld I; the guideline and the FAQ do
+    // not, and the guideline governs — so they are not named here.
+    // Nr. 5: up to 130 systems in 2026 and possibly 2027, "aus dem Budget des
+    // Landkreises Schaumburg finanziert", first come first served (Nr. 6.3).
+    // Nr. 6.1: purchase only after the confirmation with a funding number.
+    // Nr. 7: payout application by 01.12.2027. Nr. 11: in force 01.09.2026 to
+    // 31.12.2027. FAQ Nr. 11: at most 800 W inverter output.
+    // Adversarial review 26.09.2026: all conditions confirmed; the application
+    // form showed "8 von 130 ausgefüllt" (form submissions, not approvals).
+    // An earlier 2024 round (150 EUR, county + Stadthagen + Westfalen-Weser)
+    // is known only from press so far and is NOT recorded here.
+    // NO STRUCTURED RATE: the grant depends on an income condition the
+    // calculator cannot know (same treatment as holzminden-solarfair).
+    // Key: Landkreis Schaumburg 03257, checked in the register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-09-01", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines neuen Balkonkraftwerks — nur für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag",
+    maxFoerderung: "150 € je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk (nur mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag)", value: "150 € je Anlage" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Personen, die Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag beziehen und ihren Erstwohnsitz im Landkreis Schaumburg haben",
+      "Erst den Zuschuss beantragen und die Bestätigung mit Fördernummer abwarten — wer das Balkonkraftwerk vorher kauft, bekommt nichts",
+      "Die Anlage muss neu gekauft, an der Adresse des Erstwohnsitzes installiert und im Marktstammdatenregister angemeldet sein; Wechselrichter höchstens 800 W",
+      "Höchstens eine Förderung je Stromzähler; die Anlage muss mindestens drei Jahre betrieben werden",
+      "Gefördert werden insgesamt bis zu 130 Anlagen in den Jahren 2026 und 2027, in der Reihenfolge der Anträge; kein Rechtsanspruch",
+      "Der Antrag auf Auszahlung muss bis zum 01.12.2027 gestellt sein; die Richtlinie tritt zum 31.12.2027 außer Kraft",
+    ],
+    // Neither guideline nor FAQ says anything about combining with other
+    // funding, so no rule is assumed.
+    combinableWith: null,
+  },
+  "suedheide-balkonkraftwerke": {
+    id: "suedheide-balkonkraftwerke", name: "Förderung für Solaranlagen (Richtlinie Balkonkraftwerke)",
+    traeger: "Gemeinde Südheide", level: "kommune", region: "Südheide",
+    bundesland: "Niedersachsen", agsCode: "03351026",
+    url: "https://www.gemeinde-suedheide.de/portal/seiten/foerderung-fuer-solaranlagen-900000199-23600.html",
+    // NEU AUFGENOMMEN 26.09.2026. Found while closing the Landkreis Celle
+    // municipalities: a web search led to the municipality's programme page.
+    // Programme page (with live online application form) and the linked
+    // "Richtlinie Balkonkraftwerke" (council decision 14.12.2023, signed
+    // 20.12.2023) read in full on 26.09.2026.
+    // Nr. 2a: "Gefördert wird einmalig je Haushalt die Neuanschaffung einer
+    // Mini-PV-Anlage" — "Die Förderung beträgt 150 EUR bei 800 Watt
+    // Nennleistung." Nr. 4: only tenants ("natürliche Personen (Mieter), die
+    // ihr zu Wohnzwecken selbst genutztes Mietobjekt in der Gemeinde Südheide
+    // haben"). Nr. 3: installation within 6 months of approval. Nr. 6: 5-year
+    // holding period from payout. Nr. 10: "tritt am 01.04.2024 in Kraft und
+    // gilt solange, bis die zur Verfügung gestellten Haushaltsmittel
+    // aufgebraucht sind". Application form confirmation no. 6: not started
+    // before applying; no. 4: no funds from other Zuwendungsgeber.
+    // Adversarial review 26.09.2026 (site search, news): all conditions
+    // confirmed, no notice of exhausted funds.
+    // NO STRUCTURED RATE: the guideline names 150 EUR only "bei 800 Watt
+    // Nennleistung" and leaves smaller devices open; "Nennleistung" does not
+    // say whether module or inverter output is meant. A flat amount would
+    // pay 150 EUR on every set of the calculator — rather no number than a
+    // wrong one. Key: Gemeinde Südheide 03351026, checked in the register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-04-01", beschlossenIso: "2023-12-14",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    nurWohnform: "mieter",
+    coveredCosts: "Einmaliger Zuschuss zur Neuanschaffung eines Balkonkraftwerks — nur für Mieter",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk (nur Mieter)", value: "150 € bei 800 W Nennleistung; für kleinere Geräte nennt die Richtlinie keinen Betrag" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Mieterinnen und Mieter, die ihre Mietwohnung in Südheide selbst bewohnen; eine Mietbescheinigung des Vermieters gehört zum Antrag",
+      "Erst online beantragen, dann kaufen — wer vorher bestellt oder kauft, bekommt nichts; nach der Bewilligung muss die Anlage binnen sechs Monaten in Betrieb sein",
+      "Gefördert wird einmal je Haushalt ein neues steckerfertiges Gerät mit höchstens 800 W Einspeiseleistung; der Zuschuss darf die Anschaffungskosten nicht übersteigen",
+      "Für die Auszahlung braucht es Rechnung mit installierter Leistung und je ein Foto vor und nach der Installation",
+      "Die Anlage muss fünf Jahre in Südheide genutzt werden; bei vorzeitigem Verkauf oder Umzug wird anteilig zurückgezahlt",
+      "Keine zusätzlichen Fördergelder anderer Zuwendungsgeber; Vergabe nach Eingang der Anträge, solange Haushaltsmittel da sind, ohne Rechtsanspruch",
+    ],
+    // Application form confirmation no. 4: "Dass ich keine Fördergelder von
+    // anderen Zuwendungsgebern erhalte (Doppelförderung)." An empty list is
+    // the catalogue's "only on its own".
+    combinableWith: [],
   },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
@@ -6649,7 +6760,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Poing", level: "kommune", region: "Poing",
     bundesland: "Bayern", agsCode: "09175135",
     url: "https://www.poing.de/bauen-umwelt/energie-klima/foerderrichtlinien",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteil der Kosten für Balkonkraftwerk und Dachanlage, dazu Pauschalen für Wärmepumpen",
     maxFoerderung: "max. 2.000 € für die Dachanlage, 250 € fürs Balkonkraftwerk",
@@ -6668,8 +6779,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Die Anlage muss der BAFA-Förderrichtlinie entsprechen und der hydraulische Abgleich durchgeführt sein",
       "Gerechnet wird der Satz der Luft-Wasser-Pumpe; für Erdwärme oder Grundwasser sind es 200 € mehr",
       "Gefördert werden nur Gebäude im Gemeindegebiet Poing",
+      { text: "Photovoltaik und Balkonkraftwerk: „Eine Kombination mit anderen staatlichen Fördermitteln ist nicht gestattet.“ (Förderrichtlinie zur Energieerzeugung, Stand Februar 2026, Nr. 3.5, gilt für Anträge ab 1. April 2026)", nur: ["pv", "balkon"] },
+      { text: "Photovoltaik und Balkonkraftwerk: Zwischen Bewilligung und Fertigmeldung mit Fotobeweis dürfen höchstens sechs Monate liegen, sonst entfällt die Förderung", nur: ["pv", "balkon"] },
     ],
-    combinableWith: BUND,
+    // KfW 270 REMOVED 24.09.2026: the PV/Mini-PV guideline (Stand Februar 2026,
+    // in force 01.04.2026, Nr. 3.5) forbids combining with "anderen staatlichen
+    // Fördermitteln"; a KfW promotional loan is one (Council + Legal-Judge).
+    // The list must NOT become empty: the heat-pump grant comes from the older
+    // Energie-Richtlinie (Juni 2021), whose Nr. 3.4 allows KfW/BAFA and whose
+    // Nr. 5.2 even requires the BEG; an empty list means "excludes federal aid"
+    // and would drop Poing from the heat-pump calculator. The 0 % VAT rate is a
+    // tax rule applying by law, not a grant, so it stays.
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["pv", "balkon", "waermepumpe"],
     percentOfCost: 0.1, pvCap: 2000,
     balkonPercentOfCost: 0.25, balkonCap: 250,
@@ -7821,7 +7942,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Ortsgemeinde Neustadt (Wied)", level: "kommune", region: "Neustadt (Wied)",
     bundesland: "Rheinland-Pfalz", agsCode: "07138044",
     url: "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     beschlossenIso: "2025-12-18", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und je kWh Speicher — Dachanlage nur zusammen mit einem Speicher",
@@ -7831,6 +7952,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Batteriespeicher", value: "130 €/kWh nutzbare Kapazität, max. 1.950 €" },
     ],
     conditions: [
+      "Die Fördermittel sind ausgeschöpft; es können keine weiteren Förderanträge mehr gestellt werden (Hinweis der Verbandsgemeinde Asbach, Stand 23.09.2026)",
       "Die Dachanlage wird nur zusammen mit einem Batteriespeicher gefördert, der zugleich errichtet, erweitert oder nachgerüstet wird",
       "Gefördert werden höchstens 15 kWp und 15 kWh; Anlagen bis 30 kWp bzw. Speicher bis 30 kWh erhalten den Höchstbetrag, größere gar nichts",
       "Leistung, die die Ortsgemeinde schon früher gefördert hat, wird auf die Grenzen von 15 kWp und 15 kWh angerechnet — gefördert wird dann nur noch der Rest",
@@ -9272,7 +9394,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "gifhorn-kreis-balkonkraftwerke": {
     id: "gifhorn-kreis-balkonkraftwerke",
     name: "Förderung von Balkonkraftwerken (Stecker-Solargeräte)",
-    traeger: "Landkreis Gifhorn", level: "kommune", region: "Landkreis Gifhorn",
+    traeger: "Landkreis Gifhorn", level: "landkreis", region: "Landkreis Gifhorn",
     bundesland: "Niedersachsen", agsCode: "03151",
     url: "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
     stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
@@ -13696,6 +13818,130 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Aufgenommen am 25.09.2026: Isenbüttel, für 2026 ausgeschöpft ──────────
+  //
+  // Found in the source queue (programme page of the "isi" climate programme).
+  // Read at the source on 25.09.2026: programme page, PV application form
+  // (FID 4149.84), flyer (4149.88, "Stand: Juni 2025") and the full funding
+  // terms (4149.72, "geändert mit Beschluss vom 22.05.2019" — online but not
+  // linked from the page). The page says the funds for budget year 2026 are
+  // exhausted and no funding is possible in 2026; it does not say the
+  // programme has ended. The 2019 terms name no cap per PV system (no. 3.1.7);
+  // the page mentions an updated version that is not published — no
+  // calculation value, and none needed while the budget is exhausted. Heating is funded only inside a separate savings-based
+  // building grant (up to 50 % of the investment, energy advice first), not as
+  // a heat-pump lump sum; that part is not modelled here, hence foerdert pv only.
+  // Adversarial counter-check 25.09.2026: rate, angles, 2026 exhaustion and
+  // procedure confirmed; tenant eligibility for PV unclear (flyer yes, form no).
+  "isenbuettel-isi-pv": {
+    id: "isenbuettel-isi-pv", name: "isi Klimaschutz-Förderprogramm: Solarstrom auf West-/Ostdächern und Fassaden",
+    traeger: "Gemeinde Isenbüttel", level: "kommune", region: "Isenbüttel",
+    bundesland: "Niedersachsen", agsCode: "03151013",
+    url: "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Aufdach-Anlagen in West- oder Ostrichtung und für Fassadenanlagen",
+    rates: [
+      { label: "Aufdach-Anlage in West- oder Ostrichtung, Fassadenanlage", value: "300 €/kWp — Mittel für 2026 ausgeschöpft" },
+    ],
+    conditions: [
+      "Die Gemeinde meldet die Fördermittel für das Haushaltsjahr 2026 als ausgeschöpft; in 2026 ist keine Förderung mehr möglich",
+      "Nur für Einwohnerinnen und Einwohner von Isenbüttel; bei Wohngebäuden natürliche Personen als Eigentümer, Eigentümer- oder Erbengemeinschaften, Mieter nur mit Modernisierungsvereinbarung mit dem Vermieter",
+      "Aufdach-Anlagen müssen zwischen 45° und 150° West bzw. −45° und −150° Ost ausgerichtet sein; der Installateur bestätigt die Ausrichtung",
+      "Antrag mit Kostenvoranschlag vor Beginn; mit der Installation darf erst nach Bewilligung begonnen werden, Auszahlung nach Abschluss gegen Rechnung",
+      "Nur marktfähige, neue Anlagen; Eigenbau, Prototypen und Gebrauchtanlagen sind ausgeschlossen",
+      "Die veröffentlichten Förderbedingungen (Fassung vom 22.05.2019) nennen keinen Höchstbetrag je Anlage; die Gemeinde spricht von einer aktualisierten Fassung, die nicht online steht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+  },
+
+  // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
+  "celle-klimaschutzfonds": {
+    id: "celle-klimaschutzfonds", name: "Klimaschutzfonds Celle",
+    traeger: "Stadt Celle", level: "kommune", region: "Celle",
+    bundesland: "Niedersachsen", agsCode: "03351006",
+    url: "https://www.celle-klimaschutz.de/Klimaschutzaktivit%C3%A4ten-der-Stadt-Celle/Stadt-Celle/Klimaschutzfonds/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-03",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp für Photovoltaik; Anteil der Kosten für Wärmepumpen in Verbindung mit einer eigenen Photovoltaikanlage; Pauschalen für Erdwärme",
+    maxFoerderung: "Photovoltaik höchstens 1.200 € je Grundstück; Wärmepumpe höchstens 3.000 € je Objekt",
+    rates: [
+      { label: "Photovoltaikanlage", value: "200 € je kWp, höchstens 1.200 € je Anlagenstandort", nur: ["pv"] },
+      { label: "Innovatives Heizsystem (z. B. Luft-Wasser- oder Erdwärmepumpe) mit eigener Photovoltaikanlage", value: "10 % der förderfähigen Kosten, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+      { label: "Erdwärme bis 30 kW", value: "1.000 € Erdwärmekollektor, 2.000 € Erdwärmesonde; reversible Anlagen (Heizen und Kühlen) 50 % mehr, höchstens 3.000 € je Objekt", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Anträge nur vom 1. Januar bis 31. Mai jedes Jahres (Ausschlussfrist); die Frist für 2026 ist abgelaufen, spätere Anträge nur in begründeten Ausnahmefällen — die nächste reguläre Antragsrunde beginnt am 1. Januar 2027",
+      "Die Maßnahme muss im Stadtgebiet Celle liegen und darf bei Antragstellung nicht begonnen sein; Planung, Angebote und Lieferverträge gelten nicht als Beginn, ein vorzeitiger Beginn braucht eine Zustimmung",
+      { text: "Die Photovoltaikanlage muss weitestgehend verschattungsfrei sein; als Anlagenstandort gilt das Baugrundstück", nur: ["pv"] },
+      { text: "Wärmepumpen werden nur zusammen mit einer vorhandenen Photovoltaikanlage oder dem Nachweis gefördert, sich eine anzuschaffen; Heizkörper, Fußbodenheizungen und Klimaanlagen sind ausgeschlossen", nur: ["waermepumpe"] },
+      "Förderprogramme von Bund und Land sind vorrangig zu nutzen; zusammen darf die Förderung 49 % der förderfähigen Kosten nicht überschreiten",
+      "Zum Antrag gehören ein verbindliches Kostenangebot und die Zustimmung des Eigentümers; über die Anträge entscheidet der Verwaltungsausschuss",
+      "Freiwillige Leistung im Rahmen der verfügbaren Fondsmittel; reichen sie nicht, werden Photovoltaikanlagen in der Reihenfolge des Antragseingangs bedient, abgelehnte Vorhaben können im Folgejahr neu beantragt werden",
+      "Die Maßnahme ist bis zum 30. Juni des Folgejahres abzuschließen, der Zuschuss binnen zwei Monaten danach abzurufen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // NEU AUFGENOMMEN 26.09.2026. Gefunden über die Websuche beim Abschluss der
+    // Samtgemeinde Flotwedel (Landkreis Celle) — die Stadt Celle stand trotz
+    // aktivem Programm nicht im Katalog. Richtlinie im Volltext gelesen
+    // (loadDocument FID 3859.52.1, „Vom 08.12.2022, zuletzt geändert durch
+    // Beschluss des Rates vom 03.12.2025"; Nr. 9.1: „Diese Förderrichtlinien
+    // treten zum 01.01.2026 in Kraft"), dazu die Programmseite. Adversariale
+    // Gegenprüfung am selben Tag: alle Beträge und Bedingungen bestätigt.
+    //
+    // `pausiert`, nicht `aktiv`: Nr. 7.2 „Anträge … können vom 1. Januar bis
+    // 31. Mai der jeweiligen Förderperiode (Ausschlussfrist) … gestellt
+    // werden", Nr. 7.4 weist spätere Anträge „im Regelfall" zurück. Wer heute
+    // plant, kann erst ab dem 01.01.2027 beantragen und darf vorher nicht
+    // beginnen — ein Abzug heute stellte Geld in Aussicht, das es für dieses
+    // Jahr nicht mehr gibt. Dasselbe Muster wie Königswinter (Richtlinie gilt
+    // weiter, keine Antragstellung). WIEDERPRÜFUNG AM 01.01.2027: Öffnet die
+    // Runde, Status auf `aktiv` nach aktuellem Träger-Beleg.
+    //
+    // KEIN Rechenwert, auch nicht für die Zeit ab Januar: Der PV-Satz wäre als
+    // pvPerKwp/pvCap abbildbar, hängt aber an Verschattungsfreiheit und an der
+    // 49-%-Kumulierungsgrenze; die Wärmepumpe setzt eine eigene PV-Anlage
+    // voraus. Das entscheidet die Reaktivierung, nicht diese Aufnahme.
+    //
+    // Balkonkraftwerke und Speicher nennt die Richtlinie nicht. Balkon ist
+    // nach dem Wortlaut (keine Mindestleistung) nicht ausgeschlossen, aber
+    // unbelegt — deshalb NICHT in `foerdert`.
+  },
+
+  // ─── Aufgenommen am 25.09.2026: Donauwörth, beendetes Programm ─────────────
+  //
+  // Found in the source queue (document page "Förderung Kleinstphotovoltaik –
+  // Antrag"). Ended — added anyway, "existed, has ended" is real information
+  // (operator, 17.08.2026). Evidence, read at the source: the application
+  // form behind the document page is filed as "Programm_abgelaufen" (24.09.
+  // and 25.09.2026), and the city's funding overview (read 25.09.2026) lists
+  // only cargo bikes, green roofs, cisterns and unsealing — no small PV. The
+  // amounts are those of that form (37.50 € for one module, 75 € for two);
+  // local press once reported 100/200 €, which is not the form we read and
+  // does not stand here. The END DATE is not published, so no endetIso.
+  "donauwoerth-kleinst-pv": {
+    id: "donauwoerth-kleinst-pv", name: "Förderung Kleinst-Photovoltaikanlage",
+    traeger: "Große Kreisstadt Donauwörth", level: "kommune", region: "Donauwörth",
+    bundesland: "Bayern", agsCode: "09779131",
+    url: "https://www.donauwoerth.de/dokumente/foerderung-kleinstphotovoltaik-antrag",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [
+      { label: "Balkonkraftwerk mit einem Modul (ca. 300 W)", value: "37,50 € — Programm beendet" },
+      { label: "Balkonkraftwerk mit zwei Modulen (bis 600 W)", value: "75 € — Programm beendet" },
+    ],
+    conditions: [
+      "Die Stadt führt das Antragsformular als abgelaufen; in ihrer Förderübersicht steht die Förderung nicht mehr",
+      "Gefördert wurden Anlagen, die nach dem 22. Juli 2022 gekauft wurden, auf Antrag vor der Bestellung; berechtigt waren Eigenheimbesitzer und Mieter, nicht institutionelle Vermieter",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   // ─── Aufgenommen am 24.09.2026: VG Bad Kreuznach, beendetes Programm ───────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Websuche nach
@@ -13726,6 +13972,68 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // Schlüssel im Melderegister nachgeschlagen (foerder:ags, 24.09.2026).
   // Council 3/3 am 24.09.2026, ein Prüfer adversarial und als Legal-Judge;
   // freigegeben mit den hier eingearbeiteten Änderungen.
+  // ─── Aufgenommen am 24.09.2026: Asbach-Bäumenheim (Landkreis Donau-Ries) ────
+  //
+  // Found while closing the Donau-Ries municipalities from the source queue:
+  // the municipality's own page "Regenerative Energien" and the 2026
+  // application form, which carries the full guideline, read at the source on
+  // 24.09.2026 (copies in the watcher's file). The page text is stale (it
+  // names the council decision of 16.01.2024); the form carries the current
+  // rules: "Mit Beschluss des Bau- und Umweltausschusses vom 30.07.2026".
+  "asbach-baeumenheim-foerderprogramm": {
+    id: "asbach-baeumenheim-foerderprogramm",
+    name: "Förderprogramm erneuerbare Energien, Energieeffizienz und Ressourceneinsparung",
+    traeger: "Gemeinde Asbach-Bäumenheim", level: "kommune", region: "Asbach-Bäumenheim",
+    bundesland: "Bayern", agsCode: "09779115",
+    // THE FORM IS THE SOURCE, NOT THE PAGE: only the form carries the rates,
+    // and a fingerprint on the page would never notice a change in them. The
+    // file name carries the start date; a new round will most likely replace
+    // it, and a dead address stops the deduction within two weeks — the safe
+    // direction.
+    url: "https://www.asbach-baeumenheim.de/fileadmin/Dateien/Bilder/Asbach-Baeumenheim/Antragsformular_2026_Gemeindefoerderung_ab_01.08.2026.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-07-30",
+    beginntIso: "2026-08-01",
+    // endetIso = the END OF THE MEASURE WINDOW, not the application deadline,
+    // and that deviates on purpose from the field's usual meaning: "Der
+    // Förderzeitraum beginnt am 01.08.2026 und endet am 31.12.2026"; the
+    // application with the invoice may still come until 31.03.2027. A plant
+    // planned from January 2027 gets nothing from this round, so the
+    // calculator must stop deducting then (adversarial review, 24.09.2026).
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Photovoltaikanlage auf dem Dach eines Wohnhauses, dazu ein Batteriespeicher als Pauschale",
+    maxFoerderung: "500 € für die Dachanlage, 250 € für den Speicher",
+    rates: [
+      { label: "Photovoltaikanlage auf Dachflächen", value: "10 % der Anschaffungskosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher (bis 10 kW, erstmalige Nachrüstung)", value: "250 € pauschal", nur: ["pv"] },
+    ],
+    conditions: [
+      "Das Formular verlangt keinen Antrag vor Beginn: Der Antrag geht mit der Schlussrechnung eines Handwerks- oder Dienstleistungsbetriebs (bzw. dem Kaufvertrag) an die Gemeinde, für Maßnahmen vom 01.08.2026 bis 31.12.2026 spätestens bis 31.03.2027",
+      "Gefördert werden nur Module samt Wechselrichter auf Dachflächen von Wohnhäusern im geschlossenen Ortsgebiet; je Flurstück ist ein Antrag möglich; bei Mietgebäuden ist die Genehmigung des Eigentümers vorzulegen",
+      "Mit dem Antrag sind die Anmeldebestätigungen des Netzbetreibers und der Bundesnetzagentur vorzulegen",
+      "Balkonkraftwerke sind ausgeschlossen, ebenso gebrauchte Anlagen und Eigenbauanlagen",
+      "Beim Speicher wird nur die erstmalige Nachrüstung gefördert, Ersatzbeschaffungen nicht",
+      "Die Richtlinie nennt als antragsberechtigt Eigentümer, Wohnungseigentümergemeinschaften und Mieter mit schriftlicher Erlaubnis des Eigentümers — und weiter unten nur Eigentümer bzw. deren Bevollmächtigte; Mieter klären das vorab mit der Gemeinde",
+      "Das Programm ist auf 50.000 € im Jahr gedeckelt; nicht mehr berücksichtigte Anträge können im Folgejahr erneut gestellt werden",
+    ],
+    // null = "not established". The form only says the rules of other funders
+    // apply and that breaching a cumulation rule can mean partial repayment;
+    // it neither allows nor excludes federal funding. An empty list would be
+    // the catalogue's explicit "only alone", BUND a conclusion from silence.
+    combinableWith: null,
+    foerdert: ["pv"],
+    // THE ROOF RATE COMPUTES, THE STORAGE RATE DOES NOT. "Nur die erstmalige
+    // Nachrüstung eines Speichers" can be read as "storage added to an
+    // existing plant" — a storage bought together with a new roof plant would
+    // then get nothing. Deducting 250 € for every storage would be a guess;
+    // it stands as a rate line only.
+    // percentOfCost works on the calculator's total cost, which includes the
+    // storage. With a 500 € cap that only matters for plants whose PV part
+    // costs less than 5,000 €, i.e. barely any roof plant.
+    percentOfCost: 0.10, pvCap: 500,
+  },
+
   "vg-bad-kreuznach-balkonkraftwerke": {
     id: "vg-bad-kreuznach-balkonkraftwerke", name: "Balkonkraftwerke für Privathaushalte",
     traeger: "Verbandsgemeinde Bad Kreuznach", level: "kommune", region: "Verbandsgemeinde Bad Kreuznach",
@@ -13956,10 +14264,26 @@ export function fundingBelegAktuell(
  * fragen sie, statt `status === "aktiv"` selbst zu prüfen.
  */
 export function fundingZaehlt(
-  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso"> | undefined,
+  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso" | "endetIso"> | undefined,
   heute: string = heuteIso(),
 ): boolean {
-  return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);
+  return !!f && f.status === "aktiv" && !fundingVorbei(f.endetIso, heute) && fundingBelegAktuell(f, heute);
+}
+
+/**
+ * Has the programme's end date passed?
+ *
+ * WHY (24.09.2026): The catalogue carried 27 active programmes with an end
+ * date, and a note in lib/funding-conditions.ts claimed the end date "switches
+ * the deduction off". It did not — nothing read it; the deduction ran until a
+ * watcher happened to flip the status. Haltern's balcony fund ends on
+ * 30.09.2026 and would have kept deducting from 1 October. The status still
+ * says what the municipality says; this only stops the money on the day after,
+ * in the safe direction. A month ("2025-12") counts up to its last day.
+ */
+export function fundingVorbei(endetIso: string | undefined, heute: string): boolean {
+  if (!endetIso) return false;
+  return endetIso.length <= 7 ? heute.slice(0, 7) > endetIso : heute.slice(0, 10) > endetIso.slice(0, 10);
 }
 
 export type FundingAmount = {

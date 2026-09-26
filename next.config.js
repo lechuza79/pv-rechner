@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingIncludes: {
+    "/solar-atlas/*": ["./public/geo/gemeinden/*.geo.json"],
+  },
+  webpack(config, {webpack}) {
+    const path = require('node:path');
+    config.resolve.alias['@dgreenheck/ez-tree$'] = path.join(__dirname, 'node_modules/@dgreenheck/ez-tree/src/lib/index.js');
+    config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^\.\/textures$/, resource => {
+      if (resource.context.includes('@dgreenheck/ez-tree/src/lib')) resource.request = path.join(__dirname, 'components/landkreis/tree-textures.js');
+    }));
+    return config;
+  },
   experimental: {
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own
@@ -100,6 +111,7 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/floersheim-am-main", "destination": "/photovoltaik-foerderung/hessen/floersheim-am-main", "permanent": true},
       {"source": "/photovoltaik-foerderung/eppelheim", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/eppelheim", "permanent": true},
       {"source": "/photovoltaik-foerderung/bruehl-baden", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/bruehl-baden", "permanent": true},
+      {"source": "/photovoltaik-foerderung/asbach-baeumenheim", "destination": "/photovoltaik-foerderung/bayern/asbach-baeumenheim", "permanent": true},
       {"source": "/photovoltaik-foerderung/radolfzell-am-bodensee", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/radolfzell-am-bodensee", "permanent": true},
       {"source": "/photovoltaik-foerderung/meschede", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/meschede", "permanent": true},
       {"source": "/photovoltaik-foerderung/ingelheim-am-rhein", "destination": "/photovoltaik-foerderung/rheinland-pfalz/ingelheim-am-rhein", "permanent": true},

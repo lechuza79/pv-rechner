@@ -86,7 +86,7 @@ async function bildAblegen(page: Page, flowName: string, zustand: string, erg: L
  * einer Option geführt — nicht wiederfindbar und in Fehlermeldungen wertlos.
  */
 async function optionen(page: Page): Promise<string[]> {
-  return page.locator("[data-flow-option]:visible").evaluateAll((els) =>
+  return page.locator("[data-flow-option]:not([inert] *):visible").evaluateAll((els) =>
     els.map((e) => e.getAttribute("data-flow-option") || ""),
   );
 }
@@ -253,7 +253,7 @@ async function gehe(
   if (pfad.length === 0 || wahlen.length > 0) {
     const gesperrt = await weiter.getAttribute("aria-disabled");
     if (gesperrt !== "true") {
-      const schonGewaehlt = await page.locator('[data-flow-option][aria-pressed="true"]:visible').count();
+      const schonGewaehlt = await page.locator('[data-flow-option][aria-pressed="true"]:not([inert] *):visible').count();
       if (schonGewaehlt === 0) {
         erg.fehler.push(`[${pfad.join(" → ")}] Weiter ist frei, obwohl nichts gewählt ist`);
       }

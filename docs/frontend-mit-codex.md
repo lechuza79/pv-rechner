@@ -177,3 +177,13 @@ for the initial flow, deferred funding, explicit confirmation and advertising
 labels. Check the actual production build at desktop and narrow phone widths.
 The seller address and withdrawal notice must remain visible below the products;
 showing them only in a details modal is insufficient.
+
+## Shared widgets and explanatory tooltips — required
+
+Before adding widget UI, consult `docs/zentrale-visuals-konzept.md` and `lib/widget-registry.ts`. Reuse the registered chart and `ExportableWidgetFrame` / `ChartOptionsMenu`; extend their props when an option is missing instead of copying their markup or behavior into a page. Page and embed variants must consume the same widget.
+
+All explanatory tooltips use `components/InfoTooltip.tsx`. Supply content plus `label`, `trigger`, or the default help icon. GlossaryTerm delegates to it. Legacy municipality scripts declare the markup consumed by `InfoTooltipBindings`; they must not implement their own tooltip position, portal, hover, or dismissal handlers. Changes to shared behavior belong in InfoTooltip and must be checked at desktop and narrow mobile widths, including keyboard and outside dismissal.
+
+`lib/__tests__/shared-tooltip-conventions.test.ts` rejects new independent tooltip renderers in app/components/municipality scripts. Existing chart-value readouts and the navigation label have named, bounded exceptions; do not broaden the exceptions to make a new help tooltip pass. This test runs with `npm test` in CI.
+
+The same reuse requirement applies to every accepted shared component, not only tooltips. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.

@@ -1078,8 +1078,6 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .site-header[data-her
 
 /* Small host-side twilight correction until scene lighting is tuned in full.
    Keep the renderer's haze and panel-edge composition intact. */
-.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .unified-canvas{filter:brightness(.68) saturate(.82)}
-.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .clouds{filter:brightness(.48);opacity:.35!important}
 
 /* One quiet reassurance at a time; no layout movement between statements. */
 @keyframes sc-trust-cycle{

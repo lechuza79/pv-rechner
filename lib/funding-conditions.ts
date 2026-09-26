@@ -158,6 +158,17 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-ruedesheim-balkonkraftwerke",
   // VG Bad Kreuznach, ebenfalls am 24.09.2026 als beendetes Programm aufgenommen.
   "vg-bad-kreuznach-balkonkraftwerke",
+  // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
+  "donauwoerth-kleinst-pv",
+  // Gemeinde Südheide, aufgenommen am 26.09.2026; alle Bedingungen stehen auf
+  // der Karte, der Betrag ist bewusst kein Rechenwert (Nennleistung offen).
+  "suedheide-balkonkraftwerke",
+  // Stadt Celle, aufgenommen am 26.09.2026; Antragsfenster 2026 geschlossen
+  // (pausiert bis 01.01.2027), die Bedingungen stehen alle auf der Karte.
+  "celle-klimaschutzfonds",
+  // Isenbüttel, aufgenommen am 25.09.2026; für 2026 ausgeschöpft, die
+  // vollständigen Bedingungen sind nicht veröffentlicht.
+  "isenbuettel-isi-pv",
   // Stadt Bad Kreuznach, aufgenommen am 24.09.2026. Das Verfahren ist das
   // umgekehrte (Antrag NACH Kauf und Installation, binnen sechs Monaten) —
   // dieselbe Lage wie bei Kandel und Langenlonsheim-Stromberg: Die vorhandenen
@@ -570,6 +581,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // the roof rate starts. Both stand in full on the card, and the threshold is
   // the reason the roof part carries no calculation field.
   "bruehl-baden-umweltschutz",
+  // Added 24 Sep 2026: Asbach-Baeumenheim. Guideline read in full (the 2026
+  // application form). No test form in this run: the application comes AFTER
+  // the installation with the invoice, which the existing forms do not model,
+  // and the eligibility is contradictory in the guideline itself (owners and
+  // tenants, then owners only) — both stand in full on the card.
+  "asbach-baeumenheim-foerderprogramm",
   // Added 23 Sep 2026: Wertingen. Exhausted programme, no published guideline;
   // the only figures the town names stand in a retrospective list inside its
   // 2023 climate concept, which is not a rule anyone could be held to. There
@@ -596,6 +613,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
   // one-per-meter and the 3-year operating duty have no test form.
   "holzminden-solarfair",
+  // Added 26 Sep 2026: county programme, same shape as Holzminden — income
+  // condition, approval before purchase, one-per-meter and the 3-year operating
+  // duty have no test form.
+  "schaumburg-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import InfoTooltipBindings from "../InfoTooltipBindings";
 
 declare global {
   interface Window {
@@ -16,6 +17,8 @@ declare global {
  */
 const SKRIPTE = [
   "/gemeinde/icons.js",
+  "/gemeinde/landkreis-rennen.js",
+  "/gemeinde/konfetti.js",
   "/gemeinde/rangliste.js",
   "/gemeinde/teilen.js",
   "/gemeinde/hilfe.js",
@@ -27,21 +30,23 @@ const SKRIPTE = [
 // Once per document, like the prototype.
 let gestartet = false;
 
-export default function GemeindeSkripte({ daten }: { daten: unknown }) {
+export default function GemeindeSkripte({ daten, navigationOnly=false }: { daten: unknown; navigationOnly?:boolean }) {
   useEffect(() => {
     if (gestartet) return;
     gestartet = true;
     window.__GEMEINDE__ = daten;
     (async () => {
-      for (const src of SKRIPTE) {
+      for (const src of navigationOnly ? SKRIPTE.filter(src=>!src.endsWith("rangliste.js")&&!src.endsWith("hilfe.js")) : SKRIPTE) {
+        if ((src.endsWith("landkreis-rennen.js") || src.endsWith("konfetti.js")) && !(daten as {districtOverview?:boolean})?.districtOverview) continue;
         await new Promise<void>((fertig) => {
           const s = document.createElement("script");
           s.src = src;
           s.onload = s.onerror = () => fertig();
           document.body.append(s);
         });
+        if (src.endsWith("konfetti.js")) window.dispatchEvent(new Event("district-race-ready"));
       }
     })();
-  }, [daten]);
-  return null;
+  }, [daten,navigationOnly]);
+  return <InfoTooltipBindings />;
 }

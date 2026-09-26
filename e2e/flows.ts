@@ -283,7 +283,7 @@ export const FLOW_TITEL_MARKE = flowTestTitel(NAMENS_PLATZHALTER).split(NAMENS_P
  * Rechen-Tests.
  */
 export async function uebrigeFragenBeantworten(page: Page) {
-  const offene = await page.locator("[data-flow-option]:visible").evaluateAll((els) => {
+  const offene = await page.locator("[data-flow-option]:not([inert] *):visible").evaluateAll((els) => {
     const beantwortet = new Set(
       els.filter((e) => e.getAttribute("aria-pressed") === "true").map((e) => e.getAttribute("data-flow-group") || ""),
     );
@@ -317,7 +317,7 @@ export async function uebrigeFragenBeantworten(page: Page) {
 /** Namen der gerade sichtbaren Akkordeon-Fragen — aufgeklappt wie eingeklappt. */
 export async function akkordeonFragen(page: Page): Promise<string[]> {
   return page.evaluate(() => {
-    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
     const namen: string[] = [];
     for (const e of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen], [data-flow-akkordeon]"))) {
       if (!sichtbar(e)) continue;
@@ -333,7 +333,7 @@ export async function akkordeonFragen(page: Page): Promise<string[]> {
  *  nichts ändern kann. */
 async function akkordeonZustand(page: Page, frage: string) {
   return page.evaluate((f) => {
-    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
     const block = Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]"))
       .filter(sichtbar)
       .find((e) => e.getAttribute("data-flow-akkordeon-offen") === f);
@@ -447,7 +447,7 @@ export async function akkordeonWaehlen(page: Page, frage: string, index: number,
 export async function akkordeonFragenBeantworten(page: Page) {
   for (let runde = 0; runde < 10; runde++) {
     const offeneOhneAntwort = await page.evaluate(() => {
-      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
       for (const block of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]")).filter(sichtbar)) {
         const knoepfe = Array.from(block.querySelectorAll("[data-flow-wahl]")).filter(sichtbar);
         if (knoepfe.length === 0) continue; // Frage ohne Knopfreihe (reines Eingabefeld)
@@ -616,7 +616,7 @@ export function wahlMeldung(weg: string | undefined, label: string, zustand: unk
 export async function weiterKlicken(page: Page, weg?: string) {
   const fingerabdruck = () =>
     page.evaluate(() => {
-      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
       if (!Array.from(document.querySelectorAll("[data-flow-nav]")).some(sichtbar)) return "kein-flow";
       return Array.from(document.querySelectorAll("[data-flow-option]"))
         .filter(sichtbar)
@@ -672,7 +672,7 @@ export async function waehle(page: Page, label: string, weg?: string) {
     // Fehlersuche schon eine Runde verloren.
     const zustand = await option.evaluate((e) => ({
       pressed: e.getAttribute("aria-pressed"),
-      sichtbar: (e as HTMLElement).offsetParent !== null,
+      sichtbar: (e as HTMLElement).offsetParent !== null && !e.closest("[inert]"),
       deaktiviert: (e as HTMLButtonElement).disabled,
     })).catch(() => null);
     throw new Error(wahlMeldung(weg, label, zustand));

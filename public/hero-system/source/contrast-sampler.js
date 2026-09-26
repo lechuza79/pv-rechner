@@ -43,11 +43,21 @@ export function chooseTone(samples, previous) {
   const values=samples.map(brightness).sort((a,b)=>a-b);
   // Ignore isolated particles and single-pixel leaf edges, not broad gradients.
   const low=values[Math.floor((values.length-1)*.1)],high=values[Math.floor((values.length-1)*.9)];
+  const median=values[Math.floor((values.length-1)*.5)];
   const ink=brightness([18,44,59]);
-  const scores={dark:(low+.05)/(ink+.05),light:1.05/(high+.05),'strong-dark':(low+.05)/.05};
-  const best=scores.dark>=4.5?'dark':scores.light>=scores['strong-dark']?'light':'strong-dark';
-  const tone=previous&&scores[previous]>=4.5&&scores[best]<scores[previous]*1.15?previous:best;
-  return {tone,ratio:scores[tone],low,high};
+  // Worst case over the text band (what the ratio reports) and the typical
+  // background (what decides between white and black).
+  const worst={dark:(low+.05)/(ink+.05),light:1.05/(high+.05),'strong-dark':(low+.05)/.05};
+  const typical={dark:(median+.05)/(ink+.05),light:1.05/(median+.05),'strong-dark':(median+.05)/.05};
+  let tone;
+  if(worst.dark>=4.5)tone='dark';
+  // On a mid-dark sky white and black reach about the same ratio (measured
+  // 4.6 against 4.5 at dusk), but black reads far worse there and the headline
+  // above is white. So white wins whenever the typical background carries it;
+  // a white button stays white down to 4.2 so it does not flicker at the edge.
+  else if(typical.light>=(previous==='light'?4.2:4.5))tone='light';
+  else tone=typical.light>=typical['strong-dark']?'light':'strong-dark';
+  return {tone,ratio:worst[tone],low,high};
 }
 export function bindSceneContrast({hero,scene,targets,layers}) {
   if(controllers.has(scene))return controllers.get(scene).dispose;

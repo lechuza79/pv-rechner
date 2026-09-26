@@ -7,6 +7,8 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import InlineEdit from "../../../../components/InlineEdit";
 import { LoadingDots } from "../../../../components/LoadingDots";
+import StatusBadge from "../../../../components/StatusBadge";
+import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
@@ -21,6 +23,8 @@ import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
 import ChartActionBar from "../../../../components/ChartActionBar";
+import ChartOptionsMenu from "../../../../components/ChartOptionsMenu";
+import DataSourcesSection from "../../../../components/DataSourcesSection";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
@@ -678,6 +682,13 @@ const BEISPIELE: Record<string, Beispiel> = {
   PresetNumberInput: ZahlenfeldBeispiel,
   InlineEdit: ZahlBeispiel,
   AccordionField: AkkordeonBeispiel,
+  StatusBadge: () => (
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <StatusBadge tone="positive" pulse>aktiv</StatusBadge>
+      <StatusBadge tone="negative">ausgeschöpft</StatusBadge>
+    </div>
+  ),
+  FormError: () => <FormError>Bitte prüfe deine E-Mail-Adresse.</FormError>,
   Modal: DialogBeispiel,
   Toast: ToastBeispiel,
   ResultSection: AbschnittBeispiel,
@@ -741,6 +752,16 @@ const BEISPIELE: Record<string, Beispiel> = {
   ErrorBoundary: AbsturzBeispiel,
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
+  ChartOptionsMenu: () => (
+    <Reihe>
+      <Zustand name="Einbetten verfügbar">
+        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+      </Zustand>
+      <Zustand name="Einbetten nicht verfügbar">
+        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
+      </Zustand>
+    </Reihe>
+  ),
   CiteModal: ZitierBeispiel,
   // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
   // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht
@@ -831,6 +852,9 @@ const BEISPIELE: Record<string, Beispiel> = {
         <DataSourceNote source={[DATA_SOURCES.energyCharts, DATA_SOURCES.ember]} />
       </Zustand>
     </Reihe>
+  ),
+  DataSourcesSection: () => (
+    <DataSourcesSection><DataSourceNote source={DATA_SOURCES.mastr}/></DataSourcesSection>
   ),
   DataSourceList: () => (
     <div style={{ maxHeight: 260, overflow: "auto" }}>

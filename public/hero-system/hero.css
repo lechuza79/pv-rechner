@@ -1,3 +1,4 @@
+@import url("/hero-system/atmosphere.css");
 .atmo-trees{position:absolute;left:0;right:0;bottom:17%;height:48%;opacity:.67;filter:blur(.3px);mask-image:linear-gradient(#000 72%,transparent 99%)}
 .atmo-trees canvas,.atmo-trees img{position:absolute;width:100%;height:100%;inset:0}.atmo-trees img{transform-origin:50% 100%}
 .atmo-dust{position:absolute;inset:50% -20% 8%;background:radial-gradient(ellipse at 30% 65%,#e9f2e759,transparent 44%),radial-gradient(ellipse at 70% 50%,#eaf4f23a,transparent 45%);filter:blur(20px);animation:atmo-fog 24s ease-in-out infinite alternate}

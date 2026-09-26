@@ -1,6 +1,9 @@
 "use client";
 
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
+import Modal from "../Modal";
+import ContactForm from "../ContactForm";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "../FundingProgramParts";
 import { saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } from "../../lib/funding-programs";
 
@@ -35,13 +38,6 @@ const MOTIV: Record<FundingTechnik, string> = {
   waermepumpe: "heatpump-modern",
 };
 
-const EBENE_WORT: Record<string, string> = {
-  kommune: "Programm der Gemeinde",
-  landkreis: "Programm des Landkreises",
-  land: "Landesprogramm",
-  bund: "Bundesprogramm",
-};
-
 const pfeil = (
   <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -50,6 +46,7 @@ const pfeil = (
 
 export type FoerderProgrammAnsicht = {
   programm: FundingProgram;
+  geltungsbereich?: string;
   /** „Zuletzt geprüft am …" oder der redaktionelle Stand — serverseitig
    *  gebildet, damit die Regel dafür an einer Stelle bleibt. */
   standLabel: string;
@@ -61,36 +58,27 @@ export type FoerderProgrammAnsicht = {
 export default function GemeindeFoerderung({
   ort,
   programme,
+  praeposition="in",
 }: {
   ort: string;
+  praeposition?: string;
   programme: FoerderProgrammAnsicht[];
 }) {
   const [offen, setOffen] = useState<FoerderProgrammAnsicht | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const [meldung, setMeldung] = useState<FoerderProgrammAnsicht | null>(null);
 
   useEffect(() => {
     if (offen) dialog.current?.showModal();
   }, [offen]);
 
   const aktive = programme.filter((p) => p.zaehlt);
-  return (
-    <div className="v3-examples-foerderung" id="atlas-foerderung">
-      <h3>Förderung in {ort}</h3>
-      <p>
-        {aktive.length > 0
-          ? `Diese Zuschüsse gelten hier zusätzlich zur bundesweiten Förderung.`
-          : `Für ${ort} ist uns derzeit kein eigener Zuschuss bekannt. Es gilt die bundesweite Förderung.`}
-      </p>
-      {/* DIESELBE Karte wie die drei Beispielrechnungen darüber (Betreiber,
-          23.09.2026: „Box wie die anderen und noch das Visual rein, nicht
-          Styles erfinden, recyceln"). Vorher hatte dieser Abschnitt eine
-          eigene, handgeschriebene Box — eigene Schrift, eigene Ränder, eigene
-          Abstände, und nichts davon passte zur Seite. Hier kommt nur der
-          Inhalt hinzu; Aufbau, Bild und Knopf sind die des geteilten
-          Bausteins. */}
-      {programme.length > 0 && (
+  const archiviert = (p: FoerderProgrammAnsicht) => ["ausgeschoepft", "eingestellt", "pausiert"].includes(p.programm.status);
+  const archiv = programme.filter(archiviert);
+  const aktuell = programme.filter((p) => !archiviert(p));
+  const karten = (liste: FoerderProgrammAnsicht[]) => (
         <div className="v3-examples sc-feature-list gemeinde-foerder-liste">
-          {programme.map((p) => {
+          {liste.map((p) => {
             const satz = saetzeFuer(p.programm.rates)[0];
             const techniken = technikenVon(p.programm);
             return (
@@ -104,19 +92,55 @@ export default function GemeindeFoerderung({
                   loading="lazy"
                 />
                 <div className="v3-example-copy sc-feature-content">
-                  <p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p>
+                  <div className="gemeinde-foerder-kopf" data-status={p.programm.status}><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} compact /></div>
                   <h3>{p.programm.name}</h3>
                   <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
-                  <p className="gemeinde-foerder-ebene">{EBENE_WORT[p.programm.level] ?? p.programm.traeger}</p>
-                </div>
+                  <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger}</a></p>
+                {p.geltungsbereich && <p className="gemeinde-foerder-ebene">{p.geltungsbereich}</p>}
+                <div className="gemeinde-foerder-aktionen">
                 <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
-                  Einzelheiten {pfeil}
+                  Einzelheiten
                 </button>
+                <button type="button" className="v3-example-cta sc-feature-action gemeinde-foerder-melden" onClick={() => setMeldung(p)}>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 21V4m0 0c5-4 9 4 14 0v10c-5 4-9-4-14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <span>Änderung melden</span>
+                </button>
+                </div>
+                </div>
               </article>
             );
           })}
         </div>
-      )}
+  );
+  return (
+    <div className="v3-examples-foerderung" id="atlas-foerderung">
+      <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive"/>
+      <h3>Förderung {praeposition} {ort}</h3>
+      <p>
+        {aktive.length > 0
+          ? `Diese Zuschüsse gelten hier zusätzlich zur bundesweiten Förderung.`
+          : `Für ${ort} ist uns derzeit kein eigener Zuschuss bekannt. Es gilt die bundesweite Förderung.`}
+      </p>
+      {/* DIESELBE Karte wie die drei Beispielrechnungen darüber (Betreiber,
+          23.09.2026: „Box wie die anderen und noch das Visual rein, nicht
+          Styles erfinden, recyceln"). Vorher hatte dieser Abschnitt eine
+          eigene, handgeschriebene Box — eigene Schrift, eigene Ränder, eigene
+          Abstände, und nichts davon passte zur Seite. Hier kommt nur der
+          Inhalt hinzu; Aufbau, Bild und Knopf sind die des geteilten
+          Bausteins. */}
+      {aktuell.length > 0 && karten(aktuell)}
+      {archiv.length > 0 && <details className="gemeinde-foerder-archiv">
+        <summary>Archiv: derzeit nicht verfügbare Förderprogramme ({archiv.length})</summary>
+        {karten(archiv)}
+      </details>}
+
+      <Modal open={meldung !== null} onClose={() => setMeldung(null)} title="Änderung melden" maxWidth={560} className="gemeinde-meldung">
+        {meldung && <>
+          <p className="gemeinde-meldung-programm">{meldung.programm.name} · {ort}</p>
+          <p>Was hat sich geändert? Ein Hinweis oder ein Link zur aktuellen Information hilft uns bei der Prüfung.</p>
+          <ContactForm key={meldung.programm.id} initialTopic="Fehler melden" initialMessage={`Änderung zum Förderprogramm: ${meldung.programm.name}\nOrt: ${ort}\nFördergeber: ${meldung.programm.traeger}\nQuelle: ${meldung.programm.url}\n\nDas hat sich geändert:\n`} />
+        </>}
+      </Modal>
 
       {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —
           die Sätze und Bedingungen kommen aus den geteilten Bausteinen. */}

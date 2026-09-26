@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { Children, cloneElement, isValidElement, createContext, useContext, useState } from "react";
 import { AccordionField } from "./AccordionField";
 import OptionCard from "./OptionCard";
 
@@ -276,13 +276,13 @@ function Question({ title, hint, children }: { title: string; hint?: string; chi
     <div>
       {!choice?.compactTitle && <div style={{ fontSize: "var(--font-size-body)", fontWeight: 700, marginBottom: hint ? 4 : 10 }}>{title}</div>}
       {hint && <div style={{ fontSize: "var(--font-size-small)", color: "var(--widget-muted)", lineHeight: 1.45, marginBottom: 10 }}>{hint}</div>}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{children}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{Children.map(children, (child, index) => isValidElement<{ choiceIndex?: number }>(child) ? cloneElement(child, { choiceIndex: choice?.compactTitle ? index : undefined }) : child)}</div>
     </div>
   );
 }
 
-function OptionRow({ label, sub, onClick }: { label: string; sub?: string; onClick: () => void }) {
+function OptionRow({ label, sub, onClick, choiceIndex }: { label: string; sub?: string; onClick: () => void; choiceIndex?: number }) {
   const choice = useContext(FundingChoice);
-  return <OptionCard label={label} sub={sub ?? ""} selected={choice?.selected === label}
+  return <OptionCard choiceIndex={choiceIndex} label={label} sub={sub ?? ""} selected={choice?.selected === label}
     onClick={() => { choice?.choose(label); onClick(); }} />;
 }

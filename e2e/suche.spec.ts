@@ -21,6 +21,9 @@ import { MESSKOPF, grenzeFuer, zeile, type Kontrastbefund } from "./kontrast";
 // Datenbank im Prüflauf.
 
 test.describe.configure({ timeout: 60_000 });
+// Search interaction does not depend on animated weather; keep software WebGL
+// from starving input and DOM measurements on CI. The scene still mounts.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 const SEITENARTEN = [
   { art: "React-Seite", pfad: "/ratgeber" },
@@ -49,6 +52,7 @@ async function oeffneSuche(page: Page) {
 for (const g of GROESSEN) {
   for (const { art, pfad } of SEITENARTEN) {
     test(`${art} (${g.name}): Suche öffnet, findet, passt und schließt`, async ({ page }) => {
+      await page.addInitScript({ content: MESSKOPF });
       await page.setViewportSize({ width: g.width, height: g.height });
       const sep = pfad.includes("?") ? "&" : "?";
       await page.goto(`${pfad}${sep}suchvorschau=1`, { waitUntil: "domcontentloaded" });
@@ -84,15 +88,13 @@ for (const g of GROESSEN) {
       // Lesbar: derselbe Messkopf wie der Kontrast-Wächter der ganzen Site,
       // beschränkt auf das Suchfenster. Das Fenster hat einen vollen, festen
       // Grund; die Messung am Baum ist hier also die Messung am Bild.
-      await page.addScriptTag({ content: MESSKOPF });
-      const befunde = (await page.evaluate(() =>
-        (window as unknown as { __kontrastMessen: () => Kontrastbefund[] }).__kontrastMessen(),
-      )) as Kontrastbefund[];
-      const imFenster: Kontrastbefund[] = [];
-      for (const b of befunde) {
-        if (b.kontrast >= grenzeFuer(b)) continue;
-        if (await page.locator(`#sc-search-panel [data-kontrast="${b.marke}"]`).count()) imFenster.push(b);
-      }
+      // Measure the complete flyout in one browser call; scanning the entire
+      // animated hero and filtering via one round-trip per label stalls CI.
+      const befunde = await page.evaluate(() =>
+        (window as unknown as { __kontrastMessen: (root: Element) => Kontrastbefund[] })
+          .__kontrastMessen(document.querySelector("#sc-search-panel")!),
+      );
+      const imFenster = befunde.filter((b) => b.kontrast < grenzeFuer(b));
       expect(imFenster, imFenster.map(zeile).join("\n")).toEqual([]);
 
       // Escape schließt und gibt den Fokus an den Knopf zurück.
@@ -103,11 +105,73 @@ for (const g of GROESSEN) {
   }
 }
 
-test("ohne Vorschau-Marke gibt es keine Lupe (der Schalter ist aus)", async ({ page, context }) => {
-  await context.clearCookies();
+test("die Lupe steht ohne Vorschau-Marke im Menü, und ohne JavaScript führt ein Link zur Suche", async ({ page, browser }) => {
   await page.goto("/ratgeber", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(".sc-nav-login").first()).toBeAttached({ timeout: 30_000 });
-  await expect(page.locator(".sc-search-toggle")).toHaveCount(0);
+  await expect(page.locator("header > .sc-search-toggle")).toBeVisible({ timeout: 30_000 });
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const ohneJs = await ctx.newPage();
+  await ohneJs.goto("/ratgeber");
+  await expect(ohneJs.locator('.sc-react-fallback a[href="/suche"]')).toHaveCount(1);
+  await ctx.close();
+});
+
+// Ein Menü steht einen festen Abstand unter der Menüzeile, egal wie viel
+// Innenabstand die Seite ihrer Kopfzeile gibt: gemessen 6 px auf den
+// React-Seiten, aber 38 px auf Startseite und Gemeindeseite.
+for (const pfad of ["/ratgeber", "/", "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg"]) {
+  test(`${pfad}: Menü und Suche hängen gleich dicht unter der Menüzeile`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(pfad, { waitUntil: "domcontentloaded" });
+    const summary = page.locator('header nav.sc-global-nav [data-section="tools"] > summary');
+    await expect(summary).toBeVisible({ timeout: 30_000 });
+    const panel = page.locator('header nav.sc-global-nav [data-section="tools"] > .sc-nav-panel');
+    await klickBisWirkung(summary, panel, "Tools öffnen");
+    // Gemessen wird die ruhende Lage, nicht ein Bild aus der Einblend-Bewegung.
+    await expect.poll(() => panel.evaluate((el) => getComputedStyle(el).transform), { timeout: 10_000 }).toBe("none");
+    const menuAbstand = await page.evaluate(() => {
+      const g = document.querySelector('header nav.sc-global-nav [data-section="tools"]')!;
+      return g.querySelector(".sc-nav-panel")!.getBoundingClientRect().top - g.querySelector("summary")!.getBoundingClientRect().bottom;
+    });
+    expect(menuAbstand).toBeGreaterThanOrEqual(0);
+    expect(menuAbstand).toBeLessThanOrEqual(12);
+    // The search is measured on a fresh page: it should not depend on how the
+    // menu was closed before.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    const { feld } = await oeffneSuche(page);
+    await expect(feld).toBeVisible();
+    await expect
+      .poll(() => page.locator("#sc-search-panel").evaluate((el) => el.getAnimations().length), { timeout: 10_000 })
+      .toBe(0);
+    const suchAbstand = await page.evaluate(() => {
+      const s = document.querySelector('header nav.sc-global-nav [data-section="tools"] > summary')!;
+      return document.querySelector("#sc-search-panel")!.getBoundingClientRect().top - s.getBoundingClientRect().bottom;
+    });
+    expect(Math.abs(suchAbstand - menuAbstand)).toBeLessThanOrEqual(1);
+  });
+}
+
+// Ein Klick auf einen Link zu einer anderen Seite lässt das Menü stehen, bis die
+// neue Seite da ist — sofort zu schließen sah aus wie ein verlorener Klick.
+test("das Menü bleibt beim Klick auf einen Link offen, bis die nächste Seite kommt", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/ratgeber", { waitUntil: "domcontentloaded" });
+  const summary = page.locator('header nav.sc-global-nav [data-section="tools"] > summary');
+  const panel = page.locator('header nav.sc-global-nav [data-section="tools"] > .sc-nav-panel');
+  await expect(summary).toBeVisible({ timeout: 30_000 });
+  await klickBisWirkung(summary, panel, "Tools öffnen");
+  // Stand in for the slow next page: the navigation is stopped AFTER the menu
+  // has handled the click (document listeners run after the menu's own). A
+  // delayed route does not work here — the test browser drops the old page at
+  // once, so the check would read the next page's closed menu.
+  await page.evaluate(() =>
+    document.addEventListener("click", (e) => {
+      if ((e.target as Element).closest("a")) e.preventDefault();
+    }),
+  );
+  await panel.locator('a[href="/waermepumpe-rechner"]').click();
+  await page.waitForTimeout(500);
+  await expect(panel).toBeVisible();
+  expect(page.url()).toContain("/ratgeber");
 });
 
 test("die Suchseite funktioniert ohne JavaScript und steht nicht im Index", async ({ browser }) => {
@@ -136,7 +200,7 @@ test("Pfeiltasten führen vom Feld durch die Treffer", async ({ page }) => {
 // Die Lupe macht die Kopfzeile breiter. Knapp über der Umschaltbreite zum
 // Burger ist dort am wenigsten Platz, und genau da lief die Kopfzeile schon
 // einmal über (ein einziger neuer Menüpunkt, 1162 px Inhalt in 1040 px).
-for (const width of [375, 1024, 1280, 1281, 1300, 1366, 1440]) {
+for (const width of [320, 375, 1024, 1280, 1281, 1300, 1366, 1440]) {
   test(`Kopfzeile mit Lupe passt auf ${width}px, eine Zeile, nichts überlappt`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/impressum?suchvorschau=1", { waitUntil: "domcontentloaded" });

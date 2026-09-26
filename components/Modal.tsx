@@ -35,8 +35,8 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { v, space } from "../lib/theme";
 import { IconClose } from "./Icons";
+import { v, space } from "../lib/theme";
 
 const DURATION_MS = 220;
 // „Bewegung reduzieren" heißt Bewegung, nicht Rückmeldung: das Fenster fährt

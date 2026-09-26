@@ -1,11 +1,10 @@
 import {navigationContent,navigationOwner} from './nav-content.js';
 import {searchFormHtml,searchResultsHtml} from './search-content.js';
 
-// Site search in the header. Built and reachable, but not shown in the menu
-// until it has been approved: until then only /suche and pages opened with
-// ?suchvorschau=1 (kept for the tab) carry the magnifier. Flipping this one
-// constant is the switch.
-export const SUCHE_IM_MENUE=false;
+// Site search in the header. This one constant is the switch (it also drives
+// the no-JS fallback link); with it off, only /suche and pages opened with
+// ?suchvorschau=1 (kept for the tab) carry the magnifier.
+export const SUCHE_IM_MENUE=true;
 function sucheSichtbar(){
  if(SUCHE_IM_MENUE||location.pathname==='/suche')return true;
  try{if(new URLSearchParams(location.search).has('suchvorschau'))sessionStorage.setItem('sc-suchvorschau','1');return sessionStorage.getItem('sc-suchvorschau')==='1';}catch{return false;}
@@ -29,7 +28,12 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  const owned=nav.querySelector(`[data-section="${owner}"]`);if(owned){owned.querySelector('summary').setAttribute('aria-current','true');const exact=[...owned.querySelectorAll('a')].find(a=>new URL(a.href).pathname===path&&!new URL(a.href).hash);exact?.setAttribute('aria-current','page');}
  const login=document.createElement('a');login.className='sc-nav-login';login.href='/login';login.setAttribute('aria-label','Login');login.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>';
  const toggle=document.createElement('button');toggle.type='button';toggle.className='sc-nav-toggle';toggle.innerHTML='<span class="sc-burger" aria-hidden="true"><i></i><i></i><i></i></span>';toggle.setAttribute('aria-expanded','false');nav.id='sc-global-navigation';toggle.setAttribute('aria-controls',nav.id);
- const search=sucheSichtbar()?mountSearch(header,()=>close(true)):null;
+ // Flyouts hang a fixed distance below the menu row, whatever padding the host
+ // page gives its header: measured 6 px on React pages but 38 px on the
+ // homepage and the town page, whose header carries 32 px of bottom padding.
+ const PANEL_GAP=6;
+ const setPanelTop=()=>{const row=nav.querySelector(':scope>details>summary');if(!row||mobile.matches)return;const top=row.getBoundingClientRect().bottom-header.getBoundingClientRect().top+PANEL_GAP;header.style.setProperty('--sc-panel-top',Math.round(top)+'px');header.style.setProperty('--sc-panel-top-margin','0px');};
+ const search=sucheSichtbar()?mountSearch(header,()=>close(true),setPanelTop):null;
  header.append(nav,...(search?[search.button]:[]),login,toggle);if(search)header.append(search.panel);
  nav.querySelector('.sc-nav-group').classList.add('sc-nav-calculators');
  const menuHead=document.createElement('div');menuHead.className='sc-menu-head';
@@ -104,16 +108,21 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
     return;
    }
    groups.forEach(other=>{if(other!==group)setGroup(other,false);});
+   if(expanded)setPanelTop();
    setGroup(group,expanded);
   });
  });
- nav.addEventListener('click',e=>{if(e.target.closest('a'))close();});
+ // A link to another page keeps the menu open until that page replaces this
+ // one: closing it at once looks like a lost click while the next page loads.
+ // Same-page links, new tabs and modifier clicks close it, since nothing else will.
+ nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&!staysOpenFor(a,e))close();});
+ const restored=e=>{if(e.persisted){close(true);search?.close();}};window.addEventListener('pageshow',restored);
  const outside=e=>{if(!header.contains(e.target)&&!nav.contains(e.target))close();};
  const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
  document.addEventListener('click',outside);document.addEventListener('keydown',keyboard);
  const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
 
- return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();delete header.dataset.globalNav;};
+ return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();delete header.dataset.globalNav;};
 }
 
 /**
@@ -121,8 +130,14 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  * Opening it closes the menu and puts the cursor in the field; results load
  * while typing; Enter (or no JavaScript at all) goes to /suche.
  */
-function mountSearch(header,closeMenu){
- const button=document.createElement('button');button.type='button';button.className='sc-search-toggle';
+/** Does this click leave for another page, so an open flyout may stay until it arrives? */
+function staysOpenFor(a,e){
+ const u=new URL(a.href,location.href);
+ return !(e.defaultPrevented||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button>0||u.origin!==location.origin||(u.pathname===location.pathname&&u.search===location.search));
+}
+
+function mountSearch(header,closeMenu,setPanelTop){
+ const button=document.createElement('button');button.type='button';button.className='sc-search-toggle';button.setAttribute('data-sc-contrast','');
  button.setAttribute('aria-label','Suche öffnen');button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','sc-search-panel');
  button.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>';
  const panel=document.createElement('div');panel.id='sc-search-panel';panel.className='sc-search-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Suche');panel.hidden=true;
@@ -149,8 +164,10 @@ function mountSearch(header,closeMenu){
   timer=setTimeout(()=>load(q),200);
  });
  function open(){
-  if(isOpen)return;isOpen=true;closeMenu();
-  const bounds=header.getBoundingClientRect();panel.style.setProperty('--search-top',Math.max(56,bounds.bottom)+'px');
+  if(isOpen)return;isOpen=true;closeMenu();setPanelTop();
+  // On the phone the panel hangs just below the magnifier, not below the
+  // header box: the homepage header carries 32 px of bottom padding.
+  panel.style.setProperty('--search-top',Math.round(button.getBoundingClientRect().bottom+12)+'px');
   panel.hidden=false;button.setAttribute('aria-expanded','true');button.setAttribute('aria-label','Suche schließen');header.classList.add('sc-search-open');
   if(!reduced.matches)panel.animate([{opacity:0,transform:'translateY(-8px)'},{opacity:1,transform:'none'}],{duration:240,easing:'cubic-bezier(.16,1,.3,1)'});
   input.focus();input.select();
@@ -163,7 +180,7 @@ function mountSearch(header,closeMenu){
  }
  button.addEventListener('click',event=>{event.stopPropagation();isOpen?close(true):open();});
  panel.querySelector('.sc-search-close').addEventListener('click',()=>close(true));
- panel.addEventListener('click',event=>{if(event.target.closest('a'))close();});
+ panel.addEventListener('click',event=>{const a=event.target.closest('a');if(a&&!staysOpenFor(a,event))close();});
  const links=()=>[...results.querySelectorAll('a')];
  panel.addEventListener('keydown',event=>{
   if(event.key==='Escape'){event.preventDefault();close(true);return;}
