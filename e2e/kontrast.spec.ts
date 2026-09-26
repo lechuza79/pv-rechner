@@ -111,6 +111,13 @@ for (const stufe of STUFEN) {
       // minutenlang im Zeitlimit (dieselbe Messung wie beim Überlauf-Test).
       // Nachgeladene Blöcke ändern Farben nicht mehr, wenn sie einmal stehen.
       await page.waitForTimeout(2000);
+      // Include the lazy ranking's controls: a closed disclosure cannot reveal
+      // palette regressions in the postcode card or comparison badges.
+      const rankingDisclosure = page.getByText(/^Alle .* in der ausführlichen Tabelle$/);
+      if (await rankingDisclosure.count()) {
+        await rankingDisclosure.click();
+        await expect(page.locator(".atlas-tabelle-scroller")).toBeVisible();
+      }
       await page.addScriptTag({ content: MESSKOPF });
       await page.addScriptTag({ content: HAEUFIGSTE_FARBE });
 

@@ -1,4 +1,5 @@
 import SiteFuss from '../SiteFuss';
+import {stageDefaults} from '../../lib/theme';
 import {ortPhrase,ortPraeposition} from '../../lib/atlas-orte';
 import DataSourcesSection from '../DataSourcesSection';
 import Script from 'next/script';
@@ -8,7 +9,7 @@ import {districtSolarCells} from "../../lib/district-monitor";
 import {isDistrictMember} from "../../lib/district-package";
 import LandkreisMonitor from "./LandkreisMonitor";
 import Header from "../SharedSiteHeader";
-import { Suspense, type ReactNode, type ComponentProps } from "react";
+import { Suspense, type ReactNode, type ComponentProps, type CSSProperties } from "react";
 import LandkreisStories from "./LandkreisStories";
 import foundation from "../social/atlas-foundations.module.css";
 import type { Crumb } from "../Breadcrumb";
@@ -136,7 +137,9 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     <LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}
       closed={<ul>{places.filter(p=>p.href).map(p=><li key={p.id}><a href={p.href!}>{p.name}</a></li>)}</ul>}>
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>{text.tableHeading}</h2></div></div>
-      <RankingTable regions={ranking.regions} cells={ranking.cells} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
+      <div style={variant === "dark" ? stageDefaults(0) as CSSProperties : undefined}>
+        <RankingTable regions={ranking.regions} cells={ranking.cells} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
+      </div>
     </LazyDisclosure></>}
     <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2>{content?<Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense>
       :<LandkreisMonitor regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/>}</section>

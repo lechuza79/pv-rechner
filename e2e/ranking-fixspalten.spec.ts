@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { stufePinnen } from "./kontrast";
 
+// Scroll-specific cases use 720px: at 1280px the new regional layout fits the
+// full table and correctly exposes neither scroll arrows nor a scroll tab stop.
 // All regional levels now expose the same lazy table disclosure. Exercise the
 // actual entry point before measuring the unchanged table geometry.
 async function openRankingTable(page: import("@playwright/test").Page) {
@@ -124,7 +126,7 @@ function messeFlucht(page: import("@playwright/test").Page) {
 
 for (const [name, viewport] of [
   ["Telefon", { width: 375, height: 812 }],
-  ["Desktop", { width: 1280, height: 800 }],
+  ["Schmales Fenster", { width: 720, height: 800 }],
 ] as const) {
   test.describe(`Rangliste, mitlaufende Spalten (${name})`, () => {
     test.use({ viewport });
@@ -436,7 +438,7 @@ for (const [name, viewport] of [
 test.describe("Rangliste: die Rastpunkte sitzen auf den Spaltenkanten", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     for (const url of ["/solar-atlas", "/solar-atlas/bayern"]) {
       test(`${name} ${url}: jede Ruhestellung ist bündig mit einer Wertspalte`, async ({ page }) => {
@@ -546,7 +548,7 @@ test.describe("Rangliste: die Rastpunkte sitzen auf den Spaltenkanten", () => {
 test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: Box überdeckt weder den eigenen noch den benachbarten „?"`, async ({ page }) => {
       await page.setViewportSize(viewport);
@@ -663,7 +665,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
 test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufenden Spalten durch", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: kein Pixel der Box im Streifen der mitlaufenden Spalten`, async ({ page }) => {
       // Bildschirmfotos und Pixelzählung dauern; die 30 Sekunden aus der
@@ -821,7 +823,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
 test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: an den Kanten, ohne den Ortsnamen zu decken und ohne den Zeilen-Klick zu fangen`, async ({
       page,
@@ -1143,4 +1145,16 @@ test.describe("Rangliste: die Rangbewegung steht auf jeder Ebene da", () => {
       }
     });
   }
+});
+
+
+test("regional table fits wide screens without redundant scroll controls", async ({page}) => {
+  await page.setViewportSize({width:1280,height:800});
+  await page.goto("/solar-atlas");
+  await openRankingTable(page);
+  const scroller=page.locator(".atlas-tabelle-scroller");
+  await expect.poll(()=>scroller.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
+  await expect(scroller).not.toHaveAttribute("tabindex","0");
+  await expect(page.getByRole("button",{name:"Eine Spalte weiter"})).toBeHidden();
+  await expect(page.getByRole("button",{name:"Eine Spalte zurück"})).toBeHidden();
 });
