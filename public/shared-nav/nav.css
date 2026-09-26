@@ -465,20 +465,23 @@
 .sc-global-nav .sc-local-card{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:68px;box-sizing:border-box;margin:0;padding:16px;border:0;border-radius:14px;background:#e0eae5;color:inherit;font-family:'DM Sans',sans-serif;font-size:inherit;font-weight:600;line-height:1.4;text-align:left;cursor:pointer;transition:background-color 180ms ease}
 .sc-local-card>span{flex:1;min-width:0}
 .sc-global-nav .sc-local-card input{display:block;width:100%;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;outline:none;box-shadow:none}
-.sc-local-card input::placeholder{color:inherit;opacity:1}
+.sc-local-card input::placeholder{color:var(--sc-nav-muted);opacity:1;font-weight:400}
+.sc-global-nav .sc-local-card-field{cursor:text}
+.sc-local-lens{flex:none;color:var(--sc-nav-muted)}
 .sc-local-chevron{flex:none;transition:transform 180ms ease}
 .sc-local-land.is-open .sc-local-chevron{transform:rotate(180deg)}
 @media(hover:hover){.sc-global-nav button.sc-local-card:hover{background:#d4ff24;color:#132527}}
 .sc-global-nav button.sc-local-card:focus-visible{outline:none;background:#d4ff24;color:#132527}
-.sc-local-field:focus-within,.sc-local-search .sc-local-card:focus-within{box-shadow:inset 0 0 0 2px var(--sc-nav-ink)}
+/* Fields carry a hairline the cards do not have: that is what marks them as fields. */
+.sc-local-field,.sc-global-nav .sc-local-card-field{box-shadow:inset 0 0 0 1px var(--sc-nav-line)}
+.sc-local-field:focus-within,.sc-global-nav .sc-local-card-field:focus-within{box-shadow:inset 0 0 0 2px var(--sc-nav-ink)}
 /* Dropdowns float over the panel and the page below; the panel stays put. */
 .sc-global-nav .sc-local-drop{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;display:grid;gap:2px;max-height:min(320px,calc(100dvh - 240px));overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:8px;border-radius:14px;background:#edf3ef;color:#153740;box-shadow:0 14px 45px #071d2933}
 .sc-global-nav .sc-local-drop[hidden]{display:none}
 .sc-global-nav .sc-local-drop>a{display:block;margin:0;padding:10px 14px;border:0;border-radius:999px;background:none;color:inherit;font:500 var(--sc-nav-copy)/1.4 'DM Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sc-local-drop strong{font-weight:600}
 .sc-local-drop strong+span{margin-left:8px;color:var(--sc-nav-muted)}
-.sc-global-nav .sc-local-drop>a:hover,.sc-global-nav .sc-local-drop>a:focus-visible{outline:none;background:#d4ff24;color:#132527}
-.sc-local-drop>a:hover span,.sc-local-drop>a:focus-visible span{color:inherit}
+.sc-global-nav .sc-local-drop>a:hover,.sc-global-nav .sc-local-drop>a:focus-visible{outline:none;background:#d7e4dc;color:inherit}
 .sc-local-note{margin:0;padding:10px 14px;color:var(--sc-nav-muted)}
 @media(min-width:1281px){.sc-nav-section-local>.sc-nav-panel{overflow:visible}}
 /* Mobile: the menu is one scrolling column, so a dropdown opens in place

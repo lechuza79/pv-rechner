@@ -21,12 +21,14 @@ export function navigationContent({atlasHref='/solar-atlas',calculatorsHref='/#h
  // carry a no-JS copy next to the live one).
  const pin='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
  const chevron='<svg class="sc-local-chevron" width="12" height="12" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const lens='<svg class="sc-local-lens" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
  const suggestions=`<div class="sc-local-drop sc-local-results" aria-live="polite" hidden></div>`;
  // The primary field: postcode or town name, the main way in.
  const townField=`<form class="sc-local-search sc-local-search-ort" action="/suche" method="get" role="search" data-local-search="ort"><label class="sc-local-label" for="${idPrefix}-ort">Deinen Ort finden</label><div class="sc-local-field">${pin}<input id="${idPrefix}-ort" name="q" type="search" placeholder="Postleitzahl oder Ortsname" autocomplete="off" enterkeyhint="go" maxlength="80"></div>${suggestions}</form>`;
- // Bundesland and Landkreis are cards like the Deutschland entries next to
- // them: same box, title line and description line.
- const kreisField=`<form class="sc-local-search sc-local-search-kreis" action="/suche" method="get" role="search" data-local-search="kreis"><label class="sc-local-card" for="${idPrefix}-kreis"><span><input id="${idPrefix}-kreis" name="q" type="search" placeholder="Landkreis eingeben" aria-label="Landkreis suchen" autocomplete="off" enterkeyhint="go" maxlength="80"><small>Name oder Postleitzahl</small></span></label>${suggestions}</form>`;
+ // Bundesland and Landkreis take the size of the Deutschland cards next to
+ // them (same box, two lines). The Landkreis one stays recognisably a field:
+ // muted placeholder, a search glass, no hover fill.
+ const kreisField=`<form class="sc-local-search sc-local-search-kreis" action="/suche" method="get" role="search" data-local-search="kreis"><label class="sc-local-card sc-local-card-field" for="${idPrefix}-kreis"><span><input id="${idPrefix}-kreis" name="q" type="search" placeholder="Landkreis eingeben" aria-label="Landkreis suchen" autocomplete="off" enterkeyhint="go" maxlength="80"><small>Name oder Postleitzahl</small></span>${lens}</label>${suggestions}</form>`;
  const lands=[...BUNDESLAENDER_DATEN].sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<a href="${atlasHref}/${l.slug}">${l.name}</a>`).join('');
  // A list of links, not a native select: it takes the menu's look, and each
  // Land is a real address. Without JavaScript the list simply stays open.

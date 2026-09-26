@@ -150,7 +150,7 @@ function mountLocal(nav){
   const drop={close(){results.hidden=true;},open(){if(results.innerHTML){closeAll(drop);results.hidden=false;}}};drops.push(drop);
   const show=html=>{results.innerHTML=html;if(html&&document.activeElement===input)drop.open();else if(!html)drop.close();};
   const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];pending=null;show('');};
-  const run=q=>{
+  const run=(q,retry=true)=>{
    controller?.abort();const own=controller=new AbortController();
    // A slow answer must not look like a dead field: after a moment, say so.
    const slow=setTimeout(()=>{if(input.value.trim()===q&&!own.signal.aborted)show('<p class="sc-local-note" role="status">Suche läuft …</p>');},300);
@@ -160,12 +160,18 @@ function mountLocal(nav){
      if(!response.ok)throw new Error(String(response.status));
      const data=await response.json();
      if(input.value.trim()!==q)return;
+     // One quiet retry before admitting a hiccup (a slow database moment).
+     if(data.nichtVerfuegbar&&retry){await new Promise(r=>setTimeout(r,1200));if(!own.signal.aborted&&input.value.trim()===q)await run(q,false);return;}
      hits=data.orte??[];
      show(hits.length
       ?hits.map(h=>`<a href="${esc(h.href)}"><strong>${esc(h.name)}</strong><span>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</span></a>`).join('')
       :data.nichtVerfuegbar?unavailable
       :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`);
-    }catch(e){if(e?.name==='AbortError')return;hits=[];show(unavailable);}
+    }catch(e){
+     if(e?.name==='AbortError')return;
+     if(retry){await new Promise(r=>setTimeout(r,1200));if(!own.signal.aborted&&input.value.trim()===q)await run(q,false);return;}
+     hits=[];show(unavailable);
+    }
     finally{clearTimeout(slow);}
    })();
    return pending;
