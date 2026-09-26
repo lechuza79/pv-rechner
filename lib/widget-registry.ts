@@ -335,6 +335,48 @@ export const WIDGETS = {
     // Fällt weg, sobald die Route steht.
     embeddable: false,
   },
+  regionalElectricityValue: {
+    id: "regional-electricity-value", title: "Wert des Solarstroms (Modellrechnung)", kind: "chart",
+    place: {title: "Wert des Solarstroms · {ort}", shareText: "Wert des Solarstroms · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Wert des Solarstroms – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalFeedInValue: {
+    id: "regional-feed-in-value", title: "Einspeisevergütung (Modellrechnung)", kind: "chart",
+    place: {title: "Einspeisevergütung · {ort}", shareText: "Einspeisevergütung · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Einspeisevergütung – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalCurrentPower: {
+    id: "regional-current-power", title: "Solarleistung heute (simuliert)", kind: "chart",
+    place: {title: "Solarleistung heute (simuliert) · {ort}", shareText: "Solarleistung heute (simuliert) · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung heute (simuliert) – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalAnnualGrowth: {
+    id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
+    place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalComposition: {
+    id: "regional-composition", title: "Solarleistung nach Anlagentyp", kind: "chart",
+    place: {title: "Solarleistung nach Anlagentyp · {ort}", shareText: "Solarleistung nach Anlagentyp · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalRace: {
+    id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",
+    place: {title: "Solaranlagen im regionalen Vergleich · {ort}", shareText: "Solaranlagen im regionalen Vergleich · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solaranlagen im regionalen Vergleich – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
   gemeindeAnlagenraster: {
     // Template "anlagenraster" (lib/story-approved-visual.ts): count grid plus
     // capacity share of one installation category, in the municipality and

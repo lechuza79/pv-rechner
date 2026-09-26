@@ -14,6 +14,7 @@
 //    data-sc-export-ignore attribute (share/CTA buttons, switchers) are
 //    dropped from the snapshot.
 
+import '../components/charts/chart-export.css';
 import { domToBlob } from 'modern-screenshot';
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR } from './export-markers';
 import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
@@ -561,6 +562,16 @@ export async function captureNodeToBlob(
   document.body.appendChild(wrapper);
 
   try {
+    await document.fonts.ready;
+    // Export-only notes and removed controls change the card's dimensions.
+    // Refit source labels on the actual capture clone, which has no observers.
+    clone.querySelectorAll<HTMLElement>('[data-sc-source-edge]').forEach(edge => {
+      let size = parseFloat(getComputedStyle(edge).fontSize);
+      while ((edge.scrollHeight > edge.clientHeight + 1 || edge.scrollWidth > edge.clientWidth + 1) && size > 5) {
+        size = Math.round((size - .2) * 10) / 10;
+        edge.style.fontSize = `${size}px`;
+      }
+    });
     return await domToBlob(clone, {
       scale,
       // Transparent canvas → the card's rounded corners stay rounded. A format

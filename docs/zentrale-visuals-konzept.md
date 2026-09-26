@@ -6,11 +6,75 @@ roadmap below (stages beyond the three migrated municipal visuals, editorial reb
 media library, billing) is **DEFERRED**. The municipality page changes only where a
 concrete BL/DE dependency requires it.
 
-**Division of work (user, 26.09.2026):** Claude implements and tests autonomously
-within this scope up to a visually reviewable BL/DE state and the authorised release
-preparation, continuing after routine steps without waiting. Codex/root does only
-milestone acceptance and genuinely new product decisions from compact evidence. Visual
-user acceptance before release, foreign worktrees and port 4237 stay untouchable.
+**Current ownership and acceptance (26.09.2026):** Codex owns UI implementation
+and rendered verification directly. Claude may prepare bounded data/backend work;
+UI feedback is not relayed through a second implementer. The user accepted the
+regional map's gestures, tutorial and swipe momentum on their phone. This is local
+acceptance, not a deployment or acceptance of the entire regional page.
+
+## Current shared building blocks (26.09.2026)
+
+- `RegionKarte` and `region-scene.ts` are the single map implementation used by
+  Landkreis, Bundesland and Deutschland through `LandkreisSeite`. Keep one-finger
+  horizontal rotation, vertical page scrolling, two-finger tilt/zoom, tap-to-card,
+  outside-tap dismissal and velocity-based decaying spin. The tutorial runs once
+  per tab session and can be replayed with “Gesten zeigen”. Respect reduced motion.
+- Composition, annual energy and monthly solar use `CompositionChart`,
+  `EnergyYearRadial` and `MonthlySolarRadial`; monitor/story wrappers preserve
+  their accepted layouts. The earlier inventory below describes the BEFORE state.
+- `charts/CurrentPowerWidget` owns the existing weather adapter and current-power
+  widget for municipality, compact header and district. `charts/AnnualGrowthWidget`
+  owns the regional annual-growth widget. Regional monitors import these directly,
+  without importing the full municipality monitor. Drawings and behaviour are moved
+  unchanged; municipality-specific layouts retain their own wrappers.
+- `ExportableWidgetFrame` owns the vertical-dot menu, copying a chart-modal link
+  and download for the migrated widgets. Individual embeds remain unavailable.
+- Bundesland/Deutschland reuse register-based widgets. Package-based live power,
+  stories and energy remain absent until appropriate aggregate data is available.
+
+Local verification of this extraction: unchanged component bodies, TypeScript,
+rendered Landkreis charts and their existing period control. No production release.
+
+## LK options-menu completion (26.09.2026, local)
+
+All eleven standalone chart/value cards now use `ExportableWidgetFrame`: race,
+current power, annual growth, month radial, year radial, electricity value,
+feed-in value, category donut and the three composition cards. The shared menu
+copies a chart-modal link and downloads a PNG. Embedding stays explicitly
+unavailable until dedicated routes exist. KPI sparklines remain part of the
+existing overview, not independent chart cards.
+
+Six newly connected widgets have entries in the existing widget registry; no
+new registry or dataset was introduced. The race reconnects its engine when the
+plot is remounted in a modal. Exports retain source/licence/place and the selected
+period. Growth exports also print the annual counts; current-power export rejects
+loading/error states. Source-edge text is fitted again on the final capture clone
+because export-only content changes dimensions.
+
+Verification: eleven menu triggers in the rendered LK page, racing modal populated,
+all six new PNG downloads received and visually inspected, growth range selection
+and 375px menu checked. Current-power source-edge clipping found and fixed; second
+PNG inspected with complete attribution. Existing registry/export tests pass.
+This is local preview work, not integration or production release.
+
+## Export palette and animation downloads (26.09.2026, local)
+
+The shared capture uses the independent `--chart-export-contrast` token on a light
+surface (defined in `components/charts/chart-export.css`). This replaces the old
+blue in all migrated Atlas image/video captures without changing the live palette.
+Background, surface and secondary text also have export-specific tokens.
+
+Race and monthly solar offer current-frame PNG, final-state PNG and video. Both
+implement the same pause/seek/restore command; capture uses the actual renderer,
+source edge and footer. Video chooses the existing browser-supported WebM/MP4
+format, records sixty samples on a canvas and shows progress. Keep the tab open.
+Prior playback/selection is restored after capture, including failures. Annual
+radial has no chronological playback; its selected state remains a normal PNG.
+
+Verified locally: race final PNG at 2026, race video from 2000 to 2026 (~30s),
+monthly video advancing days (~31s), light palette without the previous blue,
+source/licence/brand retained. TypeScript and 15 focused existing tests passed.
+Browser verification was Chromium; Safari's MP4 path is not device-tested.
 
 ## BL/DE dependencies (checked in code, 26.09.2026)
 
@@ -233,3 +297,52 @@ reviews visual fidelity against the approved design; operator decides design que
 
 - None technical. Visible user acceptance of the local result is pending before merge.
   (Export palette and story credit were decided by root on 25.09.2026; see 4e.)
+
+## Regional completion audit — 26 September 2026
+
+- Regression traced: release fccc34e9 removed the municipal annual-growth data
+  grouping and mount. Restored from register.series using the shared AnnualGrowth
+  widget; confirmed rendered for Guentersleben and Ochsenfurt. No new data source.
+- Municipality monitor now also wires category donut, electricity value,
+  feed-in value and current power into the existing shared export frame. Monthly
+  playback exposes the same current/final image and video actions as the district.
+- Municipality class explanation uses a viewport-positioned top-layer popover:
+  the old fixed tooltip inherited an offset from its transformed page ancestor.
+  Verified visible in Ochsenfurt and Escape dismissal. Hover, focus, click/tap,
+  outside dismissal and viewport repositioning use one implementation.
+- Bayern and Deutschland render the shared regional map, race and five register
+  widgets. Removed the duplicate legacy annual-growth block only; per-capita
+  comparisons, ranking links and international comparison remain. State/country
+  subscription button is omitted because only municipality/district dialogs exist.
+- Local checks: TypeScript, 26 district/registry tests, Bayern widget menu,
+  Deutschland menu at 375px without horizontal overflow. No production release.
+- Still deliberately outside this register-based transfer: aggregate live weather,
+  energy/monthly story packages for state/country; standalone chart embed routes
+  and a general user-facing widget configurator. Safari video path remains untested.
+
+Shared-widget follow-up: municipal monitor links now point to their host page,
+pass the chart parameter into the monitor and use the existing full-screen iframe
+modal handoff. Opening the Ochsenfurt electricity-value link and closing it were
+verified: modal fills the viewport; closing removes the parameter, restores normal
+iframe layout and page scrolling. Seven available Ochsenfurt monitor menus verified.
+Its downloaded PNG was inspected: light background, contrast ink, selected August
+2026, place and sources intact. TypeScript passes after the final change.
+Regional preview checks also found/fixed a duplicated site header and municipality-
+only race accessibility wording on higher levels. Bremen renders with two cities.
+These higher-level checks remain local; finish shared-widget acceptance first.
+
+### Shared explanatory tooltips (26 September 2026)
+
+`components/InfoTooltip.tsx` owns positioning, theme inheritance, hover, tap, keyboard and dismissal. React widgets use `<InfoTooltip title="…" label="…">…</InfoTooltip>` (omit `label` for the help icon; use `trigger` for custom visuals). Export notes remain enabled by default. GlossaryTerm retains its first-mention registry and delegates rendering/interaction to InfoTooltip.
+
+Legacy ranking markup declares a `[data-info-tooltip]` wrapper with hidden `[data-tooltip-label]` and `[data-tooltip-content]` children. `InfoTooltipBindings`, mounted once by GemeindeSkripte, renders the same React component into that wrapper and handles replaced ranking content. It reads text and line breaks only. No separate positioning, click handler or tooltip CSS belongs in ranking scripts. Chart value hover readouts are separate from explanatory help.
+
+### Release scope confirmed by operator — 26 September 2026
+
+Ship the shared widget foundation and municipality/district/state/country integration first. General widget settings, configurable standalone embeds and optional primary hero footer sharing are explicitly deferred; they are additive follow-up work, not release blockers. Existing unavailable embed actions must stay honest.
+
+Accepted-component reuse is required by the frontend instructions. Architecture guards cover the shared frame/menu/modal/source-footer/export pipeline, tooltip, settings and current chart consumers (composition, month, year, current power, growth, regional map). New accepted components must add their consumer contract; existing data-value hover exceptions are not permission for custom explanatory tooltips.
+
+Safari verification (native macOS Safari, 26 September 2026): actual options-menu downloads completed for racing and monthly radial. This installed Safari selects supported VP9/WebM. Both files decode without errors and contain all 60 sampled frames; inspected first/last frames show 2000→2026 and 1 August→month total respectively, with light palette, place, date and source attribution. Recording is slower than Chromium; iPhone Safari was not separately exercised. Files: `solar-check-race-Landkreis Würzburg-2.webm` (1200×1195), `solar-check-radial-09679-2.webm` (480×903).
+
+Release checks: 59 focused architecture, tooltip, widget convention, export palette, composition, district content/monitor/energy and registry tests pass. TypeScript passes. These checks do not themselves prove deployment.

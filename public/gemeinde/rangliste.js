@@ -344,26 +344,6 @@
       updateReset();
       load();
     };
-    function bindTooltip() {
-      const trigger = section.querySelector(".ranking-class-help"),
-        tip = section.querySelector("#ranking-class-tip");
-      if (!trigger) return;
-      trigger.onclick = () => {
-        const open = trigger.getAttribute("aria-expanded") !== "true";
-        trigger.setAttribute("aria-expanded", String(open));
-        tip.hidden = !open;
-      };
-      trigger.onkeydown = (e) => {
-        if (e.key === "Escape") {
-          tip.hidden = true;
-          trigger.setAttribute("aria-expanded", "false");
-        }
-      };
-      trigger.onblur = () => {
-        tip.hidden = true;
-        trigger.setAttribute("aria-expanded", "false");
-      };
-    }
     function playLabel() {
       play.textContent = playing ? "Ⅱ Pause" : "▶ Abspielen";
       play.setAttribute(
@@ -1111,13 +1091,12 @@
       const cluster = savedClass
         ? savedClass.replace(/\s*\([^)]*\)/g, "")
         : classLabel;
-      const classHelp = `<span class="ranking-help-wrap"><button type="button" class="ranking-class-help" aria-expanded="false" aria-describedby="ranking-class-tip">${escape(G.districtOverview ? `${fmt(total)} Orte ${areaLabel}` : cluster)}</button><span id="ranking-class-tip" role="tooltip" hidden>${m.snapshot ? escape(savedClass ?? "Alle Ortsgrößen") : classes.map((c) => escape(c[1])).join("<br>")}<br>${G.districtOverview ? "" : escape(G.name) + " hat " + G.einwohnerLabel + "."}</span></span>`;
+      const classHelp = `<span class="ranking-help-wrap" data-info-tooltip><span data-tooltip-label hidden>${escape(G.districtOverview ? `${fmt(total)} Orte ${areaLabel}` : cluster)}</span><span data-tooltip-content hidden>${m.snapshot ? escape(savedClass ?? "Alle Ortsgrößen") : classes.map((c) => escape(c[1])).join("<br>")}<br>${G.districtOverview ? "" : escape(G.name) + " hat " + G.einwohnerLabel + "."}</span></span>`;
       section.querySelector(".ranking-intro-copy").innerHTML = G.districtOverview
         ? `Wir vergleichen ${classHelp}. Berücksichtigt werden ${ownerLabel}.`
         : m.snapshot
         ? `Wir vergleichen ${fmt(total)} Orte ${escape(m.snapshot.scopePhrase ?? "in " + areaLabel)}${savedClass ? " · " + classHelp : ""}.`
         : `Wir vergleichen ${fmt(total)} Orte ${areaLabel} · ${classHelp}. Berücksichtigt werden ${ownerLabel}.`;
-      bindTooltip();
       updateReset();
       section.querySelector(".ranking-scope").textContent = "";
 

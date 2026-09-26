@@ -47,9 +47,9 @@ const LEVEL_TEXT: Record<"landkreis" | "bundesland" | "de", {noun: string; membe
  * prepared package (stories, monthly KPI history, energy); Bundesland and
  * Deutschland have none yet and show the register-based parts only.
  */
-export default async function LandkreisSeite({ region, children, ranking, basePath, crumbs, stand, intro, state, variant = false }: {
+export default async function LandkreisSeite({ region, children, ranking, basePath, crumbs, stand, intro, einordnung, zusatz, state, variant = false }: {
   region: AtlasRegion; children: AtlasChild[]; ranking: { regions: RankingRegion[]; cells: ChildYearRow[] };
-  state: {id:string;name:string}; basePath: string; crumbs: Crumb[]; stand: string; intro: ReactNode; variant?: boolean | "dark";
+  state: {id:string;name:string}; basePath: string; crumbs: Crumb[]; stand: string; intro: ReactNode; einordnung?: ReactNode; zusatz?: ReactNode; variant?: boolean | "dark";
 }) {
   // The authoritative municipality list is the region register (one rule with
   // the district package build). Geometry also contains forests and the
@@ -114,13 +114,13 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     </div></div>
     {isDistrict&&<><GemeindeAboDialog name={region.name} ags={region.region_id} verwaltungLabel="Für den Landkreis"/>
     <script dangerouslySetInnerHTML={{__html:ABO_SOFORT_SKRIPT}}/></>}
-    <div className={styles.subnavRail}><GemeindeAbschnittNav name={region.name} naechstesUpdate={naechstesUpdate} links={[
+    <div className={styles.subnavRail}><GemeindeAbschnittNav subscribable={isDistrict} name={region.name} naechstesUpdate={naechstesUpdate} links={[
       {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},{href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
     ].filter(link=>isDistrict||(link.href==="#atlas-ranking"?comparable:link.href==="#atlas-foerderung"?level==="bundesland":link.href!=="#atlas-stories"))}/></div>
     <div className={`${styles.storyBand} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <section className={styles.districtIntro}>
         <div><p>Stand {dashboardDate(stand)}</p><h2>So steht es um Solar<br/>{ortPhrase(region)}.</h2></div>
-        <div><p>{intro}</p></div>
+        <div><p>{intro}</p>{einordnung&&<p>{einordnung}</p>}</div>
       </section>
       {content&&<section id="atlas-stories" className={styles.districtStories} aria-label="Geschichten aus dem Landkreis">
         <h2>Insights {ortPhrase(region)}</h2>
@@ -140,6 +140,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     </LazyDisclosure></>}
     <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2>{content?<Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense>
       :<LandkreisMonitor regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/>}</section>
+    {zusatz&&<section className={`${styles.section} ${styles.regionExtras}`} aria-label="Weitere Auswertungen">{zusatz}</section>}
     {level!=="de"&&<section className={`${styles.fundingSection} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
     </section>}

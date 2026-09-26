@@ -223,8 +223,9 @@ async function AtlasBody({
       : region.level === "bundesland"
         ? [{ key: "de", ags: "de" }]
         : [];
-  // Old page only: the per-capita comparison with the parent levels.
-  const refData = onRegionDesign ? [] : await Promise.all(
+  // Per-capita comparison with the parent levels: old page, and kept on the new
+  // design for Bundesland/Deutschland (existing content, removal is a product decision).
+  const refData = region.level === "landkreis" && onRegionDesign ? [] : await Promise.all(
     refChain.map(async (r) => {
       const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
       return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
@@ -272,7 +273,7 @@ async function AtlasBody({
    * Stunde, nicht je Aufruf.
    */
   const geschwister =
-    region.level === "bundesland" && !onRegionDesign
+    region.level === "bundesland"
       ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
       : [];
   const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
@@ -382,10 +383,51 @@ async function AtlasBody({
   // First local design reference only; metadata, structured data and index
   // policy remain on the existing route and share the existing sources.
   if (onRegionDesign) {
+    // Bundesland/Deutschland keep the existing extra content of the old page
+    // (highlight paragraph, per-capita comparison, ranking tiles,
+    // international comparison, funding link) until a product decision says otherwise.
+    const keepExtras = region.level !== "landkreis";
+    const einordnungNode = keepExtras && einordnung.length > 0 ? einordnung.map((teil, idx) => {
+      if (typeof teil === "string") return teil;
+      if ("href" in teil) return <Link key={`${teil.href}-${idx}`} href={teil.href}>{teil.text}</Link>;
+      return <strong key={`w-${idx}`}>{teil.text}</strong>;
+    }) : null;
+    const zusatz = keepExtras ? <>
+      <div style={S.section}>
+        <h2 style={S.h2}>Kennzahlen im Vergleich</h2>
+        <AtlasKpiRow groups={[{ tiles: kpiTiles }]} regionPerCap={regionPerCap} references={kpiRefs} defaultRefKey={defaultRefKey} />
+      </div>
+      <div style={S.section}>
+        <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
+        <p style={S.sub}>{`Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune. ${GROESSENKLASSEN_WARUM}`}</p>
+        <div style={S.rangKacheln}>
+          {rankingKategorienGruppiert().buerger.map((k) => (
+            <Link key={k.slug} href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`} style={S.rangKachel}>
+              <span style={S.rangKachelTitel}>{k.thema}</span>
+              <span style={S.rangKachelCta}>Rangliste ansehen <IconArrowRight size={12} /></span>
+            </Link>
+          ))}
+        </div>
+      </div>
+      {region.level === "de" && (
+        <div style={S.section}>
+          <h2 style={S.h2}>Deutschland im internationalen Vergleich</h2>
+          <p style={S.sub}>Wie der deutsche Ausbau gegenüber anderen Ländern dasteht, zeigt der Ländervergleich.</p>
+          <Link href="/laendervergleich" style={S.link}>Photovoltaik-Ausbau im Ländervergleich</Link>
+        </div>
+      )}
+      {region.level === "bundesland" && region.slug && (
+        <div style={S.section}>
+          <h2 style={S.h2}>Förderung</h2>
+          <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
+          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme in {region.name}</Link>
+        </div>
+      )}
+    </> : null;
     return <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
-      <LandkreisSeite state={region.level === "de" ? {id:"",name:""} : {id:region.region_id.slice(0,2),name:region.level === "bundesland" ? region.name : ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} />
+      <LandkreisSeite state={region.level === "de" ? {id:"",name:""} : {id:region.region_id.slice(0,2),name:region.level === "bundesland" ? region.name : ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} einordnung={einordnungNode} zusatz={zusatz} />
     </>;
   }
 

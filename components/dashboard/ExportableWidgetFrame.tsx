@@ -6,6 +6,8 @@ import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {embedPath, widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
 import ChartOptionsMenu from '../ChartOptionsMenu';
+import Modal from '../Modal';
+import {controlChartAnimation, downloadChartVideo} from '../../lib/chart-animation-export';
 import EinbettenDialog from '../EinbettenDialog';
 import {WIDGET_MAX_WIDTH_COMPACT} from '../../lib/widget-registry';
 
@@ -32,9 +34,10 @@ import './dashboard.css';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, stateLabel, settings, children, className = '', filename, actions = 'menu', einbetten, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, stateLabel, settings, children, className = '', filename, actions = 'menu', einbetten, animated = false, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
+  animated?: boolean;
   /** Place shown (municipality or district) — names title, share text and image note. */
   place: string;
   /** Data date for the source edge. */
@@ -51,6 +54,59 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);
+  const [videoProgress,setVideoProgress]=useState<number|null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+  // Include the title because one template can render multiple stock segments.
+  const detailId = `${filename}-${frame.title}`;
+  useEffect(() => {
+    const sync = () => setDetailOpen(new URL(window.location.href).searchParams.get('chart') === detailId);
+    sync();
+    window.addEventListener('popstate', sync);
+    return () => window.removeEventListener('popstate', sync);
+  }, [detailId]);
+  useEffect(() => {
+    window.dispatchEvent(new Event('chart-detail-change'));
+  }, [detailOpen]);
+  const closeDetail = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('chart');
+    window.history.replaceState(null, '', url);
+    try {
+      if (window.parent !== window && window.parent.location.origin === window.location.origin) {
+        const host = new URL(window.parent.location.href);
+        host.searchParams.delete('chart');
+        window.parent.history.replaceState(null, '', host);
+      }
+    } catch { /* External embeds cannot change their host URL. */ }
+    setDetailOpen(false);
+  };
+  const copyDetailLink = async () => {
+    let url = new URL(window.location.href);
+    try {
+      if (window.parent !== window && window.parent.location.origin === window.location.origin) {
+        url = new URL(window.parent.location.href);
+      }
+    } catch { /* External embeds keep their own directly accessible URL. */ }
+    url.searchParams.set('chart', detailId);
+    url.hash = '';
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        return;
+      } catch { /* Embedded browsers may deny the asynchronous Clipboard API. */ }
+    }
+    {
+      // Local phone previews use HTTP, where the Clipboard API is unavailable.
+      const field = document.createElement('textarea');
+      field.value = url.toString();
+      field.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand('copy');
+      field.remove();
+      if (!copied) throw new Error('Link konnte nicht kopiert werden.');
+    }
+  };
   useEffect(() => {
     try { const host = new URL(window.top?.location.href ?? window.location.href); host.search = ''; host.hash = 'atlas-data'; setLiveUrl(host.toString()); }
     catch { setLiveUrl(undefined); }
@@ -66,9 +122,10 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
   // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
   const edgeColumns = def.sources.length > 1 ? 2 : 1;
   const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;box-sizing:border-box;`;
-  return <ExportNotesProvider>
+  const content = <ExportNotesProvider>
     <WidgetFrame
       {...frame}
+      data-chart-detail-open={detailOpen ? true : undefined}
       ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
       className={`${foundation.foundation} sc-dashboard ${className}`}
       {...{[EXPORT_BRIGHTEST_ATTR]: '', [EXPORT_CSS_ATTR]: exportCss}}
@@ -77,12 +134,31 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
         {stateLabel && <ExportOnly display="inline-block" style={{fontSize: "var(--atlas-label-size)", color: "var(--atlas-secondary)"}}>{stateLabel}</ExportOnly>}
       </>}
       helpPlacement={actions === 'menu' ? 'title' : 'tools'}
-      menu={actions === 'menu' ? <ChartOptionsMenu label={frame.title} busy={chartExport.isExporting}
-        onShare={chartExport.canNativeShare ? chartExport.sharePng : () => navigator.clipboard?.writeText(`${def.shareText}\n${def.shareUrl}`).catch(() => {})}
-        onDownload={chartExport.downloadPng}
+      menu={actions === 'menu' ? <ChartOptionsMenu label={frame.title} busy={chartExport.isExporting||videoProgress!==null}
+        onShare={copyDetailLink}
+        onDownload={async()=>{
+          if(chartExport.chartRef.current?.querySelector('[data-export-ready="false"]')) throw new Error('Die Daten sind noch nicht verfügbar. Bitte später erneut versuchen.');
+          const node=chartExport.chartRef.current;
+          if(animated&&node)await controlChartAnimation(node,{mode:'pause'});
+          try{await chartExport.downloadPng();}
+          finally{if(animated&&node)await controlChartAnimation(node,{mode:'restore'});}
+        }}
+        animation={animated?{
+          end:async()=>{
+            const node=chartExport.chartRef.current;if(!node)return;
+            await controlChartAnimation(node,{mode:'seek',progress:1});
+            try{await chartExport.downloadPng();}finally{await controlChartAnimation(node,{mode:'restore'});}
+          },
+          video:async()=>{
+            const node=chartExport.chartRef.current;if(!node)return;
+            setVideoProgress(0);
+            try{await downloadChartVideo(node,filename,setVideoProgress);}finally{setVideoProgress(null);}
+          },
+        }:undefined}
         // Only a supported embed route yields a code; the monitor charts have none yet (registry: embeddable false).
         embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true)} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} /> : undefined}
       footer={<>
+        {videoProgress!==null&&<ExportIgnore><p role="status">Video wird erstellt: {videoProgress} % · Bitte diesen Tab geöffnet lassen.</p></ExportIgnore>}
         {actions === 'bar' && <div className="sc-widget-actions"><WidgetFooter widget={def} chartExport={chartExport} onsite showCta={false} /></div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
@@ -95,4 +171,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;
+  return detailOpen
+    ? <Modal open onClose={closeDetail} title={place} ariaLabel={frame.title} maxWidth={880}>{content}</Modal>
+    : content;
 }

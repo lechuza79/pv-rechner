@@ -5,10 +5,10 @@ import {KpiOverview} from "../dashboard/KpiOverview";
 import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
 import type {DistrictMonitorResult} from "../../lib/district-monitor";
 import {useMemo} from 'react';
-import {CurrentPower,AnnualGrowth} from "../gemeinde/GemeindeMonitor";
+import {CurrentPower} from "../charts/CurrentPowerWidget";
+import {AnnualGrowth} from "../charts/AnnualGrowthWidget";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import {ShareDonut} from "../charts/ShareDonut";
-import {WidgetFrame} from "../dashboard/WidgetFrame";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
 import {WIDGETS} from "../../lib/widget-registry";
 import styles from "./landkreis.module.css";
@@ -37,10 +37,10 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
   return <div className={`${foundation.foundation} ${styles.districtMonitor} municipal-data sc-dashboard`} data-story-scheme="dark">
     {!monitor?null:monitor.status==='ready'?<KpiOverview groups={monitorKpiGroups({history:monitor.history,population:population??0,registerStand:monitor.registerStand,populationStand})} help={<><p>Vollständige Summe aller Gemeinden im Landkreis bis zum {dashboardDate(monitor.history.observations[0].end)}. Registerstand: {dashboardDate(monitor.registerStand)}. Gezählt werden heute erfasste Anlagen nach Inbetriebnahmedatum; stillgelegte Anlagen fehlen, Nachmeldungen können frühere Werte verändern.</p>{populationStand&&<p>Die Leistung je Einwohner bezieht sich durchgehend auf die Einwohnerzahl vom {dashboardDate(populationStand)}.</p>}</>}/>:<p role="status">Für Bestand und Entwicklung liegt derzeit keine vollständige, einheitliche Monatshistorie aller Gemeinden vor.</p>}
     <div className="sc-widget-grid">
-      {monitor&&<WidgetFrame title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></WidgetFrame>}
-      <AnnualGrowth years={years} stand={stand}/>
+      {monitor&&<ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={name} stand={dashboardDate(stand)} filename={`solar-check-current-${regionId}`} data-story-scheme="dark" title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></ExportableWidgetFrame>}
+      <AnnualGrowth years={years} stand={stand} name={name} regionId={regionId}/>
       {monitor&&<DistrictEnergyWidgets data={monitor.energy} name={name} regionId={regionId}/>}
-      <WidgetFrame title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute {monitor?"im Landkreis":ortPhrase({name})} erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></WidgetFrame>
+      <ExportableWidgetFrame widget={WIDGETS.regionalComposition} place={name} stand={dashboardDate(stand)} filename={`solar-check-categories-${regionId}`} data-story-scheme="dark" title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute {monitor?"im Landkreis":ortPhrase({name})} erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></ExportableWidgetFrame>
       {groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>)}
     </div>
   </div>;

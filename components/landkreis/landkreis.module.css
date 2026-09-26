@@ -228,7 +228,7 @@
 .darkVariant .subnavRail{margin-top:-100px}
 
 /* Dark page with the shared municipality ranking retaining its light surface. */
-:global(body):has(.darkVariant){background:#08191c}
+:global(html):has(.darkVariant),:global(body):has(.darkVariant){--color-bg-page:#08191c;background:#08191c}
 .page.darkVariant{background:var(--atlas-surface);color:var(--atlas-text);--atlas-bg:var(--atlas-surface);--atlas-paper:var(--atlas-card);--atlas-ink:var(--atlas-text);--atlas-muted:var(--atlas-secondary);--atlas-line:var(--atlas-border);--theme-action:var(--atlas-action);--theme-action-ink:var(--atlas-action-ink)}
 .darkVariant .fundingSection :global(.sc-feature-card){background:transparent!important;color:var(--atlas-text)}
 .darkVariant .fundingSection :global(.sc-feature-visual){--solar-circle:var(--atlas-card)}
@@ -289,3 +289,24 @@
 .heroBand::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");mix-blend-mode:soft-light;}
 .sceneHost::after{display:none;}
 @media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
+.regionExtras{display:block}
+
+/* One short gesture demonstration per session; never intercepts input. */
+.mapGestureGuide{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:4;display:grid;justify-items:center;gap:12px;pointer-events:none;color:#fff;text-align:center;animation:gestureAppear 2.3s both}
+.mapGestureGuide span{padding:8px 12px;border-radius:12px;background:#08191ce6;font-size:13px;line-height:1.4;width:max-content;max-width:calc(100vw - 48px)}
+.gestureFingers{position:relative;width:150px;height:76px;filter:drop-shadow(0 2px 8px #0008)}
+.gestureFingers i{position:absolute;top:24px;left:48px;width:24px;height:24px;border:2px solid white;border-radius:50%;background:#ffffff45;box-sizing:border-box}
+.gestureFingers i+i{left:82px}
+.mapGestureGuide[data-gesture="0"] .gestureFingers i{left:63px;animation:gestureTurn 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="1"] .gestureFingers{animation:gestureTilt 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="2"] .gestureFingers i{animation:gestureZoomLeft 2.3s ease-in-out both}
+.mapGestureGuide[data-gesture="2"] .gestureFingers i+i{animation:gestureZoomRight 2.3s ease-in-out both}
+@keyframes gestureAppear{0%,100%{opacity:0}12%,85%{opacity:1}}
+@keyframes gestureTurn{0%,15%{transform:translateX(-32px)}65%,100%{transform:translateX(32px)}}
+@keyframes gestureTilt{0%,15%{transform:translateY(20px)}65%,100%{transform:translateY(-20px)}}
+@keyframes gestureZoomLeft{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(-30px)}}
+@keyframes gestureZoomRight{0%,15%{transform:translateX(0)}65%,100%{transform:translateX(30px)}}
+@media(prefers-reduced-motion:reduce){.mapGestureGuide,.mapGestureGuide .gestureFingers,.mapGestureGuide .gestureFingers i{animation:none!important}}
+
+.mapGestureReplay{position:absolute;bottom:12px;right:12px;z-index:4;min-height:44px;padding:8px 12px;border:1px solid #ffffff30;border-radius:20px;background:#08191ccc;color:#fff;font:inherit;font-size:12px;cursor:pointer}
+.mapGestureReplay:focus-visible{outline:2px solid white;outline-offset:3px}

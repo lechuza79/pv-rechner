@@ -12,6 +12,39 @@ import styles from "./landkreis.module.css";
 
 export type MapValue = { id: string; name: string; value: number | null; formatted: Messwert; href: string | null };
 
+/** Brief touch guidance, shared across regional pages for this tab session. */
+function MapGestureGuide({ready}:{ready:boolean}) {
+  const [step,setStep]=useState(-1);
+  const [replay,setReplay]=useState(0);
+  useEffect(()=>{
+    if(!ready||(!replay&&!window.matchMedia("(pointer: coarse)").matches))return;
+    const key="solar-check-map-gestures-v1";
+    try{if(!replay&&sessionStorage.getItem(key))return;}catch{/* Storage may be unavailable. */}
+    const timers:ReturnType<typeof setTimeout>[]=[];
+    const remember=()=>{try{sessionStorage.setItem(key,"seen");}catch{/* Nonessential guidance. */}};
+    const dismiss=()=>{remember();timers.forEach(clearTimeout);setStep(-1);};
+    timers.push(setTimeout(()=>{
+      if(document.hidden)return;
+      remember();setStep(0);
+      timers.push(setTimeout(()=>setStep(1),2300));
+      timers.push(setTimeout(()=>setStep(2),4600));
+      timers.push(setTimeout(()=>setStep(-1),6900));
+    },replay?100:900));
+    document.addEventListener("pointerdown",dismiss,{once:true,capture:true});
+    document.addEventListener("keydown",dismiss,{once:true,capture:true});
+    return()=>{timers.forEach(clearTimeout);document.removeEventListener("pointerdown",dismiss,true);document.removeEventListener("keydown",dismiss,true);};
+  },[ready,replay]);
+  if(!ready)return null;
+  const labels=["Seitlich wischen zum Drehen","Zwei Finger bewegen zum Neigen","Zwei Finger spreizen zum Zoomen"];
+  return <>
+    <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>
+    {step>=0&&<div key={`${replay}-${step}`} className={styles.mapGestureGuide} data-gesture={step}>
+    <div className={styles.gestureFingers} aria-hidden="true"><i/>{step>0&&<i/>}</div>
+    <span>{labels[step]}</span>
+  </div>}
+  </>;
+}
+
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
@@ -21,6 +54,12 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   member?: string; overview?: string;
 }) {
   const router=useRouter();
+  useEffect(()=>{
+    const themeTags=[...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+    const previous=themeTags.map(tag=>tag.content);
+    themeTags.forEach(tag=>{tag.content="#08191c";});
+    return()=>themeTags.forEach((tag,index)=>{tag.content=previous[index];});
+  },[]);
   const tooltip=useRef<HTMLDivElement>(null);
   const navigationTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const [pointer,setPointer]=useState({x:0,y:0});
@@ -38,7 +77,9 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const [metricId, setMetricId] = useState(metrics[0].id);
   const { values, label: metric } = metrics.find(m => m.id === metricId) ?? metrics[0];
   const [sceneFailed, setSceneFailed] = useState(false);
+  const [sceneReady,setSceneReady]=useState(false);
   const [selected, setSelected] = useState("");
+  const [touchInfo,setTouchInfo]=useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   useEffect(() => {
     if (!hovered) return;
@@ -46,7 +87,17 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     window.addEventListener("keydown", dismiss);
     return () => window.removeEventListener("keydown", dismiss);
   }, [hovered]);
-  const openPlace=(id:string)=>{
+  useEffect(() => {
+    if(!touchInfo||!hovered)return;
+    const outside=(event:PointerEvent)=>{
+      if(tooltip.current?.contains(event.target as Node))return;
+      setHovered(null);setTouchInfo(false);
+    };
+    document.addEventListener("pointerdown",outside,true);
+    return()=>document.removeEventListener("pointerdown",outside,true);
+  },[touchInfo,hovered]);
+  const openPlace=(id:string,touch=false)=>{
+    if(touch){setTouchInfo(true);setHovered(id);return;}
     const place=values.find(v=>v.id===id);
     if(!place?.href){setHovered(id);return;}
     if(navigating)return;
@@ -83,7 +134,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     <div className={`${styles.mapTools} sc-dashboard`} role="group" aria-label="Kennzahl der Karte">
       <WidgetSetting label="Kennzahl der Karte" hideLabel size="md" stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
     </div>
-    <div className={styles.mapCanvas} data-map-canvas onPointerMove={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerLeave={() => setHovered(null)}>
+    <div className={styles.mapCanvas} data-map-canvas onPointerDown={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerMove={event=>{if(!touchInfo||!hovered)setPointer({x:event.clientX,y:event.clientY});}} onPointerLeave={event => {if(event.pointerType!=="touch"&&!touchInfo)setHovered(null);}}>
     {/* Drawn only when the 3D scene fails. It used to be server-rendered and
         hidden on every page: 0.9 MB of duplicated boundary paths for the
         Eifelkreis, never shown while the scene works. */}
@@ -93,7 +144,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
         {shapes.map(s => <path key={s.id} d={s.sidePath} fillRule="nonzero" data-forest={s.kind === "Gemeindefreies Gebiet"} />)}
       </g>
       <g className={styles.mapGround}>
-        {shapes.map(s => <path key={s.id} d={s.path} fillRule="evenodd" data-context={!byId.has(s.id)} data-kind={s.kind} data-selected={s.id === selected} data-hovered={s.id === hovered} data-region={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={() => openPlace(s.id)}>
+        {shapes.map(s => <path key={s.id} d={s.path} fillRule="evenodd" data-context={!byId.has(s.id)} data-kind={s.kind} data-selected={s.id === selected} data-hovered={s.id === hovered} data-region={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={e => openPlace(s.id,(e.nativeEvent as PointerEvent).pointerType === "touch")}>
           <title>{s.name + (byId.has(s.id) ? "" : " · " + contextDescription(s))}</title>
         </path>)}
       </g>
@@ -102,7 +153,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
           const v = byId.get(s.id);
           if (!v || v.value === null || v.value <= 0) return null;
           const [x, y] = s.anchor, h = barHeight(v.value, maximum), r = 5;
-          return <g key={s.id} className={styles.bar} data-selected={selected === s.id} data-hovered={hovered === s.id} data-bar={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={() => openPlace(s.id)}>
+          return <g key={s.id} className={styles.bar} data-selected={selected === s.id} data-hovered={hovered === s.id} data-bar={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={e => openPlace(s.id,(e.nativeEvent as PointerEvent).pointerType === "touch")}>
             <title>{`${v.name}: ${v.formatted.value} ${v.formatted.unit}`}</title>
             <path d={`M${x-r},${y}L${x-r},${y-h}L${x},${y-h-3}L${x+r},${y-h}L${x+r},${y}L${x},${y+3}Z`} />
             <path className={styles.barLight} d={`M${x-r},${y-h}L${x},${y-h+3}L${x+r},${y-h}L${x},${y-h-3}Z`} />
@@ -116,7 +167,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
           data-city-pin={s.id} data-selected={selected === s.id} data-hovered={hovered === s.id}
           onPointerLeave={() => setHovered(null)}
           onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }}
-          onClick={() => openPlace(s.id)}>
+          onClick={e => openPlace(s.id,(e.nativeEvent as PointerEvent).pointerType === "touch")}>
           <title>{`${s.name} · ${contextDescription(s)}`}</title>
           <path fill="white" stroke="none" fillRule="evenodd" d="M0,0 C-4,-9 -19,-19 -19,-32 A19,19 0 1,1 19,-32 C19,-19 4,-9 0,0Z" />
           <text x="0" y="-27" textAnchor="middle" fill="#163338" stroke="none" fontFamily="Arial, sans-serif" fontWeight="700" fontSize="15">{s.name.replace(/^Kreisfreie Stadt\s+/, "").slice(0, 2).toLocaleUpperCase("de-DE")}</text>
@@ -124,11 +175,19 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       </g>
     </svg>
     </div>}
-    <RegionScene heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={setHovered} onSelect={openPlace} onReady={ready=>setSceneFailed(!ready)} />
-    {hoverShape && createPortal(<div ref={tooltip} role="tooltip" className={styles.mapTooltip} style={flagPosition}>
+    <RegionScene heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
+    <MapGestureGuide ready={sceneReady&&!sceneFailed}/>
+    {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
+      // Portal events still bubble through the React map parent. Keep the card
+      // fixed under the finger so pointerdown cannot move its link before click.
+      onPointerDown={event=>event.stopPropagation()} onPointerMove={event=>event.stopPropagation()}
+      onPointerUp={event=>event.stopPropagation()} onClick={event=>event.stopPropagation()}>
       <strong>{hoverShape.name}</strong>
       <span>{hoverValue ? `${hoverValue.formatted.value} ${hoverValue.formatted.unit} · ${metric}` : contextDescription(hoverShape)}</span>
-      <small>{hoverValue?.href?`${member} öffnen ↗`:null}</small>
+      {touchInfo ? <>
+        {hoverValue?.href&&<a href={hoverValue.href} style={{color:"inherit"}}>{member} öffnen ↗</a>}
+        <button type="button" onClick={()=>{setHovered(null);setTouchInfo(false);}} style={{border:0,background:"transparent",color:"inherit",textAlign:"left",padding:"8px 0"}}>Schließen</button>
+      </> : <small>{hoverValue?.href?`${member} öffnen ↗`:null}</small>}
     </div>,document.body)}
     </div>
 
