@@ -155,7 +155,9 @@ function storyExportWidget(story:StoryConcept):WidgetDef|null{const def=storyVis
  * (WidgetSourceEdge). The place is the story's own municipality, not the host page.
  */
 function StoryExportFooter({story,widget}:{story:StoryConcept;widget:WidgetDef}){
- return <><WidgetSourceEdge widget={widget} visible={false} spalten={widget.sources.length>1?2:1} stand={formatStoryDate(story.sourceDate??story.period)}/><div className="story-export-shared" data-sc-export-only="block"><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div></>;
+ const columns=widget.sources.length>1?2:1;
+ // Lane clear of the rounded card corners and off the border (same as the monitor export).
+ return <><div style={{position:'absolute',top:24,bottom:24,right:6,width:SOURCE_EDGE_WIDTH*columns,pointerEvents:'none'}}><WidgetSourceEdge widget={widget} visible={false} spalten={columns} stand={formatStoryDate(story.sourceDate??story.period)}/></div><div className="story-export-shared" data-sc-export-only="block"><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div></>;
 }
 function StoryArtwork({story,visual,name,active}:any){
  const stage=useRef<HTMLDivElement>(null),canvas=useRef<HTMLDivElement>(null);
@@ -169,7 +171,7 @@ function StoryArtwork({story,visual,name,active}:any){
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
  const shared=storyExportWidget(story);
  // Room for the source edge outside the story width: one column per source, at most two.
- const edge=shared?SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+8:0;
+ const edge=shared?SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+14:0;
  return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={shared
   // Migrated: default export palette (brightest stage; light Atlas scheme via EXPORT_BRIGHTEST_ATTR), source edge outside the story width.
   ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${edge}px;`

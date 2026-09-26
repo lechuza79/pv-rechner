@@ -22,6 +22,10 @@ import './dashboard.css';
  * itself so the detached capture keeps its tokens. Pass the host's
  * `data-story-scheme` (dark on the monitors) — the Atlas class alone means light.
  */
+/** Source edge lane: clear of the rounded corners (widget radius 16px) and off the card border. */
+const EDGE_INSET = 28;
+const EDGE_GAP = 6;
+
 export function ExportableWidgetFrame({widget, place, stand, stateLabel, settings, children, className = '', filename, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref'> & {
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
@@ -50,7 +54,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
   });
   // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
   const edgeColumns = def.sources.length > 1 ? 2 : 1;
-  const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + 6}px;box-sizing:border-box;`;
+  const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;box-sizing:border-box;`;
   return <ExportNotesProvider>
     <WidgetFrame
       {...frame}
@@ -65,7 +69,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
         <div className="sc-widget-actions"><WidgetFooter widget={def} chartExport={chartExport} onsite showCta={false} /></div>
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
-        <WidgetSourceEdge widget={def} stand={stand} visible={false} spalten={edgeColumns} />
+        <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
+          <WidgetSourceEdge widget={def} stand={stand} visible={false} spalten={edgeColumns} />
+        </div>
         <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={`Ort: ${place}`} /></ExportOnly>
       </>}
     >{children}</WidgetFrame>
