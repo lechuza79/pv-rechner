@@ -201,7 +201,7 @@ export async function reiter(page: Page) {
  *  clicks use. Listing filtered but clicking by index on the unfiltered set
  *  hit the site menu's toggle and then clicked into the open menu. */
 export function abschnittKoepfe(page: Page) {
-  return page.locator("button[aria-expanded]:visible:not(header *):not(footer *):not(nav *)");
+  return page.locator("button[aria-expanded]:visible:not([inert] *):not(header *):not(footer *):not(nav *)");
 }
 
 export async function abschnitte(page: Page) {
