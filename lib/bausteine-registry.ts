@@ -574,6 +574,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons"],
   },
   {
+    datei: "components/ChartOptionsMenu.tsx",
+    name: "ChartOptionsMenu",
+    zweck:
+      "Kompaktes Optionsmenü oben rechts an einem Diagramm: Teilen, Download, Einbetten — dieselben Handler wie die Aktionsleiste, nur als Menü.",
+    gruppe: "widget",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ChartExportBar.tsx",
     name: "ChartExportBar",
     zweck: "Die Aktionsleiste über einem Chart, das auf einer eigenen Seite steht.",

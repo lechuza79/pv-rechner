@@ -51,8 +51,13 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   controls.enableZoom = false; controls.minPolarAngle = .35; controls.maxPolarAngle = 1.25;
   controls.minAzimuthAngle = -Infinity; controls.maxAzimuthAngle = Infinity;
   controls.autoRotateSpeed = .35;
-  controls.update(); canvas.style.touchAction = "pan-y";
-  controls.touches.ONE = THREE.TOUCH.PAN; controls.touches.TWO = THREE.TOUCH.ROTATE;
+  // Touch: a horizontal one-finger drag turns the map; vertical drags stay page
+  // scrolling (the browser claims them via pan-y); two fingers stay the browser's
+  // pinch zoom. Before, two fingers were mapped to TOUCH.ROTATE, which OrbitControls
+  // does not handle for two fingers (it falls back to "none"), and pinch zoom was
+  // blocked over the whole hero. A short tap still opens the municipality.
+  controls.update(); canvas.style.touchAction = "pan-y pinch-zoom";
+  controls.touches.ONE = THREE.TOUCH.ROTATE; controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
   const pickables: THREE.Object3D[] = [];
   const surfaces = new Map<string, THREE.MeshBasicMaterial>();
   const bars = new Map<string, THREE.Mesh>();
@@ -241,6 +246,14 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const endDrag = () => {manual=false;lastFrame=performance.now();invalidate();};
   controls.addEventListener("start",startDrag);
   controls.addEventListener("end",endDrag);
+  // Touch turns the map around its axis only: a vertical drag belongs to page
+  // scrolling, and until the browser claims it the map must not tilt with it.
+  const tilt={min:controls.minPolarAngle,max:controls.maxPolarAngle};
+  const lockTilt=(e:PointerEvent)=>{if(e.pointerType!=="touch")return;const polar=controls.getPolarAngle();controls.minPolarAngle=polar;controls.maxPolarAngle=polar;};
+  // After the gesture handlers below have removed the pointer.
+  const unlockTilt=()=>queueMicrotask(()=>{if(pointers.size===0){controls.minPolarAngle=tilt.min;controls.maxPolarAngle=tilt.max;}});
+  canvas.addEventListener("pointerdown",lockTilt,{capture:true});
+  canvas.addEventListener("pointerup",unlockTilt);canvas.addEventListener("pointercancel",unlockTilt);
   const press = (e:PointerEvent) => {if(e.button!==0)return;pointers.add(e.pointerId);if(pointers.size>1){dragged=true;return;}dragged=false;down={x:e.clientX,y:e.clientY,pointerId:e.pointerId};};
   const release = (e:PointerEvent) => { pointers.delete(e.pointerId);if(!dragged&&down?.pointerId===e.pointerId&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5){const id=hit(e);if(id)events.select(id);}down=null; };
   const cancel = (e:PointerEvent) => {pointers.delete(e.pointerId);down=null;dragged=true;};
@@ -335,6 +348,6 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       renderer.shadowMap.needsUpdate=true;
       invalidate();
     },
-    dispose(){dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
+    dispose(){dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();canvas.removeEventListener("pointerdown",lockTilt,{capture:true});canvas.removeEventListener("pointerup",unlockTilt);canvas.removeEventListener("pointercancel",unlockTilt);controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
   };
 }
