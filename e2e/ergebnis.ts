@@ -37,6 +37,8 @@ export interface ErgebnisUnterTest {
    * geändert" ist eben nicht „das Ergebnis hat sich geändert".
    */
   kernzahlen: RegExp[];
+  settingsButton?: string;
+  scenarioButton?: RegExp;
 }
 
 // Hier stand bis zum 26.08.2026 ein Feld für „dieses Ergebnis ist per Adresse
@@ -65,8 +67,10 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
     // lauter Standardwerten sähe auch dann richtig aus, wenn das Lesen der
     // Adresse gar nicht stattfindet.
     pfad: "/waermepumpe-rechner?fl=180&da=0&hz=hk_alt&ah=oel_kohle",
-    enthaelt: "Deine Wärmepumpen-Prognose",
-    kernzahlen: [/⌀ Ersparnis\/Jahr\s*\n?\s*([\d.,]+)\s*€/, /CO₂ 20 J\s*\n?\s*([\d.,]+)\s*t/],
+    enthaelt: "Dein Heizkostenvergleich.",
+    settingsButton: "Rechnung einstellen",
+    scenarioButton: /Preisentwicklung/,
+    kernzahlen: [/⌀ Ersparnis\/Jahr\s*\n?\s*([\d.,]+)\s*€/, /CO₂ eingespart\s*\n?\s*([\d.,]+)\s*t/],
   },
 ];
 
@@ -80,8 +84,8 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
  */
 export async function bisZumErgebnis(page: Page) {
   for (let schritt = 0; schritt < 12; schritt++) {
-    if ((await page.locator("[data-flow-nav]:visible").count()) === 0) return;
-    const erste = await page.locator("[data-flow-option]:visible").first().getAttribute("data-flow-option").catch(() => null);
+    if ((await page.locator("[data-flow-nav]:not([inert] *):visible").count()) === 0) return;
+    const erste = await page.locator("[data-flow-option]:not([inert] *):visible").first().getAttribute("data-flow-option").catch(() => null);
     if (erste) await waehle(page, erste);
     await uebrigeFragenBeantworten(page);
     await weiterKlicken(page);

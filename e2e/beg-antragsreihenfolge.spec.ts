@@ -89,7 +89,7 @@ test.describe("BEG-Antragsreihenfolge: sichtbar dort, wo der Betrag steht", () =
     await weiterKlicken(page);
     await bisZumErgebnis(page);
 
-    await expect(page.getByText(/Deine BEG-Förderung/i).first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText(/Investition & Förderung/i).first()).toBeVisible({ timeout: 20_000 });
 
     const treffer = page.getByText(/Der Zuschuss muss beantragt sein, bevor das Vorhaben beginnt/i).first();
     await expect(treffer).toBeVisible({ timeout: 20_000 });

@@ -115,7 +115,7 @@ async function fuelleFelder(page: Page): Promise<number> {
 }
 
 async function imFlow(page: Page): Promise<boolean> {
-  return (await page.locator("[data-flow-nav]:visible").count()) > 0;
+  return (await page.locator("[data-flow-nav]:not([inert] *):visible").count()) > 0;
 }
 
 /**
@@ -230,7 +230,7 @@ async function gehe(
     await fuelleFelder(page);
     // Die Freigabe darf einen React-Commit nach der Eingabe kommen — ein
     // Befund ist erst, wenn Weiter DAUERHAFT gesperrt bleibt.
-    const weiterHier = page.locator("[data-flow-next]:visible").first();
+    const weiterHier = page.locator("[data-flow-next]:not([inert] *):visible").first();
     const bleibtGesperrtOhneWahl = await expect(weiterHier)
       .not.toHaveAttribute("aria-disabled", "true", { timeout: 3_000 })
       .then(() => false)
@@ -247,7 +247,7 @@ async function gehe(
     return;
   }
 
-  const weiter = page.locator("[data-flow-next]:visible").first();
+  const weiter = page.locator("[data-flow-next]:not([inert] *):visible").first();
 
   // Die Flow-Konvention selbst: ohne Auswahl kein Weitergehen.
   if (pfad.length === 0 || wahlen.length > 0) {
@@ -349,7 +349,7 @@ async function gehe(
     // Dieselbe Toleranz wie oben: Die Freigabe darf einen React-Commit nach
     // dem aria-pressed der Option kommen — unter Last wurde hier sonst ein
     // „Weiter bleibt gesperrt" gemeldet, das keines war.
-    const weiterJetzt = page.locator("[data-flow-next]:visible").first();
+    const weiterJetzt = page.locator("[data-flow-next]:not([inert] *):visible").first();
     const bleibtGesperrt = await expect(weiterJetzt)
       .not.toHaveAttribute("aria-disabled", "true", { timeout: 3_000 })
       .then(() => false)

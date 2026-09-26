@@ -52,23 +52,7 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
 // hätte das nicht gefunden, weil der String ja existierte. Dieser Test öffnet
 // deshalb das echte Modal im echten Ergebnis und liest, was dort steht.
 test("Grüngas-Modal nennt den Geltungsbereich vollständig und sichtbar", async ({ page }) => {
-  await page.goto("/waermepumpe-rechner");
-
-  await page.getByText("Neubau", { exact: false }).first().click();
-  // Durch den Flow: In JEDEM Schritt erst die offenen Fragen beantworten, dann
-  // Weiter. Seit dem Flow-Umbau (Betreiber-Vorgabe: kein Schritt startet
-  // vorbelegt) bleibt Weiter sonst ausgegraut, und der Test hängt am Knopf statt
-  // an dem, was er prüfen soll. Der Helfer ist derselbe, den der Flow-Läufer
-  // benutzt — geteilt in e2e/flows.ts, damit beide nicht auseinanderlaufen.
-  for (let i = 0; i < 12; i++) {
-    await uebrigeFragenBeantworten(page);
-    const weiter = page.getByRole("button", { name: /^weiter$/i });
-    if (!(await weiter.count())) break;
-    await weiter.first().click();
-  }
-  await uebrigeFragenBeantworten(page);
-  await uebrigeFragenBeantworten(page);
-  await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
+  await page.goto("/waermepumpe-rechner?si=neubau&hz=hk_neu&pe=4");
 
   await page.getByRole("button", { name: /realistischer Preisentwicklung/ }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Mehr erfahren", exact: true }).click();

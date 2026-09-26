@@ -18,7 +18,7 @@ export default function OptionCard({ selected, onClick, icon = null, label, sub,
     // wählbaren Optionen eines Schritts, ohne dass ein Flow ihm seine Struktur
     // beschreiben muss. Selbe Systematik wie die Export-Marker: Der Baustein
     // meldet sich selbst an, statt dass jemand daran denken muss.
-    <button type="button" onClick={onClick} data-flow-option={choiceIndex === undefined ? label : undefined} data-flow-group={group} aria-pressed={selected} {...(choiceIndex === undefined ? {} : choiceAttributes(choiceIndex, selected))} style={{
+    <button type="button" onClick={onClick} data-flow-option={choiceIndex === undefined ? label : undefined} data-flow-group={group} {...(choiceIndex === undefined ? { "aria-pressed": selected } : choiceAttributes(choiceIndex, selected))} style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "14px 8px", borderRadius: v('--radius-md'), cursor: "pointer",
       background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),

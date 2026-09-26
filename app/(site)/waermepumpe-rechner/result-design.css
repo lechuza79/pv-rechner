@@ -811,3 +811,5 @@ body:has(.wp-result-page) .site-header-frame{padding-block:18px!important;border
 .wp-price-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 
 body .wp-product-seller{color:var(--color-awareness);font-size:var(--result-type-caption);line-height:1.5}
+
+@media(max-width:400px){body .wp-profit-row .wp-result-value{font-size:var(--result-type-stat)!important}}

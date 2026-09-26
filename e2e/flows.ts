@@ -623,7 +623,7 @@ export async function weiterKlicken(page: Page, weg?: string) {
         .map((e) => `${e.getAttribute("data-flow-option")}=${e.getAttribute("aria-pressed")}`)
         .join("¦");
     });
-  const weiter = page.locator("[data-flow-next]:visible").first();
+  const weiter = page.locator("[data-flow-next]:not([inert] *):visible").first();
   const vorher = await fingerabdruck();
   try {
     await expect(async () => {
