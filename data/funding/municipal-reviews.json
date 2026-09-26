@@ -65637,5 +65637,125 @@
         "evidenceUrl": "https://www.schaumburg.de/media/custom/3020_4714_1.PDF?1764328772="
       }
     ]
+  },
+  {
+    "regionId": "03151",
+    "name": "Landkreis Gifhorn",
+    "checkedAt": "2026-09-26T00:16:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises Gifhorn für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Einziges Kreisprogramm für Privathaushalte ist die Balkonkraftwerk-Förderung (200 € pauschal, einkommensgebunden, Richtlinie seit 01.07.2024); sie ist ausgeschöpft und so im Katalog geführt: Der Haushaltsplanentwurf 2026 setzt ab 2025 0,00 € an, die Volltextsuche zeigt keine aktuelle Dienstleistung (geklärt am 23.09.2026). Die übrigen erfassten Kreisquellen betreffen Lernförderung, eine empfangene EFRE-Förderung und vier entfernte Meldungen zu Bundes-Ladeinfrastruktur, Insekten, Demokratie und LEADER — keine Privatförderung für PV, Speicher oder Wärmepumpen. Wiederprüfung mit dem Haushalt 2027.",
+    "searches": [
+      "Volltextsuche landkreis-gifhorn.de „Steckersolar*“ und „Balkonkraftwerk*“ am 23.09.2026",
+      "Haushaltsplanentwurf 2026 am 23.09.2026 gelesen",
+      "Alle sechs erfassten Kreisquellen am 26.09.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.6949.1&Ext=PDF",
+        "finding": "Haushaltsplanentwurf 2026 des Landkreises Gifhorn, freiwillige Zuwendungen Zeile 148 „Foerderung Balkonkraftwerke“: 2024 1.600,00 €, 2025 bis 2029 je 0,00 € (am 23.09.2026 gelesen, Leiferde-Prüfung)."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
+        "finding": "Volltextsuche des Landkreises am 23.09.2026: nur Amtsblatt 2024-06 mit der Balkonkraftwerk-Richtlinie, keine aktuelle Dienstleistung."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/Lernf%C3%B6rderung-und-Hausaufgabenhilfe",
+        "finding": "Gelesen: „Koordinierungsstelle für außerschulische Lernförderung im Landkreis Gifhorn“ — Bildung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.7577.1&Ext=PDF",
+        "finding": "Gelesen: Presseinformation „Landkreis Gifhorn erhält EFRE-Förderung für InnoNetz Wasser“ — vom Kreis empfangene Förderung, keine Privatförderung."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/Startseite/",
+        "finding": "Am 26.09.2026: Die vier erfassten Meldungsadressen unter /Service/ (Bundesprogramm Ladeinfrastruktur Mehrparteienhäuser, Insektenförderung, Partnerschaft für Demokratie, LEADER-Petition) leiten auf die Startseite um; die Meldungen sind entfernt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-gifhorn.de/Lernf%C3%B6rderung-und-Hausaufgabenhilfe",
+        "disposition": "reviewed",
+        "reason": "Gelesen: „Koordinierungsstelle für außerschulische Lernförderung im Landkreis Gifhorn“ — Bildung, keine Energieförderung.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/Lernf%C3%B6rderung-und-Hausaufgabenhilfe"
+      },
+      {
+        "url": "landkreis-gifhorn.de/loadDocument.phtml?FID=4083.7577.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Presseinformation „Landkreis Gifhorn erhält EFRE-Förderung für InnoNetz Wasser“ — vom Kreis empfangene Förderung, keine Privatförderung.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.7577.1&Ext=PDF"
+      },
+      {
+        "url": "landkreis-gifhorn.de/Service/Bundesf%C3%B6rderprogramm-f%C3%BCr-Ladeinfrastruktur-an-Mehrparteienh%C3%A4usern-startet-im-April.php",
+        "disposition": "replaced",
+        "reason": "Meldung entfernt, Adresse leitet am 26.09.2026 auf die Startseite um. Die Adresse benennt ein Bundes- bzw. Naturschutz-/Demokratie-/LEADER-Thema; der Stand der Kreisförderung für Privathaushalte ist über Haushaltsplan und Volltextsuche geklärt.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/Startseite/"
+      },
+      {
+        "url": "landkreis-gifhorn.de/Service/Insektenf%C3%B6rderung-Insektenvielfalt.php",
+        "disposition": "replaced",
+        "reason": "Meldung entfernt, Adresse leitet am 26.09.2026 auf die Startseite um. Die Adresse benennt ein Bundes- bzw. Naturschutz-/Demokratie-/LEADER-Thema; der Stand der Kreisförderung für Privathaushalte ist über Haushaltsplan und Volltextsuche geklärt.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/Startseite/"
+      },
+      {
+        "url": "landkreis-gifhorn.de/Service/Landkreis-Gifhorn-erh%C3%A4lt-eine-Bundesf%C3%B6rderung-f%C3%BCr-eine-Partnerschaft-f%C3%BCr-Demokratie.php",
+        "disposition": "replaced",
+        "reason": "Meldung entfernt, Adresse leitet am 26.09.2026 auf die Startseite um. Die Adresse benennt ein Bundes- bzw. Naturschutz-/Demokratie-/LEADER-Thema; der Stand der Kreisförderung für Privathaushalte ist über Haushaltsplan und Volltextsuche geklärt.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/Startseite/"
+      },
+      {
+        "url": "landkreis-gifhorn.de/Service/Online-Petition-zum-Erhalt-der-LEADER-F%C3%B6rderung.php",
+        "disposition": "replaced",
+        "reason": "Meldung entfernt, Adresse leitet am 26.09.2026 auf die Startseite um. Die Adresse benennt ein Bundes- bzw. Naturschutz-/Demokratie-/LEADER-Thema; der Stand der Kreisförderung für Privathaushalte ist über Haushaltsplan und Volltextsuche geklärt.",
+        "evidenceUrl": "https://www.landkreis-gifhorn.de/Startseite/"
+      }
+    ]
+  },
+  {
+    "regionId": "03151025",
+    "name": "Sassenburg",
+    "checkedAt": "2026-09-26T00:16:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Kreisebene Gifhorn.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss der Gemeinde Sassenburg für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden. Die Volltextsuche der Gemeinde liefert für Photovoltaik und Solar nur Bauleitplanung zum Freiflächen-Solarpark, für Balkonkraftwerk und Wärmepumpe nichts, für Zuschuss und Förderung nur Dorfentwicklung, Wirtschaftswege und Sitzungsunterlagen. Die beiden erfassten Dokumente (FID 4082.4387/4388) sind vom Server entfernt („ungueltiger Zugriff“) und nicht im Webarchiv; ihre Nachbarobjekte aus demselben Hochladezeitraum sind Wahlbekanntmachung und Hundeanmeldung, die Ratsunterlagen vom 18.08. und 27.08.2026 nennen keinen Förderbeschluss für Privathaushalte. Die Balkonkraftwerk-Förderung des Landkreises Gifhorn ist ausgeschöpft.",
+    "searches": [
+      "Volltextsuche sassenburg.de nach Photovoltaik, Balkonkraftwerk, Förderung, Zuschuss, Wärmepumpe, Solar und Klimaschutz am 26.09.2026",
+      "Einladungen Bau- und Umweltausschuss 18.08.2026 und Rat 27.08.2026 gelesen",
+      "Wayback-Abfrage beider entfernten Dokumente am 26.09.2026: keine Sicherung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sassenburg.de/?NavID=4082.11&qs=Photovoltaik",
+        "finding": "Volltextsuche am 26.09.2026: 24 Ergebnisse, ausschließlich Bebauungsplan und Flächennutzungsplan zu Freiflächen-PV-Anlagen und Beteiligungsprotokolle. „Balkonkraftwerk“ und „Wärmepumpe“: keine Ergebnisse."
+      },
+      {
+        "url": "https://www.sassenburg.de/loadDocument.phtml?FID=4082.4387.1&Ext=PDF",
+        "finding": "Am 26.09.2026 (mit und ohne Sitzungscookie): Antwort „ungueltiger Zugriff [NoM]“, 25 Byte; ebenso FID 4082.4388.1. Keine Webarchiv-Sicherung."
+      },
+      {
+        "url": "https://www.sassenburg.de/loadDocument.phtml?FID=4082.4393.1&Ext=PDF",
+        "finding": "Einladung Rat 27.08.2026 gelesen: Tagesordnung u. a. „Förderung Wirtschaftswege“, Beteiligung an der Wirtschaftsförderungsgesellschaft — kein Energie-Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.6949.1&Ext=PDF",
+        "finding": "Haushaltsplanentwurf 2026 des Landkreises Gifhorn, freiwillige Zuwendungen Zeile 148 „Foerderung Balkonkraftwerke“: 2024 1.600,00 €, 2025 bis 2029 je 0,00 € (am 23.09.2026 gelesen, Leiferde-Prüfung)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sassenburg.de/loadDocument.phtml?FID=4082.4387.1&amp;Ext=PDF",
+        "disposition": "replaced",
+        "reason": "Dokument vom Server entfernt und nicht archiviert; nicht lesbar. Die Frage, ob Sassenburg Privathaushalte fördert, ist über die Volltextsuche der Gemeinde und die aktuellen Ratsunterlagen verneint; kein Prüfdatum für das Dokument selbst gesetzt.",
+        "evidenceUrl": "https://www.sassenburg.de/loadDocument.phtml?FID=4082.4387.1&Ext=PDF"
+      },
+      {
+        "url": "sassenburg.de/loadDocument.phtml?FID=4082.4388.1&amp;Ext=PDF",
+        "disposition": "replaced",
+        "reason": "Dokument vom Server entfernt und nicht archiviert; nicht lesbar. Die Frage, ob Sassenburg Privathaushalte fördert, ist über die Volltextsuche der Gemeinde und die aktuellen Ratsunterlagen verneint; kein Prüfdatum für das Dokument selbst gesetzt.",
+        "evidenceUrl": "https://www.sassenburg.de/loadDocument.phtml?FID=4082.4387.1&Ext=PDF"
+      }
+    ]
   }
 ]
