@@ -15,6 +15,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { versandfenster } from "../lib/schulferien";
+import { kommunenVersandtag } from "../lib/kommunen-versandtag";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../lib/outreach-status";
 import { liesNotiz } from "../lib/outreach-ruecklauf";
@@ -304,10 +305,11 @@ async function main(): Promise<void> {
   // lib/zeit.ts) — mit der Weltzeit fiele die Auskunft nachts auf den Vortag.
   const heuteIso = heuteInBerlin(jetzt);
   const fenster = versandfenster("06", heuteIso);
-  log(
-    fenster.frei ? "Heute darf gesendet werden (Beispiel Hessen)." : `Heute nicht: ${fenster.grund}`,
-    fenster.frei ? "ok" : "warn",
-  );
+  // Same two checks as the send script, in the same order — the weekday rule
+  // was missing here once and the overview said "go" on a Saturday.
+  const tag = kommunenVersandtag(jetzt);
+  const grund = !tag.ok ? tag.grund : !fenster.frei ? fenster.grund : null;
+  log(grund ? `Heute nicht: ${grund}` : "Heute darf gesendet werden (Beispiel Hessen).", grund ? "warn" : "ok");
 }
 
 main().catch((e) => {
