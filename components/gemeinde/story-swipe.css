@@ -204,3 +204,6 @@
    behält ihren Platz (sonst springt die Seite beim Schließen) und ist für
    Maus und Tastatur nicht erreichbar. */
 .story-strip-verdeckt { visibility: hidden }
+
+/* Shared export footer (migrated templates): hidden on the page, spacing only; colours come from the export palette. */
+.story-export-shared{display:none;box-sizing:border-box;padding:0 20px 20px}

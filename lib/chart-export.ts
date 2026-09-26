@@ -14,8 +14,9 @@
 //    data-sc-export-ignore attribute (share/CTA buttons, switchers) are
 //    dropped from the snapshot.
 
+import '../components/charts/chart-export.css';
 import { domToBlob } from 'modern-screenshot';
-import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from './export-markers';
+import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR } from './export-markers';
 import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
 import { widgetVarsAusTokens } from './widget-theme';
@@ -23,7 +24,7 @@ import { widgetVarsAusTokens } from './widget-theme';
 // Die Marker-Konstanten leben in lib/export-markers.ts (ohne Abhängigkeiten) und
 // werden hier nur weitergereicht: Wer nur einen Marker braucht, soll nicht
 // modern-screenshot mitladen müssen.
-export { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CSS_ATTR };
+export { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CSS_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR };
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -74,7 +75,10 @@ export function applyExportMarkers(root: Element): void {
   root.querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`).forEach((el) => {
     el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
   });
-  root.querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`).forEach((el) => {
+  // The captured node itself may carry image-only CSS too (a card that needs
+  // room for its source edge); querySelectorAll never returns the root.
+  const targets = root.querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`);
+  [...(root instanceof HTMLElement && root.hasAttribute(EXPORT_CSS_ATTR) ? [root] : []), ...targets].forEach((el) => {
     el.style.cssText += ';' + (el.getAttribute(EXPORT_CSS_ATTR) || '');
   });
 }
@@ -532,6 +536,7 @@ export async function captureNodeToBlob(
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
   applyBrightestStage(wrapper);
+  wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
   const clone = node.cloneNode(true) as HTMLElement;
   applyExportMarkers(clone);
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
@@ -557,6 +562,16 @@ export async function captureNodeToBlob(
   document.body.appendChild(wrapper);
 
   try {
+    await document.fonts.ready;
+    // Export-only notes and removed controls change the card's dimensions.
+    // Refit source labels on the actual capture clone, which has no observers.
+    clone.querySelectorAll<HTMLElement>('[data-sc-source-edge]').forEach(edge => {
+      let size = parseFloat(getComputedStyle(edge).fontSize);
+      while ((edge.scrollHeight > edge.clientHeight + 1 || edge.scrollWidth > edge.clientWidth + 1) && size > 5) {
+        size = Math.round((size - .2) * 10) / 10;
+        edge.style.fontSize = `${size}px`;
+      }
+    });
     return await domToBlob(clone, {
       scale,
       // Transparent canvas → the card's rounded corners stay rounded. A format

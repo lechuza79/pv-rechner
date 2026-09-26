@@ -76,7 +76,7 @@
 .sc-widget-tools{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-shrink:0;max-width:100%;}
 .sc-widget-tools .sc-widget-setting{flex-wrap:nowrap;min-width:0;}
 .sc-widget-tools .sc-widget-setting>span{flex:0 1 auto;}
-.sc-widget-head{flex-wrap:wrap;}
+.sc-widget-head{flex-wrap:wrap;position:relative;z-index:3;}
 .sc-widget-head h4{flex:1 1 150px;}
 .sc-widget-tools{margin-left:auto;}
 .sc-kpi-overview{background:var(--widget-surface);border-radius:var(--widget-radius);padding:24px;}
@@ -151,3 +151,8 @@
 .sc-kpi-plot .sc-kpi-flag:after{left:clamp(6px,calc(var(--kpi-anchor) - 6px),calc(100% - 18px));}
 
 @container(min-width:851px){.sc-widget-grid>.sc-widget:has(.sc-share-donut){grid-column:span 2;}}
+/* Footer rows of an exportable widget (ExportableWidgetFrame). */
+.sc-widget-actions{padding:0 var(--widget-padding) var(--widget-padding);}
+.sc-widget-actions>div{margin-top:4px!important;}
+/* Help right beside the headline (charts with an options menu). */
+.sc-widget-title-help{display:inline-flex;vertical-align:middle;margin-left:8px;}

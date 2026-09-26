@@ -11,7 +11,12 @@
  --color-bg:var(--atlas-surface);--color-bg-muted:var(--atlas-card);--color-text-primary:var(--atlas-text);--color-text-secondary:var(--atlas-secondary);--color-text-muted:var(--atlas-secondary);--color-border:var(--atlas-border);--color-accent:var(--atlas-action);--color-text-on-accent:var(--atlas-action-ink);--color-accent-dim:color-mix(in srgb,var(--atlas-action) 10%,var(--atlas-surface));
  color:var(--atlas-text);font-family:var(--atlas-body);font-size:var(--atlas-body-size);line-height:1.65;
 }
-.foundation[data-story-scheme=dark]{--atlas-picker-bg:#0b2024;--atlas-surface:#08191c;--atlas-card:#163338;--atlas-text:#e8eee9;--atlas-secondary:#a7bcbb;--atlas-border:#b0c8c325;--atlas-action:#d4ff24;--atlas-action-ink:#132527;color-scheme:dark}
+/* Export default: inside an image capture, widgets marked data-sc-export-brightest
+   drop the dark scheme and fall back to the light Atlas palette above
+   (lib/export-markers.ts). The page itself is unaffected; :where keeps the
+   rule's specificity exactly as before (a bare :not would raise it and override
+   host rules, e.g. the story teaser surface). */
+.foundation[data-story-scheme=dark]:where(:not([data-sc-export-capture] [data-sc-export-brightest],[data-sc-export-capture] [data-sc-export-brightest] *)){--atlas-picker-bg:#0b2024;--atlas-surface:#08191c;--atlas-card:#163338;--atlas-text:#e8eee9;--atlas-secondary:#a7bcbb;--atlas-border:#b0c8c325;--atlas-action:#d4ff24;--atlas-action-ink:#132527;color-scheme:dark}
 .foundation[data-story-scheme=highlight]{--atlas-picker-bg:#b5ce5e;--atlas-surface:#d4ff24;--atlas-card:#e2ff78;--atlas-text:#132527;--atlas-secondary:#3e5032;--atlas-border:#13252740;--atlas-action:#132527;--atlas-action-ink:#d4ff24}
 .foundation :is(h1,h2,h3){font-family:var(--atlas-display);font-weight:700;letter-spacing:normal;line-height:1.2}
 .foundation :is(button,select){font-family:var(--atlas-body)}

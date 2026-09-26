@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { v } from "../lib/theme";
+import { tokens, v } from "../lib/theme";
 import { IconHelpCircle } from "./Icons";
 // Bewusst aus den schlanken Modulen, NICHT aus lib/chart-export bzw.
 // components/WidgetExport: an denen hängen modern-screenshot, CiteModal und
@@ -16,8 +16,8 @@ import { nodeToText, useRegisterExportNote } from "./export-notes";
 // is keyboard- + screen-reader-accessible (real <button> + aria-describedby).
 //
 // The tooltip renders into a portal on <body> with fixed positioning, so it
-// never gets clipped by overflow:hidden ancestors. Positioning/close logic
-// mirrors GlossaryTerm, but the content is arbitrary (not glossary-bound).
+// never gets clipped by overflow:hidden ancestors. Glossary terms and legacy
+// ranking explanations reuse this component; behavior lives only here.
 
 // Etwas breiter als frueher (280): Inhalte mit zwei Spalten — Name links, Wert
 // rechts, etwa die Groessenklassen — brachen darunter jede Zeile um.
@@ -75,7 +75,7 @@ export default function InfoTooltip({
   title,
   children,
   size = 13,
-  ariaLabel = "Mehr Infos",
+  ariaLabel,
   exportNote = true,
   label,
   trigger,
@@ -92,6 +92,8 @@ export default function InfoTooltip({
   });
   const tooltipId = useId();
   const [portalTheme, setPortalTheme] = useState<CSSProperties>({});
+  const pinned = useRef(false);
+  const close = () => { pinned.current = false; setOpen(false); };
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const keepOpen = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -99,7 +101,7 @@ export default function InfoTooltip({
   };
   const delayedClose = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setOpen(false), 180);
+    closeTimer.current = setTimeout(() => { if (!pinned.current) setOpen(false); }, 180);
   };
   useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
 
@@ -107,11 +109,11 @@ export default function InfoTooltip({
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
     const computed = getComputedStyle(triggerRef.current);
-    const tokens: Record<string, string> = {};
+    const resolved: Record<string, string> = { ...tokens };
     for (const name of Array.from(computed)) {
-      if (name.startsWith("--")) tokens[name] = computed.getPropertyValue(name);
+      if (name.startsWith("--")) resolved[name] = computed.getPropertyValue(name);
     }
-    setPortalTheme(tokens as CSSProperties);
+    setPortalTheme(resolved as CSSProperties);
   }, [open]);
 
   useEffect(() => setMounted(true), []);
@@ -156,27 +158,27 @@ export default function InfoTooltip({
   // Close on outside click, scroll, resize, or Escape.
   useEffect(() => {
     if (!open) return;
-    const close = (event: Event) => {
+    const closeOnViewportChange = (event: Event) => {
       if (event.target instanceof Node && tooltipRef.current?.contains(event.target)) return;
-      setOpen(false);
+      close();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
     const onPointer = (e: PointerEvent) => {
       const target = e.target as Node;
       if (triggerRef.current?.contains(target) || tooltipRef.current?.contains(target)) return;
-      setOpen(false);
+      close();
     };
     document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", close, true);
-    window.addEventListener("resize", close);
+    window.addEventListener("scroll", closeOnViewportChange, true);
+    window.addEventListener("resize", closeOnViewportChange);
     return () => {
       document.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", close, true);
-      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", closeOnViewportChange, true);
+      window.removeEventListener("resize", closeOnViewportChange);
     };
   }, [open]);
 
@@ -188,15 +190,16 @@ export default function InfoTooltip({
         // A "?" you cannot click is noise in a still image — the text it hides
         // is carried into the export footer instead (see useRegisterExportNote).
         {...(label || trigger ? {} : { [EXPORT_IGNORE_ATTR]: "" })}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ?? (label || trigger ? undefined : "Mehr Infos")}
         aria-describedby={open ? tooltipId : undefined}
         onMouseEnter={keepOpen}
         onMouseLeave={delayedClose}
         onFocus={keepOpen}
-        onBlur={delayedClose}
+        onBlur={() => { pinned.current = false; delayedClose(); }}
         onClick={(e) => {
           e.preventDefault();
-          keepOpen();
+          if (pinned.current) close();
+          else { pinned.current = true; keepOpen(); }
         }}
         style={
           trigger
@@ -258,7 +261,7 @@ export default function InfoTooltip({
             onMouseEnter={keepOpen}
             onMouseLeave={delayedClose}
             onFocus={keepOpen}
-            onBlur={delayedClose}
+            onBlur={() => { pinned.current = false; delayedClose(); }}
             style={{
               ...portalTheme,
               boxSizing: "border-box",
@@ -267,7 +270,7 @@ export default function InfoTooltip({
               left: pos.left,
               zIndex: 1000,
               maxWidth: pos.width,
-              width: "max-content",
+              width: pos.width,
               maxHeight: pos.maxHeight || undefined,
               overflowY: "auto",
               background: v("--color-bg"),

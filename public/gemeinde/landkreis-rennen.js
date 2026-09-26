@@ -41,10 +41,10 @@ window.solarDistrictTimeline = function (indexed, ids) {
 };
 
 /* Animate actual commissioning-year totals, using the shared ranking's filters and formatting. */
-window.solarDistrictRace = async function ({ stage, rows, history, format, unit, animate, current, skip, clockHost }) {
+window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden Gemeinden im Zeitverlauf", rows, history, format, unit, animate, current, skip, clockHost }) {
   const race = document.createElement('div');
   race.className = 'district-race';
-  race.setAttribute('aria-label', 'Die zehn führenden Gemeinden im Zeitverlauf');
+  race.setAttribute('aria-label', label);
   const clock = clockHost ?? document.createElement('p');
   clock.className = 'district-race-year';
   const positions = document.createElement('div');
@@ -81,7 +81,9 @@ window.solarDistrictRace = async function ({ stage, rows, history, format, unit,
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let visible=false;
   const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;},{threshold:0}); observer.observe(race);
+  let lastProgress=0, exportProgress=null, savedProgress=0;
   function paint(progress) {
+    lastProgress=progress;
     const position=progress*(indexed.length-1), from=indexed[Math.floor(position)], to=indexed[Math.min(indexed.length-1,Math.floor(position)+1)];
     const fraction=position%1;
     clock.textContent=String(fraction<.5?from.year:to.year);
@@ -96,10 +98,24 @@ window.solarDistrictRace = async function ({ stage, rows, history, format, unit,
       const place=1+order.filter(other=>other.value>row.value).length;
       item.dataset.rank=place;
       item.setAttribute('aria-label', `Platz ${place}: ${row.name}`);
-      value.textContent=format(row.value); bar.style.width=`${100*row.value/max}%`;
+      value.textContent=format(row.value);
+      // Keep a stable painted box while racing; resizing rounded boxes can leave
+      // stale end-cap fragments in Safari's composited moving rows.
+      bar.style.transform=`scaleX(${Math.max(0,Math.min(1,row.value/max))})`;
     });
     return order;
   }
+  const exportControl=event=>{
+    const command=event.detail;
+    if(command.mode==='restore'){
+      if(exportProgress!==null){paint(savedProgress);exportProgress=null;}
+    }else{
+      if(exportProgress===null)savedProgress=lastProgress;
+      exportProgress=command.mode==='pause'?lastProgress:Math.max(0,Math.min(1,command.progress??0));
+      paint(exportProgress);
+    }
+  };
+  stage.addEventListener('chart-export-animation',exportControl);
   const timeline = window.solarDistrictTimeline(indexed, rows.map(row => row.id));
   const raceDuration = timeline.duration, finishDelay = 2000;
   const timelineProgress = timeline.progress;
@@ -111,6 +127,7 @@ window.solarDistrictRace = async function ({ stage, rows, history, format, unit,
       function tick(now){
         if(!current()||!stage.isConnected){resolve();return;}
         const delta=Math.min(80,now-last);last=now;
+        if(exportProgress!==null){requestAnimationFrame(tick);return;}
         if(visible&&!document.hidden)elapsed+=delta;
         if(!motion||reduced.matches||skip())elapsed=raceDuration+finishDelay;
         paint(timelineProgress(elapsed/raceDuration));
@@ -126,6 +143,6 @@ window.solarDistrictRace = async function ({ stage, rows, history, format, unit,
     if(motion&&!reduced.matches&&visible&&!document.hidden&&winners.length)
       window.dispatchEvent(new CustomEvent('atlas-ranking-celebrate',{detail:{target:items.get(winners[0].id).item}}));
   }
-  const cleanup=new MutationObserver(()=>{if(!stage.contains(race)){observer.disconnect();cleanup.disconnect();}});cleanup.observe(stage,{childList:true});
+  const cleanup=new MutationObserver(()=>{if(!stage.contains(race)){observer.disconnect();cleanup.disconnect();stage.removeEventListener('chart-export-animation',exportControl);}});cleanup.observe(stage,{childList:true});
   await play(animate);
 };

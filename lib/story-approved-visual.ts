@@ -1,6 +1,8 @@
 import type {StoryConcept} from './story-konzepte';
 import type {PostBild} from './social-posts';
 import {BILDFORMEN,TEMPLATES} from './social-bildformen';
+import type {WidgetKind} from './dashboard/model';
+import {WIDGETS} from './widget-registry';
 
 /** Reuse approved forms only when the original form rules accept the data. */
 export function approvedStoryVisual(story:StoryConcept):PostBild|null {
@@ -30,20 +32,40 @@ export function approvedStoryVisual(story:StoryConcept):PostBild|null {
   return BILDFORMEN.find(form=>form.art===art)?.passt(bild)?bild:null;
 }
 
-/** One catalog for gallery choices and readiness, including custom chart templates. */
-export const STORY_VISUAL_TEMPLATES=[
- {id:'verlauf',name:'Monatlicher Zubau · Verlauf'},
- {id:'electricity-value',name:'Kennzahl · Stromwert'},
- {id:'feed-in-value',name:'Kennzahl · Einspeisevergütung'},
- {id:'anlagenraster',name:'Anlagenraster + Leistungsanteil'},
+/**
+ * One catalog of visual templates: gallery choices, readiness, and the monitor
+ * role (widget title + layout kind) for templates that appear as monitor widgets.
+ * `widget` names the widget-registry entry (identity, sources, share target) and
+ * marks templates migrated to the shared export pipeline; the rest still carry
+ * the story reader's legacy credit line until they are migrated.
+ */
+export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};widget?:keyof typeof WIDGETS;
+ /** Only stories whose data really stems from the registry entry's sources use its footer; others keep the legacy credit. */
+ exportProvenance?:(story:StoryConcept)=>boolean};
+export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
+ {id:'verlauf',name:'Monatlicher Zubau · Verlauf',monitor:{title:'Zubau pro Monat',kind:'time-series'}},
+ {id:'electricity-value',name:'Kennzahl · Stromwert',monitor:{title:'Wert des Solarstroms',kind:'number'}},
+ {id:'feed-in-value',name:'Kennzahl · Einspeisevergütung',monitor:{title:'Einspeisevergütung',kind:'number'}},
+ // Monitor title derives from the selected category (see monitorWidgetRole).
+ {id:'anlagenraster',name:'Anlagenraster + Leistungsanteil',monitor:{kind:'composition'},widget:'gemeindeAnlagenraster'},
  {id:'saeule',name:'Säulen'},
  {id:'umriss',name:'Gefüllte Umrisse'},
- {id:'anteilsdonut',name:'Anteilsdonut'},
+ {id:'anteilsdonut',name:'Anteilsdonut',monitor:{title:'Installierte Solarleistung nach Anlagentyp',kind:'donut'}},
  {id:'yield',name:'Ertragsvergleich'},
- {id:'energy-year',name:'Solar + Wind · Jahresprofil'},
- {id:'radial',name:'Solar-Monatsrecap'},
+ {id:'energy-year',name:'Solar + Wind · Jahresprofil',monitor:{title:'Solar- und Windpotenzial im Jahresverlauf',kind:'radial'},widget:'gemeindeEnergieJahr',
+  // Older packages name the free Open-Meteo archive; the registry entry claims our ERA5 archive.
+  exportProvenance:story=>Boolean(story.energyYear?.sourceUrl?.startsWith('era5-archive:'))},
+ {id:'radial',name:'Solar-Monatsrecap',monitor:{title:'Solarerzeugung im Tagesverlauf',kind:'radial'},widget:'gemeindeSolarMonat',
+  exportProvenance:story=>Boolean(story.solarMonth?.sourceUrl?.startsWith('era5-archive:'))},
  {id:'rank-month',name:'Monatliche Rangübersicht'},
 ];
+export function storyVisualTemplateDef(id:string|null|undefined):StoryVisualTemplate|undefined{return id?STORY_VISUAL_TEMPLATES.find(t=>t.id===id):undefined;}
+/** Monitor widget title and layout kind, read from the template catalog. */
+export function monitorWidgetRole(template:string,story:{countComparison?:{label:string}}):{title:string;kind:WidgetKind}{
+ const def=storyVisualTemplateDef(template)?.monitor;
+ const title=def?.title??(story.countComparison?.label?story.countComparison.label+': Anteil an Anzahl und Leistung':'Anlagenbestand');
+ return {title,kind:def?.kind??'number'};
+}
 export function storyVisualTemplate(story:StoryConcept):string|null {
  if(story.label==='Stromwert-Monatsrecap'&&approvedStoryVisual(story))return 'electricity-value';
  if(story.label==='Einspeisevergütung-Monatsrecap'&&approvedStoryVisual(story))return 'feed-in-value';

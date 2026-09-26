@@ -347,6 +347,16 @@ export const BAUSTEINE: Baustein[] = [
       "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
   },
   {
+    datei: "components/InfoTooltipBindings.tsx",
+    name: "InfoTooltipBindings",
+    keinBeispielWeil: "This adapter has no independent visual output: it mounts the existing InfoTooltip into legacy ranking markup. The InfoTooltip gallery example covers its appearance; the municipality ranking exercises the binding lifecycle.",
+    zweck: "Binds legacy explanatory markup to InfoTooltip without separate positioning or interaction logic.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["InfoTooltip"],
+  },
+  {
     datei: "components/InfoTooltip.tsx",
     name: "InfoTooltip",
     zweck:
@@ -574,6 +584,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons"],
   },
   {
+    datei: "components/ChartOptionsMenu.tsx",
+    name: "ChartOptionsMenu",
+    zweck:
+      "Kompaktes Optionsmenü oben rechts an einem Diagramm: Teilen, Download, Einbetten — dieselben Handler wie die Aktionsleiste, nur als Menü.",
+    gruppe: "widget",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ChartExportBar.tsx",
     name: "ChartExportBar",
     zweck: "Die Aktionsleiste über einem Chart, das auf einer eigenen Seite steht.",
@@ -672,7 +692,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["InfoTooltip"],
   },
   {
     datei: "components/Faq.tsx",

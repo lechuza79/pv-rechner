@@ -1,6 +1,10 @@
 'use client';
 import {IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '../Icons';
 import {mitLizenzangaben} from '../../lib/data-sources';
+import {EXPORT_BRIGHTEST_ATTR} from '../../lib/export-markers';
+import {WIDGETS,widgetFuerMeldung,type WidgetDef} from '../../lib/widget-registry';
+import {WidgetExportFooter,WidgetSourceEdge,SOURCE_EDGE_WIDTH} from '../WidgetExport';
+import {storyVisualTemplate,storyVisualTemplateDef} from '../../lib/story-approved-visual';
 import {useState,useEffect,useRef} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
@@ -120,7 +124,9 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
   try{await document.fonts.ready;const {captureNodeToBlob,downloadBlob}=await import('../../lib/chart-export');const exportHost=document.createElement('div');
    exportHost.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none;';
    const exportCard=node.cloneNode(true) as HTMLElement;
-   exportCard.style.cssText=`${node.getAttribute('data-sc-export-css')};width:${node.getBoundingClientRect().width}px;box-sizing:border-box;`;
+   // The shared footer's source edge sits OUTSIDE the story width, so the headline keeps its line breaks.
+   const edge=Number(node.getAttribute('data-export-edge')??0);
+   exportCard.style.cssText=`${node.getAttribute('data-sc-export-css')};width:${node.getBoundingClientRect().width+edge}px;box-sizing:border-box;`;
    exportHost.appendChild(exportCard);document.body.appendChild(exportHost);
    try{const blob=await captureNodeToBlob(exportCard,3);downloadBlob(blob,`solar-check-story-${index+1}.png`);}finally{exportHost.remove();}setFeedback('Bild heruntergeladen.');}catch{setFeedback('Download fehlgeschlagen. Bitte erneut versuchen.');}finally{setBusy(false);}
  };
@@ -140,6 +146,19 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
 }
 
 // Fit the whole original widget uniformly; its internal proportions stay untouched.
+/** Templates migrated to the shared export footer declare their sources in the template catalog. */
+/** Registry identity for templates migrated to the shared export pipeline; null keeps the legacy credit. */
+function storyExportWidget(story:StoryConcept):WidgetDef|null{const def=storyVisualTemplateDef(storyVisualTemplate(story));if(!def?.widget||(def.exportProvenance&&!def.exportProvenance(story)))return null;return widgetFuerMeldung(WIDGETS[def.widget],story.town,story.title);}
+/**
+ * Image-only footer from the shared export pipeline: brand line + own licence
+ * (WidgetExportFooter) and the vertical source edge with licence and data date
+ * (WidgetSourceEdge). The place is the story's own municipality, not the host page.
+ */
+function StoryExportFooter({story,widget}:{story:StoryConcept;widget:WidgetDef}){
+ const columns=widget.sources.length>1?2:1;
+ // Lane clear of the rounded card corners and off the border (same as the monitor export).
+ return <><div style={{position:'absolute',top:24,bottom:24,right:6,width:SOURCE_EDGE_WIDTH*columns,pointerEvents:'none'}}><WidgetSourceEdge widget={widget} visible={false} spalten={columns} stand={formatStoryDate(story.sourceDate??story.period)}/></div><div className="story-export-shared" data-sc-export-only="block"><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div></>;
+}
 function StoryArtwork({story,visual,name,active}:any){
  const stage=useRef<HTMLDivElement>(null),canvas=useRef<HTMLDivElement>(null);
  const [foreground,setForeground]=useState(true);
@@ -150,8 +169,14 @@ function StoryArtwork({story,visual,name,active}:any){
  // dann in einem Kasten, der für den Tagesverlauf gebaut war.
  const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
- return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css="position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;">
- {visual(story,false,active&&foreground)}<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>
+ const shared=storyExportWidget(story);
+ // Room for the source edge outside the story width: one column per source, at most two.
+ const edge=shared?SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+14:0;
+ return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={shared
+  // Migrated: default export palette (brightest stage; light Atlas scheme via EXPORT_BRIGHTEST_ATTR), source edge outside the story width.
+  ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${edge}px;`
+  :'position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;'} data-export-edge={shared?edge:undefined} {...(shared?{[EXPORT_BRIGHTEST_ATTR]:''}:{})}>
+ {visual(story,false,active&&foreground)}{shared?<StoryExportFooter story={story} widget={shared}/>:<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>}
  </div></div>;
 }
 function VisibleWidget({story,visual,enabled}:any){

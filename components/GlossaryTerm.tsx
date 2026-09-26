@@ -10,9 +10,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
+import InfoTooltip from "./InfoTooltip";
 import { usePathname } from "next/navigation";
-import { v } from "../lib/theme";
 import { resolveGlossary, resolveGlossarySlug } from "../lib/glossary";
 
 // Inline glossary term: renders its children with a subtle dashed underline
@@ -28,10 +27,6 @@ import { resolveGlossary, resolveGlossarySlug } from "../lib/glossary";
 //
 // Accessibility: the trigger is a real <button> with aria-describedby pointing
 // at the tooltip, so screen readers announce the explanation.
-
-const TOOLTIP_MAX_WIDTH = 280;
-const GAP = 8; // px between trigger and tooltip
-const EDGE = 8; // min px from viewport edge
 
 // useLayoutEffect warns during SSR; fall back to useEffect on the server.
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -105,19 +100,6 @@ export default function GlossaryTerm({ id, children }: Props) {
   const slug = resolveGlossarySlug(id);
   const ctx = useContext(GlossaryContext);
   const instanceId = useId();
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const tooltipRef = useRef<HTMLSpanElement>(null);
-  const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number; below: boolean }>({
-    top: 0,
-    left: 0,
-    below: false,
-  });
-  const tooltipId = useId();
-
-  useEffect(() => setMounted(true), []);
-
   // Register this mention with the provider; first one per slug wins. Runs in a
   // layout effect so the demotion of duplicates happens before the browser
   // paints — no flash of multiple underlined mentions.
@@ -134,53 +116,6 @@ export default function GlossaryTerm({ id, children }: Props) {
     return () => unregister(slug, instanceId);
   }, [register, unregister, slug, instanceId]);
 
-  // Position the tooltip relative to the trigger, clamped to the viewport.
-  useLayoutEffect(() => {
-    if (!open || !triggerRef.current) return;
-    const t = triggerRef.current.getBoundingClientRect();
-    const ttWidth = Math.min(TOOLTIP_MAX_WIDTH, window.innerWidth - 2 * EDGE);
-    const ttHeight = tooltipRef.current?.offsetHeight ?? 80;
-
-    // Prefer above; flip below if not enough room.
-    const below = t.top - GAP - ttHeight < EDGE;
-    const top = below ? t.bottom + GAP : t.top - GAP - ttHeight;
-
-    // Center horizontally on the trigger, clamp to viewport.
-    let left = t.left + t.width / 2 - ttWidth / 2;
-    left = Math.max(EDGE, Math.min(left, window.innerWidth - ttWidth - EDGE));
-
-    setPos({ top, left, below });
-  }, [open]);
-
-  // Close on outside click, scroll, resize, or Escape.
-  useEffect(() => {
-    if (!open) return;
-    const close = () => setOpen(false);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    const onPointer = (e: PointerEvent) => {
-      const target = e.target as Node;
-      if (
-        triggerRef.current?.contains(target) ||
-        tooltipRef.current?.contains(target)
-      ) {
-        return;
-      }
-      setOpen(false);
-    };
-    document.addEventListener("pointerdown", onPointer);
-    document.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", close, true);
-    window.addEventListener("resize", close);
-    return () => {
-      document.removeEventListener("pointerdown", onPointer);
-      document.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", close, true);
-      window.removeEventListener("resize", close);
-    };
-  }, [open]);
-
   const label = children ?? entry?.term ?? id;
 
   // Not in the glossary → plain text (lets us wrap ahead of writing the entry).
@@ -194,87 +129,5 @@ export default function GlossaryTerm({ id, children }: Props) {
 
   if (!isPrimary) return <>{label}</>;
 
-  return (
-    <>
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-describedby={open ? tooltipId : undefined}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        onClick={(e) => {
-          e.preventDefault();
-          setOpen((o) => !o);
-        }}
-        style={{
-          font: "inherit",
-          color: "inherit",
-          background: "none",
-          border: "none",
-          padding: 0,
-          margin: 0,
-          cursor: "help",
-          // Dotted blue underline sitting close to the word (small offset)
-          // instead of a far dashed baseline rule. Full accent rather than the
-          // light shade: on 15px body text the light one was barely visible, so
-          // the affordance — "there is something behind this word" — did not
-          // read (Betreiber, 18.08.2026).
-          textDecoration: "underline",
-          textDecorationStyle: "dotted",
-          textDecorationColor: v("--color-accent"),
-          textDecorationThickness: "1px",
-          textUnderlineOffset: "2px",
-          lineHeight: "inherit",
-          display: "inline",
-        }}
-      >
-        {label}
-      </button>
-      {mounted &&
-        open &&
-        createPortal(
-          <span
-            ref={tooltipRef}
-            id={tooltipId}
-            role="tooltip"
-            style={{
-              position: "fixed",
-              top: pos.top,
-              left: pos.left,
-              zIndex: 1000,
-              maxWidth: TOOLTIP_MAX_WIDTH,
-              width: "max-content",
-              background: v("--color-bg"),
-              color: v("--color-text-secondary"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              boxShadow: v("--shadow-md"),
-              padding: "10px 12px",
-              fontFamily: v("--font-text"),
-              fontSize: v("--font-size-small"),
-              lineHeight: 1.5,
-              fontWeight: 400,
-              textAlign: "left",
-              pointerEvents: "auto",
-              animation: "fu .15s ease-out",
-            }}
-          >
-            <span
-              style={{
-                display: "block",
-                fontWeight: 700,
-                color: v("--color-text-primary"),
-                marginBottom: 3,
-              }}
-            >
-              {entry.term}
-            </span>
-            {entry.short}
-          </span>,
-          document.body
-        )}
-    </>
-  );
+  return <InfoTooltip label={label} title={entry.term} ariaLabel={typeof label === "string" ? label : entry.term} exportNote={false}>{entry.short}</InfoTooltip>;
 }
