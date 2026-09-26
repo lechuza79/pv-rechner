@@ -41,4 +41,3 @@ export function AnnualGrowth({ years, stand, name, regionId }: { name:string; re
     </ExportableWidgetFrame>
   );
 }
-

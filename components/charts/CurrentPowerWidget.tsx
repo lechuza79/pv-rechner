@@ -87,4 +87,3 @@ export function CurrentPower({ installedKwp, compact = false, weatherSource, fra
   );
   return frameless ? content : <WidgetFrame title="Solarleistung heute" kind="radial" context={compact ? undefined : <>Aus dem Wetter am Standort simuliert{asOf}</>}>{content}</WidgetFrame>;
 }
-

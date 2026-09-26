@@ -290,6 +290,8 @@
 .sceneHost::after{display:none;}
 @media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
 .regionExtras{display:block}
+/* Comparison badges sit on dark cards even when the surrounding site uses daylight mode. */
+.darkVariant .regionExtras{--color-positive:#2BE06E;--color-positive-text:#2BE06E;--color-negative:#F26D6D;--color-negative-text:#F26D6D;}
 
 /* One short gesture demonstration per session; never intercepts input. */
 .mapGestureGuide{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:4;display:grid;justify-items:center;gap:12px;pointer-events:none;color:#fff;text-align:center;animation:gestureAppear 2.3s both}
