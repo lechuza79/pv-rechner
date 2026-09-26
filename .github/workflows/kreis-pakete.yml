@@ -33,6 +33,7 @@ on:
       - "lib/district-monitor.ts"
       - "lib/district-energy.ts"
       - "lib/district-stories.ts"
+      - "lib/region-package.ts"
       - "lib/gemeinde-paket.ts"
       - "scripts/kreis-paket.ts"
   workflow_dispatch:

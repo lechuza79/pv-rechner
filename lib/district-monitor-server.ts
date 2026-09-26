@@ -6,6 +6,7 @@ import {DB_READ_TIMEOUT_MS,withDbTimeout} from './db-timeout';
 import {ATLAS_DATEN_TAG,KREIS_PAKET_TAG} from './atlas-revalidate-routen';
 import {DISTRICT_POINTER_PATH,checkDistrictPackage,checkManifest,type DistrictComputed,type DistrictMonitor,type DistrictRefusal} from './district-package';
 import type {StoryConcept} from './story-konzepte';
+import {checkRegionPackage} from './region-package';
 
 /**
  * The district page reads ONE precomputed package (lib/district-package.ts),
@@ -66,6 +67,27 @@ export async function loadDistrictContent(regionId:string,members:string[],stand
   // Story titles of energy years follow the current code, like the town reader.
   const stories=pkg.content.stories.map((s:StoryConcept)=>s.energyYear?{...s,title:energyYearTitle(s.energyYear)}:s);
   return {monitor:pkg.content.monitor,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:manifest.generation,builtAt:pkg.builtAt}};
+}
+
+/**
+ * Bundesland and Deutschland: the region package of the same generation
+ * (lib/region-package.ts). `children` are the page's child regions (Kreise
+ * resp. Bundesländer); a different child list refuses the package. Same three
+ * outcomes as a district. `monitor.sites` is always null here: the live power
+ * widget has no upper-level source yet; `stories` is always empty.
+ */
+export async function loadRegionContent(regionId:string,children:string[],stand:string):Promise<DistrictContent>{
+  const pointer=await readObject(DISTRICT_POINTER_PATH);
+  const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
+  if(!manifest||!checkManifest(manifest))return unavailable('not-published');
+  const entry=manifest.regions?.[regionId];
+  if(!entry)return unavailable('not-published');
+  const body=await readObject(entry.path);
+  if(!body)return unavailable('not-published');
+  const check=checkRegionPackage(JSON.parse(brotliDecompressSync(body).toString('utf8')),regionId,children);
+  if(!check.ok)return unavailable(check.reason);
+  const {pkg}=check;
+  return {monitor:pkg.content.monitor,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:manifest.generation,builtAt:pkg.builtAt}};
 }
 
 /** The daily power endpoint consumes the same package. */

@@ -32,6 +32,8 @@ import {
   buildDistrictPackage,
   checkDistrictPackage,
   checkManifest,
+  districtFingerprint,
+  isEmptyTown,
   newGeneration,
   planRefresh,
   type DistrictManifest,
@@ -39,6 +41,8 @@ import {
   type DistrictMembership,
 } from "./district-package";
 import type { DistrictLock } from "./district-package-lock";
+import type { EnergyPacket } from "./district-energy";
+import { buildRegionPackage, checkRegionPackage, partFromAggregate, partFromTown, regionFingerprint, type RegionMembership, type RegionPackage } from "./region-package";
 
 export type DistrictStore = {
   /** Parsed JSON, or null when the object does not exist. Throws on read failure. */
@@ -55,8 +59,8 @@ export const MAX_MISSING_TOWN_SHARE = 0.02;
 export type RefreshResult =
   | { status: "gesperrt" }
   | { status: "aktuell"; generation: string; districts: number }
-  | { status: "plan"; rebuild: { id: string; why: string }[]; drop: string[]; generation: string | null }
-  | { status: "veröffentlicht"; generation: string; previous: string | null; rebuilt: number; kept: number; dropped: string[]; missingTowns: number; bytes: number; warnings: string[] };
+  | { status: "plan"; rebuild: { id: string; why: string }[]; drop: string[]; regions: boolean; generation: string | null }
+  | { status: "veröffentlicht"; generation: string; previous: string | null; rebuilt: number; kept: number; dropped: string[]; missingTowns: number; bytes: number; regionsRebuilt: number; warnings: string[] };
 
 async function pool<T>(items: T[], n: number, work: (item: T, index: number) => Promise<void>) {
   let cursor = 0;
@@ -86,6 +90,19 @@ export async function refreshDistricts(opts: {
   log?: (line: string) => void;
   /** Required for writing runs; a dry run only reads. */
   lock?: DistrictLock;
+  /**
+   * Bundesländer and Deutschland (lib/region-package.ts). Built in the same
+   * generation as the districts, all together, whenever any of them is stale.
+   * Omitted: the run publishes districts only and keeps no region entries.
+   */
+  regions?: RegionMembership[];
+  /**
+   * Of the given region ids (towns, or Kreise/areas as a key prefix), those the
+   * register lists with NO plant of any kind. Asked only for towns whose package
+   * holds nothing to sum and for the children a Land does not sum. Omitted:
+   * none counts as empty, and the affected level stays "unavailable".
+   */
+  confirmEmpty?: (ags: string[]) => Promise<ReadonlySet<string>>;
 }): Promise<RefreshResult> {
   if (opts.dryRun || !opts.lock) {
     if (!opts.dryRun) throw new Error("Schreibender Lauf ohne Sperre — Abbruch");
@@ -118,8 +135,25 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     for (const name of await store.list(`${DISTRICT_PACKAGE_PREFIX}/${gen}`)) present.add(`${DISTRICT_PACKAGE_PREFIX}/${gen}/${name}`);
 
   const plan = planRefresh(manifest, districts, townTags, present, opts.all, opts.registerEdition ?? "");
-  if (!plan.rebuild.length && !plan.drop.length) return { status: "aktuell", generation: manifest!.generation, districts: districts.length };
-  if (opts.dryRun) return { status: "plan", rebuild: plan.rebuild.map((r) => ({ id: r.d.regionId, why: r.why })), drop: plan.drop, generation: manifest?.generation ?? null };
+  // Region fingerprints rest on the district fingerprints of THIS register state.
+  const regions = opts.regions ?? [];
+  const partPrints = new Map(districts.map((d) => [d.regionId, districtFingerprint(d, townTags, opts.registerEdition ?? "")]));
+  const regionPrints = new Map<string, string>();
+  for (const r of regions) {
+    for (const p of r.parts) if (p.kind === "town") partPrints.set(p.id, `town:${townTags.get(p.town!) ?? "fehlt"}`);
+    const fp = regionFingerprint(r, partPrints);
+    regionPrints.set(r.regionId, fp);
+    partPrints.set(r.regionId, fp);
+  }
+  const regionsStale =
+    !!opts.all ||
+    regions.some((r) => {
+      const e = manifest?.regions?.[r.regionId];
+      return !e || e.fingerprint !== regionPrints.get(r.regionId) || !present.has(e.path);
+    }) ||
+    Object.keys(manifest?.regions ?? {}).some((id) => !regionPrints.has(id));
+  if (!plan.rebuild.length && !plan.drop.length && !regionsStale) return { status: "aktuell", generation: manifest!.generation, districts: districts.length };
+  if (opts.dryRun) return { status: "plan", rebuild: plan.rebuild.map((r) => ({ id: r.d.regionId, why: r.why })), drop: plan.drop, regions: regionsStale, generation: manifest?.generation ?? null };
 
   const generation = newGeneration(now());
   const builtAt = now().toISOString();
@@ -136,7 +170,10 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     await pool(d.members, opts.concurrency ?? 8, async (ags, i) => {
       packets[i] = await readTown(ags);
     });
-    const pkg = buildDistrictPackage(d, packets, fingerprint, builtAt);
+    const candidates = d.members.filter((_, i) => isEmptyTown(packets[i]));
+    const empty = candidates.length && opts.confirmEmpty ? await opts.confirmEmpty(candidates) : new Set<string>();
+    const pkg = buildDistrictPackage(d, packets, fingerprint, builtAt, empty);
+    if (pkg.empty?.length) log(`${d.regionId} ${d.name}: ohne jede Anlage im Register, Summe ohne sie: ${pkg.empty.join(" ")}`);
     if (pkg.missing.length === d.members.length) throw new Error(`${d.regionId} ${d.name}: kein einziges Gemeindepaket gefunden — Abbruch, die bisherige Generation bleibt`);
     missingTowns += pkg.missing.length;
     towns += d.members.length;
@@ -161,6 +198,52 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     if (!check.ok || check.pkg.fingerprint !== entry.fingerprint) throw new Error(`${entry.path}: Rücklese-Prüfung fehlgeschlagen (${check.ok ? "Fingerabdruck" : check.reason})`);
   });
 
+  // Bundesländer and Deutschland from the district packages of THIS generation
+  // (freshly built or kept) plus the kreisfreie Städte. Rebuilt together so the
+  // levels never rest on different editions; ~25 MB of reads, only when stale.
+  const regionEntries: Record<string, DistrictManifestEntry> = {};
+  let regionsRebuilt = 0;
+  if (regions.length && regionsStale) {
+    const pathOf = (id: string) => entries[id]?.path ?? manifest?.districts[id]?.path;
+    const results = new Map<string, RegionPackage>();
+    // States first (their parts are districts/towns), Deutschland last (its parts are states).
+    for (const r of [...regions].sort((a, b) => (a.level === "de" ? 1 : 0) - (b.level === "de" ? 1 : 0))) {
+      await keep(`Region ${r.regionId}`);
+      const parts: (EnergyPacket | null)[] = new Array(r.parts.length);
+      await pool(r.parts, 6, async (p, i) => {
+        if (p.kind === "town") parts[i] = partFromTown(p.id, await readTown(p.town!));
+        else if (p.kind === "state") parts[i] = partFromAggregate(p.id, results.get(p.id) ?? null);
+        else {
+          const path = pathOf(p.id);
+          const back = path ? await store.getBytes(path) : null;
+          if (!back) throw new Error(`${r.regionId}: Kreispaket ${p.id} nicht lesbar — Abbruch`);
+          const check = checkDistrictPackage(JSON.parse(brotliDecompressSync(back).toString("utf8")), p.id, byId.get(p.id)!.members);
+          if (!check.ok) throw new Error(`${r.regionId}: Kreispaket ${p.id} abgelehnt (${check.reason}) — Abbruch`);
+          parts[i] = partFromAggregate(p.id, check.pkg);
+        }
+      });
+      const confirmed = r.excluded.length && opts.confirmEmpty ? await opts.confirmEmpty(r.excluded) : new Set<string>();
+      const pkg = buildRegionPackage(r, parts, regionPrints.get(r.regionId)!, builtAt, confirmed);
+      results.set(r.regionId, pkg);
+      const json = Buffer.from(JSON.stringify(pkg));
+      if (json.length > DISTRICT_PACKAGE_MAX_BYTES) throw new Error(`${r.regionId}: Paket ${json.length} Byte, Grenze ${DISTRICT_PACKAGE_MAX_BYTES}`);
+      const br = brotliCompressSync(json, { params: { [constants.BROTLI_PARAM_QUALITY]: 9 } });
+      const path = `${DISTRICT_PACKAGE_PREFIX}/${generation}/region-${r.regionId}.json.br`;
+      await store.put(path, br, "application/octet-stream");
+      regionEntries[r.regionId] = { path, fingerprint: pkg.fingerprint, members: r.parts.length, editions: pkg.editions, missing: pkg.missing.length, bytes: br.length };
+      bytes += br.length;
+      regionsRebuilt++;
+      const m = pkg.content.monitor;
+      log(`Region ${r.regionId} ${r.name}: ${r.parts.length} Teile, Monitor ${m.status === "ready" ? "vollständig" : `nicht verfügbar (${m.reason})`}, Energie ${m.energy ? `${m.energy.monthly.length} Monate/${m.energy.annual.length} Jahre, Wert ${m.energy.monthly.filter((x) => x.value).length} Monate` : "nicht verfügbar"}${pkg.missing.length ? `, ohne verwertbare Daten: ${pkg.missing.join(" ")}` : ""}`);
+    }
+    await pool(Object.entries(regionEntries), 6, async ([id, entry]) => {
+      const back = await store.getBytes(entry.path);
+      const r = regions.find((x) => x.regionId === id)!;
+      const check = back ? checkRegionPackage(JSON.parse(brotliDecompressSync(back).toString("utf8")), id, [...r.parts.map((p) => p.id), ...r.excluded]) : null;
+      if (!check?.ok || check.pkg.fingerprint !== entry.fingerprint) throw new Error(`${entry.path}: Rücklese-Prüfung fehlgeschlagen`);
+    });
+  } else for (const r of regions) regionEntries[r.regionId] = manifest!.regions![r.regionId];
+
   const next: DistrictManifest = {
     version: DISTRICT_PACKAGE_VERSION,
     townPackageVersion: GEMEINDE_PAKET_VERSION,
@@ -174,6 +257,7 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     if (!entry) throw new Error(`${d.regionId}: ohne Eintrag — Generation unvollständig`);
     next.districts[d.regionId] = entry;
   }
+  if (regions.length) next.regions = regionEntries;
 
   // Overlap protection: the lease first, then the pointer this run started from.
   await keep("Zeigerwechsel");
@@ -189,7 +273,7 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
   const warnings: string[] = [];
   try {
     await keep("Aufräumen");
-    const keepGens = new Set([...Object.values(next.districts), ...Object.values(manifest?.districts ?? {})].map((e) => genOf(e.path)));
+    const keepGens = new Set([next, manifest].flatMap((m) => [...Object.values(m?.districts ?? {}), ...Object.values(m?.regions ?? {})]).map((e) => genOf(e.path)));
     for (const name of await store.list(DISTRICT_PACKAGE_PREFIX)) {
       if (name === "aktuell.json" || keepGens.has(name)) continue;
       const files = await store.list(`${DISTRICT_PACKAGE_PREFIX}/${name}`);
@@ -199,5 +283,5 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     warnings.push(`Aufräumen alter Generationen fehlgeschlagen: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  return { status: "veröffentlicht", generation, previous: manifest?.generation ?? null, rebuilt: plan.rebuild.length, kept: plan.keep.length, dropped: plan.drop, missingTowns, bytes, warnings };
+  return { status: "veröffentlicht", generation, previous: manifest?.generation ?? null, rebuilt: plan.rebuild.length, kept: plan.keep.length, dropped: plan.drop, missingTowns, bytes, regionsRebuilt, warnings };
 }
