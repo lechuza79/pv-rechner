@@ -66541,5 +66541,528 @@
         "evidenceUrl": "https://www.flotwedel.de/portal/seiten/foerderung-900000010-29611.html?naviID=900000208&brotID=900000208&rubrik=900000013"
       }
     ]
+  },
+  {
+    "regionId": "03351002",
+    "name": "Ahnsbeck",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahnsbeck gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351003",
+    "name": "Beedenbostel",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beedenbostel gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "beedenbostel.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Alte Adresse unerreichbar; dasselbe Programm „Jung kauft Alt“ der Samtgemeinde steht auf lachendorf.de und ist kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351008",
+    "name": "Eldingen",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eldingen gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351015",
+    "name": "Hohne",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohne gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/",
+        "finding": "Am 26.09.2026 gelesen: EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.gemeinde-hohne.de/unsere-gemeinde/foerderblick",
+        "finding": "Am 26.09.2026 gelesen: Gelesen: Download-Liste der Ausgaben des Mitteilungsblatts „Förderblick“, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum",
+        "finding": "Am 26.09.2026 gelesen: Ortsgeschichte Erdölförderung, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "gemeinde-hohne.de/lebenswert/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/"
+      },
+      {
+        "url": "hohne.de/lebenswert/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "EU-Förderung für kommunale Vorhaben (LEADER), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/LEADER-Region-Lachte-Lutter-Oker/"
+      },
+      {
+        "url": "gemeinde-hohne.de/unsere-gemeinde/foerderblick",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Download-Liste der Ausgaben des Mitteilungsblatts „Förderblick“, kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-hohne.de/unsere-gemeinde/foerderblick"
+      },
+      {
+        "url": "gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum",
+        "disposition": "reviewed",
+        "reason": "Ortsgeschichte Erdölförderung, kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-hohne.de/unsere-gemeinde/voller-energie/erdoelfoerderung-und-energiemuseum"
+      }
+    ]
+  },
+  {
+    "regionId": "03351016",
+    "name": "Lachendorf",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lachendorf gehört zur Samtgemeinde Lachendorf (Landkreis Celle). Die Förderseite der Samtgemeinde führt nur Dorferneuerung, „Jung kauft Alt“ (Erwerb von Altbauten), geförderte kommunale Projekte und die LEADER-Region; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf; die Programme der Stadt Celle und der Gemeinde Südheide gelten nur in deren Gebiet.",
+    "searches": [
+      "Förderseite der Samtgemeinde Lachendorf mit allen Unterseiten am 26.09.2026",
+      "Navigation der Startseite lachendorf.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026",
+      "Landkreis Celle, Fördermöglichkeiten für private Haushalte, am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unterseiten „Dorferneuerungen“, „Förderprogramm \"Jung kauft Alt\"“, „Geförderte Projekte“, „LEADER-Region Lachte-Lutter-Oker“ — kein Energieprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
+        "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht der Samtgemeinde mit Dorferneuerungen, „Jung kauft Alt“, geförderten Projekten und LEADER — keine Haushaltsförderung für Energieanlagen.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung (Landes-/EU-Förderung für Ortsbild und Gebäude im Dorferneuerungsgebiet), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/F%C3%B6rderprogramm-Jung-kauft-Alt-",
+        "disposition": "reviewed",
+        "reason": "Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Projekte mit Fremdförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte/Sanierung-d-ehem-Spritzenhauses-zur-Schaffung-v-R%C3%A4umlichkeiten-z-gemeinschaftlichen-Nutzung",
+        "disposition": "reviewed",
+        "reason": "Kommunales Bauprojekt (Spritzenhaus), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.lachendorf.de/F%C3%B6rderungen/"
+      },
+      {
+        "url": "lachendorf.de/loadDocument.phtml?FID=4036.260.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Richtlinie „Jung kauft Alt“ (Förderung des Erwerbs von Altbauten), kein Energieprogramm.",
+        "evidenceUrl": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "03351010",
+    "name": "Faßberg",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Faßberg verweist auf ihrer Seite „Förderprogramme“ nur auf die Förderdatenbank des Bundes, die NBank und die LEADER-Region Oberes Örtzetal; der Bereich Nachhaltigkeit und Umwelt (Klimaleitbild, Wärmeplanung, Energiebericht, E-Mobilität, PV-Anlage Rathaus, Beratungsangebot „Energiewende zu Hause“) enthält kein Zuschussprogramm für Haushalte. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Seite „Förderprogramme“ am 26.09.2026 vollständig gelesen",
+      "Navigation Nachhaltigkeit und Umwelt am 26.09.2026 durchgesehen",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/",
+        "finding": "Am 26.09.2026 gelesen: „Die folgende Aufzählung verschafft Ihnen eine erste Übersicht der Möglichkeiten“ — Förderdatenbank des BMWE, NBank, LEADER-Region „Kulturraum Oberes Örtzetal“; kein eigenes Programm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Verweise auf Bundes-, Landes- und LEADER-Förderung, kein eigenes Haushaltsprogramm.",
+        "evidenceUrl": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/"
+      },
+      {
+        "url": "fassberg.de/portal/seiten/foerderprogramme-900000186-29550.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Verweise auf Bundes-, Landes- und LEADER-Förderung, kein eigenes Haushaltsprogramm.",
+        "evidenceUrl": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351023",
+    "name": "Wietze",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Wietze führt im Bereich Umwelt, Klima & Energie Hochwasser- und Starkregenvorsorge, Klimaschutzkonzept, Energieberichte und die kommunale Wärmeplanung; die Seite „Förderung“ darin betrifft die Bundesförderung der Wärmeplanung selbst. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Alle Unterseiten von „Umwelt, Klima & Energie“ am 26.09.2026 aufgelistet, Wärmeplanung/Förderung gelesen",
+      "Websuche nach Zuschüssen für Balkonkraftwerke/Photovoltaik in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung/",
+        "finding": "Am 26.09.2026 gelesen: Beteiligung an der Wärmeplanung (Ideenkarte), „Gefördert durch: Bundesministerium für Umwelt … Projektträger Jülich“ — Förderung der Kommune, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.wietze.de/",
+        "finding": "Am 26.09.2026 auf der Startseite als Link-Titel geprüft: Bekanntmachung zum Bebauungsplan an der Steinförder Straße — Treffer nur über den Straßennamen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung der kommunalen Wärmeplanung, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.wietze.de/umwelt-klima-energie/kommunale-waermeplanung/foerderung/"
+      },
+      {
+        "url": "wietze.de/rathaus-politik/amtliche-bekanntmachungen/bauleitplanung-der-gemeinde-wietze-bebauungsplan-wietze-nr-34-und-oertliche-bauvorschrift-an-der-steinfoerder-strasse",
+        "disposition": "reviewed",
+        "reason": "Bebauungsplan („Steinförder Straße“), Treffer nur über den Straßennamen.",
+        "evidenceUrl": "https://www.wietze.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "03351025",
+    "name": "Eschede",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Eschede nennt unter Wirtschaftsförderung nur Existenzgründer-Förderung (MikroSTARTer, ERP), EU-Förderung und die LEADER-Region Lachte-Lutter-Oker, dazu die Förderkulisse der Dorfentwicklung. Ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht verzeichnet. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Seiten „Fördermöglichkeiten“ und „Förderkulisse Dorfentwicklung“ am 26.09.2026",
+      "Navigation der Startseite eschede.de nach Klima-, Energie- und Förderthemen am 26.09.2026",
+      "Websuche nach Zuschüssen in den Celler Gemeinden am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie eine Existenzgründung planen, stehen Ihnen unterschiedliche Fördermöglichkeiten zur Verfügung“ — MikroSTARTer, ERP-Gründerkredit, EU-Förderung, LEADER."
+      },
+      {
+        "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
+        "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html",
+        "finding": "Am 26.09.2026 gelesen: Förderkulisse der Dorfentwicklung (Landesprogramm für Ortsbild und Gebäude), kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Existenzgründer- und EU-Förderung, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.eschede.de/seite/420031/f%C3%B6rderm%C3%B6glichkeiten.html"
+      },
+      {
+        "url": "eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html",
+        "disposition": "reviewed",
+        "reason": "Förderkulisse der Dorfentwicklung (Landesprogramm für Ortsbild und Gebäude), kein Energieprogramm.",
+        "evidenceUrl": "https://www.eschede.de/seite/474453/f%C3%B6rderkulisse-dorfentwicklung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03351026",
+    "name": "Südheide",
+    "checkedAt": "2026-09-26T11:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Südheide zahlt Mieterinnen und Mietern einmalig 150 € für ein neues Balkonkraftwerk (Richtlinie Balkonkraftwerke, in Kraft seit 01.04.2024, gilt bis die Haushaltsmittel aufgebraucht sind; Online-Antrag im September 2026 erreichbar). Eigentümer, Dachanlagen, Speicher und Wärmepumpen fördert die Gemeinde nicht. Im Katalog als suedheide-balkonkraftwerke, ohne Rechenwert, weil die Richtlinie den Betrag nur für 800 W Nennleistung nennt. Der Landkreis hat keinen eigenen Fördertopf.",
+    "searches": [
+      "Programmseite und Richtlinie Balkonkraftwerke am 26.09.2026 vollständig gelesen",
+      "Adversariale Gegenprüfung am 26.09.2026 (Seitensuche nach Balkonkraftwerk, Photovoltaik, Solaranlagen, Fördermittel; aktuelle Meldungen) — alles bestätigt, kein Hinweis auf ausgeschöpfte Mittel",
+      "Websuche „Gemeinde Südheide Förderrichtlinie Balkonkraftwerk“ am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-suedheide.de/portal/seiten/foerderung-fuer-solaranlagen-900000199-23600.html",
+        "finding": "Am 26.09.2026 gelesen: „Sie können als Mieter eine Zuwendung in Höhe von 150,00 € beantragen, wenn die gemietete Wohnimmobilie in der Gemeinde Südheide liegt und von Ihnen genutzt wird.“ Online-Antragsformular aktiv."
+      },
+      {
+        "url": "https://www.gemeinde-suedheide.de/downloads/datei/ODZjMjFkNjdjMTFmNzAyYmswMWZHV3NYMHBxYk40cFdYVFMvNW5Qc2MxRnpKN1M2RTFieDVwNU11ZjhkcGZrNTlicnN2Zi8xV3NPMEFUbm9QMUY0dnJtTGEzSGVWL1I3YXhhNCtKc1ZWdTJJSXZVcStGUHRFUmdWUFdqOWdYWVRPRVA2MGNoQ0FrdkZEOGN4eENvdnB4RCsyZ3FXOHMxbWszQ1Zldz09",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 2a „Die Förderung beträgt 150 EUR bei 800 Watt Nennleistung.“; Nr. 4 „Antragsberechtigt sind natürliche Personen (Mieter)“; Nr. 10 „tritt am 01.04.2024 in Kraft und gilt solange, bis die zur Verfügung gestellten Haushaltsmittel aufgebraucht sind.“"
+      }
+    ],
+    "sources": []
   }
 ]

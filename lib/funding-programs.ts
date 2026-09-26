@@ -4794,6 +4794,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // funding, so no rule is assumed.
     combinableWith: null,
   },
+  "suedheide-balkonkraftwerke": {
+    id: "suedheide-balkonkraftwerke", name: "Förderung für Solaranlagen (Richtlinie Balkonkraftwerke)",
+    traeger: "Gemeinde Südheide", level: "kommune", region: "Südheide",
+    bundesland: "Niedersachsen", agsCode: "03351026",
+    url: "https://www.gemeinde-suedheide.de/portal/seiten/foerderung-fuer-solaranlagen-900000199-23600.html",
+    // NEU AUFGENOMMEN 26.09.2026. Found while closing the Landkreis Celle
+    // municipalities: a web search led to the municipality's programme page.
+    // Programme page (with live online application form) and the linked
+    // "Richtlinie Balkonkraftwerke" (council decision 14.12.2023, signed
+    // 20.12.2023) read in full on 26.09.2026.
+    // Nr. 2a: "Gefördert wird einmalig je Haushalt die Neuanschaffung einer
+    // Mini-PV-Anlage" — "Die Förderung beträgt 150 EUR bei 800 Watt
+    // Nennleistung." Nr. 4: only tenants ("natürliche Personen (Mieter), die
+    // ihr zu Wohnzwecken selbst genutztes Mietobjekt in der Gemeinde Südheide
+    // haben"). Nr. 3: installation within 6 months of approval. Nr. 6: 5-year
+    // holding period from payout. Nr. 10: "tritt am 01.04.2024 in Kraft und
+    // gilt solange, bis die zur Verfügung gestellten Haushaltsmittel
+    // aufgebraucht sind". Application form confirmation no. 6: not started
+    // before applying; no. 4: no funds from other Zuwendungsgeber.
+    // Adversarial review 26.09.2026 (site search, news): all conditions
+    // confirmed, no notice of exhausted funds.
+    // NO STRUCTURED RATE: the guideline names 150 EUR only "bei 800 Watt
+    // Nennleistung" and leaves smaller devices open; "Nennleistung" does not
+    // say whether module or inverter output is meant. A flat amount would
+    // pay 150 EUR on every set of the calculator — rather no number than a
+    // wrong one. Key: Gemeinde Südheide 03351026, checked in the register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-04-01", beschlossenIso: "2023-12-14",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    nurWohnform: "mieter",
+    coveredCosts: "Einmaliger Zuschuss zur Neuanschaffung eines Balkonkraftwerks — nur für Mieter",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk (nur Mieter)", value: "150 € bei 800 W Nennleistung; für kleinere Geräte nennt die Richtlinie keinen Betrag" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Mieterinnen und Mieter, die ihre Mietwohnung in Südheide selbst bewohnen; eine Mietbescheinigung des Vermieters gehört zum Antrag",
+      "Erst online beantragen, dann kaufen — wer vorher bestellt oder kauft, bekommt nichts; nach der Bewilligung muss die Anlage binnen sechs Monaten in Betrieb sein",
+      "Gefördert wird einmal je Haushalt ein neues steckerfertiges Gerät mit höchstens 800 W Einspeiseleistung; der Zuschuss darf die Anschaffungskosten nicht übersteigen",
+      "Für die Auszahlung braucht es Rechnung mit installierter Leistung und je ein Foto vor und nach der Installation",
+      "Die Anlage muss fünf Jahre in Südheide genutzt werden; bei vorzeitigem Verkauf oder Umzug wird anteilig zurückgezahlt",
+      "Keine zusätzlichen Fördergelder anderer Zuwendungsgeber; Vergabe nach Eingang der Anträge, solange Haushaltsmittel da sind, ohne Rechtsanspruch",
+    ],
+    // Application form confirmation no. 4: "Dass ich keine Fördergelder von
+    // anderen Zuwendungsgebern erhalte (Doppelförderung)." An empty list is
+    // the catalogue's "only on its own".
+    combinableWith: [],
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",
