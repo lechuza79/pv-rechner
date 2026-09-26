@@ -60111,7 +60111,7 @@
   {
     "regionId": "07133033",
     "name": "Gebroth",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-26T14:05:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60120,7 +60120,8 @@
       "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
       "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
       "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
-      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach",
+      "Neu erfasstes Mitteilungsblatt-PDF (Quelle vom Crawler) am 26.09.2026 erneut im Original gelesen"
     ],
     "evidence": [
       {
@@ -60138,6 +60139,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Mitteilungsblatt-PDF 24.03.2026: Programm seit 01.04.2023, insgesamt 120.000 €, 100 € je Balkonkraftwerk; „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“"
       }
     ],
     "sources": [
@@ -60152,6 +60157,12 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Mitteilungsblatt 24.03.2026 im Original gelesen (26.09.2026): „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ Bestätigt die beendete Balkonförderung (vg-ruedesheim-balkonkraftwerke); keine Neuauflage.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   },
@@ -67282,5 +67293,137 @@
       "dueAt": "2026-10-03T08:00:00Z",
       "detail": "Ratsinformationssystem Winsen (Aller) für 2022/2023 nach dem Antrag „Balkonkraftwerke“ durchsehen (Bau-, Planungs- und Umweltausschuss, Rat) und den Artikel der Celler Zeitung im echten Browser lesen; wurde ein Programm beschlossen, Laufzeit und Betrag belegen und als beendetes Programm aufnehmen, sonst negativ abschließen."
     }
+  },
+  {
+    "regionId": "07133028",
+    "name": "Eckenroth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Eckenroth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133085",
+    "name": "Roth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Roth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133095",
+    "name": "Seibersbach",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Seibersbach gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07133110",
+    "name": "Warmsroth",
+    "checkedAt": "2026-09-26T14:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Warmsroth gehört zur Verbandsgemeinde Langenlonsheim-Stromberg (Landkreis Bad Kreuznach). Anwendbar ist allein deren Balkonkraftwerk-Zuschuss (120 € je Haushalt, katalogisiert als vg-langenlonsheim-stromberg-balkonkraftwerke, Fördergebiet mit diesem Gemeindeschlüssel); das Jahreskontingent 2026 ist vergeben, weitere Anträge kommen auf die Warteliste. Die Förderseite der VG nennt keine weiteren Programme für Photovoltaik, Speicher oder Wärmepumpen; ein eigenes Programm der Ortsgemeinde wurde nicht gefunden; der Landkreis Bad Kreuznach führt kein eigenes Programm (Prüfung vom 24.09.2026).",
+    "searches": [
+      "Förderprogramme-Seite der VG Langenlonsheim-Stromberg am 26.09.2026 live gelesen (unverändert: „NUR NOCH WARTELISTE“, 120 € je Haushalt, 2026 wieder 125 Anträge)",
+      "Umwelt- und Klimaschutz-Übersicht der VG gelesen: keine weiteren Zuschüsse für private Haushalte",
+      "Websuche nach Programmen der Ortsgemeinden Eckenroth, Roth, Seibersbach und Warmsroth (26.09.2026): keine Treffer",
+      "Landkreis Bad Kreuznach: kein eigenes Programm (Websuche 24.09.2026, dokumentiert bei Gebroth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "finding": "„Durch das neue Förderprogramm werden neuwertige Balkonkraftwerke, welche ab dem 15.04.2024 angeschafft werden, einmalig mit 120 € pro Haushalt gefördert. 2026 werden wieder 125 Anträge durch die Verbandsgemeinde unterstützt.“ Warnhinweis „NUR NOCH WARTELISTE“. Einziges Förderangebot der Seite."
+      },
+      {
+        "url": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz",
+        "finding": "Übersicht Umwelt & Klimaschutz: Stadtradeln, Umweltpreis, Infoabende, Carsharing — kein weiteres Zuschussprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der VG im Original gelesen; Programm im Katalog (vg-langenlonsheim-stromberg-balkonkraftwerke), Stand unverändert.",
+        "evidenceUrl": "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme"
+      }
+    ]
   }
 ]
