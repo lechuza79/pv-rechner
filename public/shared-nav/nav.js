@@ -116,13 +116,51 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  // one: closing it at once looks like a lost click while the next page loads.
  // Same-page links, new tabs and modifier clicks close it, since nothing else will.
  nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&!staysOpenFor(a,e))close();});
- const restored=e=>{if(e.persisted){close(true);search?.close();}};window.addEventListener('pageshow',restored);
+ const local=mountLocal(nav);
+ const restored=e=>{if(e.persisted){close(true);search?.close();local.reset();}};window.addEventListener('pageshow',restored);
  const outside=e=>{if(!header.contains(e.target)&&!nav.contains(e.target))close();};
- const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
+ const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button,input,select')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
  document.addEventListener('click',outside);document.addEventListener('keydown',keyboard);
  const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
 
- return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();delete header.dataset.globalNav;};
+ return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();local.destroy();delete header.dataset.globalNav;};
+}
+
+/**
+ * "Vor Ort": the town and Landkreis fields suggest places while typing; Enter
+ * opens the first suggestion (or, before any has loaded, the search page the
+ * form points at). The Bundesland picker opens its Land on selection.
+ */
+function mountLocal(nav){
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const arrow='<svg class="sc-nav-link-arrow" width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const unavailable='<p class="sc-local-note" role="status">Die Ortssuche antwortet gerade nicht. Bitte gleich noch einmal versuchen.</p>';
+ const fields=[...nav.querySelectorAll('[data-local-search]')].map(form=>{
+  const level=form.dataset.localSearch,input=form.querySelector('input'),results=form.querySelector('.sc-local-results');
+  let timer,controller,hits=[];
+  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];results.innerHTML='';};
+  const run=async q=>{
+   controller?.abort();controller=new AbortController();
+   try{
+    const response=await fetch(`/api/suche/orte?ebene=${level}&q=${encodeURIComponent(q)}`,{signal:controller.signal});
+    if(!response.ok)throw new Error(String(response.status));
+    const data=await response.json();
+    if(input.value.trim()!==q)return;
+    hits=data.orte??[];
+    results.innerHTML=hits.length
+     ?`<div class="sc-nav-column sc-local-hits">${hits.map(h=>`<a href="${esc(h.href)}"><span>${esc(h.name)}<small>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</small></span>${arrow}</a>`).join('')}</div>`
+     :data.nichtVerfuegbar?unavailable
+     :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`;
+   }catch(e){if(e?.name==='AbortError')return;hits=[];results.innerHTML=unavailable;}
+  };
+  // A postcode only means something once it is complete; "97" is not a miss.
+  input.addEventListener('input',()=>{const q=input.value.trim();clear();if(q.length<2||(/^\d+$/.test(q)&&q.length<5))return;timer=setTimeout(()=>run(q),200);});
+  form.addEventListener('submit',e=>{if(hits[0]){e.preventDefault();location.href=hits[0].href;}});
+  return {reset(){clear();input.value='';},destroy(){clear();}};
+ });
+ const land=nav.querySelector('[data-local-land] select');
+ if(land)land.addEventListener('change',()=>{if(land.value)location.href='/api/atlas/goto?ags='+encodeURIComponent(land.value);});
+ return {reset(){fields.forEach(f=>f.reset());if(land)land.value='';},destroy(){fields.forEach(f=>f.destroy());}};
 }
 
 /**
