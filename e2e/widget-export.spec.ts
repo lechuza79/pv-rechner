@@ -237,7 +237,7 @@ test.describe("Gemeinde-Monitor: Monatsrückblick", () => {
 
     const downloadPromise = page.waitForEvent("download");
     await widget.getByRole("button", { name: /^Optionen für/ }).click();
-    await widget.getByRole("menuitem", { name: "Download" }).click();
+    await widget.getByRole("menuitem", { name: "Aktueller Stand als Bild" }).click();
     const buf = await readFile((await (await downloadPromise).path())!);
     expect(buf.byteLength).toBeGreaterThan(30_000);
     expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
@@ -245,7 +245,7 @@ test.describe("Gemeinde-Monitor: Monatsrückblick", () => {
   });
 });
 
-// The monitor options menu: exactly Teilen, Download, Einbetten; keyboard, focus, Escape, outside tap.
+// The monitor options menu: exactly Link kopieren, Download, Einbetten; keyboard, focus, Escape, outside tap.
 test.describe("Gemeinde-Monitor: Optionsmenü", () => {
   test("Tastatur, Fokus, Escape und Tippen daneben; Einbetten ehrlich als nicht verfügbar", async ({ page }) => {
     await page.goto("/embed/gemeinde/09679202/monitor");
@@ -259,7 +259,7 @@ test.describe("Gemeinde-Monitor: Optionsmenü", () => {
     await button.focus();
     await page.keyboard.press("Enter");
     const items = widget.getByRole("menuitem");
-    await expect(items).toHaveText([/Teilen/, /Download/, /Einbetten/]);
+    await expect(items).toHaveText([/Link kopieren/, /Download/, /Einbetten/]);
     await expect(items.first()).toBeFocused();
     await page.keyboard.press("ArrowDown");
     await expect(items.nth(1)).toBeFocused();
