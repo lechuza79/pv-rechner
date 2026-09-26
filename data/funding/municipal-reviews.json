@@ -65757,5 +65757,330 @@
         "evidenceUrl": "https://www.sassenburg.de/loadDocument.phtml?FID=4082.4387.1&Ext=PDF"
       }
     ]
+  },
+  {
+    "regionId": "03257003",
+    "name": "Auetal",
+    "checkedAt": "2026-09-26T02:08:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Auetal führt unter „Kommunale Förderungen“ nur die Richtlinie „Jung kauft Alt“ (Altbauerwerb durch Familien); kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Volltextsuche ohne Treffer. Landkreis Schaumburg: „Schaumburg SolarFair“ (150 € je Balkonkraftwerk, nur mit Transferleistungsbezug, 130 Plätze bis Ende 2027) gilt auch hier und steht im Katalog. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche auetal.de (portal/suche.html) nach Photovoltaik, Balkonkraftwerk und Solar am 26.09.2026 — jeweils „keine … übereinstimmenden Inhalte“",
+      "Volltextsuche auetal.de nach Förderung am 26.09.2026 — Treffer nur Jung kauft Alt, Existenzgründer-, Sport- und Denkmalförderung, Bürgergeld",
+      "Programmseite Schaumburg SolarFair am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.auetal.de/umwelt-bauen/kommunale-foerderungen/",
+        "finding": "Am 26.09.2026 gelesen: Unter „Kommunale Förderungen“ steht allein die „Richtlinie der Gemeinde Auetal zur Förderung der Erwerbs von Altbauten für (Neu)Bürger“ — „Mit dem Förderprogramm \"Jung kauft Alt\" soll dem demographischen Wandel … entgegengewirkt werden.“"
+      },
+      {
+        "url": "https://www.auetal.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Am 26.09.2026: „Leider wurden keine mit Ihrer Suchanfrage Photovoltaik übereinstimmenden Inhalte gefunden.“ Ebenso für Balkonkraftwerk und Solar."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "auetal.de/umwelt-bauen/kommunale-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: einzige kommunale Förderung ist „Jung kauft Alt“ (Altbauerwerb), kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.auetal.de/umwelt-bauen/kommunale-foerderungen/"
+      },
+      {
+        "url": "auetal.de/portal/seiten/kommunale-foerderungen-900000291-27901.html?naviID=900000163&amp;brotID=900000163&amp;rubrik=900000003",
+        "disposition": "replaced",
+        "reason": "Ältere Portaladresse derselben Seite „Kommunale Förderungen“; durch die gelesene aktuelle Adresse erledigt.",
+        "evidenceUrl": "https://www.auetal.de/umwelt-bauen/kommunale-foerderungen/"
+      },
+      {
+        "url": "auetal.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.auetal.de%2Fumwelt-bauen%2Fkommunale-foerderungen%2F",
+        "disposition": "replaced",
+        "reason": "Barriere-Meldeformular, das nur auf die Seite „Kommunale Förderungen“ verweist; deren Inhalt ist gelesen.",
+        "evidenceUrl": "https://www.auetal.de/umwelt-bauen/kommunale-foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03257009",
+    "name": "Bückeburg",
+    "checkedAt": "2026-09-26T02:08:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bückeburg führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die einzige Förderseite für private Bauvorhaben gilt der Sanierung ortsbildprägender Gebäude; die Sitemap (268 Seiten) enthält keine Energie- oder Klimaförderseite. Die Volltextsuche liefert ohne Cookie-Zustimmung keinen Inhalt und wurde deshalb durch die Sitemap ersetzt. Landkreis Schaumburg: „Schaumburg SolarFair“ (150 € je Balkonkraftwerk, nur mit Transferleistungsbezug, 130 Plätze bis Ende 2027) gilt auch hier und steht im Katalog. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Sitemap bueckeburg.de (ceasy/modules/cms/sitemap.php, 268 Adressen) am 26.09.2026 nach foerder, zuschuss, klima, solar, photovolt, balkon, energie, waerme durchsucht — nur Sanierungsförderung, Stadtbäume/Klimawandel und Wirtschaftsförderung",
+      "Volltextsuche bueckeburg.de im Browser am 26.09.2026 — Inhalt wird ohne Cookie-Zustimmung nicht geladen (nicht zugestimmt)",
+      "Programmseite Schaumburg SolarFair am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planung-Entwicklung/Foerdermoeglichkeit-von-privat-Bauvorhaben-im-R",
+        "finding": "Am 26.09.2026: Seitenbeschreibung „Sind Sie Besitzer*in eines ortsbildprägenden/ landschaftstypischer Gebäudes? Planen Sie eine (Teil-) Sanierung?“ — Sanierungsförderung, kein Energie-Zuschuss."
+      },
+      {
+        "url": "https://www.bueckeburg.de/ceasy/modules/cms/sitemap.php",
+        "finding": "Am 26.09.2026 geladen: 268 Adressen, keine Seite zu Photovoltaik-, Balkon-, Speicher- oder Wärmepumpenförderung."
+      },
+      {
+        "url": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Projekte-allgemein",
+        "finding": "Am 26.09.2026 gelesen: Projektliste der Stadt (Theatersaal, Quartierskonzept, Blühwiese Evesen — „Die Bingo- Umweltstiftung fördert die Anlage der Blühfläche!“, Perspektive Innenstadt, Starkregen, Lärm, Brücke) — städtische Projekte, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bueckeburg.de/de/Leben-in-Bueckeburg/Planung-Entwicklung/Foerdermoeglichkeit-von-privat-Bauvorhaben-im-R",
+        "disposition": "reviewed",
+        "reason": "Sanierungsförderung für ortsbildprägende Gebäude, keine Energie-Förderung.",
+        "evidenceUrl": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planung-Entwicklung/Foerdermoeglichkeit-von-privat-Bauvorhaben-im-R"
+      },
+      {
+        "url": "bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Projekte-allgemein",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste städtischer Projekte, kein Förderprogramm für Haushalte.",
+        "evidenceUrl": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Projekte-allgemein"
+      },
+      {
+        "url": "bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Anlage-einer-Bluehwiese-im-Ortsteil-Evesen",
+        "disposition": "replaced",
+        "reason": "Städtisches Blühwiesen-Projekt mit Stiftungsförderung; Teaser auf der gelesenen Projektliste, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Projekte-allgemein"
+      },
+      {
+        "url": "bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Aktuelle-Projekte/Baumquartiere-in-der-Langen-Strasse",
+        "disposition": "replaced",
+        "reason": "Adresse bereits als entfernt geführt; laut gelesener Projektliste „Baumquartiere in der Langen Straße — Förderprogramm Perspektive Innenstadt“, ein städtisches Straßenbauprojekt, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planen,Bauen,Wohnen/Projekte-allgemein"
+      }
+    ]
+  },
+  {
+    "regionId": "03257028",
+    "name": "Obernkirchen",
+    "checkedAt": "2026-09-26T02:08:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Obernkirchen bietet eigene Fördermittel nur in drei Bereichen: städtische Eigenheimzulage, Gründerfonds und bauliche Immobilienumgestaltung Innenstadt. Die Seite „Geförderte Klimaschutzmaßnahmen“ listet städtische Projekte (Beleuchtungssanierung). Volltextsuche: Photovoltaik nur Auftragsvergaben/Bebauungsplan, Solar nur Perspektive Innenstadt, Bebauungspläne und Haushaltsbuch (dort nur ein Solarcarport), Balkonkraftwerk ohne Treffer. Landkreis Schaumburg: „Schaumburg SolarFair“ (150 € je Balkonkraftwerk, nur mit Transferleistungsbezug, 130 Plätze bis Ende 2027) gilt auch hier und steht im Katalog. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche obernkirchen.de nach Photovoltaik, Balkonkraftwerk, Solar und Förderung am 26.09.2026",
+      "Haushaltsbuch 2025/2026 nach solar, balkon, photovolt, stecker durchsucht am 26.09.2026 — nur Solarcarport",
+      "Programmseite Schaumburg SolarFair am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.obernkirchen.de/bauen-wirtschaft/wirtschaft-und-gewerbe/foerderprogramme/",
+        "finding": "Am 26.09.2026 gelesen: „Obernkirchen bietet in den drei Bereichen Städtische Eigenheimzulage Gründerfonds Bauliche Immobilienumgestaltung Innenstadt Obernkirchen eigene Fördermittel … an.“"
+      },
+      {
+        "url": "https://www.obernkirchen.de/rathaus-politik/bekanntmachungen/gefoerderte-klimaschutzmassnahmen/",
+        "finding": "Am 26.09.2026 gelesen: „Die Stadt Obernkirchen hat die nachfolgenden Klimaschutzprojekte mit Fördermitteln … umgesetzt.“ — Sanierung von Innen- und Straßenbeleuchtung, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.obernkirchen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Am 26.09.2026: „Leider wurden keine mit Ihrer Suchanfrage Balkonkraftwerk übereinstimmenden Inhalte gefunden.“ Photovoltaik: Auftragsvergaben und Umweltbericht; Solar: Perspektive Innenstadt, Bebauungspläne, Haushaltsbuch."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "obernkirchen.de/bauen-wirtschaft/wirtschaft-und-gewerbe/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Eigenheimzulage, Gründerfonds, Innenstadt-Umgestaltung — keine Energie-Förderung.",
+        "evidenceUrl": "https://www.obernkirchen.de/bauen-wirtschaft/wirtschaft-und-gewerbe/foerderprogramme/"
+      },
+      {
+        "url": "obernkirchen.de/rathaus-politik/bekanntmachungen/gefoerderte-klimaschutzmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: vom Bund geförderte städtische Beleuchtungssanierungen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.obernkirchen.de/rathaus-politik/bekanntmachungen/gefoerderte-klimaschutzmassnahmen/"
+      },
+      {
+        "url": "obernkirchen.de/portal/seiten/foerderprogramme-900000122-27940.html?naviID=900000315&amp;brotID=900000315&amp;rubrik=900000005",
+        "disposition": "replaced",
+        "reason": "Ältere Portaladresse der gelesenen Seite „Förderprogramme“.",
+        "evidenceUrl": "https://www.obernkirchen.de/bauen-wirtschaft/wirtschaft-und-gewerbe/foerderprogramme/"
+      },
+      {
+        "url": "obernkirchen.de/portal/seiten/gefoerderte-klimaschutzmassnahmen-900000092-27940.html?naviID=900000226&amp;brotID=900000226&amp;rubrik=900000003",
+        "disposition": "replaced",
+        "reason": "Ältere Portaladresse der gelesenen Seite „Geförderte Klimaschutzmaßnahmen“.",
+        "evidenceUrl": "https://www.obernkirchen.de/rathaus-politik/bekanntmachungen/gefoerderte-klimaschutzmassnahmen/"
+      },
+      {
+        "url": "obernkirchen.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.obernkirchen.de%2Frathaus-politik%2Fbekanntmachungen%2Fgefoerderte-klimaschutzmassnahmen%2F",
+        "disposition": "replaced",
+        "reason": "Barriere-Meldeformular mit Verweis auf die gelesene Seite „Geförderte Klimaschutzmaßnahmen“.",
+        "evidenceUrl": "https://www.obernkirchen.de/rathaus-politik/bekanntmachungen/gefoerderte-klimaschutzmassnahmen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03257031",
+    "name": "Rinteln",
+    "checkedAt": "2026-09-26T02:08:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Rinteln listet unter „Förderprogramme“ nur Programme, aus denen die Stadt selbst gefördert wird (LEADER, Zukunftsräume, Perspektive Innenstadt, Klimaanpassung Grundschulen u. a.); für Eigentümer nur Denkmalförderung des Landes. Volltextsuche: Photovoltaik nur Kita-Dach, Stadtwerke-Antrag und Freiflächen-PV, Balkonkraftwerk und Solar ohne Förderbezug. Landkreis Schaumburg: „Schaumburg SolarFair“ (150 € je Balkonkraftwerk, nur mit Transferleistungsbezug, 130 Plätze bis Ende 2027) gilt auch hier und steht im Katalog. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche rinteln.de (suche/SearchForm) nach Photovoltaik, Balkonkraftwerk und Solar am 26.09.2026",
+      "Websuche „Rinteln … Förderprogramm Balkonkraftwerk“ am 26.09.2026 — nur Händlerseite (Anker) ohne Amtsbeleg und Kreisprogramm SolarFair",
+      "Programmseite Schaumburg SolarFair am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme",
+        "finding": "Am 26.09.2026 gelesen: „Im Nachfolgenden finden Sie aktuelle – aber auch bereits abgeschlossene – Förderprogramme und -maßnahmen, durch die Rinteln zukunftstauglich entwickelt und gestaltet werden soll.“ — LEADER, Zukunftsräume Niedersachsen, Perspektive Innenstadt, Klimaanpassung in sozialen Einrichtungen, Stronger combined."
+      },
+      {
+        "url": "https://www.rinteln.de/leben-in-rinteln/bauen-und-wohnen/foerdermoeglichkeiten/foerdermoeglichkeiten-fuer-eigentuemer",
+        "finding": "Am 26.09.2026 gelesen: „Sie können beim Niedersächsischen Landesamt für Denkmalpflege Zuschüsse für Erhaltungs- oder Pflegemaßnahmen an Kulturdenkmalen … beantragen.“"
+      },
+      {
+        "url": "https://www.rinteln.de/suche/SearchForm?q=Photovoltaik",
+        "finding": "Am 26.09.2026: Treffer „Installation einer Photovoltaik-Anlage auf dem Dach der Kita Goldbeck“ (Ausschreibung), Ratsantrag Stadtwerke, Freiflächen-Photovoltaik — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Förderprogramme für städtische Projekte, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      },
+      {
+        "url": "rinteln.de/leben-in-rinteln/bauen-und-wohnen/foerdermoeglichkeiten/foerdermoeglichkeiten-fuer-eigentuemer",
+        "disposition": "reviewed",
+        "reason": "Gelesen: nur Denkmalförderung des Landes.",
+        "evidenceUrl": "https://www.rinteln.de/leben-in-rinteln/bauen-und-wohnen/foerdermoeglichkeiten/foerdermoeglichkeiten-fuer-eigentuemer"
+      },
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme/foerdermassnahme-klimaanpassung",
+        "disposition": "replaced",
+        "reason": "Unterseite eines städtischen Förderprojekts (Klimaanpassung Grundschulen, Innenstadt, Zukunftsräume), auf der gelesenen Übersicht beschrieben — keine Förderung für Haushalte.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      },
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme/sofortprogramm-perspektive-innenstadt",
+        "disposition": "replaced",
+        "reason": "Unterseite eines städtischen Förderprojekts (Klimaanpassung Grundschulen, Innenstadt, Zukunftsräume), auf der gelesenen Übersicht beschrieben — keine Förderung für Haushalte.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      },
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme/sofortprogramm-perspektive-innenstadt/lust-auf-fruehling",
+        "disposition": "replaced",
+        "reason": "Unterseite eines städtischen Förderprojekts (Klimaanpassung Grundschulen, Innenstadt, Zukunftsräume), auf der gelesenen Übersicht beschrieben — keine Förderung für Haushalte.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      },
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme/sofortprogramm-perspektive-innenstadt/rintelner-sommer-buehne-2021",
+        "disposition": "replaced",
+        "reason": "Unterseite eines städtischen Förderprojekts (Klimaanpassung Grundschulen, Innenstadt, Zukunftsräume), auf der gelesenen Übersicht beschrieben — keine Förderung für Haushalte.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      },
+      {
+        "url": "rinteln.de/politik-und-verwaltung/foerderprogramme/zukunftsraeume-niedersachsen",
+        "disposition": "replaced",
+        "reason": "Unterseite eines städtischen Förderprojekts (Klimaanpassung Grundschulen, Innenstadt, Zukunftsräume), auf der gelesenen Übersicht beschrieben — keine Förderung für Haushalte.",
+        "evidenceUrl": "https://www.rinteln.de/politik-und-verwaltung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03257035",
+    "name": "Stadthagen",
+    "checkedAt": "2026-09-26T02:08:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadthagen führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die erfassten Richtlinien sind Stadt.Fonds (Innenstadt, Vereine, Gewerbe), Sanierung stadtbildprägender Gebäude, Fassadenrenovierung und ein Landesprogramm für Unternehmen; der Bereich Klima- und Umweltschutz enthält Grünanlagen und Energieberichte, „Stadthagen wird gefördert“ nur städtische Projekte. Die frühere Mitfinanzierung der SolarFair-Runde 2024 ist nur aus der Presse bekannt; die laufende Runde 2026 zahlt der Landkreis. Landkreis Schaumburg: „Schaumburg SolarFair“ (150 € je Balkonkraftwerk, nur mit Transferleistungsbezug, 130 Plätze bis Ende 2027) gilt auch hier und steht im Katalog. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Richtlinien Stadt.Fonds 2026, Sanierungsmaßnahmen, Fassadenrenovierung und Änderungserlass WiFö am 26.09.2026 vollständig bzw. nach Energie-Stichworten gelesen",
+      "Seiten „Klima- und Umweltschutz, Landschaftspflege und Mobilität“ und „Stadthagen wird gefördert“ im Browser am 26.09.2026",
+      "Websuche „Stadthagen Förderung Balkonkraftwerk Photovoltaik Zuschuss 2026“ am 26.09.2026 — kein Stadtprogramm",
+      "Programmseite Schaumburg SolarFair am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadthagen.de/Dateien/Foerderrichtlinie-Stadt-Fonds-2026.html",
+        "finding": "Richtlinie am 26.09.2026 gelesen: „Er unterstützt engagierte Bürger*innen, Initiativen, Vereine, Unternehmen und Institutionen finanziell dabei, Projekte zur Stärkung der Stadt umzusetzen.“ Themenfelder: öffentliches Erscheinungsbild, Gastronomie, Einzelhandel, Kultur, Familie, Veranstaltungen — keine Haushalts-Energieanlagen."
+      },
+      {
+        "url": "https://www.stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html",
+        "finding": "Richtlinie (Scan) am 26.09.2026 gelesen: „Die Stadt Stadthagen gewährt zur Förderung der städtebaulichen Entwicklung der Stadt Zuschüsse zur Modernisierung und Instandsetzung stadtbildprägender Gebäude.“"
+      },
+      {
+        "url": "https://www.stadthagen.de/Dateien/Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html",
+        "finding": "Am 26.09.2026 gelesen: „Die Stadt Stadthagen gewährt im Interesse der Erhaltung des Stadtbildes Zuschüsse zu Pflege- und Verschönerungsarbeiten an Gebäudefassaden.“"
+      },
+      {
+        "url": "https://www.stadthagen.de/Dateien/Aenderungserlass-Foerderprogramm-WiFoe.html",
+        "finding": "Am 26.09.2026 gelesen: „Änderungserlass zum Förderprogramm „Neustart Niedersachsen Investition““ — Landesprogramm für Unternehmen der gewerblichen Wirtschaft."
+      },
+      {
+        "url": "https://www.stadthagen.de/Buergerservice/Rathaus/Stadthagen-wird-gefoerdert.htm",
+        "finding": "Am 26.09.2026 gelesen: „Zurzeit werden u.a. folgende Projekte gefördert: KSI: Energieeffizienz- und Potentialstudie für die Kläranlage Stadthagen …“ — städtische Projekte."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadthagen.de/Dateien/Foerderrichtlinie-Stadt-Fonds-2026.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Stadtentwicklungsfonds für Projekte, keine Haushalts-Energieförderung.",
+        "evidenceUrl": "https://www.stadthagen.de/Dateien/Foerderrichtlinie-Stadt-Fonds-2026.html"
+      },
+      {
+        "url": "stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Sanierung stadtbildprägender Gebäude.",
+        "evidenceUrl": "https://www.stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html"
+      },
+      {
+        "url": "stadthagen.de/Dateien/Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Fassadenpflege im Altstadtbereich.",
+        "evidenceUrl": "https://www.stadthagen.de/Dateien/Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html"
+      },
+      {
+        "url": "stadthagen.de/Dateien/Aenderungserlass-Foerderprogramm-WiFoe.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Landesprogramm Neustart Niedersachsen Investition für Unternehmen.",
+        "evidenceUrl": "https://www.stadthagen.de/Dateien/Aenderungserlass-Foerderprogramm-WiFoe.html"
+      },
+      {
+        "url": "stadthagen.de/Dateien/2026-07-14-RL-Bundesfoerderung-Jung-kauft-Alt-Ae1.html",
+        "disposition": "replaced",
+        "reason": "Am 26.09.2026 „Der aufgerufene Inhalt ist nicht mehr verfügbar“; Titel ist die Bundesförderung Jung kauft Alt (Wohneigentum), keine Energie-Förderung; die Übersicht „Stadthagen wird gefördert“ nennt kein Energieprogramm.",
+        "evidenceUrl": "https://www.stadthagen.de/Buergerservice/Rathaus/Stadthagen-wird-gefoerdert.htm"
+      },
+      {
+        "url": "stadthagen.de/Seiten/Lesefoerderung.html",
+        "disposition": "replaced",
+        "reason": "Leseförderung der Stadtbücherei (Navigationspunkt), sachfremd.",
+        "evidenceUrl": "https://www.stadthagen.de/Buergerservice/Rathaus/Stadthagen-wird-gefoerdert.htm"
+      }
+    ]
   }
 ]
