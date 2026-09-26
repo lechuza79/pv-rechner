@@ -336,6 +336,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/reckershausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/reckershausen", permanent: true },
       { source: "/photovoltaik-foerderung/reich-hunsrueck", destination: "/photovoltaik-foerderung/rheinland-pfalz/reich-hunsrueck", permanent: true },
       { source: "/photovoltaik-foerderung/benzweiler", destination: "/photovoltaik-foerderung/rheinland-pfalz/benzweiler", permanent: true },
+      { source: "/photovoltaik-foerderung/bubach", destination: "/photovoltaik-foerderung/rheinland-pfalz/bubach", permanent: true },
       { source: "/photovoltaik-foerderung/staudt", destination: "/photovoltaik-foerderung/rheinland-pfalz/staudt", permanent: true },
       { source: "/photovoltaik-foerderung/windhagen", destination: "/photovoltaik-foerderung/rheinland-pfalz/windhagen", permanent: true },
       { source: "/photovoltaik-foerderung/koenigswinter", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koenigswinter", permanent: true },

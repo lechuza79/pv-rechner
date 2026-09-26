@@ -658,6 +658,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // 31.12.2022); the owner rule and the renewables-only heating rule have no
   // test form yet.
   "kuelz-hunsrueck-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
+  // the energy check and the unregulated balcony eligibility have no test form yet.
+  "bubach-energiespar",
 ];
 
 /**

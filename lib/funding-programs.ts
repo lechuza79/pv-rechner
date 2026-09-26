@@ -7798,6 +7798,63 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
   },
 
+  "bubach-energiespar": {
+    id: "bubach-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Bubach", level: "kommune", region: "Bubach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140020",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/bubach/richtlinie-zur-foerderung-der-energieeinsparung-bubach.pdf?cid=63j",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-08-07",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Festbetrag für ein Balkonkraftwerk mit Prozentgrenze; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.000 €, Speicher max. 2.000 €, Balkonkraftwerk max. 200 €, Heizungsanlagen zusammen max. 2.000 €; insgesamt 5.000 € je Antragsteller",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "200 € je kWp, max. 2.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.000 €, höchstens 30 % der Anschaffungskosten, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "200 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung, Hybridheizung)", value: "zusammen bis 2.000 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Bubach",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Bubach und nur mit einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; bis 30 € davon übernimmt die Gemeinde", nur: ["pv", "waermepumpe"] },
+      { text: "Wer das Balkonkraftwerk beantragen darf, regelt die Richtlinie nicht ausdrücklich; einen Energie-Check verlangt sie dafür nicht", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gibt es bis 4.000 €, begrenzt auf 200 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung auf dem Vordruck an das Ortsbürgermeisteramt",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 200, pvCap: 2000, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 200,
+    // GUIDELINE READ IN FULL 27.09.2026 — pages 1-8 are SCANNED (no text
+    // layer), read page by page as images; byte-identical to the copy saved
+    // 26.09.2026. Council 07.08.2018 (period 2018-2020), in force 01.09.2018
+    // (§ 9 (6)), consolidated 11.01.2021, last amended 06.12.2024 (7th
+    // amendment). § 1 (3) Nr. 1 roof PV "bis zu einer Gesamtleistung von
+    // 10 kWp je Anlage", hence pvMax: 10. § 4 (2) "200 € je kWp Leistung
+    // dieser Anlage gefördert. Die Förderung ist auf 2.000 € je Anlage und
+    // Gebäude begrenzt" — computed. § 4 (3) storage 2,000 € max 30 % and
+    // § 4 (4) combined unit 4,000 € (200 €/kWp, 30 % of storage share) —
+    // information only. § 4 (11) balcony (§ 1 (3) Nr. 13) "einmalige
+    // Förderung von 200 €, höchstens jedoch 30 % der Anschaffungskosten" —
+    // computed. § 4 (7) heating Nr. 6-9 incl. heat pump "insgesamt 2.000 €",
+    // 30 % — not computed. § 4 (12) total 5,000 € per applicant. § 2 (2):
+    // Nr. 1-11 only for owners; § 2 names NO eligible group for Nr. 13
+    // (balcony), so no nurWohnform — it would invent a restriction the text
+    // does not make. § 3 (1): energy check for Nr. 1-11, not for the balcony.
+    // § 9 (7): the VG guideline takes priority for identical items (it covers
+    // appliances and consultation only, per the VG guideline read for the
+    // Tiefenbach review on 26.09.2026). § 9 (8): double funding only with
+    // another Bubach programme is excluded; other funders are combinable, so
+    // BUND. § 9 (9)/(10): period and measures "bis zum 31.12.2027", so
+    // endetIso. Found through the VG Simmern-Rheinböllen sitemap; the
+    // municipality was not in the catalogue.
+  },
+
   "kuelz-hunsrueck-heizung-ee": {
     id: "kuelz-hunsrueck-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
     traeger: "Ortsgemeinde Külz (Hunsrück)", level: "kommune", region: "Külz (Hunsrück)",

@@ -68014,5 +68014,26 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07140020",
+    "name": "Bubach",
+    "checkedAt": "2026-09-26T22:19:33Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bubach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 07.08.2018, in Kraft 01.09.2018, zuletzt geändert 06.12.2024, Maßnahmen bis 31.12.2027): Dachanlage bis 10 kWp 200 €/kWp bis 2.000 €, Speicher 2.000 € höchstens 30 %, Balkonkraftwerk 200 € höchstens 30 %, Heizungsanlagen einschließlich Wärmepumpe zusammen bis 2.000 € höchstens 30 %; insgesamt 5.000 €. Dachanlage, Speicher und Heizung nur für Eigentümer nach Energie-Check; für das Balkonkraftwerk nennt die Richtlinie keinen Berechtigtenkreis. Neu katalogisiert als bubach-energiespar; Richtlinie ist eingescannt und wurde seitenweise als Bild gelesen.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Bubach mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (8 eingescannte Seiten als Bild, dazu Antragsvordruck), am 27.09.2026 neu geladen und bytegleich zur Akte vom 26.09.2026",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/bubach/richtlinie-zur-foerderung-der-energieeinsparung-bubach.pdf?cid=63j",
+        "finding": "§ 4 (2): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 1 wird mit einmalig 200 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.000 € je Anlage und Gebäude begrenzt.“ § 4 (11): Balkonanlage „einmalige Förderung von 200 €, höchstens jedoch 30 % der Anschaffungskosten“. § 9 (10): Maßnahmen „bis zum 31.12.2027 getätigt, bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
   }
 ]
