@@ -470,6 +470,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
   { slug: "bickenbach", name: "Bickenbach", ags: "07140014", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
   { slug: "hausbay", name: "Hausbay", ags: "07140047", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "horn", name: "Horn", ags: "07140058", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "reckershausen", name: "Reckershausen", ags: "07140122", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
   // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
   // above: the Verbandsgemeinde's balcony grant is as specific as the town's

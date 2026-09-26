@@ -67805,5 +67805,128 @@
         "evidenceUrl": "https://www.oberbergkirchen.de/page/2/?s=f%C3%B6rderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "07140058",
+    "name": "Horn",
+    "checkedAt": "2026-09-26T18:14:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Horn (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert Eigentümer über die eigene Energiesparrichtlinie (Ratsbeschluss 12.05.2022, zuletzt geändert 18.11.2024, Maßnahmen bis 31.12.2026): Dachanlage 100 €/kWp bis 1.500 €, Speicher 25 % bis 1.500 €, Balkonkraftwerk 150 € höchstens 30 %; Voraussetzung Energie-Check vor Ort. Neu katalogisiert als horn-hunsrueck-energieeinsparung, zwei unabhängige Prüfer (einer adversarial) bestätigen alle Sätze und Bedingungen. Kein Kreisprogramm für Private.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026) nach energiespar/richtlinie/foerder durchsucht: Energiesparrichtlinien der Ortsgemeinden im Ortsrecht der VG",
+      "Förderprogramm-Übersicht horn-hunsrueck.de gelesen (Energieeinsparung, Ortsentwicklung, Leben mittendrin, Brauchwasser, Dorferneuerung)",
+      "Richtlinie im Original (VG-Ortsrecht und Kopie auf horn-hunsrueck.de mit Geräteliste und Antrag) vollständig gelesen",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/horn/energiesparrichtlinie-durchgeschrieben-horn.pdf?cid=2dj",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 2 wird mit einmalig 100 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 1.500 € je Anlage und Gebäude begrenzt.“ § 2 (2): Förderung nach § 1 (3) nur für „Eigentümer eines Wohngebäudes“."
+      },
+      {
+        "url": "https://horn-hunsrueck.de/foerderung-energieeinsparungen-in-horner-haushalten",
+        "finding": "„Welche Maßnahmen gefördert werden & in welcher Höhe entnehmen Sie bitte der folgenden Energiesparrichtlinie: Energiesparrichtlinie der Ortsgemeinde Horn (11/24)“ — mit Antragsvordruck, kein Hinweis auf erschöpfte Mittel."
+      },
+      {
+        "url": "https://horn-hunsrueck.de/foerderung-ortsentwicklung",
+        "finding": "Förderung besonderer Gestaltungsmaßnahmen nach der Ortskern-Richtlinie der VG Simmern — bauliche Ortsentwicklung, keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "horn-hunsrueck.de/foerderung-energieeinsparungen-in-horner-haushalten",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Energiesparrichtlinie gelesen, Richtlinie im Original gelesen und katalogisiert.",
+        "evidenceUrl": "https://horn-hunsrueck.de/foerderung-energieeinsparungen-in-horner-haushalten"
+      },
+      {
+        "url": "horn-hunsrueck.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite ohne eigenen Inhalt; einschlägig ist allein die verlinkte Energiesparrichtlinie, die katalogisiert ist.",
+        "evidenceUrl": "https://horn-hunsrueck.de/foerderung-energieeinsparungen-in-horner-haushalten"
+      },
+      {
+        "url": "horn-hunsrueck.de/foerderung-ortsentwicklung",
+        "disposition": "reviewed",
+        "reason": "Ortskern-/Gestaltungsförderung, betrifft keine der geprüften Techniken.",
+        "evidenceUrl": "https://horn-hunsrueck.de/foerderung-ortsentwicklung"
+      }
+    ]
+  },
+  {
+    "regionId": "07140122",
+    "name": "Reckershausen",
+    "checkedAt": "2026-09-26T18:14:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Reckershausen (VG Kirchberg, Rhein-Hunsrück-Kreis) fördert Eigentümer über die Energiesparrichtlinie (Ratsbeschluss 19.04.2016, zuletzt geändert 07.10.2025, verlängert bis 31.12.2027): Dachanlage 200 €/kWp bis 5 kWp und 300 € je weiteres kWp bis 10 kWp, max. 2.500 €; Speicher 2.500 €, höchstens 30 %; Voraussetzung Energieberatung. Kein Balkonkraftwerk, keine Wärmepumpe. Neu katalogisiert als reckershausen-energiespar, nur als Information (Grenzsatz-Staffel und Speicher-Prozentgrenze nicht rechenbar); zwei unabhängige Prüfer (einer adversarial) bestätigen alle Angaben.",
+    "searches": [
+      "Richtlinie im Original vollständig gelesen (5 Seiten)",
+      "Suche auf reckershausen.de nach Energiespar/Förderung",
+      "Sitemap kirchberg-hunsrueck.de nach kipki/foerder/energie/balkon/photovolt durchsucht: VG-Leistungen betreffen Vereine, Wirtschaft, Dorferneuerung und Energieberatung, kein Zuschussprogramm für Private",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://reckershausen.de/wp-content/uploads/2026/05/Energiesparrichtlinie-2025.pdf",
+        "finding": "§ 5 (4): „Die Neuinstallation einer Photovoltaikanlage … wird einmalig mit 200 € je kWp bis zu einer Leistung von bis zu 5 kWp und darüber hinaus 300 € je kWp von 5 kWp bis zu einer Leistung von 10 kWp dieser Anlage gefördert. Die Förderung ist auf 2.500 € je Anlage und Standort begrenzt.“ § 7 (6): verlängert bis zum 31.12.2027."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "reckershausen.de/wp-content/uploads/2026/05/Energiesparrichtlinie-2025.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie vollständig gelesen und als Informationseintrag katalogisiert.",
+        "evidenceUrl": "https://reckershausen.de/wp-content/uploads/2026/05/Energiesparrichtlinie-2025.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "07140150",
+    "name": "Tiefenbach",
+    "checkedAt": "2026-09-26T18:29:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tiefenbach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) hat keine eigene Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Förderseite der Gemeinde verweist nur auf VG-Programme (Leben mittendrin, Energiesparrichtlinie für Haushaltsgeräte und Energieberatung, Sport, Klassenfahrten, Wirtschaft) und die Kreis-Dorferneuerung; im Ortsrecht-Ordner der Gemeinde auf sim-rhb.de steht keine Energiesparrichtlinie; der Doppelhaushalt 2025/26 enthält Zuschüsse nur für Vereine, Ortskern-Projektkäufe, Bürgerbus und Kita, das Produkt „Photovoltaikanlage“ ist die gemeindeeigene Anlage. Kein Kreisprogramm für Private.",
+    "searches": [
+      "Förderprogramm-Seite der Gemeinde gelesen (26.09.2026)",
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Tiefenbach (Satzungen, Haushaltsplan) ohne Energiesparrichtlinie; Energiesparrichtlinien nur bei Benzweiler, Bubach, Fronhofen, Horn, Külz, Neuerkirch, Rayerschied, Reich, Wahlbach",
+      "Doppelhaushalt 2025/26 im Original nach Zuschüssen, Photovoltaik, Energie, Klimaschutz durchsucht",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://tiefenbach-hunsrueck.de/foerderprogramme.html",
+        "finding": "„Förderprogramme der Verbandsgemeinde Simmern-Rheinböllen: Leben mittendrin, Energiesparrichtlinie, Sportförderung / Vereinsförderung, Zuschüsse zu mehrtägigen Klassenfahrten, Wirtschaftsförderung; Förderprogramme der Kreisverwaltung: Antrag auf Zuwendung – private Dorferneuerung“ — kein eigenes Energieprogramm der Gemeinde."
+      },
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/tiefenbach/haushaltplan-2025-2026-tiefenbach.pdf?cid=4gy",
+        "finding": "Doppelhaushalt 2025/26: Zuweisungen und Zuschüsse nur „Unterstützung Vereine“, „Förderprogramm für Projektkäufe im Ortskern“, „Zuschuss Bürgerbus“ und Kita-Umlage; Produkt 53100 „Photovoltaikanlage“ mit Erträgen aus Verkäufen ist die gemeindeeigene Anlage."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: einziges einschlägiges Programm (Balkonkraftwerke für einkommensschwache Haushalte, KIPKI-Mittel) laut Prüfung vom 18.09.2026 bis 30.06.2026 befristet und beendet; kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tiefenbach-hunsrueck.de/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste auf VG- und Kreisprogramme ohne eigenes Energieprogramm; die VG-Energiesparrichtlinie fördert laut ihrer Bekanntgabe Haushaltsgeräte und Energieberatung, keine PV, keinen Speicher, kein Balkonkraftwerk und keine Wärmepumpe.",
+        "evidenceUrl": "https://tiefenbach-hunsrueck.de/foerderprogramme.html"
+      }
+    ]
   }
 ]

@@ -639,6 +639,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // the owner rule, the one-year tenancy for balcony devices and the re-funding
   // blocks have no test form yet.
   "bickenbach-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule
+  // (incl. balcony), the 30 kWp limit and the own-consumption purpose of the
+  // storage have no test form yet.
+  "horn-hunsrueck-energieeinsparung",
+  // Added 26 Sep 2026: guideline read in full, information only; the energy
+  // consultation, the owner rule and the start-after-entry-into-force rule have
+  // no test form yet.
+  "reckershausen-energiespar",
 ];
 
 /**

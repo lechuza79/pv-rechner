@@ -7749,6 +7749,92 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Adversarial reviewer: every rate confirmed, "before" rejected (fixed).
   },
 
+  "horn-hunsrueck-energieeinsparung": {
+    id: "horn-hunsrueck-energieeinsparung", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Horn", level: "kommune", region: "Horn",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140058",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/horn/energiesparrichtlinie-durchgeschrieben-horn.pdf?cid=2dj",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2022-05-12",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp, Anteil der Speicherkosten, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "max. 1.500 € Dachanlage, 1.500 € Speicher (als Kombigerät mit integriertem Speicher zusammen bis 3.000 €), 150 € Balkonkraftwerk; insgesamt 5.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik", value: "100 € je kWp, max. 1.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "25 % der Anschaffungskosten, max. 1.500 €, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "150 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes in Horn — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist ein Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde",
+      { text: "Dach- und Fassadenanlagen bis 30 kWp, zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt zunächst für Anschaffungen, die bis 31.12.2026 abgeschlossen sind; der Gemeinderat kann sie verlängern",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1500,
+    balkonPercentOfCost: 0.3, balkonCap: 150,
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 6 pages; the copy on
+    // horn-hunsrueck.de, "Energiesparrichtlinie (11/24)", has the same body
+    // plus device list and application form, 9 pages): council decision
+    // 12.05.2022, in force retroactively 01.07.2021 (§ 8 (6)), last amended
+    // 18.11.2024. § 4 (3) PV "100 € je kWp … auf 1.500 € je Anlage und Gebäude
+    // begrenzt"; § 4 (4) storage 25 % max 1,500 € — NOT computed (the model has
+    // no storage percentage); § 4 (5) PV with integrated storage 3,000 € but
+    // limited to 100 €/kWp + 25 % without repeating the 1,500 € PV cap, so a
+    // large combined system can get more for its PV part — the computed value
+    // errs low, the combined maximum stands in maxFoerderung; § 4 (11)
+    // balcony 150 € max 30 % — computed. § 2 (2): everything in § 1 (3),
+    // including the balcony (Nr. 10), only for owners of a residential building
+    // — hence nurWohnform. § 3 (5) energy check required for all of § 1 (3).
+    // § 8 (5) funding independent of other grants, so BUND. § 8 (7) term until
+    // 31.12.2026 — a guideline term, not endetIso. Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "reckershausen-energiespar": {
+    id: "reckershausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Reckershausen", level: "kommune", region: "Reckershausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140122",
+    url: "https://reckershausen.de/wp-content/uploads/2026/05/Energiesparrichtlinie-2025.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2016-04-19",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbetrag für einen Speicher mit Prozentgrenze",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher; insgesamt 6.000 € je Haushalt",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je weiteres kWp bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Reckershausen",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      "Ein Speicher muss überwiegend dem Eigenverbrauch dienen",
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht vorher mit Angebot oder danach mit Rechnung an den Ortsbürgermeister, über Dachanlage und Speicher entscheidet der Gemeinderat",
+      "Die Richtlinie ist bis 31.12.2027 verlängert; der Gemeinderat kann sie erneut verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 5 pages): council decision
+    // 19.04.2016, last amended 07.10.2025, term extended to 31.12.2027 (§ 7 (6)).
+    // DELIBERATELY WITHOUT A COMPUTED RATE. § 5 (4) PV "200 € je kWp bis zu
+    // einer Leistung von bis zu 5 kWp und darüber hinaus 300 € je kWp von 5 kWp
+    // bis zu einer Leistung von 10 kWp … auf 2.500 € … begrenzt" is a MARGINAL
+    // rate staffel; the model computes pvSockel + kwp × pvPerKwp over the full
+    // size and pvTiers carry flat amounts (same reasoning as Unterföhring and
+    // Dietmannsried). § 5 (5) storage flat 2,500 € but max 30 % — the model has
+    // no storage percentage (same as Bickenbach). No balcony, no heat pump in
+    // § 2. § 3 (2): PV and storage only for owners; § 4 (3) energy
+    // consultation for § 2 Nr. 2-12. The guideline is silent on other public
+    // funding, so BUND stays. Found through the municipality's source queue;
+    // it was not in the catalogue.
+  },
+
   "schlierbach-energiespeicher": {
     id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
     traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",
