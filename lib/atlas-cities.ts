@@ -475,6 +475,11 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "reich-hunsrueck", name: "Reich", ags: "07140123", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
   { slug: "benzweiler", name: "Benzweiler", ags: "07140011", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1066 },
   { slug: "bubach", name: "Bubach", ags: "07140020", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
+  { slug: "fronhofen", name: "Fronhofen", ags: "07140039", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "rayerschied", name: "Rayerschied", ags: "07140121", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  // Two programmes on this key (energy-saving guideline with roof PV, and a
+  // heating-only guideline); the page shows the one that funds roof PV.
+  { slug: "neuerkirch", name: "Neuerkirch", ags: "07140101", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076, fundingId: "neuerkirch-energiespar" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
   // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
   // above: the Verbandsgemeinde's balcony grant is as specific as the town's

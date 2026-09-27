@@ -68035,5 +68035,85 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07140121",
+    "name": "Rayerschied",
+    "checkedAt": "2026-09-27T00:40:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Rayerschied (VG Simmern-Rheinböllen) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 21.02.2019, in Kraft ab 01.01.2020, Förderperiode bis 31.12.2027): Dachanlage bis 10 kWp 250 €/kWp bis 2.500 €, Speicher 2.500 € höchstens 30 %, Kombigerät bis 5.000 €, Balkonkraftwerk 30 % bis 300 € (Mieter und Eigentümer), Heizung einschließlich Wärmepumpe zusammen bis 2.500 € höchstens 30 %; insgesamt 10.000 €. Energie-Check und Eigentum nötig für Dachanlage, Speicher und Heizung; Antrag binnen 12 Monaten nach Fertigstellung. Neu katalogisiert als rayerschied-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle gerechneten Werte und fanden die 12-Monats-Frist (Textschicht las 1215). Hinweis: Rayerschied fehlt in der Postleitzahl-Zuordnung (abgeschnittene Tabelle), eigene Aufgabe angelegt.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Rayerschied mit Energiesparrichtlinie, Anhang, Antragsvordruck, Haushaltsplan 2024/2025",
+      "Richtlinie am 27.09.2026 neu geladen, bytegleich zur Akte vom 26.09.2026, vollständig gelesen",
+      "Haushaltsplan 2024/2025: Konto 28100.541900 Energiesparrichtlinie",
+      "VG-Klimaschutz-Serviceseite: keine eigene VG-Förderung für PV/Balkon, nur Ortsgemeinde-Richtlinien"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/rayerschied/richtlinie-energieeinsparung-rayerschied.pdf?cid=65j",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 2 wird mit 250 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500 € je Anlage und Gebäude begrenzt.“ § 4 (13): Balkonanlage „30 % der Anschaffungskosten, jedoch höchstens 300,00 €“. § 8 (11): Maßnahmen „bis zum 31.12.2027 getätigt bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140101",
+    "name": "Neuerkirch",
+    "checkedAt": "2026-09-27T00:40:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Neuerkirch hat zwei eigene Richtlinien: Energiesparrichtlinie (Ratsbeschluss 09.08.2017, 7. Änderung 13.11.2025, bis 31.12.2027): Dachanlage bis 10 kWp 250 €/kWp bis 2.500 €, Speicher 3.000 € höchstens 30 %, Balkonkraftwerk 300 € höchstens 30 %, insgesamt 6.000 €; im Haushalt 2026/2027 je 50.000 €. Heizungsrichtlinie (12.05.2014, geändert 05.05.2015, ohne Enddatum): Heizung aus erneuerbaren Energien einschließlich Wärmepumpe bis 4.000 € je Objekt, auch Nahwärmeanschluss; die Gemeinde-Website verweist weiterhin darauf, eigener Haushaltsposten fehlt. Neu katalogisiert als neuerkirch-energiespar und neuerkirch-heizung-ee (nur Information); Stadtseite zeigt das Energiespar-Programm. Zwei unabhängige Prüfer bestätigen alle gerechneten Werte.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Neuerkirch (Energiesparrichtlinie, Heizungsrichtlinie, Entsiegelungs- und Ortsentwicklungsrichtlinie, Haushaltsplan 2026/2027)",
+      "Beide Richtlinien am 27.09.2026 neu geladen, bytegleich zur Akte, vollständig gelesen",
+      "Haushaltsplan 2026/2027 nach Förderposten durchsucht: 118.000 € (50.000 € Energiesparrichtlinie, 60.000 € Leben mittendrin, 3.000 € Sport, 5.000 € Begrünung)",
+      "Gemeinde-Website neuerkirch.de/bauen-wohnen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-zur-foerderung-der-energieeinsparung-neuerkirch-durchgeschrieben.pdf?cid=66g",
+        "finding": "§ 4 (2): „Die Errichtung einer Photovoltaikanlage nach § 1 Abs. 3 Nr. 2 wird einmalig mit 250 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500 € je Anlage begrenzt.“ § 4 (7): Balkonanlage „300,00 €, höchstens jedoch 30 % der Anschaffungskosten“. § 8 (9): „bis zum 31.12.2027“."
+      },
+      {
+        "url": "https://www.neuerkirch.de/bauen-wohnen",
+        "finding": "„Der Anschluss wird gefördert wie auch alternative Maßnahmen zur Wärmegewinnung und Einsparungen durch erneuerbare Energien. Einzelheiten der Fördermöglichkeiten entnehmen Sie der ‚Richtlinie … vom 12.05 2014‘“; Förderprogramme verweisen auf die VG-Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neuerkirch.de/bauen-wohnen",
+        "disposition": "reviewed",
+        "reason": "Seite am 27.09.2026 gelesen: verweist auf die Förderrichtlinien der Ortsgemeinde bei der VG (beide katalogisiert) und bestätigt die laufende Heizungsförderung; kein weiteres Programm.",
+        "evidenceUrl": "https://www.neuerkirch.de/bauen-wohnen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140039",
+    "name": "Fronhofen",
+    "checkedAt": "2026-09-27T00:40:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Fronhofen fördert über die Richtlinie zur regenerativen Strom- und Wärmeversorgung (19.01.2015, ohne Enddatum): neue Photovoltaikanlage nur zusammen mit Speicher bis 4.000 €, Speicher-Nachrüstung an Anlagen seit 2009 bis 3.000 €, Heizung aus erneuerbaren Energien einschließlich Wärmepumpe bis 4.000 €, Nahwärmeanschluss; je Gebäude nur Strom oder Wärme, nur Eigentümer, Betrag nach Kosten ohne festen Satz (nicht gerechnet). Laufend belegt durch den Doppelhaushalt 2026/2027 (2026: 16.000 €, ab 2027 jährlich 4.000 € für diese Förderung). Neu katalogisiert als fronhofen-regenerativ; zwei unabhängige Prüfer bestätigen Status und Beträge.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Fronhofen (Richtlinie, Doppelhaushalt 2026/2027)",
+      "Richtlinie am 27.09.2026 neu geladen, bytegleich zur Akte, vollständig gelesen",
+      "Doppelhaushalt 2026/2027 nach Förderposten durchsucht (Konto 28100.541900)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/foerderrichtlinie-erneuerbare-energien-fronhofen-durchgeschrieben.pdf?cid=2bd",
+        "finding": "§ 4 1.2: „Die Neuinstallation von PV-Anlagen einschließlich der erforderlichen Stromspeicher wird mit höchstens 4.000,- Euro gefördert.“ § 2: „entweder für Wärme- oder für Stromversorgung“."
+      },
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/haushaltssatzung-und-plan-2027-fronhofen.pdf?cid=5is",
+        "finding": "Konto 541900: „16.000 € für die Auszahlung von Fördersummen gem. Richtlinien der OG (Förderung regenerativer Strom-/Wärmeversorgung)“; „ab 2027: Förderung 4.000 €“."
+      }
+    ],
+    "sources": []
   }
 ]

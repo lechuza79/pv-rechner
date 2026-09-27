@@ -661,6 +661,20 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
   // the energy check and the unregulated balcony eligibility have no test form yet.
   "bubach-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // for PV/storage/heating, the 2-year balcony holding period and the
+  // 15-month application window have no test form yet.
+  "rayerschied-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // and the unregulated balcony eligibility have no test form yet.
+  "neuerkirch-energiespar",
+  // Added 27 Sep 2026: heating-only guideline read in full; the owner rule and
+  // the renewables-only heating rule have no test form yet.
+  "neuerkirch-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full, information only; the owner
+  // rule, PV-only-with-storage and the power-or-heat-per-building rule have no
+  // test form yet.
+  "fronhofen-regenerativ",
 ];
 
 /**

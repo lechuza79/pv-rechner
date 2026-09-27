@@ -7855,6 +7855,209 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // municipality was not in the catalogue.
   },
 
+  "rayerschied-energiespar": {
+    id: "rayerschied-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Rayerschied", level: "kommune", region: "Rayerschied",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140121",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/rayerschied/richtlinie-energieeinsparung-rayerschied.pdf?cid=65j",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2019-02-21",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Anteil eines Balkonkraftwerks; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 2.500 €, Balkonkraftwerk max. 300 €, Heizungsanlagen zusammen max. 2.500 €; insgesamt 10.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung)", value: "zusammen bis 2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Rayerschied",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Rayerschied und nur nach einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, und während der Laufzeit genügt ein Check", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Mieter und Eigentümer eines Wohngebäudes in Rayerschied beantragen; es muss mindestens zwei Jahre im eigenen Eigentum bleiben", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) bis 10 kWp gibt es bis 5.000 €, begrenzt auf 250 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz; ob der Zuschuss neben der Bundesförderung für die Wärmepumpe gezahlt wird, lässt die Richtlinie offen (Doppelförderung ist ausgeschlossen) — vorher beim Ortsbürgermeister klären", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie (01.01.2020); der Antrag geht spätestens 12 Monate nach Fertigstellung mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Eine Doppelförderung ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 7 pages, byte-identical to
+    // the copy saved 26.09.2026): council 21.02.2019, in force retroactively
+    // 01.01.2020 (§ 8 (7)), 4th amendment 05.08.2025, § 8 (10)/(11) period and
+    // measures "bis zum 31.12.2027" (footnotes cite a 5th amendment), so
+    // endetIso. § 1 (3) Nr. 2 roof PV "bis zu einer Gesamtleistung von 10 kWp
+    // je Anlage", hence pvMax: 10. § 4 (3) "250 € je kWp … auf 2.500 € je
+    // Anlage und Gebäude begrenzt" — computed. § 4 (4) storage 2,500 € max
+    // 30 % and § 4 (5) combined unit max 5,000 € — information only. § 4 (13)
+    // balcony (Nr. 14) "30 % der Anschaffungskosten, jedoch höchstens 300,00 €"
+    // — computed. § 4 (9) heating Nr. 8-10 incl. heat pump max 2,500 € and
+    // 30 % — not computed. § 4 (16) total 10,000 €. § 2 (3): Nr. 1-11 only for
+    // owners; § 2 (5): Nr. 13-16 (incl. balcony) tenants AND owners, so no
+    // nurWohnform. § 3 (1): energy check for Nr. 1-11 (PV, storage, heat pump),
+    // one check suffices during the term; § 1 (1) the town pays the 40 € own
+    // share. § 5 (2) application within 12 months (the text layer reads "1215":
+    // "12" plus footnote 15, checked on the rendered page). § 8 (4)
+    // balcony kept 2 years. § 8 (8): a VG Simmern energy guideline takes
+    // priority for identical items — it covers appliances and consultation
+    // only (see Bubach), so not PV, storage or balcony. § 8 (9): double funding
+    // excluded, VG/district programmes are none; no federal cash grant for PV or
+    // a balcony, so BUND; for the heat pump (BEG exists) the text leaves stacking
+    // open, hence the heat-pump condition — nothing is computed there. Council
+    // 27.09.2026: two verifiers incl. an adversarial one confirm every computed
+    // value; they caught the 12-month deadline. Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "neuerkirch-energiespar": {
+    id: "neuerkirch-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Neuerkirch", level: "kommune", region: "Neuerkirch",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140101",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-zur-foerderung-der-energieeinsparung-neuerkirch-durchgeschrieben.pdf?cid=66g",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2017-08-09",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Festbetrag für ein Balkonkraftwerk mit Prozentgrenze",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 3.000 €, Balkonkraftwerk max. 300 €; insgesamt 6.000 € je Antragsteller",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "3.000 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "300 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Neuerkirch",
+      { text: "Dachanlage und Speicher nur für Eigentümer eines Wohngebäudes in Neuerkirch und nur nach einem Energie-Check vor Ort durch ein anerkanntes Institut; bis 40 € davon übernimmt die Gemeinde", nur: ["pv"] },
+      { text: "Wer das Balkonkraftwerk beantragen darf, regelt die Richtlinie nicht ausdrücklich; einen Energie-Check verlangt sie dafür nicht", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; der Speicher muss dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Der Antrag geht auf dem Vordruck an den Ortsbürgermeister — vor dem Vorhaben mit dem Angebot oder danach mit der Rechnung; ausgezahlt wird nach Schlussrechnung und Abnahme",
+      "Eine Doppelförderung ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Bewilligt wird im Rahmen der Haushaltsmittel nach Eingang der vollständigen Unterlagen; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, byte-identical to the copy
+    // saved 26.09.2026): council 09.08.2017, in force retroactively 01.04.2017
+    // (§ 8 (7)), 7th amendment 13.11.2025, § 8 (8)/(9) term and measures "bis
+    // zum 31.12.2027", so endetIso. § 1 (3) Nr. 2 roof PV "bis zu einer
+    // Gesamtleistung von 10 kWp je Anlage", hence pvMax: 10. § 4 (2) "einmalig
+    // mit 250 € je kWp … auf 2.500 € je Anlage begrenzt" — computed. § 4 (3)
+    // storage 3,000 € max 30 % — information only. § 4 (7) balcony (Nr. 7)
+    // "einmalige Förderung von 300,00 €, höchstens jedoch 30 % der
+    // Anschaffungskosten" — computed as min(30 %, 300 €). § 4 (9) total 6,000 €.
+    // § 2 (2): Nr. 2-6 only for owners; § 2 names NO eligible group for Nr. 7
+    // (balcony), so no nurWohnform. § 3 (1): energy check for Nr. 2-6, not for
+    // the balcony; § 4 (1) Nr. 2 check costs up to 40 €. No heat pump in this
+    // guideline — the town's separate heating guideline is its own entry
+    // (neuerkirch-heizung-ee). § 8 (5): a VG guideline takes priority for
+    // identical items (appliances and consultation only, see Bubach). § 8 (6):
+    // double funding excluded, VG/district programmes are none, so BUND. Found
+    // through the VG Simmern-Rheinböllen sitemap; the municipality was not in
+    // the catalogue.
+  },
+
+  "neuerkirch-heizung-ee": {
+    id: "neuerkirch-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
+    traeger: "Ortsgemeinde Neuerkirch", level: "kommune", region: "Neuerkirch",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140101",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-heizung-erneuerbare-energien-neuerkirch-durchgeschrieben.pdf?cid=2ty",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2014-05-12",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "max. 4.000 € je Objekt",
+    rates: [
+      { label: "Heizungsanlage (Wärmepumpe an wasserführender Heizung, Holz/Pellet, Solarthermie)", value: "bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer von Gebäuden in Neuerkirch; jedes Gebäude wird nur einmal gefördert",
+      "Gefördert werden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpen nur an einem wasserführenden Heizungsnetz",
+      "Auch bereits errichtete Anlagen können gefördert werden",
+      "Auch der Anschluss an das örtliche Nahwärmenetz wird mit bis zu 4.000 € je Übergabestation gefördert; beim Netz Neuerkirch-Külz geht das Geld als Baukostenzuschuss direkt an den Netzbetreiber",
+      "Die Richtlinie von 2014 nennt kein Enddatum; die Gemeinde verweist auf ihrer Website weiterhin darauf. Einen eigenen Betrag nennt der Haushaltsplan 2026/2027 dafür nicht",
+      "Mittel gibt es nur im Rahmen des Haushalts, kein Rechtsanspruch",
+    ],
+    combinableWith: null,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, byte-identical to
+    // the copy saved 26.09.2026, published on the VG Simmern-Rheinböllen site
+    // next to the town's energy-saving guideline): dated 12.05.2014, last
+    // amended by council 05.05.2015, in force the day after publication (§ 6
+    // (3)), NO end date — unlike the near-identical Külz guideline, which an
+    // amendment in 2022 ended. § 2 owners, one subsidy per building. § 3 (1)
+    // Nr. 3 heat pumps "an ein wasserführendes Heizungsnetz angeschlossen";
+    // § 3 (3) only fully renewable; § 3 (5) already built plants eligible.
+    // § 4 (1) "höchstens 4.000,00 Euro" per object, amount "richtet sich nach
+    // den förderfähigen Kosten" — no rate, so nothing to compute. § 4 (3) district
+    // heating 4,000 € per transfer station. combinableWith null: the guideline
+    // says nothing on combination. STATUS AKTIV rests on the town's own page
+    // (neuerkirch.de/bauen-wohnen, read 27.09.2026): "Bestehende Gebäude …
+    // können weiterhin an das Nahwärmenetz angeschlossen werden. Der Anschluss
+    // wird gefördert wie auch alternative Maßnahmen zur Wärmegewinnung …
+    // Einzelheiten … Richtlinie … vom 12.05 2014". The budget plan 2026/2027
+    // names no own line (118,000 € split into energy-saving guideline, Leben
+    // mittendrin, sports, greening), which the conditions say openly.
+  },
+
+  "fronhofen-regenerativ": {
+    id: "fronhofen-regenerativ", name: "Richtlinie zur Förderung von regenerativer Strom- und Wärmeversorgung",
+    traeger: "Ortsgemeinde Fronhofen", level: "kommune", region: "Fronhofen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140039",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/foerderrichtlinie-erneuerbare-energien-fronhofen-durchgeschrieben.pdf?cid=2bd",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2015-01-19",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Photovoltaikanlage mit Speicher, eines nachgerüsteten Speichers oder einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "Photovoltaikanlage mit Speicher max. 4.000 €, nachgerüsteter Speicher max. 3.000 €, Heizungsanlage max. 4.000 € je Objekt; je Gebäude nur Strom oder Wärme",
+    rates: [
+      { label: "Photovoltaik nur zusammen mit einem Speicher", value: "bis 4.000 € für Anlage und Speicher nach den förderfähigen Kosten", nur: ["pv"] },
+      { label: "Speicher an einer seit 01.01.2009 bestehenden Anlage", value: "bis 3.000 € nach den förderfähigen Kosten", nur: ["pv"] },
+      { label: "Heizungsanlage (u. a. Wärmepumpe oder Solarthermie an wasserführender Heizung; auch Holz-/Pelletkessel)", value: "bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer von Gebäuden in Fronhofen; jedes Gebäude wird nur einmal gefördert — entweder für Strom oder für Wärme",
+      { text: "Eine neue Photovoltaikanlage wird nur zusammen mit einem Speicher gefördert, der überwiegend der Eigenversorgung dient und nicht gewinnorientiert betrieben wird", nur: ["pv"] },
+      { text: "Gefördert werden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpe und Solarthermie nur an einem wasserführenden Heizungsnetz. Auch seit 01.01.2009 bereits errichtete Heizungen können gefördert werden", nur: ["waermepumpe"] },
+      "Der Betrag richtet sich nach den nachgewiesenen Kosten für Planung, Anschaffung und Installation; einen festen Satz nennt die Richtlinie nicht",
+      "Der Antrag geht auf dem Vordruck an den Ortsbürgermeister oder die Verbandsgemeindeverwaltung — vor dem Vorhaben mit dem Angebot oder danach mit der Rechnung",
+      "Ausgezahlt wird nach Schlussrechnung und Abnahme in zwei gleichen Teilen: im Jahr der Fertigstellung und im Jahr danach",
+      "Auch der Anschluss an das Nahwärmenetz Fronhofen wird gefördert (Baukostenzuschuss bis 4.000 €, direkt an den Netzbetreiber)",
+      "Die Richtlinie von 2015 nennt kein Enddatum; im Haushalt stehen für diese Förderung (einschließlich Nahwärme-Anschlüssen) 2026 16.000 € und ab 2027 jährlich 4.000 €, das Geld ist also knapp. Reichen die Mittel nicht, entscheidet der Eingang der vollständigen Unterlagen; kein Rechtsanspruch",
+    ],
+    combinableWith: null,
+    foerdert: ["pv", "waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, byte-identical to
+    // the copy saved 26.09.2026): council 19.01.2015, in force the day after
+    // publication (§ 8 (3)), NO end date. § 1 (2) PV "in Verbindung mit
+    // Energiespeichern"; § 3 (1) 1.3.2 new PV only combined with storage
+    // "überwiegend zur Eigenversorgung … nicht gewinnorientiert", 1.3.1 storage
+    // retrofit for PV existing since 01.01.2009, 1.1.x biomass boilers, heat
+    // pumps and solar thermal on a water-based heating system. § 4 1.2 new PV
+    // incl. storage "höchstens 4.000,- Euro", 1.3 retrofit storage "höchstens
+    // 3.000,00 Euro", 1. heating max 4,000 € per object; § 4 2. amount "richtet
+    // sich nach den förderfähigen Kosten" — no rate, nothing computed. § 2
+    // owners, one subsidy per building "entweder für Wärme- oder für
+    // Stromversorgung". § 6 (2) paid in two equal parts across two years.
+    // STATUS AKTIV rests on the double budget 2026/2027 dated 30.04.2026
+    // (haushaltssatzung-und-plan-2027-fronhofen.pdf, read 27.09.2026), account
+    // 28100.541900: "16.000 € für die Auszahlung von Fördersummen gem.
+    // Richtlinien der OG (Förderung regenerativer Strom-/Wärmeversorgung)" in
+    // 2026, "ab 2027: Förderung 4.000 €" (may include district-heating
+    // connection payouts). Council 27.09.2026: two verifiers incl. an
+    // adversarial one confirm status and amounts. combinableWith null: the guideline
+    // says nothing on combination. Found through the VG Simmern-Rheinböllen
+    // sitemap; the municipality was not in the catalogue.
+  },
+
   "kuelz-hunsrueck-heizung-ee": {
     id: "kuelz-hunsrueck-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
     traeger: "Ortsgemeinde Külz (Hunsrück)", level: "kommune", region: "Külz (Hunsrück)",
