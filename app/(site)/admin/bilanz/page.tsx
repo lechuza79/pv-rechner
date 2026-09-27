@@ -343,7 +343,7 @@ export default async function BilanzPage() {
                     textAlign: "right",
                     fontFamily: v("--font-mono"),
                     whiteSpace: "nowrap",
-                    color: m.zeitaenderung > 0 ? v("--color-negative") : v("--color-positive"),
+                    color: m.zeitaenderung > 0 ? v("--color-negative-text") : v("--color-positive-text"),
                   }}
                 >
                   {m.zeitaenderung > 0 ? "+" : ""}
