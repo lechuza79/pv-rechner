@@ -68288,7 +68288,7 @@
   {
     "regionId": "07140064",
     "name": "Kastellaun",
-    "checkedAt": "2026-09-27T04:09:18Z",
+    "checkedAt": "2026-09-27T04:18:30Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -68296,7 +68296,8 @@
     "searches": [
       "VG-Seite „Förderprogramme“ (verweist auf Stadt → Bauen, Ortsgemeinden, Klimaschutz → Förderungen)",
       "Stadt → Bauen: Richtlinie „gültig bis 2026“ vollständig gelesen",
-      "VG-Richtlinie vollständig gelesen, Seitenbilder geprüft"
+      "VG-Richtlinie vollständig gelesen, Seitenbilder geprüft",
+      "Vier erfasste Quellen der Stadt einzeln gelesen und vermerkt (Klimaschutz-Förderungen, VG-Förderprogramme-Verweisseite, KIPKI-Seite, Tivoli-Meldung)"
     ],
     "evidence": [
       {
@@ -68306,9 +68307,50 @@
       {
         "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/Stadt/aktuelle_Richtlinie_gueltig_bis_2026_mit_Anlagen.pdf",
         "finding": "Fassadenförderprogramm: § 3 gestalterische Dach- und Fassadensanierung, § 5 „20 % … maximal 10.000,-- Euro“, § 9 bis 31. Dezember 2026. Keine Energieanlagen."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/foerderungen/",
+        "finding": "Listet „Förderprogramm der Verbandsgemeinde Kastellaun zur Schaffung vitaler Dorfzentren…“ mit Richtlinie und Antrag sowie die Ortsgemeinde-Richtlinien."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+        "finding": "„Förderprogramme der Stadt Kastellaun Finden Sie unter: www.kastellaun.de/gemeinden/stadt/bauen“; weitere Verweise auf Ortsgemeinden und Klimaschutz."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm/",
+        "finding": "„Diese Summe wurde in der VG Kastellaun bereits komplett für Klimaschutzmaßnahmen vergeben“ (kommunale Projekte)."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten/",
+        "finding": "Förderbescheid über 5.600.000 € für den Neubau der Stadthalle Tivoli."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "kastellaun.de/klimaschutz/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Klimaschutzseite „Förderungen“: VG-Richtlinie (katalogisiert als vg-kastellaun-dorfzentren-klimaschutz) und die Ortsgemeinde-Richtlinien (Beltheim, Dommershausen, Roth, Michelbach, katalogisiert).",
+        "evidenceUrl": "https://www.kastellaun.de/klimaschutz/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Stadt → Bauen, Ortsgemeinden und Klimaschutz → Förderungen; alle Ziele gelesen.",
+        "evidenceUrl": "https://www.kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/"
+      },
+      {
+        "url": "kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Mittel der VG vollständig für kommunale Projekte vergeben; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm/"
+      },
+      {
+        "url": "kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten",
+        "disposition": "reviewed",
+        "reason": "Landesförderbescheid für den Neubau der Stadthalle; keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten/"
+      }
+    ]
   },
   {
     "regionId": "07140153",
