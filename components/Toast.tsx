@@ -92,7 +92,7 @@ export default function Toast({
         background: awareness ? v("--color-awareness-dim") : accent ? v("--color-cta") : v("--color-text-primary"),
         color: foreground,
         borderRadius: v("--radius-pill"), padding: "12px 16px",
-        boxShadow: v("--shadow-lg"),
+        boxShadow: v("--shadow-toast"),
         display: "flex", alignItems: "center", gap: 10,
         fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
         boxSizing: "border-box",

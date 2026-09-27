@@ -10,7 +10,7 @@ import { SCENARIOS, NATIONAL_AVG_YIELD } from "../../../lib/constants";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
-import { FUEL } from "../../../lib/constants";
+import { FUEL, FUEL_PRICE_INFLATION } from "../../../lib/constants";
 import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
 import { heuteInBerlin } from "../../../lib/zeit";
@@ -103,7 +103,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       batteryBase: Number(data.battery_base),
       batteryPerKwh: Number(data.battery_per_kwh),
       electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
-      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
+      electricityIncrease: DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
     };
@@ -270,7 +270,7 @@ export default async function MethodikPage() {
           <br />
           <span style={S.accent}>Brennstoffpreis:</span> Gas {Math.round(FUEL.gas.price * 100)} ct/kWh · Heizöl {Math.round(FUEL.oil.price * 100)} ct/kWh
           <br />
-          Preissteigerung: 2 %/Jahr
+          Brennstoff-Preissteigerung: {(FUEL_PRICE_INFLATION * 100).toLocaleString("de-DE")} %/Jahr
           <br />
           <br />
           <span style={S.label}>CO₂-Abgabe</span>
@@ -362,7 +362,7 @@ export default async function MethodikPage() {
         <p style={S.p}>
           Die Amortisationsrechnung zeigt, ab wann sich die Investition durch
           eingesparten Strom und Einspeisevergütung rechnet. Wir rechnen mit
-          drei Szenarien für die zukünftige Strompreisentwicklung:
+          dem UBA-Haushaltsstromtrend als geglätteter nominaler Jahresrate und zwei Sensitivitäten von jeweils einem Prozentpunkt darunter und darüber. Die Ränder sind Modellannahmen, keine weiteren Studienprognosen. Der Eigenverbrauch bleibt beim Wechsel gleich:
         </p>
         <div style={S.card}>
           <span style={S.label}>Annahmen</span>
@@ -385,18 +385,19 @@ export default async function MethodikPage() {
           <span style={S.accent}>Strompreis:</span> {(prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh
           <br />
           <br />
-          <span style={S.label}>3 Szenarien</span>
+          <span style={S.label}>UBA-Basis und Sensitivitäten</span>
           {/* Die Prozentsätze kommen aus SCENARIOS, nicht aus dem Fließtext: Hier
               stand die mittlere Annahme um einen Prozentpunkt zu hoch getippt,
               während der Rechner seit dem 20.07.2026 anders rechnet und sein
               Reiter das auch so beschriftet (Council 18.08.2026). Eine getippte
               Modellzahl veraltet lautlos. */}
+          <p>Die UBA-Tabellen 3 und 13 ergeben für 2025–2045 eine mittlere nominale Rate. Wir wenden sie auf deinen heutigen Arbeitspreis an und schreiben sie über den Rechenzeitraum fort. Der Trend der Quelle umfasst auch umgelegte Grundpreise; seine Übertragung auf den Arbeitspreis ist eine Näherung. Grundpreise werden nicht als Solarersparnis angerechnet. <a href={SCENARIOS[1].source.href}>Quelle und Annahmen</a></p>
           {SCENARIOS.map(s => (
             <span key={s.id}>
               {/* textColor, nicht color: hier steht der Name als Text, nicht als
                   Kurve — die Kurvenfarbe kommt auf diesem Grund auf 1,9:1. */}
               <span style={{ color: s.textColor, fontWeight: 600 }}>{s.label}:</span>{" "}
-              Strom +{(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %/Jahr
+              Strom {s.sub}
               <br />
             </span>
           ))}

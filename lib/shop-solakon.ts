@@ -246,3 +246,15 @@ export async function holeSolakonAngebote(signal?: AbortSignal): Promise<ShopAng
 
   return { angebote, abgerufenIso: new Date().toISOString() };
 }
+
+/** Panel ratings from the current Solakon package listings; no generic Wp-to-count guess. */
+export function angebotModulAnzahl(offer: Pick<ShopAngebot, "haendler" | "produkt" | "moduleWp">): number | null {
+  if (offer.haendler !== "solakon") return null;
+  const panels: Record<string, { total: number; panel: number }> = {
+    onPower: { total: 2000, panel: 500 },
+    onBasic: { total: 1000, panel: 500 },
+    onLite: { total: 900, panel: 450 },
+  };
+  const known = panels[offer.produkt];
+  return known && offer.moduleWp === known.total ? known.total / known.panel : null;
+}

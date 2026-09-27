@@ -37,20 +37,20 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     await expect(page.getByRole("link", { name: /Zum Shop/ }).first()).toBeVisible();
 
     // Die erste Zeile trägt die Begründung, warum sie oben steht.
-    await expect(page.getByText("rechnet sich am besten")).toBeVisible();
+    await expect(page.getByText("Höchster berechneter Vorteil")).toBeVisible();
   });
 
   test("die Kennzeichnung als bezahlte Empfehlung ist sichtbar, nicht versteckt", async ({ page }) => {
     // § 5a Abs. 4 UWG: Der kommerzielle Zweck muss erkennbar sein. Ein Hinweis,
     // den man erst aufklappen muss, ist nicht erkennbar.
     await bisZumErgebnis(page);
-    await expect(page.getByText(/Anzeige · Provision bei Kauf/)).toBeVisible();
-    await expect(page.getByText(/bekommen wir eine Provision vom Händler/)).toBeVisible();
+    await expect(page.locator(".bkw-offers .wp-product-rank").first().getByText("ANZEIGE")).toBeVisible();
+    await expect(page.getByText(/erhalten wir eine Provision/)).toBeVisible();
   });
 
   test("nennt den Stand der Preise — ein Preis ohne Datum wird still falsch", async ({ page }) => {
     await bisZumErgebnis(page);
-    await expect(page.getByText(/abgerufen am \d{2}\.\d{2}\.\d{4}/)).toBeVisible();
+    await expect(page.locator(".bkw-offer-price-note").first()).toContainText(/Stand \d{2}\.\d{2}\.\d{4}/);
   });
 
   test("sagt sichtbar, wonach sortiert wird", async ({ page }) => {

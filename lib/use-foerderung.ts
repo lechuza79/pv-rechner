@@ -30,7 +30,7 @@ export type Foerderung = {
   ags: string | null;
   laedt: boolean;
   /** PLZ auflösen — nach jeder PLZ-Eingabe aufrufen. */
-  ausPlz: (plz: string) => Promise<void>;
+  ausPlz: (plz: string, preferredAgs?: string) => Promise<boolean>;
   /** Bei mehrdeutiger PLZ: Ort wählen. */
   waehleOrt: (ags: string) => void;
 };
@@ -47,17 +47,19 @@ export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string |
   // mit Dachplänen eine Förderung vor die Nase zu halten, die er nicht bekommt.
   const programme = useMemo(() => programmeFuerTechnik(alle, technik), [alle, technik]);
 
-  const ausPlz = useCallback(async (plz: string) => {
-    if (!/^\d{5}$/.test(plz)) return;
+  const ausPlz = useCallback(async (plz: string, preferredAgs?: string) => {
+    if (!/^\d{5}$/.test(plz)) return false;
     setLaedt(true);
     try {
       const res = await fetch(`/api/funding?plz=${plz}`);
+      if (!res.ok) throw new Error("Funding lookup unavailable");
       const data = await res.json();
       const gefunden: FoerderKandidat[] = Array.isArray(data.candidates) ? data.candidates : [];
       setKandidaten(gefunden);
-      if (gefunden.length === 1) {
-        setAgs(gefunden[0].ags);
-        setAlle(gefunden[0].programs);
+      const chosen = gefunden.find(place => place.ags === preferredAgs) ?? (gefunden.length === 1 ? gefunden[0] : undefined);
+      if (chosen) {
+        setAgs(chosen.ags);
+        setAlle(chosen.programs);
       } else {
         // Mehrdeutig → erst fragen. Solange keine Programme, denn eine PLZ kann
         // zwei Gemeinden mit völlig verschiedener Förderung abdecken.
@@ -65,11 +67,11 @@ export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string |
         setAlle([]);
       }
     } catch {
-      setKandidaten([]);
-      setAgs(null);
-      setAlle([]);
+      setLaedt(false);
+      return false;
     }
     setLaedt(false);
+    return true;
   }, []);
 
   const waehleOrt = useCallback((gewaehlt: string) => {

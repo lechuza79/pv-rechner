@@ -58,9 +58,11 @@ export function AccordionField({
   onEdit,
   children,
   completedStyle,
+  triggerId,
   headerHelp,
   available = true,
 }: {
+  triggerId?: string;
   completedStyle?: "check";
   headerHelp?: ReactNode;
   available?: boolean;
@@ -86,7 +88,7 @@ export function AccordionField({
           <IconChevronDown size={iconSizes.sm} />
         </button>
       </div> : <>
-      <button type="button" className="wp-question-heading" aria-expanded={open} disabled={!available} onClick={onEdit}
+      <button id={triggerId} type="button" className="wp-question-heading" aria-expanded={open} disabled={!available} onClick={onEdit}
         {...(open ? {} : { "data-flow-akkordeon": label })}>
         <span>{label}</span>
         {answered && !open && <span className="wp-question-status" aria-hidden="true"><IconCheck size={iconSizes.sm} /></span>}

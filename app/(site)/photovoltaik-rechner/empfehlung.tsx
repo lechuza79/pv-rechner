@@ -768,7 +768,7 @@ export default function Empfehlung({
             {/* Strompreis-Szenario ganz oben: bewegt die gezeigte Rendite und
                 Amortisation. Die empfohlene Anlagengröße bleibt bewusst fix. */}
             <ScenarioTabs
-              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: s.sub, source: s.source }))}
               selected={scenario}
               onSelect={setScenario}
             />

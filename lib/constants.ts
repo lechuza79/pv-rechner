@@ -1,3 +1,4 @@
+import { HOUSEHOLD_ELECTRICITY_SCENARIOS, ELECTRICITY_PROJECTION_SOURCE, electricityRateLabel } from "./electricity-projection";
 import { v } from "./theme";
 import { OIL_REFERENCE, oilProjectedPricePerKwh } from "./oil-reference";
 
@@ -167,14 +168,16 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 // LESBARER Text (die Stufen aus lib/theme.ts, ~6:1). Wer einen Szenarionamen
 // als Text setzt, nimmt `textColor`; wer eine Linie, eine Fläche oder einen
 // Balken zeichnet, `color`.
-export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), textColor: v("--color-negative-text"), strom: 0.01, evDelta: -5,
-    explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) und du nutzt 5 Prozentpunkte weniger Strom selbst als geschätzt — beides drückt die Ersparnis." },
-  { id: "realistic", label: "Realistisch", color: v("--color-positive"), textColor: v("--color-positive-text"), strom: 0.02, evDelta: 0,
-    explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
-  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), textColor: v("--color-accent"), strom: 0.05, evDelta: 5,
-    explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker — und du nutzt 5 Prozentpunkte mehr Strom selbst als geschätzt." },
-];
+export const SCENARIOS = HOUSEHOLD_ELECTRICITY_SCENARIOS.map((scenario, index) => ({
+  ...scenario,
+  strom: scenario.rate,
+  sub: electricityRateLabel(scenario.rate),
+  source: { href: ELECTRICITY_PROJECTION_SOURCE.url, label: "Quelle: Umweltbundesamt" },
+  // Price sensitivities do not silently change the household's self-consumption.
+  evDelta: 0,
+  color: v(index === 0 ? "--color-negative" : index === 1 ? "--color-positive" : "--color-accent"),
+  textColor: v(index === 0 ? "--color-negative-text" : index === 1 ? "--color-positive-text" : "--color-accent"),
+}));
 
 // Vereinigung beider Zweige: `az`/`ng` (Ausrichtung, Neigung) und `sk` (freie
 // Speichergröße) sind unabhängig voneinander entstanden. Fehlt einer, rechnet
@@ -380,3 +383,6 @@ export const WP_FUEL_OPTIONS: {
   { id: "gas_vorhanden", label: "Vorhandene Gastherme", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: FUEL.gas.efficiency, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
   { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];
+
+/** Default fuel-price growth, separate from electricity scenarios. */
+export const FUEL_PRICE_INFLATION = 0.02;

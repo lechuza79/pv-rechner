@@ -1,3 +1,4 @@
+import { HEATPUMP_ELECTRICITY_INCREASE } from "./electricity-projection";
 import { HEATING_INVESTMENT, gasInvestmentGross } from "./heating-investment";
 // ─── Heat Pump Configuration ───────────────────────────────────────────────
 // All constants for the heat pump calculator, centralized for future admin UI.
@@ -182,9 +183,9 @@ export interface HeatPumpConfig {
  */
 export const STROM_PFAD = {
   /** Prognos/UBA T13, Wärmepumpentarif 27,4 → 20,5 ct(2024) — real −1,44 %/a. */
-  niedrig: 0.00636,
+  niedrig: HEATPUMP_ELECTRICITY_INCREASE.low,
   /** Fraunhofer ISE, oberes Szenario 27,48 → 42,07 ct(2026) — real +2,27 %/a. */
-  hoch: 0.04382,
+  hoch: HEATPUMP_ELECTRICITY_INCREASE.high,
 } as const;
 
 export const GAS_PFAD = {
@@ -292,7 +293,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // (real +0,23 %/a, nominal 2,30 %). Die amtliche Projektion liegt mit
   // 0,64 %/a darunter und ist deshalb der optimistische Pfad, nicht die Mitte.
   gasInflation: 0.02106,
-  stromInflation: 0.023,
+  stromInflation: HEATPUMP_ELECTRICITY_INCREASE.central,
   source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, Juni 2025; bestätigt durch den zweiten Check vom 02.07.2026: Median 34.898 €, Mittelwert 36.397 €, Spanne 21.099–54.168 €), KfW Merkblatt 458 (BEG EM, Stand 07/2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
   validFrom: "2026-07-27",
   /**

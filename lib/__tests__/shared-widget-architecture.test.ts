@@ -7,6 +7,14 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  'lib/prices-config.ts':['./electricity-projection'],
+  'lib/constants.ts':['./electricity-projection'],
+  'lib/heatpump-config.ts':['./electricity-projection'],
+  'lib/balkon.ts':['./electricity-projection','./balkon-sim'],
+  'lib/calc.ts':['./electricity-projection'],
+  'lib/kostenrennen.ts':['./electricity-projection'],
+  'components/WpGeraeteEmpfehlung.tsx':['./AffiliateTrust','./AffiliateActions','./AffiliateCarousel','./AffiliateDetails'],
+  'components/BalkonAngebot.tsx':['./AffiliateTrust','./AffiliateActions','./AffiliateCarousel','./AffiliateDetails'],
   'components/dashboard/ExportableWidgetFrame.tsx':['./WidgetFrame','../ChartOptionsMenu','../Modal','../WidgetExport','../../lib/useChartExport','../../lib/chart-animation-export'],
   'components/dashboard/WidgetFrame.tsx':['../InfoTooltip'],
   'components/GlossaryTerm.tsx':['./InfoTooltip'],

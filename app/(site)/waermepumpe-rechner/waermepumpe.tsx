@@ -5,10 +5,11 @@ import { AccordionField } from "../../../components/AccordionField";
 import { BEG_EINKOMMEN_OPTIONS, confirmedBegBonuses } from "../../../lib/beg-funding-options";
 import { BegFundingQuestions, type BegFundingScreen } from "../../../components/BegFundingQuestions";
 import FlowSchritte from "../../../components/FlowSchritte";
-import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
+import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 import Toast from "../../../components/Toast";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
@@ -23,6 +24,7 @@ import {
   begNaechsteStufe,
   type BegStand,
 } from "../../../lib/heatpump-config";
+import ResultActions from "../../../components/calculator/ResultActions";
 import PersonalHeatRace from "./_components/PersonalHeatRace";
 import { useResultIntro } from "./_components/useResultIntro";
 import BegStandSchalter, { BegStandHilfe } from "./_components/BegStandSchalter";
@@ -33,6 +35,7 @@ import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../..
 import OptionCard from "../../../components/OptionCard";
 import ResultSection from "../../../components/ResultSection";
 import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
+import StatCard from "../../../components/calculator/ResultStatCard";
 import StandNoteView from "../../../components/StandNoteView";
 import WpGeraeteEmpfehlung, { WpAuswahlHeading } from "../../../components/WpGeraeteEmpfehlung";
 import { type StandSeite } from "../../../lib/stand-format";
@@ -58,7 +61,7 @@ import WpPvFlow from "../../../components/WpPvFlow";
 import { wpPvRecommendation } from "../../../lib/wp-pv-recommend";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconAlert, IconSettings, IconRefresh, IconCheck, IconCopy, IconPlus, IconShare, IconWhatsApp } from "../../../components/Icons";
+import { IconAlert, IconSettings, IconPlus } from "../../../components/Icons";
 import { v, iconSizes, tokens } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
@@ -435,14 +438,6 @@ export default function Waermepumpe({
   const [forwardOpen, setForwardOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
-  const shareBtnStyle = (aktiv?: boolean) => ({
-    width: 40, height: 40, borderRadius: v('--radius-pill'), cursor: "pointer" as const,
-    background: aktiv ? v('--color-accent-dim') : v('--color-bg'),
-    border: `1px solid ${aktiv ? v('--color-accent') : v('--color-border-accent')}`,
-    color: v('--color-accent'),
-    display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const,
-    flexShrink: 0 as const, transition: "all 0.2s",
-  });
   const handleCopy = async () => {
     trackEvent("waermepumpe_geteilt");
     const url = buildShareUrl();
@@ -475,19 +470,6 @@ export default function Waermepumpe({
   const [resultRevision, setResultRevision] = useState(0);
   const resultIntro = useResultIntro(isResult, resultRevision);
   const overviewRef = useRef<HTMLDivElement>(null);
-  const actionbarRef = useRef<HTMLDivElement>(null);
-  const [actionsStuck, setActionsStuck] = useState(false);
-  useEffect(() => {
-    if (!isResult) return;
-    const update = () => {
-      const bar = actionbarRef.current;
-      if (bar) setActionsStuck(bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1);
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
-  }, [isResult]);
   const fundingNoticeRef = useRef<HTMLElement>(null);
   const [fundingNoticeRevealed, setFundingNoticeRevealed] = useState(false);
   useEffect(() => {
@@ -832,7 +814,7 @@ export default function Waermepumpe({
   // ── Render ───────────────────────────────────────────────────
   return (
     <div className={isResult ? "wp-calculator-page wp-result-page" : "wp-calculator-page wp-input-page"} style={{ ...({ "--wp-chevron-size": `${iconSizes.sm}px`, "--wp-positive": tokens["--color-positive"] } as React.CSSProperties), background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
-      <style>{`:root:has(.wp-calculator-page){${Object.entries(tokens).filter(([key]) => key.startsWith("--color-") || key.startsWith("--shadow-")).map(([key,value]) => `${key}:${value}!important`).join(";")}}`}</style>
+      <CalculatorTheme />
       <div style={{ maxWidth: embedded ? "100%" : isResult ? 1240 : v('--page-max-width'), margin: "0 auto" }}>
         {!embedded && (
           <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: 24 }}>
@@ -1209,20 +1191,7 @@ export default function Waermepumpe({
             </section>
 
 </div>
-            <div ref={actionbarRef} className={`wp-result-actionbar${actionsStuck ? " is-stuck" : ""}`} role="region" aria-label="Ergebnisaktionen">
-              <div className="wp-result-actionbar-inner">
-                <div className="wp-result-actionbar-secondary">
-                  <button type="button" className="wp-forward-secondary" onClick={() => canShare ? handleNativeShare() : setForwardOpen(true)}><IconShare size={iconSizes.md} /> Weiterleiten</button>
-                  <div className="wp-result-share">
-                    <button type="button" onClick={handleCopy} title="Link kopieren" aria-label="Link zu diesem Ergebnis kopieren" style={shareBtnStyle(copied)}>{copied ? <IconCheck size={iconSizes.md} /> : <IconCopy size={iconSizes.md} />}</button>
-                    <button type="button" onClick={handleWhatsApp} title="WhatsApp" aria-label="Ergebnis per WhatsApp teilen" style={shareBtnStyle()}><IconWhatsApp size={iconSizes.md} /></button>
-                    <button type="button" onClick={() => setResetOpen(true)} title="Neu berechnen" aria-label="Neu berechnen" style={shareBtnStyle()}><IconRefresh size={iconSizes.md} /></button>
-                  </div>
-                </div>
-                <button type="button" className="wp-save-primary" onClick={() => setSaveOpen(true)}>Speichern</button>
-                <span className="wp-actionbar-status" role="status">{copied ? "Link kopiert" : ""}</span>
-              </div>
-            </div>
+            <ResultActions copied={copied} onForward={() => canShare ? handleNativeShare() : setForwardOpen(true)} onCopy={handleCopy} onWhatsApp={handleWhatsApp} onReset={() => setResetOpen(true)} onSave={() => setSaveOpen(true)} />
 <aside className="wp-geraete-spalte" aria-label="Passende Geräte" id="wp-geraete">
 <WpAuswahlHeading hints={productHints}
   auslegungKw={result.auslegungKw} vorlaufC={result.flowTemp} wpType={wpType}
@@ -1754,17 +1723,6 @@ function TcoBreakdown({ r, jahre, sanierungHinweis, refLabel }: { r: HeatPumpRes
   );
 }
 
-function StatCard({ label, value, unit, positive, help, helpTitle, helpAriaLabel }: { label: string; value: string; unit?: string; positive: boolean; help?: ReactNode; helpTitle?: string; helpAriaLabel?: string }) {
-  return (
-    <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
-        {label}
-        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={iconSizes.sm}>{help}</InfoTooltip>}
-      </div>
-      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}{unit && <> <span className="wp-stat-unit">{unit}</span></>}</div>
-    </div>
-  );
-}
 
 // BEG Einkommens-Bonus (KfW 458 ab 21.07.2026): gestaffelt nach zu versteuerndem
 // Haushaltsjahreseinkommen. Das repräsentative Einkommen pro Stufe reicht, weil die

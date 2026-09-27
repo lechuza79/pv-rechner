@@ -1,0 +1,26 @@
+"use client";
+import { useEffect, useState, type ReactNode } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { IconChevronLeft, IconChevronRight } from './Icons';
+import { iconSizes, space } from '../lib/theme';
+
+/** One product list, driven by Embla; optionally becomes a desktop sidebar. */
+export default function AffiliateCarousel({ children, label, desktopSidebar = false }: { children: ReactNode; label: string; desktopSidebar?: boolean }) {
+  const [ref, api] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', breakpoints: desktopSidebar ? { '(min-width: 1440px)': { active: false } } : {} });
+  const [bounds, setBounds] = useState({ prev: false, next: false });
+  useEffect(() => {
+    if (!api) return;
+    const sync = () => setBounds({ prev: api.canScrollPrev(), next: api.canScrollNext() });
+    sync(); api.on('select', sync).on('reInit', sync);
+    return () => { api.off('select', sync).off('reInit', sync); };
+  }, [api]);
+  return <div className="wp-product-carousel-frame" data-scroll-prev={bounds.prev} data-scroll-next={bounds.next}>
+    {(bounds.prev || bounds.next) && <nav className="wp-product-navigation" aria-label={label}>
+      <button type="button" aria-label="Vorherige Angebote" disabled={!bounds.prev} onClick={() => api?.scrollPrev()}><IconChevronLeft size={iconSizes.sm} /></button>
+      <button type="button" aria-label={label} disabled={!bounds.next} onClick={() => api?.scrollNext()}><IconChevronRight size={iconSizes.sm} /></button>
+    </nav>}
+    <div ref={ref} className="wp-product-carousel" style={{ overflow: 'hidden' }}>
+      <ul className="wp-geraete-reihe" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', gap: space.md }}>{children}</ul>
+    </div>
+  </div>;
+}

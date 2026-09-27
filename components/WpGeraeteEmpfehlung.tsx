@@ -1,13 +1,15 @@
 "use client";
 
-import ContactPerson from "./ContactPerson";
-import InfoTooltip from "./InfoTooltip";
+import AffiliateFundedPrice from "./AffiliateFundedPrice";
+import AffiliateDetails from "./AffiliateDetails";
+import AffiliateTrust from "./AffiliateTrust";
+import AffiliateActions from "./AffiliateActions";
+import AffiliateCarousel from "./AffiliateCarousel";
 import Modal from "./Modal";
 
 import { useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad, iconSizes } from "../lib/theme";
-import { IconExternal, IconAlert, IconInfo, IconShare, IconCopy, IconChevronDown, IconChevronLeft, IconChevronRight } from "./Icons";
+import { IconAlert, IconInfo } from "./Icons";
 import ResultSection from "./ResultSection";
 import {
   geraetLeistungTeile,
@@ -430,19 +432,13 @@ Vielen Dank!`);
         {preisStand ? ` · Stand ${preisStand}. Shoppreis gilt.` : null}
       </div>
 
-      {fundingFraction > 0 && <div className="wp-product-funded-price">
-        <div className="wp-funded-amount"><strong><small>ca.</small> {estimatedOwnPrice.toLocaleString("de-DE")} <small>€</small></strong></div>
-        <div className="wp-funded-label"><span>mit Förderung</span></div>
-        <span className="wp-funded-help">
-          <InfoTooltip ariaLabel="Wie wird der Gerätepreis mit Förderung geschätzt?" title="Geschätzter Geräteanteil nach Förderung">
-            Die Förderung aus deiner Modellrechnung wird anteilig auf den Gerätepreis verteilt ({(fundingFraction * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %). Der Förderdeckel ist dabei berücksichtigt. {fall.fundingEstimate?.assumptions} Voraussetzung ist, dass das Gerät und dein Vorhaben förderfähig sind; das ist noch nicht bestätigt. Beim Händler zahlst du zunächst den vollen Preis, die Förderung wird separat ausgezahlt. Montage und weiteres Zubehör sind in diesem Geräteanteil nicht enthalten.
-          </InfoTooltip>
-        </span>
-        <button className="wp-funded-footer" onClick={fall.onFundingDetails} aria-label="Förderung genau berechnen">Förderung genau berechnen</button>
-      </div>}
+      {fundingFraction > 0 && <AffiliateFundedPrice amount={estimatedOwnPrice.toLocaleString("de-DE")} approximate
+        helpLabel="Wie wird der Gerätepreis mit Förderung geschätzt?" helpTitle="Geschätzter Geräteanteil nach Förderung" onDetails={fall.onFundingDetails}>
+        Die Förderung aus deiner Modellrechnung wird anteilig auf den Gerätepreis verteilt ({(fundingFraction * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %). Der Förderdeckel ist dabei berücksichtigt. {fall.fundingEstimate?.assumptions} Voraussetzung ist, dass das Gerät und dein Vorhaben förderfähig sind; das ist noch nicht bestätigt. Beim Händler zahlst du zunächst den vollen Preis, die Förderung wird separat ausgezahlt. Montage und weiteres Zubehör sind in diesem Geräteanteil nicht enthalten.
+      </AffiliateFundedPrice>}
 
       {(werte.length > 0 || satz || g.kaeltemittel === "r32" || hinweise.length > 0) && (
-        <details className="wp-card-disclosure wp-card-specs"><summary><span>Details</span><IconChevronDown size={iconSizes.sm} /></summary>
+        <AffiliateDetails>
         <dl
           style={{
             display: "grid",
@@ -486,17 +482,13 @@ Vielen Dank!`);
           {hinweise.map((h) => <li key={h.id}>{h.text}</li>)}
         </ul>
       </div>}
-        </details>
+        </AffiliateDetails>
       )}
 
-      <div className="wp-product-actions">
-        <button className="wp-product-forward" onClick={openShare} aria-label="An deinen Heizungsbauer weiterleiten"><IconShare size={16} /> Weiterleiten</button>
-        <a className="wp-product-shop" href={g.link} target="_blank" rel="nofollow sponsored noopener noreferrer">Zum Shop <IconExternal size={14} /></a>
-        <button className="wp-product-copy" aria-label="Produktlink kopieren" title="Produktlink kopieren" onClick={async () => {
-          try { await navigator.clipboard.writeText(g.link); setLinkStatus("Link kopiert"); }
-          catch { setLinkStatus("Kopieren nicht möglich. Nutze Weiterleiten."); }
-        }}><IconCopy size={16} /></button>
-      </div>
+      <AffiliateActions url={g.link} onForward={openShare} forwardLabel="An deinen Heizungsbauer weiterleiten" onCopy={async () => {
+        try { await navigator.clipboard.writeText(g.link); setLinkStatus("Link kopiert"); }
+        catch { setLinkStatus("Kopieren nicht möglich. Nutze Weiterleiten."); }
+      }} />
       {linkStatus && <p className="wp-product-copy-status" role="status">{linkStatus}</p>}
       <Modal open={shareText !== null} onClose={() => setShareText(null)} title="An deinen Heizungsbauer weiterleiten" intro="Die Nachricht enthält das Gerät und deine Auslegung zur Prüfung durch den Fachbetrieb.">
         <textarea className="wp-product-share-text" aria-label="Nachricht an deinen Heizungsbauer" value={shareText ?? ""} readOnly rows={10} />
@@ -522,24 +514,6 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
     const devices = (antwort?.empfehlungen ?? []).map(e => e.geraet);
     fall.onHintsChange?.(gemeinsameHinweise(devices, fall).filter(h => !h.id.startsWith("umfang-")));
   }, [antwort, fall.onHintsChange, fall.auslegungKw, fall.vorlaufC, fall.wpType, fall.situation, fall.heizsystem, fall.personen, fall.heizkoerperTausch]);
-
-  // Wischleiste auf schmalen Schirmen, ab der Seitenspalte abgeschaltet — die
-  // Umschaltung macht Embla selbst über seine Breakpoint-Option, damit es nur
-  // EINEN Umschaltpunkt gibt und nicht zwei, die auseinanderlaufen können.
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    containScroll: "trimSnaps",
-    breakpoints: { "(min-width: 1440px)": { active: false } },
-  });
-
-  const [scrollState, setScrollState] = useState({ prev: false, next: false });
-  useEffect(() => {
-    if (!emblaApi) return;
-    const sync = () => setScrollState({ prev: emblaApi.canScrollPrev(), next: emblaApi.canScrollNext() });
-    sync();
-    emblaApi.on("select", sync).on("reInit", sync);
-    return () => { emblaApi.off("select", sync).off("reInit", sync); };
-  }, [emblaApi]);
 
   useEffect(() => {
     let abgebrochen = false;
@@ -711,32 +685,16 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         </Modal>
       </div></div>
 
-      <div className="wp-product-carousel-frame" data-scroll-prev={scrollState.prev} data-scroll-next={scrollState.next}>
-      {(scrollState.prev || scrollState.next) && <nav className="wp-product-navigation" aria-label="Weitere Wärmepumpen">
-        <button type="button" aria-label="Vorherige Wärmepumpen" disabled={!scrollState.prev} onClick={() => emblaApi?.scrollPrev()}><IconChevronLeft size={iconSizes.sm} /></button>
-        <button type="button" aria-label="Weitere Wärmepumpen" disabled={!scrollState.next} onClick={() => emblaApi?.scrollNext()}><IconChevronRight size={iconSizes.sm} /></button>
-      </nav>}
-      {/* One product list: horizontal carousel until the desktop sidebar. */}
-      <div ref={emblaRef} className="wp-product-carousel" style={{ overflow: "hidden" }}>
-        <ul
-          className="wp-geraete-reihe"
-          style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", gap: space.md }}
-        >
-          {treffer.map((e, i) => (
-            <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
-              <Karte e={e} rang={i} fall={fall} preisStand={preisStand} ohneHinweise={gemeinsameIds} />
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      </div>
-
-      <div className="wp-product-trust">
-        <ContactPerson beforeName={<span className="wp-product-promise"><strong>Mein Versprechen:</strong> Die Empfehlungen sind nach Preis und passender Heizleistung für deinen Bedarf ausgewählt – nicht nach unserer Provision.</span>} />
-        <p className="wp-product-disclosure">Die Geräte stammen von unserem Partner {WP_HAENDLER.kurz}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</p>
-        <p className="wp-product-seller" style={{ margin: `${space.sm}px 0 0` }}>Verkäufer: {haendlerAnschrift()}. Beim Kauf im Shop besteht ein Widerrufsrecht.</p>
-      </div>
+      <AffiliateCarousel label="Weitere Wärmepumpen" desktopSidebar>
+        {treffer.map((e, i) => <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
+          <Karte e={e} rang={i} fall={fall} preisStand={preisStand} ohneHinweise={gemeinsameIds} />
+        </li>)}
+      </AffiliateCarousel>
+      <AffiliateTrust
+        promise="Die Empfehlungen sind nach Preis und passender Heizleistung für deinen Bedarf ausgewählt – nicht nach unserer Provision."
+        disclosure={<>Die Geräte stammen von unserem Partner {WP_HAENDLER.kurz}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</>}
+        seller={<>Verkäufer: {haendlerAnschrift()}. Beim Kauf im Shop besteht ein Widerrufsrecht.</>}
+      />
 
       {/* Shared safety restrictions stay visible; longer cost explanations are optional. */}
 

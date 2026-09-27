@@ -395,7 +395,87 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
 
+  {
+    datei: "components/AffiliateTrust.tsx", name: "AffiliateTrust",
+    zweck: "Gemeinsames persönliches Versprechen mit Porträt und Partnerkennzeichnung.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["ContactPerson"],
+    gegenprobe: {
+      muster: "className\\s*=\\s*[\"']wp-product-trust[\"']",
+      bedeutet: "Use AffiliateTrust instead of duplicating its accepted affiliate markup.",
+      ausser: [],
+    },
+  },
+  {
+    datei: "components/AffiliateActions.tsx", name: "AffiliateActions",
+    zweck: "Identische Produktaktionen zum Weiterleiten, Kaufen und Kopieren.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gegenprobe: {
+      muster: "className\\s*=\\s*[\"']wp-product-actions[\"']",
+      bedeutet: "Use AffiliateActions instead of duplicating its accepted affiliate markup.",
+      ausser: [],
+    },
+  },
+  {
+    datei: "components/AffiliateCarousel.tsx", name: "AffiliateCarousel",
+    zweck: "Gemeinsame Produkt-Wischleiste mit Embla und bedienbaren Pfeilen.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gegenprobe: {
+      muster: "className\\s*=\\s*[\"']wp-product-carousel-frame[\"']",
+      bedeutet: "Use AffiliateCarousel instead of duplicating its accepted affiliate markup.",
+      ausser: [],
+    },
+  },
+  {
+    datei: "components/AffiliateFundedPrice.tsx", name: "AffiliateFundedPrice",
+    zweck: "Gemeinsamer Preis nach Förderung mit Erklärung und Förderprüfung für WP und BKW.",
+    gruppe: "rueckmeldung", ebene: "zusammensetzung", stand: "im-aufbau",
+    bestehtAus: ["InfoTooltip"],
+  },
+  {
+    datei: "components/AffiliateDetails.tsx", name: "AffiliateDetails",
+    zweck: "Gemeinsames aufklappbares Produktdatenfeld in den Angebotskarten.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gegenprobe: {
+      muster: "className\\s*=\\s*[\"']wp-card-disclosure wp-card-specs[\"']",
+      bedeutet: "Use AffiliateDetails instead of duplicating its accepted affiliate markup.",
+      ausser: [],
+    },
+  },
+  {
+    datei: "components/AffiliateProductTeaser.tsx", name: "AffiliateProductTeaser",
+    zweck: "Compact linked calculation product with a separate selection disclosure.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: [],
+  },
   // ─── Struktur ──────────────────────────────────────────────────────────────
+  {
+    datei: "components/calculator/ResultStatCard.tsx", name: "ResultStatCard",
+    zweck: "Gemeinsame Ergebniskennzahl mit getrennt gesetzter, kleinerer Einheit für WP und BKW.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["InfoTooltip"],
+  },
+  {
+    datei: "components/calculator/CalculatorTheme.tsx", name: "CalculatorTheme",
+    zweck: "Eine feste Farbpalette für die gemeinsamen Rechner-Ergebnisse, unabhängig von der Tageszeit.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: [],
+  },
+  {
+    datei: "components/calculator/ResultActions.tsx", name: "ResultActions",
+    zweck: "Gemeinsame Ergebnisaktionen: im Inhalt, beim Scrollen oben haftend.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+  },
+  {
+    datei: "components/calculator/BalkonRace.tsx", name: "BalkonRace",
+    zweck: "Balkon-Stromkosten aus dem Rechenkern im gemeinsamen Racing-Chart.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: [],
+  },
+  {
+    datei: "components/ResultSettings.tsx",
+    name: "ResultSettings",
+    zweck: "Bearbeitet Rechengrundlagen als Entwurf; erst Neuberechnen übernimmt Änderungen, Abbrechen verwirft sie.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Modal", "FlowNav", "AccordionField"],
+  },
   {
     datei: "components/ResultSection.tsx",
     name: "ResultSection",
@@ -988,7 +1068,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "AffiliateTrust", "AffiliateActions", "AffiliateCarousel", "Modal", "AffiliateDetails", "AffiliateProductTeaser", "AffiliateFundedPrice"],
   },
   {
     datei: "components/ResultFunding.tsx",
@@ -998,7 +1078,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["FundingProgramParts", "Icons", "Modal"],
+    bestehtAus: ["FundingProgramParts", "Icons", "Modal", "Switch"],
   },
   {
     datei: "components/KfwFoerderpraxis.tsx",

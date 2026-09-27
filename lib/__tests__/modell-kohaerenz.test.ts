@@ -728,10 +728,10 @@ describe("Modell-Kohärenz: der Kaufblock sagt, wovor er rechnet", () => {
     // Kaufblock rechnet mit dem Kassenpreis — unter „dieselbe Rechnung wie oben"
     // stand „bezahlt nach 3,0 Jahren" neben einer Kachel mit 1,8.
     const rechner = readFileSync(join(ROOT, "app/(site)/balkonkraftwerk/rechner/balkon.tsx"), "utf8");
-    expect(rechner).toMatch(/<BalkonAngebot[^>]*foerderungEuro=\{foerderung\}/);
+    expect(rechner).toMatch(/besteAngebote\(katalog.daten\?\.angebote \?\? \[\], angebotBasis, CFG, fundingContext\)/);
+    expect(rechner).toMatch(/<BalkonAngebot[^>]*ratedOffers=\{ratedOffers\}/);
     const block = readFileSync(join(ROOT, "components/BalkonAngebot.tsx"), "utf8");
-    expect(block).toMatch(/foerderungEuro > 0 \?/);
-    expect(block).toMatch(/vor der Förderung/);
+    expect(block).toMatch(/empfehlungAusBewertung\(ratedOffers\)/);
   });
 });
 

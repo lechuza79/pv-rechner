@@ -33,6 +33,7 @@
 // Split über die geteilte tagQuote — hier steht nur, was Balkon-spezifisch ist.
 
 import { NUTZUNG, NATIONAL_AVG_YIELD, DEGRAD } from "./constants";
+import type { SolarStorageOptions } from "./solar-storage";
 import { DEFAULT_PRICES } from "./prices-config";
 
 export type BalkonSetId = "single" | "duo" | "max";
@@ -81,7 +82,7 @@ export interface BalkonPresence {
   tagQuote: number;
 }
 
-export interface BalkonStorage {
+export interface BalkonStorage extends SolarStorageOptions {
   id: BalkonStorageId;
   label: string;
   sub: string;

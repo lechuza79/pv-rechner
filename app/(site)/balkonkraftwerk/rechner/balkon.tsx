@@ -1,14 +1,15 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
+import AffiliateDetails from "../../../../components/AffiliateDetails";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import StandortField from "../../../../components/StandortField";
-import { IconArrowRight, IconRefresh, IconCheck } from "../../../../components/Icons";
-import { v, iconSizes, fsPx } from "../../../../lib/theme";
+import { IconCheck, IconSettings, IconPlus } from "../../../../components/Icons";
+import { v, iconSizes, fsPx, tokens } from "../../../../lib/theme";
 import { usePrices } from "../../../../lib/prices";
 import { PERSONEN, SCENARIOS } from "../../../../lib/constants";
 import ScenarioTabs from "../../../../components/ScenarioTabs";
@@ -17,12 +18,32 @@ import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } fro
 import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
+import Toast from "../../../../components/Toast";
+import Switch from "../../../../components/Switch";
+import { AccordionField } from "../../../../components/AccordionField";
+import CalculatorTheme from "../../../../components/calculator/CalculatorTheme";
+import Modal from "../../../../components/Modal";
+import BalkonRace from "../../../../components/calculator/BalkonRace";
+import ResultActions from "../../../../components/calculator/ResultActions";
+import { useResultIntro } from "../../../../components/calculator/useResultIntro";
+import "../../../../components/calculator/result-design.css";
+import "./result.css";
+import ResultSettings from "../../../../components/ResultSettings";
 import ResultFunding from "../../../../components/ResultFunding";
-import BalkonAngebot from "../../../../components/BalkonAngebot";
+import { useBalkonAngebote } from "../../../../lib/use-balkon-angebote";
+import { balkonFunding, type BalkonFundingContext } from "../../../../lib/balkon-funding";
+import { readBalkonHardware, writeBalkonHardware, type BalkonHardwareSnapshot } from "../../../../lib/balkon-share";
+import { angebotBegruendung, bewerteAngebot, besteAngebote, configFuerAngebot } from "../../../../lib/shop-angebot";
+import type { ShopAngebot } from "../../../../lib/shop-solakon";
+import BalkonAngebot, { BalkonProduktTeaser } from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
-import { stackFunding, type Wohnform } from "../../../../lib/funding-programs";
+import { type Wohnform } from "../../../../lib/funding-programs";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+
+import StatCard from "../../../../components/calculator/ResultStatCard";
+import StandNoteView from "../../../../components/StandNoteView";
+import type { StandSeite } from "../../../../lib/stand-format";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
 // One word each for the step indicator; the current one is the step heading.
@@ -41,7 +62,7 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
   return `${CFG.sets.find(s => s.id === setId)!.label}, ${storageName(storageId)}`;
 }
 
-export default function Balkon() {
+export default function Balkon({ stand }: { stand?: StandSeite }) {
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -69,35 +90,45 @@ export default function Balkon() {
   // gesetzt ist — nudget zur standortgenauen Ertragsrechnung (wie im PV-Rechner).
   const [plzToast, setPlzToast] = useState(false);
   const plzToastShown = useRef(false);
-
-  // Klebt die Auswahl gerade oben? Nur dann bekommt sie einen Schatten (eingefadet).
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
+  const resultCardRef = useRef<HTMLDivElement>(null);
 
   // Editierbare Overrides im Ergebnis
   const [oStrom, setOStrom] = useState<number | null>(null);
+  const katalog = useBalkonAngebote();
+  const [sharedHardware, setSharedHardware] = useState<BalkonHardwareSnapshot | null>(null);
+  const [offerId, setOfferId] = useState<string | null>(null);
   const [oInvest, setOInvest] = useState<number | null>(null);
+  const [additionalCosts, setAdditionalCosts] = useState(0);
+  const [shadingLossPercent, setShadingLossPercent] = useState(0);
   const [oVerbrauch, setOVerbrauch] = useState<number | null>(null);
 
   const prices = usePrices();
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
   // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleiche Preis-Config).
-  const priceIncrease = prices.electricityIncrease;
   // Strompreis-Szenario: bewegt alle gezeigten Zahlen. Die EMPFEHLUNG (welches
   // Set / ob Speicher) bleibt am Basiswert verankert — sonst spränge sie beim
   // Umschalten. Balkon-Szenarien kennen kein evDelta (eigenes HTW-Modell).
+  const [horizonYears, setHorizonYears] = useState<10 | 20>(10);
+  const [horizonDraft, setHorizonDraft] = useState<10 | 20>(10);
   const [scenario, setScenario] = useState("realistic");
   const scenarioStrom = (SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).strom;
   const haushaltKwh = oVerbrauch ?? PERSONEN[personen].verbrauch;
 
   const isResult = step >= STEPS.length;
+  const [pricesOpen, setPricesOpen] = useState(false);
+  const [scenarioDraft, setScenarioDraft] = useState("realistic");
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<string | null>(null);
+  const [technicalOpen, setTechnicalOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // PLZ-Toast einmal einblenden, sobald das Ergebnis erscheint und noch kein
   // Standort übernommen wurde.
   useEffect(() => {
     // Ein spät eintreffender Standort nimmt den Hinweis zurück, statt weiter
     // nach etwas zu fragen, das längst gesetzt ist.
-    if (plzConfirmed || /^\d{5}$/.test(plz)) { setPlzToast(false); return; }
+    if (plzConfirmed) { setPlzToast(false); return; }
     // readLocation() statt auf den übernommenen Standort im State zu warten:
     // die Übernahme landet einen Render später — bis dahin hätte dieser Effekt
     // schon entschieden zu nudgen.
@@ -105,24 +136,6 @@ export default function Balkon() {
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzConfirmed, plz]);
-  // Auto-Ausblenden nach 6 s (eigener Effekt, damit der Timer unter StrictMode
-  // korrekt neu gesetzt wird).
-  useEffect(() => {
-    if (!plzToast) return;
-    const t = setTimeout(() => setPlzToast(false), 6000);
-    return () => clearTimeout(t);
-  }, [plzToast]);
-
-  // Schatten der klebenden Auswahl erst zeigen, wenn sie wirklich oben anliegt.
-  useEffect(() => {
-    const el = stickyRef.current;
-    if (!el) return;
-    const onScroll = () => setStuck(el.getBoundingClientRect().top <= 0.5);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isResult]);
-
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
   // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
@@ -192,6 +205,8 @@ export default function Balkon() {
     if (adresseGelesen.current) return;
     adresseGelesen.current = true;
     const q = new URLSearchParams(window.location.search);
+    setOfferId(q.get("offer"));
+    setSharedHardware(readBalkonHardware(q));
 
     const ausAdresse = q.get("plz");
     if (ausAdresse && /^\d{5}$/.test(ausAdresse)) {
@@ -205,7 +220,7 @@ export default function Balkon() {
     const gesetzt: string[] = [];
 
     const pe = Number(q.get("pe"));
-    if (Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
+    if (q.get("pe")?.trim() && Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
       setPersonen(pe);
       gesetzt.push("personen");
     }
@@ -225,6 +240,15 @@ export default function Balkon() {
     if (gesetzt.length > 0) {
       setBeantwortet(prev => new Set([...prev, ...gesetzt]));
     }
+    const setId = q.get("set"), storageId = q.get("sp");
+    if (CFG.sets.some(item => item.id === setId) && CFG.storage.some(item => item.id === storageId)) setOverride({ setId: setId as BalkonSetId, storageId: storageId as BalkonStorageId });
+    if (q.get("years") === "20") setHorizonYears(20);
+    const scenarioId = q.get("sc"); if (SCENARIOS.some(item => item.id === scenarioId)) setScenario(scenarioId!);
+    const readNumber = (key: string, min: number, max: number, set: (value: number) => void) => { const raw = q.get(key); const value = Number(raw); if (raw?.trim() && Number.isFinite(value) && value >= min && value <= max) set(value); };
+    readNumber("inv", 0, 20000, setOInvest); readNumber("strom", .1, .7, setOStrom); readNumber("verbrauch", 800, 12000, setOVerbrauch);
+    readNumber("extra", 0, 10000, setAdditionalCosts); readNumber("shade", 0, 100, setShadingLossPercent);
+    if (q.get("funding") === "0") setFundingEnabled(false);
+    const home = q.get("wohnform"); if (home === "mieter" || home === "eigentuemer") setWohnform(home);
     // Nur ein VOLLSTÄNDIGER Satz springt ins Ergebnis. Mit einer halben Angabe
     // stünde der Empfänger vor einem Ergebnis, das zur Hälfte auf unseren
     // Startwerten beruht, ohne dass er es sieht.
@@ -243,8 +267,8 @@ export default function Balkon() {
   // Empfehlung: effizienteste Konfiguration (Set + Speicher) aus den Eingaben.
   // Reagiert live auf die im Ergebnis editierbaren Werte (Strompreis, Verbrauch).
   const recommendation = useMemo(
-    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
-    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
+    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, horizonYears, additionalCosts, shadingLossPercent }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, horizonYears, additionalCosts, shadingLossPercent],
   );
 
   // Aktive Konfiguration: gewählte Alternative oder — Default — die Empfehlung.
@@ -256,14 +280,8 @@ export default function Balkon() {
   // dem es erscheint. Der Speicherpreis steckt beim Angebot im Setpreis, deshalb
   // wird `invest` bewusst NICHT durchgereicht.
   const angebotBasis = useMemo(
-    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
-    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
-  );
-
-  // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
-  const scenarioRec = useMemo(
-    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom }),
-    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
+    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, horizonYears, additionalCosts, shadingLossPercent }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, horizonYears, additionalCosts, shadingLossPercent],
   );
 
   // ── Förderung ───────────────────────────────────────────────────────────────
@@ -273,6 +291,7 @@ export default function Balkon() {
   // der Posten mit der größten Hebelwirkung auf die Amortisation, und der
   // einzige, den wir nicht gezeigt haben.
   const foerderQuelle = useFoerderung("balkon");
+  const [selectedLocationAgs, setSelectedLocationAgs] = useState<string>();
   const fundingPrograms = foerderQuelle.programme;
   const [fundingEnabled, setFundingEnabled] = useState(true);
   // Wohnform: nur gefragt, wo ein aufgelöstes Programm sie unterscheidet.
@@ -284,50 +303,77 @@ export default function Balkon() {
   // Dieselbe Postleitzahl wie für den Standort-Ertrag löst auch die Förderung
   // auf — der Rechner fragt sie also kein zweites Mal.
   const ausPlz = foerderQuelle.ausPlz;
-  useEffect(() => { if (/^\d{5}$/.test(plz)) void ausPlz(plz); }, [plz, ausPlz]);
+  useEffect(() => { if (/^\d{5}$/.test(plz)) void ausPlz(plz, selectedLocationAgs); }, [plz, ausPlz, selectedLocationAgs]);
 
-  const bruttoInvest = oInvest ?? calcBalkon({
+  const previewFundingContext = useMemo(() => ({ programs: fundingPrograms, enabled: fundingEnabled, wohnform: wohnform ?? undefined, locationKnown: !!foerderQuelle.ags }), [fundingPrograms, fundingEnabled, wohnform, foerderQuelle.ags]);
+
+  // Keep lookup and selection changes in a draft until the shared apply action.
+  const [appliedFunding, setAppliedFunding] = useState<BalkonFundingContext | null>(null);
+  const [checkedLocation, setCheckedLocation] = useState<{ plz: string; ags: string; name: string } | null>(null);
+  const [locationSearchDirty, setLocationSearchDirty] = useState(false);
+  const [pendingPlace, setPendingPlace] = useState<{ plz: string; ags: string; name: string } | null>(null);
+  const fundingContext = appliedFunding ?? previewFundingContext;
+  const beginFundingEdit = () => setAppliedFunding(current => current ?? previewFundingContext);
+  const fundingChanged = pendingPlace !== null || (appliedFunding !== null && JSON.stringify(appliedFunding) !== JSON.stringify(previewFundingContext));
+
+  const ratedOffers = useMemo(() => besteAngebote(katalog.daten?.angebote ?? [], angebotBasis, CFG, fundingContext), [katalog.daten, angebotBasis, fundingContext]);
+  const offerSetId = (offer: Pick<ShopAngebot, "moduleWp">): BalkonSetId => offer.moduleWp <= 600 ? "single" : offer.moduleWp <= 1200 ? "duo" : "max";
+  const explicitOffer = useMemo(() => {
+    const found = katalog.daten?.angebote.find(entry => entry.id === offerId && entry.lieferbar);
+    return found ? bewerteAngebot(found, angebotBasis, CFG, fundingContext) : undefined;
+  }, [katalog.daten, offerId, angebotBasis, fundingContext]);
+  const selectedOffer = offerId ? explicitOffer
+    : (override ? ratedOffers.find(entry => offerSetId(entry.angebot) === override.setId && (entry.angebot.speicherKwh > 0) === (override.storageId !== "none")) : ratedOffers[0]);
+  const offer = selectedOffer?.angebot;
+  const offerReason = angebotBegruendung(selectedOffer, ratedOffers, horizonYears, oInvest !== null);
+  const hardware = offer ?? (offerId ? sharedHardware : null);
+  const storageHelp = hardware && hardware.speicherKwh > 0 && <InfoTooltip title="Annahmen zum Speicher" ariaLabel="Hinweis zur Speicherberechnung">Wir rechnen mit der angegebenen Speichergröße; tatsächlich nutzbar ist etwas weniger. Die Speicherersparnis fällt deshalb eher hoch aus. Vorausgesetzt ist eine Steuerung passend zu deinem Verbrauch.</InfoTooltip>;
+  const calculationConfig = useMemo(() => hardware ? configFuerAngebot(hardware) : CFG, [hardware]);
+  const effectiveSetId = hardware ? offerSetId(hardware) : active.setId;
+  const systemLabel = offer
+    ? `${offer.produkt} · ${(offer.moduleWp / 1000).toLocaleString("de-DE")} kWp · ${offer.speicherKwh > 0 ? `${offer.speicherKwh.toLocaleString("de-DE")} kWh Speicher` : "ohne Speicher"}`
+    : hardware ? `${(hardware.moduleWp / 1000).toLocaleString("de-DE")} kWp · ${hardware.speicherKwh.toLocaleString("de-DE")} kWh Speicher (geteilte Angaben)` : configLabel(active.setId, active.storageId);
+  const chooseOffer = (next: ShopAngebot) => { setOfferId(next.id); setOInvest(null); };
+
+  // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
+  const scenarioRec = recommendation;
+
+  const bruttoInvest = oInvest ?? hardware?.preis ?? calcBalkon({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, horizonYears,
   }).invest;
-  const fundingStack = useMemo(
-    () => stackFunding(fundingPrograms, {
-      technik: "balkon", wattPeak: CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
-      kosten: bruttoInvest, wohnform: wohnform ?? undefined,
-      // Die gewählte Speichergröße gehört in die Förderrechnung: Der Landkreis
-      // Oldenburg zahlt seinen Zuschuss ausschließlich für Balkonkraftwerk UND
-      // Speicher zusammen. Ohne diese Angabe zöge das Programm auch dem Set
-      // ohne Speicher Geld ab, das dafür niemand bekommt. Immer gesetzt, auch
-      // als 0 — das heißt „ohne Speicher"; fehlt der Wert, rechnet das Modell
-      // eine solche Bedingung bewusst gar nicht.
-      speicherKwh: CFG.storage.find(x => x.id === active.storageId)?.kwh ?? 0,
-    }),
-    [fundingPrograms, active.setId, active.storageId, bruttoInvest, wohnform],
-  );
-  const foerderung = fundingEnabled ? fundingStack.total : 0;
+  const fundingAssessment = useMemo(() => balkonFunding({
+    moduleWp: hardware?.moduleWp ?? CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
+    speicherKwh: hardware?.speicherKwh ?? CFG.storage.find(x => x.id === active.storageId)?.kwh ?? 0,
+  }, bruttoInvest, fundingContext), [hardware, active.setId, active.storageId, bruttoInvest, fundingContext]);
+  const fundingPreview = useMemo(() => balkonFunding({
+    moduleWp: hardware?.moduleWp ?? CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
+    speicherKwh: hardware?.speicherKwh ?? CFG.storage.find(x => x.id === active.storageId)?.kwh ?? 0,
+  }, bruttoInvest, previewFundingContext), [hardware, active.setId, active.storageId, bruttoInvest, previewFundingContext]);
+  const foerderung = fundingAssessment.grant;
 
   const inputs: BalkonInputs = useMemo(() => ({
-    setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
-    invest: Math.max(0, bruttoInvest - foerderung),
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, bruttoInvest, foerderung]);
+    setId: hardware ? "duo" : active.setId, orientationId, presenceId, storageId: hardware ? (hardware.speicherKwh > 0 ? "small" : "none") : active.storageId,
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, horizonYears, additionalCosts, shadingLossPercent,
+    invest: fundingAssessment.investment,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, horizonYears, additionalCosts, shadingLossPercent, bruttoInvest, foerderung, hardware, fundingAssessment.investment]);
 
-  const r = useMemo(() => calcBalkon(inputs), [inputs]);
-  const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
+  const r = useMemo(() => calcBalkon(inputs, calculationConfig), [inputs, calculationConfig]);
+  const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")}` : "—";
 
   // Set-Größe und Speicher sind zwei GETRENNTE Entscheidungen. Jede ändert die
   // aktive Konfiguration; stimmt sie wieder mit der Empfehlung überein, folgen
   // wir automatisch der Empfehlung (override = null). Editierten Anschaffungspreis
   // dabei verwerfen, da sich der Standardpreis mit der Wahl ändert.
   const applySelection = (setId: BalkonSetId, storageId: BalkonStorageId) => {
+    setOfferId(null);
     setOInvest(null);
     if (setId === recommendation.best.setId && storageId === recommendation.best.storageId) setOverride(null);
     else setOverride({ setId, storageId });
   };
   const selectSize = (setId: BalkonSetId) => applySelection(setId, active.storageId);
   const selectStorage = (storageId: BalkonStorageId) => applySelection(active.setId, storageId);
-  const resetToRecommendation = () => { setOverride(null); setOInvest(null); };
-  const resetAll = () => { setOverride(null); setOInvest(null); setStep(0); };
+  const resetToRecommendation = () => { setOfferId(null); setOverride(null); setOInvest(null); };
 
   // Karten zeigen die Zahlen des gewählten Szenarios; welche Karte „Empfohlen"
   // heißt, entscheidet weiter `recommendation` (Basiswert).
@@ -340,8 +386,15 @@ export default function Balkon() {
 
   // Speicher als aufklappbarer Schalter: an = eine Speichergröße gewählt.
   const storageOptions = CFG.storage.filter(s => s.kwh > 0);
-  const storageOn = active.storageId !== "none";
+  const storageOn = hardware ? hardware.speicherKwh > 0 : active.storageId !== "none";
   const toggleStorage = () => {
+    if (offer) {
+      const next = ratedOffers.find(entry => entry.angebot.moduleWp === offer.moduleWp && (entry.angebot.speicherKwh > 0) !== storageOn);
+      if (next) chooseOffer(next.angebot);
+      else { setOfferId(null); setOInvest(null); setOverride({ setId: effectiveSetId, storageId: storageOn ? "none" : "small" }); }
+      return;
+    }
+    if (offerId && !offer) { setOfferId(null); setSharedHardware(null); }
     if (storageOn) { selectStorage("none"); return; }
     // Beim Einschalten die wirtschaftlichste Größe für das aktive Set vorwählen.
     const bestForSet = recommendation.ranked
@@ -366,17 +419,42 @@ export default function Balkon() {
 
   // Cross-Flow-Teaser: Bei hohem Verbrauch holt eine Dachanlage deutlich mehr
   // (Balkon deckt nur die Grundlast). Schwelle bewusst konservativ.
+  const [resultRevision, setResultRevision] = useState(0);
+  const intro = useResultIntro(isResult, `${r.lifetimeSaving}-${resultRevision}`, false);
+  const revealUpdatedResult = () => {
+    setSettingsSection(null);
+    requestAnimationFrame(() => {
+      document.getElementById("bkw-ueberblick")?.scrollIntoView({ behavior: "instant", block: "start" });
+      // Restart the shared introduction once the updated result is in view.
+      setResultRevision(value => value + 1);
+    });
+  };
+  const shareUrl = () => {
+    const url = new URL(window.location.pathname, window.location.origin);
+    const data = { ...writeBalkonHardware(hardware), pe: String(personen), an: presenceId, au: orientationId, set: effectiveSetId, sp: offer ? (storageOn ? "small" : "none") : active.storageId, years: String(horizonYears), extra: String(additionalCosts), shade: String(shadingLossPercent), sc: scenario,
+      offer: offer?.id ?? offerId ?? "", plz, inv: oInvest === null ? "" : String(oInvest), strom: oStrom === null ? "" : String(oStrom), verbrauch: oVerbrauch === null ? "" : String(oVerbrauch), funding: fundingContext.enabled ? "1" : "0", wohnform: fundingContext.wohnform ?? "" };
+    Object.entries(data).forEach(([key, value]) => { if (value) url.searchParams.set(key, value); });
+    url.hash = "bkw-ueberblick";
+    return url.toString();
+  };
+  const shareText = () => `Mein Balkonkraftwerk: ${systemLabel}. Modellvorteil über ${horizonYears} Jahre: ${r.lifetimeSaving.toLocaleString("de-DE")} € nach Anschaffung.`;
+  const copyResult = async () => { try { await navigator.clipboard.writeText(shareUrl()); setCopied(true); window.setTimeout(() => setCopied(false), 2000); } catch { setShareOpen(true); } };
+  const saveResult = () => {
+    const url = URL.createObjectURL(new Blob([shareText(), "\n\nBerechnung wieder öffnen:\n", shareUrl()], { type: "text/plain;charset=utf-8" }));
+    const link = document.createElement("a"); link.href = url; link.download = "solar-check-balkonkraftwerk.txt"; link.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
   const roofWorthIt = haushaltKwh >= BALKON_DACH_HINWEIS_KWH;
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
+    <div className={isResult ? "wp-calculator-page wp-result-page bkw-result-page" : undefined} style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+        <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus
               belongs to the first question, not the title. */}
-          <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
+          <h1 className={isResult ? "wp-visually-hidden" : undefined} style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
             {isResult ? "Deine Empfehlung" : "Balkonkraftwerk-Rechner"}
           </h1>
+          {isResult && <nav className="wp-section-nav" aria-label="Ergebnisbereiche"><a href="#bkw-ueberblick" aria-current="location">Überblick</a><a href="#bkw-angebote">Passende Sets</a><a href="#bkw-einstellungen">Einstellungen</a></nav>}
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
               Lohnt sich ein Balkonkraftwerk für dich? Für Miete und Eigentum ohne eigenes Dach — wir empfehlen dir die passende Größe, mit oder ohne Speicher.
@@ -410,7 +488,7 @@ export default function Balkon() {
                   })}
                 </div>
 
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Tagsüber jemand zuhause?
                   <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={iconSizes.sm}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
@@ -424,7 +502,7 @@ export default function Balkon() {
                   ))}
                 </div>
 
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für den echten Ertrag)</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (optional)</div>
                 <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchPvgis(plz); }} style={{ display: "flex", gap: 8 }}>
                   <input
                     type="text" inputMode="numeric" aria-label="Postleitzahl"
@@ -464,7 +542,7 @@ export default function Balkon() {
                 <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive-text') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
                   {plzConfirmed
                     ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
-                    : "Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt."}
+                    : "Mit deiner PLZ prüfen wir den Ertrag und mögliche Förderung vor Ort. Du kannst sie auch später im Ergebnis ergänzen."}
                 </div>
               </div>
             )}
@@ -500,46 +578,73 @@ export default function Balkon() {
           </div>
         )}
 
-        {/* PLZ-Toast: einmaliger Nudge zur standortgenauen Ertragsrechnung */}
-        {plzToast && (
-          <div
-            className="fu"
-            onClick={() => {
-              const el = document.querySelector<HTMLInputElement>('input[aria-label="Postleitzahl eingeben"]');
-              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
-              setPlzToast(false);
-            }}
-            style={{
-              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-cta'), color: v('--color-text-on-accent'),
-              borderRadius: v("--radius-pill"), padding: "12px 16px",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
-              fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
-            }}
-          >
-            <span style={{ flex: 1 }}>PLZ eingeben für einen standortgenauen Ertrag</span>
-            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
-          </div>
-        )}
+        <Toast alignTo={resultCardRef} tone="awareness" open={plzToast && intro.progress === 1} onClose={() => setPlzToast(false)}>
+          <span className="wp-funding-toast-content"><span>Vielleicht gibt es Förderung<br />an deinem Wohnort</span>
+            <button type="button" onClick={() => {
+              setSettingsSection("location"); setPlzToast(false);
+              document.getElementById("bkw-einstellungen")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}>Förderung prüfen</button>
+          </span>
+        </Toast>
 
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
-          <div className="fu">
-            {/* Strompreis-Szenario ganz oben: rechnet alle Zahlen darunter um. */}
+          <div className="wp-ergebnis wp-result-main bkw-result-main">
+          <CalculatorTheme />
+
+          <section id="bkw-ueberblick" className="wp-overview" aria-label="Dein Ergebnis">
+            <div className="wp-overview-top"><div className="wp-result-column">
+              <div ref={resultCardRef} className="wp-result-hero">
+                <div className="wp-overview-head"><div className="wp-result-label">
+                  <span className="wp-result-label-copy"><strong>{r.lifetimeSaving >= 0 ? "Einsparungen" : "Mehrkosten"} über {horizonYears} Jahre</strong> mit <button type="button" className="wp-assumptions-trigger" onClick={() => { setScenarioDraft(scenario); setHorizonDraft(horizonYears); setPricesOpen(true); }}>{(SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).resultLabel}</button></span>
+                  <div className="wp-result-tools"><button type="button" className="wp-result-details-link" onClick={() => setDetailsOpen(true)}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" onClick={() => document.getElementById("bkw-settings-trigger")?.click()}><IconSettings size={iconSizes.xl} /></button></div>
+                </div></div>
+                <div className="wp-profit-comparison"><span className="wp-profit-illustration" aria-hidden="true"><img src="/illustrations/funding-check-neon.svg" alt="" width={1024} height={1024} /></span>
+                  <div className="wp-profit-content"><div className="wp-profit-row">
+                    <div className="bkw-profit-amount"><div ref={intro.anchor} className="wp-result-value">{r.lifetimeSaving > 0 && <span className="wp-result-plus" style={{ color: tokens["--color-positive"] }} aria-label="Plus"><IconPlus size={iconSizes.md} /></span>}<span className="wp-result-count"><span className="wp-result-count-space" aria-hidden="true">{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")}</span><span className="wp-result-count-live">{Math.round(Math.abs(r.lifetimeSaving) * intro.progress).toLocaleString("de-DE")}</span></span> <span className="wp-result-currency">€</span></div><div className="wp-reference-inline"><span>vs. ausschließlich Netzstrom</span></div></div>
+                    <Switch className="wp-pv-switch" an={storageOn} onChange={toggleStorage} label="Speicher mitrechnen" text="Mit Speicher" />
+                  </div></div>
+                </div>
+                <p className="wp-result-summary">{Number.isFinite(r.amortYears) && <>Dein Balkonkraftwerk rechnet sich <strong>nach {r.amortYears.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren</strong>. </>}Über {horizonYears} Jahre zahlst du insgesamt <strong>{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")} € {r.lifetimeSaving >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung{additionalCosts > 0 ? ", zusätzliche Kosten" : ""} und Reststrom sind eingerechnet.</p>
+                {offerReason && <p className="bkw-offer-reason">{offerReason} <a href="#bkw-ertrag" onClick={() => setTechnicalOpen(true)}>Details</a>. {storageHelp}</p>}
+                {offer ? <BalkonProduktTeaser offer={offer} /> : <p className="bkw-offer-price-note">{offerId && "Das geteilte Shopangebot ist aktuell nicht verfügbar. "}{hardware ? "Modellrechnung mit den geteilten Geräteangaben und dem gespeicherten Preis; kein aktuelles Kaufangebot." : "Modellrechnung mit typischen Setgrößen und Modellpreisen; aktuell ist kein passendes Shopangebot zugrunde gelegt."} {storageHelp}</p>}
+              </div>
+            </div><div className="wp-result-chart"><BalkonRace key={`${r.lifetimeSaving}-${r.invest}-${resultRevision}`} result={r} autoplay={intro.stage === "race"} /></div></div>
+            <div className="wp-result-stats" style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))" }}>
+              <StatCard label="Amortisation" value={amortLabel} unit={isFinite(r.amortYears) ? "Jahre" : undefined} help="Zeit, bis die Stromersparnis die Anschaffung nach Förderung ausgeglichen hat." />
+              <StatCard label="Ersparnis im 1. Jahr" value={r.savingPerYear.toLocaleString("de-DE")} unit="€" help="Vermiedene Stromkosten im ersten Jahr. Der Kaufpreis wird bei Amortisation und Gesamtvorteil berücksichtigt." />
+              <StatCard label="Autarkie" value={String(Math.round(r.autarky * 100))} unit="%" help="Anteil deines Jahresverbrauchs, den das Balkonkraftwerk selbst deckt." />
+            </div>
+          </section>
+          <ResultActions copied={copied} onCopy={copyResult} onForward={() => setShareOpen(true)} onWhatsApp={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + "\n" + shareUrl())}`, "_blank", "noopener,noreferrer")} onSave={saveResult} onReset={() => window.location.assign(window.location.pathname)} />
+          <section id="bkw-angebote" className="bkw-offers" aria-label="Passende Sets"><BalkonAngebot basis={angebotBasis} funding={fundingContext} design="result" katalog={katalog} ratedOffers={ratedOffers} selectedOfferId={offer?.id} onFundingDetails={() => { setSettingsSection("location"); requestAnimationFrame(() => document.getElementById("bkw-einstellungen")?.scrollIntoView({ behavior: "smooth", block: "start" })); }} onCalculate={next => { chooseOffer(next); revealUpdatedResult(); }} /></section>
+          <Modal open={pricesOpen} onClose={() => setPricesOpen(false)} title="Preise und Preisentwicklung">            {/* Strompreis-Szenario ganz oben: rechnet alle Zahlen darunter um. */}
             <ScenarioTabs
-              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
-              selected={scenario}
-              onSelect={setScenario}
+              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: s.sub, source: s.source }))}
+              selected={scenarioDraft}
+              onSelect={setScenarioDraft}
             />
-            {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
-                Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
-            <div ref={stickyRef} style={{
-              position: "sticky", top: 0, zIndex: 20, background: v('--color-bg'),
-              paddingTop: 8, paddingBottom: 10, marginBottom: 6,
-              boxShadow: stuck ? "0 8px 12px -8px rgba(0,0,0,0.12)" : "0 8px 12px -8px rgba(0,0,0,0)",
-              transition: "box-shadow 0.25s ease",
-            }}>
+<p>Wie lange möchtest du rechnen?</p><div className="bkw-offer-options">{([10, 20] as const).map(years => <OptionCard key={years} selected={horizonDraft === years} onClick={() => setHorizonDraft(years)} label={`${years} Jahre`} sub="" />)}</div>
+<FlowNav weiterAktiv={scenarioDraft !== scenario || horizonDraft !== horizonYears} weiterLabel="Ergebnis neu berechnen" zurueckLabel="Abbrechen" onZurueck={() => setPricesOpen(false)} inaktivHinweis="Ändere zuerst den Zeitraum oder die Preisentwicklung." onWeiter={() => { setScenario(scenarioDraft); setHorizonYears(horizonDraft); setPricesOpen(false); revealUpdatedResult(); }} /></Modal>
+          <Modal open={detailsOpen} onClose={() => setDetailsOpen(false)} title="Deine Stromkosten im Detail"><p>Über {horizonYears} Jahre sparen die selbst genutzten Solarerträge {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} € Stromkosten. Davon werden {r.invest.toLocaleString("de-DE")} € Anschaffung nach Förderung abgezogen. Es bleiben {r.lifetimeSaving.toLocaleString("de-DE")} € Vorteil.</p><p>Moduldegradation und begrenzte Speicherlebensdauer sind eingerechnet.</p></Modal>
+          <Modal open={shareOpen} onClose={() => setShareOpen(false)} title="Ergebnis weiterleiten"><p>{shareText()}</p><div className="wp-result-actions"><button type="button" onClick={copyResult}>{copied ? "Link kopiert" : "Link kopieren"}</button><a href={`mailto:?subject=${encodeURIComponent("Meine Balkonkraftwerk-Rechnung")}&body=${encodeURIComponent(shareText() + "\n" + (typeof window !== "undefined" ? shareUrl() : ""))}`}>Per E-Mail weiterleiten</a></div></Modal>
+          <div id="bkw-einstellungen" className="wp-investment-balance bkw-adjustments wp-funding-flow"><p className="wp-investment-eyebrow">Einstellungen & Förderung</p>
+            <AccordionField completedStyle="check" label="Dein Balkonkraftwerk" answered summary={systemLabel} open={settingsSection === "system"} onEdit={() => setSettingsSection(settingsSection === "system" ? null : "system")}>
+            {offer ? <>
+              <p className="bkw-offer-price-note">Rechnung mit {systemLabel}: {bruttoInvest.toLocaleString("de-DE", { minimumFractionDigits: 2 })} €{oInvest !== null ? " (eigener Preis)" : " (Shoppreis)"}. Halterung, Versand und Montage bitte im Angebot prüfen.</p>
+              <div className="bkw-offer-options">
+                {Array.from(new Set(ratedOffers.map(entry => entry.angebot.moduleWp))).sort((a, b) => a - b).map(wp => {
+                  const next = ratedOffers.find(entry => entry.angebot.moduleWp === wp && (entry.angebot.speicherKwh > 0) === storageOn) ?? ratedOffers.find(entry => entry.angebot.moduleWp === wp)!;
+                  return <OptionCard key={wp} selected={offer.moduleWp === wp} onClick={() => chooseOffer(next.angebot)} label={`${(wp / 1000).toLocaleString("de-DE")} kWp`} sub={next.angebot.produkt} />;
+                })}
+              </div>
+              <div className="bkw-offer-options">
+                {ratedOffers.filter(entry => entry.angebot.moduleWp === offer.moduleWp).sort((a, b) => a.angebot.speicherKwh - b.angebot.speicherKwh).map(entry => <OptionCard key={entry.angebot.id} selected={entry.angebot.id === offer.id} onClick={() => chooseOffer(entry.angebot)} label={entry.angebot.speicherKwh > 0 ? `${entry.angebot.speicherKwh.toLocaleString("de-DE")} kWh Speicher` : "Ohne Speicher"} sub={`${entry.angebot.preis.toLocaleString("de-DE", { minimumFractionDigits: 2 })} € gesamt`} />)}
+              </div>
+              <p>Die Empfehlung hat unter den verfügbaren Partnerangeboten den höchsten berechneten Vorteil über {horizonYears} Jahre nach Förderung.</p>
+              {offer.id !== ratedOffers[0]?.angebot.id && <button type="button" className="wp-assumptions-trigger" onClick={resetToRecommendation}>Zur Empfehlung</button>}
+            </> : <>
+              <p className="bkw-offer-price-note">{katalog.daten ? "Für diese Auswahl ist kein passendes Shopangebot verfügbar." : "Aktuelle Shoppreise sind noch nicht verfügbar."} Wir rechnen mit Modellpreisen und typischen Setgrößen.</p>
             {/* 1. Set-Größe — alle drei in einer Reihe. Blauer Rand markiert nur die
                 AKTIVE Wahl; die Empfehlung bleibt über Marker + Erhebung erkennbar. */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
@@ -547,17 +652,9 @@ export default function Balkon() {
                 const selected = active.setId === o.setId;
                 const isRec = o.setId === recommendation.best.setId;
                 return (
-                  <button key={o.setId} onClick={() => selectSize(o.setId)} style={{
-                    padding: "12px 6px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
-                    display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 0,
-                    background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
-                    border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
-                    boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
-                  }}>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
-                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
-                  </button>
+                  <OptionCard key={o.setId} selected={selected} onClick={() => selectSize(o.setId)}
+                    label={setShort(o.setId)}
+                    sub={`~${o.result.savingPerYear.toLocaleString("de-DE")} €/Jahr${isRec ? " · Empfehlung" : ""}`} />
                 );
               })}
             </div>
@@ -574,21 +671,7 @@ export default function Balkon() {
                 ausgeblendet, die zweite Zeile entsteht also nicht erst beim
                 Einschalten. */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", rowGap: 8 }}>
-              <button onClick={toggleStorage} aria-pressed={storageOn} style={{
-                background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
-                display: "inline-flex", alignItems: "center", gap: 6,
-              }}>
-                <span aria-hidden style={{
-                  width: 38, height: 22, borderRadius: v("--radius-pill"), flexShrink: 0, position: "relative", display: "inline-block",
-                  background: storageOn ? v('--color-cta') : v('--color-border-muted'), transition: "background 0.2s",
-                }}>
-                  <span style={{
-                    position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
-                    background: v('--color-bg'), transition: "left 0.2s",
-                  }} />
-                </span>
-                <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
-              </button>
+              <Switch an={storageOn} onChange={toggleStorage} label="Speicher mitrechnen" text="Speicher" />
               <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={iconSizes.sm}>
                 Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
                 extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
@@ -629,7 +712,6 @@ export default function Balkon() {
                 })}
               </div>
             </div>
-            </div>
 
             {/* Beschreibung der aktiven Konfiguration */}
             <div style={{ marginBottom: 16, padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
@@ -648,37 +730,46 @@ export default function Balkon() {
               )}
             </div>
 
-            {/* Hero: Gesamt-Ersparnis über die Laufzeit (pro Jahr steht in den Karten) */}
-            <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
-                Ersparnis in {CFG.lifetimeYears} Jahren
-              </div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive-text'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
-                {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} €
-              </div>
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
-                ~{r.savingPerYear.toLocaleString("de-DE")} €/Jahr · {r.annualYield.toLocaleString("de-DE")} kWh Ertrag/Jahr · davon {r.selfUsedKwh.toLocaleString("de-DE")} kWh selbst genutzt
+            </>}
+            </AccordionField>
+
+            <ResultSettings flow triggerId="bkw-settings-trigger" title="Deine Rechengrundlagen" summary={`${haushaltKwh.toLocaleString("de-DE")} kWh/Jahr · ${Math.round(strompreis * 100)} ct/kWh`}
+              values={{ invest: bruttoInvest, strom: strompreis, verbrauch: haushaltKwh, extra: additionalCosts, shade: shadingLossPercent }}
+              onApply={draft => {
+                if (draft.invest !== bruttoInvest) setOInvest(draft.invest);
+                setAdditionalCosts(draft.extra);
+                setShadingLossPercent(draft.shade);
+                if (draft.strom !== strompreis) setOStrom(draft.strom);
+                if (draft.verbrauch !== haushaltKwh) setOVerbrauch(draft.verbrauch);
+                revealUpdatedResult();
+              }}>
+              {(draft, update) => <>
+                <div>{storageOn ? "Set inklusive Speicher" : "Set-Preis"}: <InlineEdit value={draft.invest} onCommit={val => update({ invest: Math.round(val) })} unit=" €" min={0} max={20000} step={50} width={64} /></div>
+                <div>Zusätzliche Kosten: <InlineEdit value={draft.extra} onCommit={val => update({ extra: Math.round(val) })} unit=" €" min={0} max={10000} step={10} width={64} /></div>
+                <p>Optional: zum Beispiel Halterung, Versand oder Montage, soweit noch nicht im Setpreis enthalten. Dafür rechnen wir keine zusätzliche Förderung an.</p>
+                <div>Zusätzlicher Ertragsverlust durch Schatten: <InlineEdit value={draft.shade} onCommit={val => update({ shade: val })} unit=" %" min={0} max={100} step={5} width={64} /></div>
+                <p>Optional deine Schätzung über das ganze Jahr. Ohne Angabe rechnen wir ohne zusätzlichen Schattenverlust.</p>
+                <div>Strompreis: <InlineEdit value={Math.round(draft.strom * 10000) / 100} onCommit={val => update({ strom: val / 100 })} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
+                <div>Haushaltsverbrauch: <InlineEdit value={draft.verbrauch} onCommit={val => update({ verbrauch: Math.round(val) })} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
+              </>}
+            </ResultSettings>
+            <AccordionField completedStyle="check" label="Standort & Förderung" answered={plzConfirmed} summary={plz} open={settingsSection === "location"} onEdit={() => setSettingsSection(settingsSection === "location" ? null : "location")}>
+              <p>Mit deinem Standort prüfen wir mögliche Zuschüsse und passen den Ertrag an.</p>
+              <div>
+                <StandortField searchPlaces checkedPlace={checkedLocation} onSearchChange={() => { setCheckedLocation(null); setLocationSearchDirty(true); }} onPlaceSelect={async place => { beginFundingEdit(); if (!await ausPlz(place.plz, place.ags)) throw new Error("Funding lookup failed"); setPendingPlace(place); setCheckedLocation(place); setLocationSearchDirty(false); }} plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} label="Postleitzahl" submitLabel="Förderung prüfen" />
               </div>
 
-              {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
-              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: v("--font-size-small"), lineHeight: 2 }}>
-                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={bruttoInvest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
-                <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
-                <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
-                <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
-              </div>
-            </div>
 
-            <ResultFunding
+            <ResultFunding showAllProgramsLink={false} design="result"
               loading={foerderQuelle.laedt}
               candidates={foerderQuelle.kandidaten}
               chosenAgs={foerderQuelle.ags}
-              onChooseAgs={foerderQuelle.waehleOrt}
+              onChooseAgs={ags => { beginFundingEdit(); foerderQuelle.waehleOrt(ags); }}
               programs={fundingPrograms}
-              applied={fundingStack.applied}
-              total={fundingStack.total}
+              applied={fundingPreview.stack.applied}
+              total={fundingPreview.stack.total}
               enabled={fundingEnabled}
-              onToggle={setFundingEnabled}
+              onToggle={enabled => { beginFundingEdit(); setFundingEnabled(enabled); }}
               brutto={bruttoInvest}
               technik="balkon"
               kopf={wohnformGefragt ? (
@@ -693,7 +784,7 @@ export default function Balkon() {
                         key={id}
                         data-flow-option
                         aria-pressed={wohnform === id}
-                        onClick={() => setWohnform(wohnform === id ? null : id)}
+                        onClick={() => { beginFundingEdit(); setWohnform(wohnform === id ? null : id); }}
                         style={{
                           padding: "6px 12px", borderRadius: v("--radius-pill"), cursor: "pointer", fontSize: v("--font-size-small"),
                           border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
@@ -708,38 +799,42 @@ export default function Balkon() {
                 </div>
               ) : undefined}
             />
+            <FlowNav zurueckSichtbar={false} weiterLabel="Ergebnis neu berechnen"
+              weiterAktiv={fundingChanged && !locationSearchDirty && !foerderQuelle.laedt && !plzLoading}
+              inaktivHinweis="Prüfe einen neuen Standort oder ändere die Förderung."
+              onWeiter={async () => {
+                setAppliedFunding(previewFundingContext);
+                if (pendingPlace) {
+                  setSelectedLocationAgs(pendingPlace.ags);
+                  onPlzChange(pendingPlace.plz);
+                  await fetchPvgis(pendingPlace.plz);
+                  setPendingPlace(null);
+                }
+                revealUpdatedResult();
+              }} />
+            </AccordionField>
 
-            {/* Kaufbare Sets, mit denselben Angaben durchgerechnet.
-                Sitzt direkt unter dem Fördercheck: erst was es kostet und was
-                davon der Staat trägt, dann wo man es bekommt. */}
-            <BalkonAngebot basis={angebotBasis} foerderungEuro={foerderung} />
-
-            {/* Stats 2×2 */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Amortisation" value={amortLabel} help="So lange dauert es, bis die Ersparnis die Anschaffung wieder eingespielt hat." />
-              <StatCard label="Autarkie" value={`${Math.round(r.autarky * 100)} %`} valueColor={v('--color-positive')} help="Anteil deines Jahresstroms, den das Balkonkraftwerk selbst deckt. Bei kleinen Anlagen zweistellig — es deckt die Grundlast, nicht den ganzen Haushalt." />
-              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(scenarioStrom * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (gewähltes Szenario). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
-              <StatCard label="CO₂ gespart" value={`${r.co2PerYear.toLocaleString("de-DE")} kg/J`} help="Vermiedener CO₂-Ausstoß pro Jahr, gerechnet mit dem deutschen Netzstrom-Mix (0,38 kg/kWh)." />
             </div>
-
-            {/* Tagesleistungskurve der empfohlenen/aktiven Set-Größe */}
-            <SetPowerCurves sets={CFG.sets} selectedId={active.setId} orientationFactor={referenceYearKwh(orientationId) / referenceYearKwh("sued_flach")} />
-            <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
-              Seit 2024 darfst du nur bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen.
-              Nutzt du mehr Module
+            <div id="bkw-ertrag" className="wp-investment-balance bkw-adjustments wp-funding-flow"><AccordionField completedStyle="check" label="Ertrag und technische Details" answered summary={`${r.annualYield.toLocaleString("de-DE")} kWh/Jahr · ${Math.round(r.autarky * 100)} % Autarkie`} open={technicalOpen} onEdit={() => setTechnicalOpen(!technicalOpen)}>
+            <div className="bkw-technical-content">
+            <dl className="bkw-yield-summary">
+              <div><dt>Erzeugt pro Jahr</dt><dd>{r.annualYield.toLocaleString("de-DE")} <small>kWh</small></dd></div>
+              <div><dt>Selbst genutzt</dt><dd>{r.selfUsedKwh.toLocaleString("de-DE")} <small>kWh</small></dd></div>
+              <div><dt>Überschuss</dt><dd>{r.feedInKwh.toLocaleString("de-DE")} <small>kWh</small></dd></div>
+            </dl>
+            <SetPowerCurves sets={offer ? [{ id: effectiveSetId, label: offer.produkt, moduleWp: offer.moduleWp, inverterW: offer.inverterW }] : CFG.sets} selectedId={effectiveSetId} orientationFactor={referenceYearKwh(orientationId) / referenceYearKwh("sued_flach")} />
+            <p>Mehr Module liefern auch morgens und abends mehr Strom. Der Wechselrichter gibt höchstens <strong>800 Watt</strong> ab.
               <InfoTooltip title="Wie viele Module sind erlaubt?" ariaLabel="Wie viele Module sind erlaubt?" size={iconSizes.sm}>
-                Die Module dürfen zusammen bis <strong>2.000 Wp</strong> leisten — mehr als der Wechselrichter durchlässt. Das ist
-                erlaubt und sinnvoll: Die Mittagsspitze wird gekappt, morgens und abends kommt aber mehr an.
+                Die Module dürfen zusammen bis 2.000 Wp leisten. Die durchgezogene Kurve zeigt die begrenzte Leistung am Wechselrichter; die gestrichelte das mögliche Modulangebot. Ein passender Speicher kann einen Teil der Mittagsspitze zum Laden nutzen. Die Kurve ist eine Veranschaulichung eines Sonnentags, keine Wettervorhersage.
               </InfoTooltip>
-              , hast du morgens und abends mehr Ertrag — die Mittagsspitze bleibt bei 800 W gedeckelt.
-            </div>
-
+            </p>
+            <p>{r.feedInKwh > 0 ? <>Den Überschuss von rund <strong>{r.feedInKwh.toLocaleString("de-DE")} kWh pro Jahr</strong> nutzt du nicht selbst. {BALKON_RECHT.keineVerguetung}</> : <>Du nutzt praktisch den gesamten Ertrag selbst.</>}</p>
             {/* Speicher: ehrliche Mehrkosten/Nutzen-Aufschlüsselung */}
-            {r.storageKwh > 0 && (() => {
+            {!offer && r.storageKwh > 0 && (() => {
               const extraSaving = r.savingPerYear - r.baseSavingPerYear;
               const paysOff = isFinite(r.storagePayback) && r.storagePayback <= CFG.storageLifeYears;
               return (
-                <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                <div className="bkw-technical-note">
                   <div style={{ fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
                     Mit {r.storageKwh.toLocaleString("de-DE")}-kWh-Speicher
                   </div>
@@ -748,7 +843,7 @@ export default function Balkon() {
                     zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
                     kostet aber <strong style={{ color: v('--color-negative-text'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
                   </div>
-                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8 }}>
+                  <div style={{ fontSize: "var(--result-type-ui)", color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (
                       <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer. Deshalb ist er bei deinem Verbrauch drin.</>
                     ) : (
@@ -759,73 +854,52 @@ export default function Balkon() {
               );
             })()}
 
-            {/* Einspeise-/Anmeldehinweis */}
-            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-              {r.feedInKwh > 0 ? (
-                <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> deines Ertrags brauchst du nicht selbst. {BALKON_RECHT.keineVerguetung}</>
-              ) : (
-                <>Du nutzt praktisch den gesamten Ertrag selbst — kein Überschuss geht verloren.</>
-              )}
-              {r.clipped && (
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-                  Der 800-W-Wechselrichter begrenzt die Mittagsspitze. Ein größeres Set bringt hier nur noch wenig zusätzlichen Ertrag.
-                </div>
-              )}
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-                {BALKON_RECHT.anmeldung}
-                {r.storageKwh > 0 && " Mit Speicher ist das Gerät allerdings von der VDE-Produktnorm nicht abgedeckt — dafür entsteht gerade eine eigene Norm; je nach Ausführung kann eine Rückfrage beim Netzbetreiber sinnvoll sein."}
-              </div>
-            </div>
-
+            <AffiliateDetails title="Anschluss, Anmeldung & Nutzung">
+              <h3>Anmeldung</h3>
+              <p>{BALKON_RECHT.anmeldung}{r.storageKwh > 0 && " Mit Speicher ist das Gerät von der VDE-Produktnorm nicht abgedeckt; je nach Ausführung kann eine Rückfrage beim Netzbetreiber sinnvoll sein."}</p>
             {/* Steckdosen-Hinweis oberhalb der Schuko-Grenze der VDE-Vornorm.
                 Bewusst KEIN "Pflicht"/"verboten": Gesetzlich sind 2.000 Wp erlaubt,
                 die Vornorm ist freiwillig und richtet sich an Hersteller. */}
-            {CFG.sets.find(s => s.id === active.setId)!.moduleWp > CFG.schukoMaxWp && (
-              <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            {(offer?.moduleWp ?? CFG.sets.find(s => s.id === active.setId)!.moduleWp) > CFG.schukoMaxWp && (
+              <div className="bkw-technical-note">
                 <strong style={{ color: v('--color-text-secondary') }}>Zur Steckdose:</strong> Gesetzlich sind {(2000).toLocaleString("de-DE")} Wp Module an 800 W erlaubt — dein Set ist also zulässig.
                 Die VDE-Vornorm (seit Dezember 2025) sieht für den normalen Schuko-Stecker aber nur bis {CFG.schukoMaxWp.toLocaleString("de-DE")} Wp vor; darüber eine spezielle
                 Einspeisesteckdose, die eine Elektrofachkraft setzt (~{CFG.energySocketCostMin}–{CFG.energySocketCostMax} €). Die Norm ist{" "}
                 <strong style={{ color: v('--color-text-secondary') }}>freiwillig</strong> und richtet sich an Hersteller, gilt aber als anerkannte Regel der Technik —
-                im Schadensfall kann das gegenüber Versicherung oder Vermieter zählen. Wer das umgehen will, nimmt das 2-Module-Set: das bleibt mit {CFG.sets.find(s => s.id === "duo")!.moduleWp} Wp darunter.
+                im Schadensfall kann das gegenüber Versicherung oder Vermieter zählen. Für den normalen Schuko-Stecker muss die Modulleistung innerhalb dieser Grenze bleiben.
               </div>
             )}
 
             {/* Miete/Eigentum-Hinweis */}
-            <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            <div className="bkw-technical-note">
               <strong style={{ color: v('--color-text-secondary') }}>Miete oder Eigentum:</strong> Beides ist möglich. {BALKON_RECHT.mieteEigentum}
             </div>
 
+            </AffiliateDetails>
             {/* Cross-Flow: großes Dach lohnt mehr */}
             {roofWorthIt && (
-              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-accent')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+              <div className="bkw-technical-note">
                 Bei deinem Verbrauch von <strong style={{ color: v('--color-text-primary') }}>{haushaltKwh.toLocaleString("de-DE")} kWh</strong> deckt ein Balkonkraftwerk nur die Grundlast.
                 Wenn du ein eigenes Dach oder eine Fläche hast, holt eine richtige Anlage ein Vielfaches heraus.{" "}
                 <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Große Anlage rechnen</Link>
               </div>
             )}
 
-            {/* Aktionen */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
-              </Link>
-              <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
-              </button>
-            </div>
-
-            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            <div className="bkw-technical-note">
               <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
-              <span> · Ertrag standortgenau, Eigenverbrauch aus der Anlagengröße · Werte auf der </span>
+              <span> · Ertrag standortgenau, Eigenverbrauch stündlich mit deinem Verbrauch verglichen · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
               <div style={{ marginTop: 6 }}>
                 <DataSourceNote source={DATA_SOURCES.pvgis} />
               </div>
             </div>
 
-            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "8px 0" }}>
+            </div>
+            </AccordionField></div>
+            <div className="bkw-result-disclaimer">
               Näherungswerte. Realer Ertrag hängt von Verschattung, Modul und Montage ab. Keine Anlageberatung.
             </div>
+            <StandNoteView seite={offer && stand && katalog.daten ? { ...stand, eintraege: [{ was: "Shoppreis des berechneten Sets", iso: katalog.daten.abgerufenIso.slice(0, 10), praezision: "tag" }, ...stand.eintraege.filter(entry => entry.was !== "Set- und Speicherpreise")] } : stand} variant="cards" />
           </div>
         )}
       </div>
@@ -859,8 +933,8 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
   const capY = yPix(capKw);
 
   return (
-    <div style={{ marginTop: 4, background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-md'), padding: "12px 10px 6px" }}>
-      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, paddingLeft: 4 }}>Leistung an einem Sonnentag</div>
+    <div className="bkw-power-chart">
+      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), marginBottom: 4, paddingLeft: 4 }}>Leistung an einem Sonnentag</div>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesleistung der Set-Größen mit Wechselrichter-Deckelung">
         {/* Wechselrichter-Deckel (800 W) */}
         <line x1={PADX} y1={capY} x2={W - PADX} y2={capY} stroke={v('--color-text-faint')} strokeWidth={1} strokeDasharray="3 3" />
@@ -884,19 +958,6 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
           </span>
         ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value, sub, help, helpTitle, valueColor }: { label: string; value: string; sub?: string; help?: React.ReactNode; helpTitle?: string; valueColor?: string }) {
-  return (
-    <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
-        {label}
-        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
-      </div>
-      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: valueColor ?? v('--color-text-primary') }}>{value}</div>
-      {sub && <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }

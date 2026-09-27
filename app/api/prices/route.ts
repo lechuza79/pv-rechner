@@ -59,7 +59,7 @@ export async function GET() {
       batteryBase: Number(data.battery_base),
       batteryPerKwh: Number(data.battery_per_kwh),
       electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
-      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
+      electricityIncrease: DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
     };
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { pvPriceSmall, pvPriceLarge, pvThresholdKwp, batteryBase, batteryPerKwh, electricityPrice, electricityIncrease, validFrom, source, notes } = body;
+    const { pvPriceSmall, pvPriceLarge, pvThresholdKwp, batteryBase, batteryPerKwh, electricityPrice, validFrom, source, notes } = body;
 
     // Type + bounds validation
     const num = (v: unknown, min: number, max: number): number | null => {
@@ -105,12 +105,12 @@ export async function POST(req: NextRequest) {
     const threshold = num(pvThresholdKwp, 1, 50) ?? 10;
     const bBase = num(batteryBase, 0, 10000) ?? 0;
     const elecPrice = num(electricityPrice, 0.10, 1.00);
-    const elecIncrease = num(electricityIncrease, -0.05, 0.20);
+    const elecIncrease = DEFAULT_PRICES.electricityIncrease;
     if (!pSmall || !pLarge || !bPerKwh) {
       return NextResponse.json({ error: "Invalid or missing price values (pvPriceSmall: 500-3000, pvPriceLarge: 500-3000, batteryPerKwh: 100-2000)" }, { status: 400 });
     }
-    if (!elecPrice || elecIncrease === null) {
-      return NextResponse.json({ error: "Invalid electricity values (electricityPrice: 0.10-1.00 €/kWh, electricityIncrease: -0.05 to 0.20)" }, { status: 400 });
+    if (!elecPrice) {
+      return NextResponse.json({ error: "Invalid electricity values (electricityPrice: 0.10-1.00 €/kWh)" }, { status: 400 });
     }
     if (typeof validFrom !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(validFrom)) {
       return NextResponse.json({ error: "validFrom must be YYYY-MM-DD" }, { status: 400 });

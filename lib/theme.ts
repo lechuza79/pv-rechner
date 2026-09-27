@@ -201,6 +201,7 @@ export const tokens = {
   // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.06)',    // cards, subtle lift
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.08)',   // menus, popovers, tooltips
+  '--shadow-toast': '0 12px 32px rgba(3,20,22,0.24)', // persistent floating notices
   '--shadow-lg': '0 8px 28px rgba(0,0,0,0.10)',   // dropdowns, modals
 
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
@@ -322,6 +323,9 @@ export const tokens = {
   '--radius-pill': '999px',             // Knöpfe und Aktionen
   '--radius-sm': '10px',                // Small: inputs, checkboxes, pills
   '--radius-md': '16px',                // Medium: buttons, cards, panels
+  '--space-xl': '16px',
+  '--space-xxl': '24px',
+  '--space-huge': '48px',
   '--radius-lg': '24px',                // Large: hero cards, outer containers
 
   // ─── Layout (3) ────────────────────────────────────────────────────────────

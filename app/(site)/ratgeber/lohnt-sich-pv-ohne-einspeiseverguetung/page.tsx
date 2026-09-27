@@ -355,7 +355,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
   const scenarioTabs: ScenarioTabMeta[] = SCENARIOS.map((s) => ({
     id: s.id,
     label: s.label,
-    sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr`,
+    sub: s.sub, source: s.source,
     explain: s.explain,
   }));
   const vergleichColumns: VergleichColumn[] = [
@@ -595,7 +595,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </p>
         <SpeicherVergleich tabs={scenarioTabs} columns={vergleichColumns} />
         <p style={S.p}>
-          Im realistischen Szenario (+{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr)
+          Im UBA-Basismodell (+{(prices.electricityIncrease * 100).toLocaleString("de-DE", { maximumFractionDigits: 2 })} %/Jahr)
           zeigt sich der Speicher-Effekt deutlich:{" "}
           <strong style={S.strong}>ohne Speicher</strong> amortisiert sich die Anlage
           {ohneRealAmort != null ? ` erst in ~${ohneRealAmort} Jahren` : " kaum im Zeitraum"}

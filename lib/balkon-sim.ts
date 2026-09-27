@@ -52,14 +52,15 @@
 // Abweichung von +3,5 % im haertesten Clipping-Fall, siehe lib/solar-year.ts).
 
 import { calcHourlyConsumption, wpHourlyWatts, type HouseholdProfile } from "./consumption";
-import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
+import { SOLAR_YEAR_DE, referenceMonthKwh, type SolarDayType } from "./solar-year";
+import { dispatchSolarHour, storageCapacity, type SolarStorageOptions } from "./solar-storage";
 
 // Die PVGIS-Monatswerte des Standorts (/api/pvgis) gelten fuer OPTIMALE Neigung.
 // Der Vergleich mit derselben Ausrichtung in der Referenzreihe ergibt, wie viel
 // ergiebiger dieser Standort ist — dieser Faktor gilt dann fuer jede Ausrichtung.
 const LOCATION_REFERENCE = "sued_flach";
 
-export interface BalkonSimInput {
+export interface BalkonSimInput extends SolarStorageOptions {
   moduleKwp: number;
   inverterKw: number;
   /** 12 × kWh/kWp aus PVGIS (Monatsprofil des Standorts). */
@@ -67,7 +68,8 @@ export interface BalkonSimInput {
   /** Ausrichtung — waehlt die passende Referenzreihe (eigener Tagesverlauf!). */
   orientation: string;
   household: HouseholdProfile;
-  /** Nutzbare Speicherkapazität in kWh (0 = ohne Speicher). */
+  /** Legacy usable capacity (kWh). When usableBatteryKwh is supplied, this is
+   * the nominal upper bound; 0 means no storage. */
   batteryKwh: number;
   /** Lade-/Entlade-Wirkungsgrad (0–1). */
   roundtrip: number;
@@ -93,7 +95,7 @@ export interface BalkonSimInput {
 }
 
 export interface BalkonSimResult {
-  /** Ertrag nach Wechselrichter-Deckelung (kWh/a) — das, was im Haus ankommt. */
+  /** Harvested generation (kWh/a): direct use + storage input + export + export curtailment. */
   annualYield: number;
   /** Ertrag, den die Module ohne Deckel geliefert hätten (kWh/a). */
   rawYield: number;
@@ -136,7 +138,7 @@ export interface BalkonSimResult {
  *  Produktions-Seite: production = direct + stored + feedIn (Wohin geht der Ertrag?).
  *  Verbrauchs-Seite:  consumption = selfUsed + gridDraw   (Woher kommt der Strom?). */
 export interface SolarMonth {
-  production: number;   // ins Haus gelieferter Ertrag (nach Wechselrichter)
+  production: number;   // harvested energy, including input to DC storage
   consumption: number;  // Gesamtverbrauch des Monats
   direct: number;       // Ertrag direkt verbraucht (ohne Umweg über den Speicher)
   stored: number;       // Ertrag in den Speicher geladen (deckt später Verbrauch)
@@ -163,7 +165,12 @@ export interface SolarYearResult extends BalkonSimResult {
  *  Speicher-Ladestand. Kern für ALLE Rechner (Balkon + Dach-PV) — Eigenverbrauch,
  *  Autarkie und Speicher-Nutzen fallen als Ergebnis an, nicht als Annahme.
  *  Liefert zusätzlich die Monatsaufschlüsselung für den Jahresverlauf. */
-export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
+export function simulateSolarYear(
+  input: BalkonSimInput,
+  // Alternate source series for measured chronology comparisons; same dispatch.
+  referenceYear: Record<string, SolarDayType[][]> = SOLAR_YEAR_DE,
+): SolarYearResult {
+  const capacity = storageCapacity(input.batteryKwh, input);
   let annualYield = 0, rawYield = 0, clippedKwh = 0;
   let selfUsedKwh = 0, directUsedKwh = 0, feedInKwh = 0, consumptionKwh = 0;
   let curtailedKwh = 0, feedInWeightedKwh = 0, productionWeightedKwh = 0;
@@ -175,7 +182,7 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
   let soc = 0; // Speicher-Ladestand (kWh), läuft über das ganze Jahr durch
   const monthly: SolarMonth[] = [];
 
-  const months = SOLAR_YEAR_DE[input.orientation] ?? SOLAR_YEAR_DE[LOCATION_REFERENCE];
+  const months = referenceYear[input.orientation] ?? referenceYear[LOCATION_REFERENCE];
 
   for (let m = 0; m < 12; m++) {
     // Die Referenzreihe liefert VERTEILUNG und Ausrichtung (welche Tage sonnig
@@ -184,7 +191,7 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
     // mit derselben Ausrichtung in der Referenz — der so gewonnene Standortfaktor
     // gilt dann fuer jede Ausrichtung. Damit wandern die Spitzen mit: ein
     // sonnigerer Ort erzeugt hoehere Spitzen und clippt mehr.
-    const refOptimal = referenceMonthKwh(LOCATION_REFERENCE, m);
+    const refOptimal = referenceMonthKwh(LOCATION_REFERENCE, m, referenceYear);
     const locationScale = refOptimal > 0 ? input.monthlyYieldPerKwp[m] / refOptimal : 0;
     const scale = locationScale * input.moduleKwp;
 
@@ -195,52 +202,25 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
         for (let h = 0; h < 24; h++) {
         // Referenz ist W je kWp → /1000 = kWh in dieser Stunde je kWp.
         const dcKwh = (dayType.w[h] / 1000) * scale;
-        const acKwh = Math.min(dcKwh, input.inverterKw); // Wechselrichter-Deckel
-        rawYield += dcKwh;
-        annualYield += acKwh;
-        clippedKwh += dcKwh - acKwh;
-        mProd += acKwh;
-
         const loadKwh = calcHourlyConsumption(input.household, h, m) / 1000;
+        const flow = dispatchSolarHour(dcKwh, loadKwh, soc, input.inverterKw, capacity, input.roundtrip, input);
+        soc = flow.soc;
+        rawYield += dcKwh;
+        annualYield += flow.production;
+        clippedKwh += flow.clipped;
+        mProd += flow.production;
         consumptionKwh += loadKwh;
         mCons += loadKwh;
-
-        // Direktverbrauch zuerst — er ist immer verlustfrei.
-        const direct = Math.min(acKwh, loadKwh);
+        const direct = flow.direct;
         directUsedKwh += direct;
         selfUsedKwh += direct;
         mSelf += direct;
         mDirect += direct;
-        let surplus = acKwh - direct;
-        const deficit = loadKwh - direct;
-
-        // Der Speicher haengt hier hinter dem Wechselrichter (AC-gekoppelt): Er
-        // laedt aus dem GEDECKELTEN Ertrag, die gekappte Mittagsspitze ist fuer ihn
-        // verloren. Reale Balkonspeicher (Anker, Zendure, Growatt) sind DC-gekoppelt
-        // und koennten sie einfangen. Nachgerechnet (07/2026): Fuer die angebotenen
-        // Groessen macht es exakt null Unterschied — 1,6 kWh sind aus dem normalen
-        // Vormittags-Ueberschuss laengst voll, bevor mittags ueberhaupt gekappt wird.
-        // Messbar wird es erst ab ~6 kWh (+46 kWh/a), und so grosse Speicher gibt es
-        // am Balkon nicht. Deshalb bleibt die einfachere AC-Kopplung stehen; die HTW
-        // modelliert an dieser Stelle ebenso. (Dach-PV nutzt dieselbe Kopplung — der
-        // Fehler ist bei Dach-Wechselrichtern noch kleiner, weil kaum geclippt wird.)
-        // Überschuss in den Speicher, soweit Platz ist.
-        if (surplus > 0 && input.batteryKwh > 0) {
-          const charge = Math.min(surplus, input.batteryKwh - soc);
-          soc += charge;
-          surplus -= charge;
-          mStored += charge;
-        }
-        // Restbedarf aus dem Speicher decken (Wirkungsgrad beim Entladen).
-        let dischargeCovered = 0;
-        if (deficit > 0 && soc > 0) {
-          const needed = deficit / input.roundtrip;
-          const taken = Math.min(needed, soc);
-          soc -= taken;
-          dischargeCovered = taken * input.roundtrip;
-          selfUsedKwh += dischargeCovered;
-          mSelf += dischargeCovered;
-        }
+        mStored += flow.charge;
+        const dischargeCovered = flow.discharge;
+        selfUsedKwh += dischargeCovered;
+        mSelf += dischargeCovered;
+        let surplus = flow.feedIn;
         // Gesetzliche Einspeisegrenze: Was der Deckel in dieser Stunde nicht
         // durchlässt, ist verloren — Verbrauch und Speicher hatten oben schon
         // ihre Chance. Ohne Deckel bleibt surplus unverändert.
@@ -251,7 +231,7 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
         if (input.priceShape) {
           const preis = input.priceShape[m]?.[h] ?? 1;
           feedInWeightedKwh += surplus * preis;
-          productionWeightedKwh += acKwh * preis;
+          productionWeightedKwh += flow.production * preis;
         }
         feedInKwh += surplus;
         mFeed += surplus;
