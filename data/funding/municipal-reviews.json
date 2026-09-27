@@ -68115,5 +68115,77 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07140002",
+    "name": "Altweidelbach",
+    "checkedAt": "2026-09-27T00:55:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altweidelbach (VG Simmern-Rheinböllen) hatte eine Richtlinie zur Förderung der Energieeinsparung (04.12.2017, zuletzt geändert 17.12.2024); laut Doppelhaushalt 2026/2027 ist sie zum 31.12.2025 abgelaufen und wird wegen der Haushaltslage vorerst nicht verlängert. Der Richtlinientext ist weder im Ortsrecht-Ordner der VG noch im Webarchiv abrufbar, deshalb kein historischer Katalogeintrag mit Beträgen. Derzeit keine kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe; Kreisprogramme wie bei den Nachbarorten.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Altweidelbach (keine Förderrichtlinie mehr, Doppelhaushalt 2026/2027)",
+      "Doppelhaushalt 2026/2027 gelesen (Teilhaushalt 1, Konto 28100.541900)",
+      "Suche auf altweidelbach.de nach „förderprogramm“: kein Treffer",
+      "Webarchiv (sim-rhb.de-Ordner und altweidelbach.de) nach der Richtlinie durchsucht: nicht vorhanden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/altweidelbach/haushaltsplan-altweidelbach-2026-2027.pdf?cid=5yp",
+        "finding": "Konto 541900: „Die Richtlinie zur Förderung der Energieeinsparung vom 04.12.2017 (zuletzt geändert am 17.12.2024) ist zum 31.12.2025 abgelaufen. Eine Verlängerung kommt aufgrund der Haushaltslage vorerst nicht in Betracht.“"
+      },
+      {
+        "url": "https://altweidelbach.de/search/f%C3%B6rderprogramm",
+        "finding": "Suchergebnis der Gemeinde-Website: „Es konnte leider nichts Passendes gefunden werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "altweidelbach.de/search/f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde ohne Treffer; die ausgelaufene Energiesparrichtlinie ist über den Haushaltsplan belegt.",
+        "evidenceUrl": "https://altweidelbach.de/search/f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "07140100",
+    "name": "Nannhausen",
+    "checkedAt": "2026-09-27T00:55:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nannhausen (VG Simmern-Rheinböllen) hat im Ortsrecht-Ordner keine Förder- oder Energiesparrichtlinie; der Doppelhaushalt 2026/2027 führt auf dem Förderkonto nur „Spenden u. Zuschüsse“ und keinen Förderposten für Energie. Die beiden gespeicherten Treffer sind Feuerwehr-Kalendereinträge zur Wasserförderung (Löschwasser) und nicht einschlägig. Keine kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Nannhausen (keine Förderrichtlinie)",
+      "Doppelhaushalt 2026/2027 nach Richtlinie/Förderung durchsucht",
+      "VG-Klimaschutz-Serviceseite: nur Ortsgemeinde-Richtlinien, keine eigene VG-Förderung für PV",
+      "Sitemap nannhausen.de vollständig nach Förder-/Energie-/Klima-Seiten durchsucht: einziger Treffer der Feuerwehrtermin „Wasserförderung“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/nannhausen/haushaltssatzung-und-plan-2026-2027-nannhausen.pdf?cid=61d",
+        "finding": "Konto 28100.541900: „Spenden u. Zuschüsse“; keine Energiespar- oder Förderrichtlinie im Haushalt."
+      },
+      {
+        "url": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung",
+        "finding": "Feuerwehr-Kalender 02.04.2022, Übung zur Wasserförderung (Löschwasser) — kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung",
+        "disposition": "reviewed",
+        "reason": "Feuerwehrübung „Wasserförderung“ (Löschwasser), nicht einschlägig.",
+        "evidenceUrl": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung"
+      },
+      {
+        "url": "nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung/events.ics?eventId=70972",
+        "disposition": "replaced",
+        "reason": "Kalenderdatei desselben Feuerwehr-Termins; durch die gelesene Kalenderseite erledigt, nicht einschlägig.",
+        "evidenceUrl": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung"
+      }
+    ]
   }
 ]
