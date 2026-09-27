@@ -62,7 +62,7 @@ export async function wartelisteEintragen(o: {
   if (!supabase) return { art: "keine-db" };
   const email = normalisiereEmail(o.email);
 
-  const { data: vorhanden } = await withDbTimeout(
+  const { data: vorhanden, error: leseFehler } = await withDbTimeout(
     supabase
       .from("warteliste")
       .select(SPALTEN)
@@ -74,6 +74,7 @@ export async function wartelisteEintragen(o: {
     DB_READ_TIMEOUT_MS,
   );
 
+  if (leseFehler) throw new Error(`Warteliste: Lesen fehlgeschlagen: ${leseFehler.message}`);
   if (vorhanden) {
     const e = aus(vorhanden as Zeile);
     if (e.status === "bestaetigt") return { art: "still" };
@@ -138,11 +139,12 @@ export async function wartelisteBestaetigen(
   jetztIso: string,
 ): Promise<{ ok: true; eintrag: WartelisteEintrag } | { ok: false; grund: "unbekannt" | "keine-db" }> {
   if (!supabase) return { ok: false, grund: "keine-db" };
-  const { data: vorhanden } = await withDbTimeout(
+  const { data: vorhanden, error: leseFehler } = await withDbTimeout(
     supabase.from("warteliste").select(SPALTEN).eq("id", id).maybeSingle(),
     "warteliste-bestaetigen-lesen",
     DB_READ_TIMEOUT_MS,
   );
+  if (leseFehler) throw new Error(`Warteliste: Lesen fehlgeschlagen: ${leseFehler.message}`);
   if (!vorhanden) return { ok: false, grund: "unbekannt" };
   const e = aus(vorhanden as Zeile);
   // Opened twice (mail scanner, back button): same friendly page. An entry
@@ -183,12 +185,13 @@ export async function wartelisteVersandFehlgeschlagen(id: string): Promise<void>
 
 /** Unsubscribe. The row stays as proof of consent (see lib/gemeinde-abo.ts). */
 export async function wartelisteAbmelden(id: string, jetztIso: string): Promise<void> {
-  if (!supabase) return;
-  await withDbTimeout(
+  if (!supabase) throw new Error("Warteliste: Datenbank nicht erreichbar");
+  const { error } = await withDbTimeout(
     supabase.from("warteliste").update({ status: "abgemeldet", abgemeldet_am: jetztIso }).eq("id", id),
     "warteliste-abmelden",
     DB_READ_TIMEOUT_MS,
   );
+  if (error) throw new Error(`Warteliste: Abmeldung fehlgeschlagen: ${error.message}`);
 }
 
 /**

@@ -121,7 +121,6 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  const outside=e=>{if(!header.contains(e.target)&&!nav.contains(e.target))close();};
  const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button,input,select')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
  document.addEventListener('click',outside);document.addEventListener('keydown',keyboard);
- const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
 
  return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();local.destroy();delete header.dataset.globalNav;};
 }

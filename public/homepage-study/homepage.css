@@ -1179,3 +1179,14 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.h
 @media(prefers-reduced-motion:reduce){html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.hs-scroll-invitation[data-hero-tone]{transition:none}}
 
 @media(prefers-reduced-transparency:reduce){.homepage-study .hs-retro-secondary.hs-scroll-invitation{backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* Six equal tool cards: three desktop columns, two tablet columns, one mobile column. */
+.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:repeat(3,minmax(0,1fr))}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool:nth-child(n){grid-column:auto;grid-row:auto;display:flex;flex-direction:column;width:auto;justify-self:stretch;grid-template-rows:none;padding:26px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-top{min-height:24px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-art{width:100%;height:150px;flex:none;margin:12px 0 8px;align-self:auto}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool h3{margin:12px 0 14px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool:first-child .hs-tool-art solar-illustration{width:220px;height:220px;max-width:100%;left:auto;top:-12px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-actions{margin-top:auto}
+@media(max-width:850px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:1fr}.hs-tools .hs-five-tools.hs-six-tools .hs-tool:nth-child(n){padding:24px}}

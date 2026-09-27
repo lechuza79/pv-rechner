@@ -5,11 +5,8 @@
 // Ziff. 3.3; EDSA 05/2020 Rn. 108), so every entry stores the version it was
 // made under, and versions are dated and NEVER overwritten.
 //
-// The wording itself lives in the header menu (public/shared-nav/nav.js, taken
-// over one to one from the design package). The version key is the one that
-// script sends (`consent: 'offer-check-v1'`). lib/__tests__/warteliste.test.ts
-// holds every text here against the shipped script: change the menu text
-// without adding a version here and the test goes red.
+// The shared waitlist form reads its wording from this archive. Each product
+// resolves its own latest version; old versions remain valid for open tabs.
 
 export type WartelisteFassung = {
   /** Stored on the entry; sent by the form. Never reuse. */
@@ -24,11 +21,12 @@ export type WartelisteFassung = {
   zusage: string;
 };
 
-export const WARTELISTEN = ["angebotscheck"] as const;
+export const WARTELISTEN = ["angebotscheck", "elektroauto"] as const;
 export type WartelisteName = (typeof WARTELISTEN)[number];
 
 export const WARTELISTE_TITEL: Record<WartelisteName, string> = {
   angebotscheck: "Angebotscheck für Photovoltaik und Wärmepumpe",
+  elektroauto: "Elektroauto-Check",
 };
 
 export const WARTELISTE_FASSUNGEN: WartelisteFassung[] = [
@@ -52,10 +50,24 @@ export const WARTELISTE_FASSUNGEN: WartelisteFassung[] = [
     zusage:
       "Mit der Anmeldung erhältst du eine Bestätigungsmail und nach deiner Bestätigung eine Nachricht zum Start. Kein Newsletter, austragen jederzeit.",
   },
+  {
+    version: "electric-car-v1",
+    liste: "elektroauto",
+    seit: "2026-09-27",
+    einleitung: "Passt ein Elektroauto zu deinem Alltag? Wir arbeiten an einem Check, der dir beim Einordnen hilft. Trag dich ein – wir sagen Bescheid, sobald er startet.",
+    zusage: "Mit der Anmeldung erhältst du eine Bestätigungsmail und nach deiner Bestätigung eine Nachricht zum Start. Kein Newsletter, austragen jederzeit.",
+  },
 ];
 
 /** Look up a stored or submitted version; unknown → null. */
 export function wartelisteFassung(version: unknown): WartelisteFassung | null {
   if (typeof version !== "string") return null;
   return WARTELISTE_FASSUNGEN.find((f) => f.version === version) ?? null;
+}
+
+/** Each product resolves its own latest consent; adding a list must not redirect existing signups. */
+export function aktuelleWartelisteFassung(liste: WartelisteName): WartelisteFassung {
+  const fassung = [...WARTELISTE_FASSUNGEN].reverse().find((f) => f.liste === liste);
+  if (!fassung) throw new Error(`Missing waitlist consent: ${liste}`);
+  return fassung;
 }

@@ -69,6 +69,8 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 - **Ortsnamen, die wie Themen klingen** (Speicher, Verl, Selb — gemessen an allen 9.924 Ortsnamen), fragen trotzdem das Register, zählen dann aber nur bei exaktem Namen.
 - Festgenagelt von `lib/__tests__/suche.test.ts` und `e2e/suche.spec.ts` (fünf Seitenarten × Telefon/Desktop: Fokus, Treffer, Überlauf, Verdeckung, Kontrast, Escape; Kopfzeile mit Lupe bei sieben Breiten).
 
+**Produkt-Wartelisten:** `/angebot-pruefen` und `/elektroauto-check` verwenden dieselbe Formularhülle (`lib/warteliste-formular.ts`) mit getrennten archivierten Einwilligungen und getrennten Listen. Menü und Startseitenkacheln verlinken mit „Mehr Info“ auf die Infoseiten. Erst der Bestätigungsklick nach der Mail aktiviert den Eintrag; die Abmeldung meldet einen fehlgeschlagenen Schreibzugriff als Fehler statt als Erfolg. Geprüft von `lib/__tests__/warteliste-produkte.test.ts` und `lib/__tests__/warteliste.test.ts`.
+
 **Startseite (`/`):** Tool-Hub mit Widget-Cards → Live Simulation, Anlage rechnen, Wärmepumpe, Energiedaten.
 
 **Routen-Schema:** Slugs sind keyword-optimiert (`thema-funktion`, transliteriert). Alte Pfade werden via `next.config.js` dauerhaft (301/308) umgeleitet, Query-Parameter bleiben erhalten (geteilte Links intakt): `/rechner`→`/photovoltaik-rechner` · `/waermepumpe`→`/waermepumpe-rechner` · `/energie`→`/strommix-deutschland` · `/empfehlung` und `/pv-bedarf-berechnen`→`/photovoltaik-rechner` · `/simulation`→`/pv-simulation` · `/balkonkraftwerk-rechner`→`/balkonkraftwerk/rechner`.

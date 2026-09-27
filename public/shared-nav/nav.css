@@ -306,7 +306,7 @@
    Hintergrund statt als eigenes Element, weil der erste Link seine
    Pseudo-Elemente für die Klickfläche der Kachel braucht. */
 .sc-global-nav .sc-nav-tool-actions a{width:calc(100% + 16px);max-width:none;margin-inline:-8px;padding:10px 14px;min-height:44px;box-sizing:border-box;border-top-color:transparent;background:linear-gradient(var(--sc-nav-line),var(--sc-nav-line)) 8px 0/calc(100% - 16px) 1px no-repeat;transition:background-color 160ms ease}
-.sc-global-nav .sc-nav-panel .sc-nav-tool-actions a[aria-current=page]{border-radius:999px;background:#d4e5d8}
+.sc-global-nav .sc-nav-panel .sc-nav-tool-actions a[aria-current=page]:not(:where(.sc-nav-tool-more a)){border-radius:999px;background:#d4e5d8}
 /* Eine Pille, ob aktiv oder überfahren, hat keine Linie an sich: weder die
    eigene darüber noch die der Zeile darunter. */
 .sc-global-nav .sc-nav-tool-actions a[aria-current=page]+a{background-image:none}
@@ -424,6 +424,8 @@
 .sc-search-pages small{display:block;margin-top:4px;font-weight:400;color:var(--sc-nav-muted,#3d5b60)}
 @media(max-width:1280px){
  .site-header.sc-global-header,html[data-sc-shell] .site-header.sc-global-header{gap:8px}
+ /* Let the existing logo shrink before either 48px action leaves the viewport. */
+ .site-header.sc-global-header:has(>.sc-search-toggle)>.brand{min-width:0;flex-shrink:1}
  .sc-global-header>.sc-search-toggle{margin-left:auto;margin-right:0;width:48px;height:48px;flex-basis:48px;border:0}
  .sc-global-header>.sc-search-toggle svg{width:28px;height:28px}
  .sc-global-header>.sc-nav-toggle,html[data-sc-shell] .sc-global-header>.sc-nav-toggle{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;padding:10px}
