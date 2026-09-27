@@ -692,6 +692,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
   // rule have no test form yet.
   "vg-kastellaun-dorfzentren-klimaschutz",
+  // Added 27 Sep 2026: village-renewal guideline read in full, information only;
+  // the 50-year building age, the 20,000 EUR minimum cost after federal funding
+  // and the year-end council decision have no test form yet.
+  "beltheim-dorferneuerung-klimaschutz",
+  // Added 27 Sep 2026: village-development guideline read in full, information
+  // only; the 50-year building age, the 20,000 EUR minimum cost and the
+  // five-year payout have no test form yet.
+  "alterkuelz-dorfentwicklung",
 ];
 
 /**
