@@ -17,14 +17,23 @@ import { getNuclearImport, nf0, nf1, dateLong, PAGE_URL, BASE_URL } from "./figu
 // API route use, so the number can never drift from what the dashboard shows.
 export const revalidate = 3600;
 
-export const metadata: Metadata = pageMetadata({
-  path: "/atomstrom-import",
-  title: "Atomstrom-Import Deutschland – wie viel Kernstrom kommt aus dem Ausland?",
-  description:
-    "Wie viel Atomstrom importiert Deutschland rechnerisch aus seinen Nachbarländern? Aktueller Wert, Methodik und zitierfähige Quelle — berechnet aus Grenzflüssen und dem Kernkraft-Anteil der Exportländer.",
-  ogImageTitle: "Atomstrom-Import",
-  ogImageSubtitle: "Wie viel Kernstrom Deutschland aus dem Ausland bezieht.",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  // The answer (seven-day average, the same figure as the first FAQ) belongs in
+  // the search result: position 7–10 on four "how much" queries, zero clicks
+  // (SEO audit 27.09.2026). The title stays number-free — it is rewritten less
+  // often than the description and must not carry a figure that moves daily.
+  const { result } = await getNuclearImport();
+  const avgGw = result?.avg_gw ?? null;
+  return pageMetadata({
+    path: "/atomstrom-import",
+    title: "Atomstrom-Import: Wie viel Kernstrom bezieht Deutschland?",
+    description: avgGw != null
+      ? `Rund ${nf1(avgGw)} GW Atomstrom (etwa ${nf0(avgGw * 24)} GWh pro Tag) bezieht Deutschland rechnerisch aus dem Ausland, im Sieben-Tage-Schnitt. Mit Herkunftsländern und Methodik.`
+      : "Wie viel Atomstrom importiert Deutschland rechnerisch aus seinen Nachbarländern? Aktueller Wert, Herkunftsländer und Methodik, berechnet aus Grenzflüssen.",
+    ogImageTitle: "Atomstrom-Import",
+    ogImageSubtitle: "Wie viel Kernstrom Deutschland aus dem Ausland bezieht.",
+  });
+}
 
 const S = {
   page: {
