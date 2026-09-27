@@ -69063,5 +69063,457 @@
         "evidenceUrl": "https://urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss"
       }
     ]
+  },
+  {
+    "regionId": "07140112",
+    "name": "Oberwesel",
+    "checkedAt": "2026-09-27T10:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberwesel (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Einzige Richtlinie für Private ist die Modernisierungsrichtlinie der Städtebauförderung (Stadtrat 14.07.2021) für das Sanierungsgebiet „Stadtkern mit Rheinufer“: Kostenerstattung bis 25 %, höchstens 25.000 €, nur über eine Modernisierungsvereinbarung zur Beseitigung städtebaulicher Missstände; Heizungsanlagen und Wärmeschutz sind dort nur beispielhafte Teilmaßnahmen einer Gesamtmodernisierung, kein Anlagenzuschuss (gleiche Einordnung wie Städtebauförderung Wilster/Glückstadt). Die Volltextsuche der Stadt findet zu Photovoltaik, Wärmepumpe, Balkon und Solar nichts. VG und Kreis fördern Private nicht (Stand 27.09.2026). Der Haushaltsplan 2026 enthält keine Zuschüsse an Privathaushalte für Energieanlagen.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Stadt Oberwesel“ vollständig durchgesehen (27.09.2026)",
+      "Modernisierungsrichtlinie „Stadtkern mit Rheinufer“ vollständig gelesen (PDF, 7 Seiten)",
+      "oberwesel.de Volltextsuche (27.09.2026): Förderprogramm → nur Stadtsanierungsprogramm; Zuschuss → Vereinsförderung; Photovoltaik, Wärmepumpe, Balkon, Solar → „nichts gefunden“",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 übernommen",
+      "Haushaltsplan 2026 im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Stadt Oberwesel“ (gelesen 27.09.2026): Haupt-, Außenbewirtungs-, Ehrungs-, Beitrags-, Denkmalzonen-, Friedhofs-, Benutzungs-, Hundesteuer-, Jagd-, Landebrücken-, Park-, Stellplatz- und Straßensatzungen, Haushalt 2026 und zum Sanierungsgebiet die „Richtlinie zur Gewährung eines Kostenerstattungsbetrages zu den Modernisierungs- und Instandsetzungsmaßnahmen an privaten Gebäuden“ — keine Energiespar- oder Förderrichtlinie für Anlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/oberwesel/s3-modernisierungsrichtlinie-23.07.2021.pdf?cid=bom",
+        "finding": "§ 6 Abs. 3: Kostenerstattungsbetrag „max. 25 v.H. der berücksichtigungsfähigen Gesamtkosten …, jedoch höchstens 25.000,00 €“; § 5 nennt als exemplarische Teilmaßnahmen u. a. „zentralen Heizungsanlagen“ und „Verbesserung des Wärmeschutzes“ im Rahmen von Modernisierungsvereinbarungen; § 2 Abs. 1: Grundstück muss im Erneuerungsgebiet liegen. Städtebauliche Gesamtmodernisierung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://oberwesel.de/?s=photovoltaik",
+        "finding": "Volltextsuche: „nichts gefunden“ (ebenso Wärmepumpe, Balkon, Solar, 27.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/oberwesel/haushalt-oberwesel-2026-hp.pdf?cid=oga",
+        "finding": "Haushaltsplan 2026 durchsucht: Städtebauförderung, Kita-Bau, Vereins- und Partnerschaftszuschüsse, eigene Energiekosten — keine Zuschüsse an Privathaushalte für Energieanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberwesel.de/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnis „förderprogramm“ führt nur auf das Stadtsanierungsprogramm (Städtebauförderung, Modernisierungsrichtlinie gelesen) — kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/oberwesel/s3-modernisierungsrichtlinie-23.07.2021.pdf?cid=bom"
+      }
+    ]
+  },
+  {
+    "regionId": "07140133",
+    "name": "Sankt Goar",
+    "checkedAt": "2026-09-27T10:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sankt Goar (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Stadt enthält keine Förderrichtlinie (nur Satzungen, Haushalt 2026 und die Sanierungsgebietssatzung „Ortsteil Biebernheim mit der Burg Rheinfels“ im vereinfachten Verfahren ohne Modernisierungsrichtlinie). Die sechs erfassten Seiten betreffen Städtebauförderbescheide für die Burg Rheinfels, LEADER-/Regionalbudget-Aufrufe der LAG Welterbe für Kleinstprojekte und eine Schlagwortseite — keine Programme für Anlagen privater Haushalte. Die Volltextsuche der Stadt findet zu Photovoltaik, Wärmepumpe und Solar nichts. VG und Kreis fördern Private nicht (Stand 27.09.2026). Der Haushaltsplan 2026 enthält keine Zuschüsse an Privathaushalte für Energieanlagen.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Stadt Sankt Goar“ vollständig durchgesehen (27.09.2026)",
+      "Alle sechs erfassten Quellen der Stadt einzeln geöffnet",
+      "stadt-st-goar.de Volltextsuche (27.09.2026): Photovoltaik, Wärmepumpe, Solar → „nichts Passendes“; Förderprogramm → Bürgerbudget, Regionalbudget, Städtebau Biebernheim; Energie/Zuschuss/Balkon → Veranstaltungen, LAG-Aufruf, Rheinbalkon",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 übernommen",
+      "Haushaltsplan 2026 im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Stadt Sankt Goar“ (gelesen 27.09.2026): Haupt-, Baumschutz-, Bücherei-, Beitrags-, Friedhofs-, Benutzungs-, Entgelt-, Hundesteuer-, Jagd-, Landebrücken-, Parkgebühren-, Stellplatz- und Straßensatzungen, Haushalt 2026, Sanierungsgebietssatzung Biebernheim (vereinfachtes Verfahren) — keine Förderrichtlinie; Energiesparrichtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/?s=photovoltaik",
+        "finding": "Volltextsuche: „Zu Ihren Suchbegriffen wurde leider nichts Passendes gefunden“ (ebenso Wärmepumpe, Solar, 27.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/burgsanierung-durch-foerderbescheid-gesichert",
+        "finding": "Städtebauförderbescheid 1,3 Mio € für die Burg Rheinfels (10.01.2025) — kommunales Vorhaben."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/gruenes-licht-fuer-foerderung",
+        "finding": "Förderbescheid Städtebau „Nachhaltige Stadt“ 500.000 € für Biebernheim/Burg Rheinfels (2020) — kommunales Vorhaben."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/foerderaufruf-eler-leader",
+        "finding": "LEADER-Förderaufruf der LAG Welterbe 2025 für innovative Projekte — kein Anlagenzuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein",
+        "finding": "Regionalbudget 2020 für Kleinstprojekte bis 20.000 € zur Umsetzung der regionalen Entwicklungsstrategie — kein PV-/Speicher-/WP-Programm (am 27.09.2026 mit Browser-Kennung erreichbar gelesen)."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein-2",
+        "finding": "Regionalbudget 2021, dieselbe Förderung für Kleinstprojekte — nicht einschlägig."
+      },
+      {
+        "url": "https://www.stadt-st-goar.de/tag/foerderung",
+        "finding": "Schlagwortseite mit den beiden Regionalbudget-Beiträgen — nicht einschlägig."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/sankt-goar/2026-05-21-haushalt-2026-sankt-goar-1.pdf?cid=oc7",
+        "finding": "Haushaltsplan 2026 durchsucht: Städtebauförderung, Kita-Bau, Vereins- und Partnerschaftszuschüsse, eigene Energiekosten — keine Zuschüsse an Privathaushalte für Energieanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-st-goar.de/burgsanierung-durch-foerderbescheid-gesichert",
+        "disposition": "reviewed",
+        "reason": "Städtebauförderbescheid 1,3 Mio € für die Burg Rheinfels (10.01.2025) — kommunales Vorhaben.",
+        "evidenceUrl": "https://www.stadt-st-goar.de/burgsanierung-durch-foerderbescheid-gesichert"
+      },
+      {
+        "url": "stadt-st-goar.de/gruenes-licht-fuer-foerderung",
+        "disposition": "reviewed",
+        "reason": "Förderbescheid Städtebau „Nachhaltige Stadt“ 500.000 € für Biebernheim/Burg Rheinfels (2020) — kommunales Vorhaben.",
+        "evidenceUrl": "https://www.stadt-st-goar.de/gruenes-licht-fuer-foerderung"
+      },
+      {
+        "url": "stadt-st-goar.de/foerderaufruf-eler-leader",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderaufruf der LAG Welterbe 2025 für innovative Projekte — kein Anlagenzuschuss für Haushalte.",
+        "evidenceUrl": "https://www.stadt-st-goar.de/foerderaufruf-eler-leader"
+      },
+      {
+        "url": "stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2020 für Kleinstprojekte bis 20.000 € zur Umsetzung der regionalen Entwicklungsstrategie — kein PV-/Speicher-/WP-Programm (am 27.09.2026 mit Browser-Kennung erreichbar gelesen).",
+        "evidenceUrl": "https://www.stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein"
+      },
+      {
+        "url": "stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein-2",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2021, dieselbe Förderung für Kleinstprojekte — nicht einschlägig.",
+        "evidenceUrl": "https://www.stadt-st-goar.de/foerderung-von-kleinstprojekten-am-mittelrhein-2"
+      },
+      {
+        "url": "stadt-st-goar.de/tag/foerderung",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite mit den beiden Regionalbudget-Beiträgen — nicht einschlägig.",
+        "evidenceUrl": "https://www.stadt-st-goar.de/tag/foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "07140138",
+    "name": "Schnorbach",
+    "checkedAt": "2026-09-27T10:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schnorbach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) hat eine eigene „Energiesparrichtlinie“ (seit Mai 2015, laut Kreis-Vortrag bis 6.000 € je Haushalt), stellt dafür aber laut Haushaltsplan 2026/2027 keine Mittel bereit: „Für 2026 und 2027 werden hierfür keine Mittel … bereitgestellt.“ Die Richtlinie selbst ist nicht veröffentlicht (Ortsrecht-Ordner der Gemeinde ohne Richtlinie), Konditionen daher nicht belegbar; im Katalog nicht aufgenommen. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 27.09.2026). VG-Energiesparrichtlinie betrifft nur Haushaltsgeräte und Energieberatung; kein laufendes Kreisprogramm für Private.",
+    "searches": [
+      "Ortsrecht-Ordner Schnorbach auf sim-rhb.de im Browser (27.09.2026): Friedhofs-, Gebühren-, Haupt-, Hundesteuer-, Beitrags- und Straßenreinigungssatzung, Haushalt 2026/2027 — keine Energiesparrichtlinie",
+      "Haushaltssatzung und -plan 2026/2027 Schnorbach nach Energie, Zuschuss, Förderung durchsucht",
+      "Kreis-Vortrag „Klimaschutz im RHK“ (30.11.2023) als Hinweisgeber gelesen",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 27.09.2026 (Keidelheim) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/schnorbach/haushaltssatzung-und-plan-2026-2027-schnorbach.pdf?cid=5jm",
+        "finding": "Vorbericht: „Die Energiesparrichtlinie wird unter der Leistung 28100 … veranschlagt. Die Ortsgemeinde hat ein Konzept erarbeitet, nach dem verschiedene energieeinsparende Maßnahmen von Privatleuten mit einem Zuschuss der Gemeinde gefördert werden. Für 2026 und 2027 werden hierfür keine Mittel für die bereitgestellt.“ Ansatz 541900: 180 € für Küster, DLRG, DRK, Jugendherbergswerk („Energiesparrichtlinie?“)."
+      },
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/schnorbach/",
+        "finding": "Ortsrecht/Satzungen (im Browser gelesen 27.09.2026): nur Satzungen und Haushalt 2026/2027, keine Richtlinie."
+      },
+      {
+        "url": "https://urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf",
+        "finding": "Kreis-Vortrag 30.11.2023: „Schnorbacher Energiesparrichtlinie, Start im Mai 2015“, maximal 6.000 € je Haushalt — Hinweisgeber, keine Quelle für Konditionen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140005",
+    "name": "Badenhard",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Badenhard (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2026/2027. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. Der Haushalt 2026/2027 hält jährlich 1.000 € für eine noch zu erlassende Energiesparrichtlinie bereit (Beispiel: Haushaltsgeräte, „weiße Ware“) — bislang ohne Richtlinie, nicht für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt; frühere Wiederprüfung, weil die Richtlinie kommen kann. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Badenhard“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2026/2027 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Badenhard“ (gelesen 27.09.2026): Satzungen und Haushalt 2026/2027, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/badenhard/haushalt-badenhard-2026-2027.pdf?cid=oey",
+        "finding": "Vorbericht, Produkt 5110: „Für die Förderung von Maßnahmen zum Klimaschutz in Badenharder Privathaushalten (bspw. für die Beschaffung sogenannter „weißer Ware“ im Rahmen einer noch zu erlassenden Energiesparrichtlinie) seitens der Ortsgemeinde stehen jährlich 1.000 € bereit.“ Die Richtlinie ist noch nicht erlassen und steht nicht im Ortsrecht."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140016",
+    "name": "Birkheim",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Birkheim (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Birkheim“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Birkheim“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/birkheim/haushaltplan-2025-2026-birkheim.pdf?cid=mrj",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140075",
+    "name": "Kratzenburg",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kratzenburg (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Kratzenburg“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Kratzenburg“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/kratzenburg/haushalt-kratzenburg-2025-2026.pdf?cid=mu7",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140098",
+    "name": "Mühlpfad",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mühlpfad (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Mühlpfad“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Mühlpfad“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/muehlpfad/haushalt-muehlpfad-2025-2026.pdf?cid=mqv",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140102",
+    "name": "Ney",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ney (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Ney“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Ney“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/ney/haushalt-ney-2025-2026.pdf?cid=mmg",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140108",
+    "name": "Niedert",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niedert (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Niedert“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Niedert“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/niedert/haushalt-niedert-2025-2026-ausfertigung.pdf?cid=mz1",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140156",
+    "name": "Utzenhain",
+    "checkedAt": "2026-09-27T10:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Utzenhain (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Hundesteuer-, Jagd- und Straßensatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist die Linkliste der Verbandsgemeinde zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026).",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt „Ortsgemeinde Utzenhain“ vollständig durchgesehen (27.09.2026)",
+      "Haushaltssatzung und -plan 2025/2026 der Ortsgemeinde im Volltext nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18., 21. und 26.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Utzenhain“ (gelesen 27.09.2026): Satzungen und Haushalt 2025/2026, keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/utzenhain/haushalt-utzenhain-2025-2026.pdf?cid=ms4",
+        "finding": "Haushaltssatzung und -plan 2025/2026 nach Energie, Zuschuss, Förderung, Photovoltaik, Solar, Balkon, Wärmepumpe durchsucht: nur eigene Energiekosten, Kita- und Kirchenzuschüsse, keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "finding": "Bürgerservice-Leistung der VG „Förderprogramme und Tipps Energiesparmaßnahmen“: Linkliste zu Förderstellen von Bund, Land und Verbraucherzentrale, kein eigenes Programm der Verbandsgemeinde (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Linkliste der VG zu Förderstellen von Bund, Land und Verbraucherzentrale; kein eigenes Programm (bereits am 21.09.2026 als keine Förderung gelesen).",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
+      }
+    ]
   }
 ]
