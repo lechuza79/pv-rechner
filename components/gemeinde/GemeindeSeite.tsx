@@ -210,9 +210,14 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
               JavaScript bedienbar, und auf dem Schreibtisch löst „display:
               contents" ihn wieder auf, sodass dort genau die Reihe des
               Entwurfs steht. */}
+{/* REIHENFOLGE = LESEREIHENFOLGE (Betreiber, 24.09.2026). Der Abschnitt
+              für Bürgerinnen und Bürger steht auf der Seite VOR dem
+              Energiemonitor und stand im Menü dahinter; die Marke zeigt
+              außerdem auf den Anfang des Abschnitts, nicht auf den Förderblock
+              in seiner Mitte. */}
           <GemeindeAbschnittNav name={ort.name} naechstesUpdate={naechstesUpdate} links={[
             {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},
-            {href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
+            {href:"#atlas-buerger",label:"Bürger & Förderung"},{href:"#atlas-data",label:"Energiemonitor"},
           ]}/>
 
           <section className="v3-intro atlas-wrap">

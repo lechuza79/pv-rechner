@@ -8321,6 +8321,104 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // fundingFor would otherwise return nothing.
   },
 
+  "beltheim-dorferneuerung-klimaschutz": {
+    id: "beltheim-dorferneuerung-klimaschutz", name: "Richtlinie zur Gewährung von Zuschüssen für Maßnahmen im Rahmen der Dorferneuerung und für Klimaschutz",
+    traeger: "Ortsgemeinde Beltheim", level: "kommune", region: "Beltheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140010",
+    url: "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Beltheim/Richtlinie_Beltheim_01.01.26.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-02-23", beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten energetischer Maßnahmen an mindestens 50 Jahre alten Gebäuden; auch die Erneuerung der Heizungsanlage allein zählt, unabhängig von der Technik",
+    maxFoerderung: "max. 8.000 € je Förderung; je Kind unter 18 Jahren mit Kindergeld im Haushalt steigt der Höchstbetrag um 10 % (höchstens 800 € je Kind). Bei einer Heizung ist der Zuschuss meist deutlich kleiner, weil die Bundesförderung vorher abgezogen wird",
+    rates: [
+      { label: "Erneuerung der Heizungsanlage als energetische Maßnahme (technikoffen, also auch eine Wärmepumpe)", value: "10 % der förderfähigen Kosten, max. 8.000 €; bei der Heizung wird die Bundesförderung (BAFA, KfW) vorher von der Rechnung abgezogen", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert wird ältere Bausubstanz: Das Objekt ist mindestens 50 Jahre alt, und an ihm wurden keine grundlegenden baulichen Verbesserungen durchgeführt",
+      "Die förderfähigen Kosten müssen mindestens 20.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen. Liegen die nachgewiesenen Kosten am Ende unter der Grenze, entfällt die gesamte Förderung. Ob die Grenze bei einer Heizung vor oder nach dem Abzug der Bundesförderung gilt, sagt die Richtlinie nicht",
+      "Antragsberechtigt sind die Eigentümer oder Käufer; der Antrag mit Kostenvoranschlägen und Fotos geht vor Baubeginn an die Ortsgemeinde oder die Verbandsgemeinde Kastellaun, begonnen werden darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Baubeginn",
+      "Über die Bewilligung entscheidet der Gemeinderat jeweils zum Ende eines Kalenderjahres nach einer Bewertungsmatrix und im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht. Einem vorzeitigen Baubeginn kann die Verbandsgemeinde mit zwei Wochen Vorlauf zustimmen, ein Anspruch auf den Zuschuss entsteht daraus nicht",
+      "Beginn innerhalb von sechs Monaten, Abschluss innerhalb von drei Jahren nach der Bewilligung; eine erneute Förderung desselben Objekts erst 15 Jahre nach Fertigstellung",
+      "Die Richtlinie gilt seit 01.01.2026 und nennt kein Enddatum",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (6-page scan with a text layer, linked
+    // from Beltheim's page on kastellaun.de; live copy fetched without www. with
+    // referer is byte-identical to the copy saved in run 0401Z, sha256
+    // f80b8071…9d25285). Council 23.02.2026, in force 01.01.2026 (Nr. 6), no
+    // end date. Nr. 2 e) "Maßnahmen zur energetischen Sanierung (u. a. …
+    // Erneuerung/Optimierung der Heizungsanlage …). Wird die Erneuerung/
+    // Optimierung der Heizungsanlage gefördert, werden staatliche Förderungen
+    // (z. B. BAFA, KFW) von der Rechnungssumme abgezogen." Nr. 3: objects of at
+    // least 50 years without fundamental improvements (the exemption is for
+    // Nr. 2 g) only); Nr. 3 a) eligible costs DIN 276 KG 100, 300–500, 700
+    // (KG 400 = technical systems, so heating counts), at least 20,000 €;
+    // Nr. 3 c) own work materials at least 10,000 €. Nr. 4 a) "10 % der Bau-
+    // … kosten – jedoch max. 8.000 €"; Nr. 4 d) +10 % of the maximum per child,
+    // at most 800 € per child. Nr. 5 a) owners or buyers; 5 e) council decides
+    // at the end of each calendar year by an assessment matrix; 5 f)
+    // complementary to other programmes; 5 g) start 6 months / finish 3 years;
+    // 5 j) re-funding after 15 years. Run 0201Z had filed this guideline as
+    // "not relevant" because it funds no PV, storage or balcony — it overlooked
+    // the heating item. Handled like vg-kastellaun-dorfzentren-klimaschutz:
+    // INFORMATION ONLY, the calculator knows neither the building's age nor the
+    // cost of the whole renovation, and the heating base is the invoice MINUS
+    // federal funding, which the flat model cannot express. BUND: the guideline
+    // subtracts BAFA/KfW from its own base instead of excluding them. Council
+    // 27.09.2026 (two reviewers, one adversarial): heating renewal alone is an
+    // eligible measure (2 e) is not tied to 2 b)'s design-upgrade rule or to an
+    // area); the 20,000 € threshold may be tested after the federal
+    // subtraction — the text does not say, so the condition says so. The
+    // assessment matrix ("Anlage") is not part of the PDF and was not seen.
+  },
+
+  "alterkuelz-dorfentwicklung": {
+    id: "alterkuelz-dorfentwicklung", name: "Richtlinien über die Gewährung von Zuschüssen für Maßnahmen im Rahmen der Dorfentwicklung",
+    traeger: "Ortsgemeinde Alterkülz", level: "kommune", region: "Alterkülz",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140001",
+    url: "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Alterk%C3%BClz/Richtlinie_Alterkuelz_ab_01.01.2022.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-10-12", beginntIso: "2022-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten energetischer Maßnahmen an mindestens 50 Jahre alten Gebäuden; auch die Erneuerung der Heizungsanlage allein zählt, unabhängig von der Technik",
+    maxFoerderung: "max. 5.000 €; der Zuschuss steigt um 20 % je Kind bis 17 Jahre, das bei Fertigstellung im Haushalt lebt",
+    rates: [
+      { label: "Erneuerung der Heizungsanlage als energetische Maßnahme (technikoffen, also auch eine Wärmepumpe)", value: "10 % der förderfähigen Kosten, max. 5.000 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Das Gebäude muss bei der Bewilligung mindestens 50 Jahre alt sein; gemeint ist im Wesentlichen ältere Bausubstanz ohne nennenswerte bauliche Verbesserungen",
+      "Die förderfähigen Kosten müssen mindestens 20.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen. Liegen die nachgewiesenen Kosten am Ende unter der Grenze, entfällt die gesamte Förderung",
+      "Kinder, die nach der Antragstellung geboren werden, erhöhen den Zuschuss nicht",
+      "Antragsberechtigt sind die Eigentümer oder Käufer; der Antrag auf dem Formblatt geht vor Baubeginn an die Ortsgemeinde oder die Verbandsgemeinde Kastellaun, begonnen werden darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Baubeginn",
+      "Der Zuschuss wird über fünf Jahre in gleichen Raten jeweils zum 1. Juli ausgezahlt",
+      "Beginn innerhalb von sechs Monaten, Abschluss innerhalb von drei Jahren nach der Bewilligung; eine erneute Förderung desselben Objekts erst 15 Jahre nach Fertigstellung",
+      "Über die Bewilligung entscheidet der Gemeinderat im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht. Die Gemeinde kann Antragsfristen setzen und gibt sie mindestens einen Monat vor Ablauf im Amtsblatt Kastellaun bekannt",
+      "Die Richtlinie gilt seit 01.01.2022 und nennt kein Enddatum",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (5 pages, two files on Alterkülz's page
+    // on kastellaun.de: a scan and a typed copy, same wording in the checked
+    // clauses 2.6, 3.1, 4.1, 4.2, 6; the scan is linked as url). Council
+    // 12.10.2021, in force 01.01.2022 (Nr. 6), no end date. 2.6 "Maßnahmen zur
+    // energetischen Sanierung (u. a. … Erneuerung/Optimierung der
+    // Heizungsanlage, Fenster)"; 3.1 eligible costs DIN 276 KG 100, 300–500,
+    // 700, at least 20,000 €; 3.2 own work materials at least 10,000 €; 3.7
+    // buildings at least 50 years at approval; 4.1 "10 % der Bau- … kosten –
+    // jedoch maximal 5.000 Euro"; 4.2 +20 % per child up to 17 for 2.6; 4.3
+    // paid in five yearly instalments on 1 July; 5.1 deadlines via Amtsblatt;
+    // 5.2 owners or buyers; 5.5 complementary to other programmes; 5.8
+    // re-funding after 15 years. INFORMATION ONLY, same reasoning as
+    // beltheim-dorferneuerung-klimaschutz. Unlike Beltheim the guideline does
+    // not subtract federal funding. BUND per 5.5. Council 27.09.2026: 3.7 (50
+    // years at approval) is the operative age rule; "keine nennenswerten
+    // Verbesserungen" stands only in the preamble, softened by "im
+    // Wesentlichen", so the condition says "gemeint ist". 4.2 raises the grant
+    // itself, not the cap; whether that can exceed 5,000 € is left open.
+  },
+
   "benzweiler-energiespar": {
     id: "benzweiler-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
     traeger: "Ortsgemeinde Benzweiler", level: "kommune", region: "Benzweiler",

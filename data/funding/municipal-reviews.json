@@ -68191,15 +68191,16 @@
   {
     "regionId": "07140010",
     "name": "Beltheim",
-    "checkedAt": "2026-09-27T02:11:00Z",
+    "checkedAt": "2026-09-27T08:13:47Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Beltheim (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 18.11.2024, gültig 01.01.2025 bis 31.12.2029): Dachanlage bis 15 kWp 100 €/kWp, höchstens 20 % der Kosten und 1.500 €; Speicher 20 % bis 1.500 €; Balkonkraftwerk 30 % bis 300 €; Power-to-Heat 20 % bis 500 €; insgesamt 2.500 € je Haushalt. Eigentümer und Mieter. Neu katalogisiert als beltheim-energiespar. Die zweite Richtlinie auf der Ortsseite (01.01.2026) betrifft die Dorferneuerung.",
+    "conclusion": "Beltheim (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 18.11.2024, gültig 01.01.2025 bis 31.12.2029): Dachanlage bis 15 kWp 100 €/kWp, höchstens 20 % der Kosten und 1.500 €; Speicher 20 % bis 1.500 €; Balkonkraftwerk 30 % bis 300 €; Power-to-Heat 20 % bis 500 €; insgesamt 2.500 € je Haushalt. Eigentümer und Mieter. Neu katalogisiert als beltheim-energiespar. Die zweite Richtlinie (Dorferneuerung und Klimaschutz, gültig ab 01.01.2026) fördert unter Nr. 2 e) auch die Erneuerung der Heizungsanlage: 10 % der Kosten nach Abzug der Bundesförderung, max. 8.000 €, Gebäude ab 50 Jahren, Kosten ab 20.000 €; katalogisiert als beltheim-dorferneuerung-klimaschutz (nur Information). Dazu gilt das VG-Programm (2.000 € für die Heizungsumstellung). Korrigiert am 27.09.2026: Der Lauf 0201Z hatte die Dorferneuerungsrichtlinie als nicht einschlägig vermerkt und dabei den Heizungspunkt übersehen.",
     "searches": [
       "Ortsseite Satzungen/Förderrichtlinien vollständig: Energiesparrichtlinie und Dorferneuerungsrichtlinie",
       "VG Kastellaun Klimaschutz-Seite „Förderungen“: verlinkt dieselbe Energiesparrichtlinie",
-      "Eingescannte Richtlinie (6 Seiten) Seite für Seite gelesen"
+      "Eingescannte Richtlinie (6 Seiten) Seite für Seite gelesen",
+      "Dorferneuerungsrichtlinie (6 Seiten) am 27.09.2026 vollständig gelesen, Live-Abruf bytegleich mit der Akte"
     ],
     "evidence": [
       {
@@ -68209,13 +68210,21 @@
       {
         "url": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
         "finding": "Ortsrecht-Seite listet „Förderung / Energiesparrichtlinien Ortsgemeinde Beltheim“ (Neufassung gültig ab 01.01.2025) und die Förderrichtlinien zur Dorferneuerung (ohne PV, Speicher, Balkon)."
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Beltheim/Richtlinie_Beltheim_01.01.26.pdf",
+        "finding": "Nr. 2 e) „Maßnahmen zur energetischen Sanierung (u. a. … Erneuerung/Optimierung der Heizungsanlage …). Wird die Erneuerung/Optimierung der Heizungsanlage gefördert, werden staatliche Förderungen (z. B. BAFA, KFW) von der Rechnungssumme abgezogen.“ Nr. 4 a) „10 % … jedoch max. 8.000 €“; Nr. 3 Objekte ab 50 Jahren, Kosten ab 20.000 €; Nr. 6 in Kraft ab 01.01.2026."
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
       }
     ],
     "sources": [
       {
         "url": "beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
         "disposition": "reviewed",
-        "reason": "Ortsrecht-Seite; darauf die Energiesparrichtlinie (katalogisiert) und die Dorferneuerungsrichtlinie (nicht einschlägig).",
+        "reason": "Ortsrecht-Seite; darauf die Energiesparrichtlinie (beltheim-energiespar) und die Dorferneuerungsrichtlinie mit Heizungsförderung (beltheim-dorferneuerung-klimaschutz), beide katalogisiert.",
         "evidenceUrl": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen"
       }
     ]
@@ -68699,5 +68708,360 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07140001",
+    "name": "Alterkülz",
+    "checkedAt": "2026-09-27T08:13:47Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Alterkülz (VG Kastellaun): Die Dorfentwicklungsrichtlinie (Beschluss 12.10.2021, in Kraft 01.01.2022, ohne Enddatum) fördert unter 2.6 energetische Maßnahmen einschließlich der Erneuerung der Heizungsanlage: 10 % der Kosten, max. 5.000 €, Gebäude bei Bewilligung ab 50 Jahren, Kosten ab 20.000 €; katalogisiert als alterkuelz-dorfentwicklung (nur Information). Dazu gilt das VG-Programm (2.000 € für die Umstellung der Heizung auf erneuerbare Energien, vg-kastellaun-dorfzentren-klimaschutz). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite Alterkülz auf kastellaun.de vollständig (Downloads: Satzungen, Bebauungspläne, zwei Fassungen der Dorfentwicklungsrichtlinie)",
+      "Beide Fassungen der Richtlinie am 27.09.2026 vollständig gelesen (Scan und Textfassung, gleicher Wortlaut)",
+      "VG-Förderübersicht und Klimaschutzseite „Förderungen“ der VG Kastellaun"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Alterk%C3%BClz/Richtlinie_Alterkuelz_ab_01.01.2022.pdf",
+        "finding": "2.6 „Maßnahmen zur energetischen Sanierung (u. a. … Erneuerung/Optimierung der Heizungsanlage, Fenster)“; 4.1 „10 % der Bau- … kosten – jedoch maximal 5.000 Euro“; 3.1 Kosten ab 20.000 €; 3.7 Gebäude ab 50 Jahren; 6. in Kraft 01.01.2022."
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140009",
+    "name": "Bell (Hunsrück)",
+    "checkedAt": "2026-09-27T08:13:47Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bell (VG Kastellaun): Für Wärmepumpen gilt das VG-Programm (2.000 € je Objekt für die Umstellung der Heizung auf erneuerbare Energien, Gebäude ab 40 Jahren, bis 31.07.2027; vg-kastellaun-dorfzentren-klimaschutz, nur Information). Die eigene Dorferneuerungsrichtlinie der Ortsgemeinde (Beschluss 08.06.2021, gültig ab Mai 2021) fördert Umnutzung, Erneuerung/Aus-/Umbau älterer Gebäude, Baulücken und Abbruch mit 10 % bis 5.000 € — anders als Beltheim und Alterkülz ohne eigenen Punkt für energetische Maßnahmen oder die Heizung; eine Heizungserneuerung allein ist dort keine genannte Maßnahme. Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite Bell auf kastellaun.de vollständig (Downloads: Satzungen, Bebauungspläne, Dorferneuerungsrichtlinie, Antrag 2018, Dokumente zu Freiflächen-Solarparks)",
+      "Dorferneuerungsrichtlinie am 27.09.2026 vollständig gelesen, Live-Abruf bytegleich mit der Akte",
+      "VG-Förderübersicht und Klimaschutzseite „Förderungen“ der VG Kastellaun"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Bell/Richtlinien_Bell_gueltig_ab_Mai_2021_f.Homepage.pdf",
+        "finding": "2. Gegenstand: a) Umnutzung leerstehender Bausubstanz, b) Erneuerung/Aus-/Umbau älterer Gebäude, c) Baulücken, d) Abbruch; 3 e) Maßnahme muss zu einer „wesentlichen gestalterischen, energetischen oder funktionalen Aufwertung“ führen, Gebäude ab 50 Jahren; 4. „10% der Baukosten … jedoch maximal 5.000 €“ — kein Punkt für Heizung oder Photovoltaik."
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140065",
+    "name": "Keidelheim",
+    "checkedAt": "2026-09-27T08:13:47Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Keidelheim (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) hat keine eigene Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die vier erfassten Seiten der Gemeinde betreffen die VG-Energiesparrichtlinie für Haushaltsgeräte und Energieberatung, das VG-Programm „Leben mittendrin“ (schließt Maßnahmen, deren Zweck überwiegend eine energetische Sanierung ist, ausdrücklich aus) und einen Zuschuss an den Turnverein; im Ortsrecht-Ordner der Gemeinde auf sim-rhb.de steht keine Energiesparrichtlinie. Kein laufendes Kreisprogramm für Private. Nicht geprüft: der Haushaltsplan 2026/2027 ist ein Scan ohne Textebene und wurde nicht nach einer Förderzeile ohne veröffentlichte Richtlinie durchsucht.",
+    "searches": [
+      "Alle vier erfassten Gemeindeseiten am 27.09.2026 abgerufen und gelesen",
+      "Richtlinie „Leben mittendrin“ (VG Simmern) über die Förderseite der Gemeinde vollständig gelesen",
+      "Ortsrecht-Ordner Keidelheim auf sim-rhb.de im Browser: Gebühren-, Benutzungs-, Friedhofs-, Haupt-, Hundesteuer-, Vorkaufs- und Beitragssatzung, Haushalt 2026/27 — keine Energiesparrichtlinie",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.keidelheim.de/energiespar-richtlinie-zur-foerderung-von-haushaltsgeraeten33fa07dc",
+        "finding": "Beitrag 09.05.2020: VG-weite Energiespar-Richtlinie fördert „Kühlschrank, … Gefrierschrank …, Geschirrspüler, Backofen/Elektroherd … sowie Energieberatungen“ — keine PV, kein Speicher, kein Balkonkraftwerk, keine Wärmepumpe."
+      },
+      {
+        "url": "https://www.keidelheim.de/infofoerderungortskern",
+        "finding": "Seite verlinkt Antrag, Richtlinie „Leben mittendrin“ und die Fördergebietskarte Keidelheim; Richtlinie Nr. 2: „Eine Förderung von Maßnahmen, deren Zweck überwiegend eine energetische Sanierung darstellt, ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://www.keidelheim.de/foerdermoeglichkeit-zur-erhaltung-und-weiterentwicklung-der-ortskernea100e51c",
+        "finding": "Beitrag 23.09.2019: Förderung „zum Bau, Erwerb, zur Sanierung oder auch zum Abriss von Gebäuden innerhalb der Ortskerne“ im gebäudescharf festgelegten Fördergebiet — dieselbe Richtlinie „Leben mittendrin“."
+      },
+      {
+        "url": "https://www.keidelheim.de/baukostenzuschuss-fuer-tv-kue-kei315def7b",
+        "finding": "Beitrag 21.12.2020: einmaliger Baukostenzuschuss von 2.500 € an den TV Kümbdchen-Keidelheim — kein Programm für Private."
+      },
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/keidelheim/",
+        "finding": "Ortsrecht/Satzungen der Gemeinde: nur Satzungen und Haushalt 2026/2027, keine Energiesparrichtlinie (im Browser gelesen 27.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "keidelheim.de/energiespar-richtlinie-zur-foerderung-von-haushaltsgeraeten33fa07dc",
+        "disposition": "reviewed",
+        "reason": "VG-Richtlinie für Haushaltsgeräte und Energieberatung, nicht einschlägig.",
+        "evidenceUrl": "https://www.keidelheim.de/energiespar-richtlinie-zur-foerderung-von-haushaltsgeraeten33fa07dc"
+      },
+      {
+        "url": "keidelheim.de/infofoerderungortskern",
+        "disposition": "reviewed",
+        "reason": "„Leben mittendrin“ schließt überwiegend energetische Sanierung aus; keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung.",
+        "evidenceUrl": "https://www.keidelheim.de/infofoerderungortskern"
+      },
+      {
+        "url": "keidelheim.de/foerdermoeglichkeit-zur-erhaltung-und-weiterentwicklung-der-ortskernea100e51c",
+        "disposition": "reviewed",
+        "reason": "Ankündigung derselben Ortskern-Richtlinie, nicht einschlägig.",
+        "evidenceUrl": "https://www.keidelheim.de/foerdermoeglichkeit-zur-erhaltung-und-weiterentwicklung-der-ortskernea100e51c"
+      },
+      {
+        "url": "keidelheim.de/baukostenzuschuss-fuer-tv-kue-kei315def7b",
+        "disposition": "reviewed",
+        "reason": "Einmaliger Vereinszuschuss, kein Programm für Private.",
+        "evidenceUrl": "https://www.keidelheim.de/baukostenzuschuss-fuer-tv-kue-kei315def7b"
+      }
+    ]
+  },
+  {
+    "regionId": "07140040",
+    "name": "Gehlweiler",
+    "checkedAt": "2026-09-27T08:21:22Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gehlweiler (VG Kirchberg, Rhein-Hunsrück-Kreis) hat keine eigene Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Suche der Gemeindewebsite findet zu Förderprogramm, Förderung, Photovoltaik, Balkonkraftwerk, Wärmepumpe und Richtlinie nichts; unter den Satzungen der Ortsgemeinde auf der VG-Seite steht keine Förderrichtlinie; die Ratsniederschriften 08/2024 bis 04/2025 enthalten keinen Beschluss zu einer Förderung für Private (nur Forstförderung, VG-Zisternenprogramm, Aufwandsentschädigung). Die VG Kirchberg fördert Private nicht, das Balkonprogramm des Kreises für einkommensschwache Haushalte ist beendet (Prüfung vom 18.09.2026). Nicht geprüft: Haushaltsplan (auf der VG-Seite nicht veröffentlicht).",
+    "searches": [
+      "Gemeindewebsite gehlweiler.de: Startseite und Volltextsuche nach Förderprogramm, Förderung, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Richtlinie (27.09.2026) — ohne Treffer",
+      "VG-Seite der Ortsgemeinde im Browser: Satzungen (Haupt-, Beitrags-, Straßenreinigungs-, Hundesteuer-, Friedhofs-, Benutzungs- und Gebührensatzung), Bebauungspläne, Hochwasserschutzkonzept — keine Förderrichtlinie",
+      "Sieben Ratsniederschriften 08/2024 bis 04/2025 nach Förderung, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, Energie durchsucht",
+      "VG Kirchberg und Rhein-Hunsrück-Kreis aus der Prüfung vom 18.09.2026 (Maitzborn) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gehlweiler.de/search/f%C3%B6rderprogramm",
+        "finding": "Suchergebnisse für „förderprogramm“: „Es konnte leider nichts Passendes gefunden werden.“ — ebenso für förderung, photovoltaik, balkonkraftwerk, wärmepumpe, richtlinie."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/gehlweiler/",
+        "finding": "Satzungen der Ortsgemeinde: nur Haupt-, Erschließungs-, Wegebeitrags-, Ausbaubeitrags-, Straßenreinigungs-, Hundesteuer-, Friedhofs-, Benutzungs- und Gebührensatzung; Niederschriften 08/2024–04/2025 ohne Förderbeschluss für Private (Stichworte nur Forst-Fördergelder, „Förderprogramm Zysterne VG“, Energiekosten der Dienstzimmerentschädigung)."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "VG Kirchberg (Prüfung 18.09.2026): kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen; Kreisprogramm für einkommensschwache Haushalte bis 30.06.2026, beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gehlweiler.de/search/f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Leere Suchergebnisseite der Gemeindewebsite; kein Förderprogramm.",
+        "evidenceUrl": "https://www.gehlweiler.de/search/f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "07140025",
+    "name": "Damscheid",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Damscheid (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht der Gemeinde enthält nur Haupt-, Benutzungs-, Entgelt-, Beitrags-, Friedhofs-, Hundesteuer-, Stellplatz- und Straßenreinigungssatzungen sowie den Haushalt 2026. Die erfasste Quelle ist eine Vereinsmeldung (REWE-Prämien für den Sportverein). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Damscheid“ (gelesen 27.09.2026): Hauptsatzung mit Änderungen, Benutzungs- und Entgeltordnung der Gemeindehäuser, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhofs- und Gebührensatzung, Haushalt 2026, Hundesteuer, Jagdgenossenschaft, Stellplatz-, Straßenreinigungs- und Wegesatzung — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "damscheid.de/svd-rewe-praemien-fuer-unseren-sv-damscheid",
+        "disposition": "replaced",
+        "reason": "Die Adresse (REWE-Prämien für den SV Damscheid, derzeit nicht erreichbar) ist eine Vereinsmeldung; ob die Gemeinde fördert, entscheidet ihr Ortsrecht, und das führt keine Förderrichtlinie.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140205",
+    "name": "Morshausen",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Morshausen (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Grenz-, Hundesteuer-, Jagd- und Straßenreinigungssatzungen sowie den Haushalt 2026/2027. Die erfassten Quellen sind eine Dorfnachricht, das Kontaktformular und eine Meldung zum Landesprogramm „Dorf-Budget“ (Mittel für Gemeindeprojekte). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Morshausen“ (gelesen 27.09.2026): Hauptsatzung, Erschließungs- und Ausbaubeitragssatzung, Friedhofs- und Gebührensatzung, Grenzsatzung, Haushalt 2026/2027, Hundesteuer, Jagdgenossenschaft, Straßenreinigung, Wegeeinziehung — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html",
+        "finding": "Dorfseite mit Meldungen „Morshausen nutzt erstmals das Förderprogramm “Dorf-Budget”“ (08.12.2025), „Große Begeisterung über die neue Backmole“ — kein Programm für Private."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html",
+        "disposition": "reviewed",
+        "reason": "Dorfnachricht; das dort genannte Dorf-Budget ist ein Landesprogramm für Gemeindeprojekte.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      },
+      {
+        "url": "gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Seite, erledigt durch die gelesene Normalfassung.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      },
+      {
+        "url": "gemeinde-morshausen.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular des Portals ohne Förderinhalt; die Förderfrage entscheidet das Ortsrecht.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/"
+      },
+      {
+        "url": "morshausen.de/news/1/1170062/nachrichten/morshausen-nutzt-erstmals-das-f%C3%B6rderprogramm-dorf-budget.html",
+        "disposition": "replaced",
+        "reason": "Meldung zum Landesprogramm Dorf-Budget (Gemeindeprojekte); ihr Titel steht auf der gelesenen Dorfseite, kein Programm für Private.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07140104",
+    "name": "Niederburg",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niederburg (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Benutzungs-, Entgelt-, Hundesteuer-, Stellplatz-, Straßenreinigungs- und Wegesatzungen sowie den Haushalt 2026. Die erfasste Quelle meldet einen Landeszuschuss für ein Straßenbauprojekt der Gemeinde. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Niederburg“ (gelesen 27.09.2026): Hauptsatzung mit Änderung, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhofs- und Gebührensatzung, Generationenhaus, Backhaus, Jugendraum, Haushalt 2026, Hundesteuer, Jagd, Stellplätze, Straßenreinigung, Wege — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://niederburg.de/land-teilt-foerderung-mit",
+        "finding": "„eine beantragte Förderung für ein Straßenbauprojekt in Höhe von 16.000€“ aus dem Investitionsstock des Landes — Zuschuss an die Gemeinde, kein Programm für Private."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "niederburg.de/land-teilt-foerderung-mit",
+        "disposition": "reviewed",
+        "reason": "Landeszuschuss für den gemeindlichen Straßenbau, nicht einschlägig.",
+        "evidenceUrl": "https://niederburg.de/land-teilt-foerderung-mit"
+      }
+    ]
+  },
+  {
+    "regionId": "07140149",
+    "name": "Thörlingen",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Thörlingen (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Hundesteuer-, Jagd-, Straßenreinigungs- und Wegeeinziehungssatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist ein Webseiten-Förderprogramm eines Vereins für Einrichtungen und Unternehmen im Ort (Gemeindewebsite von hier nicht erreichbar, im Archiv gelesen). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet",
+      "Gemeindewebsite thoerlingen.de: Verbindung von hier verweigert (curl und Browser); Seite im Archiv gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Thörlingen“ (gelesen 27.09.2026): Hauptsatzung mit Änderung, Erschließungs- und Wegebeitragssatzung, Haushalt 2025/2026, Hundesteuer, Jagdgenossenschaft, Straßenreinigung, drei Wegeeinziehungen — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://web.archive.org/web/2026/http://www.thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html",
+        "finding": "„Webseitenförderprogramm der Ortsgemeinde Thörlingen … Projektpartner für kostenfreie Webseitengestaltung gesucht“ (Förderverein für regionale Entwicklung) — kein Energieprogramm."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html",
+        "disposition": "reviewed",
+        "reason": "Webseiten-Förderprogramm für örtliche Einrichtungen, im Archiv der Amtsseite gelesen (die Website verweigert von hier die Verbindung); nicht einschlägig.",
+        "evidenceUrl": "https://web.archive.org/web/2026/http://www.thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07140155",
+    "name": "Urbar",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Urbar (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält Haupt-, Beitrags-, Friedhofs-, Benutzungs-, Entgelt-, Hundesteuer-, Stellplatz-, Tourismusbeitrags-, Vorkaufsrechts- und Straßenreinigungssatzungen, eine Ehrenbürger-Richtlinie und den Haushalt 2025. Die erfassten Quellen sind der geförderte Glasfaserausbau und ein Vortrag der Kreis-Klimaschutzstelle (2023), der Energiesparrichtlinien anderer Gemeinden nennt (Schnorbach), keine von Urbar. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Urbar“ (gelesen 27.09.2026): Hauptsatzung mit zwei Änderungen, Ehrenbürger-Richtlinie, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhof, Benutzungs- und Entgeltordnungen, Haushalt 2025, Hundesteuer, Jagd, Rückneugliederung, Stellplätze, Straßenreinigung, Wege, Tourismusbeitrag, Vorkaufsrecht — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf",
+        "finding": "Vortrag „Klimaschutz im RHK – Was kann ich beitragen“ (30.11.2023): „bereits 40 Gemeinden fördern Energiesparmaßnahmen ihrer Bürger … Schnorbacher Energiesparrichtlinie … Maximal 6.000 € Zuschuss je Haushalt“ — Beispiel einer anderen Gemeinde, kein Programm von Urbar."
+      },
+      {
+        "url": "https://urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss",
+        "finding": "Geförderter Glasfaseranschluss (Westconnect) bis 30.09.2025 — nicht einschlägig."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf",
+        "disposition": "reviewed",
+        "reason": "Informationsvortrag des Kreises; nennt Programme anderer Gemeinden, keines von Urbar.",
+        "evidenceUrl": "https://urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf"
+      },
+      {
+        "url": "urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss",
+        "disposition": "reviewed",
+        "reason": "Glasfaserausbau, nicht einschlägig.",
+        "evidenceUrl": "https://urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss"
+      }
+    ]
   }
 ]
