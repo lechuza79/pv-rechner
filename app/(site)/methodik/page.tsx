@@ -391,7 +391,7 @@ export default async function MethodikPage() {
               während der Rechner seit dem 20.07.2026 anders rechnet und sein
               Reiter das auch so beschriftet (Council 18.08.2026). Eine getippte
               Modellzahl veraltet lautlos. */}
-          <p>Die UBA-Tabellen 3 und 13 ergeben für 2025–2045 eine mittlere nominale Rate. Wir wenden sie auf deinen heutigen Arbeitspreis an und schreiben sie über den Rechenzeitraum fort. Der Trend der Quelle umfasst auch umgelegte Grundpreise; seine Übertragung auf den Arbeitspreis ist eine Näherung. Grundpreise werden nicht als Solarersparnis angerechnet. <a href={SCENARIOS[1].source.href}>Quelle und Annahmen</a></p>
+          <p>Die UBA-Tabellen 3 und 13 ergeben für 2025–2045 eine mittlere nominale Rate. Wir wenden sie auf deinen heutigen Arbeitspreis an und schreiben sie über den Rechenzeitraum fort. Der Trend der Quelle umfasst auch umgelegte Grundpreise; seine Übertragung auf den Arbeitspreis ist eine Näherung. Grundpreise werden nicht als Solarersparnis angerechnet. <a href={SCENARIOS[1].source.href} style={S.link}>Quelle und Annahmen</a></p>
           {SCENARIOS.map(s => (
             <span key={s.id}>
               {/* textColor, nicht color: hier steht der Name als Text, nicht als
