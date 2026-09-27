@@ -67928,5 +67928,776 @@
         "evidenceUrl": "https://tiefenbach-hunsrueck.de/foerderprogramme.html"
       }
     ]
+  },
+  {
+    "regionId": "07140123",
+    "name": "Reich",
+    "checkedAt": "2026-09-26T20:07:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Reich (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert Eigentümer über die eigene Energiesparrichtlinie (Ratsbeschluss 10.04.2018, zuletzt geändert 04.03.2026, Maßnahmen bis 31.12.2026): Dachanlage bis 10 kWp 200 €/kWp, Dachanlage oder Speicher zusammen höchstens 1.500 € und 30 % der Kosten, Heizungsanlagen einschließlich Wärmepumpe bis 1.500 €; Voraussetzung Energie-Check vor Ort. Kein Balkonkraftwerk. Neu katalogisiert als reich-hunsrueck-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle Sätze, vier Präzisierungen eingearbeitet. Die Gemeinde hat keine eigene Website; kein Kreisprogramm für Private.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Reich mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (8 Seiten, 9. Änderung vom 04.03.2026)",
+      "Websuche nach eigener Programmseite der Gemeinde: keine gefunden",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/reich/energiesparrichtlinie-reich-durchgeschrieben.pdf?cid=57d",
+        "finding": "§ 4 (2): „Die Neuinstallation einer Photovoltaikanlage nach § 1(3) Nr. 1 wird mit einmalig 200 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 1.500 € je Anlage und Gebäude begrenzt.“ § 9 (10): nur Maßnahmen, die „bis zum 31.12.2026 getätigt bzw. abgeschlossen sind“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140158",
+    "name": "Wahlbach",
+    "checkedAt": "2026-09-26T20:07:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wahlbach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) hat eine eigene Energiesparrichtlinie (zuletzt geändert 28.01.2026, Maßnahmen bis 31.12.2026), die seit der 7. Änderung vom 12.12.2024 nur noch energiesparende Haushaltsgeräte fördert (100 € je Gerätesorte); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen stehen nicht mehr darin. Kein Kreisprogramm für Private. Keine passende kommunale Förderung (Stand 26.09.2026).",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Wahlbach mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (9 Seiten mit Antrag und Geräteliste)",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/wahlbach/richtlinie-energieeinsparung-wahlbach-durchgeschrieben.pdf?cid=3ry",
+        "finding": "§ 1 (2): „Gefördert wird die Beschaffung folgender neuer Elektrogeräte …“ (Kühl-, Gefriergeräte, Waschmaschine, Geschirrspüler, Backofen, Trockner); § 4 (1) 100 € je Gerätesorte — keine weiteren Fördertatbestände."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140011",
+    "name": "Benzweiler",
+    "checkedAt": "2026-09-26T22:13:33Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Benzweiler (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 05.09.2023, 1. Änderung 09.10.2024, Maßnahmen bis 31.12.2026): Dachanlage bis 30 kWp 250 €/kWp bis 2.500 €, Speicher 2.500 € höchstens 30 %, Balkonkraftwerk 30 % bis 300 € (auch für Mieter), Heizungsanlagen einschließlich Wärmepumpe zusammen bis 2.500 € höchstens 30 %; insgesamt 7.000 €. Dachanlage, Speicher und Heizung nur für Eigentümer mit Erstwohnsitz. Neu katalogisiert als benzweiler-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle gerechneten Werte, vier Textpräzisierungen eingearbeitet. Keine eigene Website der Gemeinde mit weiterem Programm gefunden; Kreisprogramme wie beim Nachbarort Reich.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Benzweiler mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (7 Seiten), am 27.09.2026 neu geladen und bytegleich zur Akte vom 26.09.2026",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/benzweiler/energiesparrichtline-benzweiler-mit-anlagen-benzweiler.pdf?cid=5ly",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 2 wird mit einmalig 250,00 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500,00 € je Anlage und Gebäude begrenzt.“ § 4 (13): Balkonanlage „30 % der Anschaffungskosten, jedoch höchstens 300,00 €“. § 8 (11): Maßnahmen „bis zum 31.12.2026 getätigt bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140076",
+    "name": "Külz (Hunsrück)",
+    "checkedAt": "2026-09-26T22:13:33Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Külz hatte eine Heizungsrichtlinie (Ratsbeschluss 24.02.2014, zuletzt geändert 05.09.2022): bis 4.000 € je Objekt für Wärmepumpen an wasserführender Heizung, Holz/Pellet und Solarthermie. Ihre Förderperiode endete am 31.12.2022 (§ 6 (4)), berücksichtigt wurden Maßnahmen bis 30.06.2023. Als beendetes Programm katalogisiert (kuelz-hunsrueck-heizung-ee). Eine aktuelle Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht veröffentlicht: Der Ortsrecht-Ordner der Verbandsgemeinde führt nur diese Richtlinie, die frühere Unterseite „Regenerative Energien“ auf kuelz.de antwortet mit 404, die Startseite verlinkt nur Dorferneuerungs-Fördergebiete und den Energieatlas.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Külz — nur die Heizungsrichtlinie",
+      "Richtlinie im Original vollständig gelesen (4 Seiten)",
+      "Websuche Külz Förderung Photovoltaik Balkonkraftwerk Zuschuss (27.09.2026)",
+      "kuelz.de: Startseite und Unterseite Regenerative Energien (404) am 27.09.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/kuelz/foerderrichtlinie-kuelz-durchgeschriebene-fassung.pdf?cid=2jp",
+        "finding": "§ 6 (4): „Die Förderperiode der Richtlinie ist bis zum 31.12.2022 begrenzt.“ § 6 (5): nur Maßnahmen, die „bis zum 30.06.2023 getätigt bzw. abgeschlossen sind“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140020",
+    "name": "Bubach",
+    "checkedAt": "2026-09-26T22:19:33Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bubach (VG Simmern-Rheinböllen, Rhein-Hunsrück-Kreis) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 07.08.2018, in Kraft 01.09.2018, zuletzt geändert 06.12.2024, Maßnahmen bis 31.12.2027): Dachanlage bis 10 kWp 200 €/kWp bis 2.000 €, Speicher 2.000 € höchstens 30 %, Balkonkraftwerk 200 € höchstens 30 %, Heizungsanlagen einschließlich Wärmepumpe zusammen bis 2.000 € höchstens 30 %; insgesamt 5.000 €. Dachanlage, Speicher und Heizung nur für Eigentümer nach Energie-Check; für das Balkonkraftwerk nennt die Richtlinie keinen Berechtigtenkreis. Neu katalogisiert als bubach-energiespar; Richtlinie ist eingescannt und wurde seitenweise als Bild gelesen.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Bubach mit Energiesparrichtlinie",
+      "Richtlinie im Original vollständig gelesen (8 eingescannte Seiten als Bild, dazu Antragsvordruck), am 27.09.2026 neu geladen und bytegleich zur Akte vom 26.09.2026",
+      "Kreisprogramme aus der Prüfung vom 18.09.2026 (Rhein-Hunsrück-Kreis) übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/bubach/richtlinie-zur-foerderung-der-energieeinsparung-bubach.pdf?cid=63j",
+        "finding": "§ 4 (2): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 1 wird mit einmalig 200 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.000 € je Anlage und Gebäude begrenzt.“ § 4 (11): Balkonanlage „einmalige Förderung von 200 €, höchstens jedoch 30 % der Anschaffungskosten“. § 9 (10): Maßnahmen „bis zum 31.12.2027 getätigt, bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140121",
+    "name": "Rayerschied",
+    "checkedAt": "2026-09-27T00:12:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Rayerschied (VG Simmern-Rheinböllen) fördert über die eigene Energiesparrichtlinie (Ratsbeschluss 21.02.2019, in Kraft ab 01.01.2020, Förderperiode bis 31.12.2027): Dachanlage bis 10 kWp 250 €/kWp bis 2.500 €, Speicher 2.500 € höchstens 30 %, Kombigerät bis 5.000 €, Balkonkraftwerk 30 % bis 300 € (Mieter und Eigentümer), Heizung einschließlich Wärmepumpe zusammen bis 2.500 € höchstens 30 %; insgesamt 10.000 €. Energie-Check und Eigentum nötig für Dachanlage, Speicher und Heizung; Antrag binnen 12 Monaten nach Fertigstellung. Neu katalogisiert als rayerschied-energiespar; zwei unabhängige Prüfer (einer adversarial) bestätigen alle gerechneten Werte und fanden die 12-Monats-Frist (Textschicht las 1215). Hinweis: Rayerschied fehlt in der Postleitzahl-Zuordnung (abgeschnittene Tabelle), eigene Aufgabe angelegt.",
+    "searches": [
+      "Sitemap sim-rhb.de (26.09.2026): Ortsrecht-Ordner Rayerschied mit Energiesparrichtlinie, Anhang, Antragsvordruck, Haushaltsplan 2024/2025",
+      "Richtlinie am 27.09.2026 neu geladen, bytegleich zur Akte vom 26.09.2026, vollständig gelesen",
+      "Haushaltsplan 2024/2025: Konto 28100.541900 Energiesparrichtlinie",
+      "VG-Klimaschutz-Serviceseite: keine eigene VG-Förderung für PV/Balkon, nur Ortsgemeinde-Richtlinien"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/rayerschied/richtlinie-energieeinsparung-rayerschied.pdf?cid=65j",
+        "finding": "§ 4 (3): „Die Neuinstallation einer Photovoltaikanlage nach § 1 (3) Nr. 2 wird mit 250 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500 € je Anlage und Gebäude begrenzt.“ § 4 (13): Balkonanlage „30 % der Anschaffungskosten, jedoch höchstens 300,00 €“. § 8 (11): Maßnahmen „bis zum 31.12.2027 getätigt bzw. abgeschlossen“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140101",
+    "name": "Neuerkirch",
+    "checkedAt": "2026-09-27T00:12:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Neuerkirch hat zwei eigene Richtlinien: Energiesparrichtlinie (Ratsbeschluss 09.08.2017, 7. Änderung 13.11.2025, bis 31.12.2027): Dachanlage bis 10 kWp 250 €/kWp bis 2.500 €, Speicher 3.000 € höchstens 30 %, Balkonkraftwerk 300 € höchstens 30 %, insgesamt 6.000 €; im Haushalt 2026/2027 je 50.000 €. Heizungsrichtlinie (12.05.2014, geändert 05.05.2015, ohne Enddatum): Heizung aus erneuerbaren Energien einschließlich Wärmepumpe bis 4.000 € je Objekt, auch Nahwärmeanschluss; die Gemeinde-Website verweist weiterhin darauf, eigener Haushaltsposten fehlt. Neu katalogisiert als neuerkirch-energiespar und neuerkirch-heizung-ee (nur Information); Stadtseite zeigt das Energiespar-Programm. Zwei unabhängige Prüfer bestätigen alle gerechneten Werte.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Neuerkirch (Energiesparrichtlinie, Heizungsrichtlinie, Entsiegelungs- und Ortsentwicklungsrichtlinie, Haushaltsplan 2026/2027)",
+      "Beide Richtlinien am 27.09.2026 neu geladen, bytegleich zur Akte, vollständig gelesen",
+      "Haushaltsplan 2026/2027 nach Förderposten durchsucht: 118.000 € (50.000 € Energiesparrichtlinie, 60.000 € Leben mittendrin, 3.000 € Sport, 5.000 € Begrünung)",
+      "Gemeinde-Website neuerkirch.de/bauen-wohnen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-zur-foerderung-der-energieeinsparung-neuerkirch-durchgeschrieben.pdf?cid=66g",
+        "finding": "§ 4 (2): „Die Errichtung einer Photovoltaikanlage nach § 1 Abs. 3 Nr. 2 wird einmalig mit 250 € je kWp Leistung dieser Anlage gefördert. Die Förderung ist auf 2.500 € je Anlage begrenzt.“ § 4 (7): Balkonanlage „300,00 €, höchstens jedoch 30 % der Anschaffungskosten“. § 8 (9): „bis zum 31.12.2027“."
+      },
+      {
+        "url": "https://www.neuerkirch.de/bauen-wohnen",
+        "finding": "„Der Anschluss wird gefördert wie auch alternative Maßnahmen zur Wärmegewinnung und Einsparungen durch erneuerbare Energien. Einzelheiten der Fördermöglichkeiten entnehmen Sie der ‚Richtlinie … vom 12.05 2014‘“; Förderprogramme verweisen auf die VG-Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neuerkirch.de/bauen-wohnen",
+        "disposition": "reviewed",
+        "reason": "Seite am 27.09.2026 gelesen: verweist auf die Förderrichtlinien der Ortsgemeinde bei der VG (beide katalogisiert) und bestätigt die laufende Heizungsförderung; kein weiteres Programm.",
+        "evidenceUrl": "https://www.neuerkirch.de/bauen-wohnen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140039",
+    "name": "Fronhofen",
+    "checkedAt": "2026-09-27T00:12:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Fronhofen fördert über die Richtlinie zur regenerativen Strom- und Wärmeversorgung (19.01.2015, ohne Enddatum): neue Photovoltaikanlage nur zusammen mit Speicher bis 4.000 €, Speicher-Nachrüstung an Anlagen seit 2009 bis 3.000 €, Heizung aus erneuerbaren Energien einschließlich Wärmepumpe bis 4.000 €, Nahwärmeanschluss; je Gebäude nur Strom oder Wärme, nur Eigentümer, Betrag nach Kosten ohne festen Satz (nicht gerechnet). Laufend belegt durch den Doppelhaushalt 2026/2027 (2026: 16.000 €, ab 2027 jährlich 4.000 € für diese Förderung). Neu katalogisiert als fronhofen-regenerativ; zwei unabhängige Prüfer bestätigen Status und Beträge.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Fronhofen (Richtlinie, Doppelhaushalt 2026/2027)",
+      "Richtlinie am 27.09.2026 neu geladen, bytegleich zur Akte, vollständig gelesen",
+      "Doppelhaushalt 2026/2027 nach Förderposten durchsucht (Konto 28100.541900)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/foerderrichtlinie-erneuerbare-energien-fronhofen-durchgeschrieben.pdf?cid=2bd",
+        "finding": "§ 4 1.2: „Die Neuinstallation von PV-Anlagen einschließlich der erforderlichen Stromspeicher wird mit höchstens 4.000,- Euro gefördert.“ § 2: „entweder für Wärme- oder für Stromversorgung“."
+      },
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/haushaltssatzung-und-plan-2027-fronhofen.pdf?cid=5is",
+        "finding": "Konto 541900: „16.000 € für die Auszahlung von Fördersummen gem. Richtlinien der OG (Förderung regenerativer Strom-/Wärmeversorgung)“; „ab 2027: Förderung 4.000 €“."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140002",
+    "name": "Altweidelbach",
+    "checkedAt": "2026-09-27T00:20:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altweidelbach (VG Simmern-Rheinböllen) hatte eine Richtlinie zur Förderung der Energieeinsparung (04.12.2017, zuletzt geändert 17.12.2024); laut Doppelhaushalt 2026/2027 ist sie zum 31.12.2025 abgelaufen und wird wegen der Haushaltslage vorerst nicht verlängert. Der Richtlinientext ist weder im Ortsrecht-Ordner der VG noch im Webarchiv abrufbar, deshalb kein historischer Katalogeintrag mit Beträgen. Derzeit keine kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe; Kreisprogramme wie bei den Nachbarorten.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Altweidelbach (keine Förderrichtlinie mehr, Doppelhaushalt 2026/2027)",
+      "Doppelhaushalt 2026/2027 gelesen (Teilhaushalt 1, Konto 28100.541900)",
+      "Suche auf altweidelbach.de nach „förderprogramm“: kein Treffer",
+      "Webarchiv (sim-rhb.de-Ordner und altweidelbach.de) nach der Richtlinie durchsucht: nicht vorhanden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/altweidelbach/haushaltsplan-altweidelbach-2026-2027.pdf?cid=5yp",
+        "finding": "Konto 541900: „Die Richtlinie zur Förderung der Energieeinsparung vom 04.12.2017 (zuletzt geändert am 17.12.2024) ist zum 31.12.2025 abgelaufen. Eine Verlängerung kommt aufgrund der Haushaltslage vorerst nicht in Betracht.“"
+      },
+      {
+        "url": "https://altweidelbach.de/search/f%C3%B6rderprogramm",
+        "finding": "Suchergebnis der Gemeinde-Website: „Es konnte leider nichts Passendes gefunden werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "altweidelbach.de/search/f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde ohne Treffer; die ausgelaufene Energiesparrichtlinie ist über den Haushaltsplan belegt.",
+        "evidenceUrl": "https://altweidelbach.de/search/f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "07140100",
+    "name": "Nannhausen",
+    "checkedAt": "2026-09-27T00:20:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nannhausen (VG Simmern-Rheinböllen) hat im Ortsrecht-Ordner keine Förder- oder Energiesparrichtlinie; der Doppelhaushalt 2026/2027 führt auf dem Förderkonto nur „Spenden u. Zuschüsse“ und keinen Förderposten für Energie. Die beiden gespeicherten Treffer sind Feuerwehr-Kalendereinträge zur Wasserförderung (Löschwasser) und nicht einschlägig. Keine kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+    "searches": [
+      "Sitemap sim-rhb.de: Ortsrecht-Ordner Nannhausen (keine Förderrichtlinie)",
+      "Doppelhaushalt 2026/2027 nach Richtlinie/Förderung durchsucht",
+      "VG-Klimaschutz-Serviceseite: nur Ortsgemeinde-Richtlinien, keine eigene VG-Förderung für PV",
+      "Sitemap nannhausen.de vollständig nach Förder-/Energie-/Klima-Seiten durchsucht: einziger Treffer der Feuerwehrtermin „Wasserförderung“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/nannhausen/haushaltssatzung-und-plan-2026-2027-nannhausen.pdf?cid=61d",
+        "finding": "Konto 28100.541900: „Spenden u. Zuschüsse“; keine Energiespar- oder Förderrichtlinie im Haushalt."
+      },
+      {
+        "url": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung",
+        "finding": "Feuerwehr-Kalender 02.04.2022, Übung zur Wasserförderung (Löschwasser) — kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung",
+        "disposition": "reviewed",
+        "reason": "Feuerwehrübung „Wasserförderung“ (Löschwasser), nicht einschlägig.",
+        "evidenceUrl": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung"
+      },
+      {
+        "url": "nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung/events.ics?eventId=70972",
+        "disposition": "replaced",
+        "reason": "Kalenderdatei desselben Feuerwehr-Termins; durch die gelesene Kalenderseite erledigt, nicht einschlägig.",
+        "evidenceUrl": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "07140010",
+    "name": "Beltheim",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Beltheim (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 18.11.2024, gültig 01.01.2025 bis 31.12.2029): Dachanlage bis 15 kWp 100 €/kWp, höchstens 20 % der Kosten und 1.500 €; Speicher 20 % bis 1.500 €; Balkonkraftwerk 30 % bis 300 €; Power-to-Heat 20 % bis 500 €; insgesamt 2.500 € je Haushalt. Eigentümer und Mieter. Neu katalogisiert als beltheim-energiespar. Die zweite Richtlinie auf der Ortsseite (01.01.2026) betrifft die Dorferneuerung.",
+    "searches": [
+      "Ortsseite Satzungen/Förderrichtlinien vollständig: Energiesparrichtlinie und Dorferneuerungsrichtlinie",
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“: verlinkt dieselbe Energiesparrichtlinie",
+      "Eingescannte Richtlinie (6 Seiten) Seite für Seite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://beltheim.de/fileadmin/user_upload/gemeinde/Satzungen_und_Gebuehrenordnungen/00_Energiesparrichtlinie_Beltheim_Neufassung_gueltig_ab_01-01-2025_mit_Unterschrift.pdf",
+        "finding": "§ 5 (2): „100 € je kWp … auf maximal 20 % der Gesamtkosten je Anlage begrenzt, höchstens jedoch mit 1.500,- €“; § 5 (5) Balkonkraftwerk 30 %, höchstens 300 €; § 7 (7) bis 31.12.2029."
+      },
+      {
+        "url": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
+        "finding": "Ortsrecht-Seite listet „Förderung / Energiesparrichtlinien Ortsgemeinde Beltheim“ (Neufassung gültig ab 01.01.2025) und die Förderrichtlinien zur Dorferneuerung (ohne PV, Speicher, Balkon)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
+        "disposition": "reviewed",
+        "reason": "Ortsrecht-Seite; darauf die Energiesparrichtlinie (katalogisiert) und die Dorferneuerungsrichtlinie (nicht einschlägig).",
+        "evidenceUrl": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140202",
+    "name": "Dommershausen",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Dommershausen (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 27.03.2025, rückwirkend ab 01.01.2025 bis 31.12.2027): Dachanlage 150 €/kWp bis 1.500 €, höchstens 20 %; Speicher 1.500 € höchstens 20 %; Heizung (Pellet, Wärmepumpe) 2.500 € höchstens 30 %; Balkonkraftwerk 30 % bis 300 €; insgesamt 5.000 € je Haushalt. Hauptwohnsitz; Dach, Speicher, Heizung nur Eigentümer. Neu katalogisiert als dommershausen-energiespar. Zusätzlich gilt für Wärmepumpen die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz; die Stadtseite bleibt auf das eigene Ortsprogramm festgelegt.",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“ (Liste der Ortsgemeinde-Richtlinien)",
+      "Richtlinie (Textfassung) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_2025-03-24_Energiesparrichtlinie_der_Ortsgemeinde_Dommershausen_final.pdf",
+        "finding": "§ 5 (5): „150 € je kWp … auf 1.500 € je Anlage begrenzt, höchstens jedoch mit 20% der Gesamtkosten“; § 5 (7) Balkon max. 300 €, höchstens 30 %; § 7 (6) bis 31.12.2027."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140131",
+    "name": "Roth",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Roth (Hunsrück, VG Kastellaun) fördert über das Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz (Beschluss 20.01.2026, rückwirkend ab 01.01.2026 bis 31.12.2027): Dachanlage 100 €/kWp bis 1.000 €, Speicher 100 €/kWh bis 600 €, Balkonkraftwerk bis 200 € höchstens 20 %, Wallbox 100 €. Eigentümer und Mieter. Neu katalogisiert als roth-hunsrueck-energie-klima. Zusätzlich gilt für Wärmepumpen die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz; die Stadtseite bleibt auf das eigene Ortsprogramm festgelegt.",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“",
+      "Eingescanntes Programm (5 Seiten) Seite für Seite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/2026-02-17__Foerderprogramm_Engergie_Klima_Roth_mit_Unterschrift.pdf",
+        "finding": "§ 5 (5) „100,- Euro je kWp … maximal 1000,- Euro“; § 5 (6) „100,- Euro je kWh … maximal 600,- Euro“; § 7 (7) bis 31.12.2027."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140095",
+    "name": "Michelbach",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Michelbach (VG Kastellaun) hatte ein Förderprogramm (Beschluss 14.11.2024) mit 100 € für ein Balkonkraftwerk; die Laufzeit war nach § 7 (6) bis 31.12.2025 beschränkt. Als beendetes Programm katalogisiert (michelbach-hunsrueck-energie-klima); eine Nachfolge ist auf der VG-Seite nicht verlinkt. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Nachtrag 27.09.2026: Für Wärmepumpen gilt die Richtlinie der Verbandsgemeinde Kastellaun (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz (nur Information).",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“",
+      "Programm (Textfassung) vollständig gelesen",
+      "VG-Richtlinie vitale Dorfzentren/Klimaschutz vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_Foerderprogramm_Engergie_Klima_Michelbach.pdf",
+        "finding": "§ 7 (6): „Die Laufzeit der Fördermaßnahme ist bis zum 31.12.2025 beschränkt.“"
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140064",
+    "name": "Kastellaun",
+    "checkedAt": "2026-09-27T04:18:30Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadt Kastellaun: Für Wärmepumpen gilt die Richtlinie der Verbandsgemeinde Kastellaun (2.000 € je Objekt für die Umstellung der Heizung auf erneuerbare Energien an mindestens 40 Jahre alten Gebäuden, Mindestkosten 10.000 €, bis 31.07.2027), neu katalogisiert als vg-kastellaun-dorfzentren-klimaschutz (nur Information). Das eigene Förderprogramm der Stadt ist ein Fassadenprogramm (20 % bis 10.000 € für gestalterische Dach- und Fassadensanierung in der Innenstadt, bis 31.12.2026) ohne Photovoltaik, Speicher, Balkonkraftwerk oder Heizung. Keine städtische Förderung für PV/Speicher/Balkon.",
+    "searches": [
+      "VG-Seite „Förderprogramme“ (verweist auf Stadt → Bauen, Ortsgemeinden, Klimaschutz → Förderungen)",
+      "Stadt → Bauen: Richtlinie „gültig bis 2026“ vollständig gelesen",
+      "VG-Richtlinie vollständig gelesen, Seitenbilder geprüft",
+      "Vier erfasste Quellen der Stadt einzeln gelesen und vermerkt (Klimaschutz-Förderungen, VG-Förderprogramme-Verweisseite, KIPKI-Seite, Tivoli-Meldung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/Stadt/aktuelle_Richtlinie_gueltig_bis_2026_mit_Anlagen.pdf",
+        "finding": "Fassadenförderprogramm: § 3 gestalterische Dach- und Fassadensanierung, § 5 „20 % … maximal 10.000,-- Euro“, § 9 bis 31. Dezember 2026. Keine Energieanlagen."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/foerderungen/",
+        "finding": "Listet „Förderprogramm der Verbandsgemeinde Kastellaun zur Schaffung vitaler Dorfzentren…“ mit Richtlinie und Antrag sowie die Ortsgemeinde-Richtlinien."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+        "finding": "„Förderprogramme der Stadt Kastellaun Finden Sie unter: www.kastellaun.de/gemeinden/stadt/bauen“; weitere Verweise auf Ortsgemeinden und Klimaschutz."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm/",
+        "finding": "„Diese Summe wurde in der VG Kastellaun bereits komplett für Klimaschutzmaßnahmen vergeben“ (kommunale Projekte)."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten/",
+        "finding": "Förderbescheid über 5.600.000 € für den Neubau der Stadthalle Tivoli."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kastellaun.de/klimaschutz/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Klimaschutzseite „Förderungen“: VG-Richtlinie (katalogisiert als vg-kastellaun-dorfzentren-klimaschutz) und die Ortsgemeinde-Richtlinien (Beltheim, Dommershausen, Roth, Michelbach, katalogisiert).",
+        "evidenceUrl": "https://www.kastellaun.de/klimaschutz/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Stadt → Bauen, Ortsgemeinden und Klimaschutz → Förderungen; alle Ziele gelesen.",
+        "evidenceUrl": "https://www.kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/"
+      },
+      {
+        "url": "kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Mittel der VG vollständig für kommunale Projekte vergeben; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.kastellaun.de/klimaschutz/klimaschutz/kipki-foerderprogramm/"
+      },
+      {
+        "url": "kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten",
+        "disposition": "reviewed",
+        "reason": "Landesförderbescheid für den Neubau der Stadthalle; keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.kastellaun.de/gemeinden/stadt/innenminister-ebling-uebergibt-foerderbescheid-neubau-der-stadthalle-tivoli-kann-starten/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140153",
+    "name": "Uhler",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Uhler (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Die eigene Richtlinie zur Dorfentwicklung (31.07.2020) fördert Abbruch, Erwerb/Vitalisierung und gestalterische Erneuerung 50 Jahre alter Gebäude (10 %, max. 4.000 €) — keine Photovoltaik, kein Speicher, kein Balkonkraftwerk, keine Heizung als eigener Gegenstand.",
+    "searches": [
+      "Ortsseite auf kastellaun.de",
+      "Richtlinie Dorfentwicklung (2. Änderung) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Uhler/Richtlinie%202.%20%C3%84nderung.pdf",
+        "finding": "Nr. 2 Abbruch, Erwerb/Vitalisierung, gestalterische Erneuerung; Nr. 4.3 10 %, max. 4.000 €; keine Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140204",
+    "name": "Mastershausen",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mastershausen (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Das eigene Vitalisierungsprogramm (Neufassung 21.10.2025) fördert nur Neuerwerber von Altbauten bis Baujahr 1960 (30 %, max. 7.500 €) für Umnutzung, Erneuerung, Baulückenschließung und Abbruch — keine Photovoltaik, kein Speicher, kein Balkonkraftwerk, keine Heizung als eigener Gegenstand.",
+    "searches": [
+      "Ortsseite auf kastellaun.de",
+      "Vitalisierungsrichtlinie (Oktober 2025) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Mastershausen/Richtlinie_Mastershausen__21.10.25_.pdf",
+        "finding": "Nr. 2 Umnutzung, Erneuerung, Baulücken, Abbruch; Nr. 3.a nur Neuerwerber; Nr. 4.a 30 %, höchstens 7.500 €; keine Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140018",
+    "name": "Braunshorn",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Braunshorn (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/braunshorn/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/braunshorn/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140021",
+    "name": "Buch",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Buch (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/buch/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/buch/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140042",
+    "name": "Gödenroth",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Gödenroth (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/goedenroth/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/goedenroth/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140046",
+    "name": "Hasselbach",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hasselbach (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/hasselbach/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/hasselbach/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140055",
+    "name": "Hollnich",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hollnich (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/hollnich/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/hollnich/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140073",
+    "name": "Korweiler",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Korweiler (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/korweiler/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/korweiler/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140502",
+    "name": "Lahr",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Lahr (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/lahr/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/lahr/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140503",
+    "name": "Mörsdorf",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mörsdorf (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/moersdorf/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/moersdorf/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140147",
+    "name": "Spesenroth",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Spesenroth (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/spesenroth/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/spesenroth/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140504",
+    "name": "Zilshausen",
+    "checkedAt": "2026-09-27T06:05:08Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Zilshausen (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Eine eigene Richtlinie der Ortsgemeinde ist nicht veröffentlicht: Der Abschnitt „Förderprogramme zur Dorferneuerung“ auf der Ortsseite trägt nur den Standardsatz, ohne angehängte Richtlinie (anders als bei Alterkülz, Bell, Beltheim, Uhler). Für Photovoltaik, Speicher und Balkonkraftwerke gibt es weder bei der Ortsgemeinde noch bei der VG einen Zuschuss.",
+    "searches": [
+      "Ortsseite kastellaun.de/gemeinden/ortsgemeinden/zilshausen/ vollständig (alle Downloads: nur Satzungen und Bebauungspläne)",
+      "VG-Förderübersicht kastellaun.de/gemeinden/verbandsgemeinde/foerderprogramme/",
+      "VG-Seite Photovoltaikanlagen (nur Bestandszahlen, kein Zuschuss)",
+      "Websuche Ortsname + Förderung Photovoltaik/Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“."
+      },
+      {
+        "url": "https://www.kastellaun.de/gemeinden/ortsgemeinden/zilshausen/",
+        "finding": "„Hier finden Sie die Dorferneuerungsrichtlinien mit dem Antrag der Ortsgemeinde.“ — kein Dokument angehängt; Downloads nur Satzungen, Hebesätze, Bebauungspläne."
+      },
+      {
+        "url": "https://www.kastellaun.de/klimaschutz/klimaschutz/photovoltaikanlagen/",
+        "finding": "Informationsseite mit PV-Bestand je Ortsgemeinde (Stand 2020), kein Förderangebot."
+      }
+    ],
+    "sources": []
   }
 ]

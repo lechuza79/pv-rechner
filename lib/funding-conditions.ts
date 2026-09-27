@@ -647,6 +647,51 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // consultation, the owner rule and the start-after-entry-into-force rule have
   // no test form yet.
   "reckershausen-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule,
+  // the shared PV/storage maximum and the heat-pump limits have no test form yet.
+  "reich-hunsrueck-energiespar",
+  // Added 27 Sep 2026: guideline read in full; first residence, the owner rule
+  // for PV/storage/heating, the 4-year balcony holding period and the
+  // subsidiarity clause have no test form yet.
+  "benzweiler-energiespar",
+  // Added 27 Sep 2026: closed historical programme (funding period ended
+  // 31.12.2022); the owner rule and the renewables-only heating rule have no
+  // test form yet.
+  "kuelz-hunsrueck-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
+  // the energy check and the unregulated balcony eligibility have no test form yet.
+  "bubach-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // for PV/storage/heating, the 2-year balcony holding period and the
+  // 15-month application window have no test form yet.
+  "rayerschied-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // and the unregulated balcony eligibility have no test form yet.
+  "neuerkirch-energiespar",
+  // Added 27 Sep 2026: heating-only guideline read in full; the owner rule and
+  // the renewables-only heating rule have no test form yet.
+  "neuerkirch-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full, information only; the owner
+  // rule, PV-only-with-storage and the power-or-heat-per-building rule have no
+  // test form yet.
+  "fronhofen-regenerativ",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the 15 kWp
+  // scope, the 3-month application window and the per-household total have no
+  // test form yet.
+  "beltheim-energiespar",
+  // Added 27 Sep 2026: guideline read in full; main residence, the owner rule
+  // for PV/storage/heating, the one-year balcony residence and the re-funding
+  // periods have no test form yet.
+  "dommershausen-energiespar",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the no-business
+  // rule and the 3-month application window have no test form yet.
+  "roth-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: closed historical programme (term ended 31.12.2025).
+  "michelbach-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: VG-wide guideline read in full, information only; the
+  // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
+  // rule have no test form yet.
+  "vg-kastellaun-dorfzentren-klimaschutz",
 ];
 
 /**
