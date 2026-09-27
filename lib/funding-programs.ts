@@ -9823,7 +9823,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // of the whole Verbandsgemeinde, and the VG's own page for Niederzissen
     // states it "ist die zweitgrößte Ortsgemeinde der Verbandsgemeinde Brohltal
     // … Verwaltungssitz" (read 27.09.2026, confirmed by an adversarial reviewer).
-    agsCodes: ["07131204", "07131201", "07131055"],
+    // All 17 member municipalities since 27.09.2026: guideline no. 6 admits
+    // residents of the whole Verbandsgemeinde ("mit Wohnsitz in der
+    // Verbandsgemeinde Brohltal"), no clause narrows it, and the member list
+    // was read at brohltal-verwaltung.de/ortsgemeinden/ (17 names); keys from
+    // the municipality register. Confirmed by an adversarial reviewer.
+    agsCodes: [
+      "07131201", "07131202", "07131016", "07131204", "07131205", "07131206",
+      "07131502", "07131041", "07131054", "07131055", "07131059", "07131060",
+      "07131208", "07131209", "07131210", "07131211",
+    ],
     url: "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beschlossenIso: "2024-10-09", beginntIso: "2024-10-15", endetIso: "2026-12-31",
@@ -9841,7 +9850,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für den erzeugten Strom darf keine Einspeisevergütung in Anspruch genommen werden, fünf Jahre Betrieb in der Verbandsgemeinde",
       "Eine Mehrfachförderung nach dieser oder einer anderen Richtlinie ist ausgeschlossen",
     ],
-    combinableWith: BUND,
+    // Guideline no. 5: "Mehrfachförderungen nach dieser Richtlinie oder anderen
+    // Förderprogrammen sind ausgeschlossen" -- no other grant may be stacked;
+    // only the zero VAT rate (a tax rule) stays alongside (27.09.2026).
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["balkon"],
     balkonPauschale: 125,
   },
