@@ -328,7 +328,7 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, desi
     <p className="bkw-offer-price-note">Preisstand {datumKurz(daten.abgerufenIso)} · Maßgeblich sind Preis und Versandbedingungen im Shop.</p>
     <AffiliateTrust id="bkw-produktauswahl"
       promise="Die Empfehlungen sind nach dem berechneten Vorteil für deinen Bedarf ausgewählt – nicht nach unserer Provision."
-      disclosure={<>Die Sets stammen von unserem Partner {daten.angebote[0]?.haendlerName}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</>}
+      disclosure={<>Solar Check nimmt am Partnerprogramm von {daten.angebote[0]?.haendlerName} teil. Die Sets stammen von unserem Partner {daten.angebote[0]?.haendlerName}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</>}
     />
   </div>;
 
@@ -409,7 +409,7 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
   const [status, setStatus] = useState("");
   const offer = entry.angebot;
   const image = modellBild(offer);
-  const url = angebotUrl(offer);
+  const url = angebotUrl(offer, undefined, recommended ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative");
   const message = `${offer.produkt} – ${ausstattung(offer)}\n${offer.preis.toLocaleString("de-DE", { minimumFractionDigits: 2 })} € (Stand ${datumKurz(date)})\n${url}`;
   return <article className="wp-product-card" data-recommended={selected}>
     <div className="bkw-product-showcase" data-selected={selected}>
@@ -418,7 +418,7 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
       {(selected || onCalculate) && <button type="button" className="bkw-calculate-link" aria-pressed={selected} aria-label={selected ? "In deiner Berechnung" : "Damit berechnen"} title={selected ? "Wird für dein Ergebnis verwendet" : "Mit diesem Set neu berechnen"} onClick={() => { if (!selected) onCalculate?.(offer); }}>{selected ? <IconCheck size={18} /> : <IconPlus size={18} />}</button>}
     </header>
     <div className="wp-product-heading">
-      <a href={url} onClick={() => trackEvent("balkon_shop_angebote")} target="_blank" rel="nofollow sponsored noopener noreferrer" className="wp-product-image" aria-label={`${offer.produkt} im Shop ansehen`}>
+      <a href={url} onClick={() => trackEvent("balkon_shop_angebote")} target="_blank" rel="nofollow sponsored noopener" referrerPolicy="origin" className="wp-product-image" aria-label={`${offer.produkt} im Shop ansehen`}>
         <div className="wp-product-rank"><span /><span>ANZEIGE</span></div>
         <span className="wp-product-photo">{BILDER_FREIGEGEBEN && image && <Image src={image} alt="" fill loading="eager" sizes="(max-width:800px) 80vw, 400px" />}</span>
         <span className="wp-product-name wp-product-image-title">{offer.produkt}</span>
@@ -444,7 +444,7 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
       {BILDER_FREIGEGEBEN && <p>Bildmaterial: {offer.haendlerName}. Abgebildet sind die Module; den Speicherumfang beschreibt die gewählte Variante.</p>}
       </section></div>
     </AffiliateDetails>
-    <AffiliateActions url={url} onShopClick={() => trackEvent("balkon_shop_angebote")} onForward={() => { setStatus(""); setShareOpen(true); }} onCopy={async () => {
+    <AffiliateActions allowReferrer url={url} onShopClick={() => trackEvent("balkon_shop_angebote")} onForward={() => { setStatus(""); setShareOpen(true); }} onCopy={async () => {
       try { await navigator.clipboard.writeText(url); setStatus("Link kopiert"); }
       catch { setStatus("Kopieren nicht möglich. Nutze Weiterleiten."); }
     }} />
@@ -462,5 +462,5 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
 
 /** Reuse the approved image mapping, specifications and affiliate URL. */
 export function BalkonProduktTeaser({ offer }: { offer: ShopAngebot }) {
-  return <AffiliateProductTeaser onShopClick={() => trackEvent("balkon_shop_ergebnis")} name={`${offer.haendlerName} ${offer.produkt}`} image={BILDER_FREIGEGEBEN ? modellBild(offer) : null} description={ausstattung(offer)} url={angebotUrl(offer)} disclosure={<>Unsere Partnerangebote sortieren wir nach deinem berechneten Vorteil – nicht nach unserer Provision.</>} />;
+  return <AffiliateProductTeaser allowReferrer onShopClick={() => trackEvent("balkon_shop_ergebnis")} name={`${offer.haendlerName} ${offer.produkt}`} image={BILDER_FREIGEGEBEN ? modellBild(offer) : null} description={ausstattung(offer)} url={angebotUrl(offer, undefined, "bkw-rechner-empfehlung")} disclosure={<>Unsere Partnerangebote sortieren wir nach deinem berechneten Vorteil – nicht nach unserer Provision.</>} />;
 }

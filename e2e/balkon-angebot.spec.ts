@@ -37,7 +37,7 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     await expect(page.getByRole("link", { name: /Zum Shop/ }).first()).toBeVisible();
 
     // Die erste Zeile trägt die Begründung, warum sie oben steht.
-    await expect(page.getByText("Höchster berechneter Vorteil")).toBeVisible();
+    await expect(page.getByText("Größte Ersparnis", { exact: true })).toBeVisible();
   });
 
   test("die Kennzeichnung als bezahlte Empfehlung ist sichtbar, nicht versteckt", async ({ page }) => {
@@ -50,14 +50,14 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
 
   test("nennt den Stand der Preise — ein Preis ohne Datum wird still falsch", async ({ page }) => {
     await bisZumErgebnis(page);
-    await expect(page.locator(".bkw-offer-price-note").first()).toContainText(/Stand \d{2}\.\d{2}\.\d{4}/);
+    await expect(page.locator(".bkw-offers .bkw-offer-price-note").last()).toContainText(/Preisstand \d{2}\.\d{2}\.\d{4}/);
   });
 
   test("sagt sichtbar, wonach sortiert wird", async ({ page }) => {
     // Der Grundsatz „nach dem Nutzen für dich, nicht nach unserer Provision"
     // steht seit der Vorgabe vom 19.08.2026 auf der Seite, nicht nur im Code.
     await bisZumErgebnis(page);
-    await expect(page.getByText(/nicht nach unserer Provision/)).toBeVisible();
+    await expect(page.locator(".bkw-offers .wp-product-promise")).toContainText("nicht nach unserer Provision");
   });
 
   test("der Kaufweg ist ein echter Link mit Partnerkennung", async ({ page }) => {
@@ -70,15 +70,18 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
 
     const links = page.locator('a[href*="solakon.de/products/"]');
     expect(await links.count()).toBeGreaterThan(1);
-    const destinations = await links.evaluateAll(nodes => nodes.map(node => (node as HTMLAnchorElement).href));
-    for (const [index, destination] of destinations.entries()) {
+    const destinations = await links.evaluateAll(nodes => nodes.map(node => ({
+      href: (node as HTMLAnchorElement).href,
+      alternative: node.closest('.wp-product-card')?.querySelector('.bkw-product-header strong')?.textContent === 'Alternative',
+    })));
+    for (const { href: destination, alternative } of destinations) {
       const url = new URL(destination);
       expect(url.searchParams.get("ref")).toBe("lsqpyrpl");
       expect(url.searchParams.get("utm_source")).toBe("affiliate");
       expect(url.searchParams.get("utm_medium")).toBe("cpo");
       expect(url.searchParams.get("utm_campaign")).toBe("solar-check");
       expect(url.searchParams.get("utm_content")).toBe(
-        index === 0 ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative",
+        alternative ? "bkw-rechner-alternative" : "bkw-rechner-empfehlung",
       );
     }
 

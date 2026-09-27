@@ -19,14 +19,20 @@ import { FUNDING_PROGRAMS, deckt, foerdergebiete, fundingForAgs } from "../fundi
 describe("Programme mit mehreren Fördergebieten", () => {
   it("führt beide Felder an EINER Stelle zusammen", () => {
     const vg = FUNDING_PROGRAMS["vg-brohltal-balkonkraftwerke"];
-    expect(foerdergebiete(vg)).toEqual(["07131073", "07131204", "07131201", "07131055"]);
+    // All 17 member municipalities of the VG (list read 27.09.2026), the
+    // main key first, then the extra areas in their stored order.
+    expect(foerdergebiete(vg)).toEqual([
+      "07131073", "07131201", "07131202", "07131016", "07131204", "07131205",
+      "07131206", "07131502", "07131041", "07131054", "07131055", "07131059",
+      "07131060", "07131208", "07131209", "07131210", "07131211",
+    ]);
     // Ein Programm ohne Zusatzgebiete verhält sich unverändert.
     expect(foerdergebiete(FUNDING_PROGRAMS["taunusstein-balkonsolar"])).toEqual(["06439015"]);
   });
 
   it("deckt jede seiner Ortsgemeinden — und keine fremde", () => {
     const vg = FUNDING_PROGRAMS["vg-brohltal-balkonkraftwerke"];
-    for (const ort of ["07131073", "07131204", "07131201", "07131055"]) {
+    for (const ort of ["07131073", "07131204", "07131201", "07131055", "07131502", "07131211"]) {
       expect(deckt(vg, ort), ort).toBe(true);
     }
     // Bad Breisig liegt im selben Landkreis und hat ein EIGENES Programm mit
