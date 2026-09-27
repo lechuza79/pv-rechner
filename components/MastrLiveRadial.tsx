@@ -894,7 +894,7 @@ export function MastrLiveRadial({
               fontSize: `min(var(--radial-center-size, ${dim.centerBig}px), ${100 / Math.max(3, centerText.length * .72)}cqi)`,
               whiteSpace: "nowrap",
               fontWeight: 700,
-              color: accentLatest,
+              color: secondaryBars ? "var(--widget-accent, var(--color-text-primary))" : v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
               fontFamily: v("--font-mono"),
               letterSpacing: -0.3,

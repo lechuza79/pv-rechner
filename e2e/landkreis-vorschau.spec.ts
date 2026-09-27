@@ -91,7 +91,7 @@ test("district content uses municipality width while scene stays full bleed", as
   await page.screenshot({path:'scratch/landkreis/width-and-artwork.png'});
 });
 
-test("district race uses one widget and monitor dates live in help",async({page})=>{
+test("district race uses one widget with footer actions and monitor dates live in help",async({page})=>{
   test.setTimeout(120000);
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.goto(route,{waitUntil:'domcontentloaded'});
@@ -122,8 +122,9 @@ test("district race uses one widget and monitor dates live in help",async({page}
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     if(width===451||width===1226)await page.screenshot({path:`scratch/landkreis/race-widget-${width}.png`});
   }
-  await ranking.getByRole('button',{name:'Informationen zu Welche Gemeinde hat die meisten Solaranlagen?'}).click();
-  await expect(page.getByRole('tooltip')).toContainText('Registerstand:');
+  await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
+  await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
+  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild','Animation als Video']);
   await page.keyboard.press('Escape');
   const annualHelp=page.locator('#atlas-data').getByRole('button',{name:'Informationen zu Zubau pro Jahr'});
   await annualHelp.scrollIntoViewIfNeeded();
@@ -186,7 +187,7 @@ test('district basics show complete monthly totals and working comparisons',asyn
     await page.screenshot({path:`scratch/landkreis/basics-${width}.png`});
   }
   await basics.getByRole('button',{name:'Kennzahlen: Erklärung'}).click();
-  await expect(page.getByRole('tooltip')).toContainText('Vollständige Summe aller Gemeinden');
+  await expect(page.getByRole('tooltip')).toContainText('Vollständige Summe aller Teilgebiete');
 });
 
 test('district energy widgets retain complete periods and fit mobile',async({page})=>{

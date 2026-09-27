@@ -20,3 +20,25 @@ it('makes row motion independent of how long rendering takes',()=>{
  expect(move(state,44,320).value).toBe(44);
  expect(move(state,0,0).value).toBe(0);
 });
+it('settles final ranks immediately when reduced motion skips the race',async()=>{
+ class Element {
+  style:Record<string,string>={};dataset:Record<string,string>={};children:Element[]=[];
+  isConnected=true;className='';textContent='';inert=false;
+  append(...nodes:Element[]){this.children.push(...nodes)}
+  setAttribute(){} addEventListener(){} removeEventListener(){} querySelector(){return null} contains(){return true}
+ }
+ const scope:any={};
+ const observer=class {observe(){}disconnect(){}};
+ runInNewContext(readFileSync('public/gemeinde/landkreis-rennen.js','utf8'),{
+  window:scope,document:{createElement:()=>new Element(),hidden:false},
+  matchMedia:()=>({matches:true}),performance:{now:()=>0},
+  requestAnimationFrame:(callback:(time:number)=>void)=>callback(100),
+  IntersectionObserver:observer,MutationObserver:observer,
+ });
+ const stage=new Element();
+ const rows=[{id:'a',name:'A',value:110},{id:'b',name:'B',value:200}];
+ await scope.solarDistrictRace({stage,rows,history:[{year:2000,rows:[{id:'a',value:100},{id:'b',value:20}]},{year:2026,rows}],format:String,animate:false,current:()=>true,skip:()=>false});
+ const race=stage.children.find(node=>node.className==='district-race')!;
+ expect(race.children.find(node=>node.dataset.raceTown==='b')!.style.transform).toBe('translateY(0px)');
+ expect(race.children.find(node=>node.dataset.raceTown==='a')!.style.transform).toBe('translateY(44px)');
+});
