@@ -39,7 +39,7 @@ for (const [label, width, mobile] of [["desktop", 1440, false], ["phone", 375, t
     test("the menu looks the same on the homepage as on every other page", async ({ page }) => {
       // Two full page loads, the homepage with its scene among them.
       test.setTimeout(90_000);
-      const TEILE = [".sc-nav-column > h3", ".sc-local-label", ".sc-nav-column > a", "button.sc-local-card", "label.sc-local-card", "label.sc-local-card input", ".sc-local-field input"];
+      const TEILE = [".sc-nav-column > .sc-hd", ".sc-local-label", ".sc-nav-column > a", "button.sc-local-card", "label.sc-local-card", "label.sc-local-card input", ".sc-local-field input"];
       const aufnahme = async (pfad: string) => {
         const panel = await openLocal(page, mobile, pfad);
         const out: Record<string, unknown> = {};
