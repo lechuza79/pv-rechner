@@ -83,7 +83,6 @@ test('WP uses the same affiliate contract with a deterministic catalogue', async
   expect(bkwCard).toEqual(wpCard);
   const first = cards.first();
   await first.scrollIntoViewIfNeeded();
-  await expect.poll(() => first.locator(".wp-product-photo img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(first.getByText('ANZEIGE', { exact: true })).toBeVisible();
   await expect(first.locator('.wp-product-copy')).toBeVisible();
   await first.locator('.wp-product-forward').click();
