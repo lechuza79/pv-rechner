@@ -73,10 +73,18 @@ test("result uses the WP composition and keeps scenario changes as drafts", asyn
 });
 
 test("sharing restores the displayed calculation", async ({ page }) => {
+  await page.route('**/api/shop/balkon', route => route.fulfill({ json: {
+    abgerufenIso: '2026-09-27T08:00:00Z',
+    angebote: [{ id: 'share-set', haendler: 'solakon', haendlerName: 'Solakon', produkt: 'onBasic',
+      moduleWp: 1000, inverterW: 800, speicherKwh: 0, preis: 600, streichpreis: null,
+      lieferbar: true, url: 'https://www.solakon.de/products/onpower?variant=share-set', bildUrl: null, variante: 'Test' }],
+  } }));
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => { sessionStorage.setItem('test-result-link', value); } } });
   });
   await page.goto(result + '&set=duo&sp=none&sc=optimistic&inv=999&strom=0.41&verbrauch=4200&funding=0', { waitUntil: 'domcontentloaded' });
+  // Capture the settled shop-backed result, not the temporary model fallback.
+  await expect(page.locator('section[aria-label="Berechnet mit"]')).toBeVisible();
   const amount = page.locator('.wp-result-count-space');
   await amount.waitFor({ state: 'attached', timeout: 60000 });
   await expect(amount).not.toHaveText('0');
