@@ -45,8 +45,9 @@ import {
   zustellprobeAdressen,
 } from "../lib/outreach-mail";
 import { versandfenster } from "../lib/schulferien";
+import { kommunenVersandtag } from "../lib/kommunen-versandtag";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
-import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
+import { berlinOffset, heuteInBerlin } from "../lib/zeit";
 import { execFileSync } from "node:child_process";
 import { v2Urteil, type V2Urteil } from "../lib/contact-v2-gate";
 import { RECHECK_MAX_AGE_DAYS, REPO_ROOT, outDir, rulesVersion } from "./lib/contact-v2-config";
@@ -121,22 +122,6 @@ async function holePaket(basis: string, schub: string, charge: number, limit: nu
 }
 
 // ─── Bremsen ──────────────────────────────────────────────────────────────────
-
-const WOCHENTAG = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
-
-/**
- * Ist heute ein Versandtag?
- *
- * Dienstag bis Donnerstag. Montags konkurriert die Mail mit allem, was übers
- * Wochenende aufgelaufen ist; freitags wird sie gelesen und bis Montag
- * vergessen. Das ist keine Feinheit — bei einer Aussendung ohne Nachfassen ist
- * der erste Blick der einzige.
- */
-function versandtag(datum: Date): { ok: boolean; grund?: string } {
-  const tag = wochentagInBerlin(datum);
-  if (tag >= 2 && tag <= 4) return { ok: true };
-  return { ok: false, grund: `${WOCHENTAG[tag]} — versendet wird Dienstag bis Donnerstag.` };
-}
 
 /** Alle Bremsen für einen einzelnen Brief. Leeres Ergebnis = darf hinaus. */
 function bremsen(b: Brief, heute: string, kontakt?: V2Urteil): string[] {
@@ -669,7 +654,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const tag = versandtag(new Date());
+  const tag = kommunenVersandtag(new Date());
   if (!tag.ok && !hat("trotzdem")) {
     log(`Heute wird nicht versendet: ${tag.grund}`, "err");
     log("Wenn es trotzdem sein muss: --trotzdem", "warn");

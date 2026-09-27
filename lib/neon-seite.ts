@@ -9,6 +9,7 @@ import { standSeite } from "./stand";
 import { liveSatz } from "./stand-format";
 import { siteFussHtml } from "./site-fuss";
 import SEKTIONEN from "./startseite-sektionen.json";
+import { tokens } from "./theme";
 
 /**
  * The redesigned homepage and PV simulation, served as the approved documents.
@@ -48,6 +49,14 @@ export const ANALYTICS_SRC = "/_vercel/insights/script.js";
 
 export const ANALYTICS_HTML =
   `<script>${ANALYTICS_SETUP}</script>` + `<script defer src="${ANALYTICS_SRC}"></script>`;
+
+/**
+ * The one token of the site's type scale the shared menu reads. React pages
+ * carry the whole theme; these standalone pages did not, so the menu fell back
+ * to a larger size here than on every other page. From the theme, never typed.
+ */
+export const NAV_TOKENS_CSS = `:root{--font-size-body:${tokens["--font-size-body"]}}`;
+export const NAV_TOKENS_HTML = `<style>${NAV_TOKENS_CSS}</style>`;
 
 export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -94,6 +103,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
   return [
+    NAV_TOKENS_HTML,
     `<title>${esc(s.titel)}</title>`,
     `<meta name="description" content="${esc(s.beschreibung)}">`,
     `<meta name="keywords" content="${esc(KEYWORDS)}">`,

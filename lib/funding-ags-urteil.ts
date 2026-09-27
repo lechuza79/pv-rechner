@@ -30,6 +30,26 @@ function norm(s: string): string {
 }
 
 /**
+ * Passt unser Ortsname zum Registernamen?
+ *
+ * Verglichen werden die ersten fünf Buchstaben. Ein Zusatz in Klammern am Ende
+ * unseres Namens ist eine eigene Unterscheidung („Roth (Hunsrück)“), die das
+ * Register nicht trägt — es führt vier Gemeinden „Roth“ allein in
+ * Rheinland-Pfalz. Er fällt deshalb weg (27.09.2026: Roth wurde sonst als
+ * falscher Schlüssel gemeldet, weil „roth“ nicht mit „rothh“ beginnt).
+ * Ist der Rest kürzer als fünf Buchstaben, muss er dem Registernamen GENAU
+ * entsprechen — sonst ginge ein Schlüssel auf „Rothenberg“ als „Roth“ durch.
+ */
+function namePasst(registerName: string, unserName: string): boolean {
+  const zusatz = /\s*\([^)]*\)\s*$/;
+  const echt = norm(registerName);
+  const ohneZusatz = norm(unserName.replace(zusatz, ""));
+  // Das Register trägt den Zusatz manchmal selbst („Külz (Hunsrück)“).
+  if (ohneZusatz.length < 5) return norm(registerName.replace(zusatz, "")) === ohneZusatz;
+  return echt.startsWith(ohneZusatz.slice(0, 5));
+}
+
+/**
  * Trägt das Programm einen GEMEINDEVERBAND statt einer Gemeinde?
  *
  * Das entscheidet, ob der Namensvergleich überhaupt greifen kann — und es ist
@@ -76,7 +96,7 @@ export function pruefeProgramm(
   // ist einer davon zwangsläufig nicht sie selbst.
   if (gebiete.length === 1 && !istGemeindeverband(p.region)) {
     const echt = registerNamen.get(gebiete[0]);
-    if (echt && !norm(echt).startsWith(norm(p.region).slice(0, 5))) {
+    if (echt && !namePasst(echt, p.region)) {
       befunde.push({
         id: p.id,
         schluessel: gebiete[0],
@@ -122,7 +142,7 @@ export function pruefeVerzeichnis(
   if (!echt) {
     return [{ id: `Verzeichnis ${c.slug}`, schluessel: c.ags, text: `${c.ags} existiert im Melderegister nicht` }];
   }
-  if (!norm(echt).startsWith(norm(c.name).slice(0, 5))) {
+  if (!namePasst(echt, c.name)) {
     return [{ id: `Verzeichnis ${c.slug}`, schluessel: c.ags, text: `${c.ags} → "${echt}" statt "${c.name}"` }];
   }
   return [];

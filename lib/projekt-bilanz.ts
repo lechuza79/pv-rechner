@@ -21,11 +21,27 @@
 // die keine zwei von ihnen haben. Deshalb trägt jede ihre eigene Einheit und
 // ihre eigene Herkunft — und deshalb gibt es in diesem Modul keine Gesamtsumme.
 
-import { inPersonenjahren, type Aufwand } from "./aufwand-schaetzung";
+import {
+  inPersonenjahren,
+  schaetzeAufwand,
+  type Aufwand,
+  type Zaehlstand,
+} from "./aufwand-schaetzung";
 import type { Rolle } from "./rollensaetze";
 import { KURS_USD_EUR } from "./modellpreise";
-import type { Bestandstag, Summe } from "./projekt-statistik";
-import type { Kostensumme } from "./projekt-kosten";
+import {
+  summiere,
+  type Bestandstag,
+  type Statistiktag,
+  type Summe,
+} from "./projekt-statistik";
+import {
+  summiereKosten,
+  summiereListenwert,
+  type Kostenmonat,
+  type Kostensumme,
+  type Listenwerttag,
+} from "./projekt-kosten";
 
 /**
  * Der eigene Stundensatz des Betreibers.
@@ -130,6 +146,14 @@ export interface Entstanden {
 export interface Herstellwert {
   /** Geschätzte Personentage aus der Gewerke-Rechnung. */
   personentage: number;
+  /**
+   * Dieselbe Schätzung OHNE KI-Abschlag.
+   *
+   * Sie steht daneben, weil der Abschlag die unsicherste Annahme der ganzen
+   * Aufstellung ist (die Messungen dazu reichen von 19 % langsamer bis 55 %
+   * schneller). Wer die Grundlage nicht sieht, kann sie nicht prüfen.
+   */
+  tageKlassisch: number;
   personenjahre: number;
   /** Dieselbe Schätzung in Geld, mit der Rollenmischung zu Agentursätzen. */
   eur: number;
@@ -193,6 +217,7 @@ export function bilanz(args: {
 
   const wert: Herstellwert = {
     personentage: args.aufwand.tage,
+    tageKlassisch: args.aufwand.tageKlassisch,
     personenjahre: inPersonenjahren(args.aufwand.tage),
     eur: args.aufwand.eur,
     vonEur: args.aufwand.eurVon,
@@ -247,4 +272,94 @@ export function bilanz(args: {
       (stundenBereinigt + investiert.stundenHochgerechnet) / STUNDEN_JE_TAG,
     ),
   };
+}
+
+// ─── Die Zusammensetzung: aus Rohzeilen wird die Übersicht ───────────────────
+//
+// SIE STEHT HIER UND NICHT IM ERFASSUNGSLAUF, weil es zwei Aufrufer gibt: den
+// Befehl auf der Kommandozeile (der die Kosten aus den Buchungsunterlagen liest)
+// und die interne Ansicht (die sie aus der Ablage liest). Zwei Fassungen davon
+// würden auseinanderlaufen — und der Unterschied fiele niemandem auf, weil
+// beide Seiten für sich plausible Zahlen zeigen.
+//
+// Gerechnet wird hier NICHTS Neues; die Funktion sortiert, grenzt Zeiträume ab
+// und reicht weiter. Alles Inhaltliche steckt in den Modulen, aus denen sie
+// liest.
+
+/**
+ * Die drei Schritte, die vor der eigentlichen Bilanz nötig sind — und die je
+ * einen gemessenen Fehler verhindern:
+ *
+ *   1. SORTIEREN. Die Ablage gibt Zeilen in beliebiger Reihenfolge zurück; ohne
+ *      Sortierung stand im Zeitraum das Ende vor dem Anfang.
+ *   2. FRÜHPHASE HOCHRECHNEN. Vor dem 15.07.2026 sind die Protokolle gelöscht;
+ *      hochgerechnet wird über die Änderungen mit dem Verhältnis des gemessenen
+ *      Zeitraums. Die Zahl steht GETRENNT und wandert nie in die Messreihe.
+ *   3. ÜBERLAPPUNG BILDEN. Nur Monate, für die BEIDES vorliegt — sonst teilt das
+ *      Verhältnis eine Vierwochen-Rechenleistung durch ein halbes Jahr Kosten.
+ */
+export function bilanzAus(args: {
+  statistiktage: Statistiktag[];
+  kostenzeilen: Kostenmonat[];
+  listenwerttage: Listenwerttag[];
+  /** Arbeitszeit, bereits über beide Werkzeuge zusammengelegt. */
+  zeit: { minuten: number; minutenParallel: number; arbeitstage: number };
+  bestand: Bestandstag;
+  zaehlstand: Zaehlstand;
+}): Bilanz {
+  const kosten = summiereKosten(args.kostenzeilen);
+  const listenwertSumme = summiereListenwert(args.listenwerttage);
+
+  const claude = summiere(args.statistiktage.filter((t) => t.werkzeug === "claude"));
+  const codex = summiere(args.statistiktage.filter((t) => t.werkzeug === "codex"));
+  const aufwand = schaetzeAufwand(args.bestand, args.zaehlstand);
+
+  const gemessen = args.statistiktage
+    .filter((t) => t.herkunft === "gemessen" && t.werkzeug === "claude")
+    .sort((a, b) => a.tag.localeCompare(b.tag));
+  const geschaetzt = args.statistiktage.filter((t) => t.herkunft === "geschaetzt");
+  const commitsGemessen = gemessen.reduce((x, t) => x + t.commits, 0);
+  const commitsGeschaetzt = geschaetzt.reduce((x, t) => x + t.commits, 0);
+  const stundenHochgerechnet = commitsGemessen > 0
+    ? Math.round((args.zeit.minuten / 60 / commitsGemessen) * commitsGeschaetzt)
+    : 0;
+
+  const monateMitListenwert = new Set(args.listenwerttage.map((t) => t.tag.slice(0, 7)));
+  const ueberlappendeMonate = [...new Set(args.kostenzeilen.map((x) => x.monat))]
+    .filter((m) => monateMitListenwert.has(m));
+  const ueberlappung = {
+    bezahltEur: summiereKosten(
+      args.kostenzeilen.filter((x) => ueberlappendeMonate.includes(x.monat)),
+    ).solarCheckEur,
+    listenwertUsd: summiereListenwert(
+      args.listenwerttage.filter((t) => ueberlappendeMonate.includes(t.tag.slice(0, 7))),
+    ),
+    monate: ueberlappendeMonate.length,
+  };
+
+  const monate = [...new Set(args.kostenzeilen.map((x) => x.monat))].sort();
+  const tageMitListenwert = [...new Set(args.listenwerttage.map((t) => t.tag))].sort();
+
+  return bilanz({
+    statistik: claude,
+    codexStatistik: codex,
+    arbeitsminuten: args.zeit.minuten,
+    arbeitstage: args.zeit.arbeitstage,
+    minutenParallel: args.zeit.minutenParallel,
+    stundenHochgerechnet,
+    kosten,
+    listenwertUsd: listenwertSumme,
+    ueberlappung,
+    bestand: args.bestand,
+    aufwand,
+    zeitraum: {
+      zeit: gemessen.length
+        ? { von: gemessen[0].tag, bis: gemessen[gemessen.length - 1].tag }
+        : null,
+      geld: monate.length ? { von: monate[0], bis: monate[monate.length - 1] } : null,
+      listenwert: tageMitListenwert.length
+        ? { von: tageMitListenwert[0], bis: tageMitListenwert[tageMitListenwert.length - 1] }
+        : null,
+    },
+  });
 }

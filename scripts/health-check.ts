@@ -1861,6 +1861,9 @@ export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
   // einer Gebietsänderung die alte Kreis-Generation stehen — die Seiten nennen
   // sie beim Datum, aber niemand baut sie nach.
   { datei: "kreis-pakete.yml", was: "Kreispakete (Landkreisseiten)" },
+  // Täglich seit 26.09.2026. Fällt er aus, sieht „keine neuen Hinweise auf
+  // Veröffentlichungen" genauso aus wie ein ruhiger Tag.
+  { datei: "kommunen-hinweise.yml", was: "Kommunen-Hinweise (Veröffentlichungen)" },
 ];
 
 /** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */

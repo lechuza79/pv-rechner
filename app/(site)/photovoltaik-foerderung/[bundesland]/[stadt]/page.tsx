@@ -14,7 +14,7 @@ import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
-import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FundingTechnikTabs from "../../../../../components/FundingTechnikTabs";
 import StickyCta from "../../../../../components/StickyCta";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../components/atlas/GemeindeAboBox";
@@ -22,6 +22,8 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
+import { foerderStadtMeta } from "../../../../../lib/foerder-stadt-meta";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
 import { atlasPathForRegionId } from "../../../../../lib/atlas";
@@ -46,19 +48,12 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
   // verspricht die Überschrift „Zuschüsse", während die Seite darunter ein
   // eingestelltes Programm zeigt.
   const f = fundingForFrom(await getFundingPrograms(), city);
-  const active = f?.status === "aktiv";
-  const year = new Date().getFullYear();
+  const meta = foerderStadtMeta(city.name, f, heuteInBerlin(new Date()).slice(0, 4));
   return {
     ...pageMetadata({
       path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
-      title: active || !f
-        ? `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`
-        : `Photovoltaik-Förderung ${city.name} ${year} – aktueller Status & Bestand`,
-      description: active
-        ? `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister, das ${f!.name} und Beispielrechnungen für deine PV-Anlage.`
-        : f
-        ? `Lohnt sich Photovoltaik in ${city.name}? Anlagenbestand aus dem Marktstammdatenregister, der Status des ${f.name} (derzeit ${FUNDING_STATUS_LABEL[f.status]}) und ehrliche Beispielrechnungen für deine PV-Anlage.`
-        : `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister und Beispielrechnungen für deine PV-Anlage.`,
+      title: meta.title,
+      description: meta.description,
       ogImageTitle: `Photovoltaik in ${city.name}`,
       ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
     }),
@@ -349,8 +344,8 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
                für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
                fördert, steht ohnehin als Träger in der Karte darunter. */
-            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
         </div>
 
@@ -522,12 +517,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           <ExampleCards examples={examples} />
           {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} ist {FUNDING_STATUS_NOTE[f.status]} —
+              Die Förderung über das Programm „{f.name}“ ist {FUNDING_STATUS_NOTE[f.status]} —
               die Beispiele rechnen daher ohne. Aktuellen Status vor einem Antrag direkt beim Programm prüfen.
             </p>
           ) : f && !examples[0]?.foerderComputable ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} hängt vom Anlagentyp ab (siehe oben) und ist hier
+              Die Förderung über das Programm „{f.name}“ hängt vom Anlagentyp ab (siehe oben) und ist hier
               nicht pauschal pro Anlage eingerechnet.
             </p>
           ) : null}

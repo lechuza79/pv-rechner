@@ -148,7 +148,9 @@ export default async function RootLayout({
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
           <SiteHeaderFrame bottomGap={headerContentGap} />
-          {children}
+          {/* The one <main> of every site page (SEO audit 27.09.2026: 68 of 122
+              pages had none). Pages must not render their own. */}
+          <main id="inhalt">{children}</main>
           {/* Trust section + footer of the new design, full width, one source
               with the document pages (lib/site-fuss.ts). */}
           <div className="site-footer-slot" style={{ marginTop: 64 }}><SiteFuss /></div>

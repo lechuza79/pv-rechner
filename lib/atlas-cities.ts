@@ -468,6 +468,27 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // always shown; the balcony grant reaches the user through the postcode
   // lookup and the balcony calculator, which see every matching programme.
   { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
+  { slug: "bickenbach", name: "Bickenbach", ags: "07140014", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "hausbay", name: "Hausbay", ags: "07140047", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "horn", name: "Horn", ags: "07140058", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "reckershausen", name: "Reckershausen", ags: "07140122", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
+  { slug: "unzenberg", name: "Unzenberg", ags: "07140154", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "henau", name: "Henau", ags: "07140050", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1044 },
+  { slug: "metzenhausen", name: "Metzenhausen", ags: "07140094", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
+  { slug: "kappel", name: "Kappel", ags: "07140062", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1075 },
+  { slug: "reich-hunsrueck", name: "Reich", ags: "07140123", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "benzweiler", name: "Benzweiler", ags: "07140011", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1066 },
+  { slug: "bubach", name: "Bubach", ags: "07140020", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
+  { slug: "fronhofen", name: "Fronhofen", ags: "07140039", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "rayerschied", name: "Rayerschied", ags: "07140121", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "beltheim", name: "Beltheim", ags: "07140010", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "beltheim-energiespar" },
+  { slug: "dommershausen", name: "Dommershausen", ags: "07140202", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "dommershausen-energiespar" },
+  // Yield measured at postcode 56288 (Kastellaun): Roth has no entry in the
+  // postcode table yet (truncated table, separate task).
+  { slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064, fundingId: "roth-hunsrueck-energie-klima" },
+  // Two programmes on this key (energy-saving guideline with roof PV, and a
+  // heating-only guideline); the page shows the one that funds roof PV.
+  { slug: "neuerkirch", name: "Neuerkirch", ags: "07140101", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076, fundingId: "neuerkirch-energiespar" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
   // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
   // above: the Verbandsgemeinde's balcony grant is as specific as the town's

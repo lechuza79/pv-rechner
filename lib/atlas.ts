@@ -189,7 +189,11 @@ const LEVEL_FALLBACK: Record<string, string> = {
  * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
  * Route geschont.
  */
-export async function searchRegions(q: string, timeoutMs?: number): Promise<RegionHit[]> {
+export async function searchRegions(
+  q: string,
+  timeoutMs?: number,
+  levels: ("bundesland" | "landkreis" | "gemeinde")[] = ["bundesland", "landkreis", "gemeinde"],
+): Promise<RegionHit[]> {
   const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
   if (term.length < 2) return [];
   const supabase = await db();
@@ -198,7 +202,7 @@ export async function searchRegions(q: string, timeoutMs?: number): Promise<Regi
       .from("mastr_regions")
       .select("region_id, level, name, bezeichnung, population, parent_region_id")
       .ilike("name", `%${term}%`)
-      .in("level", ["bundesland", "landkreis", "gemeinde"])
+      .in("level", levels)
       .not("slug", "is", null)
       .order("population", { ascending: false, nullsFirst: false })
       .limit(40),

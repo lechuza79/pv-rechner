@@ -44,12 +44,18 @@ import ArchivTabelle from "./ArchivTabellen";
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const year = new Date().getFullYear();
+  // The searcher wants the number; it belongs in the search result, from the
+  // SAME chain as the short answer on the page (SEO audit 27.09.2026: position
+  // 8, 144 impressions for "einspeisevergütung tabelle", zero clicks). German
+  // calendar day, like the page below — otherwise the title shows the old rate
+  // for two hours after each cut-off.
+  const todayIso = heuteInBerlin(new Date());
+  const year = todayIso.slice(0, 4);
+  const rates = feedInRatesForCommissioning(todayIso) ?? feedInRatesFor(todayIso);
   return pageMetadata({
     path: "/einspeiseverguetung-tabelle",
-    title: `Einspeisevergütung ${year}: aktuelle Sätze & Tabelle seit 2000`,
-    description:
-      "Wie hoch ist die Einspeisevergütung? Aktuelle EEG-Sätze für Teil- und Volleinspeisung plus die komplette Tabelle: amtliche Monatswerte 2012–2022 für Bestandsanlagen, Halbjahres-Sätze seit 2022, Jahreswerte seit 2000 — und was nach 20 Jahren passiert.",
+    title: `Einspeisevergütung ${year}: ${fmtCt(rates.teilUnder10)} ct – Tabelle seit 2000`,
+    description: `Aktuell ${fmtCt(rates.teilUnder10)} ct/kWh bei Teileinspeisung bis 10 kWp, ${fmtCt(rates.vollUnder10)} ct bei Volleinspeisung. Dazu alle Sätze seit 2000 als Tabelle, auch für Bestandsanlagen.`,
     ogImageTitle: "Einspeisevergütung: die komplette Tabelle",
     ogImageSubtitle: "Aktuelle Sätze und alle historischen Werte seit 2000.",
   });

@@ -3,6 +3,8 @@ import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ortPraeposition } from "../../../../lib/atlas-orte";
+import { heuteInBerlin } from "../../../../lib/zeit";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
@@ -101,11 +103,13 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
   const params = await props.params;
   const name = blName(params.bundesland);
   if (!name) return {};
-  const year = new Date().getFullYear();
+  const year = heuteInBerlin(new Date()).slice(0, 4);
   return pageMetadata({
     path: `/photovoltaik-foerderung/${params.bundesland}`,
-    title: `Photovoltaik-Förderung ${name} ${year} – Programme nach Stadt`,
-    description: `Welche Förderung gibt es für Photovoltaik und Speicher in ${name}? Übersicht der Städte mit eigenem Förderprogramm — mit Beträgen und Beispielrechnung.`,
+    // Title within the measured 60-character budget (SEO audit 27.09.2026:
+    // 62–73 characters with the old "– Programme nach Stadt" suffix).
+    title: `Photovoltaik-Förderung ${name} ${year}`,
+    description: `Welche Förderung gibt es für Photovoltaik und Speicher ${ortPraeposition(name)} ${name}? Die Städte mit eigenem Förderprogramm, mit Beträgen und Beispielrechnung.`,
     ogImageTitle: `PV-Förderung in ${name}`,
     ogImageSubtitle: "Programme nach Stadt — mit Beträgen und Beispielrechnung.",
   });

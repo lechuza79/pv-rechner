@@ -20,7 +20,6 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, basename } from "node:path";
 import { homedir } from "node:os";
-import { execFileSync } from "node:child_process";
 import * as unzipper from "unzipper";
 import {
   ANBIETER,
@@ -32,14 +31,12 @@ import {
   type Kostenmonat,
   type Listenwerttag,
 } from "../lib/projekt-kosten";
-import { bilanz, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
+import { bilanzAus, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
 import { ROLLENSAETZE, ERHEBUNG } from "../lib/rollensaetze";
 import { MESSUNGEN, KI_ANNAHME_STAND, FEHLERRICHTUNG } from "../lib/ki-wirkung";
-import { schaetzeAufwand, type Zaehlstand } from "../lib/aufwand-schaetzung";
-import { WIDGETS } from "../lib/widget-registry";
-import { allFundingPrograms } from "../lib/funding-programs";
-import { summiere, tagVon, type Statistiktag, type Bestandstag } from "../lib/projekt-statistik";
+import { tagVon, type Statistiktag, type Bestandstag } from "../lib/projekt-statistik";
 import { KURS_USD_EUR, PREISE_STAND } from "../lib/modellpreise";
+import { zaehlstand } from "./lib/zaehlstand";
 import { heuteInBerlin } from "../lib/zeit";
 
 const SCHREIBEN = process.argv.includes("--schreiben");
@@ -343,40 +340,6 @@ async function leseStatistik(): Promise<{ tage: Statistiktag[]; minuten: number;
   };
 }
 
-function git(...args: string[]): string {
-  return execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-}
-
-function zahlDerDateien(...pathspec: string[]): number {
-  return git("ls-files", ...pathspec).trim().split("\n").filter(Boolean).length;
-}
-
-/**
- * Die Mengen, mit denen die Aufwandsschätzung rechnet.
- *
- * GEZÄHLT, NICHT GEPFLEGT — bis auf die Rechner. Eine Liste, die jemand von
- * Hand nachziehen müsste, ist beim dritten Mal falsch; deshalb kommt alles aus
- * dem Dateibaum bzw. aus den Registern, die es ohnehin gibt.
- *
- * Die Rechner sind die Ausnahme, weil sie sich aus keinem Muster ableiten
- * lassen: Eine Rechnerseite sieht im Dateibaum aus wie jede andere Seite. Sie
- * stehen deshalb namentlich hier, und ein sechster fiele auf, weil ihn jemand
- * eintragen muss — das ist bei fünf Einträgen in einem halben Jahr vertretbar.
- */
-function zaehlstand(): Zaehlstand {
-  const RECHNER = [
-    "Photovoltaik", "Wärmepumpe", "Balkonkraftwerk", "Klimaanlage", "Einspeisevergütung",
-  ];
-  return {
-    rechner: RECHNER.length,
-    seiten: zahlDerDateien("app/**/page.tsx"),
-    widgets: Object.keys(WIDGETS).length,
-    routen: zahlDerDateien("app/**/route.ts"),
-    komponenten: zahlDerDateien("components/*.tsx", "components/**/*.tsx"),
-    foerderprogramme: allFundingPrograms().length,
-  };
-}
-
 async function bestandLesen(): Promise<Bestandstag | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -444,59 +407,21 @@ async function main() {
     if (!bestand) {
       console.log("\nFür die Übersicht fehlt der Bestand — erst die Statistik erfassen.");
     } else {
-      const claude = summiere(st.tage.filter((t) => t.werkzeug === "claude"));
-      const codex = summiere(st.tage.filter((t) => t.werkzeug === "codex"));
-      const aufwand = schaetzeAufwand(bestand, zaehlstand());
-
-      // Die Frühphase hat keine Zeitmessung — ihre Protokolle sind gelöscht.
-      // Hochgerechnet wird über die Änderungen, mit dem Verhältnis, das im
-      // gemessenen Zeitraum galt: dieselbe Regel wie bei den Tokens. Sie steht
-      // getrennt und wird NICHT in die Messreihe geschrieben.
-      // SORTIERT, sonst steht im Zeitraum das Ende vor dem Anfang: Die Ablage
-      // gibt die Zeilen in beliebiger Reihenfolge zurück, und ein Zeitraum
-      // „von 20.08. bis 19.08." sieht aus wie ein Rechenfehler, wo nur eine
-      // Sortierung fehlt.
-      const gemessen = st.tage
-        .filter((t) => t.herkunft === "gemessen" && t.werkzeug === "claude")
-        .sort((a, b) => a.tag.localeCompare(b.tag));
-      const geschaetzt = st.tage.filter((t) => t.herkunft === "geschaetzt");
-      const commitsGemessen = gemessen.reduce((x, t) => x + t.commits, 0);
-      const commitsGeschaetzt = geschaetzt.reduce((x, t) => x + t.commits, 0);
-      const stundenHochgerechnet = commitsGemessen > 0
-        ? Math.round((st.minuten / 60 / commitsGemessen) * commitsGeschaetzt)
-        : 0;
-
-      // Nur die Monate, für die BEIDE Größen vorliegen — sonst teilt das
-      // Verhältnis eine Vierwochen-Rechenleistung durch ein halbes Jahr Kosten.
-      const monateMitListenwert = new Set(listenwert.map((t) => t.tag.slice(0, 7)));
-      const ueberlappendeMonate = [...new Set(zeilen.map((x) => x.monat))]
-        .filter((m) => monateMitListenwert.has(m));
-      const ueberlappung = {
-        bezahltEur: summiereKosten(zeilen.filter((x) => ueberlappendeMonate.includes(x.monat))).solarCheckEur,
-        listenwertUsd: listenwert
-          .filter((t) => ueberlappendeMonate.includes(t.tag.slice(0, 7)))
-          .reduce((x, t) => x + (listenwertUsd(t) ?? 0), 0),
-        monate: ueberlappendeMonate.length,
-      };
-
-      const tageMitListenwert = [...new Set(listenwert.map((t) => t.tag))].sort();
-      const b = bilanz({
-        statistik: claude, codexStatistik: codex,
-        arbeitsminuten: st.minuten, arbeitstage: st.arbeitstage,
-        minutenParallel: st.minutenParallel,
-        stundenHochgerechnet,
-        kosten: s, listenwertUsd: listenwertSumme, ueberlappung, bestand, aufwand,
-        zeitraum: {
-          zeit: gemessen.length
-            ? { von: gemessen[0].tag, bis: gemessen[gemessen.length - 1].tag }
-            : null,
-          geld: zeilen.length
-            ? { von: zeilen[0].monat, bis: zeilen[zeilen.length - 1].monat }
-            : null,
-          listenwert: tageMitListenwert.length
-            ? { von: tageMitListenwert[0], bis: tageMitListenwert[tageMitListenwert.length - 1] }
-            : null,
+      // Die Zusammensetzung steht in lib/projekt-bilanz.ts, weil die interne
+      // Ansicht sie genauso braucht — nur mit den Kosten aus der Ablage statt
+      // aus den Buchungsunterlagen. Zwei Fassungen liefen auseinander, ohne dass
+      // es einer der beiden Seiten anzusehen wäre.
+      const b = bilanzAus({
+        statistiktage: st.tage,
+        kostenzeilen: zeilen,
+        listenwerttage: listenwert,
+        zeit: {
+          minuten: st.minuten,
+          minutenParallel: st.minutenParallel,
+          arbeitstage: st.arbeitstage,
         },
+        bestand,
+        zaehlstand: zaehlstand(),
       });
       const raum = (r: { von: string; bis: string } | null) => (r ? ` [${r.von} bis ${r.bis}]` : "");
       const i = b.investiert;
@@ -519,9 +444,9 @@ async function main() {
       console.log(`  ${z(b.entstanden.codezeilen)} Zeilen Code, ${z(b.entstanden.dokuzeilen)} Zeilen Doku`);
       console.log(`  ${z(b.entstanden.testfaelle)} Prüfungen, ${z(b.entstanden.dateien)} Dateien, ${z(b.entstanden.commits)} Änderungen`);
       console.log("WERT — was ein Team dafür verlangt hätte (geschätzt, nicht gemessen)");
-      console.log(`  ${z(aufwand.tageKlassisch)} Personentage klassisch entwickelt`);
+      console.log(`  ${z(b.wert.tageKlassisch)} Personentage klassisch entwickelt`);
       console.log(`  ${z(b.wert.personentage)} Personentage mit KI-Unterstützung ` +
-        `(−${Math.round((1 - b.wert.personentage / aufwand.tageKlassisch) * 100)} %) ` +
+        `(−${Math.round((1 - b.wert.personentage / b.wert.tageKlassisch) * 100)} %) ` +
         `= ${b.wert.personenjahre} Personenjahre — damit wird gerechnet`);
       for (const r of ROLLENSAETZE) {
         const std = b.wert.stundenJeRolle[r.rolle];

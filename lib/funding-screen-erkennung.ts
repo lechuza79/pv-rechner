@@ -34,12 +34,15 @@ export type ScreenVerdikt =
  *
  * 1 = nur PV, Balkon-Wörter mit in derselben Liste, Wärmepumpe unbekannt.
  * 2 = drei Techniken getrennt (18.08.2026).
+ * 3 = umschriebene Umlaute (&ouml;, &#252;) werden gelesen statt verworfen
+ *     (27.09.2026) — Seiten mit solcher Schreibung waren für jedes Wort mit
+ *     Umlaut blind und kommen deshalb neu dran.
  *
  * WER DIE WORTLISTEN ÄNDERT, ZÄHLT DIE VERSION HOCH. Sonst gilt eine Seite als
  * mit der neuen Erkennung geprüft, die nie durch sie gelaufen ist — dieselbe
  * Fehlerklasse wie ein Prüfdatum ohne Prüfung.
  */
-export const SCREEN_VERSION = 2;
+export const SCREEN_VERSION = 3;
 
 /**
  * Rückfall-Frist, falls von einer Seite kein Fingerabdruck vorliegt.
@@ -89,6 +92,12 @@ const ZUSCHUSS = /(zuschuss|gefördert|fördersatz|förderhöhe|förderbetrag|wi
 const BEENDET =
   /(beendet|eingestellt|ausgelaufen|ausgeschöpft|keine anträge|nicht mehr möglich|geschlossen|außer kraft|stehen keine förderprogramme|derzeit keine förder|zurzeit keine förder|nicht mehr gefördert|mittel sind aufgebraucht)/;
 
+/** Named entities that carry German letters or joiners; everything else blanks. */
+const ENTITAETEN: Record<string, string> = {
+  auml: "ä", ouml: "ö", uuml: "ü", Auml: "Ä", Ouml: "Ö", Uuml: "Ü", szlig: "ß",
+  amp: "&", nbsp: " ", shy: "", euro: "€",
+};
+
 /**
  * Sichtbarer Text einer HTML-Seite, kleingeschrieben und ohne Auszeichnung.
  *
@@ -106,7 +115,18 @@ export function sichtbarerText(html: string): string {
     .replace(/<(nav|header|footer|aside)[^>]*>[\s\S]*?<\/\1>/gi, " ")
     .replace(/<!--[\s\S]*?-->/g, " ")
     .replace(/<[^>]+>/g, " ")
-    .replace(/&[a-z]+;|&#\d+;/gi, " ")
+    // UMLAUTS FIRST, THEN THE REST — measured 27.09.2026 at keidelheim.de:
+    // the page body writes "F&ouml;rderung", "Haushaltsger&auml;ten". Blanking
+    // every entity turned that into "f rderung", so no German funding word with
+    // an umlaut could ever match on such a site, and a verbatim quote from the
+    // page was rejected as "not in the original".
+    .replace(/&(?:#(\d+)|#x([\da-f]+)|([a-z]+));/gi, (_ganz, dez, hex, name) => {
+      if (dez || hex) {
+        const code = dez ? Number(dez) : parseInt(hex, 16);
+        return code > 0 && code < 0x110000 ? String.fromCodePoint(code) : " ";
+      }
+      return ENTITAETEN[name] ?? " ";
+    })
     .replace(/\s+/g, " ")
     .toLowerCase();
 }

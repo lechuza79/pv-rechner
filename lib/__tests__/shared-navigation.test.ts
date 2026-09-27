@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { load } from "cheerio";
 import { navigationContent, navigationOwner } from "../../public/shared-nav/nav-content.js";
+import { BUNDESLAENDER } from "../mastr-regions";
+import { slugify } from "../atlas-cities";
 import { RATGEBER } from "../ratgeber";
 
 describe("Shared public navigation", () => {
@@ -44,5 +46,27 @@ describe("Shared public navigation", () => {
     expect($('a[href^="/energiemonitor/"]').length).toBe(0);
     expect($('a[href="#"]').length).toBe(0);
     expect($('img:not([alt=""])').length).toBe(0);
+  });
+
+  it("leads 'Vor Ort' with the place field, then Deutschland, Bundesland and Landkreis", () => {
+    const $ = load(navigationContent());
+    const local = $('[data-section="local"]');
+    // The town field comes first: postcode or name is the main way in.
+    expect(local.find("form, a").first().is('[data-local-search="ort"]')).toBe(true);
+    expect(local.find('[data-local-search="kreis"]').length).toBe(1);
+    expect(local.find('a[href="/solar-atlas"]').length).toBe(1);
+    // One link per Land, from the shared list, each a real atlas address.
+    const lands = local.find("[data-local-land] a").map((_, a) => $(a).attr("href")).get();
+    expect(lands.sort()).toEqual(BUNDESLAENDER.map(b => `/solar-atlas/${slugify(b.name)}`).sort());
+  });
+
+  it("keeps field ids unique when the menu stands twice on a page", () => {
+    // React pages carry a no-JS copy next to the live menu; a shared id sends
+    // the label (and any lookup by id) to the hidden copy.
+    const ids = (html: string) => load(html)("[id]").map((_, e) => e.attribs.id).get();
+    const live = ids(navigationContent());
+    const fallback = ids(navigationContent({ idPrefix: "sc-fallback-local" }));
+    expect(live.length).toBeGreaterThan(0);
+    expect(live.filter(id => fallback.includes(id))).toEqual([]);
   });
 });

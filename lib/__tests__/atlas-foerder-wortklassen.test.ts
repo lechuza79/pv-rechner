@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { publishedCities, fundingForFrom } from "../atlas-cities";
+import { allFundingPrograms } from "../funding-programs";
+import { foerderStadtMeta } from "../foerder-stadt-meta";
 
 /**
  * Zwei Seitenfamilien, dieselben Orte — und getrennte Wortklassen in Titel und
@@ -144,8 +147,13 @@ describe("Wortklassen: Atlas und Förderseiten fassen sich nicht ins Revier", ()
   });
 
   it("die Förder-Stadtseite trägt umgekehrt ihr Geld-Wort im Titel", () => {
-    const { titel } = metaZeilen(FOERDER_STADTSEITE);
-    expect(titel.length, "Förder-Stadtseite: kein Titel gefunden — Muster kaputt?").toBeGreaterThan(0);
+    // Since 27.09.2026 the title is built by lib/foerder-stadt-meta.ts, so the
+    // check runs the real builder over every published city instead of reading
+    // string literals from the page source.
+    const programme = allFundingPrograms();
+    const titel = publishedCities().map((c) => foerderStadtMeta(c.name, fundingForFrom(programme, c), 2026).title);
+    expect(titel.length, "Förder-Stadtseite: keine Titel erzeugt").toBeGreaterThan(0);
+    expect(readFileSync(join(ROOT, FOERDER_STADTSEITE), "utf8")).toContain("foerderStadtMeta(");
     for (const stelle of titel) {
       expect(
         GELD_WOERTER.test(stelle),

@@ -640,7 +640,13 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Durchgang ändert den Entwurf nicht; sie geht mit der Gegenäußerung der
   //   Bundesregierung an den Bundestag. Zustand und Werte unverändert:
   //   Regierungsentwurf, im Ausschuss für Wirtschaft und Energie.
-  geprueftIso: "2026-09-26",
+  // 27.09.2026: Beide amtlichen Seiten im Original gelesen. Bundesrat 470/26
+  //   führt unverändert Plenarberatung 25.09.26 (1068. Sitzung, TOP 56:
+  //   Stellungnahme) samt 470/26(B). Das Textarchiv des Bundestages (kw39,
+  //   Stand 27.09.2026) bestätigt die erste Lesung: 21/7867 wurde „dem
+  //   federführenden Ausschuss für Wirtschaft und Energie zur weiteren Beratung
+  //   überwiesen". Zustand und Werte unverändert: Regierungsentwurf.
+  geprueftIso: "2026-09-27",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
