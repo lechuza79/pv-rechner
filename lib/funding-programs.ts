@@ -6664,6 +6664,112 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Speicherstaffel 300/400/500/600 €.
   },
 
+  // ─── Aufgenommen am 27.09.2026: Umweltförderrichtlinien der Ortsgemeinden
+  // Otterstadt und Waldsee (VG Rheinauen, Rhein-Pfalz-Kreis) ──────────────────
+  //
+  // Found through the source queue (VG page "Klimaschutz > Förderungen", four
+  // municipality rows). The VG page links a guideline, an overview of measures
+  // and an application form for EACH of the two Ortsgemeinden; Altrip and
+  // Neuhofen have none there. Both guidelines are scans without a text layer
+  // and were read page by page on 27.09.2026 (Otterstadt: "Richtlinien zur
+  // Umweltförderung der Ortsgemeinde Otterstadt vom Dezember 2024", signed
+  // 04.12.2024; Waldsee: "… vom Januar 2024", signed 05.01.2024), the overviews
+  // as text (Otterstadt "Stand 04.12.2024", Waldsee "Stand 01.01.2025").
+  //
+  // Overview, item 2.1: "Installation von PV-Anlagen/ Solaranlagen/
+  // Balkonkraftwerke — 10 %, max. 500 €"; 2.2: "Batteriespeicher für neue oder
+  // bestehende Solaranlagen — 10 %, max. 250 €"; 1.3: "Umstellung Öl- oder
+  // Gasheizung auf regenerative Quellen — 10 %, max. 500 €".
+  //
+  // WHAT IS COMPUTED: 10 % of the cost, at most 500 EUR, for the roof system
+  // (same form as Ostheide) and for a balcony system. NOT computed: the storage
+  // line — `percentOfCost` already acts on the cost the calculator passes, and
+  // a separate 10 %/250 EUR storage share cannot be expressed next to it
+  // (Horneburg pattern: shown, not deducted) — and the heating line, which is
+  // tied to replacing an oil or gas heating that is 10 to 30 years old, an
+  // age the calculator does not ask.
+  //   Known edge of `percentOfCost`: it acts on the whole cost passed in, so a
+  //   very small roof system with a large storage could show up to 500 EUR
+  //   where the two separate lines would pay less (e.g. 1 kWp + 4,000 EUR
+  //   storage: 350 EUR real, 500 EUR computed). A roof system of normal size
+  //   reaches the 500 EUR cap on its own, so the typical case is exact.
+  //
+  // THE APPLICATION COMES AFTER THE START: § 6 (1) "Der Antrag ist innerhalb
+  // von drei Monaten nach Beginn der Maßnahme schriftlich … zu stellen", and
+  // the VG page repeats it as its only highlighted note. The usual "apply
+  // first" advice would be wrong here, and so would missing the three months.
+  //
+  // Source addresses: Otterstadt has its own "Zuschüsse" page linking guideline
+  // and form (checked 27.09.2026); Waldsee has none (404), so its entry cites
+  // its guideline PDF on the VG site instead of the shared VG overview page.
+  //
+  // Funds are set "jährlich im Rahmen der Haushaltsplanung" (§ 5); neither
+  // page names a 2026 budget or a stop. Status `aktiv` on the strength of the
+  // VG page offering the forms today; no deduction happens until a probe is
+  // logged at the authority source.
+  "otterstadt-umweltfoerderung": {
+    id: "otterstadt-umweltfoerderung", name: "Richtlinien zur Umweltförderung",
+    traeger: "Ortsgemeinde Otterstadt", level: "kommune", region: "Otterstadt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338021",
+    url: "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-12-04",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    coveredCosts: "10 % der Kosten, gedeckelt je Maßnahme — Photovoltaik, Balkonkraftwerk, Batteriespeicher, Heizungsumstieg, daneben Dämmung, Fenster und Begrünung",
+    maxFoerderung: "max. 500 € Photovoltaik bzw. Balkonkraftwerk, 250 € Speicher, 500 € Heizungsumstieg",
+    rates: [
+      { label: "Photovoltaik- oder Solaranlage", value: "10 % der Kosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "10 % der Kosten, höchstens 250 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "10 % der Kosten, höchstens 500 €", nur: ["balkon"] },
+      { label: "Umstieg von Öl oder Gas auf erneuerbare Wärme", value: "10 % der Kosten, höchstens 500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Antrag wird NACH Beginn gestellt, aber spätestens drei Monate nach der Auftragserteilung — wer die Frist verpasst, bekommt nichts",
+      "Antragsberechtigt sind Einwohner von Otterstadt sowie Eigentümer, die binnen eines Jahres nach dem Antrag dort wohnen; die Maßnahme muss im Ort liegen",
+      "Die Umsetzung ist mit Fotos zu belegen; bei Photovoltaik ist die Anmeldung im Marktstammdatenregister nachzuweisen",
+      { text: "Gefördert werden nur neue Module; auf Neubauten nur, wenn keine gesetzliche oder baurechtliche Pflicht zur Anlage besteht", nur: ["pv", "balkon"] },
+      { text: "Gefördert wird der Austausch einer 10 bis 30 Jahre alten Öl- oder Gasheizung; ältere nur, wenn sie nicht unter die Austauschpflicht fallen", nur: ["waermepumpe"] },
+      "Andere Förderungen dürfen dazukommen; der Zuschuss der Gemeinde ist nachrangig und sinkt bei einer Überfinanzierung",
+      "Mittel werden jährlich im Haushalt bereitgestellt und nach Eingang vergeben; kein Rechtsanspruch",
+      "Die Bewilligung verfällt, wenn sie nicht spätestens im Folgejahr abgerufen wird",
+    ],
+    combinableWith: BUND,
+    percentOfCost: 0.10, pvCap: 500,
+    balkonPercentOfCost: 0.10, balkonCap: 500,
+  },
+  "waldsee-umweltfoerderung": {
+    id: "waldsee-umweltfoerderung", name: "Richtlinien zur Umweltförderung",
+    traeger: "Ortsgemeinde Waldsee", level: "kommune", region: "Waldsee",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338026",
+    url: "https://www.vg-rheinauen.de/verwaltung-politik/satzungen/ortsgemeinde-waldsee/umweltfoerderrichtlinien-og-waldsee.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-01-05",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    coveredCosts: "10 % der Kosten, gedeckelt je Maßnahme — Photovoltaik, Balkonkraftwerk, Batteriespeicher, Heizungsumstieg, daneben Dämmung, Fenster und Begrünung",
+    maxFoerderung: "max. 500 € Photovoltaik bzw. Balkonkraftwerk, 250 € Speicher, 500 € Heizungsumstieg",
+    rates: [
+      { label: "Photovoltaik- oder Solaranlage", value: "10 % der Kosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "10 % der Kosten, höchstens 250 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "10 % der Kosten, höchstens 500 €", nur: ["balkon"] },
+      { label: "Umstieg von Öl oder Gas auf erneuerbare Wärme", value: "10 % der Kosten, höchstens 500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Antrag wird NACH Beginn gestellt, aber spätestens drei Monate nach Auftragserteilung oder Materialbestellung — wer die Frist verpasst, bekommt nichts",
+      "Antragsberechtigt sind Einwohner von Waldsee; die Maßnahme muss im Ort liegen",
+      "Die Umsetzung ist mit Fotos zu belegen",
+      { text: "Gefördert werden nur neue Module; auf Neubauten nur, wenn keine gesetzliche oder baurechtliche Pflicht zur Anlage besteht", nur: ["pv", "balkon"] },
+      { text: "Gefördert wird der Austausch einer 10 bis 30 Jahre alten Öl- oder Gasheizung; ältere nur, wenn sie nicht unter die Austauschpflicht fallen", nur: ["waermepumpe"] },
+      "Andere Förderungen dürfen dazukommen; der Zuschuss der Gemeinde ist nachrangig und sinkt bei einer Überfinanzierung",
+      "Mittel werden jährlich im Haushalt bereitgestellt und nach Eingang vergeben; kein Rechtsanspruch",
+      "Die Bewilligung verfällt, wenn sie nicht spätestens im Folgejahr abgerufen wird",
+    ],
+    combinableWith: BUND,
+    percentOfCost: 0.10, pvCap: 500,
+    balkonPercentOfCost: 0.10, balkonCap: 500,
+  },
+
   "limburgerhof-balkonkraftwerke": {
     id: "limburgerhof-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Limburgerhof", level: "kommune", region: "Limburgerhof",
@@ -10613,6 +10719,44 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // die das Programm nicht mehr nennt.
   },
 
+  // ─── Aufgenommen am 27.09.2026: Landkreis Ahrweiler, beendetes Programm ───
+  //
+  // "Gab es, ist beendet" is a real answer (operator, 17.08.2026). Programme
+  // read in full on 27.09.2026 at the county's own PDF (Teil B of the county's
+  // climate-protection guideline, adopted by the Kreistag in June 2022):
+  // 3b "Der Kreis übernimmt den Kostenbeitrag in Höhe von 100 € je
+  // Kilowattstunde nutzbarer (kWh) Speicherkapazität, maximal jedoch 500 € pro
+  // Speichersystem", 3c from 1 kWh, 6a applications "bis einschließlich
+  // 31. Oktober", 11 "tritt mit Wirkung vom 11.06.2022 in Kraft".
+  // The county's news item of 2022 ("Neues Förderprogramm für Batteriespeicher
+  // bereits ausgeschöpft") says the 2022 budget was used up and a new round was
+  // planned for 2023. Whether it ran is NOT documented: the county's programme
+  // page lists as past programmes only "2022: Förderung für Batteriespeicher"
+  // and "2023: Förderung von Dach- und Fassadenbegrünung", and says today:
+  // "Es stehen keine Fördermittel mehr zur Verfügung und eine
+  // Mittelbeantragung ist damit nicht mehr möglich." One adversarial reviewer
+  // (27.09.2026) found no relaunch and no current programme. No end date is
+  // set: the source names none, only the exhausted 2022 budget.
+  "ahrweiler-batteriespeicher": {
+    id: "ahrweiler-batteriespeicher", name: "Einbau von Batteriespeichern bei PV-Anlagen",
+    traeger: "Landkreis Ahrweiler", level: "landkreis", region: "Landkreis Ahrweiler",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131",
+    url: "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2022-06-11",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher an einer PV-Anlage — das Programm lief 2022 und ist beendet",
+    maxFoerderung: "max. 500 € je Speichersystem",
+    rates: [{ label: "Batteriespeicher", value: "100 € je kWh nutzbarer Kapazität, höchstens 500 € — Programm beendet" }],
+    conditions: [
+      "Das Programm startete am 11.06.2022; die Mittel für 2022 waren kurz darauf ausgeschöpft",
+      "Eine Neuauflage für 2023 war angekündigt; ob sie stattfand, ist nicht belegt — heute stehen nach Angabe des Kreises keine Fördermittel mehr zur Verfügung",
+      "Gefördert wurden Speicher ab 1 kWh an einer bestehenden oder neuen PV-Anlage im Kreisgebiet, je Standort einer; Beginn erst nach der Förderzusage",
+    ],
+    combinableWith: BUND,
+    // No rate: closed.
+  },
   "rhein-hunsrueck-einkommensschwache-haushalte": {
     id: "rhein-hunsrueck-einkommensschwache-haushalte",
     name: "Förderung zur Energieeinsparung in einkommensschwachen Haushalten",
