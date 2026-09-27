@@ -8092,6 +8092,171 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // sitemap. combinableWith null: the guideline says nothing on combination.
   },
 
+  "beltheim-energiespar": {
+    id: "beltheim-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Beltheim", level: "kommune", region: "Beltheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140010",
+    url: "https://beltheim.de/fileadmin/user_upload/gemeinde/Satzungen_und_Gebuehrenordnungen/00_Energiesparrichtlinie_Beltheim_Neufassung_gueltig_ab_01-01-2025_mit_Unterschrift.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-11-18", beginntIso: "2025-01-01", endetIso: "2029-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp mit Prozentgrenze, Anteil der Speicherkosten, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.500 €, Speicher max. 1.500 €, Balkonkraftwerk max. 300 €; insgesamt 2.500 € je Haushalt über die Laufzeit",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 15 kWp)", value: "100 € je kWp, höchstens 20 % der Gesamtkosten und max. 1.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "20 % der Anschaffungskosten, max. 1.500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Beltheim, auch juristische Personen; gefördert werden Maßnahmen an Gebäuden in Beltheim",
+      { text: "Gefördert werden Dachanlagen bis 15 kWp je Anlage zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie (01.01.2025) begonnen werden; der Antrag geht spätestens drei Monate nach der Anschaffung mit Rechnung und Zahlungsnachweis an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2029; insgesamt zahlt die Gemeinde je Haushalt höchstens 2.500 €",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1500, pvMax: 15,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF, 6 pages, read page by
+    // page; the VG Kastellaun climate page links the same file): council
+    // 18.11.2024, in force 01.01.2025 (§ 7 (6)), term "zunächst bis zum
+    // 31.12.2029" (§ 7 (7)). § 2 (2) roof PV "bis zu einer Gesamtleistung von
+    // 15 kWp je Anlage", hence pvMax: 15 (safe direction). § 5 (2) "100 € je
+    // kWp … auf maximal 20 % der Gesamtkosten je Anlage begrenzt, höchstens
+    // jedoch mit 1.500,- €": the 20 % cap binds only below 500 €/kWp, far under
+    // the calculator's market prices, so the kWp rate is computed. § 5 (3)
+    // storage "bis zu 20 % der Anschaffungskosten … höchstens jedoch mit
+    // 1.500,- €" — not computed (the model has no storage percentage). § 5 (5)
+    // balcony 30 % max 300 € — computed. § 5 (4) power-to-heat (heating rods,
+    // hot-water heat pumps storing own PV power) 20 % max 500 € — a hot-water
+    // heat pump is no heating system, so not listed under waermepumpe. § 5 (6)
+    // 2,500 € per household for the whole term. § 3 (1) owners AND tenants for
+    // everything, so no nurWohnform. § 7 (3) paid independently of other
+    // funding; no federal cash grant for PV or balcony, so BUND.
+  },
+
+  "dommershausen-energiespar": {
+    id: "dommershausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Dommershausen", level: "kommune", region: "Dommershausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140202",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_2025-03-24_Energiesparrichtlinie_der_Ortsgemeinde_Dommershausen_final.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-03-27", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp mit Prozentgrenze, Festbetrag für einen Speicher und für eine Heizungsanlage mit Prozentgrenze, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.500 €, Speicher max. 1.500 €, Balkonkraftwerk max. 300 €, Heizungsanlage max. 2.500 €; insgesamt 5.000 € je Haushalt",
+    rates: [
+      { label: "Photovoltaik", value: "150 € je kWp, max. 1.500 € und höchstens 20 % der Gesamtkosten", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "1.500 €, höchstens 20 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Heizungsanlage (Pellet-Zentralheizung, Wärmepumpe)", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nur mit Hauptwohnsitz in Dommershausen und für Maßnahmen an einem Wohngebäude in Dommershausen",
+      { text: "Dachanlage, Speicher und Heizungsanlage nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Dommershausen; über diese Anträge entscheidet der Gemeinderat", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Eigentümer und Mieter beantragen, die seit mindestens einem Jahr in Dommershausen wohnen", nur: ["balkon"] },
+      { text: "Gefördert werden Photovoltaikanlagen auf Dächern und an Wänden zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht vorher mit Angebot oder danach mit Rechnung an den Ortsbürgermeister",
+      "Eine erneute Förderung ist erst nach zehn Jahren (Dachanlage, Speicher, Heizung) bzw. fünf Jahren (Balkonkraftwerk) möglich",
+      "Die Richtlinie gilt bis 31.12.2027; Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 150, pvCap: 1500,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, linked from the VG Kastellaun
+    // climate page "Förderungen"): council 27.03.2025, in force the day after
+    // publication, term "rückwirkend zum 01.01.2025 … zunächst bis zum
+    // 31.12.2027" (§ 7 (5)/(6)). Same template as bickenbach-energiespar:
+    // § 5 (5) PV "150 € je kWp … auf 1.500 € je Anlage begrenzt, höchstens
+    // jedoch mit 20% der Gesamtkosten" — the 20 % cap binds only below
+    // 750 €/kWp, so the kWp rate is computed. § 5 (6) storage flat 1,500 € max
+    // 20 % — not computed (no storage percentage in the model). § 5 (7) balcony
+    // "maximal 300 €, höchstens mit 30%" — computed. § 5 (4) heating Nr. 5
+    // (Pellet, "Wärmepumpe / Wärmetauscher") 2,500 € max 30 % — not computed.
+    // § 3 (2) Nr. 2-7 and 10 owners only; § 3 (1) Nr. 1, 8, 9 owners or tenants
+    // for at least a year; § 3 (3) main residence. No energy consultation
+    // required (unlike Bickenbach). § 4 (5) re-funding after 5/10 years. The
+    // guideline is silent on other public funding. No beginntIso: § 7 (6) says
+    // "rückwirkend zum 01.01.2025", but § 4 (4) funds only measures begun after
+    // entry into force (§ 7 (5), day after publication) — verifier flagged the
+    // conflict, so the start date is left out.
+  },
+
+  "roth-hunsrueck-energie-klima": {
+    id: "roth-hunsrueck-energie-klima", name: "Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz",
+    traeger: "Ortsgemeinde Roth", level: "kommune", region: "Roth (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140131",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/2026-02-17__Foerderprogramm_Engergie_Klima_Roth_mit_Unterschrift.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-01-20", beginntIso: "2026-01-01", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.000 €, Speicher max. 600 €, Balkonkraftwerk max. 200 €",
+    rates: [
+      { label: "Photovoltaik", value: "100 € je kWp, max. 1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "100 € je kWh, max. 600 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Roth; Gewerbebetriebe und Gewerbegebäude sind ausgeschlossen",
+      { text: "Gefördert werden Dachanlagen zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten des Programms (01.01.2026) begonnen werden; der Antrag geht spätestens drei Monate nach der Anschaffung schriftlich mit Rechnung, Zahlungs- und Montagenachweis an den Ortsbürgermeister",
+      "Das Programm läuft bis 31.12.2027; Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1000,
+    speicherPerKwh: 100, speicherCap: 600,
+    balkonPercentOfCost: 0.2, balkonCap: 200,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF, 5 pages, read page by
+    // page; linked from the VG Kastellaun climate page): council 20.01.2026,
+    // in force retroactively 01.01.2026 (§ 7 (6)), term until 31.12.2027
+    // (§ 7 (7)). § 5 (5) PV "100,- Euro je kWp … maximal 1000,- Euro",
+    // § 5 (6) storage "100,- Euro je kWh … maximal 600,- Euro", § 5 (2)
+    // balcony "maximal 200,- Euro, höchstens 20 %" — all computed. § 5 (7)
+    // wallbox 100 € per household (needs a pure EV registered at the address,
+    // § 4 (5)) and appliances/mowers/pumps — outside our techniques. § 3 (1)
+    // owners AND tenants, so no nurWohnform. § 7 (3) paid independently of
+    // other funding as long as the total does not exceed the cost; no federal
+    // cash grant for PV or balcony, so BUND. Slug carries "hunsrueck": the
+    // Bavarian town Roth already owns "roth".
+  },
+
+  "michelbach-hunsrueck-energie-klima": {
+    id: "michelbach-hunsrueck-energie-klima", name: "Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz",
+    traeger: "Ortsgemeinde Michelbach", level: "kommune", region: "Michelbach (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140095",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_Foerderprogramm_Engergie_Klima_Michelbach.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-11-14", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss für ein Balkonkraftwerk",
+    maxFoerderung: "100 € je Haushalt, höchstens der Kaufpreis",
+    rates: [
+      { label: "Balkonkraftwerk", value: "ausgelaufen — Laufzeit bis 31.12.2025; zuvor 100 € je Haushalt, höchstens der Kaufpreis", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt waren Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Michelbach; Gewerbebetriebe ausgeschlossen",
+      "Gefördert wurden Maßnahmen, mit denen nach dem 22.05.2024 begonnen wurde; der Antrag ging spätestens drei Monate nach der Anschaffung an den Ortsbürgermeister",
+      "Die Laufzeit war auf den 31.12.2025 beschränkt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 6 pages, still linked from
+    // the VG Kastellaun climate page "Förderungen"): council 14.11.2024,
+    // financed from KIPKI and the municipal budget; § 5 (2) balcony "einmalig
+    // mit 100,- Euro je Haushalt … maximal jedoch die Höhe des Kaufpreises";
+    // § 7 (6) "Die Laufzeit der Fördermaßnahme ist bis zum 31.12.2025
+    // beschränkt". No roof PV, storage or heat pump. Taken in as ended (operator
+    // 17.08.2026: "gab es, ist beendet" is a real answer); no successor
+    // programme found on the VG page. Not in ATLAS_CITIES — a closed
+    // balcony-only programme gets no Photovoltaik-Förderung page.
+  },
+
   "benzweiler-energiespar": {
     id: "benzweiler-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
     traeger: "Ortsgemeinde Benzweiler", level: "kommune", region: "Benzweiler",

@@ -675,6 +675,19 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // rule, PV-only-with-storage and the power-or-heat-per-building rule have no
   // test form yet.
   "fronhofen-regenerativ",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the 15 kWp
+  // scope, the 3-month application window and the per-household total have no
+  // test form yet.
+  "beltheim-energiespar",
+  // Added 27 Sep 2026: guideline read in full; main residence, the owner rule
+  // for PV/storage/heating, the one-year balcony residence and the re-funding
+  // periods have no test form yet.
+  "dommershausen-energiespar",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the no-business
+  // rule and the 3-month application window have no test form yet.
+  "roth-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: closed historical programme (term ended 31.12.2025).
+  "michelbach-hunsrueck-energie-klima",
 ];
 
 /**

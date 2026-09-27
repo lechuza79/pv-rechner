@@ -68187,5 +68187,97 @@
         "evidenceUrl": "https://nannhausen.de/kalender/feuerwehr/2022-04-02-wasserfoerderung"
       }
     ]
+  },
+  {
+    "regionId": "07140010",
+    "name": "Beltheim",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Beltheim (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 18.11.2024, gültig 01.01.2025 bis 31.12.2029): Dachanlage bis 15 kWp 100 €/kWp, höchstens 20 % der Kosten und 1.500 €; Speicher 20 % bis 1.500 €; Balkonkraftwerk 30 % bis 300 €; Power-to-Heat 20 % bis 500 €; insgesamt 2.500 € je Haushalt. Eigentümer und Mieter. Neu katalogisiert als beltheim-energiespar. Die zweite Richtlinie auf der Ortsseite (01.01.2026) betrifft die Dorferneuerung.",
+    "searches": [
+      "Ortsseite Satzungen/Förderrichtlinien vollständig: Energiesparrichtlinie und Dorferneuerungsrichtlinie",
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“: verlinkt dieselbe Energiesparrichtlinie",
+      "Eingescannte Richtlinie (6 Seiten) Seite für Seite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://beltheim.de/fileadmin/user_upload/gemeinde/Satzungen_und_Gebuehrenordnungen/00_Energiesparrichtlinie_Beltheim_Neufassung_gueltig_ab_01-01-2025_mit_Unterschrift.pdf",
+        "finding": "§ 5 (2): „100 € je kWp … auf maximal 20 % der Gesamtkosten je Anlage begrenzt, höchstens jedoch mit 1.500,- €“; § 5 (5) Balkonkraftwerk 30 %, höchstens 300 €; § 7 (7) bis 31.12.2029."
+      },
+      {
+        "url": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
+        "finding": "Ortsrecht-Seite listet „Förderung / Energiesparrichtlinien Ortsgemeinde Beltheim“ (Neufassung gültig ab 01.01.2025) und die Förderrichtlinien zur Dorferneuerung (ohne PV, Speicher, Balkon)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen",
+        "disposition": "reviewed",
+        "reason": "Ortsrecht-Seite; darauf die Energiesparrichtlinie (katalogisiert) und die Dorferneuerungsrichtlinie (nicht einschlägig).",
+        "evidenceUrl": "https://beltheim.de/ortsgemeinde/satzungen-foerderrichtlinien-gebuehrenordnungen"
+      }
+    ]
+  },
+  {
+    "regionId": "07140202",
+    "name": "Dommershausen",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Dommershausen (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 27.03.2025, rückwirkend ab 01.01.2025 bis 31.12.2027): Dachanlage 150 €/kWp bis 1.500 €, höchstens 20 %; Speicher 1.500 € höchstens 20 %; Heizung (Pellet, Wärmepumpe) 2.500 € höchstens 30 %; Balkonkraftwerk 30 % bis 300 €; insgesamt 5.000 € je Haushalt. Hauptwohnsitz; Dach, Speicher, Heizung nur Eigentümer. Neu katalogisiert als dommershausen-energiespar.",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“ (Liste der Ortsgemeinde-Richtlinien)",
+      "Richtlinie (Textfassung) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_2025-03-24_Energiesparrichtlinie_der_Ortsgemeinde_Dommershausen_final.pdf",
+        "finding": "§ 5 (5): „150 € je kWp … auf 1.500 € je Anlage begrenzt, höchstens jedoch mit 20% der Gesamtkosten“; § 5 (7) Balkon max. 300 €, höchstens 30 %; § 7 (6) bis 31.12.2027."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140131",
+    "name": "Roth",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Roth (Hunsrück, VG Kastellaun) fördert über das Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz (Beschluss 20.01.2026, rückwirkend ab 01.01.2026 bis 31.12.2027): Dachanlage 100 €/kWp bis 1.000 €, Speicher 100 €/kWh bis 600 €, Balkonkraftwerk bis 200 € höchstens 20 %, Wallbox 100 €. Eigentümer und Mieter. Neu katalogisiert als roth-hunsrueck-energie-klima.",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“",
+      "Eingescanntes Programm (5 Seiten) Seite für Seite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/2026-02-17__Foerderprogramm_Engergie_Klima_Roth_mit_Unterschrift.pdf",
+        "finding": "§ 5 (5) „100,- Euro je kWp … maximal 1000,- Euro“; § 5 (6) „100,- Euro je kWh … maximal 600,- Euro“; § 7 (7) bis 31.12.2027."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140095",
+    "name": "Michelbach",
+    "checkedAt": "2026-09-27T02:11:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Michelbach (VG Kastellaun) hatte ein Förderprogramm (Beschluss 14.11.2024) mit 100 € für ein Balkonkraftwerk; die Laufzeit war nach § 7 (6) bis 31.12.2025 beschränkt. Als beendetes Programm katalogisiert (michelbach-hunsrueck-energie-klima); eine Nachfolge ist auf der VG-Seite nicht verlinkt. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+    "searches": [
+      "VG Kastellaun Klimaschutz-Seite „Förderungen“",
+      "Programm (Textfassung) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_Foerderprogramm_Engergie_Klima_Michelbach.pdf",
+        "finding": "§ 7 (6): „Die Laufzeit der Fördermaßnahme ist bis zum 31.12.2025 beschränkt.“"
+      }
+    ],
+    "sources": []
   }
 ]
