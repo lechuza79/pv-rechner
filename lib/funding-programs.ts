@@ -8427,6 +8427,98 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // fundingFor would otherwise return nothing.
   },
 
+  "vg-weilerbach-meilenstein-preisgeld": {
+    id: "vg-weilerbach-meilenstein-preisgeld", name: "MEILENSTEIN-Preisgeld zur Erreichung der „100% Zero Emission Village“",
+    traeger: "Verbandsgemeinde Weilerbach", level: "kommune", region: "Verbandsgemeinde Weilerbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07335049",
+    // ALL 8 MEMBERS as named in the guideline itself ("Ortsgemeinden Erzenhausen,
+    // Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach,
+    // Schwedelbach und Weilerbach"), each resolved against mastr_regions under
+    // 07335. The programme page lists 11 names; Albersbach and Fockenberg-Limbach
+    // are village parts of Reichenbach-Steegen, Pörrbach of Schwedelbach
+    // (council verifier, de.wikipedia, 27.09.2026). The Kaiserslautern district
+    // key 07335 would cover the other Verbandsgemeinden and is wrong here.
+    agsCodes: [
+      "07335005", "07335006", "07335019", "07335024",
+      "07335040", "07335043", "07335049", "07335501",
+    ],
+    url: "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-10-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Preisgeld nach Punkten für Maßnahmen im Gebäudesektor, darunter Photovoltaik ab 5 kWp, Batteriespeicher und Wärmepumpen bei einer Sanierung",
+    maxFoerderung: "Betrag je Punkt legt die Verbandsgemeinde jedes Jahr im Haushalt fest",
+    rates: [
+      { label: "Photovoltaik", value: "Punkte je nach Größe: ein Punkt für 5 bis 20 kWp, zwei über 20 kWp, drei über 30 kWp, höchstens sechs; der Eurobetrag je Punkt steht nicht in der Richtlinie", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "ein zusätzlicher Punkt", nur: ["pv"] },
+      { label: "Wärmepumpe (nur bei einer Sanierung)", value: "ein Punkt", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Ein Preisgeld, keine feste Summe: Betrag je Punkt und Jahressumme beschließt die Verbandsgemeinde im Haushalt; reicht die Summe nicht, wird sie gleichmäßig auf alle Punkte verteilt",
+      "Antrag vor Beginn der Maßnahme, also vor Auftrag oder Materialbestellung; nachträglich ist keine Berücksichtigung möglich",
+      "Ausgezahlt wird einmal im Jahr bei der Meilensteinverleihung; Stichtag für die vollständigen Nachweise ist der 30. September",
+      { text: "Photovoltaik erst ab 5 kWp, auch im Neubau; nachzuweisen sind Rechnungen und Zahlungsbelege", nur: ["pv"] },
+      { text: "Wärmepumpe nur bei einer Sanierung: Der Heizungsbauer muss bestätigen, dass mindestens 65 % des Energiebedarfs des Gebäudes erneuerbar gedeckt werden, bei Anlagen mit Umwälzpumpe ist der hydraulische Abgleich nachzuweisen, und einzureichen ist der Förderbescheid von BAFA oder KfW", nur: ["waermepumpe"] },
+      "Antragsberechtigt sind Eigentümer von Gebäuden in den Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach, auch bei vermieteten Gebäuden",
+      "Kombinierbar mit anderen öffentlichen Fördermitteln, solange zusammen nicht mehr als die Kosten gezahlt wird; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 ("Richtlinie vom 28.4.2014, geändert …
+    // am 01.09.2025", 8 pages; "Die Änderung der Richtlinie tritt zum 01.10.2025
+    // in Kraft"), saved and live copy hash-identical (council verifier A):
+    // .../vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4.
+    // INFORMATION ONLY, and it has to stay so: "Das Preisgeld pro Punkt sowie
+    // die Preisgeldsumme, die jährlich zur Verfügung gestellt wird, werden im
+    // Rahmen der Haushaltsplanungen festgelegt." A 2022 press release names
+    // 30,000 EUR a year, and a search snippet of a 2021 guideline "250 Euro"
+    // per point — neither could be confirmed for 2025/2026, so no amount.
+    // The one-year implementation rule stands only on the page, not in the
+    // guideline, and is therefore not listed as a condition. Alive: the
+    // Amtsblatt "Weilerbach aktuell" 29/2026 reports the ceremony of
+    // 07.07.2026 for 2024/2025 (70 applicants). Council: two verifiers incl.
+    // adversarial, 27.09.2026, all facts confirmed.
+  },
+
+  "weilerbach-energieeinsparmassnahmen": {
+    id: "weilerbach-energieeinsparmassnahmen", name: "Förderprogramm für Energieeinsparmaßnahmen im Rahmen des Klimaschutzkonzeptes",
+    traeger: "Ortsgemeinde Weilerbach", level: "kommune", region: "Weilerbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07335049",
+    url: "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/og-weilerbach-foerderrichtlinie-foerderprogramm-fuer-energieeinsparmassnahmen-ab-2023.pdf?cid=edj",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-07-13",
+    eligibility: ["privat"],
+    coveredCosts: "10 % der Investition für Heizungstechnik ohne Gas- oder Ölbrennwert, darunter Wärmepumpen mit Flächenheizung",
+    maxFoerderung: "1.500 € je Haus (2.000 € mit Bedarfsenergieausweis oder Energieberatung)",
+    rates: [
+      { label: "Wärmepumpe mit Flächenheizung", value: "10 % der Investition, höchstens 1.500 € je Haus, mit Bedarfsenergieausweis oder Energieberatung nach BAFA/KfW höchstens 2.000 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Wärmepumpen werden nur zusammen mit einer Flächenheizung gefördert",
+      "Voraussetzung ist eine kostenlose Erst-Energieberatung durch die Verbandsgemeinde Weilerbach oder die Kreisverwaltung Kaiserslautern; die Verbandsgemeinde bietet sie nach eigener Angabe zurzeit nicht an, und der Landkreis verweist auf die Beratung der Stadt Kaiserslautern und der Verbraucherzentrale. Vor dem Auftrag deshalb beim Energiebüro der Verbandsgemeinde klären, welche Beratung anerkannt wird",
+      "Antrag vor Beginn der Maßnahme; schon die Beauftragung gilt als Beginn",
+      "Für Eigentumswohnungen gelten die halben Sätze, in Häusern mit mehr als zwei Wohnungen der halbe Satz je Wohnung",
+      "Ausgezahlt wird einmal im Jahr nach dem 31. Oktober; reicht das Jahresbudget nicht, bekommen alle Anträge denselben Anteil",
+      "Nur für Gebäude in der Gemarkung Weilerbach; Nachweise spätestens 12 Monate nach dem Antrag, kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (3 pages, council of the Ortsgemeinde
+    // 13.07.2023, header "seit 01.07.2023", closing clause "rückwirkend zum
+    // 01.01.2023" — the source contradicts itself, so no beginntIso). Linked as
+    // "neue Richtlinie ab Juli 2023" on the VG programme page; the older page
+    // /energiebuero/weitere-zuschuesse still links the superseded 2022 version
+    // with identical amounts. "Anträge können bis auf weiteres eingereicht
+    // werden." Information only: the underfloor-heating rule, the mandatory
+    // consultation and the pro-rata cut have no form in the calculator, and
+    // the pro-rata rule means 10 % is a ceiling, not a promise. The consultation
+    // note ("Zur Zeit findet keine Erst-Energieberatung statt") stands on the
+    // VG page and concerns the VG's own offer; whether the district still
+    // offers one is unclear: kaiserslautern-kreis.de/verwaltung/klimaschutz/
+    // energieberatung/ offers no service of its own and points to the city and
+    // the Verbraucherzentrale (adversarial verifier, 27.09.2026).
+  },
+
   "beltheim-dorferneuerung-klimaschutz": {
     id: "beltheim-dorferneuerung-klimaschutz", name: "Richtlinie zur Gewährung von Zuschüssen für Maßnahmen im Rahmen der Dorferneuerung und für Klimaschutz",
     traeger: "Ortsgemeinde Beltheim", level: "kommune", region: "Beltheim",

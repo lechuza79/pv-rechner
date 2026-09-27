@@ -72201,5 +72201,242 @@
         "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/"
       }
     ]
+  },
+  {
+    "regionId": "07335005",
+    "name": "Erzenhausen",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Erzenhausen gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      },
+      {
+        "url": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse",
+        "finding": "Ältere Seite „Weitere Zuschüsse“: Programm der Ortsgemeinde Weilerbach und Links auf Bund/Land; kein eigenes Programm dieser Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weilerbach.de/energiebuero/weitere-zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Gelesen 27.09.2026: nennt nur das Programm der Ortsgemeinde Weilerbach (Gemarkung Weilerbach) und Bundes-/Landesprogramme; für diese Ortsgemeinde gilt das MEILENSTEIN-Preisgeld der VG.",
+        "evidenceUrl": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse"
+      }
+    ]
+  },
+  {
+    "regionId": "07335006",
+    "name": "Eulenbis",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Eulenbis gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07335019",
+    "name": "Kollweiler",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kollweiler gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      },
+      {
+        "url": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse",
+        "finding": "Ältere Seite „Weitere Zuschüsse“: Programm der Ortsgemeinde Weilerbach und Links auf Bund/Land; kein eigenes Programm dieser Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weilerbach.de/energiebuero/weitere-zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Gelesen 27.09.2026: nennt nur das Programm der Ortsgemeinde Weilerbach (Gemarkung Weilerbach) und Bundes-/Landesprogramme; für diese Ortsgemeinde gilt das MEILENSTEIN-Preisgeld der VG.",
+        "evidenceUrl": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse"
+      }
+    ]
+  },
+  {
+    "regionId": "07335024",
+    "name": "Mackenbach",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mackenbach gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      },
+      {
+        "url": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse",
+        "finding": "Ältere Seite „Weitere Zuschüsse“: Programm der Ortsgemeinde Weilerbach und Links auf Bund/Land; kein eigenes Programm dieser Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weilerbach.de/energiebuero/weitere-zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Gelesen 27.09.2026: nennt nur das Programm der Ortsgemeinde Weilerbach (Gemarkung Weilerbach) und Bundes-/Landesprogramme; für diese Ortsgemeinde gilt das MEILENSTEIN-Preisgeld der VG.",
+        "evidenceUrl": "https://www.weilerbach.de/energiebuero/weitere-zuschuesse"
+      }
+    ]
+  },
+  {
+    "regionId": "07335501",
+    "name": "Reichenbach-Steegen",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Reichenbach-Steegen gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07335040",
+    "name": "Rodenbach",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Rodenbach gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07335043",
+    "name": "Schwedelbach",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Schwedelbach gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Die Ortsgemeinde hat kein eigenes Energieförderprogramm (VG-Übersicht und Sitemap weilerbach.de, 593 Adressen, nur OG Weilerbach mit eigenem Programm). Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07335049",
+    "name": "Weilerbach",
+    "checkedAt": "2026-09-27T20:30:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Weilerbach gehört zur Verbandsgemeinde Weilerbach (Landkreis Kaiserslautern; die Richtlinie nennt die acht Ortsgemeinden ausdrücklich). Anwendbar ist das MEILENSTEIN-Preisgeld der VG (Richtlinie geändert 01.09.2025, in Kraft 01.10.2025): Punkte für Photovoltaik ab 5 kWp (1–6), Batteriespeicher (1) und Wärmepumpen bei Sanierung (1); der Eurobetrag je Punkt wird jährlich im Haushalt festgelegt und steht in keiner gelesenen Quelle, daher nur Information ohne Abzug. Richtlinie und Programmseite am 27.09.2026 im Original gelesen, von zwei Prüfern (einer adversarial) bestätigt. Zusätzlich fördert die Ortsgemeinde Weilerbach Energiesparmaßnahmen (Richtlinie Ortsgemeinderat 13.07.2023): Wärmepumpen mit Flächenheizung 10 %, höchstens 1.500 € (2.000 € mit Bedarfsenergieausweis/Energieberatung), anteilig gekürzt bei überzeichnetem Budget, Pflicht-Erstberatung; nur Information. Der Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap kaiserslautern-kreis.de, 1.784 Adressen, 27.09.2026). Kein Balkonkraftwerk-Programm (PV-Punkte erst ab 5 kWp).",
+    "searches": [
+      "Richtlinie MEILENSTEIN-Preisgeld 2025 vollständig gelesen (27.09.2026)",
+      "Programmseite und ältere Seite „Weitere Zuschüsse“ der VG Weilerbach gelesen (27.09.2026)",
+      "Sitemap weilerbach.de (593 Adressen) und kaiserslautern-kreis.de (1.784 Adressen) nach Förder-, Zuschuss-, Solar-, Speicher- und Richtlinienbegriffen durchsucht (27.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4",
+        "finding": "MEILENSTEIN-Preisgeld: Geltungsbereich Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach; Preisgeld pro Punkt im Haushalt festgelegt."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+        "finding": "Programmseite der VG: MEILENSTEIN-Preisgeld und Programm der Ortsgemeinde Weilerbach, keine weiteren Ortsprogramme."
+      },
+      {
+        "url": "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/og-weilerbach-foerderrichtlinie-foerderprogramm-fuer-energieeinsparmassnahmen-ab-2023.pdf?cid=edj",
+        "finding": "Richtlinie der Ortsgemeinde Weilerbach vom 13.07.2023: Wärmepumpen mit Flächenheizung 10 %, höchstens 1.500 €/2.000 € je Haus."
+      }
+    ],
+    "sources": []
   }
 ]

@@ -698,6 +698,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
   // rule have no test form yet.
   "vg-kastellaun-dorfzentren-klimaschutz",
+  // Added 27 Sep 2026: Weilerbach point-based prize (no euro per point in the
+  // guideline) and the village heat-pump grant (underfloor heating, mandatory
+  // consultation, pro-rata cut), both information only.
+  "vg-weilerbach-meilenstein-preisgeld",
+  "weilerbach-energieeinsparmassnahmen",
   // Added 27 Sep 2026: village-renewal guideline read in full, information only;
   // the 50-year building age, the 20,000 EUR minimum cost after federal funding
   // and the year-end council decision have no test form yet.
