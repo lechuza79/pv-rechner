@@ -68858,5 +68858,210 @@
         "evidenceUrl": "https://www.gehlweiler.de/search/f%C3%B6rderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "07140025",
+    "name": "Damscheid",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Damscheid (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht der Gemeinde enthält nur Haupt-, Benutzungs-, Entgelt-, Beitrags-, Friedhofs-, Hundesteuer-, Stellplatz- und Straßenreinigungssatzungen sowie den Haushalt 2026. Die erfasste Quelle ist eine Vereinsmeldung (REWE-Prämien für den Sportverein). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Damscheid“ (gelesen 27.09.2026): Hauptsatzung mit Änderungen, Benutzungs- und Entgeltordnung der Gemeindehäuser, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhofs- und Gebührensatzung, Haushalt 2026, Hundesteuer, Jagdgenossenschaft, Stellplatz-, Straßenreinigungs- und Wegesatzung — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "damscheid.de/svd-rewe-praemien-fuer-unseren-sv-damscheid",
+        "disposition": "replaced",
+        "reason": "Die Adresse (REWE-Prämien für den SV Damscheid, derzeit nicht erreichbar) ist eine Vereinsmeldung; ob die Gemeinde fördert, entscheidet ihr Ortsrecht, und das führt keine Förderrichtlinie.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140205",
+    "name": "Morshausen",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Morshausen (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Grenz-, Hundesteuer-, Jagd- und Straßenreinigungssatzungen sowie den Haushalt 2026/2027. Die erfassten Quellen sind eine Dorfnachricht, das Kontaktformular und eine Meldung zum Landesprogramm „Dorf-Budget“ (Mittel für Gemeindeprojekte). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Morshausen“ (gelesen 27.09.2026): Hauptsatzung, Erschließungs- und Ausbaubeitragssatzung, Friedhofs- und Gebührensatzung, Grenzsatzung, Haushalt 2026/2027, Hundesteuer, Jagdgenossenschaft, Straßenreinigung, Wegeeinziehung — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html",
+        "finding": "Dorfseite mit Meldungen „Morshausen nutzt erstmals das Förderprogramm “Dorf-Budget”“ (08.12.2025), „Große Begeisterung über die neue Backmole“ — kein Programm für Private."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html",
+        "disposition": "reviewed",
+        "reason": "Dorfnachricht; das dort genannte Dorf-Budget ist ein Landesprogramm für Gemeindeprojekte.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      },
+      {
+        "url": "gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Seite, erledigt durch die gelesene Normalfassung.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      },
+      {
+        "url": "gemeinde-morshausen.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular des Portals ohne Förderinhalt; die Förderfrage entscheidet das Ortsrecht.",
+        "evidenceUrl": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/"
+      },
+      {
+        "url": "morshausen.de/news/1/1170062/nachrichten/morshausen-nutzt-erstmals-das-f%C3%B6rderprogramm-dorf-budget.html",
+        "disposition": "replaced",
+        "reason": "Meldung zum Landesprogramm Dorf-Budget (Gemeindeprojekte); ihr Titel steht auf der gelesenen Dorfseite, kein Programm für Private.",
+        "evidenceUrl": "https://www.gemeinde-morshausen.de/seite/518576/april-2001-fiezpr%C3%A4mierung-im-backes.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07140104",
+    "name": "Niederburg",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niederburg (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Friedhofs-, Benutzungs-, Entgelt-, Hundesteuer-, Stellplatz-, Straßenreinigungs- und Wegesatzungen sowie den Haushalt 2026. Die erfasste Quelle meldet einen Landeszuschuss für ein Straßenbauprojekt der Gemeinde. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Niederburg“ (gelesen 27.09.2026): Hauptsatzung mit Änderung, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhofs- und Gebührensatzung, Generationenhaus, Backhaus, Jugendraum, Haushalt 2026, Hundesteuer, Jagd, Stellplätze, Straßenreinigung, Wege — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://niederburg.de/land-teilt-foerderung-mit",
+        "finding": "„eine beantragte Förderung für ein Straßenbauprojekt in Höhe von 16.000€“ aus dem Investitionsstock des Landes — Zuschuss an die Gemeinde, kein Programm für Private."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "niederburg.de/land-teilt-foerderung-mit",
+        "disposition": "reviewed",
+        "reason": "Landeszuschuss für den gemeindlichen Straßenbau, nicht einschlägig.",
+        "evidenceUrl": "https://niederburg.de/land-teilt-foerderung-mit"
+      }
+    ]
+  },
+  {
+    "regionId": "07140149",
+    "name": "Thörlingen",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Thörlingen (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält nur Haupt-, Beitrags-, Hundesteuer-, Jagd-, Straßenreinigungs- und Wegeeinziehungssatzungen sowie den Haushalt 2025/2026. Die erfasste Quelle ist ein Webseiten-Förderprogramm eines Vereins für Einrichtungen und Unternehmen im Ort (Gemeindewebsite von hier nicht erreichbar, im Archiv gelesen). VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet",
+      "Gemeindewebsite thoerlingen.de: Verbindung von hier verweigert (curl und Browser); Seite im Archiv gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Thörlingen“ (gelesen 27.09.2026): Hauptsatzung mit Änderung, Erschließungs- und Wegebeitragssatzung, Haushalt 2025/2026, Hundesteuer, Jagdgenossenschaft, Straßenreinigung, drei Wegeeinziehungen — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://web.archive.org/web/2026/http://www.thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html",
+        "finding": "„Webseitenförderprogramm der Ortsgemeinde Thörlingen … Projektpartner für kostenfreie Webseitengestaltung gesucht“ (Förderverein für regionale Entwicklung) — kein Energieprogramm."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html",
+        "disposition": "reviewed",
+        "reason": "Webseiten-Förderprogramm für örtliche Einrichtungen, im Archiv der Amtsseite gelesen (die Website verweigert von hier die Verbindung); nicht einschlägig.",
+        "evidenceUrl": "https://web.archive.org/web/2026/http://www.thoerlingen.de/seite/192606/webseitenfoerderprogramm_der_ortsgemeindethoerlingen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07140155",
+    "name": "Urbar",
+    "checkedAt": "2026-09-27T08:31:57Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Urbar (VG Hunsrück-Mittelrhein, Rhein-Hunsrück-Kreis) hat keine eigene Förderrichtlinie: Das Ortsrecht enthält Haupt-, Beitrags-, Friedhofs-, Benutzungs-, Entgelt-, Hundesteuer-, Stellplatz-, Tourismusbeitrags-, Vorkaufsrechts- und Straßenreinigungssatzungen, eine Ehrenbürger-Richtlinie und den Haushalt 2025. Die erfassten Quellen sind der geförderte Glasfaserausbau und ein Vortrag der Kreis-Klimaschutzstelle (2023), der Energiesparrichtlinien anderer Gemeinden nennt (Schnorbach), keine von Urbar. VG und Kreis fördern Private nicht. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Nicht geprüft: Haushaltsplan auf eine Förderzeile ohne veröffentlichte Richtlinie.",
+    "searches": [
+      "Ortsrecht/Satzungen der VG Hunsrück-Mittelrhein, Abschnitt der Ortsgemeinde vollständig durchgesehen (27.09.2026)",
+      "VG- und Kreisprogramme aus den Prüfungen vom 18. und 26.09.2026 (Mermuth) übernommen",
+      "Alle erfassten Quellen der Gemeinde einzeln geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/",
+        "finding": "Abschnitt „Ortsgemeinde Urbar“ (gelesen 27.09.2026): Hauptsatzung mit zwei Änderungen, Ehrenbürger-Richtlinie, Erschließungs-, Ausbau- und Kostenerstattungssatzung, Friedhof, Benutzungs- und Entgeltordnungen, Haushalt 2025, Hundesteuer, Jagd, Rückneugliederung, Stellplätze, Straßenreinigung, Wege, Tourismusbeitrag, Vorkaufsrecht — keine Förder- oder Energiesparrichtlinie; solche Richtlinien stehen in der VG nur bei Bickenbach, Hausbay und Laudert."
+      },
+      {
+        "url": "https://urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf",
+        "finding": "Vortrag „Klimaschutz im RHK – Was kann ich beitragen“ (30.11.2023): „bereits 40 Gemeinden fördern Energiesparmaßnahmen ihrer Bürger … Schnorbacher Energiesparrichtlinie … Maximal 6.000 € Zuschuss je Haushalt“ — Beispiel einer anderen Gemeinde, kein Programm von Urbar."
+      },
+      {
+        "url": "https://urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss",
+        "finding": "Geförderter Glasfaseranschluss (Westconnect) bis 30.09.2025 — nicht einschlägig."
+      },
+      {
+        "url": "https://www.hunsrueckmittelrhein.de/klimaschutz/aktivitaeten-der-verbandsgemeinde/kommunales-investitionsprogramm-klimaschutz-und-innovation",
+        "finding": "VG Hunsrück-Mittelrhein setzt ihre KIPKI-Mittel vollständig für die energetische Sanierung der Grundschule Halsenbach ein; kein Programm für private Haushalte (Prüfung 26.09.2026). Das Balkonprogramm des Rhein-Hunsrück-Kreises für einkommensschwache Haushalte lief bis 30.06.2026 und ist beendet."
+      }
+    ],
+    "sources": [
+      {
+        "url": "urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf",
+        "disposition": "reviewed",
+        "reason": "Informationsvortrag des Kreises; nennt Programme anderer Gemeinden, keines von Urbar.",
+        "evidenceUrl": "https://urbar-loreley.de/wp-content/uploads/2023/12/2023_11_30_Klimaschutz-im-RHK-Was-kann-ich-beitragen-Vortrag-Frank-Michael-Uhle.pdf"
+      },
+      {
+        "url": "urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss",
+        "disposition": "reviewed",
+        "reason": "Glasfaserausbau, nicht einschlägig.",
+        "evidenceUrl": "https://urbar-loreley.de/letzter-aufruf-fuer-den-gefoerderten-glasfaseranschluss"
+      }
+    ]
   }
 ]
