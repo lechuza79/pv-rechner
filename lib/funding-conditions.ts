@@ -700,6 +700,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // only; the 50-year building age, the 20,000 EUR minimum cost and the
   // five-year payout have no test form yet.
   "alterkuelz-dorfentwicklung",
+  // Added 27 Sep 2026: guidelines read in full; the energy consultation, the
+  // owner rule (Unzenberg: one-year residence for the balcony), the
+  // own-consumption purpose of the storage and the water-based heating
+  // requirement for heat pumps have no test form yet.
+  "unzenberg-energiespar",
+  "henau-energiespar",
+  "metzenhausen-energiespar",
+  "kappel-energie",
 ];
 
 /**

@@ -25894,65 +25894,6 @@
     ]
   },
   {
-    "regionId": "07140048",
-    "name": "Hecken",
-    "checkedAt": "2026-09-18T20:09:20Z",
-    "recheckAt": "2026-12-17T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Hecken gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
-    "searches": [
-      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
-      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
-      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
-      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
-    ],
-    "evidence": [
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
-        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
-        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
-        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
-        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
-      },
-      {
-        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
-        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
-      }
-    ],
-    "sources": [
-      {
-        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
-        "disposition": "reviewed",
-        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
-        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
-      },
-      {
-        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
-        "disposition": "reviewed",
-        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
-        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
-      }
-    ]
-  },
-  {
     "regionId": "07140053",
     "name": "Hirschfeld (Hunsrück)",
     "checkedAt": "2026-09-18T20:09:20Z",
@@ -26078,112 +26019,6 @@
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Maitzborn gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
-    "searches": [
-      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
-      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
-      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
-      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
-    ],
-    "evidence": [
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
-        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
-        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
-        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
-        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
-      },
-      {
-        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
-        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
-      }
-    ],
-    "sources": [
-      {
-        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
-        "disposition": "reviewed",
-        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
-        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
-      }
-    ]
-  },
-  {
-    "regionId": "07140094",
-    "name": "Metzenhausen",
-    "checkedAt": "2026-09-18T20:09:20Z",
-    "recheckAt": "2026-12-17T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Metzenhausen gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
-    "searches": [
-      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
-      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
-      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
-      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
-    ],
-    "evidence": [
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
-        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
-        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
-        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
-        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
-      },
-      {
-        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
-        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
-      },
-      {
-        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
-        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
-      }
-    ],
-    "sources": [
-      {
-        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
-        "disposition": "reviewed",
-        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
-        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
-      }
-    ]
-  },
-  {
-    "regionId": "07140111",
-    "name": "Ober Kostenz",
-    "checkedAt": "2026-09-18T20:09:20Z",
-    "recheckAt": "2026-12-17T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Ober Kostenz gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
     "searches": [
       "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
       "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
@@ -69515,5 +69350,756 @@
         "evidenceUrl": "https://www.hunsrueckmittelrhein.de/buergerservice/leistungen/RLP:entry:41028/foerderprogramme-und-tipps-energiesparmassnahmen"
       }
     ]
+  },
+  {
+    "regionId": "07140107",
+    "name": "Niedersohren",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niedersohren (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Niedersohren keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/niedersohren/",
+        "finding": "Ortsgemeinde-Seite Niedersohren (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Niedersohren nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140109",
+    "name": "Niederweiler",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niederweiler (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Niederweiler keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Eigene Website der Ortsgemeinde gelesen: https://www.niederweiler-hunsrueck.de/"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/niederweiler/",
+        "finding": "Ortsgemeinde-Seite Niederweiler (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Niederweiler nicht genannt."
+      },
+      {
+        "url": "https://www.niederweiler-hunsrueck.de/",
+        "finding": "Startseite der Ortsgemeinde gelesen (27.09.2026): keine Förder- oder Richtlinienseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140120",
+    "name": "Raversbeuren",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Raversbeuren (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Raversbeuren keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Eigene Website der Ortsgemeinde gelesen: https://www.raversbeuren.de/"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/raversbeuren/",
+        "finding": "Ortsgemeinde-Seite Raversbeuren (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Raversbeuren nicht genannt."
+      },
+      {
+        "url": "https://www.raversbeuren.de/",
+        "finding": "Startseite der Ortsgemeinde gelesen (27.09.2026): keine Förder- oder Richtlinienseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140129",
+    "name": "Rödern",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rödern (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Rödern keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/roedern/",
+        "finding": "Ortsgemeinde-Seite Rödern (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Rödern nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140130",
+    "name": "Rohrbach",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rohrbach (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Rohrbach keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/rohrbach/",
+        "finding": "Ortsgemeinde-Seite Rohrbach (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Rohrbach nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140141",
+    "name": "Schwarzen",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarzen (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Schwarzen keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/schwarzen/",
+        "finding": "Ortsgemeinde-Seite Schwarzen (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Schwarzen nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140151",
+    "name": "Todenroth",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Todenroth (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Todenroth keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Eigene Website der Ortsgemeinde gelesen: https://www.ortsgemeinde-todenroth.de/unser-dorf/satzungen/"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/todenroth/",
+        "finding": "Ortsgemeinde-Seite Todenroth (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Todenroth nicht genannt."
+      },
+      {
+        "url": "https://www.ortsgemeinde-todenroth.de/unser-dorf/satzungen/",
+        "finding": "Satzungsseite der Ortsgemeinde gelesen (27.09.2026): Hauptsatzung, Beitrags-, Friedhofs-, Hundesteuer- und Benutzungssatzungen — keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140159",
+    "name": "Wahlenau",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wahlenau (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Wahlenau keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Eigene Website der Ortsgemeinde gelesen: https://www.wahlenau.de/"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/wahlenau/",
+        "finding": "Ortsgemeinde-Seite Wahlenau (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Wahlenau nicht genannt."
+      },
+      {
+        "url": "https://www.wahlenau.de/",
+        "finding": "Startseite der Ortsgemeinde gelesen (27.09.2026): keine Förder- oder Richtlinienseite (nur Abfallkalender als Dokument)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140163",
+    "name": "Womrath",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Womrath (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Womrath keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/womrath/",
+        "finding": "Ortsgemeinde-Seite Womrath (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Womrath nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140164",
+    "name": "Woppenroth",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Woppenroth (VG Kirchberg, Rhein-Hunsrück-Kreis) führt auf der Ortsgemeinde-Seite der VG keine Förderrichtlinie; die dort per Skript geladene Liste „Förderprogramme“, in der die Nachbarorte Henau, Kappel, Metzenhausen, Reckershausen und Unzenberg ihre Energiesparrichtlinien veröffentlichen, ist leer, und im Mitteilungsblatt der VG erscheint für Woppenroth keine Richtlinie. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Wiederprüfung nach 60 Tagen, weil Hecken zeigt, dass eine Richtlinie im Rhein-Hunsrück-Kreis auch unveröffentlicht angewendet werden kann.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/woppenroth/",
+        "finding": "Ortsgemeinde-Seite Woppenroth (VG Kirchberg), Download-Liste „Förderprogramme“ am 27.09.2026 vollständig ausgelesen: keine Förderrichtlinie; die Seite führt nur Satzungen, Bebauungspläne und Niederschriften."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026 im Volltext durchsucht: Energiesparrichtlinien der Ortsgemeinden Unzenberg und (Tagesordnung) Hecken; Woppenroth nicht genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140154",
+    "name": "Unzenberg",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Unzenberg (VG Kirchberg, Rhein-Hunsrück-Kreis) fördert über die Energiesparrichtlinie (Ratsbeschluss 29.01.2018, zuletzt geändert 24.11.2025, Laufzeit bis 31.12.2026): Dachanlage 250 €/kWp bis 2.500 €, Speicher 2.500 € höchstens 30 %, Balkonkraftwerk 300 € höchstens 30 % (auch Mieter), Wärmepumpe 2.500 € höchstens 30 %; Energieberatung Voraussetzung außer beim Balkonkraftwerk. Neu katalogisiert als unzenberg-energiespar (Dachanlage und Balkonkraftwerk gerechnet); zwei unabhängige Prüfer, einer adversarial, bestätigen alle Angaben.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Richtlinie im Original vollständig gelesen",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "unzenberg.de: Medienbibliothek nach „energie“ durchsucht, Fassungen 2019–2026 gefunden; Fassung 2026 identisch mit der Kopie auf der VG-Seite"
+    ],
+    "evidence": [
+      {
+        "url": "https://unzenberg.de/wp-content/uploads/2026/01/20260105_36-energiesparrichtlinie-2026-unterschrieben.pdf",
+        "finding": "§ 5 (5): „Die Neuinstallation einer Photovoltaikanlage … wird einmalig mit 250 € je kWp Leistung dieser Anlage gefördert. Die Förderung Ist auf 2.500 € je Anlage begrenzt.“ § 7 (6): Laufzeit „bis zum 31.12.2026 verlängert“."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/536550/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 8/2026: „die bekannte Energiesparrichtlinie der Ortsgemeinde Unzenberg wurde in der letzten Ratssitzung wieder um ein Jahr bis zum 31.12.2026 verlängert“ — nicht über 2026 hinaus in dieser Form."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140050",
+    "name": "Henau",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Henau (VG Kirchberg, Rhein-Hunsrück-Kreis) fördert Eigentümer über die Energiesparrichtlinie (Ratsbeschluss 12.04.2021, geändert 05.02.2025 und 18.11.2025, Laufzeit bis 31.12.2028): Dachanlage 200 €/kWp bis 5 kWp und 300 €/kWp bis 10 kWp, max. 2.500 €; Speicher 2.500 € höchstens 30 %; Balkonkraftwerk höchstens 300 € und 30 %; Wärmepumpe 2.500 € höchstens 30 %; Energieberatung Voraussetzung. Neu katalogisiert als henau-energiespar (nur das Balkonkraftwerk gerechnet); zwei unabhängige Prüfer bestätigen alle Angaben.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Richtlinie im Original vollständig gelesen",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/henau/foerderprogramme/energiesparrichtlinie-2026-unterschrieben.pdf",
+        "finding": "§ 5 (15): „Für die Maßnahme nach § 2 Abs. 1 Nr. 16 wird ein Zuschuss von maximal 300 Euro bezahlt, jedoch maximal 30% der Investitionskosten.“ § 7 (6): „vom 01.06.2021 bis zum 31.12.2028 befristet“."
+      },
+      {
+        "url": "https://henau.de/oertliches-foerderprogramm/",
+        "finding": "Seite der Ortsgemeinde: „Für Henau gilt diese Förderung ebenfalls“ — Verweis auf die örtlichen Förderprogramme der VG."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140094",
+    "name": "Metzenhausen",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Metzenhausen (VG Kirchberg, Rhein-Hunsrück-Kreis) fördert Eigentümer über die Energiesparrichtlinie (Ratsbeschluss 07.02.2019, zuletzt geändert 21.03.2025, Laufzeit bis 31.12.2026): Dachanlage gestaffelt bis 2.500 €, Speicher 2.500 € höchstens 30 %, Balkonkraftwerk 100 € höchstens 30 %, Wärmepumpe 2.500 € höchstens 30 %; Energieberatung Voraussetzung. Die frühere Einstufung „keine passende Förderung“ (18.09.2026) war falsch: die Richtlinie steht in der per Skript geladenen Liste der VG-Seite. Neu katalogisiert als metzenhausen-energiespar (nur das Balkonkraftwerk gerechnet); zwei unabhängige Prüfer bestätigen alle Angaben.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Richtlinie im Original vollständig gelesen",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/metzenhausen/foerderprogramme/energiesparrichtlinie-metzenhausen-2025.pdf",
+        "finding": "§ 5 (4): „… 200 € je kWp bis zu einer Leistung von bis zu 5 kWp und darüber hinaus 300 € je kWp von 5 kWp bis zu einer Leistung von 10 kWp … auf 2.500 € je Anlage und Standort begrenzt. Die Neuanschaffung eines Balkonkraftwerkes (max. 800 Watt) wird einmalig mit 100 €, höchstens jedoch mit 30% der Anschaffungskosten, gefördert.“ § 7 (6): „bis zum 31.12.2026 begrenzt“."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/537971/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 11/2026: Sitzung des Ortsgemeinderates Metzenhausen am 18.03.2026, TOP 5 „Gewährung von Zuschüssen nach der Energiesparrichtlinie“."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140062",
+    "name": "Kappel",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kappel (VG Kirchberg, Rhein-Hunsrück-Kreis) fördert über die Richtlinie zu energetischen Maßnahmen (Ratsbeschluss 11.01.2016, zuletzt geändert 16.12.2024, Laufzeit bis 31.12.2028) Balkonkraftwerke mit höchstens 100 € und 30 % (Eigentümer und Mieter) und Heizungen einschließlich Wärmepumpe mit 4.600 € je Objekt (Eigentümer, Energieberatung Voraussetzung); keine Dachanlage, kein Speicher. Neu katalogisiert als kappel-energie (nur das Balkonkraftwerk gerechnet); adversarialer Prüfer bestätigt alle Angaben.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Richtlinie im Original vollständig gelesen",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/kappel/foerderprogramme/foerderrichtlinie.pdf",
+        "finding": "Gescannte Richtlinie Seite für Seite gelesen: § 5 (7) „Für die Maßnahme nach § 2 Abs. 1 Nr. 14 wird ein Zuschuss von maximal 100 Euro bezahlt, jedoch maximal 30 % der Investitionskosten.“ § 5 (6) Heizungsmaßnahmen Nr. 6–13 „pro Objekt einmalig ein Zuschuss in Höhe von 4.600 €“ abzüglich 2.500 € Eigenbeitrag; § 7 (6) „bis zum 31.12.2028 begrenzt“. Keine Dachanlage, kein Speicher."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140048",
+    "name": "Hecken",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Hecken (VG Kirchberg) wendet eine eigene Energiesparrichtlinie an: Der Ortsgemeinderat beriet im Februar 2026 über die „Gewährung von Zuschüssen nach der Energiesparrichtlinie“ (Mitteilungsblatt Nr. 6/2026). Die Richtlinie ist weder auf der Ortsgemeinde-Seite der VG noch anderswo veröffentlicht; Umfang und Beträge sind daher nicht belegt. Die Einstufung „keine passende Förderung“ vom 18.09.2026 war falsch. Rückfrage an die Verbandsgemeindeverwaltung vorgemerkt.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Impressum der VG gelesen: Poststelle rathaus@kirchberg-hunsrueck.de"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://epaper.wittich.de/frontend/catalogs/535287/2/pdf/complete.pdf",
+        "finding": "Mitteilungsblatt VG Kirchberg Nr. 6/2026 (05.02.2026), Sitzung des Ortsgemeinderates Hecken: TOP 4 „Gewährung von Zuschüssen nach der Energiesparrichtlinie“."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/hecken/",
+        "finding": "Ortsgemeinde-Seite Hecken, Download-Liste „Förderprogramme“ am 27.09.2026 ausgelesen: leer — die Richtlinie ist nicht veröffentlicht."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+        "finding": "Impressum der Verbandsgemeindeverwaltung Kirchberg: „E-Mail: rathaus@kirchberg-hunsrueck.de“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-11T08:00:00Z",
+      "detail": "Rückfrage zur unveröffentlichten Energiesparrichtlinie Hecken über den bestehenden Versandweg; bei Antwort Richtlinie im Original lesen"
+    },
+    "enquiry": {
+      "id": "klaerung-07140048",
+      "recipient": "rathaus@kirchberg-hunsrueck.de",
+      "recipientSource": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+      "website": "https://www.kirchberg-hunsrueck.de",
+      "question": "Im Mitteilungsblatt (Nr. 6/2026) steht für die Ratssitzung der Ortsgemeinde Hecken der Punkt „Gewährung von Zuschüssen nach der Energiesparrichtlinie“. Auf der Seite der Ortsgemeinde finde ich die Richtlinie nicht. Können Sie mir die geltende Energiesparrichtlinie der Ortsgemeinde Hecken schicken oder sagen, wo sie veröffentlicht ist? Mich interessiert vor allem, ob sie Photovoltaik, Batteriespeicher, Balkonkraftwerke oder Wärmepumpen fördert und bis wann sie gilt."
+    }
+  },
+  {
+    "regionId": "07140071",
+    "name": "Kludenbach",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Kludenbach (VG Kirchberg) veröffentlicht auf der Ortsgemeinde-Seite der VG eine Förderrichtlinie (Ratsbeschluss 17.05.2017, zuletzt geändert 12.09.2022): Dachanlage 20 % höchstens 2.000 €, Speicher 20 % höchstens 2.000 €, Wärmepumpe 20 % höchstens 2.000 €, nur Eigentümer. Ihre Laufzeit ist laut § 6 (6) „zunächst bis zum 31.12.2025 begrenzt“; daneben steht ein Antragsvordruck von 2025. Ob der Rat sie verlängert hat, ist nicht belegt. Rückfrage vorgemerkt; nicht katalogisiert.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Impressum der VG gelesen: Poststelle rathaus@kirchberg-hunsrueck.de"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/kludenbach/foerderprogramme/16-foerderrichtlinie.pdf",
+        "finding": "§ 4 Nr. 3: „Die Neuinstallation einer Photovoltaikanlage … wird einmalig mit 20 % der Anlage, höchstens mit 2.000 € gefördert.“ § 6 (6): „Die Laufzeit der Richtlinie ist zunächst bis zum 31.12.2025 begrenzt. Eine Verlängerung durch Beschlussfassung des Ortsgemeinderates ist möglich.“"
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+        "finding": "Impressum der Verbandsgemeindeverwaltung Kirchberg: „E-Mail: rathaus@kirchberg-hunsrueck.de“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-11T08:00:00Z",
+      "detail": "Rückfrage zur Verlängerung der Kludenbacher Richtlinie über den bestehenden Versandweg"
+    },
+    "enquiry": {
+      "id": "klaerung-07140071",
+      "recipient": "rathaus@kirchberg-hunsrueck.de",
+      "recipientSource": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+      "website": "https://www.kirchberg-hunsrueck.de",
+      "question": "Auf der Seite der Ortsgemeinde Kludenbach steht die Förderrichtlinie (Fassung vom 12.09.2022) mit Zuschüssen u. a. für Photovoltaik, Speicher und Wärmepumpen. Laut § 6 Abs. 6 war ihre Laufzeit bis zum 31.12.2025 begrenzt. Hat der Ortsgemeinderat sie verlängert, und können private Eigentümer derzeit einen Antrag stellen? Falls es eine neuere Fassung gibt: Wo finde ich sie?"
+    }
+  },
+  {
+    "regionId": "07140111",
+    "name": "Ober Kostenz",
+    "checkedAt": "2026-09-27T12:26:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Ober Kostenz (VG Kirchberg) veröffentlicht auf der Ortsgemeinde-Seite der VG eine Richtlinie vom 25.07.2013, die u. a. Wärmepumpen an wasserführenden Heizungen mit höchstens 4.800 € je Objekt fördert (keine Photovoltaik, kein Speicher, kein Balkonkraftwerk); sie nennt keine Laufzeit. Ob sie heute noch angewendet und mit Haushaltsmitteln hinterlegt wird, ist nicht belegt. Die Einstufung „keine passende Förderung“ vom 18.09.2026 war damit voreilig. Rückfrage vorgemerkt; nicht katalogisiert.",
+    "searches": [
+      "Download-Liste „Förderprogramme“ der Ortsgemeinde-Seite auf kirchberg-hunsrueck.de gelesen (27.09.2026) — die Liste wird per Skript nachgeladen und fehlt im ausgelieferten HTML; ausgelesen über die Download-Schnittstelle der Seite für alle 40 Ortsgemeinden der VG",
+      "Websuche nach „Energiesparrichtlinie“ mit den Ortsnamen der VG Kirchberg (27.09.2026); die Treffer im Mitteilungsblatt der VG (Nr. 5/2025, 40/2025, 6/2026, 8/2026, 11/2026) im Volltext gelesen: Energiesparrichtlinien nur bei Henau, Reckershausen, Hecken, Unzenberg und Metzenhausen",
+      "Regionales Zukunftsprogramm der VG und Kreisprogramme aus den Prüfungen vom 18.09.2026 übernommen",
+      "Impressum der VG gelesen: Poststelle rathaus@kirchberg-hunsrueck.de"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/ober-kostenz/foerderprogramme/25-foerderrichtlinie-25-07-2013.pdf",
+        "finding": "Teil 2 § 2: gefördert werden u. a. „Wärmepumpen die an ein wasserführendes Heizungsnetz angeschlossen sind oder werden“; § 3: „Je Objekt wird max. ein Zuschuss von 4800,00 € gewährt.“ Inkrafttreten rückwirkend 01.04.2013, keine Laufzeit."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesmittel für kommunale Gebäude der VG Kirchberg (Dämmung Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-sim.de/Klimaschutz/",
+        "finding": "Rhein-Hunsrück-Kreis: das einzige einschlägige Kreisprogramm (Balkonkraftwerke einkommensschwacher Haushalte, KIPKI) lief bis 30.06.2026 und ist beendet (Prüfung vom 18.09.2026); kein Kreisprogramm im Katalog."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+        "finding": "Impressum der Verbandsgemeindeverwaltung Kirchberg: „E-Mail: rathaus@kirchberg-hunsrueck.de“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG (Schulen, Kita, Feuerwehrhäuser), keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-11T08:00:00Z",
+      "detail": "Rückfrage zur Geltung der Ober Kostenzer Heizungsrichtlinie über den bestehenden Versandweg"
+    },
+    "enquiry": {
+      "id": "klaerung-07140111",
+      "recipient": "rathaus@kirchberg-hunsrueck.de",
+      "recipientSource": "https://www.kirchberg-hunsrueck.de/de/allgemein/impressum/",
+      "website": "https://www.kirchberg-hunsrueck.de",
+      "question": "Auf der Seite der Ortsgemeinde Ober Kostenz steht die Richtlinie vom 25.07.2013, die u. a. Wärmepumpen mit bis zu 4.800 € je Objekt fördert. Wird diese Richtlinie heute noch angewendet, und können private Eigentümer derzeit einen Antrag stellen? Falls sie ersetzt oder aufgehoben wurde, hilft mir auch diese kurze Auskunft."
+    }
   }
 ]
