@@ -70105,7 +70105,7 @@
   {
     "regionId": "07140",
     "name": "Rhein-Hunsrück-Kreis",
-    "checkedAt": "2026-09-27T14:40:00Z",
+    "checkedAt": "2026-09-27T14:20:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -70189,7 +70189,7 @@
   {
     "regionId": "07131073",
     "name": "Schalkenbach",
-    "checkedAt": "2026-09-27T15:10:00Z",
+    "checkedAt": "2026-09-27T14:30:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -70215,27 +70215,69 @@
       {
         "url": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/solarkataster/",
         "finding": "„Der Kreis Ahrweiler stellt aktuell keine Fördermittel für PV-Anlagen oder Speicher bereit.“"
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik."
       }
     ],
     "sources": [
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "reviewed",
         "reason": "Richtlinie der VG im Original gelesen, zellgleich mit dem Katalog.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
       },
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "replaced",
         "reason": "Dieselbe Datei unter zweiter Adresse (identische Prüfsumme) — erledigt durch die gelesene Richtlinie.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Förderprogramme im Original gelesen: Balkonkraftwerke (VG), Dachphotovoltaik Niederzissen (toter Link), Baumsetzlinge Schalkenbach, Galenberg, Burgbrohl.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite im Original gelesen: 125 € je Haushalt, aktiv.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/"
       }
     ]
   },
   {
     "regionId": "07131201",
     "name": "Brenk",
-    "checkedAt": "2026-09-27T15:10:00Z",
+    "checkedAt": "2026-09-27T14:30:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -70261,27 +70303,69 @@
       {
         "url": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/solarkataster/",
         "finding": "„Der Kreis Ahrweiler stellt aktuell keine Fördermittel für PV-Anlagen oder Speicher bereit.“"
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik."
       }
     ],
     "sources": [
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "reviewed",
         "reason": "Richtlinie der VG im Original gelesen, zellgleich mit dem Katalog.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
       },
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "replaced",
         "reason": "Dieselbe Datei unter zweiter Adresse (identische Prüfsumme) — erledigt durch die gelesene Richtlinie.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Förderprogramme im Original gelesen: Balkonkraftwerke (VG), Dachphotovoltaik Niederzissen (toter Link), Baumsetzlinge Schalkenbach, Galenberg, Burgbrohl.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite im Original gelesen: 125 € je Haushalt, aktiv.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/"
       }
     ]
   },
   {
     "regionId": "07131204",
     "name": "Galenberg",
-    "checkedAt": "2026-09-27T15:10:00Z",
+    "checkedAt": "2026-09-27T14:30:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -70307,27 +70391,69 @@
       {
         "url": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/solarkataster/",
         "finding": "„Der Kreis Ahrweiler stellt aktuell keine Fördermittel für PV-Anlagen oder Speicher bereit.“"
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik."
+      },
+      {
+        "url": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/",
+        "finding": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik."
       }
     ],
     "sources": [
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "reviewed",
         "reason": "Richtlinie der VG im Original gelesen, zellgleich mit dem Katalog.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
       },
       {
-        "url": "www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
+        "url": "brohltal-verwaltung.de/dokumente/bauen-und-wohnen/richtlinie-vg-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg",
         "disposition": "replaced",
         "reason": "Dieselbe Datei unter zweiter Adresse (identische Prüfsumme) — erledigt durch die gelesene Richtlinie.",
         "evidenceUrl": "https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-verbandsgemeinde-brohltal-zur-foerderung-von-balkonkraftwerken-verlaengerung.pdf?cid=hcg"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Förderprogramme im Original gelesen: Balkonkraftwerke (VG), Dachphotovoltaik Niederzissen (toter Link), Baumsetzlinge Schalkenbach, Galenberg, Burgbrohl.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite im Original gelesen: 125 € je Haushalt, aktiv.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Schalkenbach) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-schalkenbach/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Galenberg) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-galenberg/"
+      },
+      {
+        "url": "brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: kommunales Förderprogramm zur Anschaffung von Baumsetzlingen (Burgbrohl) — keine Energietechnik.",
+        "evidenceUrl": "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/baumsetzling-foerderprogramm-burgbrohl/"
       }
     ]
   },
   {
     "regionId": "07131055",
     "name": "Niederzissen",
-    "checkedAt": "2026-09-27T15:40:00Z",
+    "checkedAt": "2026-09-27T14:35:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
