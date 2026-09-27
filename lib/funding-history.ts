@@ -330,3 +330,25 @@ export function verlaufFuerSeite(eintraege: HistorieEintrag[]): {
     : null;
   return { wechsel, beobachtetSeit };
 }
+
+/**
+ * When did we last see this programme reopen — its status change INTO "aktiv"
+ * from another recorded status?
+ *
+ * The trigger for the subscriber message "nimmt wieder Anträge an". Only a real
+ * change counts: the first sighting (`aufnahme`) is us starting to look, not the
+ * municipality reopening, and a status entry without a previous value is the
+ * same thing in another form. Returns the detection date (ours, never the
+ * council's) of the most recent reopening, or null.
+ *
+ * The caller still checks that the programme is active NOW — a reopening that
+ * has since been closed again is no news.
+ */
+export function wiederOffenSeit(eintraege: HistorieEintrag[]): string | null {
+  const aktiv = FUNDING_STATUS_LABEL.aktiv;
+  const treffer = eintraege
+    .filter((e) => e.feld === "status" && e.neu === aktiv && e.alt !== null && e.alt !== aktiv)
+    .map((e) => e.festgestelltAm)
+    .sort();
+  return treffer.length ? treffer[treffer.length - 1] : null;
+}

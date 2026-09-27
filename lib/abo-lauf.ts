@@ -37,7 +37,7 @@ import "server-only";
 // Lesepfad würde genau diese Trennung aufheben.
 
 import { empfaengerFuerOrt, versandVermerken, type GemeindeAbo } from "./gemeinde-abo";
-import { gemeindeMeldungen, hatNachricht, type Meldung } from "./gemeinde-meldungen";
+import { gemeindeMeldungen, hatNachricht, meldungenFuerAbo, type Meldung } from "./gemeinde-meldungen";
 import { aboMeldungsMail } from "./abo-mail";
 import { abmeldeLink, einstellungenLink } from "./abo-token";
 import { sendeAboMail } from "./abo-versand";
@@ -45,6 +45,9 @@ import { getRegionAtlasData } from "./mastr-data";
 import { getRegionById, atlasPathForRegionId } from "./atlas";
 import { tagMonatJahr } from "./stand-format";
 import { versandzeitOk } from "./versandzeit";
+import { getFundingPrograms } from "./funding-data";
+import { getFundingHistory, wiederOffenSeit } from "./funding-history";
+import { deckt, fundingZaehlt, technikenVon } from "./funding-programs";
 import { jahrInBerlin, heuteInBerlin } from "./zeit";
 
 export type LaufErgebnis = {
@@ -76,7 +79,21 @@ export async function meldungenFuerOrt(
   const atlas = await getRegionAtlasData(regionId);
   if (!atlas) return null;
 
+  // Die Programme, die diesen Ort decken — über das Fördergebiet, nie über
+  // gleiche Schlüssel (ein Kreisprogramm deckt jede Gemeinde darin). Fällt der
+  // Katalog oder der Verlauf aus, entfallen genau diese Meldungen; der Rest
+  // der Mail rechnet weiter.
+  const programme = (await getFundingPrograms().catch(() => [])).filter((p) => deckt(p, regionId));
+  const verlauf = programme.length ? await getFundingHistory() : new Map();
+  const wiederOffen = programme.flatMap((p) => {
+    if (p.status !== "aktiv") return [];
+    const seit = wiederOffenSeit(verlauf.get(p.id) ?? []);
+    return seit ? [{ name: p.name, festgestelltAm: seit, foerdert: technikenVon(p) }] : [];
+  });
+
   const meldungen = gemeindeMeldungen({
+    foerderung: programme.map((p) => ({ name: p.name, zaehlt: fundingZaehlt(p) })),
+    wiederOffen,
     daten: {
       name: region.name,
       regionId,
@@ -149,21 +166,26 @@ export async function aboLauf(o: {
       continue;
     }
 
-    // DIE EIGENTLICHE ENTSCHEIDUNG. `hatNachricht` ist schärfer als „es gibt
-    // eine Meldung": Eine reine Bestandsbeschreibung stand beim letzten Mal
-    // genauso da und ist keine Nachricht.
+    // DIE EIGENTLICHE ENTSCHEIDUNG — je Abonnent, nicht je Ort. `hatNachricht`
+    // ist schärfer als „es gibt eine Meldung": Eine reine Bestandsbeschreibung
+    // stand beim letzten Mal genauso da und ist keine Nachricht. Und was an
+    // einem einzelnen Ereignis hängt, zählt nur, wenn es nach dem letzten Stand
+    // DIESES Abonnenten liegt (`meldungenFuerAbo`).
     if (!hatNachricht(stoff.meldungen)) {
       erg.orteStill++;
       continue;
     }
 
     const empfaenger = await empfaengerFuerOrt(regionId);
-    const offen = empfaenger.filter((abo) => !schonHeuteGeschrieben(abo, o.jetzt));
-    if (offen.length === 0) {
-      erg.orteStill++;
-      continue;
+    let jemand = false;
+    for (const abo of empfaenger) {
+      if (schonHeuteGeschrieben(abo, o.jetzt)) continue;
+      const eigene = meldungenFuerAbo(stoff.meldungen, abo);
+      if (!hatNachricht(eigene)) continue;
+      versandliste.push({ abo, stoff: { ...stoff, meldungen: eigene } });
+      jemand = true;
     }
-    for (const abo of offen) versandliste.push({ abo, stoff });
+    if (!jemand) erg.orteStill++;
   }
 
   // ─── Das Versandfenster ───────────────────────────────────────────────────
