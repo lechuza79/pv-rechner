@@ -158,6 +158,8 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     });
     if(generation!==playbackGeneration||!current()||!stage.isConnected)return;
     race.dataset.state='revealed';
+    // Reduced motion and skipped playback must settle immediately at final ranks.
+    motionStates.clear();
     const order=paint(1),winners=order.filter(row=>row.value>0&&row.value===order[0]?.value);
     if(motion&&!reduced.matches&&visible&&!document.hidden&&winners.length)
       window.dispatchEvent(new CustomEvent('atlas-ranking-celebrate',{detail:{target:items.get(winners[0].id).item}}));

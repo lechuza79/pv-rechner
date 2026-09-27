@@ -17,3 +17,12 @@ describe('Live radial zero reading',()=>{
     expect(html).toContain('12:00 Uhr');
   });
 });
+
+it('uses readable text on light standalone cards and preserves the Atlas accent',()=>{
+ const standalone=renderToStaticMarkup(<MastrLiveRadial energietraeger="solar" installedKwp={20000} injected={points} highlightTs={points[1].ts} bare/>);
+ const atlas=renderToStaticMarkup(<MastrLiveRadial energietraeger="solar" installedKwp={20000} injected={points} highlightTs={points[1].ts} bare secondaryBars/>);
+ const valueStyle=(html:string)=>html.match(/<div style="([^"]*font-variant-numeric:tabular-nums[^"]*)"/)?.[1];
+ expect(valueStyle(standalone)).toContain('color:var(--color-text-primary)');
+ expect(valueStyle(standalone)).not.toContain('--color-highlight');
+ expect(valueStyle(atlas)).toContain('color:var(--widget-accent, var(--color-text-primary))');
+});
