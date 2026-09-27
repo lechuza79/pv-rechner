@@ -27,6 +27,7 @@ const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/presse", title: "Presse & Creator", desc: "Redaktionen, Fachdienste und Creator mit Ansprechpartner, Beleg und Aufhänger — filtern, vormerken, aussortieren." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
   { href: "/admin/einbettungen", title: "Einbettungen", desc: "Fremde Seiten, auf denen unsere Widgets laufen — der Erfolg des Outreach, ohne auf eine Antwort zu warten." },
+  { href: "/admin/bilanz", title: "Projekt-Bilanz", desc: "Was hineinging und was herauskam: Zeit, Geld und Rechenleistung gegen Bestand und geschätzten Herstellwert." },
 ];
 
 export default async function AdminHub() {

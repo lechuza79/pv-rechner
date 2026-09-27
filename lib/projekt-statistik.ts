@@ -113,6 +113,32 @@ export interface Bestandstag {
   commitsGesamt: number;
 }
 
+/**
+ * Der Zählstand zu einer Bestandszeile — die Mengen, mit denen die
+ * Aufwandsschätzung rechnet.
+ *
+ * ER GEHÖRT ZUR MESSUNG, nicht zur Laufzeit: Gezählt wird beim Erfassungslauf
+ * aus dem Dateibaum; die Ansicht liest ihn aus der Ablage, weil im
+ * ausgelieferten Bündel weder das Arbeitsverzeichnis noch git existieren.
+ *
+ * Fehlt er (Altzeile vor dem 27.09.2026), stehen überall Nullen — daran ist
+ * „noch nicht erhoben" erkennbar, und die Aufwandsschätzung wird dann bewusst
+ * nicht gezeigt statt mit einer leeren Menge gerechnet.
+ */
+export type BestandMitZaehlstand = Bestandstag & {
+  rechner: number;
+  seiten: number;
+  widgets: number;
+  routen: number;
+  komponenten: number;
+  foerderprogramme: number;
+};
+
+/** Ob eine Bestandszeile ihren Zählstand mitbringt. */
+export function hatZaehlstand(b: BestandMitZaehlstand): boolean {
+  return b.seiten > 0 && b.komponenten > 0;
+}
+
 export const STATISTIK_DDL = `
   create table if not exists projekt_statistik (
     tag date not null,
@@ -152,6 +178,17 @@ export const STATISTIK_DDL = `
     commits_gesamt integer not null,
     erfasst_am timestamptz not null default now()
   );
+  -- Nachträglich: der Zählstand, mit dem die Aufwandsschätzung rechnet. Er wird
+  -- beim Erfassungslauf aus dem Dateibaum GEZÄHLT und hier mitgeschrieben, weil
+  -- die Ansicht ihn zur Laufzeit nicht zählen kann (kein Arbeitsverzeichnis, kein
+  -- git im ausgelieferten Bündel). Ohne Vorgabewert wären die Altzeilen nicht
+  -- lesbar; mit 0 sind sie als „noch nicht erhoben" erkennbar.
+  alter table projekt_bestand add column if not exists rechner integer not null default 0;
+  alter table projekt_bestand add column if not exists seiten integer not null default 0;
+  alter table projekt_bestand add column if not exists widgets integer not null default 0;
+  alter table projekt_bestand add column if not exists routen integer not null default 0;
+  alter table projekt_bestand add column if not exists komponenten integer not null default 0;
+  alter table projekt_bestand add column if not exists foerderprogramme integer not null default 0;
   alter table projekt_statistik enable row level security;
   alter table projekt_arbeitszeit enable row level security;
   alter table projekt_bestand enable row level security;
