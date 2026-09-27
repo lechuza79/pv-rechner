@@ -32,6 +32,9 @@ const REGISTER = new Map<string, string>([
   ["05334002", "Aachen"],
   ["06440016", "Nidda"],
   ["07314000", "Ludwigshafen am Rhein"],
+  ["07140131", "Roth"],
+  ["06437014", "Rothenberg"],
+  ["07140076", "Külz (Hunsrück)"],
 ]);
 
 describe("Gemeindeschlüssel-Wächter", () => {
@@ -149,6 +152,24 @@ describe("Gemeindeschlüssel-Wächter", () => {
       const b = pruefeVerzeichnis({ slug: "nidda", name: "Nidda", ags: "07314000" }, REGISTER);
       expect(b).toHaveLength(1);
       expect(b[0].text).toContain("Ludwigshafen am Rhein");
+    });
+  });
+  describe("Kurzer Ortsname mit eigenem Zusatz in Klammern", () => {
+    // 27.09.2026: „Roth (Hunsrück)“ gegen Registername „Roth“ wurde als
+    // falscher Schlüssel gemeldet — die Prüfung hielt „roth“ gegen „rothh“.
+    it("lässt Roth (Hunsrück) auf dem Schlüssel von Roth durch", () => {
+      expect(pruefeProgramm({ id: "roth", region: "Roth (Hunsrück)", agsCode: "07140131" }, REGISTER)).toEqual([]);
+      expect(pruefeVerzeichnis({ slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131" }, REGISTER)).toEqual([]);
+    });
+
+    it("schlägt weiter an, wenn der Schlüssel auf einen längeren Ort mit gleichem Anfang zeigt", () => {
+      expect(pruefeProgramm({ id: "roth", region: "Roth (Hunsrück)", agsCode: "06437014" }, REGISTER)).toHaveLength(1);
+      expect(pruefeVerzeichnis({ slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "06437014" }, REGISTER)).toHaveLength(1);
+      expect(pruefeProgramm({ id: "roth", region: "Roth", agsCode: "06437014" }, REGISTER)).toHaveLength(1);
+    });
+
+    it("lässt einen Zusatz durch, den auch das Register trägt", () => {
+      expect(pruefeProgramm({ id: "kuelz", region: "Külz (Hunsrück)", agsCode: "07140076" }, REGISTER)).toEqual([]);
     });
   });
 });

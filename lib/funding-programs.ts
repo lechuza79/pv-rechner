@@ -8578,6 +8578,191 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // it was not in the catalogue.
   },
 
+  "unzenberg-energiespar": {
+    id: "unzenberg-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Unzenberg", level: "kommune", region: "Unzenberg",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140154",
+    url: "https://unzenberg.de/wp-content/uploads/2026/01/20260105_36-energiesparrichtlinie-2026-unterschrieben.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-01-29",
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 300 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "300 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Unzenberg, gemeldet mit Hauptwohnsitz im Ort", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk bekommen Eigentümer und Mieter, die es seit mindestens einem Jahr sind und mit Hauptwohnsitz in Unzenberg gemeldet sind", nur: ["balkon"] },
+      { text: "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €", nur: ["pv", "waermepumpe"] },
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2026; der Gemeinderat kann sie verlängern, will sie aber laut Mitteilungsblatt (Februar 2026) über 2026 hinaus nicht in dieser Form fortführen",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 250, pvCap: 2500,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 7 pages;
+    // identical text on the VG page kirchberg-hunsrueck.de/de/gemeinden/
+    // ortsgemeinden/unzenberg/foerderprogramme/36-energiesparrichtlinie-2026-
+    // unterschrieben.pdf): council 29.01.2018, last amended 24.11.2025.
+    // § 5 (5) "250 € je kWp … auf 2.500 € je Anlage begrenzt" — computed.
+    // § 5 (6) storage 2,500 € max 30 % — NOT computed (no storage percentage in
+    // the model, same as Bickenbach/Reckershausen). § 5 (3) balcony "300 €,
+    // jedoch mit maximal 30 %" — computed. § 5 (11) heat pumps (§ 2 Nr. 14,
+    // connected to a water-based heating system) "2.500 € … höchstens mit 30 %"
+    // — NOT computed: the calculator measures a municipal heat-pump grant on the
+    // base-path investment, which only works for flat amounts (tripwire in
+    // waermepumpe-kommunalfoerderung.test.ts). Information only. § 3 (1): balcony (Nr. 3) for owners AND
+    // tenants of at least one year, so NO nurWohnform; § 3 (2): PV, storage,
+    // heat pump owners only (conditions). § 4 (3) energy consultation for
+    // Nr. 4-15, not for the balcony. § 7 (6) term until 31.12.2026 → endetIso.
+    // Council intends a different guideline from 2027 (Mitteilungsblatt VG
+    // Kirchberg Nr. 8/2026, 19.02.2026). Silent on other public funding → BUND.
+    // Found 27.09.2026: the VG village pages load their "Förderprogramme" list
+    // by script; earlier sitemap-only checks could not see it.
+  },
+
+  "henau-energiespar": {
+    id: "henau-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Henau", level: "kommune", region: "Henau",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140050",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/henau/foerderprogramme/energiesparrichtlinie-2026-unterschrieben.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-04-12",
+    endetIso: "2028-12-31",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 300 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je kWp von 5 bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter, Module bis 2 kWp", value: "höchstens 300 €, höchstens 30 % der Investitionskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Henau — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2028; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 7 pages,
+    // listed under "Förderprogramme" on the VG page of Henau): council
+    // 12.04.2021, amended 05.02.2025 and 18.11.2025; § 7 (6) term 01.06.2021 to
+    // 31.12.2028 → endetIso. § 5 (4) PV "200€ je kWp bis zu einer Leistung von
+    // 5 kWp und 300 € je kWp von 5 kWp bis zu einer Leistung von 10 kWp …
+    // auf 2.500 € je Anlage begrenzt" — marginal staffel, NOT computed (same
+    // as Reckershausen). § 5 (5) storage 2,500 € max 30 % — not computed.
+    // § 5 (15) balcony (§ 2 Nr. 16) "maximal 300 Euro …, jedoch maximal 30 %
+    // der Investitionskosten" — computed. § 5 (10) heat pumps (§ 2 Nr. 13)
+    // "2.500 € …, höchstens mit 30 %" — NOT computed (percentage heat-pump grant,
+    // see Unzenberg). § 3 (2): Nr. 3-17, incl.
+    // the balcony, only for owners → nurWohnform. § 4 (3) energy consultation
+    // for Nr. 2-14, 16 and 17. Silent on other public funding → BUND.
+  },
+
+  "metzenhausen-energiespar": {
+    id: "metzenhausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Metzenhausen", level: "kommune", region: "Metzenhausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140094",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/metzenhausen/foerderprogramme/energiesparrichtlinie-metzenhausen-2025.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2019-02-07",
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 100 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je weiteres kWp bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "100 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Metzenhausen — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2026; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 100,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 8 pages,
+    // listed under "Förderprogramme" on the VG page of Metzenhausen): council
+    // 07.02.2019, amended 10.03.2022, 30.08.2023 and 21.03.2025; § 7 (6) term
+    // until 31.12.2026 → endetIso. § 5 (4) PV 200 €/kWp up to 5 kWp and 300 €
+    // per further kWp up to 10 kWp, max 2,500 € — marginal staffel, NOT
+    // computed; same paragraph: balcony (max 800 W) "einmalig mit 100 €,
+    // höchstens jedoch mit 30 %" — computed. § 5 (5) storage 2,500 € max 30 %
+    // — not computed. § 5 (10) heat pumps (§ 2 Nr. 13) 2,500 € max 30 % —
+    // not computed (percentage heat-pump grant, see Unzenberg). § 3 (2): Nr. 3-15 (PV and balcony are Nr. 5) only for owners →
+    // nurWohnform. § 4 (3) energy consultation for Nr. 2-17. The council
+    // agenda of 18.03.2026 (Mitteilungsblatt VG Kirchberg Nr. 11/2026) lists
+    // "Gewährung von Zuschüssen nach der Energiesparrichtlinie" — it is in use.
+    // Silent on other public funding → BUND.
+  },
+
+  "kappel-energie": {
+    id: "kappel-energie", name: "Richtlinie zur Förderung von energetischen Maßnahmen",
+    traeger: "Ortsgemeinde Kappel", level: "kommune", region: "Kappel",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140062",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/kappel/foerderprogramme/foerderrichtlinie.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2016-01-11",
+    endetIso: "2028-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil eines Balkonkraftwerks; Festbetrag je Objekt für neue Heizungen einschließlich Wärmepumpe — keine Dachanlage, kein Batteriespeicher",
+    maxFoerderung: "max. 100 € Balkonkraftwerk, 4.600 € Heizung je Objekt; insgesamt 5.000 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter, Module bis 2 kWp", value: "höchstens 100 €, höchstens 30 % der Investitionskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "4.600 € je Objekt; von der Investitionssumme werden 2.500 € Eigenbeitrag abgezogen, der volle Zuschuss fällt ab 7.100 € an", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Das Balkonkraftwerk bekommen Eigentümer und Mieter einer Wohnung oder eines Wohngebäudes in Kappel", nur: ["balkon"] },
+      { text: "Die Wärmepumpe nur für Eigentümer eines Wohngebäudes in Kappel; sie muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      { text: "Voraussetzung ist die Teilnahme an einer anerkannten Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil übernimmt die Gemeinde", nur: ["waermepumpe"] },
+      { text: "Die 4.600 € gibt es je Objekt nur einmal für alle Heizungsmaßnahmen zusammen — Wärmepumpe, Pellet-, Hackschnitzel- oder Holzvergaserkessel, Solarthermie und Nahwärme-Anschluss werden nicht nebeneinander gefördert", nur: ["waermepumpe"] },
+      "Der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2028; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 100,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned image PDF without text layer,
+    // 5 pages, read page by page; listed under "Förderprogramme" on the VG page
+    // of Kappel): council 11.01.2016, amended 25.05.2021, 20.03.2024 and
+    // 16.12.2024; § 7 (6) term until 31.12.2028 → endetIso. § 2 has NO roof PV
+    // and NO storage. § 5 (7) balcony (§ 2 Nr. 14) "maximal 100 Euro …, jedoch
+    // maximal 30 % der Investitionskosten" — computed; § 3 (1) balcony for
+    // owners AND tenants, so no nurWohnform; no energy consultation for Nr. 14
+    // (§ 4 (3) covers Nr. 2-13). § 5 (6) heating measures Nr. 6-13 (incl. heat
+    // pump Nr. 8) "pro Objekt einmalig ein Zuschuss in Höhe von 4.600 € …
+    // Von der Investitionssumme wird ein Eigenbeitrag in Höhe von 2.500 € in
+    // Abzug gebracht" — information only for now: in practice a flat 4,600 €
+    // for any heat pump, but a new heat-pump deduction of this size needs its
+    // own review before it is computed. § 3 (2) Nr. 3-13 owners only. § 5 (1)
+    // 5,000 € per household in total. Silent on other public funding → BUND.
+  },
+
   "schlierbach-energiespeicher": {
     id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
     traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",
