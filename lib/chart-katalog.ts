@@ -27,8 +27,14 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  { datei: "charts/AnnualGrowthWidget", art: "widget", wofuer: "Shared annual growth chart with period selection and export actions for municipality and regional monitors." },
+  { datei: "charts/CurrentPowerWidget", art: "baustein", wofuer: "Shared weather adapter and current solar power dial for municipality, regional monitor and compact header." },
   { datei: "charts/CategoryBarChart", art: "baustein", wofuer: "Category bars with partial-period hatching and accessible values." },
   { datei: "charts/ShareDonut", art: "baustein", wofuer: "Share donut with center total and category detail cards." },
+  { datei: "charts/CompositionChart", art: "baustein", wofuer: "Anlagenraster mit Leistungsanteil (Vorlage anlagenraster): eine Grafik für Monitor, Geschichte, Redaktion und Bild, zwei ausdrückliche Layouts (monitor, story)." },
+  { datei: "charts/EnergyYearRadial", art: "baustein", wofuer: "Jahresprofil Solar/Wind (Vorlage energy-year): ein Strahl je Tag; Monitor und Geschichte legen ihre Bedienung darum, zwei ausdrückliche Layouts (monitor, story)." },
+  { datei: "charts/MonthlySolarRadial", art: "baustein", wofuer: "Solar-Monatsrückblick (Vorlage radial): eine 24-Stunden-Linie je Tag; Monitor und Geschichte behalten Zustand und Bedienung, zwei ausdrückliche Layouts (monitor, story)." },
+  { datei: "charts/CompositionArc", art: "baustein", wofuer: "Anteilsbogen der Zusammensetzungs-Grafik: flacher Anfang, rundes Ende; Monitor und Geschichten zeichnen ihn gleich." },
   // ─── Rohformen ────────────────────────────────────────────────────────────
   { datei: "charts/DonutChart", art: "baustein", wofuer: "Ring mit freier Mitte — Anteile eines Ganzen zu einem Zeitpunkt." },
   { datei: "charts/LineChart", art: "baustein", wofuer: "Linien über die Zeit, mehrere Reihen mit gemeinsamer Achse." },

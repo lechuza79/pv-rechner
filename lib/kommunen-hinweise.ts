@@ -59,7 +59,11 @@ export function schonVermerkt(fundstelle: string, notiz: string | null): boolean
     return nummer ? n.includes(nummer) : false;
   }
   const d = domainVon(fundstelle).replace(/^(m|l|lm)\.(?=facebook\.com$)/, "");
-  if (n.includes(d)) return true;
+  // A domain inside a MAIL ADDRESS does not count: Trier's note carried the
+  // sender "…@trier.de" of its reply, and a link from trier.de to our home page
+  // was then treated as long known (26.09.2026).
+  const esc = d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (new RegExp(`(^|[^@\\w.-])([\\w-]+\\.)*${esc}(?![\\w-])`).test(n)) return true;
   // Soziale Netze stehen in älteren Vermerken nur mit Namen („über Facebook").
   // Bewusst NUR dort: Bei einer Gemeinde-Domain wäre der Name ohne Endung
   // („heringen") auch in jedem Betreff enthalten und hielte jeden neuen

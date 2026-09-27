@@ -109,7 +109,7 @@ export default function Client() {
 
   if (fehler) {
     return (
-      <main style={S.page}>
+      <div style={S.page}>
         <div style={S.wrap}>
           <h1 style={S.h1}>Dieser Link stimmt nicht</h1>
           <p style={S.lede}>
@@ -121,22 +121,22 @@ export default function Client() {
             Zum Energie-Atlas
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
   if (!abos) {
     return (
-      <main style={S.page}>
+      <div style={S.page}>
         <div style={S.wrap}>
           <p style={S.lede}>Einen Moment …</p>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main style={S.page}>
+    <div style={S.page}>
       <div style={S.wrap}>
         <h1 style={S.h1}>Deine Meldungen</h1>
         <p style={S.lede}>
@@ -160,7 +160,7 @@ export default function Client() {
           Bestätigung gehört.
         </p>
       </div>
-    </main>
+    </div>
   );
 }
 

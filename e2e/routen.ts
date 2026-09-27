@@ -10,6 +10,7 @@ export type Seite = { pfad: string; erwartet: RegExp };
 /** Seiten, die kein Flow-Test abdeckt. */
 export const SEITEN: Seite[] = [
   // Rechner
+  { pfad: "/suche?q=W%C3%A4rmepumpe", erwartet: /wärmepumpe/i },
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
   { pfad: "/balkonkraftwerk", erwartet: /balkonkraftwerk/i },
   { pfad: "/balkonkraftwerk/rechner", erwartet: /balkon/i },

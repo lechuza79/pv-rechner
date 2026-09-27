@@ -1,3 +1,5 @@
+import { HEATING_INVESTMENT, lwwpCoreGross } from "./heating-investment";
+import { OIL_REFERENCE, oilProjectedPricePerKwh } from "./oil-reference";
 // ─── Heat Pump Calculation Engine ──────────────────────────────────────────
 // Pure functions — no React, no I/O. Reusable in server/client.
 //
@@ -7,7 +9,7 @@
 //   Auslegung = Heizlast × Auslegungsfaktor                        (Anlagengröße, bestimmt den Preis)
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
-//   Invest   = base + perKw × Auslegung                     (VZ-Angebotsauswertung)
+//   Investment: KWW capacity-dependent core + VZ-calibrated fixed remainder.
 //   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
 //              Grund, Klima und Höchstbetrag folgen dem Fahrplan der Richtlinie
 //              (BEG_FAHRPLAN); der Fördersatz halbiert sich zum 01.01.2027.
@@ -22,15 +24,17 @@ import {
   DEFAULT_HEATPUMP_CONFIG,
   begStufeAm,
   BEG_WERTSCHOEPFUNGS_BONUS,
+  STROM_PFAD,
+  GAS_PFAD,
   type HeatPumpConfig,
   type BegStufe,
 } from "./heatpump-config";
 import { calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
-import { calcFossilReference, wpStandingCostPerYear } from "./fossil-reference";
+import { calcFossilReference, wpStandingCostPerYear, fossilReplacementInvestment } from "./fossil-reference";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, auslegungsleistung, flowTempForSystem, calcJAZ } from "./heatpump-core";
-import { type FuelKind } from "./constants";
+import { YEAR, type FuelKind } from "./constants";
 import type { GasScenario } from "./greengas-config";
 import { v } from "./theme";
 
@@ -191,9 +195,12 @@ export interface HeatPumpScenarioResult extends HeatPumpResult {
 // heatpump-core.ts (siehe Re-Export oben) und werden hier importiert genutzt.
 
 export function calcInvestBrutto(wpType: "lwwp" | "swwp", auslegungKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
-  const base = wpType === "swwp" ? cfg.investSwwpBase : cfg.investLwwpBase;
-  const perKw = wpType === "swwp" ? cfg.investSwwpPerKw : cfg.investLwwpPerKw;
-  const heatpumpCost = base + perKw * auslegungKw;
+  // Capacity is a COST CLASS proxy, not a conversion to the KWW A2/W35
+  // operating point or a manufacturer-specific technical sizing result.
+  const heatpumpCost = wpType === "swwp"
+    ? cfg.investSwwpBase + cfg.investSwwpPerKw * auslegungKw
+    : cfg.investLwwpBase + cfg.investLwwpCoreAt10Kw *
+      lwwpCoreGross(auslegungKw) / HEATING_INVESTMENT.lwwp.referenceCoreGross;
   // Tauschkosten nur wenn die Maßnahme aktiv gewählt ist — nicht mehr automatisch
   // an "alte Heizkörper" gekoppelt (sonst zahlt man den Tausch ohne JAZ-Nutzen).
   const hkTausch = doHeizkoerperTausch ? cfg.heizkoerperTauschKosten : 0;
@@ -438,9 +445,13 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // PV-Rechner exakt dieselbe Grundlage benutzt (er hatte vorher eine eigene, die
   // auseinandergelaufen war). Zahlen weiterhin aus heatpump-config.ts.
   const fuelKind: FuelKind = inputs.fuelKind ?? "gas";
-  const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
-  const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
-  const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
+  const gasInvest = inputs.override?.fossilErsatzInvest ?? fossilReplacementInvestment(fuelKind, cfg, heizlastKw);
+  const gasPrice = inputs.override?.gasPrice ?? (fuelKind === "oil" ? oilProjectedPricePerKwh(YEAR) : cfg.gasPriceCtPerKwh / 100);
+  const defaultEfficiency = fuelKind === "oil"
+    ? (gasInvest > 0 ? OIL_REFERENCE.newEfficiency : OIL_REFERENCE.existingEfficiency)
+    : cfg.gasEfficiency;
+  const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? defaultEfficiency);
+  const gasCo2 = inputs.override?.gasCo2 ?? (fuelKind === "oil" ? OIL_REFERENCE.co2PerKwh : cfg.gasCo2PerKwh);
   const fuelKwh = qGes / gasEff;
   // Anschaffung der fossilen Alternative — auch im BESTAND. Wer sich gegen die
   // Wärmepumpe entscheidet, betreibt nicht 20 Jahre lang eine alte Heizung weiter,
@@ -450,7 +461,6 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // die zugehörige Investition anzusetzen, also zwei Hälften verschiedener Fälle.
   // Wer eine junge Heizung hat, setzt den Betrag im Ergebnis auf 0 — dann fällt über
   // greenGasApplies() auch die Beimischungspflicht weg (die Regel steht nur dort).
-  const gasInvest = inputs.override?.fossilErsatzInvest ?? cfg.fossilErsatzInvest;
   // Grüngas-Modus (GModG Bio-Treppe): der Gaspreis wird Jahr für Jahr neu gemischt
   // (teures Biomethan verdrängt Erdgas, Netzentgelt + CO₂ steigen eigenständig) —
   // das kann das simple „Preis × Teuerung"-Modell nicht abbilden. Modell +
@@ -540,12 +550,170 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 // nicht nur die Kern-Prognose, sondern auch der Sanierungswege-Vergleich auf der
 // Ergebnisseite mit demselben Szenario rechnet (sonst widerspräche der Wege-Block
 // dem oben gewählten Szenario).
+/**
+ * Die Preispfade — jede der sechs Zahlen ist eine Studienzahl.
+ *
+ * WAS HIER STAND, in drei Fassungen binnen zweier Tage: erst Strom +5/+2/+1 %
+ * und Gas +1/+2/+4 % ganz ohne Beleg, dann +4/+2/+1 gegen +2/+2,5/+5 mit einer
+ * Leitquelle für die Mitte und gegriffenen Rändern. Der Betreiber hat am
+ * 06.09.2026 das Naheliegende verlangt: die Werte aus den Studien nehmen,
+ * darauf verweisen, und nicht runden — „das macht wohl auch einen unterschied
+ * über so einen langen zeitraum". Nachgemessen am Referenzfall (unsanierter
+ * Altbau, 140 m², alte Heizkörper): Zwischen 4,0 und 4,38 % Strompfad liegen
+ * über zwanzig Jahre rund 2.800 €. Die Rundung war teurer als die Recherche.
+ *
+ * WIRKUNG DER GANZEN UMSTELLUNG, am selben Fall: Die mittlere Zahl fällt von
+ * 18.323 auf 14.008 € — die Wärmepumpe spart nach den Studienwerten also
+ * WENIGER, als die gegriffenen Pfade behauptet hatten. Beide Bewegungen gehen
+ * zu ihren Lasten: Strom von 2,0 auf 2,30 %, Gas von 2,5 auf 2,11 %.
+ *
+ * ── DIE BEIDEN QUELLEN ──────────────────────────────────────────────────────
+ *
+ * UBA = Kemmler u. a. (2026): „Rahmendaten und Endverbrauchspreise für die
+ *   Treibhausgas-Projektionen 2026", 3. Auflage, Prognos AG im Auftrag des
+ *   Umweltbundesamtes, FKZ 37K2 44 201 0, DOI 10.60810/openumwelt-8481.
+ *   Tabelle 3 (Preisindex BIP, S. 21), Tabelle 12 (Erdgas Haushalte, S. 58),
+ *   Tabelle 13 (Strom Wärmepumpentarif, S. 59).
+ *   Volltext: `docs/quellen/UBA-Rahmendaten-THG-Projektionen-2026.pdf`.
+ *
+ * ISE = Fraunhofer ISE (23.06.2026): Kurzstudie „Vergleich Wärmeversorgung /
+ *   Auswirkungen der Bio-Treppe in § 43", im Auftrag der MVV Energie AG.
+ *   Folie 17 (Endkundenpreise in Preisen 2026), Folie 21/22 (Zusammensetzung
+ *   und Netzentgelt-Annahmen). Volltext:
+ *   `docs/quellen/Fraunhofer-ISE-Biotreppe-GModG-2026-06.pdf`.
+ *
+ * Beide am 06.09.2026 im Original gelesen. Die ISE-Kurven stehen dort nur als
+ * Grafik; sie wurden aus der 800-dpi-Fassung der Folie pixelgenau ausgelesen
+ * (Raster 376,3 Pixel je 5 ct, Nulllinie bei Zeile 4847,5).
+ *
+ * EINE PIXELMESSUNG KANN TROTZDEM DANEBENLIEGEN, und genau das ist passiert:
+ * Am linken Rand liegen die beiden Stromkurven fast übereinander, und die
+ * hellere ist ÜBER der dunklen gezeichnet — von der dunklen sind vier von
+ * vierundzwanzig Pixelzeilen sichtbar. Die erste Messung nahm deren Unterkante
+ * für den Wert und startete den oberen Pfad bei 27,31 statt 27,48 ct; die Rate
+ * kam dadurch 0,04 Punkte zu hoch heraus (rund 180 € im Referenzfall, zulasten
+ * der Wärmepumpe). Gefunden von einem adversarialen Prüfer, der zusätzlich die
+ * Gegenprobe geliefert hat: Auf Folie 22 sind die 2026er Säulen beider
+ * Stromszenarien gleich hoch — die beiden Pfade starten also auf demselben
+ * Wert, und das ist der einzige unverdeckt messbare, 27,48 ct.
+ *
+ * REGEL DARAUS: Wo zwei Kurven einander berühren, misst man die Kurve, die
+ * OBEN liegt, und nimmt den Wert für beide — die untere ist an dieser Stelle
+ * gar nicht messbar, nur ihre Kante.
+ *
+ * WARUM DIESE ZWEI UND NICHT DIE GROSSEN HÄUSER: Weder Projektionsbericht noch
+ * Ariadne, Langfristszenarien, dena oder Agora variieren die Endkundenpreise
+ * über ihre Szenarien — der Projektionsbericht sagt ausdrücklich, dabei
+ * „würden sich die Wirkungen überlagern und wären nicht mehr klar zuordenbar".
+ * Eine Bandbreite gibt es nur dort, wo jemand genau diese Frage gerechnet hat:
+ * in der Wärmepumpe-gegen-Gas-Debatte 2026. Die ISE-Kurzstudie ist davon die
+ * mit der vollständigsten Komponenten-Dokumentation — und wir benutzen sie
+ * ohnehin schon für die Anschaffungskosten der fossilen Referenz.
+ *
+ * ── STROM: WÄRMEPUMPENTARIF, ENDKUNDENPREIS ─────────────────────────────────
+ *
+ *   optimistisch  UBA T13   27,4  → 20,5  ct(2024)/kWh  real −1,44 %/a
+ *   realistisch   ISE nied. 27,48 → 28,69 ct(2026)/kWh  real +0,23 %/a
+ *   pessimistisch ISE hoch  27,48 → 42,07 ct(2026)/kWh  real +2,27 %/a
+ *
+ * Die amtliche Projektion ist damit unser GÜNSTIGSTER Pfad, nicht die Mitte:
+ * Sie ist der einzige Beleg dafür, dass der Wärmepumpentarif real fällt, und
+ * sie liegt unter beiden ISE-Szenarien. Die Mitte ist das untere ISE-Szenario;
+ * die Bandbreite spannt sich also über beide Quellen, statt eine davon zu
+ * spiegeln.
+ *
+ * DER GLEICHLAUF MIT DEM PV-RECHNER IST DAMIT AUFGEGEBEN, und zwar bewusst:
+ * Dort steht der Haushaltstarif, hier der Wärmepumpentarif — nach UBA T13 zwei
+ * verschiedene Reihen mit verschiedenen Pfaden (Haushalt 38,3 → 33,4, WP-Tarif
+ * 27,4 → 20,5). Denselben Anstieg für beide anzusetzen wäre Konsistenz-Optik
+ * gegen die Quelle.
+ *
+ * ── GAS: ERDGAS HAUSHALTE, OHNE CO₂ UND OHNE BEIMISCHUNG ────────────────────
+ *
+ * DIE ISE-GASKURVEN SIND HIER NICHT EINSETZBAR, und das ist der wichtigste
+ * Befund dieser Runde. Sie enthalten laut Folie 19 als eigene Komponenten den
+ * CO₂-Preis UND die Grüngas-Beschaffung — beides rechnet dieser Rechner
+ * getrennt (`co2SurchargeOverToday` bzw. die Bio-Treppe). Wer die ISE-Rate von
+ * +5,74 %/a übernimmt, zählt beides ein zweites Mal. Ein Vorschlag, genau das
+ * zu tun, lag am 06.09.2026 auf dem Tisch und ist daran gescheitert.
+ *
+ * Bleibt die UBA-Zerlegung. Netto (die MwSt. steht dort in einer eigenen
+ * Zeile), EUR(2024)/MWh, Beschaffung + Steuern/Abgaben + Netzentgelte:
+ *
+ *   2025   61 + 10 + 27 = 98        2045   31 + 5 + 62 = 98
+ *
+ * Ohne CO₂ ist der reale Gaspreis über zwanzig Jahre also EXAKT konstant: Was
+ * die Beschaffung verliert (−3,3 %/a), holen die Netzentgelte des
+ * schrumpfenden Gasnetzes zurück (+4,2 %/a). Der frühere Kommentar nannte hier
+ * +0,29 %/a — das war der Bruttopreis minus dem NETTO-CO₂-Betrag, also ein
+ * Abzug ohne die darauf entfallende Mehrwertsteuer.
+ *
+ * Die Bandbreite trägt damit allein das Netzentgelt, und dafür nennt ISE zwei
+ * Ränder (Folie 21): unten „konstantes Niveau von 2026 bis 2045" (2,2 ct/kWh),
+ * oben ein Hochlauf auf 8,0 ct/kWh nach der Studie des Öko-Instituts zum
+ * Netzentgeltanstieg bei sinkender Gasnachfrage.
+ *
+ * ÜBERNOMMEN WIRD DAS VERHÄLTNIS, NICHT DER ABSOLUTWERT — und zwar an BEIDEN
+ * Rändern. ISEs 2,2 ct gehören zu einer anderen Abgrenzung als die 2,7 ct der
+ * UBA-Tabelle; einen davon einzusetzen hieße, zwei Zerlegungen zu mischen. Die
+ * erste Fassung tat unten das eine („konstant") und oben das andere (die 8,0
+ * ct direkt eingesetzt) und schrieb die Regel dagegen zwei Zeilen darüber
+ * selbst hin — aufgefallen dem adversarialen Prüfer, nicht dem Autor.
+ *
+ *   pessimistisch  Netz konstant (×1,00)  →  63,0 EUR/MWh  real −2,18 %/a
+ *   realistisch    Netz 27 → 62 (UBA)     →  98,0 EUR/MWh  real  0,00 %/a
+ *   optimistisch   Netz ×3,64 (8,0/2,2)   → 134,2 EUR/MWh  real +1,58 %/a
+ *
+ * ── REAL IST NICHT NOMINAL ──────────────────────────────────────────────────
+ *
+ * Beide Quellen rechnen real, dieser Rechner zinst nominal auf. Umgerechnet
+ * mit dem BIP-Deflator aus UBA T3 (Index 2024 = 100 → 2045 = 156,0), auf den
+ * jeweiligen Zeitraum geometrisch interpoliert: 2,106 %/a für 2025–2045,
+ * 2,069 %/a für 2026–2045. Daraus die Werte unten. Wer die realen Raten direkt
+ * einsetzt, unterschätzt jeden Pfad um gut zwei Punkte.
+ *
+ * DER ANGEZEIGTE PROZENTWERT IST NICHT DER GERECHNETE. Der CO₂-Aufschlag kommt
+ * in `calcFossilReference` additiv und szenariounabhängig obendrauf. Gemessen
+ * am Referenzfall (20.000 kWh Gas, 11 ct/kWh): aus den Pfaden −0,13 / +2,11 /
+ * +3,72 % werden effektiv rund +1,2 / +3,0 / +4,4 % im Jahr. Die Beschriftung
+ * nennt deshalb den Preispfad, nicht die Endrate.
+ *
+ * ── ZWEI VORBEHALTE, DIE MITGEHÖREN ─────────────────────────────────────────
+ *
+ * 1. ZWEI ALTE UNGENAUIGKEITEN IM CO₂-ZWEIG HEBEN SICH ZUFÄLLIG AUF. Der
+ *    heutige Brennstoffpreis enthält die heutige CO₂-Abgabe (bei 55 €/t rund
+ *    1,3 ct/kWh brutto) und wächst mit `gasInflation` mit — obwohl die Rate ex
+ *    CO₂ hergeleitet ist; das sind 2045 gut 0,6 ct zu viel. Gegenläufig wird
+ *    der CO₂-Aufschlag NETTO auf einen Bruttopreis addiert, rund 0,6 ct zu
+ *    wenig. Beides ist älter als diese Änderung und keines steht für sich; wer
+ *    einen der beiden repariert, muss den anderen mitreparieren, sonst
+ *    verschiebt sich das Ergebnis. Gefunden bei der Gegenprüfung 06.09.2026.
+ *
+ * 2. DER PESSIMISTISCHE GASPFAD LIEGT UNTER JEDEM STUDIENSZENARIO. Nicht wegen
+ *    des Preispfads — der ist die amtliche Zerlegung mit eingefrorenem
+ *    Netzentgelt —, sondern weil unser CO₂-Pfad flacher verläuft als der der
+ *    Quelle (209 €/t in 2045 gegen 225 €/t bei UBA, in Preisen von 2024).
+ *    Der Reiter sagt „der CO₂-Preis kommt auch hier zusätzlich obendrauf"; das
+ *    stimmt, schließt diese Lücke aber nicht. Wer den CO₂-Pfad anfasst, prüft
+ *    diesen Rand mit.
+ *
+ * `gasScenario` mappt auf den IW-Preiskorridor (nur im Grüngas-Modus wirksam):
+ * „ungünstig für die WP" = Gas bleibt billig → low; „günstig" = Gas wird teuer
+ * → high. Spiegelbildlich zur `gasInflation`-Logik.
+ *
+ * Der JAZ-Faktor bleibt: Reale Anlagen streuen, und die Streuung nach unten ist
+ * belegt (Fraunhofer ISE WPsmart). Er ist an seinem Szenario ausgeschrieben
+ * („die Arbeitszahl fällt etwas schlechter aus"), und wer es genauer will,
+ * ändert die Jahresarbeitszahl im Ergebnis direkt — sie ist dort editierbar.
+ *
+ * Herleitung nachrechenbar in `lib/__tests__/wp-preispfade.test.ts`: Der Test
+ * rechnet aus den Tabellenwerten beider Quellen die sechs Raten neu und hält
+ * sie gegen die Konstanten hier. Wer eine Zahl ändert, ändert sie dort mit —
+ * oder der Lauf wird rot.
+ */
 export function heatPumpScenarioAdj(id: string, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { jazFactor: number; stromInflation: number; gasInflation: number; gasScenario: GasScenario } {
-  // gasScenario mappt auf den IW-Preiskorridor (nur im Grüngas-Modus wirksam):
-  // „Pessimistisch für die WP" = Gas bleibt billig → low; „Optimistisch" = Gas
-  // wird teuer → high. Spiegelbildlich zur gasInflation-Logik.
-  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: 0.05, gasInflation: 0.01, gasScenario: "low" };
-  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04, gasScenario: "high" };
+  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: STROM_PFAD.hoch, gasInflation: GAS_PFAD.niedrig, gasScenario: "low" };
+  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: STROM_PFAD.niedrig, gasInflation: GAS_PFAD.hoch, gasScenario: "high" };
   return { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation, gasScenario: "base" };
 }
 
@@ -553,16 +721,23 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
   // WP-Sicht: teurer Strom + billiges Gas ist ungünstig (Strom treibt die
   // WP-Kosten, Gas die Referenz). Daher ist „Pessimistisch" = Strom steigt
   // schnell / Gas kaum — spiegelbildlich zum PV-Rechner.
-  const gasPct = (r: number) => `${(r * 100).toLocaleString("de-DE")} %`;
+  // Eine Nachkommastelle, und nur wenn sie etwas trägt: Die Pfade sind auf
+  // Hundertstel gesetzt (4,42 %), aber „Strom +4,42 %/a" auf einem Reiter
+  // behauptet eine Genauigkeit, die aus einem abgelesenen Diagramm stammt.
+  // Gerechnet wird mit dem vollen Wert, angezeigt der gerundete.
+  const pct = (r: number) =>
+    `${r < 0 ? "−" : "+"}${Math.abs(r * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`;
   const meta: Array<Pick<HeatPumpScenarioResult, "id" | "label" | "color" | "sub" | "explain">> = [
-    { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), sub: "Strom +5 %/a",
-      explain: "Ungünstig für die Wärmepumpe: Der Strompreis steigt schnell (+5 %/Jahr), Gas kaum — und die Arbeitszahl fällt etwas schlechter aus." },
-    { id: "realistic",   label: "Realistisch",   color: v("--color-positive"), sub: `Strom +${gasPct(cfg.stromInflation)}/a`,
-      explain: `Mittlere Annahme: Strompreis +${gasPct(cfg.stromInflation)}/Jahr, Gas +${gasPct(cfg.gasInflation)}/Jahr wie erwartet.` },
-    { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: "Strom +1 %/a",
-      explain: "Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (+1 %/Jahr), Gas verteuert sich kräftig (+4 %/Jahr) — die WP spart mehr." },
+    { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), sub: `Strom ${pct(STROM_PFAD.hoch)}/a`,
+      explain: `Ungünstig für die Wärmepumpe: Der Strompreis steigt kräftig (${pct(STROM_PFAD.hoch)}/Jahr), Gas bleibt fast stehen (${pct(GAS_PFAD.niedrig)}/Jahr) — und die Arbeitszahl fällt etwas schlechter aus. Beide Zahlen sind Studienwerte: der Strompfad das obere Szenario der Fraunhofer-ISE-Kurzstudie vom Juni 2026, der Gaspfad die amtliche Projektion mit Netzentgelten auf heutigem Niveau. Der CO₂-Preis kommt auch hier zusätzlich obendrauf.` },
+    { id: "realistic",   label: "Realistisch",   color: v("--color-positive"), sub: `Strom ${pct(cfg.stromInflation)}/a`,
+      explain: `Mittlere Annahme: Strompreis ${pct(cfg.stromInflation)}/Jahr, Gas ${pct(cfg.gasInflation)}/Jahr. Der Strompfad ist das untere Szenario der Fraunhofer-ISE-Kurzstudie, der Gaspfad die Preisprojektion, die Prognos für das Umweltbundesamt rechnet — dort bleibt der Gaspreis ohne CO₂ real konstant, weil die günstigere Beschaffung von den Netzentgelten des schrumpfenden Gasnetzes aufgezehrt wird. Der CO₂-Preis kommt in allen Pfaden zusätzlich obendrauf.` },
+    { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: `Strom ${pct(STROM_PFAD.niedrig)}/a`,
+      explain: `Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (${pct(STROM_PFAD.niedrig)}/Jahr), Gas verteuert sich stärker (${pct(GAS_PFAD.hoch)}/Jahr) — die Wärmepumpe spart mehr. Der Strompfad ist die amtliche Projektion, nach der der Wärmepumpentarif bis 2045 real sogar fällt; beim Gas steigen die Netzentgelte nach der Studie des Öko-Instituts auf 8 Cent je Kilowattstunde. Dazu kommt der CO₂-Preis.` },
   ];
-  return meta.map(s => ({ ...s, ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
+  return meta.map(s => ({ ...s,
+    ...(inputs.fuelKind === "oil" ? { explain: "Für Heizöl verwenden alle drei Szenarien denselben UBA-Preispfad einschließlich CO₂ und Mehrwertsteuer. Sie unterscheiden sich beim Strompreis und der Arbeitszahl der Wärmepumpe. Dein eingetragener Ölpreis bestimmt das Ausgangsniveau; die weitere Entwicklung folgt der Projektion. Zusätzliche Kosten für Bioheizöl sind nicht enthalten." } : {}),
+    ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
 }
 
 // ─── PV synergy: how much of WP electricity can a PV system cover? ─────────
@@ -573,4 +748,34 @@ export function estimatePvCoverageOfWp(kwp: number, eWp: number, speicherKwh: nu
   const base = 0.15 * Math.pow(kwp / eWpMwh, 0.3);
   const speicherBoost = speicherKwh > 0 ? 0.05 + 0.02 * Math.min(speicherKwh / eWpMwh, 4) : 0;
   return Math.max(0.05, Math.min(base + speicherBoost, 0.35));
+}
+
+
+/** Opposing installation-price stress cases. These hold energy assumptions
+ * fixed, recalculate grants from gross costs and never vary entered net quotes.
+ * The ±20% is a sensitivity choice, not a confidence interval.
+ */
+export function calcHeatPumpInvestmentSensitivity(
+  inputs: HeatPumpInputs,
+  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+  scenarioAdj?: Parameters<typeof calcHeatPump>[2],
+): { central: HeatPumpResult; favorable: HeatPumpResult; adverse: HeatPumpResult } {
+  const central = calcHeatPump(inputs, cfg, scenarioAdj);
+  const vary = (wpFactor: number, fossilFactor: number): HeatPumpResult => {
+    const wp = inputs.override?.investNetto === undefined ? wpFactor : 1;
+    const adjusted = {
+      ...cfg,
+      investLwwpBase: cfg.investLwwpBase * wp,
+      investLwwpCoreAt10Kw: cfg.investLwwpCoreAt10Kw * wp,
+      investSwwpBase: cfg.investSwwpBase * wp,
+      investSwwpPerKw: cfg.investSwwpPerKw * wp,
+      heizkoerperTauschKosten: cfg.heizkoerperTauschKosten * wp,
+    };
+    return calcHeatPump({ ...inputs, override: { ...inputs.override,
+      fossilErsatzInvest: inputs.override?.fossilErsatzInvest
+        ?? Math.round(central.gasInvest * fossilFactor),
+    } }, adjusted, scenarioAdj);
+  };
+  const spread = HEATING_INVESTMENT.sensitivityFraction;
+  return { central, favorable: vary(1 - spread, 1 + spread), adverse: vary(1 + spread, 1 - spread) };
 }

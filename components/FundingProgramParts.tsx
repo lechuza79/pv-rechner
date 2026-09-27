@@ -1,4 +1,5 @@
 import { v } from "../lib/theme";
+import StatusBadge from "./StatusBadge";
 import InfoTooltip from "./InfoTooltip";
 import {
   FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, bedingungenFuer, saetzeFuer,
@@ -40,7 +41,8 @@ export function fundingStatusColor(status: FundingStatus): string {
   return status === "aktiv" ? v("--color-positive") : v("--color-text-muted");
 }
 
-export function FundingStatusBadge({ status }: { status: FundingStatus }) {
+export function FundingStatusBadge({ status, compact = false }: { status: FundingStatus; compact?: boolean }) {
+  if (compact) return <StatusBadge tone={status === "aktiv" ? "positive" : status === "ausgeschoepft" || status === "eingestellt" ? "negative" : "neutral"} pulse={status === "aktiv"}>{FUNDING_STATUS_LABEL[status]}</StatusBadge>;
   const c = fundingStatusColor(status);
   // „aktiv" ist eine positive Aussage und wird auch so gesetzt: gefüllt in der
   // Positiv-Farbe des Systems statt als blasser Umriss. Die übrigen Zustände

@@ -15,3 +15,6 @@
 .sc-share-legend strong{font-size:28px;line-height:1.2;white-space:nowrap;}
 .sc-share-legend small{font-size:12px;font-weight:400;color:var(--widget-muted);}
 @container(max-width:300px){.sc-share-donut{padding-inline:12px;}.sc-share-legend{gap:8px;}.sc-share-legend strong{font-size:24px;}}
+
+.sc-share-donut{container:share-donut / inline-size;}
+@container share-donut (min-width:420px){.sc-share-legend{grid-template-columns:repeat(3,minmax(0,1fr));}.sc-share-legend strong{font-size:26px;}}

@@ -30,6 +30,7 @@
     ],
     ["grossstaedte", "Großstädte · ab 100.000", 100000, Infinity],
   ];
+  if (G.districtOverview) classes.unshift(["alle", "Alle Ortsgrößen", 0, Infinity]);
   const metrics = [
     {
       id: "count",
@@ -146,11 +147,10 @@
     const c = classes.find((c) => c[0] === classId);
     return r.population >= c[2] && r.population < c[3];
   };
-  const ownIncluded = () =>
-    within({
-      population: data.districtPeers.find((r) => r.region_id === G.ags)
-        .population,
-    });
+  const ownIncluded = () => {
+    const own = data.districtPeers.find((r) => r.region_id === G.ags);
+    return Boolean(own && within(own));
+  };
   const ownRow = (rows) =>
     ownIncluded() ? rows.find((r) => r.id === G.ags) : null;
   const localRows = (m) =>
@@ -216,6 +216,14 @@
     }
     section.innerHTML = `<div class="atlas-wrap"><div class="atlas-head"><div><h2>Ranking: ${escape(G.name)} im Vergleich</h2></div><p class="ranking-intro"><span class="ranking-intro-copy">Wie steht ${escape(G.name)} da?</span> <button type="button" class="ranking-edit" aria-expanded="false" aria-controls="ranking-settings">Vergleichsgrößen ändern</button> <button type="button" class="ranking-reset" hidden>Zurücksetzen</button></p></div><div class="ranking-settings" id="ranking-settings" hidden><div class="ranking-filters"><label>Vergleichsgebiet<select data-filter="area">${G.kreisAgs ? `<option value="${G.kreisAgs}">${escape(G.kreisLabel)}</option>` : ""}<option value="${G.landAgs}">${escape(G.landLabel)}</option><option value="">Deutschland</option></select></label><label>Ortsgröße<select data-filter="class">${classes.map((c) => `<option value="${c[0]}" ${c[0] === classId ? "selected" : ""}>${c[1]}</option>`).join("")}</select></label><label>Anlagenbereich<select data-filter="owner"><option value="alle">Alle Anlagen</option><option value="privat">Privat</option><option value="gewerbe">Gewerbe / Freifläche</option></select></label></div></div><div class="ranking-playback"><span class="ranking-scope"></span><button type="button" class="ranking-play" hidden></button></div><p class="ranking-availability"></p><p class="ranking-load" role="status"></p><div class="atlas-competition"><div class="atlas-award-card ranking-stage" aria-live="off"></div><aside class="ranking-category-panel"><p class="atlas-kicker">${escape(G.genitiv)} Platzierungen</p><div class="ranking-choices" aria-label="Ranking-Kategorie"></div><button type="button" class="ranking-next">Nächste Platzierung entdecken →</button></aside></div><div class="ranking-share-actions"><button type="button" class="atlas-button" data-ranking-share>Platzierung teilen ↗</button></div><button type="button" class="ranking-open" aria-haspopup="dialog"></button><dialog class="ranking-dialog" aria-labelledby="ranking-dialog-title"><header class="ranking-dialog-head"><div class="ranking-dialog-titel"><h2 id="ranking-dialog-title">Rangliste</h2><p class="ranking-dialog-context"></p></div><button class="ranking-close" type="button" aria-label="Rangliste schließen">×</button></header><p class="ranking-change"></p><div class="ranking-table"></div></dialog><p class="ranking-source">${G.kreisAgs ? "Landkreis" : escape(G.landLabel)}: Registerstand ${new Date(data.dataAsOf).toLocaleDateString("de-DE")} · Einwohner: ${new Date(data.populationAsOf).toLocaleDateString("de-DE")}. ${escape(G.landLabel)} und Deutschland: Datenabruf bei Auswahl.</p></div>`;
 
+    if (G.districtOverview) {
+      section.dataset.districtOverview = "true";
+      section.querySelector("h2").textContent = "Die Gemeinden im Ranking";
+      section.querySelector(".atlas-kicker").textContent = "Kategorien";
+      const areaSelect = section.querySelector('[data-filter="area"]');
+      [...areaSelect.options].forEach(option => { if (option.value !== G.kreisAgs) option.remove(); });
+      section.querySelector(".ranking-source").textContent = "Registerstand " + new Date(data.dataAsOf).toLocaleDateString("de-DE");
+    }
     const stage = section.querySelector(".ranking-stage"),
       choices = section.querySelector(".ranking-choices"),
       play = section.querySelector(".ranking-play"),
@@ -336,26 +344,6 @@
       updateReset();
       load();
     };
-    function bindTooltip() {
-      const trigger = section.querySelector(".ranking-class-help"),
-        tip = section.querySelector("#ranking-class-tip");
-      if (!trigger) return;
-      trigger.onclick = () => {
-        const open = trigger.getAttribute("aria-expanded") !== "true";
-        trigger.setAttribute("aria-expanded", String(open));
-        tip.hidden = !open;
-      };
-      trigger.onkeydown = (e) => {
-        if (e.key === "Escape") {
-          tip.hidden = true;
-          trigger.setAttribute("aria-expanded", "false");
-        }
-      };
-      trigger.onblur = () => {
-        tip.hidden = true;
-        trigger.setAttribute("aria-expanded", "false");
-      };
-    }
     function playLabel() {
       play.textContent = playing ? "Ⅱ Pause" : "▶ Abspielen";
       play.setAttribute(
@@ -450,6 +438,10 @@
       if (!item) return;
       const box = item.getBoundingClientRect(),
         view = choices.getBoundingClientRect();
+      if (matchMedia("(max-width: 600px)").matches) {
+        choices.scrollTo({ left: choices.scrollLeft + box.left - view.left - 4, behavior: "instant" });
+        return;
+      }
       let top = choices.scrollTop;
       if (box.bottom > view.bottom) top += box.bottom - view.bottom;
       else if (box.top < view.top) top -= view.top - box.top;
@@ -489,7 +481,9 @@
       }
       render(true);
     }
+    let swipeTimer;
     function render(animate = false) {
+      clearTimeout(swipeTimer);
       const m = metrics.find((m) => m.id === active),
         rows = getRows(m),
         me = ownRow(rows),
@@ -516,7 +510,7 @@
             month: "short",
             year: "numeric",
           });
-      const top = rows.slice(0, 3),
+      const top = rows.slice(0, G.districtOverview ? 10 : 3),
         order = top.length === 3 ? [top[1], top[0], top[2]] : top;
       const previous = me ? rows.find((r) => r.rank === me.rank - 1) : null;
       section.dataset.share = JSON.stringify({
@@ -614,7 +608,7 @@
               ? fmt(me.value) + " " + m.unit
               : ownIncluded()
                 ? "Keine Platzierung"
-                : "Andere Größenklasse",
+                : G.districtOverview ? "Top 10 von " + fmt(total) + " Orten" : "Andere Größenklasse",
         });
         const button = choices.querySelector(`[data-category="${m.id}"]`);
         if (!button) return;
@@ -630,7 +624,7 @@
             ? fmt(me.value) + " " + m.unit
             : ownIncluded()
               ? "Keine Platzierung"
-              : "Andere Größenklasse";
+              : G.districtOverview ? "Top 10 von " + fmt(total) + " Orten" : "Andere Größenklasse";
         decoratePosition(button, m, seen.get(m.id));
         if (!inviteReady && !inviteDismissed) {
           clearTimeout(inviteTimer);
@@ -714,12 +708,8 @@
             qualifier || (sk.unit === "Anlagen" ? "Anzahl der Anlagen" : sk.unit);
           heading.after(sub);
         }
-        const kicker = stage.querySelector(".atlas-kicker");
-        if (kicker)
-          kicker.textContent =
-            m.snapshot && !m.snapshot.rows
-              ? G.genitiv + " Platzierung"
-              : "Top " + Math.min(3, top.length) + " von " + fmt(total);
+        stage.querySelector(".atlas-kicker")?.remove();
+        stage.classList.toggle("is-snapshot", Boolean(m.snapshot && !m.snapshot.rows));
         const scopeDetail = stage.querySelector(".ranking-detail");
         if (scopeDetail)
           scopeDetail.textContent = m.snapshot
@@ -763,6 +753,7 @@
                 "Installierte Nennleistung der Solaranlagen geteilt durch die Einwohnerzahl. Wp steht für Watt Peak – nicht für die aktuelle Stromerzeugung.",
             }[m.id] ??
             "Gespeicherte Rangliste für die angezeigte Vergleichsgruppe.";
+          if (G.districtOverview) explanation.append(" Heutiger Anlagenbestand nach Inbetriebnahmejahr. Pro-Kopf-Werte mit aktuellem Einwohnerstand.");
           const sourceNote = document.createElement("span");
           sourceNote.className = "ranking-help-source";
           sourceNote.textContent = sourceText;
@@ -778,6 +769,23 @@
             }
           };
           detail.append(" ", help, explanation);
+        }
+
+        if (G.districtOverview) {
+          stage.querySelector(".ranking-podium")?.remove();
+          stage.querySelector(".ranking-own")?.remove();
+          stage.querySelector(".ranking-gap")?.remove();
+          enthuellungLaeuft = motion;
+          ueberspringen = false;
+          const history = (data.history ?? []).map(frame => ({year: frame.year, rows:
+            data.districtPeers.filter(r => within(r) && r.population > 0).map(r => ({
+              id:r.region_id, value:m.value({...r, sums:frame.sums[r.region_id] ?? r.sums}, owner)
+            }))
+          }));
+          await window.solarDistrictRace({stage, rows, history, format: n => wert(n, sk), unit: sk.unit,
+            animate: motion, current: () => id === animationId, skip: () => ueberspringen});
+          if (id === animationId) { revealChoice(); schedule(); }
+          return;
         }
 
         for (const contender of stage.querySelectorAll(".ranking-contender")) {
@@ -955,6 +963,7 @@
         .sort((a, b) => (a.id === active0 ? -1 : 0) - (b.id === active0 ? -1 : 0));
       const shown = availableMetrics;
       const previousScrollTop = choices.scrollTop;
+      const restoreChoiceFocus = choices.contains(document.activeElement);
       choices.innerHTML = "";
       for (const metric of shown) {
         const available = true,
@@ -967,8 +976,13 @@
         b.setAttribute("aria-pressed", String(active === metric.id));
         const known = seen.get(metric.id),
           [label, subline] = splitTitle(metric.title);
-        b.innerHTML = `<span class="ranking-choice-position"><strong class="ranking-choice-rank">${known?.rank ?? "—"}</strong><small class="ranking-choice-denominator">${known?.denominator ?? ""}</small></span><span><strong class="ranking-choice-title">${escape(label)}</strong>${subline ? `<span class="ranking-choice-subline">${escape(subline)}</span>` : ""}<span class="ranking-choice-caption">${known?.caption ?? (available ? "Platzierung entdecken" : "Nur im Landkreis verfügbar")}</span></span><span class="ranking-choice-arrow" aria-hidden="true">${arrow}</span>`;
+        b.innerHTML = `<span class="ranking-choice-position"><strong class="ranking-choice-rank">${known?.rank ?? "—"}</strong><small class="ranking-choice-denominator">${known?.denominator ?? ""}</small></span><span><strong class="ranking-choice-title">${escape(label)}</strong>${subline ? `<span class="ranking-choice-subline">${escape(subline)}</span>` : ""}<span class="ranking-choice-caption">${known?.caption ?? (available ? (G.districtOverview ? "Sieger entdecken" : "Platzierung entdecken") : "Nur im Landkreis verfügbar")}</span></span><span class="ranking-choice-arrow" aria-hidden="true">${arrow}</span>`;
         b.onclick = () => {
+          if (matchMedia("(max-width: 600px)").matches && metric.id === active) {
+            dismissInvite();
+            selectMetric((availableMetrics.indexOf(metric) + 1) % availableMetrics.length);
+            return;
+          }
           pause();
           discovered = Math.max(
             discovered,
@@ -1008,6 +1022,28 @@
         discovered = Math.max(discovered, index + 1);
         selectCategory(metric);
       };
+      // Native scroll snapping handles touch gestures; select only after scrolling settles.
+      choices.onscroll = () => {
+        clearTimeout(swipeTimer);
+        if (!matchMedia("(max-width: 600px)").matches) return;
+        swipeTimer = setTimeout(() => {
+          if (!choices.isConnected) return;
+          const left = choices.getBoundingClientRect().left + 4;
+          const cards = [...choices.querySelectorAll(".ranking-choice")];
+          const closest = cards.reduce((best, card) =>
+            !best || Math.abs(card.getBoundingClientRect().left - left) < Math.abs(best.getBoundingClientRect().left - left) ? card : best, null);
+          if (closest && closest.dataset.category !== active) {
+            dismissInvite();
+            selectMetric(availableMetrics.findIndex(metric => metric.id === closest.dataset.category));
+          }
+        }, 180);
+      };
+      choices.onkeydown = (event) => {
+        if (!matchMedia("(max-width: 600px)").matches || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+        event.preventDefault();
+        dismissInvite();
+        selectMetric(activeIndex + (event.key === "ArrowRight" ? 1 : -1));
+      };
       const prev = navigation.querySelector(".ranking-prev");
       prev.disabled = activeIndex <= 0;
       prev.onclick = () => selectMetric(activeIndex - 1);
@@ -1016,8 +1052,8 @@
       next.innerHTML =
         "<span>" +
         (!seen.has(availableMetrics[activeIndex + 1]?.id)
-          ? "Nächste Platzierung entdecken"
-          : "Nächste Platzierung") +
+          ? (G.districtOverview ? "Nächsten Sieger entdecken" : "Nächste Platzierung entdecken")
+          : (G.districtOverview ? "Nächste Kennzahl" : "Nächste Platzierung")) +
         "</span>" +
         arrow;
       // Ein Klick waehrend der Enthuellung bringt sie zu Ende, erst der
@@ -1032,6 +1068,7 @@
       requestAnimationFrame(() => {
         sizePanel();
         keepActiveVisible(animate);
+        if (restoreChoiceFocus) choices.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
       });
 
       const areaLabel = m.snapshot
@@ -1054,11 +1091,12 @@
       const cluster = savedClass
         ? savedClass.replace(/\s*\([^)]*\)/g, "")
         : classLabel;
-      const classHelp = `<span class="ranking-help-wrap"><button type="button" class="ranking-class-help" aria-expanded="false" aria-describedby="ranking-class-tip">${escape(cluster)}</button><span id="ranking-class-tip" role="tooltip" hidden>${m.snapshot ? escape(savedClass ?? "Alle Ortsgrößen") : classes.map((c) => escape(c[1])).join("<br>")}<br>${escape(G.name)} hat ${G.einwohnerLabel}.</span></span>`;
-      section.querySelector(".ranking-intro-copy").innerHTML = m.snapshot
+      const classHelp = `<span class="ranking-help-wrap" data-info-tooltip><span data-tooltip-label hidden>${escape(G.districtOverview ? `${fmt(total)} Orte ${areaLabel}` : cluster)}</span><span data-tooltip-content hidden>${m.snapshot ? escape(savedClass ?? "Alle Ortsgrößen") : classes.map((c) => escape(c[1])).join("<br>")}<br>${G.districtOverview ? "" : escape(G.name) + " hat " + G.einwohnerLabel + "."}</span></span>`;
+      section.querySelector(".ranking-intro-copy").innerHTML = G.districtOverview
+        ? `Wir vergleichen ${classHelp}. Berücksichtigt werden ${ownerLabel}.`
+        : m.snapshot
         ? `Wir vergleichen ${fmt(total)} Orte ${escape(m.snapshot.scopePhrase ?? "in " + areaLabel)}${savedClass ? " · " + classHelp : ""}.`
         : `Wir vergleichen ${fmt(total)} Orte ${areaLabel} · ${classHelp}. Berücksichtigt werden ${ownerLabel}.`;
-      bindTooltip();
       updateReset();
       section.querySelector(".ranking-scope").textContent = "";
 

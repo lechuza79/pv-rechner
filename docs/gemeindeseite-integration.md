@@ -64,7 +64,7 @@ Er ist **Referenz für Aussehen und Verhalten**, nicht Code, der live geht.
   schreibgeschützt. Nur lokal nutzbar; so kennzeichnen oder umbauen.
 - Geschichten-Vorrat: gemessen 0 zur Veröffentlichung vorgemerkte Funde (22.09.2026);
   der Suchlauf erzeugt 639 Funde ohne widersprüchliche Kennung.
-- Monatslauf aus EINEM Registerauszug (Atlas + Geschichten + Pakete), sonst
+- Monatslauf aus EINEM Registerauszug (Atlas + Geschichten + Pakete + Kreispakete), sonst
   weichen die Zahlen ab (gemessen: 108 von ~1.200 Paketen mit Abweichung).
 
 ## Stand vor dem Livegang (22.09.2026)

@@ -35,6 +35,7 @@ import {
   HERKUNFT_TEXT,
   type Herkunft,
 } from "../lib/outreach-herkunft";
+import { ordneWebsiteVerweis, type Angeschrieben } from "../lib/outreach-website-verweise";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -307,6 +308,49 @@ async function main() {
     for (const [k, n] of [...fremde].sort((a, b) => b[1] - a[1])) console.log(`  ${n}  ${k}`);
   }
 
+  // ─── Fremde Seiten auf der GANZEN Website ────────────────────────────────────
+  //
+  // A publication links wherever its author thinks fits: on 26.09.2026 the
+  // Lübecker Nachrichten linked the district page and the city of Trier our
+  // home page — both invisible to the per-page check above for days.
+  const angeschriebene: Angeschrieben[] = zeilen.map((z) => ({
+    name: regionen.get(z.region_id)?.name ?? z.region_id,
+    website: z.website,
+    pfad: pfade.get(z.region_id) ?? null,
+    status: z.outreach_status,
+  }));
+  const websiteHinweise: Hinweis[] = [];
+  const ohneOrt: string[] = [];
+  const hosts = await aggregat({ datensatz: "visits", zeitraum, nach: ["referrerHostname"], limit: 100 });
+  for (const h of hosts) {
+    const host = String(h.referrerHostname ?? "");
+    if (!host || host === "Others") continue;
+    if (ordneHerkunft(host) !== "veroeffentlichung" && ordneHerkunft(host) !== "andere") continue;
+    const pfadZeilen = await aggregat({ datensatz: "visits", zeitraum, nach: ["requestPath"], filter: `referrerHostname eq '${host.replace(/'/g, "''")}'`, limit: 10 });
+    const verweis = {
+      host,
+      besucher: Number(h.visitors ?? 0),
+      pfade: pfadZeilen.filter((r) => r.requestPath && r.requestPath !== "Others").map((r) => ({ pfad: String(r.requestPath), besucher: Number(r.visitors ?? 0) })),
+    };
+    const z = ordneWebsiteVerweis(verweis, angeschriebene);
+    if (!z || z.art === "ortsseite") continue;
+    if (z.art === "gemeinde") websiteHinweise.push({ gemeinde: z.gemeinde, fundstelle: host, quelle: `${verweis.besucher} Besucher, ${z.grund}` });
+    else ohneOrt.push(`  ${String(verweis.besucher).padStart(3)}  ${host} → ${z.grund}`);
+  }
+  if (hosts.some((h) => h.referrerHostname === "Others")) console.log("\n! Mehr als 100 verweisende Seiten — der Rest steckt in Vercels Sammelposten.");
+  const notizJeName = new Map(zeilen.map((z) => [regionen.get(z.region_id)?.name ?? z.region_id, z.notes] as const));
+  const neueWebsite = neueHinweise(websiteHinweise, notizJeName);
+  console.log("\nVerweise auf andere Seiten als die Ortsseite, einer angeschriebenen Gemeinde zugeordnet:");
+  if (!websiteHinweise.length) console.log("  keine");
+  for (const w of websiteHinweise) {
+    const neu = neueWebsite.some((n) => n.gemeinde === w.gemeinde && n.fundstelle === w.fundstelle);
+    console.log(`  ${neu ? "NEU  " : "     "}${w.gemeinde}: ${w.fundstelle} — ${w.quelle}`);
+  }
+  if (ohneOrt.length) {
+    console.log("\nFremde Seiten ohne Ortsbezug (Traffic, kein Outreach-Beleg):");
+    for (const z of ohneOrt) console.log(z);
+  }
+
   // ─── Melden ─────────────────────────────────────────────────────────────────
   //
   // Nur mit `--melden` (der wöchentliche Lauf setzt es). Gemeldet wird, was
@@ -325,6 +369,9 @@ async function main() {
         roh.push({ gemeinde: g.name, fundstelle: h, quelle: `${n} Besucher von dort, seit ${seit}` });
       }
     }
+    // Site-wide finds belong to the same report — a hint that only the
+    // terminal shows is the one that gets left lying.
+    for (const w of websiteHinweise) { roh.push(w); if (!notizen.has(w.gemeinde)) notizen.set(w.gemeinde, notizJeName.get(w.gemeinde) ?? null); }
     const neu = neueHinweise(roh, notizen);
     const bericht = hinweisBericht(neu, "Besucherherkunft");
     console.log(`

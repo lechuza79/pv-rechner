@@ -107,7 +107,7 @@ function bindHeroContrast() {
   const policy = window.SolarHeroContrast;
   if (!root || !scene || !policy) return false;
   let frame=0, until=0;
-  const targets=()=>[...root.querySelectorAll('.site-header,.hero-copy,.hero-copy h1,.hero-description,.hero-copy .eyebrow,.hs-journey,.hs-location-step h2,.hs-location-explanation,.hs-journey-back,.hero-actions,.hero-actions .secondary-cta,.hs-retro-actions .hs-retro-secondary,.hs-retro-values,.hs-location-step .hs-location-form')];
+  const targets=()=>[...root.querySelectorAll('.site-header,.sc-search-toggle,.hero-copy,.hero-copy h1,.hero-description,.hero-copy .eyebrow,.hs-journey,.hs-location-step h2,.hs-location-explanation,.hs-journey-back,.hero-actions,.hero-actions .secondary-cta,.hs-retro-actions .hs-retro-secondary,.hs-retro-values,.hs-location-step .hs-location-form')];
   function sync() {
     frame=0;
     const bounds=scene.getBoundingClientRect();

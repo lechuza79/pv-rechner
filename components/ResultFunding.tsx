@@ -72,6 +72,9 @@ function FundingProgramModal({
 }
 
 interface ResultFundingProps {
+  title?: string;
+  showInvestmentTotal?: boolean;
+  federalFundingIncluded?: boolean;
   loading: boolean;
   /** PLZ candidates from /api/funding; null = not resolved yet. */
   candidates: { ort: string; ags: string }[] | null;
@@ -113,6 +116,7 @@ interface ResultFundingProps {
 }
 
 export default function ResultFunding({
+  title = "Förderung", showInvestmentTotal = true, federalFundingIncluded = true,
   loading, candidates, chosenAgs, onChooseAgs,
   programs, applied, total, enabled, onToggle, brutto, technik = "pv", hinweis, kopf,
 }: ResultFundingProps) {
@@ -136,11 +140,11 @@ export default function ResultFunding({
     background: v("--color-bg"), borderRadius: v("--radius-lg"),
     padding: "16px 16px", marginBottom: 16, border: `1px solid ${v("--color-border")}`,
   };
-  const heading = (
+  const heading = title ? (
     <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 10 }}>
-      Förderung
+      {title}
     </div>
-  );
+  ) : null;
 
   // Eine Karte, ein Rahmen, eine Überschrift — der Kopf-Inhalt sitzt in jedem
   // Zustand an derselben Stelle, damit das Feld beim Auflösen nicht springt.
@@ -233,10 +237,10 @@ export default function ResultFunding({
                   <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive-text"), whiteSpace: "nowrap" }}>− {nf(amount)} €</span>
                 </div>
               ))}
-              <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 7 }}>
+              {showInvestmentTotal && <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 7 }}>
                 <span style={{ color: v("--color-text-secondary") }}>Investition nach Förderung</span>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>{nf(effektiv)} €</span>
-              </div>
+              </div>}
               <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
                 Fördersätze ohne Gewähr — verbindlich ist die offizielle Quelle des Programms, Budgets können erschöpft sein.
               </p>
@@ -272,7 +276,7 @@ export default function ResultFunding({
                   stand hier fest verdrahtet und wäre unter der Wärmepumpe eine
                   Falschaussage gewesen. */}
               {technik === "waermepumpe"
-                ? " Die Bundesförderung (BEG) ist oben bereits eingerechnet."
+                ? (federalFundingIncluded ? " Die Bundesförderung (BEG) ist oben bereits eingerechnet." : " Die BEG-Heizungsförderung für den Heizungstausch gilt nicht für Neubauten.")
                 : " Bundesweit gilt die 0 % Mehrwertsteuer auf Photovoltaik und Speicher — die steckt bereits in den Marktpreisen."}
             </>
           )}

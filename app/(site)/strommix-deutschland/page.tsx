@@ -50,6 +50,14 @@ export default function EnergiePage() {
         padding: "0 16px 20px",
       }}
     >
+      {/* Hero on the server: the client below reads the URL and renders only
+          in the browser, so a heading there never reached the served HTML. */}
+      <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", marginBottom: 28 }}>
+        <h1>Strommix Deutschland – live</h1>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
+          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
+        </p>
+      </div>
       <Suspense fallback={null}>
         <EnergieClient />
       </Suspense>

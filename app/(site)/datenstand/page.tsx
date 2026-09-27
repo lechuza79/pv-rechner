@@ -436,7 +436,7 @@ export default async function DatenstandPage() {
             { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a Norm-Bedarf; gerechnet wird mit ${verbrauchSpecKwh("neubau", HP.specDemandNeubau.length - 1)}–${verbrauchSpecKwh("neubau", 0)} kWh/m²·a` },
             { label: "Bedarf → Verbrauch (Prebound)", value: `Norm-Bedarf wird auf den erwarteten realen Verbrauch umgerechnet: bei ${HP.specDemandBestand[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag, bei ${HP.specDemandNeubau[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandNeubau[0]) * 100)} %. Quelle: Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), 3.400 deutsche Wohnungen. Heizlast und Warmwasser bleiben unkorrigiert` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
-            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
+            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € pauschaler Rest + leistungsabhängige Kernkosten (bei 10 kW: ${nf(HP.investLwwpCoreAt10Kw)} €)` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
             // Grundsatz und Höchstbetrag aus dem Fahrplan der Richtlinie, nicht
             // aus der Config-Konstante: Beide ändern sich zu festen Stichtagen.
@@ -448,7 +448,7 @@ export default async function DatenstandPage() {
             // Der Öl-Fall ist seit 28.07.2026 ein eigener Rechenweg (anderer Preis,
             // anderer Kessel-Wirkungsgrad, mehr CO₂, keine Grundgebühr) — er fehlte hier.
             { label: "Heizöl-Referenz", value: `${nf(FUEL.oil.price * 100)} ct/kWh, ${nf(FUEL.oil.co2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.oil.efficiency * 100)} % Kessel` },
-            { label: "Neue fossile Heizung (Anschaffung, im Ergebnis editierbar)", value: `${nf(HP.fossilErsatzInvest)} €` },
+            { label: "Neue Gasheizung: kleinste Kostenreferenz (10 kW, darüber leistungsabhängig)", value: `${nf(HP.fossilErsatzInvest)} €` },
             { label: "Grundpreis je Jahr (Gas / Heizöl / WP-Zähler)", value: `${nf(HP.fixCostPerYear.gas)} / ${nf(HP.fixCostPerYear.oil)} / ${nf(HP.wpFixCostPerYear)} €` },
             { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
             { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },

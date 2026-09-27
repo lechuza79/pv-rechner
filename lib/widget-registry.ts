@@ -335,6 +335,105 @@ export const WIDGETS = {
     // Fällt weg, sobald die Route steht.
     embeddable: false,
   },
+  regionalElectricityValue: {
+    id: "regional-electricity-value", title: "Wert des Solarstroms (Modellrechnung)", kind: "chart",
+    place: {title: "Wert des Solarstroms · {ort}", shareText: "Wert des Solarstroms · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Wert des Solarstroms – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalFeedInValue: {
+    id: "regional-feed-in-value", title: "Einspeisevergütung (Modellrechnung)", kind: "chart",
+    place: {title: "Einspeisevergütung · {ort}", shareText: "Einspeisevergütung · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Einspeisevergütung – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalCurrentPower: {
+    id: "regional-current-power", title: "Solarleistung heute (simuliert)", kind: "chart",
+    place: {title: "Solarleistung heute (simuliert) · {ort}", shareText: "Solarleistung heute (simuliert) · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung heute (simuliert) – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalAnnualGrowth: {
+    id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
+    place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalComposition: {
+    id: "regional-composition", title: "Solarleistung nach Anlagentyp", kind: "chart",
+    place: {title: "Solarleistung nach Anlagentyp · {ort}", shareText: "Solarleistung nach Anlagentyp · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
+  regionalRace: {
+    id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",
+    place: {title: "Solaranlagen im regionalen Vergleich · {ort}", shareText: "Solaranlagen im regionalen Vergleich · {ort} – Solar Check"},
+    exampleParams: {ags: "09679"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Solaranlagen im regionalen Vergleich – Solar Check",
+    sources: [DATA_SOURCES.mastr], embeddable: false,
+  },
+  gemeindeAnlagenraster: {
+    // Template "anlagenraster" (lib/story-approved-visual.ts): count grid plus
+    // capacity share of one installation category, in the municipality and
+    // district monitor and in stories. One identity for monitor export, story
+    // export and later embeds.
+    id: "gemeinde-anlagenraster",
+    title: "Anteil einer Anlagenart an Anzahl und Solarleistung",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Anteil an Anzahl und Solarleistung in {ort}",
+      shareText: "Wie viele Anlagen, wie viel Leistung: Solaranlagen nach Art in {ort} – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solaranlagen nach Art: Anteil an Anzahl und Leistung – Solar Check",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
+  gemeindeEnergieJahr: {
+    // Template "energy-year": modelled solar (and wind) per day over one year,
+    // municipality and district monitor and stories. Weather from our ERA5
+    // archive, capacity from the register.
+    id: "gemeinde-energie-jahr",
+    title: "Solar- und Windpotenzial im Jahresverlauf",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Solar- und Windpotenzial in {ort} im Jahresverlauf",
+      shareText: "Solar und Wind in {ort}: jeder Tag eines Jahres, modelliert aus Wetter und Anlagenbestand – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solar und Wind über ein Jahr, Tag für Tag modelliert – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
+  gemeindeSolarMonat: {
+    // Template "radial": modelled solar output over 24 hours for every day of
+    // one month, municipality and district monitor and stories.
+    id: "gemeinde-solar-monat",
+    title: "Solarerzeugung im Tagesverlauf",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Solarerzeugung in {ort} im Tagesverlauf",
+      shareText: "Solar in {ort}: jeder Tag eines Monats über 24 Stunden, modelliert aus Wetter und Anlagenbestand – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solarerzeugung über 24 Stunden, jeder Tag eines Monats modelliert – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
   regionAnlagentyp: {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",

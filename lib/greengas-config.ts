@@ -601,7 +601,16 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // fastenergy, heizoel24) und ein Gesamtpreis-Chart; keine amtliche Statistik
   // und kein Verband führt eine Reihe für den Bio-Anteil. Der Lücken-Hinweis im
   // Öl-Ergebnis bleibt samt seiner benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-24",
+  // 26.09.2026: Chronologie des amtlichen GModG-Portals (gmodg.bund.de) im
+  //   Original gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026,
+  //   kein Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Gegensuche
+  //   erneut ohne Trägerquelle mit Preisreihe.
+  // 27.09.2026: GModG-Infoportal (gmodg.bund.de, Neuigkeiten) im Original
+  //   gelesen — § 42a weiter nur als Ankündigung eines Gesetzes bis zum
+  //   01.12.2026, kein Quotengesetz, keine Änderung an § 43. Einziger neuer
+  //   Bundestagsvorgang ist eine Kleine Anfrage (BT-Drs. 21/7563), kein
+  //   Gesetzgebungsschritt. Bioheizöl erneut ohne Trägerquelle mit Preisreihe.
+  geprueftRechtIso: "2026-09-27",
   reviewBy: "2027-07-25",
 };
 

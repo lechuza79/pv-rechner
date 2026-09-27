@@ -4,8 +4,9 @@
 .legend{display:flex;justify-content:center;align-items:center;gap:12px;min-height:20px;margin:12px 0;flex-wrap:wrap;font-size:var(--atlas-label-size);color:var(--atlas-secondary);opacity:0;visibility:hidden;transition:opacity 160ms ease}.chart:hover .legend,.chart:focus-within .legend,.chart[data-legend-visible="true"] .legend{opacity:1;visibility:visible}.legend span{display:flex;align-items:center;gap:7px}.legend i{width:8px;height:8px;border-radius:50%;background:var(--atlas-action)}.legend span+span i{background:var(--atlas-text)}
 .compact{box-sizing:border-box;padding:20px;width:100%;aspect-ratio:1;display:grid;place-items:center}.compact>svg{width:100%;height:100%;margin:0;min-height:0}
 
-.settings>div{flex:1;min-width:120px;}
-.settings>div:first-child{flex:0 0 132px;}
-.settings :global(.sc-widget-setting){min-width:0;}
-.settings :global(.sc-setting-select),.settings :global(.sc-setting-select select){width:100%;}
-.settings :global(select){min-height:30px;padding-top:4px;padding-bottom:4px;}
+/* Keep both labels readable; wrap controls instead of shrinking their text. */
+.settings>div{flex:0 0 auto;}
+.settings :global(.sc-setting-select){min-width:132px;}
+
+/* Image only: the chosen year and energy type replace the selectors. */
+.exportState{margin:0;padding:16px var(--widget-padding) 0;font-size:var(--atlas-label-size);color:var(--atlas-secondary)}

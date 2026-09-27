@@ -102,6 +102,18 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
   // Vorschrift falsch — der Legal-Judge hat genau diesen Fehler am ersten
   // Entwurf des Eintrags beanstandet.
   {
+    norm: "UWG §5b",
+    gesetz: "Gesetz gegen den unlauteren Wettbewerb",
+    traegt:
+      "Gesamtpreis und Lieferkosten neben jedem Gerät in der Empfehlung. " +
+      "Absatz 2 (Offenlegung der Ranking-Parameter) greift NICHT: Er setzt Waren " +
+      "\"von verschiedenen Unternehmern\" voraus, wir zeigen einen Händler.",
+    fundstelle: "§ 5b Abs. 1 Nr. 3, Abs. 2 Satz 1",
+    quelle: "gesetze-im-internet.de/uwg_2004/__5b.html",
+    geprueftIso: "2026-08-27",
+    zustand: "gesetz",
+  },
+  {
     norm: "EnWG §14a",
     gesetz: "Energiewirtschaftsgesetz",
     traegt:

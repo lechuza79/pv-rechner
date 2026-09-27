@@ -26,6 +26,10 @@
  *   wetter   ERA5 months/years the packages need (idempotent)
  *   pakete   scripts/gemeinde-paket.ts --alle --stand=<D> --neu
  *   upload   scripts/gemeinde-paket-upload.ts --stand=<D>
+ *   kreise   scripts/kreis-paket.ts --alle: every district package from the town
+ *            packages just uploaded, published as one generation (the district
+ *            pages read only these; see lib/district-package.ts). The daily
+ *            workflow kreis-pakete.yml repeats it if this step fails or is skipped.
  *   frisch   invalidate the Atlas pages (they read the packages)
  */
 import { spawnSync } from "node:child_process";
@@ -36,7 +40,7 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 const los = process.argv.includes("--los");
 const ab = process.argv.find((a) => a.startsWith("--ab="))?.slice(5);
-const SCHRITTE = ["export", "caches", "wetter", "pakete", "upload", "frisch"] as const;
+const SCHRITTE = ["export", "caches", "wetter", "pakete", "upload", "kreise", "frisch"] as const;
 const BNETZA = "scripts/.cache/bnetza";
 
 function befehl(titel: string, cmd: string, args: string[], env: Record<string, string> = {}) {
@@ -107,6 +111,8 @@ async function main() {
   if (schritt("pakete"))
     befehl("Pakete aller Orte", "npx", ["tsx", "--conditions=react-server", "scripts/gemeinde-paket.ts", "--alle", `--stand=${exp.datum}`, "--neu"]);
   if (schritt("upload")) befehl("Pakete hochladen", "npx", ["tsx", "scripts/gemeinde-paket-upload.ts", `--stand=${exp.datum}`]);
+  // Invalidation follows in "frisch" (full Atlas scope), so none here.
+  if (schritt("kreise")) befehl("Kreispakete aller Landkreise", "npm", ["run", "kreise:pakete", "--", "--alle", "--ohne-invalidierung"]);
   if (schritt("frisch")) {
     // The same call the CI's MaStR import makes after its run.
     const base = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";

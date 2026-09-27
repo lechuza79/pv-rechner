@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingIncludes: {
+    "/solar-atlas/*": ["./public/geo/gemeinden/*.geo.json"],
+  },
+  webpack(config, {webpack}) {
+    const path = require('node:path');
+    config.resolve.alias['@dgreenheck/ez-tree$'] = path.join(__dirname, 'node_modules/@dgreenheck/ez-tree/src/lib/index.js');
+    config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^\.\/textures$/, resource => {
+      if (resource.context.includes('@dgreenheck/ez-tree/src/lib')) resource.request = path.join(__dirname, 'components/landkreis/tree-textures.js');
+    }));
+    return config;
+  },
   experimental: {
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own
@@ -100,6 +111,7 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/floersheim-am-main", "destination": "/photovoltaik-foerderung/hessen/floersheim-am-main", "permanent": true},
       {"source": "/photovoltaik-foerderung/eppelheim", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/eppelheim", "permanent": true},
       {"source": "/photovoltaik-foerderung/bruehl-baden", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/bruehl-baden", "permanent": true},
+      {"source": "/photovoltaik-foerderung/asbach-baeumenheim", "destination": "/photovoltaik-foerderung/bayern/asbach-baeumenheim", "permanent": true},
       {"source": "/photovoltaik-foerderung/radolfzell-am-bodensee", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/radolfzell-am-bodensee", "permanent": true},
       {"source": "/photovoltaik-foerderung/meschede", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/meschede", "permanent": true},
       {"source": "/photovoltaik-foerderung/ingelheim-am-rhein", "destination": "/photovoltaik-foerderung/rheinland-pfalz/ingelheim-am-rhein", "permanent": true},
@@ -318,6 +330,19 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/amstetten", destination: "/photovoltaik-foerderung/baden-wuerttemberg/amstetten", permanent: true },
       { source: "/photovoltaik-foerderung/neustadt-westerwald", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-westerwald", permanent: true },
       { source: "/photovoltaik-foerderung/neustadt-wied", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-wied", permanent: true },
+      { source: "/photovoltaik-foerderung/bickenbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/bickenbach", permanent: true },
+      { source: "/photovoltaik-foerderung/hausbay", destination: "/photovoltaik-foerderung/rheinland-pfalz/hausbay", permanent: true },
+      { source: "/photovoltaik-foerderung/horn", destination: "/photovoltaik-foerderung/rheinland-pfalz/horn", permanent: true },
+      { source: "/photovoltaik-foerderung/reckershausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/reckershausen", permanent: true },
+      { source: "/photovoltaik-foerderung/reich-hunsrueck", destination: "/photovoltaik-foerderung/rheinland-pfalz/reich-hunsrueck", permanent: true },
+      { source: "/photovoltaik-foerderung/benzweiler", destination: "/photovoltaik-foerderung/rheinland-pfalz/benzweiler", permanent: true },
+      { source: "/photovoltaik-foerderung/bubach", destination: "/photovoltaik-foerderung/rheinland-pfalz/bubach", permanent: true },
+      { source: "/photovoltaik-foerderung/fronhofen", destination: "/photovoltaik-foerderung/rheinland-pfalz/fronhofen", permanent: true },
+      { source: "/photovoltaik-foerderung/rayerschied", destination: "/photovoltaik-foerderung/rheinland-pfalz/rayerschied", permanent: true },
+      { source: "/photovoltaik-foerderung/neuerkirch", destination: "/photovoltaik-foerderung/rheinland-pfalz/neuerkirch", permanent: true },
+      { source: "/photovoltaik-foerderung/beltheim", destination: "/photovoltaik-foerderung/rheinland-pfalz/beltheim", permanent: true },
+      { source: "/photovoltaik-foerderung/dommershausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/dommershausen", permanent: true },
+      { source: "/photovoltaik-foerderung/roth-hunsrueck", destination: "/photovoltaik-foerderung/rheinland-pfalz/roth-hunsrueck", permanent: true },
       { source: "/photovoltaik-foerderung/staudt", destination: "/photovoltaik-foerderung/rheinland-pfalz/staudt", permanent: true },
       { source: "/photovoltaik-foerderung/windhagen", destination: "/photovoltaik-foerderung/rheinland-pfalz/windhagen", permanent: true },
       { source: "/photovoltaik-foerderung/koenigswinter", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koenigswinter", permanent: true },
@@ -344,6 +369,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/klempau", destination: "/photovoltaik-foerderung/schleswig-holstein/klempau", permanent: true },
       { source: "/photovoltaik-foerderung/helmstedt", destination: "/photovoltaik-foerderung/niedersachsen/helmstedt", permanent: true },
       { source: "/photovoltaik-foerderung/meinersen", destination: "/photovoltaik-foerderung/niedersachsen/meinersen", permanent: true },
+      { source: "/photovoltaik-foerderung/quakenbrueck", destination: "/photovoltaik-foerderung/niedersachsen/quakenbrueck", permanent: true },
+      { source: "/photovoltaik-foerderung/menslage", destination: "/photovoltaik-foerderung/niedersachsen/menslage", permanent: true },
       { source: "/photovoltaik-foerderung/mueden-aller", destination: "/photovoltaik-foerderung/niedersachsen/mueden-aller", permanent: true },
       { source: "/photovoltaik-foerderung/garching-b-muenchen", destination: "/photovoltaik-foerderung/bayern/garching-b-muenchen", permanent: true },
       { source: "/photovoltaik-foerderung/goettingen", destination: "/photovoltaik-foerderung/niedersachsen/goettingen", permanent: true },

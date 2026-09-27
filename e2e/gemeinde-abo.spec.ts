@@ -111,16 +111,13 @@ test.describe("Gemeinde-Abo", () => {
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Nidda");
 
-    // BEIDE Daten, nie eines von beiden: aus welchem Monat die Werte stammen
-    // UND wann wir sie zuletzt bestätigt haben. Eines allein lässt offen, ob
-    // die Beträge von gestern oder von vor einem Jahr sind.
-    //
-    // Über die Position gemessen statt über die Textsuche: Die Angabe steht
-    // zweimal auf der Seite (Kopfzeile und Programmkarte), und ein Selektor,
-    // der beide trifft, sagt nichts darüber, ob die OBERE existiert.
+    // Keep both the value month and the verification status above the heading.
+    // Without a verified date, the explicit unverified status is truthful.
+    // The same label also occurs in the program card, so checking text alone
+    // would not prove that the header label exists in the correct position.
     const befund = await page.evaluate(() => {
       const h1 = document.querySelector("h1")!;
-      const muster = /Werte von .+, zuletzt geprüft am/;
+      const muster = /Werte von .+, (?:zuletzt geprüft am|noch nicht nachgeprüft)/;
       const oben = [...document.querySelectorAll("div")].filter(
         (e) =>
           e.children.length === 0 &&
@@ -130,7 +127,7 @@ test.describe("Gemeinde-Abo", () => {
       return { anzahl: oben.length, text: oben[0]?.textContent?.trim() ?? null };
     });
     expect(befund.anzahl).toBe(1);
-    expect(befund.text).toMatch(/Werte von .+, zuletzt geprüft am \d{2}\.\d{2}\.\d{4}/);
+    expect(befund.text).toMatch(/Werte von .+, (?:zuletzt geprüft am \d{2}\.\d{2}\.\d{4}|noch nicht nachgeprüft)(?: ·|$)/);
   });
 
   test("auf der Förderseite bleiben alle drei Wege in der Leiste", async ({ page }) => {

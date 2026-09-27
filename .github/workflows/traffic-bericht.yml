@@ -1,0 +1,30 @@
+name: Traffic-Bericht
+
+# Weekly: which pages get visitors, what moved, where visitors come from apart
+# from search engines, and which search queries are close enough to be worth
+# work. Filed to the watcher archive for Claude (no mail) — the reading and the
+# content proposals are Claude's job, not the operator's.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  bericht:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run traffic:bericht -- --melden

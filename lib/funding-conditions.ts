@@ -145,6 +145,35 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Bedingungen stehen vollständig auf der Karte, der Kontingent-Hinweis als
   // erste Zeile und die Antragsreihenfolge weiter oben. Prüfform, sobald es
   // eine Prüfform für „Antrag NACH Kauf" gibt.
+  // Die drei Klimafonds der Samtgemeinde Artland, aufgenommen am 24.09.2026.
+  // Der Antragszeitpunkt ist in den drei Richtlinien VERSCHIEDEN geregelt
+  // (Badbergen: vollständiger Antrag vor Auftragsvergabe; Quakenbrück und
+  // Menslage: nur kein Auftrag vor Inkrafttreten der Richtlinie), und der Rat
+  // der Samtgemeinde „erst nach dem Bescheid kaufen" steht nur auf der Seite.
+  // Eine Prüfform „vor-auftrag" gäbe bei zwei von dreien eine Pflicht aus, die
+  // die Richtlinie nicht kennt. Alle Bedingungen stehen auf der Karte.
+  "quakenbrueck-klimafonds", "menslage-klimafonds", "badbergen-klimafonds",
+  // VG Rüdesheim, aufgenommen am 24.09.2026 als BEENDETES Programm; es gibt
+  // nichts mehr zu beantragen und damit nichts zu prüfen.
+  "vg-ruedesheim-balkonkraftwerke",
+  // VG Bad Kreuznach, ebenfalls am 24.09.2026 als beendetes Programm aufgenommen.
+  "vg-bad-kreuznach-balkonkraftwerke",
+  // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
+  "donauwoerth-kleinst-pv",
+  // Gemeinde Südheide, aufgenommen am 26.09.2026; alle Bedingungen stehen auf
+  // der Karte, der Betrag ist bewusst kein Rechenwert (Nennleistung offen).
+  "suedheide-balkonkraftwerke",
+  // Stadt Celle, aufgenommen am 26.09.2026; Antragsfenster 2026 geschlossen
+  // (pausiert bis 01.01.2027), die Bedingungen stehen alle auf der Karte.
+  "celle-klimaschutzfonds",
+  // Isenbüttel, aufgenommen am 25.09.2026; für 2026 ausgeschöpft, die
+  // vollständigen Bedingungen sind nicht veröffentlicht.
+  "isenbuettel-isi-pv",
+  // Stadt Bad Kreuznach, aufgenommen am 24.09.2026. Das Verfahren ist das
+  // umgekehrte (Antrag NACH Kauf und Installation, binnen sechs Monaten) —
+  // dieselbe Lage wie bei Kandel und Langenlonsheim-Stromberg: Die vorhandenen
+  // Prüfformen bilden „Antrag vor Kauf" ab. Alle Bedingungen stehen auf der Karte.
+  "bad-kreuznach-balkonkraftwerke",
   "vg-langenlonsheim-stromberg-balkonkraftwerke",
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
@@ -552,6 +581,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // the roof rate starts. Both stand in full on the card, and the threshold is
   // the reason the roof part carries no calculation field.
   "bruehl-baden-umweltschutz",
+  // Added 24 Sep 2026: Asbach-Baeumenheim. Guideline read in full (the 2026
+  // application form). No test form in this run: the application comes AFTER
+  // the installation with the invoice, which the existing forms do not model,
+  // and the eligibility is contradictory in the guideline itself (owners and
+  // tenants, then owners only) — both stand in full on the card.
+  "asbach-baeumenheim-foerderprogramm",
   // Added 23 Sep 2026: Wertingen. Exhausted programme, no published guideline;
   // the only figures the town names stand in a retrospective list inside its
   // 2023 climate concept, which is not a rule anyone could be held to. There
@@ -578,6 +613,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
   // one-per-meter and the 3-year operating duty have no test form.
   "holzminden-solarfair",
+  // Added 26 Sep 2026: county programme, same shape as Holzminden — income
+  // condition, approval before purchase, one-per-meter and the 3-year operating
+  // duty have no test form.
+  "schaumburg-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",
@@ -592,6 +631,75 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // existing-building rule and the own-consumption sizing of the roof system have
   // no test form yet (roof system is therefore not computed at all).
   "staudt-energieeffizienz",
+  // Added 26 Sep 2026: guideline read in full; the prior energy check, the
+  // owner-and-first-residence rule and the six-month application window have no
+  // test form yet.
+  "hausbay-energieeinsparung",
+  // Added 26 Sep 2026: scanned guideline read in full; the energy consultation,
+  // the owner rule, the one-year tenancy for balcony devices and the re-funding
+  // blocks have no test form yet.
+  "bickenbach-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule
+  // (incl. balcony), the 30 kWp limit and the own-consumption purpose of the
+  // storage have no test form yet.
+  "horn-hunsrueck-energieeinsparung",
+  // Added 26 Sep 2026: guideline read in full, information only; the energy
+  // consultation, the owner rule and the start-after-entry-into-force rule have
+  // no test form yet.
+  "reckershausen-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule,
+  // the shared PV/storage maximum and the heat-pump limits have no test form yet.
+  "reich-hunsrueck-energiespar",
+  // Added 27 Sep 2026: guideline read in full; first residence, the owner rule
+  // for PV/storage/heating, the 4-year balcony holding period and the
+  // subsidiarity clause have no test form yet.
+  "benzweiler-energiespar",
+  // Added 27 Sep 2026: closed historical programme (funding period ended
+  // 31.12.2022); the owner rule and the renewables-only heating rule have no
+  // test form yet.
+  "kuelz-hunsrueck-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
+  // the energy check and the unregulated balcony eligibility have no test form yet.
+  "bubach-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // for PV/storage/heating, the 2-year balcony holding period and the
+  // 15-month application window have no test form yet.
+  "rayerschied-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // and the unregulated balcony eligibility have no test form yet.
+  "neuerkirch-energiespar",
+  // Added 27 Sep 2026: heating-only guideline read in full; the owner rule and
+  // the renewables-only heating rule have no test form yet.
+  "neuerkirch-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full, information only; the owner
+  // rule, PV-only-with-storage and the power-or-heat-per-building rule have no
+  // test form yet.
+  "fronhofen-regenerativ",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the 15 kWp
+  // scope, the 3-month application window and the per-household total have no
+  // test form yet.
+  "beltheim-energiespar",
+  // Added 27 Sep 2026: guideline read in full; main residence, the owner rule
+  // for PV/storage/heating, the one-year balcony residence and the re-funding
+  // periods have no test form yet.
+  "dommershausen-energiespar",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the no-business
+  // rule and the 3-month application window have no test form yet.
+  "roth-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: closed historical programme (term ended 31.12.2025).
+  "michelbach-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: VG-wide guideline read in full, information only; the
+  // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
+  // rule have no test form yet.
+  "vg-kastellaun-dorfzentren-klimaschutz",
+  // Added 27 Sep 2026: village-renewal guideline read in full, information only;
+  // the 50-year building age, the 20,000 EUR minimum cost after federal funding
+  // and the year-end council decision have no test form yet.
+  "beltheim-dorferneuerung-klimaschutz",
+  // Added 27 Sep 2026: village-development guideline read in full, information
+  // only; the 50-year building age, the 20,000 EUR minimum cost and the
+  // five-year payout have no test form yet.
+  "alterkuelz-dorfentwicklung",
 ];
 
 /**

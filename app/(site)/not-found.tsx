@@ -22,5 +22,5 @@ import NichtGefundenInhalt from "../../components/NichtGefundenInhalt";
  * lib/__tests__/atlas-soft-404.test.ts).
  */
 export default function NichtGefunden() {
-  return <NichtGefundenInhalt />;
+  return <NichtGefundenInhalt innerhalbMain />;
 }

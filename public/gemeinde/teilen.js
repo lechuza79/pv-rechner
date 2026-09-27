@@ -45,7 +45,7 @@
     }
   });
   const dialog = document.createElement("dialog");
-  dialog.className = "atlas-dialog";
+  dialog.className = "atlas-dialog gemeinde-share-dialog";
   dialog.setAttribute("aria-labelledby", "ranking-share-title");
   document.body.append(dialog);
   document.addEventListener("click", (event) => {
@@ -66,23 +66,24 @@
       : "Energiewende " + G.name;
     const text = data?.rank
       ? `${G.name} liegt bei „${data.title}“ auf Platz ${data.rank} von ${data.total} Orten ${data.area}. Verglichen wird die Größenklasse ${data.classLabel}; berücksichtigt werden ${data.owner}. Der Wert für ${G.name} beträgt ${data.value} ${data.unit}.`
-      : "Wie entwickelt sich die Energiewende in " + G.name + "? Die Ortsübersicht zeigt erneuerbare Energie, Anlagenbestand, Ausbau und Vergleiche mit anderen Orten.";
+      : G.districtOverview ? "Wie entwickelt sich Solarenergie " + (G.ortPhrase || "im " + G.name) + "? Die " + (G.overviewLabel || "Landkreisübersicht") + " zeigt Anlagenbestand, Ausbau und die Regionen im Vergleich." : "Wie entwickelt sich die Energiewende in " + G.name + "? Die Ortsübersicht zeigt erneuerbare Energie, Anlagenbestand, Ausbau und Vergleiche mit anderen Orten.";
     const source =
       "Grundlage: Marktstammdatenregister der Bundesnetzagentur und Einwohnerzahlen von Destatis, dl-de/by-2-0. Datenstand und laufende Übersicht: " +
       url;
     dialog.innerHTML =
-      '<button class="atlas-close" aria-label="Schließen">×</button><h2 id="ranking-share-title">' + esc(G.genitiv) + ' Platzierung teilen</h2><div class="atlas-paper"><h3></h3><p></p><a target="_blank" rel="noopener"></a></div><p>Der Link führt zur Ortsseite. Die gewählte Vergleichsgruppe steht in der Meldung; die Filter werden im Link nicht gespeichert.</p><div class="ranking-share-buttons"><button class="atlas-button" data-copy-link>Link kopieren</button><button class="atlas-secondary" data-copy-story>Meldung mit Link kopieren</button></div><p role="status"></p><details><summary>Weitere Möglichkeiten</summary><p><a href="' + esc(G.widgetUrl) + '" target="_blank" rel="noopener">Vorhandene Daten-Widgets ansehen ↗</a></p><p>Download und Einbettung dieser neuen Platzierungsgrafik folgen mit der Umsetzung.</p></details>';
+      '<header class="gemeinde-share-header"><h2 id="ranking-share-title">' + esc(G.genitiv) + ' Platzierung teilen</h2><button class="atlas-close" aria-label="Schließen">' + solarLiveIcons.Close + '</button></header><div class="atlas-paper"><h3></h3><p></p><a target="_blank" rel="noopener"></a></div><p class="gemeinde-share-note">Der Link führt zur Ortsseite. Die gewählte Vergleichsgruppe steht in der Meldung; die Filter werden im Link nicht gespeichert.</p><div class="ranking-share-buttons"><button class="atlas-button" data-copy-link>' + solarLiveIcons.Copy + '<span>Link kopieren</span></button><button class="atlas-secondary" data-copy-story>' + solarLiveIcons.Copy + '<span>Meldung mit Link kopieren</span></button></div><p role="status"></p>';
     if (pageShare) {
       dialog.querySelector("#ranking-share-title").textContent =
         "Energiewende " + G.name + " teilen";
       dialog.querySelector(".atlas-paper + p").textContent =
-        "Der Link führt zur Energiewende in " + G.name + ".";
+        (G.districtOverview ? "Der Link führt zur " + (G.overviewLabel || "Landkreisübersicht") + ": " : "Der Link führt zur Energiewende in ") + G.name + ".";
     }
     dialog.querySelector("h3").textContent = headline;
     dialog.querySelector(".atlas-paper p").textContent = text;
     const link = dialog.querySelector(".atlas-paper a");
     link.href = url;
-    link.textContent = "Energie-Atlas " + G.name + " ↗";
+    link.textContent = "Energie-Atlas " + G.name;
+    link.insertAdjacentHTML("beforeend", solarLiveIcons.External);
     dialog.querySelector(".atlas-close").onclick = () => dialog.close();
     async function copy(value, message) {
       try {

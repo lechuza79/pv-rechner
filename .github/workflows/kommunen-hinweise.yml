@@ -20,9 +20,13 @@ name: Kommunen-Hinweise
 #
 # Kosten: rund 1,20 $ Websuche je Lauf (zwei Abfragen je Gemeinde).
 
+# Visitor origin daily (free), web search Monday and Thursday (~1,50 $ a run).
+# Once a week was too slow: on 26.09.2026 a city press release and a Facebook
+# post had been live for four days without either showing up.
 on:
   schedule:
-    - cron: "30 6 * * 1"
+    - cron: "30 6 * * *"
+    - cron: "45 6 * * 1,4"
   workflow_dispatch: {}
 
 permissions:
@@ -55,6 +59,7 @@ jobs:
       # trotzdem — ein Hinweis-Lauf, der still halb scheitert, sieht aus wie
       # „nichts Neues".
       - name: Besucherherkunft
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '30 6 * * *'
         timeout-minutes: 15
         continue-on-error: true
         id: klicks
@@ -63,6 +68,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Websuche
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '45 6 * * 1,4'
         timeout-minutes: 40
         continue-on-error: true
         id: presse
@@ -72,7 +78,7 @@ jobs:
           DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
 
       - name: Ergebnis
-        if: steps.klicks.outcome != 'success' || steps.presse.outcome != 'success'
+        if: steps.klicks.outcome == 'failure' || steps.presse.outcome == 'failure'
         run: |
           echo "Besucherherkunft: ${{ steps.klicks.outcome }} · Websuche: ${{ steps.presse.outcome }}"
           exit 1

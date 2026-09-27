@@ -13,7 +13,9 @@ import {
   type WidgetSettings,
 } from "../../../../lib/widget-settings";
 import { calcBegSubsidy, calcInvestBrutto } from "../../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "../../../../lib/heatpump-config";
+import { begStufeAm } from "../../../../lib/heatpump-config";
+import { BegFundingQuestions } from "../../../../components/BegFundingQuestions";
+import { begIncomeFor } from "../../../../lib/beg-funding-options";
 import { BEG_ANTRAG_KURZ, BEG_ANTRAG_STAND } from "../../../../lib/beg-antrag";
 
 // Das Gültigkeitsdatum des Merkblatts stand hier bis zum 26.08.2026 handgetippt
@@ -31,7 +33,6 @@ const GUELTIG_AB = BEG_ANTRAG_STAND.validFrom.split("-").reverse().join(".");
 // from the calculator. Bracket labels + cap are derived from the config staffel
 // so a future BEG change updates the widget automatically.
 
-const cfg = DEFAULT_HEATPUMP_CONFIG;
 // Grundsatz, Klimabonus und Höchstbetrag ändern sich zu festen Stichtagen der
 // Förderrichtlinie. Die RECHNUNG zieht sie sich ohnehin selbst (calcBegSubsidy
 // löst ohne Angabe den heutigen Stand auf); die angezeigten Zahlen daneben
@@ -45,20 +46,6 @@ const CTA_URL = WIDGET.cta!.href;
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 
-// Income options built FROM the config staffel (no hardcoded duplicate).
-// Representative income per tier = the tier's upper bound; the engine derives
-// the tier + Familienzuschlag from it.
-const STAFFEL = cfg.begEinkommensStaffel;
-const EINKOMMEN_OPTIONS: { key: string; label: string; sub: string; income?: number }[] = [
-  ...STAFFEL.map((t) => ({
-    key: `t${t.maxIncome}`,
-    label: `bis ${nf(t.maxIncome)} €`,
-    sub: `Einkommens-Bonus +${Math.round(t.rate * 100)} %`,
-    income: t.maxIncome,
-  })),
-  { key: "none", label: `über ${nf(STAFFEL[STAFFEL.length - 1].maxIncome)} €`, sub: "kein Einkommens-Bonus" },
-];
-const incomeFor = (key: string) => EINKOMMEN_OPTIONS.find((o) => o.key === key)?.income;
 
 // Regler-Spanne + Startwert an echten Angeboten (Verbraucherzentrale RLP,
 // Auswertung von 160 Luft-Wasser-Angeboten: 20.228–63.061 €, Median 34.979 €).
@@ -71,7 +58,7 @@ const INVEST_MAX = 60000;
 // Reihenfolge fragt nur ab, was den Fördersatz wirklich bewegt. Neubau kürzt
 // direkt ins Ergebnis ab (keine BEG-WP-Förderung), Vermieter überspringt die
 // Einkommensfrage (Einkommens-Bonus gibt es nur für selbstnutzende Eigentümer).
-type Screen = "gebaeude" | "heizung" | "alter" | "nutzung" | "einkommen" | "kind" | "result";
+type Screen = import("../../../../components/BegFundingQuestions").BegFundingScreen;
 
 export default function FoerderCheckWidget() {
   // First-party embed (onsite=1): our own page carries CTAs' context, source and
@@ -132,7 +119,7 @@ export default function FoerderCheckWidget() {
     () =>
       calcBegSubsidy(neubau ? "neubau" : "bestand", "lwwp", invest, {
         klimaBonus: selbstnutzer && fossil,
-        haushaltseinkommen: selbstnutzer ? incomeFor(einkommen) : undefined,
+        haushaltseinkommen: selbstnutzer ? begIncomeFor(einkommen) : undefined,
         kindImHaushalt: selbstnutzer && kind,
       }),
     [neubau, invest, fossil, selbstnutzer, einkommen, kind],
@@ -181,7 +168,8 @@ export default function FoerderCheckWidget() {
           onReset={reset}
         />
       ) : (
-        <FlowView
+        <BegFundingQuestions
+          stufe={stufeHeute}
           // Wechselnder key = die Fade-Up-Animation spielt bei JEDEM Schritt neu ab.
           // Ohne ihn behält React dasselbe DOM-Element und die Animation liefe nur
           // beim allerersten Rendern (Konvention siehe lib/theme.ts, sc-swap).
@@ -243,269 +231,6 @@ export default function FoerderCheckWidget() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Flow: eine Frage pro Screen, Klick wählt und geht weiter.
 // ─────────────────────────────────────────────────────────────────────────────
-function FlowView({
-  screen,
-  go,
-  setNeubau,
-  setFossil,
-  setAlterUnbekannt,
-  setSelbstnutzer,
-  setEinkommen,
-  setKind,
-}: {
-  screen: Screen;
-  go: (s: Screen) => void;
-  setNeubau: (v: boolean) => void;
-  setFossil: (v: boolean) => void;
-  setAlterUnbekannt: (v: boolean) => void;
-  setSelbstnutzer: (v: boolean) => void;
-  setEinkommen: (v: string) => void;
-  setKind: (v: boolean) => void;
-}) {
-  if (screen === "gebaeude") {
-    return (
-      <Question title="Um welches Gebäude geht es?">
-        <OptionRow
-          label="Bestandsgebäude"
-          sub="Bereits bewohnt, Heizung wird getauscht"
-          onClick={() => {
-            setNeubau(false);
-            go("nutzung");
-          }}
-        />
-        <OptionRow
-          label="Neubau"
-          sub="Noch nicht fertiggestellt"
-          onClick={() => {
-            setNeubau(true);
-            go("result");
-          }}
-        />
-      </Question>
-    );
-  }
-
-  if (screen === "heizung") {
-    // Klima-Geschwindigkeits-Bonus hängt von der Art der alten Heizung ab:
-    //  • Öl / Kohle / Nachtspeicher → immer (kein Mindestalter)
-    //  • Gas / Biomasse (Holz, Pellets) → nur ab 20 Jahren → Folgefrage "alter"
-    //  • alles andere (schon Strom-WP etc.) → kein Klima-Bonus
-    return (
-      <Question
-        title="Welche Heizung ersetzt du?"
-        hint="Die Art der alten Heizung entscheidet über den Klima-Geschwindigkeits-Bonus."
-      >
-        <OptionRow
-          label="Öl, Kohle, Gas-Etage oder Nachtspeicher"
-          sub={`Klima-Bonus +${Math.round(stufeHeute.klimaBonus * 100)} % (unabhängig vom Alter)`}
-          onClick={() => {
-            setFossil(true);
-            setAlterUnbekannt(false);
-            go("einkommen");
-          }}
-        />
-        <OptionRow
-          label="Gas-Zentralheizung, Holz oder Pellets"
-          sub="Klima-Bonus nur ab 20 Jahren – Alter wird gleich gefragt"
-          onClick={() => {
-            go("alter");
-          }}
-        />
-        <OptionRow
-          label="Etwas anderes"
-          sub="z. B. bereits eine Strom- oder Wärmepumpenheizung – kein Klima-Bonus"
-          onClick={() => {
-            setFossil(false);
-            setAlterUnbekannt(false);
-            go("einkommen");
-          }}
-        />
-      </Question>
-    );
-  }
-
-  if (screen === "alter") {
-    return (
-      <Question
-        title="Wie alt ist die Heizung?"
-        hint="Für den Klima-Geschwindigkeits-Bonus muss eine Gas-, Holz- oder Pelletheizung mindestens 20 Jahre alt sein."
-      >
-        <OptionRow
-          label="20 Jahre oder älter"
-          sub={`Klima-Bonus +${Math.round(stufeHeute.klimaBonus * 100)} %`}
-          onClick={() => {
-            setFossil(true);
-            setAlterUnbekannt(false);
-            go("einkommen");
-          }}
-        />
-        <OptionRow
-          label="Jünger als 20 Jahre"
-          sub="Kein Klima-Bonus"
-          onClick={() => {
-            setFossil(false);
-            setAlterUnbekannt(false);
-            go("einkommen");
-          }}
-        />
-        <OptionRow
-          label="Weiß ich nicht"
-          sub="Wir rechnen mit Bonus und weisen im Ergebnis darauf hin"
-          onClick={() => {
-            setFossil(true);
-            setAlterUnbekannt(true);
-            go("einkommen");
-          }}
-        />
-        <details style={{ marginTop: 4 }}>
-          <summary
-            style={{
-              fontSize: "var(--font-size-caption)",
-              color: "var(--widget-accent)",
-              cursor: "pointer",
-              listStyle: "none",
-              fontWeight: 600,
-            }}
-          >
-            Woran erkenne ich das Alter?
-          </summary>
-          <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
-            Auf dem Typenschild am Heizkessel steht das Bau- oder Herstellungsjahr. Alternativ findest du das
-            Datum im letzten Schornsteinfeger-Protokoll oder auf der Rechnung bzw. dem Übergabeprotokoll der
-            Heizungsinstallation.
-          </div>
-        </details>
-      </Question>
-    );
-  }
-
-  if (screen === "nutzung") {
-    // Steht bewusst VOR den Heizungsfragen: Klima- und Einkommens-Bonus setzen beide
-    // Selbstnutzung voraus. Für Vermieter bleibt nur die Grundförderung — dann sind
-    // Heizungstyp und Alter für die Förderung ohne Wirkung und werden übersprungen.
-    return (
-      <Question
-        title="Bewohnst du das Gebäude selbst?"
-        hint="Klima- und Einkommens-Bonus gibt es nur für selbstnutzende Eigentümer."
-      >
-        <OptionRow
-          label="Ja, ich wohne selbst darin"
-          sub="Klima- und Einkommens-Bonus möglich"
-          onClick={() => {
-            setSelbstnutzer(true);
-            go("heizung");
-          }}
-        />
-        <OptionRow
-          label="Nein, ich vermiete"
-          sub="Nur die Grundförderung von 30 %"
-          onClick={() => {
-            setSelbstnutzer(false);
-            go("result");
-          }}
-        />
-      </Question>
-    );
-  }
-
-  if (screen === "einkommen") {
-    return (
-      <Question
-        title="Zu versteuerndes Haushaltseinkommen?"
-        hint="Gemeint ist das gemeinsame zu versteuernde Jahreseinkommen aller im Haushalt."
-      >
-        {EINKOMMEN_OPTIONS.map((o) => (
-          <OptionRow
-            key={o.key}
-            label={o.label}
-            sub={o.sub}
-            onClick={() => {
-              setEinkommen(o.key);
-              // Kind hebt nur bei einer Bonus-Stufe die Grenze — sonst überspringen.
-              go(o.income != null ? "kind" : "result");
-            }}
-          />
-        ))}
-      </Question>
-    );
-  }
-
-  if (screen === "kind") {
-    return (
-      <Question
-        title="Lebt mindestens ein minderjähriges Kind im Haushalt?"
-        hint={`Schon ein Kind hebt die maßgebliche Einkommensgrenze um ${nf(cfg.begFamilienzuschlag)} € – die Anzahl spielt keine Rolle. Dadurch kann eine höhere Bonusstufe greifen.`}
-      >
-        <OptionRow
-          label="Ja"
-          sub={`Einkommensgrenze +${nf(cfg.begFamilienzuschlag)} €`}
-          onClick={() => {
-            setKind(true);
-            go("result");
-          }}
-        />
-        <OptionRow
-          label="Nein"
-          onClick={() => {
-            setKind(false);
-            go("result");
-          }}
-        />
-      </Question>
-    );
-  }
-
-  return null;
-}
-
-function Question({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
-  return (
-    <div style={{ animation: "fu 0.3s ease-out" }}>
-      <div style={{ fontSize: "var(--font-size-small)", fontWeight: 700, marginBottom: hint ? 4 : 10 }}>{title}</div>
-      {hint && <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.45, marginBottom: 10 }}>{hint}</div>}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{children}</div>
-    </div>
-  );
-}
-
-function OptionRow({ label, sub, onClick }: { label: string; sub?: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        width: "100%",
-        textAlign: "left",
-        padding: "11px 13px",
-        borderRadius: "var(--radius-md)",
-        border: "1px solid var(--color-border)",
-        background: "var(--color-bg)",
-        color: "var(--widget-fg)",
-        cursor: "pointer",
-        fontFamily: "inherit",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 10,
-        transition: "border-color 0.15s, background 0.15s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--widget-accent)";
-        e.currentTarget.style.background = "var(--color-bg-muted)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--color-border)";
-        e.currentTarget.style.background = "var(--color-bg)";
-      }}
-    >
-      <span>
-        <span style={{ fontSize: "var(--font-size-small)", fontWeight: 600 }}>{label}</span>
-        {sub && <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 1 }}>{sub}</span>}
-      </span>
-      <span style={{ color: "var(--widget-accent)", fontSize: "var(--font-size-small)", flexShrink: 0 }}>→</span>
-    </button>
-  );
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Ergebnis
 // ─────────────────────────────────────────────────────────────────────────────

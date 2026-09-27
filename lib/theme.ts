@@ -25,6 +25,7 @@ export const tokens = {
   // Ansicht, wo der Balken unter der Kopfzeile endete. Zwei Flächen bekommt das
   // Design erst, wenn die Seiten ihre Inhalte als Karten setzen statt als Band;
   // das gehört ins Detail-Redesign.
+  '--color-page-canvas': '#E8ECE3',    // Fixed v3 canvas, independent of solar conditions.
   '--color-bg-page': '#F6F8F1',         // Seitengrund, NUR am body
   '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
   '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
@@ -98,7 +99,8 @@ export const tokens = {
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
   '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
-  '--color-awareness': '#3DFFC1',       // Awareness/Aufmerksamkeit (Synonym fürs Highlight-Token, semantisch klarer für allgemeine Use-Cases ausserhalb Live-Daten)
+  '--color-awareness': '#562581',       // Purple attention cues; green is reserved for positive values.
+  '--color-awareness-dim': '#e8d5ff',   // Soft background for awareness notices.
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
@@ -204,6 +206,8 @@ export const tokens = {
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
+  '--font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
+  '--font-chart-number': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   // Headings are Montserrat 700 in the new design — on the homepage, on the
   // content template and in the shared footer, which every page already carries.
@@ -829,6 +833,17 @@ export const globalStyles = `
   /* Akkordeon-Felder (Großverbraucher): Übergang zwischen Auswahl- und
      Fertig-Zustand in beide Richtungen. React tauscht dabei das Element
      (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
+  /* Shared disclosure motion for native details and controlled React panels. */
+  :root{--disclosure-duration:280ms;--disclosure-easing:ease}
+  .sc-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing)}
+  .sc-collapse[data-open="true"]{grid-template-rows:1fr;opacity:1}
+  .sc-collapse>div{min-height:0;overflow:hidden}
+  @supports (interpolate-size:allow-keywords){
+    details{interpolate-size:allow-keywords}
+    details::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing),content-visibility var(--disclosure-duration) allow-discrete}
+    details[open]::details-content{block-size:auto;opacity:1}
+  }
+  @media(prefers-reduced-motion:reduce){.sc-collapse,details::details-content{transition:none!important}}
   .sc-acc{animation:sc-reveal .22s ease-out}
   @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
   /* Eine Kalenderwoche, die auf- oder zugeht.
@@ -894,30 +909,6 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
-  /* Geräteempfehlung: Seitenspalte ab Tablet-Breite, darunter Wischleiste.
-
-     Die Rechner laufen in einer 480px-Spalte (--page-max-width). Das Ergebnis
-     bricht ab 1024px aus dieser Begrenzung aus und legt rechts eine 300er-Spalte
-     daneben; der negative Außenabstand zentriert den breiteren Block über der
-     schmalen Spalte, statt ihn nach rechts wandern zu lassen. Unterhalb bleibt
-     alles wie bisher — die Regel greift schlicht nicht.
-
-     WARUM 1024 UND NICHT DER KOPFZEILEN-PUNKT (1080): Das sind zwei verschiedene
-     Fragen. Dort geht es darum, ab wann die Navigationsleiste in eine Zeile
-     passt; hier darum, ab wann 480 + 24 + 300 = 804 px plus Ränder auf den
-     Schirm passen. Denselben Wert zu nehmen wäre eine Scheingemeinsamkeit.
-
-     Die Spalte scrollt mit (sticky), aber nur bis zur eigenen Höhe: Bei einer
-     Liste, die höher ist als das Fenster, wäre ein festes Mitlaufen ein Käfig —
-     man käme an die unterste Kachel nicht heran. */
-  .wp-ergebnis{display:block}
-  /* Schmal: Kacheln nebeneinander im Sichtfenster, eine gut sichtbar plus ein
-     angeschnittener Rand der nächsten — das ist der Hinweis, dass es weitergeht.
-     Ohne den Anschnitt wischt niemand. */
-  @media (min-width:1024px){
-    .wp-ergebnis{display:grid;grid-template-columns:minmax(0,480px) 300px;gap:24px;align-items:start;width:804px;margin-left:-162px}
-    /* In der Spalte gestapelt statt nebeneinander. */
-  }
   /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop

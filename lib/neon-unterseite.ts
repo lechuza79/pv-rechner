@@ -1,6 +1,6 @@
 import "server-only";
 import { BASE_URL } from "./seo";
-import { ANALYTICS_HTML, esc } from "./neon-seite";
+import { ANALYTICS_HTML, NAV_TOKENS_HTML, esc } from "./neon-seite";
 import { siteFussHtml } from "./site-fuss";
 
 /**
@@ -53,6 +53,7 @@ export function neonUnterseiteHtml(o: {
     `<link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">`,
     `<link rel="apple-touch-icon" href="/apple-icon.png" type="image/png" sizes="180x180">`,
     NEON_STYLESHEETS.map((href) => `<link rel="stylesheet" href="${href}">`).join(""),
+    NAV_TOKENS_HTML,
     ANALYTICS_HTML,
     `</head><body>`,
     `<header class="site-header">${NEON_KOPF_INNEN}</header>`,

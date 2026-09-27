@@ -33,3 +33,5 @@
  .sc-feature-card>.sc-feature-action{justify-self:stretch;width:100%;padding:12px 16px!important}
  .sc-profit-splash::before{inset:-12px -16px}
 }
+
+@container sc-features (max-width:28rem){.gemeinde-foerder-liste .sc-feature-card>solar-illustration.sc-feature-visual{display:none;}}

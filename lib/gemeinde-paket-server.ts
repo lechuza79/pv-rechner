@@ -1,9 +1,11 @@
 import "server-only";
+import type { StoryConcept } from "./story-konzepte";
+import { energyYearTitle } from "./story-energy-year-labels";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { brotliDecompressSync } from "node:zlib";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
-import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
+import { DB_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 
 /**
@@ -30,13 +32,22 @@ function gueltig(p: unknown, ags: string): p is GemeindePaket {
   return !!x && x.version === GEMEINDE_PAKET_VERSION && x.ags === ags && Array.isArray(x.missing);
 }
 
+/** Keep stored annual story titles consistent with their actual energy mix. */
+function mitJahrestiteln(data: GemeindePaket): GemeindePaket {
+  if (!Array.isArray(data.stories)) return data;
+  return {...data, stories: data.stories.map(raw => {
+    const story = raw as StoryConcept;
+    return story.energyYear ? {...story, title: energyYearTitle(story.energyYear)} : story;
+  })};
+}
+
 export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
   if (!/^\d{8}$/.test(ags)) return null;
   const lokal = process.env.GEMEINDE_PAKET_LOKAL;
   if (lokal) {
     try {
       const data = JSON.parse(await readFile(path.join(lokal, `${ags}.json`), "utf8"));
-      return gueltig(data, ags) ? data : null;
+      return gueltig(data, ags) ? mitJahrestiteln(data) : null;
     } catch {
       return null;
     }
@@ -55,13 +66,17 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
         next: { revalidate: 86400, tags: [ATLAS_DATEN_TAG] },
       }),
       `gemeinde-paket/${ags}`,
-      DB_SOFT_READ_TIMEOUT_MS,
+      // The full budget, not the soft one: this read has no fallback — a
+      // timeout fails the render, and on a first render (nothing in the CDN
+      // yet) the visitor gets a 500. Five such 500s in 24 h on 24.09.2026,
+      // each a cold render of a different town, none a storage outage.
+      DB_READ_TIMEOUT_MS,
     );
     // Supabase Storage answers a missing object with 400 or 404.
     if (res.status === 400 || res.status === 404) return null;
     if (!res.ok) throw new Error(`gemeinde-paket/${ags}: HTTP ${res.status}`);
     const data = JSON.parse(brotliDecompressSync(Buffer.from(await res.arrayBuffer())).toString("utf8"));
-    return gueltig(data, ags) ? data : null;
+    return gueltig(data, ags) ? mitJahrestiteln(data) : null;
   } catch (e) {
     throw e instanceof Error ? e : new Error(`gemeinde-paket/${ags}: ${String(e)}`);
   }

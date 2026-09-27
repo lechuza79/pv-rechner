@@ -58,13 +58,21 @@ test('painted-background policy covers the full brightness range and replaces un
  assert.equal(chooseTone(Array.from({length:100},()=>[20,25,30]),'dark').tone,'light');
  assert.equal(chooseTone(Array.from({length:100},()=>[220,225,230]),'light').tone,'dark');
 });
+test('a mid-dark dusk sky gets white, not black, when both reach the ratio',()=>{
+ // Measured 24.09.2026 on the live homepage: black at 4.51 against white at
+ // about 4.6 — equal on paper, and black read far worse next to a white headline.
+ const dusk=Array.from({length:100},()=>[118,118,118]);
+ const r=chooseTone(dusk,'strong-dark');
+ assert.equal(r.tone,'light');assert.ok(r.ratio>=4.5);
+});
 test('isolated particles do not flip a dark scene but a broad light region does',()=>{
  const dark=Array.from({length:98},()=>[20,20,20]);
  assert.equal(chooseTone([...dark,[255,255,255],[255,255,255]]).tone,'light');
  assert.equal(chooseTone(Array.from({length:100},()=>[235,235,235])).tone,'dark');
 });
 test('both rendering hosts measure after paint and can wake a paused scene',()=>{
- for(const path of ['public/dynamic-hero/dist/test.js','public/hero-system/dist/hero-stage.js','public/hero-system/source/hero-stage.js']){
+ assert.match(read('public/dynamic-hero/dist/test.js'),/import \{mountHeroStage as \w+\} from '\/hero-system\/dist\/hero-stage.js'/);
+ for(const path of ['public/hero-system/source/hero-stage.js']){
   const source=read(path);assert.match(source,/SolarSceneContrast\?\.afterFrame/);assert.match(source,/sc-contrast-request/);
  }
  assert.match(samplerSource,/version!==revision/);

@@ -3,8 +3,9 @@ import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
-import { ATLAS_CITIES, cityPath, slugify, liveBundeslaender, type AtlasCity } from "../../../lib/atlas-cities";
-import { fundingAmount, fundingStandLabel, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
+import { ATLAS_CITIES, cityPath, slugify, foerderBundeslaender, publishedBundeslaender, type AtlasCity } from "../../../lib/atlas-cities";
+import { ortPraeposition } from "../../../lib/atlas-orte";
+import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 import { FundingStatusBadge, FundingRates } from "../../../components/FundingProgramParts";
 
@@ -103,8 +104,12 @@ export default async function FoerderungPage() {
     byLand.set(bl, list);
   }
   const laender = Array.from(byLand.keys()).sort((a, b) => a.localeCompare(b, "de"));
-  // Bundesländer mit eigener Seite: mit Städten ODER mit Landesprogramm.
-  const blWithPage = new Set([...liveBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
+  // Bundesländer mit eigener Seite — dieselbe Liste, aus der die Landesseite
+  // ihre Adressen baut. Die frühere Fassung fragte die Städte mit aktivem
+  // Programm; ein Land, dessen Programme nur Balkonkraftwerke fördern (das
+  // Saarland), bekam so einen Link auf eine 404 (Audit 27.09.2026).
+  const blWithPage = new Set(foerderBundeslaender().map((b) => b.slug));
+  const blMitStaedten = new Set(publishedBundeslaender().map((b) => b.slug));
 
   return (
     <div style={S.page}>
@@ -131,7 +136,7 @@ export default async function FoerderungPage() {
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
             {blWithPage.has(slugify(bl)) && (
               <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
-                {liveBundeslaender().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={iconSizes.xs} />
+                {blMitStaedten.has(slugify(bl)) ? `Alle Städte ${ortPraeposition(bl)} ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={iconSizes.xs} />
               </Link>
             )}
             {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}

@@ -624,7 +624,29 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   zwanzig Stunden in der Zukunft lag. Nur der Abgleich mit der Uhr deckt es
   //   auf; eine Zusammenfassung kennt den Unterschied zwischen angekündigt und
   //   erledigt nicht.
-  geprueftIso: "2026-09-24",
+  // 25.09.2026, 06:55 Uhr: Die erste Lesung hat am 24.09.2026 stattgefunden.
+  //   Textarchiv des Bundestages (kw39-de-energie-stromsektor-1211294) im
+  //   Original: Der Entwurf wurde „dem federführenden Ausschuss für Wirtschaft
+  //   und Energie zur weiteren Beratung überwiesen"; beschlossen wurde nur die
+  //   Überweisung. Die Vorgangsseite des Bundesrates zu 470/26 führt weiter
+  //   allein die Grunddrucksache; die Plenarsitzung des Bundesrates ist heute
+  //   und hat zum Zeitpunkt der Prüfung noch nicht begonnen. Zustand
+  //   unverändert: Regierungsentwurf, eingebracht, jetzt im Ausschuss.
+  // 26.09.2026, 00:10 Uhr: Der Bundesrat hat in seiner 1068. Sitzung am
+  //   25.09.2026 zu 470/26 Stellung genommen (Beschlussdrucksache 470/26(B),
+  //   Volltext docs/quellen/EEG-2027_Bundesrat-Stellungnahme-470-26-B_2026-09-25.pdf).
+  //   Ziffer 1 c fordert, „Anpassungen bei der Vergütung kleiner PV-Anlagen"
+  //   im laufenden Verfahren zurückzustellen. Eine Stellungnahme im ersten
+  //   Durchgang ändert den Entwurf nicht; sie geht mit der Gegenäußerung der
+  //   Bundesregierung an den Bundestag. Zustand und Werte unverändert:
+  //   Regierungsentwurf, im Ausschuss für Wirtschaft und Energie.
+  // 27.09.2026: Beide amtlichen Seiten im Original gelesen. Bundesrat 470/26
+  //   führt unverändert Plenarberatung 25.09.26 (1068. Sitzung, TOP 56:
+  //   Stellungnahme) samt 470/26(B). Das Textarchiv des Bundestages (kw39,
+  //   Stand 27.09.2026) bestätigt die erste Lesung: 21/7867 wurde „dem
+  //   federführenden Ausschuss für Wirtschaft und Energie zur weiteren Beratung
+  //   überwiesen". Zustand und Werte unverändert: Regierungsentwurf.
+  geprueftIso: "2026-09-27",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
