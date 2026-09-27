@@ -16,9 +16,9 @@ const STUB = {
   ],
 };
 
-async function openLocal(page: Page, mobile: boolean) {
+async function openLocal(page: Page, mobile: boolean, pfad = "/impressum") {
   await page.route("**/api/suche/orte**", r => r.fulfill({ json: STUB }));
-  await page.goto("/impressum");
+  await page.goto(pfad);
   if (mobile) await page.getByRole("button", { name: "Menü öffnen", exact: true }).click();
   await page.locator('.sc-global-nav [data-section="local"] > summary').click();
   const panel = page.locator('.sc-global-nav [data-section="local"] > .sc-nav-panel');
@@ -32,6 +32,32 @@ const LOOK = ["fontSize", "fontWeight", "fontFamily", "lineHeight", "borderRadiu
 for (const [label, width, mobile] of [["desktop", 1440, false], ["phone", 375, true]] as const) {
   test.describe(`Vor Ort menu (${label})`, () => {
     test.beforeEach(async ({ page }) => page.setViewportSize({ width, height: 900 }));
+
+    // The homepage carries stylesheets of its own; the menu inside it must not
+    // notice. Twice already a page-wide rule reached into the shared header
+    // (search field outline, rounded buttons in another typeface).
+    test("the menu looks the same on the homepage as on every other page", async ({ page }) => {
+      // Two full page loads, the homepage with its scene among them.
+      test.setTimeout(90_000);
+      const TEILE = [".sc-nav-column > h3", ".sc-local-label", ".sc-nav-column > a", "button.sc-local-card", "label.sc-local-card", "label.sc-local-card input", ".sc-local-field input"];
+      const aufnahme = async (pfad: string) => {
+        const panel = await openLocal(page, mobile, pfad);
+        const out: Record<string, unknown> = {};
+        for (const sel of TEILE) out[sel] = await panel.locator(sel).first().evaluate((el, props) => {
+          const c = getComputedStyle(el);
+          return { ...Object.fromEntries(props.map(p => [p, c[p as keyof CSSStyleDeclaration]])), h: (el as HTMLElement).offsetHeight };
+        }, [...LOOK]);
+        return out;
+      };
+      const unterseite = await aufnahme("/impressum");
+      const startseite = await aufnahme("/");
+      expect(startseite).toEqual(unterseite);
+      // Focused, too: the homepage header draws focus rings the others do not.
+      for (const feld of ["#sc-local-ort", "#sc-local-kreis"]) {
+        await page.locator(`.sc-global-nav ${feld}`).click();
+        expect(await page.locator(`.sc-global-nav ${feld}`).evaluate(el => getComputedStyle(el).outlineStyle)).toBe("none");
+      }
+    });
 
     test("Bundesland and Landkreis are the same card as the Deutschland entries", async ({ page }) => {
       const panel = await openLocal(page, mobile);
@@ -93,6 +119,9 @@ for (const [label, width, mobile] of [["desktop", 1440, false], ["phone", 375, t
       await town.fill("Höchberg");
       const hits = panel.locator('[data-local-search="ort"] .sc-local-results');
       await expect(hits.getByRole("link")).toHaveCount(2);
+      // One frame only: the field's own box, never a second ring on the bare input.
+      const ring = await town.evaluate(el => getComputedStyle(el).outlineStyle);
+      expect(ring).toBe("none");
       await town.press("ArrowDown");
       await expect(hits.getByRole("link").first()).toBeFocused();
       await page.keyboard.press("Escape");

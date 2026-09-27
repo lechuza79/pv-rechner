@@ -461,6 +461,8 @@
 .sc-global-nav .sc-local-field input{flex:1;min-width:0;margin:0;padding:12px 0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;outline:none;box-shadow:none}
 .sc-local-field input::placeholder{color:var(--sc-nav-muted);opacity:1;font-weight:400;font-family:'DM Sans',sans-serif}
 .sc-local-field input::-webkit-search-cancel-button,.sc-local-card input::-webkit-search-cancel-button{display:none}
+/* Safari puts its contact/password AutoFill key into search-like fields; here it sat on the second line. */
+.sc-local input::-webkit-contacts-auto-fill-button,.sc-local input::-webkit-credentials-auto-fill-button{visibility:hidden;display:none!important;pointer-events:none}
 /* Secondary: a card. The field's placeholder reads like a card title. */
 .sc-global-nav .sc-local-card{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:68px;box-sizing:border-box;margin:0;padding:16px;border:0;border-radius:14px;background:#e0eae5;color:inherit;font-family:'DM Sans',sans-serif;font-size:inherit;font-weight:600;line-height:1.4;text-align:left;cursor:pointer;transition:background-color 180ms ease}
 .sc-local-card>span{flex:1;min-width:0}
