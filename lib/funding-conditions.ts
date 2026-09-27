@@ -528,6 +528,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // would suggest the remaining conditions are met once the date fits, for a
   // programme that has no money left. Written out rather than half-captured.
   "gifhorn-kreis-balkonkraftwerke",
+  // Added 27 Sep 2026 as a closed county programme (no calculation fields),
+  // bound to low-income households like Gifhorn; the guideline text itself is
+  // no longer retrievable, only the county's archived overview page.
+  "rhein-hunsrueck-einkommensschwache-haushalte",
+  // Added 27 Sep 2026 as a closed historical programme (no calculation fields).
+  "niederzissen-photovoltaik",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",

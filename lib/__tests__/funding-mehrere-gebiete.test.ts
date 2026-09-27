@@ -19,14 +19,14 @@ import { FUNDING_PROGRAMS, deckt, foerdergebiete, fundingForAgs } from "../fundi
 describe("Programme mit mehreren Fördergebieten", () => {
   it("führt beide Felder an EINER Stelle zusammen", () => {
     const vg = FUNDING_PROGRAMS["vg-brohltal-balkonkraftwerke"];
-    expect(foerdergebiete(vg)).toEqual(["07131073", "07131204", "07131201"]);
+    expect(foerdergebiete(vg)).toEqual(["07131073", "07131204", "07131201", "07131055"]);
     // Ein Programm ohne Zusatzgebiete verhält sich unverändert.
     expect(foerdergebiete(FUNDING_PROGRAMS["taunusstein-balkonsolar"])).toEqual(["06439015"]);
   });
 
   it("deckt jede seiner Ortsgemeinden — und keine fremde", () => {
     const vg = FUNDING_PROGRAMS["vg-brohltal-balkonkraftwerke"];
-    for (const ort of ["07131073", "07131204", "07131201"]) {
+    for (const ort of ["07131073", "07131204", "07131201", "07131055"]) {
       expect(deckt(vg, ort), ort).toBe(true);
     }
     // Bad Breisig liegt im selben Landkreis und hat ein EIGENES Programm mit

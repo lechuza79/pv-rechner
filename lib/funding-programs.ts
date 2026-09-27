@@ -9713,7 +9713,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "vg-brohltal-balkonkraftwerke", name: "Förderung von privaten Balkonkraftwerken",
     traeger: "Verbandsgemeinde Brohltal", level: "kommune", region: "Verbandsgemeinde Brohltal",
     bundesland: "Rheinland-Pfalz", agsCode: "07131073",
-    agsCodes: ["07131204", "07131201"],
+    // 07131055 Niederzissen added 27.09.2026: guideline no. 6 admits residents
+    // of the whole Verbandsgemeinde, and the VG's own page for Niederzissen
+    // states it "ist die zweitgrößte Ortsgemeinde der Verbandsgemeinde Brohltal
+    // … Verwaltungssitz" (read 27.09.2026, confirmed by an adversarial reviewer).
+    agsCodes: ["07131204", "07131201", "07131055"],
     url: "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beschlossenIso: "2024-10-09", beginntIso: "2024-10-15", endetIso: "2026-12-31",
@@ -9734,6 +9738,49 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 125,
+  },
+
+  "niederzissen-photovoltaik": {
+    id: "niederzissen-photovoltaik", name: "Förderung von Photovoltaikanlagen auf privaten Hausdächern",
+    traeger: "Ortsgemeinde Niederzissen", level: "kommune", region: "Niederzissen (VG Brohltal)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131055",
+    url: "https://web.archive.org/web/20250517065348/https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-ortsgemeinde-niederzissen-zur-foerderung-von-photovoltaikanlagen-auf-privaten-hausdaechern-2025.pdf?cid=fu7",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-03-04", beginntIso: "2024-04-01", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je installiertem kWp, gedeckelt",
+    maxFoerderung: "1.000 € je Anlage",
+    rates: [
+      { label: "Dach-Photovoltaik ab 1,0 kWp", value: "100 € je kWp, höchstens 1.000 €" },
+    ],
+    conditions: [
+      "Das Programm lief in zwei Auflagen: vom 01.04.2024 bis zum 31.12.2024 und vom 01.01.2025 bis zum 31.12.2025, jeweils bis zur Verausgabung der Mittel; für 2026 ist keine Neuauflage veröffentlicht",
+      "Gefördert wurden neue Dachanlagen ab 1,0 kWp auf privaten Bestandsdächern; Balkonkraftwerke waren ausgeschlossen",
+      "Der Antrag war vor der Beauftragung eines Fachbetriebs zu stellen; beauftragt werden durfte erst nach der Bewilligung",
+      "Antragsberechtigt waren Grundstückseigentümer, dinglich Nutzungsberechtigte und Mieter mit Erstwohnsitz in Niederzissen und Einverständnis des Eigentümers",
+      "Die Anlage war mindestens zehn Jahre am Standort zu betreiben",
+      "Kumulierung mit anderen Programmen war zulässig, zusammen höchstens 90 Prozent der Gesamtkosten",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // AUFGENOMMEN 27.09.2026 als beendetes Programm. Zwei Richtlinien im
+    // Volltext gelesen, Beträge und Bedingungen gleich: die erste vom 04.03.2024
+    // (live abrufbar, gültig bis spätestens 31.12.2024) und die Neuauflage vom
+    // 27.01.2025 (nur noch im Archiv der Amtsseite, Stand 17.05.2025): Nr. 2
+    // „beginnt zum 01.01.2025 … spätestens am 31.12.2025"; Nr. 5 „Pro
+    // installiertem kWp werden 100 € Zuschuss gewährt. Der Gesamtzuschuss
+    // beträgt maximal 1.000 €." Die Neuauflage hat erst der widerlegende
+    // Gegenprüfer gefunden — die erste Fassung dieses Eintrags hielt 2024 für
+    // das Ende.
+    // BEENDET, NICHT „EINGESTELLT"-VERKÜNDET: Eine Mitteilung gibt es nicht. Belegt
+    // ist, dass die Frist abgelaufen ist, die Programmseite der VG
+    // (…/foerderprogramme/dach-pv-niederzissen/, im Archiv noch am 13.01.2026
+    // als „Förderprogramm Niederzissen 2025", „endet zum 31.12.2025") heute mit
+    // 404 antwortet, die Übersicht der VG die Kachel als toten Link führt und die
+    // Sitemap keine Richtlinie 2026 kennt. Ratsinfo und Mitteilungsblatt sind
+    // nicht durchsucht — ein Ratsbeschluss für 2026 ist damit nicht ausgeschlossen.
+    // Das Budget (20.000 €) nannte nur die Programmseite, nicht die Richtlinie.
+    // KEINE RECHENWERTE: beendet, darf nichts abziehen.
   },
 
   "vg-alzey-land-balkon-speicher": {
@@ -10564,6 +10611,47 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Die Richtlinie ist weiterhin über das Serviceportal abrufbar (HTTP 200,
     // 188 kB PDF) — deshalb zeigt `url` auf sie und nicht auf eine Übersicht,
     // die das Programm nicht mehr nennt.
+  },
+
+  "rhein-hunsrueck-einkommensschwache-haushalte": {
+    id: "rhein-hunsrueck-einkommensschwache-haushalte",
+    name: "Förderung zur Energieeinsparung in einkommensschwachen Haushalten",
+    traeger: "Rhein-Hunsrück-Kreis", level: "landkreis", region: "Rhein-Hunsrück-Kreis",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140",
+    url: "https://web.archive.org/web/20260211010133/https://www.kreis-sim.de/index.php?object=tx,3347.2&ModID=10&FID=3347.15.1&kat=448.66",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-03-18", beginntIso: "2024-04-01", endetIso: "2026-06-30",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je Gerät bzw. Anlage, nur für einkommensschwache Haushalte",
+    maxFoerderung: "200 € je Balkonanlage",
+    rates: [
+      { label: "Balkonanlage bis 800 Wattpeak", value: "200 €" },
+    ],
+    conditions: [
+      "Der Förderzeitraum lief vom 01.04.2024 bis zum 30.06.2026; das Programm ist beendet",
+      "Antragsberechtigt waren nur einkommensschwache Haushalte: Bezug von Bürgergeld, Hilfe zum Lebensunterhalt, Kinderzuschlag oder Leistungen nach dem Asylbewerberleistungsgesetz, ein Einkommen unter der Pfändungsfreigrenze oder ein Anspruch auf Lernmittelfreiheit",
+      "Gefördert wurden daneben energiesparende Haushaltsgeräte und hocheffiziente Heizungsumwälzpumpen mit jeweils 200 €",
+      "Finanziert aus Mitteln des Kommunalen Investitionsprogramms Klimaschutz und Innovation (KIPKI) des Landes",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, aus zwei voneinander unabhängigen Gründen: Das Programm
+    // ist seit dem 30.06.2026 beendet, und es war an das Einkommen gebunden —
+    // eine Angabe, die der Rechner nicht kennt (dieselbe Bauform wie Gifhorn).
+    //
+    // BELEG: Die Programmseite des Kreises ist mit dem Umzug der Kreis-Website
+    // (kreis-sim.de → kv-rhk.de) verschwunden; die alten Adressen antworten mit
+    // 404, und die neue Website (Sitemap 1.578 Adressen, 27.09.2026) führt weder
+    // das Programm noch einen Nachfolger. `url` zeigt deshalb auf das Archiv der
+    // Amtsseite vom 11.02.2026 — den Wortlaut des Trägers selbst: „Förderzeitraum:
+    // 01.04.2024 – 30.06.2026" und „Mini-Photovoltaikanlagen (sogenannte
+    // „Balkonanlagen") mit maximal 800 Wattpeak Leistung ebenfalls mit jeweils
+    // 200 Euro bezuschusst". Die Richtlinie selbst (§ 1, § 2) war weder live noch
+    // im Archiv abrufbar.
+    // NICHT ÜBERNOMMEN: Presseberichte nannten „50 Prozent der
+    // Anschaffungskosten, maximal 200 Euro". Die Amtsseite nennt nur den
+    // Festbetrag; ohne Richtlinie bleibt offen, ob ein Prozentdeckel galt. Da das
+    // Programm nichts abzieht, steht nur der belegte Höchstbetrag da.
   },
 
   "meinersen-solar": {
