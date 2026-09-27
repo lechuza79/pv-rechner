@@ -187,3 +187,10 @@ All explanatory tooltips use `components/InfoTooltip.tsx`. Supply content plus `
 `lib/__tests__/shared-tooltip-conventions.test.ts` rejects new independent tooltip renderers in app/components/municipality scripts. Existing chart-value readouts and the navigation label have named, bounded exceptions; do not broaden the exceptions to make a new help tooltip pass. This test runs with `npm test` in CI.
 
 The same reuse requirement applies to every accepted shared component, not only tooltips. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.
+
+The complete energy monitor uses `components/dashboard/EnergyMonitor.tsx`.
+Municipality and regional adapters supply widget content and availability only;
+section order, headings, grid and spacing follow the accepted municipality page.
+Do not assemble a separate grid on a state, country or embed page. The shared
+composition is covered by `energy-monitor-layout.test.tsx` and the existing
+architecture guard. Region-specific data calculations remain in their adapters.

@@ -48,10 +48,10 @@ function MapGestureGuide({ready}:{ready:boolean}) {
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht" }: {
+export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1 }: {
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
   /** Singular of the mapped unit (link hint) and the name of the table below. */
-  member?: string; overview?: string;
+  member?: string; overview?: string; framingScale?: number;
 }) {
   const router=useRouter();
   useEffect(()=>{
@@ -175,7 +175,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       </g>
     </svg>
     </div>}
-    <RegionScene heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
+    <RegionScene framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
     <MapGestureGuide ready={sceneReady&&!sceneFailed}/>
     {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
       // Portal events still bubble through the React map parent. Keep the card

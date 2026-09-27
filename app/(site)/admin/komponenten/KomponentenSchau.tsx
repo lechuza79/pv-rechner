@@ -755,10 +755,13 @@ const BEISPIELE: Record<string, Beispiel> = {
   ChartOptionsMenu: () => (
     <Reihe>
       <Zustand name="Einbetten verfügbar">
-        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+        <ChartOptionsMenu contactHref={`/kontakt?${new URLSearchParams({topic:"Widget einbetten",message:"Frage zum Einbetten: Beispiel-Diagramm (Komponentenschau)"})}`} label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+      </Zustand>
+      <Zustand name="Primary-Fußleiste">
+        <ChartOptionsMenu presentation="footer" contactHref="/kontakt?topic=Widget%20einbetten" label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{onEmbed: () => {}}} />
       </Zustand>
       <Zustand name="Einbetten nicht verfügbar">
-        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
+        <ChartOptionsMenu contactHref={`/kontakt?${new URLSearchParams({topic:"Widget einbetten",message:"Frage zum Einbetten: Beispiel-Diagramm (Komponentenschau)"})}`} label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
       </Zustand>
     </Reihe>
   ),

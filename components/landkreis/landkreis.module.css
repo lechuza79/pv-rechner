@@ -272,7 +272,7 @@
 /* Only the map control floats directly on its scene. */
 .mapTools :global(.sc-setting-stepper){background:transparent;}
 
-.districtMonitor{display:grid;gap:var(--widget-gap,20px);}
+/* Section spacing comes from the shared EnergyMonitor composition. */
 
 /* Viewport-bound map flag; full-bleed scene must never clip it. */
 .mapTooltip{position:fixed;right:auto;max-width:calc(100vw - 24px);z-index:100;background:#163338;color:#e7efeb;}
@@ -312,3 +312,13 @@
 
 .mapGestureReplay{position:absolute;bottom:12px;right:12px;z-index:4;min-height:44px;padding:8px 12px;border:1px solid #ffffff30;border-radius:20px;background:#08191ccc;color:#fff;font:inherit;font-size:12px;cursor:pointer}
 .mapGestureReplay:focus-visible{outline:2px solid white;outline-offset:3px}
+
+/* Shared editorial text uses the site's body typography and neutral links. */
+.page .districtIntro{grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr);gap:48px}
+.page .districtIntro p{font-family:var(--font-body);font-size:var(--sc-type-body-size);line-height:var(--sc-type-body-leading)}
+.page .districtIntro p+p{margin-top:16px}
+.page .districtIntro a{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
+.page .districtIntro a:hover{text-decoration-color:currentColor}
+@media(max-width:700px){.page .districtIntro{grid-template-columns:1fr;gap:28px}}
+
+@media(min-width:801px){.heroStage[data-map-clear-heading=true] .mapCanvas{height:clamp(520px,75svh,660px)}}

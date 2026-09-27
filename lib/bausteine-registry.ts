@@ -385,6 +385,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
 
+  {
+    datei: "components/dashboard/EnergyMonitor.tsx",
+    name: "EnergyMonitor",
+    zweck: "Gemeinsame Monitor-Zusammenstellung nach der Kommunenseite: Kennzahlen, aktueller Ausbau, Anlagenbestand, Strom und Wert, optionale Karte.",
+    gruppe: "widget",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+
   // ─── Struktur ──────────────────────────────────────────────────────────────
   {
     datei: "components/ResultSection.tsx",
@@ -609,7 +619,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Logo"],
   },
   {
     datei: "components/DataSourcesSection.tsx",

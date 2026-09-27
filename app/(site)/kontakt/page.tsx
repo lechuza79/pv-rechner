@@ -3,6 +3,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
+import {isContactTopic, DEFAULT_CONTACT_TOPIC} from "../../../lib/contact-topics";
 import ContactForm from "../../../components/ContactForm";
 import ContactPerson from "../../../components/ContactPerson";
 
@@ -34,7 +35,10 @@ const S = {
   } as React.CSSProperties,
 };
 
-export default function Kontakt() {
+export default async function Kontakt({searchParams}: {searchParams: Promise<Record<string, string | string[] | undefined>>}) {
+  const params = await searchParams;
+  const topic = isContactTopic(params.topic) ? params.topic : DEFAULT_CONTACT_TOPIC;
+  const message = typeof params.message === 'string' ? params.message.slice(0, 4000) : '';
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -51,7 +55,7 @@ export default function Kontakt() {
           <ContactPerson note="Ich lese und beantworte jede Nachricht selbst, in der Regel innerhalb von 1–2 Werktagen." />
         </div>
 
-        <ContactForm />
+        <ContactForm key={`${topic}:${message}`} initialTopic={topic} initialMessage={message} />
 
         <p style={{ ...S.p, marginTop: 24, fontSize: v('--font-size-small'), color: v('--color-text-muted') }}>
           Alternativ erreichst du uns direkt per E-Mail:{" "}

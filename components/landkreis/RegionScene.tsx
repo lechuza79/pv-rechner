@@ -5,7 +5,7 @@ import type { MapValue } from "./RegionKarte";
 import type { createRegionScene, Season } from "./region-scene";
 import styles from "./landkreis.module.css";
 
-type Props = { heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
+type Props = { framingScale?: number; heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
   onHover: (id:string|null)=>void; onSelect: (id:string,touch?:boolean)=>void; onReady: (ready:boolean)=>void };
 export default function RegionScene(props:Props) {
   const host=useRef<HTMLDivElement>(null), current=useRef(props);
@@ -31,7 +31,7 @@ export default function RegionScene(props:Props) {
       const instance=createRegionScene(host.current,current.current.shapes,{
         hover:id=>current.current.onHover(id),select:(id,touch)=>current.current.onSelect(id,touch),pin:setPin,
         failed:()=>{setFailed(true);current.current.onReady(false);},
-      }, current.current.heightEnvelope);
+      }, current.current.heightEnvelope, current.current.framingScale);
       scene.current=instance;
       instance.update(current.current.values,current.current.selected,current.current.hovered);
       void instance.season(current.current.season??"summer");

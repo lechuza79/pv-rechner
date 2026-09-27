@@ -131,3 +131,21 @@ Erzwungen von `lib/__tests__/analytics-ereignisse.test.ts` (Signatur, kein
 Aufruf am Wrapper vorbei, keine Zahlen im Namen, Katalog vollständig) und
 `lib/__tests__/analytics-ohne-query.test.ts` (der Abfrageteil der Adresse, in
 dem die Postleitzahl steht, erreicht die Messung nicht).
+
+
+## Shared widget counters
+
+`widget_<catalog-id>_<scope>_<action>` counts shared widget interactions without
+properties or visitor identifiers. IDs come from the existing widget catalog;
+scopes are municipality, district, state, country, embed and other. Actions are
+listed centrally in `lib/widget-analytics.ts`. No place names, selection values,
+query parameters or arbitrary element text are included in event names.
+
+`visible` is counted once per mounted frame when at least 25% is visible.
+Compare interaction counts with visibility counts, not just absolute clicks:
+a frequently displayed widget otherwise looks more interesting by default.
+Group by catalog ID across scopes for the overall ranking, by scope for a level,
+and by the existing sanitized page path for a particular locality. Counts are
+not unique people. `video_complete` means the file was generated, not that a
+user saved it. `video_error` counts a failed or interrupted generation.
+Local preview events are development diagnostics; collection begins after release.

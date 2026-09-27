@@ -15,7 +15,9 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  useEffect(()=>{
   const host=exportHost.current;if(!host)return;
   const control=(event:Event)=>{
-   const command=(event as CustomEvent<{mode:string;progress?:number}>).detail;
+   const command=(event as CustomEvent<{mode:string;progress?:number;timeMs?:number;report?:(value:{durationMs:number})=>void}>).detail;
+   if(command.mode==='restart'){savedExport.current=null;setHovered(null);setSelected(data.days[0]?.date??selected);setFocused(true);setFrame(0);setPlaying(true);return;}
+   if(command.mode==='describe'){command.report?.({durationMs:data.days.length*650});return;}
    if(command.mode==='restore'){
     const saved=savedExport.current;if(!saved)return;
     setSelected(saved.selected);setFocused(saved.focused);setHovered(saved.hovered);setPlaying(saved.playing);setFrame(saved.frame);savedExport.current=null;
@@ -23,7 +25,7 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
     savedExport.current??={selected,focused,hovered,playing,frame};
     setPlaying(false);
     if(command.mode==='seek'){
-     const progress=command.progress??0,index=Math.min(data.days.length-1,Math.floor(progress*data.days.length));
+     const progress=command.timeMs!==undefined?command.timeMs/(data.days.length*650):command.progress??0,index=Math.min(data.days.length-1,Math.floor(progress*data.days.length));
      setHovered(null);setSelected(data.days[index]?.date??selected);
      setFocused(progress<1);setFrame(progress<1?index:null);
     }

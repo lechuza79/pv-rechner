@@ -26,8 +26,8 @@ import {checkRegionPackage} from './region-package';
  */
 export type DistrictPrepared =
   | {state:'current'|'older-edition';editions:string[];generation:string;builtAt:string}
-  | {state:'unavailable';reason:'not-published'|DistrictRefusal};
-export type DistrictContent = DistrictComputed & {prepared:DistrictPrepared};
+  | {state:'unavailable';reason:'not-published'|'read-error'|DistrictRefusal};
+export type DistrictContent = DistrictComputed & {prepared:DistrictPrepared;preview?:boolean};
 
 const UNAVAILABLE_MONITOR:DistrictMonitor={status:'unavailable',reason:'not-prepared',energy:null,sites:null};
 
@@ -45,7 +45,7 @@ async function readObject(path:string):Promise<Buffer|null>{
   return Buffer.from(await res.arrayBuffer());
 }
 
-const unavailable=(reason:'not-published'|DistrictRefusal):DistrictContent=>({monitor:UNAVAILABLE_MONITOR,stories:[],prepared:{state:'unavailable',reason}});
+const unavailable=(reason:'not-published'|'read-error'|DistrictRefusal):DistrictContent=>({monitor:UNAVAILABLE_MONITOR,stories:[],prepared:{state:'unavailable',reason}});
 
 /** Same-cycle test: the register database and the town packages are built days apart within one month. */
 export function preparedState(editions:string[],stand:string):'current'|'older-edition'{
@@ -77,6 +77,23 @@ export async function loadDistrictContent(regionId:string,members:string[],stand
  * widget has no upper-level source yet; `stories` is always empty.
  */
 export async function loadRegionContent(regionId:string,children:string[],stand:string):Promise<DistrictContent>{
+  // Explicit local review mode; production always reads the published generation.
+  const fixtureDir=process.env.NODE_ENV==='development'?process.env.REGIONAL_UI_FIXTURES:undefined;
+  if(fixtureDir&&/^(de|\d{2})$/.test(regionId)){
+    const {readFile}=await import('node:fs/promises');
+    const {join}=await import('node:path');
+    const body=await readFile(join(fixtureDir,`region-${regionId}.json`),'utf8').catch(error=>{
+      if(error.code==='ENOENT')return null;
+      throw error;
+    });
+    if(body){
+      const check=checkRegionPackage(JSON.parse(body),regionId,children);
+      if(!check.ok)throw new Error(`Local regional preview: ${check.reason}`);
+      const {pkg}=check;
+      return {monitor:pkg.content.monitor,stories:[],preview:true,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:'local-preview',builtAt:pkg.builtAt}};
+    }
+  }
+
   const pointer=await readObject(DISTRICT_POINTER_PATH);
   const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
   if(!manifest||!checkManifest(manifest))return unavailable('not-published');

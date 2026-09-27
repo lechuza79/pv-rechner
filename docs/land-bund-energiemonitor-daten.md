@@ -92,13 +92,8 @@ Das ändert auch die drei **Kreisseiten** (sie bekommen ihren Monitor) — sicht
    (Solkwitz: Wert fehlt in diesen Monaten, Eigenverbrauchsanteil 0). Warum die
    Gemeindeberechnung dort keinen Wert liefert, ist **nicht geprüft**. Schleswig-Holstein
    entsprechend 5 Monate, Thüringen 17. Alle anderen Länder 20/20.
-2. **Live-Solarleistung** (`sites`) gibt es oben nicht. Der Kreis-Endpunkt rechnet je Gemeinde
-   Wetter; für Deutschland wären das ~11.000 Orte je Abruf. Braucht eine eigene Lösung
-   (z. B. aus den Kreiskurven gewichtet) — bis dahin das Widget auf Land/Bund **nicht**
-   rendern (`LandkreisMonitor` rendert es heute, sobald `monitor` übergeben wird, und
-   ruft einen Endpunkt, der nur fünfstellige Kreise annimmt).
-3. **Texte in `LandkreisMonitor`/`DistrictEnergyWidgets`** sprechen von „Landkreis" /
-   „aller Gemeinden" — auf Land/Bund anpassen (UI).
+2. **Live-Solarleistung:** Datenberechnung und lokale UI-Anbindung sind fertig (siehe unten). Produktiv fehlen noch die Aktivierungsschritte: Landespakete v2 bauen und Tagesdatei schreiben. Bis dahin zeigt das Widget einen Nicht-verfügbar-Hinweis.
+3. Die regionalen Widgets verwenden bereits gebietsneutrale Texte.
 4. Das Jahresprofil enthält nur **2025** (wie auf Kreisebene).
 
 ## Solarleistung heute (Land und Deutschland), Stand 26.09.2026
@@ -141,3 +136,28 @@ Rechenzeit ~55 s für zwei Tage.
 
 Zur Aktivierung: Merge auf main → nächster Kreispaket-Lauf baut die Landespakete v2 mit
 Gemeindelisten → nächster stündlicher Wetterlauf schreibt die Datei.
+## Local UI integration — 26 September 2026
+
+The `codex/atlas-regional-polish` worktree now uses `loadRegionContent` with the unfiltered page children for state/country pages. The shared monitor renders monthly KPIs and energy/value widgets from the package. Live power uses the shared widget on every regional level; state/country curves come from `/api/region/solartag`, independently of historical package availability. Both an unavailable package and an unavailable monitor show a visible notice; register snapshots remain separately available. Partial monetary coverage is disclosed and only calculable months are selectable. No upper-level stories are rendered.
+
+Nothing has been published by this UI integration. For local visual acceptance, `REGIONAL_UI_FIXTURES` can point to validated example packages. This override is read only in development and the page marks the preview through a DOM attribute. Without it, unpublished packages remain unavailable. Production always reads the published generation. Sachsen-Anhalt and Germany were visually checked with the local examples, including sparklines, radial charts, money widgets and Germany's 5/20 monetary coverage. Legacy regional ranking teasers and duplicate funding blocks are removed; the shared ranking and funding sections remain.
+
+### Shared monitor composition (local, 26 September)
+
+All adapters now use `EnergyMonitor`: KPIs, current power when supported and
+annual growth, Anlagenbestand, Strom und Wert, optional municipality map. Money
+widgets precede the daily and annual profiles, matching the municipality page.
+The development fixture marker is a DOM attribute (`data-monitor-preview`),
+not product copy. The preview still uses local example packages until publication;
+removing the visible developer note does not publish or refresh data.
+
+### Local live-widget integration
+
+Commit `78cbaa1f` is integrated locally. `regionalSolarWeatherSource` chooses
+the regional endpoint for state/country IDs and retains the district endpoint
+for districts. The shared live widget renders independently of historical
+package readiness. Non-success responses reject the load and use its existing
+unavailable state, never a zero curve. Seven targeted integration tests passed.
+The old local historical example envelopes were upgraded to package version 2;
+their site lists remain null and no historical values were changed. They do not
+supply a live-weather curve. Nothing was published or rebuilt in storage.
