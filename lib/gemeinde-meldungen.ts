@@ -261,6 +261,11 @@ function meldungZubau(d: MeldungsDaten): Meldung | null {
   return {
     schluessel: `zubau-${jahr}`,
     art: "bewegung",
+    // WHY A DATE: without one this was a permanent "movement" — every send run
+    // would have mailed the same year's build-out again. The year is news once,
+    // when it is over; German midnight on 1 January of the following year.
+    // Later data stands still correct the number, but they are not new news.
+    festgestelltAm: `${jahr + 1}-01-01T00:00:00+01:00`,
     titel: `${anlagenWort(zeile.count)} kamen ${jahr} in ${d.name} dazu`,
     text:
       `${jahr} gingen ${wo(d.name)} ${anlagenWort(zeile.count)} mit zusammen ` +
@@ -288,6 +293,10 @@ function meldungAuslauf(d: MeldungsDaten, heuteJahr: number): Meldung | null {
   return {
     schluessel: `auslauf-${heuteJahr}`,
     art: "stichtag",
+    // Once per year and subscriber: the deadline is news from 1 January on.
+    // Unlike a movement it is NOT hidden from someone who subscribes later in
+    // the year — the deadline still lies ahead of them (see meldungenFuerAbo).
+    festgestelltAm: `${heuteJahr}-01-01T00:00:00+01:00`,
     titel: `${anlagenWort(betroffen)} in ${d.name} verlieren Ende ${heuteJahr} die Einspeisevergütung`,
     text:
       `${grossWo(d.name)} stehen ${anlagenWort(betroffen)} auf privaten Dächern, die ` +
@@ -494,8 +503,12 @@ export function meldungenFuerAbo(
     technikenGewaehlt: FundingTechnik[];
   },
 ): Meldung[] {
-  const stand = abo.letzteMailAm ?? abo.bestaetigtAm;
   return meldungen.filter((m) => {
+    // Ein Stichtag gilt auch für den, der sich nach dem 1. Januar anmeldet —
+    // die Frist liegt noch vor ihm. Gemessen wird deshalb nur an der letzten
+    // Mail. Eine Bewegung dagegen ist für einen später Angemeldeten keine
+    // Neuigkeit mehr; dort zählt vor der ersten Mail die Bestätigung.
+    const stand = m.art === "stichtag" ? abo.letzteMailAm : (abo.letzteMailAm ?? abo.bestaetigtAm);
     // Als Zeitpunkt verglichen, nicht als Text: Die Datenbank schreibt
     // „+00:00", der Lauf „Z" — als Zeichenkette liefe der Vergleich daneben.
     if (m.festgestelltAm && stand && Date.parse(m.festgestelltAm) <= Date.parse(stand)) return false;

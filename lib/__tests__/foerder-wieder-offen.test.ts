@@ -112,3 +112,39 @@ describe("meldungenFuerAbo — je Abonnent nur, was neu ist", () => {
     expect(hat(meldungenFuerAbo(meldungen, { ...stand, quelle: "gemeinde", technikenGewaehlt: ["pv"] }))).toBe(true);
   });
 });
+
+describe("Zubau und Auslauf gehen einmal je Jahr hinaus, nicht bei jedem Lauf", () => {
+  // Before 27.09.2026 the build-out of the last full year was an undated
+  // "movement": every send run would have mailed it again.
+  const d2: MeldungsDaten = {
+    ...daten,
+    solar: {
+      total_count: 400, total_kwp: 4000,
+      by_segment: [{ segment: "privat_dach", count: 400, kwp: 4000 }] as MeldungsDaten["solar"]["by_segment"],
+      by_year: [{ year: 2025, count: 60, kwp: 600 }, { year: 2024, count: 50, kwp: 500 }] as MeldungsDaten["solar"]["by_year"],
+      by_year_segment: [{ year: 2006, segment: "privat_dach", count: 40, kwp: 200 }] as MeldungsDaten["solar"]["by_year_segment"],
+    },
+    standIso: "2026-09-05",
+  };
+  const meldungen = gemeindeMeldungen({ daten: d2, heuteJahr: 2026 });
+  const basis = { quelle: "gemeinde" as const, technikenGewaehlt: ["pv", "balkon", "waermepumpe"] as ("pv" | "balkon" | "waermepumpe")[] };
+  const hat = (l: ReturnType<typeof meldungenFuerAbo>, praefix: string) => l.some((x) => x.schluessel.startsWith(praefix));
+
+  it("beide Meldungen existieren im Beispiel überhaupt", () => {
+    expect(hat(meldungen, "zubau-2025")).toBe(true);
+    expect(hat(meldungen, "auslauf-2026")).toBe(true);
+  });
+
+  it("nach der ersten Mail im Jahr kommt keine von beiden noch einmal", () => {
+    const l = meldungenFuerAbo(meldungen, { ...basis, bestaetigtAm: "2025-06-01T00:00:00Z", letzteMailAm: "2026-03-01T17:00:00Z" });
+    expect(hat(l, "zubau-")).toBe(false);
+    expect(hat(l, "auslauf-")).toBe(false);
+    expect(hatNachricht(l)).toBe(false);
+  });
+
+  it("wer sich im Herbst anmeldet, bekommt den Zubau nicht als Neuigkeit — den Auslauf-Stichtag aber schon", () => {
+    const l = meldungenFuerAbo(meldungen, { ...basis, bestaetigtAm: "2026-09-16T09:00:00Z", letzteMailAm: null });
+    expect(hat(l, "zubau-")).toBe(false);
+    expect(hat(l, "auslauf-")).toBe(true);
+  });
+});
