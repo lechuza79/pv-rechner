@@ -72438,5 +72438,188 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07335004",
+    "name": "Enkenbach-Alsenborn",
+    "checkedAt": "2026-09-27T22:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Enkenbach-Alsenborn (Ortsgemeinde und Sitz der VG, Landkreis Kaiserslautern): keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die Förderseite der Verbandsgemeinde nennt nur Programme für Kommunen (Nationale Klimaschutzinitiative, EFRE, KI 3.0); die Photovoltaik- und Effizienzseiten informieren und verweisen auf die Energieberatung der Verbraucherzentrale. Der Landkreis Kaiserslautern hat kein Privatprogramm.",
+    "searches": [
+      "Förderseite, Photovoltaik- und Gebäudeeffizienzseite der VG Enkenbach-Alsenborn am 27.09.2026 im Browser gelesen",
+      "Sitemap enkenbach-alsenborn.de (956 Adressen) nach Förder-/Solar-/Energiebegriffen durchsucht (27.09.2026)",
+      "Websuche nach Zuschuss Balkonkraftwerk/Photovoltaik je Ortsgemeinde (28.09.2026, ohne Treffer)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Die Förderseite der VG Enkenbach-Alsenborn nennt nur die Nationale Klimaschutzinitiative (Projektträger Jülich, klimaschutz.de) sowie EFRE/KI 3.0 für Maßnahmen der Kommunen — kein Zuschuss der VG oder einer Ortsgemeinde für private Haushalte."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/erneuerbare-energien-energieeffizienz/photovoltaik/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Informationsseite zu Photovoltaik (Potenzial 62.000 kWp, Anlagen der Gemeindewerke) ohne Förderangebot; die Seite zur Gebäudeeffizienz verweist nur auf die Energieberatung der Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/sitemap.xml",
+        "finding": "Sitemap der VG (956 Adressen) nach Förder-, Zuschuss-, Solar-, Balkon-, Speicher-, Klima- und Energiebegriffen durchsucht: nur die Förderseite für Kommunen, Informationsseiten zu Erneuerbaren und Bebauungspläne für Freiflächen-Solarparks — keine Richtlinie für Privatleute."
+      },
+      {
+        "url": "https://www.kaiserslautern-kreis.de/",
+        "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "enkenbach-alsenborn.de/oekologisch/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG, nur Programme für Kommunen (NKI, EFRE, KI 3.0).",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      },
+      {
+        "url": "enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermassnahmen-in-den-kommunen-nationale-klimaschutzinitiative",
+        "disposition": "reviewed",
+        "reason": "Nationale Klimaschutzinitiative — Förderung für Kommunen, nicht für private Haushalte.",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07335026",
+    "name": "Mehlingen",
+    "checkedAt": "2026-09-27T22:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mehlingen (VG Enkenbach-Alsenborn, Landkreis Kaiserslautern): keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die Adresse mehlingen.de leitet auf die Website der Verbandsgemeinde um; deren Förderseite nennt nur Programme für Kommunen, in der Sitemap stehen zu Mehlingen nur Bebauungspläne eines Freiflächen-Solarparks. Der Landkreis Kaiserslautern hat kein Privatprogramm.",
+    "searches": [
+      "Förderseite, Photovoltaik- und Gebäudeeffizienzseite der VG Enkenbach-Alsenborn am 27.09.2026 im Browser gelesen",
+      "Sitemap enkenbach-alsenborn.de (956 Adressen) nach Förder-/Solar-/Energiebegriffen durchsucht (27.09.2026)",
+      "Websuche nach Zuschuss Balkonkraftwerk/Photovoltaik je Ortsgemeinde (28.09.2026, ohne Treffer)",
+      "http://www.mehlingen.de/ am 27.09.2026 abgerufen: Weiterleitung auf www.enkenbach-alsenborn.de"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Die Förderseite der VG Enkenbach-Alsenborn nennt nur die Nationale Klimaschutzinitiative (Projektträger Jülich, klimaschutz.de) sowie EFRE/KI 3.0 für Maßnahmen der Kommunen — kein Zuschuss der VG oder einer Ortsgemeinde für private Haushalte."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/erneuerbare-energien-energieeffizienz/photovoltaik/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Informationsseite zu Photovoltaik (Potenzial 62.000 kWp, Anlagen der Gemeindewerke) ohne Förderangebot; die Seite zur Gebäudeeffizienz verweist nur auf die Energieberatung der Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/sitemap.xml",
+        "finding": "Sitemap der VG (956 Adressen) nach Förder-, Zuschuss-, Solar-, Balkon-, Speicher-, Klima- und Energiebegriffen durchsucht: nur die Förderseite für Kommunen, Informationsseiten zu Erneuerbaren und Bebauungspläne für Freiflächen-Solarparks — keine Richtlinie für Privatleute."
+      },
+      {
+        "url": "https://www.kaiserslautern-kreis.de/",
+        "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermassnahmen-in-den-kommunen-nationale-klimaschutzinitiative",
+        "disposition": "reviewed",
+        "reason": "Nationale Klimaschutzinitiative — Förderung für Kommunen, nicht für private Haushalte.",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07335205",
+    "name": "Sembach",
+    "checkedAt": "2026-09-27T22:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sembach (VG Enkenbach-Alsenborn, Landkreis Kaiserslautern): keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die eigene Website der Ortsgemeinde hat keine Förder- oder Energieseite; die Förderseite der Verbandsgemeinde nennt nur Programme für Kommunen. Der Landkreis Kaiserslautern hat kein Privatprogramm.",
+    "searches": [
+      "Förderseite, Photovoltaik- und Gebäudeeffizienzseite der VG Enkenbach-Alsenborn am 27.09.2026 im Browser gelesen",
+      "Sitemap enkenbach-alsenborn.de (956 Adressen) nach Förder-/Solar-/Energiebegriffen durchsucht (27.09.2026)",
+      "Websuche nach Zuschuss Balkonkraftwerk/Photovoltaik je Ortsgemeinde (28.09.2026, ohne Treffer)",
+      "Sitemap sembach.de (39 Adressen) am 27.09.2026 durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Die Förderseite der VG Enkenbach-Alsenborn nennt nur die Nationale Klimaschutzinitiative (Projektträger Jülich, klimaschutz.de) sowie EFRE/KI 3.0 für Maßnahmen der Kommunen — kein Zuschuss der VG oder einer Ortsgemeinde für private Haushalte."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/erneuerbare-energien-energieeffizienz/photovoltaik/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Informationsseite zu Photovoltaik (Potenzial 62.000 kWp, Anlagen der Gemeindewerke) ohne Förderangebot; die Seite zur Gebäudeeffizienz verweist nur auf die Energieberatung der Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/sitemap.xml",
+        "finding": "Sitemap der VG (956 Adressen) nach Förder-, Zuschuss-, Solar-, Balkon-, Speicher-, Klima- und Energiebegriffen durchsucht: nur die Förderseite für Kommunen, Informationsseiten zu Erneuerbaren und Bebauungspläne für Freiflächen-Solarparks — keine Richtlinie für Privatleute."
+      },
+      {
+        "url": "https://www.sembach.de/sitemap.xml",
+        "finding": "Eigene Website der Ortsgemeinde Sembach: Sitemap-Index mit 39 Adressen am 27.09.2026 durchsucht — keine Seite zu Förderung, Zuschuss, Solar, Balkonkraftwerk, Speicher oder Klima."
+      },
+      {
+        "url": "https://www.kaiserslautern-kreis.de/",
+        "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "enkenbach-alsenborn.de/oekologisch/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG, nur Programme für Kommunen (NKI, EFRE, KI 3.0).",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      },
+      {
+        "url": "enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermassnahmen-in-den-kommunen-nationale-klimaschutzinitiative",
+        "disposition": "reviewed",
+        "reason": "Nationale Klimaschutzinitiative — Förderung für Kommunen, nicht für private Haushalte.",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07335007",
+    "name": "Fischbach",
+    "checkedAt": "2026-09-27T22:05:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fischbach (VG Enkenbach-Alsenborn, Landkreis Kaiserslautern): keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die einzige erfasste Fundstelle betrifft den geförderten Breitbandausbau; die Website der Ortsgemeinde hat keine Energieförderung, die Förderseite der Verbandsgemeinde nur Programme für Kommunen. Der Landkreis Kaiserslautern hat kein Privatprogramm.",
+    "searches": [
+      "Förderseite, Photovoltaik- und Gebäudeeffizienzseite der VG Enkenbach-Alsenborn am 27.09.2026 im Browser gelesen",
+      "Sitemap enkenbach-alsenborn.de (956 Adressen) nach Förder-/Solar-/Energiebegriffen durchsucht (27.09.2026)",
+      "Websuche nach Zuschuss Balkonkraftwerk/Photovoltaik je Ortsgemeinde (28.09.2026, ohne Treffer)",
+      "Sitemap fischbach-pfalz.de (65 Adressen) am 27.09.2026 durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Die Förderseite der VG Enkenbach-Alsenborn nennt nur die Nationale Klimaschutzinitiative (Projektträger Jülich, klimaschutz.de) sowie EFRE/KI 3.0 für Maßnahmen der Kommunen — kein Zuschuss der VG oder einer Ortsgemeinde für private Haushalte."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/oekologisch/erneuerbare-energien-energieeffizienz/photovoltaik/",
+        "finding": "Am 27.09.2026 im Browser gelesen: Informationsseite zu Photovoltaik (Potenzial 62.000 kWp, Anlagen der Gemeindewerke) ohne Förderangebot; die Seite zur Gebäudeeffizienz verweist nur auf die Energieberatung der Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/sitemap.xml",
+        "finding": "Sitemap der VG (956 Adressen) nach Förder-, Zuschuss-, Solar-, Balkon-, Speicher-, Klima- und Energiebegriffen durchsucht: nur die Förderseite für Kommunen, Informationsseiten zu Erneuerbaren und Bebauungspläne für Freiflächen-Solarparks — keine Richtlinie für Privatleute."
+      },
+      {
+        "url": "https://www.fischbach-pfalz.de/sitemap.xml",
+        "finding": "Eigene Website der Ortsgemeinde Fischbach: Sitemap mit 65 Adressen am 27.09.2026 durchsucht — „Förder“ nur beim geförderten Breitbandausbau und beim Kita-Förderverein, keine Energie- oder Solarförderung."
+      },
+      {
+        "url": "https://www.kaiserslautern-kreis.de/",
+        "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "fischbach-pfalz.de/fischbach-1/aktuelle-infos/gef%C3%B6rderter-breitbandausbau",
+        "disposition": "reviewed",
+        "reason": "Seite zum geförderten Breitbandausbau — keine Energieförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.fischbach-pfalz.de/sitemap.xml"
+      }
+    ]
   }
 ]
