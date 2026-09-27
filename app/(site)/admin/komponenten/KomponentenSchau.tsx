@@ -1,4 +1,5 @@
 "use client";
+import { SCENARIOS } from "../../../../lib/constants";
 
 import { useState } from "react";
 import { AccordionField } from "../../../../components/AccordionField";
@@ -616,17 +617,13 @@ function ZitierBeispiel() {
 
 
 function SzenarienBeispiel() {
-  const [gewaehlt, setGewaehlt] = useState("real");
+  const [gewaehlt, setGewaehlt] = useState("realistic");
   return (
     <div style={{ maxWidth: 520 }}>
       <ScenarioTabs
         selected={gewaehlt}
         onSelect={setGewaehlt}
-        tabs={[
-          { id: "pess", label: "Pessimistisch", sub: "+1 %/Jahr", explain: "Der Strompreis steigt kaum — die Ersparnis wächst langsam." },
-          { id: "real", label: "Realistisch", sub: "+2 %/Jahr", explain: "Der Strompreis steigt etwa wie die allgemeine Teuerung." },
-          { id: "opti", label: "Optimistisch", sub: "+5 %/Jahr", explain: "Der Strompreis steigt deutlich — die Anlage rechnet sich schneller." },
-        ]}
+        tabs={SCENARIOS}
       />
     </div>
   );

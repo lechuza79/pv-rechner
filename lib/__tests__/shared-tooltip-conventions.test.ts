@@ -7,6 +7,8 @@ const root = join(__dirname, "../..");
 const owners: Record<string, number> = {
   "components/InfoTooltip.tsx": 1,
   "components/charts/CategoryBarChart.tsx": 1,
+  // Shared chart data readout following the pointer, not explanatory help.
+  "components/charts/RaceChart.tsx": 1,
   "components/dashboard/KpiOverview.tsx": 1,
   "components/FlowNav.tsx": 1,
 };

@@ -206,7 +206,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       batteryBase: Number(data.battery_base),
       batteryPerKwh: Number(data.battery_per_kwh),
       electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
-      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
+      electricityIncrease: DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
     };
@@ -552,18 +552,18 @@ export default async function DatenstandPage() {
         <Section
           title="Wirtschaftlichkeit"
           stand="Konvention"
-          intro="Rahmen der 25-Jahres-Hochrechnung und die drei Szenarien im Amortisations-Chart."
+          intro="Haushaltsstrom nach UBA/Prognos, nominal geglättet; zwei Sensitivitäten von ±1 Prozentpunkt. Der Trend wird über den Rechenzeitraum fortgeschrieben."
           rows={[
             { label: "Betrachtungszeitraum", value: `${nf(YEARS)} Jahre` },
             { label: "Modul-Degradation", value: `${nf(DEGRAD * 100)} % / Jahr` },
             ...SCENARIOS.map((s) => ({
               label: `Szenario ${s.label}`,
-              value: `Strompreis +${nf(s.strom * 100)} %/a · Eigenverbrauch ${s.evDelta >= 0 ? "+" : ""}${nf(s.evDelta)} %`,
+              value: `${s.sub} · ${s.id === "realistic" ? "UBA-Basis, nominal geglättet" : "Sensitivitätsannahme"}`,
             })),
             { label: "Standortertrag", value: "PVGIS (EU JRC), live je Postleitzahl" },
             { label: "PLZ → Koordinaten", value: "WZB plz_geocoord, Apache License 2.0" },
           ]}
-          source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
+          source="UBA/Prognos, Rahmendaten 2026 (3. Auflage), Tabellen 3 und 13 · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
         />
 
         {/* ── Energie-Atlas & Karte ── */}

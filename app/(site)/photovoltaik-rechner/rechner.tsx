@@ -790,7 +790,7 @@ export default function PVRechner({
           // Die Prozentsätze aus SCENARIOS, nicht getippt: Im Bild stand „1 %, 3 %
           // und 5 %", gerechnet wurden 1, 2 und 5 — und das Bild ist die Fassung,
           // die ohne Rückfragemöglichkeit weitergereicht wird (Council 18.08.2026).
-          text: `Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (${SCENARIOS.map(s => `${(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`).join(", ")} pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).`,
+          text: `Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (${SCENARIOS.map(s => `${(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`).join(", ")} pro Jahr); die Ränder sind Sensitivitäten von ±1 Prozentpunkt zur UBA-Basis. Der Eigenverbrauch bleibt gleich.`,
         },
       ] : undefined,
       source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
@@ -1263,7 +1263,7 @@ export default function PVRechner({
             {/* Szenario-Wahl ganz oben: sie rechnet ALLES darunter um
                 (Amortisation, Rendite, ⌀ Ersparnis, Chart). */}
             <ScenarioTabs
-              tabs={scenarioData.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              tabs={scenarioData.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: s.sub, source: s.source }))}
               selected={scenario}
               onSelect={setScenario}
             />
@@ -1525,7 +1525,7 @@ export default function PVRechner({
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              stromSteigerung={sel.strom} gasSteigerung={heatPumpScenarioAdj(sel.id).gasInflation} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={heatPumpScenarioAdj(sel.id).stromInflation} gasSteigerung={heatPumpScenarioAdj(sel.id).gasInflation} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (

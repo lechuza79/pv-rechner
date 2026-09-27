@@ -202,6 +202,7 @@ function RaceCard({
   const FARBE_A = v(kamera.farbe), FARBE_B = v(anderer.farbe);
   const [t, setT] = useState(Math.max(0, Math.min(1, initialProgress)) * T);
   const [spielt, setSpielt] = useState(false);
+  const [hoverDay, setHoverDay] = useState<number | null>(null);
   const [plotWidth, setPlotWidth] = useState(640);
   const narrow = plotWidth <= 560;
   const [ruhig, setRuhig] = useState(false);
@@ -567,7 +568,23 @@ function RaceCard({
       <div style={{ position: "relative", paddingRight: mini || onsite ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
       <ExportBox>
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: H, display: "block" }} role="img"
-          aria-label={ariaLabel(stand, kA[tag], kB[tag])}>
+          aria-label={ariaLabel(stand, kA[tag], kB[tag])}
+          tabIndex={mini ? undefined : 0}
+          onPointerMove={mini ? undefined : event => {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) * W / bounds.width;
+            const y = (event.clientY - bounds.top) * H / bounds.height;
+            if (x < P.l || x > P.l + cW || y < P.t || y > y0) { setHoverDay(null); return; }
+            setHoverDay(Math.min(tag, Math.max(0, Math.round(xStart + (x - P.l) / cW * (xEnd - xStart)))));
+          }}
+          onPointerLeave={() => setHoverDay(null)}
+          onBlur={() => setHoverDay(null)}
+          onKeyDown={mini ? undefined : event => {
+            if (event.key === "Escape") { setHoverDay(null); return; }
+            if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+            event.preventDefault();
+            setHoverDay(day => event.key === "Home" ? 0 : event.key === "End" ? tag : Math.max(0, Math.min(tag, (day ?? tag) + (event.key === "ArrowLeft" ? -30 : 30))));
+          }}>
           {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
               eigenes Element und wird beim Auftauchen neu gemountet — die Animation
               läuft genau dann. Bei reduzierter Bewegung steht sie sofort. */}
@@ -629,6 +646,10 @@ function RaceCard({
             </g>
           ))}
 
+          {hoverDay !== null && !mini && <g {...{ [EXPORT_IGNORE_ATTR]: "" }} pointerEvents="none" clipPath={`url(#${clipId})`}>
+            <line x1={xL(hoverDay)} x2={xL(hoverDay)} y1={P.t} y2={y0} stroke={v("--color-text-muted")} strokeDasharray="4 4" />
+            {[{ values: kA, color: FARBE_A }, { values: kB, color: FARBE_B }].map((series, index) => <circle key={index} cx={xL(hoverDay)} cy={yL(series.values[hoverDay])} r={4} fill={series.color} stroke={v("--color-bg")} strokeWidth={2} />)}
+          </g>}
           {/* Spitzen mit Betrag */}
           {spitzen.map((s, i) => (
             <g key={s.key}>
@@ -640,6 +661,17 @@ function RaceCard({
           ))}
         </svg>
       </ExportBox>
+      {hoverDay !== null && !mini && <div role="tooltip" {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{
+        position: "absolute", top: space.sm, left: Math.max(0, Math.min(xL(hoverDay) + space.md, plotWidth - Math.min(260, plotWidth))),
+        width: Math.min(260, plotWidth), boxSizing: "border-box", pointerEvents: "none", zIndex: 2,
+        background: v("--color-bg"), color: v("--color-text-primary"), border: `1px solid ${v("--color-border")}`,
+        borderRadius: v("--radius-md"), boxShadow: v("--shadow-md"), padding: abstand("md", "lg"), fontSize: v("--font-size-small"),
+      }}>
+        <strong>{datumVon(hoverDay).tag}. {MONATE[datumVon(hoverDay).monat]} {datumVon(hoverDay).jahr}</strong>
+        {[anderer, kamera].map(series => <div key={series.key} style={{ display: "flex", justifyContent: "space-between", gap: space.sm, marginTop: space.xs }}>
+          <span>{series.kurz}</span><strong style={{ color: v(series.farbe), whiteSpace: "nowrap" }}>{fmt(series.werte[hoverDay])}</strong>
+        </div>)}
+      </div>}
       {!mini && !onsite && <WidgetSourceEdge widget={widget} stand={quellenStand} spalten={kantenSpalten} />}
       </div>
 

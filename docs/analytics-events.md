@@ -67,6 +67,18 @@ nur niemand gebaut.
 | `pv_gespeichert` | Berechnung im Konto gespeichert (nach erfolgreichem Save) |
 | `pv_methodik` | „Methodik"-Link aus dem Ergebnis geöffnet |
 
+### Balkonkraftwerk-Shopklicks
+
+| Event | Auslöser |
+|---|---|
+| `balkon_shop_ergebnis` | Shoplink im Produktverweis oben im Ergebnis |
+| `balkon_shop_angebote` | Produktbild oder „Zum Shop“ in den unteren Ergebniskarten |
+
+Gezählt werden Link-Aktivierungen, keine Käufe oder eindeutigen Personen.
+„Damit berechnen“, Teilen und Kopieren zählen nicht als Shopklick. Es werden
+keine Produkt-, Standort- oder Berechnungswerte übertragen. Die Zahlen vergleichen
+Klickmengen, keine Sichtbarkeits- oder Conversion-Raten.
+
 ### Herkunft aus dem Kommunen-Outreach
 | Event | Auslöser |
 |---|---|

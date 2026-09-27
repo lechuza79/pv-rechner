@@ -483,8 +483,8 @@ export default async function LohntSichPvMitSpeicherPage() {
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
           Ertrag von {EX.ertragKwp} kWh pro kWp (deutscher Schnitt bei optimaler Ausrichtung, ohne
-          Standortdaten). Gerechnet mit unserem Modell im realistischen Szenario
-          (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
+          Standortdaten). Gerechnet mit unserem Modell im UBA-Basismodell
+          (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE", { maximumFractionDigits: 2 })} %/Jahr):
         </p>
         <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -557,8 +557,7 @@ export default async function LohntSichPvMitSpeicherPage() {
 
         {/* ── Zwei Beispiele mit Chart + Kacheln + Deep-Link in den Rechner ── */}
         <p style={{ ...S.p, marginTop: 18 }}>
-          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das realistische
-          Szenario, die blasseren Linien der vorsichtige und der günstige Verlauf. Ein Klick
+          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das UBA-Basismodell, die blasseren Linien sind Sensitivitäten von einem Prozentpunkt darunter und darüber. Ein Klick
           öffnet die Anlage direkt im Rechner, wo du jede Annahme anpassen kannst:
         </p>
         <TeaserCard row={ohne} title="10 kWp ohne Speicher" badge="10 kWp · kein Speicher" />

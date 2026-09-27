@@ -1,0 +1,91 @@
+/* BKW-specific composition; the visual language comes from the shared WP result. */
+body .bkw-result-page{background:var(--color-page-canvas)!important}
+.bkw-result-page>div{max-width:1280px!important}
+.bkw-result-main{max-width:100%;min-width:0}
+.bkw-result-main>.wp-overview,.bkw-adjustments{max-width:820px;margin-inline:auto}
+.bkw-result-main>.wp-overview .wp-overview-top{grid-template-columns:minmax(0,1fr)}
+.bkw-result-page .wp-result-value{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.bkw-result-page .wp-result-plus{color:var(--color-positive)}
+.bkw-offers{margin-block:var(--space-huge)}
+.bkw-adjustments{margin-block:var(--space-huge)!important;--color-bg:var(--result-panel);--color-bg-muted:var(--result-control);--color-text-primary:var(--result-text);--color-text-secondary:var(--result-muted);--color-text-muted:var(--result-muted);--color-accent:var(--result-accent);--color-accent-dim:color-mix(in srgb,var(--result-accent) 12%,transparent);--color-border:var(--result-rule);font-size:var(--result-type-body)}
+.bkw-adjustments h2{font-size:var(--font-size-h3);margin-bottom:var(--space-xxl)}
+.bkw-offer-intro{max-width:820px;line-height:1.65;font-size:var(--result-type-ui);margin-block:var(--space-xxl)}
+
+.bkw-result-page .wp-result-summary{max-width:none}
+
+.bkw-offers .wp-product-card{height:100%;display:flex;flex-direction:column;gap:var(--space-xl)}
+.bkw-offers .wp-product-heading{margin:0}
+.bkw-offers .wp-product-rank{display:flex;justify-content:space-between}
+.bkw-offers .bkw-offer-intro{margin:0}
+.bkw-offers .bkw-offer-result>.bkw-offer-intro{max-width:60ch;margin-bottom:var(--space-xxl)}
+.bkw-offer-price-note{font-size:var(--result-type-caption);color:var(--color-text-secondary)}
+
+
+.bkw-profit-amount{min-width:0}
+.bkw-profit-amount .wp-reference-inline{margin-top:calc(var(--space-xl)/4)}
+.bkw-result-main>.bkw-adjustments+.bkw-adjustments{margin-top:var(--space-xl)!important}
+
+.bkw-result-disclaimer{margin-top:var(--space-xxl);text-align:center;font-size:var(--font-size-caption);color:var(--color-text-faint)}
+.bkw-result-main>.sc-stand-cards{max-width:var(--page-max-width);margin-inline:auto}
+
+.bkw-offer-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--space-xl);margin-block:var(--space-xl)}
+
+.bkw-offer-reason{font-size:var(--font-size-body);line-height:1.65;color:var(--result-muted);margin-block:var(--space-xl)}
+
+.bkw-offer-reason a { color: inherit; text-underline-offset: 3px; }
+#bkw-ertrag { scroll-margin-top: 100px; }
+
+.bkw-adjustments .wp-funding-location { margin-block: var(--space-xl); }
+
+.bkw-product-calculation { font-size:var(--result-type-ui); line-height:1.5; }
+.bkw-product-calculation p { margin:calc(var(--space-xl)/2) 0 0; }
+.bkw-product-price-row { display:flex; align-items:baseline; flex-wrap:wrap; gap:calc(var(--space-xl)/2) var(--space-xl); }
+.bkw-product-price-row > strong { font:700 var(--font-size-display-sm)/1.2 var(--result-font-heading); }
+.bkw-product-price-row small { font:400 var(--result-type-body)/1.4 var(--result-font-body); }
+.bkw-product-price-row > span,.bkw-product-price-row > del { color:var(--color-text-secondary); font-size:var(--result-type-caption); }
+.bkw-technical-content { display:grid; gap:var(--space-xl); font:400 var(--result-type-body)/1.6 var(--result-font-body); color:var(--result-muted); }
+.bkw-technical-content p,.bkw-technical-content dl { margin:0; }
+.bkw-technical-content h3 { font:700 var(--result-type-body)/1.4 var(--result-font-heading); color:var(--result-text); margin:0 0 calc(var(--space-xl)/2); }
+.bkw-technical-content strong { color:var(--result-text); }
+.bkw-yield-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-xl); }
+.bkw-yield-summary dt { font-size:var(--result-type-caption); }
+.bkw-yield-summary dd { margin:calc(var(--space-xl)/4) 0 0; color:var(--result-text); font:700 var(--result-type-body)/1.4 var(--result-font-heading); }
+.bkw-yield-summary small { font:400 var(--result-type-caption)/1.4 var(--result-font-body); }
+.bkw-power-chart { padding:var(--space-xl); background:var(--result-control); border-radius:var(--radius-md); }
+.bkw-technical-note { margin-block:var(--space-xl); font-size:var(--result-type-ui); }
+.bkw-technical-content .wp-card-disclosure { color:var(--result-muted); }
+.bkw-technical-content .wp-card-disclosure summary { color:var(--result-text); }
+
+body .bkw-offers .wp-product-card[data-recommended="true"] { box-shadow:0 8px 28px #03141608; }
+/* The header extends behind a separate white image panel. */
+.bkw-product-showcase { --bkw-header-bg:var(--color-bg-muted); }
+.bkw-product-showcase[data-selected="true"] { --bkw-header-bg:var(--color-awareness-dim); }
+.bkw-product-header { position:relative; box-sizing:border-box; padding:calc(var(--space-xl)/2) var(--space-xl); min-height:calc(var(--space-xl)*4.5); display:flex; justify-content:space-between; align-items:center; gap:var(--space-xl); font-size:var(--result-type-ui); line-height:1.4; background:var(--bkw-header-bg); border-radius:var(--radius-md) var(--radius-md) 0 0; }
+.bkw-product-showcase[data-selected="true"] .bkw-product-header { color:var(--color-awareness); }
+.bkw-product-header::after { content:""; position:absolute; inset:100% 0 auto; height:var(--space-xxl); background:inherit; border-radius:0 0 var(--radius-md) var(--radius-md); }
+.bkw-product-showcase .wp-product-heading { position:relative; padding-inline:0; }
+.bkw-product-header strong,.bkw-product-header span { display:block; }
+.bkw-product-header span { font-size:var(--result-type-caption); color:inherit; }
+.bkw-calculate-link { display:inline-flex; align-items:center; justify-content:center; flex:0 0 36px; width:36px; height:36px; border:1px solid currentColor; border-radius:var(--radius-pill); padding:0; background:transparent; color:inherit; cursor:pointer; }
+.bkw-calculate-link:hover { background:color-mix(in srgb,currentColor 10%,transparent); }
+.bkw-calculate-link:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.bkw-calculate-link svg { flex-shrink:0; }
+
+
+/* Keep one spacing rhythm instead of stacking inherited margins and gaps. */
+body .bkw-offers .wp-product-funded-price { margin:var(--space-xl) 0 0; }
+body .bkw-offers .wp-card-disclosure { margin: auto 0 0; padding:calc(var(--space-xl)/2) 0; }
+body .bkw-offers .wp-product-actions { margin:0; padding:0; }
+.bkw-offers > .bkw-offer-result > .bkw-offer-price-note { margin-top:var(--space-xl); }
+
+.bkw-product-calculation { border-top:1px solid var(--color-border); padding-top:var(--space-xl); }
+body .bkw-offers .wp-product-funded-price { grid-template-columns:auto minmax(0,1fr) auto; }
+body .bkw-offers .wp-product-funded-price[data-empty="true"] { color:var(--color-text-primary); }
+body .bkw-offers .wp-funded-help { position:static; grid-column:3; grid-row:1; align-self:center; margin-right:12px; color:var(--color-text-primary); }
+body .bkw-offers .wp-product-funded-price .wp-funded-label { padding-right:0; }
+body .bkw-offers .wp-product-funded-price .wp-funded-empty { grid-column:1 / 3; padding-right:12px; }
+.bkw-product-details { display:grid; gap:var(--space-xl); }
+.bkw-product-details section + section { border-top:1px solid var(--color-border); padding-top:var(--space-xl); }
+.bkw-product-details h4 { margin:0 0 calc(var(--space-xl)/2); font:600 var(--result-type-ui)/1.4 var(--result-font-body); }
+.bkw-product-details p { margin:0 0 calc(var(--space-xl)/2); font-size:var(--result-type-caption); line-height:1.5; }
+.bkw-product-details p:last-child { margin-bottom:0; }

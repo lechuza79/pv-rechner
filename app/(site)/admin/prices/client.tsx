@@ -68,7 +68,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [battBase, setBattBase] = useState(current?.battery_base ?? DEFAULT_PRICES.batteryBase);
   const [battKwh, setBattKwh] = useState(current?.battery_per_kwh ?? DEFAULT_PRICES.batteryPerKwh);
   const [elecPrice, setElecPrice] = useState(current?.electricity_price ?? DEFAULT_PRICES.electricityPrice);
-  const [elecIncrease, setElecIncrease] = useState(current?.electricity_increase ?? DEFAULT_PRICES.electricityIncrease);
+  const elecIncrease = DEFAULT_PRICES.electricityIncrease;
   const [validFrom, setValidFrom] = useState(heuteInBerlin());
   const [source, setSource] = useState("");
   const [notes, setNotes] = useState("");
@@ -225,8 +225,8 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
               <input style={S.input} type="number" step="0.1" value={Math.round(elecPrice * 100 * 10) / 10} onChange={e => setElecPrice(Number(e.target.value) / 100)} />
             </div>
             <div style={{ flex: 1 }}>
-              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Jährliche Steigerung (%)</span>
-              <input style={S.input} type="number" step="0.1" value={Math.round(elecIncrease * 100 * 10) / 10} onChange={e => setElecIncrease(Number(e.target.value) / 100)} />
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>UBA-Modellannahme (%/Jahr)</span>
+              <input style={S.input} type="number" readOnly value={Number((elecIncrease * 100).toFixed(2))} />
             </div>
           </div>
 

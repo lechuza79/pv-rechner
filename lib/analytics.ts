@@ -72,6 +72,9 @@ export const EVENTS = [
   // Trichter Balkonkraftwerk
   "balkon_schritt_ausrichtung",
   "balkon_ergebnis",
+  // Shop click totals by placement, without product or visitor properties.
+  "balkon_shop_ergebnis",
+  "balkon_shop_angebote",
   // Herkunft aus den Outreach-Briefen: zwei Namen statt einer Eigenschaft
   "brief_aufruf_direkt",
   "brief_aufruf_verweis",

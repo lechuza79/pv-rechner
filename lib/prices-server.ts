@@ -35,7 +35,7 @@ export async function fetchMarketPrices(): Promise<PriceConfig> {
       batteryBase: Number(data.battery_base),
       batteryPerKwh: Number(data.battery_per_kwh),
       electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
-      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
+      electricityIncrease: DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
     };
