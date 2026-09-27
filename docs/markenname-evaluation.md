@@ -586,8 +586,23 @@ zu treffen.
 | Stufe | Was passiert | Warum jetzt / warum nicht jetzt |
 |---|---|---|
 | **1. sofort** | Name entscheiden, alle sieben Endungen sichern, Marke anmelden | Kostet null Sichtbarkeit. Freie Domains in diesem Namensraum sind knapp (5.3), und die Schweizer Marke aus 2.5 zeigt, wie schnell so etwas weg ist |
-| **2. mit dem ersten neuen Markt** | Schweiz startet unter dem neuen Namen, eigene Domain | Dort ist der alte Name versperrt; es gibt keinen Bestand zu gefährden |
-| **3. wenn die Umgestaltung steht und die Kurve eine Delle hat** | Deutschland zieht um, `solar-check.io` leitet dauerhaft weiter | Googles beide Bedingungen erfüllt, statt gegen sie zu arbeiten |
+| **2. mit dem ersten neuen Markt** | Schweiz startet auf der **neuen Dachdomain**, als Marktpfad (`neuername.eu/ch/de/`), nicht als eigene Landesendung | Dort ist der alte Name versperrt; es gibt keinen Bestand zu gefährden. **Kein zweiter Domainstamm** — Begründung gleich darunter |
+| **3. wenn die Umgestaltung steht und die Kurve eine Delle hat** | Deutschland zieht auf dieselbe Domain um, `solar-check.io` leitet dauerhaft weiter | Googles beide Bedingungen erfüllt, statt gegen sie zu arbeiten — und es bleibt bei **einem** Umzug |
+
+**Warum Stufe 2 keine eigene Landesdomain bekommt:** Ein drittes Papier vom selben Tag,
+`docs/domain-struktur-mehrere-maerkte.md`, hat die Frage „eine Domain mit Länderpfaden oder eine
+Landesdomain je Markt" unabhängig gemessen und kommt eindeutig auf **eine Domain, Markt als
+erstes Pfadsegment**. Seine Belege: `zonneplan.de` (eigene Landesendung derselben Marke) hat in
+Deutschland **null** Sichtbarkeit, während `1komma5.com/de/` 72.182 Besuche erreicht und
+`1komma5.nl` nur 1.937. Dazu das Größenargument — bei rund 71 Besuchen im Monat verträgt die
+Autorität keine Aufteilung auf fünf Domains.
+
+**Das Papier setzt voraus, dass die Domain bleibt; diese Auswertung sagt, dass der Name geht.
+Beides zusammen ergibt keinen Widerspruch, sondern die Reihenfolge oben:** Die Struktur-
+Empfehlung gilt unverändert, sie hängt nur an einem anderen Stamm. Und weil die neuen Märkte
+neu entstehen statt umzuziehen, bleibt für Google genau **eine** Adressänderung übrig — was der
+Rat aus der Search-Console-Hilfe ausdrücklich verlangt: *„Try not to combine multiple moves to a
+single location … move sites one at a time"* (dort im Wortlaut zitiert, gelesen 27.09.2026).
 
 **Die Zwischenstufe hat einen Preis, und er gehört benannt:** Zwischen Stufe 2 und 3 heißt
 dasselbe Produkt in zwei Ländern verschieden. Das ist unschön, aber es ist der einzige Zustand,
@@ -620,6 +635,7 @@ der ist auf Dauer der teuerste.
 | Rechtliche Bewertung der Markenlage | Ausdrücklich nicht Gegenstand — anwaltliche Frage |
 | Solar-Anteil an der **heutigen** Nachfrage | Die Aufschlüsselung liegt nur für den Schnappschuss vom 02.09.2026 vor (58 Begriffe). Der Live-Abruf vom 27.09.2026 zählt 110 Begriffe, ist aber nicht nach Thema aufgeteilt — s. Einschränkung 0 in Abschnitt 3 |
 | Verfügbarkeit über den 27.09.2026 hinaus | Alle Domain- und Markenangaben sind eine Momentaufnahme. Vor einer Entscheidung neu abfragen |
+| Schweizer Marke 842255 im Schweizer Register selbst | Belegt ist sie über **TMview**, den amtlichen Verbund von EUIPO/TMDN, der die Daten direkt vom IGE bezieht (Datensatz `CH502025000016654`, mit Gesuchs- und Eintragungsdatum, Klassen, Inhaberin). Eine zweite Bestätigung direkt auf `swissreg.ch` war nicht zu holen — das Register gibt seine Daten nur über einen interaktiven Client heraus, drei Adressversuche liefen auf 404 bzw. eine Weiterleitung. **Der Befund steht damit auf einer Quelle, nicht auf zweien** |
 
 ---
 
@@ -629,10 +645,13 @@ der ist auf Dauer der teuerste.
 |---|---|
 | Trägt der Name? Welcher Name stattdessen? | **dieses Dokument** |
 | Was kostet ein Umzug an Sichtbarkeit, Verweisen und Arbeit? | `docs/domain-umzug-was-steht-auf-dem-spiel.md` (27.09.2026) |
+| Wie werden fünf Märkte unter einer Marke adressiert? | `docs/domain-struktur-mehrere-maerkte.md` (27.09.2026) |
 | Wer ist der direkte Wettbewerber mit dem ähnlichen Namen? | `docs/seo/wettbewerb-solarcheck-deutschland.md` (27.08.2026) |
 | Was ein neuer Ländermarkt fachlich braucht | `docs/marktstart-bestandsaufnahme.md` (26.09.2026) |
 
-Die beiden erstgenannten sind am selben Tag unabhängig voneinander entstanden und messen
-verschiedene Hälften derselben Entscheidung. **Sie widersprechen sich in der Empfehlung zum
-Zeitpunkt nicht, sondern ergänzen sich** — die Auflösung steht in 6.3 und 6.4. Wer nur eines
-von beiden liest, bekommt eine halbe Entscheidungsgrundlage.
+Die ersten drei sind am 27.09.2026 unabhängig voneinander in parallelen Sitzungen entstanden und
+messen drei verschiedene Hälften derselben Entscheidung: **ob** der Name geht (hier), **was** ein
+Wechsel kostet, **wie** fünf Märkte adressiert werden. Keines widerspricht einem anderen; die
+Zusammenführung steht in 6.3 und 6.4. **Wer nur eines liest, bekommt ein Drittel der
+Entscheidungsgrundlage** — und die drei Empfehlungen lesen sich einzeln so, als schlössen sie
+einander aus.
