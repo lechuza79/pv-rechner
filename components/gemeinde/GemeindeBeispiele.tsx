@@ -122,7 +122,11 @@ export default function GemeindeBeispiele({
   ];
 
   return (
-    <section className="atlas-section v3-conclusion">
+    // Die Sprungmarke der Leiste zeigt auf den ANFANG dieses Abschnitts,
+    // nicht auf den Förderblock darin: Sie heißt „Bürger & Förderung", und
+    // wer sie anklickt, soll bei den Beispielrechnungen landen, unter denen
+    // die Förderung steht.
+    <section className="atlas-section v3-conclusion" id="atlas-buerger">
       <div className="atlas-wrap">
         <div className="atlas-head">
           <details className="v3-calculation-help">

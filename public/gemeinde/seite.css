@@ -84,6 +84,19 @@
    dieser Leiste. */
 @media(max-width:860px){
   .solar-page .v3-section-nav .atlas-page-update{font-size:11px}
+}
+/* DER ORTSNAME FAELLT SCHON AUF DEM LAPTOP WEG, NICHT ERST AUF DEM TELEFON
+   (gemessen 24.09.2026, langer Ortsname): Zwischen 860 und rund 1100 px steht
+   die Marken-Reihe offen da UND der Abo-Knopf traegt den Ortsnamen. Zusammen
+   brauchte die Leiste 950 px in einem 854 px breiten Platz — die Seite war bei
+   880 px Fenster 963 px breit, also seitlicher Ueberlauf auf jeder Ortsseite
+   in diesem Bereich. Das gab es schon vor der laengeren Marke "Buerger &
+   Foerderung" (902 px), sie hat es nur vergroessert.
+   Der Ortsname ist der richtige Posten: Er steht im Titel, in der Ueberschrift
+   und in der Kruemelspur; das Datum daneben steht sonst nirgends, und den
+   Umschaltpunkt der Marken-Reihe anzuheben wuerde die Messung reparieren und
+   nicht die Seite. */
+@media(max-width:1100px){
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-lang{display:none}
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:inline}
 }

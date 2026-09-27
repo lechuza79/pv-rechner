@@ -97,7 +97,13 @@ test.describe("Gemeindeseite", () => {
   // auf 768 px um 113 px breiter als das Fenster, also schob sich die ganze
   // Seite seitlich. Ein Blick auf Höchberg hätte das nie gezeigt.
   const LANGER_ORT = "/solar-atlas/sachsen/landkreis-goerlitz/quitzdorf-am-see-kw-tanecy-p-i-j-zoru";
-  for (const breite of [375, 414, 768]) {
+  // 861, 1024 und 1099 px kamen am 24.09.2026 dazu: Zwischen dem Umschaltpunkt
+  // der Marken-Reihe (860) und rund 1100 px steht die Reihe offen da UND der
+  // Abo-Knopf trug den Ortsnamen — zusammen brauchte die Leiste 950 px in
+  // einem 854 px breiten Platz. Die Seite war bei 880 px Fenster 963 px breit,
+  // und das GALT SCHON VORHER; die bisherigen drei Breiten liegen alle
+  // unterhalb des Umschaltpunkts und konnten es deshalb nicht sehen.
+  for (const breite of [375, 414, 768, 861, 1024, 1099]) {
     test(`ein langer Ortsname läuft auf ${breite} px nicht seitlich über`, async ({ page }) => {
       await page.setViewportSize({ width: breite, height: 900 });
       const antwort = await page.goto(LANGER_ORT, { waitUntil: "domcontentloaded" });

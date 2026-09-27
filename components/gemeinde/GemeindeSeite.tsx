@@ -237,8 +237,13 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
               <div className="v3-nav-links">
                 <a href="#atlas-stories">Insights</a>
                 <a href="#atlas-ranking">Ranking</a>
+                {/* REIHENFOLGE = LESEREIHENFOLGE (Betreiber, 24.09.2026). Der
+                    Abschnitt für Bürgerinnen und Bürger steht auf der Seite VOR
+                    dem Energiemonitor und stand im Menü dahinter; die Marke
+                    zeigt außerdem auf den Anfang des Abschnitts, nicht auf den
+                    Förderblock in seiner Mitte. */}
+                <a href="#atlas-buerger">Bürger &amp; Förderung</a>
                 <a href="#atlas-data">Energiemonitor</a>
-                <a href="#atlas-foerderung">Förderung</a>
               </div>
             </details>
             <div className="atlas-page-actions">
