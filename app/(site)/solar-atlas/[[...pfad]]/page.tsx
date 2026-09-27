@@ -384,47 +384,14 @@ async function AtlasBody({
   // First local design reference only; metadata, structured data and index
   // policy remain on the existing route and share the existing sources.
   if (onRegionDesign) {
-    // Bundesland/Deutschland keep the existing extra content of the old page
-    // (highlight paragraph, per-capita comparison, ranking tiles,
-    // international comparison, funding link) until a product decision says otherwise.
+    // Regional pages share the monitor, ranking table and funding section.
     const keepExtras = region.level !== "landkreis";
     const einordnungNode = keepExtras && einordnung.length > 0 ? einordnung.map((teil, idx) => {
       if (typeof teil === "string") return teil;
       if ("href" in teil) return <Link key={`${teil.href}-${idx}`} href={teil.href}>{teil.text}</Link>;
       return <strong key={`w-${idx}`}>{teil.text}</strong>;
     }) : null;
-    const zusatz = keepExtras ? <>
-      <div style={S.section}>
-        <h2 style={S.h2}>Kennzahlen im Vergleich</h2>
-        <AtlasKpiRow groups={[{ tiles: kpiTiles }]} regionPerCap={regionPerCap} references={kpiRefs} defaultRefKey={defaultRefKey} />
-      </div>
-      <div style={S.section}>
-        <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
-        <p style={S.sub}>{`Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune. ${GROESSENKLASSEN_WARUM}`}</p>
-        <div style={S.rangKacheln}>
-          {rankingKategorienGruppiert().buerger.map((k) => (
-            <Link key={k.slug} href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`} style={S.rangKachel}>
-              <span style={S.rangKachelTitel}>{k.thema}</span>
-              <span style={S.rangKachelCta}>Rangliste ansehen <IconArrowRight size={12} /></span>
-            </Link>
-          ))}
-        </div>
-      </div>
-      {region.level === "de" && (
-        <div style={S.section}>
-          <h2 style={S.h2}>Deutschland im internationalen Vergleich</h2>
-          <p style={S.sub}>Wie der deutsche Ausbau gegenüber anderen Ländern dasteht, zeigt der Ländervergleich.</p>
-          <Link href="/laendervergleich" style={S.link}>Photovoltaik-Ausbau im Ländervergleich</Link>
-        </div>
-      )}
-      {region.level === "bundesland" && region.slug && foerderBundeslaender().some((b) => b.slug === region.slug) && (
-        <div style={S.section}>
-          <h2 style={S.h2}>Förderung</h2>
-          <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
-          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme {ortPhrase(region)}</Link>
-        </div>
-      )}
-    </> : null;
+    const zusatz = region.level === "de" ? <p><Link href="/laendervergleich">Photovoltaik-Ausbau im internationalen Vergleich</Link></p> : null;
     return <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />

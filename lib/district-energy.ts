@@ -2,7 +2,14 @@ import type {GemeindePaket, MonthValue} from './gemeinde-paket';
 import type {SolarMonth} from './story-monthly-solar';
 import type {EnergyYear} from './story-energy-year';
 export type DistrictEnergy = Omit<NonNullable<GemeindePaket['monitorPeriods']>, 'weatherPoint'>;
-type Packet = Pick<GemeindePaket,'ags'|'registerStand'|'monitorPeriods'>;
+type Packet = Pick<GemeindePaket,'ags'|'registerStand'|'monitorPeriods'> & {
+ /** An already aggregated part (district or Bundesland, lib/region-package.ts).
+  *  It carries no single self-consumption share; its months only have a value
+  *  when ITS members shared one valuation basis, which the date then states. */
+ aggregate?:true;
+};
+/** One member of an aggregation: a town package or an aggregate one level down. */
+export type EnergyPacket = Packet & Pick<GemeindePaket,'monitorHistory'>;
 const valid = (n:number) => Number.isFinite(n) && n >= 0;
 const sum = (numbers:number[]) => numbers.reduce((a,b)=>a+b,0);
 function calendar(start:string,count:number) {
@@ -15,7 +22,7 @@ export function aggregateDistrictEnergy(ids:string[],packets:(Packet|null)[],tow
  if(rows.some(p=>p.registerStand!==rows[0].registerStand||!p.monitorPeriods))return null;
  const periods=rows.map(p=>p.monitorPeriods!);
  const first=periods[0];
- const sameValueBasis=!!first.valuationAssumptionDate && periods.every(p=>p.valuationAssumptionDate===first.valuationAssumptionDate && p.privateSelfConsumption!==null && valid(p.privateSelfConsumption) && p.privateSelfConsumption<=1);
+ const sameValueBasis=!!first.valuationAssumptionDate && periods.every((p,i)=>p.valuationAssumptionDate===first.valuationAssumptionDate && (rows[i].aggregate || (p.privateSelfConsumption!==null && valid(p.privateSelfConsumption) && p.privateSelfConsumption<=1)));
  const monthly:DistrictEnergy['monthly']=[];
  for(const candidate of first.monthly){
   const month=candidate.month;

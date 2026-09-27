@@ -2,7 +2,6 @@
 
 import {ortPhrase} from "../../lib/atlas-orte";
 import {useEffect, useRef, useState} from "react";
-import InfoTooltip from "../InfoTooltip";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
 import {WIDGETS} from "../../lib/widget-registry";
 import {dashboardDate} from "../../lib/dashboard/format";
@@ -31,7 +30,7 @@ export default function DistrictRaceWidget({name,stand,rows,history,wording=DIST
     function start(){
       if(!active||started||!stage||!clock.current||!window.solarDistrictRace)return;
       started=true;
-      void window.solarDistrictRace({stage,label:`${wording.leaders} im Zeitverlauf`,clockHost:clock.current,rows,history,
+      void window.solarDistrictRace({stage,label:`${Math.min(10,rows.length)} führende ${wording.unit} im Zeitverlauf`,clockHost:clock.current,rows,history,
         format:value=>Math.round(value).toLocaleString("de-DE"),animate:true,current:()=>active,skip:()=>false});
     }
     window.addEventListener("district-race-ready",start);
@@ -39,10 +38,9 @@ export default function DistrictRaceWidget({name,stand,rows,history,wording=DIST
     return ()=>{active=false;window.removeEventListener("district-race-ready",start);stage?.replaceChildren();};
   },[rows,history,stage,wording.leaders]);
   return <div className={`${foundation.foundation} sc-dashboard district-race-layout`} data-story-scheme="light">
-    <ExportableWidgetFrame animated widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
+    <ExportableWidgetFrame actions="primary" animated exportNote={null} widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
       headingMeta={<span ref={clock}>{history[0]?.year}</span>}
-      context={<>Wir vergleichen <InfoTooltip label={`${rows.length} ${wording.unit} ${ortPhrase({name})}`} ariaLabel={`Verglichene ${wording.unit}`}>{wording.members}, unabhängig von ihrer Einwohnerzahl.</InfoTooltip>. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}
-      help={<p>{wording.leaders} im Zeitverlauf. Verglichen werden alle {rows.length} {wording.unit} {ortPhrase({name})}, unabhängig von ihrer Einwohnerzahl. Heutiger Anlagenbestand nach Inbetriebnahmejahr. Registerstand: {dashboardDate(stand)}.</p>}>
+      context={<>Wir vergleichen {rows.length} {wording.unit} {ortPhrase({name})}. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}>
       <div className="district-race-artwork" aria-hidden="true">
         <div className="district-race-splashes"/>
         <div className="district-race-panels"/>

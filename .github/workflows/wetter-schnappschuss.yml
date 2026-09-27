@@ -27,7 +27,7 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -44,4 +44,16 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run wetter:schnappschuss
+        run: npm run wetter:schnappschuss -- --auch-lokal
+
+      # Tageskurve "Solarleistung heute" für die 16 Länder und Deutschland
+      # (lib/region-solar-day.ts): liest die eben geschriebenen Wetterdateien
+      # von der Platte, ruft keinen Wetterdienst, schreibt eine Datei.
+      - name: Länder- und Deutschland-Tageskurve
+        timeout-minutes: 8
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          WEATHER_SNAPSHOT_DIR: scripts/.cache/icon-d2
+        run: npm run wetter:regionen

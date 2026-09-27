@@ -40,6 +40,13 @@ window.solarDistrictTimeline = function (indexed, ids) {
   }};
 };
 
+/* Shared, time-based row motion: capture speed never changes a rank transition. */
+window.solarRaceRowPosition = function (state, target, time) {
+  if (!state || time < state.time) return {from:target, target, start:time, time, value:target};
+  const value=state.from+(state.target-state.from)*Math.min(1,Math.max(0,(time-state.start)/220));
+  return target===state.target ? {...state,time,value} : {from:value,target,start:time,time,value};
+};
+
 /* Animate actual commissioning-year totals, using the shared ranking's filters and formatting. */
 window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden Gemeinden im Zeitverlauf", rows, history, format, unit, animate, current, skip, clockHost }) {
   const race = document.createElement('div');
@@ -81,8 +88,11 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let visible=false;
   const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;},{threshold:0}); observer.observe(race);
-  let lastProgress=0, exportProgress=null, savedProgress=0;
-  function paint(progress) {
+  let lastProgress=0, exportProgress=null, savedProgress=0, paintTime=0, savedTime=0;
+  const motionStates=new Map();
+  let playbackGeneration=0;
+  function paint(progress,time=paintTime,entrance=1) {
+    paintTime=time;
     lastProgress=progress;
     const position=progress*(indexed.length-1), from=indexed[Math.floor(position)], to=indexed[Math.min(indexed.length-1,Math.floor(position)+1)];
     const fraction=position%1;
@@ -92,52 +102,61 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     order.forEach((row,index)=>{
       const {item,value,bar}=items.get(row.id);
       const shown=index<10 && row.value>0;
-      item.style.transform=`translateY(${Math.min(index,11)*44}px)`;
+      const motion=window.solarRaceRowPosition(motionStates.get(row.id),Math.min(index,11)*44,time);
+      motionStates.set(row.id,motion);
+      item.style.transition="none";
+      item.style.transform=`translateY(${motion.value}px)`;
       item.style.opacity=shown?'1':'0'; item.inert=!shown;
       item.setAttribute('aria-hidden',String(!shown));
       const place=1+order.filter(other=>other.value>row.value).length;
       item.dataset.rank=place;
       item.setAttribute('aria-label', `Platz ${place}: ${row.name}`);
       value.textContent=format(row.value);
-      // Keep a stable painted box while racing; resizing rounded boxes can leave
-      // stale end-cap fragments in Safari's composited moving rows.
-      bar.style.transform=`scaleX(${Math.max(0,Math.min(1,row.value/max))})`;
+      // Clip a stable box with fixed-radius caps; scaling would flatten the caps.
+      const width=Math.max(0,Math.min(1,row.value/max))*entrance;
+      bar.style.clipPath=`inset(0 ${(1-width)*100}% 0 0 round 0 4px 4px 0)`;
     });
     return order;
   }
   const exportControl=event=>{
     const command=event.detail;
+    if(command.mode==='restart'){exportProgress=null;void play(true);return;}
+    if(command.mode==='describe'){command.report({durationMs:introDuration+raceDuration+finishDelay});return;}
     if(command.mode==='restore'){
-      if(exportProgress!==null){paint(savedProgress);exportProgress=null;}
+      if(exportProgress!==null){motionStates.clear();paint(savedProgress,savedTime,entranceAt(savedTime));exportProgress=null;}
     }else{
-      if(exportProgress===null)savedProgress=lastProgress;
-      exportProgress=command.mode==='pause'?lastProgress:Math.max(0,Math.min(1,command.progress??0));
-      paint(exportProgress);
+      if(exportProgress===null){savedProgress=lastProgress;savedTime=paintTime;}
+      if(command.mode==='seek'&&command.timeMs===undefined)motionStates.clear();
+      exportProgress=command.mode==='pause'?lastProgress:command.timeMs!==undefined?timelineProgress(Math.max(0,command.timeMs-introDuration)/raceDuration):Math.max(0,Math.min(1,command.progress??0));
+      const time=command.timeMs??paintTime;
+      paint(exportProgress,time,command.mode==='seek'&&command.timeMs===undefined?1:entranceAt(time));
     }
   };
   stage.addEventListener('chart-export-animation',exportControl);
   const timeline = window.solarDistrictTimeline(indexed, rows.map(row => row.id));
-  const raceDuration = timeline.duration, finishDelay = 2000;
+  const raceDuration = timeline.duration, finishDelay = 2000, introDuration = 800;
+  const entranceAt=time=>1-Math.pow(1-Math.min(1,Math.max(0,time/introDuration)),3);
   const timelineProgress = timeline.progress;
   async function play(motion) {
+    const generation=++playbackGeneration;
     race.dataset.state='racing';
-    paint(0);
+    motionStates.clear();paint(0,0,motion&&!reduced.matches?0:1);
     let elapsed=0,last=performance.now();
     await new Promise(resolve=>{
       function tick(now){
-        if(!current()||!stage.isConnected){resolve();return;}
+        if(generation!==playbackGeneration||!current()||!stage.isConnected){resolve();return;}
         const delta=Math.min(80,now-last);last=now;
         if(exportProgress!==null){requestAnimationFrame(tick);return;}
         if(visible&&!document.hidden)elapsed+=delta;
-        if(!motion||reduced.matches||skip())elapsed=raceDuration+finishDelay;
-        paint(timelineProgress(elapsed/raceDuration));
-        if(elapsed>=raceDuration)race.dataset.state="finishing";
-        if(elapsed>=raceDuration+finishDelay){resolve();return;}
+        if(!motion||reduced.matches||skip())elapsed=introDuration+raceDuration+finishDelay;
+        paint(timelineProgress(Math.max(0,elapsed-introDuration)/raceDuration),elapsed,entranceAt(elapsed));
+        if(elapsed>=introDuration+raceDuration)race.dataset.state="finishing";
+        if(elapsed>=introDuration+raceDuration+finishDelay){resolve();return;}
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
     });
-    if(!current()||!stage.isConnected)return;
+    if(generation!==playbackGeneration||!current()||!stage.isConnected)return;
     race.dataset.state='revealed';
     const order=paint(1),winners=order.filter(row=>row.value>0&&row.value===order[0]?.value);
     if(motion&&!reduced.matches&&visible&&!document.hidden&&winners.length)

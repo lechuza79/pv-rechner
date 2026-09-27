@@ -119,17 +119,10 @@ export async function POST(req: NextRequest) {
   const emailRoh = typeof payload.email === "string" ? payload.email : "";
   const email = normalisiereEmail(emailRoh);
 
-  // FÜNF ODER ACHT STELLEN, nicht nur acht — und das ist kein Aufweichen der
-  // Prüfung, sondern die Korrektur eines Fehlers: Das Ortsverzeichnis führt
-  // fünfstellige Schlüssel für kreisfreie Städte und Landkreise, achtstellige
-  // für kreisangehörige Gemeinden. Die Förderseiten tragen beide Formen. Mit
-  // der engeren Prüfung wäre die Anmeldung auf jeder kreisfreien Stadt stumm
-  // gescheitert — die Seite hätte funktioniert, nur der Knopf nicht.
-  //
-  // Die eigentliche Prüfung ist ohnehin die nächste: Ob es den Ort GIBT,
-  // beantwortet das Verzeichnis, nicht die Länge der Zahl.
-  if (!/^\d{5}$|^\d{8}$/.test(regionId)) {
-    return NextResponse.json({ error: "Kein gültiger Gemeindeschlüssel." }, { status: 400 });
+  // All Atlas levels share the same subscription flow. The registry lookup
+  // below remains authoritative; the format check only rejects malformed IDs.
+  if (!/^(?:de|\d{2}|\d{5}|\d{8})$/.test(regionId)) {
+    return NextResponse.json({ error: "Keine gültige Region." }, { status: 400 });
   }
   if (!siehtNachEmailAus(email)) {
     return NextResponse.json({ error: "Diese E-Mail-Adresse sieht nicht richtig aus." }, { status: 400 });

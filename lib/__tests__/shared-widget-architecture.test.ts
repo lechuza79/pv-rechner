@@ -11,8 +11,8 @@ const consumers: Record<string,string[]> = {
   'components/dashboard/WidgetFrame.tsx':['../InfoTooltip'],
   'components/GlossaryTerm.tsx':['./InfoTooltip'],
   'components/InfoTooltipBindings.tsx':['./InfoTooltip'],
-  'components/gemeinde/GemeindeMonitor.tsx':['../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],
-  'components/landkreis/LandkreisMonitor.tsx':['../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],
+  'components/gemeinde/GemeindeMonitor.tsx':['../dashboard/EnergyMonitor','../dashboard/KpiOverview','../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],
+  'components/landkreis/LandkreisMonitor.tsx':['../dashboard/EnergyMonitor','../dashboard/KpiOverview','../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],
   'components/landkreis/DistrictRaceWidget.tsx':['../dashboard/ExportableWidgetFrame'],
   'components/landkreis/DistrictEnergyWidgets.tsx':['../dashboard/ExportableWidgetFrame'],
   'components/gemeinde/MonitorMonthlySolarChart.tsx':['../charts/MonthlySolarRadial','../dashboard/WidgetSetting'],
@@ -30,6 +30,11 @@ describe('Shared widget architecture',()=>{
     const source=read(consumer);
     const imports=[...source.matchAll(/\bfrom\s*['"]([^'"]+)['"]/g)].map(match=>match[1]);
     for(const dependency of dependencies)expect(imports,`Reuse ${dependency}; add options there instead of copying its implementation.`).toContain(dependency);
+  });
+  it('keeps monitor sections in the shared composition',()=>{
+    for (const path of ['components/gemeinde/GemeindeMonitor.tsx','components/landkreis/LandkreisMonitor.tsx']) {
+      expect(read(path)).not.toMatch(/className="sc-widget-grid"|<h3>Anlagenbestand|<h3>Strom und Wert/);
+    }
   });
   it('keeps menu rendering and video encoding out of individual widgets',()=>{
     const violations= ['components/gemeinde','components/landkreis','components/charts'].flatMap(files).filter(path=>

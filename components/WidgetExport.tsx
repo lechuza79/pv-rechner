@@ -572,7 +572,7 @@ export function WidgetExportFooter({
           <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
-                <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />
+                <PoweredBy light label={brandLabel(widget?.kind ?? "chart")} />
                 <span> · {OWN_WORK_LICENSE.code}</span>
               </>
             ) : (

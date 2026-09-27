@@ -520,6 +520,7 @@ export async function captureNodeToBlob(
   node: HTMLElement,
   scale = 2,
   format?: { type: string; quality?: number; background?: string },
+  presentation: 'export' | 'screen' = 'export',
 ): Promise<Blob> {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
@@ -535,10 +536,11 @@ export async function captureNodeToBlob(
   const wrapper = document.createElement('div');
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
-  applyBrightestStage(wrapper);
-  wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
+  if(presentation==='export')applyBrightestStage(wrapper);
+  if(presentation==='export')wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
   const clone = node.cloneNode(true) as HTMLElement;
-  applyExportMarkers(clone);
+  if(presentation==='export')applyExportMarkers(clone);
+  clone.querySelectorAll('[data-video-overlay]').forEach(overlay=>overlay.remove());
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
   // text (matches the print footers that already use the plain DataSourceNote).
   clone

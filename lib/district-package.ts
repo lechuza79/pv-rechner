@@ -55,6 +55,13 @@ export type DistrictPackage = {
   editions: string[];
   /** Members without a published town package (their data is absent, not zero). */
   missing: string[];
+  /**
+   * Members the register confirmed at build time to have NO plant of any kind
+   * (e.g. Gröde, 7 residents). Their packages carry no history because there is
+   * nothing to count; they add zero, so they are left out of the sums instead of
+   * making the whole district "unavailable". Absent in older packages.
+   */
+  empty?: string[];
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
@@ -68,6 +75,8 @@ export type DistrictManifest = {
   publishedAt: string;
   previousGeneration: string | null;
   districts: Record<string, DistrictManifestEntry>;
+  /** Bundesländer and Deutschland (lib/region-package.ts), same generation. Absent in older pointers. */
+  regions?: Record<string, DistrictManifestEntry>;
 };
 
 const sorted = (xs: string[]) => [...xs].sort();
@@ -79,16 +88,25 @@ const sorted = (xs: string[]) => [...xs].sort();
  * when every town is present and on one edition, stories by the accepted
  * selection. `packets[i]` belongs to `ids[i]`; null means "no package".
  */
-export function computeDistrictContent(ids: string[], packets: (GemeindePaket | null)[], town: string): DistrictComputed {
+export function computeDistrictContent(ids: string[], packets: (GemeindePaket | null)[], town: string, empty: ReadonlySet<string> = new Set()): DistrictComputed {
   const stories: StoryConcept[][] = packets.map((p) => (p ? (paketFuer("geschichten", p).stories as StoryConcept[]) : []));
-  const sites = packets.flatMap((p) => (p?.register ? [{ ags: p.ags, kwp: p.register.own.sums.alle.kwp }] : []));
-  const slim = packets.map((p) => (p ? { ags: p.ags, registerStand: p.registerStand, monitorHistory: p.monitorHistory, monitorPeriods: p.monitorPeriods } : null));
+  // Register-confirmed empty towns add zero: leave them out of every sum.
+  const keep = ids.map((a, i) => !(empty.has(a) && isEmptyTown(packets[i])));
+  const sumIds = ids.filter((_, i) => keep[i]);
+  const sumPackets = packets.filter((_, i) => keep[i]);
+  const sites = sumPackets.flatMap((p) => (p?.register ? [{ ags: p.ags, kwp: p.register.own.sums.alle.kwp }] : []));
+  const slim = sumPackets.map((p) => (p ? { ags: p.ags, registerStand: p.registerStand, monitorHistory: p.monitorHistory, monitorPeriods: p.monitorPeriods } : null));
   const monitor: DistrictMonitor = {
-    ...aggregateDistrictMonitor(ids, slim, slim[0]?.registerStand ?? ""),
-    energy: aggregateDistrictEnergy(ids, slim, town),
-    sites: sites.length === ids.length && slim.every((p) => p?.registerStand === slim[0]?.registerStand) ? sites : null,
+    ...aggregateDistrictMonitor(sumIds, slim, slim[0]?.registerStand ?? ""),
+    energy: aggregateDistrictEnergy(sumIds, slim, town),
+    sites: sites.length === sumIds.length && slim.every((p) => p?.registerStand === slim[0]?.registerStand) ? sites : null,
   };
   return { monitor, stories: selectDistrictStories(stories) };
+}
+
+/** A published town package that holds nothing to sum: no history, no periods, no register figures. */
+export function isEmptyTown(p: GemeindePaket | null): boolean {
+  return !!p && !p.monitorHistory && !p.monitorPeriods && !p.register;
 }
 
 /** What a district's package is computed from; changes whenever any input changes. */
@@ -103,7 +121,7 @@ export function districtFingerprint(d: DistrictMembership, townTags: ReadonlyMap
   return createHash("sha256").update(JSON.stringify(input)).digest("hex");
 }
 
-export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePaket | null)[], fingerprint: string, builtAt: string): DistrictPackage {
+export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePaket | null)[], fingerprint: string, builtAt: string, emptyTowns: ReadonlySet<string> = new Set()): DistrictPackage {
   if (packets.length !== d.members.length) throw new Error(`${d.regionId}: ${packets.length} Pakete für ${d.members.length} Gemeinden`);
   packets.forEach((p, i) => {
     if (p && p.ags !== d.members[i]) throw new Error(`${d.regionId}: Paket ${p.ags} an Stelle von ${d.members[i]}`);
@@ -116,9 +134,10 @@ export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePa
     members: sorted(d.members),
     editions: sorted([...new Set(packets.flatMap((p) => (p ? [p.registerStand] : [])))]),
     missing: d.members.filter((_, i) => !packets[i]),
+    ...(d.members.some((a, i) => emptyTowns.has(a) && isEmptyTown(packets[i])) ? { empty: sorted(d.members.filter((a, i) => emptyTowns.has(a) && isEmptyTown(packets[i]))) } : {}),
     fingerprint,
     builtAt,
-    content: computeDistrictContent(d.members, packets, d.name),
+    content: computeDistrictContent(d.members, packets, d.name, emptyTowns),
   };
 }
 

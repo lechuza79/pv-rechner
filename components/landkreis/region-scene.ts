@@ -16,7 +16,7 @@ const BAR_MAX = 155;
 export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], events: {
   hover: (id: string | null) => void; select: (id: string, touch?: boolean) => void;
   pin: (point: { x: number; y: number } | null) => void; failed: () => void;
-}, heightEnvelope: Record<string, number> = {}) {
+}, heightEnvelope: Record<string, number> = {}, framingScale = 1) {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0, 0);
@@ -225,12 +225,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     const heading = stage?.querySelector<HTMLElement>("[data-map-hero-heading]");
     const stageRect = stage?.getBoundingClientRect();
     const headingBottom = heading?.getBoundingClientRect().bottom ?? hostRect.top;
-    const topInset = Math.max(0, headingBottom - hostRect.top + (w < 600 ? 12 : -200));
+    const topInset = Math.max(0, headingBottom - hostRect.top + (w < 600 ? 12 : stage?.dataset.mapClearHeading === "true" ? -80 : -200));
     const canvasRect = host.closest<HTMLElement>("[data-map-canvas]")?.getBoundingClientRect();
     const bottomEdge = canvasRect ? canvasRect.bottom - hostRect.top : stageRect ? stageRect.bottom - hostRect.top : h;
     const fittedHeight = Math.max(200, bottomEdge - topInset);
     const fittedWidth = Math.min(w, 1120);
-    const worldPerFitPixel = Math.max(2 * framing.halfH / fittedHeight, 2 * framing.halfW / fittedWidth) * 1.12;
+    const worldPerFitPixel = Math.max(2 * framing.halfH / fittedHeight, 2 * framing.halfW / fittedWidth) * 1.12 / framingScale;
     const halfH = worldPerFitPixel * h / 2;
     const centerY = (topInset + bottomEdge) / 2;
     const verticalOffset = (centerY - h / 2) * worldPerFitPixel;
