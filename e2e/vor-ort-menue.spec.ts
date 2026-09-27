@@ -75,7 +75,7 @@ for (const [label, width, mobile] of [["desktop", 1440, false], ["phone", 375, t
       const kreis = await measure("label.sc-local-card");
       expect(kreis).toEqual(card);
       // All three column headings sit on one line.
-      const tops = await panel.locator(".sc-nav-column > h3").evaluateAll(hs => hs.map(h => Math.round(h.getBoundingClientRect().top)));
+      const tops = await panel.locator(".sc-nav-column > .sc-hd").evaluateAll(hs => hs.map(h => Math.round(h.getBoundingClientRect().top)));
       if (!mobile) expect(new Set(tops).size).toBe(1);
     });
 

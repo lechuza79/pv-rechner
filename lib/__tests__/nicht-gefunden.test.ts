@@ -49,8 +49,10 @@ describe("404-Seiten", () => {
     // Geprüft wird die VERWENDUNG, nicht der Import — eine stehengebliebene
     // Import-Zeile neben eigenem JSX wäre genau der Rückfall.
     for (const [name, quelle] of [["global", GLOBAL], ["(site)", SITE]] as const) {
+      // Inside the site layout it renders without its own <main> (the layout
+      // has the one), hence the optional prop.
       expect(quelle, `die ${name}-Seite rendert den geteilten Baustein nicht`)
-        .toContain("<NichtGefundenInhalt />");
+        .toMatch(/<NichtGefundenInhalt( innerhalbMain)? \/>/);
       expect(quelle, `die ${name}-Seite zeichnet den Inhalt selbst statt ihn zu holen`)
         .not.toContain("NICHT_GEFUNDEN.wege");
     }

@@ -231,7 +231,7 @@ test('district chart proportions and source footer remain responsive',async({pag
   await art.scrollIntoViewIfNeeded();
   await expect.poll(()=>art.evaluate(e=>!!e.shadowRoot?.querySelector('svg'))).toBe(true);
   const footer=page.locator('[data-page-footer]');
-  expect(await footer.evaluate(e=>Math.abs(e.getBoundingClientRect().top-document.querySelector('main')!.getBoundingClientRect().bottom))).toBeLessThan(1);
+  expect(await footer.evaluate(e=>Math.abs(e.getBoundingClientRect().top-document.querySelector('.solar-page')!.getBoundingClientRect().bottom))).toBeLessThan(1);
   expect(await footer.locator('.sc-data-sources').evaluate(e=>e.previousElementSibling?.classList.contains('sc-trust'))).toBe(true);
   await expect(page.locator('[data-sc-fuss]:visible')).toHaveCount(1);
   await page.setViewportSize({width:451,height:793});

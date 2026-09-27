@@ -19,7 +19,7 @@ export default async function SuchSeite(props: { searchParams: Promise<{ q?: str
   const q = (Array.isArray(sp.q) ? sp.q[0] : sp.q) ?? "";
   const ergebnis = await suche(q);
   return (
-    <main
+    <div
       style={{
         background: v("--color-bg"),
         color: v("--color-text-primary"),
@@ -37,6 +37,6 @@ export default async function SuchSeite(props: { searchParams: Promise<{ q?: str
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

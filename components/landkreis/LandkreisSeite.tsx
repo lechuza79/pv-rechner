@@ -95,7 +95,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
   const content=isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):null;
   const comparable=towns.length>1;
-  return <><main className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
+  return <><div className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
     <link rel="stylesheet" href="/gemeinde/region-sections.css" precedence="default"/>
     <link rel="stylesheet" href="/design-system/feature-card.css" precedence="default"/>
     <div className={`${styles.heroBand} ${foundation.foundation}`} data-story-scheme="dark" data-map-hero-band>
@@ -150,7 +150,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive"/>
     <GemeindeSkripte navigationOnly daten={{districtOverview:true,overviewLabel:isDistrict?"Landkreisübersicht":level==="bundesland"?"Länderübersicht":"Deutschlandübersicht",ortPhrase:ortPhrase(region),ags:null,kreisAgs:region.region_id,kreisLabel:region.name,landAgs:state.id,landLabel:state.name,startArea:region.region_id,startKategorie:"count",klasse:"alle",kreisBase:basePath+"/",stufen:STUFEN,discoveries:[],name:region.name,liveUrl:`https://solar-check.io${basePath}`,genitiv:region.name,widgetUrl:"https://solar-check.io/energie-widgets"}}/>
 
-  </main><div data-page-footer><SiteFuss zwischen={<DataSourcesSection><DataSourceNote label="Datenbasis:" source={isDistrict?[DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.iconD2Archive, DATA_SOURCES.era5Archive]:[DATA_SOURCES.mastr, DATA_SOURCES.bkg]}/></DataSourcesSection>}/></div></>;
+  </div><div data-page-footer><SiteFuss zwischen={<DataSourcesSection><DataSourceNote label="Datenbasis:" source={isDistrict?[DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.iconD2Archive, DATA_SOURCES.era5Archive]:[DATA_SOURCES.mastr, DATA_SOURCES.bkg]}/></DataSourcesSection>}/></div></>;
 }
 
 /** The map and introduction must not wait for all municipality monitor packages. */

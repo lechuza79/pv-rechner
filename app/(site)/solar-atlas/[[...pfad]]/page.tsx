@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
@@ -28,6 +28,7 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { foerderBundeslaender } from "../../../../lib/atlas-cities";
 import { atlasSeitenTitel } from "../../../../lib/atlas-titel";
 import { GROESSENKLASSEN_WARUM } from "../../../../lib/gemeindegroesse";
 import { buildRegionHighlight } from "../../../../lib/region-highlight";
@@ -154,7 +155,7 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   if (region.level === "landkreis") {
     const kids = await getChildren(region);
     if (kids.length === 1 && kids[0].slug) {
-      redirect(`/solar-atlas/${(params.pfad ?? []).join("/")}/${kids[0].slug}`);
+      permanentRedirect(`/solar-atlas/${(params.pfad ?? []).join("/")}/${kids[0].slug}`);
     }
   }
   if (!childLevel) notFound();
@@ -416,11 +417,11 @@ async function AtlasBody({
           <Link href="/laendervergleich" style={S.link}>Photovoltaik-Ausbau im Ländervergleich</Link>
         </div>
       )}
-      {region.level === "bundesland" && region.slug && (
+      {region.level === "bundesland" && region.slug && foerderBundeslaender().some((b) => b.slug === region.slug) && (
         <div style={S.section}>
           <h2 style={S.h2}>Förderung</h2>
           <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
-          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme in {region.name}</Link>
+          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme {ortPhrase(region)}</Link>
         </div>
       )}
     </> : null;
@@ -594,12 +595,12 @@ async function AtlasBody({
           </div>
         )}
 
-        {region.level === "bundesland" && region.slug && (
+        {region.level === "bundesland" && region.slug && foerderBundeslaender().some((b) => b.slug === region.slug) && (
           <div style={S.section}>
             <h2 style={S.h2}>Förderung</h2>
             <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
             <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>
-              Förderprogramme in {region.name}
+              Förderprogramme {ortPhrase(region)}
             </Link>
           </div>
         )}

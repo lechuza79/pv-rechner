@@ -14,6 +14,9 @@ export const organizationJsonLd = {
   alternateName: ["Solarcheck", "solar-check.io"],
   url: BASE_URL,
   logo: `${BASE_URL}/logo.png`,
+  // The company page we post from (live since 24.08.2026); ties the brand
+  // entity to it.
+  sameAs: ["https://www.linkedin.com/company/solar-check-io"],
   description:
     "Kostenlose Energie-Rechner — ohne Anmeldung, ohne Verkaufsanrufe: Photovoltaik-Rentabilität, Wärmepumpe und Live-Energiedaten für Deutschland.",
 };

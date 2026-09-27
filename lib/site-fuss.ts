@@ -104,7 +104,7 @@ export function vertrauenInnenHtml(): string {
     }
     text += esc(s.text.slice(i));
     const mehr = s.mehr ? `<a class="sc-trust-more" href="${esc(s.href)}">Mehr erfahren ${PFEIL}</a>` : "";
-    return `<div class="sc-trust-item"><solar-trust-badge motif="${MOTIV[s.icon]}" aria-hidden="true"></solar-trust-badge><h3>${esc(s.titel)}</h3><p>${text}</p>${mehr}</div>`;
+    return `<div class="sc-trust-item"><solar-trust-badge motif="${MOTIV[s.icon]}" aria-hidden="true"></solar-trust-badge><p class="sc-hd" role="heading" aria-level="3">${esc(s.titel)}</p><p>${text}</p>${mehr}</div>`;
   }).join("");
   return `<div class="sc-trust-grid">${items}</div>`;
 }
@@ -112,13 +112,13 @@ export function vertrauenInnenHtml(): string {
 /** Everything in the footer after the brand logo. */
 export function fussInnenHtml(): string {
   const gruppen = FUSS_GRUPPEN.map(
-    (g) => `<section><h2>${esc(g.titel)}</h2>${g.links.map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join("")}</section>`,
+    (g) => `<section><p class="sc-hd" role="heading" aria-level="2">${esc(g.titel)}</p>${g.links.map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join("")}</section>`,
   ).join("");
   return (
     `<p class="sc-footer-tagline">Dein Dach. Deine Energie.</p>` +
     `<nav class="sc-footer-grid" aria-label="Fußnavigation">${gruppen}</nav>` +
     (FUSS_LAENDER.length
-      ? `<nav class="sc-footer-laender" aria-label="Energie-Atlas nach Bundesland"><h2>Energie-Atlas nach Bundesland</h2><div>${FUSS_LAENDER.map((l) => `<a href="${esc(l.href)}"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="/bundeslaender.svg#bl-${esc(l.slug)}"/></svg><span>${esc(l.label)}</span></a>`).join("")}</div></nav>`
+      ? `<nav class="sc-footer-laender" aria-label="Energie-Atlas nach Bundesland"><p class="sc-hd" role="heading" aria-level="2">Energie-Atlas nach Bundesland</p><div>${FUSS_LAENDER.map((l) => `<a href="${esc(l.href)}"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="/bundeslaender.svg#bl-${esc(l.slug)}"/></svg><span>${esc(l.label)}</span></a>`).join("")}</div></nav>`
       : "") +
     `<div class="sc-footer-legal"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div>` +
     `<p class="sc-footer-disclaimer">Alle Berechnungen und Angaben sind unverbindliche Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine Rechts-, Steuer- oder Anlageberatung dar.</p>`

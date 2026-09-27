@@ -99,7 +99,7 @@ function ausNavigation(): SucheEintrag[] {
       // durchrechnen"; "Angebotscheck", not "Auf die Warteliste"); with two,
       // the action tells them apart and the subject goes underneath.
       const card = $(a).closest(".sc-nav-tool");
-      const h3 = card.find("h3").first();
+      const h3 = card.find(".sc-hd, h3").first();
       const cardTitle = card.length ? h3.clone().children().remove().end().text().trim() : "";
       const badge = card.length ? h3.find(".sc-nav-badge").text().trim() : "";
       const cardText = card.length ? card.find("p").first().text().trim() : "";

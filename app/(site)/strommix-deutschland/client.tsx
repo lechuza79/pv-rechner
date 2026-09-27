@@ -368,16 +368,9 @@ export default function EnergieClient() {
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      {/* Hero */}
-      <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <h1 style={{}}>
-          Strommix Deutschland – live
-        </h1>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
-          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
-        </p>
-      </div>
-
+      {/* The hero (h1 + intro) lives in page.tsx: this component reads the URL
+          and renders only in the browser, so a heading here was missing from
+          the server HTML (SEO audit 27.09.2026). */}
       {/* Zwei eigenständige Live-Widgets — VOR dem Strommix-Widget, das aus
           Zeitraum-Umschalter, Kachelreihe und Verlaufs-Chart besteht. Sie
           standen zuerst zwischen Kacheln und Chart und wirkten dadurch wie ein
