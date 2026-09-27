@@ -17,7 +17,8 @@ test.describe("Data-driven pages", () => {
     await expect(page.getByRole("heading", { name: /Live|Simulation|Solar/i }).first()).toBeVisible();
 
     // PLZ input should exist
-    const plzInput = page.getByPlaceholder(/PLZ|Postleitzahl/i).first();
+    // Visible only: the header search (closed) also names "Postleitzahl" in its placeholder.
+    const plzInput = page.getByPlaceholder(/PLZ|Postleitzahl/i).filter({ visible: true }).first();
     await expect(plzInput).toBeVisible();
 
     // Type a known PLZ and submit

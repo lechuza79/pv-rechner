@@ -1,0 +1,116 @@
+Quelle: handelsregister.de, Seite "Informationen" -> Aktuelle Nutzungsordnung
+Abgerufen am 23.09.2026. Die Seite ist ueber einen gewoehnlichen GET nicht erreichbar;
+die Anwendung navigiert ausschliesslich ueber Formular-Absendungen.
+---
+Registerportal | Informationen
+Diese Webseite verwendet funktionale Cookies. Mehr erfahren Sie in den Datenschutzhinweisen.
+Wenn Sie diese Webseite weiter nutzen, erklären Sie sich mit der Nutzung von Cookies und der Verarbeitung Ihrer Daten nach den Vorgaben der Datenschutzhinweise einverstanden.
+Verstanden.
+Gemeinsames Registerportal der Länder
+topbar menu button DE DE EN ES FR IT Startseite Normale Suche Erweiterte Suche Registerbekanntmachungen Länderinformationen Informationen Hilfe Datenschutzhinweise Impressum Kontakt Bund / Länder Onlinedienste
+Direkt zum Inhalt
+Direkt zur Hauptnavigation
+Direkt zur Kontaktseite
+Direkt zum Footer
+Startseite Informationen
+Startseite
+Normale Suche
+Erweiterte Suche
+Registerbekanntmachungen
+Länderinformationen
+Informationen
+Hilfe
+Kontakt
+Bund / Länder
+Onlinedienste
+Kontakt
+Weiter
+zur Kontaktseite
+Informationen
+Aktuelle Nutzungsordnung
+1.) Das Registerportal der Länder ist das von den Landesjustizverwaltungen bestimmte elektronische Informations- und Kommunikationssystem, über das die Daten aus den Rechtsträgerregistern der Justiz, die bei den Registergerichten geführt werden, abrufbar sind. Es wird im Auftrag der Landesjustizverwaltungen vom Land Nordrhein-Westfalen betrieben. Es handelt sich um die Handelsregister Teile A und B, die Genossenschafts-, Partnerschafts-, Gesellschafts- und Vereinsregister. Für die einzelnen Rechtsträger werden folgende Informationen bereitgestellt:
+Indexdaten
+Dokumente
+Unternehmensträgerdaten
+Sonstige Veröffentlichungen
+Aktueller Abdruck (AD)
+Chronologischer Abdruck (CD)
+Historischer Abdruck (HD)
+Strukturierter Registerinhalt (SI), Datensatz als XML-Datei
+Das Registerportal stellt in Zusammenarbeit mit den Landesjustizverwaltungen und den Registergerichten die notwendigen Kapazitäten für die Einsichtnahme in die Rechtsträgerregister der Justiz zur Verfügung. Es kann durch Ausfälle und hohe Nachfrage oder erforderliche Wartungsarbeiten zu Kapazitätsengpässen oder Einschränkungen kommen. Auch kann nicht ausgeschlossen werden, dass die Dienste im Einzelfall durch missbräuchliche Massenabrufe überlastet werden.
+2.) Diese Nutzungsordnung regelt das öffentlich-rechtliche Nutzungsverhältnis mit dem Land Nordrhein-Westfalen bei der Inanspruchnahme der Dienste auf dieser Internetseite, insbesondere dem Suchen und Abrufen sowie dem Speichern und Fertigen von Abdrucken von Informationen aus dem Handels-, Genossenschafts-, Partnerschafts-, Gesellschafts- und Vereinsregister (Registerinformationen). Es gelten die §§ 9 HGB, 156 Abs. 1 GenG, 5 Abs. 2 PartGG, 79 BGB, 52, 53 HRV, 707b BGB und 33, 36 VRV.
+3.) Die Einsichtnahme in die Rechtsträgerregister der Justiz sowie in die zum Handelsregister eingereichten Dokumente ist jedem zu Informationszwecken durch einzelne Abrufe gestattet (vgl. § 9 Abs. 1 S. 1 HGB, 79 Abs. 3 S. 1 BGB). Systematische Abrufe, um parallele Voll- oder Teilregister aufzubauen, auszubauen oder zu aktualisieren, sind unzulässig.
+4.) Abgerufene Registerinformationen dürfen nur nach Maßgabe der geltenden datenschutzrechtlichen Bestimmungen, insbesondere der Datenschutz-Grundverordnung (Verordnung (EU) 2016/679 vom 27.04.2016) und der Datenschutzgesetze des Bundes und der Länder, abgerufen, gespeichert, genutzt und verbreitet werden.
+5.) Es ist unzulässig, mehr als 60 Suchen oder Aufrufe von Rechtsträgern pro Stunde im Registerportal vorzunehmen. Kann das berechtigte Erfordernis für eine höhere Abrufhäufigkeit nachgewiesen werden, besteht die Möglichkeit, bei der Servicestelle Registerportal beim AG Hagen einen Antrag auf einen Zugang mit einer registrierten IP-Adresse nach Ziffer 7) zu stellen.
+6.) Das Registerportal sperrt einzelne IP-Adressen und beendet einzelne Nutzersessions, wenn der Verdacht besteht, dass gegen die gesetzlichen Vorgaben oder diese Nutzungsordnung verstoßen wird. Diese Maßnahmen oder andere geeignete technische Maßnahmen können im Einzelfall auch getroffen werden, um die Verfügbarkeit des Registerportals bei starker Beanspruchung aufrecht zu erhalten, wieder herzustellen oder um die Kapazitäten gleichmäßig auf die Nutzerinnen und Nutzer zu verteilen. Bei Überlast oder Missbrauchsverdacht behält sich das Registerportal vor, Kapazitäten zu reduzieren, Sperren einzurichten und einzelne Nutzer oder Nutzergruppen von dem Service dauerhaft oder vorübergehend auszuschließen.
+7.) Bei der Servicestelle Registerportal kann beantragt werden, eine IP-Adresse zur Nutzung des Registerportals zu registrieren, für die die Regel nach Ziffer 5) Satz 1 nicht gilt (Whitelist-IP). In dem Antrag muss angegeben werden, in welchem Umfang Informationen aus dem Registerportal abgerufen werden und zu welchen Zwecken diese Abrufe erfolgen. Die Antragstellerin/ der Antragsteller muss sich verpflichten, die Vorgaben aus der Nutzungsordnung einzuhalten. Falls sich Anhaltspunkte ergeben, dass eine Nutzerin/Nutzer mit ihren/seinen Abrufen oder Suchen in einem bestimmten Zeitpunkt gegen § 9 Abs. 1 S. 1 HGB verstößt, muss gegenüber der Servicestelle das Interesse an der übermäßigen Nutzung des Services nachgewiesen werden können. Kann ein Nachweis nicht erbracht werden, kann die Registrierung widerrufen werden.
+Rechtliche Informationen
+Verweise und Links
+Diese Website enthält als Information auch entsprechend gekennzeichnete Links oder Verweise auf Websites Dritter. Die Verantwortlichkeit für diese fremden Inhalte liegt alleine bei dem Anbieter, der die Inhalte bereithält. Das Land Nordrhein-Westfalen vermittelt lediglich den Zugang zur Nutzung dieser Inhalte.
+Bei der erstmaligen Verknüpfung mit einem anderen Internetangebot ist dessen Inhalt daraufhin geprüft worden, ob durch ihn eine mögliche zivilrechtliche oder strafrechtliche Verantwortlichkeit ausgelöst wird. Auf die aktuelle und zukünftige Gestaltung, die Inhalte oder die Urheberschaft der verlinkten/verknüpften Seiten besteht jedoch keinerlei Einfluss. Deshalb distanziert sich das Land Nordrhein-Westfalen hiermit ausdrücklich von allen Inhalten aller verlinkten/verknüpften Seiten, die nach der Linksetzung verändert wurden.
+Für illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der Nutzung oder Nichtnutzung von Informationen Dritter entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die jeweilige Veröffentlichung lediglich verweist. Urheber- und Kennzeichenrecht
+Falls nicht anders angegeben, unterliegen alle Seiten auf diesem Informationsserver dem Urheberrecht (Copyright). Dies gilt insbesondere für Texte, Bilder und Grafiken einschließlich deren Anordnung auf den Web-Seiten. Eine Vervielfältigung oder Verwendung solcher Seiten (oder Teilen davon) in anderen elektronischen oder gedruckten Publikationen und deren Veröffentlichung (auch im Internet) ist nur nach vorheriger Genehmigung gestattet.
+Eine Veröffentlichung oder Weiterverwendung der über diese Seiten publizierten Daten unter der Bezeichnung "Handelsregister" ist unzulässig (§ 8 Absatz 2 Handelsgesetzbuch). Weiterhin können Bilder, Grafiken, Text- oder sonstige Dateien ganz oder teilweise dem Urheberrecht Dritter unterliegen.
+Alle innerhalb des Internetangebotes genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer. Allein aufgrund der bloßen Nennung in diesem Internetangebot ist nicht der Schluss zu ziehen, dass Markenzeichen nicht durch Rechte Dritter geschützt sind. Mitteilung nach Artikel 3 Nummer 3 der Richtlinie 2012/17/EU
+Die nationalen Bestimmungen, aufgrund welcher sich Dritte gemäß Artikel 3 Absätze 5, 6 und 7 der Richtlinie 2009/101/EG des Europäischen Parlaments und des Rates vom 16. September 2009 zur Koordinierung der Schutzbestimmungen, die in den Mitgliedstaaten den Gesellschaften im Sinne des Artikels 54 Absatz 2 des Vertrags im Interesse der Gesellschafter sowie Dritter vorgeschrieben sind, um diese Bestimmungen gleichwertig zu gestalten (ABl. L 258 vom 1.10.2009, S. 11) auf die in Artikel 2 derselben Richtlinie genannten Tatsachen berufen können, enthält § 15 des Handelsgesetzbuchs.
+Nach dieser Vorschrift gilt:
+Die Gesellschaft kann Dritten nur solche Tatsachen entgegenhalten, die eingetragen und bekannt gemacht sind, oder die dem Dritten bereits bekannt waren (§ 15 Absatz 1 des Handelsgesetzbuchs). Ein Dritter muss sich richtig eingetragene und bekannt gemachte Tatsachen entgegenhalten lassen. Dies gilt nicht bei Rechtshandlungen, die innerhalb von fünfzehn Tagen nach der Bekanntmachung vorgenommen werden, sofern der Dritte beweist, dass er die Tatsache weder kannte noch kennen musste (§ 15 Absatz 2 des Handelsgesetzbuchs). Ist eine einzutragende Tatsache unrichtig bekanntgemacht, so kann sich ein Dritter demjenigen gegenüber, in dessen Angelegenheiten die Tatsache einzutragen war, auf die bekanntgemachte Tatsache berufen, es sei denn, dass er die Unrichtigkeit kannte (§ 15 Absatz 3 des Handelsgesetzbuchs).
+Informationen in mehreren Sprachen
+Bitte wählen Sie aus der Liste eine Sprache aus:
+englisch
+english
+französisch
+français
+italienisch
+italiano
+niederländisch
+nederlands
+polnisch
+polski
+spanisch
+español
+türkisch
+türkçe
+Häufig gestellte Fragen
+1. Welche Informationen erhalte ich über das gemeinsame Registerportal der Länder?
+Mit dem gemeinsamen Registerportal der Länder bietet die deutsche Justiz die Möglichkeit, an jedem PC-Arbeitsplatz zu jeder Zeit Einsicht in die Handelsregister aller Bundesländer zu nehmen. Neben dem Handelsregister werden auch Daten aus den Genossenschafts-, Partnerschafts- und Gesellschaftsregistern sowie zum Teil aus den Vereinsregistern angeboten.
+Auch ohne Kenntnis der Registernummer können Sie gezielt nach registrierten Unternehmen und Einzelfirmen suchen. Der Registerinhalt wird in verschiedenen Darstellungsformen als pdf-Dokument zur Verfügung gestellt und kann gespeichert sowie ausgedruckt werden.
+Angeboten werden insbesondere:
+der aktuelle Abdruck mit einem Überblick über alle derzeit gültigen Eintragungen,
+der chronologische Abdruck mit allen Daten ab Umstellung auf elektronische Registerführung,
+der historische Abdruck mit allen Daten, die bis zur Umstellung auf die elektronische Registerführung gültig waren.
+Die Aktualität der bereits einsehbaren Daten ist jederzeit gewährleistet. Sie erhalten authentische Daten aus dem amtlichen Register, da die Recherche unmittelbar auf den Echtdatenbestand des Handelsregisters zugreift.
+Daneben ermöglicht das Registerportal den Abruf von Dokumenten, die auf elektronischem Wege dem Registergericht zugesandt wurden und zum sogenannten Registerordner gehören, wie z. B. Anmeldungen zum Register, Gesellschafterlisten und Satzungen von Kapitalgesellschaften. Außerdem können Sie sich über die Registerbekanntmachungen nach § 10 HGB informieren.
+Welche Registerbereiche die einzelnen Bundesländer aktuell anbieten, entnehmen Sie bitte den Länderinformationen. 2. Warum erhalte ich beim Dokumentenabruf nicht das gesuchte Dokument?
+Über den Dokumentenabruf erhalten Sie grundsätzlich alle Dokumente, die bezüglich einer Firma im Registerordner enthalten sind. Allerdings finden Sie hier nur Dokumente, die bereits elektronisch dem Registergericht zugeleitet wurden.
+Sofern das gesuchte Dokument nicht im Registerportal abrufbar ist, können Sie beim zuständigen Registergericht beantragen, dass dieses Dokument online zur Verfügung gestellt wird. Voraussetzung hierfür ist, dass das Dokument nicht älter als zehn Jahre ist. Außerdem ist diese Bereitstellung auf Antrag kostenpflichtig (derzeit 2,00 EUR pro Seite, mindestens 25,00 EUR).
+Link zur Suche in der Gerichtsdatenbank
+3. Kann ich über das Registerportal auch Jahresabschlüsse/Bilanzen abrufen?
+Jahresabschlüsse und Bilanzen sind nicht über das Registerportal abrufbar. Diese erhalten Sie ausschließlich über das Unternehmensregister des Bundesanzeigers. 4. An wen wende ich mich bei Fragen zum Inhalt des Handelsregisters?
+Für die Eintragungen in den jeweiligen Registern sind die registerführenden Amtsgerichte zuständig. Bei Fragen zum Inhalt wenden Sie sich daher bitte an das zuständige Amtsgericht.
+Link zur Suche in der Gerichtsdatenbank
+5. Beim Download von PDF-Dateien meldet der Internet Explorer "Beim Öffnen dieses Dokuments ist ein Fehler aufgetreten. Diese Datei kann nicht gefunden werden."
+Hierfür ist eine Einstellung im Internet Explorer verantwortlich. Prüfen Sie bitte, ob in den "Internetoptionen" im Tab "Erweitert" unter "Sicherheit" die Option "Verschlüsselte Seiten nicht auf der Festplatte speichern" markiert ist. Sollte die Einstellung aktiviert sein, so verhindert sie das Speichern jeder Datei, die verschlüsselt übertragen wird und somit auch die anschließende Anzeige. Eine verschlüsselte Übertragung erkennen Sie an dem gelben Schloß in der Statuszeile und an der Protokollbezeichnung "https:" in der Adresszeile des Internet Explorers. Zu Ihrer Sicherheit werden alle Handelsregisterauszüge verschlüsselt übertragen. 6. Beim Download erscheint folgende Meldung: "Leider können wir den Dokumentenabruf über das TOR-Netzwerk aus Sicherheitsgründen nicht zulassen. "
+Das Registerportal ist regelmäßig das Ziel automatisierter Massenabfragen. Sehr häufig erreicht die Frequenz dieser Abfragen eine Höhe, bei der die Straftatbestände der Rechtsnormen §§303a, b StGB vorliegen. Aufgrund dieser Situation haben wir alle Abrufe aus dem sogenannten TOR-Netzwerk (TOR = the onion routing) gesperrt. Des Weiteren sperren wir einzelne IP-Adressen gezielt, wenn die Rahmenbedingungen der oben angeführten Straftatbestände erreicht werden. In beiden Fällen wird dem Abrufer die von Ihnen angeführte Fehlermeldung angezeigt.
+Bei der Sperrung einzelner IP-Adressen kann es vorkommen, dass IP-Adressen versehentlich gesperrt werden. In diesem Fall könnte auch bei einem zulässigen Abruf die Fehlermeldung auftreten. 7. An wen kann ich mich bei Fragen zum Transparenzregister wenden?
+Wenden Sie sich bei Fragen bitte an die vorgesehenen Servicenummern des Transparenzregisters, welche Sie der Startseite www.transparenzregister.de
+entnehmen können. Fragen rund um das Transparenzregister können durch die Servicestelle des Registerportals leider nicht beantwortet werden.
+Übersicht
+Impressum
+Datenschutzhinweise
+Seite drucken
+Erklärung der Barrierefreiheit
+Kontaktformular zur Barrierefreiheit
+Copyright
+© 2026 Ministerium der Justiz Nordrhein-Westfalen Version: 2.12.10 Stand:
+2026-06-10 06:54
+Abgelaufene Session
+Ihre Session ist abgelaufen. Aus Sicherheitsgründen wurde ihre Arbeit wegen zu langer Inaktivität beendet. Die Logininformationen, Suchanfragen und Suchergebnisse wurden verworfen.
+Startseite
+Fehler bei der Verarbeitung Ihrer Anfrage
+Es ist ein Fehler aufgetreten!
+In der Anwendung ist ein Fehler aufgetreten. Bitte helfen Sie uns den Fehler dauerhaft zu beseitigen. Wenn Sie Informationen geben können, wie der Fehler entstanden ist, so melden sie diese mit Nennung der folgenden Fehler ID an die Servicestelle des Registerportals.
+Fehler ID:
+Startseite
+Bitte warten Sie – Ihre Anfrage wird bearbeitet.
+nach oben

@@ -61,7 +61,7 @@ describe("Feed-in-Archiv vor 04/2012 — Realitäts-Anker", () => {
     }
   });
 
-  it("2006 bis 2008 folgen zellgleich der Degressionskette des EEG 2004", () => {
+  it("2005 bis 2008 folgen zellgleich der Degressionskette des EEG 2004", () => {
     // Unabhängige Größe: die BASISWERTE des Gesetzes (§ 11 Abs. 1 und Abs. 2
     // Satz 1 EEG 2004, BGBl. I 2004 Nr. 40 S. 1922 f.) und die Prozentsätze aus
     // Abs. 5 — nicht die Tabelle gegen sich selbst. Gerundet wird nach Abs. 5
@@ -76,7 +76,6 @@ describe("Feed-in-Archiv vor 04/2012 — Realitäts-Anker", () => {
       frei = round2(
         frei * (1 - (jahr >= 2006 ? EEG2004_DEGRESSION.freiflaecheAb2006 : EEG2004_DEGRESSION.freiflaecheAb2005)),
       );
-      if (jahr === 2005) continue; // 2005 ist ausgelaufen und steht deshalb nicht in der Tabelle
       const row = altFeedInRatesFor(`${jahr}-07-01`)!;
       expect(row.roofUpTo30).toBe(dach30);
       expect(row.roofUpTo100).toBe(dach100);
@@ -138,8 +137,9 @@ describe("Anschluss an die Monatstabelle ab 04/2012", () => {
 });
 
 describe("altFeedInRatesFor — Grenzen", () => {
-  it("liefert vor 2006 null", () => {
-    expect(altFeedInRatesFor("2005-12-31")).toBeNull();
+  it("liefert vor 2005 null", () => {
+    expect(altFeedInRatesFor("2005-12-31")?.from).toBe("2005-01-01");
+    expect(altFeedInRatesFor("2004-12-31")).toBeNull();
     expect(altFeedInRatesFor("2004-07-31")).toBeNull();
     expect(altFeedInRatesFor("1999-01-01")).toBeNull();
   });

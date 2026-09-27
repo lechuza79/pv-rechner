@@ -61,6 +61,7 @@ export function Auswahl({
   eckenRechts = true,
   hoechstens = 80,
   pfeile,
+  umlaufend = false,
 }: {
   /** Was auf dem Knopf steht — der gewählte Wert, nicht der Name des Filters. */
   titel: string;
@@ -81,6 +82,8 @@ export function Auswahl({
    * zweihundert Einträgen ist ein Pfeil ein Versprechen, das niemand einlöst.
    */
   pfeile?: boolean;
+  /** Wrap arrow navigation for cyclic selections. */
+  umlaufend?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
   const [suche, setSuche] = useState("");
@@ -118,10 +121,11 @@ export function Auswahl({
   const ecke = v("--radius-sm");
   const mitPfeilen = pfeile ?? eintraege.length <= PFEILE_BIS;
   const stelle = eintraege.findIndex((e) => e.schluessel === aktiv);
-  // Am Rand angekommen bleibt der Pfeil stehen, statt umzulaufen: Ein Wähler,
-  // der von hinten nach vorn springt, verliert die Stelle, an der man war.
+  const vorherGesperrt = eintraege.length < 2 || (!umlaufend && stelle <= 0);
+  const nachherGesperrt = eintraege.length < 2 || (!umlaufend && (stelle < 0 || stelle >= eintraege.length - 1));
   const schritt = (um: number) => {
-    const ziel = stelle + um;
+    if (!eintraege.length) return;
+    const ziel = umlaufend ? (stelle + um + eintraege.length) % eintraege.length : stelle + um;
     if (ziel < 0 || ziel >= eintraege.length) return;
     onWahl(eintraege[ziel].schluessel);
   };
@@ -144,15 +148,15 @@ export function Auswahl({
         <button
           type="button"
           onClick={() => schritt(-1)}
-          disabled={stelle <= 0}
+          disabled={vorherGesperrt}
           aria-label="Vorheriger Eintrag"
           style={{
             ...kante,
             borderRight: "none",
             borderTopLeftRadius: eckenLinks ? ecke : 0,
             borderBottomLeftRadius: eckenLinks ? ecke : 0,
-            opacity: stelle <= 0 ? 0.4 : 1,
-            cursor: stelle <= 0 ? "default" : "pointer",
+            opacity: vorherGesperrt ? 0.4 : 1,
+            cursor: vorherGesperrt ? "default" : "pointer",
           }}
         >
           <IconChevronLeft size={12} />
@@ -197,15 +201,15 @@ export function Auswahl({
         <button
           type="button"
           onClick={() => schritt(1)}
-          disabled={stelle < 0 || stelle >= eintraege.length - 1}
+          disabled={nachherGesperrt}
           aria-label="Nächster Eintrag"
           style={{
             ...kante,
             borderLeft: "none",
             borderTopRightRadius: eckenRechts ? ecke : 0,
             borderBottomRightRadius: eckenRechts ? ecke : 0,
-            opacity: stelle < 0 || stelle >= eintraege.length - 1 ? 0.4 : 1,
-            cursor: stelle < 0 || stelle >= eintraege.length - 1 ? "default" : "pointer",
+            opacity: nachherGesperrt ? 0.4 : 1,
+            cursor: nachherGesperrt ? "default" : "pointer",
           }}
         >
           <IconChevronRight size={12} />

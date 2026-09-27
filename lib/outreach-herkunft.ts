@@ -40,6 +40,8 @@ const SOZIAL = [
   "facebook.com", "fb.com", "fb.me", "instagram.com", "linkedin.com", "lnkd.in",
   "x.com", "twitter.com", "t.co", "threads.net", "threads.com", "mastodon.social",
   "nebenan.de", "nextdoor.de", "whatsapp.com", "t.me", "youtube.com", "bsky.app",
+  // App referrers (Android sends the package name, not a host).
+  "com.linkedin.android", "reddit.com", "com.reddit.frontpage",
 ];
 
 /** Postfächer und Mail-Programme. Ein Klick von hier kam aus unserem Brief. */
@@ -65,10 +67,12 @@ const SUCHE = [
   // Baidu sah am 22.09.2026 als „andere Seite" aus und landete damit als
   // Veröffentlichungs-Hinweis für Wallertheim im Wochenbericht.
   "baidu.com",
+  "kagi.com",
 ];
 
 /** Unsere eigenen Oberflächen. */
-const INTERN = ["vercel.com", "solar-check.io"];
+// awin.com: our affiliate network's dashboards, not a reader.
+const INTERN = ["vercel.com", "solar-check.io", "awin.com"];
 
 function trifft(host: string, liste: string[]): boolean {
   return liste.some((m) => (m.endsWith(".") || m.includes("/") ? host.includes(m) : host === m || host.endsWith(`.${m}`)));
@@ -86,6 +90,8 @@ export function ordneHerkunft(verweis: string, gemeindeWebsite?: string | null):
   if (trifft(host, PRUEFDIENST)) return "pruefdienst";
   if (trifft(host, INTERN)) return "intern";
   if (trifft(host, SOZIAL)) return "veroeffentlichung";
+  // "suche.t-online.de" would otherwise match the mailbox entry "t-online.de".
+  if (host.startsWith("suche.") || host.includes("search.")) return "suche";
   if (trifft(host, POSTFACH)) return "brief";
   if (trifft(host, SUCHE)) return "suche";
 

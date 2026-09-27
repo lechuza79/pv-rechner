@@ -164,7 +164,7 @@ const S = {
     display: "block",
   },
   accent: { color: v("--color-accent"), fontWeight: 600 },
-  positive: { color: v("--color-positive"), fontWeight: 600 },
+  positive: { color: v("--color-positive-text"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   ctaButton: {
@@ -487,10 +487,10 @@ export default async function WaermepumpeFoerderungPage() {
                     <span style={{ ...S.strong, display: "block" }}>{r.label}</span>
                     <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{r.desc}</span>
                   </td>
-                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: r.highlight ? v("--color-positive") : v("--color-text-primary") }}>
+                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: r.highlight ? v("--color-positive-text") : v("--color-text-primary") }}>
                     {pct(r.rate)}
                   </td>
-                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: v("--color-positive"), fontWeight: 700 }}>
+                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: v("--color-positive-text"), fontWeight: 700 }}>
                     {eur(r.amount)}
                   </td>
                   <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined }}>
@@ -832,7 +832,7 @@ export default async function WaermepumpeFoerderungPage() {
                         {jetzt ? "gilt jetzt" : vorbei ? "vorbei" : stufe.aenderung}
                       </span>
                     </td>
-                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
+                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive-text") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
                       {pct(stufe.grundfoerderung)}
                       {mitEuBonus ? (
                         <span style={{ display: "block", fontFamily: v("--font-text"), fontSize: v("--font-size-caption"), color: v("--color-text-muted"), whiteSpace: "normal" }}>

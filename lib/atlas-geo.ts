@@ -8,16 +8,28 @@ import fs from "node:fs/promises";
 // Keine Nutzer-PLZ, nichts geloggt (die AGS kommt aus der Route, nicht vom
 // Besucher).
 
-type PlzEntry = { ort: string; ags: string; kreis: string; land: string };
+export type PlzEntry = { ort: string; ags: string; kreis: string; land: string };
 
 let agsToPlz: Map<string, string> | null = null;
+let plzTabelle: Record<string, PlzEntry[]> | null = null;
+
+async function loadPlzTabelle(): Promise<Record<string, PlzEntry[]>> {
+  if (plzTabelle) return plzTabelle;
+  const file = path.join(process.cwd(), "public", "plz-ags.json");
+  plzTabelle = JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, PlzEntry[]>;
+  return plzTabelle;
+}
+
+/** The Gemeinden a postcode belongs to (one postcode can span several). */
+export async function gemeindenZurPlz(plz: string): Promise<PlzEntry[]> {
+  return (await loadPlzTabelle())[plz] ?? [];
+}
 let coords: Record<string, [number, number]> | null = null;
 
 /** PLZ→AGS einmal umdrehen; je Gemeinde die kleinste PLZ als stabile Vertreterin. */
 async function loadAgsToPlz(): Promise<Map<string, string>> {
   if (agsToPlz) return agsToPlz;
-  const file = path.join(process.cwd(), "public", "plz-ags.json");
-  const table = JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, PlzEntry[]>;
+  const table = await loadPlzTabelle();
   const map = new Map<string, string>();
   for (const [plz, entries] of Object.entries(table)) {
     for (const e of entries) {

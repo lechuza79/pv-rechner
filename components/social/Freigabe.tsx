@@ -173,7 +173,7 @@ export function Freigabe({
           key={`sperre-${i}`}
           style={{
             fontSize: v("--font-size-small"),
-            color: v("--color-negative"),
+            color: v("--color-negative-text"),
             marginBottom: space.xs,
             display: "flex",
             gap: space.xs,
@@ -362,7 +362,7 @@ export function Freigabe({
                       <p
                         style={{
                           fontSize: v("--font-size-caption"),
-                          color: v("--color-negative"),
+                          color: v("--color-negative-text"),
                           margin: 0,
                           marginTop: space.xs,
                         }}

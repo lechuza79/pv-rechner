@@ -117,14 +117,8 @@ export type Schub = {
 };
 
 /**
- * Der Schub, der gerade dran ist.
- *
- * ER WIRD GEPFLEGT UND VERALTET TROTZDEM. Am 06.09.2026 zeigte er auf
- * „mail-he-rp-sl", dessen 79 Gemeinden längst alle angeschrieben waren; vier
- * der fünf Schübe waren durch. Wer sich darauf verlässt, arbeitet an Orten, an
- * denen sich nichts mehr ändern lässt — die Templates-Ansicht leitet deshalb
- * selbst ab, welcher Schub offene Gemeinden hat, statt dieser Angabe zu folgen.
- * Sie bleibt als Voreinstellung für den Zug-Lauf, nicht als Wahrheit.
+ * The planned batch. The editorial view prefers it only after its start date
+ * and while it still contains open towns; otherwise it chooses an eligible fallback.
  */
 export const AKTUELLER_SCHUB = "mail-sept-26";
 

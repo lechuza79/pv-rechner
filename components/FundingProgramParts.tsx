@@ -1,4 +1,5 @@
 import { v } from "../lib/theme";
+import StatusBadge from "./StatusBadge";
 import InfoTooltip from "./InfoTooltip";
 import {
   FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, bedingungenFuer, saetzeFuer,
@@ -40,7 +41,8 @@ export function fundingStatusColor(status: FundingStatus): string {
   return status === "aktiv" ? v("--color-positive") : v("--color-text-muted");
 }
 
-export function FundingStatusBadge({ status }: { status: FundingStatus }) {
+export function FundingStatusBadge({ status, compact = false }: { status: FundingStatus; compact?: boolean }) {
+  if (compact) return <StatusBadge tone={status === "aktiv" ? "positive" : status === "ausgeschoepft" || status === "eingestellt" ? "negative" : "neutral"} pulse={status === "aktiv"}>{FUNDING_STATUS_LABEL[status]}</StatusBadge>;
   const c = fundingStatusColor(status);
   // „aktiv" ist eine positive Aussage und wird auch so gesetzt: gefüllt in der
   // Positiv-Farbe des Systems statt als blasser Umriss. Die übrigen Zustände
@@ -265,7 +267,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
             {ex.foerderung > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
-                <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
+                <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive-text"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
@@ -274,7 +276,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: v("--color-text-secondary") }}>Gewinn 25 J.</span>
-              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
+              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive-text") : v("--color-negative-text") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
             </div>
           </div>
         </div>

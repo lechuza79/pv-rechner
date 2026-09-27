@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import NichtGefundenInhalt from "../components/NichtGefundenInhalt";
 import { NICHT_GEFUNDEN } from "../lib/nicht-gefunden";
-import { ANALYTICS_SETUP, ANALYTICS_SRC } from "../lib/neon-seite";
+import { ANALYTICS_SETUP, ANALYTICS_SRC, NAV_TOKENS_CSS } from "../lib/neon-seite";
 import { NEON_KOPF_INNEN, NEON_NAV_SKRIPT, NEON_STYLESHEETS } from "../lib/neon-unterseite";
 import { siteFussHtml } from "../lib/site-fuss";
 
@@ -44,6 +44,7 @@ export default function GlobalNotFound() {
         {NEON_STYLESHEETS.map((href) => (
           <link key={href} rel="stylesheet" href={href} />
         ))}
+        <style dangerouslySetInnerHTML={{ __html: NAV_TOKENS_CSS }} />
         {/* Same reach measurement as every other document page, and for the same
             reason it is allowed at all: the setup snippet drops the query string
             before anything is sent (lib/neon-seite.ts). Without it a broken

@@ -1,5 +1,11 @@
 # Lehren: Wärmepumpen-Rechner — Modellentscheidungen und Preisquellen
 
+Investment update, 2026-09-14: the historical fixed gas price and linear LWWP
+price rule below are superseded by [the researched investment model](heating-investment-model.md).
+Gas follows the KWW capacity curve; LWWP uses KWW core costs plus a fixed
+remainder calibrated to VZ offers excluding radiator replacement. Historical
+figures below describe the earlier implementation, not current outputs.
+
 Wortlaut aus CLAUDE.md (WP 10 und WP 8), Stand 29.07.2026. Die daraus folgenden
 Regeln stehen weiterhin in CLAUDE.md („Modellprämissen der Rechner", „Geteilte
 Rechen-Basis", „Faktenprüfung"); hier liegt die vollständige Begründung mit

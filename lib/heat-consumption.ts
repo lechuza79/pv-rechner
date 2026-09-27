@@ -165,4 +165,4 @@ export function waermeAusEndenergie(endenergieKwh: number, kesselWirkungsgrad: n
 
 /** Liter Heizöl → kWh. Unterer Heizwert Heizöl EL: 10 kWh/l (gerundeter
  *  Branchenwert; die Abrechnung nennt Liter, die Rechnung braucht kWh). */
-export const OEL_KWH_PRO_LITER = 10;
+export { OIL_KWH_PER_LITRE as OEL_KWH_PRO_LITER } from "./oil-reference";

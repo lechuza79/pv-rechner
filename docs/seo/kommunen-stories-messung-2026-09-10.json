@@ -1,0 +1,5070 @@
+{
+  "measuredAt": "2026-09-10",
+  "gsc": {
+    "atlas": {
+      "configured": true,
+      "range": {
+        "start": "2026-08-10",
+        "end": "2026-09-07",
+        "days": 28
+      },
+      "prefix": "/solar-atlas",
+      "pagesWithImpressions": 41,
+      "totals": {
+        "impressions": 1982,
+        "clicks": 10
+      },
+      "pages": [
+        {
+          "url": "https://solar-check.io/solar-atlas/brandenburg",
+          "impressions": 242,
+          "clicks": 0,
+          "position": 26.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/schleswig-holstein",
+          "impressions": 230,
+          "clicks": 0,
+          "position": 52.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+          "impressions": 183,
+          "clicks": 1,
+          "position": 52.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/bayern",
+          "impressions": 152,
+          "clicks": 1,
+          "position": 22.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/thueringen",
+          "impressions": 126,
+          "clicks": 1,
+          "position": 43.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+          "impressions": 121,
+          "clicks": 2,
+          "position": 38.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/sachsen",
+          "impressions": 103,
+          "clicks": 1,
+          "position": 22.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+          "impressions": 100,
+          "clicks": 0,
+          "position": 38.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen",
+          "impressions": 96,
+          "clicks": 0,
+          "position": 42.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/berlin",
+          "impressions": 87,
+          "clicks": 0,
+          "position": 31.6
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+          "impressions": 86,
+          "clicks": 0,
+          "position": 28.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+          "impressions": 72,
+          "clicks": 0,
+          "position": 35
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/saarland",
+          "impressions": 66,
+          "clicks": 2,
+          "position": 39.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen",
+          "impressions": 63,
+          "clicks": 1,
+          "position": 26.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hamburg",
+          "impressions": 48,
+          "clicks": 0,
+          "position": 24.1
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas",
+          "impressions": 43,
+          "clicks": 0,
+          "position": 21.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/bremen",
+          "impressions": 40,
+          "clicks": 0,
+          "position": 35.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/saarland/landkreis-neunkirchen/eppelborn",
+          "impressions": 18,
+          "clicks": 0,
+          "position": 12.3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-leer/weener",
+          "impressions": 16,
+          "clicks": 0,
+          "position": 8.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+          "impressions": 15,
+          "clicks": 0,
+          "position": 39
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-grafschaft-bentheim/schuettorf",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 8.1
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-oldenburg/hude-oldenburg",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 6.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-rotenburg-wuemme/sittensen",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 8.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-suedliche-weinstrasse/bornheim",
+          "impressions": 7,
+          "clicks": 0,
+          "position": 25.4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-friesland/jever",
+          "impressions": 5,
+          "clicks": 0,
+          "position": 9.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-offenbach/langen-hessen",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 13.8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-altenkirchen-westerwald/herdorf",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-alzey-worms/wallertheim",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 11.8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-altenkirchen-westerwald/brachbach",
+          "impressions": 3,
+          "clicks": 1,
+          "position": 4.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-giessen/langgoens",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 6.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-marburg-biedenkopf/biedenkopf",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-goslar/liebenburg",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 9.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-lueneburg/westergellersen",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-uelzen/suderburg",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 17
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-mainz-bingen/selzen",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 9.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-lahn-dill-kreis/lahnau",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-uelzen/barum",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-bernkastel-wittlich/berglicht",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-mainz-bingen/loerzweiler",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-rhein-hunsrueck-kreis/oberwesel",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-rhein-lahn-kreis/miehlen",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 6
+        }
+      ]
+    },
+    "site": {
+      "configured": true,
+      "range": {
+        "start": "2026-08-10",
+        "end": "2026-09-07",
+        "days": 28
+      },
+      "prefix": "/",
+      "pagesWithImpressions": 116,
+      "totals": {
+        "impressions": 7503,
+        "clicks": 51
+      },
+      "pages": [
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung",
+          "impressions": 1036,
+          "clicks": 2,
+          "position": 37.3
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk/foerderung",
+          "impressions": 486,
+          "clicks": 4,
+          "position": 11.1
+        },
+        {
+          "url": "https://solar-check.io/atomstrom-import",
+          "impressions": 421,
+          "clicks": 4,
+          "position": 7.1
+        },
+        {
+          "url": "https://solar-check.io/methodik",
+          "impressions": 283,
+          "clicks": 0,
+          "position": 42.1
+        },
+        {
+          "url": "https://solar-check.io/strommix-deutschland",
+          "impressions": 249,
+          "clicks": 5,
+          "position": 20.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/brandenburg",
+          "impressions": 242,
+          "clicks": 0,
+          "position": 26.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/schleswig-holstein",
+          "impressions": 230,
+          "clicks": 0,
+          "position": 52.9
+        },
+        {
+          "url": "https://solar-check.io/pv-simulation",
+          "impressions": 221,
+          "clicks": 2,
+          "position": 25.8
+        },
+        {
+          "url": "https://solar-check.io/",
+          "impressions": 219,
+          "clicks": 13,
+          "position": 25.1
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+          "impressions": 183,
+          "clicks": 1,
+          "position": 52.9
+        },
+        {
+          "url": "https://solar-check.io/ratgeber/lohnt-sich-pv-mit-speicher",
+          "impressions": 175,
+          "clicks": 0,
+          "position": 8.4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/bayern",
+          "impressions": 152,
+          "clicks": 1,
+          "position": 22.2
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/niedersachsen/osnabrueck",
+          "impressions": 148,
+          "clicks": 1,
+          "position": 7.2
+        },
+        {
+          "url": "https://solar-check.io/waermepumpe-rechner",
+          "impressions": 129,
+          "clicks": 0,
+          "position": 89.4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/thueringen",
+          "impressions": 126,
+          "clicks": 1,
+          "position": 43.9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/niedersachsen/hannover",
+          "impressions": 126,
+          "clicks": 0,
+          "position": 7.9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+          "impressions": 121,
+          "clicks": 2,
+          "position": 38.2
+        },
+        {
+          "url": "https://solar-check.io/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",
+          "impressions": 106,
+          "clicks": 1,
+          "position": 7.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/sachsen",
+          "impressions": 103,
+          "clicks": 1,
+          "position": 22.9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-neigungswinkel",
+          "impressions": 103,
+          "clicks": 0,
+          "position": 17.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+          "impressions": 100,
+          "clicks": 0,
+          "position": 38.2
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/essen",
+          "impressions": 96,
+          "clicks": 0,
+          "position": 8.1
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen",
+          "impressions": 96,
+          "clicks": 0,
+          "position": 42.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/berlin",
+          "impressions": 87,
+          "clicks": 0,
+          "position": 31.6
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+          "impressions": 86,
+          "clicks": 0,
+          "position": 28.7
+        },
+        {
+          "url": "https://solar-check.io/einspeiseverguetung-rechner",
+          "impressions": 75,
+          "clicks": 1,
+          "position": 40.4
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/bonn",
+          "impressions": 73,
+          "clicks": 0,
+          "position": 7.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+          "impressions": 72,
+          "clicks": 0,
+          "position": 35
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/bottrop",
+          "impressions": 71,
+          "clicks": 2,
+          "position": 5.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/hessen/frankfurt",
+          "impressions": 67,
+          "clicks": 1,
+          "position": 8.6
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/saarland",
+          "impressions": 66,
+          "clicks": 2,
+          "position": 39.9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/rhein-erft-kreis",
+          "impressions": 65,
+          "clicks": 0,
+          "position": 8.8
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk/rechner",
+          "impressions": 64,
+          "clicks": 0,
+          "position": 61.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen",
+          "impressions": 63,
+          "clicks": 1,
+          "position": 26.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/krefeld",
+          "impressions": 63,
+          "clicks": 0,
+          "position": 7.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-rechner",
+          "impressions": 63,
+          "clicks": 0,
+          "position": 57.2
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern/wuerzburg",
+          "impressions": 60,
+          "clicks": 1,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk-rechner",
+          "impressions": 59,
+          "clicks": 0,
+          "position": 80
+        },
+        {
+          "url": "https://solar-check.io/datenstand",
+          "impressions": 59,
+          "clicks": 0,
+          "position": 5.4
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/kreis-viersen",
+          "impressions": 58,
+          "clicks": 0,
+          "position": 7.3
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/hessen/wiesbaden",
+          "impressions": 51,
+          "clicks": 0,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern/muenchen",
+          "impressions": 49,
+          "clicks": 0,
+          "position": 13.4
+        },
+        {
+          "url": "https://solar-check.io/ratgeber",
+          "impressions": 48,
+          "clicks": 0,
+          "position": 30.8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hamburg",
+          "impressions": 48,
+          "clicks": 0,
+          "position": 24.1
+        },
+        {
+          "url": "https://solar-check.io/energie-widgets",
+          "impressions": 47,
+          "clicks": 0,
+          "position": 4.8
+        },
+        {
+          "url": "https://solar-check.io/klimaanlage-stromkosten",
+          "impressions": 46,
+          "clicks": 0,
+          "position": 58.3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas",
+          "impressions": 43,
+          "clicks": 0,
+          "position": 21.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/muenster",
+          "impressions": 42,
+          "clicks": 0,
+          "position": 7.9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/brandenburg/potsdam",
+          "impressions": 40,
+          "clicks": 0,
+          "position": 7.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/bremen",
+          "impressions": 40,
+          "clicks": 0,
+          "position": 35.2
+        },
+        {
+          "url": "https://solar-check.io/lohnt-sich-pv-ohne-einspeiseverguetung",
+          "impressions": 38,
+          "clicks": 1,
+          "position": 6
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/dortmund",
+          "impressions": 36,
+          "clicks": 0,
+          "position": 7.8
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg/karlsruhe",
+          "impressions": 34,
+          "clicks": 0,
+          "position": 8
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/duesseldorf",
+          "impressions": 31,
+          "clicks": 0,
+          "position": 10.1
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/rheinland-pfalz/mayen-koblenz",
+          "impressions": 31,
+          "clicks": 0,
+          "position": 5.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern/regensburg",
+          "impressions": 30,
+          "clicks": 0,
+          "position": 8.8
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/rheinland-pfalz/mainz",
+          "impressions": 28,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/hessen/kreis-bergstrasse",
+          "impressions": 27,
+          "clicks": 1,
+          "position": 5.9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen/koeln",
+          "impressions": 27,
+          "clicks": 0,
+          "position": 8.8
+        },
+        {
+          "url": "https://solar-check.io/kontakt",
+          "impressions": 24,
+          "clicks": 1,
+          "position": 5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg/heidelberg",
+          "impressions": 21,
+          "clicks": 0,
+          "position": 11.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg/mannheim",
+          "impressions": 21,
+          "clicks": 0,
+          "position": 5.6
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/niedersachsen/wolfsburg",
+          "impressions": 20,
+          "clicks": 0,
+          "position": 7.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/hessen/darmstadt",
+          "impressions": 19,
+          "clicks": 0,
+          "position": 9.3
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg/baden-baden",
+          "impressions": 18,
+          "clicks": 0,
+          "position": 9.2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/saarland/landkreis-neunkirchen/eppelborn",
+          "impressions": 18,
+          "clicks": 0,
+          "position": 12.3
+        },
+        {
+          "url": "https://solar-check.io/datenschutz",
+          "impressions": 17,
+          "clicks": 0,
+          "position": 4.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern/memmingen",
+          "impressions": 17,
+          "clicks": 0,
+          "position": 4.4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-leer/weener",
+          "impressions": 16,
+          "clicks": 0,
+          "position": 8.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg/stuttgart",
+          "impressions": 15,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/mecklenburg-vorpommern/schwerin",
+          "impressions": 15,
+          "clicks": 0,
+          "position": 6.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+          "impressions": 15,
+          "clicks": 0,
+          "position": 39
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk/ratgeber/mit-speicher",
+          "impressions": 14,
+          "clicks": 0,
+          "position": 6.1
+        },
+        {
+          "url": "https://solar-check.io/glossar",
+          "impressions": 14,
+          "clicks": 0,
+          "position": 47.6
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/niedersachsen",
+          "impressions": 14,
+          "clicks": 0,
+          "position": 69.4
+        },
+        {
+          "url": "https://solar-check.io/ratgeber/waermepumpe-foerderung-2026",
+          "impressions": 13,
+          "clicks": 0,
+          "position": 5.8
+        },
+        {
+          "url": "https://solar-check.io/impressum",
+          "impressions": 12,
+          "clicks": 1,
+          "position": 3.7
+        },
+        {
+          "url": "https://solar-check.io/lizenz",
+          "impressions": 12,
+          "clicks": 0,
+          "position": 3.7
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk/anmelden",
+          "impressions": 11,
+          "clicks": 0,
+          "position": 7.3
+        },
+        {
+          "url": "https://solar-check.io/lohnt-sich-pv-mit-speicher",
+          "impressions": 11,
+          "clicks": 0,
+          "position": 25.1
+        },
+        {
+          "url": "https://solar-check.io/pv-bedarf-berechnen",
+          "impressions": 11,
+          "clicks": 0,
+          "position": 68.6
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-grafschaft-bentheim/schuettorf",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 8.1
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-oldenburg/hude-oldenburg",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 6.7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-rotenburg-wuemme/sittensen",
+          "impressions": 10,
+          "clicks": 0,
+          "position": 8.9
+        },
+        {
+          "url": "https://solar-check.io/balkonkraftwerk",
+          "impressions": 8,
+          "clicks": 0,
+          "position": 26.8
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/rheinland-pfalz",
+          "impressions": 7,
+          "clicks": 0,
+          "position": 8.3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-suedliche-weinstrasse/bornheim",
+          "impressions": 7,
+          "clicks": 0,
+          "position": 25.4
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern/schweinfurt",
+          "impressions": 5,
+          "clicks": 0,
+          "position": 3
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/hessen",
+          "impressions": 5,
+          "clicks": 0,
+          "position": 39.6
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-friesland/jever",
+          "impressions": 5,
+          "clicks": 0,
+          "position": 9.2
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/baden-wuerttemberg",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 8.3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-offenbach/langen-hessen",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 13.8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-altenkirchen-westerwald/herdorf",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-alzey-worms/wallertheim",
+          "impressions": 4,
+          "clicks": 0,
+          "position": 11.8
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-altenkirchen-westerwald/brachbach",
+          "impressions": 3,
+          "clicks": 1,
+          "position": 4.7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/nordrhein-westfalen",
+          "impressions": 3,
+          "clicks": 0,
+          "position": 8
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bayern",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 5.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bremen/bremen",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-giessen/langgoens",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 6.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-marburg-biedenkopf/biedenkopf",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-goslar/liebenburg",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 9.5
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-lueneburg/westergellersen",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 3
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-uelzen/suderburg",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 17
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-mainz-bingen/selzen",
+          "impressions": 2,
+          "clicks": 0,
+          "position": 9.5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/berlin",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/berlin/berlin",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/brandenburg",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/bremen",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 5
+        },
+        {
+          "url": "https://solar-check.io/photovoltaik-foerderung/mecklenburg-vorpommern",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/ratgeber/gasheizung-oder-waermepumpe",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 2
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/hessen/landkreis-lahn-dill-kreis/lahnau",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 4
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-uelzen/barum",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 7
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-bernkastel-wittlich/berglicht",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-mainz-bingen/loerzweiler",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 9
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-rhein-hunsrueck-kreis/oberwesel",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 11
+        },
+        {
+          "url": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-rhein-lahn-kreis/miehlen",
+          "impressions": 1,
+          "clicks": 0,
+          "position": 6
+        }
+      ]
+    },
+    "atlasQueries": [
+      {
+        "query": "solaratlas bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 95,
+        "clicks": 0,
+        "position": 17.9
+      },
+      {
+        "query": "photovoltaik brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 65,
+        "clicks": 0,
+        "position": 29.9
+      },
+      {
+        "query": "solarkataster berlin",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 64,
+        "clicks": 0,
+        "position": 28.7
+      },
+      {
+        "query": "photovoltaik schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 45,
+        "clicks": 0,
+        "position": 86.6
+      },
+      {
+        "query": "solaranlagen brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 41,
+        "clicks": 0,
+        "position": 30.7
+      },
+      {
+        "query": "solarlux fachpartner mv",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 39,
+        "clicks": 0,
+        "position": 61.3
+      },
+      {
+        "query": "solarkataster brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 37,
+        "clicks": 0,
+        "position": 24.5
+      },
+      {
+        "query": "photovoltaik sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 32,
+        "clicks": 0,
+        "position": 30.1
+      },
+      {
+        "query": "solar thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 32,
+        "clicks": 0,
+        "position": 48.3
+      },
+      {
+        "query": "solarlux wintergarten mecklenburg",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 32,
+        "clicks": 0,
+        "position": 78.1
+      },
+      {
+        "query": "photovoltaik ostholstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 26,
+        "clicks": 0,
+        "position": 28
+      },
+      {
+        "query": "photovoltaik rheinland-pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 26,
+        "clicks": 0,
+        "position": 92.8
+      },
+      {
+        "query": "photovoltaik pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 25,
+        "clicks": 0,
+        "position": 39.8
+      },
+      {
+        "query": "solaratlas hamburg",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 23,
+        "clicks": 0,
+        "position": 15.7
+      },
+      {
+        "query": "solaranlage hessen karben",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 22,
+        "clicks": 0,
+        "position": 93.7
+      },
+      {
+        "query": "photovoltaik schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 21,
+        "clicks": 0,
+        "position": 84.8
+      },
+      {
+        "query": "solar baden württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 21,
+        "clicks": 0,
+        "position": 74.3
+      },
+      {
+        "query": "solaranlage thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 20,
+        "clicks": 0,
+        "position": 86.5
+      },
+      {
+        "query": "schweizer solarunternehmen in sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 18,
+        "clicks": 0,
+        "position": 35.1
+      },
+      {
+        "query": "solaranlage bad-pyrmont",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+        "impressions": 16,
+        "clicks": 0,
+        "position": 43.8
+      },
+      {
+        "query": "solarkataster bremen",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 16,
+        "clicks": 0,
+        "position": 50.6
+      },
+      {
+        "query": "photovoltaik sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 14,
+        "clicks": 0,
+        "position": 80.8
+      },
+      {
+        "query": "photovoltaikfelder luftbildauswertung hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 14,
+        "clicks": 0,
+        "position": 15
+      },
+      {
+        "query": "solar brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 14,
+        "clicks": 0,
+        "position": 27.1
+      },
+      {
+        "query": "solaranlage hameln",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+        "impressions": 14,
+        "clicks": 0,
+        "position": 63.4
+      },
+      {
+        "query": "bester solarbau in thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 13,
+        "clicks": 0,
+        "position": 29
+      },
+      {
+        "query": "luftbildauswertung für photovoltaikfelder in rheinland-pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 12,
+        "clicks": 0,
+        "position": 21.2
+      },
+      {
+        "query": "pv anlage mecklenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 12,
+        "clicks": 0,
+        "position": 87.3
+      },
+      {
+        "query": "solaranlage ostholstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 12,
+        "clicks": 0,
+        "position": 35
+      },
+      {
+        "query": "solarkataster nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 12,
+        "clicks": 0,
+        "position": 71.7
+      },
+      {
+        "query": "balkonkraftwerk saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 11,
+        "clicks": 0,
+        "position": 23.1
+      },
+      {
+        "query": "luftbildauswertung für solarparks in hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 11,
+        "clicks": 0,
+        "position": 36.5
+      },
+      {
+        "query": "photovoltaik hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 11,
+        "clicks": 0,
+        "position": 85.6
+      },
+      {
+        "query": "solaranlage püttlingen",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 11,
+        "clicks": 0,
+        "position": 80
+      },
+      {
+        "query": "solarkataster saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 11,
+        "clicks": 0,
+        "position": 29.8
+      },
+      {
+        "query": "luftbilder für solarparks in rheinland-pfalz auswerten lassen",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 37.7
+      },
+      {
+        "query": "photovoltaik rheinland pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 92.1
+      },
+      {
+        "query": "pv-anlagen brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 32.9
+      },
+      {
+        "query": "solaranlage saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 76.3
+      },
+      {
+        "query": "solaranlage sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 86.1
+      },
+      {
+        "query": "solaratlas rlp",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 15.9
+      },
+      {
+        "query": "solarkataster hamburg",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 31
+      },
+      {
+        "query": "standortsuche pv",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 10,
+        "clicks": 0,
+        "position": 70.5
+      },
+      {
+        "query": "photovoltaik mecklenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 9,
+        "clicks": 0,
+        "position": 77.1
+      },
+      {
+        "query": "photovoltaik püttlingen",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 9,
+        "clicks": 0,
+        "position": 64.7
+      },
+      {
+        "query": "photovoltaik saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 9,
+        "clicks": 0,
+        "position": 98.6
+      },
+      {
+        "query": "solarrechner saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 9,
+        "clicks": 0,
+        "position": 46
+      },
+      {
+        "query": "hamburger solaratlas",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 20
+      },
+      {
+        "query": "photovoltaik anbieter rheinland-pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 49.3
+      },
+      {
+        "query": "photovoltaik mecklenburg-vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 82.8
+      },
+      {
+        "query": "photovoltaik sachsen-anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 93.9
+      },
+      {
+        "query": "photovoltaik thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 87
+      },
+      {
+        "query": "solaranlage brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 67.1
+      },
+      {
+        "query": "solaranlage eppelborn",
+        "page": "https://solar-check.io/solar-atlas/saarland/landkreis-neunkirchen/eppelborn",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 12.3
+      },
+      {
+        "query": "solaranlage mecklenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 98.9
+      },
+      {
+        "query": "solaratlas niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 8,
+        "clicks": 0,
+        "position": 11.6
+      },
+      {
+        "query": "balkonkraftwerke brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 21.1
+      },
+      {
+        "query": "freiflächen photovoltaik schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 21.9
+      },
+      {
+        "query": "luftbilder auswerten lassen für photovoltaikfelder niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 68.3
+      },
+      {
+        "query": "photovoltaik eppelborn",
+        "page": "https://solar-check.io/solar-atlas/saarland/landkreis-neunkirchen/eppelborn",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 13.9
+      },
+      {
+        "query": "photovoltaik kaufen sittensen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-rotenburg-wuemme/sittensen",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 8.6
+      },
+      {
+        "query": "photovoltaikanlage brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 38
+      },
+      {
+        "query": "pv anlage hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 85.6
+      },
+      {
+        "query": "solar saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 85.7
+      },
+      {
+        "query": "solar sachsen-anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 71.1
+      },
+      {
+        "query": "solaranlage privathaus bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 56
+      },
+      {
+        "query": "solaranlage rheinland-pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 90.6
+      },
+      {
+        "query": "solaratlas deutschland",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 65
+      },
+      {
+        "query": "solarenergie baden württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 59.7
+      },
+      {
+        "query": "solarteur mecklenburgische seenplatte",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 7,
+        "clicks": 0,
+        "position": 14.4
+      },
+      {
+        "query": "energieatlas niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 40.5
+      },
+      {
+        "query": "freiflächen photovoltaik mecklenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 23
+      },
+      {
+        "query": "photovoltaik anbieter großenwiehe",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 60.2
+      },
+      {
+        "query": "photovoltaik in schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 86.5
+      },
+      {
+        "query": "photovoltaik mecklenburg",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 87.2
+      },
+      {
+        "query": "photovoltaikanlage saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 75.2
+      },
+      {
+        "query": "pv saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 91
+      },
+      {
+        "query": "schleswig holstein photovoltaik ertrag",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 65.5
+      },
+      {
+        "query": "solar bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 51.5
+      },
+      {
+        "query": "solaranlage mecklenburg-vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 95
+      },
+      {
+        "query": "solaranlage sachsen-anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 90.5
+      },
+      {
+        "query": "solaratlas hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 10.8
+      },
+      {
+        "query": "solarkataster hameln",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 8.5
+      },
+      {
+        "query": "solarpark eiche",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 69.3
+      },
+      {
+        "query": "thüringen solar",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 6,
+        "clicks": 0,
+        "position": 89.7
+      },
+      {
+        "query": "+photovoltaik +brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 26
+      },
+      {
+        "query": "energieatlas bw",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 41.6
+      },
+      {
+        "query": "energieatlas nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 38
+      },
+      {
+        "query": "luftbildauswertung für solarparks baden-württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 54.8
+      },
+      {
+        "query": "photovoltaik ertrag in schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 65.2
+      },
+      {
+        "query": "pv anlage saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 90.4
+      },
+      {
+        "query": "pv anlagen saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 78.4
+      },
+      {
+        "query": "solaratlas nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 28.2
+      },
+      {
+        "query": "solarkataster bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 53.2
+      },
+      {
+        "query": "solarkataster niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 83.2
+      },
+      {
+        "query": "solarkataster rlp",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 5,
+        "clicks": 0,
+        "position": 54.8
+      },
+      {
+        "query": "balkonkraftwerk brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 31
+      },
+      {
+        "query": "balkonkraftwerk gewerbe meckenlenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 14.8
+      },
+      {
+        "query": "beste photovoltaikanlagen baden-württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 48.3
+      },
+      {
+        "query": "energieatlas berlin",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 52.5
+      },
+      {
+        "query": "freiflächen photovoltaik sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 19.8
+      },
+      {
+        "query": "photovoltaik anbieter rheinland pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 51.5
+      },
+      {
+        "query": "photovoltaik baden württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 74.8
+      },
+      {
+        "query": "photovoltaik ertrag schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 73.8
+      },
+      {
+        "query": "photovoltaik gerwerbe thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 31.5
+      },
+      {
+        "query": "photovoltaik-anlagen in schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 93.8
+      },
+      {
+        "query": "saarland photovoltaik",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 96.5
+      },
+      {
+        "query": "solar bayern photovoltaik",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 93.5
+      },
+      {
+        "query": "solaranlagen sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 28.8
+      },
+      {
+        "query": "solaranlagen schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 91.3
+      },
+      {
+        "query": "solaranlagen thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 52.8
+      },
+      {
+        "query": "solarfirmen sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 26.8
+      },
+      {
+        "query": "solarfirmen sachsen-anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 26.5
+      },
+      {
+        "query": "solarkataster nrw karte",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 66
+      },
+      {
+        "query": "solarkataster rheinland pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 55.8
+      },
+      {
+        "query": "solarrechner hamburg",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 4,
+        "clicks": 0,
+        "position": 63.5
+      },
+      {
+        "query": "bremen photovoltaik",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 63
+      },
+      {
+        "query": "jever einwohner 2025",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-friesland/jever",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 9
+      },
+      {
+        "query": "luftbildauswertung für solarparks in niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 55.7
+      },
+      {
+        "query": "nrw solarrechner",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 84.3
+      },
+      {
+        "query": "photovoltaik firmen mecklenburg vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 42
+      },
+      {
+        "query": "photovoltaik kosten schwentinental",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 75
+      },
+      {
+        "query": "photovoltaikertrag schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 72.3
+      },
+      {
+        "query": "pv anlage kaufen großenwiehe",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 60.3
+      },
+      {
+        "query": "pv anlage schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 89.7
+      },
+      {
+        "query": "pv brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 27.3
+      },
+      {
+        "query": "pv ertrag schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 80
+      },
+      {
+        "query": "pv ertrag schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 81.7
+      },
+      {
+        "query": "pv hameln",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 42
+      },
+      {
+        "query": "solar atlas bw",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 25
+      },
+      {
+        "query": "solar hameln",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen/landkreis-hameln-pyrmont",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 34
+      },
+      {
+        "query": "solar kataster rlp",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 50.7
+      },
+      {
+        "query": "solar sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 38
+      },
+      {
+        "query": "solaranlage wadgassen",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 91.7
+      },
+      {
+        "query": "solaranlagen in deutschland liste",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 33.7
+      },
+      {
+        "query": "solaranlagen sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 86
+      },
+      {
+        "query": "solarkataster baden württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 40
+      },
+      {
+        "query": "solarkataster baden-württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 43.3
+      },
+      {
+        "query": "solarkataster bw",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 59
+      },
+      {
+        "query": "solarkataster sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 46.7
+      },
+      {
+        "query": "solarrechner nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 89.7
+      },
+      {
+        "query": "solarrechner thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 31.3
+      },
+      {
+        "query": "solarteur mwd station schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 49.3
+      },
+      {
+        "query": "standortsuche solar",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 86
+      },
+      {
+        "query": "westfa solaranlagen",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 3,
+        "clicks": 0,
+        "position": 18.7
+      },
+      {
+        "query": "freiflächen photovoltaik hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 31
+      },
+      {
+        "query": "luftbildauswertung für photovoltaikfelder in baden-württemberg",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 30.5
+      },
+      {
+        "query": "luftbildauswertung für solarparks in bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 30.5
+      },
+      {
+        "query": "nrw solarkataster",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 58
+      },
+      {
+        "query": "photovoltaik kölpinsee",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 44
+      },
+      {
+        "query": "photovoltaik rügen",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 82
+      },
+      {
+        "query": "photovoltaik standort prüfen nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 48
+      },
+      {
+        "query": "photovoltaikanlage hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 88.5
+      },
+      {
+        "query": "photovoltaikanlage sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 76
+      },
+      {
+        "query": "photovoltaikanlagen brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 68
+      },
+      {
+        "query": "pv-anlagen in schleswig-holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 87.5
+      },
+      {
+        "query": "saar solar kontor",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 58.5
+      },
+      {
+        "query": "solar bayern gmbh",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 66.5
+      },
+      {
+        "query": "solar kataster bremen",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 42.5
+      },
+      {
+        "query": "solar kataster nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 57
+      },
+      {
+        "query": "solar kataster rheinland pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 47
+      },
+      {
+        "query": "solar mecklenburg",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 46.5
+      },
+      {
+        "query": "solaranlage hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 92
+      },
+      {
+        "query": "solaranlage niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 97.5
+      },
+      {
+        "query": "solaranlagen saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 51
+      },
+      {
+        "query": "solaranlagen schleswig holstein",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 93.5
+      },
+      {
+        "query": "solaratlas brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 30
+      },
+      {
+        "query": "solaratlas bw",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 27.5
+      },
+      {
+        "query": "solarberatung mecklenburg-vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 28
+      },
+      {
+        "query": "solarenergie altenholz",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 90.5
+      },
+      {
+        "query": "solarenergie thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 62.5
+      },
+      {
+        "query": "solarinvest thüringen 2020",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 55
+      },
+      {
+        "query": "solarkataster hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 74.5
+      },
+      {
+        "query": "solarkataster rheinland-pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 54.5
+      },
+      {
+        "query": "solarrechner brandenburg",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 68
+      },
+      {
+        "query": "solarrechner brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 24
+      },
+      {
+        "query": "solarrechner bw",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 62
+      },
+      {
+        "query": "solarzentrum mv",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 53
+      },
+      {
+        "query": "sonnenstunden nrw photovoltaik",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 80.5
+      },
+      {
+        "query": "thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 2,
+        "clicks": 0,
+        "position": 1.5
+      },
+      {
+        "query": "balkon solaranlage in der nähe",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 46
+      },
+      {
+        "query": "balkonkraftwerk bremen",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 74
+      },
+      {
+        "query": "balkonkraftwerk solaranlage frankenthal 67227",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 35
+      },
+      {
+        "query": "bayern solar",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 44
+      },
+      {
+        "query": "enerix bremen",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 44
+      },
+      {
+        "query": "hamburg solaranlagen",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 19
+      },
+      {
+        "query": "hessen solar kataster",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 35
+      },
+      {
+        "query": "hessen solarkataster",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 73
+      },
+      {
+        "query": "ja",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 2
+      },
+      {
+        "query": "ja",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 5
+      },
+      {
+        "query": "ja gerne",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 9
+      },
+      {
+        "query": "limburg-weilburg",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 1
+      },
+      {
+        "query": "mit solar",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 3
+      },
+      {
+        "query": "omsi 2 nah.sh solarpark",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 46
+      },
+      {
+        "query": "photovoiltaik saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 97
+      },
+      {
+        "query": "photovoltaik anbieter in meiner nähe",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 74
+      },
+      {
+        "query": "photovoltaik bitburg-prüm",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 22
+      },
+      {
+        "query": "photovoltaik bornheim",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-suedliche-weinstrasse/bornheim",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 32
+      },
+      {
+        "query": "photovoltaik bremen / solaranlage bremen",
+        "page": "https://solar-check.io/solar-atlas/bremen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 99
+      },
+      {
+        "query": "photovoltaik datenbank",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 77
+      },
+      {
+        "query": "photovoltaik förderung mecklenburg-vorpommern",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 65
+      },
+      {
+        "query": "photovoltaik hamburg location trade",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 47
+      },
+      {
+        "query": "photovoltaik herdorf",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-altenkirchen-westerwald/herdorf",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 11
+      },
+      {
+        "query": "photovoltaik im saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 89
+      },
+      {
+        "query": "photovoltaik karte nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 42
+      },
+      {
+        "query": "photovoltaik rechner nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 84
+      },
+      {
+        "query": "photovoltaik sachsen karte",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 9
+      },
+      {
+        "query": "photovoltaik sh",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 25
+      },
+      {
+        "query": "photovoltaik uckermark",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 29
+      },
+      {
+        "query": "photovoltaikanlage sachsen anhalt",
+        "page": "https://solar-check.io/solar-atlas/sachsen-anhalt",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 95
+      },
+      {
+        "query": "photovoltaikanlage thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 95
+      },
+      {
+        "query": "photovoltaikanlagen in kreis mettmann",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 43
+      },
+      {
+        "query": "pv anlage mit speicher kaufen großenwiehe",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 79
+      },
+      {
+        "query": "pv anlagen thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 89
+      },
+      {
+        "query": "pv bornheim",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-suedliche-weinstrasse/bornheim",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 23
+      },
+      {
+        "query": "pv ertragsrechner nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 81
+      },
+      {
+        "query": "pv kataster hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 48
+      },
+      {
+        "query": "pv kataster nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 55
+      },
+      {
+        "query": "pv schleswig",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 98
+      },
+      {
+        "query": "pv zubau deutschland",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 7
+      },
+      {
+        "query": "pv-anlage dänischenhagen preise",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 72
+      },
+      {
+        "query": "pv-anlagen saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 78
+      },
+      {
+        "query": "rlp solarkataster",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 59
+      },
+      {
+        "query": "saarland",
+        "page": "https://solar-check.io/solar-atlas/saarland",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 2
+      },
+      {
+        "query": "sind sie beliebt",
+        "page": "https://solar-check.io/solar-atlas/berlin",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 2
+      },
+      {
+        "query": "solar bayern dek gmbh",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 78
+      },
+      {
+        "query": "solar bornheim",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz/landkreis-suedliche-weinstrasse/bornheim",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 30
+      },
+      {
+        "query": "solar hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 27
+      },
+      {
+        "query": "solar kataster hessen",
+        "page": "https://solar-check.io/solar-atlas/hessen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 46
+      },
+      {
+        "query": "solar nowack",
+        "page": "https://solar-check.io/solar-atlas/mecklenburg-vorpommern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 37
+      },
+      {
+        "query": "solar schleswig",
+        "page": "https://solar-check.io/solar-atlas/schleswig-holstein",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 25
+      },
+      {
+        "query": "solaranlage rheinland pfalz",
+        "page": "https://solar-check.io/solar-atlas/rheinland-pfalz",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 93
+      },
+      {
+        "query": "solardach check ibbenbüren",
+        "page": "https://solar-check.io/solar-atlas",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 69
+      },
+      {
+        "query": "solarkataster bayern karte",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 29
+      },
+      {
+        "query": "solarkataster iserlohn",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 69
+      },
+      {
+        "query": "solarkataster nrw download",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 49
+      },
+      {
+        "query": "solarparks deutschland karte",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 68
+      },
+      {
+        "query": "solarpotenzial",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 3
+      },
+      {
+        "query": "solarpotenzialkataster nrw",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 53
+      },
+      {
+        "query": "solarprofi bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 55
+      },
+      {
+        "query": "solarrechner sachsen",
+        "page": "https://solar-check.io/solar-atlas/sachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 18
+      },
+      {
+        "query": "solarstrom brandenburg",
+        "page": "https://solar-check.io/solar-atlas/brandenburg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 41
+      },
+      {
+        "query": "solarwerke bayern",
+        "page": "https://solar-check.io/solar-atlas/bayern",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 48
+      },
+      {
+        "query": "solarwerke westfalen",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 45
+      },
+      {
+        "query": "solarzentrum thüringen",
+        "page": "https://solar-check.io/solar-atlas/thueringen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 17
+      },
+      {
+        "query": "sonne nrw schermbeck",
+        "page": "https://solar-check.io/solar-atlas/nordrhein-westfalen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 40
+      },
+      {
+        "query": "sonneneinstrahlung karte",
+        "page": "https://solar-check.io/solar-atlas/baden-wuerttemberg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 90
+      },
+      {
+        "query": "top pv-anlagen in velpke, niedersachsen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 60
+      },
+      {
+        "query": "uelzen",
+        "page": "https://solar-check.io/solar-atlas/niedersachsen",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 7
+      },
+      {
+        "query": "weißflächenanalyse windkraft hamburg",
+        "page": "https://solar-check.io/solar-atlas/hamburg",
+        "impressions": 1,
+        "clicks": 0,
+        "position": 89
+      }
+    ]
+  },
+  "vercel": {
+    "va-total": {
+      "version": 1,
+      "query": {
+        "since": "2026-08-10T00:00:00.000Z",
+        "until": "2026-09-10T00:00:00.000Z"
+      },
+      "data": {
+        "visitors": 1264,
+        "pageviews": 3164
+      }
+    },
+    "va-atlas": {
+      "version": 1,
+      "query": {
+        "since": "2026-08-10T00:00:00.000Z",
+        "until": "2026-09-10T00:00:00.000Z",
+        "filter": "startswith(requestPath, '/solar-atlas')"
+      },
+      "data": {
+        "visitors": 614,
+        "pageviews": 1540
+      }
+    },
+    "va-referrers": {
+      "version": 1,
+      "query": {
+        "since": "2026-08-10T00:00:00.000Z",
+        "until": "2026-09-10T01:00:00.000Z",
+        "groupBy": [
+          "referrerHostname"
+        ],
+        "limit": 30
+      },
+      "data": [
+        {
+          "referrerHostname": "",
+          "visitors": 964,
+          "pageviews": 2676
+        },
+        {
+          "referrerHostname": "google.com",
+          "visitors": 70,
+          "pageviews": 79
+        },
+        {
+          "referrerHostname": "reddit.com",
+          "visitors": 69,
+          "pageviews": 78
+        },
+        {
+          "referrerHostname": "com.reddit.frontpage",
+          "visitors": 46,
+          "pageviews": 58
+        },
+        {
+          "referrerHostname": "lm.facebook.com",
+          "visitors": 40,
+          "pageviews": 45
+        },
+        {
+          "referrerHostname": "facebook.com",
+          "visitors": 36,
+          "pageviews": 38
+        },
+        {
+          "referrerHostname": "duckduckgo.com",
+          "visitors": 29,
+          "pageviews": 31
+        },
+        {
+          "referrerHostname": "bing.com",
+          "visitors": 26,
+          "pageviews": 48
+        },
+        {
+          "referrerHostname": "m.facebook.com",
+          "visitors": 17,
+          "pageviews": 18
+        },
+        {
+          "referrerHostname": "ecosia.org",
+          "visitors": 14,
+          "pageviews": 19
+        },
+        {
+          "referrerHostname": "linkedin.com",
+          "visitors": 10,
+          "pageviews": 13
+        },
+        {
+          "referrerHostname": "l.facebook.com",
+          "visitors": 8,
+          "pageviews": 9
+        },
+        {
+          "referrerHostname": "smex-ctp.trendmicro.com",
+          "visitors": 6,
+          "pageviews": 8
+        },
+        {
+          "referrerHostname": "copilot.microsoft.com",
+          "visitors": 5,
+          "pageviews": 5
+        },
+        {
+          "referrerHostname": "de.search.yahoo.com",
+          "visitors": 5,
+          "pageviews": 6
+        },
+        {
+          "referrerHostname": "heringen.de",
+          "visitors": 5,
+          "pageviews": 5
+        },
+        {
+          "referrerHostname": "accounts.google.com",
+          "visitors": 4,
+          "pageviews": 4
+        },
+        {
+          "referrerHostname": "chatgpt.com",
+          "visitors": 4,
+          "pageviews": 4
+        },
+        {
+          "referrerHostname": "vercel.com",
+          "visitors": 3,
+          "pageviews": 4
+        },
+        {
+          "referrerHostname": "com.google.android.gm",
+          "visitors": 2,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "old.reddit.com",
+          "visitors": 2,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "Others",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "com.google.android.googlequicksearchbox",
+          "visitors": 1,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "com.linkedin.android",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "email.t-online.de",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "gemini.google.com",
+          "visitors": 1,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "github.com",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "m.baidu.com",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "pct.awin.com",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "search.brave.com",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "search.yahoo.com",
+          "visitors": 1,
+          "pageviews": 1
+        }
+      ]
+    },
+    "va-atlas-referrers": {
+      "version": 1,
+      "query": {
+        "since": "2026-08-10T00:00:00.000Z",
+        "until": "2026-09-10T01:00:00.000Z",
+        "groupBy": [
+          "referrerHostname"
+        ],
+        "filter": "startswith(requestPath, '/solar-atlas')",
+        "limit": 30
+      },
+      "data": [
+        {
+          "referrerHostname": "",
+          "visitors": 486,
+          "pageviews": 1354
+        },
+        {
+          "referrerHostname": "lm.facebook.com",
+          "visitors": 40,
+          "pageviews": 45
+        },
+        {
+          "referrerHostname": "facebook.com",
+          "visitors": 33,
+          "pageviews": 35
+        },
+        {
+          "referrerHostname": "m.facebook.com",
+          "visitors": 17,
+          "pageviews": 18
+        },
+        {
+          "referrerHostname": "google.com",
+          "visitors": 14,
+          "pageviews": 14
+        },
+        {
+          "referrerHostname": "linkedin.com",
+          "visitors": 10,
+          "pageviews": 13
+        },
+        {
+          "referrerHostname": "l.facebook.com",
+          "visitors": 8,
+          "pageviews": 9
+        },
+        {
+          "referrerHostname": "smex-ctp.trendmicro.com",
+          "visitors": 6,
+          "pageviews": 8
+        },
+        {
+          "referrerHostname": "heringen.de",
+          "visitors": 5,
+          "pageviews": 5
+        },
+        {
+          "referrerHostname": "bing.com",
+          "visitors": 4,
+          "pageviews": 23
+        },
+        {
+          "referrerHostname": "vercel.com",
+          "visitors": 3,
+          "pageviews": 4
+        },
+        {
+          "referrerHostname": "chatgpt.com",
+          "visitors": 2,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "com.google.android.gm",
+          "visitors": 2,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "duckduckgo.com",
+          "visitors": 2,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "com.linkedin.android",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "copilot.microsoft.com",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "email.t-online.de",
+          "visitors": 1,
+          "pageviews": 1
+        },
+        {
+          "referrerHostname": "gemini.google.com",
+          "visitors": 1,
+          "pageviews": 2
+        },
+        {
+          "referrerHostname": "m.baidu.com",
+          "visitors": 1,
+          "pageviews": 1
+        }
+      ]
+    },
+    "va-events": {
+      "version": 1,
+      "query": {
+        "since": "2026-08-10T00:00:00.000Z",
+        "until": "2026-09-10T01:00:00.000Z",
+        "groupBy": [
+          "eventName"
+        ],
+        "limit": 100
+      },
+      "data": [
+        {
+          "eventName": "pv_schritt_speicher",
+          "visitors": 135,
+          "count": 176
+        },
+        {
+          "eventName": "balkon_ergebnis",
+          "visitors": 129,
+          "count": 146
+        },
+        {
+          "eventName": "pv_schritt_haushalt",
+          "visitors": 129,
+          "count": 161
+        },
+        {
+          "eventName": "pv_schritt_verbraucher",
+          "visitors": 129,
+          "count": 159
+        },
+        {
+          "eventName": "pv_ergebnis",
+          "visitors": 124,
+          "count": 150
+        },
+        {
+          "eventName": "brief_aufruf_verweis",
+          "visitors": 76,
+          "count": 100
+        },
+        {
+          "eventName": "brief_aufruf_direkt",
+          "visitors": 66,
+          "count": 83
+        },
+        {
+          "eventName": "balkon_schritt_ausrichtung",
+          "visitors": 51,
+          "count": 64
+        },
+        {
+          "eventName": "empfehlung_ergebnis",
+          "visitors": 41,
+          "count": 52
+        },
+        {
+          "eventName": "pv_schritt_dach",
+          "visitors": 34,
+          "count": 39
+        },
+        {
+          "eventName": "waermepumpe_ergebnis",
+          "visitors": 15,
+          "count": 17
+        },
+        {
+          "eventName": "empfehlung_schritt_haushalt",
+          "visitors": 13,
+          "count": 14
+        },
+        {
+          "eventName": "empfehlung_schritt_verbraucher",
+          "visitors": 13,
+          "count": 15
+        },
+        {
+          "eventName": "pv_geteilt",
+          "visitors": 5,
+          "count": 9
+        },
+        {
+          "eventName": "waermepumpe_schritt_groesse",
+          "visitors": 5,
+          "count": 6
+        },
+        {
+          "eventName": "klima_ergebnis",
+          "visitors": 4,
+          "count": 4
+        },
+        {
+          "eventName": "waermepumpe_schritt_daemmung",
+          "visitors": 4,
+          "count": 4
+        },
+        {
+          "eventName": "waermepumpe_schritt_haushalt",
+          "visitors": 4,
+          "count": 4
+        },
+        {
+          "eventName": "waermepumpe_schritt_heizsystem",
+          "visitors": 4,
+          "count": 4
+        },
+        {
+          "eventName": "abo_anmeldung",
+          "visitors": 3,
+          "count": 3
+        },
+        {
+          "eventName": "klima_schritt_nutzung",
+          "visitors": 2,
+          "count": 2
+        },
+        {
+          "eventName": "klima_schritt_raeume",
+          "visitors": 2,
+          "count": 2
+        }
+      ]
+    }
+  },
+  "dataforseo": {
+    "volumes": [
+      {
+        "keyword": "solaranlagen deutschland statistik",
+        "info": {
+          "se_type": "google",
+          "last_updated_time": "2026-08-21 04:47:17 +00:00",
+          "competition": 0.03,
+          "competition_level": "LOW",
+          "cpc": null,
+          "search_volume": 20,
+          "low_top_of_page_bid": null,
+          "high_top_of_page_bid": null,
+          "categories": [
+            10004,
+            10295,
+            11262,
+            12110,
+            12573
+          ],
+          "monthly_searches": [
+            {
+              "year": 2026,
+              "month": 7,
+              "search_volume": 10
+            },
+            {
+              "year": 2026,
+              "month": 6,
+              "search_volume": 20
+            },
+            {
+              "year": 2026,
+              "month": 5,
+              "search_volume": 30
+            },
+            {
+              "year": 2026,
+              "month": 4,
+              "search_volume": 20
+            },
+            {
+              "year": 2026,
+              "month": 3,
+              "search_volume": 30
+            },
+            {
+              "year": 2026,
+              "month": 2,
+              "search_volume": 20
+            },
+            {
+              "year": 2026,
+              "month": 1,
+              "search_volume": 10
+            },
+            {
+              "year": 2025,
+              "month": 12,
+              "search_volume": 20
+            },
+            {
+              "year": 2025,
+              "month": 11,
+              "search_volume": 30
+            },
+            {
+              "year": 2025,
+              "month": 10,
+              "search_volume": 10
+            },
+            {
+              "year": 2025,
+              "month": 9,
+              "search_volume": 20
+            },
+            {
+              "year": 2025,
+              "month": 8,
+              "search_volume": 20
+            },
+            {
+              "year": 2025,
+              "month": 7,
+              "search_volume": 30
+            },
+            {
+              "year": 2025,
+              "month": 6,
+              "search_volume": 70
+            },
+            {
+              "year": 2025,
+              "month": 5,
+              "search_volume": 50
+            },
+            {
+              "year": 2025,
+              "month": 4,
+              "search_volume": 90
+            },
+            {
+              "year": 2025,
+              "month": 3,
+              "search_volume": 70
+            },
+            {
+              "year": 2025,
+              "month": 2,
+              "search_volume": 50
+            },
+            {
+              "year": 2025,
+              "month": 1,
+              "search_volume": 40
+            },
+            {
+              "year": 2024,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2024,
+              "month": 11,
+              "search_volume": 50
+            },
+            {
+              "year": 2024,
+              "month": 10,
+              "search_volume": 40
+            },
+            {
+              "year": 2024,
+              "month": 9,
+              "search_volume": 40
+            },
+            {
+              "year": 2024,
+              "month": 8,
+              "search_volume": 30
+            },
+            {
+              "year": 2024,
+              "month": 7,
+              "search_volume": 30
+            },
+            {
+              "year": 2024,
+              "month": 6,
+              "search_volume": 90
+            },
+            {
+              "year": 2024,
+              "month": 5,
+              "search_volume": 50
+            },
+            {
+              "year": 2024,
+              "month": 4,
+              "search_volume": 50
+            },
+            {
+              "year": 2024,
+              "month": 3,
+              "search_volume": 50
+            },
+            {
+              "year": 2024,
+              "month": 2,
+              "search_volume": 70
+            },
+            {
+              "year": 2024,
+              "month": 1,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2023,
+              "month": 11,
+              "search_volume": 90
+            },
+            {
+              "year": 2023,
+              "month": 10,
+              "search_volume": 50
+            },
+            {
+              "year": 2023,
+              "month": 9,
+              "search_volume": 50
+            },
+            {
+              "year": 2023,
+              "month": 8,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 7,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 6,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 5,
+              "search_volume": 110
+            },
+            {
+              "year": 2023,
+              "month": 4,
+              "search_volume": 90
+            },
+            {
+              "year": 2023,
+              "month": 3,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 2,
+              "search_volume": 70
+            },
+            {
+              "year": 2023,
+              "month": 1,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 12,
+              "search_volume": 30
+            },
+            {
+              "year": 2022,
+              "month": 11,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 10,
+              "search_volume": 90
+            },
+            {
+              "year": 2022,
+              "month": 9,
+              "search_volume": 90
+            },
+            {
+              "year": 2022,
+              "month": 8,
+              "search_volume": 90
+            },
+            {
+              "year": 2022,
+              "month": 7,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 6,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 5,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 4,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 3,
+              "search_volume": 90
+            },
+            {
+              "year": 2022,
+              "month": 2,
+              "search_volume": 70
+            },
+            {
+              "year": 2022,
+              "month": 1,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2021,
+              "month": 11,
+              "search_volume": 50
+            },
+            {
+              "year": 2021,
+              "month": 10,
+              "search_volume": 50
+            },
+            {
+              "year": 2021,
+              "month": 9,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 8,
+              "search_volume": 30
+            },
+            {
+              "year": 2021,
+              "month": 7,
+              "search_volume": 40
+            },
+            {
+              "year": 2021,
+              "month": 6,
+              "search_volume": 70
+            },
+            {
+              "year": 2021,
+              "month": 5,
+              "search_volume": 70
+            },
+            {
+              "year": 2021,
+              "month": 4,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 3,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 2,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 1,
+              "search_volume": 90
+            },
+            {
+              "year": 2020,
+              "month": 12,
+              "search_volume": 40
+            },
+            {
+              "year": 2020,
+              "month": 11,
+              "search_volume": 50
+            },
+            {
+              "year": 2020,
+              "month": 10,
+              "search_volume": 40
+            },
+            {
+              "year": 2020,
+              "month": 9,
+              "search_volume": 40
+            },
+            {
+              "year": 2020,
+              "month": 8,
+              "search_volume": 20
+            },
+            {
+              "year": 2020,
+              "month": 7,
+              "search_volume": 10
+            },
+            {
+              "year": 2020,
+              "month": 6,
+              "search_volume": 20
+            },
+            {
+              "year": 2020,
+              "month": 5,
+              "search_volume": 20
+            },
+            {
+              "year": 2020,
+              "month": 4,
+              "search_volume": 10
+            },
+            {
+              "year": 2020,
+              "month": 3,
+              "search_volume": 20
+            },
+            {
+              "year": 2020,
+              "month": 2,
+              "search_volume": 20
+            },
+            {
+              "year": 2020,
+              "month": 1,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 12,
+              "search_volume": 30
+            },
+            {
+              "year": 2019,
+              "month": 11,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 10,
+              "search_volume": 30
+            },
+            {
+              "year": 2019,
+              "month": 9,
+              "search_volume": 20
+            },
+            {
+              "year": 2019,
+              "month": 8,
+              "search_volume": 10
+            },
+            {
+              "year": 2019,
+              "month": 7,
+              "search_volume": 20
+            },
+            {
+              "year": 2019,
+              "month": 6,
+              "search_volume": 40
+            },
+            {
+              "year": 2019,
+              "month": 5,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 4,
+              "search_volume": 40
+            },
+            {
+              "year": 2019,
+              "month": 3,
+              "search_volume": 40
+            },
+            {
+              "year": 2019,
+              "month": 2,
+              "search_volume": 20
+            },
+            {
+              "year": 2019,
+              "month": 1,
+              "search_volume": 40
+            },
+            {
+              "year": 2018,
+              "month": 12,
+              "search_volume": 40
+            },
+            {
+              "year": 2018,
+              "month": 11,
+              "search_volume": 70
+            },
+            {
+              "year": 2018,
+              "month": 10,
+              "search_volume": 70
+            }
+          ],
+          "search_volume_trend": {
+            "monthly": -50,
+            "quarterly": -67,
+            "yearly": -67
+          }
+        }
+      },
+      {
+        "keyword": "solaratlas bayern",
+        "info": {
+          "se_type": "google",
+          "last_updated_time": "2026-08-23 21:17:37 +00:00",
+          "competition": 0.46,
+          "competition_level": "MEDIUM",
+          "cpc": 3.8,
+          "search_volume": 90,
+          "low_top_of_page_bid": 1.57,
+          "high_top_of_page_bid": 4.57,
+          "categories": [
+            10018,
+            10160,
+            10829
+          ],
+          "monthly_searches": [
+            {
+              "year": 2026,
+              "month": 7,
+              "search_volume": 90
+            },
+            {
+              "year": 2026,
+              "month": 6,
+              "search_volume": 90
+            },
+            {
+              "year": 2026,
+              "month": 5,
+              "search_volume": 110
+            },
+            {
+              "year": 2026,
+              "month": 4,
+              "search_volume": 140
+            },
+            {
+              "year": 2026,
+              "month": 3,
+              "search_volume": 170
+            },
+            {
+              "year": 2026,
+              "month": 2,
+              "search_volume": 110
+            },
+            {
+              "year": 2026,
+              "month": 1,
+              "search_volume": 110
+            },
+            {
+              "year": 2025,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2025,
+              "month": 11,
+              "search_volume": 90
+            },
+            {
+              "year": 2025,
+              "month": 10,
+              "search_volume": 70
+            },
+            {
+              "year": 2025,
+              "month": 9,
+              "search_volume": 50
+            },
+            {
+              "year": 2025,
+              "month": 8,
+              "search_volume": 110
+            },
+            {
+              "year": 2025,
+              "month": 7,
+              "search_volume": 170
+            },
+            {
+              "year": 2025,
+              "month": 6,
+              "search_volume": 140
+            },
+            {
+              "year": 2025,
+              "month": 5,
+              "search_volume": 140
+            },
+            {
+              "year": 2025,
+              "month": 4,
+              "search_volume": 140
+            },
+            {
+              "year": 2025,
+              "month": 3,
+              "search_volume": 140
+            },
+            {
+              "year": 2025,
+              "month": 2,
+              "search_volume": 110
+            },
+            {
+              "year": 2025,
+              "month": 1,
+              "search_volume": 170
+            },
+            {
+              "year": 2024,
+              "month": 12,
+              "search_volume": 110
+            },
+            {
+              "year": 2024,
+              "month": 11,
+              "search_volume": 140
+            },
+            {
+              "year": 2024,
+              "month": 10,
+              "search_volume": 140
+            },
+            {
+              "year": 2024,
+              "month": 9,
+              "search_volume": 590
+            },
+            {
+              "year": 2024,
+              "month": 8,
+              "search_volume": 210
+            },
+            {
+              "year": 2024,
+              "month": 7,
+              "search_volume": 260
+            },
+            {
+              "year": 2024,
+              "month": 6,
+              "search_volume": 1600
+            },
+            {
+              "year": 2024,
+              "month": 5,
+              "search_volume": 170
+            },
+            {
+              "year": 2024,
+              "month": 4,
+              "search_volume": 260
+            },
+            {
+              "year": 2024,
+              "month": 3,
+              "search_volume": 210
+            },
+            {
+              "year": 2024,
+              "month": 2,
+              "search_volume": 210
+            },
+            {
+              "year": 2024,
+              "month": 1,
+              "search_volume": 170
+            },
+            {
+              "year": 2023,
+              "month": 12,
+              "search_volume": 140
+            },
+            {
+              "year": 2023,
+              "month": 11,
+              "search_volume": 210
+            },
+            {
+              "year": 2023,
+              "month": 10,
+              "search_volume": 210
+            },
+            {
+              "year": 2023,
+              "month": 9,
+              "search_volume": 260
+            },
+            {
+              "year": 2023,
+              "month": 8,
+              "search_volume": 720
+            },
+            {
+              "year": 2023,
+              "month": 7,
+              "search_volume": 590
+            },
+            {
+              "year": 2023,
+              "month": 6,
+              "search_volume": 590
+            },
+            {
+              "year": 2023,
+              "month": 5,
+              "search_volume": 170
+            },
+            {
+              "year": 2023,
+              "month": 4,
+              "search_volume": 260
+            },
+            {
+              "year": 2023,
+              "month": 3,
+              "search_volume": 390
+            },
+            {
+              "year": 2023,
+              "month": 2,
+              "search_volume": 210
+            },
+            {
+              "year": 2023,
+              "month": 1,
+              "search_volume": 260
+            },
+            {
+              "year": 2022,
+              "month": 12,
+              "search_volume": 170
+            },
+            {
+              "year": 2022,
+              "month": 11,
+              "search_volume": 260
+            },
+            {
+              "year": 2022,
+              "month": 10,
+              "search_volume": 260
+            },
+            {
+              "year": 2022,
+              "month": 9,
+              "search_volume": 320
+            },
+            {
+              "year": 2022,
+              "month": 8,
+              "search_volume": 320
+            },
+            {
+              "year": 2022,
+              "month": 7,
+              "search_volume": 260
+            },
+            {
+              "year": 2022,
+              "month": 6,
+              "search_volume": 170
+            },
+            {
+              "year": 2022,
+              "month": 5,
+              "search_volume": 260
+            },
+            {
+              "year": 2022,
+              "month": 4,
+              "search_volume": 480
+            },
+            {
+              "year": 2022,
+              "month": 3,
+              "search_volume": 390
+            },
+            {
+              "year": 2022,
+              "month": 2,
+              "search_volume": 210
+            },
+            {
+              "year": 2022,
+              "month": 1,
+              "search_volume": 320
+            },
+            {
+              "year": 2021,
+              "month": 12,
+              "search_volume": 140
+            },
+            {
+              "year": 2021,
+              "month": 11,
+              "search_volume": 170
+            },
+            {
+              "year": 2021,
+              "month": 10,
+              "search_volume": 170
+            },
+            {
+              "year": 2021,
+              "month": 9,
+              "search_volume": 260
+            },
+            {
+              "year": 2021,
+              "month": 8,
+              "search_volume": 110
+            },
+            {
+              "year": 2021,
+              "month": 7,
+              "search_volume": 140
+            },
+            {
+              "year": 2021,
+              "month": 6,
+              "search_volume": 110
+            },
+            {
+              "year": 2021,
+              "month": 5,
+              "search_volume": 260
+            },
+            {
+              "year": 2021,
+              "month": 4,
+              "search_volume": 110
+            },
+            {
+              "year": 2021,
+              "month": 3,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 2,
+              "search_volume": 90
+            },
+            {
+              "year": 2021,
+              "month": 1,
+              "search_volume": 110
+            },
+            {
+              "year": 2020,
+              "month": 12,
+              "search_volume": 110
+            },
+            {
+              "year": 2020,
+              "month": 11,
+              "search_volume": 70
+            },
+            {
+              "year": 2020,
+              "month": 10,
+              "search_volume": 70
+            },
+            {
+              "year": 2020,
+              "month": 9,
+              "search_volume": 40
+            },
+            {
+              "year": 2020,
+              "month": 8,
+              "search_volume": 50
+            },
+            {
+              "year": 2020,
+              "month": 7,
+              "search_volume": 70
+            },
+            {
+              "year": 2020,
+              "month": 6,
+              "search_volume": 50
+            },
+            {
+              "year": 2020,
+              "month": 5,
+              "search_volume": 70
+            },
+            {
+              "year": 2020,
+              "month": 4,
+              "search_volume": 50
+            },
+            {
+              "year": 2020,
+              "month": 3,
+              "search_volume": 50
+            },
+            {
+              "year": 2020,
+              "month": 2,
+              "search_volume": 70
+            },
+            {
+              "year": 2020,
+              "month": 1,
+              "search_volume": 170
+            },
+            {
+              "year": 2019,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 11,
+              "search_volume": 70
+            },
+            {
+              "year": 2019,
+              "month": 10,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 9,
+              "search_volume": 70
+            },
+            {
+              "year": 2019,
+              "month": 8,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 7,
+              "search_volume": 30
+            },
+            {
+              "year": 2019,
+              "month": 6,
+              "search_volume": 40
+            },
+            {
+              "year": 2019,
+              "month": 5,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 4,
+              "search_volume": 50
+            },
+            {
+              "year": 2019,
+              "month": 3,
+              "search_volume": 30
+            },
+            {
+              "year": 2019,
+              "month": 2,
+              "search_volume": 40
+            },
+            {
+              "year": 2019,
+              "month": 1,
+              "search_volume": 50
+            },
+            {
+              "year": 2018,
+              "month": 12,
+              "search_volume": 30
+            },
+            {
+              "year": 2018,
+              "month": 11,
+              "search_volume": 40
+            }
+          ],
+          "search_volume_trend": {
+            "monthly": 0,
+            "quarterly": -18,
+            "yearly": -47
+          }
+        }
+      },
+      {
+        "keyword": "solarkataster bayern",
+        "info": {
+          "se_type": "google",
+          "last_updated_time": "2026-08-22 08:24:49 +00:00",
+          "competition": 0.51,
+          "competition_level": "MEDIUM",
+          "cpc": 4.36,
+          "search_volume": 390,
+          "low_top_of_page_bid": 1.44,
+          "high_top_of_page_bid": 4.57,
+          "categories": [
+            10004,
+            10295,
+            11262,
+            12110,
+            12573
+          ],
+          "monthly_searches": [
+            {
+              "year": 2026,
+              "month": 7,
+              "search_volume": 390
+            },
+            {
+              "year": 2026,
+              "month": 6,
+              "search_volume": 320
+            },
+            {
+              "year": 2026,
+              "month": 5,
+              "search_volume": 480
+            },
+            {
+              "year": 2026,
+              "month": 4,
+              "search_volume": 590
+            },
+            {
+              "year": 2026,
+              "month": 3,
+              "search_volume": 720
+            },
+            {
+              "year": 2026,
+              "month": 2,
+              "search_volume": 390
+            },
+            {
+              "year": 2026,
+              "month": 1,
+              "search_volume": 480
+            },
+            {
+              "year": 2025,
+              "month": 12,
+              "search_volume": 320
+            },
+            {
+              "year": 2025,
+              "month": 11,
+              "search_volume": 390
+            },
+            {
+              "year": 2025,
+              "month": 10,
+              "search_volume": 390
+            },
+            {
+              "year": 2025,
+              "month": 9,
+              "search_volume": 390
+            },
+            {
+              "year": 2025,
+              "month": 8,
+              "search_volume": 390
+            },
+            {
+              "year": 2025,
+              "month": 7,
+              "search_volume": 590
+            },
+            {
+              "year": 2025,
+              "month": 6,
+              "search_volume": 480
+            },
+            {
+              "year": 2025,
+              "month": 5,
+              "search_volume": 590
+            },
+            {
+              "year": 2025,
+              "month": 4,
+              "search_volume": 590
+            },
+            {
+              "year": 2025,
+              "month": 3,
+              "search_volume": 720
+            },
+            {
+              "year": 2025,
+              "month": 2,
+              "search_volume": 590
+            },
+            {
+              "year": 2025,
+              "month": 1,
+              "search_volume": 590
+            },
+            {
+              "year": 2024,
+              "month": 12,
+              "search_volume": 480
+            },
+            {
+              "year": 2024,
+              "month": 11,
+              "search_volume": 480
+            },
+            {
+              "year": 2024,
+              "month": 10,
+              "search_volume": 590
+            },
+            {
+              "year": 2024,
+              "month": 9,
+              "search_volume": 590
+            },
+            {
+              "year": 2024,
+              "month": 8,
+              "search_volume": 590
+            },
+            {
+              "year": 2024,
+              "month": 7,
+              "search_volume": 720
+            },
+            {
+              "year": 2024,
+              "month": 6,
+              "search_volume": 880
+            },
+            {
+              "year": 2024,
+              "month": 5,
+              "search_volume": 720
+            },
+            {
+              "year": 2024,
+              "month": 4,
+              "search_volume": 720
+            },
+            {
+              "year": 2024,
+              "month": 3,
+              "search_volume": 880
+            },
+            {
+              "year": 2024,
+              "month": 2,
+              "search_volume": 720
+            },
+            {
+              "year": 2024,
+              "month": 1,
+              "search_volume": 880
+            },
+            {
+              "year": 2023,
+              "month": 12,
+              "search_volume": 720
+            },
+            {
+              "year": 2023,
+              "month": 11,
+              "search_volume": 880
+            },
+            {
+              "year": 2023,
+              "month": 10,
+              "search_volume": 1000
+            },
+            {
+              "year": 2023,
+              "month": 9,
+              "search_volume": 2400
+            },
+            {
+              "year": 2023,
+              "month": 8,
+              "search_volume": 9900
+            },
+            {
+              "year": 2023,
+              "month": 7,
+              "search_volume": 8100
+            },
+            {
+              "year": 2023,
+              "month": 6,
+              "search_volume": 4400
+            },
+            {
+              "year": 2023,
+              "month": 5,
+              "search_volume": 880
+            },
+            {
+              "year": 2023,
+              "month": 4,
+              "search_volume": 1000
+            },
+            {
+              "year": 2023,
+              "month": 3,
+              "search_volume": 1300
+            },
+            {
+              "year": 2023,
+              "month": 2,
+              "search_volume": 1300
+            },
+            {
+              "year": 2023,
+              "month": 1,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 12,
+              "search_volume": 880
+            },
+            {
+              "year": 2022,
+              "month": 11,
+              "search_volume": 1600
+            },
+            {
+              "year": 2022,
+              "month": 10,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 9,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 8,
+              "search_volume": 1900
+            },
+            {
+              "year": 2022,
+              "month": 7,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 6,
+              "search_volume": 880
+            },
+            {
+              "year": 2022,
+              "month": 5,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 4,
+              "search_volume": 2400
+            },
+            {
+              "year": 2022,
+              "month": 3,
+              "search_volume": 1600
+            },
+            {
+              "year": 2022,
+              "month": 2,
+              "search_volume": 1300
+            },
+            {
+              "year": 2022,
+              "month": 1,
+              "search_volume": 2400
+            },
+            {
+              "year": 2021,
+              "month": 12,
+              "search_volume": 480
+            },
+            {
+              "year": 2021,
+              "month": 11,
+              "search_volume": 1000
+            },
+            {
+              "year": 2021,
+              "month": 10,
+              "search_volume": 720
+            },
+            {
+              "year": 2021,
+              "month": 9,
+              "search_volume": 1300
+            },
+            {
+              "year": 2021,
+              "month": 8,
+              "search_volume": 1000
+            },
+            {
+              "year": 2021,
+              "month": 7,
+              "search_volume": 880
+            },
+            {
+              "year": 2021,
+              "month": 6,
+              "search_volume": 320
+            },
+            {
+              "year": 2021,
+              "month": 5,
+              "search_volume": 1900
+            },
+            {
+              "year": 2021,
+              "month": 4,
+              "search_volume": 480
+            },
+            {
+              "year": 2021,
+              "month": 3,
+              "search_volume": 480
+            },
+            {
+              "year": 2021,
+              "month": 2,
+              "search_volume": 390
+            },
+            {
+              "year": 2021,
+              "month": 1,
+              "search_volume": 390
+            },
+            {
+              "year": 2020,
+              "month": 12,
+              "search_volume": 140
+            },
+            {
+              "year": 2020,
+              "month": 11,
+              "search_volume": 170
+            },
+            {
+              "year": 2020,
+              "month": 10,
+              "search_volume": 210
+            },
+            {
+              "year": 2020,
+              "month": 9,
+              "search_volume": 210
+            },
+            {
+              "year": 2020,
+              "month": 8,
+              "search_volume": 170
+            },
+            {
+              "year": 2020,
+              "month": 7,
+              "search_volume": 260
+            },
+            {
+              "year": 2020,
+              "month": 6,
+              "search_volume": 210
+            },
+            {
+              "year": 2020,
+              "month": 5,
+              "search_volume": 140
+            },
+            {
+              "year": 2020,
+              "month": 4,
+              "search_volume": 140
+            },
+            {
+              "year": 2020,
+              "month": 3,
+              "search_volume": 170
+            },
+            {
+              "year": 2020,
+              "month": 2,
+              "search_volume": 390
+            },
+            {
+              "year": 2020,
+              "month": 1,
+              "search_volume": 720
+            },
+            {
+              "year": 2019,
+              "month": 12,
+              "search_volume": 170
+            },
+            {
+              "year": 2019,
+              "month": 11,
+              "search_volume": 260
+            },
+            {
+              "year": 2019,
+              "month": 10,
+              "search_volume": 210
+            },
+            {
+              "year": 2019,
+              "month": 9,
+              "search_volume": 140
+            },
+            {
+              "year": 2019,
+              "month": 8,
+              "search_volume": 140
+            },
+            {
+              "year": 2019,
+              "month": 7,
+              "search_volume": 140
+            },
+            {
+              "year": 2019,
+              "month": 6,
+              "search_volume": 110
+            },
+            {
+              "year": 2019,
+              "month": 5,
+              "search_volume": 110
+            },
+            {
+              "year": 2019,
+              "month": 4,
+              "search_volume": 70
+            },
+            {
+              "year": 2019,
+              "month": 3,
+              "search_volume": 110
+            },
+            {
+              "year": 2019,
+              "month": 2,
+              "search_volume": 140
+            },
+            {
+              "year": 2019,
+              "month": 1,
+              "search_volume": 90
+            },
+            {
+              "year": 2018,
+              "month": 12,
+              "search_volume": 50
+            },
+            {
+              "year": 2018,
+              "month": 11,
+              "search_volume": 70
+            },
+            {
+              "year": 2018,
+              "month": 10,
+              "search_volume": 70
+            }
+          ],
+          "search_volume_trend": {
+            "monthly": 22,
+            "quarterly": -19,
+            "yearly": -34
+          }
+        }
+      }
+    ],
+    "serps": {
+      "local": {
+        "keyword": "photovoltaik höchberg",
+        "datetime": "2026-09-10 09:10:24 +00:00",
+        "items": [
+          {
+            "type": "local_pack",
+            "title": "Stuis Photovoltaik GmbH",
+            "url": "https://www.stuis-pv.de/?utm_source=google&utm_medium=local&utm_campaign=gmb",
+            "rank": 1
+          },
+          {
+            "type": "local_pack",
+            "title": "NeueEnergie24 GmbH - Photovoltaik und Wärmepumpen aus Veitshöchheim / Würzburg",
+            "url": "http://www.neueenergie24.de/",
+            "rank": 2
+          },
+          {
+            "type": "local_pack",
+            "title": "Grüne Energie 360 GmbH",
+            "url": "https://www.gruene-energie-360.de/",
+            "rank": 3
+          },
+          {
+            "type": "compare_sites",
+            "title": "Websites zu Orten",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik in Würzburg und Region",
+            "url": "https://www.team-elektro-beck.de/beck-elektrotechnik-gmbh/leistungen/photovoltaik.html",
+            "rank": 1
+          },
+          {
+            "type": "people_also_ask",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik Würzburg - Jetzt Angebot einholen",
+            "url": "https://krasniqi-solar.de/photovoltaik-wuerzburg/",
+            "rank": 2
+          },
+          {
+            "type": "organic",
+            "title": "Die besten Photovoltaik-Anbieter & Projekte aus Würzburg",
+            "url": "https://www.energie-experten.org/experten-finden/photovoltaik-wuerzburg",
+            "rank": 3
+          },
+          {
+            "type": "organic",
+            "title": "Grüne Energie Würzburg: Nachhaltige Lösungen",
+            "url": "https://maex-solar.de/photovoltaik-wuerzburg/",
+            "rank": 4
+          },
+          {
+            "type": "local_pack",
+            "title": "hallo.solar - Würzburg",
+            "url": "https://hallo.solar/",
+            "rank": 4
+          },
+          {
+            "type": "local_pack",
+            "title": "Cosmin Solar/Photovoltaik",
+            "url": "http://www.cosmin-pv.de/",
+            "rank": 5
+          },
+          {
+            "type": "local_pack",
+            "title": "Lukas Preisinger Photovoltaik-Fachplaner",
+            "url": null,
+            "rank": 6
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik-Montagefirma finden in Höchberg",
+            "url": "https://home.meinestadt.de/hoechberg/handwerkermarkt/photovoltaik",
+            "rank": 5
+          },
+          {
+            "type": "organic",
+            "title": "Integriertes kommunales Klimaschutzkonzept ...",
+            "url": "https://www.hoechberg.de/wp-content/uploads/2024/04/klimaschutzkonzept_hoechberg.pdf",
+            "rank": 6
+          },
+          {
+            "type": "organic",
+            "title": "STUIS PV - Ihr Partner für Photovoltaik",
+            "url": "https://www.stuis-pv.de/",
+            "rank": 7
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik Würzburg » Firmen, Rechner & Angebote",
+            "url": "https://www.rechnerphotovoltaik.de/photovoltaik/in/bayern/wuerzburg",
+            "rank": 8
+          },
+          {
+            "type": "organic",
+            "title": "Weitere Ideen",
+            "url": "https://buergerstromwest.de/pv-freiflaechenanlage-hoechberg-und-weitere-ideen/",
+            "rank": 9
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik Würzburg - Solaranlage von ...",
+            "url": "https://www.webosolar.de/photovoltaik-wuerzburg/",
+            "rank": 10
+          },
+          {
+            "type": "related_searches",
+            "rank": 1
+          }
+        ]
+      },
+      "atlas": {
+        "keyword": "solaratlas bayern",
+        "datetime": "2026-09-10 09:10:27 +00:00",
+        "items": [
+          {
+            "type": "organic",
+            "title": "Energie-Atlas Bayern; Informationsportal",
+            "url": "https://www.bayernportal.de/dokumente/leistung/267088708483",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Energieatlas Bayern",
+            "url": "https://www.karten.energieatlas.bayern.de/start/",
+            "rank": 2
+          },
+          {
+            "type": "organic",
+            "title": "Alle Solarkataster Deutschlands im Überblick",
+            "url": "https://www.mein-eigenheim.de/solar/solarkataster-deutschland.html",
+            "rank": 3
+          },
+          {
+            "type": "ai_overview",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Solarkataster Bayern: Anleitung & Tipps",
+            "url": "https://www.energie-solar-erfahrungen.de/photovoltaik/solarkataster-bayern",
+            "rank": 4
+          },
+          {
+            "type": "organic",
+            "title": "Solaratlas BGL",
+            "url": "https://www.lra-bgl.de/solaratlas/",
+            "rank": 5
+          },
+          {
+            "type": "organic",
+            "title": "Energie-Atlas Bayern",
+            "url": "https://www.byak.de/planen-und-bauen/architektur-technik/energieeffizientes-und-nachhaltiges-bauen/programme-und-buendnisse/energie-atlas-bayern.html",
+            "rank": 6
+          },
+          {
+            "type": "organic",
+            "title": "Solarpotenzialkataster",
+            "url": "https://www.landkreis-muenchen.de/themen/energie-klimaschutz/klimaschutz-zum-mitmachen/solarpotenzialkataster/",
+            "rank": 7
+          },
+          {
+            "type": "images",
+            "title": "Bilder",
+            "url": "https://www.google.com/search?sca_esv=1f9121a7cdf920c7&hl=de&gl=DE&q=solaratlas+bayern&udm=2&source=univ&fir=20D63WdgqcjuNM%252ClZt0oyQyG13fVM%252C_%253BbDL7rD7OMBeYRM%252Civ91UihH3gwI5M%252C_%253BaHgGb6dY7OIkrM%252CBiNJ7zj7vm_IWM%252C_%253BsHoC8xkFw4VpCM%252Civ91UihH3gwI5M%252C_%253BxS2YD7vWI1LEpM%252Civ91UihH3gwI5M%252C_%253BIyjl34Tzeek67M%252Czy4NBfNiq6mb4M%252C_&usg=AI4_-kSRWDgb93KjzPpnN4Q1A0KIO3eAGw&sa=X&ved=2ahUKEwiDjfe01eOWAxV64MkDHQITBREQ7Al6BAhFEAU",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Atlas zeigt Potenzial von Solaranlagen in Deutschland",
+            "url": "https://www.dlr.de/de/aktuelles/nachrichten/2024/atlas-zeigt-potenzial-von-solaranlagen-in-deutschland",
+            "rank": 8
+          },
+          {
+            "type": "related_searches",
+            "rank": 1
+          }
+        ]
+      },
+      "statistics": {
+        "keyword": "solaranlagen deutschland statistik",
+        "datetime": "2026-09-10 09:10:33 +00:00",
+        "items": [
+          {
+            "type": "ai_overview",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "4,2 Millionen Photovoltaikanlagen in Deutschland installiert",
+            "url": "https://www.destatis.de/DE/Presse/Pressemitteilungen/2025/07/PD25_N034_43.html",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik Deutschland | Zahlen & Charts",
+            "url": "https://strom-report.com/photovoltaik/",
+            "rank": 2
+          },
+          {
+            "type": "people_also_ask",
+            "rank": 1
+          },
+          {
+            "type": "organic",
+            "title": "Aktuelle Fakten zur Photovoltaik in Deutschland",
+            "url": "https://www.ise.fraunhofer.de/content/dam/ise/de/documents/publications/studies/aktuelle-fakten-zur-photovoltaik-in-deutschland.pdf",
+            "rank": 3
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik in Deutschland: Zwischen Fortschritt und ...",
+            "url": "https://de.statista.com/themen/156/photovoltaik/",
+            "rank": 4
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik-Markt in Deutschland",
+            "url": "https://www.solarbranche.de/ausbau/deutschland/photovoltaik",
+            "rank": 5
+          },
+          {
+            "type": "organic",
+            "title": "Photovoltaik-Dachanlagen",
+            "url": "https://www.umweltbundesamt.de/themen/klima-energie/erneuerbare-energien/photovoltaik/photovoltaik-dachanlagen",
+            "rank": 6
+          },
+          {
+            "type": "organic",
+            "title": "Jahresrückblick: Photovoltaik in Deutschland 2025",
+            "url": "https://www.metergrid.de/blog/jahresruckblick-photovoltaik-in-deutschland-2025-stromerzeugung-eigenverbrauch-und-eu-vergleich",
+            "rank": 7
+          },
+          {
+            "type": "organic",
+            "title": "Marktdaten",
+            "url": "https://www.solarwirtschaft.de/fuer-verbraucher/marktdaten/",
+            "rank": 8
+          },
+          {
+            "type": "organic",
+            "title": "Entwicklung der Photovoltaikleistung in der EU 2026",
+            "url": "https://www.destatis.de/Europa/DE/Thema/Umwelt-Energie/Photovoltaik.html",
+            "rank": 9
+          },
+          {
+            "type": "related_searches",
+            "rank": 1
+          }
+        ]
+      }
+    }
+  },
+  "comparison": {
+    "months": [
+      {
+        "month": "2024-08",
+        "count": 3
+      },
+      {
+        "month": "2024-09",
+        "count": 2
+      },
+      {
+        "month": "2024-10",
+        "count": 0
+      },
+      {
+        "month": "2024-11",
+        "count": 1
+      },
+      {
+        "month": "2024-12",
+        "count": 0
+      },
+      {
+        "month": "2025-01",
+        "count": 0
+      },
+      {
+        "month": "2025-02",
+        "count": 3
+      },
+      {
+        "month": "2025-03",
+        "count": 6
+      },
+      {
+        "month": "2025-04",
+        "count": 4
+      },
+      {
+        "month": "2025-05",
+        "count": 29
+      },
+      {
+        "month": "2025-06",
+        "count": 4
+      },
+      {
+        "month": "2025-07",
+        "count": 1
+      },
+      {
+        "month": "2025-08",
+        "count": 1
+      },
+      {
+        "month": "2025-09",
+        "count": 0
+      },
+      {
+        "month": "2025-10",
+        "count": 2
+      },
+      {
+        "month": "2025-11",
+        "count": 1
+      },
+      {
+        "month": "2025-12",
+        "count": 0
+      },
+      {
+        "month": "2026-01",
+        "count": 0
+      },
+      {
+        "month": "2026-02",
+        "count": 0
+      },
+      {
+        "month": "2026-03",
+        "count": 0
+      },
+      {
+        "month": "2026-04",
+        "count": 1
+      },
+      {
+        "month": "2026-05",
+        "count": 2
+      }
+    ],
+    "windows": [
+      {
+        "from": "2024-08",
+        "to": "2024-10",
+        "value": 5
+      },
+      {
+        "from": "2024-09",
+        "to": "2024-11",
+        "value": 3
+      },
+      {
+        "from": "2024-10",
+        "to": "2024-12",
+        "value": 1
+      },
+      {
+        "from": "2024-11",
+        "to": "2025-01",
+        "value": 1
+      },
+      {
+        "from": "2024-12",
+        "to": "2025-02",
+        "value": 3
+      },
+      {
+        "from": "2025-06",
+        "to": "2025-08",
+        "value": 6
+      },
+      {
+        "from": "2025-07",
+        "to": "2025-09",
+        "value": 2
+      },
+      {
+        "from": "2025-08",
+        "to": "2025-10",
+        "value": 3
+      },
+      {
+        "from": "2025-09",
+        "to": "2025-11",
+        "value": 3
+      },
+      {
+        "from": "2025-10",
+        "to": "2025-12",
+        "value": 3
+      },
+      {
+        "from": "2025-11",
+        "to": "2026-01",
+        "value": 1
+      },
+      {
+        "from": "2025-12",
+        "to": "2026-02",
+        "value": 0
+      },
+      {
+        "from": "2026-01",
+        "to": "2026-03",
+        "value": 0
+      },
+      {
+        "from": "2026-02",
+        "to": "2026-04",
+        "value": 1
+      },
+      {
+        "from": "2026-03",
+        "to": "2026-05",
+        "value": 3
+      }
+    ]
+  }
+}

@@ -29,7 +29,7 @@ const ROOT = join(__dirname, "..", "..");
 
 const ATLAS_SEITEN = [
   "app/(site)/solar-atlas/[[...pfad]]/page.tsx",
-  "app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx",
+  "components/gemeinde/gemeinde-metadata.ts",
 ];
 
 const FOERDER_STADTSEITE = "app/(site)/photovoltaik-foerderung/[bundesland]/[stadt]/page.tsx";

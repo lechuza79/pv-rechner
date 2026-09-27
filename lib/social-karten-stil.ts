@@ -114,7 +114,15 @@ export function serienFarben(
   // IST die Umgebung. Deshalb Tokens statt Hexwerte — sonst stünde die Karte
   // abends mit Tagesfarben da, also mit demselben Fehler, nur andersherum.
   if (palette === "seite") {
-    return { hervorgehoben: "var(--color-accent)", gedaempft: "var(--color-text-primary)" };
+    // Die gedämpfte Reihe ist eine FLÄCHE, keine Schrift: Mit der Textfarbe
+    // stand der Vorjahres-Balken als weißer Block auf der dunklen Karte, und
+    // die hervorgehobene Differenz darüber war ein Strich (Befund des
+    // Betreibers, 23.09.2026). Gemischt aus derselben Textfarbe, damit sie in
+    // jeder Tagesstufe zur Karte passt.
+    return {
+      hervorgehoben: "var(--color-accent)",
+      gedaempft: "color-mix(in srgb, var(--color-text-primary) 26%, transparent)",
+    };
   }
   // The muted series is the accent at 45 % on the card surface, the same mix
   // the homepage stories use — precomputed as a solid colour (see above).

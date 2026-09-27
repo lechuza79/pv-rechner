@@ -201,7 +201,8 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 /* Shared typography roles, agreed 2026-09-08; integrate into lib/theme.ts on handoff. */
 @font-face{font-family:Montserrat;src:url('/homepage-study/montserrat-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
 :is(.homepage-study,html[data-homepage-preview]){--font-display:Montserrat,sans-serif;--font-display-weight:700;--font-display-tracking:normal;--font-chart-number:var(--font-display);--font-chart-number-weight:700}
-:is(.homepage-study,html[data-homepage-preview]) :is(h1,h2,h3),:is(.homepage-study,html[data-homepage-preview]) h1 *{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:normal}
+/* The shared header keeps its own type on every page. */
+:is(.homepage-study,html[data-homepage-preview]) :is(h1,h2,h3):not(.sc-global-header *),:is(.homepage-study,html[data-homepage-preview]) h1 *{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:normal}
 :is(.homepage-study,html[data-homepage-preview]) .sc-chart-number,:is(.homepage-study,html[data-homepage-preview]) .hs-value,:is(.homepage-study,html[data-homepage-preview]) .hs-race-legend b,:is(.homepage-study,html[data-homepage-preview]) #hs-race-year,:is(.homepage-study,html[data-homepage-preview]) #hs-race-output{font-family:var(--font-chart-number);font-weight:700;letter-spacing:normal;font-variant-numeric:tabular-nums}
 :is(.homepage-study,html[data-homepage-preview]) .hs-value small{font-family:'DM Sans',sans-serif;font-weight:400;letter-spacing:normal}
 @media(min-width:1280px){:is(.homepage-study,html[data-homepage-preview]) h1{font-size:64px}}
@@ -1078,8 +1079,6 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .site-header[data-her
 
 /* Small host-side twilight correction until scene lighting is tuned in full.
    Keep the renderer's haze and panel-edge composition intact. */
-.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .unified-canvas{filter:brightness(.68) saturate(.82)}
-.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .clouds{filter:brightness(.48);opacity:.35!important}
 
 /* One quiet reassurance at a time; no layout movement between statements. */
 @keyframes sc-trust-cycle{

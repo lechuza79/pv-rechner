@@ -1,0 +1,21 @@
+{
+  "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/dynamic-hero",
+  "sha256": {
+    "unified-renderer.js": "2c8537c0bbcafd81379f25c72b4daec7d109e350669d0a79432e73e7d811fcea",
+    "tree-async.js": "6faf026cd9864bb4d94c8573b3d277ca3f4fbc501ff9a5362af2ae4679dbb85c",
+    "flight-models.js": "c80a9a18e82604ac301f267623d922385133806e24a71ff68ac9dda5f699243f",
+    "panel-study.js": "fa228dd2db1d99a95a730a2219bbbb6ecd714866ae5786cf979e4d8ccfc583d0",
+    "panel-water.js": "88b4280d42a42fc15ed7e1440e20cd553f6099c3ab955cee00a084a34e0302e9",
+    "foreground-branch.js": "97903a693bb6fad42444a5abd6780c651e63527d72dab7b96dd9379971130fca",
+    "rain-field.js": "7f3896b1bae06faf48eb6f6f1c3155e9b6d9c234b24d0daa3c10a2f6b0e976a8",
+    "sun-optics.js": "68ce75bfc4ff65840030817bab7c605acde8d1f15e5ecb677749fae6f47fde08",
+    "night-sky.js": "22d886e64827680ecf8ee171d8ee15c319d29321dade9d19abeeeba400881730",
+    "textured-moon.js": "63dd8fdf7b7303420807dad4105a303e5c636bae1b3dcd71c3de86cb1e1ba339",
+    "cinematic-dust.js": "c531a2bb6dd447b63428a41adee630bc0bfba68131126ee5f1025149d8725363",
+    "sky-life.js": "bb1426ab6838c84ac3f61dc191e60d850418149e0738e1762ec316d0e21b5d38",
+    "scene-state.js": "d127e80a6e3b2ec44c4f71d63f1954a38fa402213dc4c39ed096c9c4ac075a63",
+    "suncalc.cjs": "5bfe4127cb91b7436295135d491e2d8abeccacbc8c4d450fb30771183b1e24d2",
+    "EZ-TREE-LICENSE.txt": "20e4afadfb10c67952b3d73cd2982d21d165ab4ae82b0dd9e4d6f2166ee349b6",
+    "SUNCALC-LICENSE.txt": "9010b843aad8e450890fc18dae2dfec00e68c10da775515801c42878afbb0da1"
+  }
+}

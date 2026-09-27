@@ -102,7 +102,7 @@ export default function SolarTrendSection({
                 </td>
                 <td style={{ ...td, color: v("--color-text-primary"), fontWeight: 700 }}>{formatGWhCompare(x.curGWh, unit)}</td>
                 <td style={td}>{formatGWhCompare(x.prevGWh, unit)}</td>
-                <td style={{ ...td, color: x.totalPct >= 0 ? v("--color-positive") : v("--color-negative") }}>
+                <td style={{ ...td, color: x.totalPct >= 0 ? v("--color-positive-text") : v("--color-negative-text") }}>
                   {signPct(x.totalPct)}
                 </td>
                 <td style={td}>{x.zerlegung ? signPct(x.zerlegung.zubauPct) : "—"}</td>

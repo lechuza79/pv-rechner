@@ -1,4 +1,32 @@
 import { test, expect } from "@playwright/test";
+import { stufePinnen } from "./kontrast";
+
+// Scroll-specific cases use 720px: at 1280px the new regional layout fits the
+// full table and correctly exposes neither scroll arrows nor a scroll tab stop.
+// All regional levels now expose the same lazy table disclosure. Exercise the
+// actual entry point before measuring the unchanged table geometry.
+async function openRankingTable(page: import("@playwright/test").Page) {
+  const disclosure = page.locator("details").filter({
+    has: page.getByText(/^Alle .* in der ausführlichen Tabelle$/),
+  });
+  await expect(disclosure).toBeAttached();
+  if (await disclosure.getAttribute("open") === null) {
+    await disclosure.locator("summary").click();
+  }
+  await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+}
+
+
+// DIE TAGESSTUFE WIRD FESTGENAGELT — sonst entscheidet die Uhr des Prüfrechners
+// über das Urteil. Dieser Test zählt Bildpunkte in der Farbe der
+// Platzierungs-Box; die Palette wird zum Abend hin gedämpft, und dort liegen
+// Box, Kartengrund und Seitengrund nur noch wenige Stufen auseinander. Am
+// 23.09.2026 meldete er abends in ALLEN zehn Stellungen je EINEN Bildpunkt —
+// auch in der Stellung 0, in der die Box gar nicht unter den mitlaufenden
+// Spalten liegen kann. Ein einzelner kantengeglätteter Punkt, der die
+// Toleranz von ±2 zufällig trifft, kein Durchscheinen. Tagsüber lief derselbe
+// Stand grün, und gegengeprüft an der Fassung VOR den Farbkorrekturen
+// desselben Tages: ebenfalls rot. Es ist also die Uhr, nicht der Code.
 
 /**
  * Die mitlaufenden Spalten der Rangliste dürfen keine Zahl anschneiden.
@@ -98,14 +126,15 @@ function messeFlucht(page: import("@playwright/test").Page) {
 
 for (const [name, viewport] of [
   ["Telefon", { width: 375, height: 812 }],
-  ["Desktop", { width: 1280, height: 800 }],
+  ["Schmales Fenster", { width: 720, height: 800 }],
 ] as const) {
   test.describe(`Rangliste, mitlaufende Spalten (${name})`, () => {
     test.use({ viewport });
 
     test("keine Zahl wird von der Haltekante angeschnitten", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       // Der Scrollkasten rastet erst ein, wenn der gemessene Überlauf feststeht
       // (Client-Effekt) — daran hängt auch der Tab-Stopp.
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -136,10 +165,13 @@ for (const [name, viewport] of [
      * Daten, nicht aus dem Code, und niemand wird an sie denken.
      */
     test("keine Zahl läuft aus ihrer eigenen Spalte heraus", async ({ page }) => {
+      test.setTimeout(90_000); // Includes a cold district render with over 200 municipalities.
       // Der Eifelkreis führt die beiden extremsten Pro-Kopf-Werte des Landes
       // (Herbstmühle 1.395.922 Wp, Scheitenkorb 876.886 Wp) in EINER Liste.
-      await page.goto("/solar-atlas/rheinland-pfalz/landkreis-eifelkreis-bitburg-pruem");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      // The district table is now a disclosure below the animated ranking.
+      // Do not wait for the unrelated monitor packages or map assets.
+      await page.goto("/solar-atlas/rheinland-pfalz/landkreis-eifelkreis-bitburg-pruem", {waitUntil:"commit"});
+      await openRankingTable(page);
 
       const funde = await page.evaluate(() => {
         const TOL = 0.5;
@@ -177,7 +209,7 @@ for (const [name, viewport] of [
 
     test("die schwebende Kopie fluchtet in jeder Stellung mit der Liste", async ({ page }) => {
       await page.goto("/solar-atlas?plz=97204");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       await expect(page.locator('[data-marked="true"]')).toHaveCount(1, { timeout: 20_000 });
 
       const max = await page.evaluate(() => {
@@ -244,8 +276,9 @@ for (const [name, viewport] of [
      *     bedienen (WCAG 2.1.1) — deshalb Fokus + Enter statt Klick.
      */
     test("springt mit den Pfeilen spaltenweise und zeigt sie nur, wo es weitergeht", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       // Erst wenn der Überlauf gemessen ist, stehen auch die Knöpfe — beides
       // hängt an derselben Messung.
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -323,8 +356,9 @@ for (const [name, viewport] of [
      *     die Rastpunkte, und ein verschobener Rastpunkt schneidet Zahlen an.
      */
     test("markiert sortierte und platzierte Spalte verschieden — ohne die Tabelle zu verbreitern", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
       const zustand = () =>
@@ -404,13 +438,13 @@ for (const [name, viewport] of [
 test.describe("Rangliste: die Rastpunkte sitzen auf den Spaltenkanten", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     for (const url of ["/solar-atlas", "/solar-atlas/bayern"]) {
       test(`${name} ${url}: jede Ruhestellung ist bündig mit einer Wertspalte`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.goto(url);
-        await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+        await openRankingTable(page);
         await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
         const befund = await page.evaluate(async () => {
@@ -514,12 +548,13 @@ test.describe("Rangliste: die Rastpunkte sitzen auf den Spaltenkanten", () => {
 test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: Box überdeckt weder den eigenen noch den benachbarten „?"`, async ({ page }) => {
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
       const messen = () =>
@@ -630,7 +665,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
 test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufenden Spalten durch", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: kein Pixel der Box im Streifen der mitlaufenden Spalten`, async ({ page }) => {
       // Bildschirmfotos und Pixelzählung dauern; die 30 Sekunden aus der
@@ -639,8 +674,9 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
       // die liest sich wie ein Fehler an der Tabelle, obwohl sie keiner ist.
       test.setTimeout(180_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
       // Die Kopfzeile mit Luft nach oben in den Blick holen: Fotografiert wird
@@ -787,7 +823,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
 test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
   for (const [name, viewport] of [
     ["Telefon", { width: 390, height: 820 }],
-    ["Desktop", { width: 1280, height: 820 }],
+    ["Schmales Fenster", { width: 720, height: 820 }],
   ] as const) {
     test(`${name}: an den Kanten, ohne den Ortsnamen zu decken und ohne den Zeilen-Klick zu fangen`, async ({
       page,
@@ -796,8 +832,9 @@ test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
       // die 30 Sekunden aus der Voreinstellung sind dafür zu knapp.
       test.setTimeout(120_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await openRankingTable(page);
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
       const breiteVorher = await page.evaluate(() =>
@@ -922,7 +959,7 @@ test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
 const TELEFON = { width: 390, height: 576 };
 
 async function pruefeFixSpalten(page: import("@playwright/test").Page) {
-  await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+  await openRankingTable(page);
   await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
   // Die Liste in den Blick holen — geprüft wird nur, was ein Mensch sehen würde.
   await page.evaluate(() => {
@@ -1018,6 +1055,7 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
   test.use({ viewport: TELEFON });
 
   test("direkt auf 390 px geladen", async ({ page }) => {
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
     const { geprueft, funde } = await pruefeFixSpalten(page);
     // Ohne diese Zusicherung wäre der Test still grün, wenn gar keine Zeile im
@@ -1028,8 +1066,9 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
 
   test("nach einer Größenänderung von 1280 auf 390 px", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
-    await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+    await openRankingTable(page);
     // Erst wenn die Tabelle steht, wird schmal gemacht: Alles, was beim ersten
     // Rendern gemessen und nicht nachgeführt wird, zeigt sich nur so.
     await page.setViewportSize(TELEFON);
@@ -1068,8 +1107,9 @@ test.describe("Rangliste: die Rangbewegung steht auf jeder Ebene da", () => {
 
   for (const ebene of EBENEN) {
     test(`${ebene.name}: hinter jeder Platzziffer steht eine Bewegung`, async ({ page }) => {
-      await page.goto(ebene.url);
-      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      if(ebene.name==="Gemeinden")test.setTimeout(90_000);
+      await page.goto(ebene.url, {waitUntil:"commit"});
+      await openRankingTable(page);
 
       const befund = await page.evaluate(() => {
         const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
@@ -1105,4 +1145,16 @@ test.describe("Rangliste: die Rangbewegung steht auf jeder Ebene da", () => {
       }
     });
   }
+});
+
+
+test("regional table fits wide screens without redundant scroll controls", async ({page}) => {
+  await page.setViewportSize({width:1280,height:800});
+  await page.goto("/solar-atlas");
+  await openRankingTable(page);
+  const scroller=page.locator(".atlas-tabelle-scroller");
+  await expect.poll(()=>scroller.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
+  await expect(scroller).not.toHaveAttribute("tabindex","0");
+  await expect(page.getByRole("button",{name:"Eine Spalte weiter"})).toBeHidden();
+  await expect(page.getByRole("button",{name:"Eine Spalte zurück"})).toBeHidden();
 });

@@ -349,8 +349,8 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
                für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
                fördert, steht ohnehin als Träger in der Karte darunter. */
-            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
         </div>
 
@@ -522,12 +522,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           <ExampleCards examples={examples} />
           {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} ist {FUNDING_STATUS_NOTE[f.status]} —
+              Die Förderung über das Programm „{f.name}“ ist {FUNDING_STATUS_NOTE[f.status]} —
               die Beispiele rechnen daher ohne. Aktuellen Status vor einem Antrag direkt beim Programm prüfen.
             </p>
           ) : f && !examples[0]?.foerderComputable ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} hängt vom Anlagentyp ab (siehe oben) und ist hier
+              Die Förderung über das Programm „{f.name}“ hängt vom Anlagentyp ab (siehe oben) und ist hier
               nicht pauschal pro Anlage eingerechnet.
             </p>
           ) : null}

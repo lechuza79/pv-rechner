@@ -150,7 +150,7 @@ export default function NeigungswinkelPage() {
                           textAlign: "right",
                           padding: "8px 6px",
                           borderBottom: `1px solid ${v("--color-border")}`,
-                          color: val === 100 ? v("--color-positive") : v("--color-text-primary"),
+                          color: val === 100 ? v("--color-positive-text") : v("--color-text-primary"),
                           fontWeight: val === 100 ? 700 : 400,
                         }}
                       >

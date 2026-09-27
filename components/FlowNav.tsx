@@ -64,6 +64,7 @@ export default function FlowNav({
   onWeiter,
   onZurueck,
   weiterLabel = "Weiter",
+  zurueckLabel = "Zurück",
   zurueckSichtbar = true,
   inaktivHinweis = "Bitte erst eine Option wählen.",
   nebenWeiter,
@@ -73,6 +74,7 @@ export default function FlowNav({
   onWeiter: () => void;
   onZurueck?: () => void;
   weiterLabel?: string;
+  zurueckLabel?: string;
   zurueckSichtbar?: boolean;
   /** Tooltip auf dem ausgegrauten Weiter-Button — sagt, was noch fehlt. */
   inaktivHinweis?: string;
@@ -133,7 +135,7 @@ export default function FlowNav({
             cursor: "pointer",
           }}
         >
-          Zurück
+          {zurueckLabel}
         </button>
       )}
       {/* Rechte Gruppe: Weiter (immer ganz rechts), optionale Sekundär-Aktion darunter. */}

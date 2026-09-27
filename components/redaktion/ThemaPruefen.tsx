@@ -121,7 +121,7 @@ export function ThemaPruefen() {
       </div>
 
       {fehler && (
-        <p style={{ color: v("--color-negative"), marginTop: space.sm }}>{fehler}</p>
+        <p style={{ color: v("--color-negative-text"), marginTop: space.sm }}>{fehler}</p>
       )}
 
       {ergebnis && (
@@ -161,7 +161,7 @@ export function ThemaPruefen() {
 
           {(ergebnis.kiAntwortDavor || ergebnis.auszugDavor) && (
             <DetailAbschnitt titel="Achtung">
-              <p style={{ margin: 0, color: v("--color-negative") }}>
+              <p style={{ margin: 0, color: v("--color-negative-text") }}>
                 {ergebnis.kiAntwortDavor
                   ? "Über den Treffern steht eine KI-Antwort. Google beantwortet die Frage selbst — eine gute Platzierung bringt hier Einblendungen und kaum Besucher."
                   : "Über den Treffern steht ein hervorgehobener Auszug. Ein Teil der Klicks wird dort abgefangen."}

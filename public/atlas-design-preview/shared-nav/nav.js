@@ -1,0 +1,18 @@
+export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='https://solar-check.io/solar-atlas',onWaitlist}={}){
+ if(!header||header.dataset.globalNav)return ()=>{};
+ header.dataset.globalNav='true';header.classList.add('sc-global-header');
+ header.querySelectorAll('nav,.header-cta,.mobile-menu').forEach(n=>n.remove());
+ const brand=header.querySelector('.brand');if(brand)brand.href=homeHref;
+ const base='https://solar-check.io';
+ const link=(label,path)=>`<a href="${base+path}">${label}</a>`;
+ const group=(label,items)=>`<details class="sc-nav-group"><summary>${label}<span aria-hidden="true">⌄</span></summary><div class="sc-nav-panel">${items}</div></details>`;
+ const nav=document.createElement('nav');nav.className='sc-global-nav';nav.setAttribute('aria-label','Hauptnavigation');
+ nav.innerHTML=group('Rechner',link('Passende PV-Anlage finden','/pv-bedarf-berechnen')+link('PV-Anlage durchrechnen','/photovoltaik-rechner')+link('Balkonkraftwerk','/balkonkraftwerk/rechner')+link('Wärmepumpe','/waermepumpe-rechner')+'<span class="sc-nav-caption">Weitere Rechner</span>'+link('Klimaanlage','/klimaanlage-stromkosten')+link('Einspeisevergütung','/einspeiseverguetung-rechner')+'<button type="button" data-waitlist>Angebotscheck <small>Demnächst · Warteliste</small></button>')+group('Förderung',link('Fördercheck Photovoltaik','/photovoltaik-foerderung')+link('Balkonkraftwerk-Förderung','/balkonkraftwerk/foerderung')+link('Wärmepumpen-Förderung','/ratgeber/waermepumpe-foerderung'))+group('Themen & Ratgeber',link('Alle Ratgeber','/ratgeber')+link('Balkonkraftwerk','/balkonkraftwerk'))+`<a href="${atlasHref}" ${active==='atlas'?'aria-current="page"':''}>Solar-Atlas</a>`+group('Energiemonitor',link('Strommix Deutschland','/strommix-deutschland')+link('Strommix im Zeitverlauf','/langzeit-strommix')+link('Energie-Widgets','/energie-widgets'));
+ const toggle=document.createElement('button');toggle.type='button';toggle.className='sc-nav-toggle';toggle.textContent='Menü ☰';toggle.setAttribute('aria-expanded','false');nav.id='sc-global-navigation';toggle.setAttribute('aria-controls',nav.id);header.append(toggle,nav);
+ const close=()=>{header.classList.remove('sc-menu-open');toggle.setAttribute('aria-expanded','false');toggle.textContent='Menü ☰';nav.querySelectorAll('details').forEach(d=>d.open=false);};
+ toggle.onclick=()=>{const open=!header.classList.contains('sc-menu-open');close();header.classList.toggle('sc-menu-open',open);toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'Schließen ×':'Menü ☰';};
+ nav.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)nav.querySelectorAll('details').forEach(other=>{if(other!==d)other.open=false;});}));
+ const outside=e=>{if(!header.contains(e.target))close();};const escape=e=>{if(e.key==='Escape'){close();toggle.focus();}};document.addEventListener('click',outside);header.addEventListener('keydown',escape);
+ const dialog=document.createElement('dialog');dialog.className='sc-waitlist';dialog.innerHTML='<button type="button" aria-label="Schließen">×</button><h2>Angebote besser einschätzen.</h2><p>Der Angebotscheck kommt demnächst. Hier kannst du dich künftig für den Start vormerken lassen.</p><p>Die Wartelisten-Anmeldung ist in dieser Gestaltungsvorschau noch nicht angeschlossen.</p>';document.body.append(dialog);dialog.querySelector('button').onclick=()=>dialog.close();nav.querySelector('[data-waitlist]').onclick=()=>{close();if(onWaitlist)onWaitlist();else dialog.showModal();};
+ return ()=>{document.removeEventListener('click',outside);header.removeEventListener('keydown',escape);dialog.remove();nav.remove();toggle.remove();delete header.dataset.globalNav;};
+}

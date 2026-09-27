@@ -92,7 +92,14 @@ describe("PV-Rechner und WP-Rechner rechnen die fossile Seite identisch", () => 
     years: HEATING_YEARS,
     pricePerKwh: FUEL.gas.price,
     co2PerKwh: FUEL.gas.co2PerKwh,
-    inflation: 0.02,
+    // AUS DER KONFIGURATION, nicht getippt. Bis 05.09.2026 stand hier 0.02 —
+    // dieselbe Zahl, die auch in der Konfiguration stand, nur ein zweites Mal.
+    // Als der mittlere Gaspfad dort auf 3 % stieg (EU-Emissionshandel für Wärme
+    // ab 2028), schlug dieser Test an und meldete einen Gleichlauf-Bruch, den es
+    // nicht gab: Beide Rechner ziehen die Rate längst aus derselben Quelle, nur
+    // der Test nicht. Ein Kohärenz-Test, der seine Vergleichsgröße selbst tippt,
+    // prüft am Ende sich gegen sich.
+    inflation: DEFAULT_HEATPUMP_CONFIG.gasInflation,
     fossilInvest: 0,
     greenGas: true,
   });
@@ -135,8 +142,8 @@ describe("Laufende Nebenkosten stehen auf beiden Seiten", () => {
   it("Gas trägt einen Netz-Grundpreis, Heizöl nicht (Strukturfrage, kein Preis)", () => {
     expect(fossilStandingCostPerYear("gas").fix).toBeGreaterThan(0);
     expect(fossilStandingCostPerYear("oil").fix).toBe(0);
-    // Wartung ist für beide Brennstoffe gleich angesetzt (belegt ist nichts anderes).
-    expect(fossilStandingCostPerYear("oil").wartung).toBe(fossilStandingCostPerYear("gas").wartung);
+    // KWW oil upkeep is independently sourced, including VAT.
+    expect(fossilStandingCostPerYear("oil").wartung).toBe(476);
   });
 
   it("die Ölheizung wird ohne Gas-Grundpreis gerechnet", () => {
@@ -144,6 +151,8 @@ describe("Laufende Nebenkosten stehen auf beiden Seiten", () => {
     const oel = calcFossilReference({ fuelKind: "oil", fuelKwh: 15000, pricePerKwh: 0.11, co2PerKwh: 0.2, fossilInvest: 0 });
     expect(gas.fix).toBeGreaterThan(0);
     expect(oel.fix).toBe(0);
-    expect(gas.fuel).toBe(oel.fuel);   // gleicher Brennstoffpreis → gleiche Brennstoffkosten
+    // Same starting price, but different published trajectories thereafter.
+    expect(gas.fuelPerYear[0]).toBe(oel.fuelPerYear[0]);
+    expect(gas.fuel).not.toBe(oel.fuel);
   });
 });

@@ -1,0 +1,252 @@
+@font-face {
+  font-family: 'Alfa Slab One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-00.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-01.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Astloch';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-02.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Bungee';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-03.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Climate Crisis';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-04.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Creepster';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-05.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Damion';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-06.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Fugaz One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-07.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Gasoek One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-08.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-09.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Josefin Slab';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-10.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Manufacturing Consent';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-11.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Megrim';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-12.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-13.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Oi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-14.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-15.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Questrial';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-16.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Shrikhand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-17.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Ultra';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-18.woff2) format('truetype');
+}
+@font-face {
+  font-family: 'Warnes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/display-19.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Gloock';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/gloock-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Goblin One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/goblin-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Ceviche One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/ceviche-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Bevan';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/bevan-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Bigshot One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/bigshot-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Bowlby One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/bowlby-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Paytone One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/paytone-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Protest Riot';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/protest-riot-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Bangers';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/bangers-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/lobster-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Lily Script One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/lily-script-one-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/montserrat-bold-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat Black';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/montserrat-black-0.woff2) format('truetype');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/atlas-design-preview/fonts/jetbrains-mono-bold-0.woff2) format('truetype');
+}

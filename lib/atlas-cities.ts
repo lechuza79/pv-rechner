@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, foerdergebiete, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
 
 export interface AtlasCity {
@@ -440,6 +440,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "wietzen", name: "Wietzen", ags: "03256036", kreis: "Landkreis Nienburg (Weser)", bundesland: "Niedersachsen", yieldKwhKwp: 1017 },
   { slug: "moormerland", name: "Moormerland", ags: "03457014", kreis: "Landkreis Leer", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
   { slug: "bad-rothenfelde", name: "Bad Rothenfelde", ags: "03459006", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1019 },
+  { slug: "quakenbrueck", name: "Quakenbrück", ags: "03459030", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
+  { slug: "menslage", name: "Menslage", ags: "03459025", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1009 },
   { slug: "goch", name: "Goch", ags: "05154016", kreis: "Kreis Kleve", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1048 },
   { slug: "hueckelhoven", name: "Hückelhoven", ags: "05370020", kreis: "Kreis Heinsberg", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1083 },
   { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039 },
@@ -458,9 +460,36 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
   { slug: "allendorf-eder", name: "Allendorf (Eder)", ags: "06635001", kreis: "Landkreis Waldeck-Frankenberg", bundesland: "Hessen", yieldKwhKwp: 1020 },
   { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
-  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned. The Verbandsgemeinde's
+  // balcony grant (`vg-hoehr-grenzhausen-balkonkraftwerke`) covers this village
+  // with an eight-digit key, exactly as specific as the village's own
+  // photovoltaic programme. Without `fundingId` both cancel out and this LIVE
+  // page falls to 404 (measured). The page keeps the roof programme it has
+  // always shown; the balcony grant reaches the user through the postcode
+  // lookup and the balcony calculator, which see every matching programme.
+  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
+  { slug: "bickenbach", name: "Bickenbach", ags: "07140014", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "hausbay", name: "Hausbay", ags: "07140047", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "horn", name: "Horn", ags: "07140058", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "reckershausen", name: "Reckershausen", ags: "07140122", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
+  { slug: "reich-hunsrueck", name: "Reich", ags: "07140123", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "benzweiler", name: "Benzweiler", ags: "07140011", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1066 },
+  { slug: "bubach", name: "Bubach", ags: "07140020", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
+  { slug: "fronhofen", name: "Fronhofen", ags: "07140039", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "rayerschied", name: "Rayerschied", ags: "07140121", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "beltheim", name: "Beltheim", ags: "07140010", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "beltheim-energiespar" },
+  { slug: "dommershausen", name: "Dommershausen", ags: "07140202", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "dommershausen-energiespar" },
+  // Yield measured at postcode 56288 (Kastellaun): Roth has no entry in the
+  // postcode table yet (truncated table, separate task).
+  { slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064, fundingId: "roth-hunsrueck-energie-klima" },
+  // Two programmes on this key (energy-saving guideline with roof PV, and a
+  // heating-only guideline); the page shows the one that funds roof PV.
+  { slug: "neuerkirch", name: "Neuerkirch", ags: "07140101", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076, fundingId: "neuerkirch-energiespar" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
-  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
+  // above: the Verbandsgemeinde's balcony grant is as specific as the town's
+  // own photovoltaic programme, and without the pin both resolve to nothing.
+  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, fundingId: "hoehr-grenzhausen-energie" },
   { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
   { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
   { slug: "boeblingen", name: "Böblingen", ags: "08115003", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
@@ -480,7 +509,15 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "rietheim-weilheim", name: "Rietheim-Weilheim", ags: "08327056", kreis: "Landkreis Tuttlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1122 },
   { slug: "gailingen", name: "Gailingen am Hochrhein", ags: "08335026", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1167 },
   { slug: "walddorfhaeslach", name: "Walddorfhäslach", ags: "08415087", kreis: "Landkreis Reutlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1147 },
-  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149 },
+  // ZWEI Programme auf demselben Gemeindeschlüssel (Dach-PV samt Speicher und
+  // das Balkon-Programm für Inhaber der KreisBonusCard), seit dem 24.09.2026.
+  // Bei gleich spezifischen Treffern gibt die Zuordnung bewusst `undefined`
+  // zurück — ohne diese Angabe fiele die Stadtseite still auf 404. Gezeigt wird
+  // das Dach-Programm: Die Seite heißt „Photovoltaik-Förderung in Tübingen",
+  // und nur dieses Programm fördert eine Dachanlage. Das Balkon-Programm bleibt
+  // über die Postleitzahl im Rechner und über die Balkon-Förderübersicht
+  // erreichbar.
+  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149, fundingId: "tuebingen-pv-speicher" },
   { slug: "forstinning", name: "Forstinning", ags: "09175118", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1128 },
   { slug: "poing", name: "Poing", ags: "09175135", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1137 },
   { slug: "gaimersheim", name: "Gaimersheim", ags: "09176126", kreis: "Landkreis Eichstätt", bundesland: "Bayern", yieldKwhKwp: 1122 },
@@ -528,6 +565,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   {"slug": "floersheim-am-main", "name": "Flörsheim am Main", "ags": "06436004", "bundesland": "Hessen", "kreis": "06436", "yieldKwhKwp": 1089},
   {"slug": "eppelheim", "name": "Eppelheim", "ags": "08226018", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1100},
   {"slug": "bruehl-baden", "name": "Brühl (Baden)", "ags": "08226009", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1115},
+  {"slug": "asbach-baeumenheim", "name": "Asbach-Bäumenheim", "ags": "09779115", "bundesland": "Bayern", "kreis": "09779", "yieldKwhKwp": 1118},
   {"slug": "radolfzell-am-bodensee", "name": "Radolfzell am Bodensee", "ags": "08335063", "bundesland": "Baden-Württemberg", "kreis": "08335", "yieldKwhKwp": 1135},
   {"slug": "meschede", "name": "Meschede", "ags": "05958032", "bundesland": "Nordrhein-Westfalen", "kreis": "05958", "yieldKwhKwp": 969},
   {"slug": "ingelheim-am-rhein", "name": "Ingelheim am Rhein", "ags": "07339030", "bundesland": "Rheinland-Pfalz", "kreis": "07339", "yieldKwhKwp": 1113},
@@ -817,4 +855,17 @@ export function publishedBundeslaender(): { name: string; slug: string }[] {
   const bySlug = new Map<string, string>();
   for (const c of publishedCities()) bySlug.set(slugify(c.bundesland), c.bundesland);
   return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}
+
+/**
+ * Bundesländer that have a funding page under /photovoltaik-foerderung/<land>:
+ * those with a published city plus those with a Land-level program. The page
+ * route builds its params from this, and the site search links to it — one
+ * answer to "does this Land have a page".
+ */
+export function foerderBundeslaender(): { name: string; slug: string }[] {
+  const m = new Map<string, string>();
+  for (const b of publishedBundeslaender()) m.set(b.slug, b.name);
+  for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
+  return Array.from(m, ([slug, name]) => ({ slug, name }));
 }

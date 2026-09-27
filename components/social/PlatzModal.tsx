@@ -323,7 +323,7 @@ export function PlatzModal({
       )}
 
       {fehler && (
-        <p style={{ color: v("--color-negative"), fontSize: v("--font-size-small"), marginTop: space.md }}>{fehler}</p>
+        <p style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small"), marginTop: space.md }}>{fehler}</p>
       )}
 
       <div style={{ display: "flex", gap: space.sm, marginTop: space.lg, flexWrap: "wrap" }}>

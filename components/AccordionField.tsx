@@ -4,9 +4,10 @@
 // die erste offene Frage aufgeklappt (ohne Vorauswahl). Nach der Wahl klappt sie
 // zu einer kompakten Zusammenfassungs-Zeile ein (Label + Wert + Edit), die nächste
 // Frage öffnet. Ein Klick auf die Edit-Zeile öffnet die Frage wieder.
+import Collapse from "./Collapse";
 import { ReactNode, createContext, useContext } from "react";
 import { v, iconSizes } from "../lib/theme";
-import { IconEdit } from "./Icons";
+import { IconCheck, IconChevronDown, IconEdit } from "./Icons";
 
 // ─── Kennzeichnung für den Flow-Läufer ───────────────────────────────────────
 //
@@ -56,7 +57,13 @@ export function AccordionField({
   summary,
   onEdit,
   children,
+  completedStyle,
+  headerHelp,
+  available = true,
 }: {
+  completedStyle?: "check";
+  headerHelp?: ReactNode;
+  available?: boolean;
   label: string;
   /** True, wenn diese Frage gerade die aufgeklappte ist. */
   open: boolean;
@@ -67,18 +74,43 @@ export function AccordionField({
   onEdit: () => void;
   children: ReactNode;
 }) {
-  if (open) {
-    return (
-      <div className="sc-acc" data-flow-akkordeon-offen={label} style={{ marginBottom: 22 }}>
+  if (completedStyle === "check") {
+    return <section className={`wp-question${open ? " is-open" : ""}${answered ? " is-answered" : ""}`}>
+      {headerHelp ? <div className="wp-question-heading wp-question-header-with-help">
+        <button type="button" className="wp-question-label-toggle" aria-expanded={open} disabled={!available} onClick={onEdit}
+          {...(open ? {} : { "data-flow-akkordeon": label })}>{label}</button>
+        {headerHelp}
+        {answered && !open && <span className="wp-question-status" aria-hidden="true"><IconCheck size={iconSizes.sm} /></span>}
+        <span className="wp-question-summary">{answered && !open ? summary : !available ? "Als Nächstes" : null}</span>
+        <button type="button" className="wp-question-chevron-toggle" aria-label={`${label} ${open ? "zuklappen" : "aufklappen"}`} aria-expanded={open} disabled={!available} onClick={onEdit}>
+          <IconChevronDown size={iconSizes.sm} />
+        </button>
+      </div> : <>
+      <button type="button" className="wp-question-heading" aria-expanded={open} disabled={!available} onClick={onEdit}
+        {...(open ? {} : { "data-flow-akkordeon": label })}>
+        <span>{label}</span>
+        {answered && !open && <span className="wp-question-status" aria-hidden="true"><IconCheck size={iconSizes.sm} /></span>}
+        <span className="wp-question-summary">{answered && !open ? summary : !available ? "Als Nächstes" : null}</span>
+        <IconChevronDown size={iconSizes.sm} />
+      </button>
+      </>}
+      <Collapse open={open}>
+        <div className="wp-question-content" {...(open ? { "data-flow-akkordeon-offen": label } : {})}>
+          <FlowFrage.Provider value={label}>{children}</FlowFrage.Provider>
+        </div>
+      </Collapse>
+    </section>;
+  }
+  return <>
+    <Collapse open={open}>
+      <div data-flow-akkordeon-offen={label} style={{ marginBottom: 22 }}>
         <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), marginBottom: 6 }}>{label}</div>
         <FlowFrage.Provider value={label}>{children}</FlowFrage.Provider>
       </div>
-    );
-  }
-  if (answered) {
-    return (
+    </Collapse>
+    <Collapse open={!open && answered}>
       <button
-        className="sc-acc"
+        aria-expanded={false}
         data-flow-akkordeon={label}
         onClick={onEdit}
         style={{
@@ -99,9 +131,8 @@ export function AccordionField({
         <span style={{ marginLeft: "auto", fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>{summary}</span>
         <IconEdit size={iconSizes.sm} color={v("--color-text-muted")} />
       </button>
-    );
-  }
-  return null;
+    </Collapse>
+  </>;
 }
 
 /** Reihe/Grid aus Auswahl-Buttons mit optionaler „keine Vorauswahl"-Anzeige

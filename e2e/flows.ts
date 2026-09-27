@@ -49,7 +49,7 @@ export const FLOWS: FlowUnterTest[] = [
   {
     name: "Wärmepumpen-Rechner",
     pfad: "/waermepumpe-rechner",
-    ergebnisEnthaelt: "Deine Wärmepumpen-Prognose",
+    ergebnisEnthaelt: "Dein Heizkostenvergleich.",
   },
   {
     name: "Klimaanlagen-Rechner",
@@ -130,11 +130,14 @@ export const SCHRITTE_OHNE_AUSWAHL: { flow: string; tiefe: number; grund: string
  *   Standard (jeder Push)         — jede OPTION jedes Schritts und jeder
  *     Zweig, nicht jede Kombination. Schnell und auf dem CI-Runner stabil.
  *   FLOW_ALLE_KOMBINATIONEN=1     — wirklich jede Kombination, ohne die
- *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), wo eine lange
- *     Laufzeit niemanden aufhält: gemessen in der Nacht zum 25.08.2026 sind es
- *     3.440 Wege in 4 h 20 bei 5 Stunden erlaubter Zeit. Wer hier eine
- *     Bedienfamilie ergänzt, vervielfacht diese Zahl — der Gesundheitscheck
- *     warnt deshalb, sobald weniger als ein Viertel der Zeit frei bleibt.
+ *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), und dort seit
+ *     dem 07.09.2026 mit einem eigenen JOB je Flow: 3.462 Wege über sieben
+ *     Flows, der längste davon der PV-Rechner mit 1.728 Wegen in 174 bis 182
+ *     Minuten. Wer hier eine Bedienfamilie ergänzt, vervielfacht diese Zahl —
+ *     der Gesundheitscheck warnt deshalb, sobald weniger als ein Viertel der
+ *     Zeit frei bleibt. Die frühere Angabe „3.440 Wege in 4 h 20 bei 5 Stunden
+ *     erlaubter Zeit" stammte aus der Zeit des EINEN gemeinsamen Jobs und
+ *     beschreibt keinen Lauf mehr, den es gibt.
  */
 export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
 
@@ -160,6 +163,49 @@ export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
  * wird das gemeldet, nicht verschwiegen.
  */
 export const MAX_WEGE_JE_FLOW = ALLE_KOMBINATIONEN ? 2500 : 150;
+
+/**
+ * Das Zeitlimit EINES Flow-Tests — und die innerste von drei Grenzen.
+ *
+ * WARUM ES HIER STEHT UND NICHT IM LÄUFER (gemessen 24.09.2026): Der
+ * nächtliche Lauf war vom 21. bis 23.09.2026 drei Nächte rot, jedes Mal im
+ * PV-Rechner, jedes Mal an einer ANDEREN Stelle des Baums und keine davon
+ * nachstellbar. Der Grund war keine dieser Stellen: Der Fehler wurde in allen
+ * drei Nächten exakt 3 h 0 m nach dem Start des Tests geworfen (10:57:05 auf
+ * 07:57:02, 10:54:40 auf 07:54:39, 11:10:00 auf 08:09:58) — das ist dieses
+ * Limit, nicht der Rechner. Läuft es ab, bricht Playwright die gerade
+ * laufende Wiederhol-Schleife ab; `weiterKlicken` und `waehle` fangen das in
+ * ihrem `catch` und werfen ihre eigene Meldung. Aus einem Zeitablauf wird so
+ * ein „Weiter kam nicht durch", das auf einen Produktfehler zeigt, den es
+ * nicht gibt.
+ *
+ * DREI GRENZEN, UND DIE INNERSTE WAR DIE ENGSTE — das war der eigentliche
+ * Fehler. Die 3 Stunden stammen vom 18.08.2026, als der ganze nächtliche Lauf
+ * EIN Test über alle sieben Flows war und die Verteilung noch niemand kannte.
+ * Am 07.09.2026 bekam jeder Flow einen eigenen Job, und weil der PV-Rechner
+ * dabei mit 174–182 Minuten gemessen wurde, bekam sein SCHRITT 200 Minuten und
+ * sein JOB 220. Dieses Limit hier blieb bei 180 — die äußeren Grenzen trugen
+ * also 10 % Luft, die innere 0 bis 3 %, und sie greift zuerst. Sechs grüne
+ * Nächte lagen bei 174–178 Minuten, drei rote darüber; das ist kein Wachstum,
+ * sondern ein Münzwurf.
+ *
+ * 195 MINUTEN SIND KEIN ANGEHOBENES LIMIT IM SINNE DES WÄCHTER-GATES: Es wird
+ * nicht mehr Zeit verbraucht (eine gute Nacht endet weiter nach 175 Minuten),
+ * sondern eine Grenze an das Budget angeglichen, das am 07.09. für genau diese
+ * Laufzeit bereitgestellt wurde. Gewachsen ist nichts — nachgezählt sind es
+ * unverändert 1.728 Wege wie am 16.09.
+ *
+ * Die Reihenfolge muss bleiben: dieses Limit < Schritt-Limit < Job-Limit.
+ * Reißt das Schritt-Limit zuerst, heißt der Ausgang „failure" ohne Hinweis
+ * darauf, WO der Läufer stand; reißt das Job-Limit zuerst, heißt er
+ * „cancelled" und fällt erst nach drei stummen Nächten auf. Festgenagelt von
+ * lib/__tests__/workflow-schritt-zeitlimits.test.ts.
+ */
+export const FLOW_TEST_ZEITLIMIT_MIN = { alleKombinationen: 195, jedeOption: 10 } as const;
+
+/** Dasselbe in Millisekunden für `test.setTimeout` — je nach Betriebsart. */
+export const FLOW_TEST_ZEITLIMIT_MS =
+  (ALLE_KOMBINATIONEN ? FLOW_TEST_ZEITLIMIT_MIN.alleKombinationen : FLOW_TEST_ZEITLIMIT_MIN.jedeOption) * 60_000;
 
 /**
  * Der Titel, unter dem ein Flow im Läufer steht — EINE Quelle für den Test
@@ -237,7 +283,7 @@ export const FLOW_TITEL_MARKE = flowTestTitel(NAMENS_PLATZHALTER).split(NAMENS_P
  * Rechen-Tests.
  */
 export async function uebrigeFragenBeantworten(page: Page) {
-  const offene = await page.locator("[data-flow-option]:visible").evaluateAll((els) => {
+  const offene = await page.locator("[data-flow-option]:not([inert] *):visible").evaluateAll((els) => {
     const beantwortet = new Set(
       els.filter((e) => e.getAttribute("aria-pressed") === "true").map((e) => e.getAttribute("data-flow-group") || ""),
     );
@@ -271,7 +317,7 @@ export async function uebrigeFragenBeantworten(page: Page) {
 /** Namen der gerade sichtbaren Akkordeon-Fragen — aufgeklappt wie eingeklappt. */
 export async function akkordeonFragen(page: Page): Promise<string[]> {
   return page.evaluate(() => {
-    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
     const namen: string[] = [];
     for (const e of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen], [data-flow-akkordeon]"))) {
       if (!sichtbar(e)) continue;
@@ -287,7 +333,7 @@ export async function akkordeonFragen(page: Page): Promise<string[]> {
  *  nichts ändern kann. */
 async function akkordeonZustand(page: Page, frage: string) {
   return page.evaluate((f) => {
-    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
     const block = Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]"))
       .filter(sichtbar)
       .find((e) => e.getAttribute("data-flow-akkordeon-offen") === f);
@@ -401,7 +447,7 @@ export async function akkordeonWaehlen(page: Page, frage: string, index: number,
 export async function akkordeonFragenBeantworten(page: Page) {
   for (let runde = 0; runde < 10; runde++) {
     const offeneOhneAntwort = await page.evaluate(() => {
-      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
       for (const block of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]")).filter(sichtbar)) {
         const knoepfe = Array.from(block.querySelectorAll("[data-flow-wahl]")).filter(sichtbar);
         if (knoepfe.length === 0) continue; // Frage ohne Knopfreihe (reines Eingabefeld)
@@ -570,14 +616,14 @@ export function wahlMeldung(weg: string | undefined, label: string, zustand: unk
 export async function weiterKlicken(page: Page, weg?: string) {
   const fingerabdruck = () =>
     page.evaluate(() => {
-      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
       if (!Array.from(document.querySelectorAll("[data-flow-nav]")).some(sichtbar)) return "kein-flow";
       return Array.from(document.querySelectorAll("[data-flow-option]"))
         .filter(sichtbar)
         .map((e) => `${e.getAttribute("data-flow-option")}=${e.getAttribute("aria-pressed")}`)
         .join("¦");
     });
-  const weiter = page.locator("[data-flow-next]:visible").first();
+  const weiter = page.locator("[data-flow-next]:not([inert] *):visible").first();
   const vorher = await fingerabdruck();
   try {
     await expect(async () => {
@@ -626,7 +672,7 @@ export async function waehle(page: Page, label: string, weg?: string) {
     // Fehlersuche schon eine Runde verloren.
     const zustand = await option.evaluate((e) => ({
       pressed: e.getAttribute("aria-pressed"),
-      sichtbar: (e as HTMLElement).offsetParent !== null,
+      sichtbar: (e as HTMLElement).offsetParent !== null && !e.closest("[inert]"),
       deaktiviert: (e as HTMLButtonElement).disabled,
     })).catch(() => null);
     throw new Error(wahlMeldung(weg, label, zustand));

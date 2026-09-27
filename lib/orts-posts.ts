@@ -25,6 +25,7 @@
 // REIN und ohne Datenbank-Importe: Der Aufrufer reicht die Geschichten, den
 // Ort und die gespeicherten Fassungen herein.
 
+import { fuelle, beitragsText } from "./social-vorlage";
 import type { OrtsStory } from "./orts-stories";
 import { moeglicheFormen } from "./social-bildformen";
 import { istKartenStil, KARTEN_STIL_STANDARD } from "./social-karten-stil";
@@ -101,11 +102,6 @@ function serienAus(story: OrtsStory): BildSerie[] {
  * Quellenzeile MIT Marke — im Text muss der Markenname stehen, damit die
  * Erwähnung der Unternehmensseite ihn findet; im Bild steht daneben das Logo.
  */
-function textAus(story: OrtsStory, standIso: string): string {
-  return [story.titel, "", story.text, "", quellenzeileMehrfach(story.quellen, standIso, true)].join(
-    "\n",
-  );
-}
 
 function bildAus(story: OrtsStory, standIso: string, fassung?: GespeicherteFassung): PostBild {
   const basis: PostBild = {
@@ -115,6 +111,8 @@ function bildAus(story: OrtsStory, standIso: string, fassung?: GespeicherteFassu
     gemessen: story.gemessen,
     serien: serienAus(story),
     ganzes: story.ganzes,
+    gesamtAnzeige: story.gesamtAnzeige,
+    anteile: story.anteile,
     quelle: quellenzeileMehrfach(story.quellen, standIso, false),
   };
   // Eine gewählte Bildform gilt nur, wenn sie für DIESE Zahlen trägt — dieselbe
@@ -141,6 +139,8 @@ function bildAus(story: OrtsStory, standIso: string, fassung?: GespeicherteFassu
  * Der Redaktionstisch nimmt `post`, die Ortsseite das Ganze.
  */
 export type OrtsBeitrag = {
+  /** Fixed source date for an immutable published edition. */
+  editionSourceDate?: string;
   post: SocialPost;
   /**
    * Die Beschriftung der Kategorie, fertig aufgelöst („Stichtag").
@@ -189,6 +189,16 @@ export function ortsPosts(opts: {
   return stories.map((story) => {
     const id = ortsPostId(ort.regionId, story.kennung);
     const fassung = fassungen[id];
+    // Keep the generated body available independently of any editorial override.
+    // Named values remain live when the municipality's data changes.
+    const platzhalter = [
+      { name: "einordnung", wert: story.text, erklaerung: "Automatisch erzeugter Originaltext mit aktuellen Daten" },
+      { name: "ort", wert: ort.name, erklaerung: "Name der Gemeinde" },
+      ...story.werte.map((w, i) => ({ name: `wert${i + 1}`, wert: w.wert.toLocaleString("de-DE"), erklaerung: `${w.name}${w.einheit ? ` (${w.einheit})` : ""}` })),
+    ];
+    const werte = Object.fromEntries(platzhalter.map(p => [p.name, p.wert]));
+    const vorlage = fassung?.vorlage ?? "{einordnung}";
+    const textRahmen = { vorher: story.titel, nachher: quellenzeileMehrfach(story.quellen, standIso, true) };
     const post: SocialPost = {
       id,
       // Die interne Bezeichnung der Vorschau, nicht Teil des Beitrags. Der
@@ -199,7 +209,10 @@ export function ortsPosts(opts: {
       ort,
       storyArt: story.art,
       kanal: ["linkedin", "instagram"],
-      text: textAus(story, standIso),
+      vorlage,
+      platzhalter,
+      textRahmen,
+      text: beitragsText(vorlage, werte, textRahmen),
       bild: bildAus(story, standIso, fassung),
       // Die Grundlage IST der Beleg: Grundmenge, Nenner und Annahmen im
       // Klartext. Dazu die Werte, damit ein Prüfer sie gegen das Bild halten
@@ -214,7 +227,7 @@ export function ortsPosts(opts: {
     return {
       post,
       label: story.kategorieLabel,
-      text: story.text,
+      text: fuelle(vorlage, werte),
       grundlage: story.grundlage,
       storyKennung: story.kennung,
     };

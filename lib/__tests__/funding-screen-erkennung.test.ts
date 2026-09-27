@@ -104,11 +104,11 @@ describe("Beendete Programme", () => {
 });
 
 describe("Versionsstempel", () => {
-  it("steht bei 2 — wer die Wortlisten ändert, zählt hoch", () => {
+  it("steht bei 3 — wer die Erkennung ändert, zählt hoch", () => {
     // Der Stempel holt die 878 Seiten zurück, die mit der PV-only-Erkennung
     // abgehakt wurden. Bleibt er stehen, während sich die Listen ändern, gilt
     // eine Seite als geprüft, die nie durch die neue Erkennung lief.
-    expect(SCREEN_VERSION).toBe(2);
+    expect(SCREEN_VERSION).toBe(3);
   });
 });
 
@@ -158,5 +158,27 @@ describe("Wiedervorlage: was eine Seite zurück auf die Liste holt", () => {
     expect(istErledigt(zeile({ screen_version: SCREEN_VERSION - 1 }), HEUTE)).toBe(false);
     expect(istErledigt(undefined, HEUTE)).toBe(false);
     expect(istErledigt(zeile({ checked_at: null }), HEUTE)).toBe(false);
+  });
+});
+
+// Measured 27.09.2026 at keidelheim.de: the body writes umlauts as named
+// entities. Blanking them made every German funding word with an umlaut
+// unmatchable on such a site.
+describe("Umschriebene Umlaute bleiben lesbar", () => {
+  it("dekodiert benannte und numerische Umlaute", () => {
+    expect(sichtbarerText("<p>F&ouml;rderung f&uuml;r W&auml;rmepumpen, Zusch&#252;sse, Stra&szlig;e</p>"))
+      .toBe(" förderung für wärmepumpen, zuschüsse, straße ");
+    expect(sichtbarerText("<p>Haushaltsger&#xE4;te&nbsp;&amp; mehr</p>")).toBe(" haushaltsgeräte & mehr ");
+  });
+
+  it("macht eine Förderseite mit umschriebenen Umlauten zum Treffer wie die mit echten", () => {
+    const echt = einordnen(sichtbarerText("<main><p>Die Gemeinde gewährt einen Zuschuss von 500 Euro für jede Wärmepumpe.</p></main>"));
+    const umschrieben = einordnen(sichtbarerText("<main><p>Die Gemeinde gew&auml;hrt einen Zuschuss von 500 Euro f&uuml;r jede W&auml;rmepumpe.</p></main>"));
+    expect(umschrieben.verdikt).toBe(echt.verdikt);
+    expect(umschrieben.techniken).toEqual(echt.techniken);
+  });
+
+  it("lässt unbekannte Entitäten weiterhin als Leerraum stehen", () => {
+    expect(sichtbarerText("<p>a&lt;b&hellip;c</p>")).toBe(" a b c ");
   });
 });

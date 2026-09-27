@@ -20,6 +20,7 @@ export function Umschalter<T extends string>({
   onWaehle,
   label,
   ariaLabel,
+  primary = false,
 }: {
   eintraege: { wert: T; text: string; zusatz?: string }[];
   wert: T;
@@ -27,6 +28,7 @@ export function Umschalter<T extends string>({
   /** Die Frage über der Reihe. Fehlt sie, steht die Reihe für sich. */
   label?: string;
   ariaLabel?: string;
+  primary?: boolean;
 }) {
   return (
     <div>
@@ -49,13 +51,13 @@ export function Umschalter<T extends string>({
               aria-pressed={aktiv}
               onClick={() => onWaehle(e.wert)}
               style={{
-                padding: pad("xs", "md"),
+                padding: primary ? pad("sm", "lg") : pad("xs", "md"),
                 borderRadius: v("--radius-sm"),
                 border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
-                background: aktiv ? v("--color-accent-dim") : "transparent",
-                color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
+                background: aktiv ? v(primary ? "--color-accent" : "--color-accent-dim") : "transparent",
+                color: aktiv ? v(primary ? "--color-text-on-accent" : "--color-accent") : v("--color-text-secondary"),
                 cursor: "pointer",
-                fontSize: v("--font-size-small"),
+                fontSize: v(primary ? "--font-size-body" : "--font-size-small"),
               }}
             >
               {e.text}

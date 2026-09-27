@@ -5,6 +5,8 @@
 // v2: Consolidated from Figma design (the previous v1 token set has been removed).
 
 export const tokens = {
+  '--color-pending-text': '#785600',
+  '--color-pending-bg': '#FFF0B3',
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
   // v3 (20.09.2026): the surfaces of the new design. Measured off the design
   // package's own content-page stylesheet (public/rechner-uebersicht/overview.css)
@@ -23,6 +25,7 @@ export const tokens = {
   // Ansicht, wo der Balken unter der Kopfzeile endete. Zwei Flächen bekommt das
   // Design erst, wenn die Seiten ihre Inhalte als Karten setzen statt als Band;
   // das gehört ins Detail-Redesign.
+  '--color-page-canvas': '#E8ECE3',    // Fixed v3 canvas, independent of solar conditions.
   '--color-bg-page': '#F6F8F1',         // Seitengrund, NUR am body
   '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
   '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
@@ -96,7 +99,8 @@ export const tokens = {
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
   '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
-  '--color-awareness': '#3DFFC1',       // Awareness/Aufmerksamkeit (Synonym fürs Highlight-Token, semantisch klarer für allgemeine Use-Cases ausserhalb Live-Daten)
+  '--color-awareness': '#562581',       // Purple attention cues; green is reserved for positive values.
+  '--color-awareness-dim': '#e8d5ff',   // Soft background for awareness notices.
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
@@ -172,6 +176,18 @@ export const tokens = {
   '--color-text-faint': '#61877B',      // Very light text, placeholders
   '--color-text-on-accent': '#132527',  // Text on accent-colored backgrounds (the lime plate)
 
+  // ─── Raised (1) ────────────────────────────────────────────────────────────
+  // Eine Flaeche, die ueber dem Seitengrund SCHWEBT — fuer die eine Zeile, die
+  // dem Leser gehoert (seine Gemeinde in der Rangliste), und fuer deren
+  // schwebende Kopie. Sie hebt sich durch Hoehe ab, nicht durch Farbe: Eine
+  // gefuellte Zeile faerbt jede Zahl darin mit und zwingt alles darauf in eine
+  // eigene Tinte — genau daran ist die Lime-Fassung am 23.09.2026 gescheitert.
+  //
+  // Sie liegt IMMER ueber dem Grund, auch nachts: Auf Dunkel ist eine
+  // angehobene Karte heller, nicht dunkler. --color-bg-muted taugt dafuer
+  // nicht, es kippt die Richtung (hell: dunkler als bg, dunkel: heller).
+  '--color-bg-raised': '#FFFFFF',
+
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#DBE1DC',
 
@@ -190,6 +206,8 @@ export const tokens = {
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
+  '--font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
+  '--font-chart-number': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   // Headings are Montserrat 700 in the new design — on the homepage, on the
   // content template and in the shared footer, which every page already carries.
@@ -508,6 +526,7 @@ export function getCssVariables(): string {
 const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#08191C',         // Grund und Karte fallen nachts zusammen
   '--color-bg': '#08191C',
+  '--color-bg-raised': '#17383E',    // dunkel: die Karte liegt ueber dem Grund
   '--color-bg-muted': '#163338',
   '--color-bg-accent': '#12292E',
   '--color-border': '#24413F',
@@ -558,6 +577,7 @@ const darkTokens: Partial<Record<TokenName, string>> = {
 const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#1E2B26',
   '--color-bg': '#1E2B26',                          // warm dim teal-green (not deep dark)
+  '--color-bg-raised': '#2C3B35',
   '--color-bg-muted': '#27352E',
   '--color-bg-accent': '#2A3B31',
   '--color-border': '#374840',
@@ -602,6 +622,7 @@ const duskTokens: Partial<Record<TokenName, string>> = {
 const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#C2C8BF',
   '--color-bg': '#C2C8BF',
+  '--color-bg-raised': '#E2E6DE',
   '--color-bg-muted': '#B7BEB4',
   '--color-bg-accent': '#BBC3B8',
   '--color-border': '#979E94',
@@ -812,6 +833,17 @@ export const globalStyles = `
   /* Akkordeon-Felder (Großverbraucher): Übergang zwischen Auswahl- und
      Fertig-Zustand in beide Richtungen. React tauscht dabei das Element
      (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
+  /* Shared disclosure motion for native details and controlled React panels. */
+  :root{--disclosure-duration:280ms;--disclosure-easing:ease}
+  .sc-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing)}
+  .sc-collapse[data-open="true"]{grid-template-rows:1fr;opacity:1}
+  .sc-collapse>div{min-height:0;overflow:hidden}
+  @supports (interpolate-size:allow-keywords){
+    details{interpolate-size:allow-keywords}
+    details::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing),content-visibility var(--disclosure-duration) allow-discrete}
+    details[open]::details-content{block-size:auto;opacity:1}
+  }
+  @media(prefers-reduced-motion:reduce){.sc-collapse,details::details-content{transition:none!important}}
   .sc-acc{animation:sc-reveal .22s ease-out}
   @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
   /* Eine Kalenderwoche, die auf- oder zugeht.
@@ -877,30 +909,6 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
-  /* Geräteempfehlung: Seitenspalte ab Tablet-Breite, darunter Wischleiste.
-
-     Die Rechner laufen in einer 480px-Spalte (--page-max-width). Das Ergebnis
-     bricht ab 1024px aus dieser Begrenzung aus und legt rechts eine 300er-Spalte
-     daneben; der negative Außenabstand zentriert den breiteren Block über der
-     schmalen Spalte, statt ihn nach rechts wandern zu lassen. Unterhalb bleibt
-     alles wie bisher — die Regel greift schlicht nicht.
-
-     WARUM 1024 UND NICHT DER KOPFZEILEN-PUNKT (1080): Das sind zwei verschiedene
-     Fragen. Dort geht es darum, ab wann die Navigationsleiste in eine Zeile
-     passt; hier darum, ab wann 480 + 24 + 300 = 804 px plus Ränder auf den
-     Schirm passen. Denselben Wert zu nehmen wäre eine Scheingemeinsamkeit.
-
-     Die Spalte scrollt mit (sticky), aber nur bis zur eigenen Höhe: Bei einer
-     Liste, die höher ist als das Fenster, wäre ein festes Mitlaufen ein Käfig —
-     man käme an die unterste Kachel nicht heran. */
-  .wp-ergebnis{display:block}
-  /* Schmal: Kacheln nebeneinander im Sichtfenster, eine gut sichtbar plus ein
-     angeschnittener Rand der nächsten — das ist der Hinweis, dass es weitergeht.
-     Ohne den Anschnitt wischt niemand. */
-  @media (min-width:1024px){
-    .wp-ergebnis{display:grid;grid-template-columns:minmax(0,480px) 300px;gap:24px;align-items:start;width:804px;margin-left:-162px}
-    /* In der Spalte gestapelt statt nebeneinander. */
-  }
   /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
@@ -1264,3 +1272,15 @@ export const globalStyles = `
 
 
 `;
+
+/**
+ * Logo colours for the "result" lockup on exported story images: dark ink on
+ * the light result surface, independent of the page's daylight stage.
+ * Here, not in components/Logo.tsx — design colours have one source.
+ */
+export const RESULT_LOGO_COLORS = {
+  "--color-accent": "#173b42",
+  "--color-brand": "color-mix(in srgb,#e8ece3 45%,#173b42)",
+  "--color-brand-deep": "color-mix(in srgb,#e8ece3 70%,#173b42)",
+  "--color-text-faint": "#8A8A8A",
+} as const;

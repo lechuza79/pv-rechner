@@ -33,6 +33,19 @@
         "3648"
       ],
       "port": 3648
+    },
+    {
+      "name": "gemeinde-vorschau",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "GEMEINDE_PAKET_LOKAL=/Users/eule/projects/pv-rechner/.claude/worktrees/atlas-handoff-release-notes-356dd8/scripts/.cache/gemeinde-pakete/2026-09-10",
+        "npx",
+        "next",
+        "dev",
+        "-p",
+        "3217"
+      ],
+      "port": 3217
     }
   ]
 }

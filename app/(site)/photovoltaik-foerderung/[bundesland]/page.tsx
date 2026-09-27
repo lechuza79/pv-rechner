@@ -8,9 +8,9 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
+import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import { landProgramBundeslaender, fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
+import { fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
 import ScenarioCards from "../../../../components/ScenarioCards";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
@@ -89,19 +89,12 @@ function segmentInsight(name: string, solar: RegionSummary | null) {
 // Bundesländer that get a page: those with published cities (live or archived)
 // AND those with a Land-level program (e.g. Berlin has no cities here but a
 // landesweites Programm).
-function allBundeslaender(): { name: string; slug: string }[] {
-  const m = new Map<string, string>();
-  for (const b of publishedBundeslaender()) m.set(b.slug, b.name);
-  for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
-  return Array.from(m, ([slug, name]) => ({ slug, name }));
-}
-
 export function generateStaticParams() {
-  return allBundeslaender().map((bl) => ({ bundesland: bl.slug }));
+  return foerderBundeslaender().map((bl) => ({ bundesland: bl.slug }));
 }
 
 function blName(slug: string): string | undefined {
-  return allBundeslaender().find((bl) => bl.slug === slug)?.name;
+  return foerderBundeslaender().find((bl) => bl.slug === slug)?.name;
 }
 
 export async function generateMetadata(props: { params: Promise<{ bundesland: string }> }): Promise<Metadata> {

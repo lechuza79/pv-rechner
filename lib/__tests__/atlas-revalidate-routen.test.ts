@@ -40,11 +40,16 @@ const LIB = path.join(__dirname, "..");
 const ATLAS_DATEN_MODULE = ["atlas.ts", "mastr-data.ts"];
 
 function seitenDatei(routenMuster: string): string {
+  // The town page lives in its own route group since the new design (09/2026).
+  for (const gruppe of ["(site)", "(gemeinde)"]) {
+    const datei = path.join(APP, gruppe, routenMuster.replace(/^\//, ""), "page.tsx");
+    if (fs.existsSync(datei)) return datei;
+  }
   return path.join(APP, "(site)", routenMuster.replace(/^\//, ""), "page.tsx");
 }
 
 /**
- * Alle Seiten unter (site) UND (embed) mit ihrem Routenmuster.
+ * Alle Seiten unter (site), (embed) und (gemeinde) mit ihrem Routenmuster.
  *
  * Die Widgets gehören dazu, weil sie dieselben Atlas-Daten rendern. Die erste
  * Fassung sah nur (site) — eine langlebige Widget-Seite wäre für die Schranke
@@ -53,7 +58,7 @@ function seitenDatei(routenMuster: string): string {
 function alleSeiten(): { muster: string; gruppe: string; datei: string; quelle: string }[] {
   const treffer: { muster: string; gruppe: string; datei: string; quelle: string }[] = [];
 
-  for (const gruppe of ["(site)", "(embed)"]) {
+  for (const gruppe of ["(site)", "(embed)", "(gemeinde)"]) {
     const wurzel = path.join(APP, gruppe);
     if (!fs.existsSync(wurzel)) continue;
 

@@ -81,6 +81,25 @@ const OK = NextResponse.json({
 
 export async function POST(req: NextRequest) {
   const jetzt = Date.now();
+
+  // Die Adresse für die Links in der Bestätigungsmail. KEIN Rückfall auf die
+  // Produktionsadresse, und die Prüfung steht VOR dem Eintrag — beides aus
+  // einem gemessenen Schaden (23.09.2026): Eine Anmeldung aus einer
+  // Entwicklungsumgebung legte die Zeile in der ECHTEN Datenbank an und
+  // verschickte einen Link auf die ECHTE Seite, signiert mit dem dortigen
+  // Geheimnis. Auf der Produktion ist diese Unterschrift wertlos, die
+  // Bestätigung lief in „Dieser Link stimmt nicht", und der Eintrag blieb
+  // unbestätigt liegen. Für den Empfänger von einem echten Fehler nicht zu
+  // unterscheiden.
+  const basis = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!basis) {
+    console.error("[Abo] Anmeldung abgelehnt: NEXT_PUBLIC_BASE_URL fehlt.");
+    return NextResponse.json(
+      { error: "Die Anmeldung ist hier gerade nicht eingerichtet. Bitte später erneut." },
+      { status: 503 },
+    );
+  }
+
   if (zuOft(herkunft(req), jetzt)) {
     return NextResponse.json({ error: "Zu viele Versuche. Bitte später erneut." }, { status: 429 });
   }
@@ -172,7 +191,6 @@ export async function POST(req: NextRequest) {
   // die diese Route sonst überall vermeidet.
   if (ergebnis.art === "still") return OK;
 
-  const basis = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
   const token = bestaetigungsToken(ergebnis.abo.id, jetzt);
   const mail = aboBestaetigungsMail({
     ortName: region.name,

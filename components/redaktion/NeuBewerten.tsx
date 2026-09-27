@@ -90,7 +90,7 @@ export function NeuBewerten({ thema }: { thema: string }) {
       </button>
 
       {fehler && (
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-negative"), marginTop: space.sm }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-negative-text"), marginTop: space.sm }}>
           {fehler}
         </p>
       )}

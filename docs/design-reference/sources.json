@@ -1,0 +1,47 @@
+[
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/homepage-study/homepage.css",
+    "snapshot": "docs/design-reference/homepage-study-homepage.css",
+    "sha256": "084bf2c11082ebe8a327781753fdfc3dc2c9918f664c91dfbe4dae7923f1813e"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/design-lab/homepage-experiments.css",
+    "snapshot": "docs/design-reference/design-lab-homepage-experiments.css",
+    "sha256": "d4de19dc1c60e5a98b79d61a3112848ea87f6b5c5eb97155c402057680eae447"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/atlas-entwurf-v3/atlas.css",
+    "snapshot": "docs/design-reference/atlas-entwurf-v3-atlas.css",
+    "sha256": "82026f52e533745dda8993d0db3f72a5798624ca295db950dcbdc0cdc73c981c"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/atlas-entwurf-v3/variant3.css",
+    "snapshot": "docs/design-reference/atlas-entwurf-v3-variant3.css",
+    "sha256": "a5c6d91e5f18d301d169f1a5ec818ecc49613bdbe22be32508cef720ba21d4ba"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/shared-nav/nav.css",
+    "snapshot": "docs/design-reference/shared-nav-nav.css",
+    "sha256": "ad346f9defdf5d6f8b5a72390c2dbcba7372945a8697b37a42a1c1a790e26a86"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/shared-person/person.css",
+    "snapshot": "docs/design-reference/shared-person-person.css",
+    "sha256": "d4e4a6f05d665b6c8e483a46aa74fa353e60db052e3937efef26f6586a1cb5ee"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/shared-footer/footer.css",
+    "snapshot": "docs/design-reference/shared-footer-footer.css",
+    "sha256": "de0b8e0b2d72272ff901d7377a119776baeb1dd292b1e00802ddfe5ee1ade58f"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/dynamic-hero/test.css",
+    "snapshot": "docs/design-reference/dynamic-hero-test.css",
+    "sha256": "cb0b61b6097431b1e7111dc648e2d4f0ad63a25112795ba9fd91581967a5b716"
+  },
+  {
+    "source": "/Users/eule/.codex/.chatgpt-projects/g-p-68cb08f24e0c8191aa1050b084bc0b5e/output/solar-hero-handoff/homepage-study/system-race.css",
+    "snapshot": "docs/design-reference/homepage-study-system-race.css",
+    "sha256": "3e2be70729f9494a7281def052cf361e8783b5594b896439df3e283eb6cf7cdb"
+  }
+]

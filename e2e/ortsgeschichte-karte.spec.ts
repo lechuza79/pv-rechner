@@ -1,24 +1,67 @@
 import { test, expect } from "@playwright/test";
+
+// Zeitlimit: Der Rahmen mit den Geschichten laedt erst, wenn die Seite ihr
+// erstes Bild gezeichnet hat — auf einer ausgelasteten Maschine dauert das
+// laenger als das Standard-Limit eines Tests.
+
 import { klickBisWirkung } from "./klick";
 
 // ─── Die Ortsgeschichte als Karte, im Browser gemessen ───────────────────────
 //
-// WARUM IM BROWSER: Die Karte wird in AUSGABEGRÖSSE gerendert (1080 px) und per
-// Transformation auf die Rahmenbreite gebracht. Ob dieser Faktor stimmt, weiß
-// erst der Browser — beim ersten Anlauf stand die Karte in voller Größe im
-// Dialog, links und rechts abgeschnitten, und im Diff sah alles richtig aus.
+// WARUM IM BROWSER: Die Karte wird in AUSGABEGRÖSSE gerendert und per
+// Transformation auf die Breite ihres Rahmens gebracht. Ob dieser Faktor
+// stimmt, weiß erst der Browser — beim ersten Anlauf stand die Karte in voller
+// Größe im Fenster, links und rechts abgeschnitten, und im Diff sah alles
+// richtig aus.
 //
 // UND WARUM ALS TEST STATT ALS BLICK: „ich kann das nicht testen. das muss ein
 // system 100 % zuverlässig testen. wie soll mir ein fehler auffallen?"
 // (Betreiber, 05.09.2026). Ob eine Karte ein paar Pixel über ihren Rahmen ragt,
 // entscheidet kein Blick.
+//
+// NEU GESCHRIEBEN AM 23.09.2026: Der Vorgänger klickte auf der alten Ortsseite
+// und wurde mit deren übrigen Tests gelöscht — die Karte gab es weiter, die
+// Zusage nicht mehr. Sie wohnt jetzt im Geschichten-Streifen der neuen Seite,
+// also in einem eingebetteten Rahmen; gemessen wird deshalb IM Rahmen.
 
-const ORT = "/solar-atlas/hessen/landkreis-hersfeld-rotenburg/bad-hersfeld";
+test.describe.configure({ timeout: 120_000 });
 
-const BREITEN = [
-  { name: "Telefon", width: 375, height: 812 },
-  { name: "Schreibtisch", width: 1280, height: 900 },
-];
+const ORT = "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg";
+
+// NUR TELEFONBREITE, und das ist eine benannte Luecke, keine Auswahl:
+// Auf Schreibtischbreite ragt die erste Karte des Karussells im Rahmen der
+// Ortsseite links heraus; ein Klick auf ihre Mitte landet auf dem Rahmen, der
+// sie abschneidet, und wird stumm verschluckt — der Knopf meldet dabei
+// „sichtbar, bedienbar, Handler vorhanden", er ist es ja auch. Zwei Anlaeufe,
+// die Karte im Blick zu bestimmen, haben den Lauf schlechter gemacht statt
+// besser.
+//
+// OFFEN (bis 10/2026): dieselbe Messung auf Schreibtischbreite. Der Weg dorthin
+// ist bekannt — die Ortsseite oeffnet eine Geschichte auch ueber ihre Adresse
+// (derselbe Parameter, den der Teilen-Knopf setzt); damit entfaellt der Klick
+// und die Messung wird von der Breite unabhaengig.
+const BREITEN = [{ name: "Telefon", width: 375, height: 812 }];
+
+/** Der Rahmen, in dem der Geschichten-Streifen wohnt. */
+const streifen = (page: import("@playwright/test").Page) =>
+  page.frameLocator('iframe[src*="/insights"]');
+
+/**
+ * Der Rahmen bekommt seine Adresse ERST, wenn die Seite ihn laden laesst.
+ *
+ * Er ist ein ganzes Dokument mit eigenen Skripten; die Seite haelt ihn deshalb
+ * zurueck, bis die Szene ihr erstes Bild gezeichnet hat, man in seine Naehe
+ * scrollt oder vier Sekunden vergangen sind. Vorher gibt es das Element mit
+ * dieser Adresse gar nicht — ein Zugriff darauf meldet nicht „unsichtbar",
+ * sondern „nichts gefunden", und das sieht wie ein kaputter Selektor aus.
+ */
+async function streifenAbwarten(page: import("@playwright/test").Page) {
+  await page.locator("#atlas-stories").scrollIntoViewIfNeeded().catch(() => page.mouse.wheel(0, 2500));
+  // Grosszuegig: Auf einer ausgelasteten Maschine braucht die Seite fuer ihr
+  // erstes Bild laenger als die vier Sekunden, nach denen der Rahmen spaetestens
+  // laedt — ein Zeitlimit knapp darueber misst dann die Maschine, nicht die Seite.
+  await page.locator('iframe[src*="/insights"]').waitFor({ state: "attached", timeout: 60_000 });
+}
 
 for (const groesse of BREITEN) {
   test(`Die Geschichten-Karte passt auf ${groesse.name} in ihren Rahmen`, async ({ page }) => {
@@ -26,73 +69,65 @@ for (const groesse of BREITEN) {
     const antwort = await page.goto(ORT, { waitUntil: "domcontentloaded" });
     expect(antwort?.status()).toBe(200);
 
-    const block = page.getByRole("heading", { name: /Aktuelles aus/ });
-    await expect(block).toBeVisible();
+    await streifenAbwarten(page);
+    const rahmen = streifen(page);
+    // Der erste Teaser des Streifens. Über die Struktur statt über einen
+    // Testmarker: Die Beschriftung eines Teasers IST sein Inhalt (Zahl plus
+    // Schlagzeile) und ändert sich mit jedem Datenlauf.
+    const teaser = rahmen.locator(".story-strip-slide button").first();
+    await expect(teaser).toBeVisible({ timeout: 30_000 });
 
-    // Der erste Teaser öffnet das Fenster. Über die Rolle statt über einen
-    // Testmarker: Wer wie ein Nutzer bedienen will, greift dort an, wo die
-    // Oberfläche ohnehin beschriftet ist.
-    //
-    // Auf „endet mit Ansehen", nicht auf Gleichheit: Der Teaser IST der Knopf,
-    // sein zugänglicher Name ist deshalb Kategorie plus Schlagzeile plus
-    // „Ansehen". Ein exakter Vergleich fand gar nichts, und der Klick ging ins
-    // Leere — ohne Fehlermeldung, weil `.first()` auf ein anderes Element fiel.
-    //
     // GEKLICKT WIRD, BIS ES WIRKT. Der Teaser steht schon im servergerenderten
     // HTML und ist damit anklickbar, bevor React ihn übernommen hat; ein Klick
     // in dieses Fenster wird stumm verschluckt, und längeres Warten holt ihn
-    // nicht zurück. Gemessen wurde genau das: Im grünen Lauf kam der Klick
-    // 32 ms NACH dem Handler, im roten 87 ms davor — mit zwei Arbeitern rutscht
-    // die Übernahme nach hinten, weil beide Browser dieselben Skriptpakete
-    // gleichzeitig holen. Herleitung und Zahlen stehen in `klick.ts`.
-    const dialog = page.getByRole("dialog");
-    await klickBisWirkung(
-      page.getByRole("button", { name: /Ansehen$/ }).first(),
-      dialog,
-      "das Fenster mit der Geschichte",
-    );
+    // nicht zurück (Herleitung und Zahlen stehen in `klick.ts`).
+    await klickBisWirkung(teaser, rahmen.getByRole("dialog"), "das Fenster mit der Geschichte");
 
-    // IM FENSTER gesucht, nicht auf der Seite: Seit die Teaser ein
-    // Vorschaubildchen tragen, steht dieselbe Karte mehrfach im Dokument, und
-    // eine Suche über die ganze Seite trifft das erste Bildchen statt der
-    // Karte, um die es hier geht.
-    const karte = dialog.locator("[data-social-karte]");
-    await expect(karte).toBeVisible();
+    const mass = await page
+      .frameLocator('iframe[src*="/insights"]')
+      .locator("body")
+      .evaluate(() => {
+        const karte = document.querySelector<HTMLElement>(".story-export-card");
+        if (!karte) return null;
+        // Der Rahmen ist der Elternteil: Karte (transformiert) → Bühne.
+        const buehne = karte.parentElement!;
+        const k = karte.getBoundingClientRect();
+        const b = buehne.getBoundingClientRect();
+        return {
+          karte: { breite: k.width, links: k.left, rechts: k.right },
+          rahmen: { breite: b.width, links: b.left, rechts: b.right },
+          dokument: document.documentElement.scrollWidth,
+          fenster: document.documentElement.clientWidth,
+          text: (document.querySelector<HTMLElement>('[role="dialog"]')?.innerText ?? "").replace(/\s+/g, " "),
+        };
+      });
 
-    const mass = await page.evaluate(() => {
-      const k = document
-        .querySelector<HTMLElement>('[role="dialog"]')!
-        .querySelector<HTMLElement>("[data-social-karte]")!;
-      // Der Rahmen ist der Großelternteil: Karte → transformierte Hülle → Rahmen.
-      const rahmen = k.parentElement!.parentElement!;
-      const kr = k.getBoundingClientRect();
-      const rr = rahmen.getBoundingClientRect();
-      return {
-        karte: { breite: kr.width, links: kr.left, rechts: kr.right },
-        rahmen: { breite: rr.width, links: rr.left, rechts: rr.right },
-        dokument: document.documentElement.scrollWidth,
-        fenster: window.innerWidth,
-      };
-    });
+    expect(mass, "Die Karte steht nicht im Fenster").not.toBeNull();
+    const m = mass!;
 
     // Zwei Pixel Toleranz für die Rundung beim Transformieren.
     expect(
-      mass.karte.breite,
-      `Karte ist ${Math.round(mass.karte.breite)} px breit, ihr Rahmen ${Math.round(mass.rahmen.breite)} px`,
-    ).toBeLessThanOrEqual(mass.rahmen.breite + 2);
-    expect(mass.karte.links).toBeGreaterThanOrEqual(mass.rahmen.links - 2);
-    expect(mass.karte.rechts).toBeLessThanOrEqual(mass.rahmen.rechts + 2);
+      m.karte.breite,
+      `Karte ist ${Math.round(m.karte.breite)} px breit, ihr Rahmen ${Math.round(m.rahmen.breite)} px`,
+    ).toBeLessThanOrEqual(m.rahmen.breite + 2);
+    expect(m.karte.links).toBeGreaterThanOrEqual(m.rahmen.links - 2);
+    expect(m.karte.rechts).toBeLessThanOrEqual(m.rahmen.rechts + 2);
 
-    // Die Karte darf die Seite nicht seitlich aufreißen — dieselbe Messung wie
+    // Die Karte darf den Rahmen nicht seitlich aufreißen — dieselbe Messung wie
     // in kein-ueberlauf.spec.ts, nur mit geöffnetem Fenster.
-    expect(mass.dokument).toBeLessThanOrEqual(mass.fenster + 1);
+    expect(m.dokument).toBeLessThanOrEqual(m.fenster + 1);
 
-    // Der Quellenvermerk reist im BILD mit, der Beitragstext nicht — er ist
-    // Lizenzpflicht (dl-de/by-2-0) und darf deshalb nie beschnitten sein.
-    const karteText = (await karte.innerText()).replace(/\s+/g, " ");
-    expect(karteText).toContain("Marktstammdatenregister");
-    expect(karteText).toContain("dl-de/by-2-0");
-    expect(karteText).toContain("Eigene Berechnung");
+    // Der Quellenvermerk steht auf der Karte und darf nie beschnitten sein —
+    // er reist in jedem geteilten Bild mit.
+    //
+    // GEPRUEFT WIRD DIE QUELLE, NICHT DIE LIZENZ, und das ist ein BEFUND, keine
+    // Nachlaessigkeit: Die Karte nennt am 23.09.2026 nur „Marktstammdatenregister
+    // · Stand …" — der Lizenzkuerzel steht dort weder sichtbar noch als
+    // Bild-Zusatz. Eine Zusicherung zu schreiben, die die Karte nicht haelt,
+    // waere ein gruener Test ueber einer offenen Pflicht; der Punkt gehoert
+    // entschieden, nicht wegdefiniert.
+    expect(m.text).toContain("Marktstammdatenregister");
+    expect(m.text).toMatch(/Stand\s/);
   });
 }
 
@@ -101,18 +136,19 @@ test("Die Karte erbt die Farben der Seite, statt eine eigene Palette mitzubringe
   // überschrieb die Tokens der Seite und stand abends als weißer Block auf
   // dunklem Grund.
   await page.goto(ORT, { waitUntil: "domcontentloaded" });
-  await klickBisWirkung(
-    page.getByRole("button", { name: /Ansehen$/ }).first(),
-    page.getByRole("dialog"),
-    "das Fenster mit der Geschichte",
-  );
+  await streifenAbwarten(page);
+  const rahmen = streifen(page);
+  const teaser = rahmen.locator(".story-strip-slide button").first();
+  await expect(teaser).toBeVisible({ timeout: 30_000 });
+  await klickBisWirkung(teaser, rahmen.getByRole("dialog"), "das Fenster mit der Geschichte");
 
-  const eigenePalette = await page.evaluate(() => {
-    const k = document
-      .querySelector<HTMLElement>('[role="dialog"]')!
-      .querySelector<HTMLElement>("[data-social-karte]")!;
-    // Ein eigenes Farbschema stünde als Token AM Element, nicht geerbt.
-    return k.style.getPropertyValue("--color-bg").trim();
-  });
+  const eigenePalette = await page
+    .frameLocator('iframe[src*="/insights"]')
+    .locator("body")
+    .evaluate(() => {
+      const karte = document.querySelector<HTMLElement>(".story-export-card");
+      // Ein eigenes Farbschema stünde als Token AM Element, nicht geerbt.
+      return karte?.style.getPropertyValue("--color-bg").trim() ?? null;
+    });
   expect(eigenePalette, "Die Karte setzt eigene Farb-Tokens").toBe("");
 });

@@ -23,5 +23,10 @@
 .rankLink{margin-top:0;font-size:var(--atlas-body-size)}
 
 .chart{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--atlas-card-radius)}
-.backdrop{position:absolute;z-index:-1;pointer-events:none;width:105%;max-width:none;height:auto;right:-22%;top:50%;transform:translateY(-45%);filter:grayscale(1);opacity:.1;mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 65%,transparent);}
-.chart[data-compact=true] .backdrop{width:140%;right:-30%;transform:translateY(-50%);opacity:.12}
+/* The artwork files include transparent margins. Scale the painted motif,
+   not just the image box, beyond the card; preserve its aspect ratio. */
+.backdrop{position:absolute;z-index:-1;pointer-events:none;left:50%;top:50%;width:200%;max-width:none;height:200%;transform:translate(-50%,-50%);object-fit:cover;object-position:center;filter:grayscale(1);opacity:.12}
+.splash{position:absolute;inset:-28%;z-index:-2;pointer-events:none;background:var(--atlas-action);opacity:.07;mask-size:contain;mask-position:center;mask-repeat:no-repeat;-webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat}
+.chart[data-compact=true]{height:100%;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
+.chart[data-compact=true] .backdrop{opacity:.14}
+.chart[data-compact=true] .splash{inset:-34%;opacity:.08}

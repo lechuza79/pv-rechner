@@ -54,7 +54,8 @@ export function VorlagenEditor({
         body: JSON.stringify({ postId, zuruecksetzen: true }),
       });
       const j = (await res.json()) as { error?: string };
-      setStatus(res.ok ? "Zurückgesetzt. Seite neu laden." : (j.error ?? "Fehlgeschlagen"));
+      if (res.ok) window.location.reload();
+      else setStatus(j.error ?? "Fehlgeschlagen");
     } catch (e) {
       setStatus((e as Error).message);
     } finally {
@@ -73,8 +74,11 @@ export function VorlagenEditor({
             marginBottom: space.xs,
           }}
         >
-          Vorlage — Zahlen stehen als {"{name}"} und lassen sich nicht überschreiben
+          Textvorlage
         </label>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: space.sm }}>
+          Platzhalter in geschweiften Klammern werden automatisch eingesetzt. Du kannst den Text umformulieren; verfügbare Inhalte und Zahlen findest du unten.
+        </p>
         <textarea
           value={entwurf}
           onChange={(e) => onEntwurf(e.target.value)}
@@ -94,7 +98,7 @@ export function VorlagenEditor({
         />
 
         {unbekannt.length > 0 && (
-          <p style={{ color: v("--color-negative"), fontSize: v("--font-size-small"), marginTop: space.xs }}>
+          <p style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small"), marginTop: space.xs }}>
             Unbekannt: {unbekannt.map((p) => `{${p}}`).join(", ")} — so gespeichert stünde die Klammer im Beitrag.
           </p>
         )}

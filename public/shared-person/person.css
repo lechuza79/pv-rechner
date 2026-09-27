@@ -3,3 +3,22 @@
 
 /* Mobile keeps the portrait left and the signature below the copy. */
 @media(max-width:700px){.sc-person{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;align-items:start}.sc-person-picture{width:64px;height:64px;order:initial}.sc-person-body{display:block;padding:0}.sc-person-body h3{font-size:22px;margin:0 0 18px}.sc-person-signature{margin:20px 0;font-size:13px}.sc-person-actions{display:flex;flex-direction:column;align-items:flex-start;gap:18px}.sc-person-primary{max-width:100%;font-size:13px;padding:11px 12px}}
+
+/* Der Kasten hat nur noch EINE Aktion (Betreiber, 23.09.2026: „primary
+   Kontakt, about weg"). Das Design-Paket versteckt die Beschriftung dieses
+   Knopfs unter 850 Pixeln, weil er dort der zweite, kleinere von zweien war —
+   als einziger Knopf bleibt davon ein nacktes Symbol übrig, und ein Symbol
+   ohne Wort ist keine Einladung. Beschriftung und Pillenform gelten deshalb
+   in jeder Breite; nur der Abstand wird schmal etwas kleiner.
+
+   Mit „.homepage-study" davor, weil die Regeln des Pakets dieselbe Anzahl
+   Klassen tragen und spaeter geladen werden — ohne den Zusatz gewinnt deren
+   „display: none". */
+.homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message{
+  display:inline-flex;align-items:center;gap:8px;
+  width:auto;height:auto;min-height:46px;flex:0 0 auto;
+  padding:10px 22px;border-radius:999px}
+.homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message>span{display:inline}
+@media(max-width:700px){
+  .homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message{min-height:42px;padding:9px 18px}
+}

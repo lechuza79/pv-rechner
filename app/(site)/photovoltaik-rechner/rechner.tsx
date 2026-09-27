@@ -1,4 +1,5 @@
 "use client";
+import { PvSizeQuestion, PvStorageQuestion } from "../../../components/PvSystemQuestions";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "../../../lib/auth";
@@ -990,23 +991,7 @@ export default function PVRechner({
           <div className="fu" key={step}>
 
             {step === 0 && (
-              <div>
-                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
-                  Die Leistung wird in <GlossaryTerm id="kwp">kWp</GlossaryTerm> angegeben.
-                </p>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                  {ANLAGEN.map((a, i) => (
-                    <OptionCard key={i} selected={beantwortet.has("anlage") && anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} label={a.label} sub={a.sub} icon={a.icon} />
-                  ))}
-                </div>
-                <div style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  marginTop: 14, fontSize: v("--font-size-small"), color: v('--color-text-muted'),
-                }}>
-                  <span>oder</span>
-                  <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} unit=" kWp" step={1} min={1} max={50} width={48} />
-                </div>
-              </div>
+              <PvSizeQuestion answered={beantwortet.has("anlage")} selected={anlage} customKwp={customKwp} onSelect={i => { setAnlage(i); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} onCustom={value => { setCustomKwp(Math.round(value)); setAnlage(4); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} />
             )}
 
             {step === 1 && (
@@ -1040,18 +1025,7 @@ export default function PVRechner({
             )}
 
             {step === 2 && (
-              <div>
-                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
-                  Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
-                </p>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
-                  .sort((a, b) => a.kwh - b.kwh)
-                  .map(s => (
-                    <OptionCard key={s.idx} selected={beantwortet.has("speicher") && oSpKwh === null && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOSpKwh(null); setOKosten(null); markBeantwortet("speicher"); }} label={s.label} sub={s.sub} icon={s.icon} />
-                  ))}
-                </div>
-              </div>
+              <PvStorageQuestion answered={beantwortet.has("speicher")} selected={oSpKwh === null ? speicher : -1} onSelect={i => { setSpeicher(i); setOSpKwh(null); setOKosten(null); markBeantwortet("speicher"); }} />
             )}
 
             {step === 3 && (

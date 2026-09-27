@@ -80,7 +80,7 @@ export default function AboErgebnis(o: {
   aktion?: React.ReactNode;
 }) {
   return (
-    <main style={S.page}>
+    <div style={S.page}>
       <div style={S.wrap}>
         <h1 style={S.h1}>{o.titel}</h1>
         {o.saetze.map((s, i) => (
@@ -104,6 +104,6 @@ export default function AboErgebnis(o: {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

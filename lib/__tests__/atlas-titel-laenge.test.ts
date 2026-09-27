@@ -25,7 +25,7 @@ const ROOT = join(__dirname, "..", "..");
 /** Die Seiten, die einen Atlas-Titel setzen. */
 const ATLAS_SEITEN = [
   "app/(site)/solar-atlas/[[...pfad]]/page.tsx",
-  "app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx",
+  "components/gemeinde/gemeinde-metadata.ts",
 ];
 
 describe("Atlas-Seitentitel", () => {

@@ -7,7 +7,9 @@ export type Evidence={label:string;value:number;unit:string};
 export type Candidate={additionsSeries?:import('./story-monthly-additions').AdditionsSeries;rankSummary?:import('./story-ranking-month').RankMonthRow[];yieldSeries?:{period:string;value:number;highlight:boolean}[];provenance?:{label:string;date:string;url?:string}[];details?:{label:string;text:string}[];id:string;family:string;title:string;status:'ready'|'review';priority:number;period:string;comparison:string;evidence:Evidence[];reason:string;limitations:string[];related:string[];visual:string;eventKey:string};
 export type Check={family:string;status:'found'|'none'|'missing';reason:string};
 export type DiscoveryReport={prepared?:import('./story-prepared-data').PreparedStoryData;rankMonth?:import('./story-ranking-month').RankMonthSnapshot;coverage?:{topic:string;first:string;last:string;count:number}[];inputKey?:string;ranking?:import('./story-rank-history').RankObservation;previousSourceDate?:string;previousCandidateIds?:string[];previousCandidateFingerprints?:string[];version:string;name:string;regionId:string;sourceDate:string;source:string;candidates:Candidate[];checks:Check[];warnings:string[];scannedRows:number;merged:number};
-const names:Record<string,string>={steckersolar:'Balkonkraftwerke',gebaeude:'Gebäudeanlagen',freiflaeche:'Freiflächenanlagen',sonstige:'Sonstige Solaranlagen'};
+/** Display names of the register's solar segments — shared with the municipality page package. */
+export const SOLAR_SEGMENT_NAMES:Record<string,string>={steckersolar:'Balkonkraftwerke',gebaeude:'Gebäudeanlagen',freiflaeche:'Freiflächenanlagen',sonstige:'Sonstige Solaranlagen'};
+const names=SOLAR_SEGMENT_NAMES;
 const ordinal=(m:string)=>Number(m.slice(0,4))*12+Number(m.slice(5,7))-1;
 const monthFormatter=new Intl.DateTimeFormat('de-DE',{month:'long',year:'numeric',timeZone:'UTC'});
 const monthAt=(n:number)=>`${Math.floor(n/12)}-${String(n%12+1).padStart(2,'0')}`;
