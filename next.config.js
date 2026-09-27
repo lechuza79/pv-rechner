@@ -405,6 +405,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/hoehr-grenzhausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/hoehr-grenzhausen", permanent: true },
       { source: "/photovoltaik-foerderung/wittlich", destination: "/photovoltaik-foerderung/rheinland-pfalz/wittlich", permanent: true },
       { source: "/photovoltaik-foerderung/limburgerhof", destination: "/photovoltaik-foerderung/rheinland-pfalz/limburgerhof", permanent: true },
+      { source: "/photovoltaik-foerderung/otterstadt", destination: "/photovoltaik-foerderung/rheinland-pfalz/otterstadt", permanent: true },
+      { source: "/photovoltaik-foerderung/waldsee", destination: "/photovoltaik-foerderung/rheinland-pfalz/waldsee", permanent: true },
       { source: "/photovoltaik-foerderung/boeblingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/boeblingen", permanent: true },
       { source: "/photovoltaik-foerderung/holzgerlingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/holzgerlingen", permanent: true },
       { source: "/photovoltaik-foerderung/wernau", destination: "/photovoltaik-foerderung/baden-wuerttemberg/wernau", permanent: true },

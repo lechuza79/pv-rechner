@@ -1,3 +1,4 @@
+import { WARTELISTE_TITEL } from "../../../lib/warteliste-einwilligung";
 import { NextRequest } from "next/server";
 import { pruefeBestaetigung } from "../../../lib/abo-token";
 import { wartelisteId } from "../../../lib/warteliste-links";
@@ -10,7 +11,7 @@ import { wartelisteErgebnis } from "../../../lib/warteliste-seite";
 // review 18.09.). Dynamic, noindex (the address carries a token).
 export const dynamic = "force-dynamic";
 const PFAD = "/warteliste/bestaetigen";
-const NOCHMAL = "Trag dich auf der Seite „Angebot prüfen“ einfach noch einmal ein, dann kommt ein neuer Link.";
+const NOCHMAL = "Trag dich auf der jeweiligen Wartelistenseite einfach noch einmal ein, dann kommt ein neuer Link.";
 
 function ungueltig(abgelaufen: boolean): Response {
   return wartelisteErgebnis(PFAD, abgelaufen ? "Der Link ist abgelaufen" : "Dieser Link stimmt nicht", [
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
   return wartelisteErgebnis(
     PFAD,
     "Noch ein Klick",
-    ["Bestätige hier, dass du auf die Warteliste für den Angebotscheck möchtest. Erst dann schreiben wir dir."],
+    ["Bestätige hier, dass du auf die von dir ausgewählte Warteliste möchtest. Erst dann schreiben wir dir."],
     { label: "Ja, auf die Warteliste", token: t },
   );
 }
@@ -49,11 +50,11 @@ export async function POST(req: NextRequest) {
   }
   if (ergebnis.eintrag.status === "abgemeldet") {
     return wartelisteErgebnis(PFAD, "Du hast dich ausgetragen", [
-      "Diese Adresse steht nicht mehr auf der Warteliste. Wenn du doch Bescheid bekommen möchtest, trag dich auf der Seite „Angebot prüfen“ neu ein.",
+      "Diese Adresse steht nicht mehr auf der Warteliste. Wenn du doch Bescheid bekommen möchtest, trag dich auf der jeweiligen Wartelistenseite neu ein.",
     ]);
   }
   return wartelisteErgebnis(PFAD, "Du stehst auf der Warteliste", [
-    "Sobald der Angebotscheck für Photovoltaik und Wärmepumpe startet, schreiben wir dir. Darüber hinaus schreiben wir dir nicht, kein Newsletter.",
+    `Sobald der ${WARTELISTE_TITEL[ergebnis.eintrag.liste]} startet, schreiben wir dir. Darüber hinaus schreiben wir dir nicht, kein Newsletter.`,
     "Austragen kannst du dich jederzeit über den Link in der Bestätigungsmail.",
   ]);
 }

@@ -420,7 +420,7 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
     <div className="wp-product-heading">
       <a href={url} onClick={() => trackEvent("balkon_shop_angebote")} target="_blank" rel="nofollow sponsored noopener noreferrer" className="wp-product-image" aria-label={`${offer.produkt} im Shop ansehen`}>
         <div className="wp-product-rank"><span /><span>ANZEIGE</span></div>
-        <span className="wp-product-photo">{BILDER_FREIGEGEBEN && image && <Image src={image} alt="" fill sizes="(max-width:800px) 80vw, 400px" />}</span>
+        <span className="wp-product-photo">{BILDER_FREIGEGEBEN && image && <Image src={image} alt="" fill loading="eager" sizes="(max-width:800px) 80vw, 400px" />}</span>
         <span className="wp-product-name wp-product-image-title">{offer.produkt}</span>
       </a>
     </div>

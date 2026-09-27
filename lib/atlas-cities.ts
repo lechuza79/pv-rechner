@@ -496,6 +496,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, fundingId: "hoehr-grenzhausen-energie" },
   { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
   { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
+  { slug: "otterstadt", name: "Otterstadt", ags: "07338021", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1121 },
+  { slug: "waldsee", name: "Waldsee", ags: "07338026", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1109 },
   { slug: "boeblingen", name: "Böblingen", ags: "08115003", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
   { slug: "holzgerlingen", name: "Holzgerlingen", ags: "08115024", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1128 },
   { slug: "wernau", name: "Wernau (Neckar)", ags: "08116072", kreis: "Landkreis Esslingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1138 },

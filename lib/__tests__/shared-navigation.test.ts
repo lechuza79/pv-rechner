@@ -12,6 +12,7 @@ describe("Shared public navigation", () => {
     ["/balkonkraftwerk/foerderung", "funding"],
     ["/balkonkraftwerk/ratgeber/mit-speicher", "knowledge"],
     ["/angebot-pruefen", "tools"],
+    ["/elektroauto-check", "tools"],
     ["/solar-atlas/niedersachsen/gifhorn/meinersen", "local"],
     ["/solar-atlas/ranking", "local"],
     ["/atomstrom-import", "monitor"],
@@ -29,12 +30,13 @@ describe("Shared public navigation", () => {
     }
   });
 
-  it("keeps the waiting list inside Tools and never advertises an available check", () => {
+  it.each(["/angebot-pruefen", "/elektroauto-check"])("links to the upcoming check information at %s inside Tools", (path) => {
     const $ = load(navigationContent({ showOrganisations: true }));
-    const offer = $('[data-section="tools"] a[href="/angebot-pruefen"]');
+    const offer = $(`[data-section="tools"] a[href="${path}"]`);
     expect(offer.length).toBe(1);
     expect(offer.closest("article").text()).toContain("Demnächst");
-    expect(offer.text()).toContain("Warteliste");
+    expect(offer.text()).toBe("Mehr Info");
+    expect(offer.attr("data-waitlist")).toBeUndefined();
     expect($('[data-section="organisations"] a[href="/energie-widgets"]').length).toBeGreaterThan(0);
   });
 

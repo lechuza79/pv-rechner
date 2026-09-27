@@ -1,4 +1,5 @@
 import "server-only";
+import { BEV_TEASER, BEV_TEASER_COPY } from "./bev-teaser";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homeFaq, pvSimulationFaq, type FaqEntry } from "./faq";
@@ -265,9 +266,7 @@ function statischeSektionen(): string {
       (k) =>
         `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
         `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
-        // The waitlist is a dialog, so the script builds a button on the last
-        // card and there is no page to link to. Without script the card states
-        // the fact and offers no action — a link that leads nowhere is worse.
+        // Render the links supplied by the imported scene sections.
         (k.links.length ? `<div class="sc-statisch-aktionen">${k.links.map(pfeil).join("")}</div>` : "") +
         `</li>`,
     )
@@ -285,7 +284,7 @@ function statischeSektionen(): string {
     `<p class="sc-statisch-kicker">${esc(d.einleitung.kicker)}</p>` +
     `<h2 id="feature-title">${esc(d.einleitung.titel)}</h2>` +
     `<p>${esc(d.einleitung.text)}</p>` +
-    `<ul class="sc-statisch-karten">${karten}</ul>` +
+    `<ul class="sc-statisch-karten">${karten}<li class="sc-statisch-karte"><p class="sc-statisch-kennung">06 / ELEKTROAUTO-CHECK · Demnächst</p><h3>${esc(BEV_TEASER_COPY.titel)}</h3><p>${esc(BEV_TEASER_COPY.text)}</p><div class="sc-statisch-aktionen">${pfeil({text:"Mehr Info",href:"/elektroauto-check"})}</div></li></ul>` +
     `<section class="sc-statisch-block" aria-labelledby="sc-statisch-atlas">` +
     `<p class="sc-statisch-kicker">${esc(d.atlas.kicker)}</p>` +
     `<h2 id="sc-statisch-atlas">${esc(d.atlas.titel)}</h2>` +
@@ -337,5 +336,5 @@ export function neonSeiteHtml(seite: NeonSeite): string {
   return vorlage
     .replace("<!--SC:KOPF-->", kopf(seite, faq))
     .replace("<!--SC:STATISCH-->", seite === "startseite" ? statischeSektionen() : "")
-    .replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
+    .replace("<!--SC:VOR-FUSS-->", (seite === "startseite" ? `<template id="sc-bev-teaser">${BEV_TEASER}</template><script src="/homepage-study/bev-v1/register.js" defer></script><script src="/homepage-study/bev-teaser.js" defer></script>` : "") + vorFuss(seite, faq));
 }

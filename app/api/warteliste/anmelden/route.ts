@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalisiereEmail, siehtNachEmailAus } from "../../../../lib/gemeinde-abo";
 import { wartelisteBelegSetzen, wartelisteEintragen, wartelisteVersandFehlgeschlagen } from "../../../../lib/warteliste";
-import { WARTELISTE_FASSUNGEN, wartelisteFassung } from "../../../../lib/warteliste-einwilligung";
+import { wartelisteFassung } from "../../../../lib/warteliste-einwilligung";
 import { wartelisteAbmeldeLink, wartelisteBestaetigenLink } from "../../../../lib/warteliste-links";
 import { wartelisteBestaetigungsMail } from "../../../../lib/warteliste-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Diese E-Mail-Adresse sieht nicht richtig aus." }, { status: 400 });
   }
 
-  // The wording the browser showed. Unknown versions fall back to the newest
-  // one the server ships — a stored version must point at a real wording.
-  const fassung = wartelisteFassung(p.consent) ?? WARTELISTE_FASSUNGEN[WARTELISTE_FASSUNGEN.length - 1];
+  // Never guess the product or consent when a browser sends an unknown version.
+  const fassung = wartelisteFassung(p.consent);
+  if (!fassung) return NextResponse.json({ error: "Bitte lade die Seite neu und versuche es noch einmal." }, { status: 400 });
 
   let ergebnis;
   try {

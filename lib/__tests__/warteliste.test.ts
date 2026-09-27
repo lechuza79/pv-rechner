@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { WARTELISTE_FASSUNGEN, wartelisteFassung } from "../warteliste-einwilligung";
+import { WARTELISTE_FASSUNGEN, wartelisteFassung, aktuelleWartelisteFassung } from "../warteliste-einwilligung";
 import { wartelisteBestaetigungsMail } from "../warteliste-mail";
 import { fehlendeAboPflichtangaben } from "../abo-mail";
 import { wartelisteId, wartelisteBestaetigenLink, wartelisteAbmeldeLink } from "../warteliste-links";
@@ -19,11 +19,11 @@ describe("Waitlist consent wording", () => {
   // there. The page must render AND send the latest archived version, taken
   // from the archive — never typed — so the stored version points at the text
   // the person actually saw.
-  const seite = lies("app/angebot-pruefen/route.ts");
+  const seite = lies("lib/warteliste-formular.ts");
   const nav = lies("public/shared-nav/nav.js");
 
   it("the page renders and sends the latest archived version", () => {
-    expect(seite).toMatch(/WARTELISTE_FASSUNGEN\[WARTELISTE_FASSUNGEN\.length - 1\]/);
+    expect(seite).toContain("aktuelleWartelisteFassung(liste)");
     expect(seite).toContain("esc(FASSUNG.einleitung)");
     expect(seite).toContain("esc(FASSUNG.zusage)");
     expect(seite).toContain("consent:${JSON.stringify(FASSUNG.version)}");
@@ -37,6 +37,16 @@ describe("Waitlist consent wording", () => {
   it("the menu has no second signup form of its own", () => {
     expect(nav).not.toMatch(/warteliste\/anmelden/);
     expect(nav).not.toMatch(/consent:/);
+  });
+
+  it("keeps offer and electric-car consent and mail separate", () => {
+    expect(aktuelleWartelisteFassung("angebotscheck").version).toBe("offer-check-v2");
+    expect(aktuelleWartelisteFassung("elektroauto").version).toBe("electric-car-v1");
+    expect(wartelisteFassung("unknown-product")).toBeNull();
+    const mail = wartelisteBestaetigungsMail({liste:"elektroauto",bestaetigenUrl:"https://solar-check.io/warteliste/bestaetigen?t=x",abmeldeUrl:"https://solar-check.io/warteliste/abmelden?t=y"});
+    expect(mail.text).toContain("Elektroauto-Check");
+    expect(mail.text).not.toContain("Angebotscheck");
+    expect(fehlendeAboPflichtangaben(mail.html, "bestaetigung")).toEqual([]);
   });
 
   it("versions are unique", () => {

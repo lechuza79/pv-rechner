@@ -714,6 +714,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "henau-energiespar",
   "metzenhausen-energiespar",
   "kappel-energie",
+  // Added 27 Sep 2026: guidelines read in full (scans, page by page); the
+  // three-month window AFTER the start, the photo evidence and the 10-to-30-year
+  // age of the replaced heating have no test form yet.
+  "otterstadt-umweltfoerderung",
+  "waldsee-umweltfoerderung",
+  "ahrweiler-batteriespeicher",
 ];
 
 /**

@@ -70512,5 +70512,446 @@
         "evidenceUrl": "https://niederzissen.de/mehrzweckgebaeude-marktplatz-und-photovoltaikanlage-bauhof/"
       }
     ]
+  },
+  {
+    "regionId": "07334011",
+    "name": "Hördt",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hördt (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
+    "searches": [
+      "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
+      "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
+      "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/",
+        "finding": "Am 27.09.2026 gelesen: Die Seite „Gründungen & Fördermittel“ der VG listet nur externe Partner (BAFA, BMWE, IHK Pfalz, ISB, Starterzentren, Wirtschaftsförderung des Kreises) — kein eigenes Förderprogramm der VG oder einer Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "finding": "Handreichung klimagerechte Gebäudeplanung der VG im Volltext durchsucht: Unter „Nützliche Links: Die passende Förderung finden“ verweist sie nur auf die Fördermittelsuche von co2online und die Förderdatenbank des Bundes; kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Klimaschutzmanagement/",
+        "finding": "Seite Klimaschutzmanagement: Förderung nennt sie nur als Bundesmittel für das eigene Klimaschutz- und Energiemanagement der Verwaltung (Nationale Klimaschutzinitiative), nicht für Haushalte."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
+        "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Bauherren-Handreichung ohne eigenes Förderprogramm, verweist auf Bundesdatenbanken.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&amp;%20F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07334015",
+    "name": "Kuhardt",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kuhardt (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
+    "searches": [
+      "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
+      "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
+      "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/",
+        "finding": "Am 27.09.2026 gelesen: Die Seite „Gründungen & Fördermittel“ der VG listet nur externe Partner (BAFA, BMWE, IHK Pfalz, ISB, Starterzentren, Wirtschaftsförderung des Kreises) — kein eigenes Förderprogramm der VG oder einer Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "finding": "Handreichung klimagerechte Gebäudeplanung der VG im Volltext durchsucht: Unter „Nützliche Links: Die passende Förderung finden“ verweist sie nur auf die Fördermittelsuche von co2online und die Förderdatenbank des Bundes; kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Klimaschutzmanagement/",
+        "finding": "Seite Klimaschutzmanagement: Förderung nennt sie nur als Bundesmittel für das eigene Klimaschutz- und Energiemanagement der Verwaltung (Nationale Klimaschutzinitiative), nicht für Haushalte."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
+        "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Bauherren-Handreichung ohne eigenes Förderprogramm, verweist auf Bundesdatenbanken.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&amp;%20F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07334016",
+    "name": "Leimersheim",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Leimersheim (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
+    "searches": [
+      "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
+      "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
+      "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/",
+        "finding": "Am 27.09.2026 gelesen: Die Seite „Gründungen & Fördermittel“ der VG listet nur externe Partner (BAFA, BMWE, IHK Pfalz, ISB, Starterzentren, Wirtschaftsförderung des Kreises) — kein eigenes Förderprogramm der VG oder einer Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "finding": "Handreichung klimagerechte Gebäudeplanung der VG im Volltext durchsucht: Unter „Nützliche Links: Die passende Förderung finden“ verweist sie nur auf die Fördermittelsuche von co2online und die Förderdatenbank des Bundes; kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Klimaschutzmanagement/",
+        "finding": "Seite Klimaschutzmanagement: Förderung nennt sie nur als Bundesmittel für das eigene Klimaschutz- und Energiemanagement der Verwaltung (Nationale Klimaschutzinitiative), nicht für Haushalte."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
+        "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Bauherren-Handreichung ohne eigenes Förderprogramm, verweist auf Bundesdatenbanken.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&amp;%20F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07334025",
+    "name": "Rülzheim",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rülzheim (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
+    "searches": [
+      "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
+      "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
+      "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/",
+        "finding": "Am 27.09.2026 gelesen: Die Seite „Gründungen & Fördermittel“ der VG listet nur externe Partner (BAFA, BMWE, IHK Pfalz, ISB, Starterzentren, Wirtschaftsförderung des Kreises) — kein eigenes Förderprogramm der VG oder einer Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "finding": "Handreichung klimagerechte Gebäudeplanung der VG im Volltext durchsucht: Unter „Nützliche Links: Die passende Förderung finden“ verweist sie nur auf die Fördermittelsuche von co2online und die Förderdatenbank des Bundes; kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Klimaschutzmanagement/",
+        "finding": "Seite Klimaschutzmanagement: Förderung nennt sie nur als Bundesmittel für das eigene Klimaschutz- und Energiemanagement der Verwaltung (Nationale Klimaschutzinitiative), nicht für Haushalte."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
+        "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Bauherren-Handreichung ohne eigenes Förderprogramm, verweist auf Bundesdatenbanken.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Informationen%20rund%20ums%20Bauen/Handreichung%20klimagerechte%20Geb%C3%A4udeplanung/Handreichung%20Bauherren_R%C3%BClzheim_web.pdf"
+      },
+      {
+        "url": "ruelzheim.de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&amp;%20F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338001",
+    "name": "Altrip",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altrip (VG Rheinauen, Rhein-Pfalz-Kreis): keine eigene Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die Förderseite der Verbandsgemeinde führt die Umweltförderrichtlinien der Ortsgemeinden einzeln auf — nur Otterstadt und Waldsee haben eine; die Ortsgemeinde-Seite von Altrip auf vg-rheinauen.de hat keinen Zuschuss-Bereich. Die Richtlinien von Otterstadt und Waldsee gelten ausdrücklich nur für Objekte im jeweiligen Ort. Wiederprüfung nach 60 Tagen, weil Ortsgemeinden der VG ihre Richtlinien über diese Seite veröffentlichen.",
+    "searches": [
+      "Förderseite der VG Rheinauen und Zuschussseite Otterstadt am 27.09.2026 live gelesen",
+      "Ortsgemeinde-Seite Altrip auf vg-rheinauen.de mit allen Unterseiten-Links geprüft (kein Zuschuss-Bereich; /zuschuesse antwortet 404)",
+      "Websuche nach Förderrichtlinien Photovoltaik/Balkonkraftwerk in Altrip und Neuhofen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/",
+        "finding": "Am 27.09.2026 gelesen: Die Förderseite der VG Rheinauen verlinkt „Umweltförderrichtlinien der Ortsgemeinde Otterstadt“ und „… der Ortsgemeinde Waldsee“ (je Richtlinie, Übersicht, Antrag) und den Hinweis „Maßnahmen nur gefördert, wenn sie innerhalb von 3 Monaten nach Maßnahmenbeginn … beantragt wurden“; für Altrip und Neuhofen steht dort nichts."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+        "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Förderseite der VG, Richtlinien nur für Otterstadt und Waldsee, nicht für Altrip.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Zuschüsse der Ortsgemeinde Otterstadt, gelten nur für Otterstadt.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338020",
+    "name": "Neuhofen",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-11-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neuhofen (VG Rheinauen, Rhein-Pfalz-Kreis): keine eigene Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die Förderseite der Verbandsgemeinde führt die Umweltförderrichtlinien der Ortsgemeinden einzeln auf — nur Otterstadt und Waldsee haben eine; die Ortsgemeinde-Seite von Neuhofen auf vg-rheinauen.de hat keinen Zuschuss-Bereich. Die Richtlinien von Otterstadt und Waldsee gelten ausdrücklich nur für Objekte im jeweiligen Ort. Wiederprüfung nach 60 Tagen, weil Ortsgemeinden der VG ihre Richtlinien über diese Seite veröffentlichen.",
+    "searches": [
+      "Förderseite der VG Rheinauen und Zuschussseite Otterstadt am 27.09.2026 live gelesen",
+      "Ortsgemeinde-Seite Neuhofen auf vg-rheinauen.de mit allen Unterseiten-Links geprüft (kein Zuschuss-Bereich; /zuschuesse antwortet 404)",
+      "Websuche nach Förderrichtlinien Photovoltaik/Balkonkraftwerk in Altrip und Neuhofen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/",
+        "finding": "Am 27.09.2026 gelesen: Die Förderseite der VG Rheinauen verlinkt „Umweltförderrichtlinien der Ortsgemeinde Otterstadt“ und „… der Ortsgemeinde Waldsee“ (je Richtlinie, Übersicht, Antrag) und den Hinweis „Maßnahmen nur gefördert, wenn sie innerhalb von 3 Monaten nach Maßnahmenbeginn … beantragt wurden“; für Altrip und Neuhofen steht dort nichts."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+        "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Förderseite der VG, Richtlinien nur für Otterstadt und Waldsee, nicht für Neuhofen.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Zuschüsse der Ortsgemeinde Otterstadt, gelten nur für Otterstadt.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338021",
+    "name": "Otterstadt",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Otterstadt fördert nach seiner Umweltförderrichtlinie Photovoltaik und Balkonkraftwerke (10 %, höchstens 500 €), Batteriespeicher (10 %, höchstens 250 €) und den Umstieg einer 10–30 Jahre alten Öl- oder Gasheizung auf erneuerbare Wärme (10 %, höchstens 500 €); der Antrag kommt bis drei Monate NACH Auftragserteilung. Aufgenommen als otterstadt-umweltfoerderung. Mittel werden jährlich im Haushalt bereitgestellt; eine Mittelzahl für 2026 nennt keine Seite.",
+    "searches": [
+      "Förderseite der VG Rheinauen am 27.09.2026 live gelesen",
+      "Richtlinie (Scan, Seite für Seite) und Maßnahmenübersicht am 27.09.2026 vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/",
+        "finding": "Am 27.09.2026 gelesen: Die Förderseite der VG Rheinauen verlinkt „Umweltförderrichtlinien der Ortsgemeinde Otterstadt“ und „… der Ortsgemeinde Waldsee“ (je Richtlinie, Übersicht, Antrag) und den Hinweis „Maßnahmen nur gefördert, wenn sie innerhalb von 3 Monaten nach Maßnahmenbeginn … beantragt wurden“; für Altrip und Neuhofen steht dort nichts."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+        "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/satzungen/ortsgemeinde-otterstadt/umweltfoerderrichtlinie-og-otterstadt-dez.-2024.pdf?cid=kry",
+        "finding": "Richtlinie vom Dezember 2024, unterschrieben 04.12.2024: § 2 Einwohner und Eigentümer, die binnen eines Jahres Einwohner sind; § 5 „Die Fördermittel werden jährlich im Rahmen der Haushaltsplanung zur Verfügung gestellt“; § 6 „Der Antrag ist innerhalb von drei Monaten nach Beginn der Maßnahme … zu stellen“, Beginn = Auftragserteilung; PV mit Registernachweis."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=kjy",
+        "finding": "Übersicht Stand 04.12.2024: 2.1 „Installation von PV-Anlagen/ Solaranlagen/ Balkonkraftwerke 10 %, max. 500 €“; 2.2 Batteriespeicher „10 %, max. 250 €“; 1.3 Umstellung Öl-/Gasheizung auf regenerative Quellen „10 %, max. 500 €“ (Heizung 10–30 Jahre alt)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: verlinkt Richtlinie, Übersicht und Antrag der Ortsgemeinde; aufgenommen als otterstadt-umweltfoerderung.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Zuschussseite der Ortsgemeinde Otterstadt (dieselbe Umweltförderrichtlinie).",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338026",
+    "name": "Waldsee",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Waldsee fördert nach seiner Umweltförderrichtlinie Photovoltaik und Balkonkraftwerke (10 %, höchstens 500 €), Batteriespeicher (10 %, höchstens 250 €) und den Umstieg einer 10–30 Jahre alten Öl- oder Gasheizung auf erneuerbare Wärme (10 %, höchstens 500 €); der Antrag kommt bis drei Monate NACH Auftragserteilung. Aufgenommen als waldsee-umweltfoerderung. Mittel werden jährlich im Haushalt bereitgestellt; eine Mittelzahl für 2026 nennt keine Seite.",
+    "searches": [
+      "Förderseite der VG Rheinauen am 27.09.2026 live gelesen",
+      "Richtlinie (Scan, Seite für Seite) und Maßnahmenübersicht am 27.09.2026 vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/",
+        "finding": "Am 27.09.2026 gelesen: Die Förderseite der VG Rheinauen verlinkt „Umweltförderrichtlinien der Ortsgemeinde Otterstadt“ und „… der Ortsgemeinde Waldsee“ (je Richtlinie, Übersicht, Antrag) und den Hinweis „Maßnahmen nur gefördert, wenn sie innerhalb von 3 Monaten nach Maßnahmenbeginn … beantragt wurden“; für Altrip und Neuhofen steht dort nichts."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+        "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/satzungen/ortsgemeinde-waldsee/umweltfoerderrichtlinien-og-waldsee.pdf?cid=lcv",
+        "finding": "Richtlinie vom Januar 2024, unterschrieben 05.01.2024: § 2 Einwohner der Ortsgemeinde; § 5 Mittel jährlich im Haushalt; § 6 Antrag „innerhalb von drei Monaten nach Beginn der Maßnahme“, Beginn = Auftragserteilung/Materialbestellung."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/ufr-uebersicht-aenderungen-waldsee-2025.pdf?cid=nj4",
+        "finding": "Übersicht Stand 01.01.2025: 2.1 „Installation von PV-Anlagen/Solaranlagen/Balkon-kraftwerken 10 %, max. 500 €“; 2.2 Batteriespeicher „10 %, max. 250 €“; 1.3 Umstellung Öl-/Gasheizung „10 %, max. 500 €“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: verlinkt Richtlinie, Übersicht und Antrag der Ortsgemeinde; aufgenommen als waldsee-umweltfoerderung.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/leben-in-der-vg/klimaschutz/foerderungen/"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Zuschussseite der Ortsgemeinde Otterstadt, gilt nur dort; für Waldsee maßgeblich ist die eigene Richtlinie.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      }
+    ]
+  },
+  {
+    "regionId": "07131",
+    "name": "Landkreis Ahrweiler",
+    "checkedAt": "2026-09-27T16:50:00Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Der Landkreis Ahrweiler hat heute kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; seine Förderseite sagt, es stünden keine Mittel mehr zur Verfügung. Das Batteriespeicher-Programm von 2022 (100 € je kWh, höchstens 500 €) war im selben Jahr ausgeschöpft; eine für 2023 angekündigte Neuauflage ist nicht belegt. Aufgenommen als beendetes Programm ahrweiler-batteriespeicher (nur Information). Ein adversarialer Prüfer bestätigte alle Punkte. Die übrigen fünf Kreisquellen betreffen Unternehmen, Landwirtschaft, Vereine und Dorfprojekte.",
+    "searches": [
+      "Förderseite Klimaschutz des Kreises, Programm-PDF und Pressemitteilung 2022 am 27.09.2026 gelesen",
+      "Websuche nach einer Neuauflage 2023/2024/2025",
+      "Alle sechs erfassten Kreisquellen live gelesen",
+      "Adversarialer Prüfer (27.09.2026): Neuauflage und laufendes Programm gesucht, nichts gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz/",
+        "finding": "Am 27.09.2026 gelesen: „Es stehen keine Fördermittel mehr zur Verfügung und eine Mittelbeantragung ist damit nicht mehr möglich.“ Als vergangene Programme nennt die Seite 2022 die Batteriespeicher und 2023 die Dach- und Fassadenbegrünung."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/wp-content/uploads/2022/06/Foerderprogramm-Batteriespeicher.pdf",
+        "finding": "Förderprogramm „Einbau von Batteriespeichern bei PV-Anlagen“ im Volltext gelesen: 100 € je kWh, höchstens 500 € je Speichersystem, ab 1 kWh, in Kraft ab 11.06.2022, Anträge bis 31. Oktober."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/neues-foerderprogramm-fuer-batteriespeicher-bereits-ausgeschoepft/",
+        "finding": "Pressemitteilung 2022: Finanzrahmen für 2022 bereits ausgeschöpft, Neuauflage für 2023 geplant."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/firmen-erhalten-zuschuesse-fuers-energiesparen/",
+        "finding": "Am 27.09.2026 gelesen: BAFA-Hinweis für kleine und mittlere Unternehmen (LED-Umrüstung, Frist 2015) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/das-foerderprogramm-artenreiche-wiese-im-bereich-landwirtschaft-und-weinbau/",
+        "finding": "Am 27.09.2026 gelesen: Programm „Artenreiche Wiese“ für Landwirte und Winzer — keine Energieanlage."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-fuer-ehrenamt-vereinswesen-und-sport/",
+        "finding": "Am 27.09.2026 gelesen: Artenreiche Wiese und Vereinsförderung für Vereinsgelände — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-laendlicher-raum/",
+        "finding": "Am 27.09.2026 gelesen: Förderung dörflicher Strukturprojekte für Ortsgemeinden, Vereine und Initiativen — keine Energieanlage privater Haushalte."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/haeufig-gestellte-fragen-zum-foerderprogramm-artenreiche-wiese/",
+        "finding": "Am 27.09.2026 gelesen: Fragen und Antworten zur Artenreichen Wiese — keine Energieanlage."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: keine Mittel mehr; das Speicherprogramm 2022 ist als beendet aufgenommen (ahrweiler-batteriespeicher).",
+        "evidenceUrl": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz/"
+      },
+      {
+        "url": "kreis-ahrweiler.de/firmen-erhalten-zuschuesse-fuers-energiesparen",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: BAFA-Hinweis für kleine und mittlere Unternehmen (LED-Umrüstung, Frist 2015) — kein Haushaltsprogramm.",
+        "evidenceUrl": "https://kreis-ahrweiler.de/firmen-erhalten-zuschuesse-fuers-energiesparen/"
+      },
+      {
+        "url": "kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/das-foerderprogramm-artenreiche-wiese-im-bereich-landwirtschaft-und-weinbau",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Programm „Artenreiche Wiese“ für Landwirte und Winzer — keine Energieanlage.",
+        "evidenceUrl": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/das-foerderprogramm-artenreiche-wiese-im-bereich-landwirtschaft-und-weinbau/"
+      },
+      {
+        "url": "kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-fuer-ehrenamt-vereinswesen-und-sport",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Artenreiche Wiese und Vereinsförderung für Vereinsgelände — kein Haushaltsprogramm.",
+        "evidenceUrl": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-fuer-ehrenamt-vereinswesen-und-sport/"
+      },
+      {
+        "url": "kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-laendlicher-raum",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Förderung dörflicher Strukturprojekte für Ortsgemeinden, Vereine und Initiativen — keine Energieanlage privater Haushalte.",
+        "evidenceUrl": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/foerderprogramm-laendlicher-raum/"
+      },
+      {
+        "url": "kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/haeufig-gestellte-fragen-zum-foerderprogramm-artenreiche-wiese",
+        "disposition": "reviewed",
+        "reason": "Am 27.09.2026 gelesen: Fragen und Antworten zur Artenreichen Wiese — keine Energieanlage.",
+        "evidenceUrl": "https://kreis-ahrweiler.de/land_natur_umwelt/artenreiche-wiese/haeufig-gestellte-fragen-zum-foerderprogramm-artenreiche-wiese/"
+      }
+    ]
   }
 ]

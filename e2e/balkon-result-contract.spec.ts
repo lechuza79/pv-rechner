@@ -95,7 +95,10 @@ test('funding lookup previews changes, then recalculation applies them', async (
   await expect(fundedPrice.locator('.bkw-product-price-row strong')).toContainText('1.050');
   await expect(fundedPrice.locator('.wp-funded-amount')).toContainText('800');
   await expect(fundedPrice.getByRole('button', { name: 'Förderung genau berechnen', exact: true })).toHaveCount(0);
-  await fundedPrice.getByRole('button', { name: 'Wie wird der Setpreis mit Förderung berechnet?', exact: true }).click();
+  const fundingHelp = fundedPrice.getByRole('button', { name: 'Wie wird der Setpreis mit Förderung berechnet?', exact: true });
+  await fundedPrice.scrollIntoViewIfNeeded();
+  await fundingHelp.focus();
+  await fundingHelp.press('Enter');
   await expect(page.getByRole('tooltip').getByText('Landkreis Oldenburg: Gefördert werden nur Balkonkraftwerke mit Speicher.', { exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
   await fundedPrice.scrollIntoViewIfNeeded();

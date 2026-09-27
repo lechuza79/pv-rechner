@@ -21,6 +21,7 @@ for (const width of [375, 569, 1280]) test(`shared affiliate design at ${width}p
   await expect(cards).toHaveCount(3, { timeout: 60000 });
   const first = cards.first();
   await first.scrollIntoViewIfNeeded();
+  await expect.poll(() => first.locator(".wp-product-photo img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(first.getByText('ANZEIGE', { exact: true })).toBeVisible();
   const image = await first.locator('.wp-product-image').boundingBox();
   const ad = await first.getByText('ANZEIGE', { exact: true }).boundingBox();
@@ -82,6 +83,7 @@ test('WP uses the same affiliate contract with a deterministic catalogue', async
   expect(bkwCard).toEqual(wpCard);
   const first = cards.first();
   await first.scrollIntoViewIfNeeded();
+  await expect.poll(() => first.locator(".wp-product-photo img").evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(first.getByText('ANZEIGE', { exact: true })).toBeVisible();
   await expect(first.locator('.wp-product-copy')).toBeVisible();
   await first.locator('.wp-product-forward').click();
@@ -107,7 +109,7 @@ test('BKW result supports funding follow-up and shared chart inspection', async 
   await expect(page.locator('[data-flow-akkordeon-offen="Ertrag und technische Details"]')).toBeVisible();
   const slider = page.getByRole('slider', { name: 'Tag wählen' });
   await slider.focus(); await slider.press('End');
-  const chart = page.locator('.wp-personal-race svg[role="img"]');
+  const chart = page.locator('.wp-personal-race svg[role="img"][tabindex="0"]');
   await page.locator('.wp-result-chart').scrollIntoViewIfNeeded();
   const box = (await chart.boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.6);
