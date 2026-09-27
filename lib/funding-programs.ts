@@ -8257,6 +8257,70 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // balcony-only programme gets no Photovoltaik-Förderung page.
   },
 
+  "vg-kastellaun-dorfzentren-klimaschutz": {
+    id: "vg-kastellaun-dorfzentren-klimaschutz", name: "Richtlinie zur Schaffung vitaler Dorfzentren/Beseitigung von Leerstand und für Klimaschutzmaßnahmen",
+    traeger: "Verbandsgemeinde Kastellaun", level: "kommune", region: "Verbandsgemeinde Kastellaun",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140064",
+    // ALL 19 MEMBERS, counted twice: the VG's own list of Ortsgemeinden
+    // (kastellaun.de/gemeinden/ortsgemeinden, 18) plus the town of Kastellaun,
+    // and de.wikipedia "Verbandsgemeinde Kastellaun" (19, read 27.09.2026).
+    // Each name resolved against mastr_regions under 07140; the Rhein-Hunsrück
+    // district holds 137 municipalities, so the five-digit district key would
+    // be wrong. Lahr, Mörsdorf and Zilshausen carry 5xx keys (moved in from
+    // Cochem-Zell), Dommershausen and Mastershausen 2xx.
+    agsCodes: [
+      "07140001", "07140009", "07140010", "07140018", "07140021", "07140042",
+      "07140046", "07140055", "07140064", "07140073", "07140095", "07140131",
+      "07140147", "07140153", "07140202", "07140204", "07140502", "07140503",
+      "07140504",
+    ],
+    url: "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-09-02", beginntIso: "2025-08-01", endetIso: "2027-07-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Objekt für Maßnahmen an mindestens 40 Jahre alten Gebäuden, darunter die Umstellung der Heizung auf erneuerbare Energien",
+    maxFoerderung: "2.000 € je Objekt",
+    rates: [
+      { label: "Umstellung der Heizung auf erneuerbare Energien, zum Beispiel auf eine Wärmepumpe", value: "2.000 € pauschal je Objekt, wenn die förderfähigen Kosten mindestens 10.000 € betragen", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert wird ältere Bausubstanz: Das Gebäude ist mindestens 40 Jahre alt und wurde in dieser Zeit nicht nennenswert baulich verbessert",
+      "Die förderfähigen Kosten (Beratung, Planung, Herstellung) müssen mindestens 10.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, ebenfalls mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen",
+      "Mit der Maßnahme darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Beginn begonnen werden; Antrag schriftlich beim Fachbereich 3 der Verbandsgemeinde",
+      "Antragsberechtigt sind die Eigentümer; gefördert wird grundsätzlich in den Bauflächen des Flächennutzungsplans, in begründeten Ausnahmefällen auch außerhalb",
+      "Maßgeblich sind die am Ende nachgewiesenen Kosten: Liegen sie unter 10.000 €, entfällt die gesamte Förderung",
+      "Beginn innerhalb von 12 Monaten, Abschluss innerhalb von 36 Monaten nach der Bewilligung; ein erneuter Antrag für dasselbe Objekt frühestens 15 Jahre nach Fertigstellung",
+      "Die Richtlinie gilt vom 01.08.2025 für zwei Jahre; Vergabe nach Eingang, soweit Haushaltsmittel bereitstehen, kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (6-page scan with a text layer; all six
+    // pages checked as images by the council, the age rule sits on pages 1–2,
+    // amount and minimum cost on page 3, the term on page 6). Still listed with
+    // an application form on kastellaun.de/klimaschutz/klimaschutz/foerderungen/. Live copy fetched the same day
+    // (kastellaun.de without www., with referer; www. answers 403) is
+    // byte-identical to the copy saved 27.09.2026 02:0x UTC
+    // (sha256 2ad4604e…d33894). Council of the VG 02.09.2025, second amendment,
+    // "tritt rückwirkend am 01. August 2025 in Kraft und hat eine
+    // Geltungsdauer von zwei Jahren" → endetIso 31.07.2027. § 4 Nr. 5 lists
+    // "Umstellung des Heizungssystems auf Erneuerbare Energien" among the
+    // energetic measures; § 1 limits eligible objects to buildings of at least
+    // 40 years. The source contradicts itself on WHICH measures are exempt:
+    // § 1 says "Nr. 9-11", § 4 puts the exemption before Nr. 10–12 (water
+    // retention, unsealing, greening). Nr. 5 is exempt under neither reading,
+    // so the heating switch keeps the age rule; § 1 softens it to "im
+    // Wesentlichen" older buildings, the condition text states the rule.
+    // § 6 minimum costs 10,000 €, § 7 "Der Zuschuss beträgt 2.000,- Euro je
+    // Objekt". No roof PV, no storage, no balcony. INFORMATION ONLY: the
+    // calculator knows neither the building's age nor its renovation history,
+    // so a flat 2,000 € would be deducted from cases the guideline excludes.
+    // § 10 paid "unabhängig von sonstigen Förderungen", other guidelines' rules
+    // on multiple funding apply → BUND. The three member villages with their
+    // own city page (Beltheim, Dommershausen, Roth) are pinned to their own
+    // programmes via fundingId, because both keys are eight digits long and
+    // fundingFor would otherwise return nothing.
+  },
+
   "benzweiler-energiespar": {
     id: "benzweiler-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
     traeger: "Ortsgemeinde Benzweiler", level: "kommune", region: "Benzweiler",

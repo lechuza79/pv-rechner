@@ -688,6 +688,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "roth-hunsrueck-energie-klima",
   // Added 27 Sep 2026: closed historical programme (term ended 31.12.2025).
   "michelbach-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: VG-wide guideline read in full, information only; the
+  // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
+  // rule have no test form yet.
+  "vg-kastellaun-dorfzentren-klimaschutz",
 ];
 
 /**

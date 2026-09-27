@@ -477,11 +477,11 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "bubach", name: "Bubach", ags: "07140020", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
   { slug: "fronhofen", name: "Fronhofen", ags: "07140039", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
   { slug: "rayerschied", name: "Rayerschied", ags: "07140121", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
-  { slug: "beltheim", name: "Beltheim", ags: "07140010", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059 },
-  { slug: "dommershausen", name: "Dommershausen", ags: "07140202", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059 },
+  { slug: "beltheim", name: "Beltheim", ags: "07140010", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "beltheim-energiespar" },
+  { slug: "dommershausen", name: "Dommershausen", ags: "07140202", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "dommershausen-energiespar" },
   // Yield measured at postcode 56288 (Kastellaun): Roth has no entry in the
   // postcode table yet (truncated table, separate task).
-  { slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
+  { slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064, fundingId: "roth-hunsrueck-energie-klima" },
   // Two programmes on this key (energy-saving guideline with roof PV, and a
   // heating-only guideline); the page shows the one that funds roof PV.
   { slug: "neuerkirch", name: "Neuerkirch", ags: "07140101", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076, fundingId: "neuerkirch-energiespar" },

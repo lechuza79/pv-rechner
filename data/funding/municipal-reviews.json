@@ -68227,7 +68227,7 @@
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Dommershausen (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 27.03.2025, rückwirkend ab 01.01.2025 bis 31.12.2027): Dachanlage 150 €/kWp bis 1.500 €, höchstens 20 %; Speicher 1.500 € höchstens 20 %; Heizung (Pellet, Wärmepumpe) 2.500 € höchstens 30 %; Balkonkraftwerk 30 % bis 300 €; insgesamt 5.000 € je Haushalt. Hauptwohnsitz; Dach, Speicher, Heizung nur Eigentümer. Neu katalogisiert als dommershausen-energiespar.",
+    "conclusion": "Dommershausen (VG Kastellaun) fördert über die Energiesparrichtlinie (Ratsbeschluss 27.03.2025, rückwirkend ab 01.01.2025 bis 31.12.2027): Dachanlage 150 €/kWp bis 1.500 €, höchstens 20 %; Speicher 1.500 € höchstens 20 %; Heizung (Pellet, Wärmepumpe) 2.500 € höchstens 30 %; Balkonkraftwerk 30 % bis 300 €; insgesamt 5.000 € je Haushalt. Hauptwohnsitz; Dach, Speicher, Heizung nur Eigentümer. Neu katalogisiert als dommershausen-energiespar. Zusätzlich gilt für Wärmepumpen die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz; die Stadtseite bleibt auf das eigene Ortsprogramm festgelegt.",
     "searches": [
       "VG Kastellaun Klimaschutz-Seite „Förderungen“ (Liste der Ortsgemeinde-Richtlinien)",
       "Richtlinie (Textfassung) vollständig gelesen"
@@ -68247,7 +68247,7 @@
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Roth (Hunsrück, VG Kastellaun) fördert über das Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz (Beschluss 20.01.2026, rückwirkend ab 01.01.2026 bis 31.12.2027): Dachanlage 100 €/kWp bis 1.000 €, Speicher 100 €/kWh bis 600 €, Balkonkraftwerk bis 200 € höchstens 20 %, Wallbox 100 €. Eigentümer und Mieter. Neu katalogisiert als roth-hunsrueck-energie-klima.",
+    "conclusion": "Roth (Hunsrück, VG Kastellaun) fördert über das Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz (Beschluss 20.01.2026, rückwirkend ab 01.01.2026 bis 31.12.2027): Dachanlage 100 €/kWp bis 1.000 €, Speicher 100 €/kWh bis 600 €, Balkonkraftwerk bis 200 € höchstens 20 %, Wallbox 100 €. Eigentümer und Mieter. Neu katalogisiert als roth-hunsrueck-energie-klima. Zusätzlich gilt für Wärmepumpen die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz; die Stadtseite bleibt auf das eigene Ortsprogramm festgelegt.",
     "searches": [
       "VG Kastellaun Klimaschutz-Seite „Förderungen“",
       "Eingescanntes Programm (5 Seiten) Seite für Seite gelesen"
@@ -68263,19 +68263,97 @@
   {
     "regionId": "07140095",
     "name": "Michelbach",
-    "checkedAt": "2026-09-27T02:11:00Z",
+    "checkedAt": "2026-09-27T04:09:18Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Michelbach (VG Kastellaun) hatte ein Förderprogramm (Beschluss 14.11.2024) mit 100 € für ein Balkonkraftwerk; die Laufzeit war nach § 7 (6) bis 31.12.2025 beschränkt. Als beendetes Programm katalogisiert (michelbach-hunsrueck-energie-klima); eine Nachfolge ist auf der VG-Seite nicht verlinkt. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Michelbach (VG Kastellaun) hatte ein Förderprogramm (Beschluss 14.11.2024) mit 100 € für ein Balkonkraftwerk; die Laufzeit war nach § 7 (6) bis 31.12.2025 beschränkt. Als beendetes Programm katalogisiert (michelbach-hunsrueck-energie-klima); eine Nachfolge ist auf der VG-Seite nicht verlinkt. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Nachtrag 27.09.2026: Für Wärmepumpen gilt die Richtlinie der Verbandsgemeinde Kastellaun (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027), katalogisiert als vg-kastellaun-dorfzentren-klimaschutz (nur Information).",
     "searches": [
       "VG Kastellaun Klimaschutz-Seite „Förderungen“",
-      "Programm (Textfassung) vollständig gelesen"
+      "Programm (Textfassung) vollständig gelesen",
+      "VG-Richtlinie vitale Dorfzentren/Klimaschutz vollständig gelesen"
     ],
     "evidence": [
       {
         "url": "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_Foerderprogramm_Engergie_Klima_Michelbach.pdf",
         "finding": "§ 7 (6): „Die Laufzeit der Fördermaßnahme ist bis zum 31.12.2025 beschränkt.“"
+      },
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140064",
+    "name": "Kastellaun",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadt Kastellaun: Für Wärmepumpen gilt die Richtlinie der Verbandsgemeinde Kastellaun (2.000 € je Objekt für die Umstellung der Heizung auf erneuerbare Energien an mindestens 40 Jahre alten Gebäuden, Mindestkosten 10.000 €, bis 31.07.2027), neu katalogisiert als vg-kastellaun-dorfzentren-klimaschutz (nur Information). Das eigene Förderprogramm der Stadt ist ein Fassadenprogramm (20 % bis 10.000 € für gestalterische Dach- und Fassadensanierung in der Innenstadt, bis 31.12.2026) ohne Photovoltaik, Speicher, Balkonkraftwerk oder Heizung. Keine städtische Förderung für PV/Speicher/Balkon.",
+    "searches": [
+      "VG-Seite „Förderprogramme“ (verweist auf Stadt → Bauen, Ortsgemeinden, Klimaschutz → Förderungen)",
+      "Stadt → Bauen: Richtlinie „gültig bis 2026“ vollständig gelesen",
+      "VG-Richtlinie vollständig gelesen, Seitenbilder geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/Stadt/aktuelle_Richtlinie_gueltig_bis_2026_mit_Anlagen.pdf",
+        "finding": "Fassadenförderprogramm: § 3 gestalterische Dach- und Fassadensanierung, § 5 „20 % … maximal 10.000,-- Euro“, § 9 bis 31. Dezember 2026. Keine Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140153",
+    "name": "Uhler",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Uhler (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Die eigene Richtlinie zur Dorfentwicklung (31.07.2020) fördert Abbruch, Erwerb/Vitalisierung und gestalterische Erneuerung 50 Jahre alter Gebäude (10 %, max. 4.000 €) — keine Photovoltaik, kein Speicher, kein Balkonkraftwerk, keine Heizung als eigener Gegenstand.",
+    "searches": [
+      "Ortsseite auf kastellaun.de",
+      "Richtlinie Dorfentwicklung (2. Änderung) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Uhler/Richtlinie%202.%20%C3%84nderung.pdf",
+        "finding": "Nr. 2 Abbruch, Erwerb/Vitalisierung, gestalterische Erneuerung; Nr. 4.3 10 %, max. 4.000 €; keine Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07140204",
+    "name": "Mastershausen",
+    "checkedAt": "2026-09-27T04:09:18Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mastershausen (VG Kastellaun): Für Wärmepumpen gilt die VG-Richtlinie (2.000 € je Objekt, Gebäude ab 40 Jahren, bis 31.07.2027; katalogisiert als vg-kastellaun-dorfzentren-klimaschutz, nur Information). Das eigene Vitalisierungsprogramm (Neufassung 21.10.2025) fördert nur Neuerwerber von Altbauten bis Baujahr 1960 (30 %, max. 7.500 €) für Umnutzung, Erneuerung, Baulückenschließung und Abbruch — keine Photovoltaik, kein Speicher, kein Balkonkraftwerk, keine Heizung als eigener Gegenstand.",
+    "searches": [
+      "Ortsseite auf kastellaun.de",
+      "Vitalisierungsrichtlinie (Oktober 2025) vollständig gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+        "finding": "VG-Richtlinie vitale Dorfzentren/Klimaschutz (VG-Rat 02.09.2025, gültig 01.08.2025 bis 31.07.2027): § 4 Nr. 5 „Umstellung des Heizungssystems auf Erneuerbare Energien“, § 7 „2.000,-- Euro je Objekt“, § 6 Mindestkosten 10.000 €, Gebäude mindestens 40 Jahre alt."
+      },
+      {
+        "url": "https://www.kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Mastershausen/Richtlinie_Mastershausen__21.10.25_.pdf",
+        "finding": "Nr. 2 Umnutzung, Erneuerung, Baulücken, Abbruch; Nr. 3.a nur Neuerwerber; Nr. 4.a 30 %, höchstens 7.500 €; keine Energieanlagen."
       }
     ],
     "sources": []
