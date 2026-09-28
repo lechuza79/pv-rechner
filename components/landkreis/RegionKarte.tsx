@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation';
 import RegionScene from "./RegionScene";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import "../dashboard/dashboard.css";
-import { barHeight, type ProjectedRegion } from "../../lib/region-perspektive";
+import { barHeight, sidePathFromPath, type ProjectedRegion } from "../../lib/region-perspektive";
 import type { Messwert } from "../../lib/atlas-format";
 import styles from "./landkreis.module.css";
 
@@ -77,6 +77,8 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const [metricId, setMetricId] = useState(metrics[0].id);
   const { values, label: metric } = metrics.find(m => m.id === metricId) ?? metrics[0];
   const [sceneFailed, setSceneFailed] = useState(false);
+  // Side walls of the fallback map: derived here, only once the scene failed.
+  const sidePaths = useMemo(() => sceneFailed ? new Map(shapes.map(s => [s.id, sidePathFromPath(s.path)])) : null, [shapes, sceneFailed]);
   const [sceneReady,setSceneReady]=useState(false);
   const [selected, setSelected] = useState("");
   const [touchInfo,setTouchInfo]=useState(false);
@@ -141,7 +143,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     {sceneFailed && <div className={styles.mapFallback}>
     <svg viewBox={shapes.length ? `${left} ${top} ${right-left} ${bottom-top}` : "0 0 1000 660"} role="img" aria-label={`${metric} auf der Karte. Gebiete und Werte stehen auch in der ${overview}.`}>
       <g className={styles.mapBase}>
-        {shapes.map(s => <path key={s.id} d={s.sidePath} fillRule="nonzero" data-forest={s.kind === "Gemeindefreies Gebiet"} />)}
+        {shapes.map(s => <path key={s.id} d={sidePaths?.get(s.id)} fillRule="nonzero" data-forest={s.kind === "Gemeindefreies Gebiet"} />)}
       </g>
       <g className={styles.mapGround}>
         {shapes.map(s => <path key={s.id} d={s.path} fillRule="evenodd" data-context={!byId.has(s.id)} data-kind={s.kind} data-selected={s.id === selected} data-hovered={s.id === hovered} data-region={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={e => openPlace(s.id,(e.nativeEvent as PointerEvent).pointerType === "touch")}>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {readdirSync,readFileSync} from "node:fs";
-import { barHeight, insidePolygon, interiorPoint, projectRegions, type RegionGeometry, type Point } from "../region-perspektive";
+import { barHeight, insidePolygon, interiorPoint, projectRegions, sidePathFromPath, type RegionGeometry, type Point } from "../region-perspektive";
 import wuerzburg from "../../public/geo/gemeinden/09679.geo.json";
 
 describe("district perspective", () => {
@@ -44,6 +44,20 @@ describe("district perspective", () => {
     expect(barHeight(50, 100)).toBe(barHeight(100, 100) / 2);
     for (const value of [null, 0, -1, NaN, Infinity]) expect(barHeight(value, 100)).toBe(0);
     expect(barHeight(10, 0)).toBe(0);
+  });
+  it("ships coordinates with at most one decimal (the map props were 13 decimals, 750 kB for Deutschland)", () => {
+    const json = JSON.stringify(projectRegions(wuerzburg.features as RegionGeometry[]));
+    expect(json).not.toMatch(/\d\.\d{2}/);
+  });
+  it("derives the fallback side walls from the outline exactly as the server built them before", () => {
+    const [region] = projectRegions([{ properties: { id: "x", name: "x" }, geometry: { type: "Polygon", coordinates: [[[10, 50], [10.2, 50], [10.2, 50.1], [10, 50], [10, 50]]] } }]);
+    const points = region.path.slice(1, -1).split("L").map(p => p.split(",").map(Number));
+    // Consecutive duplicates vanish in the rounding; the closing point stays.
+    expect(points).toHaveLength(4);
+    const walls = sidePathFromPath(region.path);
+    expect(walls.match(/Z/g)).toHaveLength(3);
+    const [a, b] = points;
+    expect(walls.startsWith(`M${a[0]},${a[1]}L${b[0]},${b[1]}L${b[0]},${Math.round((b[1] + 14) * 10) / 10}L${a[0]},${Math.round((a[1] + 14) * 10) / 10}Z`)).toBe(true);
   });
   it("allows an empty geographic coverage", () => expect(projectRegions([])).toEqual([]));
 });
