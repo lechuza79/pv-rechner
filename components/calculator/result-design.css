@@ -521,6 +521,12 @@ body a.wp-product-image{display:block;position:relative;width:100%!important;hei
 body .wp-product-photo{display:block;position:relative;width:100%;aspect-ratio:4/3}
 body .wp-product-photo>img{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;box-sizing:border-box;padding:32px 14px 8px;object-fit:contain!important;transform:none;aspect-ratio:auto}
 body .wp-product-image .wp-product-image-title{position:relative;display:block;padding:8px 12px 12px;color:var(--color-text-primary);background:#fff;text-align:left;line-height:1.4!important}
+/* Card without a product photo (no image permission, or none in the feed): no
+   empty white photo box. Labels sit in the flow above the title, on the card's
+   own surface — the fixed white ground only exists for cut-out merchant photos. */
+body a.wp-product-image[data-ohne-bild]{background:transparent!important;border-radius:0!important;overflow:visible}
+body a.wp-product-image[data-ohne-bild] .wp-product-rank{position:static;margin:0 0 8px!important;align-items:center!important}
+body a.wp-product-image[data-ohne-bild] .wp-product-image-title{padding:0;background:transparent}
 
 /* Investment draft: one balance, followed by its editable assumptions. */
 body .wp-investment-balance{background:var(--color-surface,#f8faf5);border-radius:20px;padding:24px;margin-bottom:20px}
