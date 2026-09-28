@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { embedPfadZiel } from "../embed-pfad-weiche";
+import { embedPfadZiel, istKonfigRewrite } from "../embed-pfad-weiche";
 
 const WURZEL = join(__dirname, "..", "..");
 const ziel = (pfad: string, query: string) => embedPfadZiel(pfad, new URLSearchParams(query));
@@ -64,9 +64,57 @@ describe("Embed-Weiche: Abfrageform → zwischengespeicherter Pfad-Zwilling", ()
     }
   });
 
-  it("die Middleware benutzt die Weiche im Embed-Zweig", () => {
+  it("die Middleware benutzt die Weiche und überlässt kanonische Formen der Konfiguration", () => {
     const mw = readFileSync(join(WURZEL, "middleware.ts"), "utf8");
+    expect(mw).toMatch(/istKonfigRewrite\(request\.nextUrl\.pathname, request\.nextUrl\.searchParams\)/);
     expect(mw).toMatch(/embedPfadZiel\(request\.nextUrl\.pathname, request\.nextUrl\.searchParams\)/);
     expect(mw).toMatch(/NextResponse\.rewrite\(url\)/);
+  });
+
+  it("die Rewrites in next.config.js treffen genau die kanonischen Formen — mit demselben Ziel", async () => {
+    type Bed = { type: string; key: string; value?: string };
+    type Regel = { source: string; destination: string; has?: Bed[]; missing?: Bed[] };
+    const config = (await import("../../next.config.js")).default as { rewrites: () => Promise<{ beforeFiles: Regel[] }> };
+    const regeln = (await config.rewrites()).beforeFiles.filter((r) => r.source.startsWith("/embed/"));
+    expect(regeln.length).toBeGreaterThan(0);
+    // Simulates Next's matching of `source`, `has` and `missing` (values are anchored).
+    const konfig = (pfad: string, query: string): string | null => {
+      const p = new URLSearchParams(query);
+      const teile = pfad.split("/");
+      for (const r of regeln) {
+        const m = r.source.match(/^\/embed\/(?::w\(([^)]+)\)|([a-z-]+))$/);
+        if (!m) throw new Error(`unbekannte Quelle ${r.source}`);
+        const erlaubt = m[1] ? m[1].split("|") : [m[2]];
+        if (teile.length !== 3 || !erlaubt.includes(teile[2])) continue;
+        const werte: Record<string, string> = { w: teile[2] };
+        const hatAlle = (r.has ?? []).every((b) => {
+          const v = p.get(b.key);
+          if (v === null) return false;
+          const t = new RegExp("^" + (b.value ?? ".*") + "$").exec(v);
+          if (t?.groups) Object.assign(werte, t.groups);
+          return !!t;
+        });
+        if (!hatAlle || (r.missing ?? []).some((b) => p.has(b.key))) continue;
+        return r.destination.replace(/:(\w+)/g, (_, k: string) => werte[k]);
+      }
+      return null;
+    };
+    const faelle: [string, string][] = [
+      ["/embed/gemeinde-solar", "ags=09679147"], ["/embed/gemeinde-solar", "ags=09-679-147"], ["/embed/gemeinde-solar", "ags=123"],
+      ["/embed/gemeinde-erneuerbare", "ags=09679147&bg=x"], ["/embed/gemeinde-solarleistung", "ags=09679147"],
+      ["/embed/region-anlagentyp", "bl=13"], ["/embed/region-anlagentyp", "bl=130"], ["/embed/region-solarleistung", "bl=1"],
+      ["/embed/simulation", ""], ["/embed/simulation", "plz=97074"], ["/embed/simulation", "plz=97074&presentation=site"],
+      ["/embed/simulation", "presentation=site"], ["/embed/simulation", "plz=abc&presentation=site"], ["/embed/simulation", "plz=&presentation=site"],
+      ["/embed/kennzahl", "metric=anlagen"], ["/embed/strommix", "ags=09679147"],
+    ];
+    for (const [pfad, query] of faelle) {
+      const p = new URLSearchParams(query);
+      const ueberKonfig = konfig(pfad, query);
+      // The config rewrites exactly when the middleware steps aside …
+      expect(ueberKonfig !== null, `${pfad}?${query}`).toBe(istKonfigRewrite(pfad, p));
+      // … and both routes land on the same twin.
+      const ziel = embedPfadZiel(pfad, p);
+      expect(ueberKonfig ?? ziel, `${pfad}?${query}`).toBe(ziel);
+    }
   });
 });

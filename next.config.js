@@ -1,3 +1,12 @@
+/** Canonical query forms of the embed widgets → cached path twins (see rewrites). */
+const EMBED_PFAD_REWRITES = [
+  { source: "/embed/:w(gemeinde-solar|gemeinde-erneuerbare|gemeinde-solarleistung)", has: [{ type: "query", key: "ags", value: "(?<ags>\\d{8})" }], destination: "/embed/:w/:ags" },
+  { source: "/embed/:w(region-anlagentyp|region-solarleistung)", has: [{ type: "query", key: "bl", value: "(?<bl>\\d{2})" }], destination: "/embed/:w/:bl" },
+  { source: "/embed/simulation", has: [{ type: "query", key: "plz", value: "(?<plz>\\d{5})" }, { type: "query", key: "presentation", value: "site" }], destination: "/embed/simulation/:plz/site" },
+  { source: "/embed/simulation", has: [{ type: "query", key: "plz", value: "(?<plz>\\d{5})" }], destination: "/embed/simulation/:plz/widget" },
+  { source: "/embed/simulation", has: [{ type: "query", key: "presentation", value: "site" }], missing: [{ type: "query", key: "plz" }], destination: "/embed/simulation/ohne/site" },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingIncludes: {
@@ -91,6 +100,15 @@ const nextConfig = {
       beforeFiles: [
         { source: "/solar-atlas/hamburg", destination: "/solar-atlas/hamburg/hamburg/hamburg" },
         { source: "/solar-atlas/berlin", destination: "/solar-atlas/berlin/berlin/berlin" },
+        // Embed codes carry their subject in the query (`?ags=…`). A page
+        // reading searchParams is never cached, so the canonical query forms
+        // go to cached path twins. Config rewrites, not the middleware: a
+        // middleware rewrite onto an on-demand ISR route is served no-store
+        // by `next start` (measured 28.09.2026), a config rewrite is cached —
+        // the same mechanism as the city-state rewrites above. Non-canonical
+        // but valid forms ("09-679-147") are rewritten by the middleware.
+        // Kept in step with lib/embed-pfad-weiche.ts by its test.
+        ...EMBED_PFAD_REWRITES,
       ],
     };
   },

@@ -18,6 +18,13 @@
  * Normalisation happens here exactly as the page did it before, so the
  * twin receives only canonical keys and cannot be flooded with variants.
  *
+ * Two routes to the twin, one target (this function decides it for both):
+ * the CANONICAL query forms are rewritten by `EMBED_PFAD_REWRITES` in
+ * next.config.js, because only a config rewrite keeps an on-demand ISR twin
+ * cached; the rare non-canonical forms ("09-679-147", "bl=130") by the
+ * middleware (`embedPfadZiel` without `istKonfigRewrite`). Fully prerendered
+ * twins (kennzahl) work either way and stay with the middleware.
+ *
  * Edge-safe on purpose: no imports.
  */
 
@@ -71,4 +78,22 @@ export function embedPfadZiel(pathname: string, params: URLSearchParams): string
   }
 
   return null;
+}
+
+/**
+ * True when next.config.js (`EMBED_PFAD_REWRITES`) already rewrites this
+ * request — the middleware then must leave it alone. Mirrors the `has` rules
+ * there exactly (their values are anchored regular expressions).
+ */
+export function istKonfigRewrite(pathname: string, params: URLSearchParams): boolean {
+  const teile = pathname.split("/").filter(Boolean);
+  if (teile.length !== 2 || teile[0] !== "embed") return false;
+  const widget = teile[1];
+  if (istAus(GEMEINDE_WIDGETS, widget)) return /^\d{8}$/.test(params.get("ags") ?? "");
+  if (istAus(LAND_WIDGETS, widget)) return /^\d{2}$/.test(params.get("bl") ?? "");
+  if (widget === "simulation") {
+    if (/^\d{5}$/.test(params.get("plz") ?? "")) return true;
+    return !params.has("plz") && params.get("presentation") === "site";
+  }
+  return false;
 }
