@@ -4,7 +4,7 @@ import {trackWidgetEvent} from "../../lib/analytics";
 import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
 import {captureNodeToBlob} from '../../lib/chart-export';
 import {WidgetFrame} from './WidgetFrame';
-import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetFooter, WidgetSourceEdge} from '../WidgetExport';
+import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetSourceEdge} from '../WidgetExport';
 import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {embedPath, widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
@@ -23,7 +23,7 @@ import './dashboard.css';
  * A monitor widget that can be shared and downloaded through the shared export
  * pipeline — no second footer, no second image renderer:
  *  • page: an options menu top right (Teilen, Download, Einbetten; ChartOptionsMenu)
- *    or, with actions="bar", the registry footer row (WidgetFooter) — same handlers;
+ *    or a footer row (actions="primary" / legacy "bar") — the same menu and handlers;
  *    subject-matter help beside the headline; everything interactive ExportIgnore'd;
  *  • image: the chosen state as text instead of the selector, the texts behind
  *    "?" and the brand line (WidgetExportFooter), the vertical source edge with
@@ -157,7 +157,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
   const edgeColumns = def.sources.length > 1 ? 2 : 1;
   const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;box-sizing:border-box;`;
-  const widgetActions = <ChartOptionsMenu presentation={actions === "primary" ? "footer" : "menu"} label={frame.title} contactHref={contactHref} busy={chartExport.isExporting||videoProgress!==null}
+  const widgetActions = <ChartOptionsMenu presentation={actions !== "menu" ? "footer" : "menu"} label={frame.title} contactHref={contactHref} busy={chartExport.isExporting||videoProgress!==null}
         onRestart={animated?async()=>{
           const node=chartExport.chartRef.current;
           if(node)await controlChartAnimation(node,{mode:'restart'});
@@ -244,8 +244,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
             </div>
           </div>
         </ExportIgnore>}
-        {actions === 'primary' && <div className="sc-widget-actions">{widgetActions}</div>}
-        {actions === 'bar' && <div className="sc-widget-actions"><WidgetFooter widget={def} chartExport={chartExport} onsite showCta={false} /></div>}
+        {actions !== 'menu' && <div className="sc-widget-actions">{widgetActions}</div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
         <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>

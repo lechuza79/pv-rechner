@@ -1,5 +1,16 @@
 # Central visual system and regional pages — plan
 
+## Action-row consolidation — 28 September 2026 (local, not released)
+
+`ExportableWidgetFrame` now routes both footer presentations (`primary` and legacy
+`bar`) through `ChartOptionsMenu`, sharing restart, contextual links, embed contact,
+export availability and animation actions. The former `bar` path used `WidgetFooter`
+with separate handlers; no current consumer selects that legacy presentation.
+The accepted primary/footer and compact menu markup remains unchanged. Other chart
+families still using `WidgetFooter` are outside this bounded change. Source attribution
+and card spacing were inspected but not changed. The rendered alias-equivalence and
+compact-menu tests plus architecture guards pass (26 checks); no deployment was made.
+
 ## Release closeout — 28 September 2026
 
 **Published, not merely a local preview.** The shared widget release reached `main`
