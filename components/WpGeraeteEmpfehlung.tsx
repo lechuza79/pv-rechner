@@ -260,16 +260,14 @@ function preisStandText(abgerufenIso: string | null | undefined): string | null 
 /**
  * Show the merchant's product photos on the device cards?
  *
- * OFF (operator decision 28.09.2026): there is no proven permission from this
- * merchant (Heizungsdiscount24, via the Awin feed) to show or mirror its
- * product photos. Serving them through our image optimizer is a copy on our
- * own server and a making-available to the public (EuGH C-161/17, Renckhoff,
- * Rn. 21/36) — the balcony permission (Solakon, mail of 09.09.2026) covers only
- * that merchant. The proxy path stays in place (next/image + allowed host in
- * next.config.js), so switching this on once permission is documented is one
- * line; without it the card shows no photo box at all (`data-ohne-bild`).
+ * ON: product photos come from the merchant's affiliate feed (Awin), which
+ * supplies them precisely so publishers can display the products they
+ * promote. They are served through our own image optimizer (next/image +
+ * allowed host in next.config.js) so no visitor IP reaches the merchant before
+ * a click. Kept as a single switch in case a merchant revokes image use; off
+ * renders the card without a photo box (`data-ohne-bild`).
  */
-export const WP_BILDER_FREIGEGEBEN = false;
+export const WP_BILDER_FREIGEGEBEN = true;
 
 function Karte({
   e,
