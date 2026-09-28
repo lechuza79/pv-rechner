@@ -38,6 +38,8 @@ import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { getFundingPrograms } from "../../../../lib/funding-data";
+import { preloadPublishedPackage } from "../../../../lib/district-monitor-server";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
 import { isDistrictMember } from "../../../../lib/district-package";
@@ -146,6 +148,11 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
  * verzögert die erste Antwortbyte für ALLE Atlas-Seiten. Beide Reads unten sind
  * `unstable_cache`-gedeckt und werden im Body ohnehin gebraucht — sie kosten also
  * keinen zusätzlichen Datenbank-Zugriff.
+ *
+ * The page's other reads are only STARTED here, not awaited (startAtlasReads):
+ * they run while the shell waits for the child list of the redirect decision.
+ * They used to begin only afterwards — on a cold district page four waits in
+ * a row instead of one.
  */
 export default async function AtlasPage(props: { params: Promise<Params> }) {
   const params = await props.params;
@@ -153,24 +160,74 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   if (!region) notFound();
 
   const childLevel = childLevelOf(region);
+  // Started, not awaited: see startAtlasReads. Only regions that have a body.
+  const reads = childLevel ? startAtlasReads(region) : null;
 
   // A kreisfreie Stadt sits at Kreis level but has exactly one Gemeinde beneath
   // it — itself. A ranking of one row is nonsense, so send it to the leaf page
   // that actually says something.
   if (region.level === "landkreis") {
-    const kids = await getChildren(region);
+    const kids = await (reads ? reads.kinder : getChildren(region));
     if (kids.length === 1 && kids[0].slug) {
       permanentRedirect(`/solar-atlas/${(params.pfad ?? []).join("/")}/${kids[0].slug}`);
     }
   }
-  if (!childLevel) notFound();
+  if (!childLevel || !reads) notFound();
 
   return (
     <Suspense fallback={<AtlasSkeleton />}>
-      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} />
+      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} reads={reads} />
     </Suspense>
   );
 }
+
+/**
+ * Every read of the page body, started at once (28.09.2026).
+ *
+ * A cold district page used to wait in series: slug → child list (redirect
+ * check) → atlas numbers, ranking, ancestors → funding catalogue → monitor
+ * package. None of the later ones depends on an earlier result except through
+ * the region itself, so they all start as soon as the region is known. The
+ * funding catalogue and the monitor package are only warmed here; the district
+ * component picks them up (getFundingPrograms joins a running read,
+ * preloadPublishedPackage is request-cached). Each promise gets a no-op catch so
+ * that a redirect or 404 thrown before the body awaits it does not surface as
+ * an unhandled rejection; the body still sees the original error.
+ *
+ * Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
+ */
+function startAtlasReads(region: AtlasRegion) {
+  const refChain =
+    region.level === "bundesland" ? [{ key: "de", ags: "de" }] : [];
+  const reads = {
+    atlas: getRegionAtlasData(region.region_id),
+    kinder: getChildren(region),
+    ancestors: getAncestors(region),
+    ranking: getRankingData(region),
+    // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
+    // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
+    einzel: region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),
+    // Per-capita comparison with the parent levels (Bundesland → Deutschland).
+    // Districts on the region design have none; Deutschland has no parent.
+    refData: Promise.all(
+      refChain.map(async (r) => {
+        const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
+        return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
+      }),
+    ),
+    // The Land's own rank among its siblings; why the error is swallowed is
+    // explained where the body uses it.
+    geschwister:
+      region.level === "bundesland"
+        ? getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [] as Awaited<ReturnType<typeof getChildren>>)
+        : Promise.resolve([] as Awaited<ReturnType<typeof getChildren>>),
+  };
+  for (const p of Object.values(reads)) void p.catch(() => {});
+  if (region.level !== "de") void getFundingPrograms().catch(() => {});
+  preloadPublishedPackage(region.level === "landkreis" ? "district" : "region", region.region_id);
+  return reads;
+}
+type AtlasReads = ReturnType<typeof startAtlasReads>;
 
 /**
  * Levels served by the regional page on the accepted district design. Bundesland
@@ -184,21 +241,23 @@ async function AtlasBody({
   region,
   childLevel,
   pfad,
+  reads,
 }: {
   region: AtlasRegion;
   childLevel: Exclude<ReturnType<typeof childLevelOf>, null>;
   pfad: string[] | undefined;
+  reads: AtlasReads;
 }) {
   const params: Params = { pfad };
   const onRegionDesign = REGION_DESIGN_LEVELS.has(region.level);
-  const [atlas, kinderRoh, ancestors, rankingRoh, einzel] = await Promise.all([
-    getRegionAtlasData(region.region_id),
-    getChildren(region),
-    getAncestors(region),
-    getRankingData(region),
-    // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
-    // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
-    region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),
+  const [atlas, kinderRoh, ancestors, rankingRoh, einzel, refData, geschwister] = await Promise.all([
+    reads.atlas,
+    reads.kinder,
+    reads.ancestors,
+    reads.ranking,
+    reads.einzel,
+    reads.refData,
+    reads.geschwister,
   ]);
   const children = mitEndpfad(kinderRoh, einzel);
   const ranking = { ...rankingRoh, regions: mitEndpfad(rankingRoh.regions, einzel) };
@@ -225,23 +284,10 @@ async function AtlasBody({
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
 
-  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
-  // Kreis → Bundesland/Deutschland, Bundesland → Deutschland; Default ist die
-  // nächsthöhere Ebene. Deutschland selbst hat keinen Elternteil → keine Tendenz.
-  const refChain =
-    region.level === "landkreis"
-      ? [{ key: "bundesland", ags: region.region_id.slice(0, 2) }, { key: "de", ags: "de" }]
-      : region.level === "bundesland"
-        ? [{ key: "de", ags: "de" }]
-        : [];
-  // Per-capita comparison with the parent levels: old page, and kept on the new
-  // design for Bundesland/Deutschland (existing content, removal is a product decision).
-  const refData = region.level === "landkreis" && onRegionDesign ? [] : await Promise.all(
-    refChain.map(async (r) => {
-      const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
-      return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
-    }),
-  );
+  // Reference levels for the per-capita tendency (refData, read in
+  // startAtlasReads): Bundesland → Deutschland, the next level up by default.
+  // Deutschland has no parent; districts are on the region design, which does
+  // not show this comparison.
   type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
   const perCapOf = (a: AtlasData, pop: number | null) =>
     pop
@@ -282,11 +328,9 @@ async function AtlasBody({
    * läuft ohnehin für die Deutschland-Seite; die 16 Länderseiten teilen sich
    * denselben Eintrag. Zusätzliche Last entsteht also höchstens einmal je
    * Stunde, nicht je Aufruf.
+   *
+   * It is read in startAtlasReads, together with all other reads.
    */
-  const geschwister =
-    region.level === "bundesland"
-      ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
-      : [];
   // Gesamtleistung je Einwohner — dieselbe Größe wie Kennzahl und Einstiegssatz
   // (siehe RegionKind.wPerCapita in lib/region-highlight.ts).
   const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rank ?? null;

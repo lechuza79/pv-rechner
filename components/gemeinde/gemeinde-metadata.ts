@@ -17,12 +17,16 @@ export type GemeindeParams = { bundesland: string; kreis: string; gemeinde: stri
  * `vorschau` keeps the preview out of every index regardless.
  */
 export async function gemeindeMetadata(params: GemeindeParams, { vorschau }: { vorschau: boolean }): Promise<Metadata> {
+  // Both reads at once: the metadata sits on the critical path of the first
+  // byte just like the page, and the outreach list does not depend on the region.
+  const angeschriebenP = verlinkendeGemeinden();
+  void angeschriebenP.catch(() => {});
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region) return { robots: atlasRobots(false) };
   const kreisfrei = params.kreis === params.gemeinde;
   const stadtstaat = istStadtstaat(region.region_id);
   const bezugsebene = stadtstaat ? "Bundesgebiet" : kreisfrei ? "Bundesland" : "Landkreis";
-  const angeschrieben = await verlinkendeGemeinden();
+  const angeschrieben = await angeschriebenP;
   const einzeln = atlasOrtEinzelfreigabe(region.region_id) || angeschrieben.includes(region.region_id);
   const anlagen = atlasLevelReleased("gemeinde") || einzeln ? (await getRegionAtlasData(region.region_id)).solar.total_count : 0;
   const meta: Metadata = {

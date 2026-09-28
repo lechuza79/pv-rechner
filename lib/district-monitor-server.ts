@@ -1,5 +1,6 @@
 import 'server-only';
 import {brotliDecompressSync} from 'node:zlib';
+import {cache} from 'react';
 import {GEMEINDE_PAKET_BUCKET} from './gemeinde-paket-server';
 import {energyYearTitle} from './story-energy-year-labels';
 import {DB_READ_TIMEOUT_MS,withDbTimeout} from './db-timeout';
@@ -53,20 +54,39 @@ export function preparedState(editions:string[],stand:string):'current'|'older-e
   return newest&&stand&&newest.slice(0,7)<stand.slice(0,7)?'older-edition':'current';
 }
 
-export async function loadDistrictContent(regionId:string,members:string[],stand:string):Promise<DistrictContent>{
+/**
+ * Pointer, manifest entry and package body of one region, read once per
+ * request (React cache). Split from the checks below so a page can START the
+ * read before it knows the member list the check needs (preloadPublishedPackage):
+ * the two reads are the longest wait of a cold district page, and they used to
+ * begin only after every other read had finished.
+ */
+type Published = {found:false}|{found:true;generation:string;raw:unknown};
+const readPublished=cache(async(kind:'district'|'region',regionId:string):Promise<Published>=>{
   const pointer=await readObject(DISTRICT_POINTER_PATH);
   const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
-  if(!manifest||!checkManifest(manifest))return unavailable('not-published');
-  const entry=manifest.districts[regionId];
-  if(!entry)return unavailable('not-published');
+  if(!manifest||!checkManifest(manifest))return {found:false};
+  const entry=kind==='district'?manifest.districts[regionId]:manifest.regions?.[regionId];
+  if(!entry)return {found:false};
   const body=await readObject(entry.path);
-  if(!body)return unavailable('not-published');
-  const check=checkDistrictPackage(JSON.parse(brotliDecompressSync(body).toString('utf8')),regionId,members);
+  if(!body)return {found:false};
+  return {found:true,generation:manifest.generation,raw:JSON.parse(brotliDecompressSync(body).toString('utf8'))};
+});
+
+/** Starts the package read without waiting; loadDistrictContent/loadRegionContent pick it up. */
+export function preloadPublishedPackage(kind:'district'|'region',regionId:string):void{
+  void readPublished(kind,regionId).catch(()=>{});
+}
+
+export async function loadDistrictContent(regionId:string,members:string[],stand:string):Promise<DistrictContent>{
+  const published=await readPublished('district',regionId);
+  if(!published.found)return unavailable('not-published');
+  const check=checkDistrictPackage(published.raw,regionId,members);
   if(!check.ok)return unavailable(check.reason);
   const {pkg}=check;
   // Story titles of energy years follow the current code, like the town reader.
   const stories=pkg.content.stories.map((s:StoryConcept)=>s.energyYear?{...s,title:energyYearTitle(s.energyYear)}:s);
-  return {monitor:pkg.content.monitor,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:manifest.generation,builtAt:pkg.builtAt}};
+  return {monitor:pkg.content.monitor,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
 }
 
 /**
@@ -94,17 +114,12 @@ export async function loadRegionContent(regionId:string,children:string[],stand:
     }
   }
 
-  const pointer=await readObject(DISTRICT_POINTER_PATH);
-  const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
-  if(!manifest||!checkManifest(manifest))return unavailable('not-published');
-  const entry=manifest.regions?.[regionId];
-  if(!entry)return unavailable('not-published');
-  const body=await readObject(entry.path);
-  if(!body)return unavailable('not-published');
-  const check=checkRegionPackage(JSON.parse(brotliDecompressSync(body).toString('utf8')),regionId,children);
+  const published=await readPublished('region',regionId);
+  if(!published.found)return unavailable('not-published');
+  const check=checkRegionPackage(published.raw,regionId,children);
   if(!check.ok)return unavailable(check.reason);
   const {pkg}=check;
-  return {monitor:pkg.content.monitor,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:manifest.generation,builtAt:pkg.builtAt}};
+  return {monitor:pkg.content.monitor,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
 }
 
 /** The daily power endpoint consumes the same package. */

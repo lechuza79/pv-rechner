@@ -22,8 +22,27 @@ const TTL = 10 * 60 * 1000; // 10 min in-memory cache (warm function reuse)
 const FEHLER_RUHE = 30 * 1000;
 let fehlerBis = 0;
 
-export async function getFundingPrograms(): Promise<FundingProgram[]> {
-  if (cache && Date.now() - cache.ts < TTL) return cache.data;
+// Concurrent callers join ONE read (28.09.2026). A page starts this read early
+// (see app/(site)/solar-atlas/[[...pfad]]/page.tsx) so it runs alongside the
+// other reads; without joining, the component's own call would issue a second
+// query while the first is still under way. `generation` keeps a read that was
+// started before invalidateFundingCache() from writing its old result back.
+let inFlight: Promise<FundingProgram[]> | null = null;
+let generation = 0;
+
+export function getFundingPrograms(): Promise<FundingProgram[]> {
+  if (cache && Date.now() - cache.ts < TTL) return Promise.resolve(cache.data);
+  if (!inFlight) {
+    const own = generation;
+    const read = ladeFundingPrograms(own).finally(() => {
+      if (inFlight === read) inFlight = null;
+    });
+    inFlight = read;
+  }
+  return inFlight;
+}
+
+async function ladeFundingPrograms(own: number): Promise<FundingProgram[]> {
 
   const seed = Object.values(FUNDING_PROGRAMS);
   // Entwicklungs-Schalter: den Code-Seed erzwingen, obwohl eine Datenbank da ist.
@@ -126,7 +145,7 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
         `[funding] Datenform nicht verstanden, auf den Code-Seed zurückgefallen: ${nichtVerstanden.join(", ")}`,
       );
     }
-    cache = { data: programs, ts: Date.now() };
+    if (own === generation) cache = { data: programs, ts: Date.now() };
     return programs;
   } catch {
     fehlerBis = Date.now() + FEHLER_RUHE;
@@ -140,6 +159,8 @@ export async function getFundingProgramById(id: string): Promise<FundingProgram 
 
 export function invalidateFundingCache(): void {
   cache = null;
+  generation += 1;
+  inFlight = null;
   // Auch die Ruhepause aufheben: Wer gerade geschrieben hat, will den neuen
   // Stand sehen, nicht 30 s lang den Seed.
   fehlerBis = 0;
