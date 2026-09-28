@@ -52,6 +52,7 @@ import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
+import { verlinktePfade, verlinkteSeiteBefund } from "../lib/verlinkte-seiten";
 import {
   BASIS_TAGE,
   FEHLBETRAG_MELDEN_AB_ANTEIL,
@@ -436,6 +437,48 @@ export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
     return [`Das Vorschaubild ist ${b.breite} statt 1200 Punkte breit — die Netzwerke schneiden es dann zu.`];
   }
   return [];
+}
+
+/** Opens every page someone links to (see lib/verlinkte-seiten.ts). null = list not readable. */
+async function messeVerlinkteSeiten(): Promise<{ pfad: string; befund: string | null }[] | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  const headers = { apikey: key, Authorization: `Bearer ${key}` };
+  try {
+    const q = async (path: string) => {
+      const res = await fetch(`${url}/rest/v1/${path}`, { headers, signal: AbortSignal.timeout(15000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    };
+    const pub = (await q("kommunen_veroeffentlichung?select=region_id&noch_online=eq.true")) as { region_id: string }[];
+    const ids = [...new Set(pub.map((p) => String(p.region_id)))];
+    if (!ids.length) return [];
+    const alle = [...new Set(ids.flatMap((id) => [id, id.slice(0, 5), id.slice(0, 2)]))];
+    const regionen = (await q(`mastr_regions?select=region_id,slug,name&region_id=in.(${alle.join(",")})`)) as {
+      region_id: string; slug: string | null; name: string;
+    }[];
+    const out: { pfad: string; befund: string | null }[] = [];
+    for (const s of verlinktePfade(ids, regionen)) {
+      let status = 0;
+      let html = "";
+      try {
+        const res = await fetch(`${BASE_URL}${s.pfad}`, {
+          redirect: "manual",
+          headers: { "user-agent": "solar-check-health-check" },
+          signal: AbortSignal.timeout(30000),
+        });
+        status = res.status;
+        html = await res.text();
+      } catch {
+        status = 0;
+      }
+      out.push({ pfad: s.pfad, befund: verlinkteSeiteBefund(status, html, s.name) });
+    }
+    return out;
+  } catch {
+    return null;
+  }
 }
 
 /** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
@@ -2059,6 +2102,27 @@ async function main() {
         `Google behandelt damit jede erfundene Adresse als gültige Seite. Zuerst app/global-not-found.tsx ` +
         `und den Schalter experimental.globalNotFound in next.config.js prüfen.`,
     );
+  }
+
+  // ── Seiten, auf die jemand verlinkt ─────────────────────────────────────
+  // Jede Gemeinde mit belegter Veröffentlichung und ihr Kreis: Status UND Inhalt.
+  // Am 28.09.2026 antworteten genau diese Seiten 8 Minuten lang mit 404, während
+  // Presse-Mails mit diesen Links hinausgingen — die Zufalls-Stichprobe oben
+  // trifft eine verlinkte Seite praktisch nie (lib/verlinkte-seiten.ts).
+  const verlinkt = await messeVerlinkteSeiten();
+  if (verlinkt === null) {
+    lines.push("Verlinkte Seiten: Liste nicht lesbar — nicht geprüft");
+  } else {
+    const kaputt = verlinkt.filter((v) => v.befund);
+    lines.push(`Verlinkte Seiten: ${verlinkt.length - kaputt.length} von ${verlinkt.length} in Ordnung`);
+    for (const v of kaputt) lines.push(`  ✗ ${v.pfad}: ${v.befund}`);
+    if (kaputt.length) {
+      technical("verlinkte-seiten", false,
+        `${kaputt.length} Seite(n), auf die Medien oder Gemeinden verlinken, liefern nicht die richtige Seite: ` +
+          kaputt.map((v) => `${v.pfad} (${v.befund})`).join("; ") +
+          `. Zuerst die letzte Auslieferung prüfen und im Zweifel zurücknehmen.`,
+      );
+    }
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────
