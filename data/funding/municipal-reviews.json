@@ -73546,5 +73546,469 @@
       "website": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
       "question": "Auf der Seite Förderprogramme der Gemeinde Grethem ist das CO2-Minderungsprogramm mit Förderrichtlinie und Antrag (beide Stand 21.10.2006) weiterhin veröffentlicht; es fördert unter anderem Photovoltaikanlagen mit 35 € je volle 0,25 kWp und Wärmepumpen mit 35 € je kW. Wird dieses Programm 2026 noch gewährt, stehen dafür Haushaltsmittel bereit, und gilt der Höchstbetrag von 350 € je Maßnahme (so die Richtlinie) oder je Gebäude und Grundeigentümer (so das Antragsformular)?"
     }
+  },
+  {
+    "regionId": "13073005",
+    "name": "Altenpleen",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altenpleen (Amt Altenpleen, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-geförderte Bauvorhaben, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "Förderseite des Amtes Altenpleen (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-altenpleen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher (Gegenprobe Kita)",
+      "Seitenkarte amt-altenpleen.de (57 Adressen) nach Förder-/Energiebegriffen",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): „Kommunale Förderprojekte“ nennt nur EU-geförderte Vorhaben des Amtes — Neubau Radweg Preetz–Krönnevitz (EFRE) und Erweiterung der Regionalen Schule „An der Prohner Wiek“ (ELER). Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Klimaschutz, Speicher: jeweils „Leider keine Treffer“; „Förderprogramm“ trifft nur die Meldung „Kostenfreie Webseitenerstellung für alle aus dem Amt“. Gegenprobe „Kita“ liefert Treffer — die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-geförderte Vorhaben des Amtes (Radweg, Schule), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073037",
+    "name": "Groß Mohrdorf",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Mohrdorf (Amt Altenpleen, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-geförderte Bauvorhaben, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "Förderseite des Amtes Altenpleen (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-altenpleen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher (Gegenprobe Kita)",
+      "Seitenkarte amt-altenpleen.de (57 Adressen) nach Förder-/Energiebegriffen",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): „Kommunale Förderprojekte“ nennt nur EU-geförderte Vorhaben des Amtes — Neubau Radweg Preetz–Krönnevitz (EFRE) und Erweiterung der Regionalen Schule „An der Prohner Wiek“ (ELER). Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Klimaschutz, Speicher: jeweils „Leider keine Treffer“; „Förderprogramm“ trifft nur die Meldung „Kostenfreie Webseitenerstellung für alle aus dem Amt“. Gegenprobe „Kita“ liefert Treffer — die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-geförderte Vorhaben des Amtes (Radweg, Schule), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073046",
+    "name": "Kramerhof",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kramerhof (Amt Altenpleen, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-geförderte Bauvorhaben, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "Förderseite des Amtes Altenpleen (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-altenpleen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher (Gegenprobe Kita)",
+      "Seitenkarte amt-altenpleen.de (57 Adressen) nach Förder-/Energiebegriffen",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): „Kommunale Förderprojekte“ nennt nur EU-geförderte Vorhaben des Amtes — Neubau Radweg Preetz–Krönnevitz (EFRE) und Erweiterung der Regionalen Schule „An der Prohner Wiek“ (ELER). Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Klimaschutz, Speicher: jeweils „Leider keine Treffer“; „Förderprogramm“ trifft nur die Meldung „Kostenfreie Webseitenerstellung für alle aus dem Amt“. Gegenprobe „Kita“ liefert Treffer — die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-geförderte Vorhaben des Amtes (Radweg, Schule), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073066",
+    "name": "Preetz",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Preetz (Amt Altenpleen, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-geförderte Bauvorhaben, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "Förderseite des Amtes Altenpleen (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-altenpleen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher (Gegenprobe Kita)",
+      "Seitenkarte amt-altenpleen.de (57 Adressen) nach Förder-/Energiebegriffen",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): „Kommunale Förderprojekte“ nennt nur EU-geförderte Vorhaben des Amtes — Neubau Radweg Preetz–Krönnevitz (EFRE) und Erweiterung der Regionalen Schule „An der Prohner Wiek“ (ELER). Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Klimaschutz, Speicher: jeweils „Leider keine Treffer“; „Förderprogramm“ trifft nur die Meldung „Kostenfreie Webseitenerstellung für alle aus dem Amt“. Gegenprobe „Kita“ liefert Treffer — die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-geförderte Vorhaben des Amtes (Radweg, Schule), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amt-altenpleen.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-altenpleen.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12069076",
+    "name": "Brück",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brück (Amt Brück, Potsdam-Mittelmark): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die als Förderseite erfasste Seite ist ein Webseitenprogramm eines Vereins; die Volltextsuche des Amtes findet nur eigene Vorhaben und Vereins-/Wirtschaftsförderung; die Klimaschutzrichtlinie des Landkreises fördert Privatinitiativen nur für Blühflächen und Gehölze, Photovoltaik nur auf kommunalen Flächen.",
+    "searches": [
+      "Förderseite des Amtes Brück (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-brueck.de (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz, Balkonkraftwerk, Wärmepumpe, Speicher",
+      "Bauhof-PV-Projekt und Meldung zur Energiemanagerin gelesen",
+      "Klimaschutzförderrichtlinie Landkreis Potsdam-Mittelmark (Archivkopie 12/2025; Live-PDF 404) und Klimaschutzseite des Kreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): Webseitenförderprogramm „Brück vernetzt“ des Fördervereins für regionale Entwicklung e.V. — kostenlose Webseitenerstellung für Einrichtungen, Vereine und Unternehmen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.amt-brueck.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-brueck.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz; Balkonkraftwerk ohne Treffer. Treffer sind Ortsbeschreibungen, Bauleitverfahren, Wirtschaftsförderung, LEADER-/Tourismus-/Vereinsförderung, eine neue Energiemanagerin für kommunale Gebäude (12.08.2026) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amt-brueck.de/texte/seite.php?id=753866",
+        "finding": "28.09.2026 gelesen: PV-Anlage mit Speicher und Ladestation auf dem Bauhof des Amtes, gefördert mit ca. 7.550 € aus der Klimaschutzrichtlinie des Landkreises — eigenes Vorhaben, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/files/images/leben-im-landkreis/klima-naturschutz/klimarichtlinie-potsdam-mittelmark-2023-01-01.pdf",
+        "finding": "Klimaschutzförderrichtlinie Potsdam-Mittelmark (in Kraft 01.01.2023, 300.000 €/Jahr), live 28.09.2026 HTTP 404, gelesen im Archiv (Kopie 04.12.2025): Nr. 2.3 fördert Vereine und Privatinitiativen nur für Blühflächen und Hecken/Gehölze; Photovoltaik nur auf kommunalen Flächen (Nr. 2.1). Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
+        "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: kostenlose Webseitenerstellung eines Fördervereins, kein Energieprogramm.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-brueck.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12069216",
+    "name": "Golzow",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Golzow (Amt Brück, Potsdam-Mittelmark): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die als Förderseite erfasste Seite ist ein Webseitenprogramm eines Vereins; die Volltextsuche des Amtes findet nur eigene Vorhaben und Vereins-/Wirtschaftsförderung; die Klimaschutzrichtlinie des Landkreises fördert Privatinitiativen nur für Blühflächen und Gehölze, Photovoltaik nur auf kommunalen Flächen.",
+    "searches": [
+      "Förderseite des Amtes Brück (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-brueck.de (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz, Balkonkraftwerk, Wärmepumpe, Speicher",
+      "Bauhof-PV-Projekt und Meldung zur Energiemanagerin gelesen",
+      "Klimaschutzförderrichtlinie Landkreis Potsdam-Mittelmark (Archivkopie 12/2025; Live-PDF 404) und Klimaschutzseite des Kreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): Webseitenförderprogramm „Brück vernetzt“ des Fördervereins für regionale Entwicklung e.V. — kostenlose Webseitenerstellung für Einrichtungen, Vereine und Unternehmen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.amt-brueck.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-brueck.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz; Balkonkraftwerk ohne Treffer. Treffer sind Ortsbeschreibungen, Bauleitverfahren, Wirtschaftsförderung, LEADER-/Tourismus-/Vereinsförderung, eine neue Energiemanagerin für kommunale Gebäude (12.08.2026) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amt-brueck.de/texte/seite.php?id=753866",
+        "finding": "28.09.2026 gelesen: PV-Anlage mit Speicher und Ladestation auf dem Bauhof des Amtes, gefördert mit ca. 7.550 € aus der Klimaschutzrichtlinie des Landkreises — eigenes Vorhaben, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/files/images/leben-im-landkreis/klima-naturschutz/klimarichtlinie-potsdam-mittelmark-2023-01-01.pdf",
+        "finding": "Klimaschutzförderrichtlinie Potsdam-Mittelmark (in Kraft 01.01.2023, 300.000 €/Jahr), live 28.09.2026 HTTP 404, gelesen im Archiv (Kopie 04.12.2025): Nr. 2.3 fördert Vereine und Privatinitiativen nur für Blühflächen und Hecken/Gehölze; Photovoltaik nur auf kommunalen Flächen (Nr. 2.1). Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
+        "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: kostenlose Webseitenerstellung eines Fördervereins, kein Energieprogramm.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-brueck.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12069345",
+    "name": "Linthe",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Linthe (Amt Brück, Potsdam-Mittelmark): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die als Förderseite erfasste Seite ist ein Webseitenprogramm eines Vereins; die Volltextsuche des Amtes findet nur eigene Vorhaben und Vereins-/Wirtschaftsförderung; die Klimaschutzrichtlinie des Landkreises fördert Privatinitiativen nur für Blühflächen und Gehölze, Photovoltaik nur auf kommunalen Flächen.",
+    "searches": [
+      "Förderseite des Amtes Brück (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-brueck.de (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz, Balkonkraftwerk, Wärmepumpe, Speicher",
+      "Bauhof-PV-Projekt und Meldung zur Energiemanagerin gelesen",
+      "Klimaschutzförderrichtlinie Landkreis Potsdam-Mittelmark (Archivkopie 12/2025; Live-PDF 404) und Klimaschutzseite des Kreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): Webseitenförderprogramm „Brück vernetzt“ des Fördervereins für regionale Entwicklung e.V. — kostenlose Webseitenerstellung für Einrichtungen, Vereine und Unternehmen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.amt-brueck.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-brueck.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz; Balkonkraftwerk ohne Treffer. Treffer sind Ortsbeschreibungen, Bauleitverfahren, Wirtschaftsförderung, LEADER-/Tourismus-/Vereinsförderung, eine neue Energiemanagerin für kommunale Gebäude (12.08.2026) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amt-brueck.de/texte/seite.php?id=753866",
+        "finding": "28.09.2026 gelesen: PV-Anlage mit Speicher und Ladestation auf dem Bauhof des Amtes, gefördert mit ca. 7.550 € aus der Klimaschutzrichtlinie des Landkreises — eigenes Vorhaben, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/files/images/leben-im-landkreis/klima-naturschutz/klimarichtlinie-potsdam-mittelmark-2023-01-01.pdf",
+        "finding": "Klimaschutzförderrichtlinie Potsdam-Mittelmark (in Kraft 01.01.2023, 300.000 €/Jahr), live 28.09.2026 HTTP 404, gelesen im Archiv (Kopie 04.12.2025): Nr. 2.3 fördert Vereine und Privatinitiativen nur für Blühflächen und Hecken/Gehölze; Photovoltaik nur auf kommunalen Flächen (Nr. 2.1). Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
+        "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: kostenlose Webseitenerstellung eines Fördervereins, kein Energieprogramm.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-brueck.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12069470",
+    "name": "Planebruch",
+    "checkedAt": "2026-09-28T04:07:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Planebruch (Amt Brück, Potsdam-Mittelmark): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die als Förderseite erfasste Seite ist ein Webseitenprogramm eines Vereins; die Volltextsuche des Amtes findet nur eigene Vorhaben und Vereins-/Wirtschaftsförderung; die Klimaschutzrichtlinie des Landkreises fördert Privatinitiativen nur für Blühflächen und Gehölze, Photovoltaik nur auf kommunalen Flächen.",
+    "searches": [
+      "Förderseite des Amtes Brück (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-brueck.de (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz, Balkonkraftwerk, Wärmepumpe, Speicher",
+      "Bauhof-PV-Projekt und Meldung zur Energiemanagerin gelesen",
+      "Klimaschutzförderrichtlinie Landkreis Potsdam-Mittelmark (Archivkopie 12/2025; Live-PDF 404) und Klimaschutzseite des Kreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "28.09.2026 live gelesen (Bildschirm- und Druckansicht): Webseitenförderprogramm „Brück vernetzt“ des Fördervereins für regionale Entwicklung e.V. — kostenlose Webseitenerstellung für Einrichtungen, Vereine und Unternehmen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.amt-brueck.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Weiterleitung des Kontaktformulars, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-brueck.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche des Amtes (Seiten und Meldungen) nach Photovoltaik, Solar, Zuschuss, Förderprogramm, Klimaschutz; Balkonkraftwerk ohne Treffer. Treffer sind Ortsbeschreibungen, Bauleitverfahren, Wirtschaftsförderung, LEADER-/Tourismus-/Vereinsförderung, eine neue Energiemanagerin für kommunale Gebäude (12.08.2026) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amt-brueck.de/texte/seite.php?id=753866",
+        "finding": "28.09.2026 gelesen: PV-Anlage mit Speicher und Ladestation auf dem Bauhof des Amtes, gefördert mit ca. 7.550 € aus der Klimaschutzrichtlinie des Landkreises — eigenes Vorhaben, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/files/images/leben-im-landkreis/klima-naturschutz/klimarichtlinie-potsdam-mittelmark-2023-01-01.pdf",
+        "finding": "Klimaschutzförderrichtlinie Potsdam-Mittelmark (in Kraft 01.01.2023, 300.000 €/Jahr), live 28.09.2026 HTTP 404, gelesen im Archiv (Kopie 04.12.2025): Nr. 2.3 fördert Vereine und Privatinitiativen nur für Blühflächen und Hecken/Gehölze; Photovoltaik nur auf kommunalen Flächen (Nr. 2.1). Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
+        "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: kostenlose Webseitenerstellung eines Fördervereins, kein Energieprogramm.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html"
+      },
+      {
+        "url": "amt-brueck.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-brueck.de/contact/index/link"
+      }
+    ]
   }
 ]
