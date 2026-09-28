@@ -1,5 +1,41 @@
 # Central visual system and regional pages — plan
 
+## Release closeout — 28 September 2026
+
+**Published, not merely a local preview.** The shared widget release reached `main`
+as `60029ab7` on 27 September 2026; Vercel deployment succeeded. Public Wittenberg
+and its action flyout were browser-verified. The release passed 5,310 unit tests.
+The shared monitor composition is used by municipality, district, state and country
+adapters, with availability determined by each level's data.
+
+Follow-up `c801f8ad` was published on 27 September: readable primary text for the
+standalone/light current-power number while preserving the Atlas accent; final race
+ranks now settle immediately with reduced motion. Related menu/export expectations
+were updated. 5,328 tests passed (3 skipped), deployment succeeded, and the public
+Bayern funding page was confirmed to render the primary-text token. These checks do
+not mean every project-wide browser check was green.
+
+**Data activation is separate from deployment.** The 27 September package run
+published 17 state/country packages; the weather run wrote the regional daily file,
+but only 14/17 regional curves were available. Schleswig-Holstein, Rheinland-Pfalz
+and Germany still had missing inputs in those runs. See the dated evidence and
+verification limits in [the data handoff](land-bund-energiemonitor-daten.md#release-and-activation-closeout--28-september-2026).
+
+Two CI findings were handed to the coordinating task and were not fixed by this
+widget patch: the roof-shape flow losing its question/state (`e2e/empfehlung.spec.ts`)
+and the missing floating ranking-header copy (`e2e/ranking-fixspalten.spec.ts`).
+Their subsequent resolution has not been verified in this closeout.
+
+General widget settings, configurable standalone embeds and an optional hero sharing
+footer remain deferred. The accepted racing-chart action footer is already included;
+it is not the deferred general hero setting. The current video export uses MP4 with
+the shared animation clock; the Safari/WebM evidence below describes the older
+26 September implementation and does not certify the final MP4 path on iPhone Safari.
+
+**Historical record below:** dated local checks, missing-data statements and pending
+release notes describe their original checkpoints. They are retained for traceability;
+this closeout takes precedence for release status.
+
 **SCOPE REDUCED (26.09.2026, user via root).** Priority is Landkreis → Bundesland →
 Deutschland live and performant on the accepted district design. The broad widget
 roadmap below (stages beyond the three migrated municipal visuals, editorial rebuild,

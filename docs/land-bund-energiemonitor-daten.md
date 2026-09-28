@@ -1,5 +1,39 @@
 # Energiemonitor für Bundesländer und Deutschland — Datenschnittstelle
 
+## Release and activation closeout — 28 September 2026
+
+**Code published:** the regional data work (`6ea0fcdc`, `78cbaa1f`) and shared UI
+integration shipped with `60029ab7` on 27 September 2026. Vercel confirmed deployment.
+The subsequent widget contrast/reduced-motion correction `c801f8ad` was also deployed
+that day. Release scope, remaining CI findings and deferred settings are recorded in
+[the central visual plan](zentrale-visuals-konzept.md#release-closeout--28-september-2026).
+
+**Storage activation, verified from existing run logs on 28 September:**
+
+- [Package run 36339227588](https://github.com/lechuza79/pv-rechner/actions/runs/36339227588)
+  succeeded on 27 September and published generation `20260927T180417Z-7df6f8`
+  with 17 state/country packages, reusing 294 district packages. Thus publication
+  happened; the historical statement below that nothing was written is superseded.
+- Sachsen-Anhalt had a complete monitor, 20 energy/value months, one year and 218
+  sites. Schleswig-Holstein, Rheinland-Pfalz and Germany remained unavailable for
+  historical monitor/energy data (`history`); the two states had no site lists.
+  Thüringen had monetary values for 17 months. A successful publisher does not mean
+  all regional datasets are complete.
+- [Weather run 36339533623](https://github.com/lechuza79/pv-rechner/actions/runs/36339533623)
+  succeeded, including the regional-curve step, and wrote
+  `wetter-modell/regionen/solartag.json` (151 kB). For both 27 and 28 September its
+  log reports **14/17 ready**: Schleswig-Holstein and Rheinland-Pfalz `no-sites`,
+  Germany `incomplete-states(01,07)`. The remaining states, including Sachsen-Anhalt,
+  had prepared daily curves. Missing curves must remain unavailable, never zero.
+
+These are the results of those specific production runs, not a fresh audit of every
+public endpoint or the latest storage generation. Subsequent imports, repaired child
+packages, later weather runs and current all-17 availability were **not verified**
+in this documentation-only closeout. No rebuild or new test run was triggered.
+
+**Historical handoff follows.** Its local-only wording, example-package results and
+then-pending activation steps remain as dated evidence, not the current release status.
+
 Stand 26.09.2026. Übergabe an die UI-Einbindung (Codex). Daten fertig, UI nicht angefasst.
 
 ## Was es gibt
