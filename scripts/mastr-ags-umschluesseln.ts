@@ -124,6 +124,10 @@ async function main() {
     const { error } = await db.rpc(fn);
     if (error) throw new Error(`${fn}: ${error.message}`);
   }
+  // The district/Land/Deutschland packages carry the ranking cells stamped with
+  // the import date (lib/ranking-package.ts); re-keying changes the numbers but
+  // not that date, so the pages would keep showing the packaged cells.
+  console.log("Danach: npm run kreise:pakete -- --alle — die Pakete tragen die Ranglisten-Zellen dieses Importdatums.");
 
   const secret = process.env.CRON_SECRET;
   if (!secret) {
