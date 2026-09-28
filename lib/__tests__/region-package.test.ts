@@ -1,10 +1,11 @@
 import {describe,expect,it} from 'vitest';
 import {brotliDecompressSync} from 'node:zlib';
 import type {GemeindePaket,MonitorObservation} from '../gemeinde-paket';
-import {buildDistrictPackage,DISTRICT_POINTER_PATH,type DistrictManifest,type DistrictMembership} from '../district-package';
+import {buildDistrictPackage,DISTRICT_CONTENT_REVISION,DISTRICT_POINTER_PATH,districtFingerprint,type DistrictManifest,type DistrictMembership} from '../district-package';
 import {aggregateDistrictEnergy} from '../district-energy';
 import {aggregateDistrictMonitor} from '../district-monitor';
-import {buildRegionPackage,checkRegionPackage,partFromAggregate,partFromTown,regionsFromRegister} from '../region-package';
+import {buildRegionPackage,checkRegionPackage,partFromAggregate,partFromTown,regionFingerprint,regionsFromRegister} from '../region-package';
+import {regionDay} from '../region-solar-day';
 import {refreshDistricts,type DistrictStore} from '../district-package-publish';
 
 const STAND='2026-09-10';
@@ -180,5 +181,63 @@ describe('region packages in the district generation',()=>{
     const q=m.pointer();
     expect(m.files.has(q.districts['15001'].path)).toBe(true);
     expect(m.files.has(q.regions!.de.path)).toBe(true);
+  });
+
+  /**
+   * Nordfriesland, 26.–28.09.2026: Gröde has no plant, so its town package holds
+   * no history. The rule "register-confirmed empty towns add zero" went live
+   * without changing any fingerprint; the daily runs kept the district package
+   * built before it ("unavailable (history)"), and with it the Land, Deutschland
+   * and the Länder day curve ("no-sites", "incomplete-states").
+   */
+  it('rebuilds a district kept from an older aggregation revision, and the Land and Deutschland above it',async()=>{
+    const empty='15001002';
+    const withEmpty=new Map([...towns,[empty,{...town(empty,1),monitorHistory:null,monitorPeriods:null,register:null} as unknown as GemeindePaket]]);
+    const readTown=async(a:string)=>withEmpty.get(a)??null;
+    const confirmEmpty=async(ids:string[])=>new Set(ids.filter(a=>a===empty));
+    const stateOf=(m:ReturnType<typeof memoryStore>,id:string)=>JSON.parse(brotliDecompressSync(m.files.get(id.length===5?m.pointer().districts[id].path:m.pointer().regions![id].path)!).toString());
+
+    // The run before the rule: nothing counts as empty, so every level is unavailable.
+    const m=memoryStore();
+    await refreshDistricts({store:m.store,readTown,districts:D,townTags:tags(),now,lock,regions:R});
+    expect(stateOf(m,'15001').content.monitor).toMatchObject({status:'unavailable',reason:'history',sites:null});
+    const land=stateOf(m,'15').content.monitor;
+    expect(land).toMatchObject({status:'unavailable',sites:null});
+    // …which is why the day curve says "no-sites" for the Land and "incomplete-states" for Deutschland.
+    const curve=regionDay({'15':land.sites},new Map(),()=>null,[0,1],'run');
+    expect(curve['15']).toMatchObject({reason:'no-sites'});
+    expect(curve.de).toMatchObject({reason:'incomplete-states'});
+
+    // Its fingerprints, as that older code wrote them.
+    const pointer=m.pointer();
+    const prints=new Map([[D[0].regionId,districtFingerprint(D[0],tags(),'',DISTRICT_CONTENT_REVISION-1)]]);
+    for(const r of R){
+      for(const part of r.parts)if(part.kind==='town')prints.set(part.id,`town:${tags().get(part.town!)}`);
+      prints.set(r.regionId,regionFingerprint(r,prints));
+      pointer.regions![r.regionId].fingerprint=prints.get(r.regionId)!;
+    }
+    pointer.districts[D[0].regionId].fingerprint=prints.get(D[0].regionId)!;
+    m.files.set(DISTRICT_POINTER_PATH,Buffer.from(JSON.stringify(pointer)));
+
+    // The daily run with the rule, no "--alle": it must see that the old package is stale.
+    const r=await refreshDistricts({store:m.store,readTown,districts:D,townTags:tags(),now,lock,regions:R,confirmEmpty});
+    expect(r).toMatchObject({status:'veröffentlicht',rebuilt:1,regionsRebuilt:2});
+    const district=stateOf(m,'15001');
+    expect(district.empty).toEqual([empty]);
+    expect(district.content.monitor.status).toBe('ready');
+    expect(stateOf(m,'15').content.monitor.status).toBe('ready');
+    expect(stateOf(m,'15').content.monitor.sites.map((s:{ags:string})=>s.ags)).toEqual(['15001001','15003000']);
+    expect(stateOf(m,'de').content.monitor.status).toBe('ready');
+  });
+
+  it('keeps the rule: a town without history and without register confirmation leaves every level unavailable',async()=>{
+    const empty='15001002';
+    const withEmpty=new Map([...towns,[empty,{...town(empty,1),monitorHistory:null,monitorPeriods:null,register:null} as unknown as GemeindePaket]]);
+    const m=memoryStore();
+    await refreshDistricts({store:m.store,readTown:async a=>withEmpty.get(a)??null,districts:D,townTags:tags(),now,lock,regions:R,confirmEmpty:async()=>new Set()});
+    const read=(path:string)=>JSON.parse(brotliDecompressSync(m.files.get(path)!).toString());
+    expect(read(m.pointer().districts['15001'].path).content.monitor).toMatchObject({status:'unavailable',reason:'history'});
+    expect(read(m.pointer().regions!['15'].path).content.monitor.status).toBe('unavailable');
+    expect(read(m.pointer().regions!.de.path).content.monitor.status).toBe('unavailable');
   });
 });
