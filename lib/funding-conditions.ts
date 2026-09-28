@@ -552,6 +552,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
   // minimum, three-year own use and council budget release have no test form.
   "goedenstorf-stecker-solar",
+  // Added 28 Sep 2026: status unsicher (guideline of 2006, no current budget
+  // published); "je volle 0,25 kWp" and the building/measure cap conflict
+  // have no test form.
+  "grethem-co2-minderung",
   // Added 22 Sep 2026: exhausted; two-month main residence, application after
   // installation and three-year operation have no test form.
   "grossheide-balkonmodule",

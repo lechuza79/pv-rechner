@@ -15547,6 +15547,56 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Added 28.09.2026: Gemeinde Grethem (Samtgemeinde Ahlden) ─────────────
+  //
+  // Found in the source queue (the Grethem funding page, shared by the four
+  // Samtgemeinde Ahlden towns in the queue). The page still offers the
+  // programme with guideline and form; both are 2-page scans dated
+  // 21.10.2006, read as images on 28.09.2026 (guideline md5
+  // 53b217902fd59dbc23d5fb8e0f3819bf):
+  // - "Einbau einer Photovoltaikanlage mit € 35,-- je volle 0,25 kW/p",
+  //   "Einbau einer Wärmepumpe mit € 35,-- je 1 kW Eingangsleistung",
+  //   "Die maximale Förderhöhe ist auf 350,-- Euro je Grundeigentümer auf eine
+  //   Maßnahme begrenzt", "Vor Bewilligung darf kein verbindlicher Auftrag
+  //   erteilt werden", "Es werden nur fabrikneue Anlagen gefördert".
+  // STATUS UNSICHER, NO CALCULATION FIELD: the guideline is twenty years old,
+  // no budget or council decision for 2026 is published, and it reserves the
+  // right to cut or postpone applications when funds run short. Same form as
+  // Kalchreuth: the rates stand as information, nothing is deducted.
+  // Balcony power plants are not named; foerdert stays pv + waermepumpe.
+  // Adversarial reviewer (28.09.2026): status, rates and scope confirmed;
+  // added the building scope ("alle Gebäude", form names "Stall") and the
+  // cap conflict (guideline "je Grundeigentümer auf eine Maßnahme", form
+  // "je Gebäude und Grundeigentümer").
+  // The craftsmen bonus (Teil 2) is paid by cooperating firms, not by the
+  // municipality, and is not a grant of this programme.
+  "grethem-co2-minderung": {
+    id: "grethem-co2-minderung", name: "CO2-Minderungsprogramm",
+    traeger: "Gemeinde Grethem", level: "kommune", region: "Grethem",
+    bundesland: "Niedersachsen", agsCode: "03358011",
+    url: "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beschlossenIso: "2006-10-21",
+    eligibility: ["privat"],
+    foerdert: ["pv", "waermepumpe"],
+    coveredCosts: "Zuschuss je Leistung für neue Photovoltaikanlagen und Wärmepumpen (daneben Solarthermie und Lüftung mit Wärmerückgewinnung)",
+    maxFoerderung: "350 € je Grundeigentümer (Richtlinie: je Maßnahme; Antragsformular: je Gebäude)",
+    rates: [
+      { label: "Photovoltaikanlage", value: "35 € je volle 0,25 kWp, höchstens 350 €", nur: ["pv"] },
+      { label: "Wärmepumpe", value: "35 € je kW Eingangsleistung, höchstens 350 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "GELTUNG UNKLAR: Richtlinie und Antrag tragen den Stand 21.10.2006; die Gemeinde veröffentlicht beide weiterhin, nennt aber kein Budget und keinen Beschluss für das laufende Jahr — wir rechnen deshalb keinen Betrag an",
+      "Antrag vor der Auftragsvergabe: Vor der Bewilligung darf kein verbindlicher Auftrag erteilt und nicht mit dem Bau begonnen werden",
+      "Gefördert werden nur fabrikneue Anlagen; beantragen lässt sich die Förderung für alle Gebäude in der Gemeinde Grethem, das Antragsformular nennt neben dem Wohnhaus auch den Stall",
+      "Der Höchstbetrag von 350 € gilt laut Richtlinie je Grundeigentümer und Maßnahme, laut Antragsformular je Gebäude und Grundeigentümer — die beiden Unterlagen widersprechen sich",
+      "Auszahlung nach Inbetriebnahme gegen Rechnung mit Zahlungsnachweis",
+      "Kein Rechtsanspruch; bei Überzeichnung der Haushaltsmittel kann die Gemeinde Anträge kürzen, auf Folgejahre verschieben oder ablehnen",
+      "Kombinierbar mit Fördermitteln von Bund, Land und anderen Stellen, soweit deren Vorschriften nicht entgegenstehen",
+    ],
+    combinableWith: BUND,
+  },
+
   // ─── Aufgenommen am 24.09.2026: Stadt Bad Kreuznach, Balkonkraftwerke ──────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Suche nach

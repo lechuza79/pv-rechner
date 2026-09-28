@@ -72830,5 +72830,721 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "03359002",
+    "name": "Ahlerstedt",
+    "checkedAt": "2026-09-28T02:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahlerstedt (Samtgemeinde Harsefeld, Landkreis Stade): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Samtgemeinde betreut ihre Mitgliedsgemeinden auf einem gemeinsamen Auftritt; dessen Seite „Beratung & Förderung“ bietet nur Beratung (Sanierungstreuhänder, Klimawerkstatt, Landesagentur), die Seitensuche findet kein Programm, und der Landkreis Stade führt für Harsefeld keine Förderung.",
+    "searches": [
+      "Beratung & Förderung der Samtgemeinde samt drei Unterseiten am 28.09.2026 live gelesen",
+      "Seitensuche harsefeld.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe, Speicher",
+      "Klimaschutz-Kontaktseite und Seitensuche des Landkreises Stade",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/",
+        "finding": "28.09.2026: Übersichtsseite „Beratung & Förderung“ verweist nur auf drei Unterseiten (Sanierungsgebiete, Klimawerkstatt, Klimaschutz- und Energieagentur Niedersachsen) — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/",
+        "finding": "28.09.2026: Beratung durch den Sanierungstreuhänder zu Städtebaufördermitteln in den Sanierungsgebieten Steinfeldsiedlung und Harsefeld Süd — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/",
+        "finding": "28.09.2026: Hinweis auf die Landesagentur KEAN und deren Förderübersicht — kein Programm der Samtgemeinde."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/",
+        "finding": "28.09.2026: Verein Klimawerkstatt, kostenlose Energieberatung mit der Verbraucherzentrale — keine Geldförderung."
+      },
+      {
+        "url": "https://www.harsefeld.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ 0 Treffer; „Photovoltaik“/„Solar“ nur Freiflächen-PV, Solarkataster, Schulneubau; „Förderprogramm“ nur LEADER und Mikroförderung Ehrenamt; „Zuschuss“ nur Wohngeld; „Wärmepumpe“ nur Wärmeplanung; „Speicher“ ohne Energiebezug."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/umwelt-gesundheit-verbraucherschutz/klimaschutz/kontakte-und-informationen/",
+        "finding": "28.09.2026: Landkreis Stade nennt unter „Kommunale Förderungen“ nur das Stadtforum Buxtehude; Seitensuche „Balkonkraftwerk“ und „Förderprogramm“ ohne Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht mit drei Beratungsverweisen, kein Förderprogramm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Städtebauförderung im Sanierungsgebiet über den Treuhänder, kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Verweis auf die Landesagentur, kein eigenes Programm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Beratungsverein, keine Geldförderung.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/"
+      },
+      {
+        "url": "harsefeld.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.harsefeld.de%2Fbauen-umwelt-wirtschaft%2Fenergie-umwelt%2Fberatung-foerderung%2Fklimaschutz-und-energieagentur-niedersachsen%2F",
+        "disposition": "replaced",
+        "reason": "Am 28.09.2026 gelesen: Formular „Barriere melden“ (Name, E-Mail, Art der Barriere) für die KEAN-Seite — keine Förderung; die Inhaltsseite selbst ist gesondert gelesen.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03359005",
+    "name": "Bargstedt",
+    "checkedAt": "2026-09-28T02:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bargstedt (Samtgemeinde Harsefeld, Landkreis Stade): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Samtgemeinde betreut ihre Mitgliedsgemeinden auf einem gemeinsamen Auftritt; dessen Seite „Beratung & Förderung“ bietet nur Beratung (Sanierungstreuhänder, Klimawerkstatt, Landesagentur), die Seitensuche findet kein Programm, und der Landkreis Stade führt für Harsefeld keine Förderung.",
+    "searches": [
+      "Beratung & Förderung der Samtgemeinde samt drei Unterseiten am 28.09.2026 live gelesen",
+      "Seitensuche harsefeld.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe, Speicher",
+      "Klimaschutz-Kontaktseite und Seitensuche des Landkreises Stade",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/",
+        "finding": "28.09.2026: Übersichtsseite „Beratung & Förderung“ verweist nur auf drei Unterseiten (Sanierungsgebiete, Klimawerkstatt, Klimaschutz- und Energieagentur Niedersachsen) — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/",
+        "finding": "28.09.2026: Beratung durch den Sanierungstreuhänder zu Städtebaufördermitteln in den Sanierungsgebieten Steinfeldsiedlung und Harsefeld Süd — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/",
+        "finding": "28.09.2026: Hinweis auf die Landesagentur KEAN und deren Förderübersicht — kein Programm der Samtgemeinde."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/",
+        "finding": "28.09.2026: Verein Klimawerkstatt, kostenlose Energieberatung mit der Verbraucherzentrale — keine Geldförderung."
+      },
+      {
+        "url": "https://www.harsefeld.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ 0 Treffer; „Photovoltaik“/„Solar“ nur Freiflächen-PV, Solarkataster, Schulneubau; „Förderprogramm“ nur LEADER und Mikroförderung Ehrenamt; „Zuschuss“ nur Wohngeld; „Wärmepumpe“ nur Wärmeplanung; „Speicher“ ohne Energiebezug."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/umwelt-gesundheit-verbraucherschutz/klimaschutz/kontakte-und-informationen/",
+        "finding": "28.09.2026: Landkreis Stade nennt unter „Kommunale Förderungen“ nur das Stadtforum Buxtehude; Seitensuche „Balkonkraftwerk“ und „Förderprogramm“ ohne Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht mit drei Beratungsverweisen, kein Förderprogramm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Städtebauförderung im Sanierungsgebiet über den Treuhänder, kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Verweis auf die Landesagentur, kein eigenes Programm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Beratungsverein, keine Geldförderung.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/"
+      },
+      {
+        "url": "harsefeld.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.harsefeld.de%2Fbauen-umwelt-wirtschaft%2Fenergie-umwelt%2Fberatung-foerderung%2Fklimaschutz-und-energieagentur-niedersachsen%2F",
+        "disposition": "replaced",
+        "reason": "Am 28.09.2026 gelesen: Formular „Barriere melden“ (Name, E-Mail, Art der Barriere) für die KEAN-Seite — keine Förderung; die Inhaltsseite selbst ist gesondert gelesen.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03359008",
+    "name": "Brest",
+    "checkedAt": "2026-09-28T02:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brest (Samtgemeinde Harsefeld, Landkreis Stade): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Samtgemeinde betreut ihre Mitgliedsgemeinden auf einem gemeinsamen Auftritt; dessen Seite „Beratung & Förderung“ bietet nur Beratung (Sanierungstreuhänder, Klimawerkstatt, Landesagentur), die Seitensuche findet kein Programm, und der Landkreis Stade führt für Harsefeld keine Förderung.",
+    "searches": [
+      "Beratung & Förderung der Samtgemeinde samt drei Unterseiten am 28.09.2026 live gelesen",
+      "Seitensuche harsefeld.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe, Speicher",
+      "Klimaschutz-Kontaktseite und Seitensuche des Landkreises Stade",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/",
+        "finding": "28.09.2026: Übersichtsseite „Beratung & Förderung“ verweist nur auf drei Unterseiten (Sanierungsgebiete, Klimawerkstatt, Klimaschutz- und Energieagentur Niedersachsen) — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/",
+        "finding": "28.09.2026: Beratung durch den Sanierungstreuhänder zu Städtebaufördermitteln in den Sanierungsgebieten Steinfeldsiedlung und Harsefeld Süd — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/",
+        "finding": "28.09.2026: Hinweis auf die Landesagentur KEAN und deren Förderübersicht — kein Programm der Samtgemeinde."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/",
+        "finding": "28.09.2026: Verein Klimawerkstatt, kostenlose Energieberatung mit der Verbraucherzentrale — keine Geldförderung."
+      },
+      {
+        "url": "https://www.harsefeld.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ 0 Treffer; „Photovoltaik“/„Solar“ nur Freiflächen-PV, Solarkataster, Schulneubau; „Förderprogramm“ nur LEADER und Mikroförderung Ehrenamt; „Zuschuss“ nur Wohngeld; „Wärmepumpe“ nur Wärmeplanung; „Speicher“ ohne Energiebezug."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/umwelt-gesundheit-verbraucherschutz/klimaschutz/kontakte-und-informationen/",
+        "finding": "28.09.2026: Landkreis Stade nennt unter „Kommunale Förderungen“ nur das Stadtforum Buxtehude; Seitensuche „Balkonkraftwerk“ und „Förderprogramm“ ohne Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht mit drei Beratungsverweisen, kein Förderprogramm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Städtebauförderung im Sanierungsgebiet über den Treuhänder, kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Verweis auf die Landesagentur, kein eigenes Programm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Beratungsverein, keine Geldförderung.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/"
+      },
+      {
+        "url": "harsefeld.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.harsefeld.de%2Fbauen-umwelt-wirtschaft%2Fenergie-umwelt%2Fberatung-foerderung%2Fklimaschutz-und-energieagentur-niedersachsen%2F",
+        "disposition": "replaced",
+        "reason": "Am 28.09.2026 gelesen: Formular „Barriere melden“ (Name, E-Mail, Art der Barriere) für die KEAN-Seite — keine Förderung; die Inhaltsseite selbst ist gesondert gelesen.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03359023",
+    "name": "Harsefeld",
+    "checkedAt": "2026-09-28T02:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Harsefeld (Samtgemeinde Harsefeld, Landkreis Stade): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Samtgemeinde betreut ihre Mitgliedsgemeinden auf einem gemeinsamen Auftritt; dessen Seite „Beratung & Förderung“ bietet nur Beratung (Sanierungstreuhänder, Klimawerkstatt, Landesagentur), die Seitensuche findet kein Programm, und der Landkreis Stade führt für Harsefeld keine Förderung.",
+    "searches": [
+      "Beratung & Förderung der Samtgemeinde samt drei Unterseiten am 28.09.2026 live gelesen",
+      "Seitensuche harsefeld.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe, Speicher",
+      "Klimaschutz-Kontaktseite und Seitensuche des Landkreises Stade",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/",
+        "finding": "28.09.2026: Übersichtsseite „Beratung & Förderung“ verweist nur auf drei Unterseiten (Sanierungsgebiete, Klimawerkstatt, Klimaschutz- und Energieagentur Niedersachsen) — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/",
+        "finding": "28.09.2026: Beratung durch den Sanierungstreuhänder zu Städtebaufördermitteln in den Sanierungsgebieten Steinfeldsiedlung und Harsefeld Süd — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/",
+        "finding": "28.09.2026: Hinweis auf die Landesagentur KEAN und deren Förderübersicht — kein Programm der Samtgemeinde."
+      },
+      {
+        "url": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/",
+        "finding": "28.09.2026: Verein Klimawerkstatt, kostenlose Energieberatung mit der Verbraucherzentrale — keine Geldförderung."
+      },
+      {
+        "url": "https://www.harsefeld.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ 0 Treffer; „Photovoltaik“/„Solar“ nur Freiflächen-PV, Solarkataster, Schulneubau; „Förderprogramm“ nur LEADER und Mikroförderung Ehrenamt; „Zuschuss“ nur Wohngeld; „Wärmepumpe“ nur Wärmeplanung; „Speicher“ ohne Energiebezug."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/umwelt-gesundheit-verbraucherschutz/klimaschutz/kontakte-und-informationen/",
+        "finding": "28.09.2026: Landkreis Stade nennt unter „Kommunale Förderungen“ nur das Stadtforum Buxtehude; Seitensuche „Balkonkraftwerk“ und „Förderprogramm“ ohne Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht mit drei Beratungsverweisen, kein Förderprogramm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Städtebauförderung im Sanierungsgebiet über den Treuhänder, kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/beratungen-in-den-sanierungsgebieten/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Verweis auf die Landesagentur, kein eigenes Programm.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      },
+      {
+        "url": "harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Beratungsverein, keine Geldförderung.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimawerkstatt-im-landkreis-stade-e-v-/"
+      },
+      {
+        "url": "harsefeld.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.harsefeld.de%2Fbauen-umwelt-wirtschaft%2Fenergie-umwelt%2Fberatung-foerderung%2Fklimaschutz-und-energieagentur-niedersachsen%2F",
+        "disposition": "replaced",
+        "reason": "Am 28.09.2026 gelesen: Formular „Barriere melden“ (Name, E-Mail, Art der Barriere) für die KEAN-Seite — keine Förderung; die Inhaltsseite selbst ist gesondert gelesen.",
+        "evidenceUrl": "https://www.harsefeld.de/bauen-umwelt-wirtschaft/energie-umwelt/beratung-foerderung/klimaschutz-und-energieagentur-niedersachsen/"
+      }
+    ]
+  },
+  {
+    "regionId": "03353002",
+    "name": "Asendorf",
+    "checkedAt": "2026-09-28T03:10:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Asendorf (Samtgemeinde Hanstedt, Landkreis Harburg): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die beiden erfassten Adressen der Samtgemeinde beschreiben ein Landesprogramm für Unternehmen; der Klimaschutzbereich bietet nur Beratung, die Seitensuche findet kein Programm für Haushalte, und der Landkreis Harburg fördert Haushalte nur mit kostenloser Energieberatung.",
+    "searches": [
+      "Klimaschutzbereich der Samtgemeinde samt Unterseiten am 28.09.2026 gelesen",
+      "Seitensuche hanstedt.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Seitensuche des Landkreises Harburg und Energiewegweiser „Zuhause“",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "finding": "28.09.2026: „Förderrichtlinien zur Steigerung der Energie- und Ressourceneffizienz für KMU“ — Landesprogramm für kleine und mittlere Unternehmen, Verweis auf die Landesagentur; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "finding": "28.09.2026: dieselbe Seite zu den Effizienz-Förderrichtlinien für KMU im Wirtschaftsbereich — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/",
+        "finding": "28.09.2026: Klimaschutz der Samtgemeinde mit Unterseiten Klimaschutzkonzept, KMU-Förderrichtlinien, Wärmeplanung, Energieberatung (kostenloser Stützpunkt der Verbraucherzentrale), Energiekoffer — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ nur Informationsseite, Aktionsmeldung #WareWunder („Manche Kommunen bieten sogar eine Förderung der kleinen Solaranlagen an“) und ein Bürgerporträt; „Photovoltaik“/„Solar“ nur Freiflächen-Bauleitplanung; „Förderprogramm“/„Zuschuss“ nur KMU-, Lastenrad-, Denkmal- und Sozialleistungen; „Wärmepumpe“ nur Informationsseiten."
+      },
+      {
+        "url": "https://www.energiewegweiser.de/beratung-foerdermittel/zuhause/",
+        "finding": "28.09.2026: Energiewegweiser des Landkreises Harburg für Privathaushalte — kostenlose Beratung mit der Verbraucherzentrale, Verweis auf staatliche Programme; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-harburg.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche des Landkreises („Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Wärmepumpe“): Beratung, KMU-Förderprogramm und ein Solarthermie-Zuschuss der Gemeinde Rosengarten; nichts für die Samtgemeinde Hanstedt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Landesförderung für KMU, nicht für Haushalte.",
+        "evidenceUrl": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu"
+      },
+      {
+        "url": "hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: dieselbe KMU-Effizienzförderung im Wirtschaftsbereich.",
+        "evidenceUrl": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz"
+      }
+    ]
+  },
+  {
+    "regionId": "03353004",
+    "name": "Brackel",
+    "checkedAt": "2026-09-28T03:10:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brackel (Samtgemeinde Hanstedt, Landkreis Harburg): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die beiden erfassten Adressen der Samtgemeinde beschreiben ein Landesprogramm für Unternehmen; der Klimaschutzbereich bietet nur Beratung, die Seitensuche findet kein Programm für Haushalte, und der Landkreis Harburg fördert Haushalte nur mit kostenloser Energieberatung.",
+    "searches": [
+      "Klimaschutzbereich der Samtgemeinde samt Unterseiten am 28.09.2026 gelesen",
+      "Seitensuche hanstedt.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Seitensuche des Landkreises Harburg und Energiewegweiser „Zuhause“",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "finding": "28.09.2026: „Förderrichtlinien zur Steigerung der Energie- und Ressourceneffizienz für KMU“ — Landesprogramm für kleine und mittlere Unternehmen, Verweis auf die Landesagentur; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "finding": "28.09.2026: dieselbe Seite zu den Effizienz-Förderrichtlinien für KMU im Wirtschaftsbereich — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/",
+        "finding": "28.09.2026: Klimaschutz der Samtgemeinde mit Unterseiten Klimaschutzkonzept, KMU-Förderrichtlinien, Wärmeplanung, Energieberatung (kostenloser Stützpunkt der Verbraucherzentrale), Energiekoffer — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ nur Informationsseite, Aktionsmeldung #WareWunder („Manche Kommunen bieten sogar eine Förderung der kleinen Solaranlagen an“) und ein Bürgerporträt; „Photovoltaik“/„Solar“ nur Freiflächen-Bauleitplanung; „Förderprogramm“/„Zuschuss“ nur KMU-, Lastenrad-, Denkmal- und Sozialleistungen; „Wärmepumpe“ nur Informationsseiten."
+      },
+      {
+        "url": "https://www.energiewegweiser.de/beratung-foerdermittel/zuhause/",
+        "finding": "28.09.2026: Energiewegweiser des Landkreises Harburg für Privathaushalte — kostenlose Beratung mit der Verbraucherzentrale, Verweis auf staatliche Programme; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-harburg.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche des Landkreises („Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Wärmepumpe“): Beratung, KMU-Förderprogramm und ein Solarthermie-Zuschuss der Gemeinde Rosengarten; nichts für die Samtgemeinde Hanstedt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Landesförderung für KMU, nicht für Haushalte.",
+        "evidenceUrl": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu"
+      },
+      {
+        "url": "hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: dieselbe KMU-Effizienzförderung im Wirtschaftsbereich.",
+        "evidenceUrl": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz"
+      }
+    ]
+  },
+  {
+    "regionId": "03353016",
+    "name": "Hanstedt",
+    "checkedAt": "2026-09-28T03:10:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hanstedt (Samtgemeinde Hanstedt, Landkreis Harburg): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die beiden erfassten Adressen der Samtgemeinde beschreiben ein Landesprogramm für Unternehmen; der Klimaschutzbereich bietet nur Beratung, die Seitensuche findet kein Programm für Haushalte, und der Landkreis Harburg fördert Haushalte nur mit kostenloser Energieberatung.",
+    "searches": [
+      "Klimaschutzbereich der Samtgemeinde samt Unterseiten am 28.09.2026 gelesen",
+      "Seitensuche hanstedt.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Seitensuche des Landkreises Harburg und Energiewegweiser „Zuhause“",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "finding": "28.09.2026: „Förderrichtlinien zur Steigerung der Energie- und Ressourceneffizienz für KMU“ — Landesprogramm für kleine und mittlere Unternehmen, Verweis auf die Landesagentur; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "finding": "28.09.2026: dieselbe Seite zu den Effizienz-Förderrichtlinien für KMU im Wirtschaftsbereich — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/",
+        "finding": "28.09.2026: Klimaschutz der Samtgemeinde mit Unterseiten Klimaschutzkonzept, KMU-Förderrichtlinien, Wärmeplanung, Energieberatung (kostenloser Stützpunkt der Verbraucherzentrale), Energiekoffer — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ nur Informationsseite, Aktionsmeldung #WareWunder („Manche Kommunen bieten sogar eine Förderung der kleinen Solaranlagen an“) und ein Bürgerporträt; „Photovoltaik“/„Solar“ nur Freiflächen-Bauleitplanung; „Förderprogramm“/„Zuschuss“ nur KMU-, Lastenrad-, Denkmal- und Sozialleistungen; „Wärmepumpe“ nur Informationsseiten."
+      },
+      {
+        "url": "https://www.energiewegweiser.de/beratung-foerdermittel/zuhause/",
+        "finding": "28.09.2026: Energiewegweiser des Landkreises Harburg für Privathaushalte — kostenlose Beratung mit der Verbraucherzentrale, Verweis auf staatliche Programme; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-harburg.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche des Landkreises („Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Wärmepumpe“): Beratung, KMU-Förderprogramm und ein Solarthermie-Zuschuss der Gemeinde Rosengarten; nichts für die Samtgemeinde Hanstedt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Landesförderung für KMU, nicht für Haushalte.",
+        "evidenceUrl": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu"
+      },
+      {
+        "url": "hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: dieselbe KMU-Effizienzförderung im Wirtschaftsbereich.",
+        "evidenceUrl": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz"
+      }
+    ]
+  },
+  {
+    "regionId": "03353024",
+    "name": "Marxen",
+    "checkedAt": "2026-09-28T03:10:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Marxen (Samtgemeinde Hanstedt, Landkreis Harburg): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die beiden erfassten Adressen der Samtgemeinde beschreiben ein Landesprogramm für Unternehmen; der Klimaschutzbereich bietet nur Beratung, die Seitensuche findet kein Programm für Haushalte, und der Landkreis Harburg fördert Haushalte nur mit kostenloser Energieberatung.",
+    "searches": [
+      "Klimaschutzbereich der Samtgemeinde samt Unterseiten am 28.09.2026 gelesen",
+      "Seitensuche hanstedt.de nach Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Seitensuche des Landkreises Harburg und Energiewegweiser „Zuhause“",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "finding": "28.09.2026: „Förderrichtlinien zur Steigerung der Energie- und Ressourceneffizienz für KMU“ — Landesprogramm für kleine und mittlere Unternehmen, Verweis auf die Landesagentur; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "finding": "28.09.2026: dieselbe Seite zu den Effizienz-Förderrichtlinien für KMU im Wirtschaftsbereich — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/leben-wohnen/klimaschutz/",
+        "finding": "28.09.2026: Klimaschutz der Samtgemeinde mit Unterseiten Klimaschutzkonzept, KMU-Förderrichtlinien, Wärmeplanung, Energieberatung (kostenloser Stützpunkt der Verbraucherzentrale), Energiekoffer — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.hanstedt.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche: „Balkonkraftwerk“ nur Informationsseite, Aktionsmeldung #WareWunder („Manche Kommunen bieten sogar eine Förderung der kleinen Solaranlagen an“) und ein Bürgerporträt; „Photovoltaik“/„Solar“ nur Freiflächen-Bauleitplanung; „Förderprogramm“/„Zuschuss“ nur KMU-, Lastenrad-, Denkmal- und Sozialleistungen; „Wärmepumpe“ nur Informationsseiten."
+      },
+      {
+        "url": "https://www.energiewegweiser.de/beratung-foerdermittel/zuhause/",
+        "finding": "28.09.2026: Energiewegweiser des Landkreises Harburg für Privathaushalte — kostenlose Beratung mit der Verbraucherzentrale, Verweis auf staatliche Programme; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-harburg.de/portal/suche.html",
+        "finding": "28.09.2026 Seitensuche des Landkreises („Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Wärmepumpe“): Beratung, KMU-Förderprogramm und ein Solarthermie-Zuschuss der Gemeinde Rosengarten; nichts für die Samtgemeinde Hanstedt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Landesförderung für KMU, nicht für Haushalte.",
+        "evidenceUrl": "https://www.hanstedt.de/leben-wohnen/klimaschutz/foerderrichtlinien-fuer-kmu"
+      },
+      {
+        "url": "hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: dieselbe KMU-Effizienzförderung im Wirtschaftsbereich.",
+        "evidenceUrl": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz"
+      }
+    ]
+  },
+  {
+    "regionId": "03358001",
+    "name": "Ahlden (Aller)",
+    "checkedAt": "2026-09-28T03:45:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahlden (Aller) (Samtgemeinde Ahlden, Heidekreis): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das einzige Haushaltsprogramm im gemeinsamen Auftritt der Samtgemeinde gehört der Gemeinde Grethem und gilt nur dort; die Seitenkarte zeigt für Ahlden (Aller) kein Programm, und der Heidekreis verweist nur auf Bundesförderung.",
+    "searches": [
+      "Förderseite Grethem mit Richtlinie und Antrag (Scans, als Bild gelesen) am 28.09.2026",
+      "Seitenkarte ahlden.info (1.418 Adressen) nach Förder- und Energiebegriffen durchsucht",
+      "Energieagentur Heidekreis, Förderprogramme für Privatpersonen",
+      "Adversarialer Prüfer (28.09.2026): Programm, Status unsicher und Techniken bestätigt, Gebäudeumfang und Deckel-Widerspruch ergänzt; keine Programme der übrigen Mitgliedsgemeinden oder des Landkreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+        "finding": "28.09.2026: Förderseite der Gemeinde Grethem: „Förderung von Maßnahmen zur CO² Minderung“ mit Förderrichtlinie und Antrag (beide Stand 21.10.2006, Scan) sowie ein Grundstücksprogramm für junge Familien. Richtlinie: PV 35 € je volle 0,25 kWp, Wärmepumpe 35 € je kW Eingangsleistung, höchstens 350 € — gilt nur für Gebäude in Grethem."
+      },
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/",
+        "finding": "28.09.2026: Bundesgeförderte LED-Umrüstung der Straßenbeleuchtung in Eickeloh (40 % BMU) — Projekt der Gemeinde, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.ahlden.info/sitemap.xml",
+        "finding": "28.09.2026: Seitenkarte der Samtgemeinde mit allen Mitgliedsgemeinden (1.418 Adressen) nach förder/klima/solar/energie/zuschuss/balkon/photov/waerme durchsucht: einziges Haushaltsprogramm ist das Grethemer CO2-Programm; sonst Straßenbeleuchtung, Klimaschutzprojekte der Gemeinde Hodenhagen, Energiestudie, Liste regionaler Solarhandwerker, Wohngeld."
+      },
+      {
+        "url": "https://www.energieagentur-heidekreis.de/privatpersonen/foerderprogramme.html",
+        "finding": "28.09.2026: Energieagentur Heidekreis verweist Privatpersonen nur auf BEG, KfW, BAFA-Förderwegweiser und co2online — kein Programm des Landkreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 samt Richtlinie gelesen: Programm der Gemeinde Grethem, gilt nur für Gebäude in Grethem — nicht für diesen Ort.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/"
+      },
+      {
+        "url": "ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: geförderte LED-Straßenbeleuchtung der Gemeinde Eickeloh, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "03358006",
+    "name": "Eickeloh",
+    "checkedAt": "2026-09-28T03:45:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eickeloh (Samtgemeinde Ahlden, Heidekreis): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das einzige Haushaltsprogramm im gemeinsamen Auftritt der Samtgemeinde gehört der Gemeinde Grethem und gilt nur dort; die Seitenkarte zeigt für Eickeloh kein Programm, und der Heidekreis verweist nur auf Bundesförderung.",
+    "searches": [
+      "Förderseite Grethem mit Richtlinie und Antrag (Scans, als Bild gelesen) am 28.09.2026",
+      "Seitenkarte ahlden.info (1.418 Adressen) nach Förder- und Energiebegriffen durchsucht",
+      "Energieagentur Heidekreis, Förderprogramme für Privatpersonen",
+      "Adversarialer Prüfer (28.09.2026): Programm, Status unsicher und Techniken bestätigt, Gebäudeumfang und Deckel-Widerspruch ergänzt; keine Programme der übrigen Mitgliedsgemeinden oder des Landkreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+        "finding": "28.09.2026: Förderseite der Gemeinde Grethem: „Förderung von Maßnahmen zur CO² Minderung“ mit Förderrichtlinie und Antrag (beide Stand 21.10.2006, Scan) sowie ein Grundstücksprogramm für junge Familien. Richtlinie: PV 35 € je volle 0,25 kWp, Wärmepumpe 35 € je kW Eingangsleistung, höchstens 350 € — gilt nur für Gebäude in Grethem."
+      },
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/",
+        "finding": "28.09.2026: Bundesgeförderte LED-Umrüstung der Straßenbeleuchtung in Eickeloh (40 % BMU) — Projekt der Gemeinde, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.ahlden.info/sitemap.xml",
+        "finding": "28.09.2026: Seitenkarte der Samtgemeinde mit allen Mitgliedsgemeinden (1.418 Adressen) nach förder/klima/solar/energie/zuschuss/balkon/photov/waerme durchsucht: einziges Haushaltsprogramm ist das Grethemer CO2-Programm; sonst Straßenbeleuchtung, Klimaschutzprojekte der Gemeinde Hodenhagen, Energiestudie, Liste regionaler Solarhandwerker, Wohngeld."
+      },
+      {
+        "url": "https://www.energieagentur-heidekreis.de/privatpersonen/foerderprogramme.html",
+        "finding": "28.09.2026: Energieagentur Heidekreis verweist Privatpersonen nur auf BEG, KfW, BAFA-Förderwegweiser und co2online — kein Programm des Landkreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 samt Richtlinie gelesen: Programm der Gemeinde Grethem, gilt nur für Gebäude in Grethem — nicht für diesen Ort.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/"
+      },
+      {
+        "url": "ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: geförderte LED-Straßenbeleuchtung der Gemeinde Eickeloh, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "03358012",
+    "name": "Hademstorf",
+    "checkedAt": "2026-09-28T03:45:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hademstorf (Samtgemeinde Ahlden, Heidekreis): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das einzige Haushaltsprogramm im gemeinsamen Auftritt der Samtgemeinde gehört der Gemeinde Grethem und gilt nur dort; die Seitenkarte zeigt für Hademstorf kein Programm, und der Heidekreis verweist nur auf Bundesförderung.",
+    "searches": [
+      "Förderseite Grethem mit Richtlinie und Antrag (Scans, als Bild gelesen) am 28.09.2026",
+      "Seitenkarte ahlden.info (1.418 Adressen) nach Förder- und Energiebegriffen durchsucht",
+      "Energieagentur Heidekreis, Förderprogramme für Privatpersonen",
+      "Adversarialer Prüfer (28.09.2026): Programm, Status unsicher und Techniken bestätigt, Gebäudeumfang und Deckel-Widerspruch ergänzt; keine Programme der übrigen Mitgliedsgemeinden oder des Landkreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+        "finding": "28.09.2026: Förderseite der Gemeinde Grethem: „Förderung von Maßnahmen zur CO² Minderung“ mit Förderrichtlinie und Antrag (beide Stand 21.10.2006, Scan) sowie ein Grundstücksprogramm für junge Familien. Richtlinie: PV 35 € je volle 0,25 kWp, Wärmepumpe 35 € je kW Eingangsleistung, höchstens 350 € — gilt nur für Gebäude in Grethem."
+      },
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/",
+        "finding": "28.09.2026: Bundesgeförderte LED-Umrüstung der Straßenbeleuchtung in Eickeloh (40 % BMU) — Projekt der Gemeinde, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.ahlden.info/sitemap.xml",
+        "finding": "28.09.2026: Seitenkarte der Samtgemeinde mit allen Mitgliedsgemeinden (1.418 Adressen) nach förder/klima/solar/energie/zuschuss/balkon/photov/waerme durchsucht: einziges Haushaltsprogramm ist das Grethemer CO2-Programm; sonst Straßenbeleuchtung, Klimaschutzprojekte der Gemeinde Hodenhagen, Energiestudie, Liste regionaler Solarhandwerker, Wohngeld."
+      },
+      {
+        "url": "https://www.energieagentur-heidekreis.de/privatpersonen/foerderprogramme.html",
+        "finding": "28.09.2026: Energieagentur Heidekreis verweist Privatpersonen nur auf BEG, KfW, BAFA-Förderwegweiser und co2online — kein Programm des Landkreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 samt Richtlinie gelesen: Programm der Gemeinde Grethem, gilt nur für Gebäude in Grethem — nicht für diesen Ort.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/"
+      },
+      {
+        "url": "ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: geförderte LED-Straßenbeleuchtung der Gemeinde Eickeloh, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "03358011",
+    "name": "Grethem",
+    "checkedAt": "2026-09-28T03:45:00Z",
+    "recheckAt": "2026-10-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Grethem (Samtgemeinde Ahlden, Heidekreis): Die Gemeinde veröffentlicht weiterhin ihr CO2-Minderungsprogramm (Richtlinie und Antrag, Stand 21.10.2006): Photovoltaik 35 € je volle 0,25 kWp, Wärmepumpe 35 € je kW Eingangsleistung, höchstens 350 € (Richtlinie: je Grundeigentümer und Maßnahme; Formular: je Gebäude), Antrag vor Auftragsvergabe. Aufgenommen als grethem-co2-minderung mit Status unsicher und ohne Rechenwert, weil kein Budget oder Beschluss für das laufende Jahr veröffentlicht ist. Speicher und Balkonkraftwerke nennt die Richtlinie nicht. Offen ist allein die Geltung: Rückfrage an die Samtgemeinde vorgemerkt.",
+    "searches": [
+      "Förderseite Grethem mit Richtlinie und Antrag (Scans, als Bild gelesen) am 28.09.2026",
+      "Seitenkarte ahlden.info (1.418 Adressen) nach Förder- und Energiebegriffen durchsucht",
+      "Energieagentur Heidekreis, Förderprogramme für Privatpersonen",
+      "Adversarialer Prüfer (28.09.2026): Programm, Status unsicher und Techniken bestätigt, Gebäudeumfang und Deckel-Widerspruch ergänzt; keine Programme der übrigen Mitgliedsgemeinden oder des Landkreises",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+        "finding": "28.09.2026: Förderseite der Gemeinde Grethem: „Förderung von Maßnahmen zur CO² Minderung“ mit Förderrichtlinie und Antrag (beide Stand 21.10.2006, Scan) sowie ein Grundstücksprogramm für junge Familien. Richtlinie: PV 35 € je volle 0,25 kWp, Wärmepumpe 35 € je kW Eingangsleistung, höchstens 350 € — gilt nur für Gebäude in Grethem."
+      },
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/",
+        "finding": "28.09.2026: Bundesgeförderte LED-Umrüstung der Straßenbeleuchtung in Eickeloh (40 % BMU) — Projekt der Gemeinde, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.ahlden.info/sitemap.xml",
+        "finding": "28.09.2026: Seitenkarte der Samtgemeinde mit allen Mitgliedsgemeinden (1.418 Adressen) nach förder/klima/solar/energie/zuschuss/balkon/photov/waerme durchsucht: einziges Haushaltsprogramm ist das Grethemer CO2-Programm; sonst Straßenbeleuchtung, Klimaschutzprojekte der Gemeinde Hodenhagen, Energiestudie, Liste regionaler Solarhandwerker, Wohngeld."
+      },
+      {
+        "url": "https://www.energieagentur-heidekreis.de/privatpersonen/foerderprogramme.html",
+        "finding": "28.09.2026: Energieagentur Heidekreis verweist Privatpersonen nur auf BEG, KfW, BAFA-Förderwegweiser und co2online — kein Programm des Landkreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 samt Richtlinie und Antrag gelesen: Grethemer CO2-Programm, als grethem-co2-minderung aufgenommen (Status unsicher, kein Rechenwert).",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/"
+      },
+      {
+        "url": "ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: geförderte LED-Straßenbeleuchtung der Gemeinde Eickeloh, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.ahlden.info/de/gemeinde-eickeloh/politik-verwaltung/eu-foerderung-strassenbeleuchtung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-12T08:00:00Z",
+      "detail": "Bei der Samtgemeinde Ahlden erfragen, ob das CO2-Minderungsprogramm der Gemeinde Grethem (Richtlinie Stand 21.10.2006) 2026 noch gewährt wird, ob dafür Haushaltsmittel bereitstehen und welcher Höchstbetrag gilt (je Maßnahme oder je Gebäude)."
+    },
+    "enquiry": {
+      "id": "klaerung-03358011",
+      "recipient": "samtgemeinde@ahlden.eu",
+      "recipientSource": "https://www.ahlden.info/de/impressum/",
+      "website": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+      "question": "Auf der Seite Förderprogramme der Gemeinde Grethem ist das CO2-Minderungsprogramm mit Förderrichtlinie und Antrag (beide Stand 21.10.2006) weiterhin veröffentlicht; es fördert unter anderem Photovoltaikanlagen mit 35 € je volle 0,25 kWp und Wärmepumpen mit 35 € je kW. Wird dieses Programm 2026 noch gewährt, stehen dafür Haushaltsmittel bereit, und gilt der Höchstbetrag von 350 € je Maßnahme (so die Richtlinie) oder je Gebäude und Grundeigentümer (so das Antragsformular)?"
+    }
   }
 ]
