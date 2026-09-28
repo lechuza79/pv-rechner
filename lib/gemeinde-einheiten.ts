@@ -18,7 +18,17 @@
  */
 export type Messgroesse = { value: string; unit: string };
 
-const de = (wert: number, stellen: number) => wert.toLocaleString("de-DE", { maximumFractionDigits: stellen });
+// One formatter per option set, built once (28.09.2026). `toLocaleString` with
+// options builds a new Intl.NumberFormat on EVERY call; the monitor charts call
+// this for every day of a year, and the profile of a district page showed this
+// one line as the largest single cost of its server render (≈ 230 ms over seven
+// pages). Same locale, same options, therefore the same strings.
+const FORMATTER = {
+  stellen0: new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 }),
+  stellen1: new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 }),
+  signifikant2: new Intl.NumberFormat("de-DE", { maximumSignificantDigits: 2 }),
+};
+const de = (wert: number, stellen: 0 | 1) => (stellen === 1 ? FORMATTER.stellen1 : FORMATTER.stellen0).format(wert);
 
 /** Erzeugte Energie eines Tages, Monats oder Jahres. */
 export function energieTeile(mwh: number): Messgroesse {
@@ -29,8 +39,8 @@ export function energieTeile(mwh: number): Messgroesse {
 
 /** Momentanleistung — kW/MW, nie „Peak": gemeint ist, was gerade fließt. */
 export function leistungTeile(mw: number): Messgroesse {
-  if (mw >= 1) return { value: mw.toLocaleString("de-DE", { maximumSignificantDigits: 2 }), unit: "MW" };
-  return { value: (mw * 1000).toLocaleString("de-DE", { maximumSignificantDigits: 2 }), unit: "kW" };
+  if (mw >= 1) return { value: FORMATTER.signifikant2.format(mw), unit: "MW" };
+  return { value: FORMATTER.signifikant2.format(mw * 1000), unit: "kW" };
 }
 
 /**
