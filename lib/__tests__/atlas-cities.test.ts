@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben } from "../atlas-cities";
+import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben, foerderStadtUmleitung, foerderBundeslaender } from "../atlas-cities";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
 import nextConfig from "../../next.config.js";
 
@@ -210,5 +212,55 @@ describe("slug redirects stay in sync with atlas-cities", () => {
       expect(r!.destination).toBe(cityPath(c));
       expect(r!.permanent).toBe(true);
     }
+  });
+});
+
+// Audit 28.09.2026: ~185 der 298 flachen Förder-Weiterleitungen endeten auf
+// einer 404, weil ihr Ziel eine Stadtadresse ohne veröffentlichte Seite ist.
+// Die Liste bleibt fest (Test oben); die Stadtroute leitet einen bekannten Ort
+// ohne Seite auf die Seite seines Bundeslands. Geprüft wird die ENDADRESSE jeder
+// Weiterleitung, nicht nur das erste Ziel.
+describe("no Förder redirect ends on a 404", () => {
+  const landSlugs = new Set(foerderBundeslaender().map((b) => b.slug));
+  const landSeiten = new Set([...landSlugs].map((s) => `/photovoltaik-foerderung/${s}`));
+  const stadtSeiten = new Map(ATLAS_CITIES.map((c) => [cityPath(c), c]));
+  const veroeffentlicht = new Set(publishedCities().map((c) => c.slug));
+
+  /** Final address a request to `pfad` lands on, or null for a 404. */
+  function endziel(pfad: string): string | null {
+    if (pfad === "/photovoltaik-foerderung" || landSeiten.has(pfad)) return pfad;
+    const c = stadtSeiten.get(pfad);
+    if (!c) return null;
+    const um = foerderStadtUmleitung(c, landSlugs);
+    if (um === null) return veroeffentlicht.has(c.slug) ? pfad : null;
+    return endziel(um);
+  }
+
+  it("every /photovoltaik-foerderung redirect reaches an existing page", async () => {
+    const redirects = await nextConfig.redirects!();
+    const foerder = redirects.filter((r: { source: string }) => r.source.startsWith("/photovoltaik-foerderung/"));
+    expect(foerder.length).toBeGreaterThan(100);
+    const tot = foerder.filter((r: { destination: string }) => endziel(r.destination) === null).map((r: { source: string }) => r.source);
+    expect(tot, "Weiterleitungen, die auf einer 404 enden").toEqual([]);
+  });
+
+  it("a known city without a page points at its Bundesland page (or the overview), never at itself", () => {
+    const ohneSeite = ATLAS_CITIES.filter((c) => !veroeffentlicht.has(c.slug));
+    // Der Fall ist real, sonst prüft der Test nichts.
+    expect(ohneSeite.length).toBeGreaterThan(0);
+    for (const c of ohneSeite) {
+      const um = foerderStadtUmleitung(c, landSlugs);
+      expect(um, c.slug).not.toBeNull();
+      expect(um === "/photovoltaik-foerderung" || landSeiten.has(um!), `${c.slug} → ${um}`).toBe(true);
+    }
+    for (const c of ATLAS_CITIES.filter((x) => veroeffentlicht.has(x.slug))) expect(foerderStadtUmleitung(c, landSlugs), c.slug).toBeNull();
+  });
+
+  it("the city route builds EVERY known city and redirects the unpublished ones", () => {
+    const src = readFileSync(join(__dirname, "../../app/(site)/photovoltaik-foerderung/[bundesland]/[stadt]/page.tsx"), "utf8");
+    // Mit publishedCities() in generateStaticParams wären unveröffentlichte
+    // Städte wieder harte 404 (dynamicParams = false).
+    expect(src).toMatch(/generateStaticParams\(\)\s*\{\s*return ATLAS_CITIES\.map/);
+    expect(src).toMatch(/const umleitung = foerderStadtUmleitung\(city\);\s*if \(umleitung\) redirect\(umleitung\)/);
   });
 });

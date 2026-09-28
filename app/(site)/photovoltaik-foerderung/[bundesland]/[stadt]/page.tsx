@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../../components/GlossaryTerm";
 import { IconArrowRight, IconExternal } from "../../../../../components/Icons";
@@ -9,7 +9,7 @@ import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { atlasRobots } from "../../../../../lib/atlas-index";
-import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom, cityIndexFreigegeben } from "../../../../../lib/atlas-cities";
+import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, fundingForFrom, cityIndexFreigegeben, foerderStadtUmleitung } from "../../../../../lib/atlas-cities";
 import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
@@ -31,19 +31,24 @@ import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
-// Published = regions with an active OR archived (exhausted/paused/discontinued)
-// program. Regions that never had a program — or whose status is "unsicher" —
-// still 404.
+// EVERY known city gets a route; unknown slugs stay a hard 404 (no on-demand
+// rendering of arbitrary addresses). A known city without a published page
+// redirects to its Bundesland page (foerderStadtUmleitung) instead of 404ing —
+// next.config.js points ~300 historic flat URLs at these addresses, and whether
+// a page exists there changes with the program status (audit 28.09.2026: about
+// 185 of them ended on a 404). The decision is re-made on every revalidation,
+// so a program that becomes active again gets its page back without a deploy
+// of the redirect list.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return publishedCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
+  return ATLAS_CITIES.map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
 export async function generateMetadata(props: { params: Promise<{ bundesland: string; stadt: string }> }): Promise<Metadata> {
   const params = await props.params;
   const city = cityBySlug(params.stadt);
-  if (!city || slugify(city.bundesland) !== params.bundesland) return {};
+  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityPublished(city)) return {};
   // Auch der Seitentitel muss über die abgeleitete Zuordnung gehen — sonst
   // verspricht die Überschrift „Zuschüsse", während die Seite darunter ein
   // eingestelltes Programm zeigt.
@@ -165,9 +170,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const city = cityBySlug(params.stadt);
   // Guard the hierarchy: the Bundesland segment must match the city, otherwise
   // a wrong-Bundesland URL would render a valid page under a bogus parent.
-  // Also guard the publish policy: only regions with a live or archived program
-  // have a page (no-program / "unsicher" slugs 404).
-  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityPublished(city)) notFound();
+  if (!city || slugify(city.bundesland) !== params.bundesland) notFound();
+  // Publish policy: a known city without a page goes to its Bundesland page
+  // (temporary — the page returns once the program qualifies again). Routing
+  // decision BEFORE any data read, so the status code is still ours to set.
+  const umleitung = foerderStadtUmleitung(city);
+  if (umleitung) redirect(umleitung);
 
   let atlas: RegionAtlas | null = null;
   try {

@@ -8,6 +8,7 @@
 
 import { allFundingPrograms, foerdergebiete, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
+import { heuteInBerlin } from "./zeit";
 
 export interface AtlasCity {
   slug: string;
@@ -854,6 +855,48 @@ export function foerderseiteTraegt(c: AtlasCity): boolean {
  */
 export function indexedCities(): AtlasCity[] {
   return publishedCities();
+}
+
+// Die Menge hängt am Kalendertag (Releaseplan) und kostet einen Durchlauf über
+// alle Städte. Beim Build ruft sie jede der ~280 Stadtrouten — einmal je Tag
+// gerechnet genügt.
+let landSlugsCache: { tag: string; slugs: ReadonlySet<string> } | null = null;
+function landSlugsHeute(): ReadonlySet<string> {
+  const tag = heuteInBerlin();
+  if (landSlugsCache?.tag !== tag) {
+    landSlugsCache = { tag, slugs: new Set(foerderBundeslaender().map((b) => b.slug)) };
+  }
+  return landSlugsCache.slugs;
+}
+
+/**
+ * Wohin eine Förder-Stadtadresse führt, die gerade KEINE Seite trägt.
+ *
+ * ANLASS (Audit 28.09.2026): Rund 185 der 298 flachen Weiterleitungen in
+ * next.config.js endeten auf einer 404 — sie zeigen fest auf die Stadtadresse,
+ * und ob es dort eine Seite gibt, entscheidet der Programmstatus. Die Liste in
+ * next.config.js ist historisch und bleibt fest (Test in atlas-cities.test.ts);
+ * die Entscheidung gehört an die Route, weil sie sich mit dem Status ändert.
+ *
+ * Deshalb: Ein BEKANNTER Ort ohne Seite leitet (vorübergehend, 307) auf die
+ * Förderseite seines Bundeslands um — oder auf die Förder-Übersicht, wo das
+ * Land keine eigene Seite hat. Ein unbekannter Ort bleibt eine harte 404.
+ * Vorübergehend, weil die Stadtseite zurückkommt, sobald ihr Programm die
+ * Schwelle wieder besteht (foerderseiteTraegt).
+ *
+ * Gibt `null` zurück, wenn die Stadt selbst eine Seite hat.
+ */
+export function foerderStadtUmleitung(
+  c: AtlasCity,
+  /** Slugs der Länder mit eigener Förderseite — nur zum Wiederverwenden in
+   *  Schleifen; die Berechnung läuft sonst je Aufruf über alle Städte. */
+  landSlugs: ReadonlySet<string> = landSlugsHeute(),
+): string | null {
+  if (isCityPublished(c)) return null;
+  const bl = slugify(c.bundesland);
+  return landSlugs.has(bl)
+    ? `/photovoltaik-foerderung/${bl}`
+    : "/photovoltaik-foerderung";
 }
 
 /** Bundesländer with at least one published city (live or archived). */

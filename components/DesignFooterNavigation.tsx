@@ -8,7 +8,7 @@ type Entry = { href: string; label: string };
 export default function DesignFooterNavigation({ groups, atlasLinks, children }: { groups: { label: string; links: Entry[] }[]; atlasLinks: Entry[]; children: ReactNode }) {
   if (usePathname() !== '/waermepumpe-rechner') return children;
   const all = groups.flatMap(group => group.links);
-  const calculators = new Set(['/photovoltaik-rechner', '/balkonkraftwerk/rechner', '/waermepumpe-rechner', '/klimaanlage-stromkosten', '/pv-bedarf-berechnen', '/einspeiseverguetung-rechner', '/pv-simulation']);
+  const calculators = new Set(['/photovoltaik-rechner', '/balkonkraftwerk/rechner', '/waermepumpe-rechner', '/klimaanlage-stromkosten', '/einspeiseverguetung-rechner', '/pv-simulation']);
   const knowledge = new Set(['/balkonkraftwerk', '/balkonkraftwerk/foerderung', '/balkonkraftwerk/ratgeber/anmelden', '/balkonkraftwerk/ratgeber/mit-speicher', '/photovoltaik-foerderung', '/ratgeber', '/glossar']);
   const energy = new Set(['/strommix-deutschland', '/atomstrom-import', '/photovoltaik-bestand-deutschland', '/datenstand']);
   const legal = new Set(['/impressum', '/datenschutz']);
