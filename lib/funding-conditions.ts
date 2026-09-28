@@ -552,6 +552,17 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
   // minimum, three-year own use and council budget release have no test form.
   "goedenstorf-stecker-solar",
+  // Added 28 Sep 2026: status unsicher (guideline scan of 2014, no current
+  // budget); "je volle 0,25 kWp" and the craftsman bonus have no test form.
+  "essel-co2-minderung",
+  // Added 28 Sep 2026: ended (measures to be finished by 31.12.2024).
+  "buchholz-aller-balkonkraftwerke",
+  // Added 28 Sep 2026: ended (guideline expired 31.12.2023).
+  "landkreis-hildesheim-balkonkraftwerke",
+  // Added 28 Sep 2026: status unsicher (no 2026 budget published); extra
+  // cost over a standard system, listed-building permit and five-year use
+  // have no test form.
+  "hildesheim-denkmal-solar",
   // Added 28 Sep 2026: status unsicher (guideline of 2006, no current budget
   // published); "je volle 0,25 kWp" and the building/measure cap conflict
   // have no test form.

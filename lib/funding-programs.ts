@@ -15547,6 +15547,180 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Added 28.09.2026: Stadt Hildesheim, PV/solar thermal on listed buildings ─
+  //
+  // Found while closing the Hildesheim source queue. Guideline "Richtlinie zur
+  // Förderung von Photovoltaik- und Solarthermie-Anlagen auf, an oder in der
+  // Nähe von Baudenkmälern", council decision 16.09.2024, Amtsblatt Landkreis
+  // Hildesheim 2024 S. 600, read in full on 28.09.2026 from the city's own
+  // download server (md5 ecd7de044c3fbfc6582b20f854bcf140):
+  // - § 1 (2) "Förderfähig sind Mehrkosten gegenüber einer Standard-Anlage."
+  // - § 8 (3) "Die maximale Fördersumme beträgt bis zu 5.000,- EUR je Maßnahme."
+  // - § 3 (2) listed-building permit required; § 3 (3) no funding once the
+  //   measure has started (no reference point named).
+  // - § 6 owners of listed buildings and neighbouring buildings, not limited
+  //   to private persons -> eligibility privat + gewerblich.
+  // - § 3 (4) no entitlement, "nach Maßgabe der verfügbaren Fördermittel".
+  // - § 10 in force 01.10.2024, expires 31.12.2027.
+  // STATUS UNSICHER, NO CALCULATION FIELD: the extra cost over a standard
+  // system cannot be modelled, and no budget for 2026 is published (the city's
+  // Feb 2025 announcement with the 35,000 EUR pot is gone from the site; only
+  // press copies remain). A clarification enquiry to the city is queued.
+  // Adversarial reviewer (28.09.2026): status, figures and scope confirmed;
+  // widened eligibility (§ 6), aligned the start rule with § 3 (3) and
+  // stopped implying full reimbursement of the extra cost (§ 8 (1)/(2)).
+  "hildesheim-denkmal-solar": {
+    id: "hildesheim-denkmal-solar", name: "Förderung denkmalgerechter Photovoltaik- und Solarthermie-Anlagen",
+    traeger: "Stadt Hildesheim", level: "kommune", region: "Hildesheim",
+    bundesland: "Niedersachsen", agsCode: "03254021",
+    url: "https://www.stadt-hildesheim.de/downloads/datei/Yzg5YzYzMzIxZWE3ZjQyYVd4K04xKzBiaXF0bnUrMTJTTEtKNE1CR0JpbWJqVHlkc0tBbXlRelFOWk9BeGh1b2lUakIyTGUwMkpXNU9Ca0paQkVVNW5zOVVDSmFSNVlFYUc2OGxRbnlMdTBoeHRTMW84dzBkUHBFbmt5SFNWc0U4TG42ZjhxSVFlS2VOVnIwQ055RHdCa0dYZGtZSWNRcHRycXl3aUl5R0Y1dkgvWnRsaER2RnVzMDRWMFNYWGhtckI4NFMzWVVoZ3RTUGtmT2RzZ2ZhWnhVY1JnRVJXeW4vb3hFVW1lTlIrOEk1VWs4T3NXZW1mOTQxLzA0Wm01USsva2xFVllKekViTWJHb2FLSjRiYjhBZENkM2FnMDY5MFhvREdnPT0",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beschlossenIso: "2024-09-16", beginntIso: "2024-10-01",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Mehrkosten einer denkmalgerechten Photovoltaik- oder Solarthermieanlage gegenüber einer Standardanlage",
+    maxFoerderung: "bis 5.000 € je Maßnahme",
+    rates: [
+      { label: "Denkmalgerechte Photovoltaik- oder Solarthermieanlage", value: "Zuschuss nach den Mehrkosten gegenüber einer Standardanlage, bis zu 5.000 € je Maßnahme", nur: ["pv"] },
+    ],
+    conditions: [
+      "MITTEL UNKLAR: Die Richtlinie gilt bis 31.12.2027, gefördert wird aber nur nach Maßgabe der verfügbaren Mittel, und für 2026 nennt die Stadt keinen Betrag — wir rechnen deshalb nichts an",
+      "Nur für Baudenkmäler und Gebäude in der Umgebung eines Baudenkmals im Stadtgebiet Hildesheim; antragsberechtigt sind deren Eigentümerinnen und Eigentümer, ohne Beschränkung auf Privatpersonen",
+      "Gefördert werden nur die Mehrkosten gegenüber einer Standardanlage gleicher Größe und Leistung, belegt durch ein Vergleichsangebot",
+      "Voraussetzung ist die denkmalrechtliche Genehmigung der Denkmalschutzbehörde der Stadt Hildesheim",
+      "Gefördert wird nur, wenn mit der Maßnahme noch nicht begonnen wurde; Antrag schriftlich bei der Denkmalschutzbehörde; Beginn innerhalb eines Jahres nach dem Bescheid (verlängerbar in begründeten Einzelfällen)",
+      "Nutzung mindestens fünf Jahre; Auszahlung nach Abschluss gegen bezahlte Rechnungen",
+      "Kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
+
+  // ─── Added 28.09.2026: Gemeinde Essel (Samtgemeinde Schwarmstedt) ─────────
+  //
+  // Found while closing the Samtgemeinde Schwarmstedt source queue (site search
+  // "Photovoltaik"). The Essel information page still says "Die Gemeinde Essel
+  // fördert den Einbau von Solarkollektor- und Photovoltaikanlagen" and links
+  // guideline and form. Guideline is a 2-page scan (created 15.05.2014, md5
+  // 1dc47156a7b9ed839b8d1c721df60ef7), read as images on 28.09.2026:
+  // - "Einbau einer Photovoltaikanlage mit 35,-- € je volle 0,25 kWp"
+  // - installed by a registered craftsman from the Aller-Leine-Tal: "erhöht
+  //   sich die Förderung um einmalig 100,-- €" (paid by the municipality here,
+  //   unlike Grethem's firm-paid bonus)
+  // - "Die maximale Förderhöhe nach B) ist auf € 350,-- je Gebäude begrenzt"
+  // - "Vor Bewilligung darf kein verbindlicher Auftrag erteilt werden"
+  // Same "Sonne auf's Dach" family as Grethem. Budget: Haushaltsplan 2025 of
+  // Essel (ortsrecht/gemeinde_essel/Haushalt-Essel_2025.pdf), investment
+  // 5610020120001 "Förderung von privaten Investitionen für den Umweltschutz":
+  // result 2023 1,300 EUR, 2024 5,000, 2025 2,500, planned 2026-2028 2,500 each.
+  // The line does not name this programme; no 2026 budget is published.
+  // STATUS UNSICHER, NO CALCULATION FIELD: the link between budget line and
+  // programme is an inference, the guideline carries no date (files of 2014),
+  // and the municipality may cut or postpone applications. Solar
+  // thermal and the passive-house grants are outside the catalogue's
+  // techniques. A clarification enquiry to the Samtgemeinde is queued.
+  // Adversarial reviewer (28.09.2026): rates, bonus under the cap, private
+  // households and technique confirmed; found the 2025 budget line and the
+  // building/residential-building cap conflict.
+  "essel-co2-minderung": {
+    id: "essel-co2-minderung", name: "CO2-Minderungsprogramm",
+    traeger: "Gemeinde Essel", level: "kommune", region: "Essel",
+    bundesland: "Niedersachsen", agsCode: "03358007",
+    url: "https://www.schwarmstedt.de/joomla/index.php/mitgliedsgemeinden/essel/informationen",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss je Leistung für neue Photovoltaikanlagen (daneben Solarkollektoren sowie Passiv- und Energiesparhäuser im Baugebiet „Rottloses Feld“)",
+    maxFoerderung: "350 € je Gebäude für Photovoltaik und Solarkollektoren",
+    rates: [
+      { label: "Photovoltaikanlage", value: "35 € je volle 0,25 kWp, höchstens 350 € je Gebäude", nur: ["pv"] },
+      { label: "Einbau durch einen Handwerksbetrieb aus dem Aller-Leine-Tal", value: "einmalig 100 € zusätzlich, innerhalb des Höchstbetrags", nur: ["pv"] },
+    ],
+    conditions: [
+      "GELTUNG UNKLAR: Die Gemeinde verweist weiterhin auf Richtlinie und Antrag (Richtlinie ohne Datum, Dateien von 2014). Der Haushalt 2025 plant auch für 2026 je 2.500 € für die „Förderung von privaten Investitionen für den Umweltschutz“, ordnet sie aber nicht ausdrücklich diesem Programm zu — wir rechnen deshalb keinen Betrag an",
+      "Vor der Bewilligung darf kein verbindlicher Auftrag erteilt und nicht mit dem Bau begonnen werden; entschieden wird innerhalb von vier Wochen nach Eingang",
+      "Gefördert werden nur fabrikneue Anlagen, auf allen Gebäuden in der Gemeinde Essel; Anlagen auf mehreren Gebäuden eines Grundstücks gelten als eine Anlage",
+      "Der Höchstbetrag von 350 € gilt laut Richtlinie je Gebäude, laut Antragsformular je Wohngebäude — das Formular fragt zugleich nach der Art des Objekts (Wohnhaus, Stall)",
+      "Auszahlung nach Inbetriebnahme gegen Rechnung mit Zahlungsnachweis",
+      "Kein Rechtsanspruch; bei Überzeichnung der Haushaltsmittel kann die Gemeinde Anträge kürzen, auf Folgejahre verschieben oder ablehnen",
+      "Kombinierbar mit Fördermitteln von Bund, Land und anderen Stellen, soweit deren Vorschriften nicht entgegenstehen",
+    ],
+    combinableWith: BUND,
+  },
+
+  // ─── Added 28.09.2026: Gemeinde Buchholz (Aller), ended balcony grant ──────
+  //
+  // Found while closing the Samtgemeinde Schwarmstedt source queue (site search
+  // "Förderung"). Council decision 26.09.2023, in force 16.03.2024 (news item
+  // of the Samtgemeinde). Guideline "Stand: Januar 2024" read in full on
+  // 28.09.2026 (md5 5d85fd63f41e264d324bb6d4b06ebf14):
+  // - § 3 (2) "ein einmaliger Zuschuss in Höhe von 150,00 Euro als
+  //   Festbetrag ..., sofern die Anschaffungskosten 500 Euro übersteigen"
+  // - § 6 (6) "Die Maßnahme ist bis zum 31.12.2024 abzuschließen."
+  // ENDED: the published guideline only covers measures finished in 2024.
+  // Haushaltsplan 2025 of Buchholz (Aller) (Haushalt-Buchholz-Aller_2025.pdf,
+  // Teilfinanzhaushalt 56100, S. 140 f.), account 56100.7818000 "Förderung
+  // Balkonkraftwerke": 2024 6,000 EUR, 2025 0, planned 2026-2028 0 each. The
+  // preliminary report (S. ~16) says the opposite ("... und die Förderung von
+  // Balkonkraftwerken geplant") -- contradicted by its own figures. Added anyway because "gab es,
+  // ist beendet" is a real answer (operator, 17.08.2026). Not the Buchholz in
+  // the Westerwald mentioned at the Asbach entry.
+  "buchholz-aller-balkonkraftwerke": {
+    id: "buchholz-aller-balkonkraftwerke", name: "Förderung von Balkon- und Gartenkraftwerken",
+    traeger: "Gemeinde Buchholz (Aller)", level: "kommune", region: "Buchholz (Aller)",
+    bundesland: "Niedersachsen", agsCode: "03358005",
+    url: "https://www.schwarmstedt.de/ortsrecht/gemeinde_buchholz/Foerderrichtlinie-Balkonkraftwerke-Buchholz-2024.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-09-26", beginntIso: "2024-03-16",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschaler Zuschuss je Balkon- oder Gartenkraftwerk — Programm beendet",
+    rates: [{ label: "Balkon- oder Gartenkraftwerk", value: "150 € je Haushalt bei Anschaffungskosten über 500 € — Programm beendet" }],
+    conditions: [
+      "Die Richtlinie (Stand Januar 2024) verlangt den Abschluss der Maßnahme bis 31.12.2024; der Haushalt 2025 sieht für 2025 und die Planjahre 2026 bis 2028 keine Mittel mehr vor (2024: 6.000 €)",
+      "Antragsberechtigt waren Mieter und Eigentümer selbst genutzten Wohneigentums in Buchholz (Aller), als Gebäudeeigentümer auch juristische Personen des Privatrechts, kirchliche, soziale und kulturelle Einrichtungen und Genossenschaften; eine Förderung je Haushalt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // ─── Added 28.09.2026: Landkreis Hildesheim, ended balcony grant 2023 ──────
+  //
+  // Found while closing the Hildesheim queue (NEXT of run 0801Z). Guideline
+  // "Richtlinie über die Förderung von Balkonkraftwerken im Landkreis
+  // Hildesheim", Kreistag decision 29.06.2023, read in full on 28.09.2026 from
+  // klimaschutzagentur-hildesheim.de (…/2023/07/Richtlinie-zur-Forderung-von-
+  // Balkonkraftwe-rken-im-Landkreis-Hildesheim_2023-07-04.pdf):
+  // - Nr. 7 "Der Zuschuss beträgt pauschal 200 € bei förderfähigen Kosten von
+  //   mindestens 200 €"
+  // - Nr. 10 in force 04.07.2023, "mit Ablauf des 31.12.2023 außer Kraft",
+  //   budget 150.000 €
+  // - Nr. 5 only natural persons; Nr. 6 d) tenants, flat owners without roof
+  //   access, buildings without a possible roof system; Nr. 6 combination
+  //   with other funding excluded; Nr. 3 a) inverter max 600 VA.
+  // The agency page (klimaschutzagentur-hildesheim.de/balkonkraftwerke, read
+  // the same day) says "Eine Antragstellung ist aufgrund der Beendigung des
+  // Förderprogramms zum 31.12.2023 nicht mehr möglich." ENDED. Added because
+  // "gab es, ist beendet" is a real answer (operator, 17.08.2026).
+  "landkreis-hildesheim-balkonkraftwerke": {
+    id: "landkreis-hildesheim-balkonkraftwerke", name: "Förderung von Balkonkraftwerken im Landkreis Hildesheim",
+    traeger: "Landkreis Hildesheim", level: "landkreis", region: "Landkreis Hildesheim",
+    bundesland: "Niedersachsen", agsCode: "03254",
+    // The guideline PDF, not the agency page: the page only restates it and
+    // confirms the end (quoted above).
+    url: "https://www.klimaschutzagentur-hildesheim.de/wp-content/uploads/2023/07/Richtlinie-zur-Forderung-von-Balkonkraftwe-rken-im-Landkreis-Hildesheim_2023-07-04.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-06-29", beginntIso: "2023-07-04",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk bis 600 VA", value: "200 € pauschal je Wohnung (bei Kosten unter 200 € die vollen Kosten) — Programm beendet" }],
+    conditions: [
+      "Die Richtlinie galt vom 04.07.2023 bis 31.12.2023 (Fördertopf 150.000 €); die Klimaschutzagentur nimmt seitdem keine Anträge mehr an",
+      "Antragsberechtigt waren nur natürliche Personen mit Wohnung im Landkreis: Mieter, Eigentümer einer Wohnung ohne Zugriff auf eine Dachfläche oder Eigentümer eines Wohngebäudes ohne Möglichkeit für eine Dachanlage",
+      "Nicht mit anderen Fördermitteln kombinierbar",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
+  },
+
   // ─── Added 28.09.2026: Gemeinde Grethem (Samtgemeinde Ahlden) ─────────────
   //
   // Found in the source queue (the Grethem funding page, shared by the four

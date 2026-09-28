@@ -75078,5 +75078,556 @@
         "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
       }
     ]
+  },
+  {
+    "regionId": "03254021",
+    "name": "Hildesheim",
+    "checkedAt": "2026-09-28T08:25:31Z",
+    "recheckAt": "2026-10-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Stadt Hildesheim: Einziges passendes Programm ist die Richtlinie zur Förderung denkmalgerechter Photovoltaik- und Solarthermie-Anlagen an oder nahe Baudenkmälern (Ratsbeschluss 16.09.2024, in Kraft 01.10.2024 bis 31.12.2027): Zuschuss nach den Mehrkosten gegenüber einer Standardanlage, bis 5.000 € je Maßnahme, nur mit denkmalrechtlicher Genehmigung und vor Maßnahmenbeginn, nach Maßgabe verfügbarer Mittel. Aufgenommen als hildesheim-denkmal-solar mit Status unsicher und ohne Rechenwert, weil für 2026 kein Budget veröffentlicht ist und Mehrkosten nicht modellierbar sind. Sonst nur geförderte Projekte der Stadt und Begrünungsförderung. Offen ist allein der Mittelstand: Rückfrage an die Stadt vorgemerkt.",
+    "searches": [
+      "Richtlinie (PDF vom Download-Server der Stadt, md5 ecd7de044c3fbfc6582b20f854bcf140) am 28.09.2026 vollständig gelesen",
+      "Förderprogramm-Übersichten, Klimaschutz- und Denkmalschutzseiten der Stadt (Baudenkmalpflege, FAQ, Service) am 28.09.2026 gelesen; Ankündigung vom Februar 2025 heute nicht mehr auf der Stadtseite (404)",
+      "Adversarialer Prüfer (28.09.2026): Status unsicher, Zahlen und Technik bestätigt; Antragsberechtigung auf alle Eigentümer erweitert, Beginnverbot und Mehrkosten-Formulierung am Wortlaut ausgerichtet",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-hildesheim.de/downloads/datei/Yzg5YzYzMzIxZWE3ZjQyYVd4K04xKzBiaXF0bnUrMTJTTEtKNE1CR0JpbWJqVHlkc0tBbXlRelFOWk9BeGh1b2lUakIyTGUwMkpXNU9Ca0paQkVVNW5zOVVDSmFSNVlFYUc2OGxRbnlMdTBoeHRTMW84dzBkUHBFbmt5SFNWc0U4TG42ZjhxSVFlS2VOVnIwQ055RHdCa0dYZGtZSWNRcHRycXl3aUl5R0Y1dkgvWnRsaER2RnVzMDRWMFNYWGhtckI4NFMzWVVoZ3RTUGtmT2RzZ2ZhWnhVY1JnRVJXeW4vb3hFVW1lTlIrOEk1VWs4T3NXZW1mOTQxLzA0Wm01USsva2xFVllKekViTWJHb2FLSjRiYjhBZENkM2FnMDY5MFhvREdnPT0",
+        "finding": "28.09.2026: Richtlinie der Stadt Hildesheim, § 8 (3) „Die maximale Fördersumme beträgt bis zu 5.000,- EUR je Maßnahme.“, § 3 (4) Förderung nach Maßgabe der verfügbaren Fördermittel, § 10 in Kraft 01.10.2024, außer Kraft 31.12.2027."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/denkmalschutz-und-denkmalbehoerde/faqs-haeufig-gestellte-fragen/",
+        "finding": "28.09.2026: Denkmalbehörde nennt direkte Zuschüsse als freiwillige, an der Haushaltslage orientierte Leistung ohne Rechtsanspruch; kein Budgetstand genannt."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/portal/seiten/foerderprogramme-900000151-33610.html",
+        "finding": "28.09.2026: Übersicht geförderter Projekte der Stadt (EFRE/ESF, Klimaschutzinitiative), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/",
+        "finding": "28.09.2026: Übersicht geförderter Projekte der Stadt, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/",
+        "finding": "28.09.2026: NKI-Projekte der Stadt (Radverkehr, Ampeln, Energiemanagement), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/digitale-verkehrslenkung/",
+        "finding": "28.09.2026: Verkehrsprojekt der Stadt, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energetische-sanierung-von-lichtsignalanlagen/",
+        "finding": "28.09.2026: Sanierung städtischer Ampeln, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energiemanagement/",
+        "finding": "28.09.2026: Energiemanagement städtischer Gebäude, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.stadt-hildesheim.de/wirtschaft-bauen/umweltangelegenheiten-und-klimaschutz/klimaschutz/foerderprogramm-begruenung/",
+        "finding": "28.09.2026: Förderung von Dach-, Fassaden- und Hofbegrünung, keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-hildesheim.de/portal/seiten/foerderprogramme-900000151-33610.html?naviID=900000225&amp;brotID=900000225&amp;rubrik=900000015",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht geförderter Projekte der Stadt (EFRE/ESF, Klimaschutzinitiative), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/portal/seiten/foerderprogramme-900000151-33610.html"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht geförderter Projekte der Stadt, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: NKI-Projekte der Stadt (Radverkehr, Ampeln, Energiemanagement), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/digitale-verkehrslenkung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Verkehrsprojekt der Stadt, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/digitale-verkehrslenkung/"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energetische-sanierung-von-lichtsignalanlagen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Sanierung städtischer Ampeln, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energetische-sanierung-von-lichtsignalanlagen/"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energiemanagement",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Energiemanagement städtischer Gebäude, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/stadtplanung-und-stadtentwicklung/foerderprogramme/klimaschutzinitiative/energiemanagement/"
+      },
+      {
+        "url": "stadt-hildesheim.de/wirtschaft-bauen/umweltangelegenheiten-und-klimaschutz/klimaschutz/foerderprogramm-begruenung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Förderung von Dach-, Fassaden- und Hofbegrünung, keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.stadt-hildesheim.de/wirtschaft-bauen/umweltangelegenheiten-und-klimaschutz/klimaschutz/foerderprogramm-begruenung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-12T08:00:00Z",
+      "detail": "Bei der Stadt Hildesheim erfragen, ob für die Förderung denkmalgerechter Photovoltaik- und Solarthermie-Anlagen 2026 noch Mittel bereitstehen und in welcher Höhe."
+    },
+    "enquiry": {
+      "id": "klaerung-03254021",
+      "recipient": "anfrage@stadt-hildesheim.de",
+      "recipientSource": "https://www.stadt-hildesheim.de/portal/seiten/impressum-900000237-33610.html",
+      "website": "https://www.stadt-hildesheim.de/downloads/datei/Yzg5YzYzMzIxZWE3ZjQyYVd4K04xKzBiaXF0bnUrMTJTTEtKNE1CR0JpbWJqVHlkc0tBbXlRelFOWk9BeGh1b2lUakIyTGUwMkpXNU9Ca0paQkVVNW5zOVVDSmFSNVlFYUc2OGxRbnlMdTBoeHRTMW84dzBkUHBFbmt5SFNWc0U4TG42ZjhxSVFlS2VOVnIwQ055RHdCa0dYZGtZSWNRcHRycXl3aUl5R0Y1dkgvWnRsaER2RnVzMDRWMFNYWGhtckI4NFMzWVVoZ3RTUGtmT2RzZ2ZhWnhVY1JnRVJXeW4vb3hFVW1lTlIrOEk1VWs4T3NXZW1mOTQxLzA0Wm01USsva2xFVllKekViTWJHb2FLSjRiYjhBZENkM2FnMDY5MFhvREdnPT0",
+      "question": "Die Stadt Hildesheim fördert nach ihrer Richtlinie vom 16.09.2024 denkmalgerechte Photovoltaik- und Solarthermie-Anlagen an oder nahe Baudenkmälern mit bis zu 5.000 € je Maßnahme, nach Maßgabe der verfügbaren Mittel. Stehen dafür 2026 noch Mittel bereit, und wie hoch ist der Fördertopf für das laufende Jahr?"
+    }
+  },
+  {
+    "regionId": "03358005",
+    "name": "Buchholz (Aller)",
+    "checkedAt": "2026-09-28T09:12:28Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Buchholz (Aller) (Samtgemeinde Schwarmstedt): Die Gemeinde hat 2024 Balkon- und Gartenkraftwerke mit 150 € je Haushalt gefördert (Richtlinie Stand Januar 2024, Abschluss bis 31.12.2024). Aufgenommen als buchholz-aller-balkonkraftwerke mit Status eingestellt; der Haushalt 2025 sieht für 2025 bis 2028 keine Mittel mehr vor. Dachanlagen, Speicher und Wärmepumpen fördert die Gemeinde nicht.",
+    "searches": [
+      "Suche der Samtgemeinde-Website schwarmstedt.de am 28.09.2026 nach Förderung, Förderrichtlinie, Zuschuss, Photovoltaik, Solar, Balkonkraftwerk, Wärmepumpe, Speicher und CO2: einzige Haushaltsprogramme sind das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung der Gemeinde Buchholz (Aller)",
+      "Energieberatungsseite der Samtgemeinde: kostenlose Beratung der Verbraucherzentrale, kein Zuschuss",
+      "Adversarialer Prüfer (28.09.2026): Essel- und Buchholz-Werte bestätigt, Haushaltsansätze 2025 beider Gemeinden gefunden (Essel 2.500 €/Jahr bis 2028 für private Umweltinvestitionen; Buchholz Balkonkraftwerke ab 2025 0 €)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarmstedt.de/ortsrecht/gemeinde_buchholz/Foerderrichtlinie-Balkonkraftwerke-Buchholz-2024.pdf",
+        "finding": "28.09.2026: § 3 (2) 150 € Festbetrag bei Anschaffungskosten über 500 €; § 6 (6) „Die Maßnahme ist bis zum 31.12.2024 abzuschließen.“"
+      },
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
+        "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03358007",
+    "name": "Essel",
+    "checkedAt": "2026-09-28T09:12:28Z",
+    "recheckAt": "2026-10-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Essel (Samtgemeinde Schwarmstedt): Die Gemeinde verweist weiterhin auf ihr CO2-Minderungsprogramm (Richtlinie ohne Datum, Dateien von 2014): Photovoltaik 35 € je volle 0,25 kWp, 100 € Bonus bei Einbau durch einen Handwerksbetrieb aus dem Aller-Leine-Tal, höchstens 350 € je Gebäude. Aufgenommen als essel-co2-minderung mit Status unsicher und ohne Rechenwert: Der Haushalt 2025 plant je 2.500 € jährlich für private Umweltinvestitionen, ordnet sie aber nicht ausdrücklich diesem Programm zu. Rückfrage an die Samtgemeinde vorgemerkt. Bürgersolarpark-Unterlagen betreffen Lindwedel.",
+    "searches": [
+      "Suche der Samtgemeinde-Website schwarmstedt.de am 28.09.2026 nach Förderung, Förderrichtlinie, Zuschuss, Photovoltaik, Solar, Balkonkraftwerk, Wärmepumpe, Speicher und CO2: einzige Haushaltsprogramme sind das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung der Gemeinde Buchholz (Aller)",
+      "Energieberatungsseite der Samtgemeinde: kostenlose Beratung der Verbraucherzentrale, kein Zuschuss",
+      "Adversarialer Prüfer (28.09.2026): Essel- und Buchholz-Werte bestätigt, Haushaltsansätze 2025 beider Gemeinden gefunden (Essel 2.500 €/Jahr bis 2028 für private Umweltinvestitionen; Buchholz Balkonkraftwerke ab 2025 0 €)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/mitgliedsgemeinden/essel/informationen",
+        "finding": "28.09.2026: „Die Gemeinde Essel fördert den Einbau von Solarkollektor- und Photovoltaikanlagen sowie den Bau von Passiv- und Energiesparhäusern“ mit Links auf Förderrichtlinie und Antrag."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
+        "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf"
+      },
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-12T08:00:00Z",
+      "detail": "Bei der Samtgemeinde Schwarmstedt erfragen, ob das CO2-Minderungsprogramm der Gemeinde Essel 2026 noch gewährt wird und ob die im Haushalt geplanten 2.500 € dafür bestimmt sind."
+    },
+    "enquiry": {
+      "id": "klaerung-03358007",
+      "recipient": "rathaus@schwarmstedt.de",
+      "recipientSource": "https://www.schwarmstedt.de/joomla/index.php/impressum",
+      "website": "https://www.schwarmstedt.de/joomla/index.php/mitgliedsgemeinden/essel/informationen",
+      "question": "Auf der Informationsseite der Gemeinde Essel steht weiterhin, dass die Gemeinde den Einbau von Solarkollektor- und Photovoltaikanlagen fördert (CO2-Minderungsprogramm, Photovoltaik 35 € je volle 0,25 kWp, höchstens 350 € je Gebäude). Wird dieses Programm 2026 noch gewährt, und sind die im Haushalt vorgesehenen Mittel für private Umweltinvestitionen dafür bestimmt?"
+    }
+  },
+  {
+    "regionId": "03358010",
+    "name": "Gilten",
+    "checkedAt": "2026-09-28T09:12:28Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gilten (Samtgemeinde Schwarmstedt): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Website der Samtgemeinde führt als Haushaltsprogramme nur das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung von Buchholz (Aller); die Samtgemeinde bietet kostenlose Energieberatung an. Die erfassten Bürgersolarpark-Unterlagen sind Bauleitplanung der Gemeinde Lindwedel.",
+    "searches": [
+      "Suche der Samtgemeinde-Website schwarmstedt.de am 28.09.2026 nach Förderung, Förderrichtlinie, Zuschuss, Photovoltaik, Solar, Balkonkraftwerk, Wärmepumpe, Speicher und CO2: einzige Haushaltsprogramme sind das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung der Gemeinde Buchholz (Aller)",
+      "Energieberatungsseite der Samtgemeinde: kostenlose Beratung der Verbraucherzentrale, kein Zuschuss",
+      "Adversarialer Prüfer (28.09.2026): Essel- und Buchholz-Werte bestätigt, Haushaltsansätze 2025 beider Gemeinden gefunden (Essel 2.500 €/Jahr bis 2028 für private Umweltinvestitionen; Buchholz Balkonkraftwerke ab 2025 0 €)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
+        "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf"
+      },
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03358015",
+    "name": "Lindwedel",
+    "checkedAt": "2026-09-28T09:12:28Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lindwedel (Samtgemeinde Schwarmstedt): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Website der Samtgemeinde führt als Haushaltsprogramme nur das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung von Buchholz (Aller); die Samtgemeinde bietet kostenlose Energieberatung an. Die erfassten Bürgersolarpark-Unterlagen sind Bauleitplanung der Gemeinde Lindwedel.",
+    "searches": [
+      "Suche der Samtgemeinde-Website schwarmstedt.de am 28.09.2026 nach Förderung, Förderrichtlinie, Zuschuss, Photovoltaik, Solar, Balkonkraftwerk, Wärmepumpe, Speicher und CO2: einzige Haushaltsprogramme sind das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung der Gemeinde Buchholz (Aller)",
+      "Energieberatungsseite der Samtgemeinde: kostenlose Beratung der Verbraucherzentrale, kein Zuschuss",
+      "Adversarialer Prüfer (28.09.2026): Essel- und Buchholz-Werte bestätigt, Haushaltsansätze 2025 beider Gemeinden gefunden (Essel 2.500 €/Jahr bis 2028 für private Umweltinvestitionen; Buchholz Balkonkraftwerke ab 2025 0 €)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
+        "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf"
+      },
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03358020",
+    "name": "Schwarmstedt",
+    "checkedAt": "2026-09-28T09:12:28Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarmstedt (Samtgemeinde Schwarmstedt): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Website der Samtgemeinde führt als Haushaltsprogramme nur das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung von Buchholz (Aller); die Samtgemeinde bietet kostenlose Energieberatung an. Die erfassten Bürgersolarpark-Unterlagen sind Bauleitplanung der Gemeinde Lindwedel.",
+    "searches": [
+      "Suche der Samtgemeinde-Website schwarmstedt.de am 28.09.2026 nach Förderung, Förderrichtlinie, Zuschuss, Photovoltaik, Solar, Balkonkraftwerk, Wärmepumpe, Speicher und CO2: einzige Haushaltsprogramme sind das CO2-Minderungsprogramm der Gemeinde Essel und die beendete Balkonkraftwerk-Förderung der Gemeinde Buchholz (Aller)",
+      "Energieberatungsseite der Samtgemeinde: kostenlose Beratung der Verbraucherzentrale, kein Zuschuss",
+      "Adversarialer Prüfer (28.09.2026): Essel- und Buchholz-Werte bestätigt, Haushaltsansätze 2025 beider Gemeinden gefunden (Essel 2.500 €/Jahr bis 2028 für private Umweltinvestitionen; Buchholz Balkonkraftwerke ab 2025 0 €)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
+        "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "finding": "28.09.2026: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Begr%C3%BCndung.pdf"
+      },
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Vorentwurf Bebauungsplan Nr. 27 Bürgersolarpark der Gemeinde Lindwedel (Freiflächenanlage), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schwarmstedt.de/baugebiete/bebauungsplaene/li/Bebauungsplan-Nr27-Buergersolarpark-Lindwedel-1u2-Vorentwurf-Umweltbericht.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03361002",
+    "name": "Blender",
+    "checkedAt": "2026-09-28T10:45:00Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Blender (Samtgemeinde Thedinghausen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Natur- und Umweltseiten der Samtgemeinde führen nur Baum-, Hecken- und Mahdprogramme; die Förderprogramm-Seite nennt nur Unternehmensprogramme; auch der Landkreis Verden führt kein Haushaltsprogramm.",
+    "searches": [
+      "Navigation und Seiten Natur und Umwelt der Samtgemeinde-Website thedinghausen.de am 28.09.2026 gelesen: Heckenschnitt-Förderung, Baumförderprogramm Riede, Baumpflanzungen an Gemeindestraßen, kein Energieprogramm",
+      "Websuche 28.09.2026 nach Thedinghausen, Riede, Emtinghausen, Blender mit Balkonkraftwerk/Photovoltaik/Zuschuss: nur Förderprogramm-Seite der Samtgemeinde (Unternehmensprogramme)",
+      "Förderprogramm-Seite des Landkreises Verden gelesen: kein Haushaltsprogramm für Solar oder Wärmepumpe",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "finding": "28.09.2026: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "finding": "28.09.2026: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "finding": "28.09.2026: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/portal/seiten/foerderprogramme-909000511-20710.html",
+        "finding": "28.09.2026: Seite Förderprogramme der Samtgemeinde verweist auf Förderdatenbank/NBank und nennt nur Programme für Unternehmen (go-digital, ValiKom), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-verden.de/portal/seiten/foerderprogramme-901000373-20600.html",
+        "finding": "28.09.2026: Förderprogramm-Seite des Landkreises Verden nennt kein Programm für private Haushalte zu Photovoltaik, Balkonkraftwerken, Speichern oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "03361004",
+    "name": "Emtinghausen",
+    "checkedAt": "2026-09-28T10:45:00Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Emtinghausen (Samtgemeinde Thedinghausen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Natur- und Umweltseiten der Samtgemeinde führen nur Baum-, Hecken- und Mahdprogramme; die Förderprogramm-Seite nennt nur Unternehmensprogramme; auch der Landkreis Verden führt kein Haushaltsprogramm.",
+    "searches": [
+      "Navigation und Seiten Natur und Umwelt der Samtgemeinde-Website thedinghausen.de am 28.09.2026 gelesen: Heckenschnitt-Förderung, Baumförderprogramm Riede, Baumpflanzungen an Gemeindestraßen, kein Energieprogramm",
+      "Websuche 28.09.2026 nach Thedinghausen, Riede, Emtinghausen, Blender mit Balkonkraftwerk/Photovoltaik/Zuschuss: nur Förderprogramm-Seite der Samtgemeinde (Unternehmensprogramme)",
+      "Förderprogramm-Seite des Landkreises Verden gelesen: kein Haushaltsprogramm für Solar oder Wärmepumpe",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "finding": "28.09.2026: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "finding": "28.09.2026: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "finding": "28.09.2026: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/portal/seiten/foerderprogramme-909000511-20710.html",
+        "finding": "28.09.2026: Seite Förderprogramme der Samtgemeinde verweist auf Förderdatenbank/NBank und nennt nur Programme für Unternehmen (go-digital, ValiKom), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-verden.de/portal/seiten/foerderprogramme-901000373-20600.html",
+        "finding": "28.09.2026: Förderprogramm-Seite des Landkreises Verden nennt kein Programm für private Haushalte zu Photovoltaik, Balkonkraftwerken, Speichern oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "03361010",
+    "name": "Riede",
+    "checkedAt": "2026-09-28T10:45:00Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Riede (Samtgemeinde Thedinghausen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Natur- und Umweltseiten der Samtgemeinde führen nur Baum-, Hecken- und Mahdprogramme; die Förderprogramm-Seite nennt nur Unternehmensprogramme; auch der Landkreis Verden führt kein Haushaltsprogramm.",
+    "searches": [
+      "Navigation und Seiten Natur und Umwelt der Samtgemeinde-Website thedinghausen.de am 28.09.2026 gelesen: Heckenschnitt-Förderung, Baumförderprogramm Riede, Baumpflanzungen an Gemeindestraßen, kein Energieprogramm",
+      "Websuche 28.09.2026 nach Thedinghausen, Riede, Emtinghausen, Blender mit Balkonkraftwerk/Photovoltaik/Zuschuss: nur Förderprogramm-Seite der Samtgemeinde (Unternehmensprogramme)",
+      "Förderprogramm-Seite des Landkreises Verden gelesen: kein Haushaltsprogramm für Solar oder Wärmepumpe",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "finding": "28.09.2026: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "finding": "28.09.2026: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "finding": "28.09.2026: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/portal/seiten/foerderprogramme-909000511-20710.html",
+        "finding": "28.09.2026: Seite Förderprogramme der Samtgemeinde verweist auf Förderdatenbank/NBank und nennt nur Programme für Unternehmen (go-digital, ValiKom), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-verden.de/portal/seiten/foerderprogramme-901000373-20600.html",
+        "finding": "28.09.2026: Förderprogramm-Seite des Landkreises Verden nennt kein Programm für private Haushalte zu Photovoltaik, Balkonkraftwerken, Speichern oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "03361013",
+    "name": "Thedinghausen",
+    "checkedAt": "2026-09-28T10:45:00Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Thedinghausen (Samtgemeinde Thedinghausen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Natur- und Umweltseiten der Samtgemeinde führen nur Baum-, Hecken- und Mahdprogramme; die Förderprogramm-Seite nennt nur Unternehmensprogramme; auch der Landkreis Verden führt kein Haushaltsprogramm.",
+    "searches": [
+      "Navigation und Seiten Natur und Umwelt der Samtgemeinde-Website thedinghausen.de am 28.09.2026 gelesen: Heckenschnitt-Förderung, Baumförderprogramm Riede, Baumpflanzungen an Gemeindestraßen, kein Energieprogramm",
+      "Websuche 28.09.2026 nach Thedinghausen, Riede, Emtinghausen, Blender mit Balkonkraftwerk/Photovoltaik/Zuschuss: nur Förderprogramm-Seite der Samtgemeinde (Unternehmensprogramme)",
+      "Förderprogramm-Seite des Landkreises Verden gelesen: kein Haushaltsprogramm für Solar oder Wärmepumpe",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "finding": "28.09.2026: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "finding": "28.09.2026: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "finding": "28.09.2026: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.thedinghausen.de/portal/seiten/foerderprogramme-909000511-20710.html",
+        "finding": "28.09.2026: Seite Förderprogramme der Samtgemeinde verweist auf Förderdatenbank/NBank und nennt nur Programme für Unternehmen (go-digital, ValiKom), kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-verden.de/portal/seiten/foerderprogramme-901000373-20600.html",
+        "finding": "28.09.2026: Förderprogramm-Seite des Landkreises Verden nennt kein Programm für private Haushalte zu Photovoltaik, Balkonkraftwerken, Speichern oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Antrag zur Förderung von Baumpflanzungen auf Privatgrundstücken entlang von Gemeindestraßen, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Baumförderprogramm der Gemeinde Riede, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/baumfoerderprogramm-der-gemeinde-riede"
+      },
+      {
+        "url": "thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm.",
+        "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung"
+      }
+    ]
   }
 ]
