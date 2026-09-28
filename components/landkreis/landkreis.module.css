@@ -322,3 +322,15 @@
 @media(max-width:700px){.page .districtIntro{grid-template-columns:1fr;gap:28px}}
 
 @media(min-width:801px){.heroStage[data-map-clear-heading=true] .mapCanvas{height:clamp(520px,75svh,660px)}}
+
+/* Reserve the actual control width, not a guessed 250px beside long titles.
+   Keep the canvas in the same grid row so the existing scene framing is retained. */
+.heroBand .heroHeading h1{font-size:var(--sc-type-hero-size,clamp(34px,3.8vw,48px));overflow-wrap:anywhere}
+@media(min-width:601px){
+  .heroStage{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:32px}
+  .heroStage .map{display:contents}
+  .heroStage .heroHeading{position:relative;grid-area:1/1;align-self:start;min-width:0;max-width:none}
+  .heroStage .mapTools{position:relative;grid-area:1/2;align-self:start;top:auto;right:auto;left:auto;margin:0}
+  .heroStage .mapCanvas{grid-area:1/1/2/3;min-width:0}
+}
+@media(max-width:600px){.heroBand .heroHeading h1{font-size:32px}}

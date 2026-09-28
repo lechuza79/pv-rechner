@@ -37,7 +37,8 @@ function MapGestureGuide({ready}:{ready:boolean}) {
   if(!ready)return null;
   const labels=["Seitlich wischen zum Drehen","Zwei Finger bewegen zum Neigen","Zwei Finger spreizen zum Zoomen"];
   return <>
-    <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>
+    {/* Replay is a development aid; the public touch tutorial remains automatic. */}
+    {process.env.NODE_ENV === "development" && <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>}
     {step>=0&&<div key={`${replay}-${step}`} className={styles.mapGestureGuide} data-gesture={step}>
     <div className={styles.gestureFingers} aria-hidden="true"><i/>{step>0&&<i/>}</div>
     <span>{labels[step]}</span>

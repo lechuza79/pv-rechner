@@ -16,6 +16,25 @@ including actual Three.js orthographic zoom direction/limits, invalidation, disa
 controls, ordinary scrolling, the capture gate and teardown. Physical MacBook pinch
 was not exercised; no rendered browser acceptance or production release is claimed.
 The existing Hero preview was left untouched.
+## Lauenburg map follow-up — 28 September 2026 (local, unreviewed)
+
+The map heading previously reserved a fixed 250px for an independently positioned
+metric control. The local correction uses a shared grid row with the control's actual
+width, a 32px gap and a wrapping title using the central hero-size token. The map canvas
+retains its shared row and existing framing. The developer replay button “Gesten zeigen”
+is now development-only; the normal metric selector and automatic touch tutorial remain.
+
+Bounded geometry comparison using the actual `projectRegions` function and checked-in
+boundaries: Lauenburg 133 shapes / 136 polygons / 2,833 points / 47 trees; Wittenberg
+9 shapes / 9 polygons / 1,012 points / no trees. This is scene complexity evidence,
+not an FPS measurement or proven stutter cause. The map renderer and frame pacer have
+no 28 September changes in the inspected main history. The local trackpad commit
+`69ab9f7e` is not an ancestor of that main and was not included in this correction.
+
+CSS and TSX parsing and whitespace checks passed. Browser control timed out twice;
+direct public reads for both pages returned Vercel Security Checkpoint instead of
+page content. Desktop/mobile visual acceptance and Safari frame-time comparison
+remain open. No performance change or production deployment was made.
 
 ## Release closeout — 28 September 2026
 
