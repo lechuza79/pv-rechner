@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ErzeugungWidget from "../erzeugung/client";
+import ErzeugungEmbedAuto from "../erzeugung/auto";
 
 export const metadata: Metadata = {
   title: "Stromerzeugung Deutschland (kompakt) — Solar Check Widget",
@@ -8,19 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function ErzeugungMiniPage(
-  props: {
-    searchParams?: Promise<{ auto?: string }>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  return <ErzeugungWidget compact autoswitchMs={parseAuto(searchParams?.auto)} />;
-}
-
-function parseAuto(raw: string | undefined): number {
-  if (!raw) return 0;
-  if (raw === "1") return 6000;
-  const n = parseInt(raw, 10);
-  if (!Number.isFinite(n) || n <= 0) return 0;
-  return Math.min(60_000, Math.max(1000, n));
+// Static: `?auto=` is read in the browser (../erzeugung/auto.tsx), not from searchParams.
+export default function ErzeugungMiniPage() {
+  return <ErzeugungEmbedAuto compact />;
 }

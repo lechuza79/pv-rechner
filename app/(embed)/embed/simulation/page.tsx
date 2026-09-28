@@ -1,18 +1,12 @@
-import type { Metadata } from "next";
 import SimulationWidget from "./client";
+import { WIDGET_METADATA } from "./meta";
 
-export const metadata: Metadata = {
-  title: "PV-Ertrag jetzt — Solar Check Widget",
-  description:
-    "Live-Photovoltaikertrag nach Postleitzahl: was eine PV-Anlage gerade beim aktuellen Wetter liefert. Von solar-check.io.",
-  robots: { index: false, follow: false },
-};
+// This address answers only requests without a valid `plz` and without
+// `presentation=site`. Everything else is rewritten by the middleware onto the
+// cached twin `[plz]/[darstellung]/page.tsx` (lib/embed-pfad-weiche.ts) —
+// reading searchParams here would make the route dynamic, i.e. never cached.
+export const metadata = WIDGET_METADATA;
 
-export default async function SimulationEmbedPage(
-  props: {
-    searchParams?: Promise<{ plz?: string; presentation?: string }>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  return <SimulationWidget plz={searchParams?.plz ?? ""} sitePresentation={searchParams?.presentation === "site"} />;
+export default function SimulationEmbedPage() {
+  return <SimulationWidget plz="" sitePresentation={false} />;
 }
