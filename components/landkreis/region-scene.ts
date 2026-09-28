@@ -88,10 +88,22 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   // Keep the actual brand colour in sRGB, independent of exposure and warm lights.
   // Box faces supply restrained depth shading; bars still cast real scene shadows.
   const brand = new THREE.Color(getComputedStyle(host).getPropertyValue("--color-brand").trim());
-  const barFaces = (selected: boolean) => [selected ? .78 : .62, .88, 1, .5, 1, .72].map(shade => {
-    const face = new THREE.MeshBasicMaterial({ color: brand.clone().multiplyScalar(shade), toneMapped: false });
-    materials.add(face); return face;
-  });
+  // Shade all six faces in one draw, retaining the existing per-face colours.
+  const barFaces = (selected: boolean) => {
+    const material = new THREE.MeshBasicMaterial({color:brand, toneMapped:false});
+    material.onBeforeCompile = shader => {
+      shader.vertexShader = "varying float barFaceShade;\n" + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>", `#include <begin_vertex>
+        barFaceShade = normal.x > 0.5 ? ${selected ? ".78" : ".62"} :
+          normal.x < -0.5 ? .88 : normal.y > 0.5 ? 1.0 :
+          normal.y < -0.5 ? .5 : normal.z > 0.5 ? 1.0 : .72;`);
+      shader.fragmentShader = "varying float barFaceShade;\n" + shader.fragmentShader;
+      shader.fragmentShader = shader.fragmentShader.replace("#include <color_fragment>",
+        "#include <color_fragment>\ndiffuseColor.rgb *= barFaceShade;");
+    };
+    material.customProgramCacheKey = () => `district-bar-faces-${selected}`;
+    materials.add(material); return material;
+  };
   const barMaterial = barFaces(false);
   const selectedBar = barFaces(true);
   const barGeometry = new THREE.BoxGeometry(6.5, 1, 6.5); geometries.add(barGeometry);
@@ -151,6 +163,9 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const placeBar = (bar: THREE.Mesh, height: number) => {
     bar.visible = height > .001; bar.scale.y = height; bar.position.y = DEPTH + height / 2;
   };
+  // Opt-in local diagnostics; no overhead or output on public pages.
+  const diagnostics = process.env.NODE_ENV === "development" && new URLSearchParams(location.search).has("mapMetrics");
+  let sampleFrames = 0, sampleStart = 0, sampleCpu = 0, sampleLast = 0, sampleMaxGap = 0;
   function render() {
     queued = 0;
     if (dead || !visible || document.hidden) return;
@@ -185,7 +200,18 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       }
       if(complete)transition=null;
     }
+    const renderStart = diagnostics ? performance.now() : 0;
     renderer.render(scene,camera);
+    if (diagnostics && elapsed > 2500) {
+      const end = performance.now();
+      if (!sampleStart) sampleStart = end;
+      if (sampleLast) sampleMaxGap = Math.max(sampleMaxGap, end - sampleLast);
+      sampleLast = end; sampleCpu += end - renderStart; sampleFrames++;
+      if (sampleFrames === 120) {
+        canvas.dataset.mapMetrics = JSON.stringify({frames:sampleFrames,ms:Math.round(end-sampleStart),renderMs:Math.round(sampleCpu/sampleFrames*100)/100,maxGapMs:Math.round(sampleMaxGap),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles});
+        sampleFrames=0;sampleStart=0;sampleCpu=0;sampleLast=0;sampleMaxGap=0;
+      }
+    }
     if (transition || moving || (!manual && !reducedMotion.matches) || elapsed<240) invalidate();
     if (city) {
       const point = new THREE.Vector3(city.groundAnchor[0],DEPTH+1,city.groundAnchor[1]).project(camera);
