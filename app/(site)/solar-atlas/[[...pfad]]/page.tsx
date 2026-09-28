@@ -10,7 +10,7 @@ import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
-import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
+import { atlasIsIndexable, atlasRobots, atlasUebersichtRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
 import AtlasKpiRow from "../../../../components/atlas/AtlasKpiRow";
@@ -21,6 +21,8 @@ import {
   getAncestors,
   getChildren,
   getRankingData,
+  getEinzelgemeinden,
+  mitEndpfad,
   childLevelOf,
   lastFullYear,
   currentYear,
@@ -127,7 +129,9 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
           : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
-    robots: atlasRobots(atlasIsIndexable(region.level)),
+    // Übersicht: nicht freigegeben heißt noindex, aber FOLLOW — sie ist der
+    // einzige interne Weg zu den freigegebenen Ortsseiten darunter.
+    robots: atlasUebersichtRobots(atlasIsIndexable(region.level)),
   };
 }
 
@@ -186,12 +190,17 @@ async function AtlasBody({
 }) {
   const params: Params = { pfad };
   const onRegionDesign = REGION_DESIGN_LEVELS.has(region.level);
-  const [atlas, children, ancestors, ranking] = await Promise.all([
+  const [atlas, kinderRoh, ancestors, rankingRoh, einzel] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),
     getAncestors(region),
     getRankingData(region),
+    // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
+    // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
+    region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),
   ]);
+  const children = mitEndpfad(kinderRoh, einzel);
+  const ranking = { ...rankingRoh, regions: mitEndpfad(rankingRoh.regions, einzel) };
 
   const crumbs: Crumb[] = [
     { label: "Energie-Atlas", href: "/solar-atlas" },

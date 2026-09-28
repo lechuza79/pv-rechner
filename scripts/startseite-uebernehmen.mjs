@@ -346,6 +346,22 @@ const textdateien = [...kopiert.filter((f) => /\.(js|css|json|svg)$/.test(f)).ma
 const reste = textdateien.filter((f) => VORSCHAU.test(readFileSync(f, "utf8")));
 if (reste.length) throw new Error(`Vorschau-Verweise übrig in:\n  ${reste.join("\n  ")}`);
 
+// ─── Links onto redirected addresses → their final address ──────────────────
+// The package links a few addresses we have since moved (28.09.2026:
+// /pv-bedarf-berechnen on the homepage tools). The table comes from
+// next.config.js, not from a list here (scripts/endadressen.mjs). Runs BEFORE
+// the sections are read out of the bundle, so the no-JS block inherits the
+// final addresses too.
+const { weiterleitungsZiele, aufEndadressen } = await import("./endadressen.mjs");
+const ziele = await weiterleitungsZiele();
+for (const f of textdateien) {
+  const { text, ersetzt } = aufEndadressen(readFileSync(f, "utf8"), ziele);
+  if (ersetzt.length) {
+    writeFileSync(f, text);
+    console.log(`Umgeleitete Links ersetzt in ${f}: ${ersetzt.join(", ")}`);
+  }
+}
+
 // ─── Sections as data ───────────────────────────────────────────────────────
 // The homepage renders the script-built sections server-side so a crawler
 // without JavaScript sees them (see lib/neon-seite.ts). Their wording is read

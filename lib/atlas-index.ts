@@ -264,3 +264,23 @@ export function ortsseiteIndexierbar(
 export function atlasRobots(indexable: boolean): Metadata["robots"] {
   return indexable ? { index: true, follow: true } : { index: false, follow: false };
 }
+
+/**
+ * robots-Feld der ÜBERSICHTSSEITEN des Atlas (Deutschland, Land, Kreis):
+ * indexierbar → index/follow, sonst noindex, FOLLOW.
+ *
+ * WARUM NICHT atlasRobots (Audit 28.09.2026): Die freigegebenen Ortsseiten
+ * (angeschriebene Gemeinden, in der Sitemap, indexierbar) werden im Atlas NUR
+ * von ihrer Kreisseite verlinkt — und die stand auf „noindex, nofollow“. Google
+ * durfte den einzigen internen Weg zu ihnen also nicht gehen. Eine Übersicht ist
+ * genau die Seite, deren Zweck ihre Links sind; „noindex, follow“ lässt sie aus
+ * dem Index, ohne die Wege darunter zu kappen.
+ *
+ * NICHT die Freigabe der Kreisebene: Ob Kreisseiten in den Index gehen, bleibt
+ * eine Entscheidung des Betreibers (FREIGABE_NACHWEIS). Die Ortsseiten selbst
+ * behalten atlasRobots — eine nicht freigegebene Ortsseite bleibt noindex,
+ * nofollow.
+ */
+export function atlasUebersichtRobots(indexable: boolean): Metadata["robots"] {
+  return indexable ? { index: true, follow: true } : { index: false, follow: true };
+}

@@ -290,7 +290,62 @@ export async function atlasPathForRegionId(regionId: string): Promise<string | n
   if (!region?.slug) return null;
   const ancestors = await getAncestors(region);
   const parts = [...ancestors, region].map((r) => r.slug).filter((s): s is string => !!s);
+  // Eine kreisfreie Stadt auf Kreisebene leitet auf ihre einzige Gemeinde weiter
+  // (siehe Atlas-Route) — gleich die Endadresse ausgeben, nicht die Weiterleitung.
+  const einzel = region.level === "landkreis" ? (await getEinzelgemeinden(region.region_id.slice(0, 2)))[region.region_id] : undefined;
+  if (einzel) parts.push(einzel);
   return `/solar-atlas/${parts.join("/")}`;
+}
+
+/**
+ * Kreise mit genau EINER Gemeinde (kreisfreie Städte, Stadtkreise) → Slug dieser
+ * Gemeinde, je Bundesland.
+ *
+ * WARUM: Die Atlas-Route leitet eine solche Kreisadresse dauerhaft auf die
+ * Gemeindeseite weiter (eine Rangliste mit einer Zeile ist Unsinn). Die
+ * Landesseiten verlinkten trotzdem die Kreisadresse — jeder Link auf eine
+ * kreisfreie Stadt war ein Umweg über eine Weiterleitung (Audit 28.09.2026:
+ * /solar-atlas/bayern/amberg → /solar-atlas/bayern/amberg/amberg).
+ *
+ * WIE: Die einzige Gemeinde eines solchen Kreises trägt den Schlüssel
+ * <Kreis>000. Am 28.09.2026 gegen das ganze Register gemessen: 107 Kreise haben
+ * eine Gemeinde <Kreis>000, genau diese 107 haben genau eine Gemeinde, und kein
+ * Kreis mit genau einer Gemeinde hat eine andere. Der Slug der Gemeinde weicht
+ * in einem Fall vom Kreis-Slug ab — deshalb gelesen, nicht abgeleitet.
+ * Eine Abfrage je Land statt je Kreis.
+ */
+async function getEinzelgemeindenUncached(landId: string): Promise<Record<string, string>> {
+  if (!/^\d{2}$/.test(landId)) return {};
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, parent_region_id, slug")
+      .eq("level", "gemeinde")
+      .like("region_id", `${landId}___000`),
+    "getEinzelgemeinden",
+  );
+  if (error) throw new Error(`getEinzelgemeinden failed: ${error.message}`);
+  const out: Record<string, string> = {};
+  for (const r of (data ?? []) as { region_id: string; parent_region_id: string | null; slug: string | null }[]) {
+    if (r.slug && r.parent_region_id && r.region_id === `${r.parent_region_id}000`) out[r.parent_region_id] = r.slug;
+  }
+  return out;
+}
+
+export const getEinzelgemeinden = unstable_cache(getEinzelgemeindenUncached, ["einzelgemeinden-v1"], {
+  revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
+});
+
+/**
+ * Dieselben Zeilen, aber der Slug einer kreisfreien Stadt trägt ihre Gemeinde
+ * gleich mit („amberg/amberg"). Alle Bausteine bauen ihren Link als
+ * `${basePath}/${slug}` — so zeigt jeder davon auf die Endadresse, ohne dass
+ * jeder einzeln davon wissen muss. Nur für Kreis-Zeilen einer Landesseite.
+ */
+export function mitEndpfad<T extends { region_id: string; slug: string | null }>(zeilen: T[], einzel: Record<string, string>): T[] {
+  return zeilen.map((z) => (z.slug && einzel[z.region_id] ? { ...z, slug: `${z.slug}/${einzel[z.region_id]}` } : z));
 }
 
 /** The level of a region's children, or null if it is a leaf. */
