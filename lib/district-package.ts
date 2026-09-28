@@ -18,9 +18,14 @@
  * then does the pointer `kreise/v<N>/aktuell.json` switch. A failed or partial
  * run leaves the previous pointer — and so the last complete generation — live.
  *
- * Bump DISTRICT_PACKAGE_VERSION whenever the package shape or the aggregation
- * / story selection changes: the pointer path carries the version, so an older
- * deployment keeps reading its own generation while the new one is built.
+ * Two numbers, two purposes — do not mix them up:
+ *   DISTRICT_PACKAGE_VERSION   the package SHAPE. It is in the pointer path, so
+ *                              a bump leaves a new deployment without packages
+ *                              until the next run has built them.
+ *   DISTRICT_CONTENT_REVISION  the aggregation / story selection BEHAVIOUR. It
+ *                              is only in the fingerprint: the next run rebuilds
+ *                              every district, the live pointer stays readable.
+ * Bump the revision whenever the same inputs can yield a different package.
  */
 import { createHash } from "node:crypto";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
@@ -32,6 +37,16 @@ import { paketFuer } from "../components/gemeinde/paket-teile";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 
 export const DISTRICT_PACKAGE_VERSION = 1;
+/**
+ * Part of every district fingerprint (and through them of every region one).
+ * WHY (28.09.2026): the rule "register-confirmed empty towns add zero" went live
+ * on 26.09.2026 without a version bump. The fingerprint did not change, so the
+ * daily runs kept Nordfriesland's package from 25.09.2026 — "unavailable
+ * (history)" because of Gröde, which has no plant — and Schleswig-Holstein and
+ * Deutschland above it stayed unavailable too ("0 gebaut, 294 übernommen"),
+ * until someone started a full run by hand. Revision 2 is that rule.
+ */
+export const DISTRICT_CONTENT_REVISION = 2;
 export const DISTRICT_PACKAGE_PREFIX = `kreise/v${DISTRICT_PACKAGE_VERSION}`;
 export const DISTRICT_POINTER_PATH = `${DISTRICT_PACKAGE_PREFIX}/aktuell.json`;
 /** unstable_cache and the fetch data cache refuse entries above 2 MB; stay well below. */
@@ -116,8 +131,8 @@ export function isEmptyTown(p: GemeindePaket | null): boolean {
  * input: story selection prefers earlier towns on ties, and float sums follow
  * it. A new import therefore rebuilds every district once.
  */
-export function districtFingerprint(d: DistrictMembership, townTags: ReadonlyMap<string, string>, registerEdition = ""): string {
-  const input = [DISTRICT_PACKAGE_VERSION, GEMEINDE_PAKET_VERSION, registerEdition, d.regionId, d.name, sorted(d.members).map((a) => [a, townTags.get(a) ?? null])];
+export function districtFingerprint(d: DistrictMembership, townTags: ReadonlyMap<string, string>, registerEdition = "", revision = DISTRICT_CONTENT_REVISION): string {
+  const input = [DISTRICT_PACKAGE_VERSION, revision, GEMEINDE_PAKET_VERSION, registerEdition, d.regionId, d.name, sorted(d.members).map((a) => [a, townTags.get(a) ?? null])];
   return createHash("sha256").update(JSON.stringify(input)).digest("hex");
 }
 

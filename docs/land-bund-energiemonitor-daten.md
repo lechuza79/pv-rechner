@@ -113,10 +113,15 @@ enthält **und** für den das Register beim Bau keine Zeile führt, wird aus den
 gelassen (= plus null) und im Kreispaket unter `empty` genannt. Ohne diese Bestätigung
 bleibt es beim alten Verhalten.
 
-**Wirksam erst nach Neubau dieser drei Kreise.** Ihr Fingerabdruck ändert sich durch die
-Regel nicht; sie werden beim nächsten Registerimport (1./3./5. des Monats → alle Kreise
-neu) oder mit einem manuellen Lauf „alle Kreise neu bauen" neu gerechnet. Bis dahin
-zeigen Schleswig-Holstein, Rheinland-Pfalz und Deutschland „nicht verfügbar".
+**Wirksam wurde das erst am 28.09.2026 mit einem manuellen Lauf „alle Kreise neu bauen".**
+Der Fingerabdruck änderte sich durch die Regel nicht, deshalb behielten die täglichen
+Läufe vom 26./27.09. die alten Kreispakete („0 gebaut, 294 übernommen"), und
+Schleswig-Holstein, Rheinland-Pfalz und Deutschland blieben „nicht verfügbar" — die
+Tageskurve ebenso (`no-sites` für die Länder, weil ein nicht verfügbarer Kreis keine
+Standortliste hat; `incomplete-states` für Deutschland). Seitdem trägt jeder
+Fingerabdruck `DISTRICT_CONTENT_REVISION` (`lib/district-package.ts`): Wer die Summierung
+ändert, erhöht sie, und der nächste Lauf baut alle Kreise und Regionen neu, ohne den
+Zeigerpfad zu verschieben.
 Das ändert auch die drei **Kreisseiten** (sie bekommen ihren Monitor) — sichtbar live.
 
 ## Verbleibende Lücken
