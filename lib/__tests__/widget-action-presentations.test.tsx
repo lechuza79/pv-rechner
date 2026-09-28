@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {ExportableWidgetFrame} from '../../components/dashboard/ExportableWidgetFrame';
+import {ExportableWidgetFrame, WidgetActionsPresentation} from '../../components/dashboard/ExportableWidgetFrame';
 import {WIDGETS} from '../widget-registry';
 
 function render(actions: 'menu' | 'bar' | 'primary') {
@@ -27,5 +27,16 @@ describe('Shared widget action presentations', () => {
     expect(menu).toContain('aria-label="Optionen für Solar ranking"');
     expect(menu).not.toContain('aria-label="Aktionen für Solar ranking"');
     expect(menu).not.toContain('sc-widget-actions');
+  });
+
+  it('lets the admin workshop override the presentation, and only where it provides the context', () => {
+    const frame = (actions: 'menu' | 'primary') => <ExportableWidgetFrame actions={actions} animated widget={WIDGETS.regionalRace}
+      title="Solar ranking" kind="time-series" place="Wittenberg" stand="27.09.2026" filename="race-test"><div>Chart content</div></ExportableWidgetFrame>;
+    const asFooter = renderToStaticMarkup(<WidgetActionsPresentation.Provider value="primary">{frame('menu')}</WidgetActionsPresentation.Provider>);
+    expect(asFooter).toBe(render('primary'));
+    const asMenu = renderToStaticMarkup(<WidgetActionsPresentation.Provider value="menu">{frame('primary')}</WidgetActionsPresentation.Provider>);
+    expect(asMenu).toBe(render('menu'));
+    // Without a provider each consumer keeps its own choice.
+    expect(renderToStaticMarkup(frame('primary'))).toBe(render('primary'));
   });
 });

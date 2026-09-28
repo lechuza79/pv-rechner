@@ -1,5 +1,31 @@
 # Central visual system and regional pages — plan
 
+## Admin widget workshop — 28 September 2026 (local, not released)
+
+`/admin/charts` is now the widget workshop (same route, admin guard of the admin
+layout plus the page's own check). It extends the existing registry view instead of
+adding a register: `app/(site)/admin/charts/werkstatt-bestand.ts` is keyed by
+`WidgetId` and holds only observations (component, usage sites, levels, functions,
+gaps, evidenced acceptance, preview kind); `lib/__tests__/widget-werkstatt.test.ts`
+checks every claim against the code (files exist, `WIDGETS.<id>` references listed,
+embed routes exist, "central" iff an `ExportableWidgetFrame` consumer).
+
+- Previews render ONE chosen widget with the pages' own readers: municipality
+  package (`ladeGemeindePaket` + `paketFuer("monitor")`, weather via the exported
+  `wetterSkript`), regional content (`loadDistrictContent`/`loadRegionContent`,
+  `getRankingData`, `regionMembers`), race input `regionRaceInput` (moved out of
+  `LandkreisSeite`, now shared). Monitor widgets come from
+  `useRegionalMonitorWidgets` / `gemeindeMonitorWidgets` (extracted from the two
+  monitors, identical output) and are placed in `EnergyMonitor`.
+- `WidgetActionsPresentation` (context in `ExportableWidgetFrame`) lets the workshop
+  switch menu/footer for every frame below it; public pages never provide it.
+  The footer unification from `codex/widget-actions-standard` (78f94b4b) is
+  cherry-picked into this branch.
+- Embed-route widgets preview as a lazy iframe of the real route (onsite or external).
+- Shared controls (options menu, footer with restart, tooltip, frame with source
+  edge and image footer, legacy `WidgetFooter`) are shown with demo handlers.
+- Not in scope and not built: widget redesign, new embeds, configurator, editorial.
+
 ## Action-row consolidation — 28 September 2026 (local, not released)
 
 `ExportableWidgetFrame` now routes both footer presentations (`primary` and legacy

@@ -10,7 +10,7 @@
  * curve — a separate call the scene never waits for. Each is fetched once and
  * shared by everything that asks within five minutes.
  */
-function wetterSkript(plz: string | null): string {
+export function wetterSkript(plz: string | null): string {
   const p = JSON.stringify(plz);
   return `(function(){var plz=${p};function quelle(url){var pending=null,started=0;return function(){if(!plz)return Promise.reject(new Error("Kein Standort"));if(!pending||Date.now()-started>300000){started=Date.now();pending=fetch(url+plz,{signal:AbortSignal.timeout(15000)}).then(function(r){return r.ok?r.json():Promise.reject(new Error("Wetter nicht verfügbar"))}).catch(function(e){pending=null;throw e});}return pending;}}var load=quelle("/scene-data?plz="),tag=quelle("/api/gemeinde/solartag?plz=");window.atlasWeather={load:load,tag:tag,refresh:function(){return load()}};if(plz){load().catch(function(){});}})();`;
 }

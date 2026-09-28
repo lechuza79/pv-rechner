@@ -25,7 +25,13 @@ import {ortPhrase} from "../../lib/atlas-orte";
  * energy widgets. Live power uses the prepared daily curve for the selected regional level. Missing
  * packages retain register snapshots, never fabricated monthly history.
  */
-export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId,name,livePower=true}:{regionId:string;name:string;livePower?:boolean;cells:ChildYearRow[];stand:string;monitor?:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
+type RegionalMonitorProps = {regionId:string;name:string;livePower?:boolean;cells:ChildYearRow[];stand:string;monitor?:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null};
+
+/**
+ * The individual widgets of the regional monitor. The monitor composes them;
+ * the admin widget workshop previews one at a time — the same nodes, not a copy.
+ */
+export function useRegionalMonitorWidgets({cells,stand,monitor,population,populationStand,regionId,name,livePower=true}:RegionalMonitorProps) {
   const weatherSource=useMemo(()=>regionalSolarWeatherSource(regionId),[regionId]);
   const solar=cells.filter(row=>SEGMENT_OWNER[row.segment]!=null&&!row.segment.startsWith("batterie"));
   const years=[...new Set(solar.map(row=>row.year))].sort((a,b)=>a-b).map(year=>({year,count:solar.filter(row=>row.year===year).reduce((sum,row)=>sum+row.count,0)}));
@@ -35,13 +41,25 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
     {label:"Freiflächenanlagen",segments:["freiflaeche"]},
   ].map(group=>({...group,value:solar.filter(row=>group.segments.includes(row.segment)).reduce((sum,row)=>sum+row.kwp,0),count:solar.filter(row=>group.segments.includes(row.segment)).reduce((sum,row)=>sum+row.count,0)}));
   const total=groups.reduce((sum,row)=>sum+row.count,0),power=groups.reduce((sum,row)=>sum+row.value,0);
+  return {
+    kpis:(!monitor||monitor.status!=='ready')?<KpiOverview snapshot groups={regionalKpiGroups(cells,stand,population)} help={<p>Bestand im Marktstammdatenregister am {dashboardDate(stand)}. Eine vollständige Monatsreihe ist derzeit nicht verfügbar.</p>}/>:<KpiOverview groups={monitorKpiGroups({history:monitor.history,population:population??0,registerStand:monitor.registerStand,populationStand})} help={<><p>Vollständige Summe aller Teilgebiete bis zum {dashboardDate(monitor.history.observations[0].end)}. Registerstand: {dashboardDate(monitor.registerStand)}. Gezählt werden heute erfasste Anlagen nach Inbetriebnahmedatum; stillgelegte Anlagen fehlen, Nachmeldungen können frühere Werte verändern.</p>{populationStand&&<p>Die Leistung je Einwohner bezieht sich durchgehend auf die Einwohnerzahl vom {dashboardDate(populationStand)}.</p>}</>}/>,
+    currentPower:livePower&&<ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={name} stand={dashboardDate(stand)} filename={`solar-check-current-${regionId}`} data-story-scheme="dark" title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></ExportableWidgetFrame>,
+    growth:<AnnualGrowth years={years} stand={stand} name={name} regionId={regionId}/>,
+    categories:<ExportableWidgetFrame widget={WIDGETS.regionalComposition} place={name} stand={dashboardDate(stand)} filename={`solar-check-categories-${regionId}`} data-story-scheme="dark" title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute {ortPhrase({name})} erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></ExportableWidgetFrame>,
+    composition:groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>),
+    ...(monitor?.status==='ready' ? districtEnergyWidgets({data:monitor.energy,name,regionId}) : {}),
+  };
+}
+
+export default function LandkreisMonitor(props:RegionalMonitorProps) {
+  const {kpis,currentPower,growth,categories,composition,energy,energyNotice}=useRegionalMonitorWidgets(props);
   return <EnergyMonitor
     className={styles.districtMonitor}
-    kpis={(!monitor||monitor.status!=='ready')?<KpiOverview snapshot groups={regionalKpiGroups(cells,stand,population)} help={<p>Bestand im Marktstammdatenregister am {dashboardDate(stand)}. Eine vollständige Monatsreihe ist derzeit nicht verfügbar.</p>}/>:<KpiOverview groups={monitorKpiGroups({history:monitor.history,population:population??0,registerStand:monitor.registerStand,populationStand})} help={<><p>Vollständige Summe aller Teilgebiete bis zum {dashboardDate(monitor.history.observations[0].end)}. Registerstand: {dashboardDate(monitor.registerStand)}. Gezählt werden heute erfasste Anlagen nach Inbetriebnahmedatum; stillgelegte Anlagen fehlen, Nachmeldungen können frühere Werte verändern.</p>{populationStand&&<p>Die Leistung je Einwohner bezieht sich durchgehend auf die Einwohnerzahl vom {dashboardDate(populationStand)}.</p>}</>}/> }
-    currentPower={livePower&&<ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={name} stand={dashboardDate(stand)} filename={`solar-check-current-${regionId}`} data-story-scheme="dark" title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></ExportableWidgetFrame>}
-    growth={<AnnualGrowth years={years} stand={stand} name={name} regionId={regionId}/>}
-    stock={<>      <ExportableWidgetFrame widget={WIDGETS.regionalComposition} place={name} stand={dashboardDate(stand)} filename={`solar-check-categories-${regionId}`} data-story-scheme="dark" title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute {ortPhrase({name})} erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></ExportableWidgetFrame>
-      {groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>)}</>}
-    {...(monitor?.status==='ready' ? districtEnergyWidgets({data:monitor.energy,name,regionId}) : {})}
+    kpis={kpis}
+    currentPower={currentPower}
+    growth={growth}
+    stock={<>{categories}{composition}</>}
+    energy={energy}
+    energyNotice={energyNotice}
   />;
 }

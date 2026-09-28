@@ -7,7 +7,7 @@
  * the live solar output reads the weather the parent page already loads
  * (window.atlasWeather, set by GemeindeSzene) — no second weather request.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
 import { WIDGETS } from "../../lib/widget-registry";
@@ -266,6 +266,25 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     };
   }, []);
 
+  const {kpis, currentPower, growth, stock, energy, energyNotice} = gemeindeMonitorWidgets(paket);
+  return <EnergyMonitor
+    rootRef={root}
+    kpis={kpis}
+    currentPower={currentPower}
+    growth={growth}
+    stock={stock.length ? stock.map((entry) => entry.node) : null}
+    energy={energy}
+    energyNotice={energyNotice}
+    map={(paket.district.districtPeers as Any[]).length >= 2 && <WennNah hoehe={640}><LocalMap paket={paket} /></WennNah>}
+  />;
+}
+
+/**
+ * The individual widgets of the municipality monitor. The monitor composes
+ * them; the admin widget workshop previews one at a time — the same nodes, not
+ * a copy. Current power reads the page's `atlasWeather` (GemeindeSzene).
+ */
+export function gemeindeMonitorWidgets(paket: GemeindePaket) {
   const register = paket.register;
   const charts = paket.charts as Any;
   const installedKwp = ((register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
@@ -279,15 +298,13 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
   const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf");
-  const widgets = (section: string) => {
-    const selected = items.filter((item: Any) => item.section === section);
-    return selected.length ? selected.map((item: Any) => <MonitorWidget key={item.story.id} item={item} paket={paket} />) : null;
-  };
+  const stock: { key: string; template: string; title: string; node: ReactNode }[] = items
+    .filter((item: Any) => item.section === "Anlagenbestand")
+    .map((item: Any) => ({ key: item.story.id, template: item.template, title: widgetRole(item).title, node: <MonitorWidget key={item.story.id} item={item} paket={paket} /> }));
   const energy: MonitorEnergyWidgets = Object.fromEntries(items.filter((item: Any) => item.section === "Strom und Wert").map((item: Any) => [item.template, <MonitorWidget key={item.story.id} item={item} paket={paket} />]));
   const missing = (charts?.availability ?? []).some((item: Any) => item.status === "missing");
-  return <EnergyMonitor
-    rootRef={root}
-    kpis={hasHistory && (
+  return {
+    kpis: hasHistory && (
         <KpiOverview
           groups={monitorKpiGroups({history:paket.monitorHistory!,population:paket.register?.own.population??0,registerStand:paket.registerStand,populationStand:paket.einwohnerStand})}
           help={
@@ -297,17 +314,16 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
             </>
           }
         />
-      )}
-    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} frameless /></ExportableWidgetFrame>}
-    growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />}
-    stock={widgets("Anlagenbestand")}
-    energy={Object.keys(energy).length ? energy : undefined}
-    energyNotice={missing && <p className="municipal-data-missing">
+      ),
+    currentPower: installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} frameless /></ExportableWidgetFrame>,
+    growth: years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />,
+    stock,
+    energy: Object.keys(energy).length ? energy : undefined,
+    energyNotice: missing && <p className="municipal-data-missing">
       Für die Monats- und Jahreserzeugung sowie Stromwert und Einspeisevergütung fehlen noch vollständige örtliche Wetterdaten. Diese
       Diagramme erscheinen, sobald die Berechnung vollständig vorliegt.
-    </p>}
-    map={(paket.district.districtPeers as Any[]).length >= 2 && <WennNah hoehe={640}><LocalMap paket={paket} /></WennNah>}
-  />;
+    </p>,
+  };
 }
 
 /**

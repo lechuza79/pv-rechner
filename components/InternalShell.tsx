@@ -117,7 +117,7 @@ export default function InternalShell({
         { href: "/admin/komponenten", label: "Komponenten" },
         { href: "/admin/vorschauen", label: "Vorschauen" },
         { href: "/admin/prices", label: "Marktpreise" },
-        { href: "/admin/charts", label: "Chart-Baukasten" },
+        { href: "/admin/charts", label: "Widget-Werkstatt" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
       ],
     });

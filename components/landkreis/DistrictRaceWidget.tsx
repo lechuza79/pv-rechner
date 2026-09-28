@@ -18,9 +18,8 @@ declare global {
 }
 
 /** Shared widget chrome; the race engine owns only its plot and clock. */
-/** Wording per level; the district texts are the default. */
-export type RaceWording = {title:string;members:string;leaders:string;unit:string};
-export const DISTRICT_RACE_WORDING: RaceWording = {title:"Welche Gemeinde hat die meisten Solaranlagen?",members:"Alle Gemeinden im Landkreis",leaders:"Die zehn führenden Gemeinden",unit:"Orte"};
+import {DISTRICT_RACE_WORDING, type RaceWording} from "../../lib/region-level-text";
+export {DISTRICT_RACE_WORDING, type RaceWording};
 
 export default function DistrictRaceWidget({name,stand,rows,history,wording=DISTRICT_RACE_WORDING}:{name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording}) {
   const [stage,setStage]=useState<HTMLDivElement|null>(null);

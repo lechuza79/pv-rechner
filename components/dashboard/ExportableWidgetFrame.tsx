@@ -1,5 +1,5 @@
 "use client";
-import {useCallback, useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
+import {createContext, useCallback, useContext, useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
 import {trackWidgetEvent} from "../../lib/analytics";
 import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
 import {captureNodeToBlob} from '../../lib/chart-export';
@@ -37,7 +37,14 @@ import './dashboard.css';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, animated = false, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+/**
+ * Overrides the action presentation of every frame below it. Only the admin
+ * widget workshop provides it, so the same frames can be compared in both
+ * presentations; public pages never do and keep each consumer's own choice.
+ */
+export const WidgetActionsPresentation = createContext<'menu' | 'primary' | null>(null);
+
+export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions: actionsProp = 'menu', einbetten, animated = false, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
   animated?: boolean;
@@ -56,6 +63,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   /** Parameters of the supported embed route; without it, embedding is shown as unavailable. */
   einbetten?: {params: Record<string, string>; height: number};
 }) {
+  const actions = useContext(WidgetActionsPresentation) ?? actionsProp;
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);

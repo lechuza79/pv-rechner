@@ -29,6 +29,9 @@ const consumers: Record<string,string[]> = {
   'components/social/AnnualEnergyChart.tsx':['../charts/EnergyYearRadial'],
   'components/social/ApprovedStoryVisual.tsx':['../charts/CompositionChart'],
   'components/landkreis/LandkreisSeite.tsx':['./RegionKarte'],
+  // The admin widget workshop previews the real monitor widgets and shared controls, never copies.
+  'app/(site)/admin/charts/WerkstattVorschau.tsx':['../../../../components/dashboard/ExportableWidgetFrame','../../../../components/dashboard/EnergyMonitor','../../../../components/landkreis/LandkreisMonitor','../../../../components/gemeinde/GemeindeMonitor','../../../../components/landkreis/DistrictRaceWidget'],
+  'app/(site)/admin/charts/Bedienelemente.tsx':['../../../../components/ChartOptionsMenu','../../../../components/InfoTooltip','../../../../components/WidgetExport','../../../../components/dashboard/WidgetFrame'],
 };
 function files(dir:string):string[] {
   return readdirSync(join(root,dir),{withFileTypes:true}).flatMap(item=>item.isDirectory()?files(`${dir}/${item.name}`):/\.[jt]sx?$/.test(item.name)?[`${dir}/${item.name}`]:[]);
