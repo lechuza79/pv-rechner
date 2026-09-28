@@ -268,7 +268,15 @@ export function bewerteLink(url: string, linktext = ""): LinkWertung {
   // „Förderstopp im Energiesparprogramm"). Die tragen das Programmwort nicht in
   // der Adresse, sondern eine Schlagzeile — und ein Datumspfad wie `/2024/`
   // schließt sie weiterhin aus, ausnahmslos.
-  const dauerseite = /foerderprogramm|förderprogramm|forderprogramm|foerderrichtlinie|förderrichtlinie/.test(adresse);
+  //
+  // Same exception for "Förderung-<technology>" as one path segment (28.09.2026):
+  // Oberviechtach keeps its standing balcony-grant page at
+  // `/Rathaus/Aktuelles/Förderung-Stecker-Solaranlage/`, with guideline and form.
+  // The technology word must follow directly, so a headline such as
+  // "/aktuelles/foerderung-fuer-den-sportverein" stays a news item; date paths
+  // are still excluded by MELDUNG_NUR_AKTUELLES.
+  const dauerseite = /foerderprogramm|förderprogramm|forderprogramm|foerderrichtlinie|förderrichtlinie/.test(adresse)
+    || /(foerderung|förderung|forderung)-(stecker|balkon|photovoltaik|solar|pv-)/.test(adresse);
   if (MELDUNG.test(adresse) && !(dauerseite && MELDUNG_NUR_AKTUELLES.test(adresse))) return leer;
   // Der Ausschluss gilt beiden Seiten: Ein Link namens „Förderverein Feuerwehr"
   // unter einer harmlosen Adresse ist derselbe Fehlgriff wie umgekehrt.

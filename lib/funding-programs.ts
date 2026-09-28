@@ -15721,6 +15721,47 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Added 28.09.2026: Oberviechtach, balcony grant since 2024 ─────────────
+  //
+  // Found in the source queue (the old "Kurzmenü" address now redirects to the
+  // start page; the live page is /Rathaus/Aktuelles/Förderung-Stecker-
+  // Solaranlage/). Guideline "Richtlinie zur Förderung von Stecker-
+  // Solaranlagen (Balkonkraftwerke) im Stadtgebiet Oberviechtach", signed
+  // 01.05.2024, read in full on 28.09.2026 (scanned PDF, loadDocument FID
+  // 3638.514.1):
+  // - Nr. 1 plug-in systems up to 800 Wp
+  // - Nr. 2 natural persons and local registered associations with (main)
+  //   residence/seat in Oberviechtach; owners or tenants, not both for the same
+  //   unit; once per unit and user; documents in the year of the invoice
+  // - Nr. 3 first come first served, annual budget, no carry-over; combination
+  //   with county, state and federal programmes allowed; applications from
+  //   01.05.2024, by 31.12. of each year
+  // - Nr. 4 "mit 10% des eingereichten Rechnungsbetrags, jedoch maximal 100 €
+  //   pro Antrag gefördert"
+  // - Nr. 7 in force 01.05.2024, no end date; suspended until year end once
+  //   the funds are used up.
+  "oberviechtach-stecker-solar": {
+    id: "oberviechtach-stecker-solar", name: "Förderung von Stecker-Solaranlagen (Balkonkraftwerke)",
+    traeger: "Stadt Oberviechtach", level: "kommune", region: "Oberviechtach",
+    bundesland: "Bayern", agsCode: "09376151",
+    url: "https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-05-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Rechnungsbetrag des Balkonkraftwerks",
+    maxFoerderung: "100 € je Antrag",
+    rates: [{ label: "Balkonkraftwerk bis 800 Wp", value: "10 % des Rechnungsbetrags, höchstens 100 €" }],
+    conditions: [
+      "Antragsberechtigt sind natürliche Personen und eingetragene Vereine mit Hauptwohnsitz bzw. Sitz in Oberviechtach; Eigentümer oder Mieter, nicht beide für dieselbe Einheit; einmal je Einheit und Nutzer",
+      "Antrag mit Originalrechnung und Foto der installierten Anlage im Jahr der Rechnung, spätestens bis 31. Dezember, bei der Stadt einreichen",
+      "Vergabe nach Eingang, solange die Jahresfördersumme reicht; Anträge werden nicht ins nächste Jahr übertragen, einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.1,
+    balkonCap: 100,
+  },
+
   // ─── Added 28.09.2026: Gemeinde Grethem (Samtgemeinde Ahlden) ─────────────
   //
   // Found in the source queue (the Grethem funding page, shared by the four

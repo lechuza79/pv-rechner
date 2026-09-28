@@ -3650,18 +3650,23 @@
   {
     "regionId": "01056050",
     "name": "Wedel",
-    "checkedAt": "2026-09-23T20:30:00Z",
-    "recheckAt": "2026-12-23T08:00:00Z",
+    "checkedAt": "2026-09-28T12:30:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf wedel.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Meldung vom Juni über bis zu vier Millionen Euro Landesmittel aus dem Programm „Neubau von Schwimmsportstätten in Schleswig-Holstein\" für den Umbau des Erlebnisbeckens in der Badebucht — Förderung FÜR die Stadt, nicht VON ihr.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Meldung vom Juni über bis zu vier Millionen Euro Landesmittel aus dem Programm „Neubau von Schwimmsportstätten in Schleswig-Holstein\" für den Umbau des Erlebnisbeckens in der Badebucht — Förderung FÜR die Stadt, nicht VON ihr. Zweite Fundstelle (28.09.2026): Die Klimaschutzseite der Stadt bewirbt nur das landesweite Programm „Klimaschutz für Bürgerinnen und Bürger“ (im Katalog als beendetes Landesprogramm geführt); ein eigener Zuschuss der Stadt ist dort nicht genannt.",
     "searches": [
-      "Meldung „Vier Millionen Euro Förderung für die Wedeler Badebucht\" am 23.09.2026 live gelesen"
+      "Meldung „Vier Millionen Euro Förderung für die Wedeler Badebucht\" am 23.09.2026 live gelesen",
+      "Klimaschutzmanagement-Seite „Attraktives Förderprogramm ‚Klimaschutz für Bürgerinnen und Bürger‘“ am 28.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.wedel.de/rathaus-politik/newsdetail/vier-millionen-euro-foerderung-fuer-die-wedeler-badebucht",
         "finding": "Wörtlich: „Das Land Schleswig-Holstein bewilligt damit Mittel in Höhe von bis zu vier Millionen Euro\" für den Umbau des Erlebnisbeckens. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.wedel.de/rathaus-politik/stadtverwaltung/stadtentwicklung/klimaschutzmanagement/test-1",
+        "finding": "28.09.2026: „Mit dem landesweiten Förderprogramm ‚Klimaschutz für Bürgerinnen und Bürger‘ erhalten Sie Zuschüsse …“ — Verweis auf das Antragsportal des Landes, kein städtischer Zuschuss."
       }
     ],
     "sources": [
@@ -3670,6 +3675,12 @@
         "disposition": "reviewed",
         "reason": "Gelesen; Landesmittel für ein Bauvorhaben der Stadt.",
         "evidenceUrl": "https://www.wedel.de/rathaus-politik/newsdetail/vier-millionen-euro-foerderung-fuer-die-wedeler-badebucht"
+      },
+      {
+        "url": "wedel.de/rathaus-politik/stadtverwaltung/stadtentwicklung/klimaschutzmanagement/test-1",
+        "disposition": "reviewed",
+        "reason": "Gelesen; bewirbt nur das Landesprogramm Schleswig-Holstein, das im Katalog als beendet geführt wird.",
+        "evidenceUrl": "https://www.wedel.de/rathaus-politik/stadtverwaltung/stadtentwicklung/klimaschutzmanagement/test-1"
       }
     ]
   },
@@ -75627,6 +75638,39 @@
         "disposition": "reviewed",
         "reason": "Am 28.09.2026 gelesen: Heckenschnitt-Förderung: Aufstockung des Kreiszuschusses um 1,00 € je laufenden Meter Hecke, kein Energieprogramm.",
         "evidenceUrl": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "09376151",
+    "name": "Oberviechtach",
+    "checkedAt": "2026-09-28T12:30:00Z",
+    "recheckAt": "2027-03-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Oberviechtach fördert Balkonkraftwerke bis 800 Wp mit 10 % des Rechnungsbetrags, höchstens 100 € je Antrag (Richtlinie in Kraft seit 01.05.2024, ohne Enddatum, Jahresbudget nach Eingang). Aufgenommen als oberviechtach-stecker-solar mit Status aktiv. Dachanlagen, Speicher und Wärmepumpen fördert die Stadt nicht; ob das Budget 2026 schon aufgebraucht ist, nennt keine öffentliche Quelle.",
+    "searches": [
+      "Programmseite und Richtlinie (Scan, drei Seiten) sowie Antragsformular am 28.09.2026 vollständig gelesen",
+      "Websuche „Oberviechtach Förderung Stecker-Solaranlage Stadt Zuschuss“ (28.09.2026): nur diese Programmseite und das Energiekonzept (kein Zuschuss)",
+      "Adversarialer Prüfer (28.09.2026): Betrag, Deckel, Berechtigte, Status und Kombinierbarkeit bestätigt; keine Ausschöpfungsmeldung gefunden",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/",
+        "finding": "28.09.2026: „gewährt Zuschüsse für Maßnahmen zum Ausbau der Erneuerbaren Energien bei so genannten Stecker-Solaranlagen (Balkonkraftwerken)“; verlinkt Antrag und Richtlinie."
+      },
+      {
+        "url": "https://www.oberviechtach.de/loadDocument.phtml?FID=3638.514.1&Ext=PDF",
+        "finding": "28.09.2026: Nr. 4 „mit 10% des eingereichten Rechnungsbetrags, jedoch maximal 100 € pro Antrag gefördert“; Nr. 7 „Diese Richtlinie tritt ab 01.05.2024 in Kraft.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "oberviechtach.de/Kurzmen%C3%BC/F%C3%B6rderung-Stecker-Solaranlage.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; dasselbe Programm steht unter der aktuellen Programmseite, die samt Richtlinie gelesen wurde.",
+        "evidenceUrl": "https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/"
       }
     ]
   }

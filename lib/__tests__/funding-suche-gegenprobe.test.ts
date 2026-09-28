@@ -142,6 +142,12 @@ describe("Findet unsere Suche die Programme, die wir selbst führen?", () => {
     expect(bewerteLink("https://x.de/aktuelles/2026/foerderprogramm-pv").punkte).toBe(0);
     // Und die Gegenprobe: die drei bestätigten Programme, für die es sie gibt.
     expect(bewerteLink("https://www.dietmannsried.de/rathaus/aktuelles-bekanntmachungen/foerderprogramm-pv-anlagen.html").punkte).toBeGreaterThan(0);
+    // "Förderung-<technology>" as one segment is a standing page too
+    // (Oberviechtach, 28.09.2026); a headline without the technology word and a
+    // dated path stay news.
+    expect(bewerteLink("https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/").punkte).toBeGreaterThan(0);
+    expect(bewerteLink("https://x.de/aktuelles/foerderung-fuer-den-sportverein").punkte).toBe(0);
+    expect(bewerteLink("https://x.de/aktuelles/2026/foerderung-balkonkraftwerke").punkte).toBe(0);
   });
 
   it("ein eindeutiges Technikwort überlebt eine fremde Oberrubrik", () => {
