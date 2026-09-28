@@ -5,6 +5,7 @@ import { anthropicLeseDienst } from "../../../lib/angebot-lesedienst";
 import { gewerkVon, WAERMEPUMPE } from "../../../lib/angebot-gewerk";
 import { zuSammlungsZeile } from "../../../lib/angebot-sammlung";
 import { merkeBefund } from "../../../lib/angebot-sammlung-db";
+import { angebotCheckAktiv } from "../../../lib/angebot-check-freigabe";
 
 // ─── Ein hochgeladenes Wärmepumpen-Angebot prüfen ─────────────────────────────
 //
@@ -63,6 +64,13 @@ function leseDienst(): LeseDienst | null {
 }
 
 export async function POST(req: Request) {
+  // Switched off until the feature is built into a page. Before setting
+  // ANGEBOT_CHECK_AKTIV=1, a GLOBAL daily cap is required (see
+  // lib/angebot-check-freigabe.ts) — the per-instance limit below is not one.
+  if (!angebotCheckAktiv()) {
+    return NextResponse.json({ fehler: "nicht-gefunden" }, { status: 404 });
+  }
+
   const ip = (req.headers.get("x-forwarded-for") ?? "unbekannt").split(",")[0].trim();
   if (zuOft(ip)) {
     return NextResponse.json({ fehler: "zu-viele-anfragen" }, { status: 429 });
