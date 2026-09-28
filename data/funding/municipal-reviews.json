@@ -74010,5 +74010,429 @@
         "evidenceUrl": "https://www.amt-brueck.de/contact/index/link"
       }
     ]
+  },
+  {
+    "regionId": "13073024",
+    "name": "Franzburg",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Franzburg (Amt Franzburg-Richtenberg, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-/Landesprojekte, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "EU-Projektseite des Amtes Franzburg-Richtenberg (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-franzburg-richtenberg.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "finding": "28.09.2026 live gelesen: „Unsere EU geförderten Projekte“ — nur eigene Vorhaben (Infozentrum Basilika Starkow, Wartehallen Velgast, Speisehalle Schule Franzburg, Machbarkeitsstudie Wolfsbach, Kita-Dach Sievertshagen) und Erläuterungen zu EFRE/ELER/ILERL. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe: keine Treffer; „Förderprogramm“ nur die EU-Projektseite. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (mv-mini-solaranlagen, im Katalog); kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-/Landesprojekte des Amtes, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073076",
+    "name": "Richtenberg",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Richtenberg (Amt Franzburg-Richtenberg, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-/Landesprojekte, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "EU-Projektseite des Amtes Franzburg-Richtenberg (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-franzburg-richtenberg.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "finding": "28.09.2026 live gelesen: „Unsere EU geförderten Projekte“ — nur eigene Vorhaben (Infozentrum Basilika Starkow, Wartehallen Velgast, Speisehalle Schule Franzburg, Machbarkeitsstudie Wolfsbach, Kita-Dach Sievertshagen) und Erläuterungen zu EFRE/ELER/ILERL. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe: keine Treffer; „Förderprogramm“ nur die EU-Projektseite. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (mv-mini-solaranlagen, im Katalog); kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-/Landesprojekte des Amtes, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073097",
+    "name": "Weitenhagen",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weitenhagen (Amt Franzburg-Richtenberg, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-/Landesprojekte, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "EU-Projektseite des Amtes Franzburg-Richtenberg (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-franzburg-richtenberg.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "finding": "28.09.2026 live gelesen: „Unsere EU geförderten Projekte“ — nur eigene Vorhaben (Infozentrum Basilika Starkow, Wartehallen Velgast, Speisehalle Schule Franzburg, Machbarkeitsstudie Wolfsbach, Kita-Dach Sievertshagen) und Erläuterungen zu EFRE/ELER/ILERL. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe: keine Treffer; „Förderprogramm“ nur die EU-Projektseite. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (mv-mini-solaranlagen, im Katalog); kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-/Landesprojekte des Amtes, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073098",
+    "name": "Wendisch Baggendorf",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wendisch Baggendorf (Amt Franzburg-Richtenberg, Vorpommern-Rügen): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Förderseite des Amtes nennt nur eigene EU-/Landesprojekte, die Volltextsuche findet zu keinem Energiebegriff etwas, und der Landkreis verweist nur auf das Landesprogramm für Balkonkraftwerke, das bereits im Katalog steht.",
+    "searches": [
+      "EU-Projektseite des Amtes Franzburg-Richtenberg (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-franzburg-richtenberg.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Landkreis Vorpommern-Rügen, Förderung von Mini-Solaranlagen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "finding": "28.09.2026 live gelesen: „Unsere EU geförderten Projekte“ — nur eigene Vorhaben (Infozentrum Basilika Starkow, Wartehallen Velgast, Speisehalle Schule Franzburg, Machbarkeitsstudie Wolfsbach, Kita-Dach Sievertshagen) und Erläuterungen zu EFRE/ELER/ILERL. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-franzburg-richtenberg.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe: keine Treffer; „Förderprogramm“ nur die EU-Projektseite. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
+        "finding": "28.09.2026: Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (mv-mini-solaranlagen, im Katalog); kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur EU-/Landesprojekte des Amtes, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/seite/762744/unsere-eu-gef%C3%B6rderten-projekte.html"
+      },
+      {
+        "url": "amt-franzburg-richtenberg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-franzburg-richtenberg.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12063088",
+    "name": "Friesack",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Friesack (Amt Friesack, Havelland): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026) — die Förderseite des Amtes nennt nur eigene Vorhaben, die Volltextsuche nichts. Anwendbar ist allein das Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (im Katalog als havelland-stecker-solar); es ist für 2026 weiter ohne Antragsmöglichkeit und steht deshalb auf pausiert, ohne Rechenwert.",
+    "searches": [
+      "Förderprojekte-Seite des Amtes Friesack (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-friesack.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Kreisprogramm Stecker-Solargeräte Havelland live nachgelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "finding": "28.09.2026 live gelesen: „geförderte Projekte im Amtsbereich Friesack“ — Waldumbau (EU-Forst-RL), PV-Anlage mit Speicher auf dem Verwaltungsgebäude des Amtes (EFRE, 2021/22), Lüftungsanlage Grundschule Paulinenaue. Eigene Vorhaben, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-friesack.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-friesack.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm: keine Treffer. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+        "finding": "28.09.2026 live: Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (havelland-stecker-solar, im Katalog, zuletzt 20.09.2026 geprüft) trägt weiter „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — Status pausiert, kein Rechenwert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur eigene Vorhaben des Amtes (Wald, PV auf Verwaltungsgebäude, Schullüftung), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-friesack.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12063142",
+    "name": "Wiesenaue",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wiesenaue (Amt Friesack, Havelland): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026) — die Förderseite des Amtes nennt nur eigene Vorhaben, die Volltextsuche nichts. Anwendbar ist allein das Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (im Katalog als havelland-stecker-solar); es ist für 2026 weiter ohne Antragsmöglichkeit und steht deshalb auf pausiert, ohne Rechenwert.",
+    "searches": [
+      "Förderprojekte-Seite des Amtes Friesack (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-friesack.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Kreisprogramm Stecker-Solargeräte Havelland live nachgelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "finding": "28.09.2026 live gelesen: „geförderte Projekte im Amtsbereich Friesack“ — Waldumbau (EU-Forst-RL), PV-Anlage mit Speicher auf dem Verwaltungsgebäude des Amtes (EFRE, 2021/22), Lüftungsanlage Grundschule Paulinenaue. Eigene Vorhaben, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-friesack.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-friesack.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm: keine Treffer. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+        "finding": "28.09.2026 live: Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (havelland-stecker-solar, im Katalog, zuletzt 20.09.2026 geprüft) trägt weiter „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — Status pausiert, kein Rechenwert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur eigene Vorhaben des Amtes (Wald, PV auf Verwaltungsgebäude, Schullüftung), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-friesack.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12063240",
+    "name": "Pessin",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Pessin (Amt Friesack, Havelland): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026) — die Förderseite des Amtes nennt nur eigene Vorhaben, die Volltextsuche nichts. Anwendbar ist allein das Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (im Katalog als havelland-stecker-solar); es ist für 2026 weiter ohne Antragsmöglichkeit und steht deshalb auf pausiert, ohne Rechenwert.",
+    "searches": [
+      "Förderprojekte-Seite des Amtes Friesack (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-friesack.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Kreisprogramm Stecker-Solargeräte Havelland live nachgelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "finding": "28.09.2026 live gelesen: „geförderte Projekte im Amtsbereich Friesack“ — Waldumbau (EU-Forst-RL), PV-Anlage mit Speicher auf dem Verwaltungsgebäude des Amtes (EFRE, 2021/22), Lüftungsanlage Grundschule Paulinenaue. Eigene Vorhaben, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-friesack.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-friesack.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm: keine Treffer. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+        "finding": "28.09.2026 live: Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (havelland-stecker-solar, im Katalog, zuletzt 20.09.2026 geprüft) trägt weiter „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — Status pausiert, kein Rechenwert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur eigene Vorhaben des Amtes (Wald, PV auf Verwaltungsgebäude, Schullüftung), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-friesack.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12063256",
+    "name": "Retzow",
+    "checkedAt": "2026-09-28T04:18:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Retzow (Amt Friesack, Havelland): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026) — die Förderseite des Amtes nennt nur eigene Vorhaben, die Volltextsuche nichts. Anwendbar ist allein das Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (im Katalog als havelland-stecker-solar); es ist für 2026 weiter ohne Antragsmöglichkeit und steht deshalb auf pausiert, ohne Rechenwert.",
+    "searches": [
+      "Förderprojekte-Seite des Amtes Friesack (Bildschirm und Druck) am 28.09.2026",
+      "Volltextsuche amt-friesack.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Kreisprogramm Stecker-Solargeräte Havelland live nachgelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "finding": "28.09.2026 live gelesen: „geförderte Projekte im Amtsbereich Friesack“ — Waldumbau (EU-Forst-RL), PV-Anlage mit Speicher auf dem Verwaltungsgebäude des Amtes (EFRE, 2021/22), Lüftungsanlage Grundschule Paulinenaue. Eigene Vorhaben, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-friesack.de/contact/index/link",
+        "finding": "28.09.2026 HTTP 404; Kontaktformular-Weiterleitung, keine Förderseite."
+      },
+      {
+        "url": "https://www.amt-friesack.de/suche/index.php",
+        "finding": "28.09.2026 Volltextsuche (Seiten und Meldungen) nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm: keine Treffer. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+        "finding": "28.09.2026 live: Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (havelland-stecker-solar, im Katalog, zuletzt 20.09.2026 geprüft) trägt weiter „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — Status pausiert, kein Rechenwert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur eigene Vorhaben des Amtes (Wald, PV auf Verwaltungsgebäude, Schullüftung), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite am 28.09.2026 gelesen, identischer Inhalt.",
+        "evidenceUrl": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html"
+      },
+      {
+        "url": "amt-friesack.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "HTTP 404 am 28.09.2026; Kontaktformular-Weiterleitung, keine Förderseite.",
+        "evidenceUrl": "https://www.amt-friesack.de/contact/index/link"
+      }
+    ]
   }
 ]
