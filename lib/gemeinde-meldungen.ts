@@ -477,6 +477,22 @@ export function gemeindeMeldungen(opts: {
  * Stichtag bevorsteht. Für den stillen Fall gibt es die Quartals-Standmeldung,
  * und die entscheidet der Versand, nicht diese Funktion.
  */
+/**
+ * Which messages a subscriber mail may carry at all (operator decision,
+ * 27.09.2026): only "Förderprogramm nimmt wieder Anträge an". The others
+ * (build-out, payment end, ranking, stock) read badly as mail and are to be
+ * rebuilt with the editorial/story system first. They stay on the page — this
+ * gate is about the mail only.
+ *
+ * An allowlist, not a blocklist: a new message type added later must not slip
+ * into mails before someone has looked at it.
+ */
+export const ABO_MAIL_FREIGEGEBEN = ["wieder-offen-"] as const;
+
+export function fuerAboMailFreigegeben(meldungen: Meldung[]): Meldung[] {
+  return meldungen.filter((m) => ABO_MAIL_FREIGEGEBEN.some((p) => m.schluessel.startsWith(p)));
+}
+
 export function hatNachricht(meldungen: Meldung[]): boolean {
   return meldungen.some((m) => m.art === "bewegung" || m.art === "stichtag");
 }

@@ -37,7 +37,7 @@ import "server-only";
 // Lesepfad würde genau diese Trennung aufheben.
 
 import { empfaengerFuerOrt, versandVermerken, type GemeindeAbo } from "./gemeinde-abo";
-import { gemeindeMeldungen, hatNachricht, meldungenFuerAbo, type Meldung } from "./gemeinde-meldungen";
+import { fuerAboMailFreigegeben, gemeindeMeldungen, hatNachricht, meldungenFuerAbo, type Meldung } from "./gemeinde-meldungen";
 import { aboMeldungsMail } from "./abo-mail";
 import { abmeldeLink, einstellungenLink } from "./abo-token";
 import { sendeAboMail } from "./abo-versand";
@@ -107,7 +107,8 @@ export async function meldungenFuerOrt(
 
   const pfad = await atlasPathForRegionId(regionId);
   return {
-    meldungen,
+    // Only released message types go into a mail — see ABO_MAIL_FREIGEGEBEN.
+    meldungen: fuerAboMailFreigegeben(meldungen),
     ortName: region.name,
     ortUrl: pfad,
     standIso: atlas.data_as_of,

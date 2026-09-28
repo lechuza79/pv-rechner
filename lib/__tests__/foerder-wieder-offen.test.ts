@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { wiederOffenSeit, type HistorieEintrag } from "../funding-history";
-import { gemeindeMeldungen, hatNachricht, meldungenFuerAbo, type MeldungsDaten } from "../gemeinde-meldungen";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { fuerAboMailFreigegeben, gemeindeMeldungen, hatNachricht, meldungenFuerAbo, type MeldungsDaten } from "../gemeinde-meldungen";
 
 // The subscriber message "Förderprogramm nimmt wieder Anträge an".
 //
@@ -146,5 +148,47 @@ describe("Zubau und Auslauf gehen einmal je Jahr hinaus, nicht bei jedem Lauf", 
     const l = meldungenFuerAbo(meldungen, { ...basis, bestaetigtAm: "2026-09-16T09:00:00Z", letzteMailAm: null });
     expect(hat(l, "zubau-")).toBe(false);
     expect(hat(l, "auslauf-")).toBe(true);
+  });
+});
+
+// Operator decision 27.09.2026: only the reopening message may go out by mail;
+// build-out, payment end, ranking and stock wait for the editorial rebuild.
+describe("Abo-Mail: nur freigegebene Meldungen", () => {
+  const voll = gemeindeMeldungen({
+    daten,
+    heuteJahr: 2026,
+    foerderung: [{ name: "Klimabonus Solar", zaehlt: true }],
+    platzierung: { messgroesse: "Solarleistung je Einwohner", rang: 1, ausN: 40, gruppe: "im Landkreis X" },
+    wiederOffen: [{ name: "Klimabonus Solar", festgestelltAm: "2026-09-20T03:40:00+00:00", foerdert: ["pv"] }],
+  });
+
+  it("lässt nur die Wiederöffnung durch", () => {
+    // Guard against a vacuous pass: the input must carry other types too.
+    expect(voll.some((m) => !m.schluessel.startsWith("wieder-offen-"))).toBe(true);
+    const frei = fuerAboMailFreigegeben(voll);
+    expect(frei.length).toBeGreaterThan(0);
+    expect(frei.every((m) => m.schluessel.startsWith("wieder-offen-"))).toBe(true);
+  });
+
+  it("ohne Wiederöffnung gibt es nichts zu schicken, auch wenn Zubau und Auslauf anstehen", () => {
+    const ohne = gemeindeMeldungen({
+      daten: {
+        ...daten,
+        solar: {
+          total_count: 400, total_kwp: 4000,
+          by_segment: [{ segment: "privat_dach", count: 400, kwp: 4000 }] as MeldungsDaten["solar"]["by_segment"],
+          by_year: [{ year: 2025, count: 60, kwp: 600 }, { year: 2024, count: 50, kwp: 500 }] as MeldungsDaten["solar"]["by_year"],
+          by_year_segment: [{ year: 2006, segment: "privat_dach", count: 40, kwp: 200 }] as MeldungsDaten["solar"]["by_year_segment"],
+        },
+      },
+      heuteJahr: 2026,
+    });
+    expect(hatNachricht(ohne)).toBe(true);
+    expect(hatNachricht(fuerAboMailFreigegeben(ohne))).toBe(false);
+  });
+
+  it("der Versandlauf filtert, bevor er entscheidet", () => {
+    const quelle = readFileSync(resolve(__dirname, "../abo-lauf.ts"), "utf8");
+    expect(quelle).toMatch(/meldungen:\s*fuerAboMailFreigegeben\(meldungen\)/);
   });
 });

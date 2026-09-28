@@ -326,6 +326,24 @@ jobs:
           curl -sS --fail-with-body -H "Authorization: Bearer $CRON_SECRET" \
             "$BASIS/api/abo/aufraeumen"
 
+      # Abo-Meldungen versenden. Seit 27.09.2026 trägt eine Abo-Mail NUR die
+      # Meldung „Förderprogramm nimmt wieder Anträge an" (Freigabe im Code,
+      # ABO_MAIL_FREIGEGEBEN) — alle anderen Meldungsarten warten auf den
+      # Umbau mit der Redaktion. Der Lauf schickt nur, wo sich für einen
+      # Abonnenten seit seiner letzten Mail etwas bewegt hat; an den meisten
+      # Tagen verschickt er nichts. Hier statt in einem eigenen Zeitplan aus
+      # demselben Grund wie das Aufräumen darüber: ein Lauf mehr, der
+      # ausfallen kann, ohne es zu melden.
+      - name: Abo-Meldungen versenden
+        if: always()
+        timeout-minutes: 6
+        env:
+          BASIS: ${{ secrets.HEALTH_BASE_URL || 'https://solar-check.io' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body --max-time 320 -H "Authorization: Bearer $CRON_SECRET" \
+            "$BASIS/api/abo/versenden"
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und
