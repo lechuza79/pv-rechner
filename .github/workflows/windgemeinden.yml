@@ -1,0 +1,71 @@
+name: Windgemeinden
+
+# Schreibt lib/windgemeinden.json neu: welche Gemeinden mehr Wind- als
+# Solarleistung haben (mindestens zwei Windräder). Die Liste steuert nur ein
+# Bild im Kopf der Gemeindeseite, keine Aussage über die Gemeinde.
+#
+# Committen ohne Rückfrage, weil der Lauf sich selbst bremst: Springt die
+# Liste um mehr als ein Drittel, schreibt das Skript nichts, und vor dem
+# Commit laufen Typen und Tests.
+#
+# Zeitpunkt: monatlich am 11., nach den drei Terminen des Registerimports
+# (5., 7., 9.) — sonst läse der Lauf den Bestand des Vormonats.
+
+on:
+  schedule:
+    - cron: "0 5 11 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windgemeinden
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Liste neu erzeugen
+        run: npm run windgemeinden:build
+
+      - name: Hat sich etwas geändert?
+        id: diff
+        run: |
+          if git diff --quiet -- lib/windgemeinden.json; then
+            echo "geaendert=nein" >> "$GITHUB_OUTPUT"
+            echo "Liste unverändert."
+          else
+            echo "geaendert=ja" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Typen und Tests
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          npx tsc --noEmit
+          npx vitest run lib/__tests__/windgemeinden.test.ts
+
+      - name: Committen
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          git config user.name "solar-check windgemeinden"
+          git config user.email "noreply@solar-check.io"
+          git add lib/windgemeinden.json
+          git commit -m "[auto] Windgemeinden: neuer Stand aus dem Anlagenregister
+
+          Erzeugt von scripts/windgemeinden-build.ts."
+          git push

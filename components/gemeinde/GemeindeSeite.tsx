@@ -5,6 +5,7 @@ import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
 import { formatStoryDate } from "../../lib/story-format";
 import { IMPORT_TAGE, naechsteAktualisierung } from "../../lib/mastr-import-plan";
 import { DATA_SOURCES } from "../../lib/data-sources";
+import { windgemeinde } from "../../lib/windgemeinden";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../lib/json-ld";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
@@ -171,6 +172,10 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
         data-place-plz={ort.plz ?? undefined}
         data-place-lat={ort.lat ?? undefined}
         data-place-lon={ort.lon ?? undefined}
+        // Wind town: more wind than solar capacity, at least two turbines
+        // (lib/windgemeinden.ts). The scene may draw a wind turbine from it; a
+        // picture only, never the basis for a statement about the town.
+        data-place-wind={windgemeinde(ort.ags) ? "true" : undefined}
       >
         <section className="hero" aria-labelledby="hero-title">
           <div className="scene" aria-hidden="true" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: HERO_SZENE_INNER_HTML }} />
