@@ -193,12 +193,15 @@ export function renderInquiryDraft(c: InquiryContext): InquiryDraft {
     "",
     // WARUM DIESE DREI ZEILEN AUCH IN EINER SACHFRAGE STEHEN: Der Auslöser für
     // Art. 14 DSGVO ist nicht die Mail, sondern dass wir die Adresse der Stelle
-    // in unserer Kontakttabelle führen — erhoben aus ihrem Impressum. Diese
+    // in unserer Kontakttabelle führen — erhoben aus Impressum oder
+    // Kontaktseite ihrer Website oder der Website der Verwaltung, der sie
+    // angehört (rollen_email_quelle; bis 28.09.2026 stand hier pauschal
+    // „Impressum", was für die Kontaktseiten-Funde nicht stimmte). Diese
     // Pflicht besteht unabhängig davon, ob die Nachricht Werbung ist; die Mail
     // ist nur die Gelegenheit, ihr nachzukommen.
     "Impressum: https://solar-check.io/impressum",
     "Datenschutz: https://solar-check.io/datenschutz",
-    "Ihre Adresse stammt aus dem Impressum Ihrer Website (Herkunftshinweis nach Art. 14 DSGVO). Wenn Sie keine weitere Nachricht wünschen, genügt eine kurze Antwort.",
+    "Ihre Adresse stammt aus dem Impressum oder von der Kontaktseite Ihrer Website bzw. der Website Ihrer Verwaltung (Herkunftshinweis nach Art. 14 DSGVO). Wenn Sie keine weitere Nachricht wünschen, genügt eine kurze Antwort.",
   );
 
   return { subject: inquirySubject(c), body: teile.join("\n") };

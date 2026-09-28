@@ -315,19 +315,23 @@ export default function DatenschutzPage() {
             Cookies nennt die Doku nicht; deshalb steht hier keiner. Der
             Bot-Schutz steht seit 08.09.2026 auf „challenge" (CLAUDE.md). */}
         <p style={S.p}>
-          Unser Hoster Vercel schützt die Website vor automatisierten Zugriffen.
-          Wirkt ein Aufruf nicht wie der eines gewöhnlichen Browsers, zeigt
-          Vercel vorab eine kurze <strong>Sicherheitsprüfung</strong>, die dein
-          Browser selbsttätig löst. Nach bestandener Prüfung legt Vercel in
-          deinem Browser einen Nachweis dafür ab, der eine Stunde gilt, damit
-          die Prüfung nicht bei jedem Aufruf wiederholt wird. Dieser Nachweis
-          dient allein der Abwehr automatisierter Zugriffe und wird nicht für
-          Werbung oder Reichweitenmessung verwendet; bei einem gewöhnlichen
-          Besuch entsteht er in aller Regel gar nicht. Er ist für den sicheren
-          Betrieb der Website erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG);
-          Rechtsgrundlage für die dabei anfallenden Daten ist Art. 6 Abs. 1
-          lit. f DSGVO (berechtigtes Interesse an einem vor automatisierten
-          Zugriffen geschützten Betrieb).
+          Unser Hoster Vercel (Abschnitt 3; er handelt dabei als unser
+          Auftragsverarbeiter) schützt die Website vor automatisierten
+          Zugriffen. Wirkt ein Aufruf nicht wie der eines gewöhnlichen Browsers,
+          zeigt Vercel vorab eine kurze <strong>Sicherheitsprüfung</strong>, die
+          dein Browser selbsttätig löst; dabei werden technische Merkmale deines
+          Browsers ausgewertet. Nach bestandener Prüfung legt Vercel in deinem
+          Browser einen Nachweis dafür ab, der eine Stunde gilt, damit die
+          Prüfung nicht bei jedem Aufruf wiederholt wird. Dieser Nachweis dient
+          allein der Abwehr automatisierter Zugriffe und wird nicht für Werbung
+          oder Reichweitenmessung verwendet; bei einem gewöhnlichen Besuch
+          entsteht er in aller Regel gar nicht. Einer Einwilligung bedarf es
+          dafür nicht, weil das Speichern und Auslesen unbedingt erforderlich
+          ist, damit wir dir die von dir aufgerufene Website zur Verfügung
+          stellen können (§ 25 Abs. 2 Nr. 2 TDDDG). Rechtsgrundlage für die
+          dabei anfallenden Daten ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einem vor automatisierten Zugriffen geschützten
+          Betrieb).
         </p>
 
         <p style={S.p}>
@@ -591,6 +595,9 @@ export default function DatenschutzPage() {
           Zusätzlich sind in den Auftragsverarbeitungsvertrag die
           Standardvertragsklauseln der EU-Kommission einbezogen — sie tragen die
           Übermittlung auch dann, wenn die Zertifizierung entfallen sollte.
+          Resend bewahrt die versendete Mail als Teil seines Versandprotokolls
+          30 Tage auf (Sicherungskopien bis zu 7 weitere Tage) und löscht sie
+          danach; in dieser Zeit können wir sie dort einsehen.
           Weitere Informationen:{" "}
           <a
             href="https://resend.com/legal/privacy-policy"
@@ -742,12 +749,11 @@ export default function DatenschutzPage() {
           angegeben, eine personenbezogene Adresse der zuständigen Stelle, dazu
           Name und E-Mail-Adresse von Ansprechpersonen für Klimaschutz oder
           Pressearbeit, soweit die Kommune sie auf ihrer eigenen Website als
-          solche veröffentlicht. Angeschrieben werden in erster Linie
-          Funktionspostfächer. Hat eine Kommune auf ihrer Website eine
-          Ansprechperson für Klimaschutz oder Pressearbeit benannt, schreiben wir
-          auch diese Person unter der dort veröffentlichten Adresse an — in
-          ihrer dienstlichen Rolle, weil das Anschreiben genau ihr
-          Aufgabengebiet betrifft.
+          solche veröffentlicht. Hat eine Kommune – oder die Verwaltung, der sie
+          angehört – auf ihrer Website eine Ansprechperson für Klimaschutz
+          (vorrangig) oder für Pressearbeit benannt, schreiben wir diese in
+          ihrer dienstlichen Rolle unter der dort veröffentlichten Adresse an;
+          andernfalls ein Funktionspostfach der Verwaltung.
           Quelle sind die Websites der Kommunen selbst sowie Wikidata.
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
           an der Ansprache der zuständigen Stelle); die Herkunftsangabe erfolgt
@@ -808,7 +814,10 @@ export default function DatenschutzPage() {
           <strong>Sachfragen an Förderstellen.</strong> Stehen auf der
           Förderseite einer Stelle widersprüchliche oder unklare Angaben zu
           einem Förderprogramm, fragen wir dort einmalig schriftlich nach — an
-          die Adresse, die die Stelle für das Programm veröffentlicht. Dafür
+          das allgemeine Postfach, das die Gemeinde oder ihre Verwaltung im
+          Impressum oder auf der Kontaktseite ihrer Website veröffentlicht, bei
+          einzeln geprüften Rückfragen an die Adresse, die die Stelle dafür
+          selbst angibt. Dafür
           halten wir fest: die Empfängeradresse, Wortlaut und Zeitpunkt unserer
           Frage samt Versandbeleg und, wenn eine Antwort kommt, deren Zeitpunkt
           und Text; darin steht regelmäßig auch der Name der antwortenden
@@ -816,7 +825,10 @@ export default function DatenschutzPage() {
           Anschreiben, gespeichert in unserer Datenbank bei Supabase
           (Abschnitt 9). Wir nutzen diese Angaben, um unseren Förderkatalog
           richtigzustellen und dieselbe Frage nicht zweimal zu stellen, und
-          bewahren sie auf, solange das Programm in unserem Katalog geführt wird.
+          bewahren sie auf, bis die Angabe im Katalog richtiggestellt ist,
+          längstens drei Jahre nach der Antwort (ohne Antwort: nach dem
+          Versand); danach löschen wir Empfängeradresse und Mailtexte und
+          behalten nur, dass und wann gefragt wurde.
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
           an zutreffenden Förderangaben); widersprechen kannst du nach Art. 21
           DSGVO formlos an die in Abschnitt 1 genannte Adresse.
@@ -908,8 +920,8 @@ export default function DatenschutzPage() {
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
           Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
           wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird
-          die Eintragung gelöscht, spätestens nach sieben Tagen, und es folgt
-          keine weitere E-Mail. Rechts&shy;grundlage
+          die Eintragung gelöscht — nach sieben Tagen beim nächsten
+          regelmäßigen Aufräumlauf —, und es folgt keine weitere E-Mail. Rechts&shy;grundlage
           ist deine <strong>Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO);
           die Zeitpunkte von Eintragung und Bestätigung dienen dem Nachweis,
           dass sie vorlag.
@@ -1106,8 +1118,9 @@ export default function DatenschutzPage() {
           unterbreiten — einen unabhängigen Rechner, den sie ihren Kunden zur
           Verfügung stellen können — und ihnen Anfragen weiterleiten, die
           Nutzerinnen und Nutzer von sich aus an sie richten (Abschnitt 20).
-          Zu solchen Anfragen führen wir eine anonyme Zählung, in der der
-          Betrieb über die Adresse seiner Website benannt ist. Rechtsgrundlage ist
+          Zu solchen Anfragen führen wir eine Zählung ohne Angaben zu den
+          Anfragenden, in der der Betrieb über die Adresse seiner Website
+          benannt ist (Abschnitt 20). Rechtsgrundlage ist
           Art. 6 Abs. 1 lit. f DSGVO; unsere berechtigten Interessen sind die
           Ansprache möglicher Partnerbetriebe und die Vermittlung von Anfragen,
           die Nutzerinnen und Nutzer von sich aus stellen. Ein Verzeichnis dieser
@@ -1169,9 +1182,11 @@ export default function DatenschutzPage() {
             zurückholen kann — dieselbe Abwägung wie beim Google-Anmeldeweg in
             Abschnitt 9. Die Route trägt dieselbe Angabe im Kopfkommentar.
 
-            Die anonyme Zählung (lib/fachbetrieb-anfrage-statistik.ts) enthält
-            keine Angaben über den Nutzer; sie steht hier, weil der Betrieb bei
-            Einzelunternehmen personenbezogen ist (siehe Abschnitt 19). */}
+            Die Zählung (lib/fachbetrieb-anfrage-statistik.ts) enthält keinen
+            Namen, keinen Kontaktweg, keine volle PLZ. Sie heißt hier bewusst
+            NICHT „anonym": Solange Resend die Mail 30 Tage im Versandprotokoll
+            hält, ließe sie sich über Tag und Betrieb zuordnen (zwei
+            Legal-Judges, 28.09.2026). */}
         <h2 id="fachbetrieb-anfrage" style={{ ...S.h2, scrollMarginTop: 96 }}>20. Anfragen an einen Fachbetrieb</h2>
         <p style={S.p}>
           Für einzelne Fachbetriebe gibt es bei uns eine eigene Seite mit
@@ -1183,8 +1198,12 @@ export default function DatenschutzPage() {
           Berechnung</strong> — er enthält die Angaben, mit denen du gerechnet
           hast, darunter die Postleitzahl — und, wenn du sie angibst, eine{" "}
           <strong>Nachricht</strong>, <strong>Straße, Postleitzahl und Ort</strong>{" "}
-          sowie bis zu zwei <strong>Fotos</strong>. Welche Angaben genau
-          hinausgehen, siehst du unmittelbar vor dem Absenden.
+          sowie bis zu zwei <strong>Fotos</strong>. Die Postleitzahl im Feld
+          für die Anschrift ist aus deiner Berechnung vorausgefüllt; du kannst
+          sie dort ändern oder löschen. Name und Kontaktweg brauchen wir
+          zwingend, ohne sie können wir die Anfrage nicht übermitteln; alles
+          Weitere ist freiwillig. Welche Angaben genau hinausgehen, siehst du
+          unmittelbar vor dem Absenden.
         </p>
         <p style={S.p}>
           Wir übermitteln diese Angaben, weil du uns darum bittest: Du möchtest,
@@ -1212,22 +1231,33 @@ export default function DatenschutzPage() {
           Antwort direkt an dich, nicht über uns.
         </p>
         <p style={S.p}>
-          <strong>Bei uns bleibt vom Inhalt nichts.</strong> Name, Kontaktweg,
-          Anschrift, Nachricht und Fotos speichern wir nicht in unserer
-          Datenbank, und wir behalten keine Kopie der Mail. Nach einer
-          erfolgreich versendeten Anfrage legen wir lediglich eine anonyme
-          Zählzeile ab: den Kalendertag, den Betrieb, die gerundete Größe der
-          gerechneten Anlage und des Speichers, die ersten zwei Stellen der
-          Postleitzahl und ob eine Nachricht dabei war — nie ihren Inhalt. Aus
-          diesen Angaben lässt sich nicht erkennen, wer die Anfrage gestellt
-          hat. Sie liegen in unserer Datenbank bei Supabase (Abschnitt 9) und
-          helfen uns zu beurteilen, ob der Weg genutzt wird.
+          <strong>Was bei uns und unserem Dienstleister bleibt.</strong> In
+          unserer eigenen Datenbank speichern wir Name, Kontaktweg, Anschrift,
+          Nachricht und Fotos nicht. Unser Versanddienstleister Resend bewahrt
+          die versendete Mail samt Anhängen als Teil seines Versandprotokolls
+          30 Tage auf (Sicherungskopien bis zu 7 weitere Tage) und löscht sie
+          danach; in dieser Zeit können wir sie dort einsehen. Nach einer
+          erfolgreich versendeten Anfrage legen wir in unserer Datenbank bei
+          Supabase (Abschnitt 9) außerdem eine Zählzeile ab: den Kalendertag,
+          den Betrieb, die auf ganze Kilowatt bzw. Kilowattstunden gerundete
+          Größe der gerechneten Anlage und des Speichers (bei selbst
+          eingetippten Werten also deine Eingabe, gerundet), die ersten zwei
+          Stellen der Postleitzahl und ob eine Nachricht dabei war — nie ihren
+          Inhalt. Die Zählzeile enthält keinen Namen, keinen Kontaktweg und
+          keine vollständige Postleitzahl. Solange das Versandprotokoll bei
+          Resend besteht (30 Tage), ließe sie sich über Tag und Betrieb der
+          versendeten Mail zuordnen; danach nicht mehr. Sie hilft uns zu
+          beurteilen, ob der Weg genutzt wird.
         </p>
         <p style={S.p}>
           Um automatisierte Masseneinsendungen abzuwehren, hält unser Server beim
           Absenden deine IP-Adresse kurzzeitig im Arbeitsspeicher, wie beim
-          Kontaktformular beschrieben (Abschnitt 10); sie wird weder gespeichert
-          noch an den Betrieb übermittelt.
+          Kontaktformular beschrieben (Abschnitt 10); sie wird von uns nicht
+          dauerhaft gespeichert und nicht an den Betrieb übermittelt; zu den
+          Protokollen unseres Hosters siehe Abschnitt 3.
+        </p>
+        <p style={S.p}>
+          Deine Rechte stehen in Abschnitt 12.
         </p>
 
         <p style={S.muted}>Stand: September 2026</p>

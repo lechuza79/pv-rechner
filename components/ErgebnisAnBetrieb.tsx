@@ -420,7 +420,8 @@ export default function ErgebnisAnBetrieb({
               {fotos.length ? `, ${fotos.length === 1 ? "ein Bild" : `${fotos.length} Bilder`}` : ""}
               {nachricht.trim() ? ", Ihre Nachricht" : ""} und einen Link auf diese
               Rechnung. Sonst nichts. Zugestellt wird das per E-Mail über
-              unseren Versanddienstleister; wir selbst behalten keine Kopie.
+              unseren Versanddienstleister, der die Mail 30 Tage aufbewahrt; in
+              unserer Datenbank speichern wir sie nicht.
             </div>
 
             <p style={S.klein}>
