@@ -1,3 +1,4 @@
+import { bindTrackpadGestures } from "../../public/shared-3d/trackpad-gestures.js";
 import { createFramePacer } from "../../public/hero-system/source/frame-pacer.js";
 import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
@@ -281,8 +282,22 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   };
   canvas.addEventListener("touchstart",twoFingerTouch,{passive:false});
   canvas.addEventListener("touchmove",twoFingerTouch,{passive:false});
-  const wheel=(e:WheelEvent)=>e.stopImmediatePropagation();
+  // Block OrbitControls wheel zoom without cancelling ordinary page scrolling.
+  // Pinch is consumed by the shared canvas-scoped handler below.
+  const wheel=(e:WheelEvent)=>{if(!e.ctrlKey)e.stopImmediatePropagation();};
   canvas.addEventListener("wheel",wheel,{capture:true,passive:true});
+  const disposeTrackpad = bindTrackpadGestures(canvas, {
+    mode: () => "pinch-only",
+    enabled: () => controls.enabled && controls.enableZoom,
+    zoom: factor => {
+      spinVelocity = 0;
+      controls.autoRotate = false;
+      resumeRotationAt = performance.now() + 7000;
+      events.hover(null);
+      controls.dollyIn(factor);
+      invalidate();
+    },
+  });
   const press = (e:PointerEvent) => {if(e.button!==0)return;pointers.add(e.pointerId);spinVelocity=0;if(pointers.size>1){swipe=null;dragged=true;return;}swipe={x:e.clientX,at:performance.now(),velocity:0};dragged=false;down={x:e.clientX,y:e.clientY,pointerId:e.pointerId};};
   const release = (e:PointerEvent) => { pointers.delete(e.pointerId);if(!dragged&&down?.pointerId===e.pointerId&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<5){const id=hit(e);if(id)events.select(id,e.pointerType==="touch");}down=null; };
   const cancel = (e:PointerEvent) => {pointers.delete(e.pointerId);swipe=null;spinVelocity=0;down=null;dragged=true;};
@@ -377,6 +392,6 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       renderer.shadowMap.needsUpdate=true;
       invalidate();
     },
-    dispose(){canvas.removeEventListener("touchstart",twoFingerTouch);canvas.removeEventListener("touchmove",twoFingerTouch);canvas.removeEventListener("wheel",wheel,{capture:true});dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
+    dispose(){disposeTrackpad();canvas.removeEventListener("touchstart",twoFingerTouch);canvas.removeEventListener("touchmove",twoFingerTouch);canvas.removeEventListener("wheel",wheel,{capture:true});dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
   };
 }

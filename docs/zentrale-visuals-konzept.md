@@ -1,5 +1,22 @@
 # Central visual system and regional pages — plan
 
+## Region map trackpad zoom — 28 September 2026 (local, not released)
+
+The shared `region-scene.ts` binds `public/shared-3d/trackpad-gestures.js` in
+`pinch-only` mode. The helper and declaration were copied unchanged from the
+uncommitted Hero worktree handoff; no Hero scene changes were imported. Ctrl-wheel
+and Safari incremental gesture events zoom only on the map canvas. Ordinary wheel
+scrolling remains uncancelled; existing touchscreen pointer gestures stay with
+OrbitControls. The old capture-wheel gate now allows pinch through. The adapter
+uses the installed public `dollyIn`, retains zoom limits 0.7–3, stops spin, delays
+auto-rotation, invalidates rendering and disposes the shared listeners.
+
+Local verification: four supplied gesture tests and four map-adapter tests pass,
+including actual Three.js orthographic zoom direction/limits, invalidation, disabled
+controls, ordinary scrolling, the capture gate and teardown. Physical MacBook pinch
+was not exercised; no rendered browser acceptance or production release is claimed.
+The existing Hero preview was left untouched.
+
 ## Release closeout — 28 September 2026
 
 **Published, not merely a local preview.** The shared widget release reached `main`
