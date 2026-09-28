@@ -35,4 +35,4 @@
  * („geprüft und unverändert" ist das Normalergebnis). Ein Lauf, der abgebrochen
  * ist oder das Live-Messskript nicht laden konnte, lässt es stehen.
  */
-export const RECHTSTEXTE_GEPRUEFT_ISO = "2026-08-16";
+export const RECHTSTEXTE_GEPRUEFT_ISO = "2026-09-28";
