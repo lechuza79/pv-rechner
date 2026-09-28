@@ -41,6 +41,7 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
 import { isDistrictMember } from "../../../../lib/district-package";
+import { vorabPfade } from "../../../../lib/atlas-vorab";
 
 // Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
 // app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx: Die Zahlen
@@ -77,8 +78,14 @@ export const revalidate = 604800;
 //    on-demand; warm hält sie der Aufwärm-Crawler (npm run atlas:warm) nach
 //    jedem MaStR-Lauf. (0b war am 27.07.2026 zwei Stunden frei und ist
 //    zurückgenommen — Stand und Auflagen stehen in lib/atlas-index.ts.)
-export function generateStaticParams() {
-  return [{ pfad: [] as string[] }];
+//
+//    Seit 28.09.2026 kommen die Seiten mit belegter Veröffentlichung dazu —
+//    jede Gemeinde, auf die jemand verlinkt, und ihr Kreis. Sie liegen damit
+//    nach jedem Deploy fertig da, statt den ersten Leser warten zu lassen. Die
+//    drei Bremsen gegen den Juli-Fall (Deckel, Stapel mit Wiederholung, Liste
+//    kann den Build nie brechen) stehen in lib/atlas-vorab.ts.
+export async function generateStaticParams() {
+  return [{ pfad: [] as string[] }, ...(await vorabPfade())];
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
