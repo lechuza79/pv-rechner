@@ -18,15 +18,15 @@ name: Kommunen-Hinweise
 # Der Lauf SCHREIBT NICHTS an den Gemeinden. Ein Hinweis ist kein Beleg; ob
 # dort die Gemeinde veröffentlicht hat, entscheidet erst das Lesen der Seite.
 #
-# Kosten: rund 1,20 $ Websuche je Lauf (zwei Abfragen je Gemeinde).
 
-# Visitor origin daily (free), web search Monday and Thursday (~1,50 $ a run).
-# Once a week was too slow: on 26.09.2026 a city press release and a Facebook
-# post had been live for four days without either showing up.
+# Visitor origin daily (free). The paid web search (Monday and Thursday) was
+# dropped on 28.09.2026: its search service is for rating backlinks, not for a
+# recurring sweep across every contacted place, and its empty balance had made
+# the run fail silently. Claude covers unclicked posts with cross-searches in
+# the evaluation instead.
 on:
   schedule:
     - cron: "30 6 * * *"
-    - cron: "45 6 * * 1,4"
   workflow_dispatch: {}
 
 permissions:
@@ -67,18 +67,8 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      - name: Websuche
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '45 6 * * 1,4'
-        timeout-minutes: 40
-        continue-on-error: true
-        id: presse
-        run: npm run kommunen:presse -- --melden
-        env:
-          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
-          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
-
       - name: Ergebnis
-        if: steps.klicks.outcome == 'failure' || steps.presse.outcome == 'failure'
+        if: steps.klicks.outcome == 'failure'
         run: |
-          echo "Besucherherkunft: ${{ steps.klicks.outcome }} · Websuche: ${{ steps.presse.outcome }}"
+          echo "Besucherherkunft: ${{ steps.klicks.outcome }}"
           exit 1

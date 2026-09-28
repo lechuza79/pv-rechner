@@ -16,11 +16,15 @@
  * never a silent "nothing new":
  *   - Postfach (IMAP, 30 Tage; trägt Rückläufer nach)
  *   - Besucherherkunft über die ganze Website (Vercel Web Analytics)
- *   - Websuche je Gemeinde + Quer-Suche (findet Presse und Facebook-Posts)
- *   - Suche je Gemeinde-Domain
  *   - danach die Übersicht (Stand, Bilanz, Abos, Versandampel)
  *
- * Costs ~1,50 $ web search per run, takes ~15 minutes.
+ * The paid web searches (kommunen:presse, kommunen:verweise) are NOT part of
+ * this run any more (decision 28.09.2026): the search service is meant for
+ * rating linking sites and competitor backlinks, not for a recurring search
+ * across every contacted place. What the web search used to add — posts
+ * nobody clicked on — is covered by a few cross-searches Claude runs with its
+ * own web search tool after this command ("solar-check.io" next to "Platz 1").
+ * Both scripts stay for a deliberate manual run. Free, takes ~2 minutes.
  */
 import { spawn } from "node:child_process";
 
@@ -29,8 +33,6 @@ type Quelle = { name: string; args: string[]; limitMin: number };
 const QUELLEN: Quelle[] = [
   { name: "Postfach", args: ["run", "kommunen:ruecklauf", "--", "--tage=30", "--schreiben"], limitMin: 10 },
   { name: "Besucherherkunft", args: ["run", "kommunen:klicks"], limitMin: 15 },
-  { name: "Websuche", args: ["run", "kommunen:presse"], limitMin: 40 },
-  { name: "Gemeinde-Domains", args: ["run", "kommunen:verweise"], limitMin: 40 },
 ];
 
 type Ergebnis = { name: string; code: number | null; sekunden: number; ausgabe: string; abgebrochen: boolean };
