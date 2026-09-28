@@ -37,13 +37,6 @@ const nextConfig = {
     // changes which component answers an unmatched address; drop the flag and
     // Next falls back to its own page, nothing else breaks.
     globalNotFound: true,
-    // Static pages are rendered in small batches, and a page whose render
-    // failed is tried again before the build gives up. Needed since atlas
-    // pages with a proven publication are rendered at build time
-    // (lib/atlas-vorab.ts): on 27.07.2026, 17 atlas pages rendered in parallel
-    // broke three deploys in a row with "fetch failed".
-    staticGenerationMaxConcurrency: 4,
-    staticGenerationRetryCount: 3,
   },
   images: {
     // Merchant product images are served through OUR image optimizer, never
