@@ -65,6 +65,14 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  const [openId,setOpenId]=useState(0);
  const lastSelected=useRef(0);
  const [feed,setFeed]=useState(false),[selected,setSelected]=useState<number|null>(null);
+ // The strip repeats the stories three times so the endless loop never shows
+ // a gap. Rendered on the server, those two extra copies were two thirds of
+ // the page HTML on a Kreis page (716 kB of 1.44 MB, measured 28.09.2026):
+ // every card is a full chart. Server and first client render carry one copy,
+ // the loop copies follow right after hydration (the carousel re-initialises
+ // on the new slides by itself).
+ const [kopien,setKopien]=useState(1);
+ useEffect(()=>{setKopien(3);},[]);
  useEffect(()=>{if(onStoryOpen)return;const id=new URLSearchParams(window.location.search).get('story');const index=stories.findIndex(story=>story.id===id);if(index>=0){lastSelected.current=index;setSelected(index);}},[stories,onStoryOpen]);
  useEffect(()=>{
   if(!embedded||!sectionRef.current)return;
@@ -81,7 +89,7 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  // hinter dem Fenster und lief dort als zweite Bühne mit (Betreiber,
  // 23.09.2026). Sie bleibt im Dokument, damit ihr Platz erhalten bleibt und
  // beim Schließen nichts springt.
- const cards=(all:boolean)=><div className={`${all?styles.feed:'story-strip'}${!all&&selected!==null?' story-strip-verdeckt':''}`} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:[...stories,...stories,...stories]).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`}><button className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
+ const cards=(all:boolean)=><div className={`${all?styles.feed:'story-strip'}${!all&&selected!==null?' story-strip-verdeckt':''}`} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:Array.from({length:kopien},()=>stories).flat()).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`}><button className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
  return <><link rel="stylesheet" href={KARTEN_STIL} precedence="default"/>
  <section ref={sectionRef} data-story-scheme={surfaceScheme} id="geschichten" className={`${foundation.foundation} ${styles.section} ${embedded?styles.embedded:''}`}>
  {showHeader&&<header><h2>Insights aus {name}</h2></header>}

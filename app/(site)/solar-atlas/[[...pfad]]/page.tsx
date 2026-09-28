@@ -1,3 +1,4 @@
+import { packeRankingZellen } from "../../../../lib/ranking-zellen";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -489,7 +490,7 @@ async function AtlasBody({
             </p>
             <RankingTable
               regions={ranking.regions}
-              cells={ranking.cells}
+              zellen={packeRankingZellen(ranking.cells, ranking.regions)}
               basePath={basePath}
               lastFullYear={lastYear}
               popInMillions={childLevel === "bundesland"}

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
+import { NurImBild } from "../lib/nur-im-bild";
 import { useExportNotes } from "./export-notes";
 import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
@@ -41,7 +42,8 @@ export function ExportOnly({
   style?: React.CSSProperties;
 }) {
   const props = { [EXPORT_ONLY_ATTR]: display, style: { display: "none", ...style } };
-  return <div {...props}>{children}</div>;
+  // Heavy artwork inside (the logo) follows after hydration — lib/nur-im-bild.ts.
+  return <div {...props}><NurImBild.Provider value={true}>{children}</NurImBild.Provider></div>;
 }
 
 /**

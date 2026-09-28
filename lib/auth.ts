@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "./supabase-browser";
 import type { User } from "@supabase/supabase-js";
 import { FEHLERTEXT, fehlerAusMeldung, type AuthFehler } from "./auth-regeln";
 import { BLEIBEN_COOKIE } from "./auth-cookies";
@@ -12,31 +11,87 @@ export type AuthState =
   | { status: "authed"; user: User }
   | { status: "anon" };
 
+// ─── The Supabase client is loaded on demand, not with every page ──────────
+//
+// The auth hook sits in the header of every React page. A static import put
+// the Supabase browser client (~49 kB compressed) into the shared first-load
+// JavaScript of every page, although most visitors are never signed in. The
+// client now comes as its own chunk: at once when a session cookie exists (so
+// signed-in users see their state as quickly as before), otherwise only when
+// something needs it — a sign-in in this tab, or a session cookie that appears
+// while the tab is open (sign-in in another tab).
+type BrowserClient = NonNullable<ReturnType<typeof import("./supabase-browser").createClient>>;
+let clientLaden: Promise<BrowserClient | null> | null = null;
+function ladeClient(): Promise<BrowserClient | null> {
+  clientLaden ??= import("./supabase-browser").then((m) => m.createClient());
+  return clientLaden;
+}
+
+/** A Supabase session cookie (possibly chunked: `.0`, `.1`), not the code verifier. */
+export function hatSitzungsCookie(cookieZeile: string): boolean {
+  return /(?:^|;\s*)sb-[^=;]*-auth-token(?:\.\d+)?=/.test(cookieZeile);
+}
+
+/** Hooks waiting for a sign-in in this tab to load the client. */
+const wecker = new Set<() => void>();
+function weckeAuth() {
+  for (const w of [...wecker]) w();
+}
+
 export function useAuth(): AuthState {
   const [state, setState] = useState<AuthState>({ status: "loading" });
 
   useEffect(() => {
-    const supabase = createClient();
-    // Ohne Zugangsdaten (lokale Arbeitskopie ohne eigene Umgebungsdatei) gibt es
-    // keine Anmeldung — die Seite bleibt aber vollständig bedienbar. Vorher
-    // warf der Client hier, und weil der Aufruf im Header jeder Seite sitzt,
-    // riss das den gesamten Aufbau mit.
-    if (!supabase) {
-      setState({ status: "anon" });
-      return;
+    let alive = true;
+    let gestartet = false;
+    let abmelden: (() => void) | null = null;
+
+    const start = () => {
+      if (gestartet) return;
+      gestartet = true;
+      wecker.delete(start);
+      document.removeEventListener("visibilitychange", pruefe);
+      ladeClient().then((supabase) => {
+        if (!alive) return;
+        // Ohne Zugangsdaten (lokale Arbeitskopie ohne eigene Umgebungsdatei) gibt es
+        // keine Anmeldung — die Seite bleibt aber vollständig bedienbar. Vorher
+        // warf der Client hier, und weil der Aufruf im Header jeder Seite sitzt,
+        // riss das den gesamten Aufbau mit.
+        if (!supabase) {
+          setState({ status: "anon" });
+          return;
+        }
+
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (alive) setState(user ? { status: "authed", user } : { status: "anon" });
+        });
+
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (alive) setState(session?.user ? { status: "authed", user: session.user } : { status: "anon" });
+        });
+        abmelden = () => subscription.unsubscribe();
+      });
+    };
+    function pruefe() {
+      if (hatSitzungsCookie(document.cookie)) start();
     }
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setState(user ? { status: "authed", user } : { status: "anon" });
-    });
+    if (hatSitzungsCookie(document.cookie)) start();
+    else {
+      // Without a session there is nothing to look up: anonymous right away.
+      setState({ status: "anon" });
+      wecker.add(start);
+      document.addEventListener("visibilitychange", pruefe);
+    }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState(session?.user ? { status: "authed", user: session.user } : { status: "anon" });
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      alive = false;
+      wecker.delete(start);
+      document.removeEventListener("visibilitychange", pruefe);
+      abmelden?.();
+    };
   }, []);
 
   return state;
@@ -73,7 +128,7 @@ export async function signInWithPassword(
   passwort: string,
   bleiben = false,
 ): Promise<AuthAntwort> {
-  const supabase = createClient();
+  const supabase = await ladeClient();
   if (!supabase) return { fehler: "nicht_eingerichtet" };
 
   let res: Response;
@@ -119,6 +174,9 @@ export async function signInWithPassword(
       // bewusst geschluckt — siehe oben
     }
   }
+  // A header that started without a session loads the client now and picks
+  // the new session up (before, it listened from the start).
+  weckeAuth();
   return {};
 }
 
@@ -141,7 +199,7 @@ export async function requestPasswordReset(email: string): Promise<AuthAntwort> 
 
 /** Neues Passwort vergeben. Setzt voraus, dass der Link aus der Mail geöffnet wurde. */
 export async function setNewPassword(passwort: string): Promise<AuthAntwort> {
-  const supabase = createClient();
+  const supabase = await ladeClient();
   if (!supabase) return { fehler: "nicht_eingerichtet" };
   const { error } = await supabase.auth.updateUser({ password: passwort });
   if (error) return { fehler: fehlerAusMeldung(error.message ?? "") };
@@ -157,7 +215,7 @@ export async function setNewPassword(passwort: string): Promise<AuthAntwort> {
  * (Abschnitt 9).
  */
 export async function signInWithGoogle(options?: { next?: string; bleiben?: boolean }): Promise<AuthAntwort> {
-  const supabase = createClient();
+  const supabase = await ladeClient();
   if (!supabase) return { fehler: "nicht_eingerichtet" };
   const next = options?.next || "/dashboard";
   // Beim Weg über Google gibt es keine eigene Route, die den Merker setzen
@@ -178,7 +236,7 @@ export async function signOut() {
   // (Art. 7 Abs. 3 S. 4 DSGVO), und danach darf kein Merker stehen bleiben,
   // der bei der nächsten Anmeldung stillschweigend wieder greift.
   merkeBleiben(false);
-  const supabase = createClient();
+  const supabase = await ladeClient();
   if (!supabase) return;
   await supabase.auth.signOut();
 }

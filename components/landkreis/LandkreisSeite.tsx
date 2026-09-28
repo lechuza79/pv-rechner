@@ -1,3 +1,4 @@
+import { packeRankingZellen } from "../../lib/ranking-zellen";
 import {monitorContentForPreview} from '../../lib/monitor-content-preview';
 import SiteFuss from '../SiteFuss';
 import {stageDefaults} from '../../lib/theme';
@@ -138,7 +139,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       closed={<ul>{places.filter(p=>p.href).map(p=><li key={p.id}><a href={p.href!}>{p.name}</a></li>)}</ul>}>
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>{text.tableHeading}</h2></div></div>
       <div style={variant === "dark" ? stageDefaults(0) as CSSProperties : undefined}>
-        <RankingTable regions={ranking.regions} cells={ranking.cells} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
+        <RankingTable regions={ranking.regions} zellen={packeRankingZellen(ranking.cells, ranking.regions)} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
       </div>
     </LazyDisclosure></>}
     <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>

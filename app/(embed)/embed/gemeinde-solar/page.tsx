@@ -1,68 +1,17 @@
-import type { Metadata } from "next";
 import GemeindeSolarWidget from "./client";
-import { getRegionById } from "../../../../lib/atlas";
-import { getRegionAtlasData } from "../../../../lib/mastr-data";
-import { bundeslandByAgs } from "../../../../lib/mastr-regions";
-import { slugify } from "../../../../lib/atlas-cities";
+import { WIDGET_METADATA } from "./meta";
 
 // Embeddable Gemeinde solar figures — the Outreach hook. A municipality drops
 // this on its own site; it shows the same numbers as the atlas page, cookie-free
 // and monthly-current. Server-rendered with ISR (data changes monthly), wrapping
 // a client shell for theme + share/embed per the widget convention.
-export const revalidate = 3600;
+//
+// This address only answers requests WITHOUT a valid `ags`: the middleware
+// rewrites every valid `?ags=…` onto the cached twin `[ags]/page.tsx`
+// (lib/embed-pfad-weiche.ts). Reading searchParams here would make the whole
+// route dynamic again — never cached, a full rebuild per embed view.
+export const metadata = WIDGET_METADATA;
 
-export const metadata: Metadata = {
-  title: "Solaranlagen in der Gemeinde — Solar Check Widget",
-  description:
-    "Anlagenbestand einer Gemeinde aus dem Marktstammdatenregister. Cookiefrei einbettbar via solar-check.io.",
-  robots: { index: false, follow: false },
-};
-
-export default async function GemeindeSolarEmbed(
-  props: {
-    searchParams?: Promise<{ ags?: string }>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  const ags = (searchParams?.ags ?? "").replace(/\D/g, "");
-  // 8-digit AGS = a Gemeinde. Anything else has no per-inhabitant home page.
-  if (ags.length !== 8) {
-    return <GemeindeSolarWidget error="Keine gültige Gemeinde angegeben." />;
-  }
-
-  const region = await getRegionById(ags);
-  if (!region || region.level !== "gemeinde") {
-    return <GemeindeSolarWidget error="Diese Gemeinde kennen wir nicht." />;
-  }
-
-  const [atlas, kreis] = await Promise.all([
-    getRegionAtlasData(ags),
-    region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),
-  ]);
-  const bl = bundeslandByAgs(ags.slice(0, 2));
-
-  const kwpDach = atlas.solar.by_segment
-    .filter((s) => s.segment !== "freiflaeche")
-    .reduce((a, s) => a + s.kwp, 0);
-
-  // Deep link to the live atlas page — "share = the live view of this widget".
-  const blSlug = bl ? slugify(bl.name) : null;
-  const atlasPath =
-    blSlug && kreis?.slug && region.slug ? `/solar-atlas/${blSlug}/${kreis.slug}/${region.slug}` : null;
-
-  return (
-    <GemeindeSolarWidget
-      name={region.name}
-      bundesland={bl?.name ?? null}
-      population={region.population}
-      count={atlas.solar.total_count}
-      kwp={atlas.solar.total_kwp}
-      kwpDach={kwpDach}
-      speicherKwh={atlas.speicher.kwh_batterie}
-      dataAsOf={atlas.data_as_of}
-      populationAsOf={region.population_as_of}
-      ags={ags}
-      atlasPath={atlasPath}
-    />
-  );
+export default function GemeindeSolarEmbed() {
+  return <GemeindeSolarWidget error="Keine gültige Gemeinde angegeben." />;
 }

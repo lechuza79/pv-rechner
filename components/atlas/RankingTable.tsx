@@ -6,7 +6,8 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowLeft, IconArrowRight } from "../Icons";
 import { SortPfeil } from "../SortPfeil";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
-import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { SEGMENT_OWNER, type RankingRegion } from "../../lib/atlas";
+import { entpackeRankingZellen, type RankingZellen } from "../../lib/ranking-zellen";
 import {
   anteilProzentTeile,
   co2TonnenTeile,
@@ -359,13 +360,14 @@ function RankDelta({ value, sinceYear, hervor = false }: { value: number | null;
  */
 export default function RankingTable({
   regions,
-  cells,
+  zellen,
   basePath,
   lastFullYear,
   popInMillions = false,
 }: {
   regions: RankingRegion[];
-  cells: ChildYearRow[];
+  /** The segment × year cells, packed on the server (lib/ranking-zellen.ts). */
+  zellen: RankingZellen;
   basePath: string;
   lastFullYear: number;
   /** Bundesländer carry millions of inhabitants — show the Einwohner column in
@@ -373,6 +375,7 @@ export default function RankingTable({
    *  Gemeinden stay whole numbers. */
   popInMillions?: boolean;
 }) {
+  const cells = useMemo(() => entpackeRankingZellen(zellen, regions), [zellen, regions]);
   const [owner, setOwner] = useState<Owner>("alle");
   /** Worauf sich Platzziffer, Rangbewegung und Balken beziehen. */
   const [platz, setPlatz] = useState<Metric>("perCapita");

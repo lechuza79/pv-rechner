@@ -4,6 +4,7 @@ import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server
 import { hostAusHerkunft, widgetAusPfad, zaehleEinbettung } from "./lib/embed-herkunft-core";
 import { traegtRechnung } from "./lib/share-keys";
 import { istKreisRangliste } from "./lib/ranking-tiefe";
+import { embedPfadZiel, istKonfigRewrite } from "./lib/embed-pfad-weiche";
 
 export async function middleware(request: NextRequest, event: NextFetchEvent) {
   // ─── Embed-Zweig: zählen, sonst nichts ─────────────────────────────────────
@@ -60,6 +61,21 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
     // Einbettung, die ihn unterdrückt — beides ist keine zählbare Einbettung.
     const host = hostAusHerkunft(request.headers.get("referer"));
     if (widget && host) event.waitUntil(zaehleEinbettung(host, widget));
+    // Query form → path twin (lib/embed-pfad-weiche.ts). Rewritten, not
+    // redirected: the embedded address stays as it is, and the theme/settings
+    // parameters stay in window.location for the client. Canonical forms are
+    // left to the config rewrite in next.config.js, which keeps the twin cached.
+    const ziel = istKonfigRewrite(request.nextUrl.pathname, request.nextUrl.searchParams)
+      ? null
+      : embedPfadZiel(request.nextUrl.pathname, request.nextUrl.searchParams);
+    if (ziel) {
+      const url = request.nextUrl.clone();
+      url.pathname = ziel;
+      // The twin reads nothing from the query; the client reads theme and
+      // settings from the browser address.
+      url.search = "";
+      return NextResponse.rewrite(url);
+    }
     return NextResponse.next({ request });
   }
 
