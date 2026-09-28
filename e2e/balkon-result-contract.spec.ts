@@ -14,7 +14,7 @@ test('ten-year default, cancelled edits and twenty-year recalculation', async ({
   await expect(result.locator('.wp-result-label-copy')).toContainText('über 10 Jahre', { timeout: 60000 });
   await expect(result).toContainText('Ersparnis im 1. Jahr');
   await result.getByRole('button', { name: 'Hinweis zur Speicherberechnung' }).click();
-  await expect(page.getByRole('tooltip')).toContainText('tatsächlich nutzbar ist etwas weniger');
+  await expect(page.getByRole('tooltip')).toContainText('15 % Mindestladung');
   await page.keyboard.press('Escape');
   await result.getByRole('slider', { name: 'Tag wählen' }).press('End');
   await expect(result).toContainText('Die Bilanz nach 10 Jahren');

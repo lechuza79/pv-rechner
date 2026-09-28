@@ -15,7 +15,7 @@ import { IconArrowRight, IconCheck, IconPlus } from "./Icons";
 import { angebotUrl, type ShopAngebot } from "../lib/shop-solakon";
 import type { BalkonFundingContext } from "../lib/balkon-funding";
 import { DEFAULT_BALKON_CONFIG } from "../lib/balkon-config";
-import { empfehlungAusBewertung, empfiehlAngebot, type AngebotBasis, type BewertetesAngebot } from "../lib/shop-angebot";
+import { empfehlungAusBewertung, speicherAnnahme, empfiehlAngebot, type AngebotBasis, type BewertetesAngebot } from "../lib/shop-angebot";
 import { preisTeile, jahreDativ, produktSpeicherTeile, pvLeistungTeile } from "../lib/atlas-format";
 
 /**
@@ -440,7 +440,7 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
       <section><h4>Ausstattung und Speicher</h4>
       <p>{offer.variante}</p>
       {offer.speicherKwh > 0 && <p>{entry.storageComparison ? <>Gegenüber einem Set gleicher Modulleistung ohne Speicher: {entry.storageComparison.additionalInvestment.toLocaleString("de-DE", { maximumFractionDigits: 0 })} € Mehrkosten nach Förderung. {entry.storageComparison.payback === 0 ? "Keine zusätzlichen Anschaffungskosten für den Speicher." : Number.isFinite(entry.storageComparison.payback) ? `Durch den zusätzlichen Speicherertrag nach ${entry.storageComparison.payback.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren ausgeglichen.` : "Innerhalb des betrachteten Zeitraums und der angenommenen Speicherlebensdauer nicht ausgeglichen."}</> : "Für den Speicher allein können wir keine Amortisation nennen: Ein vergleichbares Set ohne Speicher fehlt."}</p>}
-      <p>Wechselrichter: {offer.inverterW} W. {offer.speicherKwh > 0 ? <>Speicher: {offer.speicherKwh.toLocaleString("de-DE")} kWh laut Hersteller; nutzbar ist etwas weniger.</> : "Ohne Speicher."}</p>
+      <p>Wechselrichter: {offer.inverterW} W. {offer.speicherKwh > 0 ? <>{speicherAnnahme(offer)}</> : "Ohne Speicher."}</p>
       {BILDER_FREIGEGEBEN && <p>Bildmaterial: {offer.haendlerName}. Abgebildet sind die Module; den Speicherumfang beschreibt die gewählte Variante.</p>}
       </section></div>
     </AffiliateDetails>

@@ -33,7 +33,7 @@ import ResultFunding from "../../../../components/ResultFunding";
 import { useBalkonAngebote } from "../../../../lib/use-balkon-angebote";
 import { balkonFunding, type BalkonFundingContext } from "../../../../lib/balkon-funding";
 import { readBalkonHardware, writeBalkonHardware, type BalkonHardwareSnapshot } from "../../../../lib/balkon-share";
-import { angebotBegruendung, bewerteAngebot, besteAngebote, configFuerAngebot } from "../../../../lib/shop-angebot";
+import { angebotBegruendung, speicherAnnahme, bewerteAngebot, besteAngebote, configFuerAngebot } from "../../../../lib/shop-angebot";
 import type { ShopAngebot } from "../../../../lib/shop-solakon";
 import BalkonAngebot, { BalkonProduktTeaser } from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
@@ -167,8 +167,10 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
+  const yieldRequest = useRef(0);
   const fetchPvgis = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
+    const request = ++yieldRequest.current;
     setPlzLoading(true);
     try {
       const plzRes = await fetch("/plz.json");
@@ -177,6 +179,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
       if (coords) {
         const res = await fetch(`/api/pvgis?lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${inputPlz.slice(0, 2)}`);
         const data = await res.json();
+        if (request !== yieldRequest.current) return;
         if (typeof data.annual === "number") setSpecificYield(data.annual);
         // Monatsprofil übernehmen (wie im PV-Rechner) — ohne das gäbe es kein
         // Sommer/Winter und der Standort bliebe bei gedeckelten Sets wirkungslos.
@@ -186,16 +189,14 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
         setPlzConfirmed(true);
       }
     } catch { /* Fallback bleibt */ }
-    setPlzLoading(false);
+    if (request === yieldRequest.current) setPlzLoading(false);
   }, []);
 
   // Standort aus der Adresse — der Weg von der Förder-Übersicht hierher.
   //
-  // Er läuft VOR dem gemerkten Standort und gewinnt gegen ihn: Wer aus der Liste
-  // auf „In Neuwied durchrechnen" klickt, meint Neuwied, auch wenn im Speicher
-  // noch die eigene Postleitzahl von gestern steht. `useSharedPlz` sieht dann
-  // ein gefülltes Feld und übernimmt nichts mehr — genau der Fall, den es als
-  // „eine bereits sichtbare Postleitzahl gewinnt" vorsieht.
+  // An explicit link location takes precedence over the remembered postcode.
+  // The shared-location hook reads the URL itself because state written
+  // by this effect is not visible to other effects from the same render.
   //
   // Gelesen wird einmal beim Aufbau, nicht über useSearchParams: Die Seite ist
   // statisch, und ein Suspense-Rand nur für diesen einen Parameter würde den
@@ -327,7 +328,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const offer = selectedOffer?.angebot;
   const offerReason = angebotBegruendung(selectedOffer, ratedOffers, horizonYears, oInvest !== null);
   const hardware = offer ?? (offerId ? sharedHardware : null);
-  const storageHelp = hardware && hardware.speicherKwh > 0 && <InfoTooltip title="Annahmen zum Speicher" ariaLabel="Hinweis zur Speicherberechnung">Wir rechnen mit der angegebenen Speichergröße; tatsächlich nutzbar ist etwas weniger. Die Speicherersparnis fällt deshalb eher hoch aus. Vorausgesetzt ist eine Steuerung passend zu deinem Verbrauch.</InfoTooltip>;
+  const storageHelp = hardware && hardware.speicherKwh > 0 && <InfoTooltip title="Annahmen zum Speicher" ariaLabel="Hinweis zur Speicherberechnung">{speicherAnnahme(hardware)}</InfoTooltip>;
   const calculationConfig = useMemo(() => hardware ? configFuerAngebot(hardware) : CFG, [hardware]);
   const effectiveSetId = hardware ? offerSetId(hardware) : active.setId;
   const systemLabel = offer

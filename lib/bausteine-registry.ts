@@ -314,6 +314,15 @@ export const BAUSTEINE: Baustein[] = [
     },
   },
   {
+    datei: "components/LocationChangeToast.tsx",
+    name: "LocationChangeToast",
+    zweck: "Meldet einen Standortwechsel durch einen Link und bietet das Wiederherstellen der bisherigen Postleitzahl an.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Toast"],
+  },
+  {
     datei: "components/Toast.tsx",
     name: "Toast",
     zweck: "Eine kurze Meldung am Rand — entweder eine Aufforderung oder eine reine Auskunft.",
