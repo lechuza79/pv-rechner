@@ -75673,5 +75673,475 @@
         "evidenceUrl": "https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/"
       }
     ]
+  },
+  {
+    "regionId": "09376131",
+    "name": "Gleiritsch",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gleiritsch (VG Oberviechtach): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das Gemeindemenü hat keinen Förder- oder Energiepunkt, die Formulare nennen nur Kreisjugendring-Zuschüsse. Die Kreisbeteiligung des Landkreises Schwandorf an Balkonkraftwerk-Förderungen setzt ein eigenes Gemeindeprogramm voraus und greift hier deshalb nicht.",
+    "searches": [
+      "Menü, Formulare & Anträge, Satzungen & Verordnungen, Leben-Wohnen-Wirtschaft und Bekanntmachungen von Gleiritsch auf vg-oberviechtach.de am 28.09.2026 gelesen: nur Solarpark-Bebauungspläne (Freiflächen) und Kreisjugendring-Zuschüsse",
+      "Seitensuche der Verwaltungsgemeinschaft liefert für jeden Begriff (auch „Breitband“) keine Treffer und taugt nicht als Negativbeleg; ersetzt durch vollständige Menüdurchsicht",
+      "Websuche 28.09.2026 „Landkreis Schwandorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gleiritsch Teunz Winklarn Niedermurach“: kein Programm dieser Gemeinden; laut Presse (Onetz, 31.10.2023) beteiligt sich der Landkreis nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt (nicht an der Amtsquelle geprüft)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "finding": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/Gemeinde-Gleiritsch/B%C3%BCrgerservice/Formulare-Antr%C3%A4ge/",
+        "finding": "28.09.2026: Formulare & Anträge der Gemeinde nennen als einzige Förderung die Zuschussrichtlinien des Kreisjugendrings, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/",
+        "finding": "28.09.2026: Vollständiges Menü von Gleiritsch (Die Gemeinde, Aktuelles, Bürgerservice, Kultur, Leben-Wohnen-Wirtschaft) enthält keinen Förder-, Klima- oder Energiepunkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php"
+      }
+    ]
+  },
+  {
+    "regionId": "09376148",
+    "name": "Niedermurach",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niedermurach (VG Oberviechtach): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das Gemeindemenü hat keinen Förder- oder Energiepunkt, die Formulare nennen nur Kreisjugendring-Zuschüsse. Die Kreisbeteiligung des Landkreises Schwandorf an Balkonkraftwerk-Förderungen setzt ein eigenes Gemeindeprogramm voraus und greift hier deshalb nicht.",
+    "searches": [
+      "Menü, Formulare & Anträge, Satzungen & Verordnungen, Leben-Wohnen-Wirtschaft und Bekanntmachungen von Niedermurach auf vg-oberviechtach.de am 28.09.2026 gelesen: nur Solarpark-Bebauungspläne (Freiflächen) und Kreisjugendring-Zuschüsse",
+      "Seitensuche der Verwaltungsgemeinschaft liefert für jeden Begriff (auch „Breitband“) keine Treffer und taugt nicht als Negativbeleg; ersetzt durch vollständige Menüdurchsicht",
+      "Websuche 28.09.2026 „Landkreis Schwandorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gleiritsch Teunz Winklarn Niedermurach“: kein Programm dieser Gemeinden; laut Presse (Onetz, 31.10.2023) beteiligt sich der Landkreis nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt (nicht an der Amtsquelle geprüft)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "finding": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/Gemeinde-Niedermurach/B%C3%BCrgerservice/Formulare-Antr%C3%A4ge/",
+        "finding": "28.09.2026: Formulare & Anträge der Gemeinde nennen als einzige Förderung die Zuschussrichtlinien des Kreisjugendrings, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/",
+        "finding": "28.09.2026: Vollständiges Menü von Niedermurach (Die Gemeinde, Aktuelles, Bürgerservice, Kultur, Leben-Wohnen-Wirtschaft) enthält keinen Förder-, Klima- oder Energiepunkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php"
+      }
+    ]
+  },
+  {
+    "regionId": "09376171",
+    "name": "Teunz",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Teunz (VG Oberviechtach): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das Gemeindemenü hat keinen Förder- oder Energiepunkt, die Formulare nennen nur Kreisjugendring-Zuschüsse. Die Kreisbeteiligung des Landkreises Schwandorf an Balkonkraftwerk-Förderungen setzt ein eigenes Gemeindeprogramm voraus und greift hier deshalb nicht.",
+    "searches": [
+      "Menü, Formulare & Anträge, Satzungen & Verordnungen, Leben-Wohnen-Wirtschaft und Bekanntmachungen von Teunz auf vg-oberviechtach.de am 28.09.2026 gelesen: nur Solarpark-Bebauungspläne (Freiflächen) und Kreisjugendring-Zuschüsse",
+      "Seitensuche der Verwaltungsgemeinschaft liefert für jeden Begriff (auch „Breitband“) keine Treffer und taugt nicht als Negativbeleg; ersetzt durch vollständige Menüdurchsicht",
+      "Websuche 28.09.2026 „Landkreis Schwandorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gleiritsch Teunz Winklarn Niedermurach“: kein Programm dieser Gemeinden; laut Presse (Onetz, 31.10.2023) beteiligt sich der Landkreis nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt (nicht an der Amtsquelle geprüft)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "finding": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/Gemeinde-Teunz/B%C3%BCrgerservice/Formulare-Antr%C3%A4ge/",
+        "finding": "28.09.2026: Formulare & Anträge der Gemeinde nennen als einzige Förderung die Zuschussrichtlinien des Kreisjugendrings, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/",
+        "finding": "28.09.2026: Vollständiges Menü von Teunz (Die Gemeinde, Aktuelles, Bürgerservice, Kultur, Leben-Wohnen-Wirtschaft) enthält keinen Förder-, Klima- oder Energiepunkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php"
+      }
+    ]
+  },
+  {
+    "regionId": "09376178",
+    "name": "Winklarn",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Winklarn (VG Oberviechtach): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Das Gemeindemenü hat keinen Förder- oder Energiepunkt, die Formulare nennen nur Kreisjugendring-Zuschüsse. Die Kreisbeteiligung des Landkreises Schwandorf an Balkonkraftwerk-Förderungen setzt ein eigenes Gemeindeprogramm voraus und greift hier deshalb nicht. Winklarn fördert im Leerstandskonzept nur eine Energie- bzw. Architektenberatung für leerstehende Gebäude (bis 500 € bzw. 1.000–1.500 €) — eine Beratungsleistung, keine Förderung von Anlagen.",
+    "searches": [
+      "Menü, Formulare & Anträge, Satzungen & Verordnungen, Leben-Wohnen-Wirtschaft und Bekanntmachungen von Winklarn auf vg-oberviechtach.de am 28.09.2026 gelesen: nur Solarpark-Bebauungspläne (Freiflächen) und Kreisjugendring-Zuschüsse",
+      "Seitensuche der Verwaltungsgemeinschaft liefert für jeden Begriff (auch „Breitband“) keine Treffer und taugt nicht als Negativbeleg; ersetzt durch vollständige Menüdurchsicht",
+      "Websuche 28.09.2026 „Landkreis Schwandorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gleiritsch Teunz Winklarn Niedermurach“: kein Programm dieser Gemeinden; laut Presse (Onetz, 31.10.2023) beteiligt sich der Landkreis nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt (nicht an der Amtsquelle geprüft)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "finding": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "finding": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/Markt-Winklarn/B%C3%BCrgerservice/Formulare-Antr%C3%A4ge/",
+        "finding": "28.09.2026: Formulare & Anträge der Gemeinde nennen als einzige Förderung die Zuschussrichtlinien des Kreisjugendrings, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/",
+        "finding": "28.09.2026: Vollständiges Menü von Winklarn (Die Gemeinde, Aktuelles, Bürgerservice, Kultur, Leben-Wohnen-Wirtschaft) enthält keinen Förder-, Klima- oder Energiepunkt."
+      },
+      {
+        "url": "https://www.vg-oberviechtach.de/Markt-Winklarn/Leben-Wohnen-Wirtschaft/Aktivierung-Leerst%C3%A4nde-und-Baul%C3%BCcken/",
+        "finding": "28.09.2026: Konzept zur Aktivierung von Leerständen; Antrag nennt „Erstberatung durch einen Energieberater bei Leerständen bis zu einem maximalen Betrag von 500 €“ (Städtebauförderung) — Beratung, keine Anlagenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt, der Aufruf zum Regionalbudget 2021 (Kleinprojekte der Integrierten Ländlichen Entwicklung) ist entfernt; keine Haushaltsförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Regionalbudget-2021-Aufruf-zur-Einreichung-von-F%C3%B6rderantr%C3%A4gen-f%C3%BCr-Kleinprojekte.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Seite ohne Inhalt; Förderpreis der Sparkassenstiftung für Projekte, keine Förderung für Solar, Speicher oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Kurzmen%C3%BC/Sparkassenstiftung-F%C3%B6rderpreis-2026.php"
+      },
+      {
+        "url": "vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: allgemeines Leistungsverzeichnis „Was erledige ich wo?“ (ÖPNV-Zuschuss), keine Energieförderung.",
+        "evidenceUrl": "https://vg-oberviechtach.de/Startseite/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php"
+      }
+    ]
+  },
+  {
+    "regionId": "09376122",
+    "name": "Dieterskirchen",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dieterskirchen (VG Neunburg vorm Wald): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die einzige Förderseite der Verwaltungsgemeinschaft betrifft die Dorferneuerung Enzenried; Formulare und Ortsrecht enthalten keine Energieförderung.",
+    "searches": [
+      "Menü der VG Neunburg (vg-neunburg.de, nur über http erreichbar) mit allen Seiten von Dieterskirchen am 28.09.2026 durchgesehen: Formulare, Ortsrecht, Aktuelles, Wirtschaft — kein Förder-, Klima- oder Solarpunkt",
+      "Meldungen (Aktuelles) aller vier Mitgliedsgemeinden und der VG am 28.09.2026 auf Balkon, Photovoltaik, Solar, Wärmepumpe, Klimaschutz durchsucht: kein Treffer",
+      "Websuche 28.09.2026 nach Neunburg vorm Wald, Schwarzhofen, Neukirchen-Balbini, Dieterskirchen, Thanstein mit Balkonkraftwerk/Zuschuss: kein Gemeindeprogramm; der Landkreis Schwandorf beteiligt sich laut Presse (Onetz, 31.10.2023, nicht an der Amtsquelle geprüft) nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "finding": "28.09.2026 (über http gelesen): „Förderung von Privatmaßnahmen in der Dorferneuerung“, dazu Infoblatt und Antrag der einfachen Dorferneuerung — kein Energieprogramm."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/103672/formulare.html",
+        "finding": "28.09.2026: Formulare von Dieterskirchen ohne Förderantrag für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/103679/ortsrecht.html",
+        "finding": "28.09.2026: Ortsrecht von Dieterskirchen ohne Förderrichtlinie für Solar, Speicher oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen (nur über http erreichbar): Förderanträge der Dorferneuerung Enzenried (Neukirchen-Balbini) — Privatförderung nach den Dorferneuerungsrichtlinien des Amts für Ländliche Entwicklung, keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      },
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite; mit der Förderantrags-Seite gelesen und gleich eingeordnet.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09376146",
+    "name": "Neukirchen-Balbini",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukirchen-Balbini (VG Neunburg vorm Wald): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die einzige Förderseite der Verwaltungsgemeinschaft betrifft die Dorferneuerung Enzenried; Formulare und Ortsrecht enthalten keine Energieförderung. Das Nahwärmenetz Schießl-Hof versorgt öffentliche Gebäude und ist keine Haushaltsförderung.",
+    "searches": [
+      "Menü der VG Neunburg (vg-neunburg.de, nur über http erreichbar) mit allen Seiten von Neukirchen-Balbini am 28.09.2026 durchgesehen: Formulare, Ortsrecht, Aktuelles, Wirtschaft — kein Förder-, Klima- oder Solarpunkt",
+      "Meldungen (Aktuelles) aller vier Mitgliedsgemeinden und der VG am 28.09.2026 auf Balkon, Photovoltaik, Solar, Wärmepumpe, Klimaschutz durchsucht: kein Treffer",
+      "Websuche 28.09.2026 nach Neunburg vorm Wald, Schwarzhofen, Neukirchen-Balbini, Dieterskirchen, Thanstein mit Balkonkraftwerk/Zuschuss: kein Gemeindeprogramm; der Landkreis Schwandorf beteiligt sich laut Presse (Onetz, 31.10.2023, nicht an der Amtsquelle geprüft) nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "finding": "28.09.2026 (über http gelesen): „Förderung von Privatmaßnahmen in der Dorferneuerung“, dazu Infoblatt und Antrag der einfachen Dorferneuerung — kein Energieprogramm."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/103774/formulare.html",
+        "finding": "28.09.2026: Formulare von Neukirchen-Balbini ohne Förderantrag für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/103761/ortsrecht.html",
+        "finding": "28.09.2026: Ortsrecht von Neukirchen-Balbini ohne Förderrichtlinie für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/533239/nahw%C3%A4rmenetz.html",
+        "finding": "28.09.2026: Nahwärmenetz für öffentliche Gebäude, gefördert von EFRE und Freistaat — kein Zuschuss für private Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen (nur über http erreichbar): Förderanträge der Dorferneuerung Enzenried (Neukirchen-Balbini) — Privatförderung nach den Dorferneuerungsrichtlinien des Amts für Ländliche Entwicklung, keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      },
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite; mit der Förderantrags-Seite gelesen und gleich eingeordnet.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09376164",
+    "name": "Schwarzhofen",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarzhofen (VG Neunburg vorm Wald): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die einzige Förderseite der Verwaltungsgemeinschaft betrifft die Dorferneuerung Enzenried; Formulare und Ortsrecht enthalten keine Energieförderung.",
+    "searches": [
+      "Menü der VG Neunburg (vg-neunburg.de, nur über http erreichbar) mit allen Seiten von Schwarzhofen am 28.09.2026 durchgesehen: Formulare, Ortsrecht, Aktuelles, Wirtschaft — kein Förder-, Klima- oder Solarpunkt",
+      "Meldungen (Aktuelles) aller vier Mitgliedsgemeinden und der VG am 28.09.2026 auf Balkon, Photovoltaik, Solar, Wärmepumpe, Klimaschutz durchsucht: kein Treffer",
+      "Websuche 28.09.2026 nach Neunburg vorm Wald, Schwarzhofen, Neukirchen-Balbini, Dieterskirchen, Thanstein mit Balkonkraftwerk/Zuschuss: kein Gemeindeprogramm; der Landkreis Schwandorf beteiligt sich laut Presse (Onetz, 31.10.2023, nicht an der Amtsquelle geprüft) nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "finding": "28.09.2026 (über http gelesen): „Förderung von Privatmaßnahmen in der Dorferneuerung“, dazu Infoblatt und Antrag der einfachen Dorferneuerung — kein Energieprogramm."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/104841/formulare.html",
+        "finding": "28.09.2026: Formulare von Schwarzhofen ohne Förderantrag für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/104845/ortsrecht.html",
+        "finding": "28.09.2026: Ortsrecht von Schwarzhofen ohne Förderrichtlinie für Solar, Speicher oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen (nur über http erreichbar): Förderanträge der Dorferneuerung Enzenried (Neukirchen-Balbini) — Privatförderung nach den Dorferneuerungsrichtlinien des Amts für Ländliche Entwicklung, keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      },
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite; mit der Förderantrags-Seite gelesen und gleich eingeordnet.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09376172",
+    "name": "Thanstein",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Thanstein (VG Neunburg vorm Wald): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die einzige Förderseite der Verwaltungsgemeinschaft betrifft die Dorferneuerung Enzenried; Formulare und Ortsrecht enthalten keine Energieförderung.",
+    "searches": [
+      "Menü der VG Neunburg (vg-neunburg.de, nur über http erreichbar) mit allen Seiten von Thanstein am 28.09.2026 durchgesehen: Formulare, Ortsrecht, Aktuelles, Wirtschaft — kein Förder-, Klima- oder Solarpunkt",
+      "Meldungen (Aktuelles) aller vier Mitgliedsgemeinden und der VG am 28.09.2026 auf Balkon, Photovoltaik, Solar, Wärmepumpe, Klimaschutz durchsucht: kein Treffer",
+      "Websuche 28.09.2026 nach Neunburg vorm Wald, Schwarzhofen, Neukirchen-Balbini, Dieterskirchen, Thanstein mit Balkonkraftwerk/Zuschuss: kein Gemeindeprogramm; der Landkreis Schwandorf beteiligt sich laut Presse (Onetz, 31.10.2023, nicht an der Amtsquelle geprüft) nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "finding": "28.09.2026 (über http gelesen): „Förderung von Privatmaßnahmen in der Dorferneuerung“, dazu Infoblatt und Antrag der einfachen Dorferneuerung — kein Energieprogramm."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/147036/formulare.html",
+        "finding": "28.09.2026: Formulare von Thanstein ohne Förderantrag für Solar, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "http://www.vg-neunburg.de/seite/147106/ortsrecht.html",
+        "finding": "28.09.2026: Ortsrecht von Thanstein ohne Förderrichtlinie für Solar, Speicher oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen (nur über http erreichbar): Förderanträge der Dorferneuerung Enzenried (Neukirchen-Balbini) — Privatförderung nach den Dorferneuerungsrichtlinien des Amts für Ländliche Entwicklung, keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      },
+      {
+        "url": "vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite; mit der Förderantrags-Seite gelesen und gleich eingeordnet.",
+        "evidenceUrl": "https://vg-neunburg.de/seite/472583/f%C3%B6rderantr%C3%A4ge.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09376147",
+    "name": "Neunburg vorm Wald",
+    "checkedAt": "2026-09-28T14:24:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neunburg vorm Wald: kein städtischer Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Übersicht der Fördermöglichkeiten verweist bei Photovoltaik auf Landratsamt, Banken und Sparkassen; die städtischen Programme betreffen Altstadtgestaltung, Städtebau, Sportvereine und Dorferneuerung. Die Wärmeplanung ist ein Planungsprojekt ohne Haushaltszuschuss.",
+    "searches": [
+      "Seiten Fördermöglichkeiten, Kommunales Förderprogramm, Allgemein, Breitband, Projektfonds und Kommunale Wärmeplanung auf neunburgvormwald.de am 28.09.2026 gelesen",
+      "Websuche 28.09.2026 nach Neunburg vorm Wald, Schwarzhofen, Neukirchen-Balbini, Dieterskirchen, Thanstein mit Balkonkraftwerk/Zuschuss: kein Gemeindeprogramm; der Landkreis Schwandorf beteiligt sich laut Presse (Onetz, 31.10.2023, nicht an der Amtsquelle geprüft) nur an Balkonkraftwerk-Programmen, die eine Gemeinde selbst auflegt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=173&L=0",
+        "finding": "28.09.2026: Übersicht Fördermöglichkeiten: bei „Förderung von Photovoltaikanlagen“ nur Verweis auf Landratsamt Schwandorf, Banken und Sparkassen; städtisch nur Altstadt-, Städtebau-, Sport- und Dorferneuerungsförderung."
+      },
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=183&L=0",
+        "finding": "28.09.2026: Kommunales Förder- und Geschäftsflächenprogramm der Altstadt (Fassaden, Dach, Außenanlagen), keine Energieanlagen."
+      },
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=240&L=0",
+        "finding": "28.09.2026: Einleitung der Förder-Sammlung („Förderungen in Neunburg vorm Wald“), keine eigene Förderung."
+      },
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=349&L=0",
+        "finding": "28.09.2026: Breitbandförderung des Freistaats (BayGibitR), keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=420&L=0",
+        "finding": "28.09.2026: Kommunale Wärmeplanung, gefördert von der Nationalen Klimaschutzinitiative (Förderphase 01.11.2024–31.10.2025) — Planung, kein Zuschuss an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neunburgvormwald.de/index.php?id=173&amp;L=0",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Übersicht Fördermöglichkeiten: bei „Förderung von Photovoltaikanlagen“ nur Verweis auf Landratsamt Schwandorf, Banken und Sparkassen; städtisch nur Altstadt-, Städtebau-, Sport- und Dorferneuerungsförderung.",
+        "evidenceUrl": "https://www.neunburgvormwald.de/index.php?id=173&L=0"
+      },
+      {
+        "url": "neunburgvormwald.de/index.php?id=183&amp;L=0",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Kommunales Förder- und Geschäftsflächenprogramm der Altstadt (Fassaden, Dach, Außenanlagen), keine Energieanlagen.",
+        "evidenceUrl": "https://www.neunburgvormwald.de/index.php?id=183&L=0"
+      },
+      {
+        "url": "neunburgvormwald.de/index.php?id=240&amp;L=0",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Einleitung der Förder-Sammlung („Förderungen in Neunburg vorm Wald“), keine eigene Förderung.",
+        "evidenceUrl": "https://www.neunburgvormwald.de/index.php?id=240&L=0"
+      },
+      {
+        "url": "neunburgvormwald.de/index.php?id=349&amp;L=0",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Breitbandförderung des Freistaats (BayGibitR), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.neunburgvormwald.de/index.php?id=349&L=0"
+      }
+    ]
   }
 ]
