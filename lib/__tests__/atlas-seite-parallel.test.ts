@@ -181,7 +181,7 @@ function body(source: string, start: string): string {
 
 describe("Atlas region page (Kreis, Land, Deutschland)", () => {
   const page = read("app/(site)/solar-atlas/[[...pfad]]/page.tsx");
-  const DATA_READS = /\b(getRegionAtlasData|getChildren|getAncestors|getRankingData|getEinzelgemeinden|getRegionById|getFundingPrograms)\(/;
+  const DATA_READS = /\b(getRegionAtlasData|getChildren|getAncestors|getRankingData|getRankingDataForPage|getEinzelgemeinden|getRegionById|getFundingPrograms)\(/;
 
   it("the body reads nothing itself — everything comes from startAtlasReads", () => {
     const b = body(page, "async function AtlasBody(");
@@ -209,6 +209,12 @@ describe("Atlas region page (Kreis, Land, Deutschland)", () => {
     expect(topLevel).not.toMatch(/\bawait\b/);
     expect(s).toMatch(/getFundingPrograms\(\)/);
     expect(s).toMatch(/preloadPublishedPackage\(/);
+  });
+
+  it("takes the ranking cells from the monitor package, not the database pages (lib/atlas-ranking-server.ts)", () => {
+    const s = body(page, "function startAtlasReads(");
+    expect(s).toMatch(/ranking: getRankingDataForPage\(region, kinder\)/);
+    expect(s).not.toMatch(/getRankingData\(/);
   });
 });
 

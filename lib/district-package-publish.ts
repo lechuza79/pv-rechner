@@ -44,6 +44,7 @@ import type { DistrictLock } from "./district-package-lock";
 import type { EnergyPacket } from "./district-energy";
 import { buildRegionPackage, checkRegionPackage, partFromAggregate, partFromTown, regionFingerprint, siteFromTown, type RegionMembership, type RegionPackage } from "./region-package";
 import type { DistrictSite } from "./district-package";
+import type { RankingSnapshot } from "./ranking-package";
 
 export type DistrictStore = {
   /** Parsed JSON, or null when the object does not exist. Throws on read failure. */
@@ -104,6 +105,12 @@ export async function refreshDistricts(opts: {
    * none counts as empty, and the affected level stays "unavailable".
    */
   confirmEmpty?: (ags: string[]) => Promise<ReadonlySet<string>>;
+  /**
+   * The ranking table's cells of one package's page (lib/ranking-package.ts),
+   * read with the page's own reader. Omitted: packages carry none and the page
+   * reads its ranking from the database, as before.
+   */
+  ranking?: (regionId: string, level: "landkreis" | "bundesland" | "de") => Promise<RankingSnapshot>;
 }): Promise<RefreshResult> {
   if (opts.dryRun || !opts.lock) {
     if (!opts.dryRun) throw new Error("Schreibender Lauf ohne Sperre — Abbruch");
@@ -174,6 +181,7 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
     const candidates = d.members.filter((_, i) => isEmptyTown(packets[i]));
     const empty = candidates.length && opts.confirmEmpty ? await opts.confirmEmpty(candidates) : new Set<string>();
     const pkg = buildDistrictPackage(d, packets, fingerprint, builtAt, empty);
+    if (opts.ranking) pkg.ranking = await opts.ranking(d.regionId, "landkreis");
     if (pkg.empty?.length) log(`${d.regionId} ${d.name}: ohne jede Anlage im Register, Summe ohne sie: ${pkg.empty.join(" ")}`);
     if (pkg.missing.length === d.members.length) throw new Error(`${d.regionId} ${d.name}: kein einziges Gemeindepaket gefunden — Abbruch, die bisherige Generation bleibt`);
     missingTowns += pkg.missing.length;
@@ -230,6 +238,7 @@ async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step
       });
       const confirmed = r.excluded.length && opts.confirmEmpty ? await opts.confirmEmpty(r.excluded) : new Set<string>();
       const pkg = buildRegionPackage(r, parts, regionPrints.get(r.regionId)!, builtAt, confirmed, partSites);
+      if (opts.ranking) pkg.ranking = await opts.ranking(r.regionId, r.level);
       results.set(r.regionId, pkg);
       const json = Buffer.from(JSON.stringify(pkg));
       if (json.length > DISTRICT_PACKAGE_MAX_BYTES) throw new Error(`${r.regionId}: Paket ${json.length} Byte, Grenze ${DISTRICT_PACKAGE_MAX_BYTES}`);

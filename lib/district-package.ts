@@ -33,6 +33,7 @@ import { aggregateDistrictMonitor, type DistrictMonitorResult } from "./district
 import { aggregateDistrictEnergy, type DistrictEnergy } from "./district-energy";
 import { selectDistrictStories } from "./district-stories";
 import type { StoryConcept } from "./story-konzepte";
+import type { RankingSnapshot } from "./ranking-package";
 import { paketFuer } from "../components/gemeinde/paket-teile";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 
@@ -45,8 +46,11 @@ export const DISTRICT_PACKAGE_VERSION = 1;
  * (history)" because of Gröde, which has no plant — and Schleswig-Holstein and
  * Deutschland above it stayed unavailable too ("0 gebaut, 294 übernommen"),
  * until someone started a full run by hand. Revision 2 is that rule.
+ * Revision 3 (28.09.2026): district, Land and Deutschland packages carry the
+ * ranking table's cells (lib/ranking-package.ts). The next run of the package
+ * workflow rebuilds every package; until then the page reads the database.
  */
-export const DISTRICT_CONTENT_REVISION = 2;
+export const DISTRICT_CONTENT_REVISION = 3;
 export const DISTRICT_PACKAGE_PREFIX = `kreise/v${DISTRICT_PACKAGE_VERSION}`;
 export const DISTRICT_POINTER_PATH = `${DISTRICT_PACKAGE_PREFIX}/aktuell.json`;
 /** unstable_cache and the fetch data cache refuse entries above 2 MB; stay well below. */
@@ -80,6 +84,8 @@ export type DistrictPackage = {
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
+  /** The ranking table's cells of the member towns (lib/ranking-package.ts); absent before revision 3. */
+  ranking?: RankingSnapshot;
 };
 
 export type DistrictManifestEntry = { path: string; fingerprint: string; members: number; editions: string[]; missing: number; bytes: number };

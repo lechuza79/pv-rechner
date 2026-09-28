@@ -183,6 +183,17 @@ describe('region packages in the district generation',()=>{
     expect(m.files.has(q.regions!.de.path)).toBe(true);
   });
 
+  it('stores the ranking cells the run reads for every district and region package',async()=>{
+    const m=memoryStore();
+    const asked:string[]=[];
+    const ranking=async(id:string,level:string)=>{asked.push(`${id}:${level}`);return {stand:'2026-09-05',ids:[id],segs:['privat_dach'],r:[0],s:[0],y:[2020],n:[1],p:[2.5],h:[0]};};
+    await refreshDistricts({store:m.store,readTown:async a=>towns.get(a)??null,districts:D,townTags:tags(),now,lock,regions:R,ranking});
+    expect(asked.sort()).toEqual(['15001:landkreis','15:bundesland','de:de']);
+    const p=m.pointer();
+    for(const path of [p.districts['15001'].path,p.regions!['15'].path,p.regions!.de.path])
+      expect(JSON.parse(brotliDecompressSync(m.files.get(path)!).toString()).ranking.p).toEqual([2.5]);
+  });
+
   /**
    * Nordfriesland, 26.–28.09.2026: Gröde has no plant, so its town package holds
    * no history. The rule "register-confirmed empty towns add zero" went live
