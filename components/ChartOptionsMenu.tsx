@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useId, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconHelpCircle, IconShare, IconRefresh } from "./Icons";
+import styles from "./ChartOptionsMenu.module.css";
 import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 
 /**
@@ -18,11 +19,12 @@ import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
  * Home/End move; Escape closes and returns focus to the button; Tab closes.
  * Pointer: a tap or click outside closes it.
  */
-export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, presentation = "menu", busy = false }: {
+export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, presentation = "menu", busy = false }: {
   /** Chart name, for the accessible button label. */
   label: string;
   /** Prefilled contact link supplied by the shared widget frame. */
   contactHref: string;
+  designContactHref?: string;
   presentation?: "menu" | "footer";
   onShare: () => void | Promise<void>;
   onDownload: () => void | Promise<void>;
@@ -35,6 +37,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   const [group,setGroup] = useState<"embed"|"download"|"share">("embed");
   const [open, setOpen] = useState(false);
   const [anchor,setAnchor] = useState({left:12,bottom:60,width:280});
+  const [menuMaxHeight,setMenuMaxHeight]=useState<number>();
   const [status, setStatus] = useState("");
   const wrap = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -50,10 +53,12 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   }, [open,group]);
 
   useLayoutEffect(() => {
-    if(!open||presentation!=="footer"||!wrap.current||!button.current)return;
+    if(!open||!wrap.current||!button.current)return;
     const host=wrap.current,trigger=button.current;
     const update=()=>{
       const box=host.getBoundingClientRect(),target=trigger.getBoundingClientRect();
+      setMenuMaxHeight(Math.max(120,presentation==="footer"?target.top-20:window.innerHeight-target.bottom-20));
+      if(presentation!=="footer")return;
       const width=Math.min(280,Math.max(0,box.width-24));
       const left=Math.max(12,Math.min(target.right-box.left-width,box.width-width-12));
       setAnchor({left,bottom:box.bottom-target.top+8,width});
@@ -109,8 +114,8 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
         <IconMore size={16} style={{ transform: "rotate(90deg)" }} />
       </button>}
       {open && (
-        <div id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
-          style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",boxSizing:"border-box",padding:"6px 0",borderRadius:12,background:`var(--widget-surface, ${v("--color-bg-raised")})`,border:"1px solid var(--widget-muted)",boxShadow:"0 12px 32px #0004" }}>
+        <div className={styles.menu} id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
+          style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",maxHeight:menuMaxHeight,overflowY:"auto",boxSizing:"border-box",padding:"6px 0",borderRadius:12,background:`var(--widget-surface, ${v("--color-bg-raised")})`,border:"1px solid var(--widget-muted)",boxShadow:"0 12px 32px #0004" }}>
           {(!footer||group==="share")&&<>
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="copy_link" disabled={busy} style={item} onClick={run(onShare, "Link kopiert.")}><IconCopy size={16} style={leadingIcon}/><span>Link kopieren</span></button>
           {onForward&&<button type="button" role="menuitem" tabIndex={-1} data-widget-action="forward" disabled={busy} style={item} onClick={run(onForward,typeof navigator!=="undefined"&&typeof navigator.share==="function"?undefined:"Link kopiert.")}><IconShare size={16} style={leadingIcon}/><span>Weiterleiten</span></button>}
@@ -122,6 +127,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} style={item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" disabled={busy} style={item} onClick={run(animation.video,"Video wird heruntergeladen.")}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video</span></button>
           </>}
+          {designContactHref&&<>{separator}<a role="menuitem" tabIndex={-1} data-widget-action="design_contact" href={designContactHref} target="_top" style={item} onClick={()=>close(false)}><IconHelpCircle size={16} style={leadingIcon}/><span>In Ihrem Design<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>Mit Ihrem Logo und Ihren Farben.</small><span style={{display:"block",marginTop:4,textDecoration:"underline",textUnderlineOffset:3}}>Anfragen →</span></span></a></>}
           </>}
           {!footer&&separator}
           {(!footer||group==="embed")&&<>

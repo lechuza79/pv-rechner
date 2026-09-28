@@ -4,6 +4,7 @@
 export const CONTACT_TOPICS = [
   "Allgemeine Frage",
   "Widget einbetten",
+  "Widget im eigenen Design",
   // Eigener Punkt neben "Widget einbetten": kommunale Anfragen sind das
   // Outreach-Ziel und sollen im Postfach ohne Lesen der Nachricht erkennbar
   // sein. Der Gemeindename gehört NICHT hier rein — er wird im Nachrichtentext

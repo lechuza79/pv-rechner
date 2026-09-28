@@ -1,6 +1,6 @@
 import {WIDGETS} from './widget-registry';
 
-export const WIDGET_ACTIONS=['visible','restart','interact','settings','options','copy_link','forward','image','image_end','video','embed','embed_contact','video_complete','video_error'] as const;
+export const WIDGET_ACTIONS=['visible','restart','interact','settings','options','copy_link','forward','image','image_end','video','embed','embed_contact','design_contact','video_complete','video_error'] as const;
 export type WidgetAction=typeof WIDGET_ACTIONS[number];
 export const WIDGET_SCOPES=['municipality','district','state','country','embed','other'] as const;
 export type WidgetScope=typeof WIDGET_SCOPES[number];

@@ -35,6 +35,26 @@ CSS and TSX parsing and whitespace checks passed. Browser control timed out twic
 direct public reads for both pages returned Vercel Security Checkpoint instead of
 page content. Desktop/mobile visual acceptance and Safari frame-time comparison
 remain open. No performance change or production deployment was made.
+## Download follow-up — 28 September 2026 (local, not released)
+
+The shared options menu now places its keyboard focus ring inside each item instead
+of inheriting the Atlas outline with a positive offset. Flyout height is bounded by
+available viewport space. The download group offers “In Ihrem Design — Anfragen”
+with widget, place, selected state and deep link prefilled in the existing contact
+form under “Widget im eigenen Design”; nothing is submitted automatically. The
+shared analytics action `design_contact` identifies these clicks by widget and scope.
+
+Video encoding waits for a hidden document to become visible instead of discarding
+the export. The overlay distinguishes paused/working states; capture interrupted by
+a tab switch is repeated at the same timeline position. Removing the chart still
+ends the export with a specific error. Closing/reloading the page is not resumable.
+
+Seven focused tests pass, including a tab switch during capture with identical
+encoded frame times after resumption; TSX/CSS syntax and whitespace checks pass.
+Browser control timed out and the local Next preview did not respond within bounded
+requests, so no rendered acceptance or real-browser MP4 run is claimed. The temporary
+preview server and fixture were removed. Visual desktop/mobile and browser background
+export acceptance remain open before release.
 
 ## Release closeout — 28 September 2026
 

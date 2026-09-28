@@ -59,7 +59,14 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);
+  const [videoPaused,setVideoPaused]=useState(false);
   const [videoProgress,setVideoProgress]=useState<number|null>(null);
+  useEffect(()=>{
+    if(videoProgress===null){setVideoPaused(false);return;}
+    const sync=()=>setVideoPaused(document.hidden);
+    sync();document.addEventListener('visibilitychange',sync);
+    return()=>document.removeEventListener('visibilitychange',sync);
+  },[videoProgress!==null]);
   const [videoFile,setVideoFile]=useState<{url:string;filename:string}|null>(null);
   const [videoPreview,setVideoPreview]=useState<string|null>(null);
   const [videoError,setVideoError]=useState<string|null>(null);
@@ -134,6 +141,10 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
     topic: 'Widget einbetten',
     message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,
   })}`;
+  const designContactHref = `/kontakt?${new URLSearchParams({
+    topic: 'Widget im eigenen Design',
+    message: `Ich möchte dieses Diagramm als Export mit meinem Logo und meinen Farben anfragen.\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMein gewünschtes Design und Exportformat:\n`,
+  })}`;
   const chartExport = useChartExport({
     context: {title: def.title},
     filename,
@@ -157,7 +168,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
   const edgeColumns = def.sources.length > 1 ? 2 : 1;
   const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;box-sizing:border-box;`;
-  const widgetActions = <ChartOptionsMenu presentation={actions === "primary" ? "footer" : "menu"} label={frame.title} contactHref={contactHref} busy={chartExport.isExporting||videoProgress!==null}
+  const widgetActions = <ChartOptionsMenu presentation={actions === "primary" ? "footer" : "menu"} label={frame.title} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
         onRestart={animated?async()=>{
           const node=chartExport.chartRef.current;
           if(node)await controlChartAnimation(node,{mode:'restart'});
@@ -228,9 +239,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
             <div className="sc-video-message" role="status" aria-live="polite">
               <div className="sc-video-state" key={videoProgress!==null?"progress":videoFile?"complete":"error"}>
               {videoProgress!==null?<>
-                <strong>Video wird erstellt: {videoProgress} %</strong>
+                <strong>{videoPaused ? "Videoexport pausiert" : "Video wird erstellt"}: {videoProgress} %</strong>
                 <progress aria-label="Videoexport" max={100} value={videoProgress}/>
-                <p>Bitte diesen Tab geöffnet lassen.</p>
+                <p>{videoPaused ? "Geht automatisch weiter, sobald dieser Tab wieder sichtbar ist." : "Im Hintergrund pausiert der Export und läuft bei Ihrer Rückkehr weiter. Bitte die Seite nicht schließen oder neu laden."}</p>
               </>:videoFile?<>
                 <strong>Dein Video ist fertig.</strong>
                 <a href={videoFile.url} download={videoFile.filename}>MP4 herunterladen</a>
