@@ -32,6 +32,7 @@ import { createHash } from "node:crypto";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
 import { aggregateDistrictMonitor } from "./district-monitor";
 import { aggregateDistrictEnergy, type EnergyPacket } from "./district-energy";
+import type { RankingSnapshot } from "./ranking-package";
 import { DISTRICT_PACKAGE_VERSION, isDistrictMember, type DistrictComputed, type DistrictMembership, type DistrictMonitor, type DistrictSite } from "./district-package";
 
 /** Bump when the region package shape or its aggregation changes. */
@@ -67,6 +68,12 @@ export type RegionPackage = {
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
+  /**
+   * The ranking table's cells of the page's children (lib/ranking-package.ts),
+   * set by the package run. Absent in packages built before 28.09.2026 — the
+   * page then reads them from the database.
+   */
+  ranking?: RankingSnapshot;
 };
 
 const sorted = (xs: string[]) => [...xs].sort();

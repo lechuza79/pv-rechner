@@ -8,6 +8,8 @@ import {ATLAS_DATEN_TAG,KREIS_PAKET_TAG} from './atlas-revalidate-routen';
 import {DISTRICT_POINTER_PATH,checkDistrictPackage,checkManifest,type DistrictComputed,type DistrictMonitor,type DistrictRefusal} from './district-package';
 import type {StoryConcept} from './story-konzepte';
 import {checkRegionPackage} from './region-package';
+import {decodeRankingCells} from './ranking-package';
+import type {ChildYearRow} from './atlas';
 
 /**
  * The district page reads ONE precomputed package (lib/district-package.ts),
@@ -120,6 +122,22 @@ export async function loadRegionContent(regionId:string,children:string[],stand:
   if(!check.ok)return unavailable(check.reason);
   const {pkg}=check;
   return {monitor:pkg.content.monitor,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+}
+
+/**
+ * The ranking table's cells from the same published package the monitor reads
+ * (lib/ranking-package.ts), or null: no package, a package for another
+ * membership/version, one built before the field existed, or cells of another
+ * register import than `stand`. The caller then reads the database. Only the
+ * published generation — the local preview fixtures carry no ranking.
+ */
+export async function loadPackagedRankingCells(kind:'district'|'region',regionId:string,children:string[],stand:string|null):Promise<ChildYearRow[]|null>{
+  if(!stand)return null;
+  const published=await readPublished(kind,regionId);
+  if(!published.found)return null;
+  const check=kind==='district'?checkDistrictPackage(published.raw,regionId,children):checkRegionPackage(published.raw,regionId,children);
+  if(!check.ok)return null;
+  return decodeRankingCells(check.pkg.ranking,stand);
 }
 
 /** The daily power endpoint consumes the same package. */

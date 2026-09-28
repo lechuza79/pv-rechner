@@ -21,7 +21,6 @@ import {
   getRegionById,
   getAncestors,
   getChildren,
-  getRankingData,
   getEinzelgemeinden,
   mitEndpfad,
   childLevelOf,
@@ -40,6 +39,7 @@ import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { preloadPublishedPackage } from "../../../../lib/district-monitor-server";
+import { getRankingDataForPage } from "../../../../lib/atlas-ranking-server";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
 import { isDistrictMember } from "../../../../lib/district-package";
@@ -199,11 +199,14 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
 function startAtlasReads(region: AtlasRegion) {
   const refChain =
     region.level === "bundesland" ? [{ key: "de", ags: "de" }] : [];
+  const kinder = getChildren(region);
   const reads = {
     atlas: getRegionAtlasData(region.region_id),
-    kinder: getChildren(region),
+    kinder,
     ancestors: getAncestors(region),
-    ranking: getRankingData(region),
+    // Cells from the monitor package when it has them (one read instead of up
+    // to ~11 database pages), else the database — see getRankingDataForPage.
+    ranking: getRankingDataForPage(region, kinder),
     // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
     // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
     einzel: region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),

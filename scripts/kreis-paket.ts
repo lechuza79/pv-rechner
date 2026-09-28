@@ -167,6 +167,23 @@ async function main() {
   if (!meta?.source_url) throw new Error("Registerstand der Datenbank nicht lesbar");
   const registerEdition = `${meta.source_url}|${meta.imported_at}`;
 
+  // Ranking cells (lib/ranking-package.ts): read with the page's own reader and
+  // stamped with the import date the page compares against — the same row the
+  // page reads (lib/mastr-data.ts, mastr_meta id 1). If the import changes while
+  // the run reads, the run stops: cells of one import under the date of another
+  // would pass the page's check.
+  const { loadRankingCells } = await import("../lib/atlas");
+  const { encodeRankingCells } = await import("../lib/ranking-package");
+  const importDate = () =>
+    mitWiederholung("mastr_meta id 1", async () => {
+      const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, { headers: kopf });
+      if (!r.ok) throw new Error(`mastr_meta: HTTP ${r.status}`);
+      const at = ((await r.json()) as { imported_at: string | null }[])[0]?.imported_at;
+      if (typeof at !== "string" || at.length < 10) throw new Error("Importdatum der Datenbank nicht lesbar");
+      return at.slice(0, 10);
+    });
+  const rankingStand = await importDate();
+
   const t0 = Date.now();
   const result = await refreshDistricts({
     store,
@@ -199,6 +216,11 @@ async function main() {
         if (!rows.length) empty.add(id);
       }
       return empty;
+    },
+    ranking: async (regionId, level) => {
+      const cells = await mitWiederholung(`Rangliste ${regionId}`, () => loadRankingCells({ region_id: regionId, level } as never));
+      if ((await importDate()) !== rankingStand) throw new Error(`Registerimport hat während des Laufs gewechselt (${regionId}) — Abbruch, die bisherige Generation bleibt`);
+      return encodeRankingCells(cells, rankingStand);
     },
   });
   const dauer = ((Date.now() - t0) / 1000).toFixed(0);
