@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import AffiliateFundedPrice from "./AffiliateFundedPrice";
 import AffiliateDetails from "./AffiliateDetails";
 import AffiliateTrust from "./AffiliateTrust";
@@ -256,6 +257,20 @@ function preisStandText(abgerufenIso: string | null | undefined): string | null 
   });
 }
 
+/**
+ * Show the merchant's product photos on the device cards?
+ *
+ * OFF (operator decision 28.09.2026): there is no proven permission from this
+ * merchant (Heizungsdiscount24, via the Awin feed) to show or mirror its
+ * product photos. Serving them through our image optimizer is a copy on our
+ * own server and a making-available to the public (EuGH C-161/17, Renckhoff,
+ * Rn. 21/36) — the balcony permission (Solakon, mail of 09.09.2026) covers only
+ * that merchant. The proxy path stays in place (next/image + allowed host in
+ * next.config.js), so switching this on once permission is documented is one
+ * line; without it the card shows no photo box at all (`data-ohne-bild`).
+ */
+export const WP_BILDER_FREIGEGEBEN = false;
+
 function Karte({
   e,
   rang,
@@ -282,6 +297,7 @@ function Karte({
   const fundingFraction = fall.fundingEstimate && fall.fundingEstimate.gross > 0
     ? Math.min(1, Math.max(0, fall.fundingEstimate.grant / fall.fundingEstimate.gross)) : 0;
   const estimatedOwnPrice = Math.round(g.preisEur * (1 - fundingFraction));
+  const bild = WP_BILDER_FREIGEGEBEN ? g.bildUrl : null;
   const displayName = g.name.replace(/Luft\s*\/\s*Wasser[- ]?/gi, "").replace(/Wärmepumpe[n]?/gi, "").replace(/-+(?=[ ,]|$)/g, "").replace(/\s+,/g, ",").replace(/,\s*,/g, ",").replace(/\s{2,}/g, " ").trim();
   const [linkStatus, setLinkStatus] = useState("");
   const [shareText, setShareText] = useState<string | null>(null);
@@ -332,6 +348,7 @@ Vielen Dank!`);
           längst aus dem Blick. */}
       <div className="wp-product-heading" style={{ display: "flex", gap: space.md, marginBottom: space.sm }}>
         <a href={g.link} target="_blank" rel="nofollow sponsored noopener noreferrer" aria-label={`${displayName} im Shop ansehen`} className="wp-product-image"
+          data-ohne-bild={bild ? undefined : ""}
           style={{
             width: 64,
             height: 64,
@@ -372,15 +389,25 @@ Vielen Dank!`);
         </span>
       </div>
 
-          <span className="wp-product-photo">{g.bildUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={g.bildUrl}
-              alt={g.name}
-              loading="eager"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          )}</span>
+          {/* The merchant image goes through OUR image optimizer (next/image,
+              host allowed in next.config.js), never straight from the shop: a
+              direct <img> sends every visitor's IP address to the merchant
+              before anyone clicked the offer, while the privacy policy says the
+              merchant hears from a visitor only on click. Same pattern as the
+              balcony offer card (BalkonAngebot). Without permission the photo
+              box is not rendered at all — see WP_BILDER_FREIGEGEBEN. */}
+          {bild && (
+            <span className="wp-product-photo">
+              <Image
+                src={bild}
+                alt={g.name}
+                fill
+                loading="eager"
+                sizes="(max-width:800px) 80vw, 400px"
+                style={{ objectFit: "contain" }}
+              />
+            </span>
+          )}
           <span className="wp-product-name wp-product-image-title" title={g.name}>{displayName}</span>
         </a>
       </div>

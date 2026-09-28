@@ -20,6 +20,18 @@ const nextConfig = {
     // Next falls back to its own page, nothing else breaks.
     globalNotFound: true,
   },
+  images: {
+    // Merchant product images are served through OUR image optimizer, never
+    // embedded directly: a direct <img> from the shop sends every visitor's IP
+    // address to the merchant before any click. Only the image path of the one
+    // merchant whose feed we show is allowed — no wildcard, otherwise
+    // /_next/image becomes an open proxy for arbitrary hosts.
+    // Heat pump catalog (Awin feed, merchant_image_url): measured 28.09.2026,
+    // all image URLs the device recommendation returns sit on this host/path.
+    remotePatterns: [
+      { protocol: "https", hostname: "www.heizungsdiscount24.de", pathname: "/shop/images/products/**" },
+    ],
+  },
   // Dev server uses .next-dev/, build uses .next/ (Vercel-compatible)
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   env: {

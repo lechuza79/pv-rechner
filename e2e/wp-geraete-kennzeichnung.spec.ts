@@ -147,6 +147,57 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     expect(text).toMatch(/nicht aus dem gesamten Markt/);
   });
 
+  test("Gerätebilder laufen über unseren Server, nie direkt vom Shop", async ({ page }) => {
+    // Same check as the balcony offer block (balkon-angebot.spec.ts): a
+    // product image loaded straight from the merchant sends every visitor's IP
+    // address there before any click — invisible, the picture looks the same.
+    // Until 28.09.2026 exactly that happened here (plain <img> from the feed).
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(ERGEBNIS, { waitUntil: "domcontentloaded" });
+    test.skip(!(await geraeteAbwarten(page)), "Gerätekatalog nicht verfügbar");
+
+    // Checked by ORIGIN, not by substring: the merchant host also appears,
+    // encoded, as a parameter of our own /_next/image address.
+    const fremde = await page.evaluate(() =>
+      [...document.querySelectorAll("li.wp-geraete-kachel img, .wp-product-photo img")]
+        .map(i => (i as HTMLImageElement).currentSrc || (i as HTMLImageElement).src)
+        .filter(Boolean)
+        .filter(src => !src.startsWith("data:"))
+        .filter(src => new URL(src, location.href).origin !== location.origin),
+    );
+    expect(fremde).toEqual([]);
+
+    // The photos are switched off until the merchant's permission is on file
+    // (WP_BILDER_FREIGEGEBEN in WpGeraeteEmpfehlung). Either way there must be
+    // no empty photo box: a card either shows a photo that came through
+    // /_next/image, or it renders no photo box at all. Once the switch is on,
+    // this also proves at least one image really loaded through us.
+    const kacheln = await page.locator("li.wp-geraete-kachel").count();
+    expect(kacheln, "Ohne Kacheln prüft dieser Test nichts").toBeGreaterThan(0);
+    const leereBoxen = await page.evaluate(
+      () =>
+        [...document.querySelectorAll(".wp-product-photo")].filter(
+          box => !box.querySelector("img"),
+        ).length,
+    );
+    expect(leereBoxen, "Fotobox ohne Bild — sieht aus wie ein Fehler").toBe(0);
+    const boxen = await page.locator(".wp-product-photo").count();
+    if (boxen > 0) {
+      await expect
+        .poll(
+          () =>
+            page.evaluate(
+              () =>
+                [...document.querySelectorAll<HTMLImageElement>(".wp-product-photo img")]
+                  .filter(i => (i.currentSrc || i.src).includes("/_next/image"))
+                  .filter(i => i.complete && i.naturalWidth > 0).length,
+            ),
+          { timeout: 15_000, message: "kein Gerätebild über unseren Server geladen" },
+        )
+        .toBeGreaterThan(0);
+    }
+  });
+
   test("widerspricht dem Produktnamen nicht", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(ERGEBNIS, { waitUntil: "domcontentloaded" });
