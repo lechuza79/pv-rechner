@@ -3650,7 +3650,7 @@
   {
     "regionId": "01056050",
     "name": "Wedel",
-    "checkedAt": "2026-09-28T12:30:00Z",
+    "checkedAt": "2026-09-28T12:20:00Z",
     "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf wedel.de.",
     "outcome": "keine-passende-foerderung",
@@ -75644,7 +75644,7 @@
   {
     "regionId": "09376151",
     "name": "Oberviechtach",
-    "checkedAt": "2026-09-28T12:30:00Z",
+    "checkedAt": "2026-09-28T12:20:00Z",
     "recheckAt": "2027-03-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
