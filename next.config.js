@@ -1,5 +1,14 @@
+// Every path except /embed and /embed/… — see the headers() comment below.
+const FRAMING_VERBOTEN_QUELLE = "/:pfad((?!embed(?:/|$)).*)";
+const FRAMING_VERBOTEN_HEADER = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // No "X-Powered-By: Next.js" — tells an attacker the framework for free.
+  poweredByHeader: false,
   outputFileTracingIncludes: {
     "/solar-atlas/*": ["./public/geo/gemeinden/*.geo.json"],
   },
@@ -68,8 +77,8 @@ const nextConfig = {
       {
         // Harmlose Basis-Header global — MIME-Sniffing aus, Referrer sparsam.
         // Absichtlich KEIN X-Frame-Options hier: die /embed/*-Widgets müssen
-        // fremd-einbettbar bleiben. Framing-Schutz sitzt gezielt auf den
-        // sensiblen Seiten unten. HSTS setzt Vercel automatisch.
+        // fremd-einbettbar bleiben. Der Framing-Schutz steht im nächsten
+        // Eintrag, mit /embed ausgenommen. HSTS setzt Vercel automatisch.
         // "/(.*)" ist Next.js' kanonische "alle Routen"-Form (matcht auch "/").
         source: "/(.*)",
         headers: [
@@ -77,21 +86,19 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
-      // Clickjacking-Schutz für die authentifizierten Bereiche — die dürfen
-      // niemals in einem fremden iframe landen (Login/Admin-Aktionen). Je ein
-      // Eintrag für den nackten Pfad und die Unterseiten.
-      { source: "/dashboard", headers: [
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
-      ] },
-      { source: "/dashboard/(.*)", headers: [
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
-      ] },
-      { source: "/admin/(.*)", headers: [
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
-      ] },
+      // Clickjacking protection for EVERY page except the widgets under /embed,
+      // which exist to be framed — by us (AutoHeightIframe, Gemeinde pages, the
+      // homepage) and by third parties (copy-paste code from the gallery).
+      // Measured 28.09.2026: every first-party <iframe> in app/, components/
+      // and public/ points to /embed/*; nothing else is meant to be framed.
+      // Only frame-ancestors, deliberately no script CSP. Test:
+      // lib/__tests__/framing-header.test.ts.
+      //
+      // HSTS stays as Vercel sets it (max-age, no includeSubDomains): the
+      // subdomains resolve via wildcard DNS to the mail/web host at the
+      // registrar (mail., webmail., autoconfig. …), which may be reached over
+      // plain http — includeSubDomains could lock those out.
+      { source: FRAMING_VERBOTEN_QUELLE, headers: FRAMING_VERBOTEN_HEADER },
     ];
   },
   async rewrites() {
