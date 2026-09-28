@@ -7,9 +7,10 @@
 // by scripting requests against it, and every cold start reset the counter.
 //
 // Until it is integrated, the route answers 404 unless this flag is set.
-// BEFORE ENABLING: add a GLOBAL daily cap (shared across instances, e.g. a
-// counter in the database), not just the per-IP in-memory limit — the
-// in-memory map lives per function instance and is gone after a cold start.
+// The GLOBAL daily cap now exists (lib/angebot-check-kontingent.ts, a counter
+// in the database, env ANGEBOT_CHECK_TAGESLIMIT, default 50). BEFORE ENABLING:
+// run GET /api/angebot-check/setup once so the counter table and function
+// exist — without them the route fails closed with 503 on every call.
 
 export const ANGEBOT_CHECK_FLAG = "ANGEBOT_CHECK_AKTIV";
 
