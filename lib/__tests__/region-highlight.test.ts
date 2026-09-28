@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   buildRegionHighlight,
   highlightAlsText,
@@ -26,12 +28,12 @@ const basis: RegionHighlightInput = {
   kinder: [
     {
       name: "Landkreis Dingolfing-Landau",
-      wPerCapitaDach: 4339,
+      wPerCapita: 4339,
       count: 9000,
       href: "/solar-atlas/bayern/landkreis-dingolfing-landau",
     },
-    { name: "Landkreis Haßberge", wPerCapitaDach: 3800, count: 13015, href: "/solar-atlas/bayern/landkreis-hassberge" },
-    { name: "München", wPerCapitaDach: 174, count: 40000, href: "/solar-atlas/bayern/muenchen" },
+    { name: "Landkreis Haßberge", wPerCapita: 3800, count: 13015, href: "/solar-atlas/bayern/landkreis-hassberge" },
+    { name: "München", wPerCapita: 174, count: 40000, href: "/solar-atlas/bayern/muenchen" },
   ],
   rang: 1,
   rangVon: 16,
@@ -60,7 +62,7 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
   });
 
   it("benennt das andere Ende, statt nur einen Faktor zu behaupten", () => {
-    expect(text(basis)).toContain("München (174 Wp je Einwohner)");
+    expect(text(basis)).toContain("München (174 Wp Solarleistung je Einwohner)");
     expect(text(basis)).not.toMatch(/-fache/);
   });
 
@@ -72,9 +74,9 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
     const mittel = text({
       ...basis,
       kinder: [
-        { name: "Kreis A", wPerCapitaDach: 2000, count: 10 },
-        { name: "Kreis B", wPerCapitaDach: 1500, count: 10 },
-        { name: "Kreis C", wPerCapitaDach: 1000, count: 10 },
+        { name: "Kreis A", wPerCapita: 2000, count: 10 },
+        { name: "Kreis B", wPerCapita: 1500, count: 10 },
+        { name: "Kreis C", wPerCapita: 1000, count: 10 },
       ],
     });
     // „der Kreis A" — der Artikel gehört dazu, die Testdaten heißen wirklich so.
@@ -85,9 +87,9 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
     const eng = text({
       ...basis,
       kinder: [
-        { name: "Kreis A", wPerCapitaDach: 1000, count: 10 },
-        { name: "Kreis B", wPerCapitaDach: 950, count: 10 },
-        { name: "Kreis C", wPerCapitaDach: 900, count: 10 },
+        { name: "Kreis A", wPerCapita: 1000, count: 10 },
+        { name: "Kreis B", wPerCapita: 950, count: 10 },
+        { name: "Kreis C", wPerCapita: 900, count: 10 },
       ],
     });
     expect(eng).toContain("Das Feld liegt dicht beieinander");
@@ -117,7 +119,7 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
 
   it("stellt nach vorn, was für diese Region auffällig ist", () => {
     // Platz 1 von 16 ist eine Nachricht — der Rangsatz führt.
-    expect(text(basis).startsWith("Gemessen an der Dachleistung")).toBe(true);
+    expect(text(basis).startsWith("Gemessen an der Solarleistung je Einwohner")).toBe(true);
 
     // Mittelfeld ohne besondere Spanne, dafür ein eingebrochener Zubau: dann
     // führt der Zubau, und derselbe Baustein erzeugt einen anders gebauten Text.
@@ -125,9 +127,9 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
       ...basis,
       rang: 8,
       kinder: [
-        { name: "Kreis A", wPerCapitaDach: 1000, count: 10 },
-        { name: "Kreis B", wPerCapitaDach: 900, count: 10 },
-        { name: "Kreis C", wPerCapitaDach: 800, count: 10 },
+        { name: "Kreis A", wPerCapita: 1000, count: 10 },
+        { name: "Kreis B", wPerCapita: 900, count: 10 },
+        { name: "Kreis C", wPerCapita: 800, count: 10 },
       ],
       byYear: [
         { year: 2024, count: 200000 },
@@ -199,11 +201,33 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
     const eng = text({
       ...basis,
       kinder: [
-        { name: "Kreis A", wPerCapitaDach: 1000, count: 10 },
-        { name: "Kreis B", wPerCapitaDach: 900, count: 10 },
-        { name: "Kreis C", wPerCapitaDach: 800, count: 10 },
+        { name: "Kreis A", wPerCapita: 1000, count: 10 },
+        { name: "Kreis B", wPerCapita: 900, count: 10 },
+        { name: "Kreis C", wPerCapita: 800, count: 10 },
       ],
     });
     expect(eng).not.toContain("Am anderen Ende");
+  });
+
+  it("vergleicht Gleiches mit Gleichem: jede Pro-Kopf-Zahl heißt, was sie misst", () => {
+    // Bis 09/2026 stand die reine Dachleistung als „je Einwohner" neben dem
+    // Durchschnitt aller Anlagen — der Spitzenreiter lag dadurch unter dem Schnitt.
+    const t = text(basis);
+    const werte = t.match(/\(\d[\d.]* Wp [^)]*\)/g) ?? [];
+    expect(werte.length).toBeGreaterThan(0);
+    for (const w of werte) expect(w).toMatch(/Wp Solarleistung je Einwohner\)$/);
+    expect(t).not.toMatch(/Dachleistung/);
+  });
+
+  it("die Seite speist den Absatz mit der Gesamtleistung, nicht der Dachleistung", () => {
+    // Dieselbe Größe wie der Durchschnitt im Einstiegssatz und die Kennzahl im
+    // Energiemonitor — sonst widerspricht der Absatz der Zahl daneben.
+    const quelle = readFileSync(
+      join(process.cwd(), "app/(site)/solar-atlas/[[...pfad]]/page.tsx"),
+      "utf8",
+    );
+    expect(quelle).toContain("wPerCapita: c.wPerCapita,");
+    expect(quelle).not.toMatch(/wPerCapitaDach: c\.wPerCapitaDach/);
+    expect(quelle).toMatch(/region\.region_id\)\?\.rank \?\? null/);
   });
 });

@@ -82,6 +82,17 @@ describe('CompositionChart layouts', () => {
     expect(monitor).toContain('Ein Rechteck steht für');
   });
 
+  it('never shows a nonzero capacity share as "0 %" (Stendal balcony plants: 0,4 %)', () => {
+    const story = {countComparison: counts, values: [{value: 2}, {value: 0.4}]};
+    const monitor = renderToStaticMarkup(<MonitorCompositionChart story={story} />);
+    expect(monitor).toContain('<b>0,4<small> %</small></b>');
+    expect(monitor).toContain('aria-label="0,4 Prozent der Solarleistung"');
+    const card = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={0.28} layout="story" />);
+    expect(card).toMatch(/>0,3<\/text>/);
+    // Above 10 % whole percent, as in the donut legends.
+    expect(renderToStaticMarkup(<CompositionChart counts={counts} powerShare={63.7} layout="monitor" />)).toContain('<b>64<small> %</small></b>');
+  });
+
   it('renders nothing on the monitor without a comparison', () => {
     expect(renderToStaticMarkup(<MonitorCompositionChart story={{values: [{value: 1}, {value: 2}]}} />)).toBe('');
   });

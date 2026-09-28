@@ -3,6 +3,8 @@ import type {SolarMonth} from '../../lib/story-monthly-solar';
 import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
 import {formatStoryDate} from '../../lib/story-format';
 import {energieTeile, leistungTeile} from '../../lib/gemeinde-einheiten';
+import {ortPhrase} from '../../lib/atlas-orte';
+import {regionDisplayName} from '../../lib/atlas-format';
 
 /**
  * The one drawing of the solar month recap (template "radial"): one closed
@@ -57,7 +59,7 @@ export function MonthlySolarRadial({data, layout, compact, displayDate, frame, p
     ? {value: leistungTeile(value).value, unit: leistungTeile(max).unit}
     : {value: value.toLocaleString('de-DE', {maximumSignificantDigits: 2}), unit: 'MW'};
   const ariaLabel = layout === 'monitor'
-    ? `Solarleistung in ${data.town ?? 'der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${energieTeile(data.totalMwh).value} ${energieTeile(data.totalMwh).unit}.`
+    ? `Solarleistung ${data.town ? ortPhrase({name: regionDisplayName(data.town)}) : 'in der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${energieTeile(data.totalMwh).value} ${energieTeile(data.totalMwh).unit}.`
     : `Solarleistung in ${data.town ?? 'Trier'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${(data.totalMwh / 1000).toFixed(2)} GWh.`;
   const centre = layout === 'monitor'
     ? (shownDay ? energieTeile(shownDay.mwh) : energieTeile(data.totalMwh))

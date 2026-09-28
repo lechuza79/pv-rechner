@@ -125,6 +125,9 @@ describe("Anteile in Prozent", () => {
     expect(fmtAnteilProzentFein(0.0994)).toBe("9,9 %");
     expect(fmtAnteilProzentFein(0.0995)).toBe("10 %");
     expect(fmtAnteilProzentFein(0.637)).toBe("64 %");
+    // Ein Anteil über null wird nie zu „0,0 %" — das behauptete, es gebe ihn nicht.
+    expect(fmtAnteilProzentFein(0.0003)).toBe("unter 0,1 %");
+    expect(fmtAnteilProzentFein(0)).toBe("0,0 %");
   });
 
   it("rundet die Rangstufe auf — sie darf die Platzierung nicht schönen", () => {

@@ -43,6 +43,13 @@ const EINZELDATEIEN = [
   // Photovoltaik-Nennleistung, die GWp ist.
   "components/RegionAnlagentypWidget.tsx",
   "components/RegionSolarLive.tsx",
+  // Die Regionsseiten (Deutschland, Länder, Kreise) seit 09/2026: Der Donut trug
+  // „MWp" fest verdrahtet und sagte Screenreadern „kWp" — gefunden erst im Audit
+  // der Produktion, weil keine dieser Dateien im Suchpfad lag.
+  "components/landkreis",
+  "components/charts/ShareDonut.tsx",
+  "components/charts/CompositionChart.tsx",
+  "components/dashboard/KpiOverview.tsx",
 ];
 
 /**
@@ -75,6 +82,7 @@ const ERLAUBT: { fragment: string; grund: string }[] = [
   { fragment: "kW${peak}", grund: "⌀ Anlagengröße, folgt ebenfalls dem Energieträger" },
   { fragment: "} MW`", grund: "Momentanleistung der Live-Simulation und Technologie-Mix — kein Peak" },
   { fragment: "} kW`", grund: "Technologie-Mix unterhalb 1 MW — kein Peak" },
+  { fragment: "`${signed(result.percent,1)} %`", grund: "relative Veränderung mit Vorzeichen in der Kennzahl-Übersicht — kein Anteil, kein atlas-format-Fall" },
 ];
 
 function dateienUnter(rel: string): string[] {

@@ -254,7 +254,7 @@ async function AtlasBody({
    * Der eigene Platz unter den Geschwistern — nur für Bundesländer.
    *
    * Die Rangliste der 16 liegt in den Kindern der Deutschland-Region und trägt
-   * dort bereits `rankDach`; wir lesen sie, statt eine zweite zu rechnen (zwei
+   * dort bereits `rank`; wir lesen sie, statt eine zweite zu rechnen (zwei
    * Ranglisten laufen auseinander, das ist im Projekt schon passiert).
    *
    * DER FEHLER WIRD GESCHLUCKT — und das ist hier kein Kaschieren, sondern der
@@ -277,7 +277,9 @@ async function AtlasBody({
     region.level === "bundesland"
       ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
       : [];
-  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
+  // Gesamtleistung je Einwohner — dieselbe Größe wie Kennzahl und Einstiegssatz
+  // (siehe RegionKind.wPerCapita in lib/region-highlight.ts).
+  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rank ?? null;
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
     { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
@@ -304,7 +306,7 @@ async function AtlasBody({
     kindWort,
     kinder: children.map((c) => ({
       name: c.name,
-      wPerCapitaDach: c.wPerCapitaDach,
+      wPerCapita: c.wPerCapita,
       count: c.count,
       // Dieselbe Adresse wie in der Rangliste weiter unten — der Absatz öffnet
       // also keinen neuen Crawl-Weg, er benennt einen bestehenden.

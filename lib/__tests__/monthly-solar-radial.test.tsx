@@ -52,3 +52,14 @@ describe('MonthlySolarRadial shared by monitor and story', () => {
     expect(def.exportProvenance!({solarMonth: {...data, sourceUrl: 'https://archive-api.open-meteo.com/v1/archive'}} as StoryConcept)).toBe(false);
   });
 });
+
+describe('place phrase of the monitor radial', () => {
+  it('uses the display name with its article: "im Vogelsbergkreis", not "in Landkreis Vogelsbergkreis"', () => {
+    // Region packages carry the register name; live on 28.09.2026 the label read
+    // "Solarleistung in Landkreis Vogelsbergkreis".
+    const html = renderToStaticMarkup(<MonitorMonthlySolarChart data={{...data, town: 'Landkreis Vogelsbergkreis'}} />);
+    expect(html).toContain('aria-label="Solarleistung im Vogelsbergkreis,');
+    expect(html).not.toContain('Landkreis Vogelsbergkreis');
+    expect(renderToStaticMarkup(<MonitorMonthlySolarChart data={data} />)).toContain('aria-label="Solarleistung in Testort,');
+  });
+});
