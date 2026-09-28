@@ -1,11 +1,14 @@
 import {afterEach,expect,it,vi} from 'vitest';
-const calls=vi.hoisted(()=>({frames:[] as number[],commands:[] as number[],hideCapture:false}));
+const calls=vi.hoisted(()=>({frames:[] as number[],commands:[] as number[],hideCapture:false,quickSwitch:false,failCapture:false}));
 vi.mock('../chart-export',()=>({captureNodeToBlob:async()=>{
  if(calls.hideCapture){
    calls.hideCapture=false;
    Object.assign(document,{hidden:true});
-   setTimeout(()=>{Object.assign(document,{hidden:false});document.dispatchEvent(new Event('visibilitychange'));},5);
+   document.dispatchEvent(new Event('visibilitychange'));
+   if(calls.quickSwitch){Object.assign(document,{hidden:false});document.dispatchEvent(new Event('visibilitychange'));}
+   else setTimeout(()=>{Object.assign(document,{hidden:false});document.dispatchEvent(new Event('visibilitychange'));},5);
  }
+ if(calls.failCapture){calls.failCapture=false;throw new Error('Capture interrupted');}
  return new Blob();
 }}));
 vi.mock('mediabunny',()=>({
@@ -16,7 +19,8 @@ vi.mock('mediabunny',()=>({
 }));
 import {downloadChartVideo,chartAnimationDuration} from '../chart-animation-export';
 afterEach(()=>vi.unstubAllGlobals());
-it.each([false,true])('encodes the same timeline after a background pause: %s',async(hidden)=>{
+it.each(['visible','hidden','quick-switch','interrupted-capture'])('encodes the same timeline after a background pause: %s',async(mode)=>{
+ const hidden=mode!=='visible';calls.quickSwitch=mode==='quick-switch';calls.failCapture=mode==='interrupted-capture';
  calls.frames=[];calls.commands=[];calls.hideCapture=hidden;
  vi.stubGlobal('MutationObserver',class {observe(){} disconnect(){}});
  vi.stubGlobal('CustomEvent',class {detail:any;constructor(_name:string,options:any){this.detail=options.detail}});

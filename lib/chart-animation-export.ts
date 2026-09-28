@@ -39,9 +39,22 @@ export async function downloadChartVideo(node:HTMLElement, filename:string, onPr
       await waitForChartVisibility(node);
       await controlChartAnimation(node,{mode:'seek',timeMs:index*1000/fps});
       await waitForChartVisibility(node);
-      const blob=await captureNodeToBlob(node,1.5);
-      // A tab switch during capture invalidates that snapshot, not the export.
-      if(document.hidden){index--;continue;}
+      const doc=node.ownerDocument??document;
+      let interrupted=false;
+      const onVisibility=()=>{if(doc.hidden)interrupted=true;};
+      doc.addEventListener('visibilitychange',onVisibility);
+      let blob:Blob;
+      try {
+        blob=await captureNodeToBlob(node,1.5);
+      } catch(error) {
+        // Retry only a capture interrupted by a tab switch; real errors still surface.
+        if(interrupted||doc.hidden){index--;continue;}
+        throw error;
+      } finally {
+        doc.removeEventListener('visibilitychange',onVisibility);
+      }
+      // Even a quick switch away and back invalidates this snapshot, not the export.
+      if(interrupted||doc.hidden){index--;continue;}
       if(!node.isConnected)await waitForChartVisibility(node);
       const bitmap=await createImageBitmap(blob);
       try {
