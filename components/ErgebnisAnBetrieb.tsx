@@ -445,12 +445,14 @@ export default function ErgebnisAnBetrieb({
               {anschriftText ? `, die Adresse (${anschriftText})` : ""}
               {fotos.length ? `, ${fotos.length === 1 ? "ein Bild" : `${fotos.length} Bilder`}` : ""}
               {nachricht.trim() ? ", Ihre Nachricht" : ""} und einen Link auf diese
-              Rechnung. Sonst nichts, und niemand sonst bekommt etwas davon.
+              Rechnung. Sonst nichts. Zugestellt wird das per E-Mail über
+              unseren Versanddienstleister, der die Mail 30 Tage aufbewahrt; in
+              unserer Datenbank speichern wir sie nicht.
             </div>
 
             <p style={S.klein}>
               Wie wir mit Ihren Angaben umgehen, steht in unserer{" "}
-              <a href="/datenschutz" style={S.link}>
+              <a href="/datenschutz#fachbetrieb-anfrage" style={S.link}>
                 Datenschutzerklärung
               </a>
               .

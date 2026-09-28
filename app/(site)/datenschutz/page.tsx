@@ -7,7 +7,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/datenschutz",
   title: "Datenschutzerklärung – Solar Check",
   description:
-    "Datenschutzerklärung für Solar Check. Datensparsam, ohne Verkaufsanrufe, kein Werbe-Tracking. Berechnungen laufen im Browser; nur für Standort-Ertrag und optionales Speichern werden Daten übermittelt.",
+    "Datenschutzerklärung für Solar Check. Datensparsam, ohne Verkaufsanrufe, kein Werbe-Tracking. Berechnungen laufen im Browser; welche Daten wann übermittelt werden, steht hier einzeln.",
   ogImageTitle: "Datenschutz",
   ogImageSubtitle: "Datensparsam und transparent — was wir erheben und was nicht.",
 });
@@ -100,8 +100,8 @@ export default function DatenschutzPage() {
           gebaut, dass so wenig personenbezogene Daten wie möglich erhoben
           werden. Es gibt keine Verkaufsanrufe und kein Werbe-Tracking durch
           Drittanbieter — du bekommst dein Ergebnis sofort, ohne Registrierung.
-          Am Ende des Wärmepumpen-Rechners stehen als Anzeige gekennzeichnete
-          Produktempfehlungen mit Provisionslinks; sie setzen bei uns keine
+          Am Ende einzelner Rechner stehen als Anzeige gekennzeichnete
+          Produktangebote mit Provisionslinks; sie setzen bei uns keine
           Cookies und übertragen erst beim Klick Daten an den Händler. Die eigentliche Berechnung läuft in deinem Browser.
           {/* Bewusst NICHT "in drei Fällen … alle drei": Hosting-Logfiles
               (Abschnitt 3) und Reichweitenmessung (Abschnitt 5) sind ebenfalls
@@ -112,8 +112,10 @@ export default function DatenschutzPage() {
           standortgenaue Ertragsprognose wird deine Postleitzahl an einen
           Berechnungsdienst gesendet (Abschnitt 8), wenn du dich freiwillig
           anmeldest, um Berechnungen zu speichern, legen wir ein Nutzerkonto an
-          (Abschnitt 9), und wenn du uns über das Kontaktformular schreibst,
-          geht deine Nachricht per E-Mail an uns (Abschnitt 10). Die wichtigsten
+          (Abschnitt 9), wenn du uns über das Kontaktformular schreibst,
+          geht deine Nachricht per E-Mail an uns (Abschnitt 10), und wenn du über
+          die Rechner-Seite eines Fachbetriebs eine Anfrage an diesen Betrieb
+          stellst, geht sie per E-Mail an ihn (Abschnitt 20). Die wichtigsten
           Fälle sind unten einzeln beschrieben.
         </p>
 
@@ -196,8 +198,12 @@ export default function DatenschutzPage() {
           Geräts.
         </p>
         <p style={S.p}>
-          Dazu zählen wir Nutzungsereignisse: dass ein Berechnungsschritt
+          Dazu zählen wir Nutzungsereignisse — etwa dass ein Berechnungsschritt
           erreicht, eine Berechnung abgeschlossen oder ein Ergebnis geteilt
+          wurde, dass Kaufangebote am Ende eines Rechners angezeigt oder
+          angeklickt wurden, dass jemand ein Abo abgeschlossen oder ein Widget
+          geteilt, heruntergeladen oder zum Einbetten geöffnet hat, oder dass
+          eine Seite über einen Link aus einem unserer Anschreiben aufgerufen
           wurde. Das sind reine Zähler — sie tragen <strong>keine
           Begleitangaben</strong>, also weder deine Eingaben noch Eckdaten
           deiner Berechnung, keine Freitexte und keinen Bezug zu deiner Person.
@@ -261,10 +267,11 @@ export default function DatenschutzPage() {
         <h2 id="cookies" style={{ ...S.h2, scrollMarginTop: 96 }}>7. Cookies</h2>
         <p style={S.p}>
           Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du den
-          Anmeldevorgang nicht startest, setzen wir überhaupt keine Cookies —
+          Anmeldevorgang nicht startest, setzen wir selbst keine Cookies —
           was wir unabhängig davon auf deinem Gerät ablegen, sind Einstellungen,
           die du selbst getroffen hast; sie stehen weiter unten in diesem
-          Abschnitt. Startest du den Anmeldevorgang, um Berechnungen zu
+          Abschnitt. Eine Ausnahme kann die Sicherheitsprüfung unseres Hosters
+          auslösen (übernächster Absatz). Startest du den Anmeldevorgang, um Berechnungen zu
           speichern (siehe Abschnitt 9), kommen Cookies dazu. Eines sichert den
           Anmeldevorgang selbst gegen Manipulation ab; es gilt höchstens 24
           Stunden, weil ein Link aus einer Mail auch dann noch funktionieren
@@ -302,8 +309,33 @@ export default function DatenschutzPage() {
           deiner Person.
         </p>
 
+        {/* Vercel-Doku „Firewall concepts" (am 28.09.2026 gelesen): Nach
+            bestandener Prüfung wird „a challenge session … created in the
+            browser", gültig eine Stunde, an den Browser gebunden. Den Namen des
+            Cookies nennt die Doku nicht; deshalb steht hier keiner. Der
+            Bot-Schutz steht seit 08.09.2026 auf „challenge" (CLAUDE.md). */}
         <p style={S.p}>
-          Zusätzlich nutzt die Website den Browser-Speicher. Öffentliche Energie- und Preisdaten werden dort nur für die Dauer deines Besuchs zwischengespeichert, damit dieselben Zahlen nicht mehrfach geladen werden müssen; schließt du den Browser-Tab, sind sie weg. Klickst du auf „Speichern", wird deine Berechnung bis zum Login vorgehalten. Diese Einträge dienen keinem Tracking und enthalten keine Kennung, mit der sich ein Gerät wiedererkennen ließe. Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
+          Unser Hoster Vercel (Abschnitt 3; er handelt dabei als unser
+          Auftragsverarbeiter) schützt die Website vor automatisierten
+          Zugriffen. Wirkt ein Aufruf nicht wie der eines gewöhnlichen Browsers,
+          zeigt Vercel vorab eine kurze <strong>Sicherheitsprüfung</strong>, die
+          dein Browser selbsttätig löst; dabei werden technische Merkmale deines
+          Browsers ausgewertet. Nach bestandener Prüfung legt Vercel in deinem
+          Browser einen Nachweis dafür ab, der eine Stunde gilt, damit die
+          Prüfung nicht bei jedem Aufruf wiederholt wird. Dieser Nachweis dient
+          allein der Abwehr automatisierter Zugriffe und wird nicht für Werbung
+          oder Reichweitenmessung verwendet; bei einem gewöhnlichen Besuch
+          entsteht er in aller Regel gar nicht. Einer Einwilligung bedarf es
+          dafür nicht, weil das Speichern und Auslesen unbedingt erforderlich
+          ist, damit wir dir die von dir aufgerufene Website zur Verfügung
+          stellen können (§ 25 Abs. 2 Nr. 2 TDDDG). Rechtsgrundlage für die
+          dabei anfallenden Daten ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einem vor automatisierten Zugriffen geschützten
+          Betrieb).
+        </p>
+
+        <p style={S.p}>
+          Zusätzlich nutzt die Website den Browser-Speicher. Öffentliche Energie- und Preisdaten werden dort nur für die Dauer deines Besuchs zwischengespeichert, damit dieselben Zahlen nicht mehrfach geladen werden müssen; schließt du den Browser-Tab, sind sie weg. Klickst du auf „Speichern", wird deine Berechnung bis zum Login vorgehalten. Ebenfalls nur für die Dauer der Sitzung merkt sich der Browser, ob dir die kurze Bedienhilfe für Karten auf dem Telefon schon gezeigt wurde, und — falls du eine Vorschau-Adresse mit dem Zusatz „suchvorschau“ aufgerufen hast — dass die Suche in der Kopfzeile eingeblendet bleiben soll. Diese Einträge dienen keinem Tracking und enthalten keine Kennung, mit der sich ein Gerät wiedererkennen ließe. Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
         </p>
 
         <p style={S.p}>
@@ -316,7 +348,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Energie-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Energie-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Energie-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dich anmeldest; meldest du dich nie an, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Energie-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -414,8 +446,8 @@ export default function DatenschutzPage() {
           Beim Anlegen eines Kontos und beim Setzen eines neuen Passworts
           schicken wir dir eine E-Mail mit einem Bestätigungslink. Diese Mails
           gehen über das E-Mail-Postfach unserer Domain bei der{" "}
-          <strong>ALL-INKL.COM – Neue Medien Münnich</strong> (Friedrichroda,
-          Deutschland); ein Auftragsverarbeitungsvertrag besteht. Auf diesem Weg
+          <strong>ALL-INKL.COM – Neue Medien Münnich</strong> (Hauptstraße 68,
+          02742 Friedersdorf, Deutschland); ein Auftragsverarbeitungsvertrag besteht. Auf diesem Weg
           bleiben die Daten bei uns und unseren Dienstleistern in der
           Europäischen Union — wohin dein eigener E-Mail-Anbieter sie danach
           weiterleitet und wie lange er sie aufbewahrt, entscheidet er, nicht
@@ -563,6 +595,9 @@ export default function DatenschutzPage() {
           Zusätzlich sind in den Auftragsverarbeitungsvertrag die
           Standardvertragsklauseln der EU-Kommission einbezogen — sie tragen die
           Übermittlung auch dann, wenn die Zertifizierung entfallen sollte.
+          Resend bewahrt die versendete Mail als Teil seines Versandprotokolls
+          30 Tage auf (Sicherungskopien bis zu 7 weitere Tage) und löscht sie
+          danach; in dieser Zeit können wir sie dort einsehen.
           Weitere Informationen:{" "}
           <a
             href="https://resend.com/legal/privacy-policy"
@@ -593,9 +628,11 @@ export default function DatenschutzPage() {
           DSGVO Widerspruch einlegen.
         </p>
         <p style={S.p}>
-          Dieselbe Abwehr läuft auf allen Schnittstellen, über die unsere Rechner
-          Daten nachladen — Standort-Ertrag, Wetter- und Klimadaten, Förderprogramme,
-          Strommix und die Karten des Energie-Atlas. Auch dort merkt sich unser Server
+          Dieselbe Abwehr läuft auch auf den übrigen Schnittstellen unserer
+          Website — dort, wo unsere Rechner und Seiten Daten nachladen (etwa
+          Standort-Ertrag, Förderprogramme oder Karten des Energie-Atlas), bei
+          Anmeldung und Suche sowie bei den anderen Formularen, über die du uns
+          oder Dritten etwas schickst. Auch dort merkt sich unser Server
           die IP-Adresse der anfragenden Verbindung kurzzeitig im Arbeitsspeicher,
           um die Zahl der Abrufe je Verbindung zu begrenzen. Das betrifft jeden
           Aufruf einer Seite mit nachgeladenen Daten, also auch dann, wenn du kein
@@ -709,8 +746,14 @@ export default function DatenschutzPage() {
           Verwaltung: die Adresse der amtlichen Website, das dort genannte
           Kontaktformular oder Postfach, die im Impressum genannte
           Verantwortlichen-Zeile samt Funktionsbezeichnung und, sofern dort
-          angegeben, eine personenbezogene Adresse der zuständigen Stelle.
-          Angeschrieben werden ausschließlich Funktionspostfächer.
+          angegeben, eine personenbezogene Adresse der zuständigen Stelle, dazu
+          Name und E-Mail-Adresse von Ansprechpersonen für Klimaschutz oder
+          Pressearbeit, soweit die Kommune sie auf ihrer eigenen Website als
+          solche veröffentlicht. Hat eine Kommune – oder die Verwaltung, der sie
+          angehört – auf ihrer Website eine Ansprechperson für Klimaschutz
+          (vorrangig) oder für Pressearbeit benannt, schreiben wir diese in
+          ihrer dienstlichen Rolle unter der dort veröffentlichten Adresse an;
+          andernfalls ein Funktionspostfach der Verwaltung.
           Quelle sind die Websites der Kommunen selbst sowie Wikidata.
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
           an der Ansprache der zuständigen Stelle); die Herkunftsangabe erfolgt
@@ -754,13 +797,41 @@ export default function DatenschutzPage() {
           Gespeichert wird der Bearbeitungsstand in unserer Datenbank bei
           Supabase (Einzelheiten und Drittlandbezug in Abschnitt 9); zusätzlich
           führen wir einen Versandnachweis je Aussendung mit Empfängeradresse,
-          Betreff und Zeitpunkt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          Art des Postfachs (etwa allgemeines Postfach oder Ansprechperson für
+          Klimaschutz), Betreff und Zeitpunkt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
           (berechtigtes Interesse an der Bearbeitung der eigenen Korrespondenz
           und am Nachweis, wer wann angeschrieben wurde).
         </p>
         <p style={S.p}>
           Die Kontaktdaten werden gelöscht, sobald das Vorhaben abgeschlossen
           ist.
+        </p>
+        {/* funding_anfragen (app/api/funding/setup, scripts/funding-anfrage.ts,
+            Rücklauf in scripts/kommunen-ruecklauf.ts): Empfänger, Betreff,
+            Wortlaut, Versandzeit, Versandbeleg; die Antwort wird ohne Zitat als
+            Notiz übernommen. Versand über dasselbe Domain-Postfach. */}
+        <p style={S.p}>
+          <strong>Sachfragen an Förderstellen.</strong> Stehen auf der
+          Förderseite einer Stelle widersprüchliche oder unklare Angaben zu
+          einem Förderprogramm, fragen wir dort einmalig schriftlich nach — an
+          das allgemeine Postfach, das die Gemeinde oder ihre Verwaltung im
+          Impressum oder auf der Kontaktseite ihrer Website veröffentlicht, bei
+          einzeln geprüften Rückfragen an die Adresse, die die Stelle dafür
+          selbst angibt. Dafür
+          halten wir fest: die Empfängeradresse, Wortlaut und Zeitpunkt unserer
+          Frage samt Versandbeleg und, wenn eine Antwort kommt, deren Zeitpunkt
+          und Text; darin steht regelmäßig auch der Name der antwortenden
+          Person. Versendet und empfangen wird über dasselbe Postfach wie bei den
+          Anschreiben, gespeichert in unserer Datenbank bei Supabase
+          (Abschnitt 9). Wir nutzen diese Angaben, um unseren Förderkatalog
+          richtigzustellen und dieselbe Frage nicht zweimal zu stellen, und
+          bewahren sie auf, bis die Angabe im Katalog richtiggestellt ist,
+          längstens drei Jahre nach der Antwort (ohne Antwort: nach dem
+          Versand); danach löschen wir Empfängeradresse und Mailtexte und
+          behalten nur, dass und wann gefragt wurde.
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+          an zutreffenden Förderangaben); widersprechen kannst du nach Art. 21
+          DSGVO formlos an die in Abschnitt 1 genannte Adresse.
         </p>
         <p style={S.p}>
           <strong>Widerspruch.</strong> Ein Widerspruch gegen die Ansprache
@@ -849,7 +920,8 @@ export default function DatenschutzPage() {
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
           Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
           wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird
-          die Eintragung gelöscht und es folgt keine weitere E-Mail. Rechts&shy;grundlage
+          die Eintragung gelöscht — nach sieben Tagen beim nächsten
+          regelmäßigen Aufräumlauf —, und es folgt keine weitere E-Mail. Rechts&shy;grundlage
           ist deine <strong>Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO);
           die Zeitpunkte von Eintragung und Bestätigung dienen dem Nachweis,
           dass sie vorlag.
@@ -885,8 +957,8 @@ export default function DatenschutzPage() {
         </p>
         <p style={S.p}>
           Die Meldungen versenden wir über das E-Mail-Postfach unserer Domain
-          bei der ALL-INKL.COM – Neue Medien Münnich (Friedrichroda,
-          Deutschland). Ein Auftragsverarbeitungsvertrag besteht; die Daten
+          bei der ALL-INKL.COM – Neue Medien Münnich (Hauptstraße 68, 02742
+          Friedersdorf, Deutschland). Ein Auftragsverarbeitungsvertrag besteht; die Daten
           verlassen dabei die Europäische Union nicht. Die Eintragungen selbst
           liegen in unserer Datenbank bei Supabase (siehe Abschnitt 9) und sind
           dort ausschließlich über einen internen Zugang lesbar.
@@ -911,9 +983,12 @@ export default function DatenschutzPage() {
             consent wording is archived in lib/warteliste-einwilligung.ts. */}
         <h2 style={S.h2}>17. Warteliste für kommende Funktionen</h2>
         <p style={S.p}>
-          Für Funktionen, die noch nicht fertig sind (derzeit der Angebotscheck
-          für Photovoltaik und Wärmepumpe), kannst du dich auf der Seite „Angebot prüfen“ auf
-          eine <strong>Warteliste</strong> setzen. Wir verarbeiten dafür deine{" "}
+          Für Funktionen, die noch nicht fertig sind — etwa den Angebotscheck
+          für Photovoltaik und Wärmepumpe (Seite „Angebot prüfen“) oder den
+          Elektroauto-Check —, kannst du dich auf der Infoseite der jeweiligen
+          Funktion auf eine <strong>Warteliste</strong> setzen. Jede Liste ist
+          getrennt; eine Eintragung gilt nur für die Funktion, bei der du sie
+          vornimmst. Wir verarbeiten dafür deine{" "}
           <strong>E-Mail-Adresse</strong>, die Warteliste, auf die du dich
           eingetragen hast, und die Zeitpunkte deiner Eintragung, deiner
           Bestätigung und einer etwaigen Austragung. Einen Namen fragen wir
@@ -991,11 +1066,13 @@ export default function DatenschutzPage() {
             Legal-Judges haben unabhängig festgestellt, dass die Erhebung hier
             bis dahin mit keinem Wort vorkam.
 
-            Beschrieben wird ausschließlich, was es GIBT: die Erhebung. Der
-            Versand, die betriebseigene Rechner-Seite und der Anfrage-Knopf sind
-            geplant, aber nicht gebaut — sie kommen in diesen Abschnitt, wenn sie
-            existieren. Eine Erklärung, die Verarbeitungen beschreibt, die es
-            nicht gibt, ist derselbe Fehler wie eine, die vorhandene verschweigt. */}
+            Beschrieben wird ausschließlich, was es GIBT. Stand 28.09.2026:
+            Die betriebseigene Rechner-Seite und der Anfrage-Knopf sind gebaut
+            (Abschnitt 20, Sicht der Nutzerinnen und Nutzer); ein Versand von
+            Anschreiben an Fachbetriebe ist es nicht — er kommt in diesen
+            Abschnitt, wenn er existiert. Eine Erklärung, die Verarbeitungen
+            beschreibt, die es nicht gibt, ist derselbe Fehler wie eine, die
+            vorhandene verschweigt. */}
         <h2 style={S.h2}>19. Verzeichnis von PV-Fachbetrieben</h2>
         <p style={S.p}>
           Wir haben ein internes Verzeichnis von Photovoltaik-Fachbetrieben und
@@ -1039,8 +1116,11 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           <strong>Zweck.</strong> Wir möchten diesen Betrieben unser Angebot
           unterbreiten — einen unabhängigen Rechner, den sie ihren Kunden zur
-          Verfügung stellen können — und ihnen künftig Anfragen weiterleiten, die
-          Nutzerinnen und Nutzer von sich aus an sie richten. Rechtsgrundlage ist
+          Verfügung stellen können — und ihnen Anfragen weiterleiten, die
+          Nutzerinnen und Nutzer von sich aus an sie richten (Abschnitt 20).
+          Zu solchen Anfragen führen wir eine Zählung ohne Angaben zu den
+          Anfragenden, in der der Betrieb über die Adresse seiner Website
+          benannt ist (Abschnitt 20). Rechtsgrundlage ist
           Art. 6 Abs. 1 lit. f DSGVO; unsere berechtigten Interessen sind die
           Ansprache möglicher Partnerbetriebe und die Vermittlung von Anfragen,
           die Nutzerinnen und Nutzer von sich aus stellen. Ein Verzeichnis dieser
@@ -1084,6 +1164,100 @@ export default function DatenschutzPage() {
           verlangen auch für den zweiten Fall keine Begründung. Die übrigen Rechte —
           Auskunft, Berichtigung, Löschung, Einschränkung und Beschwerde bei einer
           Aufsichtsbehörde — stehen in Abschnitt 12.
+        </p>
+
+        {/* Angelegt 28.09.2026. Der Rückkanal (app/api/fachbetrieb/anfrage,
+            components/ErgebnisAnBetrieb.tsx, Seite /fuer/<kennung>) war live,
+            ohne hier vorzukommen.
+
+            RECHTSGRUNDLAGE lit. b, NICHT lit. a. Die Übermittlung ist genau die
+            Leistung, die der Nutzer mit dem Absenden anfordert: Er bittet uns,
+            seine Anfrage an einen bestimmten Betrieb zu übermitteln, um von ihm
+            ein Angebot zu bekommen. Ohne Übermittlung gibt es diese Leistung
+            nicht (Erforderlichkeit), und sie beruht auf seiner Anfrage
+            (erste Alternative: Nutzungsverhältnis mit uns; für die Sicht des
+            Betriebs zusätzlich die zweite Alternative, vorvertragliche Maßnahme
+            auf Anfrage). Eine Einwilligung wäre die schlechtere Wahl: Sie
+            verspräche einen Widerruf, der eine verschickte Mail nicht
+            zurückholen kann — dieselbe Abwägung wie beim Google-Anmeldeweg in
+            Abschnitt 9. Die Route trägt dieselbe Angabe im Kopfkommentar.
+
+            Die Zählung (lib/fachbetrieb-anfrage-statistik.ts) enthält keinen
+            Namen, keinen Kontaktweg, keine volle PLZ. Sie heißt hier bewusst
+            NICHT „anonym": Solange Resend die Mail 30 Tage im Versandprotokoll
+            hält, ließe sie sich über Tag und Betrieb zuordnen (zwei
+            Legal-Judges, 28.09.2026). */}
+        <h2 id="fachbetrieb-anfrage" style={{ ...S.h2, scrollMarginTop: 96 }}>20. Anfragen an einen Fachbetrieb</h2>
+        <p style={S.p}>
+          Für einzelne Fachbetriebe gibt es bei uns eine eigene Seite mit
+          unserem Rechner, auf die der Betrieb von seiner Website aus verweisen
+          kann. Auf dieser Seite kannst du dein Ergebnis mit einer Anfrage an genau diesen
+          Betrieb schicken. Übermittelt werden dabei dein{" "}
+          <strong>Name</strong>, dein <strong>Kontaktweg</strong> (E-Mail-Adresse
+          oder Telefonnummer, wie du ihn angibst), ein <strong>Link auf deine
+          Berechnung</strong> — er enthält die Angaben, mit denen du gerechnet
+          hast, darunter die Postleitzahl — und, wenn du sie angibst, eine{" "}
+          <strong>Nachricht</strong>, <strong>Straße, Postleitzahl und Ort</strong>{" "}
+          sowie bis zu zwei <strong>Fotos</strong>. Die Postleitzahl im Feld
+          für die Anschrift ist aus deiner Berechnung vorausgefüllt; du kannst
+          sie dort ändern oder löschen. Name und Kontaktweg brauchen wir
+          zwingend, ohne sie können wir die Anfrage nicht übermitteln; alles
+          Weitere ist freiwillig. Welche Angaben genau hinausgehen, siehst du
+          unmittelbar vor dem Absenden.
+        </p>
+        <p style={S.p}>
+          Wir übermitteln diese Angaben, weil du uns darum bittest: Du möchtest,
+          dass der Betrieb sich mit einem Angebot oder einer Rückfrage bei dir
+          meldet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO — die
+          Übermittlung ist die Leistung, die du mit dem Absenden anforderst, und
+          dient Schritten vor einem Vertrag mit dem Betrieb, die auf deine
+          Anfrage hin erfolgen.
+        </p>
+        <p style={S.p}>
+          <strong>Empfänger ist der Fachbetrieb</strong>, den die Seite nennt.
+          Er verarbeitet deine Angaben ab dem Eingang als eigener
+          Verantwortlicher nach seiner eigenen Datenschutzerklärung; wie lange er
+          sie aufbewahrt, entscheidet er. Die Mail an den Betrieb verschicken wir
+          über den E-Mail-Dienst <strong>Resend</strong> (Plus Five Five, Inc.,
+          2261 Market Street #5039, San Francisco, CA 94114, USA) als
+          Auftragsverarbeiter nach Art. 28 DSGVO. Deine Angaben werden dabei in
+          die USA übermittelt und dort technisch bedingt im Versandprotokoll
+          verarbeitet. Grundlage der Übermittlung ist der Angemessenheitsbeschluss
+          der EU-Kommission vom 10. Juli 2023 zum EU-US Data Privacy Framework;
+          Resend ist dort als Teilnehmer gelistet. Zusätzlich sind in den
+          Auftragsverarbeitungsvertrag die Standardvertragsklauseln der
+          EU-Kommission einbezogen — sie tragen die Übermittlung auch dann, wenn
+          die Zertifizierung entfallen sollte. Antwortet der Betrieb, geht seine
+          Antwort direkt an dich, nicht über uns.
+        </p>
+        <p style={S.p}>
+          <strong>Was bei uns und unserem Dienstleister bleibt.</strong> In
+          unserer eigenen Datenbank speichern wir Name, Kontaktweg, Anschrift,
+          Nachricht und Fotos nicht. Unser Versanddienstleister Resend bewahrt
+          die versendete Mail samt Anhängen als Teil seines Versandprotokolls
+          30 Tage auf (Sicherungskopien bis zu 7 weitere Tage) und löscht sie
+          danach; in dieser Zeit können wir sie dort einsehen. Nach einer
+          erfolgreich versendeten Anfrage legen wir in unserer Datenbank bei
+          Supabase (Abschnitt 9) außerdem eine Zählzeile ab: den Kalendertag,
+          den Betrieb, die auf ganze Kilowatt bzw. Kilowattstunden gerundete
+          Größe der gerechneten Anlage und des Speichers (bei selbst
+          eingetippten Werten also deine Eingabe, gerundet), die ersten zwei
+          Stellen der Postleitzahl und ob eine Nachricht dabei war — nie ihren
+          Inhalt. Die Zählzeile enthält keinen Namen, keinen Kontaktweg und
+          keine vollständige Postleitzahl. Solange das Versandprotokoll bei
+          Resend besteht (30 Tage), ließe sie sich über Tag und Betrieb der
+          versendeten Mail zuordnen; danach nicht mehr. Sie hilft uns zu
+          beurteilen, ob der Weg genutzt wird.
+        </p>
+        <p style={S.p}>
+          Um automatisierte Masseneinsendungen abzuwehren, hält unser Server beim
+          Absenden deine IP-Adresse kurzzeitig im Arbeitsspeicher, wie beim
+          Kontaktformular beschrieben (Abschnitt 10); sie wird von uns nicht
+          dauerhaft gespeichert und nicht an den Betrieb übermittelt; zu den
+          Protokollen unseres Hosters siehe Abschnitt 3.
+        </p>
+        <p style={S.p}>
+          Deine Rechte stehen in Abschnitt 12.
         </p>
 
         <p style={S.muted}>Stand: September 2026</p>
