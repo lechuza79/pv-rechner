@@ -74434,5 +74434,649 @@
         "evidenceUrl": "https://www.amt-friesack.de/contact/index/link"
       }
     ]
+  },
+  {
+    "regionId": "13072012",
+    "name": "Bentwisch",
+    "checkedAt": "2026-09-28T06:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bentwisch (Amt Rostocker Heide, Landkreis Rostock): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die drei Förderrubriken des Amtes nennen nur eigene Vorhaben (LED-Straßenbeleuchtung, Schulluft, Wegebau), die Volltextsuche findet kein Haushaltsprogramm. Anwendbar bleibt allein das Landesprogramm Mini-Solaranlagen (nur Mieter).",
+    "searches": [
+      "Drei Förderrubriken des Amtes Rostocker Heide am 28.09.2026 live gelesen",
+      "Volltextsuche amt-rostocker-heide.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm, Klimaschutz (Gegenprobe Kita)",
+      "Websuche Landkreis Rostock Förderung Balkonkraftwerk/Photovoltaik",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "finding": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/suche/suchergebnis.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 5 „Photovoltaikanlage Gelbensande“; Solar nur Bauleitplanung Solarpark Purkshof; Förderprogramm nur die allgemeinen Rubriken „Finanzielle Hilfen und Förderprogramme“ des Landesportals; Zuschuss/Klimaschutz nur Leistungen des Landes (Schwerbehinderte, Referat Klimaschutz des Ministeriums) und LED-Bekanntmachungen. Gegenprobe „Kita“: 69 Treffer, die Suche arbeitet."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mini-Solaranlagen MV (im Katalog als mv-mini-solaranlagen, nur noch für Mieter) gilt landesweit und damit auch hier; keine eigene Leistung des Amtes. Eine Kreisförderung des Landkreises Rostock war in einer Websuche am 28.09.2026 nicht zu finden (Kreisseite: Suchadresse 404)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072015",
+    "name": "Blankenhagen",
+    "checkedAt": "2026-09-28T06:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Blankenhagen (Amt Rostocker Heide, Landkreis Rostock): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die drei Förderrubriken des Amtes nennen nur eigene Vorhaben (LED-Straßenbeleuchtung, Schulluft, Wegebau), die Volltextsuche findet kein Haushaltsprogramm. Anwendbar bleibt allein das Landesprogramm Mini-Solaranlagen (nur Mieter).",
+    "searches": [
+      "Drei Förderrubriken des Amtes Rostocker Heide am 28.09.2026 live gelesen",
+      "Volltextsuche amt-rostocker-heide.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm, Klimaschutz (Gegenprobe Kita)",
+      "Websuche Landkreis Rostock Förderung Balkonkraftwerk/Photovoltaik",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "finding": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/suche/suchergebnis.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 5 „Photovoltaikanlage Gelbensande“; Solar nur Bauleitplanung Solarpark Purkshof; Förderprogramm nur die allgemeinen Rubriken „Finanzielle Hilfen und Förderprogramme“ des Landesportals; Zuschuss/Klimaschutz nur Leistungen des Landes (Schwerbehinderte, Referat Klimaschutz des Ministeriums) und LED-Bekanntmachungen. Gegenprobe „Kita“: 69 Treffer, die Suche arbeitet."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mini-Solaranlagen MV (im Katalog als mv-mini-solaranlagen, nur noch für Mieter) gilt landesweit und damit auch hier; keine eigene Leistung des Amtes. Eine Kreisförderung des Landkreises Rostock war in einer Websuche am 28.09.2026 nicht zu finden (Kreisseite: Suchadresse 404)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072072",
+    "name": "Mönchhagen",
+    "checkedAt": "2026-09-28T06:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mönchhagen (Amt Rostocker Heide, Landkreis Rostock): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die drei Förderrubriken des Amtes nennen nur eigene Vorhaben (LED-Straßenbeleuchtung, Schulluft, Wegebau), die Volltextsuche findet kein Haushaltsprogramm. Anwendbar bleibt allein das Landesprogramm Mini-Solaranlagen (nur Mieter).",
+    "searches": [
+      "Drei Förderrubriken des Amtes Rostocker Heide am 28.09.2026 live gelesen",
+      "Volltextsuche amt-rostocker-heide.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm, Klimaschutz (Gegenprobe Kita)",
+      "Websuche Landkreis Rostock Förderung Balkonkraftwerk/Photovoltaik",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "finding": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/suche/suchergebnis.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 5 „Photovoltaikanlage Gelbensande“; Solar nur Bauleitplanung Solarpark Purkshof; Förderprogramm nur die allgemeinen Rubriken „Finanzielle Hilfen und Förderprogramme“ des Landesportals; Zuschuss/Klimaschutz nur Leistungen des Landes (Schwerbehinderte, Referat Klimaschutz des Ministeriums) und LED-Bekanntmachungen. Gegenprobe „Kita“: 69 Treffer, die Suche arbeitet."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mini-Solaranlagen MV (im Katalog als mv-mini-solaranlagen, nur noch für Mieter) gilt landesweit und damit auch hier; keine eigene Leistung des Amtes. Eine Kreisförderung des Landkreises Rostock war in einer Websuche am 28.09.2026 nicht zu finden (Kreisseite: Suchadresse 404)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072088",
+    "name": "Rövershagen",
+    "checkedAt": "2026-09-28T06:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rövershagen (Amt Rostocker Heide, Landkreis Rostock): keine eigene Förderung der Gemeinde oder des Amtes für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die drei Förderrubriken des Amtes nennen nur eigene Vorhaben (LED-Straßenbeleuchtung, Schulluft, Wegebau), die Volltextsuche findet kein Haushaltsprogramm. Anwendbar bleibt allein das Landesprogramm Mini-Solaranlagen (nur Mieter).",
+    "searches": [
+      "Drei Förderrubriken des Amtes Rostocker Heide am 28.09.2026 live gelesen",
+      "Volltextsuche amt-rostocker-heide.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm, Klimaschutz (Gegenprobe Kita)",
+      "Websuche Landkreis Rostock Förderung Balkonkraftwerk/Photovoltaik",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "finding": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "finding": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.amt-rostocker-heide.de/suche/suchergebnis.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 5 „Photovoltaikanlage Gelbensande“; Solar nur Bauleitplanung Solarpark Purkshof; Förderprogramm nur die allgemeinen Rubriken „Finanzielle Hilfen und Förderprogramme“ des Landesportals; Zuschuss/Klimaschutz nur Leistungen des Landes (Schwerbehinderte, Referat Klimaschutz des Ministeriums) und LED-Bekanntmachungen. Gegenprobe „Kita“: 69 Treffer, die Suche arbeitet."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mini-Solaranlagen MV (im Katalog als mv-mini-solaranlagen, nur noch für Mieter) gilt landesweit und damit auch hier; keine eigene Leistung des Amtes. Eine Kreisförderung des Landkreises Rostock war in einer Websuche am 28.09.2026 nicht zu finden (Kreisseite: Suchadresse 404)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rostocker-heide.de/uebersicht-eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht-EU-Förderung“ listet nur Bekanntmachungen zur Umrüstung von Straßenbeleuchtung und einer Flutlichtanlage auf LED (Rövershagen, Gelbensande, Bentwisch, Mönchhagen, 2019–2023). Vorhaben der Gemeinden, keine Leistung an Haushalte.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/uebersicht-eu-foerderung"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: „Übersicht Förderung MV tut gut“ nennt nur zwei Bekanntmachungen von 12/2021 zur Luftqualität in Unterrichtsräumen (MV-Schutzfonds). Schulvorhaben, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Uebersicht-Foerderung-MV-tut-gut/index.html"
+      },
+      {
+        "url": "amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Rubrik „EU-Förderung (ländlicher Wegebau)“ ohne Einträge. Wegebau der Gemeinden, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-rostocker-heide.de/Zur-Uebersicht-EU-Foerderung-laendlicher-Wegebau/index.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03454004",
+    "name": "Bockhorst",
+    "checkedAt": "2026-09-28T06:25:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bockhorst (Samtgemeinde Nordhümmling, Landkreis Emsland): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstellen betreffen ein Denkmalvorhaben, das LEADER-Regionalbudget und Familienzuschüsse; der einzige PV-Bezug des Kreises war ein Steuerberatungs-Gutschein, der am 31.12.2023 endete.",
+    "searches": [
+      "Drei Fundstellen auf sg-nordhuemmling.de am 28.09.2026 live gelesen",
+      "Volltextsuche sg-nordhuemmling.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Solaroffensive Emsland (Energieeffizienzagentur) und Kreis-Richtlinie Solarnutzung 2021–2023 gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "finding": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "finding": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "finding": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/?s=Balkonkraftwerk",
+        "finding": "28.09.2026 Volltextsuche sg-nordhuemmling.de: Balkonkraftwerk ohne Treffer; Photovoltaik und Wärmepumpe nur energetische Sanierung der Turnhallen GOBS Börgermoor/Esterwegen (NBank-Mittel an die Samtgemeinde); Solar nur ältere Meldung zur Solarberatung der Energieeffizienzagentur Emsland; Zuschuss/Förderprogramm nur SkF, Mikroförderung Ehrenamt, LEADER, Digitalisierung Kultur. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.eea-emsland.de/fileadmin/user_upload/downloads/Foerderrichtlinie_Solarnutzung_LK_Emsland_2021-2023_final.pdf",
+        "finding": "28.09.2026 gelesen: Kreis-Richtlinie Landkreis Emsland „unterstützende Maßnahmen für den Betrieb privater Solarnutzung“ — Steuerberatungskosten bis 300 € für PV bis 15 kWp, Antragszeitraum 01.08.2021 bis 31.12.2023, beendet. Kein Zuschuss auf die Anlage; die Seite der Energieeffizienzagentur (Solaroffensive) nennt keine Nachfolge. Nicht im Katalog, als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen"
+      },
+      {
+        "url": "sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026"
+      },
+      {
+        "url": "sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder"
+      }
+    ]
+  },
+  {
+    "regionId": "03454006",
+    "name": "Breddenberg",
+    "checkedAt": "2026-09-28T06:25:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Breddenberg (Samtgemeinde Nordhümmling, Landkreis Emsland): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstellen betreffen ein Denkmalvorhaben, das LEADER-Regionalbudget und Familienzuschüsse; der einzige PV-Bezug des Kreises war ein Steuerberatungs-Gutschein, der am 31.12.2023 endete.",
+    "searches": [
+      "Drei Fundstellen auf sg-nordhuemmling.de am 28.09.2026 live gelesen",
+      "Volltextsuche sg-nordhuemmling.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Solaroffensive Emsland (Energieeffizienzagentur) und Kreis-Richtlinie Solarnutzung 2021–2023 gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "finding": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "finding": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "finding": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/?s=Balkonkraftwerk",
+        "finding": "28.09.2026 Volltextsuche sg-nordhuemmling.de: Balkonkraftwerk ohne Treffer; Photovoltaik und Wärmepumpe nur energetische Sanierung der Turnhallen GOBS Börgermoor/Esterwegen (NBank-Mittel an die Samtgemeinde); Solar nur ältere Meldung zur Solarberatung der Energieeffizienzagentur Emsland; Zuschuss/Förderprogramm nur SkF, Mikroförderung Ehrenamt, LEADER, Digitalisierung Kultur. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.eea-emsland.de/fileadmin/user_upload/downloads/Foerderrichtlinie_Solarnutzung_LK_Emsland_2021-2023_final.pdf",
+        "finding": "28.09.2026 gelesen: Kreis-Richtlinie Landkreis Emsland „unterstützende Maßnahmen für den Betrieb privater Solarnutzung“ — Steuerberatungskosten bis 300 € für PV bis 15 kWp, Antragszeitraum 01.08.2021 bis 31.12.2023, beendet. Kein Zuschuss auf die Anlage; die Seite der Energieeffizienzagentur (Solaroffensive) nennt keine Nachfolge. Nicht im Katalog, als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen"
+      },
+      {
+        "url": "sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026"
+      },
+      {
+        "url": "sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder"
+      }
+    ]
+  },
+  {
+    "regionId": "03454011",
+    "name": "Esterwegen",
+    "checkedAt": "2026-09-28T06:25:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Esterwegen (Samtgemeinde Nordhümmling, Landkreis Emsland): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstellen betreffen ein Denkmalvorhaben, das LEADER-Regionalbudget und Familienzuschüsse; der einzige PV-Bezug des Kreises war ein Steuerberatungs-Gutschein, der am 31.12.2023 endete.",
+    "searches": [
+      "Drei Fundstellen auf sg-nordhuemmling.de am 28.09.2026 live gelesen",
+      "Volltextsuche sg-nordhuemmling.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Solaroffensive Emsland (Energieeffizienzagentur) und Kreis-Richtlinie Solarnutzung 2021–2023 gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "finding": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "finding": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "finding": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/?s=Balkonkraftwerk",
+        "finding": "28.09.2026 Volltextsuche sg-nordhuemmling.de: Balkonkraftwerk ohne Treffer; Photovoltaik und Wärmepumpe nur energetische Sanierung der Turnhallen GOBS Börgermoor/Esterwegen (NBank-Mittel an die Samtgemeinde); Solar nur ältere Meldung zur Solarberatung der Energieeffizienzagentur Emsland; Zuschuss/Förderprogramm nur SkF, Mikroförderung Ehrenamt, LEADER, Digitalisierung Kultur. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.eea-emsland.de/fileadmin/user_upload/downloads/Foerderrichtlinie_Solarnutzung_LK_Emsland_2021-2023_final.pdf",
+        "finding": "28.09.2026 gelesen: Kreis-Richtlinie Landkreis Emsland „unterstützende Maßnahmen für den Betrieb privater Solarnutzung“ — Steuerberatungskosten bis 300 € für PV bis 15 kWp, Antragszeitraum 01.08.2021 bis 31.12.2023, beendet. Kein Zuschuss auf die Anlage; die Seite der Energieeffizienzagentur (Solaroffensive) nennt keine Nachfolge. Nicht im Katalog, als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen"
+      },
+      {
+        "url": "sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026"
+      },
+      {
+        "url": "sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder"
+      }
+    ]
+  },
+  {
+    "regionId": "03454022",
+    "name": "Hilkenbrook",
+    "checkedAt": "2026-09-28T06:25:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hilkenbrook (Samtgemeinde Nordhümmling, Landkreis Emsland): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstellen betreffen ein Denkmalvorhaben, das LEADER-Regionalbudget und Familienzuschüsse; der einzige PV-Bezug des Kreises war ein Steuerberatungs-Gutschein, der am 31.12.2023 endete.",
+    "searches": [
+      "Drei Fundstellen auf sg-nordhuemmling.de am 28.09.2026 live gelesen",
+      "Volltextsuche sg-nordhuemmling.de nach Photovoltaik, Balkonkraftwerk, Solar, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Solaroffensive Emsland (Energieeffizienzagentur) und Kreis-Richtlinie Solarnutzung 2021–2023 gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "finding": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "finding": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "finding": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd."
+      },
+      {
+        "url": "https://www.sg-nordhuemmling.de/?s=Balkonkraftwerk",
+        "finding": "28.09.2026 Volltextsuche sg-nordhuemmling.de: Balkonkraftwerk ohne Treffer; Photovoltaik und Wärmepumpe nur energetische Sanierung der Turnhallen GOBS Börgermoor/Esterwegen (NBank-Mittel an die Samtgemeinde); Solar nur ältere Meldung zur Solarberatung der Energieeffizienzagentur Emsland; Zuschuss/Förderprogramm nur SkF, Mikroförderung Ehrenamt, LEADER, Digitalisierung Kultur. Gegenprobe „Kita“ liefert Treffer."
+      },
+      {
+        "url": "https://www.eea-emsland.de/fileadmin/user_upload/downloads/Foerderrichtlinie_Solarnutzung_LK_Emsland_2021-2023_final.pdf",
+        "finding": "28.09.2026 gelesen: Kreis-Richtlinie Landkreis Emsland „unterstützende Maßnahmen für den Betrieb privater Solarnutzung“ — Steuerberatungskosten bis 300 € für PV bis 15 kWp, Antragszeitraum 01.08.2021 bis 31.12.2023, beendet. Kein Zuschuss auf die Anlage; die Seite der Energieeffizienzagentur (Solaroffensive) nennt keine Nachfolge. Nicht im Katalog, als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Förderbescheid über 500.000 € an die Gemeinde Esterwegen für die Sanierung des Alten Herrenhauses. Vorhaben der Gemeinde, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/500-000-euro-foerderung-fuer-das-alte-herrenhaus-jetzt-kann-die-umsetzung-beginnen"
+      },
+      {
+        "url": "sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: LEADER-Regionalbudget „Kleinstprojekte 2026“ (bis 15.000 €) für Gemeinschaftsvorhaben wie Bänke, Begrünung, Workshops. Keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe privater Haushalte.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/leader-region-huemmling-foerderprogramm-kleinstprojekte-2026"
+      },
+      {
+        "url": "sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen: Hinweis des SkF von 04/2022 auf Zuschüsse für Kinder bzw. Familienurlaub. Sachfremd.",
+        "evidenceUrl": "https://www.sg-nordhuemmling.de/skf-informiert-ueber-zuschuesse-fuer-kinder"
+      }
+    ]
+  },
+  {
+    "regionId": "03254010",
+    "name": "Despetal",
+    "checkedAt": "2026-09-28T06:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Despetal (Samtgemeinde Leinebergland, Landkreis Hildesheim): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstelle betrifft Städtebauförderung für die Innenstadt Gronau; die Samtgemeinde bietet nur Beratung (Wärmepumpeninitiative, Solarkataster). Das Balkonkraftwerk-Programm des Landkreises Hildesheim lief vom 04.07. bis 31.12.2023 und ist beendet.",
+    "searches": [
+      "Sofortprogramm-Seite und Klimaschutz-Rubrik der Samtgemeinde am 28.09.2026 gelesen",
+      "Volltextsuche sg-leinebergland.de nach Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Balkonkraftwerk-Förderung Landkreis Hildesheim bei der Klimaschutzagentur live gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/",
+        "finding": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien/",
+        "finding": "28.09.2026 gelesen: Rubrik Klimaschutz und Erneuerbare Energien — Freiflächen-PV-Konzept (Ratsbeschluss 22.08.2024), Klimaschutzteilkonzept, Energiebericht; „Klimaschutz & Nachhaltigkeit für den Alltag“ verweist auf Solarkataster und Wärmepumpeninitiative der Klimaschutzagentur (Beratung, Praxistermine). Kein Zuschuss."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/portal/suche.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk 0 Treffer; Photovoltaik nur Bauleitplanung Freiflächen-PV am Oberg und FFPV-Konzept; Wärmepumpe nur Wärmepumpeninitiative (Beratungsveranstaltungen 08–10/2026); Zuschuss nur Vereinsrichtlinien, Dorferneuerung, Schülerbeförderung, Bildungspaket; Förderprogramm nur Innenstadt, Dorfentwicklung, Klimaschutzteilkonzept. Gegenprobe Kita: 10 Treffer."
+      },
+      {
+        "url": "https://klimaschutzagentur-hildesheim.de/balkonkraftwerke/",
+        "finding": "28.09.2026 live gelesen: Förderung von Balkonkraftwerken im Landkreis Hildesheim, Zeitraum 04.07.2023 bis 31.12.2023, 150.000 €, max. 200 € je Haushalt; „Eine Antragstellung ist aufgrund der Beendigung des Förderprogramms zum 31.12.2023 nicht mehr möglich.“ Beendet, nicht im Katalog — als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      },
+      {
+        "url": "sg-leinebergland.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.sg-leinebergland.de%2Fumwelt-bauen%2Ffoerderprojekte%2Fsofortprogramm-perspektive-innenstadt%2F",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 geprüft: Formular „Barriere melden“ zur selben Seite, liefert nur die Wahl-Vorschaltseite; keine eigene Förderseite, erledigt durch die gelesene Seite zum Sofortprogramm.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      }
+    ]
+  },
+  {
+    "regionId": "03254013",
+    "name": "Eime",
+    "checkedAt": "2026-09-28T06:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eime (Samtgemeinde Leinebergland, Landkreis Hildesheim): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstelle betrifft Städtebauförderung für die Innenstadt Gronau; die Samtgemeinde bietet nur Beratung (Wärmepumpeninitiative, Solarkataster). Das Balkonkraftwerk-Programm des Landkreises Hildesheim lief vom 04.07. bis 31.12.2023 und ist beendet.",
+    "searches": [
+      "Sofortprogramm-Seite und Klimaschutz-Rubrik der Samtgemeinde am 28.09.2026 gelesen",
+      "Volltextsuche sg-leinebergland.de nach Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Balkonkraftwerk-Förderung Landkreis Hildesheim bei der Klimaschutzagentur live gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/",
+        "finding": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien/",
+        "finding": "28.09.2026 gelesen: Rubrik Klimaschutz und Erneuerbare Energien — Freiflächen-PV-Konzept (Ratsbeschluss 22.08.2024), Klimaschutzteilkonzept, Energiebericht; „Klimaschutz & Nachhaltigkeit für den Alltag“ verweist auf Solarkataster und Wärmepumpeninitiative der Klimaschutzagentur (Beratung, Praxistermine). Kein Zuschuss."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/portal/suche.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk 0 Treffer; Photovoltaik nur Bauleitplanung Freiflächen-PV am Oberg und FFPV-Konzept; Wärmepumpe nur Wärmepumpeninitiative (Beratungsveranstaltungen 08–10/2026); Zuschuss nur Vereinsrichtlinien, Dorferneuerung, Schülerbeförderung, Bildungspaket; Förderprogramm nur Innenstadt, Dorfentwicklung, Klimaschutzteilkonzept. Gegenprobe Kita: 10 Treffer."
+      },
+      {
+        "url": "https://klimaschutzagentur-hildesheim.de/balkonkraftwerke/",
+        "finding": "28.09.2026 live gelesen: Förderung von Balkonkraftwerken im Landkreis Hildesheim, Zeitraum 04.07.2023 bis 31.12.2023, 150.000 €, max. 200 € je Haushalt; „Eine Antragstellung ist aufgrund der Beendigung des Förderprogramms zum 31.12.2023 nicht mehr möglich.“ Beendet, nicht im Katalog — als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      },
+      {
+        "url": "sg-leinebergland.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.sg-leinebergland.de%2Fumwelt-bauen%2Ffoerderprojekte%2Fsofortprogramm-perspektive-innenstadt%2F",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 geprüft: Formular „Barriere melden“ zur selben Seite, liefert nur die Wahl-Vorschaltseite; keine eigene Förderseite, erledigt durch die gelesene Seite zum Sofortprogramm.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      }
+    ]
+  },
+  {
+    "regionId": "03254027",
+    "name": "Rheden",
+    "checkedAt": "2026-09-28T06:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rheden (Samtgemeinde Leinebergland, Landkreis Hildesheim): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstelle betrifft Städtebauförderung für die Innenstadt Gronau; die Samtgemeinde bietet nur Beratung (Wärmepumpeninitiative, Solarkataster). Das Balkonkraftwerk-Programm des Landkreises Hildesheim lief vom 04.07. bis 31.12.2023 und ist beendet.",
+    "searches": [
+      "Sofortprogramm-Seite und Klimaschutz-Rubrik der Samtgemeinde am 28.09.2026 gelesen",
+      "Volltextsuche sg-leinebergland.de nach Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Balkonkraftwerk-Förderung Landkreis Hildesheim bei der Klimaschutzagentur live gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/",
+        "finding": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien/",
+        "finding": "28.09.2026 gelesen: Rubrik Klimaschutz und Erneuerbare Energien — Freiflächen-PV-Konzept (Ratsbeschluss 22.08.2024), Klimaschutzteilkonzept, Energiebericht; „Klimaschutz & Nachhaltigkeit für den Alltag“ verweist auf Solarkataster und Wärmepumpeninitiative der Klimaschutzagentur (Beratung, Praxistermine). Kein Zuschuss."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/portal/suche.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk 0 Treffer; Photovoltaik nur Bauleitplanung Freiflächen-PV am Oberg und FFPV-Konzept; Wärmepumpe nur Wärmepumpeninitiative (Beratungsveranstaltungen 08–10/2026); Zuschuss nur Vereinsrichtlinien, Dorferneuerung, Schülerbeförderung, Bildungspaket; Förderprogramm nur Innenstadt, Dorfentwicklung, Klimaschutzteilkonzept. Gegenprobe Kita: 10 Treffer."
+      },
+      {
+        "url": "https://klimaschutzagentur-hildesheim.de/balkonkraftwerke/",
+        "finding": "28.09.2026 live gelesen: Förderung von Balkonkraftwerken im Landkreis Hildesheim, Zeitraum 04.07.2023 bis 31.12.2023, 150.000 €, max. 200 € je Haushalt; „Eine Antragstellung ist aufgrund der Beendigung des Förderprogramms zum 31.12.2023 nicht mehr möglich.“ Beendet, nicht im Katalog — als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      },
+      {
+        "url": "sg-leinebergland.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.sg-leinebergland.de%2Fumwelt-bauen%2Ffoerderprojekte%2Fsofortprogramm-perspektive-innenstadt%2F",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 geprüft: Formular „Barriere melden“ zur selben Seite, liefert nur die Wahl-Vorschaltseite; keine eigene Förderseite, erledigt durch die gelesene Seite zum Sofortprogramm.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      }
+    ]
+  },
+  {
+    "regionId": "03254043",
+    "name": "Gronau (Leine)",
+    "checkedAt": "2026-09-28T06:40:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gronau (Leine) (Samtgemeinde Leinebergland, Landkreis Hildesheim): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstelle betrifft Städtebauförderung für die Innenstadt Gronau; die Samtgemeinde bietet nur Beratung (Wärmepumpeninitiative, Solarkataster). Das Balkonkraftwerk-Programm des Landkreises Hildesheim lief vom 04.07. bis 31.12.2023 und ist beendet.",
+    "searches": [
+      "Sofortprogramm-Seite und Klimaschutz-Rubrik der Samtgemeinde am 28.09.2026 gelesen",
+      "Volltextsuche sg-leinebergland.de nach Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
+      "Balkonkraftwerk-Förderung Landkreis Hildesheim bei der Klimaschutzagentur live gelesen",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/",
+        "finding": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien/",
+        "finding": "28.09.2026 gelesen: Rubrik Klimaschutz und Erneuerbare Energien — Freiflächen-PV-Konzept (Ratsbeschluss 22.08.2024), Klimaschutzteilkonzept, Energiebericht; „Klimaschutz & Nachhaltigkeit für den Alltag“ verweist auf Solarkataster und Wärmepumpeninitiative der Klimaschutzagentur (Beratung, Praxistermine). Kein Zuschuss."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/portal/suche.html",
+        "finding": "28.09.2026 Volltextsuche: Balkonkraftwerk 0 Treffer; Photovoltaik nur Bauleitplanung Freiflächen-PV am Oberg und FFPV-Konzept; Wärmepumpe nur Wärmepumpeninitiative (Beratungsveranstaltungen 08–10/2026); Zuschuss nur Vereinsrichtlinien, Dorferneuerung, Schülerbeförderung, Bildungspaket; Förderprogramm nur Innenstadt, Dorfentwicklung, Klimaschutzteilkonzept. Gegenprobe Kita: 10 Treffer."
+      },
+      {
+        "url": "https://klimaschutzagentur-hildesheim.de/balkonkraftwerke/",
+        "finding": "28.09.2026 live gelesen: Förderung von Balkonkraftwerken im Landkreis Hildesheim, Zeitraum 04.07.2023 bis 31.12.2023, 150.000 €, max. 200 € je Haushalt; „Eine Antragstellung ist aufgrund der Beendigung des Förderprogramms zum 31.12.2023 nicht mehr möglich.“ Beendet, nicht im Katalog — als historischer Kandidat vorgemerkt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 live gelesen (hinter der Wahl-Vorschaltseite): Sofortprogramm „Perspektive Innenstadt!“ des Landes für die Innenstadt Gronau (Dialogverfahren, Museumskonzept). Städtebauförderung der Samtgemeinde, keine Haushaltsförderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      },
+      {
+        "url": "sg-leinebergland.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.sg-leinebergland.de%2Fumwelt-bauen%2Ffoerderprojekte%2Fsofortprogramm-perspektive-innenstadt%2F",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 geprüft: Formular „Barriere melden“ zur selben Seite, liefert nur die Wahl-Vorschaltseite; keine eigene Förderseite, erledigt durch die gelesene Seite zum Sofortprogramm.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      }
+    ]
   }
 ]
