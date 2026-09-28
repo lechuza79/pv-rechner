@@ -5,6 +5,7 @@ import { anzeigeOrtsname, istKreisfrei, istStadtstaat, ortsseitenPfad } from "..
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
+import { getFundingPrograms } from "../../../../../../lib/funding-data";
 import GemeindeSeite from "../../../../../../components/gemeinde/GemeindeSeite";
 import { vergleichsBasisPfad } from "../../../../../../lib/atlas-ranking";
 import { gemeindeMetadata } from "../../../../../../components/gemeinde/gemeinde-metadata";
@@ -34,6 +35,10 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
 
+  // The funding catalogue is read by GemeindeSeite; started here so it runs
+  // alongside the package instead of after it (getFundingPrograms joins a
+  // running read). Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
+  void getFundingPrograms().catch(() => {});
   const [paket, kreis, geo] = await Promise.all([
     ladeGemeindePaket(region.region_id),
     region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),

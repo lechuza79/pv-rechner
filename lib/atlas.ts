@@ -9,6 +9,7 @@
 // Gemeinde is the only stored grain; Kreis, Bundesland and DE are prefix rollups.
 
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 import { withDbTimeout } from "./db-timeout";
 import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
@@ -238,39 +239,86 @@ export async function searchRegions(
  * kreisfreie Stadt) apart from "landkreis-wuerzburg" and lets twenty Neustadts
  * coexist.
  */
-async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
-  const supabase = await db();
+/**
+ * Walks the slug chain from Deutschland over rows already fetched: each segment
+ * is matched within its parent, exactly like the segment-by-segment lookup.
+ * Pure, so the rule is testable without a database.
+ */
+export function walkSlugPath(rows: AtlasRegion[], slugs: string[]): AtlasRegion | null {
   let parent = "de";
   let region: AtlasRegion | null = null;
   for (const slug of slugs) {
-    const { data, error } = await withDbTimeout(
-      supabase.from("mastr_regions").select(REGION_COLUMNS).eq("parent_region_id", parent).eq("slug", slug).maybeSingle(),
-      "resolveSlugPath",
-    );
-    if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
-    if (!data) return null;
-    region = asRegion(data);
+    const hits = rows.filter((r) => r.parent_region_id === parent && r.slug === slug);
+    if (hits.length > 1) throw new Error(`resolveSlugPath failed: slug "${slug}" is not unique below ${parent}`);
+    if (hits.length === 0) return null;
+    region = hits[0];
     parent = region.region_id;
   }
   return region;
 }
 
+/**
+ * ONE query for the whole path instead of one per segment (28.09.2026). The
+ * segments used to be looked up one after another — three round trips for a
+ * Gemeinde page, in front of everything else the page reads. All rows carrying
+ * any of the slugs come back at once (a few dozen even for "neustadt"), and the
+ * chain is walked in memory by the same parent rule.
+ */
+async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
+  if (slugs.length === 0) return null;
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase.from("mastr_regions").select(REGION_COLUMNS).in("slug", [...new Set(slugs)]),
+    "resolveSlugPath",
+  );
+  if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
+  const rows = (data ?? []) as AtlasRegion[];
+  // PostgREST caps a response silently; a capped list could miss the one row
+  // the chain needs. Never observed (a slug is shared by a few dozen places at
+  // most), but a silent miss would be a wrong 404, so refuse instead.
+  if (rows.length >= 1000) throw new Error(`resolveSlugPath: ${rows.length} rows for ${slugs.join("/")}, response may be truncated`);
+  const region = walkSlugPath(rows, slugs);
+  return region ? asRegion(region) : null;
+}
+
 // Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
-// + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
-// Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL): eine Gemeindeseite löst drei
-// Segmente einzeln und nacheinander auf (Bundesland → Kreis → Gemeinde); das war
-// der häufigste Verursacher der Atlas-Timeouts.
-export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
+// + Render). Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL).
+const resolveSlugPathCached = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
   revalidate: STAMMDATEN_TTL,
   tags: [ATLAS_DATEN_TAG],
 });
 
+// Request-scoped dedupe on top of the data cache: generateMetadata and the page
+// resolve the same path concurrently, and unstable_cache does not join two
+// concurrent misses — on a cold data cache both went to the database. React's
+// cache() keys by argument identity, hence the joined string.
+const resolveSlugPathForRequest = cache((path: string) => resolveSlugPathCached(path.split("/")));
+export function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | null> {
+  return resolveSlugPathForRequest(slugs.join("/"));
+}
+
+/** The ancestor ids a nested AGS implies: parent, its Land prefix, Deutschland. */
+export function ancestorIdsGuess(region: Pick<AtlasRegion, "region_id" | "parent_region_id">): string[] {
+  if (!region.parent_region_id) return [];
+  const ids = [region.parent_region_id];
+  if (region.region_id.length > 2) ids.push(region.region_id.slice(0, 2));
+  ids.push("de");
+  return [...new Set(ids)];
+}
+
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
 export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> {
+  // The AGS is nested, so the chain is known in advance for the regular case
+  // (Kreis → Land → Deutschland): request all links at once instead of one
+  // round trip per level. The walk below still follows parent_region_id and
+  // fetches anything the guess missed, so an irregular chain stays correct.
+  const guessed = new Map<string, Promise<AtlasRegion | null>>();
+  for (const id of ancestorIdsGuess(region)) guessed.set(id, getRegionById(id));
+  for (const p of guessed.values()) void p.catch(() => {});
   const chain: AtlasRegion[] = [];
   let cursor = region.parent_region_id;
   while (cursor) {
-    const parent = await getRegionById(cursor);
+    const parent = await (guessed.get(cursor) ?? getRegionById(cursor));
     if (!parent) break;
     chain.unshift(parent);
     cursor = parent.parent_region_id;
@@ -850,48 +898,100 @@ export const getRankingData = unstable_cache(getRankingDataUncached, ["ranking-d
  * A Kreis with 55 Gemeinden across 5 segments and 25 years is ~6.900 cells, and
  * PostgREST caps a response at 1000 rows *without saying so* — the first attempt
  * here returned exactly 1000 and would have shown most Gemeinden as zero. Hence
- * .range() until a short page arrives, and a hard stop rather than a silent
- * truncation if the payload ever grows past what a page should carry.
+ * paging, and a hard stop rather than a silent truncation if the payload ever
+ * grows past what a page should carry.
+ *
+ * The first page also asks for the total (28.09.2026); the remaining pages are
+ * then requested a few at a time instead of strictly one after another. Bayern
+ * has ~13 pages: on a cold data cache that was 13 round trips in series, about
+ * 2.4 s before its Land page could render. At most CELL_PAGE_PARALLEL requests
+ * run at once — each page re-runs the aggregate on the database, and a burst of
+ * thirteen would be exactly the parallel load the Atlas has fallen over before.
+ * If the total is missing, or the pages do not add up to it (a data run landed
+ * in between), the plain sequential walk is the fallback.
  */
+const CELL_PAGE = 1000;
+const CELL_MAX = 20_000;
+export const CELL_PAGE_PARALLEL = 4;
+
+/** Page start offsets after the first page, grouped into batches that run concurrently. */
+export function cellPageBatches(total: number, page = CELL_PAGE, parallel = CELL_PAGE_PARALLEL): number[][] {
+  const starts: number[] = [];
+  for (let from = page; from < total; from += page) starts.push(from);
+  const batches: number[][] = [];
+  for (let i = 0; i < starts.length; i += parallel) batches.push(starts.slice(i, i + parallel));
+  return batches;
+}
+
 async function loadAllCells(
   supabase: Awaited<ReturnType<typeof db>>,
   prefix: string,
   childLen: number,
 ): Promise<ChildYearRow[]> {
-  const PAGE = 1000;
-  const MAX = 20_000;
-  const all: ChildYearRow[] = [];
-  for (let from = 0; from < MAX; from += PAGE) {
-    const { data, error } = await withDbTimeout(
+  const page = async (from: number, withCount = false) => {
+    const { data, error, count } = await withDbTimeout(
       supabase
-        .rpc("mastr_children_by_year", {
-          p_prefix: prefix,
-          p_child_len: childLen,
-          p_traeger: ["solar", "speicher"],
-          p_year_min: null,
-        })
+        .rpc(
+          "mastr_children_by_year",
+          {
+            p_prefix: prefix,
+            p_child_len: childLen,
+            p_traeger: ["solar", "speicher"],
+            p_year_min: null,
+          },
+          withCount ? { count: "exact" } : undefined,
+        )
         // Stable order is required for paging — without it rows can repeat or vanish.
         .order("region_id", { ascending: true })
         .order("segment", { ascending: true })
         .order("year", { ascending: true })
-        .range(from, from + PAGE - 1),
+        .range(from, from + CELL_PAGE - 1),
       "mastr_children_by_year",
     );
     if (error) throw new Error(`mastr_children_by_year failed: ${error.message}`);
-    const rows = (data ?? []) as ChildYearRow[];
-    all.push(
-      ...rows.map((r) => ({
-        region_id: r.region_id,
-        segment: r.segment,
-        year: Number(r.year),
-        count: Number(r.count),
-        kwp: Number(r.kwp),
-        kwh: Number(r.kwh),
-      })),
-    );
-    if (rows.length < PAGE) return all;
+    return { rows: ((data ?? []) as ChildYearRow[]).map(asCell), count: count ?? null };
+  };
+
+  const first = await page(0, true);
+  if (first.rows.length < CELL_PAGE) return first.rows;
+  const total = first.count;
+  if (total !== null && total > CELL_MAX) throw tooLarge(prefix);
+  if (total !== null) {
+    const all = [...first.rows];
+    let consistent = true;
+    for (const batch of cellPageBatches(total)) {
+      const pages = await Promise.all(batch.map((from) => page(from)));
+      for (const [i, p] of pages.entries()) {
+        const expected = Math.min(CELL_PAGE, total - batch[i]);
+        if (p.rows.length !== expected) consistent = false;
+        all.push(...p.rows);
+      }
+    }
+    if (consistent && all.length === total) return all;
   }
-  throw new Error(`Ranking payload exceeds ${MAX} cells for prefix "${prefix}" — refusing to ship a truncated table`);
+  // Sequential walk: no total, or the data changed between the pages.
+  const all: ChildYearRow[] = [];
+  for (let from = 0; from < CELL_MAX; from += CELL_PAGE) {
+    const { rows } = await page(from);
+    all.push(...rows);
+    if (rows.length < CELL_PAGE) return all;
+  }
+  throw tooLarge(prefix);
+}
+
+function asCell(r: ChildYearRow): ChildYearRow {
+  return {
+    region_id: r.region_id,
+    segment: r.segment,
+    year: Number(r.year),
+    count: Number(r.count),
+    kwp: Number(r.kwp),
+    kwh: Number(r.kwh),
+  };
+}
+
+function tooLarge(prefix: string): Error {
+  return new Error(`Ranking payload exceeds ${CELL_MAX} cells for prefix "${prefix}" — refusing to ship a truncated table`);
 }
 
 // ─── Leaderboards ─────────────────────────────────────────────────────────────

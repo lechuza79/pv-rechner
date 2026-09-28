@@ -61,12 +61,20 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   const isDistrict = level === "landkreis";
   // Bundesland: every Landkreis AND kreisfreie Stadt; Deutschland: the 16 Länder.
   const towns = isDistrict ? children.filter(c => isDistrictMember(c, region.region_id)) : children.filter(c => c.bezeichnung !== "Gemeindefreies Gebiet");
+  // The three reads of this component start together (28.09.2026): the monitor
+  // package used to begin only after the map outline and the funding catalogue
+  // had arrived, one wait after the other. Guarded by
+  // lib/__tests__/atlas-seite-parallel.test.ts.
+  const content=monitorContentForPreview(isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand));
+  const [shapes, allPrograms] = await Promise.all([
+    isDistrict ? districtGeometry(region.region_id) : childGeometry(level as "bundesland" | "de", region.region_id),
+    level === "de" ? Promise.resolve([] as Awaited<ReturnType<typeof getFundingPrograms>>) : getFundingPrograms(),
+  ]);
   const sums = new Map(foldSiblings(ranking.regions, ranking.cells).map(r => [r.region_id, r.sums.alle]));
   const places: MapValue[] = towns.map(town => {
     const value = sums.get(town.region_id)?.kwp ?? null;
     return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${basePath}/${town.slug}` : null };
   }).sort((a, b) => a.name.localeCompare(b.name, "de"));
-  const shapes = isDistrict ? await districtGeometry(region.region_id) : await childGeometry(level as "bundesland" | "de", region.region_id);
   const metrics = [
     { id: "kwp", label: "Installierte Solarleistung", format: pvLeistungTeile },
     { id: "count", label: "Solaranlagen", format: anlagenZahlTeile },
@@ -75,7 +83,6 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const value = sums.get(p.id)?.[m.id as "kwp" | "count" | "speicher"] ?? null;
     return { ...p, value, formatted: value === null ? { value: "–", unit: "" } : m.format(value) };
   }) }));
-  const allPrograms = level === "de" ? [] : await getFundingPrograms();
   const districtPrograms = matchFundingForAgs(allPrograms,region.region_id);
   const programs = new Map(districtPrograms.filter(p=>p.level!=="bund").map(p=>[p.id,p]));
   const coverage = new Map<string,string[]>();
@@ -94,7 +101,6 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   });
   const townIds = new Set(towns.map(t => t.region_id));
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
-  const content=monitorContentForPreview(isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand));
   const comparable=towns.length>1;
   return <><div className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
     <link rel="stylesheet" href="/gemeinde/region-sections.css" precedence="default"/>
