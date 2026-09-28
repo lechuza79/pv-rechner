@@ -15508,6 +15508,45 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Added 28.09.2026: VG Römerberg-Dudenhofen, closed programme ─────────
+  //
+  // Found in the source queue (the VG's funding page for Dudenhofen,
+  // Hanhofen and Harthausen). Closed — added anyway, "existed, has ended" is
+  // real information (operator, 17.08.2026). Evidence, both read 28.09.2026:
+  // - live https://www.vgrd.de/klimaschutz/foerderprogramme/: "Hinweis: Die
+  //   Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen."
+  // - programme page in the web archive (copy of 16.07.2025; the live path
+  //   now redirects to the homepage after a relaunch): "Die Förderung beträgt
+  //   je Haushalt einmalig 100 € für ein Balkonkraftwerk", invoice dated from
+  //   01.02.2024, photo of the installed device, landlord consent for
+  //   tenants, and "ACHTUNG: Förderprogramm wird eingestellt - bis zum
+  //   30.11.2025 können noch Anträge gestellt werden".
+  // No separate guideline is published; the page says nothing about
+  // stacking, so combinableWith stays null ("not determined"). Member towns:
+  // the four Ortsgemeinden the VG homepage lists, keys from the register.
+  // url is the live funding page, never the archive copy: the page watcher
+  // would otherwise stamp a frozen copy as a live check.
+  "vg-roemerberg-dudenhofen-balkonkraftwerke": {
+    id: "vg-roemerberg-dudenhofen-balkonkraftwerke", name: "Balkonkraftwerk-Förderung",
+    traeger: "Verbandsgemeinde Römerberg-Dudenhofen", level: "kommune", region: "Verbandsgemeinde Römerberg-Dudenhofen",
+    bundesland: "Rheinland-Pfalz",
+    agsCodes: ["07338007", "07338010", "07338011", "07338023"],
+    url: "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-02-01", endetIso: "2025-11-30",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Haushalt für ein Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Haushalt, einmalig — Programm beendet" }],
+    conditions: [
+      "Anträge waren bis zum 30.11.2025 möglich; die Verbandsgemeinde meldet die Förderung als ausgelaufen",
+      "Gefördert wurden neu angeschaffte Balkonkraftwerke an Wohngebäuden in der Verbandsgemeinde, Kaufdatum ab 01.02.2024",
+      "Der Antrag kam nach dem Kauf: mit Originalrechnung und einem Foto der installierten Anlage; Mieter brauchten die schriftliche Zustimmung der Eigentümerseite",
+      "Die Anlage musste die einschlägigen Normen für fest installierte Stromerzeuger erfüllen (insbesondere VDE); gefördert wurden Module, Wechselrichter, Halterung und die Elektroarbeiten eines Fachbetriebs",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+  },
+
   // ─── Aufgenommen am 24.09.2026: Stadt Bad Kreuznach, Balkonkraftwerke ──────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Suche nach

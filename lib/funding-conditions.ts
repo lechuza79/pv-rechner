@@ -158,6 +158,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-ruedesheim-balkonkraftwerke",
   // VG Bad Kreuznach, ebenfalls am 24.09.2026 als beendetes Programm aufgenommen.
   "vg-bad-kreuznach-balkonkraftwerke",
+  // VG Römerberg-Dudenhofen, added 28.09.2026 as a closed programme; application came after the purchase.
+  "vg-roemerberg-dudenhofen-balkonkraftwerke",
   // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
   "donauwoerth-kleinst-pv",
   // Gemeinde Südheide, aufgenommen am 26.09.2026; alle Bedingungen stehen auf

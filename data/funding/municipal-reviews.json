@@ -72621,5 +72621,214 @@
         "evidenceUrl": "https://www.fischbach-pfalz.de/sitemap.xml"
       }
     ]
+  },
+  {
+    "regionId": "07338007",
+    "name": "Dudenhofen",
+    "checkedAt": "2026-09-28T00:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Dudenhofen (VG Römerberg-Dudenhofen, Rhein-Pfalz-Kreis): Die Verbandsgemeinde förderte Balkonkraftwerke ab 01.02.2024 mit einmalig 100 € je Haushalt; Anträge waren bis 30.11.2025 möglich, die Förderseite meldet das Programm als ausgelaufen. Aufgenommen als beendetes Programm vg-roemerberg-dudenhofen-balkonkraftwerke ohne Rechenwert. Heute kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026): Die Förderseite der VG nennt nur noch die Dachbegrünung, die Seitenkarte des gesamten Auftritts (1.250 Adressen, auch die Ortsgemeinden) enthält kein weiteres Energieprogramm, und der Rhein-Pfalz-Kreis führt unter seinen Klimaschutzprojekten kein Förderprogramm für Haushalte.",
+    "searches": [
+      "Förderseite, geförderte Projekte und Energie-Wegweiser der VG am 28.09.2026 live gelesen",
+      "Programmseite Balkonkraftwerke im Webarchiv (Kopie 16.07.2025) gelesen; der alte Pfad leitet heute auf die Startseite",
+      "Seitenkarte vgrd.de (1.250 Adressen) nach förder/zuschuss/solar/balkon/energie durchsucht",
+      "Klimaschutz und aktuelle Klimaschutzprojekte des Rhein-Pfalz-Kreises am 28.09.2026 gelesen",
+      "Adversarialer Prüfer (28.09.2026): Betrag, Frist, Ende und die vier Ortsgemeinden bestätigt, VDE-Bedingung ergänzt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+        "finding": "28.09.2026: „Hinweis: Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“"
+      },
+      {
+        "url": "https://web.archive.org/web/20250716012608/https://www.vgrd.de/verwaltung-politik/gemeinden/vg-roemerberg-dudenhofen/klimaschutz/foerderprogramme/balkonkraftwerke/",
+        "finding": "Archivkopie 16.07.2025: „Die Förderung beträgt je Haushalt einmalig 100 € für ein Balkonkraftwerk“; Kaufdatum ab 01.02.2024; „bis zum 30.11.2025 können noch Anträge gestellt werden“."
+      },
+      {
+        "url": "https://www.rhein-pfalz-kreis.de/umwelt/klimaschutz/aktuelle-klimaschutzprojekte/",
+        "finding": "28.09.2026: Solarkataster, Wärmewende-Kampagne, KlimaSparbuch, Ladesäulen u. a. — kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/",
+        "finding": "28.09.2026: bundesgeförderte Projekte der Verwaltung (Kläranlage Römerberg, Klimaschutzmanagement) — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/",
+        "finding": "28.09.2026: Linkliste auf BAFA, KfW und den Fördermittelkompass der Energieagentur RLP — kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgrd.de/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur Dachbegrünung und der Hinweis „Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“ — als beendetes Programm aufgenommen.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: bundesgeförderte Projekte der Verwaltung selbst (Kläranlage, Klimaschutzmanagement), kein Programm für Private.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Linkliste auf BAFA-, KfW- und Landesangebote, kein eigenes Programm.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338010",
+    "name": "Hanhofen",
+    "checkedAt": "2026-09-28T00:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hanhofen (VG Römerberg-Dudenhofen, Rhein-Pfalz-Kreis): Die Verbandsgemeinde förderte Balkonkraftwerke ab 01.02.2024 mit einmalig 100 € je Haushalt; Anträge waren bis 30.11.2025 möglich, die Förderseite meldet das Programm als ausgelaufen. Aufgenommen als beendetes Programm vg-roemerberg-dudenhofen-balkonkraftwerke ohne Rechenwert. Heute kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026): Die Förderseite der VG nennt nur noch die Dachbegrünung, die Seitenkarte des gesamten Auftritts (1.250 Adressen, auch die Ortsgemeinden) enthält kein weiteres Energieprogramm, und der Rhein-Pfalz-Kreis führt unter seinen Klimaschutzprojekten kein Förderprogramm für Haushalte.",
+    "searches": [
+      "Förderseite, geförderte Projekte und Energie-Wegweiser der VG am 28.09.2026 live gelesen",
+      "Programmseite Balkonkraftwerke im Webarchiv (Kopie 16.07.2025) gelesen; der alte Pfad leitet heute auf die Startseite",
+      "Seitenkarte vgrd.de (1.250 Adressen) nach förder/zuschuss/solar/balkon/energie durchsucht",
+      "Klimaschutz und aktuelle Klimaschutzprojekte des Rhein-Pfalz-Kreises am 28.09.2026 gelesen",
+      "Adversarialer Prüfer (28.09.2026): Betrag, Frist, Ende und die vier Ortsgemeinden bestätigt, VDE-Bedingung ergänzt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+        "finding": "28.09.2026: „Hinweis: Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“"
+      },
+      {
+        "url": "https://web.archive.org/web/20250716012608/https://www.vgrd.de/verwaltung-politik/gemeinden/vg-roemerberg-dudenhofen/klimaschutz/foerderprogramme/balkonkraftwerke/",
+        "finding": "Archivkopie 16.07.2025: „Die Förderung beträgt je Haushalt einmalig 100 € für ein Balkonkraftwerk“; Kaufdatum ab 01.02.2024; „bis zum 30.11.2025 können noch Anträge gestellt werden“."
+      },
+      {
+        "url": "https://www.rhein-pfalz-kreis.de/umwelt/klimaschutz/aktuelle-klimaschutzprojekte/",
+        "finding": "28.09.2026: Solarkataster, Wärmewende-Kampagne, KlimaSparbuch, Ladesäulen u. a. — kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/",
+        "finding": "28.09.2026: bundesgeförderte Projekte der Verwaltung (Kläranlage Römerberg, Klimaschutzmanagement) — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/",
+        "finding": "28.09.2026: Linkliste auf BAFA, KfW und den Fördermittelkompass der Energieagentur RLP — kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgrd.de/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur Dachbegrünung und der Hinweis „Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“ — als beendetes Programm aufgenommen.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: bundesgeförderte Projekte der Verwaltung selbst (Kläranlage, Klimaschutzmanagement), kein Programm für Private.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Linkliste auf BAFA-, KfW- und Landesangebote, kein eigenes Programm.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338011",
+    "name": "Harthausen",
+    "checkedAt": "2026-09-28T00:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Harthausen (VG Römerberg-Dudenhofen, Rhein-Pfalz-Kreis): Die Verbandsgemeinde förderte Balkonkraftwerke ab 01.02.2024 mit einmalig 100 € je Haushalt; Anträge waren bis 30.11.2025 möglich, die Förderseite meldet das Programm als ausgelaufen. Aufgenommen als beendetes Programm vg-roemerberg-dudenhofen-balkonkraftwerke ohne Rechenwert. Heute kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026): Die Förderseite der VG nennt nur noch die Dachbegrünung, die Seitenkarte des gesamten Auftritts (1.250 Adressen, auch die Ortsgemeinden) enthält kein weiteres Energieprogramm, und der Rhein-Pfalz-Kreis führt unter seinen Klimaschutzprojekten kein Förderprogramm für Haushalte.",
+    "searches": [
+      "Förderseite, geförderte Projekte und Energie-Wegweiser der VG am 28.09.2026 live gelesen",
+      "Programmseite Balkonkraftwerke im Webarchiv (Kopie 16.07.2025) gelesen; der alte Pfad leitet heute auf die Startseite",
+      "Seitenkarte vgrd.de (1.250 Adressen) nach förder/zuschuss/solar/balkon/energie durchsucht",
+      "Klimaschutz und aktuelle Klimaschutzprojekte des Rhein-Pfalz-Kreises am 28.09.2026 gelesen",
+      "Adversarialer Prüfer (28.09.2026): Betrag, Frist, Ende und die vier Ortsgemeinden bestätigt, VDE-Bedingung ergänzt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+        "finding": "28.09.2026: „Hinweis: Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“"
+      },
+      {
+        "url": "https://web.archive.org/web/20250716012608/https://www.vgrd.de/verwaltung-politik/gemeinden/vg-roemerberg-dudenhofen/klimaschutz/foerderprogramme/balkonkraftwerke/",
+        "finding": "Archivkopie 16.07.2025: „Die Förderung beträgt je Haushalt einmalig 100 € für ein Balkonkraftwerk“; Kaufdatum ab 01.02.2024; „bis zum 30.11.2025 können noch Anträge gestellt werden“."
+      },
+      {
+        "url": "https://www.rhein-pfalz-kreis.de/umwelt/klimaschutz/aktuelle-klimaschutzprojekte/",
+        "finding": "28.09.2026: Solarkataster, Wärmewende-Kampagne, KlimaSparbuch, Ladesäulen u. a. — kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/",
+        "finding": "28.09.2026: bundesgeförderte Projekte der Verwaltung (Kläranlage Römerberg, Klimaschutzmanagement) — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/",
+        "finding": "28.09.2026: Linkliste auf BAFA, KfW und den Fördermittelkompass der Energieagentur RLP — kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgrd.de/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: nur Dachbegrünung und der Hinweis „Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“ — als beendetes Programm aufgenommen.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: bundesgeförderte Projekte der Verwaltung selbst (Kläranlage, Klimaschutzmanagement), kein Programm für Private.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 28.09.2026 gelesen: Linkliste auf BAFA-, KfW- und Landesangebote, kein eigenes Programm.",
+        "evidenceUrl": "https://www.vgrd.de/klimaschutz/ratgeber/energie-wegweiser/foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "07338023",
+    "name": "Römerberg",
+    "checkedAt": "2026-09-28T00:15:00Z",
+    "recheckAt": "2026-12-27T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Römerberg (VG Römerberg-Dudenhofen, Rhein-Pfalz-Kreis): Die Verbandsgemeinde förderte Balkonkraftwerke ab 01.02.2024 mit einmalig 100 € je Haushalt; Anträge waren bis 30.11.2025 möglich, die Förderseite meldet das Programm als ausgelaufen. Aufgenommen als beendetes Programm vg-roemerberg-dudenhofen-balkonkraftwerke ohne Rechenwert. Heute kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026): Die Förderseite der VG nennt nur noch die Dachbegrünung, die Seitenkarte des gesamten Auftritts (1.250 Adressen, auch die Ortsgemeinden) enthält kein weiteres Energieprogramm, und der Rhein-Pfalz-Kreis führt unter seinen Klimaschutzprojekten kein Förderprogramm für Haushalte.",
+    "searches": [
+      "Förderseite, geförderte Projekte und Energie-Wegweiser der VG am 28.09.2026 live gelesen",
+      "Programmseite Balkonkraftwerke im Webarchiv (Kopie 16.07.2025) gelesen; der alte Pfad leitet heute auf die Startseite",
+      "Seitenkarte vgrd.de (1.250 Adressen) nach förder/zuschuss/solar/balkon/energie durchsucht",
+      "Klimaschutz und aktuelle Klimaschutzprojekte des Rhein-Pfalz-Kreises am 28.09.2026 gelesen",
+      "Adversarialer Prüfer (28.09.2026): Betrag, Frist, Ende und die vier Ortsgemeinden bestätigt, VDE-Bedingung ergänzt",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+        "finding": "28.09.2026: „Hinweis: Die Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen.“"
+      },
+      {
+        "url": "https://web.archive.org/web/20250716012608/https://www.vgrd.de/verwaltung-politik/gemeinden/vg-roemerberg-dudenhofen/klimaschutz/foerderprogramme/balkonkraftwerke/",
+        "finding": "Archivkopie 16.07.2025: „Die Förderung beträgt je Haushalt einmalig 100 € für ein Balkonkraftwerk“; Kaufdatum ab 01.02.2024; „bis zum 30.11.2025 können noch Anträge gestellt werden“."
+      },
+      {
+        "url": "https://www.rhein-pfalz-kreis.de/umwelt/klimaschutz/aktuelle-klimaschutzprojekte/",
+        "finding": "28.09.2026: Solarkataster, Wärmewende-Kampagne, KlimaSparbuch, Ladesäulen u. a. — kein Förderprogramm für Haushalte."
+      }
+    ],
+    "sources": []
   }
 ]
