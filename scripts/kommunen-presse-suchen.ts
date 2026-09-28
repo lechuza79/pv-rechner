@@ -42,6 +42,8 @@ import { berichtAblegen } from "../lib/alert-senden";
 const trocken = process.argv.includes("--trocken");
 const LOGIN = process.env.DATAFORSEO_LOGIN;
 const PASSWORT = process.env.DATAFORSEO_PASSWORD;
+/** Reason of the last failed call — printed when a run fails, so an empty balance is not read as "nothing found". */
+let letzterFehler: string | null = null;
 const PREIS_JE_ABRUF = 0.002;
 let ausgegeben = 0;
 
@@ -73,11 +75,11 @@ async function serpEinmal(frage: string, art: "organic" | "news", tiefe: number)
       body: JSON.stringify([{ keyword: frage, location_code: 2276, language_code: "de", depth: tiefe }]),
       signal: AbortSignal.timeout(90_000),
     });
-    if (!res.ok) return { adressen: [], fehler: `HTTP ${res.status}` };
+    if (!res.ok) return { adressen: [], fehler: (letzterFehler = res.status === 402 ? "HTTP 402 — Guthaben beim Suchdienst aufgebraucht" : `HTTP ${res.status}`) };
     const d: any = await res.json();
     const a = d?.tasks?.[0];
     if (/no search results/i.test(String(a?.status_message ?? ""))) return { adressen: [], fehler: null };
-    if (a?.status_code >= 40000) return { adressen: [], fehler: String(a.status_message) };
+    if (a?.status_code >= 40000) return { adressen: [], fehler: (letzterFehler = String(a.status_message)) };
     const items: any[] = a?.result?.[0]?.items ?? [];
     return {
       adressen: items
@@ -86,7 +88,7 @@ async function serpEinmal(frage: string, art: "organic" | "news", tiefe: number)
       fehler: null,
     };
   } catch (e) {
-    return { adressen: [], fehler: String((e as Error)?.message ?? e).slice(0, 60) };
+    return { adressen: [], fehler: (letzterFehler = String((e as Error)?.message ?? e).slice(0, 60)) };
   }
 }
 
@@ -217,6 +219,13 @@ async function main() {
   if (fehlgeschlagen.length) {
     console.log(`\nSUCHE KAM NICHT DURCH: ${fehlgeschlagen.length}`);
     for (const f of fehlgeschlagen.slice(0, 10)) console.log(`  ${f}`);
+  }
+  // A run in which a tenth of the places could not be searched has no verdict.
+  // It used to exit 0 and was listed as "ok" in the evaluation — on 28.09.2026
+  // with an empty service balance, 260 of 289 searches had failed.
+  if (fehlgeschlagen.length > gemeinden.length / 10) {
+    console.log(`\nLAUF OHNE URTEIL: ${fehlgeschlagen.length} von ${gemeinden.length} nicht durchgekommen — letzter Grund: ${letzterFehler ?? "unbekannt"}`);
+    process.exitCode = 1;
   }
   console.log(`\nKosten: ${ausgegeben.toFixed(3)} $`);
 

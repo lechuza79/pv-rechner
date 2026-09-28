@@ -6,8 +6,11 @@
  *   npm run kommunen:veroeffentlichungen -- --setup      Tabelle anlegen (idempotent)
  *   npm run kommunen:veroeffentlichungen -- --eintragen <gemeindeschlüssel> <adresse> [--ohne-link] [--nicht-mehr-online] [--gesehen JJJJ-MM-TT] [--kanal <art>]
  *
- * Eingetragen wird nur, was jemand selbst angesehen hat. Ein Hinweis aus dem
- * wöchentlichen Lauf ist kein Beleg (siehe lib/kommunen-hinweise.ts). Das
+ * Eingetragen wird, was jemand selbst angesehen hat — oder was die
+ * Besucherherkunft belegt: Besucher, die von einem Medium oder sozialen Netz
+ * auf die Seite der Gemeinde oder ihres Landkreises kommen, sind der Beleg,
+ * auch wenn der Beitrag hinter einer Bezahlschranke steht. Ein Treffer der
+ * Websuche allein ist kein Beleg (siehe lib/kommunen-hinweise.ts). Das
  * Eintragen setzt den Status der Gemeinde auf „veröffentlicht" und schreibt die
  * Adresse in ihre Notiz — damit meldet der Hinweis-Lauf sie nicht noch einmal.
  */

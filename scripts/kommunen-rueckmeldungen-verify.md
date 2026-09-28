@@ -46,8 +46,22 @@ diesem Lauf **gelesen**, nicht weitergereicht:
 - Trägt er nicht: den Grund als Notiz an die Gemeinde schreiben, mit der Adresse. **Ohne
   diesen Vermerk kommt der Hinweis nächste Woche wieder** — die Notiz IST das Gedächtnis,
   eine zweite Tabelle „gesichtet" wäre eine zweite Wahrheit.
-- Kommt die Seite nicht durch (Anmeldung, Bot-Prüfung), bleibt der Hinweis offen und
-  wird beim nächsten Lauf erneut versucht. Nicht eintragen, was niemand gesehen hat.
+- Kommt die Seite nicht durch (Anmeldung, Bot-Prüfung, Bezahlschranke), aber der Hinweis
+  stammt aus der **Besucherherkunft** und die verweisende Seite ist ein Medium oder ein
+  soziales Netz (nicht die eigene Website der Gemeinde, kein Mail-Prüfdienst): **eintragen**,
+  mit `--kanal presse` bzw. `soziales-netz`. Die Adresse des Beitrags findet eine Google-Suche
+  im Browser: `site:<verweisende Domain>` mit `solar-check.io`, dann mit den Schreibweisen
+  „Solar Check" und „solar-check". Findet das nichts (Bezahlschranke: Google kennt dann nur
+  den Anreißer), dieselbe Suche mit Ortsname und Messgröße — so am 28.09.2026 der LN-Artikel
+  über Berkenthin. Nur wenn auch das nichts findet: die Startseite des Mediums.
+  Besucher, die von dort auf die Seite der Gemeinde oder ihres Landkreises kommen, SIND der
+  Beleg, dass dort etwas steht (Betreiber, 28.09.2026: „wir sehen die über die Referrer").
+  Vorher blieben solche Hinweise wochenlang offen, und die Lübecker Nachrichten fehlten
+  deshalb in jeder Auswertung. Worüber der Beitrag genau spricht, steht dann nicht fest —
+  das gehört in die Notiz, nicht in eine Sperre.
+- **Die Besucherherkunft ist die Quelle, nicht die Websuche** (Betreiber, 28.09.2026: „wenn
+  niemand geklickt hat, ist der Beitrag ohnehin nahezu irrelevant“). Eine Suche ohne
+  Verweis-Anlass läuft nicht mehr.
 
 ## 3. Was dem Betreiber gehört
 
