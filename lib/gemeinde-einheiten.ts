@@ -37,12 +37,19 @@ export function leistungTeile(mw: number): Messgroesse {
  * Maßstab für eine Kennzahl-REIHE: Die Einheit hängt am heutigen Wert und gilt
  * dann für alle Monate der Reihe — sonst stünde derselbe Verlauf mal in kWp,
  * mal in MWp, und die Kurve spränge ohne Anlass.
+ *
+ * Die dritte Stufe (`riesig`, ab einer Million) kam mit den Länder- und
+ * Deutschland-Seiten: Ohne sie stand dort „33.482,1 MWh" statt „33,5 GWh" und
+ * die Solarleistung in MWp neben „129,2 GWp" aus dem Formatierer der Seite.
+ * Dieselbe Schwelle wie in lib/atlas-format.ts.
  */
 export function reihenMassstab(
   heute: number,
   klein: string,
   gross: string,
+  riesig?: string,
 ): { teiler: number; unit: string; digits: number } {
+  if (riesig && heute >= 1_000_000) return { teiler: 1_000_000, unit: riesig, digits: 1 };
   if (heute >= 1000) return { teiler: 1000, unit: gross, digits: 1 };
   // Unter zehn zählt die Nachkommastelle: ein halbes Kilowatt als „1 kWp"
   // zu runden verdoppelt die Anlage des Dorfes.

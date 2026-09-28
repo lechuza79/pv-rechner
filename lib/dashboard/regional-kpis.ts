@@ -9,8 +9,8 @@ export function regionalKpiGroups(cells:ChildYearRow[],stand:string,population:n
   const batteries=included.filter(row=>row.segment.startsWith('batterie'));
   const sum=(rows:ChildYearRow[],field:'count'|'kwp'|'kwh')=>rows.reduce((total,row)=>total+row[field],0);
   const power=sum(solar,'kwp'),capacity=sum(batteries,'kwh');
-  const powerScale=reihenMassstab(power,'kWp','MWp');
-  const batteryScale=reihenMassstab(capacity,'kWh','MWh');
+  const powerScale=reihenMassstab(power,'kWp','MWp','GWp');
+  const batteryScale=reihenMassstab(capacity,'kWh','MWh','GWh');
   const metric=(id:string,label:string,value:number,unit:string,digits=0):KpiDefinition=>({
     id,label,unit,digits,kind:'stock',current:{end:stand,value,basis:`register:${stand}`},history:[],
   });

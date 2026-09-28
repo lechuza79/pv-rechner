@@ -363,9 +363,12 @@ export function prozentGerundet(anteil: number): number {
  * batterieMittelTeile: Unter 10 % würde die Rundung Segmente einebnen, die sich
  * in der Legende sichtbar unterscheiden (0,4 % und 1,4 % wären beide „1 %" bzw.
  * „0 %"). Oberhalb trägt die Nachkommastelle nichts und macht die Legende unruhig.
+ * Ein Anteil über null, der auch mit einer Nachkommastelle null wäre, heißt
+ * „unter 0,1 %" — „0,0 %" behauptete, es gebe ihn nicht.
  */
 export function anteilProzentFeinTeile(anteil: number): Messwert {
   const p = anteil * 100;
+  if (p > 0 && p < 0.05) return { value: "unter 0,1", unit: "%" };
   return {
     value:
       p >= 9.95

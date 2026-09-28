@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 import ContactForm from "../ContactForm";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "../FundingProgramParts";
-import { saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } from "../../lib/funding-programs";
+import { istFinanzierung, saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } from "../../lib/funding-programs";
 
 /**
  * Förderung auf der Ortsseite: je Programm eine Vorschaubox, die Einzelheiten
@@ -55,6 +55,37 @@ export type FoerderProgrammAnsicht = {
   zaehlt: boolean;
 };
 
+/** Archived = shown only in the closed archive below the cards. */
+export const istArchiviert = (p: FoerderProgrammAnsicht) =>
+  ["ausgeschoepft", "eingestellt", "pausiert"].includes(p.programm.status);
+
+/**
+ * The sentence above the cards — derived from EXACTLY the cards it introduces.
+ *
+ * It used to follow a different set (only programs that deduct money in the
+ * calculator), so Berlin read "kein eigener Zuschuss bekannt" directly above
+ * an active SolarPLUS card. Whether a program deducts money stays with
+ * `fundingZaehlt()` on the server; this sentence only names what is listed.
+ * Loans are named as loans: Bremen's only card is a loan, and "Diese
+ * Zuschüsse" above it was false. The place takes its preposition from the
+ * shared rule ("Im Vogelsbergkreis", "Im Saarland"), not a bare "Für X".
+ */
+export function foerderEinleitung(ort: string, praeposition: string, aktuell: FoerderProgrammAnsicht[]): string {
+  if (aktuell.length === 0) {
+    const wo = `${praeposition.charAt(0).toUpperCase()}${praeposition.slice(1)} ${ort}`;
+    return `${wo} ist uns derzeit kein eigenes Förderprogramm bekannt. Es gilt die bundesweite Förderung.`;
+  }
+  const eins = aktuell.length === 1;
+  const darlehen = aktuell.filter((p) => istFinanzierung(p.programm)).length;
+  const subjekt =
+    darlehen === aktuell.length
+      ? eins ? "Dieses Darlehen gilt" : "Diese Darlehen gelten"
+      : darlehen === 0
+        ? eins ? "Dieser Zuschuss gilt" : "Diese Zuschüsse gelten"
+        : "Diese Programme gelten";
+  return `${subjekt} hier zusätzlich zur bundesweiten Förderung.`;
+}
+
 export default function GemeindeFoerderung({
   ort,
   programme,
@@ -72,10 +103,8 @@ export default function GemeindeFoerderung({
     if (offen) dialog.current?.showModal();
   }, [offen]);
 
-  const aktive = programme.filter((p) => p.zaehlt);
-  const archiviert = (p: FoerderProgrammAnsicht) => ["ausgeschoepft", "eingestellt", "pausiert"].includes(p.programm.status);
-  const archiv = programme.filter(archiviert);
-  const aktuell = programme.filter((p) => !archiviert(p));
+  const archiv = programme.filter(istArchiviert);
+  const aktuell = programme.filter((p) => !istArchiviert(p));
   const karten = (liste: FoerderProgrammAnsicht[]) => (
         <div className="v3-examples sc-feature-list gemeinde-foerder-liste">
           {liste.map((p) => {
@@ -116,11 +145,7 @@ export default function GemeindeFoerderung({
     <div className="v3-examples-foerderung" id="atlas-foerderung">
       <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive"/>
       <h3>Förderung {praeposition} {ort}</h3>
-      <p>
-        {aktive.length > 0
-          ? `Diese Zuschüsse gelten hier zusätzlich zur bundesweiten Förderung.`
-          : `Für ${ort} ist uns derzeit kein eigener Zuschuss bekannt. Es gilt die bundesweite Förderung.`}
-      </p>
+      <p>{foerderEinleitung(ort, praeposition, aktuell)}</p>
       {/* DIESELBE Karte wie die drei Beispielrechnungen darüber (Betreiber,
           23.09.2026: „Box wie die anderen und noch das Visual rein, nicht
           Styles erfinden, recyceln"). Vorher hatte dieser Abschnitt eine

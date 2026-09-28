@@ -16043,6 +16043,18 @@ export function technikenVon(f: Pick<FundingProgram, "foerdert">): FundingTechni
 }
 
 /**
+ * Ist das Programm ein Kredit/Darlehen statt eines Zuschusses?
+ *
+ * Der Katalog kennt dafür kein eigenes Feld; jedes Finanzierungsprogramm trägt
+ * seinen Charakter im Wortlaut der förderfähigen Kosten („… (kein Zuschuss)").
+ * Gelesen wird deshalb genau dieser Vermerk — kein Raten aus dem Programmnamen.
+ * Anlass: Über der Bremer Darlehenskarte stand „Diese Zuschüsse gelten hier …".
+ */
+export function istFinanzierung(f: Pick<FundingProgram, "coveredCosts">): boolean {
+  return /\bkein Zuschuss\b/i.test(f.coveredCosts ?? "");
+}
+
+/**
  * Alle Fördergebiete eines Programms — die EINZIGE Stelle, die `agsCode` und
  * `agsCodes` zusammenführt.
  *

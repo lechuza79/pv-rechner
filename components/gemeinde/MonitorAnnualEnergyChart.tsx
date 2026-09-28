@@ -5,6 +5,8 @@ import {WidgetSetting} from '../dashboard/WidgetSetting';
 import {EnergyYearRadial} from '../charts/EnergyYearRadial';
 import {EXPORT_CSS_ATTR,EXPORT_IGNORE_ATTR,EXPORT_ONLY_ATTR} from '../../lib/export-markers';
 import styles from './MonitorAnnualEnergyChart.module.css';
+import {ortPhrase} from '../../lib/atlas-orte';
+import {regionDisplayName} from '../../lib/atlas-format';
 
 export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialData], compact=false}:{data:EnergyYear;datasets?:EnergyYear[];compact?:boolean}) {
  const [year,setYear]=useState(initialData.year);
@@ -24,7 +26,7 @@ export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialDat
   {!compact&&controls}
   {!compact&&<p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:"block"}} style={{display:'none'}}>{data.year} · {modeLabel}</p>}
   <EnergyYearRadial data={data} mode={mode} index={index} compact={compact} layout="monitor" labelClass={styles.label} totalClass={styles.total} showWind
-   onHover={setHover} onToggle={i=>setSelected(selected===i?null:i)} ariaLabel={`Solar und Wind in ${data.town}, ${data.year}. Modellierte Tageserträge; Wind mit vereinfachter Referenzkurve.`}/>
+   onHover={setHover} onToggle={i=>setSelected(selected===i?null:i)} ariaLabel={`Solar und Wind ${ortPhrase({name: regionDisplayName(data.town)})}, ${data.year}. Modellierte Tageserträge; Wind mit vereinfachter Referenzkurve.`}/>
   {!compact&&<div className={styles.legend} {...{[EXPORT_CSS_ATTR]:"opacity:1;visibility:visible;"}}><span><i/>Solar</span><span><i/>Wind · {windTotal+solarTotal>0?(windTotal/(windTotal+solarTotal)*100).toLocaleString('de-DE',{maximumFractionDigits:2}):'0'} % im Jahr</span></div>}
  </div>;
 }

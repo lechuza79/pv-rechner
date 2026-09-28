@@ -32,5 +32,9 @@ describe("Einheiten der Ortsseite", () => {
     expect(reihenMassstab(240, "kWp", "MWp")).toEqual({ teiler: 1, unit: "kWp", digits: 0 });
     expect(reihenMassstab(9338, "kWp", "MWp")).toEqual({ teiler: 1000, unit: "MWp", digits: 1 });
     expect(reihenMassstab(1.92, "kWh", "MWh").unit).toBe("kWh");
+    // Länder und Deutschland: „33.482,1 MWh" stand live, wo „33,5 GWh" hingehört.
+    expect(reihenMassstab(33_482_100, "kWh", "MWh", "GWh")).toEqual({ teiler: 1_000_000, unit: "GWh", digits: 1 });
+    expect(reihenMassstab(129_189_770, "kWp", "MWp", "GWp").unit).toBe("GWp");
+    expect(reihenMassstab(999_999, "kWp", "MWp", "GWp").unit).toBe("MWp");
   });
 });

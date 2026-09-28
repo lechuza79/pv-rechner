@@ -1,6 +1,7 @@
 "use client";
 import React, {useEffect, useId, useRef, useState} from 'react';
 import {storyCountGrid} from '../../lib/story-count-grid';
+import {anteilProzentFeinTeile} from '../../lib/atlas-format';
 import {CompositionBackdrop} from '../social/CompositionBackdrop';
 import {CompositionArc} from './CompositionArc';
 import monitorStyles from './CompositionChart.monitor.module.css';
@@ -37,7 +38,10 @@ export function CompositionChart({counts, powerShare, layout, compact = false}: 
   const columns = layout === 'monitor' ? monitorColumns : 16;
   const {cells, perCell} = storyCountGrid(counts.total, counts.selected);
   const rows = Math.ceil(cells.length / columns);
-  const powerLabel = `${powerShare.toLocaleString('de-DE')} Prozent der Solarleistung`;
+  // One rounding rule for ring, label and aria text: a nonzero share never reads
+  // as "0 %" (Stendal's balcony plants were 0,4 % and showed as 0).
+  const share = anteilProzentFeinTeile(powerShare / 100);
+  const powerLabel = `${share.value} Prozent der Solarleistung`;
   const rootClass = `${styles.chart} ${layout === 'story' && compact ? styles.compact : ''}`;
 
   return <div ref={host} className={rootClass} data-visual="anlagenraster" data-visual-layout={layout}>
@@ -48,11 +52,11 @@ export function CompositionChart({counts, powerShare, layout, compact = false}: 
           <circle cx="50" cy="50" r="40" fill="none" stroke="var(--atlas-border)" strokeWidth="10" />
           <CompositionArc value={powerShare} />
           {layout === 'story' && <>
-            <text className={styles.shareValue} x="50" y="48" textAnchor="middle" dominantBaseline="middle">{Math.round(powerShare)}</text>
-            <text className={styles.shareUnit} x="50" y="65" textAnchor="middle" dominantBaseline="middle">%</text>
+            <text className={styles.shareValue} x="50" y="48" textAnchor="middle" dominantBaseline="middle">{share.value}</text>
+            <text className={styles.shareUnit} x="50" y="65" textAnchor="middle" dominantBaseline="middle">{share.unit}</text>
           </>}
         </svg>
-        {layout === 'monitor' && <b>{Math.round(powerShare)}<small> %</small></b>}
+        {layout === 'monitor' && <b>{share.value}<small> {share.unit}</small></b>}
         <span>der Solarleistung</span>
       </div>
     </div>
