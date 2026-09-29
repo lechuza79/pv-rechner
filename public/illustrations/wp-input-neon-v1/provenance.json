@@ -39,6 +39,34 @@
       "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-homepage-neon-v2/heatpump-modern/composite.svg",
       "status": "existing-neon-composition-cleaned",
       "note": "No new object/stroke generation; previous generic hidden accent removed."
+    },
+    {
+      "id": "roof-gable",
+      "webp": "roof-gable.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-illustrations-library/wp-input-neon-v1/exports/roof-gable.webp",
+      "status": "existing-export-reused",
+      "note": "Copied unchanged from the existing illustration library."
+    },
+    {
+      "id": "roof-flat",
+      "webp": "roof-flat.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-illustrations-library/wp-input-neon-v1/exports/roof-flat.webp",
+      "status": "existing-export-reused",
+      "note": "Copied unchanged from the existing illustration library."
+    },
+    {
+      "id": "roof-hip",
+      "webp": "roof-hip.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-illustrations-library/wp-input-neon-v1/exports/roof-hip.webp",
+      "status": "existing-export-reused",
+      "note": "Copied unchanged from the existing illustration library."
+    },
+    {
+      "id": "roof-shed",
+      "webp": "roof-shed.webp",
+      "source": "/Users/eule/austausch-chatgpt/ausgang/solar-check-illustrations-library/wp-input-neon-v1/exports/roof-shed.webp",
+      "status": "existing-export-reused",
+      "note": "Copied unchanged from the existing illustration library."
     }
   ],
   "missingBaseMotifs": [

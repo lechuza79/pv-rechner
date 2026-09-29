@@ -60,6 +60,7 @@ export default function GebaeudeField({
   hinweis,
   onWeissNicht,
   completedStyle,
+  active = true,
 }: {
   werte: GebaeudeWerte;
   setWerte: (patch: Partial<GebaeudeWerte>) => void;
@@ -81,6 +82,7 @@ export default function GebaeudeField({
   onWeissNicht?: () => void;
   /** Use the boxed, check-mark accordion variant on result settings. */
   completedStyle?: "check";
+  active?: boolean;
 }) {
   const stufen = daemmstufen ?? INSULATION_BESTAND;
   const hat = (k: string) => beantwortet.has(k);
@@ -92,7 +94,7 @@ export default function GebaeudeField({
   // Offen ist die zum Bearbeiten angeklickte Frage, sonst die erste offene.
   // Sind alle beantwortet und nichts angeklickt, ist nichts offen — dann steht
   // hier nur die Zusammenfassung samt Ergebniszeile.
-  const offen = bearbeitet && (GEBAEUDE_FIELDS as readonly string[]).includes(bearbeitet)
+  const offen = !active ? null : bearbeitet && (GEBAEUDE_FIELDS as readonly string[]).includes(bearbeitet)
     ? bearbeitet
     : GEBAEUDE_FIELDS.find(k => !beantwortet.has(k)) ?? null;
 
@@ -107,7 +109,7 @@ export default function GebaeudeField({
         completedStyle={completedStyle}
       >
         {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
-          {HAUSTYP_WP.map((item, i) => <OptionCard key={i} group="Haustyp" selected={hat(F_HAUSTYP) && werte.haustypIdx === i} onClick={() => waehle(F_HAUSTYP, { haustypIdx: i })} label={item.label} sub={""} />)}
+          {HAUSTYP_WP.map((item, i) => <OptionCard key={i} choiceIndex={i} group="Haustyp" selected={hat(F_HAUSTYP) && werte.haustypIdx === i} onClick={() => waehle(F_HAUSTYP, { haustypIdx: i })} label={item.label} sub={""} />)}
         </div> : (
         <ChoiceButtons
           options={HAUSTYP_WP}
@@ -168,7 +170,7 @@ export default function GebaeudeField({
         completedStyle={completedStyle}
       >
         {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
-          {stufen.map((item, i) => <OptionCard key={i} group="Dämmzustand" selected={hat(F_DAEMMUNG) && werte.insulationIdx === i} onClick={() => waehle(F_DAEMMUNG, { insulationIdx: i })} label={item.label} sub={item.sub} />)}
+          {stufen.map((item, i) => <OptionCard key={i} choiceIndex={i} group="Dämmzustand" selected={hat(F_DAEMMUNG) && werte.insulationIdx === i} onClick={() => waehle(F_DAEMMUNG, { insulationIdx: i })} label={item.label} sub={item.sub} />)}
         </div> : (
         <ChoiceButtons
           options={stufen}
@@ -189,7 +191,7 @@ export default function GebaeudeField({
         completedStyle={completedStyle}
       >
         {completedStyle === "check" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 }}>
-          {HEIZSYSTEM.map((item, i) => <OptionCard key={i} group="Heizflächen" selected={hat(F_HEIZSYSTEM) && werte.heizsystem === item.id} onClick={() => waehle(F_HEIZSYSTEM, { heizsystem: item.id as Heizsystem })} label={item.label} sub={item.sub} />)}
+          {HEIZSYSTEM.map((item, i) => <OptionCard key={i} choiceIndex={i} group="Heizflächen" selected={hat(F_HEIZSYSTEM) && werte.heizsystem === item.id} onClick={() => waehle(F_HEIZSYSTEM, { heizsystem: item.id as Heizsystem })} label={item.label} sub={item.sub} />)}
         </div> : (
         <ChoiceButtons
           options={HEIZSYSTEM}

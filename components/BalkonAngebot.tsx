@@ -1,4 +1,5 @@
 "use client";
+import ResultChoiceHeader from "./ResultChoiceHeader";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { trackEvent } from "../lib/analytics";
@@ -11,7 +12,7 @@ import Modal from "./Modal";
 import AffiliateFundedPrice from "./AffiliateFundedPrice";
 import AffiliateDetails from "./AffiliateDetails";
 import { v } from "../lib/theme";
-import { IconArrowRight, IconCheck, IconPlus } from "./Icons";
+import { IconArrowRight } from "./Icons";
 import { angebotUrl, type ShopAngebot } from "../lib/shop-solakon";
 import type { BalkonFundingContext } from "../lib/balkon-funding";
 import { DEFAULT_BALKON_CONFIG } from "../lib/balkon-config";
@@ -394,8 +395,7 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, desi
         Solar Check nimmt am Partnerprogramm von {daten.angebote[0]?.haendlerName} teil und
         erhält für vermittelte Käufe eine Provision.{" "}
         {alle.some(a => a.angebot.speicherKwh > 0) && (
-          <>Die Speichergröße ist die Herstellerangabe der Batteriekapazität; nutzbar ist etwas
-          weniger, der Speichernutzen fällt hier also eher am oberen Rand aus.</>
+          <>Die Speichergröße ist die Herstellerangabe der Batteriekapazität; bei Solakon ONE berücksichtigen wir 15 % Mindestladung. Die Rechnung setzt einen eingerichteten Smart Meter voraus; dessen Lieferumfang ist nicht bestätigt. Zusätzliche Kosten bitte ergänzen.</>
         )}
       </div>
     </div>
@@ -413,10 +413,9 @@ function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDet
   const message = `${offer.produkt} – ${ausstattung(offer)}\n${offer.preis.toLocaleString("de-DE", { minimumFractionDigits: 2 })} € (Stand ${datumKurz(date)})\n${url}`;
   return <article className="wp-product-card" data-recommended={selected}>
     <div className="bkw-product-showcase" data-selected={selected}>
-    <header className="bkw-product-header">
-      <div><strong>{recommended ? "Größte Ersparnis" : "Alternative"}</strong><span>{nf(entry.ergebnis.lifetimeSaving)} € Ersparnis über {entry.ergebnis.annualCosts.grid.length} Jahre</span></div>
-      {(selected || onCalculate) && <button type="button" className="bkw-calculate-link" aria-pressed={selected} aria-label={selected ? "In deiner Berechnung" : "Damit berechnen"} title={selected ? "Wird für dein Ergebnis verwendet" : "Mit diesem Set neu berechnen"} onClick={() => { if (!selected) onCalculate?.(offer); }}>{selected ? <IconCheck size={18} /> : <IconPlus size={18} />}</button>}
-    </header>
+    <ResultChoiceHeader className="bkw-product-header" actionLabel={selected ? "In deiner Berechnung" : "Damit berechnen"} selected={selected} title={recommended ? "Größte Ersparnis" : "Alternative"} onSelect={onCalculate ? ()=>onCalculate(offer) : undefined}>
+      {nf(entry.ergebnis.lifetimeSaving)} € Ersparnis über {entry.ergebnis.annualCosts.grid.length} Jahre
+    </ResultChoiceHeader>
     <div className="wp-product-heading">
       <a href={url} onClick={() => trackEvent("balkon_shop_angebote")} target="_blank" rel="nofollow sponsored noopener" referrerPolicy="origin" className="wp-product-image" aria-label={`${offer.produkt} im Shop ansehen`}>
         <div className="wp-product-rank"><span /><span>ANZEIGE</span></div>

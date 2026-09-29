@@ -179,13 +179,22 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/OptionalDisclosure.tsx",
+    name: "OptionalDisclosure",
+    zweck: "Optionale Eingaben einheitlich aufklappen: zentrierte Beschriftung, Chevron, Abstände und barrierearme Höhenanimation.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons", "InfoTooltip"],
+  },
+  {
     datei: "components/AccordionField.tsx",
     name: "AccordionField",
     zweck: "Eine Frage, die zuklappt, sobald sie beantwortet ist, und ihre Antwort in der Kopfzeile trägt.",
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "OptionCard"],
   },
   {
     datei: "components/AuswahlSkipper.tsx",
@@ -266,7 +275,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["AccordionField", "PresetNumberInput"],
+    bestehtAus: ["AccordionField", "PresetNumberInput", "OptionalDisclosure"],
   },
   {
     datei: "components/GebaeudeField.tsx",
@@ -464,6 +473,38 @@ export const BAUSTEINE: Baustein[] = [
     zweck: "Compact linked calculation product with a separate selection disclosure.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: [],
   },
+  {
+    datei: "components/HeatPumpRunningComparison.tsx", name: "HeatPumpRunningComparison",
+    zweck: "Running heating cost comparison reused from the PV technical result.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
+  },
+  {
+    datei: "components/PvConsumerComparison.tsx", name: "PvConsumerComparison",
+    zweck: "Separate heating and driving energy comparisons for existing and staged PV consumers.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "InlineEdit", "HeatPumpRunningComparison", "PvConsumerFields"],
+  },
+  {
+    datei: "components/PvConsumerFields.tsx", name: "PvConsumerFields",
+    zweck: "Shared in-step consumer questions for PV scenarios and result editing.",
+    gruppe: "eingabe", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["GebaeudeField", "AccordionField", "TriToggle", "PresetNumberInput"],
+  },
+  {
+    datei: "components/ResultChoiceHeader.tsx", name: "ResultChoiceHeader",
+    zweck: "Shared active calculation selector for product offers and consumer scenarios.",
+    gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["Icons"],
+  },
+  {
+    datei: "components/calculator/ResultOverview.tsx", name: "ResultOverview",
+    zweck: "Gemeinsamer Ergebnisaufbau mit Betrag, Erklärung, Kostenverlauf und Kennzahlen.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+  },
+  {
+    datei: "components/calculator/CalculatorContent.tsx", name: "CalculatorContent",
+    zweck: "Gemeinsame Inhaltsbreite und Ausrichtung für Eingaben, Ergebnisse und begleitende Inhalte.",
+    gruppe: "struktur", ebene: "baustein", stand: "verbindlich", bestehtAus: [],
+  },
+  {datei:"components/MetricValue.tsx",name:"MetricValue",zweck:"Große Kennzahl mit zurückgenommenem Vorzeichen und Einheit.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:[]},
+  {datei:"components/charts/ChartFlag.tsx",name:"ChartFlag",zweck:"Gemeinsame Fahne an einem Diagrammwert mit Position oberhalb oder unterhalb.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:[]},
   // ─── Struktur ──────────────────────────────────────────────────────────────
   {
     datei: "components/calculator/ResultStatCard.tsx", name: "ResultStatCard",
@@ -1095,7 +1136,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Icons", "AffiliateTrust", "AffiliateActions", "AffiliateCarousel", "Modal", "AffiliateDetails", "AffiliateProductTeaser", "AffiliateFundedPrice"],
+    bestehtAus: ["Icons", "AffiliateTrust", "AffiliateActions", "AffiliateCarousel", "Modal", "AffiliateDetails", "AffiliateProductTeaser", "AffiliateFundedPrice", "ResultChoiceHeader"],
   },
   {
     datei: "components/ResultFunding.tsx",

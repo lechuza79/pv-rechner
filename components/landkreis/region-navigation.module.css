@@ -96,3 +96,9 @@
 
 /* Keep longer readings comfortably inside the compact navigation donut. */
 .value b[data-compact]{font-size:15px;letter-spacing:-.02em}
+
+/* A native swipe row keeps the mobile directory compact. */
+@media(max-width:760px){
+  .grid{flex-wrap:nowrap;justify-content:flex-start;max-width:none;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:4px;gap:12px;padding:8px 4px 16px;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--color-border) transparent}
+  .grid>li{flex:0 0 min(85%,300px);height:auto;scroll-snap-align:start}
+}

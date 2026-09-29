@@ -186,7 +186,7 @@ All explanatory tooltips use `components/InfoTooltip.tsx`. Supply content plus `
 
 `lib/__tests__/shared-tooltip-conventions.test.ts` rejects new independent tooltip renderers in app/components/municipality scripts. Existing chart-value readouts and the navigation label have named, bounded exceptions; do not broaden the exceptions to make a new help tooltip pass. This test runs with `npm test` in CI.
 
-The same reuse requirement applies to every accepted shared component, not only tooltips. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.
+The same reuse requirement applies to every accepted shared component, not only tooltips. Reuse means importing the component, not copying its markup, CSS class pattern or behavior. Extend the shared component when needed; if it does not exist, create it once, register it and migrate the affected consumers together. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.
 
 The complete energy monitor uses `components/dashboard/EnergyMonitor.tsx`.
 Municipality and regional adapters supply widget content and availability only;
@@ -194,3 +194,19 @@ section order, headings, grid and spacing follow the accepted municipality page.
 Do not assemble a separate grid on a state, country or embed page. The shared
 composition is covered by `energy-monitor-layout.test.tsx` and the existing
 architecture guard. Region-specific data calculations remain in their adapters.
+
+## Calculator layout boundaries (29 September 2026)
+
+Use CalculatorContent for the question/result column and its supporting sections.
+The shared CSS owns input width (760 px), result width (820 px) and page gutters.
+Do not override direct-child div widths or give FAQ/source sections a separate
+width. CalculatorTheme must be mounted throughout the flow, not only after a
+result appears; all five calculator routes use its fixed palette. The shared
+layout browser test checks alignment, overflow, theme independence and the
+balcony storage switch updating the actual product and merchant link.
+
+Consumer previews apply together through one fixed page footer; individual cards
+open their existing editors. Hide unrelated temporary notices while that footer
+is active. Use MetricValue for the benefit amount and OptionalDisclosure with
+heading/description for comparison headers. AffiliateCarousel.desktopSlides sets
+the visible desktop count; navigation requires actual content overflow.
