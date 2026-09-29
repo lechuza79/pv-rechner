@@ -76531,7 +76531,7 @@
   {
     "regionId": "09376161",
     "name": "Schwandorf",
-    "checkedAt": "2026-09-29T16:20:00Z",
+    "checkedAt": "2026-09-29T16:09:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -76566,13 +76566,31 @@
         "disposition": "reviewed",
         "reason": "Kontaktkarte des Klimaschutzmanagements auf der Programmseite, kein Förderinhalt.",
         "evidenceUrl": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/"
+      },
+      {
+        "url": "schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Gef%C3%B6rderte-Projekte",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): Förderprojekte der Stadt selbst (NKI), kein Zuschuss an Privathaushalte (29.09.2026)",
+        "evidenceUrl": "https://www.schwandorf.de/media/custom/3655_3963_1.PDF"
+      },
+      {
+        "url": "schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (vorhanden): Programmseite von schwandorf-klimaschutz (Katalog, aktiv) (29.09.2026)",
+        "evidenceUrl": "https://www.schwandorf.de/media/custom/3655_3963_1.PDF"
+      },
+      {
+        "url": "schwandorf.de/media/custom/3655_3963_1.PDF?1766485809=",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (Fachlich geprüft: addable): Live-Programmseite bietet Antrag und gültige Richtlinie an; kein Antragsstopp. Datenmodell kann Mindestspeicherbedingung4kWh derzeit nicht am PV-Fixbetrag ausdrücken: ohne Rechenfelder aufnehmen.",
+        "evidenceUrl": "https://www.schwandorf.de/media/custom/3655_3963_1.PDF"
       }
     ]
   },
   {
     "regionId": "09376",
     "name": "Landkreis Schwandorf",
-    "checkedAt": "2026-09-29T16:30:00Z",
+    "checkedAt": "2026-09-29T16:09:00Z",
     "recheckAt": "2027-03-29T08:00:00Z",
     "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -76597,13 +76615,43 @@
         "disposition": "reviewed",
         "reason": "Leere Seite (nur Navigation), keine Förderrichtlinie für Haushalte; Website-Suche bestätigt kein Kreisprogramm.",
         "evidenceUrl": "https://www.landkreis-schwandorf.de/Quicknavigation/F%C3%B6rderrichtlinien.php"
+      },
+      {
+        "url": "landkreis-schwandorf.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/M%C3%BCtter-und-V%C3%A4terzentren-Beantragung-einer-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): Förderung Mütter-/Väterzentren, kein Energieprogramm (29.09.2026)",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik"
+      },
+      {
+        "url": "landkreis-schwandorf.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Aufstiegs-BAf%C3%B6G-Beantragung-einer-Aufstiegsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): Aufstiegs-BAföG, kein Energieprogramm (29.09.2026)",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik"
+      },
+      {
+        "url": "landkreis-schwandorf.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Wohngeld-Beantragung-eines-Miet-oder-Lastenzuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): Wohngeld, kein Energieprogramm (29.09.2026)",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik"
+      },
+      {
+        "url": "landkreis-schwandorf.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/%C3%96ffentlicher-Personennahverkehr-Beantragung-eines-Zuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): ÖPNV-Zuschuss, kein Energieprogramm (29.09.2026)",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik"
+      },
+      {
+        "url": "landkreis-schwandorf.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Mietwohnungen-f%C3%BCr-Menschen-mit-Behinderung-Beantragung-einer-F%C3%B6rderung-f%C3%BCr-die-Anpassung.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (keine-foerderung): Der Tiefenlink löst die Einzelleistung nicht auf: die Adresse liefert das A-Z-Verzeichnis aller Dienstleistungen. Die Seite belegt kein Programm dieser Kommune. Gelesen 23.09.2026.",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik"
       }
     ]
   },
   {
     "regionId": "01002000",
     "name": "Kiel",
-    "checkedAt": "2026-09-29T16:40:00Z",
+    "checkedAt": "2026-09-29T16:09:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -76668,6 +76716,18 @@
         "disposition": "reviewed",
         "reason": "Trefferliste der Website-Suche, Seite 4; Einzeltreffer gesondert geprüft.",
         "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      },
+      {
+        "url": "kiel.de/&",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (quelle-entfernt): Korrektur am 20.09.2026: stand als keine-foerderung, gestuetzt allein auf eine 404 — das ist eine Aussage ueber die Gemeinde, gelesen wurde nichts. Adresse im selben Augenblick ueber alle Schreibweisen neu gemessen.",
+        "evidenceUrl": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php"
+      },
+      {
+        "url": "kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php",
+        "disposition": "reviewed",
+        "reason": "Bereits erfasst (Fachlich geprüft: existing): 2026 ausgesetzt; bestehender Katalog führt pausiert.",
+        "evidenceUrl": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php"
       }
     ]
   }
