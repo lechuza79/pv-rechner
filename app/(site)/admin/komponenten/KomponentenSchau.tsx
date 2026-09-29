@@ -15,6 +15,7 @@ import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
+import OnsiteSearch from "../../../../components/OnsiteSearch";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
 import StorySlider from "../../../../components/StorySlider";
@@ -670,7 +671,16 @@ function MultitoolBeispiel() {
   );
 }
 
+function OnsiteSearchBeispiel() {
+  const [query,setQuery]=useState("");
+  return <div style={{width:"100%",maxWidth:400}}><OnsiteSearch
+    items={[{id:"charts",label:"Charts"},{id:"maps",label:"Karten"},{id:"forms",label:"Formulare"}]}
+    ariaLabel="Baustein suchen" placeholder="Baustein suchen …" onQueryChange={setQuery}/>
+    <p aria-live="polite">{query ? `Filter: ${query}` : "Alle Bausteine"}</p></div>;
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  OnsiteSearch: OnsiteSearchBeispiel,
   Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,

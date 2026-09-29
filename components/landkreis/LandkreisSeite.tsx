@@ -76,6 +76,13 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const value = sums.get(town.region_id)?.kwp ?? null;
     return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${basePath}/${town.slug}` : null };
   }).sort((a, b) => a.name.localeCompare(b.name, "de"));
+  // Reuse the map's geographic boundaries for the footer-style navigation cards.
+  const outlines = shapes.map(shape => {
+    const points = shape.ground.flat(2);
+    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+    const x = Math.min(...xs), y = Math.min(...ys);
+    return {id:shape.id, viewBox:`${x} ${y} ${Math.max(...xs)-x} ${Math.max(...ys)-y}`, path:shape.ground.flatMap(poly => poly.map(ring => `M${ring.map(p=>p.join(',')).join('L')}Z`)).join(' ')};
+  });
   const metrics = [
     { id: "kwp", label: "Installierte Solarleistung", format: pvLeistungTeile },
     { id: "count", label: "Solaranlagen", format: anlagenZahlTeile },
@@ -143,7 +150,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
         history={rankingHistory.map(frame=>({year:frame.year,rows:towns.map(town=>({id:town.region_id,value:frame.sums[town.region_id]?.alle.count??0}))}))}/>
     </section>
     </>}
-    <Suspense fallback={<RegionNavigation places={places} title={text.overview} parentName={region.name}/>}><RegionNavigationSection content={content} places={places} title={text.overview} parentName={region.name}/></Suspense>
+    <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>
 
     <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
     {comparable&&<LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}

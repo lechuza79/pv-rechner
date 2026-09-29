@@ -454,8 +454,12 @@ export function formatDataAsOf(iso: string): string {
   return `${MONATE_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
 }
 
-/** Absolute monthly solar energy in one comparable unit across regional cards. */
-export const energieMwhTeile = (mwh: number): Messwert => ({
-  value: mwh > 0 && mwh < 0.1 ? "< 0,1" : dez(mwh, 1),
-  unit: "MWh",
-});
+/** Compact monthly energy: choose the largest unit that keeps a value >= 1. */
+export function energieMwhTeile(mwh: number): Messwert {
+  const magnitude = Math.abs(mwh);
+  const divisor = magnitude >= 1_000_000 ? 1_000_000 : magnitude >= 1_000 ? 1_000 : 1;
+  return {
+    value: mwh > 0 && mwh < 0.1 ? "< 0,1" : dez(mwh / divisor, 1),
+    unit: divisor === 1_000_000 ? "TWh" : divisor === 1_000 ? "GWh" : "MWh",
+  };
+}

@@ -130,6 +130,15 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/OnsiteSearch.tsx",
+    name: "OnsiteSearch",
+    zweck: "Suche mit Vorschlägen: vorhandene Inhalte filtern oder externe Treffer laden. Daten und Navigation bleiben beim Aufrufer.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
     datei: "components/SelectField.tsx",
     name: "SelectField",
     zweck: "Auswahl aus einer Liste, wenn die Optionen zu viele für Karten sind.",
