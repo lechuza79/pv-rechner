@@ -579,13 +579,13 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
           </div>
         )}
 
-        <StandortPrompt alignTo={resultCardRef} open={plzToast && intro.progress === 1} onClose={() => setPlzToast(false)}
+        <StandortPrompt resultKey={JSON.stringify(r)} onResultChange={revealUpdatedResult} alignTo={resultCardRef} open={plzToast && intro.progress === 1} onClose={() => setPlzToast(false)}
           onSave={async place => {
             const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags, () => fetchPvgis(place.plz));
             if (!programs) throw new Error("Location could not be applied");
             setAppliedFunding({ programs, enabled: fundingEnabled, wohnform: wohnform ?? undefined, locationKnown: true });
             setSelectedLocationAgs(place.ags); setPlz(place.plz); setCheckedLocation(place);
-            setPendingPlace(null); setLocationSearchDirty(false); setPlzToast(false); revealUpdatedResult();
+            setPendingPlace(null); setLocationSearchDirty(false); setPlzToast(false);
           }} />
 
         {/* ── RESULT (empfehlungsgetrieben) ── */}

@@ -1132,7 +1132,7 @@ export default function PVRechner({
         )}
 
         {/* ── RESULT ── */}
-        <StandortPrompt alignTo={resultCardRef} open={plzToast && intro.progress === 1 && !hasConsumerAddons}
+        <StandortPrompt resultKey={JSON.stringify(sel.data)} onResultChange={revealUpdatedResult} alignTo={resultCardRef} open={plzToast && intro.progress === 1 && !hasConsumerAddons}
           onClose={() => setPlzToast(false)}
           message={fundingActive ? "Genauerer Ertrag\nfür deinen Standort" : "Förderung möglich\nan deinem Wohnort"}
           onSave={async place => {
@@ -1141,7 +1141,7 @@ export default function PVRechner({
             setAppliedPrograms(programs); setAppliedAgs(place.ags); setPlz(place.plz);
             setCheckedPlace(place); setPendingPlace(null); setLocationDirty(false);
             setFundingEnabled(true); setFundingDraft(null); setFundingError(null);
-            setPlzToast(false); revealUpdatedResult();
+            setPlzToast(false);
           }} />
 
         {/* Folge einer übersprungenen Frage. Neutral statt blau: das ist eine

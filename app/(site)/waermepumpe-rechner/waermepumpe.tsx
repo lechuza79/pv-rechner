@@ -218,6 +218,7 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState("");
   const foerderQuelle = useFoerderung("waermepumpe");
+  const [locationFeedbackVisible, setLocationFeedbackVisible] = useState(false);
   const [locationPromptDismissed, setLocationPromptDismissed] = useState(false);
   const [checkedPlz, setCheckedPlz] = useState("");
   const lookupFunding = (value: string) => {
@@ -1594,20 +1595,20 @@ export default function Waermepumpe({
                 </>}
               </div>
             </Modal>
-            <StandortPrompt alignTo={overviewRef}
+            <StandortPrompt resultKey={JSON.stringify(result)} onResultChange={showUpdatedResult} onFeedbackChange={setLocationFeedbackVisible} alignTo={overviewRef}
               open={isResult && situation === "bestand" && !checkedPlz && !locationPromptDismissed && resultIntro.progress === 1 && !fundingCheckOpen && !fundingNotice}
               onClose={() => setLocationPromptDismissed(true)}
               onSave={async place => {
                 const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags);
                 if (!programs) throw new Error("Location could not be applied");
-                setPlz(place.plz); setCheckedPlz(place.plz); setLocationPromptDismissed(true); showUpdatedResult();
+                setPlz(place.plz); setCheckedPlz(place.plz); setLocationPromptDismissed(true);
               }} />
-            <Toast alignTo={overviewRef} tone="awareness" open={isResult && (!!checkedPlz || locationPromptDismissed) && situation === "bestand" && !fundingConfirmed && resultIntro.progress === 1 && !fundingPromptDismissed && !fundingCheckOpen && !fundingNotice} onClose={() => setFundingPromptDismissed(true)}>
+            <Toast alignTo={overviewRef} tone="awareness" open={!locationFeedbackVisible && isResult && (!!checkedPlz || locationPromptDismissed) && situation === "bestand" && !fundingConfirmed && resultIntro.progress === 1 && !fundingPromptDismissed && !fundingCheckOpen && !fundingNotice} onClose={() => setFundingPromptDismissed(true)}>
               <span className="wp-funding-toast-content">Eventuell mehr Förderung möglich
                 <button type="button" onClick={openFundingCheck}>Fördercheck machen</button>
               </span>
             </Toast>
-            <Toast alignTo={overviewRef} tone="awareness" open={fundingNotice} onClose={() => setFundingNotice(false)}>
+            <Toast alignTo={overviewRef} tone="awareness" open={fundingNotice && !locationFeedbackVisible} onClose={() => setFundingNotice(false)}>
               <span className="wp-funding-toast-content">Förderung geändert · Ergebnis aktualisiert
                 <button type="button" onClick={showUpdatedResult}>Zum neuen Ergebnis</button>
               </span>

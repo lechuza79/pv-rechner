@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
+import { NATIONAL_AVG_YIELD } from "../lib/constants";
 import { DEFAULT_PRICES } from '../lib/prices-config';
 import { DEFAULT_FEED_IN } from '../lib/feedin-config';
 
@@ -15,6 +16,7 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.route('**/api/prices', r => r.fulfill({ json: DEFAULT_PRICES }));
   await page.route('**/api/feedin', r => r.fulfill({ json: DEFAULT_FEED_IN }));
+  await page.route('**/api/shop/balkon', r => r.fulfill({ json: { angebote: [], abgerufenIso: new Date().toISOString() } }));
   await page.route('**/api/suche?*', r => r.fulfill({ json: { orte: [
     { ags: '03458014', name: 'Wildeshausen', kontext: 'Landkreis Oldenburg', links: [{ href: '/?plz=27793' }] },
   ] } }));
@@ -45,7 +47,9 @@ for (const [name, route] of routes) test(`${name}: mobile inline location saves 
   await page.setViewportSize({ width: 375, height: 812 });
   let fundingRequests = 0;
   page.on('request', request => { if (request.url().includes('/api/funding?plz=')) fundingRequests++; });
+  if (name === 'wp') await page.clock.install();
   const prompt = await open(page, route, name === 'klima');
+  if (name === 'wp') await page.getByRole('slider', { name: 'Tag wählen', exact: true }).first().evaluate(el => el.setAttribute('data-before-location', 'true'));
   await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).click({ trial: true });
   const buttonBox = (await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).boundingBox())!;
   const promptBox = (await prompt.boundingBox())!;
@@ -78,6 +82,18 @@ for (const [name, route] of routes) test(`${name}: mobile inline location saves 
   await prompt.getByRole('button', { name: 'Speichern', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Standort eingeben', exact: true })).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => localStorage.getItem('sc-plz'))).toBe('27793');
+  const feedback = page.getByRole('status').filter({ hasText: 'Wildeshausen übernommen.' });
+  await expect(feedback).toContainText(name === 'wp' ? 'Dein Ergebnis bleibt unverändert.' : 'Ergebnis aktualisiert.');
+  await expect(feedback).toContainText('(10 s)');
+  if (name === 'wp') {
+    await expect(page.locator('[data-before-location="true"]')).toHaveCount(1);
+    await feedback.screenshot({ path: '/tmp/location-feedback-unchanged.png' });
+    await page.clock.fastForward(9000);
+    await expect(feedback).toContainText('(1 s)');
+    await page.clock.fastForward(1000);
+    await expect(feedback).toHaveCount(0);
+    await expect(page.locator('[data-before-location="true"]')).toHaveCount(1);
+  } else if (name === 'pv') await feedback.screenshot({ path: '/tmp/location-feedback-updated.png' });
 });
 
 test('PV: failed yield lookup preserves the result and lets the visitor retry', async ({ page }) => {
@@ -131,4 +147,20 @@ test('BKW: saving the location applies an eligible grant to the selected set', a
   await prompt.getByRole('button', { name: 'Speichern', exact: true }).click();
   await expect(page.locator('.wp-funded-amount').first()).toContainText('800');
   await expect.poll(() => page.evaluate(() => localStorage.getItem('sc-plz'))).toBe('27793');
+});
+
+
+for (const [name, route] of routes.filter(([name]) => name === 'pv' || name === 'bkw')) test(`${name}: unchanged yield and no grant do not restart the result`, async ({ page }) => {
+  await page.route('**/api/pvgis?*', r => r.fulfill({ json: { annual: NATIONAL_AVG_YIELD, source: 'pvgis' } }));
+  const prompt = await open(page, route);
+  await page.getByRole('slider', { name: 'Tag wählen', exact: true }).first().evaluate(el => el.setAttribute('data-before-location', 'true'));
+  await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).click();
+  await prompt.getByLabel('Postleitzahl oder Ort', { exact: true }).fill('27793');
+  await prompt.getByRole('button', { name: /27793 Wildeshausen/ }).click();
+  await prompt.getByRole('button', { name: 'Speichern', exact: true }).click();
+  const feedback = page.getByRole('status').filter({ hasText: 'Wildeshausen übernommen.' });
+  await expect(feedback).toContainText('Dein Ergebnis bleibt unverändert.');
+  await expect(page.locator('[data-before-location="true"]')).toHaveCount(1);
+  await feedback.getByRole('button', { name: 'Schließen', exact: true }).click();
+  await expect(feedback).toHaveCount(0);
 });

@@ -24,6 +24,8 @@ export default function Toast({
   children,
   /** Millisekunden bis zum Selbstschließen. 0 = bleibt stehen. */
   autoHideMs = 0,
+  showCountdown = false,
+  countdownKey,
   tone = "accent",
 }: {
   open: boolean;
@@ -37,6 +39,8 @@ export default function Toast({
   onClick?: () => void;
   children: React.ReactNode;
   autoHideMs?: number;
+  showCountdown?: boolean;
+  countdownKey?: string;
   /** `accent` = Handlungsaufforderung, `neutral` = reine Auskunft. */
   tone?: "accent" | "neutral" | "awareness";
 }) {
@@ -54,11 +58,15 @@ export default function Toast({
   // Satz war nach einer Sekunde weg. Genau der Satz, der die stille Annahme
   // sichtbar machen soll.
   const inhalt = typeof children === "string" ? children : null;
+  const [remaining, setRemaining] = useState(() => Math.ceil(autoHideMs / 1000));
   useEffect(() => {
     if (!open || !autoHideMs) return;
-    const t = setTimeout(() => onCloseRef.current(), autoHideMs);
-    return () => clearTimeout(t);
-  }, [open, autoHideMs, inhalt]);
+    const deadline = Date.now() + autoHideMs;
+    setRemaining(Math.ceil(autoHideMs / 1000));
+    const timeout = setTimeout(() => onCloseRef.current(), autoHideMs);
+    const interval = showCountdown ? setInterval(() => setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000))), 250) : undefined;
+    return () => { clearTimeout(timeout); if (interval) clearInterval(interval); };
+  }, [open, autoHideMs, showCountdown, countdownKey, inhalt]);
 
   const [alignment, setAlignment] = useState<CSSProperties>({});
   useLayoutEffect(() => {
@@ -107,6 +115,7 @@ export default function Toast({
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
+      {showCountdown && autoHideMs > 0 && <span aria-hidden="true" style={{ whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>({remaining} s)</span>}
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
         aria-label={closeLabel}

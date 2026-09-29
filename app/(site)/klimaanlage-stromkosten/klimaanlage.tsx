@@ -433,7 +433,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         )}
 
         {/* ── RESULT ── */}
-        <StandortPrompt open={isResult && !plzConfirmed && !locationPromptDismissed}
+        <StandortPrompt resultKey={JSON.stringify(result)} open={isResult && !plzConfirmed && !locationPromptDismissed}
           message={"Genauer rechnen\nmit deinem Standort"}
           onClose={() => setLocationPromptDismissed(true)}
           onSave={async place => {
