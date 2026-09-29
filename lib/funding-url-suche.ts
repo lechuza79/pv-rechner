@@ -99,6 +99,20 @@ const FOERDER_SIGNALE: { muster: RegExp; punkte: number }[] = [
   // „bonus" und „praemie" nur in Verbindung mit dem Thema: Ein „Bonusprogramm"
   // der Stadtbücherei ist kein Zuschuss, ein „Klimabonus" schon.
   { muster: /foerder|förder|klimabonus|energiebonus|solarbonus|solarpraemie|solarprämie/, punkte: 5 },
+  // A page that carries nothing but the technology as its LAST path segment
+  // (28.09.2026). Measured against our own catalogue: nine confirmed grants
+  // live exactly like this and were invisible to the search, because no money
+  // word appears — Bruck i.d.OPf. `/service/pv-balkonkraftwerke`, Meschede
+  // `/balkonkraftwerk`, Waltrop, Schwarzenfeld, Mutterstadt, Pfaffenhofen,
+  // Trier-Saarburg `/balkonkraftwerke/`, Kumhausen `/balkon-photovoltaikanlagen`,
+  // Eckental `/photovoltaikanlagen/`. A municipality rarely keeps a standing
+  // page named after a single technology unless it pays for it.
+  //
+  // The whole segment must be the technology word: `/balkonkraftwerk-anmelden`
+  // or `/balkonkraftwerke-richtig-nutzen` stay out (information, not money).
+  // The screener still reads every result, so a pure information page costs
+  // one screening, not a catalogue entry.
+  { muster: /\/(pv-|photovoltaik-)?(balkonkraftwerke?|balkon-?photovoltaik(anlagen?)?|balkon-pv(-anlagen)?|photovoltaikanlagen|steckersolar(anlagen|geraete)?)(\/|\.html?|\.php)?$/, punkte: 5 },
 ];
 
 /**

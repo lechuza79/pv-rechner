@@ -1,3 +1,4 @@
+import RegionNavigation from "./RegionNavigation";
 import { packeRankingZellen } from "../../lib/ranking-zellen";
 import {monitorContentForPreview} from '../../lib/monitor-content-preview';
 import SiteFuss from '../SiteFuss';
@@ -75,6 +76,13 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const value = sums.get(town.region_id)?.kwp ?? null;
     return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${basePath}/${town.slug}` : null };
   }).sort((a, b) => a.name.localeCompare(b.name, "de"));
+  // Reuse the map's geographic boundaries for the footer-style navigation cards.
+  const outlines = shapes.map(shape => {
+    const points = shape.ground.flat(2);
+    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+    const x = Math.min(...xs), y = Math.min(...ys);
+    return {id:shape.id, viewBox:`${x} ${y} ${Math.max(...xs)-x} ${Math.max(...ys)-y}`, path:shape.ground.flatMap(poly => poly.map(ring => `M${ring.map(p=>p.join(',')).join('L')}Z`)).join(' ')};
+  });
   const metrics = [
     { id: "kwp", label: "Installierte Solarleistung", format: pvLeistungTeile },
     { id: "count", label: "Solaranlagen", format: anlagenZahlTeile },
@@ -141,14 +149,17 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
         rows={towns.map(town=>({id:town.region_id,name:town.name,href:town.slug?`${basePath}/${town.slug}`:null,value:sums.get(town.region_id)?.count??0}))}
         history={rankingHistory.map(frame=>({year:frame.year,rows:towns.map(town=>({id:town.region_id,value:frame.sums[town.region_id]?.alle.count??0}))}))}/>
     </section>
-    <LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}
+    </>}
+    <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>
+
+    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
+    {comparable&&<LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}
       closed={<ul>{places.filter(p=>p.href).map(p=><li key={p.id}><a href={p.href!}>{p.name}</a></li>)}</ul>}>
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>{text.tableHeading}</h2></div></div>
       <div style={variant === "dark" ? stageDefaults(0) as CSSProperties : undefined}>
         <RankingTable regions={ranking.regions} zellen={packeRankingZellen(ranking.cells, ranking.regions)} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
       </div>
-    </LazyDisclosure></>}
-    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
+    </LazyDisclosure>}
     {zusatz&&<section className={`${styles.section} ${styles.regionExtras}`} aria-label="Weitere Auswertungen">{zusatz}</section>}
     {level!=="de"&&<section className={`${styles.fundingSection} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
@@ -169,4 +180,9 @@ async function RegionMonitorSection({content,...props}:Omit<ComponentProps<typeo
     ?<p role="status">Die vorbereitete Auswertung für {props.name} ist derzeit nicht vollständig verfügbar. Monatsvergleiche und Energiedaten erscheinen hier, sobald alle Teilgebiete auf gemeinsamer Grundlage vorliegen.</p>
     :prepared.state==='older-edition'?<p role="status">Diese Auswertung beruht auf den Gebietsdaten mit Registerstand {dashboardDate(prepared.editions.at(-1)!)}. Die neueren Registerzahlen werden gerade eingearbeitet.</p>:null;
   return <div data-monitor-preview={preview ? "local-package" : undefined}>{note}<LandkreisMonitor {...props} monitor={monitor}/></div>;
+}
+
+async function RegionNavigationSection({content,...props}:ComponentProps<typeof RegionNavigation> & {content:Promise<DistrictContent>}) {
+  const {childEnergy}=await content;
+  return <RegionNavigation {...props} energy={childEnergy}/>;
 }

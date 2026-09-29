@@ -646,7 +646,13 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Stand 27.09.2026) bestätigt die erste Lesung: 21/7867 wurde „dem
   //   federführenden Ausschuss für Wirtschaft und Energie zur weiteren Beratung
   //   überwiesen". Zustand und Werte unverändert: Regierungsentwurf.
-  geprueftIso: "2026-09-27",
+  // 29.09.2026: Mitteilung des Ausschusses für Wirtschaft und Energie vom
+  //   25.09.2026 im Original gelesen (bundestag.de, to_47_05-10-2026_oeA_EEG.pdf):
+  //   Die 47. Sitzung am 05.10.2026 ist eine öffentliche Anhörung zu
+  //   BT-Drucksache 21/7867. Die Ausschussberatung läuft also noch; eine
+  //   2./3. Lesung vor diesem Termin ist ausgeschlossen. Zustand und Werte
+  //   unverändert: Regierungsentwurf, im Ausschuss.
+  geprueftIso: "2026-09-29",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
