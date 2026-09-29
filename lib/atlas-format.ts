@@ -263,8 +263,8 @@ export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
  * Prozent ist eine Einheit wie kWp: Sie wird nicht getippt, sondern kommt hier
  * her. Zwischen Zahl und Zeichen steht im Deutschen ein Leerzeichen (DIN 5008).
  */
-export const anteilProzentTeile = (anteil: number): Messwert => ({
-  value: prozentGerundet(anteil).toLocaleString("de-DE"),
+export const anteilProzentTeile = (anteil: number, stellen?: number): Messwert => ({
+  value: stellen === undefined ? prozentGerundet(anteil).toLocaleString("de-DE") : anteil > 0 && anteil * 100 < 10 ** -stellen ? `< ${dez(10 ** -stellen, stellen)}` : dez(anteil * 100, stellen),
   unit: "%",
 });
 export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
@@ -453,3 +453,9 @@ export function formatDataAsOf(iso: string): string {
   if (!m) return iso;
   return `${MONATE_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
 }
+
+/** Absolute monthly solar energy in one comparable unit across regional cards. */
+export const energieMwhTeile = (mwh: number): Messwert => ({
+  value: mwh > 0 && mwh < 0.1 ? "< 0,1" : dez(mwh, 1),
+  unit: "MWh",
+});
