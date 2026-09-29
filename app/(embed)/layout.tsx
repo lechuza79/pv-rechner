@@ -1,3 +1,4 @@
+import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
@@ -54,6 +55,7 @@ export default function EmbedRootLayout({
         {children}
         <WidgetAutoHeight />
         <VideoRenderBridge />
+        <WidgetVideoConfirmation />
       </body>
     </html>
   );

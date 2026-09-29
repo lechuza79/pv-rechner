@@ -54,3 +54,22 @@ export async function callVideoFn<T = Json>(name: VideoFn, p: Json): Promise<T> 
 export async function closeVideoDb(): Promise<void> {
   if (pool) { await pool.end(); pool = null; }
 }
+
+/** Read display context only. Never expose recipient details to the browser. */
+export async function videoConfirmationContext(hash: string): Promise<{ ags: string; period: string; token_expires_at: string; status: string } | null> {
+  const url = localUrl();
+  if (url) {
+    if (!pool) {
+      const { Pool } = await import("pg");
+      pool = new Pool({ connectionString: url, max: 4 });
+    }
+    const result = await pool.query("select ags, period, token_expires_at, status from video_requests where token_hash=$1", [hash]);
+    return result.rows[0] ?? null;
+  }
+  if (process.env.VIDEO_EXPORT_ENABLED !== "1") return null;
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) return null;
+  const { data, error } = await supabase.from("video_requests").select("ags,period,token_expires_at,status").eq("token_hash", hash).maybeSingle();
+  if (error) throw new Error("Video confirmation context unavailable");
+  return data;
+}

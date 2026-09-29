@@ -71,3 +71,16 @@ describe("video export: personal data stays out of logs and links", () => {
     expect(lies("lib/video-export-abo.ts")).toContain("aboBestaetigen(result.abo.id, now)");
   });
 });
+
+
+describe("video confirmation presentation", () => {
+  it("uses the shared modal on municipal, site and embed pages", () => {
+    for (const layout of ["gemeinde", "site", "embed"]) {
+      expect(lies(`app/(${layout})/layout.tsx`)).toContain("<WidgetVideoConfirmation />");
+    }
+    const route = lies("app/api/video-export/bestaetigen/route.ts");
+    expect(route).not.toMatch(/<!doctype|<body|<button/);
+    expect(route).toContain("getGemeindePfad(context.ags)");
+    expect(route).toContain("Location: `${target}#${fragment}`");
+  });
+});

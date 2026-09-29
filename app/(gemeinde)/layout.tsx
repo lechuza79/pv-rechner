@@ -1,3 +1,4 @@
+import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import type { Metadata, Viewport } from "next";
 import { getCssVariables } from "../../lib/theme";
 import { WebAnalytics } from "../../components/WebAnalytics";
@@ -77,6 +78,7 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
             layout). Without them the switch would blind the letter statistics. */}
         <WebAnalytics />
         <HerkunftsMelder />
+        <WidgetVideoConfirmation />
       </body>
     </html>
   );
