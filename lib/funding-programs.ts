@@ -2415,8 +2415,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // daneben. Der Seiten-Wächter meldet den Wechsel einmalig als „nicht
     // vergleichbar"; das ist der Preis und in seiner Bauart vorgesehen.
     url: "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen",
+    // BUDGET 2026 AUSGESCHÖPFT (29.09.2026, zweimal unabhängig an der
+    // Programmseite gelesen): „Das für Neuanträge im Jahr 2026 zur Verfügung
+    // stehende Fördermittelbudget ist vollständig ausgeschöpft. Ab sofort
+    // können keine neuen Förderanträge mehr angenommen werden." Der Hinweis
+    // steht über der ganzen Seite, gilt also Dachanlage, Speicher UND
+    // Balkonkraftwerk. Die Richtlinie (Version 2, 02.10.2025) läuft „bis zum
+    // 31.12.2026" — eine Neuauflage 2027 ist nicht angekündigt.
     stand: "September 2026",
-    status: "aktiv", capped: true, verified: true,
+    status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Staffel-Pauschalen für Dachanlage und Speicher, dazu eine Pauschale fürs Balkonkraftwerk",
     rates: [
@@ -10474,13 +10481,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       },
       {
         "label": "Stationärer Speicher mit neuer PV-Anlage",
-        "value": "300 € pauschal",
+        "value": "300 € pauschal (seit Sept. 2026 nicht mehr auf der Seite der Stadt)",
         "nur": [
           "pv"
         ]
       }
     ],
+    // SPEICHERTEIL VON DER AMTSSEITE VERSCHWUNDEN (29.09.2026, zweimal
+    // unabhängig gelesen, beide Adressvarianten): Unter „Förderprogramme" steht
+    // nur noch „Förderung von Stecker-Solar … Der Zuschuss für die
+    // Stecker-Solargeräte beträgt 100 Euro." Speicher/Batterie kommen im
+    // Dokument nicht mehr vor, verlinkt sind nur Stecker-Richtlinie, FAQ und
+    // Denkmalliste. KEIN „ausgeschöpft"/„beendet" — ob das Programm endete oder
+    // umzog, ist offen. Deshalb bleibt der letzte belegte Stand (16.09.2026)
+    // stehen, mit dem offenen Befund sichtbar daneben; ein Ende ist nicht
+    // belegt, und am Dach-Anteil hängt die Förderseite der Stadt. Geld bewegt
+    // der Teil nicht — er trägt keinen strukturierten Satz.
     "conditions": [
+      {
+        "text": "Seit September 2026 nennt die Stadt die Speicherförderung nicht mehr auf ihrer Förderseite — ob sie noch läuft, bitte vor dem Kauf bei der Stadt erfragen",
+        "nur": [
+          "pv"
+        ]
+      },
       {
         "text": "Die Speicherförderung läuft seit dem 7. Juli 2026",
         "nur": [
