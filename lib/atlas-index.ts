@@ -244,6 +244,17 @@ export function ortsseiteIndexierbar(
 }
 
 /**
+ * A district page is indexable once a town in it has received our letter
+ * (operator, 29.09.2026): press releases per district link it since then, same
+ * reasoning as for the town pages — a page we hand out must not be blocked. The
+ * district LEVEL stays unreleased; this is per page, triggered by the send date.
+ */
+export function kreisseiteIndexierbar(kreisId: string, angeschrieben: readonly string[]): boolean {
+  if (atlasIsIndexable("landkreis")) return true;
+  return kreisId.length === 5 && angeschrieben.some((ags) => ags.length === 8 && ags.startsWith(kreisId));
+}
+
+/**
  * robots-Feld für Next-Metadata: indexierbar → index/follow, sonst
  * noindex/nofollow.
  *

@@ -172,6 +172,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           priority: 0.5,
         });
       }
+      // Their district pages are released with them (kreisseiteIndexierbar) — only
+      // from contacted towns, not from the release plan, and never for a
+      // kreisfreie Stadt, whose district page forwards to the town page.
+      if (!atlasLevelReleased("landkreis")) {
+        const kreisUrls = new Set<string>();
+        for (const ags of ausOutreach) {
+          const p = pfade[ags];
+          if (p && p.kreis !== p.gemeinde) kreisUrls.add(`${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}`);
+        }
+        for (const url of kreisUrls) atlasPages.push({ url, lastModified: mastrStand, changeFrequency: "monthly", priority: 0.5 });
+      }
     } catch {
       // bewusst still: siehe Kommentar oben
     }

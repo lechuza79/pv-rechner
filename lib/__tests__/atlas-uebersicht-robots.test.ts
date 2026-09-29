@@ -25,7 +25,9 @@ describe("Atlas-Übersichten: noindex, aber follow", () => {
   });
 
   it("die Atlas-Route setzt für eine gefundene Region die Übersichts-Regel", () => {
-    expect(route).toMatch(/robots:\s*atlasUebersichtRobots\(atlasIsIndexable\(region\.level\)\)/);
+    // District pages: released per page once a town in them got our letter
+    // (operator, 29.09.2026) — still via the overview rule, so never nofollow.
+    expect(route).toMatch(/robots:\s*atlasUebersichtRobots\(\s*region\.level === "landkreis"\s*\?\s*kreisseiteIndexierbar\([\s\S]*?:\s*atlasIsIndexable\(region\.level\),?\s*\)/);
     // Eine unbekannte Adresse bleibt noindex, nofollow.
     expect(route).toContain("if (!region) return { robots: atlasRobots(false) };");
   });

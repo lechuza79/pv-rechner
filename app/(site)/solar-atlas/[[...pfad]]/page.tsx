@@ -13,7 +13,8 @@ import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
-import { atlasIsIndexable, atlasRobots, atlasUebersichtRobots } from "../../../../lib/atlas-index";
+import { atlasIsIndexable, atlasRobots, atlasUebersichtRobots, kreisseiteIndexierbar } from "../../../../lib/atlas-index";
+import { verlinkendeGemeinden } from "../../../../lib/atlas-outreach-freigabe";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
 import AtlasKpiRow from "../../../../components/atlas/AtlasKpiRow";
@@ -136,7 +137,11 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     }),
     // Übersicht: nicht freigegeben heißt noindex, aber FOLLOW — sie ist der
     // einzige interne Weg zu den freigegebenen Ortsseiten darunter.
-    robots: atlasUebersichtRobots(atlasIsIndexable(region.level)),
+    robots: atlasUebersichtRobots(
+      region.level === "landkreis"
+        ? kreisseiteIndexierbar(region.region_id, await verlinkendeGemeinden().catch(() => [] as string[]))
+        : atlasIsIndexable(region.level),
+    ),
   };
 }
 
