@@ -7369,6 +7369,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind Menschen, die in Walddorfhäslach zur Miete oder im Eigentum wohnen",
       "Das Gerät muss auf Walddorfhäslacher Gemarkung betrieben werden",
+      "Mieterinnen und Mieter legen die schriftliche Zustimmung der Vermieterin oder des Vermieters vor",
+      "Bei einem Kulturdenkmal oder Prüffall ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+      "Hersteller oder Verkäufer bestätigen die Produktsicherheit in einer Eigen- oder Konformitätserklärung (z. B. CE-Kennzeichnung, Netzanschlussnorm 4105)",
       "Entschieden wird im Rahmen der verfügbaren Haushaltsmittel",
     ],
     combinableWith: BUND,

@@ -76331,17 +76331,18 @@
   {
     "regionId": "09376170",
     "name": "Teublitz",
-    "checkedAt": "2026-09-29T09:50:00Z",
+    "checkedAt": "2026-09-29T12:30:00Z",
     "recheckAt": "2026-10-13T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "klaerung",
-    "conclusion": "Stadt Teublitz beschloss am 11.05.2023 eine „Richtlinie zur Förderung von Stecker-Solaranlagen im Stadtgebiet Teublitz“ (10 % des Rechnungsbetrags, höchstens 100 €, bis 600 Wp, ohne Enddatum; 10.000 € im Haushalt 2023). Die frühere Programmseite teublitz.de/balkonkraftwerke antwortet heute mit 404, die Sitemap und die Formulare führen das Programm nicht mehr, die Beschlussbücher 2024–2026 enthalten weder Aufhebung noch Verlängerung. Ob das Programm heute läuft, ist offen; noch nicht in den Katalog aufgenommen.",
+    "conclusion": "Stadt Teublitz beschloss am 11.05.2023 eine „Richtlinie zur Förderung von Stecker-Solaranlagen im Stadtgebiet Teublitz“ (10 % des Rechnungsbetrags, höchstens 100 €, bis 600 Wp, ohne Enddatum, Antrag bis 31.12. des Haushaltsjahres). Die Programmseite teublitz.de/balkonkraftwerke bot laut Webarchiv noch am 15.01.2026 Antrag und Richtlinie an (weitere Archivfassung 22.04.2026 mit HTTP 200); heute antwortet sie mit 404, und die Website-Suche findet das Programm nicht mehr. Ein Aufhebungsbeschluss ist in den Beschlussbüchern 2024–2026 nicht enthalten. Ob 2026 noch gefördert wird, ist offen; Rückfrage an die Stadt vorgemerkt, noch nicht in den Katalog aufgenommen.",
     "searches": [
       "Beschlussbuch Stadtrat 2023_09 (Seiten 16–18) gelesen: Beschluss Nr. 43 vom 11.05.2023, 19:0",
       "Bürgerversammlung 2023: über zwei Drittel der 10.000 € abgerufen",
       "teublitz.de/balkonkraftwerke am 29.09.2026: HTTP 404; Sitemap und Formularseite ohne Programm",
       "Beschlussbücher 2024, 2025, 2026 durchsucht: kein Beschluss zu Stecker-Solar/Balkon",
-      "Website-Suche „Balkonkraftwerk(e)“: nur Bürgerversammlung 2023; Internet Archive nicht erreichbar"
+      "Website-Suche „Balkonkraftwerk(e)“: nur Bürgerversammlung 2023; Internet Archive nicht erreichbar",
+      "Webarchiv teublitz.de/balkonkraftwerke (29.09.2026): Fassungen 05/2023 bis 04/2026 mit HTTP 200; Fassung 15.01.2026 gelesen: Antragsformular und Richtlinie verlinkt, Ansprechpartner Finanzabteilung"
     ],
     "evidence": [
       {
@@ -76351,6 +76352,10 @@
       {
         "url": "https://www.teublitz.de/breitbandausbau/baygibitr-breitband-foerderverfahren",
         "finding": "29.09.2026: Breitband-Förderverfahren nach der Bayerischen Gigabitrichtlinie, kein Zuschuss an Privathaushalte für Energie."
+      },
+      {
+        "url": "https://web.archive.org/web/20260115082726/https://www.teublitz.de/balkonkraftwerke",
+        "finding": "29.09.2026 (Archivfassung 15.01.2026): „hat deshalb im Mai 2023 beschlossen, Zuschüsse für sogenannte Stecker-Solaranlagen (Balkonkraftwerke) … zu gewähren“; Antragsformular online, „spätestens am 31.12. für das jeweilige Haushaltsjahr“."
       }
     ],
     "sources": [
@@ -76362,29 +76367,41 @@
       }
     ],
     "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-30T08:00:00Z",
-      "detail": "Programmseite teublitz.de/balkonkraftwerke im Webarchiv (Stand 2024–2026) lesen und Haushaltsplan 2025/2026 der Stadt auf einen Ansatz für Stecker-Solar prüfen; danach als beendet oder aktiv aufnehmen oder Rückfrage an die Kämmerei vormerken."
+      "kind": "enquiry",
+      "dueAt": "2026-10-13T08:00:00Z",
+      "detail": "Bei der Stadt Teublitz erfragen, ob die Stecker-Solar-Förderung (Richtlinie vom 11.05.2023) 2026 noch gewährt wird oder beendet ist, und seit wann."
+    },
+    "enquiry": {
+      "id": "klaerung-09376170",
+      "recipient": "info@teublitz.de",
+      "recipientSource": "https://www.teublitz.de/impressum",
+      "website": "https://www.teublitz.de/balkonkraftwerke",
+      "question": "Bis Anfang 2026 bot die Stadt Teublitz auf teublitz.de/balkonkraftwerke einen Zuschuss für Stecker-Solaranlagen nach der Richtlinie vom 11.05.2023 an (10 % des Rechnungsbetrags, höchstens 100 €). Die Seite ist inzwischen nicht mehr erreichbar. Wird die Förderung 2026 noch gewährt, oder ist sie beendet — und falls ja, zu welchem Datum?"
     }
   },
   {
     "regionId": "09376159",
     "name": "Schmidgaden",
-    "checkedAt": "2026-09-29T09:50:00Z",
-    "recheckAt": "2026-10-13T08:00:00Z",
+    "checkedAt": "2026-09-29T12:40:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "klaerung",
-    "conclusion": "Gemeinde Schmidgaden: Website ohne Klima-, Energie- oder Förderrubrik; Formulare ohne Förderantrag; Fördertreffer nur Breitbandausbau und Kriterien für Freiflächen-PV. Die Website-Suche ist defekt (auch „Breitband“ ohne Treffer), das Ratsinformationssystem nur mit Browser lesbar — ein Balkon-Programm wie in den Nachbargemeinden ist deshalb nicht ausgeschlossen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Schmidgaden: kein gemeindlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Website ohne Klima-, Energie- oder Förderrubrik, Formulare ohne Förderantrag; das Ratsinformationssystem (Sitzungen seit 2021) enthält keinen Tagesordnungspunkt zu einem solchen Programm — Treffer zu Förderung und Zuschuss betreffen Vereine, Kirche und Straßenbeleuchtung, zu Photovoltaik nur Freiflächenanlagen.",
     "searches": [
       "Startseite, komplettes Menü, Sitemap, Aktuelles, beide Formular- und Informationsseiten, Kommunale Wärmeplanung am 29.09.2026 gelesen",
       "Website-Suche liefert für jeden Begriff „Keine Ergebnisse“, auch für die Kontrolle „Breitband“ — Index defekt",
       "Websuche „Schmidgaden Balkonkraftwerk Förderung“: nur Onetz ohne Bezug",
-      "Ratsinformationssystem ris.komuna.net/schmidgaden ist eine JavaScript-Anwendung, per einfachem Abruf nicht lesbar"
+      "Ratsinformationssystem ris.komuna.net/schmidgaden ist eine JavaScript-Anwendung, per einfachem Abruf nicht lesbar",
+      "Ratsinformationssystem ris.komuna.net/schmidgaden, Volltextsuche im Browser am 29.09.2026: „Balkonkraftwerk“, „Stecker“, „Klimaschutz“, „Wärmepumpe“, „Richtlinie“ ohne Treffer; „Förderung“ (3), „Zuschuss“ (4), „Photovoltaik“ (16), „Solar“ (3), „Speicher“ (1), „Energie“ (6) ohne Förderprogramm für Privathaushalte; Kontrolle „Haushalt“ liefert 24 Treffer (Suche funktioniert)"
     ],
     "evidence": [
       {
         "url": "https://www.schmidgaden.de/bauen-projekte/breitbandausbau-nach-dem-foerderprogramm-gemaess-der-gigabit-rl-2-0",
         "finding": "29.09.2026: Breitbandausbau nach der Gigabitrichtlinie 2.0, kein Zuschuss an Privathaushalte für Energie."
+      },
+      {
+        "url": "https://ris.komuna.net/schmidgaden/app/volltextsuche",
+        "finding": "29.09.2026: Suche „Balkonkraftwerk“ → „Für diese Suche wurde kein Ergebnis gefunden.“; „Förderung“ → nur Kriegsgräberfürsorge, LED-Straßenbeleuchtung (BMU-Förderung) und Feuerwehr-Zuschuss."
       }
     ],
     "sources": [
@@ -76394,11 +76411,6 @@
         "reason": "Breitbandförderung, kein Energieprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.schmidgaden.de/bauen-projekte/breitbandausbau-nach-dem-foerderprogramm-gemaess-der-gigabit-rl-2-0"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-30T08:00:00Z",
-      "detail": "Ratsinformationssystem ris.komuna.net/schmidgaden im echten Browser nach „Balkonkraftwerk“, „Stecker“, „Förderung“ durchsuchen; findet sich nichts, als keine passende Förderung schließen."
-    }
+    ]
   }
 ]
