@@ -7,7 +7,7 @@
  * the live solar output reads the weather the parent page already loads
  * (window.atlasWeather, set by GemeindeSzene) — no second weather request.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-export-client";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
@@ -27,6 +27,7 @@ import { WidgetSetting } from "../dashboard/WidgetSetting";
 import { WidgetFrame } from "../dashboard/WidgetFrame";
 import { EnergyMonitor, type MonitorEnergyWidgets } from "../dashboard/EnergyMonitor";
 import { KpiOverview } from "../dashboard/KpiOverview";
+import {regionalSolarWeatherSource} from "../../lib/dashboard/regional-solar-weather";
 import {AnnualGrowth} from "../charts/AnnualGrowthWidget";
 import {CurrentPower, type SolarWeatherSource} from "../charts/CurrentPowerWidget";
 import { MastrMap } from "../MastrMap";
@@ -242,6 +243,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
 }
 
 export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
+  const weatherSource = useMemo(() => regionalSolarWeatherSource(paket.ags), [paket.ags]);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // Only in a frame: there the body is ours, and the parent needs the
@@ -308,7 +310,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
           }
         />
       )}
-    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} frameless /></ExportableWidgetFrame>}
+    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
     growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />}
     stock={widgets("Anlagenbestand")}
     energy={Object.keys(energy).length ? energy : undefined}
