@@ -8,6 +8,7 @@
  * (window.atlasWeather, set by GemeindeSzene) — no second weather request.
  */
 import { useEffect, useRef, useState } from "react";
+import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-export-client";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
 import { WIDGETS } from "../../lib/widget-registry";
@@ -101,6 +102,8 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   const periods = paket.monitorPeriods as Any;
   const role = widgetRole(item);
   const [period, setPeriod] = useState("current");
+  const [videoMonth, setVideoMonth] = useState(item.story.solarMonth?.month);
+  const videoParams: VideoRequestParams | undefined = item.template === "radial" && paket.ags === "06440016" && videoMonth ? {widget:"gemeinde-solar-monat", ags:paket.ags, period:videoMonth} : undefined;
   const isDonut = item.template === "anteilsdonut";
   const isComposition = item.template === "anlagenraster";
   const hasStockPeriod = isDonut || isComposition;
@@ -149,7 +152,10 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : isValuation ? monthLabel(chosenValue?.month ?? item.story.period) : undefined,
         filename: `solar-check-${item.template}-${paket.ags}`,
         animated: item.template === "radial",
-        ...(item.template === "radial" ? {exportNote: "Modellierte Erzeugung, keine Messung."} : {}),
+        videoParams,
+        videoPeriod: videoMonth ? monthLabel(videoMonth) : undefined,
+        onVideoRequest: videoParams ? (email: string, options: import("../WidgetVideoDialog").VideoMailOptions) => requestWidgetVideo({...videoParams, email, ...options}) : undefined,
+        ...(item.template === "radial" ? {exportNote: null, helpExportNote: false} : {}),
       }
     : {};
   return (
@@ -225,7 +231,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
           {item.story.energyYear ? (
             <MonitorAnnualEnergyChart data={item.story.energyYear} datasets={periods.annual} />
           ) : item.story.solarMonth ? (
-            <MonitorMonthlySolarChart data={item.story.solarMonth} datasets={periods.monthly.map((row: Any) => row.solar)} />
+            <MonitorMonthlySolarChart data={item.story.solarMonth} datasets={periods.monthly.map((row: Any) => row.solar)} onPeriodChange={setVideoMonth} />
           ) : (
             <MunicipalChart story={renderedStory as StoryConcept} />
           )}

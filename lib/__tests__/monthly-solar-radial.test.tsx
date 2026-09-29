@@ -44,7 +44,7 @@ describe('MonthlySolarRadial shared by monitor and story', () => {
 
   it('monitor: month selector and day controls stay out of the image, the month is printed', () => {
     expect((monitor.match(/data-sc-export-ignore=""/g) ?? []).length).toBeGreaterThanOrEqual(2);
-    expect(monitor).toMatch(/data-sc-export-only="block"[^>]*>Aug\. 2026</);
+    expect(monitor).toMatch(/data-sc-export-only="block"[^>]*>Aug\. 2026.*?modelliert</);
   });
 
   it('story export uses the registry footer only for data from our ERA5 archive', () => {

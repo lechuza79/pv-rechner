@@ -1229,6 +1229,8 @@ export const NOCH_NICHT_EINGEORDNET: string[] = [
   "DesignFooterNavigation",
   "HeatPumpDesignHeader",
   "PvSystemQuestions",
+  "VideoRenderBridge",
+  "WidgetVideoDialog",
   // Die Geräteempfehlung unter dem Wärmepumpen-Ergebnis (seit 05.09.2026).
   // Noch kein geteilter Baustein: Sie steht an genau einer Stelle und trägt
   // Affiliate-Kennzeichnung, Preisangaben und die fachlichen Hinweise, die nur
