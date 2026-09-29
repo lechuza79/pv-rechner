@@ -295,7 +295,7 @@ export default function Modal({
       cancelAnimationFrame(fokusFrame);
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
-      trigger?.focus();
+      trigger?.focus({ preventScroll: true });
     };
   }, [open]);
 
@@ -377,10 +377,13 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
         className={className}
         data-story-scheme={scheme}
+        data-shared-modal="true"
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel ?? (typeof title === "string" ? title : undefined)}
         style={{
+          // Explicit light dialogs keep readable foregrounds inside dark embeds.
+          ...(scheme === "light" ? Object.fromEntries(Object.entries(tokens).filter(([key]) => key.startsWith("--color-text-") || key.startsWith("--color-border"))) : {}),
           background: v("--color-bg"),
           color: v("--color-text-primary"),
           fontFamily: v("--font-text"),

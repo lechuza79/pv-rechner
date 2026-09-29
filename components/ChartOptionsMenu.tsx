@@ -87,7 +87,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     return()=>{observer.disconnect();window.removeEventListener('resize',update);};
   },[open,group,presentation]);
 
-  const close = (refocus = true) => { setOpen(false); if (refocus) button.current?.focus(); };
+  const close = (refocus = true) => { setOpen(false); if (refocus) button.current?.focus({preventScroll:true}); };
   const run = (fn: () => void | Promise<void>, done?: string) => async () => {
     close();
     try {
@@ -157,7 +157,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           </>}
         </div>
       )}
-      {videoOpen && <WidgetVideoDialog open={videoOpen} onClose={()=>{setVideoOpen(false);button.current?.focus();}} label={label} videoParams={videoParams} period={videoPeriod} place={videoPlace} loadThumbnail={loadVideoThumbnail} onRequest={onVideoRequest} />}
+      {videoOpen && <WidgetVideoDialog open={videoOpen} onClose={()=>{setVideoOpen(false);button.current?.focus({preventScroll:true});}} label={label} videoParams={videoParams} period={videoPeriod} place={videoPlace} loadThumbnail={loadVideoThumbnail} onRequest={onVideoRequest} />}
       {status && <span role="status" aria-live="polite" style={{ position: footer ? "relative" : "absolute", display:"block", right: 0, top: footer ? undefined : "100%", zIndex: 21, minWidth: 180, padding: 10, borderRadius: 8, background: `var(--widget-surface, ${v("--color-bg-raised")})`, color: "inherit" }}>{status}</span>}
     </div>
   );

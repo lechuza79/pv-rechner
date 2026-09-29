@@ -27,6 +27,7 @@ export default function GemeindeRahmen({
   durchreichen?: string[];
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
+  const placeholder = useRef<HTMLDivElement>(null);
   const los = useNachDerSzene(ref);
 
   useEffect(() => {
@@ -36,8 +37,17 @@ export default function GemeindeRahmen({
     let modalOpen = false;
     let closeTimer: ReturnType<typeof setTimeout> | undefined;
     let lastHeight = startHoehe;
+    let previousOverflow = "";
+    let parentScroll = 0;
     const applyModal = (open: boolean) => {
       if (open === modalOpen) return;
+      const contentOffset = Math.max(0, -frame.getBoundingClientRect().top);
+      if (open) {
+        parentScroll = window.scrollY;
+        previousOverflow = document.body.style.overflow;
+        // Keep the document height stable when the frame leaves normal flow.
+        if (placeholder.current) placeholder.current.style.height = `${lastHeight}px`;
+      }
       modalOpen = open;
       if (section) {
         section.style.position = open ? "relative" : "";
@@ -49,7 +59,14 @@ export default function GemeindeRahmen({
       frame.style.inset = open ? "0" : "auto";
       frame.style.zIndex = open ? "2147483647" : "auto";
       frame.style.height = open ? "100dvh" : `${lastHeight}px`;
-      document.body.style.overflow = open ? "hidden" : "";
+      document.body.style.overflow = open ? "hidden" : previousOverflow;
+      if (open) {
+        frame.contentWindow?.scrollTo({ top: contentOffset, behavior: "instant" });
+      } else {
+        if (placeholder.current) placeholder.current.style.height = "";
+        frame.contentWindow?.scrollTo({ top: 0, behavior: "instant" });
+        window.scrollTo({ top: parentScroll, behavior: "instant" });
+      }
       frame.style.backdropFilter = open ? "blur(3px)" : "";
       frame.style.background = open ? "rgba(0,8,10,.48)" : "transparent";
     };
@@ -66,16 +83,19 @@ export default function GemeindeRahmen({
     return () => {
       window.removeEventListener("message", onMessage);
       clearTimeout(closeTimer);
+      if (modalOpen) applyModal(false);
     };
   }, [nachricht, startHoehe, vollbild]);
 
   return (
-    <iframe
-      ref={ref}
-      src={los ? mitParametern(src, durchreichen) : undefined}
-      title={title}
-      style={{ display: "block", width: "100%", height: startHoehe, border: 0, background: "transparent" }}
-    />
+    <div ref={placeholder}>
+      <iframe
+        ref={ref}
+        src={los ? mitParametern(src, durchreichen) : undefined}
+        title={title}
+        style={{ display: "block", width: "100%", height: startHoehe, border: 0, background: "transparent" }}
+      />
+    </div>
   );
 }
 
