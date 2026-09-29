@@ -255,14 +255,14 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     const previous = properties.map((property) => [property, document.body.style.getPropertyValue(property)]);
     properties.forEach((property) => document.body.style.setProperty(property, computed.getPropertyValue(property)));
     let lastModal = false;
-    const hasModal = () => Boolean(document.querySelector('[data-chart-detail-open]'));
+    const hasModal = () => Boolean(document.querySelector('[data-chart-detail-open], [data-shared-modal="true"]'));
     const notify = () => {
       lastModal = hasModal();
       parent.postMessage({ type: "municipal-data-layout", height: root.current?.scrollHeight, modal: lastModal }, location.origin);
     };
     // Modal portals mount after the widget's effect, outside the monitor root.
     const modalObserver = new MutationObserver(() => { if (hasModal() !== lastModal) notify(); });
-    modalObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-chart-detail-open"] });
+    modalObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-chart-detail-open", "data-shared-modal"] });
     const observer = new ResizeObserver(notify);
     observer.observe(root.current!);
     window.addEventListener("chart-detail-change", notify);

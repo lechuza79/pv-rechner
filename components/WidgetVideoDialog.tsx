@@ -79,7 +79,7 @@ export default function WidgetVideoDialog({ open, onClose, label, period, place,
     }
   }
 
-  return <Modal open={open} onClose={onClose} title="Video herunterladen" maxWidth={520} className={styles.dialog}>
+  return <Modal open={open} onClose={onClose} title="Video herunterladen" maxWidth={520} className={styles.dialog} scheme="light">
     <div className={styles.content}>
       <div className={styles.context}><div className={styles.thumbnail}>{thumbnail ? <img src={thumbnail} alt={`Vorschau: ${label}`} /> : <IconVideo size={24} aria-hidden="true" />}</div><div>{label}<span>{period ? `${period} · MP4-Video` : "MP4-Video"}</span></div></div>
       {direct === null ? <p role="status" aria-live="polite">Wird geladen …</p> : direct ? <div>
@@ -157,7 +157,7 @@ export function WidgetVideoConfirmation() {
     } catch { setContext(previous => ({...previous, outcome:"unavailable"})); }
     finally { setBusy(false); }
   }
-  return <Modal open onClose={() => setToken("")} title={copy.title} maxWidth={520} className={styles.dialog}>
+  return <Modal open onClose={() => setToken("")} title={copy.title} maxWidth={520} className={styles.dialog} scheme="light">
     <div className={styles.content}>
       {context?.place && <div className={styles.context}><IconVideo size={24} aria-hidden="true" /><div>Solarerzeugung im Tagesverlauf in {context.place}<span>{context.period && new Date(`${context.period}-01T12:00:00Z`).toLocaleDateString("de-DE", {month:"long",year:"numeric"})} · MP4-Video</span></div></div>}
       <p role="status">{copy.text}</p>
