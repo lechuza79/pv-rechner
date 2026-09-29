@@ -7,6 +7,7 @@ import { jsonLdHtml } from "../../lib/json-ld";
 import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import SiteHeaderFrame from "../../components/SiteHeaderFrame";
+import LocationChangeToast from "../../components/LocationChangeToast";
 import SiteFuss from "../../components/SiteFuss";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
@@ -151,6 +152,7 @@ export default async function RootLayout({
           {/* The one <main> of every site page (SEO audit 27.09.2026: 68 of 122
               pages had none). Pages must not render their own. */}
           <main id="inhalt">{children}</main>
+          <LocationChangeToast />
           {/* Trust section + footer of the new design, full width, one source
               with the document pages (lib/site-fuss.ts). */}
           <div className="site-footer-slot" style={{ marginTop: 64 }}><SiteFuss /></div>

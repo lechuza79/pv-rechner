@@ -93,7 +93,7 @@ function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace }: { ch
         const data: SuchErgebnis = await response.json();
         if (controller.signal.aborted) return;
         const places = data.orte.flatMap(place => {
-          const link = place.links.find(link => link.href.startsWith("/balkonkraftwerk/rechner?"));
+          const link = place.links.find(link => /^\d{5}$/.test(new URL(link.href, window.location.origin).searchParams.get("plz") ?? ""));
           const postcode = link && new URL(link.href, window.location.origin).searchParams.get("plz");
           return postcode ? [{ plz: postcode, ags: place.ags, name: place.name, context: place.kontext }] : [];
         });

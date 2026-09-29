@@ -14,6 +14,7 @@ interface PresetNumberInputProps {
   max: number;
   /** Trailing unit label + placeholder, e.g. "km" or "m²". */
   unit: string;
+  placeholder?: string;
   /** Called with a valid, in-range number as the user types. */
   onCommit: (n: number) => void;
   /** Smaller sizing for the result-page QuickSettings row. */
@@ -45,6 +46,7 @@ export default function PresetNumberInput({
   min,
   max,
   unit,
+  placeholder = unit,
   onCommit,
   compact = false,
   onFocus,
@@ -68,7 +70,7 @@ export default function PresetNumberInput({
     <span style={{ display: "inline-flex", alignItems: "center", gap: s.gap }}>
       <input
         value={text}
-        placeholder={unit}
+        placeholder={placeholder}
         inputMode="numeric"
         onFocus={() => {
           focused.current = true;

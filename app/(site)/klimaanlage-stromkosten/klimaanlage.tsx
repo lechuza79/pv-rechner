@@ -1,4 +1,6 @@
 "use client";
+import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
+
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
@@ -214,6 +216,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
+      <CalculatorTheme />
       <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus

@@ -16,6 +16,6 @@ import StandNoteView from "./StandNoteView";
  * Die Formulierung steht komplett in <StandNoteView>; hier passiert nur das
  * Nachschlagen.
  */
-export default function StandNote({ pfad, style }: { pfad: string; style?: React.CSSProperties }) {
-  return <StandNoteView seite={standSeite(pfad)} style={style} />;
+export default function StandNote({ pfad, style, variant }: { pfad: string; style?: React.CSSProperties; variant?: "plain" | "cards" }) {
+  return <StandNoteView seite={standSeite(pfad)} style={style} variant={variant} />;
 }

@@ -427,3 +427,20 @@ describe("funded offer explanations", () => {
     expect(rated.fundingNotes).toEqual([]);
   });
 });
+
+
+describe("Solakon factory reserve", () => {
+  it("reduces usable storage without changing nominal size, price or PV yield", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh > 0)!;
+    const config = configFuerAngebot(offer);
+    expect(config.storage.find(s => s.id === "small")!.usableBatteryKwh).toBeCloseTo(offer.speicherKwh * .85);
+    const nominalConfig = { ...config, storage: config.storage.map(s => ({ ...s, usableBatteryKwh: s.kwh })) };
+    const inputs = { ...BASIS, setId: "duo" as const, storageId: "small" as const };
+    const adjusted = calcBalkon(inputs, config), nominal = calcBalkon(inputs, nominalConfig);
+    expect(adjusted.invest).toBe(nominal.invest);
+    expect(adjusted.storageKwh).toBe(nominal.storageKwh);
+    expect(adjusted.annualYield).toBe(nominal.annualYield);
+    expect(adjusted.selfUsedKwh).toBeLessThan(nominal.selfUsedKwh);
+    expect(adjusted.lifetimeSaving).toBeLessThan(nominal.lifetimeSaving);
+  });
+});

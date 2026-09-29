@@ -1,5 +1,5 @@
 /* Result roles reuse the font families supplied by the site layout. */
-.wp-calculator-page{
+.wp-calculator-page,.wp-input-page{
   --result-canvas:#08191c;
   --result-panel:#102428;
   --result-control:#1b363b;

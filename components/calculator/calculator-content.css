@@ -1,0 +1,7 @@
+/* Questions and results share their respective width with all supporting sections. */
+:root:has(.wp-calculator-page){--calculator-content-width:760px;--calculator-gutter:clamp(16px,3vw,32px)}
+:root:has(.wp-ergebnis){--calculator-content-width:820px}
+.sc-calculator-content{width:100%;max-width:var(--calculator-content-width,760px);margin-inline:auto;container-type:inline-size;box-sizing:border-box;min-width:0}
+.sc-calculator-content--inset{width:calc(100% - 2 * var(--calculator-gutter,16px));padding-bottom:32px}
+body .wp-calculator-page{padding-inline:var(--calculator-gutter)!important}
+@container (max-width:900px){body .wp-overview-top{grid-template-columns:minmax(0,1fr);gap:12px}}

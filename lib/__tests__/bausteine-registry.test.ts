@@ -72,7 +72,7 @@ describe("Bausteine-Register", () => {
         if (anderer === b.name) continue;
         // Relativer Import innerhalb desselben Ordners — so importieren sich
         // die geteilten Bausteine untereinander.
-        if (new RegExp(`from ["'](?:\\./|\\.\\./)+${anderer}["']`).test(quelle)) wirklich.add(anderer);
+        if (new RegExp(`from ["'](?:\\./|\\.\\./)+(?:[\\w-]+/)*${anderer}["']`).test(quelle)) wirklich.add(anderer);
       }
       for (const d of b.bestehtAus) {
         if (!namen.has(d)) fehler.push(`${b.name}: „${d}“ steht nicht im Register`);

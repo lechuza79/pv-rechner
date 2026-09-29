@@ -1,8 +1,7 @@
 /* BKW-specific composition; the visual language comes from the shared WP result. */
 body .bkw-result-page{background:var(--color-page-canvas)!important}
-.bkw-result-page>div{max-width:1280px!important}
 .bkw-result-main{max-width:100%;min-width:0}
-.bkw-result-main>.wp-overview,.bkw-adjustments{max-width:820px;margin-inline:auto}
+.bkw-result-main>.wp-overview,.bkw-adjustments{max-width:100%;margin-inline:auto}
 .bkw-result-main>.wp-overview .wp-overview-top{grid-template-columns:minmax(0,1fr)}
 .bkw-result-page .wp-result-value{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
 .bkw-result-page .wp-result-plus{color:var(--color-positive)}
@@ -26,7 +25,7 @@ body .bkw-result-page{background:var(--color-page-canvas)!important}
 .bkw-result-main>.bkw-adjustments+.bkw-adjustments{margin-top:var(--space-xl)!important}
 
 .bkw-result-disclaimer{margin-top:var(--space-xxl);text-align:center;font-size:var(--font-size-caption);color:var(--color-text-faint)}
-.bkw-result-main>.sc-stand-cards{max-width:var(--page-max-width);margin-inline:auto}
+.bkw-result-main>.sc-stand-cards{max-width:100%;margin-inline:auto}
 
 .bkw-offer-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--space-xl);margin-block:var(--space-xl)}
 

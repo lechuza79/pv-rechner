@@ -1,4 +1,6 @@
 "use client";
+import CalculatorContent from "../../../components/calculator/CalculatorContent";
+
 import "./result-design.css";
 import "./input-design.css";
 import { AccordionField } from "../../../components/AccordionField";
@@ -221,9 +223,6 @@ export default function Waermepumpe({
     void foerderQuelle.ausPlz(value);
   };
   useSharedPlz(plz, remembered => {
-    // An explicit shared-link location wins over this device's remembered location.
-    const params = new URLSearchParams(window.location.search);
-    if (istGeteilterLink(params) && wpAusParametern(params).plz) return;
     setPlz(remembered);
     lookupFunding(remembered);
   });
@@ -815,7 +814,7 @@ export default function Waermepumpe({
   return (
     <div className={isResult ? "wp-calculator-page wp-result-page" : "wp-calculator-page wp-input-page"} style={{ ...({ "--wp-chevron-size": `${iconSizes.sm}px`, "--wp-positive": tokens["--color-positive"] } as React.CSSProperties), background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
       <CalculatorTheme />
-      <div style={{ maxWidth: embedded ? "100%" : isResult ? 1240 : v('--page-max-width'), margin: "0 auto" }}>
+      <CalculatorContent>
         {!embedded && (
           <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: 24 }}>
 
@@ -1657,7 +1656,7 @@ export default function Waermepumpe({
             unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
             einbettende Seite die Quellenangabe. */}
         {!embedded && <StandNoteView seite={stand} variant="cards" />}
-      </div>
+      </CalculatorContent>
     </div>
   );
 }

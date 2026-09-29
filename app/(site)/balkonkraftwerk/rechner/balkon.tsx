@@ -1,4 +1,6 @@
 "use client";
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
+
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
 import AffiliateDetails from "../../../../components/AffiliateDetails";
@@ -8,8 +10,8 @@ import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import StandortField from "../../../../components/StandortField";
-import { IconCheck, IconSettings, IconPlus } from "../../../../components/Icons";
-import { v, iconSizes, fsPx, tokens } from "../../../../lib/theme";
+import { IconCheck } from "../../../../components/Icons";
+import { v, iconSizes, fsPx } from "../../../../lib/theme";
 import { usePrices } from "../../../../lib/prices";
 import { PERSONEN, SCENARIOS } from "../../../../lib/constants";
 import ScenarioTabs from "../../../../components/ScenarioTabs";
@@ -21,6 +23,7 @@ import { useSharedPlz, readLocation } from "../../../../lib/location";
 import Toast from "../../../../components/Toast";
 import Switch from "../../../../components/Switch";
 import { AccordionField } from "../../../../components/AccordionField";
+import ResultOverview from "../../../../components/calculator/ResultOverview";
 import CalculatorTheme from "../../../../components/calculator/CalculatorTheme";
 import Modal from "../../../../components/Modal";
 import BalkonRace from "../../../../components/calculator/BalkonRace";
@@ -33,7 +36,7 @@ import ResultFunding from "../../../../components/ResultFunding";
 import { useBalkonAngebote } from "../../../../lib/use-balkon-angebote";
 import { balkonFunding, type BalkonFundingContext } from "../../../../lib/balkon-funding";
 import { readBalkonHardware, writeBalkonHardware, type BalkonHardwareSnapshot } from "../../../../lib/balkon-share";
-import { angebotBegruendung, bewerteAngebot, besteAngebote, configFuerAngebot } from "../../../../lib/shop-angebot";
+import { angebotBegruendung, speicherAnnahme, bewerteAngebot, besteAngebote, configFuerAngebot } from "../../../../lib/shop-angebot";
 import type { ShopAngebot } from "../../../../lib/shop-solakon";
 import BalkonAngebot, { BalkonProduktTeaser } from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
@@ -63,7 +66,10 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
 }
 
 export default function Balkon({ stand }: { stand?: StandSeite }) {
+  const [flowReady,setFlowReady] = useState(false);
+  useEffect(()=>setFlowReady(true),[]);
   const [step, setStep] = useState(0);
+  const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
   // Flow-Konvention: keine Vorauswahl, Weiter erst nach echter Wahl.
@@ -164,11 +170,14 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
     },
     { erfuellt: beantwortet.has("ausrichtung"), hinweis: "Bitte erst wählen, wie die Module hängen." },
   ];
+  const activeQuestion = editingQuestion ?? (!beantwortet.has("personen") ? "personen" : !beantwortet.has("anwesenheit") ? "anwesenheit" : "standort");
   const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
+  const yieldRequest = useRef(0);
   const fetchPvgis = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
+    const request = ++yieldRequest.current;
     setPlzLoading(true);
     try {
       const plzRes = await fetch("/plz.json");
@@ -177,6 +186,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
       if (coords) {
         const res = await fetch(`/api/pvgis?lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${inputPlz.slice(0, 2)}`);
         const data = await res.json();
+        if (request !== yieldRequest.current) return;
         if (typeof data.annual === "number") setSpecificYield(data.annual);
         // Monatsprofil übernehmen (wie im PV-Rechner) — ohne das gäbe es kein
         // Sommer/Winter und der Standort bliebe bei gedeckelten Sets wirkungslos.
@@ -186,16 +196,15 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
         setPlzConfirmed(true);
       }
     } catch { /* Fallback bleibt */ }
-    setPlzLoading(false);
+    if (request === yieldRequest.current) setPlzLoading(false);
   }, []);
 
   // Standort aus der Adresse — der Weg von der Förder-Übersicht hierher.
   //
   // Er läuft VOR dem gemerkten Standort und gewinnt gegen ihn: Wer aus der Liste
   // auf „In Neuwied durchrechnen" klickt, meint Neuwied, auch wenn im Speicher
-  // noch die eigene Postleitzahl von gestern steht. `useSharedPlz` sieht dann
-  // ein gefülltes Feld und übernimmt nichts mehr — genau der Fall, den es als
-  // „eine bereits sichtbare Postleitzahl gewinnt" vorsieht.
+  // The shared-location hook checks the URL itself: state written here is
+  // not yet visible to other effects from the same render.
   //
   // Gelesen wird einmal beim Aufbau, nicht über useSearchParams: Die Seite ist
   // statisch, und ein Suspense-Rand nur für diesen einen Parameter würde den
@@ -327,7 +336,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const offer = selectedOffer?.angebot;
   const offerReason = angebotBegruendung(selectedOffer, ratedOffers, horizonYears, oInvest !== null);
   const hardware = offer ?? (offerId ? sharedHardware : null);
-  const storageHelp = hardware && hardware.speicherKwh > 0 && <InfoTooltip title="Annahmen zum Speicher" ariaLabel="Hinweis zur Speicherberechnung">Wir rechnen mit der angegebenen Speichergröße; tatsächlich nutzbar ist etwas weniger. Die Speicherersparnis fällt deshalb eher hoch aus. Vorausgesetzt ist eine Steuerung passend zu deinem Verbrauch.</InfoTooltip>;
+  const storageHelp = hardware && hardware.speicherKwh > 0 && <InfoTooltip title="Annahmen zum Speicher" ariaLabel="Hinweis zur Speicherberechnung">{speicherAnnahme(hardware)}</InfoTooltip>;
   const calculationConfig = useMemo(() => hardware ? configFuerAngebot(hardware) : CFG, [hardware]);
   const effectiveSetId = hardware ? offerSetId(hardware) : active.setId;
   const systemLabel = offer
@@ -446,8 +455,9 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const roofWorthIt = haushaltKwh >= BALKON_DACH_HINWEIS_KWH;
 
   return (
-    <div className={isResult ? "wp-calculator-page wp-result-page bkw-result-page" : undefined} style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
+    <div data-flow-ready={flowReady} className={isResult ? "wp-calculator-page wp-result-page bkw-result-page" : "wp-calculator-page wp-input-page"} style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
+      <CalculatorTheme />
+      <CalculatorContent>
         <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus
               belongs to the first question, not the title. */}
@@ -472,24 +482,14 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
               <div>
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Personen im Haushalt?</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 20 }}>
-                  {PERSONEN.map((p, i) => {
-                    const aktiv = beantwortet.has("personen") && personen === i;
-                    return (
-                    <button key={p.label} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
-                      onClick={() => { setPersonen(i); setOVerbrauch(null); markBeantwortet("personen"); }} style={{
-                      padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-lead"), fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
-                    }}>{p.label}</button>
-                    );
-                  })}
-                </div>
-
+                <AccordionField completedStyle="check" label="Personen im Haushalt" open={activeQuestion === "personen"} answered={beantwortet.has("personen")} summary={`${PERSONEN[personen].label} Personen`} onEdit={() => setEditingQuestion("personen")}>
+                  <div className="wp-person-options" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12}}>
+                    {PERSONEN.map((p,i)=><OptionCard key={p.label} group="personen" choiceIndex={i} selected={beantwortet.has("personen") && personen===i} label={p.label === "1" ? "1 Person" : `${p.label} Personen`} sub="" onClick={()=>{setPersonen(i);setOVerbrauch(null);markBeantwortet("personen");setEditingQuestion(null);}}/>)}
+                  </div>
+                </AccordionField>
+                <AccordionField completedStyle="check" label="Tagsüber zuhause" open={activeQuestion === "anwesenheit"} answered={beantwortet.has("anwesenheit")} summary={CFG.presence.find(p=>p.id===presenceId)?.label} onEdit={()=>setEditingQuestion("anwesenheit")}>
                 <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, display: "inline-flex", alignItems: "center", gap: 4 }}>
-                  Tagsüber jemand zuhause?
+                  Wie oft ist tagsüber jemand zuhause?
                   <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={iconSizes.sm}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
                     Wer tagsüber zuhause ist (Homeoffice, Rente, Familie), nutzt mehr davon selbst — Überschuss fließt
@@ -497,12 +497,14 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                   </InfoTooltip>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
-                  {CFG.presence.map(p => (
-                    <OptionCard key={p.id} group="anwesenheit" selected={beantwortet.has("anwesenheit") && presenceId === p.id} onClick={() => { setPresenceId(p.id); markBeantwortet("anwesenheit"); }} label={p.label} sub={p.sub} />
+                  {CFG.presence.map((p,i) => (
+                    <OptionCard key={p.id} group="anwesenheit" choiceIndex={i} selected={beantwortet.has("anwesenheit") && presenceId === p.id} onClick={() => { setPresenceId(p.id); markBeantwortet("anwesenheit"); setEditingQuestion(null); }} label={p.label} sub={p.sub} />
                   ))}
                 </div>
 
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (optional)</div>
+                </AccordionField>
+                <AccordionField completedStyle="check" label="Standort (optional)" open={activeQuestion === "standort"} answered={plzConfirmed} summary={plz} onEdit={()=>setEditingQuestion("standort")}>
+
                 <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchPvgis(plz); }} style={{ display: "flex", gap: 8 }}>
                   <input
                     type="text" inputMode="numeric" aria-label="Postleitzahl"
@@ -544,27 +546,29 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                     ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
                     : "Mit deiner PLZ prüfen wir den Ertrag und mögliche Förderung vor Ort. Du kannst sie auch später im Ergebnis ergänzen."}
                 </div>
+                </AccordionField>
               </div>
             )}
 
             {/* 1: Ausrichtung */}
             {step === 1 && (
               <div>
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie hängen die Module?</div>
+                <AccordionField completedStyle="check" label="Wie hängen die Module?" open answered={beantwortet.has("ausrichtung")} onEdit={()=>{}}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
-                  {CFG.orientations.map(o => (
-                    <OptionCard key={o.id} selected={beantwortet.has("ausrichtung") && orientationId === o.id} onClick={() => { setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
+                  {CFG.orientations.map((o,i) => (
+                    <OptionCard key={o.id} choiceIndex={i} selected={beantwortet.has("ausrichtung") && orientationId === o.id} onClick={() => { setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
                   ))}
                 </div>
                 <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
                   Senkrecht am Geländer bringt gut ein Viertel weniger als flach aufgeständert in Südrichtung — der Winkel ist
                   bei Balkon-PV der größte Hebel.
                 </div>
+                </AccordionField>
               </div>
             )}
 
             {/* Nav */}
-            <div style={{ marginTop: 24 }}>
+            <div className="wp-flow-footer">
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
@@ -590,32 +594,23 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
           <div className="wp-ergebnis wp-result-main bkw-result-main">
-          <CalculatorTheme />
 
-          <section id="bkw-ueberblick" className="wp-overview" aria-label="Dein Ergebnis">
-            <div className="wp-overview-top"><div className="wp-result-column">
-              <div ref={resultCardRef} className="wp-result-hero">
-                <div className="wp-overview-head"><div className="wp-result-label">
-                  <span className="wp-result-label-copy"><strong>{r.lifetimeSaving >= 0 ? "Einsparungen" : "Mehrkosten"} über {horizonYears} Jahre</strong> mit <button type="button" className="wp-assumptions-trigger" onClick={() => { setScenarioDraft(scenario); setHorizonDraft(horizonYears); setPricesOpen(true); }}>{(SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).resultLabel}</button></span>
-                  <div className="wp-result-tools"><button type="button" className="wp-result-details-link" onClick={() => setDetailsOpen(true)}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" onClick={() => document.getElementById("bkw-settings-trigger")?.click()}><IconSettings size={iconSizes.xl} /></button></div>
-                </div></div>
-                <div className="wp-profit-comparison"><span className="wp-profit-illustration" aria-hidden="true"><img src="/illustrations/funding-check-neon.svg" alt="" width={1024} height={1024} /></span>
-                  <div className="wp-profit-content"><div className="wp-profit-row">
-                    <div className="bkw-profit-amount"><div ref={intro.anchor} className="wp-result-value">{r.lifetimeSaving > 0 && <span className="wp-result-plus" style={{ color: tokens["--color-positive"] }} aria-label="Plus"><IconPlus size={iconSizes.md} /></span>}<span className="wp-result-count"><span className="wp-result-count-space" aria-hidden="true">{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")}</span><span className="wp-result-count-live">{Math.round(Math.abs(r.lifetimeSaving) * intro.progress).toLocaleString("de-DE")}</span></span> <span className="wp-result-currency">€</span></div><div className="wp-reference-inline"><span>vs. ausschließlich Netzstrom</span></div></div>
-                    <Switch className="wp-pv-switch" an={storageOn} onChange={toggleStorage} label="Speicher mitrechnen" text="Mit Speicher" />
-                  </div></div>
-                </div>
-                <p className="wp-result-summary">{Number.isFinite(r.amortYears) && <>Dein Balkonkraftwerk rechnet sich <strong>nach {r.amortYears.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren</strong>. </>}Über {horizonYears} Jahre zahlst du insgesamt <strong>{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")} € {r.lifetimeSaving >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung{additionalCosts > 0 ? ", zusätzliche Kosten" : ""} und Reststrom sind eingerechnet.</p>
-                {offerReason && <p className="bkw-offer-reason">{offerReason} <a href="#bkw-ertrag" onClick={() => setTechnicalOpen(true)}>Details</a>. {storageHelp}</p>}
-                {offer ? <BalkonProduktTeaser offer={offer} /> : <p className="bkw-offer-price-note">{offerId && "Das geteilte Shopangebot ist aktuell nicht verfügbar. "}{hardware ? "Modellrechnung mit den geteilten Geräteangaben und dem gespeicherten Preis; kein aktuelles Kaufangebot." : "Modellrechnung mit typischen Setgrößen und Modellpreisen; aktuell ist kein passendes Shopangebot zugrunde gelegt."} {storageHelp}</p>}
-              </div>
-            </div><div className="wp-result-chart"><BalkonRace key={`${r.lifetimeSaving}-${r.invest}-${resultRevision}`} result={r} autoplay={intro.stage === "race"} /></div></div>
-            <div className="wp-result-stats" style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))" }}>
+          <ResultOverview id="bkw-ueberblick" saving={r.lifetimeSaving} years={horizonYears}
+            scenarioLabel={(SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).resultLabel}
+            onScenario={() => { setScenarioDraft(scenario); setHorizonDraft(horizonYears); setPricesOpen(true); }}
+            onDetails={() => setDetailsOpen(true)} onSettings={() => document.getElementById("bkw-settings-trigger")?.click()}
+            progress={intro.progress} anchor={intro.anchor} heroRef={resultCardRef}
+            control={<Switch className="wp-pv-switch" an={storageOn} onChange={toggleStorage} label="Speicher mitrechnen" text="Mit Speicher" />}
+            chart={<BalkonRace key={`${r.lifetimeSaving}-${r.invest}-${resultRevision}`} result={r} autoplay={intro.stage === "race"} />}
+            stats={<>
               <StatCard label="Amortisation" value={amortLabel} unit={isFinite(r.amortYears) ? "Jahre" : undefined} help="Zeit, bis die Stromersparnis die Anschaffung nach Förderung ausgeglichen hat." />
               <StatCard label="Ersparnis im 1. Jahr" value={r.savingPerYear.toLocaleString("de-DE")} unit="€" help="Vermiedene Stromkosten im ersten Jahr. Der Kaufpreis wird bei Amortisation und Gesamtvorteil berücksichtigt." />
               <StatCard label="Autarkie" value={String(Math.round(r.autarky * 100))} unit="%" help="Anteil deines Jahresverbrauchs, den das Balkonkraftwerk selbst deckt." />
-            </div>
-          </section>
+            </>}>
+                <p className="wp-result-summary">{Number.isFinite(r.amortYears) && <>Dein Balkonkraftwerk rechnet sich <strong>nach {r.amortYears.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren</strong>. </>}Über {horizonYears} Jahre zahlst du insgesamt <strong>{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")} € {r.lifetimeSaving >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung{additionalCosts > 0 ? ", zusätzliche Kosten" : ""} und Reststrom sind eingerechnet.</p>
+                {offerReason && <p className="bkw-offer-reason">{offerReason} <a href="#bkw-ertrag" onClick={() => setTechnicalOpen(true)}>Details</a>. {storageHelp}</p>}
+                {offer ? <BalkonProduktTeaser offer={offer} /> : <p className="bkw-offer-price-note">{offerId && "Das geteilte Shopangebot ist aktuell nicht verfügbar. "}{hardware ? "Modellrechnung mit den geteilten Geräteangaben und dem gespeicherten Preis; kein aktuelles Kaufangebot." : "Modellrechnung mit typischen Setgrößen und Modellpreisen; aktuell ist kein passendes Shopangebot zugrunde gelegt."} {storageHelp}</p>}
+          </ResultOverview>
           <ResultActions copied={copied} onCopy={copyResult} onForward={() => setShareOpen(true)} onWhatsApp={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + "\n" + shareUrl())}`, "_blank", "noopener,noreferrer")} onSave={saveResult} onReset={() => window.location.assign(window.location.pathname)} />
           <section id="bkw-angebote" className="bkw-offers" aria-label="Passende Sets"><BalkonAngebot basis={angebotBasis} funding={fundingContext} design="result" katalog={katalog} ratedOffers={ratedOffers} selectedOfferId={offer?.id} onFundingDetails={() => { setSettingsSection("location"); requestAnimationFrame(() => document.getElementById("bkw-einstellungen")?.scrollIntoView({ behavior: "smooth", block: "start" })); }} onCalculate={next => { chooseOffer(next); revealUpdatedResult(); }} /></section>
           <Modal open={pricesOpen} onClose={() => setPricesOpen(false)} title="Preise und Preisentwicklung">            {/* Strompreis-Szenario ganz oben: rechnet alle Zahlen darunter um. */}
@@ -902,7 +897,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
             <StandNoteView seite={offer && stand && katalog.daten ? { ...stand, eintraege: [{ was: "Shoppreis des berechneten Sets", iso: katalog.daten.abgerufenIso.slice(0, 10), praezision: "tag" }, ...stand.eintraege.filter(entry => entry.was !== "Set- und Speicherpreise")] } : stand} variant="cards" />
           </div>
         )}
-      </div>
+      </CalculatorContent>
     </div>
   );
 }

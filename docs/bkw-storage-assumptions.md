@@ -1,0 +1,9 @@
+# BKW storage and shared location — verified 2026-09-28
+
+- Solakon ONE minimum charge defaults to 15%, adjustable from 10–40%. Household discharge stops at that threshold. Model 85% of nominal capacity separately from conversion efficiency; retain nominal capacity for product identity and funding. This is the factory operating window, not a measured usable-capacity certification. Source: https://serviceportal.solakon.de/help/solakon-one/minimale-ladung-speicherheizung-am-solakon-one
+- Demand-following discharge assumes a configured compatible smart meter. Fixed-power energy plans are possible; 200 W is the default **without an active plan**, not an unavoidable limit of every system without a meter. Source: https://serviceportal.solakon.de/help/solakon-one/energieplaene-smart-meter-zwangsentladung-und-speicherladung
+- The onPower page lists Smart Meter as optional. Inclusion in each imported bundle is unverified. Do not invent an accessory price or claim it is included. The result tooltip and offer details disclose the assumption and direct additional equipment/installation costs to the existing additional-cost input. Source: https://www.solakon.de/products/onpower
+- Shared snapshots retain the merchant so the same reserve applies when the original offer disappears. Legacy Solakon offer IDs retain this identity too.
+- URL postcode takes precedence over browser memory before either effect can adopt a location. Stale BKW yield responses cannot overwrite a more recent request.
+
+A link replacing a different remembered postcode shows the shared Toast for ten seconds. Undo restores storage and URL, clears location-derived query values, and reapplies the previous postcode through the calculator callback without resetting other answers. BKW and PV discard stale yield responses. The global location notification is transient and is removed when its originating calculator unmounts.

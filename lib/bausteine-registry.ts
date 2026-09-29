@@ -170,13 +170,22 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/OptionalDisclosure.tsx",
+    name: "OptionalDisclosure",
+    zweck: "Optionale Eingaben einheitlich aufklappen: zentrierte Beschriftung, Chevron, Abstände und barrierearme Höhenanimation.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons", "InfoTooltip"],
+  },
+  {
     datei: "components/AccordionField.tsx",
     name: "AccordionField",
     zweck: "Eine Frage, die zuklappt, sobald sie beantwortet ist, und ihre Antwort in der Kopfzeile trägt.",
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "OptionCard"],
   },
   {
     datei: "components/AuswahlSkipper.tsx",
@@ -314,6 +323,15 @@ export const BAUSTEINE: Baustein[] = [
     },
   },
   {
+    datei: "components/LocationChangeToast.tsx",
+    name: "LocationChangeToast",
+    zweck: "Meldet einen durch einen Link geänderten Standort mit Countdown und Rückgängig-Aktion.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Toast"],
+  },
+  {
     datei: "components/Toast.tsx",
     name: "Toast",
     zweck: "Eine kurze Meldung am Rand — entweder eine Aufforderung oder eine reine Auskunft.",
@@ -446,6 +464,23 @@ export const BAUSTEINE: Baustein[] = [
     zweck: "Compact linked calculation product with a separate selection disclosure.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: [],
   },
+  {
+    datei: "components/ResultChoiceHeader.tsx", name: "ResultChoiceHeader",
+    zweck: "Shared active calculation selector for product offers and consumer scenarios.",
+    gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["Icons"],
+  },
+  {
+    datei: "components/calculator/ResultOverview.tsx", name: "ResultOverview",
+    zweck: "Gemeinsamer Ergebnisaufbau mit Betrag, Erklärung, Kostenverlauf und Kennzahlen.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+  },
+  {
+    datei: "components/calculator/CalculatorContent.tsx", name: "CalculatorContent",
+    zweck: "Gemeinsame Inhaltsbreite und Ausrichtung für Eingaben, Ergebnisse und begleitende Inhalte.",
+    gruppe: "struktur", ebene: "baustein", stand: "verbindlich", bestehtAus: [],
+  },
+  {datei:"components/MetricValue.tsx",name:"MetricValue",zweck:"Große Kennzahl mit zurückgenommenem Vorzeichen und Einheit.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:[]},
+  {datei:"components/charts/ChartFlag.tsx",name:"ChartFlag",zweck:"Gemeinsame Fahne an einem Diagrammwert mit Position oberhalb oder unterhalb.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:[]},
   // ─── Struktur ──────────────────────────────────────────────────────────────
   {
     datei: "components/calculator/ResultStatCard.tsx", name: "ResultStatCard",
@@ -1068,7 +1103,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Icons", "AffiliateTrust", "AffiliateActions", "AffiliateCarousel", "Modal", "AffiliateDetails", "AffiliateProductTeaser", "AffiliateFundedPrice"],
+    bestehtAus: ["Icons", "AffiliateTrust", "AffiliateActions", "AffiliateCarousel", "Modal", "AffiliateDetails", "AffiliateProductTeaser", "AffiliateFundedPrice", "ResultChoiceHeader"],
   },
   {
     datei: "components/ResultFunding.tsx",

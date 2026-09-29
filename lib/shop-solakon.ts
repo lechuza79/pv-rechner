@@ -34,16 +34,8 @@ export interface ShopAngebot {
   /**
    * Batteriekapazität in kWh, 0 = ohne Speicher.
    *
-   * VORBEHALT, GEMESSEN AM DATENBLATT (09.09.2026): Das Datenblatt des Solakon
-   * ONE nennt die Zeile „Batteriekapazität [kWh] 2.11" und macht KEINE Angabe
-   * zur nutzbaren Kapazität. 2,11 kWh ist die Nennkapazität der Zellen
-   * (35,2 V × 60 Ah). Unsere eigene Speicher-Config führt dagegen ausdrücklich
-   * die NUTZBARE Kapazität. Wir rechnen hier mit der Nennkapazität, weil eine
-   * Entladetiefe zu erfinden schlechter wäre als die benannte Ungenauigkeit —
-   * die Fehlerrichtung ist bekannt und steht am Ergebnis: Der Speichernutzen
-   * fällt eher am oberen Rand aus.
-   *
-   * OFFEN (bis 11/2026): nutzbare Kapazität beim Hersteller erfragen.
+   * Nominal capacity from the shop. The offer calculation separately applies
+   * the documented 15% minimum charge of Solakon ONE's factory settings.
    */
   speicherKwh: number;
   /** Bruttopreis in Euro, wie im Shop ausgezeichnet. */
