@@ -93,3 +93,6 @@
 .grid>li{flex:0 0 calc((100% - 48px) / 3)}
 @media(max-width:1000px){.grid>li{flex-basis:calc((100% - 24px) / 2)}}
 @media(max-width:480px){.grid>li{flex-basis:100%}}
+
+/* Keep longer readings comfortably inside the compact navigation donut. */
+.value b[data-compact]{font-size:15px;letter-spacing:-.02em}

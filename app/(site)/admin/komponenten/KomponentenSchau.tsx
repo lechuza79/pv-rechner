@@ -13,6 +13,7 @@ import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
+import ArticleTeasers from "../../../../components/ArticleTeasers";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
 import OnsiteSearch from "../../../../components/OnsiteSearch";
@@ -728,6 +729,12 @@ const BEISPIELE: Record<string, Beispiel> = {
     />
   ),
   BackLink: () => <BackLink fallback="/admin" label="Zurück zur Übersicht" />,
+  ArticleTeasers: () => (
+    <ArticleTeasers title="Mehr zum Thema" items={[
+      {href: "/laendervergleich", title: "Solarenergie im internationalen Vergleich", teaser: "Wie steht Deutschland beim Solarausbau im Vergleich zu anderen Ländern da?"},
+      {href: "/ratgeber", title: "Photovoltaik verstehen", teaser: "Verständliche Entscheidungshilfen zu Anlage, Speicher und Eigenverbrauch.", cta: "Zu den Ratgebern"},
+    ]} />
+  ),
   RelatedLinks: () => (
     <div style={{ maxWidth: 460 }}>
       <RelatedLinks

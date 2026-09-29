@@ -1,8 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
+import ArticleTeasers from "../../../components/ArticleTeasers";
 import Breadcrumb from "../../../components/Breadcrumb";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { RATGEBER } from "../../../lib/ratgeber";
 
@@ -33,39 +32,6 @@ const S = {
     marginBottom: 28,
     lineHeight: 1.6,
   },
-  list: { display: "grid", gap: 14 },
-  card: {
-    display: "block",
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-lg"),
-    padding: "18px 20px",
-    textDecoration: "none",
-    color: "inherit",
-  },
-  cardTitle: {
-    fontSize: v("--font-size-h3"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginBottom: 6,
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  },
-  cardTeaser: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.6,
-    marginBottom: 10,
-  },
-  cardCta: {
-    fontSize: v("--font-size-small"),
-    fontWeight: 700,
-    color: v("--color-accent"),
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-  },
 } as const;
 
 export default function RatgeberPage() {
@@ -81,17 +47,9 @@ export default function RatgeberPage() {
           unser Rechner.
         </p>
 
-        <div style={S.list}>
-          {RATGEBER.map((r) => (
-            <Link key={r.slug} href={r.slug} style={S.card}>
-              <div style={S.cardTitle}>{r.title}</div>
-              <p style={S.cardTeaser}>{r.teaser}</p>
-              <span style={S.cardCta}>
-                Zum Ratgeber <IconArrowRight size={iconSizes.sm} />
-              </span>
-            </Link>
-          ))}
-        </div>
+        <ArticleTeasers layout="list" items={RATGEBER.map((r) => ({
+          href: r.slug, title: r.title, teaser: r.teaser, cta: "Zum Ratgeber",
+        }))} />
       </div>
     </div>
   );
