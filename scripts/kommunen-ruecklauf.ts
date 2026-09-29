@@ -70,7 +70,13 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 // NICHT aufgenommen: Hersteller und Behörden (Solakon, IT.NRW). Von dort kann
 // etwas Inhaltliches kommen, und eine Ausblendung, die einmal zu weit ging,
 // merkt niemand mehr.
-const FREMD_ABSENDER = ["awin.com", "mail.awin.com", "adcell.de", "goaffpro.com"];
+//
+// OUR OWN DOMAIN: measured 29.09.2026 (14-day fetch) — copies of our own press
+// releases and waitlist confirmations sat in the inbox, seven mails in two
+// weeks, classified as reply or even objection ("Widerspruch", because a press
+// release carries the right-to-object sentence). No municipality writes from
+// solar-check.io.
+const FREMD_ABSENDER = ["awin.com", "mail.awin.com", "adcell.de", "goaffpro.com", "solar-check.io"];
 
 function istFremdverkehr(von: string): boolean {
   const domain = von.split("@")[1]?.toLowerCase() ?? "";
