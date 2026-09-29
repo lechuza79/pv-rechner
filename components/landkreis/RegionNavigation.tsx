@@ -21,6 +21,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
   const gridRef=useRef<HTMLUListElement>(null);
   useEffect(()=>{
     const grid=gridRef.current;
+    grid?.scrollTo({left:0,behavior:'instant'});
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
     if(!grid || reduced.matches)return;
     const animations:Animation[]=[];
