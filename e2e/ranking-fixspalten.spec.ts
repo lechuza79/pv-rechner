@@ -963,7 +963,8 @@ async function pruefeFixSpalten(page: import("@playwright/test").Page) {
   await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
   // Die Liste in den Blick holen — geprüft wird nur, was ein Mensch sehen würde.
   await page.evaluate(() => {
-    document.querySelector(".atlas-tabelle-scroller")!.scrollIntoView({ block: "start" });
+    // Geometry assertions must not race the global smooth-scroll animation.
+    document.querySelector(".atlas-tabelle-scroller")!.scrollIntoView({ block: "start", behavior: "instant" });
   });
   await page.waitForTimeout(400);
 
