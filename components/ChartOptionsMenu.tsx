@@ -34,6 +34,14 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   animation?: {end:()=>Promise<void>;video:()=>Promise<void>};
   busy?: boolean;
 }) {
+  // Preserve the shared frame's widget, location, state and source context.
+  const videoRequest = new URL(contactHref, "https://solar-check.io");
+  videoRequest.searchParams.set("topic", "Widget als Video");
+  const contactMessage = videoRequest.searchParams.get("message") ?? `Widget: ${label}`;
+  videoRequest.searchParams.set("message", contactMessage
+    .replace(/^Ich habe eine Frage zum Einbetten dieses Widgets:/, "Ich möchte dieses Diagramm als MP4-Video anfragen:")
+    .replace(/Meine Frage:\n?$/, "Gewünschtes Format und Verwendungszweck:\n"));
+  const videoContactHref = `${videoRequest.pathname}${videoRequest.search}`;
   const [group,setGroup] = useState<"embed"|"download"|"share">("embed");
   const [open, setOpen] = useState(false);
   const [anchor,setAnchor] = useState({left:12,bottom:60,width:280});
@@ -125,7 +133,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} style={item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
           {animation&&<>
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} style={item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
-            <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" disabled={busy} style={item} onClick={run(animation.video,"Video wird heruntergeladen.")}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video</span></button>
+            <a role="menuitem" tabIndex={-1} data-widget-action="video_contact" href={videoContactHref} target="_top" style={item} onClick={()=>close(false)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></a>
           </>}
           {designContactHref&&<>{separator}<a role="menuitem" tabIndex={-1} data-widget-action="design_contact" href={designContactHref} target="_top" style={item} onClick={()=>close(false)}><IconHelpCircle size={16} style={leadingIcon}/><span>In Ihrem Design<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>Mit Ihrem Logo und Ihren Farben.</small><span style={{display:"block",marginTop:4,textDecoration:"underline",textUnderlineOffset:3}}>Anfragen →</span></span></a></>}
           </>}
