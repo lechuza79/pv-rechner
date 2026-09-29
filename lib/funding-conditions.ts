@@ -558,6 +558,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 28 Sep 2026: submission in the invoice year, first come first
   // served and one grant per unit and user have no test form.
   "oberviechtach-stecker-solar",
+  // Added 28 Sep 2026: submission in the invoice year, first come first
+  // served, annual budget and one grant per unit and user have no test form.
+  "maxhuette-haidhof-stecker-solar",
+  // Added 28 Sep 2026: landlord consent, grid registration proof and one
+  // system per dwelling unit have no test form.
+  "bruck-opf-balkonkraftwerke",
   // Added 28 Sep 2026: ended (measures to be finished by 31.12.2024).
   "buchholz-aller-balkonkraftwerke",
   // Added 28 Sep 2026: ended (guideline expired 31.12.2023).

@@ -15762,6 +15762,90 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonCap: 100,
   },
 
+  // ─── Added 28.09.2026: Maxhütte-Haidhof, balcony grant since 2023 ─────────
+  //
+  // Found in the source queue (Schwandorf district). Page "Förderantrag
+  // Balkonkraftwerke" with the full guideline (Stadtrat 08.02.2024, 1st
+  // amendment), read on 28.09.2026:
+  // - § 2 natural persons and local registered associations with (main)
+  //   residence/seat in Maxhütte-Haidhof; owners or tenants, not both for the
+  //   same unit; documents in the invoice year; once per unit and user;
+  //   combination with non-town programmes allowed
+  // - § 4 "10 % des eingereichten Rechnungsbetrages, jedoch maximal 100,00 €
+  //   pro Antrag"; shipping not subsidised
+  // - § 5/§ 6 first come first served, 10,000 € per budget year, lottery for
+  //   simultaneous applications; applications from 01.04.2023, for 2024–2027
+  //   from 1 January, by 31 December of each year
+  // No power limit in the guideline (the original of 09.02.2023 had 600 Wp;
+  // the 1st amendment removed it). The form reserves a claw-back on moving
+  // away. Adversarial check 28.09.2026 confirmed all points. The district refunds half of municipal
+  // balcony grants to the town (press, not a household payment), so the
+  // household amount stays 100 €.
+  "maxhuette-haidhof-stecker-solar": {
+    id: "maxhuette-haidhof-stecker-solar", name: "Förderung von Stecker-Solaranlagen (Balkonkraftwerke)",
+    traeger: "Stadt Maxhütte-Haidhof", level: "kommune", region: "Maxhütte-Haidhof",
+    bundesland: "Bayern", agsCode: "09376141",
+    url: "https://www.maxhuette-haidhof.de/Planen-Bauen/Planen-Bauen-/Formulare/F%C3%B6rderantrag-Balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-04-01",
+    endetIso: "2027-12-31",
+    beschlossenIso: "2024-02-08",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Rechnungsbetrag des Balkonkraftwerks ohne Versandkosten",
+    maxFoerderung: "100 € je Antrag",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % des Rechnungsbetrags, höchstens 100 €" }],
+    conditions: [
+      "Antragsberechtigt sind natürliche Personen und örtliche eingetragene Vereine mit Hauptwohnsitz bzw. Sitz in Maxhütte-Haidhof; Eigentümer oder Mieter, nicht beide für dieselbe Einheit; einmal je Einheit und Nutzer",
+      "Förderantrag und Rechnung im Jahr der Anschaffung, spätestens bis 31. Dezember, bei der Stadt einreichen",
+      "Jahresbudget 10.000 €, Vergabe nach Eingang; ist es ausgeschöpft, ruht das Programm bis Jahresende, einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.1,
+    balkonCap: 100,
+  },
+
+  // ─── Added 28.09.2026: Markt Bruck i.d.OPf., balcony grant since 2023 ─────
+  //
+  // Found via web search while closing the Schwandorf district (the queue only
+  // held the heat-planning overview). Guideline "Richtlinie zur Förderung von
+  // steckbaren Stromerzeugungsgeräten (Balkonkraftwerke)", signed 30.06.2023,
+  // read in full on 28.09.2026 (page 3 is a scan, read as image):
+  // - Nr. 2/6 plug-in devices up to 800 W inverter output, "mit 20 % der
+  //   Anschaffungskosten, maximal 200,00 €", one system per dwelling unit
+  // - Nr. 3 owners, or tenants with landlord consent, each with main residence
+  //   in the property; local registered associations
+  // - Nr. 5 no devices invoiced before 01.04.2023, no used devices, no purely
+  //   commercial buildings
+  // - Nr. 7/8 order of receipt within the budget, written decision; proof
+  //   includes grid registration, invoice, conformity declaration and photo
+  // - Nr. 11 in force 01.07.2023, no end date.
+  // Adversarial check 28.09.2026: all points confirmed; the application form
+  // asks for the register unit number instead of the grid confirmation.
+  "bruck-opf-balkonkraftwerke": {
+    id: "bruck-opf-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
+    traeger: "Markt Bruck i.d.OPf.", level: "kommune", region: "Bruck i.d.OPf.",
+    bundesland: "Bayern", agsCode: "09376117",
+    url: "https://www.markt-bruck.de/buergerservice-und-politik/service/pv-balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-01",
+    beschlossenIso: "2023-06-30",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil an den Anschaffungskosten des Balkonkraftwerks",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "20 % der Anschaffungskosten, höchstens 200 €" }],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter (mit Zustimmung des Vermieters) mit Hauptwohnsitz im Antragsobjekt in Bruck sowie örtliche eingetragene Vereine; eine Anlage je Wohneinheit",
+      "Nur neue Geräte mit Rechnung ab 1. April 2023; nicht an rein gewerblich genutzten Gebäuden",
+      "Nachweise: Rechnung, Anmeldung der Anlage (Richtlinie: Bestätigung des Netzbetreibers, Antragsformular: Nummer im Marktstammdatenregister), Konformitätserklärung und Foto der montierten Anlage; bei Denkmalen die denkmalrechtliche Genehmigung",
+      "Vergabe nach Eingang, solange die Haushaltsmittel reichen; einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.2,
+    balkonCap: 200,
+  },
+
   // ─── Added 28.09.2026: Gemeinde Grethem (Samtgemeinde Ahlden) ─────────────
   //
   // Found in the source queue (the Grethem funding page, shared by the four
