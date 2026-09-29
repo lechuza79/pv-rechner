@@ -1,3 +1,4 @@
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ErrorBoundary } from "../../../../components/ErrorBoundary";
@@ -41,7 +42,7 @@ export default function BalkonPage() {
     <ErrorBoundary>
       <Balkon stand={standSeite("/balkonkraftwerk/rechner")} />
 
-      <div style={S.wrap}>
+      <CalculatorContent inset>
         <h2 style={S.h2}>Was der Balkonkraftwerk-Rechner berechnet</h2>
         <p style={S.p}>
           Der Rechner beantwortet die eine Frage, an der alles hängt:{" "}
@@ -106,7 +107,7 @@ export default function BalkonPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
-      </div>
+</CalculatorContent>
     </ErrorBoundary>
   );
 }

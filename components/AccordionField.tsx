@@ -5,6 +5,7 @@
 // zu einer kompakten Zusammenfassungs-Zeile ein (Label + Wert + Edit), die nächste
 // Frage öffnet. Ein Klick auf die Edit-Zeile öffnet die Frage wieder.
 import Collapse from "./Collapse";
+import OptionCard from "./OptionCard";
 import { ReactNode, createContext, useContext } from "react";
 import { v, iconSizes } from "../lib/theme";
 import { IconCheck, IconChevronDown, IconEdit } from "./Icons";
@@ -146,8 +147,14 @@ export function ChoiceButtons<T>({
   columns,
   render,
   sub,
+  cards = false,
+  segmented = false,
+  illustration,
 }: {
   options: readonly T[];
+  cards?: boolean;
+  segmented?: boolean;
+  illustration?: (option: T, i: number) => string;
   /** Index der aktiven Wahl, oder null wenn noch nichts gewählt wurde. */
   selected: number | null;
   onSelect: (i: number) => void;
@@ -162,14 +169,19 @@ export function ChoiceButtons<T>({
   const flowWahl = useFlowWahl();
   return (
     <div
+      className={segmented ? "sc-choice-segmented" : illustration ? "wp-house-options" : undefined}
       style={
-        columns
+        illustration ? undefined : columns
           ? { display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 6 }
           : { display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }
       }
     >
       {options.map((o, i) => {
         const active = selected === i;
+        const label = render(o, i);
+        if (cards && typeof label === "string") {
+          return <OptionCard key={i} choiceIndex={i} selected={active} onClick={() => onSelect(i)} label={label} sub={sub ? String(sub(o, i)) : ""} illustration={illustration?.(o, i)} />;
+        }
         if (sub) {
           return (
             <button

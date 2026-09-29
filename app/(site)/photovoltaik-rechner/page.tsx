@@ -1,3 +1,4 @@
+import CalculatorContent from "../../../components/calculator/CalculatorContent";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { ErrorBoundary } from "../../../components/ErrorBoundary";
@@ -54,22 +55,23 @@ export default function RechnerPage() {
     <ErrorBoundary>
       <Suspense
         fallback={
-          <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px", textAlign: "center" }}>
+          <CalculatorContent inset>
             <h1 style={{ color: v("--color-text-primary"), fontSize: v("--font-size-h2") }}>{UEBERSCHRIFT}</h1>
             <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 6 }}>{UNTERZEILE}</p>
-          </div>
+          </CalculatorContent>
         }
       >
         <Empfehlung
+          ohneZwischenansicht
           stand={standSeite("/photovoltaik-rechner")}
           ueberschrift={UEBERSCHRIFT}
           unterzeile={UNTERZEILE}
           direktHref={`/photovoltaik-rechner?${DIREKT_KEY}=1`}
         />
       </Suspense>
-      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" }}>
+      <CalculatorContent inset>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
-      </div>
+      </CalculatorContent>
     </ErrorBoundary>
   );
 }

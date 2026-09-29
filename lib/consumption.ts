@@ -185,6 +185,14 @@ export function wpHourlyWatts(household: HouseholdProfile | null, hour: number, 
   return wpDailyKwh * (WP_SHAPE[hour] || 1 / 24) * 1000;
 }
 
+/** Reuse the same component loads for consumption and PV attribution. */
+export function eaHourlyWatts(h: HouseholdProfile | null, hour: number): number {
+  return h?.eaActive ? (h.eaAnnualKwh ?? calcEaAnnual(EA_DEFAULT_KM)) / 365 * (EA_SHAPE[hour] || 1 / 24) * 1000 : 0;
+}
+export function klimaHourlyWatts(h: HouseholdProfile | null, hour: number, month: number): number {
+  return h?.klimaActive ? (h.klimaAnnualKwh ?? calcKlimaAnnual(h.klimaM2 ?? KLIMA_DEFAULT_M2)) / 365 * (AC_MONTHLY[month] ?? 1) * (AC_SHAPE[hour] ?? 1 / 24) * 1000 : 0;
+}
+
 /** Current household consumption in Watts for a given hour.
  *
  * Four independent load components, each with their own hourly + seasonal profile:
@@ -217,23 +225,8 @@ export function calcHourlyConsumption(household: HouseholdProfile | null, hour: 
   //    the WP-only load can be read back out for the WP-specific PV coverage).
   totalWatts += wpHourlyWatts(household, hour, month);
 
-  // 3. E-car: actual annual kWh if given (PV-Rechner), else EA_DEFAULT_KM ×
-  //    EA_KWH_PER_KM. No strong seasonal pattern.
-  if (household.eaActive) {
-    const eaAnnual = household.eaAnnualKwh ?? calcEaAnnual(EA_DEFAULT_KM);
-    const eaDailyKwh = eaAnnual / 365;
-    totalWatts += eaDailyKwh * (EA_SHAPE[hour] || 1 / 24) * 1000;
-  }
-
-  // 4. Air conditioning: actual cooling kWh if given, else estimate from living
-  // area; summer + afternoon peak. Nullish coalescing (not ||) on AC_MONTHLY:
-  // winter months are a legit 0 and must stay 0 — a falsy-|| fallback would leak
-  // cooling into January.
-  if (household.klimaActive) {
-    const klimaAnnual = household.klimaAnnualKwh ?? calcKlimaAnnual(household.klimaM2 ?? KLIMA_DEFAULT_M2);
-    const klimaDailyKwh = (klimaAnnual / 365) * (AC_MONTHLY[month] ?? 1.0);
-    totalWatts += klimaDailyKwh * (AC_SHAPE[hour] ?? 1 / 24) * 1000;
-  }
+  totalWatts += eaHourlyWatts(household, hour);
+  totalWatts += klimaHourlyWatts(household, hour, month);
 
   return Math.round(totalWatts);
 }

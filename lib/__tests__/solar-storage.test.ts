@@ -11,8 +11,9 @@ const base = {
 
 describe("shared storage dispatch", () => {
   it("preserves every pre-change annual and monthly value without new parameters", () => {
+    // Preserve every legacy value while allowing additional consumer attribution fields.
     // JSON normalizes the existing rounded -0 grid values to 0.
-    for (const { input, expected } of legacy) expect(JSON.parse(JSON.stringify(simulateSolarYear(input)))).toEqual(expected);
+    for (const { input, expected } of legacy) expect(JSON.parse(JSON.stringify(simulateSolarYear(input)))).toMatchObject(expected);
   });
   it("explicit legacy options produce the same result", () => {
     expect(simulateSolarYear({ ...base, batteryCoupling: "ac", usableBatteryKwh: base.batteryKwh }))

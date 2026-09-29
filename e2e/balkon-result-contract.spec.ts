@@ -15,6 +15,8 @@ test('ten-year default, cancelled edits and twenty-year recalculation', async ({
   await expect(result).toContainText('Ersparnis im 1. Jahr');
   await result.getByRole('button', { name: 'Hinweis zur Speicherberechnung' }).click();
   await expect(page.getByRole('tooltip')).toContainText('15 % Mindestladung');
+  await expect(page.getByRole('tooltip')).toContainText('Smart Meter');
+  await page.screenshot({ path: '/tmp/bkw-storage-assumptions.png', animations: 'disabled' });
   await page.keyboard.press('Escape');
   await result.getByRole('slider', { name: 'Tag wählen' }).press('End');
   await expect(result).toContainText('Die Bilanz nach 10 Jahren');

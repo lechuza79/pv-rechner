@@ -12,7 +12,7 @@
  * AB DEM ERSTEN GETEILTEN LINK SIND DIESE NAMEN ÖFFENTLICH und dürfen sich
  * nicht mehr ändern — Namen dürfen dazukommen, nie umbenannt werden.
  */
-export const SHARE_KEYS = ["a", "s", "sk", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw", "direkt"];
+export const SHARE_KEYS = ["a", "s", "sk", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "ags", "flow", "ht", "da", "flaeche", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw", "direkt"];
 
 /**
  * Der Einstieg „Anlagengröße schon bekannt": öffnet unter der Rechner-Adresse

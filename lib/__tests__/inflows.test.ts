@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, dirname } from "node:path";
 import { INFLOWS, RECHNER_DATEIEN, betroffeneDateien } from "../inflows";
 import { WP_M2_MIN, WP_M2_MAX, WP_M2_PRESETS } from "../constants";
 
@@ -28,7 +28,9 @@ describe("Inflows: jede Frage steht dort, wo sie stehen muss", () => {
       // Import + je Ort eine Verwendung. Der Import allein zählt nicht — genau
       // so sah der Empfehlungs-Flow aus, als er den Haustyp erfragte und dann
       // nicht weitergab.
-      expect(quelle, `${einbau.datei} importiert ${name} nicht`).toContain(`from "../../../components/${name}"`);
+      const target = relative(dirname(einbau.datei), inflow.komponente).replace(/\.tsx?$/, "");
+      const importPath = target.startsWith(".") ? target : `./${target}`;
+      expect(quelle, `${einbau.datei} importiert ${name} nicht`).toContain(`from "${importPath}"`);
       const verwendungen = quelle.split(`<${name}`).length - 1;
       expect(
         verwendungen,

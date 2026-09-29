@@ -329,7 +329,7 @@ export async function GET(req: NextRequest) {
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
+              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>Ø ERSPARNIS / JAHR</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? C_POSITIVE : C_TEXT }}>
                 {`${savingsStr} \u20AC`}
               </span>

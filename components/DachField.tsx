@@ -14,6 +14,8 @@
 // Beim Flachdach lautet die Frage anders: nicht „wie steil", sondern ob die
 // Module aufgeständert sind — eine Entscheidung, die man kennt, und nach Süden
 // 9 Punkte wert. Die Stufen kommen aus lib/dach-ertrag.ts, nicht von hier.
+import type { ReactNode } from "react";
+import OptionalDisclosure from "./OptionalDisclosure";
 import { AccordionField, ChoiceButtons, flowWahl } from "./AccordionField";
 import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
@@ -48,6 +50,16 @@ export default function DachField({
   hinweis,
   onWeissNicht,
   karten = false,
+  completedStyle,
+  unknownScope = "roof",
+  available = true,
+  active = true,
+  showPending = false,
+  groupedRoof = false,
+  allowEarlyEdit = false,
+  roofDetails,
+  roofSummary,
+  illustrationBase = "/illustrations/wp-input-neon-v1",
 }: {
   dachartIdx: number | null;
   setDachartIdx: (i: number) => void;
@@ -73,6 +85,17 @@ export default function DachField({
    *  Knöpfe — für den Frage-Flow, in dem sie Hauptfragen sind. In der
    *  Verfeinerung des Ergebnisses bleibt es bei der schmalen Fassung. */
   karten?: boolean;
+  completedStyle?: "check";
+  /** Limit the unknown answer to the orientation question. */
+  unknownScope?: "roof" | "orientation";
+  available?: boolean;
+  active?: boolean;
+  showPending?: boolean;
+  groupedRoof?: boolean;
+  allowEarlyEdit?: boolean;
+  roofDetails?: ReactNode;
+  roofSummary?: string;
+  illustrationBase?: string;
 }) {
   const hat = (k: string) => beantwortet.has(k);
   const stufen = neigungsStufen(dachartIdx);
@@ -93,9 +116,8 @@ export default function DachField({
       : neigungOffenNoetig
         ? F_NEIGUNG
         : null;
-  const offen = bearbeitet && (DACH_FIELDS as readonly string[]).includes(bearbeitet)
-    ? bearbeitet
-    : naechsteOffene;
+  const explicitEdit = bearbeitet && (DACH_FIELDS as readonly string[]).includes(bearbeitet);
+  const offen = allowEarlyEdit && explicitEdit ? bearbeitet : !available || !active ? null : explicitEdit ? bearbeitet : naechsteOffene;
 
   const neigungSummary = () => {
     if (!dach) return "";
@@ -104,94 +126,40 @@ export default function DachField({
     // wäre „typisch 10°" eine Antwort auf eine Frage, die gar nicht gestellt
     // wird (die Modellannahme dahinter IST eine Aufständerung, siehe DACHARTEN).
     if (neigungGrad == null) {
-      return dach.aufgestaendert ? "üblich: aufgeständert" : `typisch ${dach.typNeigung}°`;
+      return dach.aufgestaendert ? "Aufständerung empfohlen" : `typisch ${dach.typNeigung}°`;
     }
     const stufe = stufen.find(s => s.grad === neigungGrad);
     return stufe ? stufe.label : `${neigungGrad}°`;
   };
 
-  return (
-    <div>
-      <AccordionField
-        label="Dachform"
-        open={offen === F_FORM}
-        answered={hat(F_FORM)}
-        summary={dach?.label}
-        onEdit={() => setBearbeitet(F_FORM)}
-      >
-        <ChoiceButtons
-          options={DACHARTEN}
-          columns={2}
-          selected={hat(F_FORM) ? dachartIdx : null}
-          onSelect={i => {
-            setDachartIdx(i);
-            // Eine Ausrichtung, die zur neuen Dachform nicht passt, wird nicht
-            // nur geleert, sondern auch als unbeantwortet zurückgenommen —
-            // sonst gilt die Frage als erledigt, kommt nicht wieder, und
-            // gerechnet wird stillschweigend der Bestfall.
-            if (!dachErlaubtNord(i) && ausrichtung === "nord") {
-              setAusrichtung(null);
-              nimmZurueck(F_AUSRICHTUNG);
-            }
-            // Die Neigungsstufen sind je Dachform andere. Der Wert fällt weg,
-            // die Annahme der neuen Form greift — deshalb hier bewusst KEIN
-            // Zurücknehmen: Es gibt eine gültige Annahme, keine Lücke.
-            setNeigungGrad(null);
-            nimmZurueck(F_NEIGUNG);
-            markiereBeantwortet(F_FORM);
+  const unknownButton = onWeissNicht ? (
+        <button
+          onClick={onWeissNicht}
+          style={{
+            display: "block", margin: `${space.lg}px auto 0`, padding: `${space.sm}px 0`, border: "none", background: "transparent",
+            color: v("--color-text-secondary"), fontSize: v("--font-size-small"), fontWeight: 400, cursor: "pointer",
+            textDecoration: "underline", textUnderlineOffset: 3,
           }}
-          render={d => d.label}
-          sub={karten ? d => d.sub : undefined}
-        />
-      </AccordionField>
-
-      <AccordionField
-        label="Ausrichtung"
-        open={offen === F_AUSRICHTUNG}
-        answered={hat(F_AUSRICHTUNG)}
-        summary={TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}
-        onEdit={() => setBearbeitet(F_AUSRICHTUNG)}
-      >
-        <ChoiceButtons
-          options={TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord")}
-          columns={2}
-          selected={
-            hat(F_AUSRICHTUNG)
-              ? TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord")
-                  .findIndex(o => o.key === ausrichtung)
-              : null
-          }
-          onSelect={i => {
-            const liste = TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord");
-            setAusrichtung(liste[i].key);
-            markiereBeantwortet(F_AUSRICHTUNG);
-          }}
-          render={o => o.label}
-          sub={karten ? o => AUSRICHTUNG_SUB[o.key] : undefined}
-        />
-        {!karten && (
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
-            {ausrichtung ? AUSRICHTUNG_SUB[ausrichtung] : "Wohin zeigt die Fläche mit den Modulen?"}
-          </div>
-        )}
-      </AccordionField>
-
-      {hat(F_AUSRICHTUNG) && stufen.length > 0 && (
-        <AccordionField
-          label={neigungFrage}
-          open={offen === F_NEIGUNG}
-          /* Sichtbar als Zeile, sobald die Ausrichtung steht — auch unbeantwortet.
-             Sonst käme niemand an die Frage heran, wo sie nicht von selbst
-             aufklappt (also überall außer Nord), und die Verfeinerung wäre für
-             genau die Leute unerreichbar, für die es sie gibt. Die Zeile trägt
-             dann die geltende Annahme („typisch 35°"). */
-          answered={hat(F_AUSRICHTUNG)}
-          summary={neigungSummary()}
-          onEdit={() => setBearbeitet(F_NEIGUNG)}
         >
-          <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
+          Weiß ich nicht — überspringen
+        </button>
+  ) : null;
+
+  const inclinationControls = <>
+          {groupedRoof ? <>
+            <ChoiceButtons cards options={stufen} columns={stufen.length}
+              selected={stufen.findIndex(s => s.grad === (neigungGrad ?? dach?.typNeigung))}
+              onSelect={i => { setNeigungGrad(stufen[i].grad); markiereBeantwortet(F_NEIGUNG); }}
+              render={s => s.label} sub={s => s.grad === dach?.typNeigung ? "Typisch" : s.sub} />
+            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.xl, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
+              Eigener Wert
+              <PresetNumberInput value={neigungGrad ?? dach?.typNeigung ?? 35} presets={stufen.map(s => s.grad)} min={0} max={90} unit="°"
+                onCommit={setNeigungGrad}
+                onFocus={() => setBearbeitet(F_FORM)} onBlur={() => markiereBeantwortet(F_NEIGUNG)} />
+            </div>
+          </> : <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
             {stufen.map((s, si) => {
-              const aktiv = hat(F_NEIGUNG) && neigungGrad === s.grad;
+              const aktiv = groupedRoof ? (neigungGrad ?? dach?.typNeigung) === s.grad : hat(F_NEIGUNG) && neigungGrad === s.grad;
               return (
                 <button
                   key={s.grad}
@@ -202,7 +170,7 @@ export default function DachField({
                     padding: "7px 12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                     background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
                     border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
-                    color: aktiv ? v("--color-accent") : v("--color-text-muted"),
+                    color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
                   }}
                 >
                   {s.label}
@@ -221,11 +189,11 @@ export default function DachField({
               max={90}
               unit="°"
               onCommit={n => { setNeigungGrad(n); markiereBeantwortet(F_NEIGUNG); }}
-              onFocus={() => setBearbeitet(F_NEIGUNG)}
+              onFocus={() => setBearbeitet(groupedRoof ? F_FORM : F_NEIGUNG)}
               onBlur={() => setBearbeitet(null)}
             />
-          </div>
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
+          </div>}
+          {!groupedRoof && <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), marginTop: space.sm, lineHeight: 1.5 }}>
             {hat(F_NEIGUNG)
               /* Sobald etwas angegeben ist, wäre „ohne Angabe rechnen wir mit …"
                  schlicht falsch — der Satz beschriebe einen Zustand, der nicht
@@ -238,28 +206,125 @@ export default function DachField({
                      Gradzahl — sie muss auch so beschrieben werden. */
                   ? "Ohne Angabe rechnen wir mit einer üblichen Aufständerung. Eigene Gradzahl geht auch."
                   : `Ohne Angabe rechnen wir mit ${dach?.typNeigung}° — bei dieser Ausrichtung macht die Neigung kaum einen Unterschied.`}
+          </div>}
+        </>;
+
+  return (
+    <div>
+      <AccordionField completedStyle={completedStyle}
+        label="Dachform" available={allowEarlyEdit || available}
+        open={offen === F_FORM || (groupedRoof && offen === F_NEIGUNG)}
+        answered={hat(F_FORM)}
+        summary={groupedRoof ? [dach?.label, neigungSummary(), roofSummary].filter(Boolean).join(" · ") : dach?.label}
+        onEdit={() => setBearbeitet(F_FORM)}
+      >
+        <ChoiceButtons
+          cards={karten}
+          illustration={karten ? d => `${illustrationBase}/${({sattel:"roof-gable",flach:"roof-flat",walm:"roof-hip",pult:"roof-shed"} as const)[d.id]}.webp` : undefined}
+          options={DACHARTEN}
+          columns={2}
+          selected={hat(F_FORM) ? dachartIdx : null}
+          onSelect={i => {
+            setDachartIdx(i);
+            // Eine Ausrichtung, die zur neuen Dachform nicht passt, wird nicht
+            // nur geleert, sondern auch als unbeantwortet zurückgenommen —
+            // sonst gilt die Frage als erledigt, kommt nicht wieder, und
+            // gerechnet wird stillschweigend der Bestfall.
+            if (!dachErlaubtNord(i) && ausrichtung === "nord") {
+              setAusrichtung(null);
+              nimmZurueck(F_AUSRICHTUNG);
+            }
+            // Die Neigungsstufen sind je Dachform andere. Der Wert fällt weg,
+            // die Annahme der neuen Form greift — deshalb hier bewusst KEIN
+            // Zurücknehmen: Es gibt eine gültige Annahme, keine Lücke.
+            setNeigungGrad(null);
+            if (groupedRoof) {
+              markiereBeantwortet(F_NEIGUNG);
+              if (DACHARTEN[i].aufgestaendert && (!ausrichtung || ausrichtung === "nord")) {
+                setAusrichtung("sued");
+                markiereBeantwortet(F_AUSRICHTUNG);
+              }
+            } else nimmZurueck(F_NEIGUNG);
+            markiereBeantwortet(F_FORM);
+          }}
+          render={d => d.label}
+          sub={karten ? d => groupedRoof && d.aufgestaendert ? "Aufständerung empfohlen" : d.sub : undefined}
+        />
+        {groupedRoof && hat(F_FORM) && <>
+          <p style={{ margin: `${space.lg}px 0`, color: v("--color-text-secondary"), fontSize: v("--font-size-small") }}>
+            {neigungGrad !== null ? `Wir rechnen mit deiner Angabe: ${neigungGrad}° Neigung.` : dach?.aufgestaendert
+              ? `Wir empfehlen aufgeständerte Module mit ${dach.typNeigung}° Neigung. Die Ausrichtung kannst du bei Bedarf ändern.`
+              : `Wir rechnen mit der typischen Dachneigung von ${dach?.typNeigung}°. Du musst sie nicht kennen.`}
+          </p>
+          <OptionalDisclosure label="Dachfläche und Neigung anpassen">
+          {roofDetails}
+          <div style={{ marginTop: space.xxl }}>
+            <h3 style={{ margin: `0 0 ${space.md}px`, fontSize: v("--font-size-body"), color: v("--color-text-primary") }}>{neigungFrage}</h3>
+            {inclinationControls}
           </div>
+          </OptionalDisclosure>
+        </>}
+      </AccordionField>
+
+      <AccordionField completedStyle={completedStyle}
+        label="Ausrichtung" available={allowEarlyEdit || (available && (!showPending || hat(F_FORM)))}
+        open={offen === F_AUSRICHTUNG}
+        answered={hat(F_AUSRICHTUNG)}
+        summary={TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label ?? (hat(F_AUSRICHTUNG) ? "Unbekannt · Annahme Süd" : undefined)}
+        onEdit={() => setBearbeitet(F_AUSRICHTUNG)}
+      >
+        <ChoiceButtons
+          cards={karten}
+          options={TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord")}
+          columns={2}
+          selected={
+            hat(F_AUSRICHTUNG)
+              ? TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord")
+                  .findIndex(o => o.key === ausrichtung)
+              : null
+          }
+          onSelect={i => {
+            const liste = TILT_ORIENTATIONS.filter(o => dachErlaubtNord(dachartIdx) || o.key !== "nord");
+            setAusrichtung(liste[i].key);
+            markiereBeantwortet(F_AUSRICHTUNG);
+          }}
+          render={o => o.label}
+          sub={karten ? o => AUSRICHTUNG_SUB[o.key] : undefined}
+        />
+        {groupedRoof && hinweis && <p style={{ margin: `${space.xl}px 0 0`, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>{hinweis}</p>}
+        {unknownScope === "orientation" && hat(F_FORM) && offen === F_AUSRICHTUNG && unknownButton}
+        {!karten && (
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
+            {ausrichtung ? AUSRICHTUNG_SUB[ausrichtung] : "Wohin zeigt die Fläche mit den Modulen?"}
+          </div>
+        )}
+      </AccordionField>
+
+      {!groupedRoof && (showPending || hat(F_AUSRICHTUNG)) && stufen.length > 0 && (
+        <AccordionField completedStyle={completedStyle}
+          label={neigungFrage} available={available && (!showPending || hat(F_AUSRICHTUNG))}
+          open={offen === F_NEIGUNG}
+          /* Sichtbar als Zeile, sobald die Ausrichtung steht — auch unbeantwortet.
+             Sonst käme niemand an die Frage heran, wo sie nicht von selbst
+             aufklappt (also überall außer Nord), und die Verfeinerung wäre für
+             genau die Leute unerreichbar, für die es sie gibt. Die Zeile trägt
+             dann die geltende Annahme („typisch 35°"). */
+          answered={hat(F_AUSRICHTUNG)}
+          summary={neigungSummary()}
+          onEdit={() => setBearbeitet(F_NEIGUNG)}
+        >
+          {inclinationControls}
         </AccordionField>
       )}
 
-      {hinweis && offen === null && (
+      {!groupedRoof && hinweis && offen === null && (
         <div className="sc-acc" style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
           {hinweis}
         </div>
       )}
 
-      {onWeissNicht && offen !== null && (
-        <button
-          onClick={onWeissNicht}
-          style={{
-            marginTop: space.md, padding: 0, border: "none", background: "transparent",
-            color: v("--color-text-muted"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
-            textDecoration: "underline", textUnderlineOffset: 3,
-          }}
-        >
-          Weiß ich nicht — überspringen
-        </button>
-      )}
+      {unknownScope === "roof" && offen !== null && unknownButton}
+
     </div>
   );
 }

@@ -176,3 +176,22 @@ describe("simulatePvYear", () => {
     });
   });
 });
+
+describe('consumer-specific solar coverage',()=>{
+  const household: HouseholdProfile={baseKwh:3500,tagQuote:.4,wpActive:true,wpAnnualKwh:5000,eaActive:true,eaAnnualKwh:2700,klimaActive:true,klimaAnnualKwh:700};
+  const run=(kwp:number,speicherKwh=0)=>simulatePvYear({kwp,speicherKwh,monthlyYieldPerKwp:null,ertragKwp:1000,household});
+  it('attributes no solar energy when there is no PV generation',()=>{
+    const result=run(0);
+    expect(result.eaAutarky).toBe(0);
+    expect(result.klimaAutarky).toBe(0);
+  });
+  it('respects different charging and cooling profiles and storage',()=>{
+    const without=run(5),withStorage=run(5,8);
+    expect(without.klimaAutarky).toBeGreaterThan(without.eaAutarky);
+    expect(withStorage.eaAutarky).toBeGreaterThan(without.eaAutarky);
+    for(const value of [without.eaAutarky,without.klimaAutarky,withStorage.eaAutarky,withStorage.klimaAutarky]) {
+      expect(value).toBeGreaterThan(0);
+      expect(value).toBeLessThanOrEqual(100);
+    }
+  });
+});

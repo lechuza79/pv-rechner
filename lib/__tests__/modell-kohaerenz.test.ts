@@ -550,18 +550,10 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     }
   });
 
-  it("Wärmepumpenstrom kostet im PV-Ergebnis den Wärmepumpen-Tarif", () => {
-    // Der Block bezahlt den Grundpreis des separaten Zählers. Dann muss er auch
-    // den Tarif rechnen, den es nur mit diesem Zähler gibt — sonst trägt er die
-    // Kosten des einen Falls und den Preis des anderen.
-    const quelle = readFileSync(join(ROOT, "app/(site)/photovoltaik-rechner/_components/ResultStats.tsx"), "utf8");
-    const zeile = quelle.split("\n").find(z => z.includes("calcWpGridCost("));
-    expect(zeile, "Der Heizkosten-Block ruft calcWpGridCost nicht mehr auf").toBeTruthy();
-    expect(
-      /wpTarif/.test(zeile ?? ""),
-      `Der Wärmepumpenstrom wird mit einem anderen Preis gerechnet als im ` +
-      `Wärmepumpen-Rechner: ${zeile?.trim().slice(0, 120)}`,
-    ).toBe(true);
+  it("Wärmepumpenstrom uses the shared household tariff without a second meter", () => {
+    const source = readFileSync(join(ROOT, "components/HeatPumpRunningComparison.tsx"), "utf8");
+    expect(source).toMatch(/calcWpGridCost\(wpKwh, wpCoverage, strompreis, stromSteigerung, HEATING_YEARS\)/);
+    expect(source).not.toMatch(/wpTarif|wpGrundpreis/);
   });
 });
 

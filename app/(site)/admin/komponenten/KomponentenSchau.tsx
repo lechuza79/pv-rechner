@@ -2,6 +2,11 @@
 import { SCENARIOS } from "../../../../lib/constants";
 
 import { useState } from "react";
+import ChartFlag from "../../../../components/charts/ChartFlag";
+import MetricValue from "../../../../components/MetricValue";
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
+import ResultChoiceHeader from "../../../../components/ResultChoiceHeader";
+import OptionalDisclosure from "../../../../components/OptionalDisclosure";
 import { AccordionField } from "../../../../components/AccordionField";
 import BackLink from "../../../../components/BackLink";
 import Breadcrumb from "../../../../components/Breadcrumb";
@@ -682,6 +687,9 @@ function OnsiteSearchBeispiel() {
 
 const BEISPIELE: Record<string, Beispiel> = {
   OnsiteSearch: OnsiteSearchBeispiel,
+ ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
+ MetricValue: () => <MetricValue value={12345} signed/>,
+  CalculatorContent: () => <CalculatorContent><p>Fragen, Ergebnis und ergänzende Inhalte folgen derselben Inhaltskante.</p></CalculatorContent>,
   Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
@@ -689,6 +697,8 @@ const BEISPIELE: Record<string, Beispiel> = {
   SelectField: AuswahlBeispiel,
   PresetNumberInput: ZahlenfeldBeispiel,
   InlineEdit: ZahlBeispiel,
+  ResultChoiceHeader: () => <ResultChoiceHeader title="Deine Berechnung" selected>3.300 € Vorteil über 25 Jahre</ResultChoiceHeader>,
+  OptionalDisclosure: () => <OptionalDisclosure label="Angaben anpassen"><p>Hier stehen die optionalen Eingaben.</p></OptionalDisclosure>,
   AccordionField: AkkordeonBeispiel,
   StatusBadge: () => (
     <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>

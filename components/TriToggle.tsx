@@ -1,7 +1,7 @@
 "use client";
 import { v } from "../lib/theme";
 
-export default function TriToggle({ options, value, onChange, label }: { options: { id: string; label: string }[]; value: string; onChange: (v: string) => void; label: string }) {
+export default function TriToggle({ options, value, onChange, label, wrap = false }: { options: { id: string; label: string }[]; value: string; onChange: (v: string) => void; label: string; wrap?: boolean }) {
   // Führendes Emoji für die Kennzeichnung abschneiden: Die Beschriftungen wandern
   // in die Wegprotokolle und Fehlermeldungen des Flow-Läufers, und „⚡ Wärmepumpe:
   // Ja" ist dort weder such- noch lesbar. Dieselbe Überlegung wie bei den
@@ -10,7 +10,7 @@ export default function TriToggle({ options, value, onChange, label }: { options
   return (
     <div style={{ marginBottom: 18 }}>
       <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary'), marginBottom: 8 }}>{label}</div>
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 6, flexWrap: wrap ? "wrap" : "nowrap" }}>
         {options.map(o => (
           // Kennzeichnung für den Flow-Läufer. Sie fehlte bis zum 22.08.2026 —
           // mit der Folge, dass er den Großverbraucher-Schritt für einen
@@ -29,7 +29,7 @@ export default function TriToggle({ options, value, onChange, label }: { options
             data-flow-group={frage}
             aria-pressed={value === o.id}
             style={{
-            flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
+            flex: wrap ? "1 1 120px" : 1, padding: "10px 8px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
             cursor: "pointer", textAlign: "center",
             background: value === o.id ? v('--color-accent-dim') : v('--color-bg-muted'),
             border: value === o.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
