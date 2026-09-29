@@ -657,13 +657,7 @@ export default function PVRechner({
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzSource, plz]);
-  // Auto-Ausblenden nach 6 s — eigener Effekt, damit der Timer auch unter
-  // StrictMode (doppelter Effekt-Invoke im Dev) korrekt neu gesetzt wird.
-  useEffect(() => {
-    if (!plzToast || intro.progress < 1) return;
-    const t = setTimeout(() => setPlzToast(false), 6000);
-    return () => clearTimeout(t);
-  }, [plzToast, intro.progress]);
+
 
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 fehlte hier der Dach-Schritt (eingefügt am 07.08.2026, Liste

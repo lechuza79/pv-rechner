@@ -320,3 +320,41 @@ test('an editorial handover opens the question flow with its chosen configuratio
   await expect(page.locator('#pv-ueberblick')).toHaveCount(0);
   await expect(page.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','false');
 });
+
+
+test('funding nudge stays until dismissed instead of timing out', async ({page}) => {
+  await page.clock.install();
+  await page.goto(url);
+  const nudge = page.getByRole('status').filter({hasText:'Vielleicht gibt es Förderung'});
+  await expect(nudge).toBeVisible();
+  await page.clock.fastForward(8000);
+  await expect(nudge).toBeVisible();
+  await nudge.getByRole('button', {name:'Schließen', exact:true}).click();
+  await expect(nudge).toHaveCount(0);
+});
+
+for (const [wp, ea, klima, target] of [
+  ['nein', 'nein', 'nein', 'wp'],
+  ['ja', 'nein', 'nein', 'ea'],
+  ['ja', 'ja', 'nein', 'klima'],
+  ['ja', 'ja', 'ja', null],
+] as const) test(`scroll hint targets the first free consumer: ${target ?? 'none'}`, async ({page}) => {
+  await page.setViewportSize({width:1280,height:720});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  const params = new URLSearchParams(url.split('?')[1]);
+  params.set('wp', wp); params.set('ea', ea); params.set('kl', klima);
+  await page.goto(`/photovoltaik-rechner?${params}`);
+  const cards = page.locator('.pv-consumer-options');
+  await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true');
+  await expect(cards.locator('.wp-solar-pointer')).toHaveCount(0);
+  await cards.scrollIntoViewIfNeeded();
+  await expect(cards.locator('.wp-solar-pointer')).toHaveCount(target ? 1 : 0);
+  if (target) {
+    const freeCard = cards.locator(`[data-consumer=${target}]`);
+    await expect(freeCard.locator('.sc-result-choice-action')).toBeVisible();
+    await expect(freeCard.locator('.wp-solar-pointer')).toHaveCSS('display', 'block');
+    expect(await freeCard.locator('.wp-solar-pointer').evaluate(el => getComputedStyle(el, '::before').animationName)).toBe('wp-tap-contact');
+    await freeCard.locator('.sc-result-choice-action').click();
+    await expect(freeCard.locator('.wp-solar-pointer')).toHaveCount(0);
+  }
+});

@@ -54,6 +54,7 @@ export default function PvConsumerSection({ id: suppliedId, values, basis, answe
   const pending: PvConsumerValues = Object.assign({}, values, ...Object.values(changes));
   const hasChanges = Object.keys(changes).length > 0;
   const editorial = action.variant === 'editorial';
+  const firstAvailable = PV_CONSUMERS.find(item => pending[item.kind] === 'nein')?.kind;
   useEffect(() => { onPendingChange?.(hasChanges); }, [hasChanges, onPendingChange]);
   useEffect(() => () => onPendingChange?.(false), [onPendingChange]);
 
@@ -119,7 +120,7 @@ export default function PvConsumerSection({ id: suppliedId, values, basis, answe
         const patch = changes[item.kind], removed = patch?.[item.kind] === 'nein';
         const active = values[item.kind] !== 'nein', configured = active || !!patch;
         return <li key={item.kind} data-consumer={item.kind} className="wp-geraete-kachel pv-consumer-card">
-          <ResultChoiceHeader editSelected neutral surface={editorial ? "white" : undefined} clickHint={editorial && item.kind === "ea" && !configured} illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
+          <ResultChoiceHeader editSelected neutral surface={editorial ? "white" : undefined} clickHint={item.kind === firstAvailable} illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
             actionLabel={`${item.title}: ${removed ? 'Wieder hinzufügen' : active ? 'Bereits berücksichtigt' : patch ? 'Zur Vorschau hinzugefügt' : 'Ergänzen'}`}
             onSelect={() => edit(item.kind)} onRemove={() => remove(item.kind)} onEdit={() => edit(item.kind)}>
             {removed ? 'Entfernt' : !amounts ? <span className="pv-consumer-period">PV-Vorteil nach Neuberechnung</span> : <>
