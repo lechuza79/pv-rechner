@@ -12,12 +12,5 @@
 .bestDay small{font:400 11px/1.2 var(--atlas-body);opacity:.75}
 .footer .transport{margin-left:auto}
 
-/* Der Wert in der Mitte blendet bei jedem Tageswechsel ein, in derselben
-   Zeit, in der sich die Linie daneben zeichnet. Ohne das springt die Zahl,
-   während die Linie noch läuft. */
-.wertWechsel{animation:wertEin 420ms ease-out both}
-@keyframes wertEin{from{opacity:0}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.wertWechsel{animation:none}}
-
 /* Image only: the chosen month (and day) replace the selectors. */
 .exportState{margin:0;padding:16px var(--widget-padding) 0;font-size:var(--atlas-label-size);color:var(--atlas-secondary)}

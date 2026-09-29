@@ -30,6 +30,7 @@ import {AnnualGrowth} from "../charts/AnnualGrowthWidget";
 import {CurrentPower, type SolarWeatherSource} from "../charts/CurrentPowerWidget";
 import { MastrMap } from "../MastrMap";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
+import {ortPhrase} from "../../lib/atlas-orte";
 import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
 
 /* The package keeps prototype data loosely typed (lib/gemeinde-paket.ts). */
@@ -148,12 +149,13 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : isValuation ? monthLabel(chosenValue?.month ?? item.story.period) : undefined,
         filename: `solar-check-${item.template}-${paket.ags}`,
         animated: item.template === "radial",
+        ...(item.template === "radial" ? {exportNote: "Modellierte Erzeugung, keine Messung."} : {}),
       }
     : {};
   return (
     <Frame
       {...exportProps}
-      title={role.title}
+      title={item.template === "radial" ? `${role.title} ${ortPhrase({name:paket.name})}` : role.title}
       kind={role.kind}
       className={chart.visualTheme}
       data-story-scheme="dark"
@@ -202,7 +204,9 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
             {assumptionDate ? ` vom ${assumptionDate}` : ""}. Nur vollständig berechenbare Monate sind auswählbar. Modellwerte, keine
             tatsächlichen Einnahmen.
           </p>
-        ) : ["radial", "energy-year"].includes(item.template) ? (
+        ) : item.template === "radial" ? (
+          <p>Modellierte Erzeugung, keine Messung.</p>
+        ) : item.template === "energy-year" ? (
           <p>
             Die Auswahl enthält nur vollständig vorhandene Wetterzeiträume. Jahresprofile verwenden den zum Jahresende rekonstruierten heutigen
             Anlagenbestand; stillgelegte Anlagen fehlen. Modellierte Erzeugung, keine Messung.
