@@ -22,9 +22,9 @@ energy explicitly. No per-child reads or aggregation on a page request.
 
 The existing district/region package builder now retains child monthly totals
 from the inputs it already loads. District content revision 4 invalidates old
-fingerprints, including region fingerprints. Before public layout release, run
-the existing package build after the code is approved. No publication occurred
-as part of the local review.
+fingerprints, including region fingerprints. Publish the complete package
+generation before releasing the layout. The generation switch is atomic; a failed
+build leaves the previous complete generation active.
 
 ## Reproduce real-data local previews
 
@@ -50,3 +50,17 @@ card is one direct link; touch has no tooltip or intermediate action. Reduced
 motion disables entry and parallax animations. Scroll parallax progressively
 enhances browsers supporting native view timelines; pointer parallax uses only
 small opposing transforms on the donut and geographic outline.
+
+## Release validation — 2026-09-29
+
+- Full pre-commit suite: 496 test files passed, 5577 tests passed, 3 skipped.
+- Isolated production build succeeded; preview on port 4294 was preserved.
+- Browser checks covered Wittenberg (9 municipalities), Sachsen-Anhalt
+  (14 districts/independent cities), and Germany (16 states).
+- Incomplete rows center at both two- and three-column widths, including after
+  filtering; no horizontal overflow at 375px. Local search, umlaut matching,
+  keyboard selection and reset were checked on the shared implementation.
+- Published data generation: `20260929T074444Z-78bc07` (294 districts,
+  17 state/country packages, zero missing municipality packages). Production
+  package caches were invalidated successfully. Production-build browser check
+  confirmed actual August values after invalidation.
