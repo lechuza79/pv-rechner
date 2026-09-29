@@ -39,6 +39,7 @@ export interface ErgebnisUnterTest {
   kernzahlen: RegExp[];
   settingsButton?: string;
   scenarioButton?: RegExp;
+  scenarioTabs?: boolean;
 }
 
 // Hier stand bis zum 26.08.2026 ein Feld für „dieses Ergebnis ist per Adresse
@@ -53,7 +54,10 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
     name: "PV-Rechner",
     pfad: "/photovoltaik-rechner?a=1&s=1&p=2&n=1&ht=2&da=0&az=sued",
     enthaelt: "amortisiert sich in",
-    kernzahlen: [/amortisiert sich in\s*([\d.,]+)/, /Gewinn[^\n]{0,20}25[^\n]{0,40}?([\d.,]+)\s*€/],
+    settingsButton: "Rechnung einstellen",
+    scenarioButton: /^realistischer Preisentwicklung$|^optimistischer Preisentwicklung$|^vorsichtiger Preisentwicklung$/,
+    scenarioTabs: true,
+    kernzahlen: [/amortisiert sich in\s*([\d.,]+)/, /insgesamt\s*([\d.,]+)\s*€ weniger/],
   },
   {
     name: "PV-Bedarf / Empfehlung",

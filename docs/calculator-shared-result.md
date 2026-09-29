@@ -94,3 +94,13 @@ When no matching available offer exists, the result explicitly identifies the ge
 Result metrics in WP and BKW use `ResultStatCard`. Pass units separately (`unit`) so years, currencies and percentages share the subordinate unit style. Floating notices use the central `--shadow-toast` token in `Toast`.
 
 `AffiliateFundedPrice` owns the funded-price block in WP and BKW, including the help tooltip and funding action. Calculators supply their own assessed amount and explanation; BKW must not copy the WP markup or show the subsidy amount as the funded price.
+
+### PV: complete flow and shared overview
+
+PV proceeds from the existing household and roof questions directly to the result. Legacy recommendation links remain readable. `ResultOverview` owns the same overview composition for PV and BKW, while `ResultSettings` keeps all edited values in a draft until explicit recalculation. Location lookup previews funding before applying the selected location, its yield and funding together. Failed lookups preserve the applied result and allow retrying.
+
+`PvResultRace` adapts the existing PV calculation to `RaceChart`. Monthly values reconcile to every annual ledger entry, including battery replacement; the chart does not introduce another financial model. Technical explanations and the monthly yield remain available in the details. PV has no affiliate product cards until a partner catalogue is available.
+
+Local verification covers draft cancellation/application, sharing and reloading fractional system sizes, funding selection, feed-in settings and narrow-screen layout. The shared BKW result/settings regression is included. This implementation is not a production release.
+
+The PV entry uses the shared check-style `AccordionField`, `OptionCard`, and `DachField`, including its explicit unknown-answer path. House and roof illustrations reuse the existing illustration library. `StandNoteView` uses its existing cards variant in both entry and result views.

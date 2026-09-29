@@ -1,0 +1,10 @@
+/* Scoped to persistent local searches; compact global search stays unchanged. */
+.field{transition:box-shadow 180ms ease,border-color 180ms ease !important}
+.local:focus-within .field{border-color:transparent !important;outline:none;box-shadow:0 0 16px color-mix(in srgb,var(--color-accent) 22%,transparent)}
+.local input:focus-visible{outline:none}
+.icon{width:24px;overflow:hidden;opacity:1;transition:width 180ms ease,opacity 140ms ease,padding 180ms ease !important}
+.local:focus-within .icon{width:0;padding-inline:0 !important;opacity:0;pointer-events:none}
+.dropdown{opacity:0;visibility:hidden;transform:translateY(-5px);pointer-events:none;transition:opacity 160ms ease,transform 160ms ease,visibility 160ms;transform-origin:top}
+.dropdown[data-open="true"]{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+.dropdown button{transition:background-color 120ms ease}
+@media(prefers-reduced-motion:reduce){.field,.icon,.dropdown,.dropdown button{transition:none !important}}

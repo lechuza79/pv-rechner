@@ -1,0 +1,11 @@
+.sc-category-flag{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:max-content;max-width:180px;padding:8px 12px;border-radius:8px;background:var(--color-accent);color:var(--color-bg);font-size:12px;line-height:1.4;text-align:center;z-index:3;box-shadow:0 4px 14px #0002;pointer-events:none;}
+.sc-category-flag:after{content:"";position:absolute;top:100%;left:calc(50% - 6px);border:6px solid transparent;border-top-color:var(--color-accent);}
+.sc-category-flag strong{display:block;font-size:22px;white-space:nowrap;}
+.sc-category-flag small{font-size:12px;font-weight:400;}
+.sc-category-flag[data-edge="start"]{left:0;transform:none;}
+.sc-category-flag[data-edge="end"]{left:auto;right:0;transform:none;}
+.sc-category-flag[data-edge="start"]:after{left:8px;}
+.sc-category-flag[data-edge="end"]:after{left:auto;right:8px;}
+.sc-category-flag{background:#fff;color:#173b42;}
+.sc-category-flag:after{border-top-color:#fff;}
+.sc-category-flag[data-placement=below]{top:calc(100% + 10px);bottom:auto}.sc-category-flag[data-placement=below]:after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#fff}

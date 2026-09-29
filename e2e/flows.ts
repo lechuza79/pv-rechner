@@ -44,7 +44,7 @@ export const FLOWS: FlowUnterTest[] = [
   {
     name: "PV-Bedarf / Empfehlung",
     pfad: "/photovoltaik-rechner",
-    ergebnisEnthaelt: "Die Empfehlung basiert auf",
+    ergebnisEnthaelt: "Deine PV-Anlage amortisiert sich",
   },
   {
     name: "Wärmepumpen-Rechner",
@@ -618,17 +618,23 @@ export async function weiterKlicken(page: Page, weg?: string) {
     page.evaluate(() => {
       const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null && !e.closest("[inert]");
       if (!Array.from(document.querySelectorAll("[data-flow-nav]")).some(sichtbar)) return "kein-flow";
-      return Array.from(document.querySelectorAll("[data-flow-option]"))
+      // Navigation may close the current question before committing the next
+      // page. Its open/closed state and the URL do not prove a step change.
+      const questions = Array.from(document.querySelectorAll("[data-flow-akkordeon-offen], [data-flow-akkordeon]"))
         .filter(sichtbar)
-        .map((e) => `${e.getAttribute("data-flow-option")}=${e.getAttribute("aria-pressed")}`)
-        .join("¦");
+        .map(e => e.getAttribute("data-flow-akkordeon-offen") ?? e.getAttribute("data-flow-akkordeon"));
+      const options = Array.from(document.querySelectorAll("[data-flow-option]"))
+        .filter(e => sichtbar(e) && !e.closest("[data-flow-akkordeon-offen]"))
+        .map(e => e.getAttribute("data-flow-option"));
+      return [...questions, ...options].join("¦");
     });
   const weiter = page.locator("[data-flow-next]:not([inert] *):visible").first();
   const vorher = await fingerabdruck();
   try {
     await expect(async () => {
+      if (await fingerabdruck() !== vorher) return;
       await expect(weiter).not.toHaveAttribute("aria-disabled", "true", { timeout: 1_000 });
-      await weiter.click();
+      await weiter.click({ timeout: 1500 });
       await expect(async () => {
         expect(await fingerabdruck()).not.toBe(vorher);
       }).toPass({ timeout: 1_500 });

@@ -1,5 +1,61 @@
 # Central visual system and regional pages — plan
 
+## Region map trackpad zoom — 28 September 2026 (local, not released)
+
+The shared `region-scene.ts` binds `public/shared-3d/trackpad-gestures.js` in
+`pinch-only` mode. The helper and declaration were copied unchanged from the
+uncommitted Hero worktree handoff; no Hero scene changes were imported. Ctrl-wheel
+and Safari incremental gesture events zoom only on the map canvas. Ordinary wheel
+scrolling remains uncancelled; existing touchscreen pointer gestures stay with
+OrbitControls. The old capture-wheel gate now allows pinch through. The adapter
+uses the installed public `dollyIn`, retains zoom limits 0.7–3, stops spin, delays
+auto-rotation, invalidates rendering and disposes the shared listeners.
+
+Local verification: four supplied gesture tests and four map-adapter tests pass,
+including actual Three.js orthographic zoom direction/limits, invalidation, disabled
+controls, ordinary scrolling, the capture gate and teardown. Physical MacBook pinch
+was not exercised; no rendered browser acceptance or production release is claimed.
+The existing Hero preview was left untouched.
+## Lauenburg map follow-up — 28 September 2026 (local, unreviewed)
+
+The map heading previously reserved a fixed 250px for an independently positioned
+metric control. The local correction uses a shared grid row with the control's actual
+width, a 32px gap and a wrapping title using the central hero-size token. The map canvas
+retains its shared row and existing framing. The developer replay button “Gesten zeigen”
+is now development-only; the normal metric selector and automatic touch tutorial remain.
+
+Bounded geometry comparison using the actual `projectRegions` function and checked-in
+boundaries: Lauenburg 133 shapes / 136 polygons / 2,833 points / 47 trees; Wittenberg
+9 shapes / 9 polygons / 1,012 points / no trees. This is scene complexity evidence,
+not an FPS measurement or proven stutter cause. The map renderer and frame pacer have
+no 28 September changes in the inspected main history. The local trackpad commit
+`69ab9f7e` is not an ancestor of that main and was not included in this correction.
+
+CSS and TSX parsing and whitespace checks passed. Browser control timed out twice;
+direct public reads for both pages returned Vercel Security Checkpoint instead of
+page content. Desktop/mobile visual acceptance and Safari frame-time comparison
+remain open. No performance change or production deployment was made.
+## Download follow-up — 28 September 2026 (local, not released)
+
+The shared options menu now places its keyboard focus ring inside each item instead
+of inheriting the Atlas outline with a positive offset. Flyout height is bounded by
+available viewport space. The download group offers “In Ihrem Design — Anfragen”
+with widget, place, selected state and deep link prefilled in the existing contact
+form under “Widget im eigenen Design”; nothing is submitted automatically. The
+shared analytics action `design_contact` identifies these clicks by widget and scope.
+
+Video encoding waits for a hidden document to become visible instead of discarding
+the export. The overlay distinguishes paused/working states; capture interrupted by
+a tab switch is repeated at the same timeline position. Removing the chart still
+ends the export with a specific error. Closing/reloading the page is not resumable.
+
+Seven focused tests pass, including a tab switch during capture with identical
+encoded frame times after resumption; TSX/CSS syntax and whitespace checks pass.
+Browser control timed out and the local Next preview did not respond within bounded
+requests, so no rendered acceptance or real-browser MP4 run is claimed. The temporary
+preview server and fixture were removed. Visual desktop/mobile and browser background
+export acceptance remain open before release.
+
 ## Release closeout — 28 September 2026
 
 **Published, not merely a local preview.** The shared widget release reached `main`

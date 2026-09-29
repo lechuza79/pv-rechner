@@ -30,6 +30,7 @@ describe.skipIf(!fixtureDir)('prepared regional examples',()=>{
     for(const title of ['Solarerzeugung im Tagesverlauf','Jahresverlauf','Wert des Solarstroms','Einspeisevergütung'])expect(html).toContain(title);
     expect(html).toContain('Solarleistung heute');
     expect(html).not.toContain('aller Gemeinden');
-    if(id==='de')expect(html).toContain('5 von 20');
+    // Partial month coverage belongs to the value widgets' help, not above the section.
+    expect(html.replaceAll('<!-- -->','')).not.toMatch(/von \d+ Monaten vollständig berechenbar/);
   },30000);
 });

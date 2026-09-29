@@ -1,8 +1,8 @@
 import "server-only";
-import { createHmac } from "node:crypto";
 import { supabase } from "./supabase-server";
 import { unstable_cache } from "next/cache";
 import { withDbTimeout } from "./db-timeout";
+import { kennungAusGeheimnis, KENNUNG_MUSTER } from "./fachbetrieb-kennung";
 
 /**
  * Die betriebseigene Rechner-Seite: Kennung, Laden, Zustand.
@@ -57,10 +57,13 @@ export type FachbetriebSeite = {
 };
 
 /**
- * Das Geheimnis der Kennung. Wir benutzen den ohnehin vorhandenen
- * Cron-Schlüssel: Eine eigene Variable wäre eine weitere Stelle, an der ein
+ * Das Geheimnis der Kennung. Wir leiten es aus dem ohnehin vorhandenen
+ * Cron-Schlüssel ab: Eine eigene Variable wäre eine weitere Stelle, an der ein
  * fehlender Eintrag auf der Produktion erst auffällt, wenn ein Link ins Leere
- * führt (Lehre „Umgebung ist nicht Code").
+ * führt (Lehre „Umgebung ist nicht Code"). Benutzt wird aber NICHT der
+ * Cron-Schlüssel selbst, sondern ein daraus abgeleiteter eigener Schlüssel —
+ * Herleitung und die Warnung, dass ein neuer CRON_SECRET jede verschickte
+ * Partner-Adresse tot macht: `lib/fachbetrieb-kennung.ts`.
  */
 function geheimnis(): string {
   const s = process.env.CRON_SECRET;
@@ -70,10 +73,7 @@ function geheimnis(): string {
 
 /** Erzeugt die Kennung einer Domain. Stabil, nicht ratbar, ohne Datenbankspalte. */
 export function kennungFuer(domain: string): string {
-  return createHmac("sha256", geheimnis())
-    .update(`fachbetrieb:${domain.toLowerCase()}`)
-    .digest("hex")
-    .slice(0, 16);
+  return kennungAusGeheimnis(domain, geheimnis());
 }
 
 /**
@@ -176,7 +176,7 @@ async function seiteAusDatenbank(kennung: string): Promise<FachbetriebSeite | nu
  * Weg, den Speicher vollzuschreiben.
  */
 export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeite | null> {
-  if (!/^[0-9a-f]{16}$/.test(kennung)) return null;
+  if (!KENNUNG_MUSTER.test(kennung)) return null;
   const geladen = unstable_cache(
     () => seiteAusDatenbank(kennung),
     ["fachbetrieb-seite", kennung],

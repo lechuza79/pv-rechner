@@ -12,9 +12,9 @@ export function readBalkonHardware(query: URLSearchParams): BalkonHardwareSnapsh
     if (!raw?.trim() || !Number.isFinite(value) || value < min || value > max) return null;
     values[key] = value;
   }
-  return { ...values, ...(query.get("batteryCoupling") === "dc" ? { batteryCoupling: "dc" as const } : {}) } as BalkonHardwareSnapshot;
+  return { ...values, ...((query.get("haendler") === "solakon" || query.get("offer")?.startsWith("solakon-")) ? { haendler: "solakon" } : {}), ...(query.get("batteryCoupling") === "dc" ? { batteryCoupling: "dc" as const } : {}) } as BalkonHardwareSnapshot;
 }
 
 export function writeBalkonHardware(hardware: BalkonHardwareSnapshot | null | undefined): Record<string, string> {
-  return hardware ? { ...Object.fromEntries(["moduleWp", "inverterW", "speicherKwh", "preis"].map(key => [key, String(hardware[key as keyof BalkonHardwareSnapshot])])), ...((hardware.haendler === "solakon" || hardware.batteryCoupling === "dc") ? { batteryCoupling: "dc" } : {}) } : {};
+  return hardware ? { ...(hardware.haendler === "solakon" ? { haendler: "solakon" } : {}), ...Object.fromEntries(["moduleWp", "inverterW", "speicherKwh", "preis"].map(key => [key, String(hardware[key as keyof BalkonHardwareSnapshot])])), ...((hardware.haendler === "solakon" || hardware.batteryCoupling === "dc") ? { batteryCoupling: "dc" } : {}) } : {};
 }

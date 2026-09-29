@@ -2,6 +2,11 @@
 import { SCENARIOS } from "../../../../lib/constants";
 
 import { useState } from "react";
+import ChartFlag from "../../../../components/charts/ChartFlag";
+import MetricValue from "../../../../components/MetricValue";
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
+import ResultChoiceHeader from "../../../../components/ResultChoiceHeader";
+import OptionalDisclosure from "../../../../components/OptionalDisclosure";
 import { AccordionField } from "../../../../components/AccordionField";
 import BackLink from "../../../../components/BackLink";
 import Breadcrumb from "../../../../components/Breadcrumb";
@@ -13,8 +18,10 @@ import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
+import ArticleTeasers from "../../../../components/ArticleTeasers";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
+import OnsiteSearch from "../../../../components/OnsiteSearch";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
 import StorySlider from "../../../../components/StorySlider";
@@ -670,7 +677,19 @@ function MultitoolBeispiel() {
   );
 }
 
+function OnsiteSearchBeispiel() {
+  const [query,setQuery]=useState("");
+  return <div style={{width:"100%",maxWidth:400}}><OnsiteSearch
+    items={[{id:"charts",label:"Charts"},{id:"maps",label:"Karten"},{id:"forms",label:"Formulare"}]}
+    ariaLabel="Baustein suchen" placeholder="Baustein suchen …" onQueryChange={setQuery}/>
+    <p aria-live="polite">{query ? `Filter: ${query}` : "Alle Bausteine"}</p></div>;
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  OnsiteSearch: OnsiteSearchBeispiel,
+ ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
+ MetricValue: () => <MetricValue value={12345} signed/>,
+  CalculatorContent: () => <CalculatorContent><p>Fragen, Ergebnis und ergänzende Inhalte folgen derselben Inhaltskante.</p></CalculatorContent>,
   Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
@@ -678,6 +697,8 @@ const BEISPIELE: Record<string, Beispiel> = {
   SelectField: AuswahlBeispiel,
   PresetNumberInput: ZahlenfeldBeispiel,
   InlineEdit: ZahlBeispiel,
+  ResultChoiceHeader: () => <ResultChoiceHeader title="Deine Berechnung" selected>3.300 € Vorteil über 25 Jahre</ResultChoiceHeader>,
+  OptionalDisclosure: () => <OptionalDisclosure label="Angaben anpassen"><p>Hier stehen die optionalen Eingaben.</p></OptionalDisclosure>,
   AccordionField: AkkordeonBeispiel,
   StatusBadge: () => (
     <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -718,6 +739,12 @@ const BEISPIELE: Record<string, Beispiel> = {
     />
   ),
   BackLink: () => <BackLink fallback="/admin" label="Zurück zur Übersicht" />,
+  ArticleTeasers: () => (
+    <ArticleTeasers title="Mehr zum Thema" items={[
+      {href: "/laendervergleich", title: "Solarenergie im internationalen Vergleich", teaser: "Wie steht Deutschland beim Solarausbau im Vergleich zu anderen Ländern da?"},
+      {href: "/ratgeber", title: "Photovoltaik verstehen", teaser: "Verständliche Entscheidungshilfen zu Anlage, Speicher und Eigenverbrauch.", cta: "Zu den Ratgebern"},
+    ]} />
+  ),
   RelatedLinks: () => (
     <div style={{ maxWidth: 460 }}>
       <RelatedLinks

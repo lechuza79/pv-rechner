@@ -1,3 +1,4 @@
+import {regionNavigationEnergy, type RegionNavigationEnergy} from "./region-navigation-energy";
 /**
  * The precomputed package behind one district page (Landkreis).
  *
@@ -33,6 +34,7 @@ import { aggregateDistrictMonitor, type DistrictMonitorResult } from "./district
 import { aggregateDistrictEnergy, type DistrictEnergy } from "./district-energy";
 import { selectDistrictStories } from "./district-stories";
 import type { StoryConcept } from "./story-konzepte";
+import type { RankingSnapshot } from "./ranking-package";
 import { paketFuer } from "../components/gemeinde/paket-teile";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 
@@ -45,8 +47,12 @@ export const DISTRICT_PACKAGE_VERSION = 1;
  * (history)" because of Gröde, which has no plant — and Schleswig-Holstein and
  * Deutschland above it stayed unavailable too ("0 gebaut, 294 übernommen"),
  * until someone started a full run by hand. Revision 2 is that rule.
+ * Revision 3 (28.09.2026): district, Land and Deutschland packages carry the
+ * ranking table's cells (lib/ranking-package.ts). The next run of the package
+ * workflow rebuilds every package; until then the page reads the database.
  */
-export const DISTRICT_CONTENT_REVISION = 2;
+// Revision 4: include child monthly energy for navigation without request-time fanout.
+export const DISTRICT_CONTENT_REVISION = 4;
 export const DISTRICT_PACKAGE_PREFIX = `kreise/v${DISTRICT_PACKAGE_VERSION}`;
 export const DISTRICT_POINTER_PATH = `${DISTRICT_PACKAGE_PREFIX}/aktuell.json`;
 /** unstable_cache and the fetch data cache refuse entries above 2 MB; stay well below. */
@@ -54,7 +60,7 @@ export const DISTRICT_PACKAGE_MAX_BYTES = 1_500_000;
 
 export type DistrictSite = { ags: string; kwp: number };
 export type DistrictMonitor = DistrictMonitorResult & { energy: DistrictEnergy | null; sites: DistrictSite[] | null };
-export type DistrictComputed = { monitor: DistrictMonitor; stories: StoryConcept[] };
+export type DistrictComputed = { monitor: DistrictMonitor; stories: StoryConcept[]; childEnergy?: RegionNavigationEnergy | null };
 
 /** One district's members, straight from the region register. */
 export type DistrictMembership = { regionId: string; name: string; members: string[] };
@@ -80,6 +86,8 @@ export type DistrictPackage = {
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
+  /** The ranking table's cells of the member towns (lib/ranking-package.ts); absent before revision 3. */
+  ranking?: RankingSnapshot;
 };
 
 export type DistrictManifestEntry = { path: string; fingerprint: string; members: number; editions: string[]; missing: number; bytes: number };
@@ -116,7 +124,7 @@ export function computeDistrictContent(ids: string[], packets: (GemeindePaket | 
     energy: aggregateDistrictEnergy(sumIds, slim, town),
     sites: sites.length === sumIds.length && slim.every((p) => p?.registerStand === slim[0]?.registerStand) ? sites : null,
   };
-  return { monitor, stories: selectDistrictStories(stories) };
+  return { monitor, stories: selectDistrictStories(stories), childEnergy: regionNavigationEnergy(ids, packets, monitor.energy, new Set(ids.filter((_,i)=>!keep[i]))) };
 }
 
 /** A published town package that holds nothing to sum: no history, no periods, no register figures. */

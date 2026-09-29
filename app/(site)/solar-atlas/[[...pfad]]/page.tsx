@@ -7,6 +7,8 @@ import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
+import ArticleTeasers from "../../../../components/ArticleTeasers";
+import { atlasEditorialLinks } from "../../../../lib/atlas-editorial-links";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -21,7 +23,6 @@ import {
   getRegionById,
   getAncestors,
   getChildren,
-  getRankingData,
   getEinzelgemeinden,
   mitEndpfad,
   childLevelOf,
@@ -40,6 +41,7 @@ import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { preloadPublishedPackage } from "../../../../lib/district-monitor-server";
+import { getRankingDataForPage } from "../../../../lib/atlas-ranking-server";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
 import { isDistrictMember } from "../../../../lib/district-package";
@@ -199,11 +201,14 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
 function startAtlasReads(region: AtlasRegion) {
   const refChain =
     region.level === "bundesland" ? [{ key: "de", ags: "de" }] : [];
+  const kinder = getChildren(region);
   const reads = {
     atlas: getRegionAtlasData(region.region_id),
-    kinder: getChildren(region),
+    kinder,
     ancestors: getAncestors(region),
-    ranking: getRankingData(region),
+    // Cells from the monitor package when it has them (one read instead of up
+    // to ~11 database pages), else the database — see getRankingDataForPage.
+    ranking: getRankingDataForPage(region, kinder),
     // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
     // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
     einzel: region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),
@@ -447,7 +452,10 @@ async function AtlasBody({
       if ("href" in teil) return <Link key={`${teil.href}-${idx}`} href={teil.href}>{teil.text}</Link>;
       return <strong key={`w-${idx}`}>{teil.text}</strong>;
     }) : null;
-    const zusatz = region.level === "de" ? <p><Link href="/laendervergleich">Photovoltaik-Ausbau im internationalen Vergleich</Link></p> : null;
+    const relatedLinks = atlasEditorialLinks[region.region_id] ?? [];
+    const zusatz = relatedLinks.length > 0
+      ? <ArticleTeasers title="Mehr zum Thema" items={relatedLinks} currentPath={basePath} />
+      : null;
     return <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />

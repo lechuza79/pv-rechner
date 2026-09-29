@@ -1,6 +1,16 @@
 import {afterEach,expect,it,vi} from 'vitest';
-const calls=vi.hoisted(()=>({frames:[] as number[],commands:[] as number[]}));
-vi.mock('../chart-export',()=>({captureNodeToBlob:async()=>new Blob()}));
+const calls=vi.hoisted(()=>({frames:[] as number[],commands:[] as number[],hideCapture:false,quickSwitch:false,failCapture:false}));
+vi.mock('../chart-export',()=>({captureNodeToBlob:async()=>{
+ if(calls.hideCapture){
+   calls.hideCapture=false;
+   Object.assign(document,{hidden:true});
+   document.dispatchEvent(new Event('visibilitychange'));
+   if(calls.quickSwitch){Object.assign(document,{hidden:false});document.dispatchEvent(new Event('visibilitychange'));}
+   else setTimeout(()=>{Object.assign(document,{hidden:false});document.dispatchEvent(new Event('visibilitychange'));},5);
+ }
+ if(calls.failCapture){calls.failCapture=false;throw new Error('Capture interrupted');}
+ return new Blob();
+}}));
 vi.mock('mediabunny',()=>({
  Output:class {target={buffer:new ArrayBuffer(0)};addVideoTrack(){} async start(){} async finalize(){} async cancel(){}},
  Mp4OutputFormat:class {},BufferTarget:class {},
@@ -9,14 +19,16 @@ vi.mock('mediabunny',()=>({
 }));
 import {downloadChartVideo,chartAnimationDuration} from '../chart-animation-export';
 afterEach(()=>vi.unstubAllGlobals());
-it('encodes the chart clock at 30fps regardless of capture wall time',async()=>{
- calls.frames=[];calls.commands=[];
+it.each(['visible','hidden','quick-switch','interrupted-capture'])('encodes the same timeline after a background pause: %s',async(mode)=>{
+ const hidden=mode!=='visible';calls.quickSwitch=mode==='quick-switch';calls.failCapture=mode==='interrupted-capture';
+ calls.frames=[];calls.commands=[];calls.hideCapture=hidden;
+ vi.stubGlobal('MutationObserver',class {observe(){} disconnect(){}});
  vi.stubGlobal('CustomEvent',class {detail:any;constructor(_name:string,options:any){this.detail=options.detail}});
  vi.stubGlobal('requestAnimationFrame',(callback:()=>void)=>callback());
  vi.stubGlobal('createImageBitmap',async()=>({width:101,height:99,close(){}}));
  vi.stubGlobal('getComputedStyle',()=>({getPropertyValue:()=>''}));
  vi.stubGlobal('URL',{createObjectURL:()=> 'blob:test'});
- vi.stubGlobal('document',{hidden:false,createElement:(tag:string)=>tag==='a'?{click(){}}:{getContext:()=>({fillRect(){},drawImage(){}})}});
+ vi.stubGlobal('document',Object.assign(new EventTarget(),{hidden:false,createElement:(tag:string)=>tag==='a'?{click(){}}:{getContext:()=>({fillRect(){},drawImage(){}})}}));
  const target={dispatchEvent:(event:any)=>{
   if(event.detail.mode==='describe')event.detail.report({durationMs:100});
   if(event.detail.mode==='seek')calls.commands.push(event.detail.timeMs);
@@ -25,6 +37,6 @@ it('encodes the chart clock at 30fps regardless of capture wall time',async()=>{
  expect(chartAnimationDuration(node)).toBe(100);
  const result=await downloadChartVideo(node,'race',()=>{});
  expect(result.filename).toBe('race.mp4');
- expect(calls.commands).toEqual([0,1000/30,2000/30]);
+ expect(calls.commands).toEqual(hidden?[0,0,1000/30,2000/30]:[0,1000/30,2000/30]);
  expect(calls.frames).toEqual([0,1/30,2/30]);
 });

@@ -13,7 +13,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createHmac } from "node:crypto";
+import { kennungAusGeheimnis } from "../lib/fachbetrieb-kennung";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -24,17 +24,9 @@ function loadEnvFile(): void {
   }
 }
 
-// Muss zeichengleich mit `kennungFuer` in lib/fachbetrieb-seite.ts sein. Die
-// Verdopplung ist Absicht: Dieses Skript läuft in Node, das Modul dort trägt
-// `server-only` und ließe sich hier nicht laden. `lib/__tests__/fachbetrieb-seite.test.ts`
-// hält beide Fassungen aneinander — eine auseinanderlaufende Kennung würde
-// jeden verschickten Link ins Leere führen.
-function kennungFuer(domain: string, geheimnis: string): string {
-  return createHmac("sha256", geheimnis)
-    .update(`fachbetrieb:${domain.toLowerCase()}`)
-    .digest("hex")
-    .slice(0, 16);
-}
+// Dieselbe Ableitung wie die Seite — aus EINER Quelle importiert, nicht
+// nachgebaut: Eine auseinanderlaufende Kennung führte jeden verschickten Link
+// lautlos ins Leere.
 
 const SITE = "https://solar-check.io";
 
@@ -72,7 +64,7 @@ async function main(): Promise<void> {
   }
 
   for (const z of zeilen) {
-    const k = kennungFuer(z.domain, geheimnis);
+    const k = kennungAusGeheimnis(z.domain, geheimnis);
     const ort = [z.plz, z.ort].filter(Boolean).join(" ");
     console.log(`${z.firmenname ?? z.domain}${ort ? ` · ${ort}` : ""}`);
     console.log(`  ${SITE}/fuer/${k}`);

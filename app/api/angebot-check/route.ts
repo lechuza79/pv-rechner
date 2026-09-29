@@ -6,6 +6,7 @@ import { gewerkVon, WAERMEPUMPE } from "../../../lib/angebot-gewerk";
 import { zuSammlungsZeile } from "../../../lib/angebot-sammlung";
 import { merkeBefund } from "../../../lib/angebot-sammlung-db";
 import { angebotCheckAktiv } from "../../../lib/angebot-check-freigabe";
+import { angebotCheckKontingent } from "../../../lib/angebot-check-kontingent-db";
 
 // ─── Ein hochgeladenes Wärmepumpen-Angebot prüfen ─────────────────────────────
 //
@@ -64,9 +65,11 @@ function leseDienst(): LeseDienst | null {
 }
 
 export async function POST(req: Request) {
-  // Switched off until the feature is built into a page. Before setting
-  // ANGEBOT_CHECK_AKTIV=1, a GLOBAL daily cap is required (see
-  // lib/angebot-check-freigabe.ts) — the per-instance limit below is not one.
+  // Switched off until the feature is built into a page. The GLOBAL daily cap
+  // exists now (lib/angebot-check-kontingent.ts, checked below before the
+  // model is called), but its table and function only exist once
+  // GET /api/angebot-check/setup has run. Run it BEFORE setting
+  // ANGEBOT_CHECK_AKTIV=1 — otherwise every call fails closed with 503.
   if (!angebotCheckAktiv()) {
     return NextResponse.json({ fehler: "nicht-gefunden" }, { status: 404 });
   }
@@ -119,6 +122,31 @@ export async function POST(req: Request) {
   const dienst = leseDienst();
   if (!dienst) {
     return NextResponse.json({ fehler: "nicht-eingerichtet" }, { status: 503 });
+  }
+
+  // GLOBAL daily cap, shared across all instances — the per-IP limit above
+  // lives in one instance's memory and caps nothing on its own. Checked last
+  // before the paid call, so malformed requests don't use up the day. Fail
+  // closed: without an explicit "frei" from the counter, no model call.
+  const kontingent = await angebotCheckKontingent();
+  if (kontingent === "erschoepft") {
+    return NextResponse.json(
+      {
+        fehler: "tageslimit",
+        meldung:
+          "Heute sind schon so viele Angebote geprüft worden, wie wir am Tag prüfen können. Bitte versuche es morgen noch einmal.",
+      },
+      { status: 429 },
+    );
+  }
+  if (kontingent !== "frei") {
+    return NextResponse.json(
+      {
+        fehler: "voruebergehend-nicht-verfuegbar",
+        meldung: "Die Prüfung ist gerade nicht erreichbar. Bitte versuche es in ein paar Minuten noch einmal.",
+      },
+      { status: 503 },
+    );
   }
 
   const dokumente = await Promise.all(

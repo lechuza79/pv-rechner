@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const { leseDienstAufrufe } = vi.hoisted(() => ({ leseDienstAufrufe: vi.fn(() => null) }));
 vi.mock("../angebot-lesedienst", () => ({ anthropicLeseDienst: leseDienstAufrufe }));
 vi.mock("../angebot-sammlung-db", () => ({ merkeBefund: vi.fn() }));
+vi.mock("../angebot-check-kontingent-db", () => ({ angebotCheckKontingent: vi.fn(async () => "frei") }));
 
 import { angebotCheckAktiv, ANGEBOT_CHECK_FLAG } from "../angebot-check-freigabe";
 import { POST } from "../../app/api/angebot-check/route";

@@ -61,7 +61,7 @@ describe('BKW result, funding, package and chart contract', () => {
     const dcConfig = configFuerAngebot(a);
     const legacyConfig = configFuerAngebot({ moduleWp: 2000, inverterW: 800, speicherKwh: 10.55, preis: 2000 });
     expect(dcConfig.storage[1].batteryCoupling).toBe('dc');
-    expect(dcConfig.storage[1].usableBatteryKwh).toBeUndefined();
+    expect(dcConfig.storage[1].usableBatteryKwh).toBeCloseTo(10.55 * .85);
     expect(legacyConfig.storage[1].batteryCoupling).toBeUndefined();
     const input = { ...basis, setId: 'duo' as const, storageId: 'small' as const };
     expect(calcBalkon(input, dcConfig).selfUsedKwh).toBeGreaterThan(calcBalkon(input, legacyConfig).selfUsedKwh);
@@ -82,7 +82,7 @@ describe('shared package snapshot', () => {
   it('retains the actual large battery and entire package price', () => {
     const a = offer(10.55, 3129.99);
     const decoded = readBalkonHardware(new URLSearchParams(writeBalkonHardware(a)))!;
-    expect(decoded).toEqual({ moduleWp: 2000, inverterW: 800, speicherKwh: 10.55, preis: 3129.99, batteryCoupling: "dc" });
+    expect(decoded).toEqual({ moduleWp: 2000, inverterW: 800, speicherKwh: 10.55, preis: 3129.99, batteryCoupling: "dc", haendler: "solakon" });
     expect(calcBalkon({ ...basis, setId: 'duo', storageId: 'small' }, configFuerAngebot(decoded))).toEqual(bewerteAngebot(a, basis).ergebnis);
   });
   for (const [key, value] of [['speicherKwh', 'NaN'], ['preis', '-100'], ['inverterW', '100000'], ['moduleWp', '']]) it(`rejects invalid ${key}`, () => {

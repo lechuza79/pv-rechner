@@ -1,5 +1,5 @@
 /* Independent export palette: tune light-surface contrast here, not per chart. */
-:root{--chart-export-contrast:#163338;--chart-export-background:#fafbf8;--chart-export-surface:#edf0ec;--chart-export-secondary:#52676b}
+:root{--chart-export-contrast:#163338;--chart-export-background:#fafbf8;--chart-export-surface:#edf0ec;--chart-export-secondary:#52676b;--chart-export-source:#666666;--chart-export-source-opacity:.5}
 [data-sc-export-capture] [data-sc-export-brightest],
 [data-sc-export-capture] [data-sc-export-brightest] *{
  --atlas-action:var(--chart-export-contrast)!important;
@@ -15,3 +15,9 @@
  --color-text-primary:var(--chart-export-contrast)!important;
  --color-text-secondary:var(--chart-export-secondary)!important;
 }
+
+/* Keep attribution neutral and quieter than the chart in every export. */
+[data-sc-export-capture] [data-sc-source-edge]{color:var(--chart-export-source)!important;opacity:var(--chart-export-source-opacity)!important}
+
+/* Center only the radial drawing, not its heading, date or footer. */
+[data-sc-export-capture] [data-chart-animation="month"] > svg{width:calc(100% - var(--chart-export-source-gutter,0px));margin-inline:auto;transform:translateX(calc(var(--chart-export-source-gutter,0px) / 2))}

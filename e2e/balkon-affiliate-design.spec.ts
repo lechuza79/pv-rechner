@@ -97,7 +97,7 @@ test('BKW result supports funding follow-up and shared chart inspection', async 
   await page.setViewportSize({ width: 569, height: 900 });
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('button', { name: 'realistischer Preisentwicklung', exact: true })).toBeVisible();
-  const amount = page.locator('.bkw-profit-amount');
+  const amount = page.locator('.wp-profit-amount');
   await expect(amount).toContainText('vs. ausschließlich Netzstrom');
   const funding = page.getByRole('button', { name: 'Förderung prüfen', exact: true });
   await funding.click();

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { gemeindeWetterpunkt } from "../../../../lib/atlas-geo";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { shardKey } from "../../../../lib/icon-d2";
 import { loadIconD2Shard } from "../../../../lib/icon-d2-store";
@@ -18,7 +19,9 @@ const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 export async function GET(req: NextRequest) {
   const limited = rateLimit(req, "gemeinde-solartag");
   if (limited) return limited;
-  const plz = req.nextUrl.searchParams.get("plz") ?? "";
+  const ags = req.nextUrl.searchParams.get("ags") ?? "";
+  const location = /^\d{8}$/.test(ags) ? await gemeindeWetterpunkt(ags) : null;
+  const plz = location?.plz ?? req.nextUrl.searchParams.get("plz") ?? "";
   const coords = /^\d{5}$/.test(plz) ? COORDS[plz] : null;
   if (!coords) return NextResponse.json({ error: "Unbekannte Postleitzahl" }, { status: 400 });
   const shard = await loadIconD2Shard(shardKey(plz));

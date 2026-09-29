@@ -36,7 +36,10 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { IconClose } from "./Icons";
-import { v, space } from "../lib/theme";
+import { tokens, space, type TokenName } from "../lib/theme";
+
+// Embeds may omit site tokens; retain the same defaults inside the shared dialog.
+const v = (name: TokenName) => `var(${name}, ${tokens[name]})`;
 
 const DURATION_MS = 220;
 // „Bewegung reduzieren" heißt Bewegung, nicht Rückmeldung: das Fenster fährt
@@ -292,7 +295,7 @@ export default function Modal({
       cancelAnimationFrame(fokusFrame);
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
-      trigger?.focus();
+      trigger?.focus({ preventScroll: true });
     };
   }, [open]);
 
@@ -374,10 +377,13 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
         className={className}
         data-story-scheme={scheme}
+        data-shared-modal="true"
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel ?? (typeof title === "string" ? title : undefined)}
         style={{
+          // Explicit light dialogs keep readable foregrounds inside dark embeds.
+          ...(scheme === "light" ? Object.fromEntries(Object.entries(tokens).filter(([key]) => key.startsWith("--color-text-") || key.startsWith("--color-border"))) : {}),
           background: v("--color-bg"),
           color: v("--color-text-primary"),
           fontFamily: v("--font-text"),
@@ -388,11 +394,11 @@ export default function Modal({
           maxHeight: isMobile ? "92dvh" : `calc(100dvh - ${space.xl * 2}px)`,
           overflowY: "auto",
           borderRadius: isMobile ? `${radius} ${radius} 0 0` : radius,
-          // Oben etwas großzügiger als unten/seitlich — der Titel bekommt Luft.
+          // Keep the title close to the top edge and separate it from the content.
           // Seiten- und Untermaß kommen aus denselben Konstanten, die der
           // klebende Fuß wieder aufhebt — driften sie auseinander, steht sein
           // Hintergrund nicht mehr bündig an der Kante.
-          padding: `${space.xxl}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
+          padding: `${space.lg}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
           boxShadow: "0 -8px 40px rgba(0,0,0,0.3)",
           outline: "none",
           opacity: shown ? 1 : 0,
@@ -421,7 +427,7 @@ const S: Record<string, React.CSSProperties> = {
     justifyContent: "space-between",
     alignItems: "center",
     gap: space.lg,
-    marginBottom: space.xs,
+    marginBottom: space.lg,
   },
   h2: {
     margin: 0,
@@ -436,7 +442,7 @@ const S: Record<string, React.CSSProperties> = {
     placeItems: "center",
     width: 40,
     height: 40,
-    margin: -space.sm,
+    margin: 0,
     borderRadius: v("--radius-sm"),
     border: "none",
     background: "transparent",

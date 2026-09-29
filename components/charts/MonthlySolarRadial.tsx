@@ -1,4 +1,5 @@
-import {useId} from 'react';
+import {useEffect,useId,useRef,useState} from 'react';
+import {SOLAR_DRAW_MS, solarEase} from '../../lib/monthly-solar-animation';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
 import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
 import {formatStoryDate} from '../../lib/story-format';
@@ -18,7 +19,8 @@ import {regionDisplayName} from '../../lib/atlas-format';
  *    always the month total, larger backdrop modules in the compact card.
  * Class names come from the wrapper's stylesheet (type sizes and motion differ).
  */
-export function MonthlySolarRadial({data, layout, compact, displayDate, frame, playing, focused, onHover, onChoose, classes}: {
+export function MonthlySolarRadial({data, layout, compact, displayDate, frame, playing, focused, onHover, onChoose, classes, animationSample}: {
+  animationSample?: {index:number;progress:number;value:number};
   data: SolarMonth;
   layout: 'monitor' | 'story';
   compact: boolean;
@@ -61,8 +63,32 @@ export function MonthlySolarRadial({data, layout, compact, displayDate, frame, p
   const ariaLabel = layout === 'monitor'
     ? `Solarleistung ${data.town ? ortPhrase({name: regionDisplayName(data.town)}) : 'in der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${energieTeile(data.totalMwh).value} ${energieTeile(data.totalMwh).unit}.`
     : `Solarleistung in ${data.town ?? 'Trier'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${(data.totalMwh / 1000).toFixed(2)} GWh.`;
+  const targetValue = shownDay ? shownDay.mwh : data.totalMwh;
+  const [countValue, setCountValue] = useState(targetValue);
+  const currentValue = useRef(targetValue);
+  useEffect(() => {
+    if (animationSample || layout !== 'monitor' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      currentValue.current = targetValue;
+      setCountValue(targetValue);
+      return;
+    }
+    const from = currentValue.current, started = performance.now();
+    let handle = 0;
+    const tick = (now:number) => {
+      const progress = Math.min(1, (now - started) / SOLAR_DRAW_MS);
+      currentValue.current = from + (targetValue - from) * solarEase(progress);
+      setCountValue(currentValue.current);
+      if (progress < 1) handle = requestAnimationFrame(tick);
+    };
+    handle = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(handle);
+  }, [targetValue, layout, !!animationSample]);
+  // Keep the energy unit stable across every day, including low-output days.
+  const dayUnit = energieTeile(Math.max(...data.days.map(day => day.mwh))).unit;
+  const unit = shownDay ? dayUnit : energieTeile(data.totalMwh).unit;
+  const divisor = unit === 'GWh' ? 1000 : unit === 'MWh' ? 1 : .001;
   const centre = layout === 'monitor'
-    ? (shownDay ? energieTeile(shownDay.mwh) : energieTeile(data.totalMwh))
+    ? {value: ((animationSample?.value ?? countValue) / divisor).toLocaleString('de-DE', {maximumFractionDigits: unit === 'kWh' ? 0 : 1}), unit}
     : {value: (data.totalMwh / 1000).toLocaleString('de-DE', {maximumFractionDigits: 1}), unit: 'GWh'};
   const centreText = <><text x="280" y="275" textAnchor="middle" className={`${classes.total} ${layout === 'monitor' && compact ? classes.totalAkzent : ''}`}>{centre.value}</text><text x="280" y="300" textAnchor="middle" className={classes.unit}>{centre.unit}</text></>;
   return <svg viewBox={chartViewBox} role={compact ? 'img' : 'group'} aria-label={ariaLabel}>
@@ -78,14 +104,12 @@ export function MonthlySolarRadial({data, layout, compact, displayDate, frame, p
     {data.days.map((day, index) => {
       const isActive = hasActive && day.date === displayDate, hidden = frame !== null && index > frame;
       return <g key={day.date} opacity={hidden ? 0 : 1} className={classes.dayLine}>
-        <path d={path(day.mw)} fill="none" stroke={`url(#${gradientId})`} strokeOpacity={playing && index === frame ? 0 : 1} strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
-        <path d={path(day.mw)} pathLength="1" className={`${classes.activeLine} ${playing && index === frame ? classes.drawing : ''}`} fill="none" stroke="var(--atlas-action)" strokeOpacity={isActive ? 1 : 0} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={path(day.mw)} fill="none" stroke={`url(#${gradientId})`} strokeOpacity={(playing || animationSample) && index === frame ? 0 : 1} strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={path(day.mw)} pathLength="1" style={animationSample && index === frame ? {strokeDasharray:1,strokeDashoffset:1-animationSample.progress} : undefined} className={`${classes.activeLine} ${playing && index === frame && !animationSample ? classes.drawing : ''}`} fill="none" stroke="var(--atlas-action)" strokeOpacity={isActive ? 1 : 0} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
         {!compact && !hidden && !playing && <path d={path(day.mw)} fill="none" stroke="transparent" strokeWidth="10" className={classes.hitLine} onPointerEnter={() => {if (!focused && !playing) onHover(day.date);}} onPointerLeave={() => onHover(null)} onClick={() => onChoose(day.date)}><title>{layout === 'monitor' ? `${formatStoryDate(day.date)}: ${energieTeile(day.mwh).value} ${energieTeile(day.mwh).unit}` : `${formatStoryDate(day.date)}: ${Math.round(day.mwh)} MWh`}</title></path>}
       </g>;
     })}
-    {/* Monitor: the centre shows what is drawn — the running day, else the
-        month — and fades in per day so it never runs ahead of the line
-        (operator, 23.09.2026). The key restarts the fade for each day. */}
-    {layout === 'monitor' ? <g key={shownDay?.date ?? 'summe'} className={classes.wertWechsel}>{centreText}</g> : centreText}
+    {/* Preserve the text nodes across day changes; only the number counts. */}
+    {centreText}
   </svg>;
 }

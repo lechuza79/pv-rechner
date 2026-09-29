@@ -174,6 +174,24 @@ SELECT jsonb_build_object(
     JOIN pg_namespace n ON n.oid = p.pronamespace
     WHERE n.nspname = 'public' AND p.proname = 'exec_sql'
   ),
+  -- Weitere SECURITY-DEFINER-Funktionen, die nur der Dienstschluessel
+  -- aufrufen darf (lib/angebot-check-kontingent.ts). Gleiche Fragen wie bei
+  -- exec_sql; fehlt eine, ist das kein Befund (Setup noch nicht gelaufen).
+  'definer_functions', (
+    SELECT coalesce(jsonb_agg(jsonb_build_object(
+      'name', p.proname,
+      'args', pg_get_function_identity_arguments(p.oid),
+      'security_definer', p.prosecdef,
+      'search_path', p.proconfig,
+      'execute_anon', COALESCE(has_function_privilege('anon', p.oid, 'EXECUTE'), false),
+      'execute_authenticated', COALESCE(has_function_privilege('authenticated', p.oid, 'EXECUTE'), false),
+      'execute_service_role', COALESCE(has_function_privilege('service_role', p.oid, 'EXECUTE'), false),
+      'execute_public', p.proacl IS NULL OR p.proacl::text LIKE '%{=X/%' OR p.proacl::text LIKE '%,=X/%'
+    ) ORDER BY p.proname, pg_get_function_identity_arguments(p.oid)), '[]'::jsonb)
+    FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname IN ('angebot_check_zaehlen')
+  ),
   'calculations', (
     SELECT jsonb_build_object(
       'exists', c.oid IS NOT NULL,
@@ -250,6 +268,17 @@ export type SecurityPosture = {
     execute_service_role: boolean;
     execute_public: boolean;
   }>;
+  /** Absent until /api/security/setup has installed the extended self-report. */
+  definer_functions?: Array<{
+    name: string;
+    args: string;
+    security_definer: boolean;
+    search_path: string[] | null;
+    execute_anon: boolean;
+    execute_authenticated: boolean;
+    execute_service_role: boolean;
+    execute_public: boolean;
+  }>;
   calculations: {
     exists: boolean;
     rls_enabled: boolean;
@@ -276,6 +305,20 @@ export function auditPosture(p: SecurityPosture): { ok: boolean; problems: strin
     if (fn.execute_authenticated) problems.push(`${sig}: authenticated darf ausfuehren.`);
     if (fn.execute_public) problems.push(`${sig}: PUBLIC darf ausfuehren.`);
     if (!fn.execute_service_role) problems.push(`${sig}: service_role darf NICHT ausfuehren — die Setup-Routen sind damit tot.`);
+    if (fn.security_definer && !fn.search_path?.length) {
+      problems.push(`${sig}: SECURITY DEFINER ohne festen search_path.`);
+    }
+  }
+
+  // Weitere Definer-Funktionen (Tageskontingent des Angebots-Checks): Wer sie
+  // mit dem Anon-Key aufrufen darf, kann das Kontingent leerzaehlen und den
+  // Angebots-Check fuer alle sperren.
+  for (const fn of p.definer_functions ?? []) {
+    const sig = `${fn.name}(${fn.args})`;
+    if (fn.execute_anon) problems.push(`${sig}: anon darf ausfuehren.`);
+    if (fn.execute_authenticated) problems.push(`${sig}: authenticated darf ausfuehren.`);
+    if (fn.execute_public) problems.push(`${sig}: PUBLIC darf ausfuehren.`);
+    if (!fn.execute_service_role) problems.push(`${sig}: service_role darf NICHT ausfuehren.`);
     if (fn.security_definer && !fn.search_path?.length) {
       problems.push(`${sig}: SECURITY DEFINER ohne festen search_path.`);
     }

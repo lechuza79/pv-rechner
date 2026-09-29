@@ -1260,6 +1260,39 @@ export default function DatenschutzPage() {
           Deine Rechte stehen in Abschnitt 12.
         </p>
 
+        <h2 id="video-download" style={S.h2}>21. Videos zu Diagrammen herunterladen</h2>
+        <p style={S.p}>
+          Für einen Video-Download verarbeiten wir deine E-Mail-Adresse, das ausgewählte
+          Diagramm, den Ort, den Zeitraum und den Bearbeitungsstatus. Nach deiner
+          Bestätigung erstellen wir das Video und senden einen Downloadlink.
+          Berechtigte angemeldete Nutzer können Videos ohne Mailanforderung erstellen.
+          Ein Ortsabo entsteht nur bei gesonderter Auswahl; dafür gilt Abschnitt 16.
+        </p>
+        <p style={S.p}>
+          Die Aufträge und privaten Videodateien speichern wir bei Supabase (Abschnitt 9).
+          Die Erstellung erfolgt mit GitHub Actions. Der Verarbeitungslauf hat Zugriff
+          auf die Aufträge und versendet fertige Downloadlinks über unser bestehendes
+          Mailpostfach bei All-Inkl (Abschnitt 16). Videos enthalten die öffentlichen
+          Diagrammdaten, nicht deine E-Mail-Adresse. Die Links und Dateien laufen nach
+          sieben Tagen ab und werden beim nächsten Bereinigungslauf entfernt.
+        </p>
+        <p style={S.p}>
+          Nach dem Versand der Abschlussmail entfernen wir die Adresse aus dem
+          Downloadauftrag. Nicht bestätigte Anfragen laufen nach 30 Minuten ab;
+          ihre Adressen werden beim nächsten Bereinigungslauf entfernt.
+          Zum Schutz vor automatisierten Anfragen speichern wir mit einem geheimen
+          Schlüssel abgeleitete Kennungen der E-Mail- und IP-Adresse sowie Zeitpunkte
+          und Status bis zu 14 Tage. Diese Kennungen sind keine anonymen Daten.
+          Die Bereinigung läuft regelmäßig, bei technischen Störungen verzögert.
+          Für gegebenenfalls von dir gewählte Abos gelten eigene Speicherfristen.
+        </p>
+        <p style={S.p}>
+          Die Verarbeitung zur Bereitstellung des angeforderten Downloads erfolgt
+          nach Art. 6 Abs. 1 lit. b DSGVO. Der Missbrauchsschutz beruht auf unserem
+          berechtigten Interesse an einem sicheren und begrenzten Betrieb
+          (Art. 6 Abs. 1 lit. f DSGVO). Deine Rechte stehen in Abschnitt 12.
+        </p>
+
         <p style={S.muted}>Stand: September 2026</p>
       </div>
     </div>

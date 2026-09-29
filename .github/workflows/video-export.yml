@@ -1,0 +1,59 @@
+name: Widget-Videos rendern
+
+# Renders queued widget videos in headless Chromium, stores them and mails the
+# download links (scripts/video-export-worker.ts). Public repository → standard
+# runners cost nothing.
+#
+# Enabled only after production schema and private storage are ready.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: video-export
+  cancel-in-progress: false
+
+jobs:
+  render:
+    if: vars.VIDEO_EXPORT_ENABLED == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check queue
+        id: queue
+        run: node scripts/video-export-pending.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      - uses: actions/setup-node@v4
+        if: steps.queue.outputs.pending == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+        if: steps.queue.outputs.pending == 'true'
+      - run: npx playwright install --with-deps chromium
+        if: steps.queue.outputs.pending == 'true'
+        timeout-minutes: 8
+      - name: Render queue
+        if: steps.queue.outputs.pending == 'true'
+        timeout-minutes: 20
+        run: npm run video:worker -- --until-idle --max-minutes=18
+        env:
+          VIDEO_EXPORT_ENABLED: "1"
+          VIDEO_EXPORT_RENDER_ORIGIN: https://solar-check.io
+          VIDEO_EXPORT_BASE_URL: https://solar-check.io
+          VIDEO_EXPORT_SECRET: ${{ secrets.VIDEO_EXPORT_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          OUTREACH_SMTP_HOST: ${{ secrets.OUTREACH_SMTP_HOST }}
+          OUTREACH_SMTP_PORT: ${{ secrets.OUTREACH_SMTP_PORT }}
+          OUTREACH_SMTP_USER: ${{ secrets.OUTREACH_SMTP_USER }}
+          OUTREACH_SMTP_PASS: ${{ secrets.OUTREACH_SMTP_PASS }}
+          OUTREACH_MAIL_FROM: ${{ secrets.OUTREACH_MAIL_FROM }}

@@ -1,3 +1,4 @@
+import {regionNavigationEnergy} from "./region-navigation-energy";
 /**
  * Precomputed monitor package for a Bundesland and for Deutschland.
  *
@@ -32,7 +33,8 @@ import { createHash } from "node:crypto";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
 import { aggregateDistrictMonitor } from "./district-monitor";
 import { aggregateDistrictEnergy, type EnergyPacket } from "./district-energy";
-import { DISTRICT_PACKAGE_VERSION, isDistrictMember, type DistrictComputed, type DistrictMembership, type DistrictMonitor, type DistrictSite } from "./district-package";
+import type { RankingSnapshot } from "./ranking-package";
+import { DISTRICT_CONTENT_REVISION, DISTRICT_PACKAGE_VERSION, isDistrictMember, type DistrictComputed, type DistrictMembership, type DistrictMonitor, type DistrictSite } from "./district-package";
 
 /** Bump when the region package shape or its aggregation changes. */
 export const REGION_PACKAGE_VERSION = 2;
@@ -67,6 +69,12 @@ export type RegionPackage = {
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
+  /**
+   * The ranking table's cells of the page's children (lib/ranking-package.ts),
+   * set by the package run. Absent in packages built before 28.09.2026 — the
+   * page then reads them from the database.
+   */
+  ranking?: RankingSnapshot;
 };
 
 const sorted = (xs: string[]) => [...xs].sort();
@@ -109,7 +117,7 @@ export function regionsFromRegister(rows: RegisterRow[], districts: DistrictMemb
 
 /** What a region package is computed from. Parts' fingerprints carry every input below them. */
 export function regionFingerprint(r: RegionMembership, partPrints: ReadonlyMap<string, string>): string {
-  const input = [REGION_PACKAGE_VERSION, DISTRICT_PACKAGE_VERSION, GEMEINDE_PAKET_VERSION, r.regionId, r.name, r.level, r.parts.map((p) => [p.id, p.kind, p.town ?? null, partPrints.get(p.id) ?? null]), r.excluded];
+  const input = [REGION_PACKAGE_VERSION, DISTRICT_CONTENT_REVISION, DISTRICT_PACKAGE_VERSION, GEMEINDE_PAKET_VERSION, r.regionId, r.name, r.level, r.parts.map((p) => [p.id, p.kind, p.town ?? null, partPrints.get(p.id) ?? null]), r.excluded];
   return createHash("sha256").update(JSON.stringify(input)).digest("hex");
 }
 
@@ -136,13 +144,13 @@ export function partFromAggregate(id: string, a: { editions: string[]; missing: 
   };
 }
 
-export function computeRegionContent(ids: string[], parts: (EnergyPacket | null)[], name: string, sites: DistrictSite[] | null = null): DistrictComputed {
+export function computeRegionContent(ids: string[], parts: (EnergyPacket | null)[], name: string, sites: DistrictSite[] | null = null, excluded: string[] = []): DistrictComputed {
   const monitor: DistrictMonitor = {
     ...aggregateDistrictMonitor(ids, parts, parts[0]?.registerStand ?? ""),
     energy: aggregateDistrictEnergy(ids, parts, name),
     sites,
   };
-  return { monitor, stories: [] };
+  return { monitor, stories: [], childEnergy: regionNavigationEnergy([...ids,...excluded], [...parts,...excluded.map(()=>null)], monitor.energy, new Set(excluded)) };
 }
 
 /** The site of a kreisfreie Stadt: its own town package's installed kWp. */
@@ -173,7 +181,7 @@ export function buildRegionPackage(r: RegionMembership, parts: (EnergyPacket | n
     excluded: [...r.excluded],
     fingerprint,
     builtAt,
-    content: ids.length && !unconfirmed.length ? computeRegionContent(ids, parts, r.name, stateSites(r, parts, partSites)) : { monitor: { status: "unavailable", reason: "missing-town", energy: null, sites: null }, stories: [] },
+    content: ids.length && !unconfirmed.length ? computeRegionContent(ids, parts, r.name, stateSites(r, parts, partSites), r.excluded) : { monitor: { status: "unavailable", reason: "missing-town", energy: null, sites: null }, stories: [] },
   };
 }
 

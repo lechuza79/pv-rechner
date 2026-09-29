@@ -51,7 +51,7 @@
 // 2.000 Wp liegen 6,5 % unter unseren — teils die dokumentierte Verdichtungs-
 // Abweichung von +3,5 % im haertesten Clipping-Fall, siehe lib/solar-year.ts).
 
-import { calcHourlyConsumption, wpHourlyWatts, type HouseholdProfile } from "./consumption";
+import { calcHourlyConsumption, wpHourlyWatts, eaHourlyWatts, klimaHourlyWatts, type HouseholdProfile } from "./consumption";
 import { SOLAR_YEAR_DE, referenceMonthKwh, type SolarDayType } from "./solar-year";
 import { dispatchSolarHour, storageCapacity, type SolarStorageOptions } from "./solar-storage";
 
@@ -159,6 +159,10 @@ export interface SolarYearResult extends BalkonSimResult {
    *  WP-PV-Deckung — deutlich unter der Jahres-Autarkie, weil die WP-Last im
    *  dunklen Winterhalbjahr anfällt, wenn die PV kaum deckt. */
   wpSelfCoveredKwh: number;
+  eaLoadKwh: number;
+  eaSelfCoveredKwh: number;
+  klimaLoadKwh: number;
+  klimaSelfCoveredKwh: number;
 }
 
 /** Stunden-Jahressimulation (12 Monate × Tagestypen × 24 h) mit durchlaufendem
@@ -178,6 +182,7 @@ export function simulateSolarYear(
   // PV/Speicher gedeckt wird. Pro-rata der WP an der Stundenlast — nur belastet,
   // wenn der Haushalt eine WP hat (Balkon: immer 0, kein Overhead).
   let wpLoadKwh = 0, wpSelfCoveredKwh = 0;
+  let eaLoadKwh = 0, eaSelfCoveredKwh = 0, klimaLoadKwh = 0, klimaSelfCoveredKwh = 0;
   const trackWp = input.household.wpActive === true;
   let soc = 0; // Speicher-Ladestand (kWh), läuft über das ganze Jahr durch
   const monthly: SolarMonth[] = [];
@@ -242,6 +247,15 @@ export function simulateSolarYear(
         // im Winter ist die Deckung klein UND der WP-Anteil groß, also bekommt die
         // WP wenig ab; im Sommer ist die WP-Last fast null. So fällt die ehrliche
         // WP-Deckung als Ergebnis an, statt die Jahres-Autarkie zu missbrauchen.
+        if (loadKwh > 0) {
+          const covered = Math.min(1, (direct + dischargeCovered) / loadKwh);
+          const car = eaHourlyWatts(input.household, h) / 1000;
+          const cooling = klimaHourlyWatts(input.household, h, m) / 1000;
+          eaLoadKwh += car;
+          eaSelfCoveredKwh += car * covered;
+          klimaLoadKwh += cooling;
+          klimaSelfCoveredKwh += cooling * covered;
+        }
         if (trackWp && loadKwh > 0) {
           const wpLoadHour = wpHourlyWatts(input.household, h, m) / 1000;
           wpLoadKwh += wpLoadHour;
@@ -277,6 +291,10 @@ export function simulateSolarYear(
     productionWeightedKwh,
     consumptionKwh: Math.round(consumptionKwh),
     monthly,
+    eaLoadKwh: Math.round(eaLoadKwh),
+    eaSelfCoveredKwh: Math.round(eaSelfCoveredKwh),
+    klimaLoadKwh: Math.round(klimaLoadKwh),
+    klimaSelfCoveredKwh: Math.round(klimaSelfCoveredKwh),
     wpLoadKwh: Math.round(wpLoadKwh),
     wpSelfCoveredKwh: Math.round(wpSelfCoveredKwh),
   };

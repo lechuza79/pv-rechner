@@ -289,7 +289,9 @@
 .heroBand::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");mix-blend-mode:soft-light;}
 .sceneHost::after{display:none;}
 @media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
-.regionExtras{display:block}
+.regionExtras{display:block;margin-top:80px;margin-bottom:0;padding-block:64px;border-block:1px solid var(--atlas-border)}
+.page:has(>.regionExtras:last-child){padding-bottom:0}
+@media(max-width:480px){.regionExtras{margin-top:64px;padding-block:48px}}
 /* Comparison badges sit on dark cards even when the surrounding site uses daylight mode. */
 .darkVariant .regionExtras{--color-positive:#2BE06E;--color-positive-text:#2BE06E;--color-negative:#F26D6D;--color-negative-text:#F26D6D;}
 
@@ -322,3 +324,15 @@
 @media(max-width:700px){.page .districtIntro{grid-template-columns:1fr;gap:28px}}
 
 @media(min-width:801px){.heroStage[data-map-clear-heading=true] .mapCanvas{height:clamp(520px,75svh,660px)}}
+
+/* Reserve the actual control width, not a guessed 250px beside long titles.
+   Keep the canvas in the same grid row so the existing scene framing is retained. */
+.heroBand .heroHeading h1{font-size:var(--sc-type-hero-size,clamp(34px,3.8vw,48px));overflow-wrap:anywhere}
+@media(min-width:601px){
+  .heroStage{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:32px}
+  .heroStage .map{display:contents}
+  .heroStage .heroHeading{position:relative;grid-area:1/1;align-self:start;min-width:0;max-width:none}
+  .heroStage .mapTools{position:relative;grid-area:1/2;align-self:start;top:auto;right:auto;left:auto;margin:0}
+  .heroStage .mapCanvas{grid-area:1/1/2/3;min-width:0}
+}
+@media(max-width:600px){.heroBand .heroHeading h1{font-size:32px}}

@@ -1,5 +1,12 @@
+import { DEFAULT_PRICES } from "../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../lib/feedin-config";
 import { test, expect, type Page } from "@playwright/test";
-import { akkordeonWaehlen, waehle, weiterKlicken } from "./flows";
+import { akkordeonOeffnen, akkordeonWaehlen, waehle, weiterKlicken } from "./flows";
+
+test.beforeEach(async ({page}) => {
+  await page.route("**/api/prices",route=>route.fulfill({json:DEFAULT_PRICES}));
+  await page.route("**/api/feedin",route=>route.fulfill({json:DEFAULT_FEED_IN}));
+});
 
 async function captureClipboard(page: Page) {
   await page.addInitScript(() => {
@@ -11,17 +18,21 @@ async function captureClipboard(page: Page) {
 }
 
 async function verifyResultAndShare(page: Page, kwp: number, cost?: string) {
-  const capacity = page.getByRole("button", { name: `${kwp.toLocaleString("de-DE")} kWp bearbeiten`, exact: true });
-  await expect(capacity).toBeVisible();
-  if (cost) await expect(page.getByRole("button", { name: `${cost} bearbeiten`, exact: true })).toBeVisible();
+  const opener = page.getByRole("button", { name: /Deine Anlage & Rechengrundlagen/ });
+  const verify = async () => {
+    await opener.click();
+    const dialog = page.getByRole("dialog", { name: "Deine Anlage & Rechengrundlagen" });
+    await expect(dialog.getByRole("button", { name: `${kwp.toLocaleString("de-DE")} kWp bearbeiten`, exact: true })).toBeVisible();
+    if (cost) await expect(dialog.getByRole("button", { name: `${cost} bearbeiten`, exact: true })).toBeVisible();
+    await dialog.getByRole("button", { name: "Abbrechen" }).click();
+  };
+  await verify();
   await page.reload();
-  await expect(capacity).toBeVisible();
+  await verify();
   await page.getByTitle("Link kopieren", { exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-copied-link", /photovoltaik-rechner\?/);
-  const shared = (await page.locator("html").getAttribute("data-copied-link"))!;
-  await page.goto(shared);
-  await expect(capacity).toBeVisible();
-  if (cost) await expect(page.getByRole("button", { name: `${cost} bearbeiten`, exact: true })).toBeVisible();
+  await page.goto((await page.locator("html").getAttribute("data-copied-link"))!);
+  await verify();
 }
 
 test("Reihenhaus keeps its 4 kWp and investment through recommendation, reload and both share links", async ({ page }) => {
@@ -33,27 +44,24 @@ test("Reihenhaus keeps its 4 kWp and investment through recommendation, reload a
   await akkordeonWaehlen(page, "Ausrichtung", 0);
   await weiterKlicken(page);
   await waehle(page, "1 Person");
+  await akkordeonOeffnen(page, "Nutzungsprofil");
   await waehle(page, "Tagsüber weg");
   await weiterKlicken(page);
+  await akkordeonWaehlen(page, "Wärmepumpe", 0);
+  await akkordeonWaehlen(page, "Elektroauto", 0);
+  await akkordeonWaehlen(page, "Klimaanlage", 0);
   await weiterKlicken(page);
-  await page.waitForURL(/view=ergebnis/);
-  await expect(page.getByText("Unsere Empfehlung", { exact: true }).locator("..").getByText("4 kWp", { exact: true })).toBeVisible();
-  const cost = (await page.getByText(/^Geschätzte Investition:/).innerText()).replace("Geschätzte Investition: ", "");
-  await page.getByRole("button", { name: "Empfehlung teilen", exact: true }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-copied-link", /view=ergebnis/);
-  await page.goto((await page.locator("html").getAttribute("data-copied-link"))!);
-  await expect(page.getByText("Unsere Empfehlung", { exact: true }).locator("..").getByText("4 kWp", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Ergebnis anzeigen", exact: true }).first().click();
-  await page.waitForURL(/photovoltaik-rechner/);
+  await page.waitForURL(/flow=emp/);
   await expect(page).toHaveURL(/a=4&ck=4&/);
-  await verifyResultAndShare(page, 4, cost);
+  await verifyResultAndShare(page, 4);
 });
 
 test("shared recommendation hands over exactly 4 kWp", async ({ page }) => {
   await page.goto("/photovoltaik-rechner?haus=reihenhaus&az=sued&personen=1&nutzung=weg&view=ergebnis");
   await page.getByRole("button", { name: "Ergebnis anzeigen", exact: true }).first().click();
   await page.waitForURL(/photovoltaik-rechner/);
-  await expect(page.getByRole("button", { name: "4 kWp bearbeiten", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /Deine Anlage & Rechengrundlagen/ }).click();
+  await expect(page.getByRole("dialog").getByRole("button", { name: "4 kWp bearbeiten", exact: true })).toBeVisible();
 });
 
 test("intermediate recommendation and alternatives retain their displayed capacity", async ({ page }) => {

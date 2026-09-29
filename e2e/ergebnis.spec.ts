@@ -97,7 +97,7 @@ for (const erg of ERGEBNISSE) {
       await ergebnisBereit(page, erg.enthaelt);
       const erwartet = await kernzahlen(page, erg.kernzahlen);
 
-      const kopieren = page.getByTitle("Link kopieren").first();
+      const kopieren = page.getByRole("button", { name: /Link (?:zu diesem Ergebnis )?kopieren/ }).first();
       test.skip((await kopieren.count()) === 0, "dieses Ergebnis hat keinen Knopf zum Linkkopieren");
       await kopieren.click();
       const link = await page.evaluate(() => navigator.clipboard.readText());
@@ -201,13 +201,17 @@ for (const erg of ERGEBNISSE) {
 
       if (erg.scenarioButton) {
         const results = new Set<string>();
-        for (const label of ["Optimistisch", "Pessimistisch", "Realistisch"]) {
+        for (const label of ["Optimistisch", erg.scenarioTabs ? "Vorsichtig" : "Pessimistisch", "Realistisch"]) {
           await page.getByRole("button", { name: erg.scenarioButton }).click();
           const modal = page.getByRole("dialog");
           await expect(modal).toBeVisible();
-          const heading = modal.getByRole("button", { name: /^Angenommene Energiepreise/ });
-          if (await heading.getAttribute("aria-expanded") !== "true") await heading.click();
-          await modal.getByRole("button", { name: new RegExp(`^${label}`) }).click();
+          if (erg.scenarioTabs) {
+            await modal.getByRole("tab", { name: new RegExp(`^${label}`) }).click();
+          } else {
+            const heading = modal.getByRole("button", { name: /^Angenommene Energiepreise/ });
+            if (await heading.getAttribute("aria-expanded") !== "true") await heading.click();
+            await modal.getByRole("button", { name: new RegExp(`^${label}`) }).click();
+          }
           await modal.getByRole("button", { name: "Ergebnis neu berechnen", exact: true }).click();
           await ergebnisBereit(page, erg.enthaelt);
           const values = await kernzahlen(page, erg.kernzahlen);
@@ -239,6 +243,24 @@ for (const erg of ERGEBNISSE) {
       await page.goto(erg.pfad);
       await ergebnisBereit(page, erg.enthaelt);
 
+      if (erg.scenarioTabs) {
+        for (const title of ["Deine Anlage & Rechengrundlagen", "Preise und Preisentwicklung", "Dach und Ausrichtung", "Haushalt & Großverbraucher", "Einspeisung und Vergütung"]) {
+          await page.getByRole("button", { name: new RegExp(`^${title}`) }).click();
+          const editor = page.getByRole("dialog", { name: title, exact: true });
+          await expect(editor).toBeVisible();
+          await expect(editor.getByRole("button", { name: /^Ergebnis neu berechnen/ })).toBeVisible();
+          await editor.getByRole("button", { name: "Abbrechen", exact: true }).click();
+          await expect(editor).toBeHidden();
+        }
+        for (const title of ["Standort & Förderung", "Ertrag und technische Details"]) {
+          const heading = page.getByRole("button", { name: new RegExp(`^${title}`) });
+          await heading.click();
+          await expect(heading).toHaveAttribute("aria-expanded", "true");
+          await heading.click();
+          await expect(heading).toHaveAttribute("aria-expanded", "false");
+        }
+        return;
+      }
       const liste = await abschnitte(page);
       test.skip(liste.length === 0, "dieses Ergebnis hat keine aufklappbaren Abschnitte");
 
@@ -251,6 +273,13 @@ for (const erg of ERGEBNISSE) {
         const kopf = abschnittKoepfe(page).nth(i);
         if ((await kopf.count()) === 0) continue;
         await kopf.click();
+        const editor = page.getByRole("dialog");
+        if (await editor.isVisible()) {
+          await expect(editor).toContainText(a.titel);
+          await expect(editor.getByRole("button", { name: /^Ergebnis neu berechnen/ })).toBeVisible();
+          await editor.getByRole("button", { name: "Abbrechen", exact: true }).click();
+          continue;
+        }
         const zustand = await kopf.getAttribute("aria-expanded");
         if (zustand !== "true") continue; // ausgeschalteter Posten: klappt bewusst nicht auf
 

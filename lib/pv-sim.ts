@@ -66,6 +66,8 @@ export interface PvSimResult {
   // reale Deckung weit unter dem Jahresmittel. Aus der Stundensimulation (pro-rata
   // der WP an der Stundenlast). 0 ohne WP.
   wpAutarky: number;
+  eaAutarky: number;
+  klimaAutarky: number;
 }
 
 /** Autarkie + Jahresverlauf einer Dach-PV-Anlage aus der Stundensimulation. */
@@ -100,6 +102,8 @@ export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp
     gesamtVerbrauch: sim.consumptionKwh,
     monthly: sim.monthly,
     wpAutarky: Math.min(wpAutarky, 100),
+    eaAutarky: sim.eaLoadKwh > 0 ? Math.min(100, sim.eaSelfCoveredKwh / sim.eaLoadKwh * 100) : 0,
+    klimaAutarky: sim.klimaLoadKwh > 0 ? Math.min(100, sim.klimaSelfCoveredKwh / sim.klimaLoadKwh * 100) : 0,
   };
 }
 

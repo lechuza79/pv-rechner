@@ -8,6 +8,8 @@ import {ATLAS_DATEN_TAG,KREIS_PAKET_TAG} from './atlas-revalidate-routen';
 import {DISTRICT_POINTER_PATH,checkDistrictPackage,checkManifest,type DistrictComputed,type DistrictMonitor,type DistrictRefusal} from './district-package';
 import type {StoryConcept} from './story-konzepte';
 import {checkRegionPackage} from './region-package';
+import {decodeRankingCells} from './ranking-package';
+import type {ChildYearRow} from './atlas';
 
 /**
  * The district page reads ONE precomputed package (lib/district-package.ts),
@@ -63,6 +65,16 @@ export function preparedState(editions:string[],stand:string):'current'|'older-e
  */
 type Published = {found:false}|{found:true;generation:string;raw:unknown};
 const readPublished=cache(async(kind:'district'|'region',regionId:string):Promise<Published>=>{
+  const fixtureDir=process.env.NODE_ENV==='development'?process.env.REGIONAL_UI_FIXTURES:undefined;
+  if(fixtureDir && /^(de|\d{2}|\d{5})$/.test(regionId)) {
+    const {readFile}=await import('node:fs/promises');
+    const {join}=await import('node:path');
+    const body=await readFile(join(fixtureDir,`${kind}-${regionId}.json`),'utf8').catch(error=>{
+      if(error.code==='ENOENT')return null;
+      throw error;
+    });
+    if(body)return {found:true,generation:'local-preview',raw:JSON.parse(body)};
+  }
   const pointer=await readObject(DISTRICT_POINTER_PATH);
   const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
   if(!manifest||!checkManifest(manifest))return {found:false};
@@ -86,7 +98,7 @@ export async function loadDistrictContent(regionId:string,members:string[],stand
   const {pkg}=check;
   // Story titles of energy years follow the current code, like the town reader.
   const stories=pkg.content.stories.map((s:StoryConcept)=>s.energyYear?{...s,title:energyYearTitle(s.energyYear)}:s);
-  return {monitor:pkg.content.monitor,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+  return {monitor:pkg.content.monitor,preview:published.generation==='local-preview',childEnergy:pkg.content.childEnergy,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
 }
 
 /**
@@ -97,29 +109,28 @@ export async function loadDistrictContent(regionId:string,members:string[],stand
  * widget has no upper-level source yet; `stories` is always empty.
  */
 export async function loadRegionContent(regionId:string,children:string[],stand:string):Promise<DistrictContent>{
-  // Explicit local review mode; production always reads the published generation.
-  const fixtureDir=process.env.NODE_ENV==='development'?process.env.REGIONAL_UI_FIXTURES:undefined;
-  if(fixtureDir&&/^(de|\d{2})$/.test(regionId)){
-    const {readFile}=await import('node:fs/promises');
-    const {join}=await import('node:path');
-    const body=await readFile(join(fixtureDir,`region-${regionId}.json`),'utf8').catch(error=>{
-      if(error.code==='ENOENT')return null;
-      throw error;
-    });
-    if(body){
-      const check=checkRegionPackage(JSON.parse(body),regionId,children);
-      if(!check.ok)throw new Error(`Local regional preview: ${check.reason}`);
-      const {pkg}=check;
-      return {monitor:pkg.content.monitor,stories:[],preview:true,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:'local-preview',builtAt:pkg.builtAt}};
-    }
-  }
-
   const published=await readPublished('region',regionId);
   if(!published.found)return unavailable('not-published');
   const check=checkRegionPackage(published.raw,regionId,children);
   if(!check.ok)return unavailable(check.reason);
   const {pkg}=check;
-  return {monitor:pkg.content.monitor,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+  return {monitor:pkg.content.monitor,preview:published.generation==='local-preview',childEnergy:pkg.content.childEnergy,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+}
+
+/**
+ * The ranking table's cells from the same published package the monitor reads
+ * (lib/ranking-package.ts), or null: no package, a package for another
+ * membership/version, one built before the field existed, or cells of another
+ * register import than `stand`. The caller then reads the database. Only the
+ * published generation — the local preview fixtures carry no ranking.
+ */
+export async function loadPackagedRankingCells(kind:'district'|'region',regionId:string,children:string[],stand:string|null):Promise<ChildYearRow[]|null>{
+  if(!stand)return null;
+  const published=await readPublished(kind,regionId);
+  if(!published.found)return null;
+  const check=kind==='district'?checkDistrictPackage(published.raw,regionId,children):checkRegionPackage(published.raw,regionId,children);
+  if(!check.ok)return null;
+  return decodeRankingCells(check.pkg.ranking,stand);
 }
 
 /** The daily power endpoint consumes the same package. */

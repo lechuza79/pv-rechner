@@ -19,6 +19,7 @@ import { v, space } from "../../../../lib/theme";
 export type EinspeisungModus = "aus" | "teil" | "voll";
 
 export interface ResultVerguetungProps extends ResultRegimeProps {
+  defaultOpen?: boolean;
   modus: EinspeisungModus;
   setModus: (m: EinspeisungModus) => void;
   /** Volleinspeisung nicht wählbar — Speicher, Wärmepumpe oder E-Auto gewählt
@@ -40,7 +41,7 @@ function ctText(ct: number): string {
 }
 
 export default function ResultVerguetung(props: ResultVerguetungProps) {
-  const { modus, setModus, vollDisabled, effEinsp, setOEinsp, ...regime } = props;
+  const { defaultOpen, modus, setModus, vollDisabled, effEinsp, setOEinsp, ...regime } = props;
   const reform = regime.regime === "reform2027";
   const eigen = !reform && regime.eigenerSatz;
   const uebergang = regime.verlauf.find((j) => j.art === "uebergang");
@@ -54,7 +55,7 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
       : `${MODUS_LABEL[modus]} · ${eigen ? "eigener Satz " : ""}${ctText(effEinsp)} · 20 Jahre`;
 
   return (
-    <ResultSection title="Einspeisung und Vergütung" summary={summary}>
+    <ResultSection defaultOpen={defaultOpen} title="Einspeisung und Vergütung" summary={summary}>
       {/* Speise ich überhaupt ein — und zu welchem Satz? */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: space.md, marginBottom: space.lg }}>
         <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>

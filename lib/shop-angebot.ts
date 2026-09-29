@@ -49,7 +49,8 @@ export function configFuerAngebot(angebot: Pick<ShopAngebot, "moduleWp" | "inver
 
   // Solakon ONE: direct PV input (2600 W), shared AC output (800 W).
   // Source: https://www.solakon.de/cdn/shop/files/Solakon_ONE_Datenblatt.pdf
-  // Nominal capacity remains an explicitly qualified upper estimate.
+  // Solakon ONE default minimum charge: 15%, unavailable to the household.
+  // https://serviceportal.solakon.de/help/solakon-one/minimale-ladung-speicherheizung-am-solakon-one
   return {
     ...cfg,
     sets: [{ ...set, moduleWp: angebot.moduleWp, inverterW: angebot.inverterW, price: angebot.preis }],
@@ -57,7 +58,7 @@ export function configFuerAngebot(angebot: Pick<ShopAngebot, "moduleWp" | "inver
     // bereits. Ihn zusätzlich anzusetzen zählte ihn doppelt.
     storage: [
       { ...cfg.storage.find(s => s.id === "none")!, kwh: 0, price: 0 },
-      { ...speicher, kwh: angebot.speicherKwh, price: 0, batteryCoupling: angebot.haendler === "solakon" ? "dc" : angebot.batteryCoupling },
+      { ...speicher, kwh: angebot.speicherKwh, usableBatteryKwh: angebot.haendler === "solakon" ? angebot.speicherKwh * .85 : undefined, price: 0, batteryCoupling: angebot.haendler === "solakon" ? "dc" : angebot.batteryCoupling },
     ],
   };
 }
@@ -211,4 +212,10 @@ export function angebotBegruendung(selected: BewertetesAngebot | undefined, rank
   return explain(withStorage
     ? "Bei dir lohnt sich der Speicher: Du nutzt mehr Solarstrom selbst und sparst damit mehr, als er zusätzlich kostet."
     : "Bei dir rechnet sich das Set ohne Speicher besser: Die zusätzliche Ersparnis mit Speicher deckt dessen Mehrkosten nicht.");
+}
+
+/** Explain the actual storage assumptions without claiming a verified bundle accessory. */
+export function speicherAnnahme(hardware: { haendler?: string; speicherKwh: number }): string {
+  if (hardware.haendler !== "solakon") return "Die angegebene Speichergröße ist die Nennkapazität; die tatsächlich nutzbare Kapazität ist nicht belegt. Die Rechnung setzt eine zum Verbrauch passende Speichersteuerung voraus.";
+  return `Von ${hardware.speicherKwh.toLocaleString("de-DE")} kWh Nennkapazität rechnen wir mit ${(hardware.speicherKwh * .85).toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh nach 15 % Mindestladung (Werkseinstellung). Die bedarfsgerechte Abgabe setzt einen kompatiblen, eingerichteten Smart Meter voraus. Ohne aktiven Energieplan sind laut Hersteller 200 W voreingestellt. Ob der Smart Meter im Set enthalten ist, ist nicht bestätigt; zusätzliche Kauf- und Installationskosten bitte unter Zusatzkosten ergänzen.`;
 }

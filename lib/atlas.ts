@@ -870,20 +870,50 @@ async function getRankingDataUncached(
   if (!childLevel) return { regions: [], cells: [] };
 
   const supabase = await db();
-  const [cells, regionsRes] = await Promise.all([
+  const [cells, regions] = await Promise.all([
     loadAllCells(supabase, prefixOf(region.region_id), LEVEL_LEN[childLevel]),
-    withDbTimeout(
-      supabase
-        .from("mastr_regions")
-        .select("region_id, name, slug, population")
-        .eq("parent_region_id", region.region_id),
-      "getRankingData/regions",
-    ),
+    queryRankingRegions(supabase, region),
   ]);
-  if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
-
-  return { regions: regionsRes.data as RankingRegion[], cells };
+  return { regions, cells };
 }
+
+/**
+ * The ranking cells alone, uncached — the database path of the table. Also the
+ * reader of the package run (scripts/kreis-paket.ts), which stores exactly
+ * this result in the region/district package (lib/ranking-package.ts).
+ */
+export async function loadRankingCells(region: AtlasRegion): Promise<ChildYearRow[]> {
+  const childLevel = childLevelOf(region);
+  if (!childLevel) return [];
+  return loadAllCells(await db(), prefixOf(region.region_id), LEVEL_LEN[childLevel]);
+}
+
+async function getRankingRegionsUncached(region: AtlasRegion): Promise<RankingRegion[]> {
+  if (!childLevelOf(region)) return [];
+  return queryRankingRegions(await db(), region);
+}
+
+async function queryRankingRegions(supabase: Awaited<ReturnType<typeof db>>, region: AtlasRegion): Promise<RankingRegion[]> {
+  const regionsRes = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, name, slug, population")
+      .eq("parent_region_id", region.region_id),
+    "getRankingData/regions",
+  );
+  if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
+  return regionsRes.data as RankingRegion[];
+}
+
+/**
+ * The table's region list alone (one small query): the page takes the cells
+ * from the precomputed package when it has them (lib/atlas-ranking-server.ts)
+ * and needs only this from the database.
+ */
+export const getRankingRegions = unstable_cache(getRankingRegionsUncached, ["ranking-regions-v1"], {
+  revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
+});
 
 // Kreis-/Regions-Rangliste: über alle Gemeinden desselben Kreises identisch —
 // cachen spart die wiederholte Zellen-Aggregation auf jeder Gemeinde-Seite.

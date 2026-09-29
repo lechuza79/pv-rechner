@@ -1,7 +1,7 @@
 /** Einmaliger Versandtest: uns selbst als Fachbetrieb eintragen. */
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createHmac } from "node:crypto";
+import { kennungAusGeheimnis } from "../lib/fachbetrieb-kennung";
 function env(): void {
   const p = resolve(process.cwd(), ".env.local");
   if (!existsSync(p)) return;
@@ -30,7 +30,7 @@ async function main() {
     art: "betrieb",
   }, { onConflict: "domain" });
   if (error) { console.error(`Fehler: ${error.message}`); process.exit(1); }
-  const k = createHmac("sha256", process.env.CRON_SECRET!).update(`fachbetrieb:${DOMAIN}`).digest("hex").slice(0, 16);
+  const k = kennungAusGeheimnis(DOMAIN, process.env.CRON_SECRET!);
   console.log(`angelegt. Kennung: ${k}`);
   console.log(`http://localhost:3061/fuer/${k}`);
 }

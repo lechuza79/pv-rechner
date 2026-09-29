@@ -148,6 +148,12 @@ describe("Findet unsere Suche die Programme, die wir selbst führen?", () => {
     expect(bewerteLink("https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/").punkte).toBeGreaterThan(0);
     expect(bewerteLink("https://x.de/aktuelles/foerderung-fuer-den-sportverein").punkte).toBe(0);
     expect(bewerteLink("https://x.de/aktuelles/2026/foerderung-balkonkraftwerke").punkte).toBe(0);
+    // A page named only after the technology is a result (Bruck i.d.OPf.,
+    // Meschede, Eckental — 28.09.2026); a page with further words is not.
+    expect(istEndergebnis(bewerteLink("https://www.markt-bruck.de/buergerservice-und-politik/service/pv-balkonkraftwerke"))).toBe(true);
+    expect(istEndergebnis(bewerteLink("https://eckental.de/photovoltaikanlagen/"))).toBe(true);
+    expect(istEndergebnis(bewerteLink("https://x.de/bauen/balkonkraftwerk-anmelden"))).toBe(false);
+    expect(istEndergebnis(bewerteLink("https://x.de/klima/balkonkraftwerke-richtig-nutzen"))).toBe(false);
   });
 
   it("ein eindeutiges Technikwort überlebt eine fremde Oberrubrik", () => {
