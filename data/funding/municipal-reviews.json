@@ -76527,5 +76527,148 @@
         "evidenceUrl": "https://www.schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke"
       }
     ]
+  },
+  {
+    "regionId": "09376161",
+    "name": "Schwandorf",
+    "checkedAt": "2026-09-29T16:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadt Schwandorf fördert PV-Dachanlagen ab 4 kWp mit neuem Speicher ab 4 kWh mit 700 €, mit Wallbox 800 € (Richtlinie Stand 18.12.2025, Stadtratsbeschluss 08.12.2025, Jahresbudget 20.000 €); deckungsgleich mit schwandorf-klimaschutz im Katalog. Balkonkraftwerke sind in Abschnitt 3.2 ausdrücklich ausgeschlossen; einen Zuschuss für Wärmepumpen enthält die Richtlinie nicht, die Website-Suche zeigt dazu nur die Wärmeplanung.",
+    "searches": [
+      "Programmseite und Richtlinie (PDF, Stand 18.12.2025) am 29.09.2026 im Volltext gelesen",
+      "Website-Suche 29.09.2026: „Wärmepumpe“ → Wärmeplanung, Erdwärme-Leitfaden, Bürgerenergiepreis, kein Zuschuss; „Balkonkraftwerk“ → keine Treffer; „Zuschuss“ → Denkmalpflege, Sozialleistungen, kein Energieprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwandorf.de/media/custom/3655_3963_1.PDF",
+        "finding": "29.09.2026: „700,00 € für die kombinierte Neuanschaffung oder Erweiterung von einer Photovoltaik-Dachanlage und eines Batteriespeichers. 800,00 € … mit einer Wallbox“; „Das Fördervolumen des Förderprogramms beträgt 20.000,00 € pro Haushaltsjahr“; ausgeschlossen „Balkonkraftwerke oder Steckersolargeräte“."
+      },
+      {
+        "url": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/",
+        "finding": "29.09.2026: Programmseite mit Antrag, Verwendungsnachweis und Richtlinie; Beschluss des Stadtrats vom 30.09.2024."
+      },
+      {
+        "url": "https://www.schwandorf.de/?qs=W%C3%A4rmepumpe",
+        "finding": "29.09.2026: 25 Treffer, kein Förderprogramm für Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/index.php?object=tx,3655.1&amp;ModID=9&amp;FID=292.541.1&amp;NavID=3655.152",
+        "disposition": "reviewed",
+        "reason": "Kontaktkarte der Stadtverwaltung auf der Programmseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/"
+      },
+      {
+        "url": "schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/index.php?object=tx,3655.1&amp;ModID=9&amp;FID=3655.72.1&amp;NavID=3655.152",
+        "disposition": "reviewed",
+        "reason": "Kontaktkarte des Klimaschutzmanagements auf der Programmseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/"
+      }
+    ]
+  },
+  {
+    "regionId": "09376",
+    "name": "Landkreis Schwandorf",
+    "checkedAt": "2026-09-29T16:30:00Z",
+    "recheckAt": "2027-03-29T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Schwandorf hat kein eigenes Förderprogramm für Haushalte bei Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen. Die erfasste Seite „Förderrichtlinien“ zeigt nur Kopf- und Fußbereich ohne Inhalt; die Website-Suche liefert zu Photovoltaik nur EEG-Informationen, Energienutzungsplan/Solarkataster und Umweltpakt-Meldungen über Unternehmen, zu Balkon nur Garten- und Tourismusinhalte.",
+    "searches": [
+      "Quicknavigation/Förderrichtlinien.php am 29.09.2026 abgerufen: kein Inhalt außer Navigation",
+      "Website-Suche 29.09.2026: „Photovoltaik“ → EEG-Dienstleistung, Energienutzungsplan, zwei Umweltpakt-Meldungen, sechs Dateien ohne Förderprogramm; „Balkon“ → Garten, Pflegeheim, Ferienwohnungen; „Zuschuss Klimaschutz“ → allgemeiner Dienstleistungstext „Freiwillige kommunale Leistung“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-schwandorf.de/?qs=Photovoltaik",
+        "finding": "29.09.2026: Treffer nur EEG-Information, Energienutzungsplan/Solarkataster und Umweltpakt-Meldungen (Mietservice Süß, Dannerbeck Holzbau); kein Zuschussprogramm des Landkreises."
+      },
+      {
+        "url": "https://www.landkreis-schwandorf.de/Quicknavigation/F%C3%B6rderrichtlinien.php",
+        "finding": "29.09.2026: HTTP 200, Seite ohne Inhalt außer Kopf-/Fußnavigation."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-schwandorf.de/Quicknavigation/F%C3%B6rderrichtlinien.php",
+        "disposition": "reviewed",
+        "reason": "Leere Seite (nur Navigation), keine Förderrichtlinie für Haushalte; Website-Suche bestätigt kein Kreisprogramm.",
+        "evidenceUrl": "https://www.landkreis-schwandorf.de/Quicknavigation/F%C3%B6rderrichtlinien.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01002000",
+    "name": "Kiel",
+    "checkedAt": "2026-09-29T16:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Das städtische Programm „Solarstadt Kiel“ (PV, Balkonkraftwerke, Solarthermie) ist für das Haushaltsjahr 2026 ausgesetzt (Ratsbeschluss 16.10.2025, Drucksache 1007/2025-01; Mittel 2025 ausgeschöpft) und steht so im Katalog (kiel-solarstadt, pausiert). Die Wärmepumpen-Seite der Stadt beschreibt das Landesprogramm „Klimaschutz für Bürger*innen“, das bereits als Landesprogramm im Katalog steht; einen eigenen Kieler Zuschuss für Wärmepumpen oder Speicher gibt es nicht. Förderfonds und Dachbegrünung betreffen andere Themen.",
+    "searches": [
+      "Programmseite Solarstadt Kiel und Richtlinie 2022 am 29.09.2026 gelesen",
+      "Website-Suche 29.09.2026: „Förderprogramm“ Seiten 2–4 → Solarstadt, Landesprogramm, Dachbegrünung, Kultur- und Förderfonds; „Wärmepumpe“ → Wärmeplanung, Infotag, Beratung, kein städtischer Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php",
+        "finding": "29.09.2026: „Bitte beachten Sie: Die Förderung ist ausgesetzt! … die Förderung des Projekts „Solarstadt Kiel“ im Haushaltsjahr 2026 auszusetzen. Neue Förderanträge können nicht mehr eingereicht werden“."
+      },
+      {
+        "url": "https://www.kiel.de/de/politik_verwaltung/service/_leistung.php?id=290657788",
+        "finding": "29.09.2026: Leistungsbeschreibung zum Landesprogramm „Klimaschutz für Bürger*innen“ (nicht-fossile Heizungssysteme, Erstwohnsitz in Schleswig-Holstein)."
+      },
+      {
+        "url": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0",
+        "finding": "29.09.2026: Treffer Wärmeplanung, Wärmepumpen-Infotag, Beratung; kein städtischer Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/_dokumente_solaranlagen/Foerderrichtlinie-Photovoltaik-Solarthermie-Kiel-22.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarstadt Kiel; Programm im Katalog, 2026 ausgesetzt.",
+        "evidenceUrl": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php"
+      },
+      {
+        "url": "kiel.de/de/politik_verwaltung/service/_leistung.php?id=290657788",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm, bereits im Katalog.",
+        "evidenceUrl": "https://www.kiel.de/de/politik_verwaltung/service/_leistung.php?id=290657788"
+      },
+      {
+        "url": "kiel.de/de/kiel_zukunft/nachhaltigkeitsziele/foerderfonds.php",
+        "disposition": "reviewed",
+        "reason": "Nachhaltigkeits- und Kulturfonds, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      },
+      {
+        "url": "kiel.de/de/umwelt_verkehr/umwelt_naturschutz/foerderprogramm_dachbegruenung.php",
+        "disposition": "reviewed",
+        "reason": "Dachbegrünung, anderes Thema.",
+        "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      },
+      {
+        "url": "kiel.de/de/_info/suchen/index.php?zoom_query=f%C3%B6rderprogramm&amp;zoom_page=2&amp;zoom_per_page=10&amp;zoom_and=1&amp;zoom_sort=0",
+        "disposition": "reviewed",
+        "reason": "Trefferliste der Website-Suche, Seite 2; Einzeltreffer gesondert geprüft.",
+        "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      },
+      {
+        "url": "kiel.de/de/_info/suchen/index.php?zoom_query=f%C3%B6rderprogramm&amp;zoom_page=3&amp;zoom_per_page=10&amp;zoom_and=1&amp;zoom_sort=0",
+        "disposition": "reviewed",
+        "reason": "Trefferliste der Website-Suche, Seite 3; Einzeltreffer gesondert geprüft.",
+        "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      },
+      {
+        "url": "kiel.de/de/_info/suchen/index.php?zoom_query=f%C3%B6rderprogramm&amp;zoom_page=4&amp;zoom_per_page=10&amp;zoom_and=1&amp;zoom_sort=0",
+        "disposition": "reviewed",
+        "reason": "Trefferliste der Website-Suche, Seite 4; Einzeltreffer gesondert geprüft.",
+        "evidenceUrl": "https://www.kiel.de/de/_info/suchen/index.php?zoom_query=w%C3%A4rmepumpe&zoom_per_page=50&zoom_and=1&zoom_sort=0"
+      }
+    ]
   }
 ]
