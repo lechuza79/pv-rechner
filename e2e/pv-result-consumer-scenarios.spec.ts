@@ -244,3 +244,35 @@ test('manual self consumption is not mislabelled as a consumer benefit',async({p
  await footer.getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
  await expect(cards.locator('.sc-metric-value').first()).toBeVisible();
 });
+
+for (const width of [375, 1280]) test(`mixed consumer changes and footer handover at ${width}px`, async ({page}) => {
+  await page.setViewportSize({width, height:900});
+  await page.goto(url.replace('ea=nein', 'ea=ja') + '&km=15000');
+  const cards = page.locator('.pv-consumer-options');
+  await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready', 'true');
+  await cards.locator('[data-consumer=ea] .sc-result-choice-action').click();
+  await page.getByRole('dialog').getByRole('button', {name:'Verbraucher entfernen', exact:true}).click();
+  await cards.locator('[data-consumer=klima] .sc-result-choice-action').click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', {name:'2 Räume', exact:true}).click();
+  await dialog.getByRole('button', {name:'Zur Vorschau hinzufügen', exact:true}).click();
+  const anchor = page.locator('.pv-consumer-apply-anchor');
+  const floating = page.locator('[data-floating-action=true]');
+  await expect(anchor).toContainText('durch Klimaanlage sowie den Wegfall von Elektroauto');
+  // Test both directions and partial intersection, not only a fully visible anchor.
+  const move = async (top:number) => {
+    await anchor.evaluate((el, y) => window.scrollBy({top:el.getBoundingClientRect().top-y, behavior:'instant'}), top);
+  };
+  await move(950);
+  await expect(floating).toHaveAttribute('aria-hidden', 'false');
+  await move(870);
+  await expect(floating).toHaveCSS('visibility', 'hidden');
+  await expect(floating).toHaveAttribute('inert', '');
+  await move(300);
+  await expect(floating).toHaveCSS('visibility', 'hidden');
+  const height = await anchor.evaluate(el => el.getBoundingClientRect().height);
+  await move(-height + 20);
+  await expect(floating).toHaveCSS('visibility', 'hidden');
+  await move(-height - 20);
+  await expect(floating).toHaveAttribute('aria-hidden', 'false');
+});

@@ -940,12 +940,19 @@ export default function PVRechner({
   })() : null;
   // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
 
-  const changedConsumerNames = consumerCases.filter(item => consumerAddons[item.kind]).map(item => {
-    const name = item.kind === "ea" ? "Elektroauto" : item.title;
-    return pendingConsumers[item.kind] === "nein" ? `Wegfall ${name}` : name;
-  });
-  const consumerChangeLabel = new Intl.ListFormat("de-DE", {style:"long",type:"conjunction"}).format(changedConsumerNames);
-  const consumerApplyBar = hasConsumerAddons ? <footer className="pv-consumer-apply" aria-label="Verbraucher übernehmen"><div><div className="pv-consumer-apply-summary"><div className="pv-consumer-apply-amount">{oEv === null ? <><MetricValue signed value={consumerImpact(pendingConsumers)}/><span>zusätzlich durch {consumerChangeLabel}</span></> : <strong>Eigenverbrauch neu berechnen</strong>}</div><p>{oEv === null ? <>Änderung deines PV-Vorteils über {YEARS} Jahre.</> : <>Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.</>}</p></div><FlowNav weiterLabel="Berechnung aktualisieren" weiterAktiv onWeiter={()=>{applyConsumers(pendingConsumers);setGvAnswered(new Set([...gvAnswered,...addonAnswers]));setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}/></div></footer> : null;
+  const changedConsumers = consumerCases.filter(item => consumerAddons[item.kind]);
+  const names = (removed: boolean) => new Intl.ListFormat("de-DE", {style:"long",type:"conjunction"}).format(
+    changedConsumers.filter(item => (pendingConsumers[item.kind] === "nein") === removed)
+      .map(item => item.kind === "ea" ? "Elektroauto" : item.title),
+  );
+  const addedConsumerNames = names(false);
+  const removedConsumerNames = names(true);
+  const consumerChangeLabel = removedConsumerNames
+    ? addedConsumerNames
+      ? `durch ${addedConsumerNames} sowie den Wegfall von ${removedConsumerNames}`
+      : `durch den Wegfall von ${removedConsumerNames}`
+    : `zusätzlich durch ${addedConsumerNames}`;
+  const consumerApplyBar = hasConsumerAddons ? <footer className="pv-consumer-apply" aria-label="Verbraucher übernehmen"><div><div className="pv-consumer-apply-summary"><div className="pv-consumer-apply-amount">{oEv === null ? <><MetricValue signed value={consumerImpact(pendingConsumers)}/><span>{consumerChangeLabel}</span></> : <strong>Eigenverbrauch neu berechnen</strong>}</div><p>{oEv === null ? <>Änderung deines PV-Vorteils über {YEARS} Jahre.</> : <>Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.</>}</p></div><FlowNav weiterLabel="Berechnung aktualisieren" weiterAktiv onWeiter={()=>{applyConsumers(pendingConsumers);setGvAnswered(new Set([...gvAnswered,...addonAnswers]));setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}/></div></footer> : null;
 
   return (
     <div className="wp-calculator-page wp-input-page pv-calculator-page" style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "0 16px 20px" }}>

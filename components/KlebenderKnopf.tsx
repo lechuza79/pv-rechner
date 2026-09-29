@@ -66,10 +66,10 @@ export default function KlebenderKnopf({
     const el = ankerRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const beobachter = new IntersectionObserver(
-      ([eintrag]) => setZeigen(floating ? eintrag.intersectionRatio < 1 : !eintrag.isIntersecting),
+      ([eintrag]) => setZeigen(!eintrag.isIntersecting),
       // Der obere Rand ist eingezogen: Ein Bereich, der gerade erst unter der
       // Kopfzeile hervorlugt, gilt noch nicht als gesehen.
-      { rootMargin: "-80px 0px 0px 0px", threshold: floating ? 1 : 0 },
+      { rootMargin: floating ? "0px" : "-80px 0px 0px 0px", threshold: 0 },
     );
     beobachter.observe(el);
     return () => beobachter.disconnect();
@@ -125,7 +125,10 @@ export default function KlebenderKnopf({
           background: floating ? "transparent" : `linear-gradient(to top, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 0%, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 55%, color-mix(in srgb, ${v("--color-bg")} 50%, transparent) 78%, transparent 100%)`,
           padding: `${floating ? 0 : 64}px 12px calc(12px + env(safe-area-inset-bottom))`,
           transform: sichtbar ? "none" : "translateY(130%)",
-          transition: "transform 0.28s ease",
+          // Hide immediately when the inline action enters the viewport.
+          // An exit animation would paint both copies during the handover.
+          visibility: floating && !sichtbar ? "hidden" : "visible",
+          transition: floating && !sichtbar ? "none" : "transform 0.28s ease",
           pointerEvents: sichtbar ? "auto" : "none",
         }}
       >
