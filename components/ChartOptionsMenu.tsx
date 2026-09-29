@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useId, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconHelpCircle, IconShare, IconRefresh } from "./Icons";
 import styles from "./ChartOptionsMenu.module.css";
+import type { VideoRequestParams } from "../lib/video-export-client";
+import WidgetVideoDialog, { type VideoMailOptions } from "./WidgetVideoDialog";
 import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 
 /**
@@ -19,12 +21,18 @@ import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
  * Home/End move; Escape closes and returns focus to the button; Tab closes.
  * Pointer: a tap or click outside closes it.
  */
-export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, presentation = "menu", busy = false }: {
+export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, onVideoRequest, videoParams, videoPeriod, videoPlace, loadVideoThumbnail, presentation = "menu", busy = false }: {
   /** Chart name, for the accessible button label. */
   label: string;
   /** Prefilled contact link supplied by the shared widget frame. */
   contactHref: string;
   designContactHref?: string;
+  /** Resolves only after the server has accepted the confirmation-mail request. */
+  onVideoRequest?: (email: string, options: VideoMailOptions) => Promise<void>;
+  videoParams?: VideoRequestParams;
+  videoPeriod?: string;
+  videoPlace?: string;
+  loadVideoThumbnail?: () => Promise<Blob | null>;
   presentation?: "menu" | "footer";
   onShare: () => void | Promise<void>;
   onDownload: () => void | Promise<void>;
@@ -34,8 +42,17 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   animation?: {end:()=>Promise<void>;video:()=>Promise<void>};
   busy?: boolean;
 }) {
+  // Preserve the shared frame's widget, location, state and source context.
+  const videoRequest = new URL(contactHref, "https://solar-check.io");
+  videoRequest.searchParams.set("topic", "Widget als Video");
+  const contactMessage = videoRequest.searchParams.get("message") ?? `Widget: ${label}`;
+  videoRequest.searchParams.set("message", contactMessage
+    .replace(/^Ich habe eine Frage zum Einbetten dieses Widgets:/, "Ich möchte dieses Diagramm als MP4-Video anfragen:")
+    .replace(/Meine Frage:\n?$/, "Gewünschtes Format und Verwendungszweck:\n"));
+  const videoContactHref = `${videoRequest.pathname}${videoRequest.search}`;
   const [group,setGroup] = useState<"embed"|"download"|"share">("embed");
   const [open, setOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
   const [anchor,setAnchor] = useState({left:12,bottom:60,width:280});
   const [menuMaxHeight,setMenuMaxHeight]=useState<number>();
   const [status, setStatus] = useState("");
@@ -125,7 +142,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} style={item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
           {animation&&<>
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} style={item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
-            <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" disabled={busy} style={item} onClick={run(animation.video,"Video wird heruntergeladen.")}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video</span></button>
+            {onVideoRequest ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" style={item} onClick={()=>{close();setVideoOpen(true);}}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>MP4 · Downloadlink per E-Mail</small></span></button> : <a role="menuitem" tabIndex={-1} data-widget-action="video_contact" href={videoContactHref} target="_top" style={item} onClick={()=>close(false)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></a>}
           </>}
           {designContactHref&&<>{separator}<a role="menuitem" tabIndex={-1} data-widget-action="design_contact" href={designContactHref} target="_top" style={item} onClick={()=>close(false)}><IconHelpCircle size={16} style={leadingIcon}/><span>In Ihrem Design<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>Mit Ihrem Logo und Ihren Farben.</small><span style={{display:"block",marginTop:4,textDecoration:"underline",textUnderlineOffset:3}}>Anfragen →</span></span></a></>}
           </>}
@@ -140,6 +157,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           </>}
         </div>
       )}
+      {videoOpen && <WidgetVideoDialog open={videoOpen} onClose={()=>{setVideoOpen(false);button.current?.focus();}} label={label} videoParams={videoParams} period={videoPeriod} place={videoPlace} loadThumbnail={loadVideoThumbnail} onRequest={onVideoRequest} />}
       {status && <span role="status" aria-live="polite" style={{ position: footer ? "relative" : "absolute", display:"block", right: 0, top: footer ? undefined : "100%", zIndex: 21, minWidth: 180, padding: 10, borderRadius: 8, background: `var(--widget-surface, ${v("--color-bg-raised")})`, color: "inherit" }}>{status}</span>}
     </div>
   );

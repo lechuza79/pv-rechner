@@ -56,6 +56,16 @@ export type EinwilligungsFassung = {
   nachweisHinweis: string;
 };
 
+/** Exact compact opt-in wording used by the video request dialog. */
+export const VIDEO_ABO_EINWILLIGUNG: EinwilligungsFassung = {
+  version: "2026-09-29-video",
+  seit: "2026-09-29",
+  gemeinde: "Neuigkeiten zu {Ort} erhalten",
+  foerderung: "Solar-Ausbau und neue Förderungen direkt per E-Mail verfolgen.",
+  zusage: "Datenschutz",
+  nachweisHinweis: "Datenschutz",
+};
+
 export const EINWILLIGUNGS_FASSUNGEN: EinwilligungsFassung[] = [
   {
     version: "2026-09-01",
@@ -84,5 +94,6 @@ export const AKTUELLE_EINWILLIGUNG = EINWILLIGUNGS_FASSUNGEN[EINWILLIGUNGS_FASSU
 /** Den Wortlaut zu einer gespeicherten Version nachschlagen. */
 export function einwilligungsFassung(version: string | null): EinwilligungsFassung | null {
   if (!version) return null;
+  if (version === VIDEO_ABO_EINWILLIGUNG.version) return VIDEO_ABO_EINWILLIGUNG;
   return EINWILLIGUNGS_FASSUNGEN.find((f) => f.version === version) ?? null;
 }

@@ -124,7 +124,8 @@ test("district race uses one widget with footer actions and monitor dates live i
   }
   await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
   await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
-  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild','Animation als Video',/In Ihrem Design.*Anfragen/]);
+  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild','Animation als Video anfragen',/In Ihrem Design.*Anfragen/]);
+  await expect(ranking.getByRole('menuitem',{name:'Animation als Video anfragen'})).toHaveAttribute('href',/topic=Widget\+als\+Video/);
   await expect(ranking.getByRole('menuitem',{name:/In Ihrem Design/})).toHaveAttribute('href',/topic=Widget\+im\+eigenen\+Design/);
   await page.keyboard.press('Escape');
   const annualHelp=page.locator('#atlas-data').getByRole('button',{name:'Informationen zu Zubau pro Jahr'});

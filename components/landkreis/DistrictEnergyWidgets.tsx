@@ -10,6 +10,7 @@ import {MonitorMonthlySolarChart} from '../gemeinde/MonitorMonthlySolarChart';
 import {MonitorAnnualEnergyChart} from '../gemeinde/MonitorAnnualEnergyChart';
 import {ApprovedStoryVisual} from '../social/ApprovedStoryVisual';
 import chart from '../social/StoryConceptLab.module.css';
+import {ortPhrase} from '../../lib/atlas-orte';
 import {dashboardDate} from '../../lib/dashboard/format';
 
 /** Months without a value in every part are left out, not summed short. The
@@ -37,7 +38,7 @@ export function districtEnergyWidgets({data,name,regionId}:{data:DistrictEnergy|
  return {energy: {
    "electricity-value": <ValueWidget data={data} name={name} regionId={regionId}/>,
    "feed-in-value": <ValueWidget data={data} name={name} regionId={regionId} feedIn/>,
-   radial: data.monthly.length>0?<ExportableWidgetFrame animated title="Solarerzeugung im Tagesverlauf" kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={help} widget={WIDGETS.gemeindeSolarMonat} place={name} stand={formatStoryDate(data.monthly[0].solar.sourceDate)} filename={`solar-check-radial-${regionId}`}><div className="monitor-widget-body"><MonitorMonthlySolarChart data={data.monthly[0].solar} datasets={data.monthly.map(row=>row.solar)}/></div></ExportableWidgetFrame>:<p role="status">Für die Solarerzeugung liegt noch kein vollständiger gemeinsamer Monat vor.</p>,
+   radial: data.monthly.length>0?<ExportableWidgetFrame animated title={`Solarerzeugung im Tagesverlauf ${ortPhrase({name})}`} exportNote={null} helpExportNote={false} kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={<p>Modellierte Erzeugung aller Teilgebiete, keine Messung.</p>} widget={WIDGETS.gemeindeSolarMonat} place={name} stand={formatStoryDate(data.monthly[0].solar.sourceDate)} filename={`solar-check-radial-${regionId}`}><div className="monitor-widget-body"><MonitorMonthlySolarChart data={data.monthly[0].solar} datasets={data.monthly.map(row=>row.solar)}/></div></ExportableWidgetFrame>:<p role="status">Für die Solarerzeugung liegt noch kein vollständiger gemeinsamer Monat vor.</p>,
    "energy-year": data.annual.length>0?<ExportableWidgetFrame title={data.annual.some(y=>y.windKw>0)?'Solar- und Windpotenzial im Jahresverlauf':'Solarpotenzial im Jahresverlauf'} kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={help} widget={WIDGETS.gemeindeEnergieJahr} place={name} stand={formatStoryDate(data.annual[0].sourceDate)} filename={`solar-check-energy-year-${regionId}`}><div className="monitor-widget-body"><MonitorAnnualEnergyChart data={data.annual[0]} datasets={data.annual}/></div></ExportableWidgetFrame>:<p role="status">Für das Jahresprofil liegt noch kein vollständiges gemeinsames Wetterjahr vor.</p>,
  }, energyNotice: <>
   {!data.monthly.some(row=>row.value)&&<p role="status">Stromwert und Einspeisevergütung sind noch nicht für alle Teilgebiete auf gemeinsamer Grundlage berechenbar.</p>}

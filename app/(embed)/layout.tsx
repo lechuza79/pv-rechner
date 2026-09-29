@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
+import VideoRenderBridge from "../../components/VideoRenderBridge";
 import { widgetBasisCss } from "../../lib/widget-basis-css";
 
 // Dieselben Schriften wie die Site, aus derselben Quelle (next/font lädt sie
@@ -52,6 +53,7 @@ export default function EmbedRootLayout({
       <body>
         {children}
         <WidgetAutoHeight />
+        <VideoRenderBridge />
       </body>
     </html>
   );

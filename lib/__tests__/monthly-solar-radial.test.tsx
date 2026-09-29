@@ -1,6 +1,8 @@
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {describe, it, expect} from 'vitest';
+import {MonthlySolarRadial} from '../../components/charts/MonthlySolarRadial';
+import {solarAnimationFrame} from '../monthly-solar-animation';
 import {MonthlySolarChart} from '../../components/social/MonthlySolarChart';
 import {MonitorMonthlySolarChart} from '../../components/gemeinde/MonitorMonthlySolarChart';
 import {storyVisualTemplateDef} from '../story-approved-visual';
@@ -42,7 +44,7 @@ describe('MonthlySolarRadial shared by monitor and story', () => {
 
   it('monitor: month selector and day controls stay out of the image, the month is printed', () => {
     expect((monitor.match(/data-sc-export-ignore=""/g) ?? []).length).toBeGreaterThanOrEqual(2);
-    expect(monitor).toMatch(/data-sc-export-only="block"[^>]*>Aug\. 2026</);
+    expect(monitor).toMatch(/data-sc-export-only="block"[^>]*>Aug\. 2026.*?modelliert</);
   });
 
   it('story export uses the registry footer only for data from our ERA5 archive', () => {
@@ -63,3 +65,11 @@ describe('place phrase of the monitor radial', () => {
     expect(renderToStaticMarkup(<MonitorMonthlySolarChart data={data} />)).toContain('aria-label="Solarleistung in Testort,');
   });
 });
+
+ it('renders the video curve and counter at an explicit intermediate time without CSS animation',()=>{
+  const sample=solarAnimationFrame(data.days.map(day=>day.mwh),950);
+  const html=renderToStaticMarkup(<MonthlySolarRadial data={data} layout="monitor" compact={false} displayDate={data.days[1].date} frame={1} playing={false} focused onHover={()=>{}} onChoose={()=>{}} classes={{}} animationSample={sample}/>);
+  expect(html).toContain('stroke-dashoffset:0.125');
+  expect(html).toContain(sample.value.toLocaleString('de-DE',{maximumFractionDigits:1}));
+  expect(html).not.toContain('wertWechsel');
+ });
