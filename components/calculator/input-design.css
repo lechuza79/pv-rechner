@@ -8,7 +8,7 @@
   --flow-copy-size:var(--font-size-small);
   --flow-artwork-disc:color-mix(in srgb,var(--result-text) 16%,transparent);
   --flow-disabled-fill:color-mix(in srgb,var(--color-text-primary) 5%,transparent);
-  --flow-disabled-ink:color-mix(in srgb,var(--color-text-primary) 38%,var(--color-bg));
+  --flow-disabled-ink:var(--color-text-muted);
 }
 .wp-input-page .wp-input-step{padding:0;background:transparent}
 :is(.wp-input-page,.wp-funding-date-options,.wp-funding-flow) :is([data-flow-option],.sc-option-card){position:relative;min-width:0;font-size:var(--flow-label-size)!important;gap:6px;padding:20px 40px 20px 16px!important;border:0!important;background:var(--flow-option)!important;color:var(--color-text-primary)!important;box-shadow:none;transition:background .18s}
