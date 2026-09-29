@@ -633,6 +633,15 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/ArticleTeasers.tsx",
+    name: "ArticleTeasers",
+    zweck: "Gemeinsame redaktionelle Karten für Ratgeberübersichten und passende Artikel auf Themenseiten.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/RelatedLinks.tsx",
     name: "RelatedLinks",
     zweck: "Die weiterführenden Verweise am Ende einer Leseseite.",

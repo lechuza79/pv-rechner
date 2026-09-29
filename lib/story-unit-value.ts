@@ -48,7 +48,13 @@ export function unitMonthValue(units:ValuationUnit[],weather:Weather,month:strin
  let expectedHours=0;for(let t=startUtc;t<endUtc;t+=3600000)if(formatter.format(new Date(t-1800000)).startsWith(month))expectedHours++;
  if(yieldByDay.size!==dayCount||includedHours!==expectedHours)throw Error('Incomplete month');
  const end=month+'-'+String(dayCount).padStart(2,'0'),seen=new Set<string>();
- const rows=units.filter(u=>u.status==='35'&&u.day.slice(0,10)<end&&u.kwp>0).map(unit=>{
+ // An inventory without one active unit is a data gap and stays an error. One
+ // whose units all start after this month is a town that had none yet: a true
+ // zero, not a missing value (Wiedenborstel's only unit started 12.04.2026 and
+ // cut every regional sum before April to "not computable").
+ const active=units.filter(u=>u.status==='35'&&u.kwp>0);
+ if(!active.length)throw Error('No contributing units');
+ const rows=active.filter(u=>u.day.slice(0,10)<end).map(unit=>{
   if(seen.has(unit.id))throw Error('Duplicate unit');seen.add(unit.id);
   const day=unit.day.slice(0,10),tariff=unitTariff(unit,end);
   const balcony=unit.art==='2961',ground=unit.art==='852',household=!ground&&unit.usage==='713';
@@ -58,6 +64,5 @@ export function unitMonthValue(units:ValuationUnit[],weather:Weather,month:strin
   const feedInKwh=kwh*(1-selfUse),exportValue=feedInKwh*tariff.ct/100;
   return {id:unit.id,day,kwp:unit.kwp,usage:unit.usage,feedInMode:unit.feedInMode,kwh,feedInKwh,selfUse,tariffCt:tariff.ct,approximateTariff:tariff.approximate,unknownMode:!['688','689'].includes(unit.feedInMode)&&!balcony,commercialSelfUseUnknown:!household&&!ground&&!balcony&&!full,euro:kwh*selfUse*DEFAULT_PRICES.electricityPrice+exportValue,feedInEuro:tariff.eligible?exportValue:0};
  });
- if(!rows.length)throw Error('No contributing units');
  return {euro:rows.reduce((s,r)=>s+r.euro,0),feedInEuro:rows.reduce((s,r)=>s+r.feedInEuro,0),totalMwh:rows.reduce((s,r)=>s+r.kwh,0)/1000,unitCount:rows.length,approximateTariffCount:rows.filter(r=>r.approximateTariff).length,unknownModeCount:rows.filter(r=>r.unknownMode).length,commercialSelfUseUnknownCount:rows.filter(r=>r.commercialSelfUseUnknown).length,rows};
 }

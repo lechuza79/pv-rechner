@@ -160,7 +160,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
         <RankingTable regions={ranking.regions} zellen={packeRankingZellen(ranking.cells, ranking.regions)} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
       </div>
     </LazyDisclosure>}
-    {zusatz&&<section className={`${styles.section} ${styles.regionExtras}`} aria-label="Weitere Auswertungen">{zusatz}</section>}
+    {zusatz&&<section id="atlas-related" className={`${styles.section} ${styles.regionExtras}`} aria-label="Weitere Auswertungen">{zusatz}</section>}
     {level!=="de"&&<section className={`${styles.fundingSection} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
     </section>}

@@ -289,7 +289,9 @@
 .heroBand::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");mix-blend-mode:soft-light;}
 .sceneHost::after{display:none;}
 @media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
-.regionExtras{display:block}
+.regionExtras{display:block;margin-top:80px;margin-bottom:0;padding-block:64px;border-block:1px solid var(--atlas-border)}
+.page:has(>.regionExtras:last-child){padding-bottom:0}
+@media(max-width:480px){.regionExtras{margin-top:64px;padding-block:48px}}
 /* Comparison badges sit on dark cards even when the surrounding site uses daylight mode. */
 .darkVariant .regionExtras{--color-positive:#2BE06E;--color-positive-text:#2BE06E;--color-negative:#F26D6D;--color-negative-text:#F26D6D;}
 
