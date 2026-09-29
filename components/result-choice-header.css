@@ -35,3 +35,6 @@
 .sc-result-choice-header:has(.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible)) .sc-result-choice-remove-label{opacity:1}
 @media(hover:none){.sc-result-choice-controls .sc-result-choice-remove-label{opacity:1}}
 @media(prefers-reduced-motion:reduce){.sc-result-choice-check,.sc-result-choice-remove-icon,.sc-result-choice-remove-label{transition:none}}
+
+.sc-result-choice-header[data-surface=white]{background:#fff;color:#1e2b26}
+.sc-result-choice-action .wp-solar-pointer{left:50%;margin:0}

@@ -737,3 +737,15 @@ describe("investment caller coherence", () => {
     }
   });
 });
+
+describe('no rounded autonomy in financial self-consumption', () => {
+  it('adding a small cooling load cannot reduce self-used solar energy', () => {
+    const household = {personenIdx:2,nutzungIdx:1,speicherKwh:0,wp:'geplant',wpKwh:5000,ea:'nein',eaKm:15000,kwp:10,ertragKwp:1050,baseKwh:3800};
+    let previous = calcEigenverbrauchExakt({...household,klima:'nein'});
+    for (let cooling=1;cooling<=600;cooling++) {
+      const current = calcEigenverbrauchExakt({...household,klima:'geplant',klimaKwh:cooling});
+      expect(current,`cooling ${cooling} kWh/year`).toBeGreaterThanOrEqual(previous-1e-10);
+      previous=current;
+    }
+  });
+});

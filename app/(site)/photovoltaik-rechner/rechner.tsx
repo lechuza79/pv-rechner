@@ -1,7 +1,4 @@
 "use client";
-import KlebenderKnopf from "../../../components/KlebenderKnopf";
-import MetricValue from "../../../components/MetricValue";
-import InfoTooltip from "../../../components/InfoTooltip";
 import CalculatorContent from "../../../components/calculator/CalculatorContent";
 
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
@@ -16,9 +13,11 @@ import Modal from "../../../components/Modal";
 import AnmeldeFormular from "../../../components/AnmeldeFormular";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
-import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
-import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT } from "../../../lib/marktwert-config";
-import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
+import { einspeiseVerlauf, type EinspeiseRegime } from "../../../lib/einspeise-regime";
+import { MARKTWERT_NIVEAU_CT } from "../../../lib/marktwert-config";
+import { calculatePvMarketProfile } from "../../../lib/pv-consumer-model";
+import PvPlantFields from "../../../components/PvPlantFields";
+import PvConsumerSection from "../../../components/PvConsumerSection";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ErgebnisAnBetrieb, { type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
@@ -28,13 +27,9 @@ import ErgebnisAnBetrieb, { type PartnerAngabe } from "../../../components/Ergeb
 import { YEAR, YEARS, DEGRAD, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
 import { DIREKT_KEY } from "../../../lib/share-keys";
 import { estimateCost, calcEigenverbrauch, calcEigenverbrauchExakt, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
-import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS, BATTERY_ROUNDTRIP } from "../../../lib/pv-sim";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
-import PvConsumerFields, {consumersComplete, requiredConsumerFields, type PvConsumerValues, type PvConsumerKind} from "../../../components/PvConsumerFields";
-import AffiliateCarousel from "../../../components/AffiliateCarousel";
-import Collapse from "../../../components/Collapse";
-import PvConsumerComparison from "../../../components/PvConsumerComparison";
-import ResultChoiceHeader from "../../../components/ResultChoiceHeader";
+import PvConsumerFields, {consumersComplete, type PvConsumerValues} from "../../../components/PvConsumerFields";
 import OptionCard from "../../../components/OptionCard";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
@@ -64,7 +59,7 @@ import ResultOverview from "../../../components/calculator/ResultOverview";
 import ResultSettings from "../../../components/ResultSettings";
 import StatCard from "../../../components/calculator/ResultStatCard";
 import { useResultIntro } from "../../../components/calculator/useResultIntro";
-import PvCoolingEditor from "./_components/PvCoolingEditor";
+import PvCoolingEditor from "../../../components/PvCoolingEditor";
 import PvResultRace from "./_components/PvResultRace";
 import StandortField from "../../../components/StandortField";
 // ResultSection steht schon oben; ResultVerbrauch ist entfallen (die
@@ -125,7 +120,7 @@ export default function PVRechner({
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
   // 5, nicht 4: Der Dach-Schritt ist inzwischen dazugekommen (Parallel-Session).
-  const [step, setStep] = useState(hasShare ? 5 : 0);
+  const [step, setStep] = useState(hasShare && initialParams?.eingabe !== "1" ? 5 : 0);
   // Welche Fragen der Nutzer WIRKLICH beantwortet hat.
   //
   // Die Werte darunter tragen weiterhin sinnvolle Startwerte — die Rechnung
@@ -535,28 +530,8 @@ export default function PVRechner({
   // verbleibende Kilowattstunde im Vergleich zum vollen Ertrag wert ist. Beides
   // hängt am Speicher und am Verbrauchsprofil dieses Haushalts, also fällt es aus
   // derselben Simulation an wie die Autarkie — statt aus einer zweiten Annahme.
-  const calculateMarketProfile = (mode: "aus" | "teil" | "voll", profile: HouseholdProfile = household) => {
-    const monthly = monthlyProfile ?? monthlyFromAnnual(effErtrag);
-    const summe = monthly.reduce((a, b) => a + b, 0);
-    const skaliert = summe > 0 ? monthly.map((m) => (m * effErtrag) / summe) : monthly;
-    const gemeinsam = {
-      moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
-      // Bei Volleinspeisung hängt weder Haushalt noch Speicher an der Anlage —
-      // sonst trüge der Marktwert das Profil eines Teileinspeisers (Council
-      // 05.09.2026: Profilfaktor 0,82 statt 1,03 bei 10 kWh Speicher).
-      orientation: "sued_flach",
-      household: mode === "voll" ? { ...profile, baseKwh: 0, wpActive: false, eaActive: false, klimaActive: false } : profile,
-      batteryKwh: mode === "voll" ? 0 : spKwh,
-      roundtrip: BATTERY_ROUNDTRIP,
-      priceShape: PREISFORM_MONAT_STUNDE,
-    };
-    const ohneDeckel = simulateSolarYear(gemeinsam);
-    const mitDeckel = simulateSolarYear({ ...gemeinsam, exportCapKw: einspeiseDeckelKw(kwp, "reform2027") });
-    return {
-      profilFaktor: profilFaktorAus(mitDeckel),
-      einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
-    };
-  };
+  const calculateMarketProfile = (mode: "aus" | "teil" | "voll", profile: HouseholdProfile = household) =>
+    calculatePvMarketProfile({kwp, storageKwh:spKwh, monthly:monthlyProfile, yieldPerKwp:effErtrag}, mode, profile);
   const marktSim = useMemo(() => calculateMarketProfile(effEinspeisungModus), [kwp, spKwh, monthlyProfile, effErtrag, household, effEinspeisungModus]);
 
   const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
@@ -592,50 +567,10 @@ export default function PVRechner({
       einspeiseModell:effEinspeisungModus === "aus" ? undefined : einspeiseModell,
     })})),[kwp,kosten,oStrom,effEvRechnung,effEinsp,effEinspeisungModus,effErtrag,monthlyProfile,spKwh,prices,gesamtVerbrauch,jahresertrag,einspeiseModell]);
 
-  // Add-ons remain separate from the global calculation until explicitly applied.
-  const [consumerDraft,setConsumerDraft]=useState<PvConsumerValues|null>(null);
-  const [consumerAnswered,setConsumerAnswered]=useState<Set<string>>(new Set());
-  const [consumerAddons,setConsumerAddons]=useState<Partial<Record<PvConsumerKind,Partial<PvConsumerValues>>>>({});
-  const [addonAnswers,setAddonAnswers]=useState<Set<string>>(new Set());
+  const [hasConsumerAddons, setHasConsumerAddons] = useState(false);
+  const [consumerRevision, setConsumerRevision] = useState(0);
   const consumerValues = {nutzung,wp,ea,eaKm,klima,klimaRooms,klimaKwh,wpHaustyp,wpWohnflaeche,wpInsulation,wpHeizsystem};
   const applyConsumers = (draft:PvConsumerValues) => {setNutzung(draft.nutzung);setWp(draft.wp);setEa(draft.ea);setEaKm(draft.eaKm);setKlima(draft.klima);setKlimaRooms(draft.klimaRooms);setKlimaKwh(draft.klimaKwh);setWpHaustyp(draft.wpHaustyp);setWpWohnflaeche(draft.wpWohnflaeche);setWpInsulation(draft.wpInsulation);setWpHeizsystem(draft.wpHeizsystem);setOEv(null);};
-  const [consumerKind,setConsumerKind]=useState<PvConsumerKind>("ea");
-  const pendingConsumers: PvConsumerValues = Object.assign({},consumerValues,...Object.values(consumerAddons));
-  const hasConsumerAddons = Object.keys(consumerAddons).length > 0;
-  const consumerCases = [
-    {kind:"wp" as const,title:"Wärmepumpe",illustration:"/shared-nav/illustrations/heatpump-modern-neon.webp",active:wp!=="nein"},
-    {kind:"ea" as const,title:"E-Auto",illustration:"/homepage-study/bev-v1/bev.webp",active:ea!=="nein"},
-    {kind:"klima" as const,title:"Klimaanlage",illustration:"/shared-nav/illustrations/aircon-neon.webp",active:klima!=="nein"},
-  ];
-  const startConsumerScenario = (kind:PvConsumerKind) => {
-    setConsumerKind(kind);
-    setConsumerAnswered(new Set([...gvAnswered,...addonAnswers]));
-    setConsumerDraft({...pendingConsumers,[kind]:pendingConsumers[kind] === "nein" ? (consumerValues[kind] === "nein" ? "geplant" : consumerValues[kind]) : pendingConsumers[kind]});
-  };
-  const removeConsumerAddon = (kind:PvConsumerKind) => {
-    setConsumerAddons(previous=>{const next={...previous};if(consumerValues[kind] !== "nein") next[kind] = {[kind]:"nein"}; else delete next[kind];return next;});
-    setAddonAnswers(answers=>new Set([...answers].filter(key=>!requiredConsumerFields(pendingConsumers,kind).includes(key))));
-  };
-  const stageConsumer = (draft:PvConsumerValues) => {
-    const patch:Partial<PvConsumerValues> = consumerKind === "wp"
-      ? {wp:draft.wp,wpHaustyp:draft.wpHaustyp,wpWohnflaeche:draft.wpWohnflaeche,wpInsulation:draft.wpInsulation,wpHeizsystem:draft.wpHeizsystem}
-      : consumerKind === "ea" ? {ea:draft.ea,eaKm:draft.eaKm}
-      : {klima:draft.klima,klimaRooms:draft.klimaRooms,klimaKwh:draft.klimaKwh};
-    setConsumerAddons(previous=>{
-      const next={...previous};
-      // Restoring the applied values cancels the pending removal, not its PV benefit.
-      const unchanged=Object.entries(patch).every(([key,value])=>consumerValues[key as keyof PvConsumerValues]===value);
-      if(unchanged && oEv===null) delete next[consumerKind];
-      else next[consumerKind]=patch;
-      return next;
-    });
-    setAddonAnswers(new Set(consumerAnswered));
-    setConsumerDraft(null);
-  };
-
-  // (Die Liste der aktiven Großverbraucher ist entfallen: sie war die Kopfzeile
-  // des gemeinsamen Verbrauchs-Abschnitts. Jeder Verbraucher hat jetzt seinen
-  // eigenen Abschnitt und trägt seinen Zustand selbst.)
 
   // Was der Börsenerlös über die Laufzeit ausmacht: dasselbe Szenario einmal mit
   // und einmal ohne Marktbewertung. Die Zahl steht am Schalter selbst — sonst
@@ -684,19 +619,6 @@ export default function PVRechner({
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
   const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
-  // Preview uses the same consumption, export and cash-flow models as the result.
-  const consumerImpact = (draft:PvConsumerValues) => {
-    const heat = draft.wp === "nein" ? null : calcWpAnnualElectricity({situation:"bestand",wohnflaeche:draft.wpWohnflaeche,insulationIdx:draft.wpInsulation,personen:PERSONEN[personen].count,heizsystem:draft.wpHeizsystem,wpType:"lwwp",haustypFaktor:HAUSTYP_WP[draft.wpHaustyp].faktor});
-    const coolingKwh = draft.klima === "nein" ? null : draft.klimaKwh ?? klimaSchnellschaetzungKwh({rooms:draft.klimaRooms,cdh:cooling.cdhSet.avg5,stromPrice:oStrom});
-    const consumption = grundverbrauch + calcExtraConsumption(draft.wp,draft.ea,draft.eaKm,draft.klima,KLIMA_DEFAULT_M2,coolingKwh,heat);
-    const ev = calcEigenverbrauchExakt({...evEingaben,nutzungIdx:draft.nutzung,wp:draft.wp,ea:draft.ea,eaKm:draft.eaKm,klima:draft.klima,klimaKwh:coolingKwh,wpKwh:heat});
-    const mode = vollEinspeisungGesperrt({wp:draft.wp,ea:draft.ea,speicherKwh:spKwh}) && einspeisungModus === "voll" ? "teil" : einspeisungModus;
-    const rate = oEinsp ?? (mode === "voll" ? calcWeightedFeedIn(kwp,feedInRates.vollUnder10,feedInRates.vollOver10,feedInRates.thresholdKwp) : calcWeightedFeedIn(kwp,feedInRates.teilUnder10,feedInRates.teilOver10,feedInRates.thresholdKwp));
-    const market = regime === "heute" || mode === "aus" ? null : calculateMarketProfile(mode,{...household,tagQuote:NUTZUNG[draft.nutzung].tagQuote,wpActive:draft.wp!=="nein",eaActive:draft.ea!=="nein",klimaActive:draft.klima!=="nein",wpAnnualKwh:heat??undefined,eaAnnualKwh:draft.ea!=="nein"?calcEaAnnual(draft.eaKm):undefined,klimaAnnualKwh:coolingKwh??undefined});
-    const exportYears = market ? einspeiseVerlauf({regime,kwp,inbetriebnahmeJahr:Math.max(2027,YEAR),heuteSatzCt:rate,marktErloes,profilFaktor:market.profilFaktor,niveauCt:oMarktwert??MARKTWERT_NIVEAU_CT}) : null;
-    const result = calc({kwp,kosten,strompreis:oStrom,eigenverbrauch:mode==="voll"?0:Math.min(ev+sel.evDelta,95,(consumption/jahresertrag)*100),einspeisung:mode==="aus"?0:rate,stromSteigerung:sel.strom,ertragKwp:effErtrag,monthly:monthlyProfile,batteryReplace:batteryReplaceCost(spKwh,prices),einspeiseModell:market && exportYears ? {satzCtImJahr:(i:number)=>exportYears[i-1]?.satzCt??0,fixkostenImJahr:(i:number)=>exportYears[i-1]?.fixkosten??0,einspeiseAnteil:market.einspeiseAnteil}:undefined});
-    return result.total-sel.data.total;
-  };
   const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
@@ -947,20 +869,6 @@ export default function PVRechner({
     return { ht, da, nutzbar, maxKwp, grundverbrauch, extraVerbrauch, gesamtVerbrauch, dachAuslastung };
   })() : null;
   // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
-
-  const changedConsumers = consumerCases.filter(item => consumerAddons[item.kind]);
-  const names = (removed: boolean) => new Intl.ListFormat("de-DE", {style:"long",type:"conjunction"}).format(
-    changedConsumers.filter(item => (pendingConsumers[item.kind] === "nein") === removed)
-      .map(item => item.kind === "ea" ? "Elektroauto" : item.title),
-  );
-  const addedConsumerNames = names(false);
-  const removedConsumerNames = names(true);
-  const consumerChangeLabel = removedConsumerNames
-    ? addedConsumerNames
-      ? `durch ${addedConsumerNames} sowie den Wegfall von ${removedConsumerNames}`
-      : `durch den Wegfall von ${removedConsumerNames}`
-    : `zusätzlich durch ${addedConsumerNames}`;
-  const consumerApplyBar = hasConsumerAddons ? <footer className="pv-consumer-apply" aria-label="Verbraucher übernehmen"><div><div className="pv-consumer-apply-summary"><div className="pv-consumer-apply-amount">{oEv === null ? <MetricValue signed value={consumerImpact(pendingConsumers)}/> : <strong>Eigenverbrauch neu berechnen</strong>}<InfoTooltip size={16} ariaLabel="Änderung des PV-Vorteils erklären">{oEv === null ? <>Änderung deines PV-Vorteils über {YEARS} Jahre.</> : <>Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.</>}</InfoTooltip></div>{oEv === null && <p className="pv-consumer-apply-subline">{consumerChangeLabel}</p>}</div><FlowNav weiterLabel="Berechnung aktualisieren" weiterAktiv onWeiter={()=>{applyConsumers(pendingConsumers);setGvAnswered(new Set([...gvAnswered,...addonAnswers]));setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}/></div></footer> : null;
 
   return (
     <div className="wp-calculator-page wp-input-page pv-calculator-page" style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "0 16px 20px" }}>
@@ -1269,37 +1177,14 @@ export default function PVRechner({
               onSave={authState.status === "anon" ? oeffneAnmeldung : handleSave} saveLabel={saved ? "Gespeichert" : saving ? "Speichert …" : "Speichern"} saveDisabled={authState.status === "loading" || saving || saved} />
             {authState.status === "authed" && savedCalcId && <p><Link href="/dashboard">Meine Berechnungen</Link></p>}
             {partner && <ErgebnisAnBetrieb partner={partner} ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""} plz={plz} />}
-            <section className="pv-consumer-scenarios" aria-labelledby="pv-consumer-heading">
-              <h2 id="pv-consumer-heading">Deinen Gewinn weiter optimieren</h2>
-              <p>Wärmepumpe, E-Auto und Klimaanlage können mehr von deinem Solarstrom nutzen. Die Kacheln zeigen den zusätzlichen PV-Vorteil über 25 Jahre. Darunter vergleichst du die laufenden Kosten – bei Heizung, Fahren und Kühlen jeweils mit dem angegebenen Zeitraum.</p>
-              <div className="pv-consumer-options">
-              <AffiliateCarousel label="Weitere Verbraucher" desktopSlides={3} previousLabel="Vorherige Verbraucher">
-                {consumerCases.map(item => {
-                  const pending = consumerAddons[item.kind];
-                  const removed = pending?.[item.kind] === "nein";
-                  const configured = item.active || !!pending;
-                  const cardValues = {...consumerValues,...pending};
-                  return <li key={item.kind} data-consumer={item.kind} className="wp-geraete-kachel pv-consumer-card">
-                    <ResultChoiceHeader editSelected neutral illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
-                      actionLabel={`${item.title}: ${removed ? "Wieder hinzufügen" : item.active ? "Bereits berücksichtigt" : pending ? "Zur Vorschau hinzugefügt" : "Ergänzen"}`}
-                      onSelect={() => startConsumerScenario(item.kind)} onRemove={() => removeConsumerAddon(item.kind)} onEdit={() => startConsumerScenario(item.kind)}>
-                      {!configured && oEv === null && <><MetricValue value={consumerImpact({...consumerValues,[item.kind]:"geplant"})}/><span className="pv-consumer-period">PV-Vorteil über {YEARS} Jahre · Beispiel</span></>}{removed && "Entfernt"}{oEv !== null && !removed && <span className="pv-consumer-period">PV-Vorteil nach Neuberechnung</span>}
-                      {configured && !removed && oEv === null && <><MetricValue signed value={consumerImpact(cardValues)-consumerImpact({...cardValues,[item.kind]:"nein"})}/><span className="pv-consumer-period">Zusätzlicher PV-Vorteil<br/>über {YEARS} Jahre</span></>}
-                    </ResultChoiceHeader>
-                  </li>;
-                })}
-              </AffiliateCarousel>
-              </div>
-              <Collapse open={pendingConsumers.wp!=="nein" || pendingConsumers.ea!=="nein" || pendingConsumers.klima!=="nein"}>
-                <div id="pv-consumer-comparison" className="pv-consumer-comparison">
-                  {(["wp","ea","klima"] as const).map(kind=><div key={kind} hidden={pendingConsumers[kind]==="nein"}>
-                    <PvConsumerComparison standalone fuelType={fuelType} setFuelType={setFuelType} kind={kind} values={pendingConsumers} personen={personen} baseKwh={grundverbrauch} kwp={kwp} speicherKwh={spKwh} ertragKwp={effErtrag} monthly={monthlyProfile} klimaKwh={pendingConsumers.klimaKwh ?? klimaSchnellschaetzungKwh({rooms:pendingConsumers.klimaRooms,cdh:cooling.cdhSet.avg5,stromPrice:oStrom})} strompreis={oStrom} scenario={sel.id} fullFeedIn={effEinspeisungModus === "voll" && !vollEinspeisungGesperrt({wp:pendingConsumers.wp,ea:pendingConsumers.ea,speicherKwh:spKwh})}/>
-                  </div>)}
-                </div>
-              </Collapse>
-              {hasConsumerAddons && <KlebenderKnopf floating kinder={ref=><div ref={ref} className="pv-consumer-apply-anchor">{consumerApplyBar}</div>} leiste={consumerApplyBar}/>}
-
-            </section>
+            <PvConsumerSection key={consumerRevision} id="pv-consumer" values={consumerValues} answered={gvAnswered}
+              basis={{personen,baseKwh:grundverbrauch,kwp,storageKwh:spKwh,yieldPerKwp:effErtrag,monthly:monthlyProfile,
+                electricityPrice:oStrom,cost:kosten,replacementCost:batteryReplaceCost(spKwh,prices),scenario:sel.id,
+                feedInMode:einspeisungModus,feedInRate:oEinsp,feedInRates,regime,marketRevenue:marktErloes,
+                marketValue:oMarktwert??MARKTWERT_NIVEAU_CT,coolingDegreeDays:cooling.cdhSet.avg5}}
+              baselineBenefit={sel.data.total} manualSelfConsumption={oEv!==null} plz={plz}
+              fuelType={fuelType} onFuelTypeChange={setFuelType} onPendingChange={setHasConsumerAddons}
+              onApply={(draft,answered)=>{applyConsumers(draft);setGvAnswered(new Set(answered));revealUpdatedResult();}} />
             <section id="pv-details" className="pv-result-settings wp-input-page">
             <AccordionField completedStyle="check" label="Ertrag und technische Details" open={technicalOpen} answered summary={`${Math.round(jahresertrag).toLocaleString("de-DE")} kWh/Jahr`} onEdit={()=>setTechnicalOpen(!technicalOpen)}>
             {empfehlungKontext && (
@@ -1379,16 +1264,7 @@ export default function PVRechner({
                   if (draft.ev !== effEv) setOEv(draft.ev); else if (hardwareChanged || draft.verbrauch !== grundverbrauch) setOEv(null);
                   revealUpdatedResult();
                 }}>
-                {(draft, update) => <>
-                  <div>Anlagenleistung: <InlineEdit value={draft.kwp} onCommit={kwp => update({kwp})} unit=" kWp" min={1} max={50} step={0.5} /></div>
-                  <div>Speichergröße: <InlineEdit value={draft.spKwh} onCommit={spKwh => update({spKwh})} unit=" kWh" min={0} max={30} step={0.5} /></div>
-                  <div>Anschaffung vor Förderung: <InlineEdit value={draft.invest} onCommit={invest => update({invest})} unit=" €" min={500} max={200000} step={500} /></div>
-                  <p>Bei einer anderen Anlagen- oder Speichergröße schätzen wir die Kosten neu, sofern du keinen neuen Preis einträgst.</p>
-                  <div>Strompreis: <InlineEdit value={draft.strom * 100} onCommit={strom => update({strom:strom / 100})} unit=" ct/kWh" min={5} max={100} step={1} /></div>
-                  <div>Haushaltsverbrauch ohne Großverbraucher: <InlineEdit value={draft.verbrauch} onCommit={verbrauch => update({verbrauch})} unit=" kWh/Jahr" min={500} max={30000} step={100} /></div>
-                  <div>Ertrag deines Dachs: <InlineEdit value={draft.ertrag} onCommit={ertrag => update({ertrag})} unit=" kWh/kWp" min={ertragMin} max={ertragMax} step={10} /></div>
-                  {effEinspeisungModus !== "voll" && <div>Eigenverbrauch: <InlineEdit value={draft.ev} onCommit={ev => update({ev})} unit=" %" min={5} max={95} step={1} /></div>}
-                </>}
+                {(draft, update) => <PvPlantFields values={draft} update={update} ertragMin={ertragMin} ertragMax={ertragMax} showSelfConsumption={effEinspeisungModus !== "voll"} />}
               </ResultSettings>
               <ResultSettings flow triggerId="pv-prices-trigger" title="Preise und Preisentwicklung" summary={sel.label} values={{scenario}} onApply={draft => {setScenario(draft.scenario); revealUpdatedResult();}}>
                 {(draft, update) => <ScenarioTabs tabs={scenarioData.map(s => ({id:s.id,label:s.label,explain:s.explain,sub:s.sub,source:s.source}))} selected={draft.scenario} onSelect={scenario => update({scenario})} />}
@@ -1398,7 +1274,7 @@ export default function PVRechner({
               </ResultSettings>
               <ResultSettings flow title="Haushalt & Großverbraucher" summary={`${gesamtVerbrauch.toLocaleString("de-DE")} kWh/Jahr insgesamt`}
                 values={consumerValues} canApply={draft=>consumersComplete(draft,gvAnswered)}
-                onApply={draft=>{applyConsumers(draft);setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}>
+                onApply={draft=>{applyConsumers(draft);setConsumerRevision(revision=>revision+1);revealUpdatedResult();}}>
                 {(draft,update)=><>
                   <PvConsumerFields values={draft} update={update} answered={gvAnswered} onAnswered={markGvAnswered}/>
                   {draft.klima!=="nein" && <PvCoolingEditor rooms={draft.klimaRooms} kwh={draft.klimaKwh} plz={plz} price={oStrom} onApply={klimaKwh=>update({klimaKwh})}/>}
@@ -1437,13 +1313,6 @@ export default function PVRechner({
                 }} />
               </AccordionField>
             </section>
-            <Modal className="pv-consumer-dialog" open={consumerDraft !== null} onClose={()=>setConsumerDraft(null)} title={`${consumerCases.find(item=>item.kind===consumerKind)?.title} ergänzen`} intro="Erst zur Vorschau hinzufügen, dann gemeinsam übernehmen.">
-              {consumerDraft && <>
-                <PvConsumerFields only={consumerKind} values={consumerDraft} update={patch=>setConsumerDraft(draft=>draft ? {...draft,...patch} : draft)} answered={consumerAnswered} onAnswered={key=>setConsumerAnswered(previous=>new Set(previous).add(key))}/>
-                {consumerKind === "klima" && consumerDraft.klima!=="nein" && <PvCoolingEditor rooms={consumerDraft.klimaRooms} kwh={consumerDraft.klimaKwh} plz={plz} price={oStrom} onApply={klimaKwh=>setConsumerDraft(draft=>draft ? {...draft,klimaKwh} : draft)}/>}
-                <FlowNav zurueckLabel="Abbrechen" onZurueck={()=>setConsumerDraft(null)} weiterLabel="Zur Vorschau hinzufügen" weiterAktiv={consumersComplete(consumerDraft,consumerAnswered,consumerKind)} inaktivHinweis="Bitte ergänze die offenen Verbraucherangaben." onWeiter={()=>{if(!consumersComplete(consumerDraft,consumerAnswered,consumerKind))return;stageConsumer(consumerDraft);}}/>
-              </>}
-            </Modal>
             <Modal open={resultDetailsOpen} onClose={()=>setResultDetailsOpen(false)} title="So entsteht dein Ergebnis">
               <p>Wir vergleichen deinen Strombezug ohne Photovoltaik mit deiner Anlage über {YEARS} Jahre.</p>
               <p>Anschaffung vor Förderung: {Math.round(bruttoKosten).toLocaleString("de-DE")} €. Angerechnete Förderung: {Math.round(foerderung).toLocaleString("de-DE")} €. Dein Eigenanteil: {Math.round(kosten).toLocaleString("de-DE")} €.</p>

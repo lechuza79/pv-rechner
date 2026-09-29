@@ -478,6 +478,10 @@ export const BAUSTEINE: Baustein[] = [
     zweck: "Running heating cost comparison reused from the PV technical result.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
   },
+  {datei:"components/PvConsumerSection.tsx",name:"PvConsumerSection",zweck:"Gemeinsame Verbraucherauswahl mit Vorschau, Vergleich und Übernahme für Rechner und Ratgeber.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["FlowNav", "Modal", "KlebenderKnopf", "InfoTooltip", "AffiliateCarousel", "PvConsumerComparison", "PvConsumerFields", "ResultChoiceHeader", "MetricValue", "PvCoolingEditor"]},
+  {datei:"components/PvConsumerExample.tsx",name:"PvConsumerExample",zweck:"Eigenständige Beispielrechnung mit Rechengrundlagen und Übergabe in den PV-Frageflow.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["PvConsumerFields", "ResultSettings", "PvConsumerSection", "PvPlantFields"]},
+  {datei:"components/PvCoolingEditor.tsx",name:"PvCoolingEditor",zweck:"Gemeinsamer Editor für den Kühlstrombedarf in Verbraucherfragen und Ergebniseinstellungen.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["KlimaDetailModal"]},
+  {datei:"components/PvPlantFields.tsx",name:"PvPlantFields",zweck:"Identische Anlagenfelder für Rechengrundlagen im Rechner und in redaktionellen Beispielen.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["InlineEdit"]},
   {
     datei: "components/PvConsumerComparison.tsx", name: "PvConsumerComparison",
     zweck: "Separate heating and driving energy comparisons for existing and staged PV consumers.",

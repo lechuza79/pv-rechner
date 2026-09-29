@@ -210,3 +210,30 @@ open their existing editors. Hide unrelated temporary notices while that footer
 is active. Use MetricValue for the benefit amount and OptionalDisclosure with
 heading/description for comparison headers. AffiliateCarousel.desktopSlides sets
 the visible desktop count; navigation requires actual content overflow.
+
+## Reusable consumer and offer sections (29 September 2026)
+
+`PvConsumerSection` owns consumer drafts, remove/restore, comparison charts and
+explicit application. `PVRechner` supplies its applied values and calculation
+basis; `PvConsumerExample` supplies an editable article example and a handover
+into the regular question flow (`direkt=1&eingabe=1`). Articles import the example,
+never the full calculator. The section owns its styles and uses instance-specific
+IDs. `PvPlantFields` and `PvCoolingEditor` are shared with the result settings.
+The consumer calculation lives in `lib/pv-consumer-model.ts`; card
+benefits and annual/fossil comparisons retain their distinct meanings.
+
+The editorial variant keeps the introduction outside the box, uses white cards,
+shows the basis through `ResultSettings embedded`, and ends with methodology and
+“Genau ausrechnen”. It has no apply footer. Inspect the real example in the
+component gallery; do not recreate its markup in individual articles.
+
+`BalkonAngebot` also works outside the calculator. Supply the same `basis` and an
+`example.description` for an article example. Its product styles travel with the
+component. Ranking, prices, product details and partner disclosures remain shared;
+example wording never implies the visitor has already supplied personal inputs.
+
+The HTW cap used for financial self-consumption keeps its interpolated precision.
+`calcAutarkie` still rounds for display/reference callers. Rounding before the
+financial cap caused downward jumps when a small cooling load was added; the
+coherence test now checks every 1 kWh increment in that range. Model assumptions
+and the HTW grid are unchanged.

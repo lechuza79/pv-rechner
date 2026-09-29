@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import KlimaDetailModal from "../../../../components/KlimaDetailModal";
+import KlimaDetailModal from "./KlimaDetailModal";
 
 /** Cooling details update the surrounding settings draft, never the result. */
 export default function PvCoolingEditor({rooms,kwh,plz,price,onApply}:{rooms:number;kwh:number|null;plz:string;price:number;onApply:(kwh:number)=>void}) {

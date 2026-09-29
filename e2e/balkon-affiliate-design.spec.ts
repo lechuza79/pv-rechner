@@ -44,6 +44,8 @@ for (const width of [375, 569, 1280]) test(`shared affiliate design at ${width}p
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   if (width === 569) {
     await first.locator('.wp-product-image').scrollIntoViewIfNeeded();
+    // Wait for the image to settle after scrolling back from the disclosure.
+    await first.locator('.wp-product-image').click({ trial: true });
     const before = await first.boundingBox();
     const frame = await first.locator('.wp-product-image').boundingBox();
     const y = frame!.y + frame!.height / 2;

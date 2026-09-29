@@ -313,3 +313,10 @@ for(const {kind,name} of consumerKinds) test(`adding then removing new ${kind} c
   await expect(card.getByRole('button',{name:`${name}: Ergänzen`,exact:true})).toBeVisible();
   await expect(page.locator('.wp-result-summary')).toHaveText(result);
 });
+
+test('an editorial handover opens the question flow with its chosen configuration', async ({page}) => {
+  await page.goto('/photovoltaik-rechner?direkt=1&eingabe=1&a=4&ck=10&sk=0&p=2&n=1&vb=3800&wp=geplant&ea=geplant&km=20000&kl=nein', {waitUntil:'domcontentloaded'});
+  await expect(page.getByRole('heading',{name:'Anlage',exact:true})).toBeVisible();
+  await expect(page.locator('#pv-ueberblick')).toHaveCount(0);
+  await expect(page.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','false');
+});

@@ -1,6 +1,8 @@
 "use client";
+import "./calculator/result-design.css";
+import "./balkon-angebot.css";
 import ResultChoiceHeader from "./ResultChoiceHeader";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import Image from "next/image";
 import { trackEvent } from "../lib/analytics";
 import { useBalkonAngebote, type BalkonKatalog } from "../lib/use-balkon-angebote";
@@ -298,7 +300,8 @@ function Alternative({ eintrag }: { eintrag: BewertetesAngebot }) {
   );
 }
 
-export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, design, katalog, ratedOffers, selectedOfferId, onCalculate, onFundingDetails }: { onFundingDetails?: () => void; selectedOfferId?: string; onCalculate?: (offer: ShopAngebot) => void; basis: AngebotBasis; foerderungEuro?: number; funding?: BalkonFundingContext; design?: "result"; katalog?: BalkonKatalog; ratedOffers?: BewertetesAngebot[] }) {
+export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, design, example, katalog, ratedOffers, selectedOfferId, onCalculate, onFundingDetails }: { onFundingDetails?: () => void; selectedOfferId?: string; onCalculate?: (offer: ShopAngebot) => void; basis: AngebotBasis; foerderungEuro?: number; funding?: BalkonFundingContext; design?: "result"; example?: { description: string }; katalog?: BalkonKatalog; ratedOffers?: BewertetesAngebot[] }) {
+  const disclosureId = useId();
   const ownCatalogue = useBalkonAngebote(katalog === undefined);
   const { daten, fehlgeschlagen } = katalog ?? ownCatalogue;
 
@@ -309,8 +312,8 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, desi
 
   // A failed price fetch must not look like an empty product catalogue.
   if (fehlgeschlagen || !daten || !empfehlung) {
-    if (design !== "result") return null;
-    return <div className="bkw-offer-result">
+    if (design !== "result" && !example) return null;
+    return <div className="bkw-offer-result wp-input-page">
       <div className="wp-section-heading"><h2>Passende Sets zu kaufen</h2></div>
       <p className="bkw-offer-intro" role="status">{fehlgeschlagen
         ? "Die aktuellen Shopangebote konnten gerade nicht geladen werden. Deine Berechnung funktioniert trotzdem."
@@ -320,15 +323,15 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, desi
 
   const alle = [empfehlung.beste, ...empfehlung.alternativen];
 
-  if (design === "result") return <div className="bkw-offer-result">
+  if (design === "result" || example) return <div className="bkw-offer-result wp-input-page">
     <div className="wp-section-heading"><h2>Passende Sets zu kaufen</h2></div>
-    <p className="bkw-offer-intro">Diese Sets sind mit deinen Angaben durchgerechnet und mit Blick auf {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen. Mögliche Förderung wird für jedes Set einzeln berücksichtigt.{!!basis.additionalCosts && <> Deine zusätzlichen Kosten von {basis.additionalCosts.toLocaleString("de-DE")} € sind jeweils eingerechnet.</>}</p>
+    <p className="bkw-offer-intro">{example ? <>Beispielrechnung: {example.description} Die Sets werden über {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen.</> : <>Diese Sets sind mit deinen Angaben durchgerechnet und mit Blick auf {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen. Mögliche Förderung wird für jedes Set einzeln berücksichtigt.{!!basis.additionalCosts && <> Deine zusätzlichen Kosten von {basis.additionalCosts.toLocaleString("de-DE")} € sind jeweils eingerechnet.</>}</>}</p>
     <AffiliateCarousel label="Weitere Balkonkraftwerke">
       {alle.map((entry, index) => <li key={entry.angebot.id} className="wp-geraete-kachel"><ResultProduct entry={entry} recommended={index === 0} selected={entry.angebot.id === selectedOfferId} onCalculate={onCalculate} onFundingDetails={onFundingDetails} date={daten.abgerufenIso} /></li>)}
     </AffiliateCarousel>
     <p className="bkw-offer-price-note">Preisstand {datumKurz(daten.abgerufenIso)} · Maßgeblich sind Preis und Versandbedingungen im Shop.</p>
-    <AffiliateTrust id="bkw-produktauswahl"
-      promise="Die Empfehlungen sind nach dem berechneten Vorteil für deinen Bedarf ausgewählt – nicht nach unserer Provision."
+    <AffiliateTrust id={disclosureId}
+      promise={example ? "Die Reihenfolge folgt dem berechneten Vorteil in dieser Beispielrechnung – nicht unserer Provision. Für deinen Haushalt kann ein anderes Set passen." : "Die Empfehlungen sind nach dem berechneten Vorteil für deinen Bedarf ausgewählt – nicht nach unserer Provision."}
       disclosure={<>Solar Check nimmt am Partnerprogramm von {daten.angebote[0]?.haendlerName} teil. Die Sets stammen von unserem Partner {daten.angebote[0]?.haendlerName}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</>}
     />
   </div>;

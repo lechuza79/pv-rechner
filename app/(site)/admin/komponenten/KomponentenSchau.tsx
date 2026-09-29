@@ -1,4 +1,7 @@
 "use client";
+import PvConsumerExample from "../../../../components/PvConsumerExample";
+import BalkonAngebot from "../../../../components/BalkonAngebot";
+import { DEFAULT_BALKON_CONFIG } from "../../../../lib/balkon-config";
 import { SCENARIOS } from "../../../../lib/constants";
 
 import { useState } from "react";
@@ -1000,12 +1003,21 @@ export default function KomponentenSchau() {
         );
       })}
 
+      <section id="pv-consumer-example" style={{ maxWidth: 820, margin: `0 auto ${space.huge}` }}>
+        <PvConsumerExample />
+      </section>
+      <section id="balkon-offer-example" style={{ maxWidth: 820, margin: `0 auto ${space.huge}` }}>
+        <BalkonAngebot
+          example={{ description: "3.800 kWh Haushaltsstrom im Jahr, teilweise tagsüber zu Hause, Südbalkon." }}
+          basis={{ orientationId: DEFAULT_BALKON_CONFIG.defaultOrientation, presenceId: DEFAULT_BALKON_CONFIG.defaultPresence, haushaltKwh: 3800, specificYield: DEFAULT_BALKON_CONFIG.specificYield, stromPrice: DEFAULT_BALKON_CONFIG.stromPrice }}
+        />
+      </section>
+
       <div id="gruppe-zusammensetzungen" style={{ marginBottom: space.huge }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
           <h2 style={{ margin: 0 }}>Zusammensetzungen</h2>
           <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-            Kennen ein Fach und sind deshalb nicht allgemein einsetzbar — hier ohne Beispiel, weil eines
-            ohne echte Daten eine Attrappe wäre.
+            Verbinden gemeinsame Bausteine mit Fachlogik. Die folgenden Beispiele sind vollständig bedienbar.
           </span>
         </div>
         <div

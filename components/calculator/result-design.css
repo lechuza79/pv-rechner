@@ -842,3 +842,8 @@ body .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is
 @media(min-width:1024px){body .wp-product-carousel-frame[data-desktop-slides] .wp-geraete-kachel{flex:0 0 calc((100% - (var(--carousel-desktop-slides) - 1) * var(--carousel-gap)) / var(--carousel-desktop-slides))}}
 
 .wp-result-actionbar[data-sticky=false]{position:relative;top:auto}
+
+/* Compact settings for standalone editorial examples. */
+.wp-result-settings-basis{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-sm) var(--space-lg);margin-block:var(--space-xl);font-size:var(--font-size-small)}
+.wp-result-settings-basis p{flex:1 1 240px;margin:0}
+body .wp-result-settings-basis .wp-result-details-link{color:var(--color-text-primary);font-size:inherit;margin:0}
