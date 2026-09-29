@@ -33,6 +33,7 @@ import PvConsumerFields, {consumersComplete, type PvConsumerValues} from "../../
 import OptionCard from "../../../components/OptionCard";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
+import StandortPrompt from "../../../components/StandortPrompt";
 import Toast from "../../../components/Toast";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX } from "../../../lib/dach-ertrag";
 import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
@@ -341,6 +342,7 @@ export default function PVRechner({
       if (!coords) { if (request === yieldRequest.current) setPlzLoading(false); return false; }
       const [lat, lon] = coords;
       const res = await fetch(`/api/pvgis?lat=${lat}&lon=${lon}&plzPrefix=${inputPlz.slice(0, 2)}`);
+      if (!res.ok) throw new Error("Yield unavailable");
       const data = await res.json();
       if (request !== yieldRequest.current) return false;
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
@@ -1130,15 +1132,17 @@ export default function PVRechner({
         )}
 
         {/* ── RESULT ── */}
-        <Toast
-          alignTo={resultCardRef} tone="awareness" open={plzToast && intro.progress === 1 && !hasConsumerAddons}
+        <StandortPrompt alignTo={resultCardRef} open={plzToast && intro.progress === 1 && !hasConsumerAddons}
           onClose={() => setPlzToast(false)}
-          onClick={() => {setLocationOpen(true);setPlzToast(false);requestAnimationFrame(()=>document.getElementById("pv-einstellungen")?.scrollIntoView({behavior:"smooth"}));}}
-        >
-          {fundingActive
-            ? "Standort prüfen für einen genaueren Ertrag"
-            : "Vielleicht gibt es Förderung an deinem Wohnort"}
-        </Toast>
+          message={fundingActive ? "Standort prüfen für einen genaueren Ertrag" : "Vielleicht gibt es Förderung an deinem Wohnort"}
+          onSave={async place => {
+            const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags, () => fetchPvgis(place.plz, false));
+            if (!programs) throw new Error("Location could not be applied");
+            setAppliedPrograms(programs); setAppliedAgs(place.ags); setPlz(place.plz);
+            setCheckedPlace(place); setPendingPlace(null); setLocationDirty(false);
+            setFundingEnabled(true); setFundingDraft(null); setFundingError(null);
+            setPlzToast(false); revealUpdatedResult();
+          }} />
 
         {/* Folge einer übersprungenen Frage. Neutral statt blau: das ist eine
             Auskunft, keine Handlungsaufforderung — und sie verschwindet von

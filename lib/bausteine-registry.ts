@@ -296,6 +296,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons"],
   },
 
+  {
+    datei: "components/StandortPrompt.tsx",
+    name: "StandortPrompt",
+    zweck: "Standort direkt im Rechner-Hinweis suchen und erst beim Speichern übernehmen.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Toast", "StandortField"],
+  },
+
   // ─── Rückmeldung ───────────────────────────────────────────────────────────
   {
     datei: "components/StatusBadge.tsx",

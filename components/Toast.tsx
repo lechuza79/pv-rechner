@@ -18,6 +18,8 @@ export default function Toast({
   alignTo,
   onClose,
   onClick,
+  closeDisabled = false,
+  expanded = false,
   children,
   /** Millisekunden bis zum Selbstschließen. 0 = bleibt stehen. */
   autoHideMs = 0,
@@ -27,6 +29,8 @@ export default function Toast({
   /** Match the horizontal bounds and corner radius of a content card. */
   alignTo?: RefObject<HTMLElement | null>;
   onClose: () => void;
+  closeDisabled?: boolean;
+  expanded?: boolean;
   /** Optional: Klick auf den Toast führt irgendwohin (z. B. Feld fokussieren). */
   onClick?: () => void;
   children: React.ReactNode;
@@ -97,14 +101,17 @@ export default function Toast({
         fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
         boxSizing: "border-box",
         ...(alignTo ? alignment : {}),
+        ...(expanded ? { borderRadius: v("--radius-lg") } : {}),
       }}
     >
-      <span style={{ flex: 1 }}>{children}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
         aria-label="Schließen"
+        disabled={closeDisabled}
         style={{
           border: "none", background: "transparent", color: foreground,
+          alignSelf: expanded ? "flex-start" : undefined,
           width: 32, height: 32, flexShrink: 0, display: "grid", placeItems: "center",
           borderRadius: v("--radius-pill"), cursor: "pointer", padding: 0, opacity: 0.85,
         }}

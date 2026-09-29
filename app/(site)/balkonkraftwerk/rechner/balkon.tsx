@@ -20,7 +20,7 @@ import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } fro
 import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
-import Toast from "../../../../components/Toast";
+import StandortPrompt from "../../../../components/StandortPrompt";
 import Switch from "../../../../components/Switch";
 import { AccordionField } from "../../../../components/AccordionField";
 import ResultOverview from "../../../../components/calculator/ResultOverview";
@@ -176,27 +176,25 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
 
   const yieldRequest = useRef(0);
   const fetchPvgis = useCallback(async (inputPlz: string) => {
-    if (!/^\d{5}$/.test(inputPlz)) return;
+    if (!/^\d{5}$/.test(inputPlz)) return false;
     const request = ++yieldRequest.current;
     setPlzLoading(true);
     try {
       const plzRes = await fetch("/plz.json");
+      if (!plzRes.ok) return false;
       const plzData: Record<string, [number, number]> = await plzRes.json();
       const coords = plzData[inputPlz];
-      if (coords) {
-        const res = await fetch(`/api/pvgis?lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${inputPlz.slice(0, 2)}`);
-        const data = await res.json();
-        if (request !== yieldRequest.current) return;
-        if (typeof data.annual === "number") setSpecificYield(data.annual);
-        // Monatsprofil übernehmen (wie im PV-Rechner) — ohne das gäbe es kein
-        // Sommer/Winter und der Standort bliebe bei gedeckelten Sets wirkungslos.
-        if (data.monthly && data.monthly.length === 12) setMonthlyYield(data.monthly);
-        // Nur bestätigen, wenn die PLZ auch aufgelöst wurde — sonst würde
-        // "Standort übernommen" angezeigt, während der Bundesschnitt gilt.
-        setPlzConfirmed(true);
-      }
-    } catch { /* Fallback bleibt */ }
-    if (request === yieldRequest.current) setPlzLoading(false);
+      if (!coords) return false;
+      const res = await fetch(`/api/pvgis?lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${inputPlz.slice(0, 2)}`);
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (request !== yieldRequest.current || !Number.isFinite(data.annual) || data.annual < 700 || data.annual > 1400) return false;
+      setSpecificYield(data.annual);
+      if (data.monthly?.length === 12) setMonthlyYield(data.monthly);
+      setPlzConfirmed(true);
+      return true;
+    } catch { return false; }
+    finally { if (request === yieldRequest.current) setPlzLoading(false); }
   }, []);
 
   // Standort aus der Adresse — der Weg von der Förder-Übersicht hierher.
@@ -581,14 +579,14 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
           </div>
         )}
 
-        <Toast alignTo={resultCardRef} tone="awareness" open={plzToast && intro.progress === 1} onClose={() => setPlzToast(false)}>
-          <span className="wp-funding-toast-content"><span>Vielleicht gibt es Förderung<br />an deinem Wohnort</span>
-            <button type="button" onClick={() => {
-              setSettingsSection("location"); setPlzToast(false);
-              document.getElementById("bkw-einstellungen")?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}>Förderung prüfen</button>
-          </span>
-        </Toast>
+        <StandortPrompt alignTo={resultCardRef} open={plzToast && intro.progress === 1} onClose={() => setPlzToast(false)}
+          onSave={async place => {
+            const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags, () => fetchPvgis(place.plz));
+            if (!programs) throw new Error("Location could not be applied");
+            setAppliedFunding({ programs, enabled: fundingEnabled, wohnform: wohnform ?? undefined, locationKnown: true });
+            setSelectedLocationAgs(place.ags); setPlz(place.plz); setCheckedLocation(place);
+            setPendingPlace(null); setLocationSearchDirty(false); setPlzToast(false); revealUpdatedResult();
+          }} />
 
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (

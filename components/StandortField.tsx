@@ -26,7 +26,7 @@ interface StandortFieldProps {
 export default function StandortField({
   plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort", submitLabel, searchPlaces, onPlaceSelect, onSearchChange, checkedPlace,
 }: StandortFieldProps) {
-  if (searchPlaces && onPlaceSelect) return <PlaceField plz={plz} loading={loading} onPick={onPlaceSelect} onSearchChange={onSearchChange} checkedPlace={checkedPlace} />;
+  if (searchPlaces && onPlaceSelect) return <PlaceField plz={plz} loading={loading} onPick={onPlaceSelect} onSearchChange={onSearchChange} checkedPlace={checkedPlace} submitLabel={submitLabel} />;
   return (
     // flexWrap/rowGap + flexShrink: auf schmalen Schirmen rutscht das Feld lieber in
     // die naechste Zeile, als gequetscht zu werden (Fix aus dem PV-Rechner, beim
@@ -68,7 +68,7 @@ export default function StandortField({
 }
 
 /** Reuses the site search and its municipality/postcode resolution. */
-function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace }: { checkedPlace?: { plz: string; ags: string; name: string } | null; onSearchChange?: () => void; plz: string; loading: boolean; onPick: (place: { plz: string; ags: string; name: string }) => void | Promise<void> }) {
+function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submitLabel = "Förderung prüfen" }: { submitLabel?: string; checkedPlace?: { plz: string; ags: string; name: string } | null; onSearchChange?: () => void; plz: string; loading: boolean; onPick: (place: { plz: string; ags: string; name: string }) => void | Promise<void> }) {
   const id = useId();
   const [query, setQuery] = useState(checkedPlace ? `${checkedPlace.plz} ${checkedPlace.name}` : plz);
   const [hits, setHits] = useState<{ plz: string; ags: string; name: string; context: string }[]>([]);
@@ -119,7 +119,7 @@ function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace }: { ch
         readOnly={checked} disabled={checking || loading} onChange={event => reset(event.target.value)} />
       {query && <button className={styles.clear} type="button" aria-label="Standort löschen" disabled={checking || loading} onClick={() => { reset(""); document.getElementById(id)?.focus(); }}><IconClose size={iconSizes.sm} /></button>}
       </div>
-      <button type="submit" disabled={!selected || loading || checking || checked}>Förderung prüfen</button>
+      <button type="submit" disabled={!selected || loading || checking || checked}>{checking || loading ? "Wird gespeichert …" : submitLabel}</button>
     </form>
     {searching && <p role="status">Orte werden gesucht …</p>}
     {message && <p role="status">{message}</p>}

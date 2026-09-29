@@ -39,6 +39,7 @@ import DataSourcesSection from "../../../../components/DataSourcesSection";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
+import StandortPrompt from "../../../../components/StandortPrompt";
 import StandortField from "../../../../components/StandortField";
 import StandNoteView from "../../../../components/StandNoteView";
 import { AuswahlSkipper } from "../../../../components/AuswahlSkipper";
@@ -402,6 +403,17 @@ function FlowNavBeispiel() {
       />
     </div>
   );
+}
+
+function StandortPromptBeispiel() {
+  const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState("");
+  return <div>
+    <button type="button" onClick={() => setOpen(true)}>Standort-Hinweis öffnen</button>
+    {place && <p>Gewählter Beispielstandort: {place}</p>}
+    <StandortPrompt open={open} onClose={() => setOpen(false)} message="Standort im Hinweis eingeben"
+      onSave={async selected => { setPlace(`${selected.plz} ${selected.name}`); }} />
+  </div>;
 }
 
 function StandortBeispiel() {
@@ -775,6 +787,7 @@ const BEISPIELE: Record<string, Beispiel> = {
   FlowNav: FlowNavBeispiel,
   FlowSchritte: FlowSchritteBeispiel,
   StandortField: StandortBeispiel,
+  StandortPrompt: StandortPromptBeispiel,
   AuswahlSkipper: SkipperBeispiel,
   ErrorBoundary: AbsturzBeispiel,
   Icons: IconsBeispiel,

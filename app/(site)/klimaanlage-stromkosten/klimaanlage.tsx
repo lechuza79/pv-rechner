@@ -1,4 +1,5 @@
 "use client";
+import StandortPrompt from "../../../components/StandortPrompt";
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 
 import { useState, useMemo, useCallback } from "react";
@@ -95,6 +96,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
   const [plzLoading, setPlzLoading] = useState(false);
+  const [locationPromptDismissed, setLocationPromptDismissed] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [cdhSet, setCdhSet] = useState<CdhModes>(() => ({
     avg5: CFG.cdhNational,
@@ -157,7 +159,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
   const fetchCooling = useCallback(async (inputPlz: string) => {
-    if (!/^\d{5}$/.test(inputPlz)) return;
+    if (!/^\d{5}$/.test(inputPlz)) return false;
     setPlzLoading(true);
     try {
       const coords = await coordsForPlz(inputPlz);
@@ -171,15 +173,18 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         fetch(`/api/cooling-degree?${qs}`),
         fetchHeatwave(coords),
       ]);
+      if (!res.ok) return false;
       const data = await res.json();
+      if (![data.avg5, data.lastSummer, data.projection].every(Number.isFinite)) return false;
       if (typeof data.avg5 === "number") {
         setCdhSet({ avg5: data.avg5, lastSummer: data.lastSummer, projection: data.projection });
         setCdhSource(data.source);
       }
       setHeatwave(hw);
       setPlzConfirmed(true);
-    } catch { /* Fallback bleibt */ }
-    setPlzLoading(false);
+      return true;
+    } catch { return false; }
+    finally { setPlzLoading(false); }
   }, []);
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
@@ -428,6 +433,14 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         )}
 
         {/* ── RESULT ── */}
+        <StandortPrompt open={isResult && !plzConfirmed && !locationPromptDismissed}
+          message="Mit deinem Standort rechnen wir mit dem Klima vor Ort."
+          onClose={() => setLocationPromptDismissed(true)}
+          onSave={async place => {
+            if (!await fetchCooling(place.plz)) throw new Error("Location could not be applied");
+            setPlz(place.plz); setLocationPromptDismissed(true);
+          }} />
+
         {isResult && (
           <div className="fu">
             {/* Hitzewellen-Banner (akut, aus 16-Tage-Vorhersage) */}

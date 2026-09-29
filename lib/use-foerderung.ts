@@ -31,9 +31,19 @@ export type Foerderung = {
   laedt: boolean;
   /** PLZ auflösen — nach jeder PLZ-Eingabe aufrufen. */
   ausPlz: (plz: string, preferredAgs?: string) => Promise<boolean>;
+  /** Save a resolved place only after dependent calculator data is ready. */
+  uebernehmeOrt: (plz: string, ags: string, prepare?: () => Promise<boolean>) => Promise<FundingProgram[] | null>;
   /** Bei mehrdeutiger PLZ: Ort wählen. */
   waehleOrt: (ags: string) => void;
 };
+
+async function lookupCandidates(plz: string): Promise<FoerderKandidat[]> {
+  const response = await fetch(`/api/funding?plz=${plz}`);
+  if (!response.ok) throw new Error("Funding lookup unavailable");
+  const data = await response.json();
+  if (!Array.isArray(data.candidates)) throw new Error("Invalid funding response");
+  return data.candidates;
+}
 
 export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string | null): Foerderung {
   const [kandidaten, setKandidaten] = useState<FoerderKandidat[] | null>(null);
@@ -51,10 +61,7 @@ export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string |
     if (!/^\d{5}$/.test(plz)) return false;
     setLaedt(true);
     try {
-      const res = await fetch(`/api/funding?plz=${plz}`);
-      if (!res.ok) throw new Error("Funding lookup unavailable");
-      const data = await res.json();
-      const gefunden: FoerderKandidat[] = Array.isArray(data.candidates) ? data.candidates : [];
+      const gefunden = await lookupCandidates(plz);
       setKandidaten(gefunden);
       const chosen = gefunden.find(place => place.ags === preferredAgs) ?? (gefunden.length === 1 ? gefunden[0] : undefined);
       if (chosen) {
@@ -73,6 +80,22 @@ export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string |
     setLaedt(false);
     return true;
   }, []);
+
+  const uebernehmeOrt = useCallback(async (plz: string, selectedAgs: string, prepare?: () => Promise<boolean>) => {
+    if (!/^\d{5}$/.test(plz)) return null;
+    setLaedt(true);
+    try {
+      const places = await lookupCandidates(plz);
+      const place = places.find(candidate => candidate.ags === selectedAgs);
+      if (!place || !Array.isArray(place.programs)) return null;
+      if (prepare && !await prepare()) return null;
+      setKandidaten(places);
+      setAgs(place.ags);
+      setAlle(place.programs);
+      return programmeFuerTechnik(place.programs, technik);
+    } catch { return null; }
+    finally { setLaedt(false); }
+  }, [technik]);
 
   const waehleOrt = useCallback((gewaehlt: string) => {
     setAgs(gewaehlt);
@@ -98,5 +121,5 @@ export function useFoerderung(technik: FundingTechnik, seedProgrammId?: string |
     return () => { abgebrochen = true; };
   }, [seedProgrammId]);
 
-  return { programme, kandidaten, ags, laedt, ausPlz, waehleOrt };
+  return { programme, kandidaten, ags, laedt, ausPlz, uebernehmeOrt, waehleOrt };
 }

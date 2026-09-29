@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
+import StandortPrompt from "../../../components/StandortPrompt";
 import Toast from "../../../components/Toast";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
@@ -217,6 +218,7 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState("");
   const foerderQuelle = useFoerderung("waermepumpe");
+  const [locationPromptDismissed, setLocationPromptDismissed] = useState(false);
   const [checkedPlz, setCheckedPlz] = useState("");
   const lookupFunding = (value: string) => {
     setCheckedPlz(value);
@@ -1592,7 +1594,15 @@ export default function Waermepumpe({
                 </>}
               </div>
             </Modal>
-            <Toast alignTo={overviewRef} tone="awareness" open={isResult && situation === "bestand" && !fundingConfirmed && resultIntro.progress === 1 && !fundingPromptDismissed && !fundingCheckOpen && !fundingNotice} onClose={() => setFundingPromptDismissed(true)}>
+            <StandortPrompt alignTo={overviewRef}
+              open={isResult && situation === "bestand" && !checkedPlz && !locationPromptDismissed && resultIntro.progress === 1 && !fundingCheckOpen && !fundingNotice}
+              onClose={() => setLocationPromptDismissed(true)}
+              onSave={async place => {
+                const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags);
+                if (!programs) throw new Error("Location could not be applied");
+                setPlz(place.plz); setCheckedPlz(place.plz); setLocationPromptDismissed(true); showUpdatedResult();
+              }} />
+            <Toast alignTo={overviewRef} tone="awareness" open={isResult && (!!checkedPlz || locationPromptDismissed) && situation === "bestand" && !fundingConfirmed && resultIntro.progress === 1 && !fundingPromptDismissed && !fundingCheckOpen && !fundingNotice} onClose={() => setFundingPromptDismissed(true)}>
               <span className="wp-funding-toast-content">Eventuell mehr Förderung möglich
                 <button type="button" onClick={openFundingCheck}>Fördercheck machen</button>
               </span>
