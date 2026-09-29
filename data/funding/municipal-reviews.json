@@ -11118,12 +11118,13 @@
   {
     "regionId": "03255023",
     "name": "Holzminden",
-    "checkedAt": "2026-09-19T18:15:00Z",
+    "checkedAt": "2026-09-29T14:05:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „SolarFair Holzminden Bürgerstiftung Balkonkraftwerk 200 Euro“ (19.09.2026)",
-      "holzminden.de: Seite SolarFair und verlinkte Förderrichtlinie im Original gelesen; Menü Umwelt (SolarFair, Klimaschutz, LED-Umrüstung, Energiebericht)"
+      "holzminden.de: Seite SolarFair und verlinkte Förderrichtlinie im Original gelesen; Menü Umwelt (SolarFair, Klimaschutz, LED-Umrüstung, Energiebericht)",
+      "29.09.2026 Wiederprüfung wegen neuer Quellen: SolarFair-Seite nennt weiter 200 € und „In den Jahren 2025 und 2026 gibt es Geld für bis zu 100 Anlagen“; kein Hinweis auf Ausschöpfung. Ergebnis unverändert."
     ],
     "evidence": [
       {
@@ -11133,6 +11134,14 @@
       {
         "url": "https://www.holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0",
         "finding": "Förderrichtlinie SolarFair gelesen: 200 € je Balkonkraftwerk, nur Wohngeld-/Bürgergeld-Beziehende mit Erstwohnsitz im Stadtgebiet und Ökostromtarif, Anschaffung nach 01.07.2025, MaStR-Registrierung, je Zähler eine Förderung, je 50 Anlagen 2025/2026 (nicht genutzte Plätze aus 2025 gehen ins Jahr 2026 über), keine Übertragung nach 2027, kein Rechtsanspruch; finanziert von der Stiftung „Vermächtnis Holzmindener Bürger“."
+      },
+      {
+        "url": "https://www.holzminden.de/bauen-wirtschaft/umwelt/solarfair",
+        "finding": "29.09.2026: SolarFair-Seite: 200 € je Balkonkraftwerk für Wohngeld-/Bürgergeld-Beziehende, bis zu 100 Anlagen 2025/2026; deckungsgleich mit Katalog."
+      },
+      {
+        "url": "https://www.holzminden.de/portal/seiten/solarfair-900000490-25610.html?brotID=900000333&naviID=900000333&rubrik=900000006",
+        "finding": "29.09.2026: Alte Portal-Adresse derselben SolarFair-Seite, identischer Inhalt."
       }
     ],
     "sources": [
@@ -11141,6 +11150,18 @@
         "disposition": "reviewed",
         "reason": "Förderrichtlinie SolarFair im Original gelesen und als Programm holzminden-solarfair aufgenommen.",
         "evidenceUrl": "https://www.holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0"
+      },
+      {
+        "url": "holzminden.de/bauen-wirtschaft/umwelt/solarfair",
+        "disposition": "reviewed",
+        "reason": "SolarFair-Seite: 200 € je Balkonkraftwerk für Wohngeld-/Bürgergeld-Beziehende, bis zu 100 Anlagen 2025/2026; deckungsgleich mit Katalog.",
+        "evidenceUrl": "https://www.holzminden.de/bauen-wirtschaft/umwelt/solarfair"
+      },
+      {
+        "url": "holzminden.de/portal/seiten/solarfair-900000490-25610.html?brotID=900000333&naviID=900000333&rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Alte Portal-Adresse derselben SolarFair-Seite, identischer Inhalt.",
+        "evidenceUrl": "https://www.holzminden.de/portal/seiten/solarfair-900000490-25610.html?brotID=900000333&naviID=900000333&rubrik=900000006"
       }
     ],
     "outcome": "programme-geprueft",
@@ -39853,12 +39874,13 @@
   {
     "regionId": "09572121",
     "name": "Eckental",
-    "checkedAt": "2026-09-20T00:25:05Z",
-    "recheckAt": "2026-12-19T08:00:00Z",
+    "checkedAt": "2026-09-29T14:05:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "Übersichtsseite des Landkreises Erlangen-Höchstadt zu den Förderprogrammen seiner Gemeinden (20.09.2026 gelesen) — HINWEISGEBER, nicht Quelle: Sie sagt selbst, sie erhebe keinen Anspruch auf Vollständigkeit, und war bei Spardorf und Uttenreuth messbar veraltet. Jede Zahl an der Richtlinie der Gemeinde selbst belegt.",
-      "eckental.de/photovoltaikanlagen/ gelesen; verlinkte Richtlinie (PDF, reiner Scan) seitenweise als Bild gelesen"
+      "eckental.de/photovoltaikanlagen/ gelesen; verlinkte Richtlinie (PDF, reiner Scan) seitenweise als Bild gelesen",
+      "29.09.2026 Wiederprüfung wegen neuer Quelle: Energienutzungsplan (181 S.) durchsucht, enthält kein Gemeindeprogramm; Ergebnis unverändert."
     ],
     "evidence": [
       {
@@ -39868,6 +39890,10 @@
       {
         "url": "https://eckental.de/wp-content/uploads/2024/09/2023-Richtlinie-zur-Foerderung-von-Stecker-Solargeraeten-bzw.-Balkonkraftwerken-in-Eckental.pdf",
         "finding": "Richtlinie vom 17.10.2023, Nr. 11: „Diese Richtlinie tritt am 01.01.2024 in Kraft“. Kein Außerkrafttreten. Nr. 6: „Der Zuschuss beträgt 50,00 Euro je Eckentaler Haushalt, der mit einem Stecker-Solargerät bzw. Balkonkraftwerk ausgerüstet wird, unabhängig davon, wie viele Module betrieben werden“. Nr. 4 a: Mittel müssen im Antragsjahr noch ausreichen. Nr. 5: keine Geräte mit Rechnungsdatum vor dem 01.01.2024, keine gewerblich genutzten Gebäude. Nr. 8: Antrag mit Rechnung und Foto der montierten Anlage, also NACH dem Kauf. Die Präambel nennt 5.000 € Fördermittel für das Jahr 2024."
+      },
+      {
+        "url": "https://www.eckental.de/wp-content/uploads/2024/08/enp_eckental_2023-10-25.pdf",
+        "finding": "29.09.2026: Energienutzungsplan 2023 (Potenzialstudie), nennt nur Bundes-/EEG-Förderung; kein gemeindlicher Zuschuss."
       }
     ],
     "outcome": "programme-geprueft",
@@ -39884,6 +39910,12 @@
         "disposition": "reviewed",
         "reason": "Die Photovoltaik-Seite und die dort verlinkte Balkon-Richtlinie wurden am 20.09.2026 gelesen. Die zweite Adresse betrifft einen Zuschuss zum öffentlichen Personennahverkehr und gehört nicht zu diesem Katalog.",
         "evidenceUrl": "https://eckental.de/photovoltaikanlagen/"
+      },
+      {
+        "url": "eckental.de/wp-content/uploads/2024/08/enp_eckental_2023-10-25.pdf",
+        "disposition": "reviewed",
+        "reason": "Energienutzungsplan 2023 (Potenzialstudie), nennt nur Bundes-/EEG-Förderung; kein gemeindlicher Zuschuss.",
+        "evidenceUrl": "https://www.eckental.de/wp-content/uploads/2024/08/enp_eckental_2023-10-25.pdf"
       }
     ]
   },
@@ -61638,15 +61670,16 @@
   {
     "regionId": "09779131",
     "name": "Donauwörth",
-    "checkedAt": "2026-09-25T05:12:00Z",
-    "recheckAt": "2026-12-23T08:00:00Z",
+    "checkedAt": "2026-09-29T14:05:00Z",
+    "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
     "conclusion": "Ein Programm im Umfang, als beendet aufgenommen: „Förderung Kleinst-Photovoltaikanlage“ (donauwoerth-kleinst-pv) — 37,50 € (ein Modul) bzw. 75 € (zwei Module) für Balkonkraftwerke; Formular als abgelaufen geführt, in der städtischen Förderübersicht nicht mehr enthalten. Kein laufender Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; der Landkreis hat kein eigenes Programm.",
     "searches": [
       "Antragsformular Kleinst-PV im Volltext gelesen (24.09.2026, Datei „Programm_abgelaufen“)",
       "Förderübersicht „Umwelt & Energie – Förderungen“ der Stadt gelesen (25.09.2026)",
-      "Websuche nach Laufzeit und Beträgen (25.09.2026): Presse nennt andere Beträge früherer Runden, kein Enddatum veröffentlicht"
+      "Websuche nach Laufzeit und Beträgen (25.09.2026): Presse nennt andere Beträge früherer Runden, kein Enddatum veröffentlicht",
+      "29.09.2026 Wiederprüfung wegen neuer Quelle: Umwelt-/Energieseite gelesen, führt als städtische Förderprogramme nur Lastenräder und Gründach-/Fassadenbegrünung; Ergebnis unverändert."
     ],
     "evidence": [
       {
@@ -61664,6 +61697,10 @@
       {
         "url": "https://www.donauwoerth.de/leben-in-donauwoerth/umwelt-und-energie/foerderungen/antrag-und-infos-kleinst-photovoltaik",
         "finding": "Am 25.09.2026 gelesen: städtische Förderungen nur noch Lastenräder, Gründach/Fassadenbegrünung, Zisternen, Entsiegelung; Balkonkraftwerke nur als allgemeiner Tipp ohne Zuschuss."
+      },
+      {
+        "url": "https://www.donauwoerth.de/umwelt-energie/",
+        "finding": "29.09.2026: Umwelt-/Energieseite: städtische Förderprogramme nur Lastenräder und Gründach/Fassadenbegrünung; Balkonkraftwerk nur als Information."
       }
     ],
     "sources": [
@@ -61684,6 +61721,12 @@
         "disposition": "reviewed",
         "reason": "Leseförderung der Stadtbibliothek — außerhalb des Umfangs.",
         "evidenceUrl": "https://www.donauwoerth.de/stadtbibliothek/lesefoerderung"
+      },
+      {
+        "url": "donauwoerth.de/umwelt-energie",
+        "disposition": "reviewed",
+        "reason": "Umwelt-/Energieseite: städtische Förderprogramme nur Lastenräder und Gründach/Fassadenbegrünung; Balkonkraftwerk nur als Information.",
+        "evidenceUrl": "https://www.donauwoerth.de/umwelt-energie/"
       }
     ]
   },
@@ -76410,6 +76453,78 @@
         "disposition": "reviewed",
         "reason": "Breitbandförderung, kein Energieprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.schmidgaden.de/bauen-projekte/breitbandausbau-nach-dem-foerderprogramm-gemaess-der-gigabit-rl-2-0"
+      }
+    ]
+  },
+  {
+    "regionId": "09376149",
+    "name": "Nittenau",
+    "checkedAt": "2026-09-29T14:12:00Z",
+    "recheckAt": "2027-03-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadt Nittenau fördert Balkonkraftwerke mit 10 % der Anschaffungskosten, höchstens 100 € je Antrag (2026 weiter gewährt, Jahrestopf 1.000 €); im Katalog als nittenau-steckersolar. Die städtische Seite „Förderprogramme“ führt kein weiteres Programm; Dachanlagen, Speicher und Wärmepumpen fördert die Stadt nicht. Der Bürgerportal-Treffer zu Heizanlagen beschreibt die Bundesförderung (Anträge beim BAFA).",
+    "searches": [
+      "Städtische Seite „Förderprogramme“ im Rathausmenü am 29.09.2026 vollständig gelesen: einziges Programm Stecker-Solaranlagen",
+      "Websuche „Nittenau Stadt Förderung Photovoltaik Speicher Wärmepumpe Zuschuss“ (29.09.2026): nur Stadtseite und Bürgerportal-Leistung Effiziente Gebäude (BAFA)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.nittenau.de/rathaus-service/buergerservice/foerderprogramme",
+        "finding": "29.09.2026: „Der kommunale Zuschuss zur Anschaffung von Stecker-Solaranlagen … wird in 2026 weiterhin gewährt … 10% der Anschaffungskosten, maximal 100 € pro Antrag … Für das Jahr 2026 wurden 1000 Euro zur Verfügung gestellt.“ Keine weiteren Programme auf der Seite."
+      },
+      {
+        "url": "https://bsp.nittenau.de/online-dienste/dienstleistungen/128578/effiziente-gebaeude-beantragung-eines-zuschusses-fuer-den-einbau-von-heizanlagen-mit-erneuerbaren-energien-oder-fuer-energetische-einzelmassnahmen",
+        "finding": "29.09.2026: Leistungsbeschreibung Bundesförderung effiziente Gebäude — „Die Anträge zum Zuschuss bearbeitet das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA)“; kein Stadtprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "nittenau.de/rathaus-service/buergerservice/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite des Balkonzuschusses, deckungsgleich mit nittenau-steckersolar.",
+        "evidenceUrl": "https://www.nittenau.de/rathaus-service/buergerservice/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09376163",
+    "name": "Schwarzenfeld",
+    "checkedAt": "2026-09-29T14:12:00Z",
+    "recheckAt": "2027-03-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Markt Schwarzenfeld fördert Balkonkraftwerke mit 10 % des Rechnungsbetrags, höchstens 100 € je Antrag (Förderhinweise vom 01.10.2024, ab Rechnungsjahr 2024, unbefristet); im Katalog als schwarzenfeld-balkon-pv. Für Dachanlagen, Speicher und Wärmepumpen gibt es keinen Marktzuschuss: Die Website-Suche zeigt dazu nur Mitteilungsblätter, Breitband und Behördenwegweiser.",
+    "searches": [
+      "Programmseite Balkonkraftwerke und Förderhinweise (PDF) am 29.09.2026 im Volltext gelesen",
+      "Website-Suche 29.09.2026: „Förderung“ → nur Balkonkraftwerke, Jugendarbeit, Breitband; „Zuschuss“ → Breitband/NGA und Behördenwegweiser; „Photovoltaik“ → Mitteilungsblätter und die Balkonseite; „Speicher“ → Behördenwegweiser; „Wärmepumpe“ → „Keine Ergebnisse gefunden“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarzenfeld.de/fileadmin/Schwarzenfeld/Leben_Wohnen_Arbeiten/Bauen_Wohnen/Balkonkraftwerke/Foerderhinweise_vom_01.10.2024.pdf",
+        "finding": "29.09.2026: „10 % des eingereichten Rechnungsbetrages, maximal 100 € pro Antrag“, Stecker-Solaranlagen bis 800 W."
+      },
+      {
+        "url": "https://www.schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke",
+        "finding": "29.09.2026: „fördert der Markt Schwarzenfeld ab dem Jahr 2024 Stecker-Solaranlagen, sogenannte Balkonkraftwerke“."
+      },
+      {
+        "url": "https://www.schwarzenfeld.de/suche?tx_kesearch_pi1%5Bsword%5D=W%C3%A4rmepumpe",
+        "finding": "29.09.2026: Suche „Wärmepumpe“ → „Keine Ergebnisse gefunden“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarzenfeld.de/fileadmin/Schwarzenfeld/Leben_Wohnen_Arbeiten/Bauen_Wohnen/Balkonkraftwerke/Foerderhinweise_vom_01.10.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Förderhinweise, deckungsgleich mit schwarzenfeld-balkon-pv.",
+        "evidenceUrl": "https://www.schwarzenfeld.de/fileadmin/Schwarzenfeld/Leben_Wohnen_Arbeiten/Bauen_Wohnen/Balkonkraftwerke/Foerderhinweise_vom_01.10.2024.pdf"
+      },
+      {
+        "url": "schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite des Balkonzuschusses (Katalogadresse).",
+        "evidenceUrl": "https://www.schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke"
       }
     ]
   }
