@@ -71,7 +71,7 @@
 .pv-consumer-apply p strong,.pv-consumer-apply p span{display:block}
 .pv-consumer-apply [data-flow-nav]{width:auto!important;min-width:0;margin:0!important}
 .pv-consumer-apply [data-flow-next]{white-space:nowrap}
-@media(max-width:600px){.pv-consumer-apply{border-radius:24px;padding:12px}.pv-consumer-apply>div{grid-template-columns:minmax(0,1fr);gap:8px}.pv-consumer-apply [data-flow-nav]{justify-self:end}.pv-consumer-apply [data-flow-next]{padding:10px 18px!important}}
+@media(max-width:600px){.pv-consumer-apply{border-radius:24px;padding:10px 12px}.pv-consumer-apply>div{gap:12px}.pv-consumer-apply [data-flow-next]{max-width:155px;white-space:normal;padding:10px 16px!important;line-height:1.25}}
 /* Existing question components inherit the neutral dialog palette. */
 .pv-consumer-dialog .wp-input-page{--flow-surface:transparent;--flow-option:var(--color-bg-muted);--flow-ink:var(--color-text-primary);--flow-muted:var(--color-text-secondary);--result-text:var(--color-text-primary);--result-muted:var(--color-text-secondary)}
 .pv-consumer-dialog .wp-question{box-shadow:none;background:transparent;border-radius:0}
@@ -90,7 +90,7 @@
 
 /* The savings flag crosses the following divider by eight pixels. */
 .pv-consumer-comparison .sc-category-pair{padding-bottom:0;margin-bottom:0}
-.pv-consumer-comparison .sc-category-pair>.sc-category-horizontal-label:last-child{box-sizing:border-box;min-height:calc(var(--pair-flag-height,76px) - 4px);margin-bottom:0}
+.pv-consumer-comparison .sc-category-pair>.sc-category-horizontal-label:last-child{box-sizing:border-box;min-height:calc(var(--pair-flag-height,76px) - 4px);margin-bottom:0;align-content:flex-start;row-gap:2px}
 .pv-consumer-comparison .sc-category-pair-saving.sc-category-flag{--flag-center:calc(100cqw - 100px);width:152px;color:var(--color-text-primary)}
 .pv-consumer-comparison .sc-category-pair-saving.sc-category-flag:after{left:calc(50% - 6px)}
 @media(max-width:480px){
@@ -98,6 +98,16 @@
 }
 
 .pv-consumer-apply-summary{min-width:0}
-.pv-consumer-apply-amount{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;line-height:1.2}
-.pv-consumer-apply-amount>span:last-child{font-size:var(--font-size-small)}
+.pv-consumer-apply-amount{display:flex;align-items:center;gap:6px;line-height:1.2}
 .pv-consumer-apply-summary>p{margin-top:4px;color:var(--color-text-secondary)}
+
+/* Keep the zero axis inside the plot's containment and inset its labels. */
+.pv-consumer-comparison .sc-category-pair-bars:before{left:0;opacity:.4}
+.pv-consumer-comparison .sc-category-horizontal-label{padding-left:8px;box-sizing:border-box}
+.pv-consumer-comparison .sc-choice-segmented{background:color-mix(in srgb,var(--color-text-primary) 12%,var(--color-bg));border:1px solid color-mix(in srgb,var(--color-text-primary) 18%,transparent)}
+.pv-consumer-comparison .sc-choice-segmented>button{color:var(--color-text-primary)!important}
+.pv-consumer-comparison .sc-choice-segmented>button[aria-pressed=true]{background:#fff!important;box-shadow:0 1px 4px #0003}
+@media(max-width:600px){
+ .pv-consumer-apply-subline{line-height:1.25!important}
+ .pv-consumer-comparison .sc-category-pair>.sc-category-horizontal-label:last-child{line-height:1.25}
+}

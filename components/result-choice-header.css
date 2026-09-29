@@ -22,3 +22,16 @@
 .sc-result-choice-art{position:relative;display:block;width:160px;height:160px;flex-shrink:0;isolation:isolate}
 .sc-result-choice-art:before{content:"";position:absolute;inset:20px;border-radius:50%;background:#e2e9df;z-index:-1}
 .sc-result-choice-art .sc-result-choice-illustration{width:100%;height:100%;object-fit:contain}
+
+/* A selected consumer can be removed without opening its editor. */
+.sc-result-choice-edit{display:block;margin:0;padding:0;border:0;background:none;color:var(--color-text-secondary);font:inherit;font-size:var(--result-type-caption);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sc-result-choice-action[data-removable=true]>span{margin:0}
+.sc-result-choice-check,.sc-result-choice-remove-icon{display:flex!important;align-items:center;justify-content:center;position:absolute;inset:0;transition:opacity .18s ease,transform .18s ease}
+.sc-result-choice-remove-icon{opacity:0;transform:rotate(-90deg)}
+.sc-result-choice-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.sc-result-choice-controls .sc-result-choice-remove-label{margin:0;font-size:10px;line-height:1.2;opacity:0;transition:opacity .18s ease;pointer-events:none}
+.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible) .sc-result-choice-check{opacity:0;transform:rotate(90deg)}
+.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible) .sc-result-choice-remove-icon{opacity:1;transform:rotate(0)}
+.sc-result-choice-header:has(.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible)) .sc-result-choice-remove-label{opacity:1}
+@media(hover:none){.sc-result-choice-controls .sc-result-choice-remove-label{opacity:1}}
+@media(prefers-reduced-motion:reduce){.sc-result-choice-check,.sc-result-choice-remove-icon,.sc-result-choice-remove-label{transition:none}}

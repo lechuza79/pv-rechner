@@ -1,6 +1,7 @@
 "use client";
 import KlebenderKnopf from "../../../components/KlebenderKnopf";
 import MetricValue from "../../../components/MetricValue";
+import InfoTooltip from "../../../components/InfoTooltip";
 import CalculatorContent from "../../../components/calculator/CalculatorContent";
 
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
@@ -620,7 +621,14 @@ export default function PVRechner({
       ? {wp:draft.wp,wpHaustyp:draft.wpHaustyp,wpWohnflaeche:draft.wpWohnflaeche,wpInsulation:draft.wpInsulation,wpHeizsystem:draft.wpHeizsystem}
       : consumerKind === "ea" ? {ea:draft.ea,eaKm:draft.eaKm}
       : {klima:draft.klima,klimaRooms:draft.klimaRooms,klimaKwh:draft.klimaKwh};
-    setConsumerAddons(previous=>({...previous,[consumerKind]:patch}));
+    setConsumerAddons(previous=>{
+      const next={...previous};
+      // Restoring the applied values cancels the pending removal, not its PV benefit.
+      const unchanged=Object.entries(patch).every(([key,value])=>consumerValues[key as keyof PvConsumerValues]===value);
+      if(unchanged && oEv===null) delete next[consumerKind];
+      else next[consumerKind]=patch;
+      return next;
+    });
     setAddonAnswers(new Set(consumerAnswered));
     setConsumerDraft(null);
   };
@@ -952,7 +960,7 @@ export default function PVRechner({
       ? `durch ${addedConsumerNames} sowie den Wegfall von ${removedConsumerNames}`
       : `durch den Wegfall von ${removedConsumerNames}`
     : `zusätzlich durch ${addedConsumerNames}`;
-  const consumerApplyBar = hasConsumerAddons ? <footer className="pv-consumer-apply" aria-label="Verbraucher übernehmen"><div><div className="pv-consumer-apply-summary"><div className="pv-consumer-apply-amount">{oEv === null ? <><MetricValue signed value={consumerImpact(pendingConsumers)}/><span>{consumerChangeLabel}</span></> : <strong>Eigenverbrauch neu berechnen</strong>}</div><p>{oEv === null ? <>Änderung deines PV-Vorteils über {YEARS} Jahre.</> : <>Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.</>}</p></div><FlowNav weiterLabel="Berechnung aktualisieren" weiterAktiv onWeiter={()=>{applyConsumers(pendingConsumers);setGvAnswered(new Set([...gvAnswered,...addonAnswers]));setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}/></div></footer> : null;
+  const consumerApplyBar = hasConsumerAddons ? <footer className="pv-consumer-apply" aria-label="Verbraucher übernehmen"><div><div className="pv-consumer-apply-summary"><div className="pv-consumer-apply-amount">{oEv === null ? <MetricValue signed value={consumerImpact(pendingConsumers)}/> : <strong>Eigenverbrauch neu berechnen</strong>}<InfoTooltip size={16} ariaLabel="Änderung des PV-Vorteils erklären">{oEv === null ? <>Änderung deines PV-Vorteils über {YEARS} Jahre.</> : <>Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.</>}</InfoTooltip></div>{oEv === null && <p className="pv-consumer-apply-subline">{consumerChangeLabel}</p>}</div><FlowNav weiterLabel="Berechnung aktualisieren" weiterAktiv onWeiter={()=>{applyConsumers(pendingConsumers);setGvAnswered(new Set([...gvAnswered,...addonAnswers]));setConsumerAddons({});setAddonAnswers(new Set());revealUpdatedResult();}}/></div></footer> : null;
 
   return (
     <div className="wp-calculator-page wp-input-page pv-calculator-page" style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "0 16px 20px" }}>
@@ -1270,12 +1278,13 @@ export default function PVRechner({
                   const pending = consumerAddons[item.kind];
                   const removed = pending?.[item.kind] === "nein";
                   const configured = item.active || !!pending;
+                  const cardValues = {...consumerValues,...pending};
                   return <li key={item.kind} data-consumer={item.kind} className="wp-geraete-kachel pv-consumer-card">
                     <ResultChoiceHeader editSelected neutral illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
                       actionLabel={`${item.title}: ${removed ? "Wieder hinzufügen" : item.active ? "Bereits berücksichtigt" : pending ? "Zur Vorschau hinzugefügt" : "Ergänzen"}`}
-                      onSelect={() => startConsumerScenario(item.kind)}>
+                      onSelect={() => startConsumerScenario(item.kind)} onRemove={() => removeConsumerAddon(item.kind)} onEdit={() => startConsumerScenario(item.kind)}>
                       {!configured && oEv === null && <><MetricValue value={consumerImpact({...consumerValues,[item.kind]:"geplant"})}/><span className="pv-consumer-period">PV-Vorteil über {YEARS} Jahre · Beispiel</span></>}{removed && "Entfernt"}{oEv !== null && !removed && <span className="pv-consumer-period">PV-Vorteil nach Neuberechnung</span>}
-                      {configured && !removed && oEv === null && <><MetricValue signed value={pending ? consumerImpact({...consumerValues,...pending}) : -consumerImpact({...consumerValues,[item.kind]:"nein"})}/><span className="pv-consumer-period">Zusätzlicher PV-Vorteil<br/>über {YEARS} Jahre</span></>}
+                      {configured && !removed && oEv === null && <><MetricValue signed value={consumerImpact(cardValues)-consumerImpact({...cardValues,[item.kind]:"nein"})}/><span className="pv-consumer-period">Zusätzlicher PV-Vorteil<br/>über {YEARS} Jahre</span></>}
                     </ResultChoiceHeader>
                   </li>;
                 })}
@@ -1432,7 +1441,6 @@ export default function PVRechner({
               {consumerDraft && <>
                 <PvConsumerFields only={consumerKind} values={consumerDraft} update={patch=>setConsumerDraft(draft=>draft ? {...draft,...patch} : draft)} answered={consumerAnswered} onAnswered={key=>setConsumerAnswered(previous=>new Set(previous).add(key))}/>
                 {consumerKind === "klima" && consumerDraft.klima!=="nein" && <PvCoolingEditor rooms={consumerDraft.klimaRooms} kwh={consumerDraft.klimaKwh} plz={plz} price={oStrom} onApply={klimaKwh=>setConsumerDraft(draft=>draft ? {...draft,klimaKwh} : draft)}/>}
-                {consumerValues[consumerKind]!=="nein" || consumerAddons[consumerKind] ? <button type="button" className="wp-result-details-link" onClick={()=>{removeConsumerAddon(consumerKind);setConsumerDraft(null);}}>Verbraucher entfernen</button> : null}
                 <FlowNav zurueckLabel="Abbrechen" onZurueck={()=>setConsumerDraft(null)} weiterLabel="Zur Vorschau hinzufügen" weiterAktiv={consumersComplete(consumerDraft,consumerAnswered,consumerKind)} inaktivHinweis="Bitte ergänze die offenen Verbraucherangaben." onWeiter={()=>{if(!consumersComplete(consumerDraft,consumerAnswered,consumerKind))return;stageConsumer(consumerDraft);}}/>
               </>}
             </Modal>

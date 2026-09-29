@@ -12,7 +12,7 @@ test('single consumer additions preserve existing consumers and require only the
   await page.goto(url,{waitUntil:"domcontentloaded"});
   const cards=page.locator('.pv-consumer-options');
   await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
-  await expect(cards.getByRole('button',{name:'Wärmepumpe: Bereits berücksichtigt',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(cards.getByRole('button',{name:'Wärmepumpe: Entfernen',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(cards.getByText('Deine Ausgangsangaben')).toHaveCount(0);
   const original=await page.locator('.wp-result-summary').innerText();
   const annualMetric=page.locator('.wp-result-summary strong').last();
@@ -32,8 +32,7 @@ test('single consumer additions preserve existing consumers and require only the
   await expect(cards.locator('[aria-pressed=true]')).toHaveCount(2);
   await expect(page.locator('.wp-result-summary')).toHaveText(original);
   await expect(cards.locator('.sc-result-choice-header').filter({hasText:'E-Auto'})).toContainText('über 25 Jahre');
-  await cards.getByRole('button',{name:'E-Auto: Zur Vorschau hinzugefügt',exact:true}).click();
-  await dialog.getByRole('button',{name:'Verbraucher entfernen',exact:true}).click();
+  await cards.getByRole('button',{name:'E-Auto: Entfernen',exact:true}).click();
   await expect(cards.locator('[aria-pressed=true]')).toHaveCount(1);
   await expect(page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true})).toHaveCount(0);
   await cards.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
@@ -119,9 +118,10 @@ test('compact comparison pairs and shared apply preserve the original until conf
       const text=el.querySelector('p')!.getBoundingClientRect();
       const button=el.querySelector('[data-flow-next]')!.getBoundingClientRect();
       const box=el.getBoundingClientRect();
-      return {textWidth:text.width,left:button.left,right:button.right,bottom:button.bottom,height:box.height};
+      return {textWidth:text.width,textRight:text.right,left:button.left,right:button.right,bottom:button.bottom,height:box.height};
     });
-    expect(geometry.textWidth).toBeGreaterThan(200);
+    expect(geometry.textWidth).toBeGreaterThan(120);
+    expect(geometry.textRight).toBeLessThanOrEqual(geometry.left-8);
     expect(geometry.left).toBeGreaterThanOrEqual(0);
     expect(geometry.right).toBeLessThanOrEqual(width);
     expect(geometry.bottom).toBeLessThanOrEqual(783);
@@ -133,7 +133,7 @@ test('compact comparison pairs and shared apply preserve the original until conf
   await page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
   await expect(footer).toHaveCount(0);
   await expect(page.locator('.wp-result-summary')).not.toHaveText(original);
-  await expect(car.getByRole('button',{name:'E-Auto: Bereits berücksichtigt',exact:true})).toBeVisible();
+  await expect(car.getByRole('button',{name:'E-Auto: Entfernen',exact:true})).toBeVisible();
   await page.locator('#pv-consumer-comparison').scrollIntoViewIfNeeded();
   await page.screenshot({path:'/tmp/pv-paired-1024.png',animations:'disabled'});
   await page.setViewportSize({width:708,height:900});
@@ -219,8 +219,7 @@ test('removing a consumer previews a signed loss and applies that exact differen
  const amount=(text:string)=>Number(text.replace(/[^0-9−-]/g,'').replace('−','-'));
  const total=page.locator('.wp-result-summary strong').last();
  const before=amount(await total.innerText());
- await cards.getByRole('button',{name:'Wärmepumpe: Bereits berücksichtigt',exact:true}).click();
- await page.getByRole('dialog').getByRole('button',{name:'Verbraucher entfernen',exact:true}).click();
+ await cards.getByRole('button',{name:'Wärmepumpe: Entfernen',exact:true}).click();
  const footer=page.locator('.pv-consumer-apply-anchor');
  const delta=amount(await footer.locator('.sc-metric-value').innerText());
  expect(delta).toBeLessThan(0);
@@ -239,7 +238,9 @@ test('manual self consumption is not mislabelled as a consumer benefit',async({p
  await dialog.getByRole('button',{name:'20.000 km',exact:true}).click();
  await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
  const footer=page.locator('.pv-consumer-apply-anchor');
- await expect(footer).toContainText('Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.');
+ await footer.getByRole('button',{name:'Änderung des PV-Vorteils erklären',exact:true}).click();
+ await expect(page.getByRole('tooltip')).toContainText('Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.');
+ await page.keyboard.press('Escape');
  await expect(footer.locator('.sc-metric-value')).toHaveCount(0);
  await footer.getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
  await expect(cards.locator('.sc-metric-value').first()).toBeVisible();
@@ -251,7 +252,6 @@ for (const width of [375, 1280]) test(`mixed consumer changes and footer handove
   const cards = page.locator('.pv-consumer-options');
   await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready', 'true');
   await cards.locator('[data-consumer=ea] .sc-result-choice-action').click();
-  await page.getByRole('dialog').getByRole('button', {name:'Verbraucher entfernen', exact:true}).click();
   await cards.locator('[data-consumer=klima] .sc-result-choice-action').click();
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('button', {name:'2 Räume', exact:true}).click();
@@ -275,4 +275,41 @@ for (const width of [375, 1280]) test(`mixed consumer changes and footer handove
   await expect(floating).toHaveCSS('visibility', 'hidden');
   await move(-height - 20);
   await expect(floating).toHaveAttribute('aria-hidden', 'false');
+});
+
+
+const consumerKinds=[{kind:'wp',name:'Wärmepumpe'},{kind:'ea',name:'E-Auto'},{kind:'klima',name:'Klimaanlage'}];
+for(const {kind,name} of consumerKinds) for(const width of [375,1280]) test(`restoring ${kind} restores its benefit and clears the unchanged preview at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.goto(url.replace('ea=nein','ea=ja')+'&km=15000&kl=ja&klr=2');
+  const card=page.locator(`[data-consumer=${kind}]`);
+  await expect(page.locator('.pv-consumer-options .wp-product-carousel-frame')).toHaveAttribute('data-ready','true');
+  const original=(await card.locator('.sc-metric-value').textContent())!;
+  expect(Number(original.replace(/[^0-9]/g,''))).toBeGreaterThan(0);
+  const result=await page.locator('.wp-result-summary').innerText();
+  await card.getByRole('button',{name:`${name}: Entfernen`,exact:true}).click();
+  await expect(card).toContainText('Entfernt');
+  await card.getByRole('button',{name:`${name}: Wieder hinzufügen`,exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await expect(card.locator('.sc-metric-value')).toHaveText(original);
+  await expect(page.locator('.pv-consumer-apply-anchor')).toHaveCount(0);
+  await expect(page.locator('.wp-result-summary')).toHaveText(result);
+  await expect(page.locator('.pv-consumer-options [aria-pressed=true]')).toHaveCount(3);
+});
+for(const {kind,name} of consumerKinds) test(`adding then removing new ${kind} cancels its preview`,async({page})=>{
+  await page.setViewportSize({width:375,height:900});
+  await page.goto(url.replace('wp=ja','wp=nein').replace(/&(wf|wi|wh|wht)=[^&]*/g,''));
+  await expect(page.locator('.pv-consumer-options .wp-product-carousel-frame')).toHaveAttribute('data-ready','true');
+  const result=await page.locator('.wp-result-summary').innerText();
+  const card=page.locator(`[data-consumer=${kind}]`);
+  await card.getByRole('button',{name:`${name}: Ergänzen`,exact:true}).click();
+  const dialog=page.getByRole('dialog');
+  if(kind==='wp') for(let i=0;i<4;i++) await dialog.locator('[data-flow-akkordeon-offen] [data-flow-wahl]').first().click();
+  else await dialog.getByRole('button',{name:kind==='ea'?'15.000 km':'2 Räume',exact:true}).click();
+  await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await expect(page.locator('.pv-consumer-apply-anchor')).toHaveCount(1);
+  await card.getByRole('button',{name:`${name}: Entfernen`,exact:true}).click();
+  await expect(page.locator('.pv-consumer-apply-anchor')).toHaveCount(0);
+  await expect(card.getByRole('button',{name:`${name}: Ergänzen`,exact:true})).toBeVisible();
+  await expect(page.locator('.wp-result-summary')).toHaveText(result);
 });
