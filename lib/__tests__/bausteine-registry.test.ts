@@ -193,3 +193,33 @@ describe("Bausteine-Register", () => {
     expect(verwendetVon("Modal").length).toBeGreaterThan(3);
   });
 });
+
+it("keeps optional calculator inputs on the shared disclosure component", () => {
+  const consumers = {
+    "components/DachField.tsx": ["Dachfläche und Neigung anpassen"],
+    "app/(site)/photovoltaik-rechner/empfehlung.tsx": ["Ich kenne meine Dachfläche", "Gebäudeangaben anpassen"],
+  };
+  for (const [file, labels] of Object.entries(consumers)) {
+    const source = lies(file);
+    for (const label of labels) expect(source, `${file}: ${label}`).toContain(`<OptionalDisclosure label="${label}"`);
+  }
+});
+
+
+it("reuses calculation selection and consumer questions in both result contexts", () => {
+  const pv = readFileSync("app/(site)/photovoltaik-rechner/rechner.tsx", "utf8");
+  const bkw = readFileSync("components/BalkonAngebot.tsx", "utf8");
+  expect(pv).toContain("<ResultChoiceHeader");
+  expect(bkw).toContain("<ResultChoiceHeader");
+  expect(pv.match(/<PvConsumerFields\b/g)).toHaveLength(2);
+});
+
+it("reuses the comparison components inside consumer cards", () => {
+  const pv = lies("app/(site)/photovoltaik-rechner/rechner.tsx");
+  const comparison = lies("components/PvConsumerComparison.tsx");
+  expect(pv).toContain("<PvConsumerComparison");
+  expect(comparison).toContain("<HeatPumpRunningComparison");
+  expect(comparison).toContain('<OptionalDisclosure label={label}>');
+  expect(pv).toContain('<AffiliateCarousel label="Weitere Verbraucher"');
+  expect(lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx")).not.toContain("calcFossilReference");
+});

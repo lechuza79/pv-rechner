@@ -1,0 +1,246 @@
+import {test,expect} from '@playwright/test';
+import {DEFAULT_PRICES} from '../lib/prices-config';
+import {DEFAULT_FEED_IN} from '../lib/feedin-config';
+test.beforeEach(async({page})=>{
+ await page.route('**/api/prices',r=>r.fulfill({json:DEFAULT_PRICES}));
+ await page.route('**/api/feedin',r=>r.fulfill({json:DEFAULT_FEED_IN}));
+ await page.emulateMedia({reducedMotion:'reduce'});
+});
+const url='/photovoltaik-rechner?a=4&ck=4&s=4&p=0&n=1&wp=ja&wf=140&wi=1&wh=hk_neu&wht=2&ea=nein&flow=emp&ht=0&da=0&az=sued';
+test('single consumer additions preserve existing consumers and require only their own missing answers',async({page})=>{
+  await page.setViewportSize({width:708,height:900});
+  await page.goto(url,{waitUntil:"domcontentloaded"});
+  const cards=page.locator('.pv-consumer-options');
+  await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
+  await expect(cards.getByRole('button',{name:'Wärmepumpe: Bereits berücksichtigt',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(cards.getByText('Deine Ausgangsangaben')).toHaveCount(0);
+  const original=await page.locator('.wp-result-summary').innerText();
+  const annualMetric=page.locator('.wp-result-summary strong').last();
+  const amount=(text:string)=>Number(text.replace(/[^0-9−-]/g,'').replace('−','-'));
+  const originalAnnual=amount(await annualMetric.innerText());
+  await cards.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+  const dialog=page.getByRole('dialog');
+  await expect(dialog.locator('[data-flow-akkordeon-offen="Fahrleistung pro Jahr"]')).toBeVisible();
+  await expect(dialog.getByRole('button',{name:/Wohnfläche|Nutzungsprofil|Gekühlte Räume/})).toHaveCount(0);
+  await expect(dialog.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','true');
+  await dialog.getByRole('button',{name:'Abbrechen',exact:true}).click();
+  await expect(page.locator('.wp-result-summary')).toHaveText(original);
+  await cards.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+  await dialog.getByRole('button',{name:'20.000 km',exact:true}).click();
+  await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(cards.locator('[aria-pressed=true]')).toHaveCount(2);
+  await expect(page.locator('.wp-result-summary')).toHaveText(original);
+  await expect(cards.locator('.sc-result-choice-header').filter({hasText:'E-Auto'})).toContainText('über 25 Jahre');
+  await cards.getByRole('button',{name:'E-Auto: Zur Vorschau hinzugefügt',exact:true}).click();
+  await dialog.getByRole('button',{name:'Verbraucher entfernen',exact:true}).click();
+  await expect(cards.locator('[aria-pressed=true]')).toHaveCount(1);
+  await expect(page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true})).toHaveCount(0);
+  await cards.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+  await expect(dialog.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','true');
+  await dialog.getByRole('button',{name:'20.000 km',exact:true}).click();
+  await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await cards.scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/pv-individual-708.png',animations:'disabled'});
+  await cards.getByRole('button',{name:'Klimaanlage: Ergänzen',exact:true}).click();
+  await expect(dialog.locator('[data-flow-akkordeon-offen="Gekühlte Räume"]')).toBeVisible();
+  await expect(dialog.getByText('Fahrleistung pro Jahr',{exact:true})).toHaveCount(0);
+  await dialog.getByRole('button',{name:'2 Räume',exact:true}).click();
+  await page.setViewportSize({width:375,height:900});
+  await dialog.screenshot({path:'/tmp/pv-individual-dialog-375.png',animations:'disabled'});
+  await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await expect(cards.locator('[aria-pressed=true]')).toHaveCount(3);
+  await cards.scrollIntoViewIfNeeded();
+  await page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click({trial:true});
+  const cooling=page.getByRole('group',{name:'Kühlstromkosten pro Jahr',exact:true});
+  await expect(cooling.locator('.sc-category-horizontal-track')).toHaveCount(2);
+  expect(await cooling.locator('.sc-category-horizontal-track').first().evaluate(el=>getComputedStyle(el).height)).toBe('7px');
+  await expect(cards).toContainText('Zusätzlicher PV-Vorteil');
+  expect(await page.locator('.pv-consumer-apply-anchor footer').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
+  await page.screenshot({path:'/tmp/pv-individual-375.png',animations:'disabled'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await expect(page.locator('.wp-result-summary')).toHaveText(original);
+  const combined=amount((await page.locator('.pv-consumer-apply-anchor .sc-metric-value').innerText()).split('€')[0]);
+  await page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
+  await expect(cards.locator('.sc-result-choice-footer')).toHaveCount(0);
+  await expect(cards.locator('[aria-pressed=true]')).toHaveCount(3);
+  await expect(page.locator('.wp-result-summary')).not.toHaveText(original);
+  expect(Math.abs(amount(await annualMetric.innerText())-originalAnnual-combined)).toBeLessThanOrEqual(1);
+});
+test('new heat pump asks only missing building information',async({page})=>{
+  await page.goto(url.replace('wp=ja','wp=nein').replace(/&(wf|wi|wh|wht)=[^&]*/g,''),{waitUntil:"domcontentloaded"});
+  await expect(page.locator('.pv-consumer-options .wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
+  await page.getByRole('button',{name:'Wärmepumpe: Ergänzen',exact:true}).click();
+  const dialog=page.getByRole('dialog');
+  await expect(dialog.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','true');
+  for(let i=0;i<4;i++){
+    const question=dialog.locator('[data-flow-akkordeon-offen]');
+    await expect(question).toHaveCount(1);
+    await question.locator('[data-flow-wahl]').first().click();
+  }
+  await expect(dialog.getByText('Fahrleistung pro Jahr',{exact:true})).toHaveCount(0);
+  await expect(dialog.locator('[data-flow-next]')).not.toHaveAttribute('aria-disabled','true');
+});
+
+test('compact comparison pairs and shared apply preserve the original until confirmation',async({page})=>{
+  await page.setViewportSize({width:1024,height:1000});
+  await page.goto(url,{waitUntil:"domcontentloaded"});
+  const cards=page.locator('.pv-consumer-options');
+  await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
+  await expect(cards.locator('.pv-consumer-addon')).toHaveCount(0);
+  await expect(cards.locator('.wp-product-navigation')).toHaveCount(0);
+  await expect(cards.locator('.sc-result-choice-footer')).toHaveCount(0);
+  const original=await page.locator('.wp-result-summary').innerText();
+  const car=cards.locator('.pv-consumer-card').filter({hasText:'E-Auto'});
+  await car.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+  for(const width of [708,375]) {
+    await page.setViewportSize({width,height:783});
+    const dialog=page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    const dialogBox=await dialog.boundingBox();
+    expect(dialogBox!.x).toBeGreaterThanOrEqual(0);
+    expect(dialogBox!.x+dialogBox!.width).toBeLessThanOrEqual(width);
+    await page.screenshot({path:`/tmp/pv-dialog-${width}.png`,animations:'disabled'});
+  }
+  await page.setViewportSize({width:1024,height:1000});
+  await page.getByRole('dialog').getByRole('button',{name:'20.000 km',exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  await expect(page.locator('.wp-result-summary')).toHaveText(original);
+  await expect(page.locator('.sc-category-pair:visible')).toHaveCount(2);
+  await expect(page.locator('.sc-category-pair-saving').first()).toContainText('%');
+  await page.getByRole('button',{name:'Heizöl',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Heizöl',exact:true})).toBeVisible();
+  const footer=page.locator('.pv-consumer-apply-anchor .pv-consumer-apply');
+  await expect(footer).toBeVisible();
+  for(const width of [708,375]) {
+    await page.setViewportSize({width,height:783});
+    await footer.scrollIntoViewIfNeeded();
+    const geometry=await footer.evaluate(el=>{
+      const text=el.querySelector('p')!.getBoundingClientRect();
+      const button=el.querySelector('[data-flow-next]')!.getBoundingClientRect();
+      const box=el.getBoundingClientRect();
+      return {textWidth:text.width,left:button.left,right:button.right,bottom:button.bottom,height:box.height};
+    });
+    expect(geometry.textWidth).toBeGreaterThan(200);
+    expect(geometry.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.right).toBeLessThanOrEqual(width);
+    expect(geometry.bottom).toBeLessThanOrEqual(783);
+    expect(geometry.height).toBeLessThan(150);
+    await page.screenshot({path:`/tmp/pv-footer-${width}.png`,animations:'disabled'});
+  }
+  await page.setViewportSize({width:1024,height:1000});
+  expect(await footer.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+  await page.locator('.pv-consumer-apply-anchor').getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
+  await expect(footer).toHaveCount(0);
+  await expect(page.locator('.wp-result-summary')).not.toHaveText(original);
+  await expect(car.getByRole('button',{name:'E-Auto: Bereits berücksichtigt',exact:true})).toBeVisible();
+  await page.locator('#pv-consumer-comparison').scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/pv-paired-1024.png',animations:'disabled'});
+  await page.setViewportSize({width:708,height:900});
+  await expect(cards.getByRole('button',{name:'Weitere Verbraucher',exact:true})).toBeVisible();
+  await cards.getByRole('button',{name:'Weitere Verbraucher',exact:true}).click();
+  await expect(cards.getByRole('button',{name:'Klimaanlage: Ergänzen',exact:true})).toBeInViewport();
+  await page.locator('#pv-consumer-comparison').scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/pv-paired-708.png',animations:'disabled'});
+  await page.setViewportSize({width:375,height:900});
+  await page.locator('#pv-consumer-comparison').scrollIntoViewIfNeeded();
+  await page.screenshot({path:'/tmp/pv-paired-375.png',animations:'disabled'});
+  await expect(cards.locator('.wp-product-navigation')).toHaveCount(1);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+
+test('consumer section keeps its layout and chart geometry across viewport sizes',async({page})=>{
+  await page.goto(url,{waitUntil:'domcontentloaded'});
+  const cards=page.locator('.pv-consumer-options');
+  await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
+  for(const width of [375,708,1440]) {
+    await page.setViewportSize({width,height:1000});
+    await page.locator('.pv-consumer-scenarios').evaluate(el=>el.scrollIntoView({block:'start'}));
+    const notice=page.getByRole('status').filter({hasText:'Vielleicht gibt es Förderung'});
+    if(await notice.isVisible()) await notice.getByRole('button',{name:'Schließen',exact:true}).click();
+    expect(await page.locator('.wp-overview').first().evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+    expect(await page.locator('.pv-result-settings').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
+    const actionbar=page.getByRole('region',{name:'Ergebnisaktionen'});
+    expect(await actionbar.evaluate(el=>getComputedStyle(el).position)).toBe('sticky');
+    const navigation=cards.getByRole('button',{name:'Weitere Verbraucher',exact:true});
+    if(width<1024) await expect(navigation).toBeVisible();
+    else await expect(cards.locator('.wp-product-navigation')).toHaveCount(0);
+    const header=cards.locator('.sc-result-choice-header').first();
+    const art=await header.locator('.sc-result-choice-art').boundingBox();
+    const title=await header.locator(':scope > div > strong').boundingBox();
+    expect(art!.x+art!.width).toBeLessThanOrEqual(title!.x);
+    const pair=page.locator('.sc-category-pair').first();
+    const tracks=pair.locator('.sc-category-horizontal-track');
+    const gap=await tracks.evaluateAll(elements=>{const upper=elements[0].getBoundingClientRect();const lower=elements[1].getBoundingClientRect();return lower.top-upper.bottom;});
+    expect(gap).toBeCloseTo(1,1);
+    expect(await tracks.first().evaluate(el=>getComputedStyle(el).borderTopLeftRadius)).toBe('0px');
+    expect(await pair.locator('.sc-category-pair-bars').evaluate(el=>getComputedStyle(el,'::before').width)).toBe('1px');
+    await expect(pair.locator('.sc-category-pair-saving')).not.toContainText('+');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await page.screenshot({path:`/tmp/pv-coherent-${width}.png`,animations:'disabled'});
+  }
+});
+
+
+test('consumer action floats only outside its content position',async({page})=>{
+  await page.setViewportSize({width:708,height:783});
+  await page.goto(url,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('.pv-consumer-options .wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:30000});
+  await page.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'15.000 km',exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+  const anchor=page.locator('.pv-consumer-apply-anchor');
+  const floating=page.locator('[data-floating-action=true]');
+  for(const width of [708,375]) {
+    await page.setViewportSize({width,height:783});
+    await page.locator('#pv-ueberblick').evaluate(el=>el.scrollIntoView({block:'start'}));
+    await expect(floating).toHaveAttribute('aria-hidden','false');
+    await page.screenshot({path:`/tmp/pv-floating-before-${width}.png`,animations:'disabled'});
+    await anchor.evaluate(el=>el.scrollIntoView({block:'center'}));
+    await expect(floating).toHaveAttribute('aria-hidden','true');
+    await page.screenshot({path:`/tmp/pv-floating-inline-${width}.png`,animations:'disabled'});
+    await page.locator('.pv-result-methodology').evaluate(el=>el.scrollIntoView({block:'start'}));
+    await expect(floating).toHaveAttribute('aria-hidden','false');
+    await expect(floating.getByRole('button',{name:'Berechnung aktualisieren',exact:true})).toBeInViewport();
+    await page.screenshot({path:`/tmp/pv-floating-after-${width}.png`,animations:'disabled'});
+  }
+  const art=page.locator('[data-consumer=ea] .sc-result-choice-art');
+  expect(await art.evaluate(el=>{const s=getComputedStyle(el,'::before');return Math.abs(parseFloat(s.width)-parseFloat(s.height));})).toBeLessThan(1);
+  await floating.getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
+  await expect(anchor).toHaveCount(0);
+});
+
+
+test('removing a consumer previews a signed loss and applies that exact difference',async({page})=>{
+ await page.goto(url,{waitUntil:'domcontentloaded'});
+ const cards=page.locator('.pv-consumer-options');
+ await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:60000});
+ const amount=(text:string)=>Number(text.replace(/[^0-9−-]/g,'').replace('−','-'));
+ const total=page.locator('.wp-result-summary strong').last();
+ const before=amount(await total.innerText());
+ await cards.getByRole('button',{name:'Wärmepumpe: Bereits berücksichtigt',exact:true}).click();
+ await page.getByRole('dialog').getByRole('button',{name:'Verbraucher entfernen',exact:true}).click();
+ const footer=page.locator('.pv-consumer-apply-anchor');
+ const delta=amount(await footer.locator('.sc-metric-value').innerText());
+ expect(delta).toBeLessThan(0);
+ await footer.getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
+ await expect(footer).toHaveCount(0);
+ expect(Math.abs(amount(await total.innerText())-before-delta)).toBeLessThanOrEqual(1);
+});
+
+test('manual self consumption is not mislabelled as a consumer benefit',async({page})=>{
+ await page.goto(url+'&ev=60',{waitUntil:'domcontentloaded'});
+ const cards=page.locator('.pv-consumer-options');
+ await expect(cards.locator('.wp-product-carousel-frame')).toHaveAttribute('data-ready','true',{timeout:60000});
+ await expect(cards.locator('.sc-metric-value')).toHaveCount(0);
+ await cards.getByRole('button',{name:'E-Auto: Ergänzen',exact:true}).click();
+ const dialog=page.getByRole('dialog');
+ await dialog.getByRole('button',{name:'20.000 km',exact:true}).click();
+ await dialog.getByRole('button',{name:'Zur Vorschau hinzufügen',exact:true}).click();
+ const footer=page.locator('.pv-consumer-apply-anchor');
+ await expect(footer).toContainText('Dein manuell gesetzter Eigenverbrauch wird beim Aktualisieren neu berechnet.');
+ await expect(footer.locator('.sc-metric-value')).toHaveCount(0);
+ await footer.getByRole('button',{name:'Berechnung aktualisieren',exact:true}).click();
+ await expect(cards.locator('.sc-metric-value').first()).toBeVisible();
+});

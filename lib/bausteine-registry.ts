@@ -266,7 +266,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["AccordionField", "PresetNumberInput"],
+    bestehtAus: ["AccordionField", "PresetNumberInput", "OptionalDisclosure"],
   },
   {
     datei: "components/GebaeudeField.tsx",
@@ -463,6 +463,21 @@ export const BAUSTEINE: Baustein[] = [
     datei: "components/AffiliateProductTeaser.tsx", name: "AffiliateProductTeaser",
     zweck: "Compact linked calculation product with a separate selection disclosure.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: [],
+  },
+  {
+    datei: "components/HeatPumpRunningComparison.tsx", name: "HeatPumpRunningComparison",
+    zweck: "Running heating cost comparison reused from the PV technical result.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
+  },
+  {
+    datei: "components/PvConsumerComparison.tsx", name: "PvConsumerComparison",
+    zweck: "Separate heating and driving energy comparisons for existing and staged PV consumers.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "InlineEdit", "HeatPumpRunningComparison", "PvConsumerFields"],
+  },
+  {
+    datei: "components/PvConsumerFields.tsx", name: "PvConsumerFields",
+    zweck: "Shared in-step consumer questions for PV scenarios and result editing.",
+    gruppe: "eingabe", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["GebaeudeField", "AccordionField", "TriToggle", "PresetNumberInput"],
   },
   {
     datei: "components/ResultChoiceHeader.tsx", name: "ResultChoiceHeader",

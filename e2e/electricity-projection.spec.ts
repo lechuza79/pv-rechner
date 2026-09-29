@@ -9,7 +9,7 @@ for (const width of [320, 375]) for (const path of [
   await page.setViewportSize({ width, height: 900 });
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   if (path.startsWith('/photovoltaik')) await ergebnisBereit(page, 'amortisiert sich in');
-  if (path.startsWith('/balkon')) {
+  {
     await page.getByRole('button', { name: 'realistischer Preisentwicklung', exact: true }).click({ timeout: 60000 });
   }
   const tabs = page.getByRole('tablist', { name: 'Strompreis-Szenario' });

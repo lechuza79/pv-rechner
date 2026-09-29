@@ -30,11 +30,12 @@ describe("Das Teilen-Vorschaubild rechnet wie die Seite", () => {
     expect(og + ogRechnungQuelle).not.toMatch(/stromSteigerung:\s*0\.0\d/);
     expect(ogRechnungQuelle).toMatch(/stromSteigerung: szenario\.strom/);
   });
-  it("„⌀ Ersparnis / Jahr“ ist dieselbe Formel wie auf der Seite", () => {
+  it("average savings includes investment, while the result labels its first-year value", () => {
     // Seite: (total + kosten) / YEARS. Im Bild stand total / 25 — um die
     // Investition zu klein, Faktor 2 im Standardfall.
     expect(ogRechnungQuelle).toMatch(/\(result\.total \+ kosten\) \/ YEARS/);
-    expect(lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx")).toMatch(/\(total \+ kosten\) \/ YEARS/);
+    expect(lies("app/(site)/photovoltaik-rechner/rechner.tsx")).toMatch(/label="Vorteil im 1. Jahr" value=\{Math.round\(sel.data.years\[1\].j\)/);
+    expect(og).toContain("Ø ERSPARNIS / JAHR");
   });
   it("beschriftet den Euro-Betrag als Gewinn", () => {
     expect(og).not.toMatch(/RENDITE 25 J/);
@@ -73,10 +74,11 @@ describe("Monatsbalken zeigen das gerechnete Dach", () => {
 
 describe("Wärmepumpen-Block im PV-Ergebnis: Gas folgt dem Szenario gegenläufig", () => {
   it("reicht den Gas-Anstieg des Szenarios durch statt fester 2 %", () => {
-    const stats = lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx");
+    const stats = lies("components/HeatPumpRunningComparison.tsx");
     expect(stats).toMatch(/inflation: gasSteigerung,/);
     expect(stats).not.toMatch(/inflation: 0\.02,/);
-    expect(lies("app/(site)/photovoltaik-rechner/rechner.tsx")).toMatch(/gasSteigerung=\{heatPumpScenarioAdj\(sel\.id\)\.gasInflation\}/);
+    expect(lies("components/PvConsumerComparison.tsx")).toMatch(/gasSteigerung=\{inflation.gasInflation\}/);
+    expect(lies("components/PvConsumerComparison.tsx")).toContain("heatPumpScenarioAdj(scenario)");
   });
 });
 
