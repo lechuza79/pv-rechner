@@ -10,6 +10,7 @@ import { IconArrowRight, IconCheck, IconClose } from "./Icons";
 // Balkonkraftwerk-Rechner, damit die nachträgliche PLZ-Eingabe überall gleich ist.
 interface StandortFieldProps {
   searchPlaces?: boolean;
+  compact?: boolean;
   checkedPlace?: { plz: string; ags: string; name: string } | null;
   onSearchChange?: () => void;
   onPlaceSelect?: (place: { plz: string; ags: string; name: string }) => void | Promise<void>;
@@ -24,9 +25,9 @@ interface StandortFieldProps {
 }
 
 export default function StandortField({
-  plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort", submitLabel, searchPlaces, onPlaceSelect, onSearchChange, checkedPlace,
+  plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort", submitLabel, searchPlaces, compact = false, onPlaceSelect, onSearchChange, checkedPlace,
 }: StandortFieldProps) {
-  if (searchPlaces && onPlaceSelect) return <PlaceField plz={plz} loading={loading} onPick={onPlaceSelect} onSearchChange={onSearchChange} checkedPlace={checkedPlace} submitLabel={submitLabel} />;
+  if (searchPlaces && onPlaceSelect) return <PlaceField plz={plz} loading={loading} onPick={onPlaceSelect} onSearchChange={onSearchChange} checkedPlace={checkedPlace} submitLabel={submitLabel} compact={compact} />;
   return (
     // flexWrap/rowGap + flexShrink: auf schmalen Schirmen rutscht das Feld lieber in
     // die naechste Zeile, als gequetscht zu werden (Fix aus dem PV-Rechner, beim
@@ -68,7 +69,7 @@ export default function StandortField({
 }
 
 /** Reuses the site search and its municipality/postcode resolution. */
-function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submitLabel = "Förderung prüfen" }: { submitLabel?: string; checkedPlace?: { plz: string; ags: string; name: string } | null; onSearchChange?: () => void; plz: string; loading: boolean; onPick: (place: { plz: string; ags: string; name: string }) => void | Promise<void> }) {
+function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submitLabel = "Förderung prüfen", compact = false }: { compact?: boolean; submitLabel?: string; checkedPlace?: { plz: string; ags: string; name: string } | null; onSearchChange?: () => void; plz: string; loading: boolean; onPick: (place: { plz: string; ags: string; name: string }) => void | Promise<void> }) {
   const id = useId();
   const [query, setQuery] = useState(checkedPlace ? `${checkedPlace.plz} ${checkedPlace.name}` : plz);
   const [hits, setHits] = useState<{ plz: string; ags: string; name: string; context: string }[]>([]);
@@ -104,7 +105,7 @@ function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submit
     }, 250);
     return () => { clearTimeout(timer); controller.abort(); };
   }, [query, selected]);
-  return <div className={styles.field}>
+  return <div className={`${styles.field} ${compact ? styles.compact : ""}`}>
     <label htmlFor={id}>Postleitzahl oder Ort</label>
     <form onSubmit={async event => {
       event.preventDefault();
@@ -115,11 +116,11 @@ function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submit
       finally { setChecking(false); }
     }}>
       <div className={styles.inputWrap}>
-      <input id={id} type="text" autoComplete="off" placeholder="z. B. 27793 oder Wildeshausen" value={query}
+      <input id={id} type="text" autoComplete="off" placeholder={compact ? "PLZ / Ort" : "z. B. 27793 oder Wildeshausen"} value={query}
         readOnly={checked} disabled={checking || loading} onChange={event => reset(event.target.value)} />
       {query && <button className={styles.clear} type="button" aria-label="Standort löschen" disabled={checking || loading} onClick={() => { reset(""); document.getElementById(id)?.focus(); }}><IconClose size={iconSizes.sm} /></button>}
       </div>
-      <button type="submit" disabled={!selected || loading || checking || checked}>{checking || loading ? "Wird gespeichert …" : submitLabel}</button>
+      <button type="submit" aria-label={submitLabel} title={submitLabel} disabled={!selected || loading || checking || checked}>{compact ? (checking || loading ? "…" : <IconCheck size={iconSizes.sm} />) : checking || loading ? "Wird gespeichert …" : submitLabel}</button>
     </form>
     {searching && <p role="status">Orte werden gesucht …</p>}
     {message && <p role="status">{message}</p>}

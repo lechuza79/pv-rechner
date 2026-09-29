@@ -19,6 +19,7 @@ export default function Toast({
   onClose,
   onClick,
   closeDisabled = false,
+  closeLabel = "Schließen",
   expanded = false,
   children,
   /** Millisekunden bis zum Selbstschließen. 0 = bleibt stehen. */
@@ -30,6 +31,7 @@ export default function Toast({
   alignTo?: RefObject<HTMLElement | null>;
   onClose: () => void;
   closeDisabled?: boolean;
+  closeLabel?: string;
   expanded?: boolean;
   /** Optional: Klick auf den Toast führt irgendwohin (z. B. Feld fokussieren). */
   onClick?: () => void;
@@ -107,7 +109,7 @@ export default function Toast({
       <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
-        aria-label="Schließen"
+        aria-label={closeLabel}
         disabled={closeDisabled}
         style={{
           border: "none", background: "transparent", color: foreground,

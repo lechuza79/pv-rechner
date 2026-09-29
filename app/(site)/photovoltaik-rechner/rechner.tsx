@@ -1134,7 +1134,7 @@ export default function PVRechner({
         {/* ── RESULT ── */}
         <StandortPrompt alignTo={resultCardRef} open={plzToast && intro.progress === 1 && !hasConsumerAddons}
           onClose={() => setPlzToast(false)}
-          message={fundingActive ? "Standort prüfen für einen genaueren Ertrag" : "Vielleicht gibt es Förderung an deinem Wohnort"}
+          message={fundingActive ? "Genauerer Ertrag\nfür deinen Standort" : "Förderung möglich\nan deinem Wohnort"}
           onSave={async place => {
             const programs = await foerderQuelle.uebernehmeOrt(place.plz, place.ags, () => fetchPvgis(place.plz, false));
             if (!programs) throw new Error("Location could not be applied");

@@ -16,3 +16,13 @@
 .inputWrap input { width:100%; padding-right:48px; }
 .field .clear { position:absolute; right:4px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:40px; height:40px; padding:0; background:transparent; color:var(--result-muted,var(--color-text-secondary)); }
 .field .clear:hover { color:var(--result-text,var(--color-text-primary)); }
+
+/* Compact editor replaces a prompt button without adding another row. */
+.compact { position: relative; margin: 0; min-width: 0; }
+.compact label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.compact form { flex-direction: row; align-items: center; gap: 0; border-radius: var(--radius-pill); background: var(--result-control, var(--color-bg)); }
+.compact input { width: 100%; min-height: 44px; padding: 8px 10px; font-size: 16px; border: 0; border-radius: var(--radius-pill); background: transparent; }
+.compact .clear { display: none; }
+.compact form > button { flex: 0 0 36px; width: 36px; height: 36px; padding: 0; margin-right: 4px; display: grid; place-items: center; }
+.compact ul, .compact > p { position: absolute; bottom: calc(100% + 16px); right: 0; width: 290px; max-width: calc(100vw - 80px); margin: 0; padding: 8px; border-radius: var(--radius-md); background: var(--result-control, var(--color-bg)); color: var(--result-text, var(--color-text-primary)); box-shadow: var(--shadow-toast); max-height: 40dvh; overflow-y: auto; }
+.compact li button { margin: 0; }

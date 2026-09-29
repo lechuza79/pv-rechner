@@ -1,11 +1,9 @@
-.prompt { color: var(--color-awareness); --result-muted: var(--color-awareness); --result-text: var(--color-text-primary); --result-control: var(--color-bg); --result-rule: var(--color-border); }
-.heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.action, .cancel { font: inherit; cursor: pointer; border-radius: var(--radius-pill); padding: 10px 16px; }
-.action { background: var(--color-awareness); color: var(--color-bg); border: 0; white-space: nowrap; }
-.editor { max-height: min(55dvh, 440px); overflow-y: auto; padding: 4px 2px; }
-.editor > div { margin-block: 12px; }
-.cancel { background: transparent; border: 1px solid currentColor; color: inherit; padding: 6px 12px; }
-.cancel:disabled { opacity: .4; cursor: wait; }
+.prompt { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--color-awareness); --result-muted: var(--color-awareness); --result-text: var(--color-text-primary); --result-control: var(--color-bg); --result-rule: var(--color-border); }
+.message { flex: 1; min-width: 0; max-width: 230px; text-wrap: balance; white-space: pre-line; }
+.control { flex: 0 0 170px; min-width: 0; }
+.action { width: 100%; min-height: 44px; font: inherit; font-weight: 700; cursor: pointer; border-radius: var(--radius-pill); padding: 8px 10px; background: var(--color-awareness); color: var(--color-bg); border: 0; white-space: nowrap; }
+.control > * { animation: prompt-control-in .18s ease-out; }
 .prompt button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-
-.editor input { font-size: max(16px, var(--font-size-body)); }
+@keyframes prompt-control-in { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: translateX(0); } }
+@media(max-width: 440px) { .prompt { gap: 8px; font-size: 12px; } .control { flex-basis: 132px; } }
+@media(prefers-reduced-motion: reduce) { .control > * { animation: none; } }

@@ -46,7 +46,16 @@ for (const [name, route] of routes) test(`${name}: mobile inline location saves 
   let fundingRequests = 0;
   page.on('request', request => { if (request.url().includes('/api/funding?plz=')) fundingRequests++; });
   const prompt = await open(page, route, name === 'klima');
+  await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).click({ trial: true });
+  const buttonBox = (await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).boundingBox())!;
+  const promptBox = (await prompt.boundingBox())!;
+  const message = prompt.getByRole('group', { name: 'Standort prüfen', exact: true }).locator(':scope > span');
+  expect(await message.evaluate(el => el.getBoundingClientRect().height <= 2 * parseFloat(getComputedStyle(el).lineHeight) + 1)).toBe(true);
   await prompt.getByRole('button', { name: 'Standort eingeben', exact: true }).click();
+  expect((await prompt.boundingBox())!.height).toBeLessThanOrEqual(promptBox.height + 1);
+  const editorBox = (await prompt.locator('form').boundingBox())!;
+  expect(Math.abs(editorBox.x - buttonBox.x)).toBeLessThanOrEqual(1);
+  expect(Math.abs(editorBox.width - buttonBox.width)).toBeLessThanOrEqual(1);
   const field = prompt.getByLabel('Postleitzahl oder Ort', { exact: true });
   await expect(field).toBeFocused();
   await expect(prompt.getByRole('button', { name: 'Speichern', exact: true })).toBeDisabled();
@@ -61,6 +70,7 @@ for (const [name, route] of routes) test(`${name}: mobile inline location saves 
   await field.fill('27793');
   await prompt.getByRole('button', { name: /27793 Wildeshausen/ }).click();
   await page.screenshot({ path: `/tmp/location-${name}-375.png`, animations: 'disabled' });
+  await prompt.screenshot({ path: `/tmp/location-inline-${name}-375.png`, animations: 'disabled' });
   const box = await prompt.boundingBox();
   expect(box!.x).toBeGreaterThanOrEqual(0);
   expect(box!.x + box!.width).toBeLessThanOrEqual(375);

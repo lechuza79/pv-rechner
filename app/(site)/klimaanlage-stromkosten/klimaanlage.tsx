@@ -434,7 +434,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
         {/* ── RESULT ── */}
         <StandortPrompt open={isResult && !plzConfirmed && !locationPromptDismissed}
-          message="Mit deinem Standort rechnen wir mit dem Klima vor Ort."
+          message={"Genauer rechnen\nmit deinem Standort"}
           onClose={() => setLocationPromptDismissed(true)}
           onSave={async place => {
             if (!await fetchCooling(place.plz)) throw new Error("Location could not be applied");
