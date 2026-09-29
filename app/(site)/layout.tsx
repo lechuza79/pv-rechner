@@ -1,3 +1,4 @@
+import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono, Montserrat } from "next/font/google";
 import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
@@ -179,6 +180,7 @@ export default async function RootLayout({
         {/* Zählt Aufrufe aus den Outreach-Briefen — eigenes Ereignis statt des
             kostenpflichtigen Kampagnen-Zusatzpakets. */}
         <HerkunftsMelder />
+        <WidgetVideoConfirmation />
       </body>
     </html>
   );

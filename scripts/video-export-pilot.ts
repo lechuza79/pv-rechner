@@ -54,7 +54,7 @@ async function confirm(token: string, ip = "198.51.100.1") {
   const res = await fetch(`${BASE}/api/video-export/bestaetigen`, {
     method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", "x-forwarded-for": ip }, body: `t=${token}`,
   });
-  return (await res.text()).match(/data-video-confirm="([a-z]+)"/)?.[1] ?? `http_${res.status}`;
+  return (await res.json()).outcome ?? `http_${res.status}`;
 }
 
 function worker(env: Record<string, string> = {}): Promise<{ code: number; out: string; ms: number; maxRssKb: number | null }> {

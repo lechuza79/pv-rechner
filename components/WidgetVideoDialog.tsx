@@ -114,3 +114,54 @@ export default function WidgetVideoDialog({ open, onClose, label, period, place,
     </div>
   </Modal>;
 }
+
+const confirmationCopy: Record<string, { title: string; text: string }> = {
+  pending: { title: "E-Mail-Adresse bestätigen", text: "Bestätigen Sie Ihre Videoanfrage. Anschließend erhalten Sie den Downloadlink per E-Mail." },
+  queued: { title: "Video wird erstellt", text: "Der Downloadlink kommt per E-Mail, sobald Ihr Video fertig ist. Sie können dieses Fenster schließen." },
+  ready: { title: "Ihr Video ist fertig", text: "Der Downloadlink ist unterwegs in Ihr Postfach." },
+  already: { title: "Bereits bestätigt", text: "Sie erhalten den Downloadlink per E-Mail, sobald Ihr Video fertig ist." },
+  expired: { title: "Link abgelaufen", text: "Bitte fordern Sie das Video im Optionsmenü des Widgets erneut an." },
+  invalid: { title: "Link ungültig", text: "Bitte öffnen Sie den vollständigen Link aus Ihrer E-Mail oder fordern Sie das Video erneut an." },
+  capacity: { title: "Gerade ausgelastet", text: "Bitte versuchen Sie es später erneut." },
+  unavailable: { title: "Gerade nicht verfügbar", text: "Bitte versuchen Sie es erneut. Ihre Anfrage wurde noch nicht bestätigt." },
+};
+
+/** Shared entry point for emailed links on both site and embed surfaces. */
+export function WidgetVideoConfirmation() {
+  const [token, setToken] = useState("");
+  const [context, setContext] = useState<{place?: string; period?: string; outcome: string} | null>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    const read = () => {
+      const value = new URLSearchParams(window.location.hash.slice(1)).get("video-confirm");
+      if (!value) return;
+      setToken(value);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      fetch(`/api/video-export/bestaetigen?view=json&t=${encodeURIComponent(value)}`, { cache: "no-store", referrerPolicy: "no-referrer" })
+        .then(res => res.json()).then(setContext).catch(() => setContext({outcome:"unavailable"}));
+    };
+    read(); window.addEventListener("hashchange", read);
+    return () => window.removeEventListener("hashchange", read);
+  }, []);
+  if (!token) return null;
+  const outcome = context?.outcome ?? "loading";
+  const copy = confirmationCopy[outcome] ?? { title: "Video herunterladen", text: "Wird geladen …" };
+  async function confirm() {
+    if (busy) return;
+    setBusy(true);
+    const form = new FormData(); form.set("t", token);
+    try {
+      const response = await fetch("/api/video-export/bestaetigen", {method:"POST", body:form});
+      const result = await response.json();
+      setContext(previous => ({...previous, outcome:result.outcome ?? "unavailable"}));
+    } catch { setContext(previous => ({...previous, outcome:"unavailable"})); }
+    finally { setBusy(false); }
+  }
+  return <Modal open onClose={() => setToken("")} title={copy.title} maxWidth={520} className={styles.dialog}>
+    <div className={styles.content}>
+      {context?.place && <div className={styles.context}><IconVideo size={24} aria-hidden="true" /><div>Solarerzeugung im Tagesverlauf in {context.place}<span>{context.period && new Date(`${context.period}-01T12:00:00Z`).toLocaleDateString("de-DE", {month:"long",year:"numeric"})} · MP4-Video</span></div></div>}
+      <p role="status">{copy.text}</p>
+      <ModalSticky>{["pending","unavailable","capacity"].includes(outcome) ? <button className={styles.submit} disabled={busy} onClick={confirm}>{busy ? "Wird bestätigt …" : "Video erstellen"}</button> : <button className={styles.submit} onClick={() => setToken("")}>Schließen</button>}</ModalSticky>
+    </div>
+  </Modal>;
+}

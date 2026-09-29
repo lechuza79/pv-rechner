@@ -1,55 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientIp, rateLimit } from "../../../../lib/rate-limit";
-import { tokens } from "../../../../lib/theme";
-import { escapeHtml } from "../../../../lib/html-escape";
-import { confirmVideo, type ConfirmOutcome } from "../../../../lib/video-export-service";
-
-// The confirmation link from the mail.
-//
-// GET ONLY SHOWS A BUTTON, POST REDEEMS. Mail security scanners open every
-// link in a mail on arrival; a GET that starts a render would let them
-// confirm on the recipient's behalf. The minimal markup is a functional
-// placeholder — look and wording belong to the UI owner.
+import { confirmVideo } from "../../../../lib/video-export-service";
+import { videoConfirmationContext } from "../../../../lib/video-export-db";
+import { plausibleToken, hashToken } from "../../../../lib/video-export-token";
+import { getGemeindePfad, getRegionById } from "../../../../lib/atlas";
 
 export const dynamic = "force-dynamic";
+const headers = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex", "Referrer-Policy": "no-referrer" };
 
-const TEXT: Record<ConfirmOutcome, { title: string; body: string }> = {
-  queued: { title: "Bestätigt", body: "Ihr Video wird erstellt. Sie bekommen eine E-Mail mit dem Downloadlink, sobald es fertig ist. Sie können diese Seite schließen." },
-  ready: { title: "Bestätigt", body: "Das Video lag schon bereit. Der Downloadlink ist unterwegs in Ihr Postfach." },
-  already: { title: "Schon bestätigt", body: "Dieser Link wurde bereits verwendet. Die Mail mit dem Downloadlink kommt, sobald das Video fertig ist." },
-  expired: { title: "Link abgelaufen", body: "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie das Video auf der Seite erneut an." },
-  invalid: { title: "Link ungültig", body: "Dieser Bestätigungslink ist ungültig." },
-  capacity: { title: "Gerade ausgelastet", body: "Wir erstellen gerade zu viele Videos. Bitte fordern Sie es später erneut an." },
-  unavailable: { title: "Nicht verfügbar", body: "Die Videoerstellung ist gerade nicht verfügbar. Bitte versuchen Sie es später erneut." },
-};
-
-function page(title: string, inner: string, status = 200) {
-  return new NextResponse(
-    `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escapeHtml(title)} – Solar Check</title></head>` +
-      `<body style="font-family:system-ui,sans-serif;max-width:520px;margin:48px auto;padding:0 16px;line-height:1.5"><h1 style="font-size:${tokens["--font-size-h2"]}">${escapeHtml(title)}</h1>${inner}<p><a href="/">Zu Solar Check</a></p></body></html>`,
-    { status, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex", "Referrer-Policy": "no-referrer" } },
-  );
-}
-
+// GET is read-only: scanners may follow the redirect but cannot confirm.
+// All visible states belong to the shared site modal, never raw API HTML.
 export async function GET(req: NextRequest) {
-  const t = req.nextUrl.searchParams.get("t") ?? "";
-  if (!/^[A-Za-z0-9_-]{43}$/.test(t)) return page(TEXT.invalid.title, `<p>${TEXT.invalid.body}</p>`, 400);
-  return page("E-Mail-Adresse bestätigen",
-    `<p>Bestätigen Sie Ihre Videoanfrage und, falls ausgewählt, Ihr Ortsabo.</p>` +
-      `<form method="post"><input type="hidden" name="t" value="${escapeHtml(t)}"><button type="submit" style="font:inherit;padding:10px 18px">Video erstellen</button></form>`);
+  const token = req.nextUrl.searchParams.get("t") ?? "";
+  let context = null;
+  let unavailable = false;
+  try { if (plausibleToken(token)) context = await videoConfirmationContext(hashToken(token)); } catch { unavailable = true; }
+  if (req.nextUrl.searchParams.get("view") === "json") {
+    if (unavailable) return NextResponse.json({ outcome: "unavailable" }, { status: 503, headers });
+    if (!context) return NextResponse.json({ outcome: "invalid" }, { headers });
+    const region = await getRegionById(context.ags).catch(() => null);
+    return NextResponse.json({
+      place: region?.name ?? "", period: context.period,
+      outcome: context.status === "pending" ? (Date.parse(context.token_expires_at) < Date.now() ? "expired" : "pending") : "already",
+    }, { headers });
+  }
+  const path = context ? await getGemeindePfad(context.ags).catch(() => null) : null;
+  const target = path ? `/solar-atlas/${path.bundesland}/${path.kreis}/${path.gemeinde}` : context ? `/embed/gemeinde/${context.ags}/monitor` : "/solar-atlas";
+
+  // Fragments keep the confirmation credential out of page requests/referrers.
+  const fragment = `video-confirm=${plausibleToken(token) ? token : "invalid"}`;
+  return new NextResponse(null, { status: 303, headers: { ...headers, Location: `${target}#${fragment}` } });
 }
 
 export async function POST(req: NextRequest) {
   const limited = rateLimit(req, "video-export-confirm", 20, 60_000);
-  if (limited) return page(TEXT.unavailable.title, `<p>${TEXT.unavailable.body}</p>`, 429);
+  if (limited) return NextResponse.json({ outcome: "unavailable" }, { status: 429, headers });
   let token: unknown = null;
-  try { token = (await req.formData()).get("t"); } catch { /* not a form post */ }
+  try { token = (await req.formData()).get("t"); } catch { /* Invalid input is handled by the service. */ }
   try {
     const outcome = await confirmVideo(token, getClientIp(req));
-    const t = TEXT[outcome];
-    return page(t.title, `<p data-video-confirm="${outcome}">${t.body}</p>`, outcome === "invalid" ? 400 : 200);
-  } catch (e) {
-    console.error(`video-export confirm failed: ${e instanceof Error ? e.message : String(e)}`);
-    return page(TEXT.unavailable.title, `<p>${TEXT.unavailable.body}</p>`, 500);
+    return NextResponse.json({ outcome }, { headers });
+  } catch {
+    return NextResponse.json({ outcome: "unavailable" }, { status: 503, headers });
   }
 }
