@@ -6,6 +6,7 @@ import { emailHash, hashToken, ipHash, newToken, plausibleToken, renderCacheKey 
 import { confirmMail, failedMail, readyMail, sendVideoMail, videoLabel } from "./video-export-mail";
 import { deleteVideos, openVideo } from "./video-export-storage";
 import { handOffSubscription } from "./video-export-abo";
+import { wakeVideoWorker } from "./video-export-wakeup";
 
 // Orchestration of the server video export. The limits and state transitions
 // themselves live in SQL (lib/video-export-sql.ts); this file validates input
@@ -109,6 +110,7 @@ export async function confirmVideo(token: unknown, ip: string | null = null): Pr
   }
   // A finished video is reused at once: the ready mail goes out now.
   if (outcome === "ready") await notifyFinished();
+  if (outcome === "queued") await wakeVideoWorker();
   return outcome;
 }
 
@@ -127,15 +129,18 @@ function mapConfirm(r: Json): ConfirmOutcome {
   }
 }
 
-export async function operatorCreate(params: VideoExportParams): Promise<{ http: number; jobId?: string; status?: string; code?: string }> {
+export async function operatorCreate(params: VideoExportParams, recipient?: string): Promise<{ http: number; jobId?: string; status?: string; code?: string }> {
   if (!videoExportEnabled()) return { http: 503, code: "unavailable" };
   const resolved = await resolveVideo(params);
   if (!resolved) return { http: 400, code: "invalid" };
   const r = await callVideoFn<Json>("video_operator_create", {
     cache_key: resolved.cacheKey, widget: params.widget, ags: params.ags, period: params.period,
     data_version: resolved.dataVersion, ...capacity(),
+    ...(recipient ? { email: recipient, email_hash: emailHash(recipient), token_hash: newToken().hash } : {}),
   });
   if (String(r.result).startsWith("capacity")) return { http: 503, code: "capacity" };
+  if (r.result === "ready") await notifyFinished();
+  else await wakeVideoWorker();
   return { http: 202, jobId: r.job_id, status: r.result === "ready" ? "done" : "queued" };
 }
 

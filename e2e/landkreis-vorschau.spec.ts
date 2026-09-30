@@ -286,7 +286,10 @@ test('video dialog distinguishes queued, rendering and downloadable without requ
   await expect(dialog.getByRole('status')).toHaveText('Wartet auf Start');
   await expect(dialog.getByRole('progressbar')).toHaveCount(0);
   await expect(dialog).toContainText('erscheint hier der Downloadbutton');
-  await expect(dialog.getByRole('button',{name:'Downloadlink zusätzlich per E-Mail'})).toBeVisible();
+  await expect(dialog.getByText('Sie können dieses Fenster schließen. Wir schicken Ihnen den Downloadlink automatisch per E-Mail.')).toBeVisible();
+  await expect(dialog.getByRole('textbox')).toHaveCount(0);
+  await expect(dialog.getByRole('button',{name:'Downloadlink zusätzlich per E-Mail'})).toHaveCount(0);
+  await page.screenshot({path:test.info().outputPath('video-automatic-mail.png')});
   status='rendering';
   await expect(dialog.getByRole('progressbar')).toHaveAttribute('value','36',{timeout:10000});
   status='done';

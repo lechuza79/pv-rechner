@@ -67,6 +67,7 @@ create table if not exists video_requests (
 -- Optional subscription (separate consent, handed to the subscription signup after confirmation).
 alter table video_requests add column if not exists subscribe boolean not null default false;
 alter table video_requests add column if not exists consent_version text;
+alter table video_requests add column if not exists notification_lease_until timestamptz;
 create index if not exists video_requests_email on video_requests (email_hash, created_at);
 create index if not exists video_requests_ip on video_requests (ip_hash, created_at);
 create index if not exists video_requests_job on video_requests (job_id, status);
@@ -199,12 +200,50 @@ begin
   return a || jsonb_build_object('request_id', r.id) || sub;
 end $$;
 
--- Operator: no mail, no per-address limits; queue cap still applies.
+-- Operator: verified account, automatic mail, no second confirmation; queue cap still applies.
 create or replace function video_operator_create(p jsonb) returns jsonb
+language plpgsql as $$
+declare a jsonb;
+begin
+  perform pg_advisory_xact_lock(7342100);
+  a := video_job_attach(p || jsonb_build_object('source','operator'));
+  if a->>'job_id' is not null and nullif(p->>'email','') is not null then
+    -- Repeated clicks reuse both render and delivery, including a recently delivered file.
+    if not exists (select 1 from video_requests where job_id = (a->>'job_id')::uuid
+      and email_hash = p->>'email_hash'
+      and (status = 'confirmed' or (status = 'delivered'
+        and created_at >= (select queued_at from video_render_jobs where id = (a->>'job_id')::uuid)))) then
+      insert into video_requests (email,email_hash,widget,ags,period,cache_key,data_version,
+        token_hash,token_expires_at,status,job_id,confirmed_at)
+      values (p->>'email',p->>'email_hash',p->>'widget',p->>'ags',p->>'period',p->>'cache_key',p->>'data_version',
+        p->>'token_hash',now(),'confirmed',(a->>'job_id')::uuid,now());
+    end if;
+  end if;
+  return a;
+end $$;
+
+-- One dispatch per minute across all server instances; scheduled runs remain a safety net.
+create table if not exists video_worker_dispatch (
+  singleton boolean primary key default true check (singleton),
+  next_at timestamptz not null default now()
+);
+alter table video_worker_dispatch enable row level security;
+revoke all on video_worker_dispatch from public;
+do $$ begin
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    execute 'revoke all on video_worker_dispatch from anon, authenticated';
+  end if;
+end $$;
+create or replace function video_worker_wakeup(p jsonb) returns jsonb
 language plpgsql as $$
 begin
   perform pg_advisory_xact_lock(7342100);
-  return video_job_attach(p || jsonb_build_object('source','operator'));
+  if not exists (select 1 from video_render_jobs where status = 'queued') then
+    return jsonb_build_object('dispatch',false);
+  end if;
+  insert into video_worker_dispatch(singleton,next_at) values(true,now()) on conflict do nothing;
+  update video_worker_dispatch set next_at = now() + interval '60 seconds' where singleton and next_at <= now();
+  return jsonb_build_object('dispatch',found);
 end $$;
 
 create or replace function video_job_status(p jsonb) returns jsonb
@@ -275,14 +314,22 @@ begin
   return jsonb_build_object('result','failed');
 end $$;
 
--- Confirmed requests whose job has ended and who have not been told yet.
+-- Claim delivery before sending so a cached request and worker cannot mail it twice.
 create or replace function video_pending_notifications(p jsonb) returns jsonb
 language sql as $$
+  with eligible as (
+    select r.id from video_requests r join video_render_jobs j on j.id = r.job_id
+    where r.status = 'confirmed' and r.email is not null
+      and (r.notification_lease_until is null or r.notification_lease_until < now())
+      and ((j.status = 'done' and j.expires_at > now()) or j.status = 'failed')
+    for update of r skip locked
+  ), claimed as (
+    update video_requests r set notification_lease_until = now() + interval '5 minutes'
+    from eligible e where r.id = e.id returning r.*
+  )
   select coalesce(jsonb_agg(jsonb_build_object('request_id', r.id, 'email', r.email, 'job_status', j.status,
     'widget', r.widget, 'ags', r.ags, 'period', r.period, 'expires_at', j.expires_at)), '[]'::jsonb)
-  from video_requests r join video_render_jobs j on j.id = r.job_id
-  where r.status = 'confirmed' and r.email is not null
-    and ((j.status = 'done' and j.expires_at > now()) or j.status = 'failed');
+  from claimed r join video_render_jobs j on j.id = r.job_id;
 $$;
 
 -- The mail went out: store the download hash, drop the address.
@@ -340,7 +387,7 @@ declare f text;
 begin
   foreach f in array array['video_request_create','video_request_discard','video_job_attach','video_request_confirm',
     'video_operator_create','video_job_progress','video_job_status','video_job_claim','video_job_finish','video_pending_notifications',
-    'video_request_notified','video_download','video_job_file','video_cleanup'] loop
+    'video_request_notified','video_download','video_job_file','video_cleanup','video_worker_wakeup'] loop
     execute format('revoke all on function %I(jsonb) from public', f);
     if exists (select 1 from pg_roles where rolname = 'anon') then
       execute format('revoke all on function %I(jsonb) from anon, authenticated', f);
