@@ -422,3 +422,7 @@ export function IconSettings({ size = 16, color = "currentColor", style }: IconP
     <circle cx="13" cy="7" r="2" /><circle cx="9" cy="17" r="2" />
   </svg>;
 }
+
+export function IconMail({ size = 16, color = "currentColor", style }: IconProps) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style={{display:"inline-block",verticalAlign:"middle",flexShrink:0,...style}}><rect x="1.5" y="3" width="13" height="10" rx="2" stroke={color} strokeWidth="1.33"/><path d="m2 4 6 4.5L14 4" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}

@@ -268,6 +268,13 @@ export const WIDGETS = {
   // ── Kommune und Region: eine Karte, je Aufruf ein anderer Ort ───────────────
   // Titel und Teilen-Text tragen den Ort erst zur Laufzeit (widgetForPlace);
   // hier steht die Gattung, damit Galerie und Übersicht etwas Sinnvolles zeigen.
+  gemeindeRanking: {
+    id: "gemeinde-ranking", title: "Top 3 im Ortsvergleich", kind: "chart",
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Die Top 3 im Solar-Ranking – Solar Check",
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.destatis],
+    cta: { label: "Orte vergleichen", href: "/solar-atlas" },
+    embeddable: false,
+  },
   gemeindeSolar: {
     id: "gemeinde-solar",
     title: "Solaranlagen einer Gemeinde",

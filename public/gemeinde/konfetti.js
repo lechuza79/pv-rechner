@@ -25,8 +25,8 @@
       const side = i%2 ? 1 : -1, r=Math.random;
       const angle = fountain ? -side*(.32+r()*.5) : (r()-.5)*2.6;
       const speed = (quiet ? 230+r()*130 : fountain ? 460+r()*160 : 370+r()*290)*scale;
-      particles.push({x: fountain ? (side<0?box.left+14:box.right-14) : box.left+box.width/2+(r()-.5)*36,
-        y:box.top+8, vx:Math.sin(angle)*speed, vy:-Math.cos(angle)*speed,
+      particles.push({x: fountain ? (side<0?box.left+14:box.right-14) : box.left+box.width/2+(r()-.5)*Math.min(36,box.width*.8),
+        y:box.top+Math.min(8,box.height/2), vx:Math.sin(angle)*speed, vy:-Math.cos(angle)*speed,
         delay:quiet ? r()*35 : fountain ? Math.floor(i/2)*5 : (i<34?0:125)+r()*28,
         w:quiet ? 6+r()*4 : 4+r()*4, h:quiet ? 11+r()*6 : 7+r()*6,
         spin:(r()-.5)*(quiet?7:17), phase:r()*Math.PI*2, color:colors[i%colors.length], circle:i%9===0});

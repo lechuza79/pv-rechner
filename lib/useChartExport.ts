@@ -12,6 +12,7 @@ export type { ExportContext, ExportStat, ExportLegendItem } from "./chart-export
 
 export interface UseChartExportOptions {
   context: ExportContext;
+  nodeSize?: {width: number; height: number};
   filename?: string;
   shareText?: string;
   shareUrl?: string;
@@ -51,6 +52,7 @@ export function useChartExport(options: UseChartExportOptions) {
       if (mode === "node") {
         await exportNode(chartRef.current, {
           filename: options.filename,
+          size: options.nodeSize,
           mode: "download",
         });
       } else {
@@ -63,7 +65,7 @@ export function useChartExport(options: UseChartExportOptions) {
     } finally {
       setIsExporting(false);
     }
-  }, [isExporting, mode, options.context, options.filename, options.onBeforeDownload]);
+  }, [isExporting, mode, options.context, options.filename, options.onBeforeDownload, options.nodeSize]);
 
   const sharePng = useCallback(async () => {
     if (!chartRef.current || isExporting) return;

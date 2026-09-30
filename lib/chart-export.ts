@@ -521,6 +521,7 @@ export async function captureNodeToBlob(
   scale = 2,
   format?: { type: string; quality?: number; background?: string },
   presentation: 'export' | 'screen' = 'export',
+  size?: {width: number; height: number},
 ): Promise<Blob> {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
@@ -558,7 +559,13 @@ export async function captureNodeToBlob(
   };
   freeze(clone);
   clone.querySelectorAll<HTMLElement | SVGElement>('*').forEach(freeze);
-  clone.style.width = `${rect.width}px`;
+  clone.style.width = `${size?.width ?? rect.width}px`;
+  if (size) {
+    clone.style.height = `${size.height}px`;
+    clone.style.setProperty('--chart-export-height', `${size.height}px`);
+    clone.style.minHeight = '0';
+    clone.setAttribute('data-export-sized', '');
+  }
   clone.style.margin = '0';
   wrapper.appendChild(clone);
   document.body.appendChild(wrapper);
@@ -617,11 +624,12 @@ export async function exportNode(
   options: {
     filename?: string;
     mode: 'download' | 'share';
+    size?: {width: number; height: number};
     shareTitle?: string;
     shareText?: string;
   },
 ): Promise<Blob | null> {
-  const blob = await captureNodeToBlob(node);
+  const blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
   const filename = options.filename || 'solar-check-chart.png';
 
   if (options.mode === 'download') {

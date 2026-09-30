@@ -91,6 +91,20 @@
     timer = null,
     remote = null,
     animationId = 0;
+  // Restore only known selections; shared ranking links must open the selected category.
+  const linkParams = new URLSearchParams(window.location.search);
+  if (linkParams.has("chart")) {
+    const requested = linkParams.get("ranking-category");
+    const linked = metrics.find(m => (m.snapshot?.key ?? m.id) === requested)
+      ?? metrics.find(m => linkParams.get("chart").startsWith(`ranking-${G.name}-${m.snapshot?.key ?? m.id}-`));
+    if (linked) { active = linked.id; active0 = active; }
+    const linkedArea = linkParams.get("ranking-area");
+    if ([G.kreisAgs, G.landAgs, ""].includes(linkedArea)) area = linkedArea;
+    const linkedClass = linkParams.get("ranking-class");
+    if (classes.some(c => c[0] === linkedClass)) classId = linkedClass;
+    const linkedOwner = linkParams.get("ranking-owner");
+    if (["alle", "privat", "gewerbe"].includes(linkedOwner)) owner = linkedOwner;
+  }
   const seen = new Map(),
     listInvitations = new Set();
   const shortScope = (scope) => scope.split(" · ")[0];
@@ -454,6 +468,11 @@
             : "instant",
       });
     }
+    function stageMessage(message) {
+      const event=new CustomEvent("municipality-ranking-status",{cancelable:true,detail:message});
+      if(!G.districtOverview)window.dispatchEvent(event);
+      if(!event.defaultPrevented)stage.innerHTML=`<p>${escape(message)}</p>`;
+    }
     async function selectCategory(metric) {
       // Finish the previous discovery if the user skips its animation.
       const prior = metrics.find((item) => item.id === active),
@@ -475,7 +494,7 @@
       // until then (or if it fails) the stored own position shows alone.
       const snap = metric.snapshot;
       if (snap && !snap.rows && snap.rowsUrl && !snap.rowsFailed) {
-        stage.innerHTML = "<p>Rangliste wird geladen …</p>";
+        stageMessage("Rangliste wird geladen …");
         await zeilenNachladen(metric);
         if (active !== metric.id) return;
       }
@@ -649,7 +668,8 @@
             new CustomEvent("atlas-ranking-celebrate", {
               detail: {
                 target:
-                  stage.querySelector(".ranking-contender.is-own") ?? stage,
+                  stage.querySelector("[data-ranking-celebration-origin]") ??
+                  stage.querySelector(".ranking-contender.is-own .ranking-step") ?? stage,
               },
             }),
           );
@@ -684,7 +704,7 @@
           animate &&
           !seen.has(m.id) &&
           !matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (motion)
+        if (motion && G.districtOverview)
           await stage
             .animate([{ opacity: 1 }, { opacity: 0 }], {
               duration: 150,
@@ -693,6 +713,20 @@
             .finished.catch(() => {});
         if (id !== animationId) return;
         cancelMotion();
+        if (!G.districtOverview) {
+          const event = new CustomEvent("municipality-ranking-widget", {cancelable:true,detail:{
+            headingVariants:metrics.map(metric=>({title:metric.title,unit:metric.unit})),
+            shareParams:{"ranking-category":m.snapshot?.key ?? m.id,"ranking-area":area,"ranking-class":classId,"ranking-owner":owner},
+            host:stage, place:G.name, category:m.snapshot?.key ?? m.id, title:m.title, unit:sk.unit,
+            scope:m.snapshot ? m.snapshot.scope : [area===G.kreisAgs?G.kreisLabel:area===G.landAgs?G.landLabel:"Deutschland",classes.find(c=>c[0]===classId)?.[1],owner==="alle"?"Alle Anlagen":owner==="privat"?"Private Anlagen":"Gewerbliche Anlagen und Freiflächen"].filter(Boolean).join(" · "),
+            stand:m.snapshot?.asOf ?? data.dataAsOf, animate:motion,
+            onReveal:()=>{if(id===animationId){revealChoice();schedule();}},
+            rows:top.map(r=>({id:r.id,name:r.name,rank:r.rank,value:r.value,formatted:wert(r.value,sk),href:r.href,own:r.id===G.ags})),
+            missing:m.snapshot&&!m.snapshot.rows?"Die Top 3 dieser Rangliste sind noch nicht verfügbar.":null
+          }});
+          window.dispatchEvent(event);
+          if(event.defaultPrevented){stage.classList.add("ranking-widget-host");return;}
+        }
         stage.innerHTML = html;
 
         const [label, qualifier] = splitTitle(m.title),
@@ -1151,7 +1185,7 @@
       full.close();
       section.querySelector(".ranking-table").innerHTML = "";
       choices.innerHTML = "";
-      stage.innerHTML = "<p>Vergleich wird geladen …</p>";
+      stageMessage("Vergleich wird geladen …");
       openList.hidden = true;
       status.textContent = "";
       section.querySelector(".ranking-intro-copy").textContent =
@@ -1194,14 +1228,13 @@
       } catch (e) {
         if (id !== requestId) return;
         busy = false;
-        stage.innerHTML =
-          "<h3>Vergleich gerade nicht verfügbar</h3><p>Bitte erneut versuchen oder ${escape(G.startLabel)} wählen.</p>";
+        stageMessage("Vergleich gerade nicht verfügbar. Bitte erneut versuchen.");
         status.textContent = "Die Live-Rangliste konnte nicht geladen werden.";
         const retry = document.createElement("button");
         retry.type = "button";
         retry.textContent = "Erneut versuchen";
         retry.onclick = load;
-        stage.append(retry);
+        status.append(retry);
         schedule();
       }
     }

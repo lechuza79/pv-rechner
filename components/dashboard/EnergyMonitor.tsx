@@ -24,7 +24,7 @@ type Props = {
  */
 export function EnergyMonitor({ rootRef, className = "", kpis, currentPower, growth, stock, energy, energyNotice, map }: Props) {
   return (
-    <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme="dark" data-energy-monitor>
+    <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme="dark" data-energy-monitor data-embed-layout-root>
       {kpis}
       {(currentPower || growth) && <section aria-label="Aktuelle Solarleistung und Ausbau">
         <div className="sc-widget-grid">{currentPower}{growth}</div>

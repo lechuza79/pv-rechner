@@ -2,8 +2,11 @@
 
 import { useEffect, useLayoutEffect, useId, useRef, useState } from "react";
 import { v } from "../lib/theme";
-import { IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconHelpCircle, IconShare, IconRefresh } from "./Icons";
-import styles from "./ChartOptionsMenu.module.css";
+import { IconCheck, IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconMail, IconArrowRight, IconShare, IconRefresh } from "./Icons";
+import Modal from "./Modal";
+import ContactForm from "./ContactForm";
+import { isContactTopic, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
+import styles from "./WidgetActionMenu.module.css";
 import type { VideoRequestParams } from "../lib/video-export-client";
 import WidgetVideoDialog, { type VideoMailOptions } from "./WidgetVideoDialog";
 import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
@@ -14,8 +17,7 @@ import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
  * prominent action bar (ChartActionBar) uses; it owns no export logic.
  *
  * Embedding is only offered as an action where a supported embed exists;
- * otherwise the entry stays visible, disabled, with the reason, so nobody is
- * handed a code that does not work.
+ * otherwise it leads to the contact form with the widget context.
  *
  * Keyboard: Enter/Space/ArrowDown open and focus the first entry; ArrowUp/Down,
  * Home/End move; Escape closes and returns focus to the button; Tab closes.
@@ -53,8 +55,18 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   const [group,setGroup] = useState<"embed"|"download"|"share">("embed");
   const [open, setOpen] = useState(false);
   const [videoOpen, setVideoOpen] = useState(false);
+  const [contact, setContact] = useState<{ topic: ContactTopic; message: string } | null>(null);
+  const openContact = (href: string) => {
+    const params = new URL(href, "https://solar-check.io").searchParams;
+    const topic = params.get("topic");
+    close();
+    setContact({ topic: isContactTopic(topic) ? topic : DEFAULT_CONTACT_TOPIC, message: params.get("message") ?? "" });
+  };
   const [anchor,setAnchor] = useState({left:12,bottom:60,width:280});
   const [menuMaxHeight,setMenuMaxHeight]=useState<number>();
+  const [menuTop,setMenuTop]=useState<number>();
+  const [copied, setCopied] = useState(false);
+  const [copying, setCopying] = useState(false);
   const [status, setStatus] = useState("");
   const wrap = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -65,8 +77,8 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     if (!open) return;
     const outside = (e: PointerEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("pointerdown", outside);
-    requestAnimationFrame(() => items()[0]?.focus());
-    return () => document.removeEventListener("pointerdown", outside);
+    const frame = requestAnimationFrame(() => items()[0]?.focus({ preventScroll: true }));
+    return () => { cancelAnimationFrame(frame); document.removeEventListener("pointerdown", outside); };
   }, [open,group]);
 
   useLayoutEffect(() => {
@@ -74,8 +86,13 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     const host=wrap.current,trigger=button.current;
     const update=()=>{
       const box=host.getBoundingClientRect(),target=trigger.getBoundingClientRect();
-      setMenuMaxHeight(Math.max(120,presentation==="footer"?target.top-20:window.innerHeight-target.bottom-20));
-      if(presentation!=="footer")return;
+      setMenuMaxHeight(Math.max(120,window.innerHeight-24));
+      if(presentation!=="footer"){
+        const height=document.getElementById(menuId)?.scrollHeight ?? 0;
+        const top=Math.max(12,Math.min(target.bottom+6,window.innerHeight-height-14));
+        setMenuTop(top-box.top);
+        return;
+      }
       const width=Math.min(280,Math.max(0,box.width-24));
       const left=Math.max(12,Math.min(target.right-box.left-width,box.width-width-12));
       setAnchor({left,bottom:box.bottom-target.top+8,width});
@@ -84,12 +101,13 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     const observer=new ResizeObserver(update);
     observer.observe(host);observer.observe(trigger);
     window.addEventListener('resize',update);
-    return()=>{observer.disconnect();window.removeEventListener('resize',update);};
-  },[open,group,presentation]);
+    window.addEventListener('scroll',update,true);
+    return()=>{observer.disconnect();window.removeEventListener('resize',update);window.removeEventListener('scroll',update,true);};
+  },[open,group,presentation,menuId]);
 
   const close = (refocus = true) => { setOpen(false); if (refocus) button.current?.focus({preventScroll:true}); };
-  const run = (fn: () => void | Promise<void>, done?: string) => async () => {
-    close();
+  const run = (fn: () => void | Promise<void>, done?: string, keepOpen = false) => async () => {
+    if (!keepOpen) close();
     try {
       await fn();
       if (done) setStatus(done);
@@ -98,6 +116,14 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     }
     window.setTimeout(() => setStatus(""), 2500);
   };
+  const copyLink = async () => {
+    setCopying(true);
+    setStatus("");
+    try { await onShare(); setCopied(true); }
+    catch (error) { setStatus(error instanceof Error ? error.message : "Link konnte nicht kopiert werden."); }
+    finally { setCopying(false); }
+  };
+  useEffect(() => { if (!open) setCopied(false); }, [open]);
   const onMenuKey = (e: React.KeyboardEvent) => {
     const list = items(), index = list.indexOf(document.activeElement as HTMLElement);
     if (e.key === "Escape") { e.preventDefault(); close(); }
@@ -110,9 +136,10 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   const onButtonKey = (e: React.KeyboardEvent) => { if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); } };
 
   const footer = presentation === "footer";
-  const item: React.CSSProperties = { display: "grid", gridTemplateColumns: "18px minmax(0, 1fr)", alignItems: "center", gap: 10, textDecoration: "none", width: "100%", minHeight: 44, padding: "8px 14px", border: 0, background: "transparent", color: `var(--widget-ink, ${v("--color-text-primary")})`, font: "inherit", fontSize: v("--font-size-body"), textAlign: "left", lineHeight: 1.45, boxSizing: "border-box", whiteSpace: "normal", cursor: "pointer" };
   const leadingIcon: React.CSSProperties = {gridColumn:1,gridRow:1,order:-1,justifySelf:"start",flexShrink:0};
-  const separator = <div role="separator" style={{height:0,margin:"6px 14px",borderTop:"1px solid color-mix(in srgb, var(--widget-muted, currentColor) 35%, transparent)"}}/>;
+  const contactIcon = {...leadingIcon,alignSelf:"start",marginTop:3};
+  const contactAction = <span className={styles.contactAction}>Anfragen <IconArrowRight size={14}/></span>;
+  const separator = <div role="separator" className={styles.separator}/>;
   const unavailable = "unavailable" in embed ? embed.unavailable : null;
 
   return (
@@ -132,31 +159,41 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
       </button>}
       {open && (
         <div className={styles.menu} id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
-          style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",maxHeight:menuMaxHeight,overflowY:"auto",boxSizing:"border-box",padding:"6px 0",borderRadius:12,background:`var(--widget-surface, ${v("--color-bg-raised")})`,border:"1px solid var(--widget-muted)",boxShadow:"0 12px 32px #0004" }}>
+          onMouseDown={event => {
+            const item = (event.target as HTMLElement).closest<HTMLElement>('[role="menuitem"]');
+            if (event.button !== 0 || !item || item.matches(":disabled")) return;
+            // Native mouse focus can scroll the outer page of an iframe even
+            // when the item is already visible. Keep focus without navigation.
+            event.preventDefault();
+            item.focus({ preventScroll: true });
+          }}
+          style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:menuTop??"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",maxHeight:menuMaxHeight,overflowY:"auto" }}>
           {(!footer||group==="share")&&<>
-          <button type="button" role="menuitem" tabIndex={-1} data-widget-action="copy_link" disabled={busy} style={item} onClick={run(onShare, "Link kopiert.")}><IconCopy size={16} style={leadingIcon}/><span>Link kopieren</span></button>
-          {onForward&&<button type="button" role="menuitem" tabIndex={-1} data-widget-action="forward" disabled={busy} style={item} onClick={run(onForward,typeof navigator!=="undefined"&&typeof navigator.share==="function"?undefined:"Link kopiert.")}><IconShare size={16} style={leadingIcon}/><span>Weiterleiten</span></button>}
+          <button type="button" role="menuitem" tabIndex={-1} data-widget-action="copy_link" disabled={busy || copying} className={styles.item} onClick={copyLink}>{copied ? <IconCheck size={16} style={leadingIcon}/> : <IconCopy size={16} style={leadingIcon}/>}<span aria-live="polite">{copied ? "Link kopiert" : copying ? "Link wird kopiert …" : "Link kopieren"}</span></button>
+          {onForward&&<button type="button" role="menuitem" tabIndex={-1} data-widget-action="forward" disabled={busy} className={styles.item} onClick={run(onForward,typeof navigator!=="undefined"&&typeof navigator.share==="function"?undefined:"Link kopiert.", true)}><IconShare size={16} style={leadingIcon}/><span>Weiterleiten</span></button>}
           </>}
           {!footer&&separator}
           {(!footer||group==="download")&&<>
-          <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} style={item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
+          <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} className={styles.item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
           {animation&&<>
-            <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} style={item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
-            {onVideoRequest ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" style={item} onClick={()=>{close();setVideoOpen(true);}}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>MP4 · Downloadlink per E-Mail</small></span></button> : <a role="menuitem" tabIndex={-1} data-widget-action="video_contact" href={videoContactHref} target="_top" style={item} onClick={()=>close(false)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></a>}
+            <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} className={styles.item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
+            {onVideoRequest ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" className={styles.item} onClick={()=>{close();setVideoOpen(true);}}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen<small className={styles.secondary}>MP4 · Downloadlink per E-Mail</small></span></button> : <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video_contact" className={styles.item} onClick={()=>openContact(videoContactHref)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></button>}
           </>}
-          {designContactHref&&<>{separator}<a role="menuitem" tabIndex={-1} data-widget-action="design_contact" href={designContactHref} target="_top" style={item} onClick={()=>close(false)}><IconHelpCircle size={16} style={leadingIcon}/><span>In Ihrem Design<small style={{display:"block",fontSize:v("--font-size-small"),color:"var(--widget-muted)",marginTop:2}}>Mit Ihrem Logo und Ihren Farben.</small><span style={{display:"block",marginTop:4,textDecoration:"underline",textUnderlineOffset:3}}>Anfragen →</span></span></a></>}
+          {designContactHref&&<>{separator}<button type="button" role="menuitem" tabIndex={-1} data-widget-action="design_contact" className={`${styles.item} ${styles.contactItem}`} onClick={()=>openContact(designContactHref)}><IconMail size={16} style={contactIcon}/><span>In Ihrem Design<small className={styles.secondary}>Ihr Logo, Ihre Farben.</small>{contactAction}</span></button></>}
           </>}
           {!footer&&separator}
           {(!footer||group==="embed")&&<>
           {unavailable
-            ? <button type="button" role="menuitem" tabIndex={-1} aria-disabled="true" style={{ ...item, cursor: "default", alignItems: "flex-start", opacity: .75 }} onClick={e => e.preventDefault()}>
-                <IconCode size={16} style={leadingIcon}/><span>Einbetten<small style={{ display: "block", fontSize: v("--font-size-small"), color: `var(--widget-muted, ${v("--color-text-muted")})`, marginTop: 2 }}>{unavailable}</small></span>
-              </button>
-            : <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed" disabled={busy} style={item} onClick={run((embed as { onEmbed: () => void }).onEmbed)}><IconCode size={16} style={leadingIcon}/><span>Einbetten</span></button>}
-          <a role="menuitem" tabIndex={-1} data-widget-action="embed_contact" href={contactHref} target="_top" style={{...item,fontSize:v("--font-size-small")}} onClick={()=>close(false)}><IconHelpCircle size={16} style={leadingIcon}/><span>Fragen zum Einbetten? Kontakt</span></a>
+            ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed_contact" className={`${styles.item} ${styles.contactItem}`} onClick={()=>openContact(contactHref)}><IconMail size={16} style={contactIcon}/><span>Einbetten<small className={styles.secondary}>Für dieses Diagramm noch nicht verfügbar.</small>{contactAction}</span></button>
+            : <><button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed" disabled={busy} className={styles.item} onClick={run((embed as { onEmbed: () => void }).onEmbed)}><IconCode size={16} style={leadingIcon}/><span>Einbetten</span></button>
+              <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed_contact" className={`${styles.item} ${styles.contactItem} ${styles.followup}`} onClick={()=>openContact(contactHref)}><IconMail size={16} style={contactIcon}/><span>Fragen zum Einbetten? {contactAction}</span></button></>}
+
           </>}
         </div>
       )}
+      <Modal open={contact !== null} onClose={() => { setContact(null); button.current?.focus({preventScroll:true}); }} title="Kontakt aufnehmen">
+        {contact && <ContactForm initialTopic={contact.topic} initialMessage={contact.message} />}
+      </Modal>
       {videoOpen && <WidgetVideoDialog open={videoOpen} onClose={()=>{setVideoOpen(false);button.current?.focus({preventScroll:true});}} label={label} videoParams={videoParams} period={videoPeriod} place={videoPlace} loadThumbnail={loadVideoThumbnail} onRequest={onVideoRequest} />}
       {status && <span role="status" aria-live="polite" style={{ position: footer ? "relative" : "absolute", display:"block", right: 0, top: footer ? undefined : "100%", zIndex: 21, minWidth: 180, padding: 10, borderRadius: 8, background: `var(--widget-surface, ${v("--color-bg-raised")})`, color: "inherit" }}>{status}</span>}
     </div>

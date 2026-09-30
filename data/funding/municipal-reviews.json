@@ -77185,5 +77185,235 @@
         "evidenceUrl": "https://www.heide.de/artikelansicht/millionenfoerderung-fuer-projekt-in-heide-gruene-energie-fuer-buerger-und-unternehmen-1.html"
       }
     ]
+  },
+  {
+    "regionId": "01053",
+    "name": "Kreis Herzogtum Lauenburg",
+    "checkedAt": "2026-09-30T09:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kreis Herzogtum Lauenburg: kein eigener Kreiszuschuss an Privathaushalte. „Kommunale Förderung für den Klimaschutz“ beschreibt die Bundesförderung (Kommunalrichtlinie) für das Klimaschutzmanagement der Kreisverwaltung. Die frühere Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen (Balkonkraftwerke)“ ist das Landesprogramm Schleswig-Holstein (im Katalog als Landesprogramm geführt) und auf der Kreisseite nicht mehr vorhanden. Die übrigen erfassten Kreisseiten betreffen Kindertages- und Pflegeleistungen.",
+    "searches": [
+      "Dienstleistung „Kommunale Förderung für den Klimaschutz beantragen“ am 30.09.2026 im Browser vollständig gelesen",
+      "Kreis-Seitensuche am 30.09.2026: Photovoltaik (10 Treffer: Solarkataster, Klima2Go-Vorträge, PV auf dem Kreishaus), Balkonkraftwerk (0), Solar (3), Wärmepumpe (11: Erdwärmesonden-Genehmigung), Klimaschutzfonds (0), Förderprogramm (18, ohne Energiezuschuss), Stecker (0)",
+      "Websuche „Kreis Herzogtum Lauenburg Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte 2026“: einziger Kreistreffer ist die Balkonkraftwerk-Dienstleistung; Aufruf am 30.09.2026: „Ungueltige ID – Das angeforderte Element existiert nicht“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Seite beschreibt das KSI-Klimaschutzmanagement der Kreisverwaltung, gefördert „im Rahmen der Nationalen Klimaschutzinitiative“ — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.kreis-rz.de/Politik-und-Verwaltung/Kreisverwaltung/Regionalentwicklung-Umwelt-Bauen/Verwaltung-Steuerung-und-Liegenschaften/F%C3%B6rderung-f%C3%BCr-Balkonkraftwerke-beantragen.php?object=tx,3149.2.1&ModID=10&FID=3150.293.1&sNavID=1814.39&NavID=1814.39&La=1",
+        "finding": "30.09.2026: Weiterleitung auf das Dienstleistungsverzeichnis mit „Das angeforderte Element existiert nicht“; Titel war „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“)“ — Leistungsbeschreibung des Landesprogramms Klimaschutz für Bürgerinnen und Bürger."
+      },
+      {
+        "url": "https://www.kreis-rz.de/?NavID=3150.1&qs=Photovoltaik",
+        "finding": "30.09.2026: Seitensuche Photovoltaik — Solarkataster, Klima2Go, Energiewende in der Kreisverwaltung; kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung des Klimaschutzmanagements der Kreisverwaltung, kein Haushaltszuschuss. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "kreis-rz.de/Quicknavigation/Kindertagespflegef%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Kindertagespflege-Förderung, anderes Sachgebiet. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "kreis-rz.de/Service/Dienstleistungen/Einmalige-Leistungen-oder-Zusch%C3%BCsse-bei-der-Aufnahme-eines-Pflegekindes.php",
+        "disposition": "reviewed",
+        "reason": "Leistungen für Pflegekinder, anderes Sachgebiet. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "kreis-rz.de/Service/Dienstleistungen/Investitionskostenzuschuss-Tages-Kurzzeitpflege-.php",
+        "disposition": "reviewed",
+        "reason": "Investitionskostenzuschuss Tages-/Kurzzeitpflege, anderes Sachgebiet. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "kreis-rz.de/Service/Dienstleistungen/Zusch%C3%BCsse-f%C3%BCr-wichtige-und-notwendige-Zusatzausgaben-f%C3%BCr-Pflegekinder-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zusatzausgaben für Pflegekinder, anderes Sachgebiet. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "kreis-rz.de/Service/Dienstleistungen/Zuschuss-zu-Altersabsicherung-als-Pflegeperson-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Altersabsicherung von Pflegepersonen, anderes Sachgebiet. Seite am 30.09.2026 abgerufen (Titel und Dienstleistung).",
+        "evidenceUrl": "https://www.kreis-rz.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01053008",
+    "name": "Behlendorf",
+    "checkedAt": "2026-09-30T09:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Behlendorf: kein Zuschuss der Gemeinde an Privathaushalte. Die Gemeindewebsite nennt zum Thema nur einen Info-Abend des Energiebeirats (2024); die Gemeindevertretung beriet 2025 über eine PV-Anlage am eigenen Klärwerk. Die Balkonförderung im Amt Berkenthin gehört der Gemeinde Berkenthin.",
+    "searches": [
+      "behlendorf.de Startseite und Menü am 30.09.2026 gelesen: keine Förder- oder Klimarubrik",
+      "Seitensuche behlendorf.de am 30.09.2026: balkon 0, foerderung 0, solar 0, photovoltaik 1 (Info-Abend 08.02.2024)",
+      "Amtsseiten-Suche berkenthin-amt.de am 30.09.2026: Behlendorf-Treffer nur Tagesordnung (PV am Klärwerk)"
+    ],
+    "evidence": [
+      {
+        "url": "https://behlendorf.de/strom-erzeugen-mit-photovoltaik/",
+        "finding": "30.09.2026: Einladung des Energiebeirats zum Info-Abend „Strom erzeugen mit Photovoltaik“ mit der Verbraucherzentrale — kein Zuschuss."
+      },
+      {
+        "url": "https://berkenthin-amt.de/gemeindevertretung-behlendorf-tagt-am-16-09/",
+        "finding": "30.09.2026: „Die mögliche Installation einer Photovoltaikanlage am Klärwerk“ auf der Tagesordnung — Gemeindeanlage, kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "behlendorf.de/sperrung-l220-kuehsen-berkenthinneuer-fahrplan-schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "22.08.2022: Straßensperrung und Schülerbeförderung, anderes Sachgebiet. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://behlendorf.de/strom-erzeugen-mit-photovoltaik/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053024",
+    "name": "Düchelsdorf",
+    "checkedAt": "2026-09-30T09:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Düchelsdorf (Amt Berkenthin): kein Zuschuss der Gemeinde an Privathaushalte. Die Balkon-Solar-Förderung auf den Amtsseiten ist ein Programm der Gemeinde Berkenthin (im Katalog als Berkenthin geführt), nicht der übrigen amtsangehörigen Gemeinden; die weiteren Amtsseiten betreffen Infrastruktur-, Corona- und Landesprogramme.",
+    "searches": [
+      "Amtsseite „Förderungen“ am 30.09.2026 gelesen: nur geförderte Gemeindeprojekte (Wegebau, Gewerbegebiet, Radweg)",
+      "Amtsseiten-Suche (berkenthin-amt.de) am 30.09.2026: balkon, photovoltaik, foerderung, solar — Balkonförderung nur Gemeinde Berkenthin; Photovoltaik-Treffer zu Düchelsdorf sind Tagesordnungen",
+      "Gemeindeinfo-Seite Düchelsdorf (Amt) am 30.09.2026 gelesen: keine eigene Website, keine Förderangabe; PV-Treffer betreffen den Bebauungsplan Nr. 2 für eine Freiflächenanlage"
+    ],
+    "evidence": [
+      {
+        "url": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/",
+        "finding": "30.09.2026: „bei uns, der Gemeinde Berkenthin können immer noch Balkonsolaranlagen gefördert werden“ — Programm der Gemeinde Berkenthin."
+      },
+      {
+        "url": "https://berkenthin-amt.de/foerderungen/",
+        "finding": "30.09.2026: Übersicht geförderter Gemeindevorhaben (ELER, GRW, KSI-Radweg) — keine Zuschüsse an Privathaushalte."
+      },
+      {
+        "url": "https://berkenthin-amt.de/gemeindevertretung-duechelsdorf-tagt-am-19-02/",
+        "finding": "30.09.2026: Tagesordnung „Bebauungsplan Nr. 2 zur Ausweisung einer Photovoltaik-Freiflächenanlage“ — Bauleitplanung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Balkonförderung der Gemeinde Berkenthin, nicht dieser Gemeinde. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      },
+      {
+        "url": "berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "27.03.2023: Beschluss der Gemeindevertretung Berkenthin — gilt nur für Berkenthin. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      },
+      {
+        "url": "berkenthin-amt.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Gemeindeprojekte, kein Haushaltszuschuss. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/bund-stellt-zusaetzliche-foerdermittel-fuer-laendliche-entwicklung-zur-verfuegung",
+        "disposition": "reviewed",
+        "reason": "2019: GAK-Sonderrahmenplan für Kleinstprojekte der Gemeinden, kein Haushaltszuschuss. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/investitionsbank-schleswig-holstein-mit-uebersicht-auf-corona-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "2020: Hinweis auf Corona-Programme der IB.SH, anderes Sachgebiet. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/zweite-antragsphase-des-foerderprogramms-klimaschutz-fuer-buergerinnen-und-buerger-des-landes-schleswig-holstein",
+        "disposition": "reviewed",
+        "reason": "2023: Pressemitteilung zum Landesprogramm Schleswig-Holstein (im Katalog als Landesprogramm), kein Gemeindeprogramm. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053034",
+    "name": "Göldenitz",
+    "checkedAt": "2026-09-30T09:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göldenitz (Amt Berkenthin): kein Zuschuss der Gemeinde an Privathaushalte. Die Balkon-Solar-Förderung auf den Amtsseiten ist ein Programm der Gemeinde Berkenthin (im Katalog als Berkenthin geführt), nicht der übrigen amtsangehörigen Gemeinden; die weiteren Amtsseiten betreffen Infrastruktur-, Corona- und Landesprogramme.",
+    "searches": [
+      "Amtsseite „Förderungen“ am 30.09.2026 gelesen: nur geförderte Gemeindeprojekte (Wegebau, Gewerbegebiet, Radweg)",
+      "Amtsseiten-Suche (berkenthin-amt.de) am 30.09.2026: balkon, photovoltaik, foerderung, solar — Balkonförderung nur Gemeinde Berkenthin; Photovoltaik-Treffer zu Göldenitz sind Tagesordnungen",
+      "Gemeindeinfo-Seite Göldenitz (Amt) am 30.09.2026 gelesen: keine eigene Website, keine Förderangabe"
+    ],
+    "evidence": [
+      {
+        "url": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/",
+        "finding": "30.09.2026: „bei uns, der Gemeinde Berkenthin können immer noch Balkonsolaranlagen gefördert werden“ — Programm der Gemeinde Berkenthin."
+      },
+      {
+        "url": "https://berkenthin-amt.de/foerderungen/",
+        "finding": "30.09.2026: Übersicht geförderter Gemeindevorhaben (ELER, GRW, KSI-Radweg) — keine Zuschüsse an Privathaushalte."
+      },
+      {
+        "url": "https://berkenthin-amt.de/gemeinde-goeldenitz-infos/",
+        "finding": "30.09.2026: Gemeindedaten (236 Einwohner), keine Förderangabe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Balkonförderung der Gemeinde Berkenthin, nicht dieser Gemeinde. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      },
+      {
+        "url": "berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "27.03.2023: Beschluss der Gemeindevertretung Berkenthin — gilt nur für Berkenthin. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      },
+      {
+        "url": "berkenthin-amt.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Gemeindeprojekte, kein Haushaltszuschuss. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/bund-stellt-zusaetzliche-foerdermittel-fuer-laendliche-entwicklung-zur-verfuegung",
+        "disposition": "reviewed",
+        "reason": "2019: GAK-Sonderrahmenplan für Kleinstprojekte der Gemeinden, kein Haushaltszuschuss. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/investitionsbank-schleswig-holstein-mit-uebersicht-auf-corona-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "2020: Hinweis auf Corona-Programme der IB.SH, anderes Sachgebiet. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/zweite-antragsphase-des-foerderprogramms-klimaschutz-fuer-buergerinnen-und-buerger-des-landes-schleswig-holstein",
+        "disposition": "reviewed",
+        "reason": "2023: Pressemitteilung zum Landesprogramm Schleswig-Holstein (im Katalog als Landesprogramm), kein Gemeindeprogramm. Am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
+      }
+    ]
   }
 ]
