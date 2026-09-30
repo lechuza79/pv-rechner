@@ -355,6 +355,7 @@ export const tokens = {
   // kleiner (Override in globalStyles → 24px, Total 72px), weil der große
   // Abstand dort zu viel leeren Raum über der Überschrift lässt.
   '--content-lede-top': '48px',
+  '--header-min-height': '48px', // Reserve the hydrated navigation controls before first paint.
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -788,7 +789,7 @@ export const globalStyles = `
      Inhaltsspalte eingezogen. Gemessen auf der Startseite bei 1024 px — Logo
      bei x=51 (5 %), Deckel 1600. Unsere Seiten hatten 16 px festen Rand, das
      Logo saß deshalb sichtbar weiter außen als auf den neuen Seiten. */
-  .sc-react-header{max-width:var(--header-frame-max)}
+  .sc-react-header{max-width:var(--header-frame-max);min-height:var(--header-min-height)}
   /* Das Logo auf hellem Grund ist NEUTRAL, nicht limette: Marke in gedecktem
      Petrol, Wortmarke in der Textfarbe. Die drei Werte stehen so im Kopf der
      neuen Seiten (components/DesignHeader.css) und sind von dort übernommen —
