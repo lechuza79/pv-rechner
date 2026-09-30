@@ -58,13 +58,13 @@ export default function Toast({
   // Satz war nach einer Sekunde weg. Genau der Satz, der die stille Annahme
   // sichtbar machen soll.
   const inhalt = typeof children === "string" ? children : null;
-  const [remaining, setRemaining] = useState(() => Math.ceil(autoHideMs / 1000));
+  const [remainingMs, setRemainingMs] = useState(autoHideMs);
   useEffect(() => {
     if (!open || !autoHideMs) return;
     const deadline = Date.now() + autoHideMs;
-    setRemaining(Math.ceil(autoHideMs / 1000));
+    setRemainingMs(autoHideMs);
     const timeout = setTimeout(() => onCloseRef.current(), autoHideMs);
-    const interval = showCountdown ? setInterval(() => setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000))), 250) : undefined;
+    const interval = showCountdown ? setInterval(() => setRemainingMs(Math.max(0, deadline - Date.now())), 100) : undefined;
     return () => { clearTimeout(timeout); if (interval) clearInterval(interval); };
   }, [open, autoHideMs, showCountdown, countdownKey, inhalt]);
 
@@ -114,8 +114,16 @@ export default function Toast({
         ...(expanded ? { borderRadius: v("--radius-lg") } : {}),
       }}
     >
+      {showCountdown && autoHideMs > 0 && (
+        <span className="sc-toast-countdown" aria-hidden="true" style={{ position: "relative", width: 28, height: 28, flexShrink: 0, display: "grid", placeItems: "center" }}>
+          <svg width="28" height="28" viewBox="0 0 28 28" style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}>
+            <circle cx="14" cy="14" r="12" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.18" />
+            <circle cx="14" cy="14" r="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - Math.min(1, remainingMs / autoHideMs)} />
+          </svg>
+          <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{Math.ceil(remainingMs / 1000)}</span>
+        </span>
+      )}
       <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
-      {showCountdown && autoHideMs > 0 && <span aria-hidden="true" style={{ whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>({remaining} s)</span>}
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
         aria-label={closeLabel}

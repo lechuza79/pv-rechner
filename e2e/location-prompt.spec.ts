@@ -84,12 +84,14 @@ for (const [name, route] of routes) test(`${name}: mobile inline location saves 
   await expect.poll(() => page.evaluate(() => localStorage.getItem('sc-plz'))).toBe('27793');
   const feedback = page.getByRole('status').filter({ hasText: 'Wildeshausen übernommen.' });
   await expect(feedback).toContainText(name === 'wp' ? 'Dein Ergebnis bleibt unverändert.' : 'Ergebnis aktualisiert.');
-  await expect(feedback).toContainText('(10 s)');
+  await expect(feedback.locator('.sc-toast-countdown')).toContainText('10');
+  await expect(feedback.locator('.sc-toast-countdown circle')).toHaveCount(2);
   if (name === 'wp') {
     await expect(page.locator('[data-before-location="true"]')).toHaveCount(1);
     await feedback.screenshot({ path: '/tmp/location-feedback-unchanged.png' });
     await page.clock.fastForward(9000);
-    await expect(feedback).toContainText('(1 s)');
+    await expect(feedback.locator('.sc-toast-countdown')).toHaveText('1');
+    await expect.poll(async () => Number(await feedback.locator('.sc-toast-countdown circle').last().getAttribute('stroke-dashoffset'))).toBeGreaterThan(0.8);
     await page.clock.fastForward(1000);
     await expect(feedback).toHaveCount(0);
     await expect(page.locator('[data-before-location="true"]')).toHaveCount(1);

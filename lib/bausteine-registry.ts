@@ -353,7 +353,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/Toast.tsx",
     name: "Toast",
-    zweck: "Eine kurze Meldung am Rand — entweder eine Aufforderung oder eine reine Auskunft.",
+    zweck: "Eine kurze Meldung am Rand — Aufforderung oder Auskunft, optional mit gemeinsamem Countdown-Ring und Sekundenanzeige.",
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
