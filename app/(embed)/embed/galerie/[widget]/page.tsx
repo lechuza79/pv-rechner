@@ -17,7 +17,7 @@ const views = {
   "gemeinde-energie-jahr": "energy-year",
   "gemeinde-solar-monat": "radial",
 } as const;
-export default async function Page({params}: {params: Promise<{widget: string}>}) {
+export default async function Page({params, searchParams}: {params: Promise<{widget: string}>; searchParams: Promise<{ags?: string}>}) {
   const {widget} = await params;
   if (widget === "solar-trend-monat") {
     const series = await getSolarMonthlySeries();
@@ -25,8 +25,10 @@ export default async function Page({params}: {params: Promise<{widget: string}>}
   }
   const single = views[widget as keyof typeof views];
   if (!single && widget !== "gemeinde-ranking") notFound();
-  const paket = await ladeGemeindePaket("06440016");
-  if (!paket) notFound();
+  const {ags = "06440016"} = await searchParams;
+  if (!/^\d{8}$/.test(ags)) notFound();
+  const paket = await ladeGemeindePaket(ags);
+  if (!paket) return <p>Für diesen Ort liegt dieses Widget noch nicht vor.</p>;
   if (widget === "gemeinde-ranking") {
     const peers = [...paket.district.peers].sort((a, b) => b.sums.alle.count - a.sums.alle.count);
     const rows = peers.slice(0, 3).map(peer => ({id: peer.region_id, name: peer.name, value: peer.sums.alle.count, formatted: peer.sums.alle.count.toLocaleString("de-DE"), own: peer.region_id === paket.ags, rank: peers.findIndex(item => item.sums.alle.count === peer.sums.alle.count) + 1}));

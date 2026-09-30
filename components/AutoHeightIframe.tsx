@@ -26,14 +26,19 @@ export default function AutoHeightIframe({
   title,
   fallbackHeight,
   framed = true,
+  onReady,
+  loading = "lazy",
 }: {
   src: string;
   title: string;
   fallbackHeight: number;
   framed?: boolean;
+  onReady?: () => void;
+  loading?: "lazy" | "eager";
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
+  useEffect(() => { if (bereit) onReady?.(); }, [bereit, onReady]);
 
   // Der Pfad hängt an der Adresse, nicht an einer Nachricht: so ist er schon
   // beim ersten Rendern im iframe da und der Knopf blitzt nicht kurz auf.
@@ -71,7 +76,7 @@ export default function AutoHeightIframe({
       ref={ref}
       src={quelle}
       title={title}
-      loading="lazy"
+      loading={loading}
       style={{
         width: "100%",
         height,

@@ -26,9 +26,12 @@ export default function OnsiteSearch({
   items,
   onQueryChange,
   placeholder = "Suchen …",
+  persistent = false,
 }: {
   /** Already loaded regions: persistent field, local suggestions, no request. */
   items?: SearchHit[];
+  /** Keep the shared field visible for a page-level asynchronous search. */
+  persistent?: boolean;
   onQueryChange?: (query: string) => void;
   placeholder?: string;
   onPick?: (item: OnsiteSearchItem) => void;
@@ -38,6 +41,7 @@ export default function OnsiteSearch({
   align?: "left" | "right";
 }) {
   const listId = useId();
+  const expandedField = persistent || Boolean(items);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<SearchHit[]>([]);
@@ -102,7 +106,7 @@ export default function OnsiteSearch({
 
   const pick = (h: SearchHit) => {
     close();
-    if (items) { setQ(h.label); onQueryChange?.(h.label); }
+    if (expandedField) { setQ(h.label); onQueryChange?.(h.label); }
     onPick?.(h);
   };
 
@@ -122,14 +126,14 @@ export default function OnsiteSearch({
   };
 
   return (
-    <div ref={wrapRef} className={items ? styles.local : undefined} style={{ position: "relative", flexShrink: 0 }}>
-      <div className={items ? styles.field : undefined} style={{ ...S.field, ...((open || items) ? S.fieldOpen : null), ...(items ? { minHeight: 46, padding: "3px 12px", width: "100%", boxSizing: "border-box" } : null) }}>
+    <div ref={wrapRef} className={expandedField ? styles.local : undefined} style={{ position: "relative", flexShrink: 0 }}>
+      <div className={expandedField ? styles.field : undefined} style={{ ...S.field, ...((open || expandedField) ? S.fieldOpen : null), ...(expandedField ? { minHeight: 46, padding: "3px 12px", width: "100%", boxSizing: "border-box" } : null) }}>
         <button
-          className={items ? styles.icon : undefined}
-          tabIndex={items ? -1 : undefined}
-          aria-hidden={items ? true : undefined}
+          className={expandedField ? styles.icon : undefined}
+          tabIndex={expandedField ? -1 : undefined}
+          aria-hidden={expandedField ? true : undefined}
           type="button"
-          onClick={() => { if (items) { setOpen(true); inputRef.current?.focus(); } else { open ? close() : setOpen(true); } }}
+          onClick={() => { if (expandedField) { setOpen(true); inputRef.current?.focus(); } else { open ? close() : setOpen(true); } }}
           style={S.iconBtn}
           aria-label={open ? "Suche schließen" : ariaLabel}
           title={ariaLabel}
@@ -140,8 +144,8 @@ export default function OnsiteSearch({
           ref={inputRef}
           value={q}
           onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); setOpen(true); }}
-          onFocus={() => { if (items) setOpen(true); }}
-          onClick={() => { if (items) setOpen(true); }}
+          onFocus={() => { if (expandedField) setOpen(true); }}
+          onClick={() => { if (expandedField) setOpen(true); }}
           role="combobox"
           aria-expanded={open}
           aria-controls={listId}
@@ -150,13 +154,13 @@ export default function OnsiteSearch({
           onKeyDown={onKey}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          style={{ ...S.input, ...((open || items) ? S.inputOpen : null), ...(items ? { width: "100%", minWidth: 0, fontSize: "var(--font-size-base)" } : null) }}
-          tabIndex={open || items ? 0 : -1}
+          style={{ ...S.input, ...((open || expandedField) ? S.inputOpen : null), ...(expandedField ? { width: "100%", minWidth: 0, fontSize: "var(--font-size-base)" } : null) }}
+          tabIndex={open || expandedField ? 0 : -1}
         />
       </div>
 
-      {(items || (open && q.trim().length >= 2)) && (
-        <div className={items ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(items ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
+      {(expandedField || (open && q.trim().length >= 2)) && (
+        <div className={expandedField ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(expandedField ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
           {loading && !hits.length ? (
             <div style={S.empty}>Suche …</div>
           ) : hits.length ? (
