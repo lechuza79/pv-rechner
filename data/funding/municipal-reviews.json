@@ -78290,5 +78290,182 @@
         "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
       }
     ]
+  },
+  {
+    "regionId": "01054",
+    "name": "Kreis Nordfriesland",
+    "checkedAt": "2026-09-30T14:06:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Nordfriesland hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Seine Förderseite nennt Energieberatung (Kreis zahlt 40 € Eigenanteil), Radinfrastruktur, Naturschutz, Mobilität und Kleinprojekte; der Entlastungsfonds 2022 glich gestiegene Energierechnungen bedürftiger Haushalte aus.",
+    "searches": [
+      "Förderseite des Kreises und Unterseite Energieberatung am 30.09.2026 gelesen",
+      "Meldung und Websuche zum Entlastungsfonds am 30.09.2026: Ausgleich gestiegener Strom- und Heizkosten für Haushalte ohne andere Hilfe, kein Anlagenzuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026: Fördertöpfe des Kreises: Energieberatung für Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilität, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte",
+        "finding": "30.09.2026: Kreis übernimmt 40 € Eigenanteil der Verbraucherzentrale-Energieberatung (2023/2024) — Beratung, kein Anlagenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht des Kreises, am 30.09.2026 gelesen: kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      },
+      {
+        "url": "nordfriesland.de/Kreis-Verwaltung/Aktuelles/Steigende-Energiekosten-Kreis-Nordfriesland-verl%C3%A4ngert-F%C3%B6rderrichtlinie-des-Entlastungsfonds.php",
+        "disposition": "reviewed",
+        "reason": "Entlastungsfonds 2022 (Ausgleich gestiegener Energiekosten), kein Anlagenzuschuss; am 30.09.2026 abgerufen.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      },
+      {
+        "url": "nordfriesland.de/Kreis-Verwaltung/Aktuelles/Steigende-Energiekosten-Kreis-Nordfriesland-verl%C3%A4ngert-F%C3%B6rderrichtlinie-des-Entlastungsfonds.php?object=tx,2271.1.1&amp;ModID=7&amp;FID=2271.19094.1&amp;NavID=2271.37",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Meldung zum Entlastungsfonds mit Parametern.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      },
+      {
+        "url": "nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte",
+        "disposition": "reviewed",
+        "reason": "Beratungszuschuss 40 €, kein Anlagenzuschuss; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte"
+      },
+      {
+        "url": "nordfriesland.de/Quicknavigation/Suchergebnis/Auszahlung-Heizkostenzuschuss.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Sozialleistung), kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      },
+      {
+        "url": "nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Radinfrastrukturma%C3%9Fnahmen",
+        "disposition": "reviewed",
+        "reason": "Fördertopf Radinfrastruktur, anderes Sachgebiet.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      }
+    ]
+  },
+  {
+    "regionId": "01054020",
+    "name": "Breklum",
+    "checkedAt": "2026-09-30T14:06:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Breklum: kein Zuschuss der Gemeinde an Privathaushalte. Die Seiten „Klima“ und „Energie“ nennen nur eigene Anlagen der Gemeinde (PV auf Sportjugendheim und Kindergärten, Nahwärme). Auch Kreis Nordfriesland und Amt fördern keine Anlagen.",
+    "searches": [
+      "breklum.de „Klima“ und „Aktuelles/Energie“ am 30.09.2026 gelesen",
+      "Websuche „Amt Mittleres Nordfriesland OR Amt Eiderstedt OR Amt Südtondern Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 30.09.2026: nur Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023)",
+      "Websuche „Breklum OR Tetenbüll OR Neukirchen Nordfriesland Gemeinde Zuschuss Balkonkraftwerk Photovoltaik“ am 30.09.2026: kein Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://breklum.de/aktuelles/energie",
+        "finding": "30.09.2026: „Neue Photovoltaikanlagen für Breklums Kindergärten“ (26.08.2024), PV auf dem Sportjugendheim — Gemeindeanlagen, kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026: Fördertöpfe des Kreises: Energieberatung für Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilität, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte",
+        "finding": "30.09.2026: Kreis übernimmt 40 € Eigenanteil der Verbraucherzentrale-Energieberatung (2023/2024) — Beratung, kein Anlagenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "breklum.de/component/finder/search?q=f%C3%B6rderprogramme&amp;Itemid=103",
+        "disposition": "reviewed",
+        "reason": "Seitensuche nach „förderprogramme“; Themenseiten Klima und Energie am 30.09.2026 stattdessen gelesen: nur Gemeindeanlagen.",
+        "evidenceUrl": "https://breklum.de/aktuelles/energie"
+      }
+    ]
+  },
+  {
+    "regionId": "01054086",
+    "name": "Neukirchen",
+    "checkedAt": "2026-09-30T14:06:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukirchen (Nordfriesland): kein Zuschuss der Gemeinde an Privathaushalte. Die Gemeindewebsite enthält keine Förder-, Klima- oder Solarrubrik; die Seitensuche nach „förderprogramm“ bringt keinen Programmtreffer. Kreis und Amt fördern keine Anlagen.",
+    "searches": [
+      "neukirchen-nordfriesland.de Startseite und Seitensuche „förderprogramm“ am 30.09.2026 gelesen: keine Förder-/Solarrubrik",
+      "Websuche „Amt Mittleres Nordfriesland OR Amt Eiderstedt OR Amt Südtondern Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 30.09.2026: nur Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023)",
+      "Websuche wie bei Breklum am 30.09.2026: kein Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026: Fördertöpfe des Kreises: Energieberatung für Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilität, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte",
+        "finding": "30.09.2026: Kreis übernimmt 40 € Eigenanteil der Verbraucherzentrale-Energieberatung (2023/2024) — Beratung, kein Anlagenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neukirchen-nordfriesland.de/index.php/component/finder/search?Itemid=101&amp;q=f%C3%B6rderprogramm&amp;rCH=-2",
+        "disposition": "reviewed",
+        "reason": "Seitensuche nach „förderprogramm“, am 30.09.2026 abgerufen: kein Programmtreffer.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      },
+      {
+        "url": "neukirchen-nordfriesland.de/index.php/component/finder/search?Itemid=101&amp;q=f%C3%B6rderprogramm&amp;rCH=2",
+        "disposition": "reviewed",
+        "reason": "Seitensuche nach „förderprogramm“, am 30.09.2026 abgerufen: kein Programmtreffer.",
+        "evidenceUrl": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel"
+      }
+    ]
+  },
+  {
+    "regionId": "01054135",
+    "name": "Tetenbüll",
+    "checkedAt": "2026-09-30T14:06:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tetenbüll: kein Zuschuss der Gemeinde an Privathaushalte. Die vollständige Sitemap der Gemeindewebsite enthält keine Klima-, Energie- oder Förderrubrik; „Förderung“ steht nur bei Feuerwehr und Fördervereinen. Kreis und Amt fördern keine Anlagen.",
+    "searches": [
+      "tetenbuell.de Startseite und „Sitemap komplett“ am 30.09.2026 gelesen",
+      "Websuche „Amt Mittleres Nordfriesland OR Amt Eiderstedt OR Amt Südtondern Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 30.09.2026: nur Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023)",
+      "Websuche wie bei Breklum am 30.09.2026: kein Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://tetenbuell.de/Startseite/Sitemap-komplett/",
+        "finding": "30.09.2026: Rubriken Infos, Ortsteile, Grundschule, Feuerwehr (Kameradschaft + Förderung), Kirche u. a. — keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026: Fördertöpfe des Kreises: Energieberatung für Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilität, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/Energieberatung-NF-Haushalte",
+        "finding": "30.09.2026: Kreis übernimmt 40 € Eigenanteil der Verbraucherzentrale-Energieberatung (2023/2024) — Beratung, kein Anlagenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tetenbuell.de/Feuerwehr/Kameradschaft-Foerderung",
+        "disposition": "reviewed",
+        "reason": "Feuerwehr-Kameradschaft, anderes Sachgebiet; Sitemap am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://tetenbuell.de/Startseite/Sitemap-komplett/"
+      },
+      {
+        "url": "tetenbuell.de/Feuerwehr/Kameradschaft-Foerderung/index.php/;focus=STRATP_com_cm4all_wdn_GoogleCalendar_48728202&amp;frame=STRATP_com_cm4all_wdn_GoogleCalendar_48728202",
+        "disposition": "reviewed",
+        "reason": "Feuerwehr-Kameradschaft, anderes Sachgebiet; Sitemap am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://tetenbuell.de/Startseite/Sitemap-komplett/"
+      }
+    ]
   }
 ]
