@@ -19,6 +19,7 @@ for (const query of ['plz=10115', 'plz=10115&pe=1&an=teils&au=sued_flach', 'pe=1
 }
 
 test('link-change toast counts down and undo restores the prior location without resetting answers', async ({ page }) => {
+  await page.clock.install();
   await page.addInitScript(() => localStorage.setItem('sc-plz', '58300'));
   await page.route('**/plz.json', route => route.fulfill({ json: { '10115': [52.53, 13.38], '58300': [51.39, 7.39] } }));
   const requested: string[] = [];
@@ -30,7 +31,11 @@ test('link-change toast counts down and undo restores the prior location without
   await page.goto('/balkonkraftwerk/rechner?plz=10115&pe=1&an=teils&au=sued_flach');
   const toast = page.getByRole('status').filter({hasText:'PLZ aus dem Link übernommen'});
   await expect(toast).toContainText('10115 statt 58300');
-  await expect(toast).toContainText(/\([1-9] s\)/);
+  const countdown = toast.locator('.sc-toast-countdown');
+  await expect(countdown).toHaveText(/^(10|[1-9])$/);
+  await page.clock.fastForward(1000);
+  await expect(countdown).toHaveText(/^[1-9]$/);
+  await expect.poll(async () => Number(await countdown.locator('circle').last().getAttribute('stroke-dashoffset'))).toBeGreaterThanOrEqual(0.09);
   await page.setViewportSize({width:375,height:850});
   await page.screenshot({path:'/tmp/location-change-toast.png', animations:'disabled'});
   await toast.getByRole('button',{name:'Rückgängig',exact:true}).click();
