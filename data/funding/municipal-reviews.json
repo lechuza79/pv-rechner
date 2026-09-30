@@ -78162,5 +78162,133 @@
         "evidenceUrl": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01053094",
+    "name": "Niendorf bei Berkenthin",
+    "checkedAt": "2026-09-30T14:03:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niendorf bei Berkenthin: kein Zuschuss der Gemeinde an Privathaushalte. Die erfassten Adressen sind Seiten des Amts Berkenthin; die Balkonförderung dort gehört der Gemeinde Berkenthin, der Rest sind Landes-, Bundes- und Infrastrukturförderungen. Die Amtsseiten-Suche nennt Niendorf bei Berkenthin zu Balkon, Solar und Förderung nur mit Feuerwehr-, Straßen- und Veranstaltungsmeldungen.",
+    "searches": [
+      "Amtsseiten-Suche berkenthin-amt.de am 30.09.2026: „Niendorf Balkon“ 0, „Niendorf Solar“ 0, „Niendorf Förderung“ nur Feuerwehr/Straßen/Veranstaltungen",
+      "Websuche „Rondeshagen OR Niendorf bei Berkenthin Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung“ am 30.09.2026: nur Programm der Gemeinde Berkenthin",
+      "Eigene Gemeindewebsite nicht gefunden (niendorf-berkenthin.de nicht erreichbar)"
+    ],
+    "evidence": [
+      {
+        "url": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/",
+        "finding": "30.09.2026: „die Gemeindevertretung Berkenthin [hat] die Förderung von Balkon-Solaranlagen mit bis zu 200,00 € je Wohneinheit beschlossen“ — Programm der Gemeinde Berkenthin, nicht des Amts."
+      },
+      {
+        "url": "https://berkenthin-amt.de/foerderungen/",
+        "finding": "30.09.2026: geförderte Projekte der Amtsgemeinden (u. a. Sanierung Bliestorfer Weg Rondeshagen, ELER) — kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "berkenthin-amt.de/investitionsbank-schleswig-holstein-mit-uebersicht-auf-corona-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zu Corona-Programmen der Investitionsbank (Land), kein Gemeindezuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/zweite-antragsphase-des-foerderprogramms-klimaschutz-fuer-buergerinnen-und-buerger-des-landes-schleswig-holstein",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (im Katalog als Landesprogramm).",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Balkon-Zuschuss der Gemeinde Berkenthin (26.10.2023), nur für Berkenthin; im Katalog unter Berkenthin.",
+        "evidenceUrl": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/"
+      },
+      {
+        "url": "berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Beschluss der Gemeindevertretung Berkenthin (27.03.2023), bis 200 € je Wohneinheit, nur Gemeinde Berkenthin.",
+        "evidenceUrl": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/"
+      },
+      {
+        "url": "berkenthin-amt.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Liste geförderter Gemeindeprojekte (Wegesanierung Rondeshagen mit ELER-Mitteln, Gewerbegebiet Kastorf, Radweg) — kein Haushaltszuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/bund-stellt-zusaetzliche-foerdermittel-fuer-laendliche-entwicklung-zur-verfuegung",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zu Bundesmitteln für ländliche Entwicklung, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053103",
+    "name": "Rondeshagen",
+    "checkedAt": "2026-09-30T14:03:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rondeshagen: kein Zuschuss der Gemeinde an Privathaushalte. Die erfassten Adressen sind Seiten des Amts Berkenthin; die Balkonförderung dort gehört der Gemeinde Berkenthin, der Rest sind Landes-, Bundes- und Infrastrukturförderungen. Die Amtsseiten-Suche nennt Rondeshagen zu Balkon, Solar und Förderung nur mit Feuerwehr-, Straßen- und Veranstaltungsmeldungen.",
+    "searches": [
+      "Amtsseiten-Suche berkenthin-amt.de am 30.09.2026: „Rondeshagen Balkon“ 0, „Rondeshagen Solar“ 0, „Rondeshagen Förderung“ nur Feuerwehr/Straßen/Veranstaltungen",
+      "Websuche „Rondeshagen OR Niendorf bei Berkenthin Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung“ am 30.09.2026: nur Programm der Gemeinde Berkenthin",
+      "rondeshagen.de (Jimdo) Start, Politik, Formulare, Satzungen, Bau- und Umweltausschuss, Sitemap am 30.09.2026 gelesen: kein Balkon-, Solar- oder Zuschuss-Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/",
+        "finding": "30.09.2026: „die Gemeindevertretung Berkenthin [hat] die Förderung von Balkon-Solaranlagen mit bis zu 200,00 € je Wohneinheit beschlossen“ — Programm der Gemeinde Berkenthin, nicht des Amts."
+      },
+      {
+        "url": "https://berkenthin-amt.de/foerderungen/",
+        "finding": "30.09.2026: geförderte Projekte der Amtsgemeinden (u. a. Sanierung Bliestorfer Weg Rondeshagen, ELER) — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://rondeshagen.jimdofree.com/politik/formulare-und-dokumente/",
+        "finding": "30.09.2026: Formularseite ohne Förderantrag oder Richtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "berkenthin-amt.de/investitionsbank-schleswig-holstein-mit-uebersicht-auf-corona-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zu Corona-Programmen der Investitionsbank (Land), kein Gemeindezuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/zweite-antragsphase-des-foerderprogramms-klimaschutz-fuer-buergerinnen-und-buerger-des-landes-schleswig-holstein",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (im Katalog als Landesprogramm).",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Balkon-Zuschuss der Gemeinde Berkenthin (26.10.2023), nur für Berkenthin; im Katalog unter Berkenthin.",
+        "evidenceUrl": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/"
+      },
+      {
+        "url": "berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Beschluss der Gemeindevertretung Berkenthin (27.03.2023), bis 200 € je Wohneinheit, nur Gemeinde Berkenthin.",
+        "evidenceUrl": "https://berkenthin-amt.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen/"
+      },
+      {
+        "url": "berkenthin-amt.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: Liste geförderter Gemeindeprojekte (Wegesanierung Rondeshagen mit ELER-Mitteln, Gewerbegebiet Kastorf, Radweg) — kein Haushaltszuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      },
+      {
+        "url": "berkenthin-amt.de/bund-stellt-zusaetzliche-foerdermittel-fuer-laendliche-entwicklung-zur-verfuegung",
+        "disposition": "reviewed",
+        "reason": "Amtsmeldung zu Bundesmitteln für ländliche Entwicklung, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://berkenthin-amt.de/foerderungen/"
+      }
+    ]
   }
 ]
