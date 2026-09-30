@@ -8,7 +8,7 @@ import styles from "./StandortPrompt.module.css";
 export type StandortSelection = { plz: string; ags: string; name: string };
 
 /** Draft location stays here; only Save may update the calculator. */
-export default function StandortPrompt({ open, onClose, onSave, resultKey, onResultChange, onFeedbackChange, alignTo, message = "Förderung möglich\nan deinem Wohnort" }: {
+export default function StandortPrompt({ open, onClose, onSave, resultKey, onResultChange, onFeedbackChange, alignTo, message = "Genauer rechnen &\nFörderung prüfen" }: {
   open: boolean;
   onClose: () => void;
   onSave: (place: StandortSelection) => Promise<void>;

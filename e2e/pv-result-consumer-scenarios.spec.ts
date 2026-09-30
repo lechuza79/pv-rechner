@@ -157,7 +157,7 @@ test('consumer section keeps its layout and chart geometry across viewport sizes
   for(const width of [375,708,1440]) {
     await page.setViewportSize({width,height:1000});
     await page.locator('.pv-consumer-scenarios').evaluate(el=>el.scrollIntoView({block:'start'}));
-    const notice=page.getByRole('status').filter({hasText:'Förderung möglich'});
+    const notice=page.getByRole('status').filter({has:page.getByRole('group',{name:'Standort prüfen',exact:true})});
     if(await notice.isVisible()) await notice.getByRole('button',{name:'Schließen',exact:true}).click();
     expect(await page.locator('.wp-overview').first().evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
     expect(await page.locator('.pv-result-settings').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
@@ -325,7 +325,7 @@ test('an editorial handover opens the question flow with its chosen configuratio
 test('funding nudge stays until dismissed instead of timing out', async ({page}) => {
   await page.clock.install();
   await page.goto(url);
-  const nudge = page.getByRole('status').filter({hasText:'Förderung möglich'});
+  const nudge = page.getByRole('status').filter({has:page.getByRole('group',{name:'Standort prüfen',exact:true})});
   await expect(nudge).toBeVisible();
   await page.clock.fastForward(8000);
   await expect(nudge).toBeVisible();
