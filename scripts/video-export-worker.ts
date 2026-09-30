@@ -186,7 +186,9 @@ async function main() {
   await closeVideoDb();
 }
 
-main().catch(async (e) => {
+// All queue work, notifications and database cleanup are awaited above. Do not
+// keep a completed runner alive through SDK refresh timers or idle sockets.
+main().then(() => process.exit(0)).catch(async (e) => {
   console.error(e instanceof Error ? e.message : e);
   await closeVideoDb();
   process.exit(1);
