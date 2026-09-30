@@ -78467,5 +78467,394 @@
         "evidenceUrl": "https://tetenbuell.de/Startseite/Sitemap-komplett/"
       }
     ]
+  },
+  {
+    "regionId": "01054056",
+    "name": "Husum",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Husum: kein Zuschuss der Stadt an Privathaushalte. Die Klimaschutzseite nennt nur das geförderte städtische Klimaschutzmanagement und kostenlose Vorträge der Verbraucherzentrale (Steckersolar, 15.09.2026). Die Treffer der Stadtseite betreffen andere Förderungen. Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "husum.org „Planen & Bauen / Klimaschutz“ und Meldung „Reges Interesse am Vortrag zu Steckersolargeräten“ am 30.09.2026 gelesen",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/",
+        "finding": "30.09.2026: Klimaschutzmanagement (NKI-gefördert, 67K22006-1), Klimaschutzkonzept, Vorträge — kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.husum.org/Verwaltung-Politik/Ver%C3%B6ffentlichungen/Reges-Interesse-am-Vortrag-zu-Steckersolarger%C3%A4ten.php?ModID=255&FID=3214.37747.1",
+        "finding": "30.09.2026: Vortrag der Verbraucherzentrale „dank der Bundesförderung für Energieberatung … kostenfrei“ — kein städtischer Zuschuss genannt."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "husum.org/Leben-in-Husum/Dienstleistungen/Was-erledige-ich-wo-/Kommunale-Projektf%C3%B6rderung-zur-St%C3%A4rkung-kommunaler-Partnerschaften-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Kommunale Partnerschaften, fachfremd.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      },
+      {
+        "url": "husum.org/Verwaltung-Politik/Ver%C3%B6ffentlichungen/Obere-Neustadt-Veranstaltung-zur-Sanierungsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Städtebauliche Sanierung Obere Neustadt, kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      },
+      {
+        "url": "husum.org/Verwaltung-Politik/Ver%C3%B6ffentlichungen/Stadt-Husum-erh%C3%B6ht-den-Zuschuss-f%C3%BCr-die-Gesellschaft-Frauen-gegen-Gewalt-.php",
+        "disposition": "reviewed",
+        "reason": "Sozialzuschuss, fachfremd.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      },
+      {
+        "url": "husum.org/Verwaltung-Politik/Ver%C3%B6ffentlichungen/Stadtwerke-Husum-erhalten-F%C3%B6rderung-f%C3%BCr-Tiefengeothermie.php",
+        "disposition": "reviewed",
+        "reason": "Förderung an die Stadtwerke für Tiefengeothermie, kein Haushaltszuschuss; am 30.09.2026 eingeordnet.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      },
+      {
+        "url": "husum.org/Verwaltung-Politik/Ver%C3%B6ffentlichungen/Zusch%C3%BCsse-f%C3%BCr-Ferien-und-Freizeitma%C3%9Fnahmen-weiterhin-verf%C3%BCgbar.php",
+        "disposition": "reviewed",
+        "reason": "Ferien-/Freizeitzuschuss, fachfremd.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      },
+      {
+        "url": "husum.org/Verwaltung-Politik/Verwaltung/Kontakte-im-Rathaus-/Hochbegabtenf%C3%B6rderung-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Verein, fachfremd.",
+        "evidenceUrl": "https://www.husum.org/Planen-Bauen/Stadtentwicklung/Klimaschutz/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054076",
+    "name": "Leck",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Leck: kein Zuschuss der Gemeinde an Privathaushalte. Die Seitensuche findet zu „balkonkraftwerk“ nichts; zu „photovoltaik“ und „klimaschutz“ nur Kreis-Vorträge, Konzepte und AktivRegion-Projektförderung. Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "leck.de-Seitensuche „balkonkraftwerk“ (keine Treffer), „photovoltaik“, „klimaschutz“, „förderprogramm“ am 30.09.2026",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.leck.de/?s=balkonkraftwerk",
+        "finding": "30.09.2026: „Keine Suchergebnisse zu: balkonkraftwerk“."
+      },
+      {
+        "url": "https://www.leck.de/?s=photovoltaik",
+        "finding": "30.09.2026: Treffer nur Kreis-Vortragsreihe Sanierung, Konzepte der Gemeinde, AktivRegion-Projekte."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "leck.de/aktivregion-beschliesst-die-foerderung-von-vier-projekten",
+        "disposition": "reviewed",
+        "reason": "AktivRegion-Förderung für Projekte/Regionalbudget, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/aktivregion-bietet-2024-wieder-regionalbudget-zur-foerderung-von-kleinprojekten-an",
+        "disposition": "reviewed",
+        "reason": "AktivRegion-Förderung für Projekte/Regionalbudget, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/erlebnisbad-leck-besuch-aus-berlin-und-hoffnung-auf-bundesfoerderung",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung Erlebnisbad, fachfremd.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/fachtag-zur-demokratiefoerderung-am-11-februar",
+        "disposition": "reviewed",
+        "reason": "Fachfremd.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/kleinprojekte-erhalten-chance-auf-bis-zu-16-000-euro-foerderung",
+        "disposition": "reviewed",
+        "reason": "AktivRegion-Kleinprojekte, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisse „förderprogramm“ Seite 2: Städtebauförderung Leck-Ost, fachfremd; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/zuschuesse-fuer-ferien-und-freizeitmassnahmen-weiterhin-verfuegbar",
+        "disposition": "reviewed",
+        "reason": "Fachfremd.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      },
+      {
+        "url": "leck.de/zuschuss-fuer-junge-unternehmen-frische-ideen-fuer-nordfriesland-gesucht",
+        "disposition": "reviewed",
+        "reason": "Gründungszuschuss, fachfremd.",
+        "evidenceUrl": "https://www.leck.de/?s=photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01054168",
+    "name": "Sylt",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Sylt: kein Zuschuss an Privathaushalte. Die Seite „Förderung“ von Klimaschutz Sylt (Inselverwaltung) nennt nur eine Sprechstunde und das gestoppte Landesprogramm; die Seitensuche findet zu „balkonkraftwerk“ nichts, zu „photovoltaik“ keine Förderung. Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "klimaschutzsylt.de Start und „Themen/Förderung“ am 30.09.2026 gelesen",
+      "gemeinde-sylt.de-Seitensuche „balkonkraftwerk“ (keine Ergebnisse) und „photovoltaik“ am 30.09.2026",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutzsylt.de/themen/foerderung/",
+        "finding": "30.09.2026: nur „CO2ntact“-Sprechstunde und Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (seit 11/2023 gestoppt)."
+      },
+      {
+        "url": "https://gemeinde-sylt.de/?s=balkonkraftwerk",
+        "finding": "30.09.2026: „Keine Ergebnisse gefunden“."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-sylt.de/foerderprogramme-fuer-unternehmen-ein-hilfreicher-ueberblick",
+        "disposition": "reviewed",
+        "reason": "Corona-Überblick für Unternehmen (2020), fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/klimaschutz-jetzt-gefoerderte-energieberatung-direkt-vor-ort-sichern",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf geförderte Energieberatung (Beratung, kein Anlagenzuschuss); am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/multipark-kann-noch-immer-auf-foerderung-hoffen",
+        "disposition": "reviewed",
+        "reason": "Projektförderung, fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung",
+        "disposition": "reviewed",
+        "reason": "Musikförderung der Henner-Krogh-Stiftung, fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung-jetzt-beantragen",
+        "disposition": "reviewed",
+        "reason": "Musikförderung der Henner-Krogh-Stiftung, fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung-jetzt-beantragen-2",
+        "disposition": "reviewed",
+        "reason": "Musikförderung der Henner-Krogh-Stiftung, fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      },
+      {
+        "url": "gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung-jetzt-beantragen-hier-frist-endet-am-31-maerz-2021",
+        "disposition": "reviewed",
+        "reason": "Musikförderung der Henner-Krogh-Stiftung, fachfremd.",
+        "evidenceUrl": "https://klimaschutzsylt.de/themen/foerderung/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054068",
+    "name": "Klixbüll",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klixbüll: kein Zuschuss der Gemeinde an Privathaushalte. Die Startseite nennt nur eigene PV-Anlagen (Kindergarten, Schule, Turnhalle); der Menüpunkt „Studien / Förderprogramme“ enthält nur Studien und das Ortsentwicklungskonzept. Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "klixbuell.de Startseite und Menü „Studien / Förderprogramme“ am 30.09.2026 gelesen",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.klixbuell.de/",
+        "finding": "30.09.2026: „Leistungsübersicht der PV-Anlagen auf Kindergarten, Schule und Turnhalle“; unter „Studien / Förderprogramme“ nur „Studie Airconnect NF“ und OEK."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "klixbuell.de",
+        "disposition": "reviewed",
+        "reason": "Startseite am 30.09.2026 gelesen: nur Gemeindeanlagen und Studien.",
+        "evidenceUrl": "https://www.klixbuell.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054085",
+    "name": "Nebel",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nebel: kein Zuschuss der Gemeinde oder des Amtes Föhr-Amrum an Privathaushalte. Die Förderübersicht des Amtes nennt nur Bundesprogramme; „Geförderte Bauvorhaben“ sind Projekte der Gemeinden selbst (z. B. LED-Straßenbeleuchtung Norddorf). Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "amtfa.de „Fördermittel für Heizungstausch & Sanierung“, „Geförderte Bauvorhaben“ und „Wärme Amrum“ (Quartierskonzept) am 30.09.2026 gelesen",
+      "Websuche „Amrum Nebel Norddorf Wittdün Gemeinde Förderung Photovoltaik Balkonkraftwerk Zuschuss Bürger“ am 30.09.2026: kein Zuschuss der Gemeinden",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "finding": "30.09.2026: geförderte Vorhaben der Gemeinden selbst (u. a. KSI-Umrüstung der Straßenbeleuchtung Norddorf, 03K14427) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html",
+        "finding": "30.09.2026: Förderübersicht des Amtes Föhr-Amrum (Stand 13.08.2026) nennt nur KfW/BAFA-Programme — kein Zuschuss des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular des Amtes, keine Förderaussage.",
+        "evidenceUrl": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01054089",
+    "name": "Norddorf auf Amrum",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Norddorf auf Amrum: kein Zuschuss der Gemeinde oder des Amtes Föhr-Amrum an Privathaushalte. Die Förderübersicht des Amtes nennt nur Bundesprogramme; „Geförderte Bauvorhaben“ sind Projekte der Gemeinden selbst (z. B. LED-Straßenbeleuchtung Norddorf). Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "amtfa.de „Fördermittel für Heizungstausch & Sanierung“, „Geförderte Bauvorhaben“ und „Wärme Amrum“ (Quartierskonzept) am 30.09.2026 gelesen",
+      "Websuche „Amrum Nebel Norddorf Wittdün Gemeinde Förderung Photovoltaik Balkonkraftwerk Zuschuss Bürger“ am 30.09.2026: kein Zuschuss der Gemeinden",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "finding": "30.09.2026: geförderte Vorhaben der Gemeinden selbst (u. a. KSI-Umrüstung der Straßenbeleuchtung Norddorf, 03K14427) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html",
+        "finding": "30.09.2026: Förderübersicht des Amtes Föhr-Amrum (Stand 13.08.2026) nennt nur KfW/BAFA-Programme — kein Zuschuss des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular des Amtes, keine Förderaussage.",
+        "evidenceUrl": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01054160",
+    "name": "Wittdün auf Amrum",
+    "checkedAt": "2026-09-30T16:04:38Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wittdün auf Amrum: kein Zuschuss der Gemeinde oder des Amtes Föhr-Amrum an Privathaushalte. Die Förderübersicht des Amtes nennt nur Bundesprogramme; „Geförderte Bauvorhaben“ sind Projekte der Gemeinden selbst (z. B. LED-Straßenbeleuchtung Norddorf). Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "amtfa.de „Fördermittel für Heizungstausch & Sanierung“, „Geförderte Bauvorhaben“ und „Wärme Amrum“ (Quartierskonzept) am 30.09.2026 gelesen",
+      "Websuche „Amrum Nebel Norddorf Wittdün Gemeinde Förderung Photovoltaik Balkonkraftwerk Zuschuss Bürger“ am 30.09.2026: kein Zuschuss der Gemeinden",
+      "Websuche „Husum OR Leck OR Sylt OR Föhr OR Klixbüll Zuschuss Balkonkraftwerk Photovoltaik Gemeinde Förderprogramm 2026“ am 30.09.2026: nur Hinweise auf Kiel, Flensburg, Geesthacht und das gestoppte Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "finding": "30.09.2026: geförderte Vorhaben der Gemeinden selbst (u. a. KSI-Umrüstung der Straßenbeleuchtung Norddorf, 03K14427) — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html",
+        "finding": "30.09.2026: Förderübersicht des Amtes Föhr-Amrum (Stand 13.08.2026) nennt nur KfW/BAFA-Programme — kein Zuschuss des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Gemeinden selbst (KSI-Straßenbeleuchtung), kein Zuschuss an Haushalte; am 30.09.2026 gelesen.",
+        "evidenceUrl": "https://www.amtfa.de/seite/458939/gef%C3%B6rderte-bauvorhaben.html"
+      },
+      {
+        "url": "amtfa.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular des Amtes, keine Förderaussage.",
+        "evidenceUrl": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html"
+      }
+    ]
   }
 ]
