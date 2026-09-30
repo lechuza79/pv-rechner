@@ -78856,5 +78856,238 @@
         "evidenceUrl": "https://www.amtfa.de/seite/690766/f%C3%B6rdermittel-f%C3%BCr-heizungstausch-sanierung.html"
       }
     ]
+  },
+  {
+    "regionId": "01054012",
+    "name": "Bohmstedt",
+    "checkedAt": "2026-09-30T18:08:03Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bohmstedt: kein Zuschuss der Gemeinde oder des Amtes Mittleres Nordfriesland an Privathaushalte. Die Gemeindeseite verweist nur auf den Energiemonitor des Netzbetreibers; die Klimaschutzseiten des Amtes nennen eigene Liegenschaften und PV auf öffentlichen Dächern, kein Förderprogramm. Kreis Nordfriesland fördert nur Energieberatung.",
+    "searches": [
+      "bohmstedt.de Startseite und Beitrag „Projektförderung“ am 30.09.2026 gelesen",
+      "amnf.de Klimaschutz (Übersicht, Entwicklung, Lebensqualität, kommunale Liegenschaften) am 30.09.2026 gelesen",
+      "Websuche „Bohmstedt OR Bredstedt \"Mittleres Nordfriesland\" Zuschuss Balkonkraftwerk Photovoltaik Förderprogramm Gemeinde“ am 30.09.2026: keine kommunale Förderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bohmstedt.de/",
+        "finding": "30.09.2026: Gemeindeseite mit Link auf den SH-Netz-Energiemonitor, kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.amnf.de/amt-verwaltung/klimaschutz/entwicklung",
+        "finding": "30.09.2026: PV nur auf Dächern öffentlicher Gebäude; kein Zuschuss für Privathaushalte auf den Klimaschutzseiten des Amtes."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
+        "finding": "30.09.2026 (Vorlauf 1601Z) gelesen: Kreis fördert nur Energieberatung, keinen Anlagenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bohmstedt.de/projektfoerderung",
+        "disposition": "reviewed",
+        "reason": "Blogbeitrag ohne Inhalt zu Energieförderung; am 30.09.2026 erneut abgerufen.",
+        "evidenceUrl": "https://www.bohmstedt.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075",
+    "name": "Landkreis Vorpommern-Greifswald",
+    "checkedAt": "2026-09-30T18:08:03Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Landkreis Vorpommern-Greifswald: kein eigener Zuschuss des Kreises an Privathaushalte. Die gefundenen Kreisseiten sind der Dienstleistungseintrag zum Balkon-PV-Programm des Landes (zuständig: Landesförderinstitut MV, bereits im Katalog; Eigentümer-Kontingent ausgeschöpft, Mieter noch möglich). Die Energie-Seite des Kreises betrifft Wirtschaft und Wasserstoff.",
+    "searches": [
+      "kreis-vg.de Dienstleistung „Förderung: Zuschuss für steckerfertige Photovoltaikanlagen“ am 30.09.2026 gelesen",
+      "kreis-vg.de Startseite und „Energie und Wasserstoff“ am 30.09.2026 gelesen",
+      "Websuche „Landkreis Vorpommern-Greifswald OR Anklam Förderung Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe Privathaushalte“ am 30.09.2026: nur Landesprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php",
+        "finding": "30.09.2026: Zuständige Stelle Landesförderinstitut Mecklenburg-Vorpommern; „Die Mittel des Programms für Eigentümer einer Wohneinheit sind vollständig ausgeschöpft … Das Kontingent für Mieter … beinhaltet noch für längere Zeit ausreichende Mittel.“ Landesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.kreis-vg.de/Wirtschaft/Wirtschaftsf%C3%B6rderung/Energie-und-Wasserstoff/",
+        "finding": "30.09.2026: Netzwerk Energie und Wirtschaft (Wasserstoff, Gewerbegebiete) — kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&NavID=3079.3&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&object=tx%7C3079.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&NavID=3079.3&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&object=tx%7C3079.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&NavID=3079.3&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&object=tx%7C3079.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&NavID=3079.3&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&object=tx%7C3079.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&NavID=3079.3&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&object=tx%7C3079.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden; kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13075039",
+    "name": "Greifswald",
+    "checkedAt": "2026-09-30T18:08:03Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Greifswald: kein städtischer Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Die städtische Klimaschutzförderrichtlinie fördert nur Lastenräder, Gründächer/Fassadenbegrünung und Bildungsarbeit und ist wegen Haushaltssperre derzeit ohne Bewilligungen. Balkon-PV nur über das Landesprogramm (im Katalog).",
+    "searches": [
+      "greifswald.de „Klimaschutz“ (Klimaschutzförderrichtlinie, Klima+ für Greifswald) am 30.09.2026 gelesen",
+      "Klimaschutzförderrichtlinie Greifswald (PDF) am 30.09.2026 gelesen",
+      "greifswald.de Verwaltungsleistungen (Balkon-PV, Klimaschutzprojekte, KfW-Sanierungszuschuss) am 30.09.2026 gelesen",
+      "Websuche „Greifswald Stadt Förderprogramm Zuschuss Balkonkraftwerk Photovoltaik Bürger 2026“ am 30.09.2026: kein städtisches Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/",
+        "finding": "30.09.2026: „Auf Grund der erlassen Haushaltssperre können derzeit keine Anträge bzgl. der Klimaschutzförderrichtlinie bewilligt werden!“ Förderbereiche Mobilität, Klimaanpassung, Bildung."
+      },
+      {
+        "url": "https://www.greifswald.de/de/.galleries/60-Stadtbauamt/60.5-Umwelt-und-Naturschutz-Dokumente/Klimaschutzfoerderrichtlinie_Greifswald.pdf",
+        "finding": "30.09.2026: Fördergegenstände Lastenräder (max. 1.000 €), Gründächer/Fassadenbegrünung (max. 2.000 €), Bildungsarbeit — keine PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "greifswald.de/de/verwaltung-politik/rathaus/pressemitteilungen/Bund-foerdert-Masterplan-fuer-den-Klimaschutz-in-Greifswald",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung des städtischen Masterplans Klimaschutz, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/rathaus/pressemitteilungen/Greifswald-erhaelt-Zuschuesse-fuer-Radstation-und-Solarthermieanlage",
+        "disposition": "reviewed",
+        "reason": "Zuschüsse an die Stadt selbst (Radstation, Solarthermie), kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/rathaus/pressemitteilungen/Kostenlose-Beratungen-zu-EU-Foerderprogrammen",
+        "disposition": "reviewed",
+        "reason": "Beratung zu EU-Förderprogrammen, kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/verwaltungsleistungen_basis/Foerderung-Zuschuss-fuer-Klimaschutz-Projekte-in-nicht-wirtschaftlich-taetigen-Organisationen-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landesförderung (LFI MV) für Klimaschutzprojekte nicht wirtschaftlich tätiger Organisationen, keine Haushalte.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/verwaltungsleistungen_basis/Foerderung-Zuschuss-fuer-Klimaschutz-Projekte-in-wirtschaftlich-taetigen-Organisationen-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landesförderung (LFI MV) für Unternehmen, keine Haushalte.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/verwaltungsleistungen_basis/Foerderung-Zuschuss-fuer-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      },
+      {
+        "url": "greifswald.de/de/verwaltung-politik/verwaltungsleistungen_basis/Investitionszuschuss-fuer-die-energetische-Sanierung-von-Wohngebaeuden-beantragen",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm KfW 430 (Sanierungszuschuss), kein städtischer Zuschuss.",
+        "evidenceUrl": "https://www.greifswald.de/de/mein-greifswald/umwelt-und-klimaschutz/klimaschutz/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075005",
+    "name": "Anklam",
+    "checkedAt": "2026-09-30T18:08:03Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Anklam: kein städtischer Zuschuss an Privathaushalte. Die Klimaschutzseiten der Stadt nennen Klimaschutzmanagement, Wärmeplanung und die Energieberatung der Verbraucherzentrale; die gefundenen Förderseiten sind der Dienstleistungseintrag zum Balkon-PV-Programm des Landes (im Katalog).",
+    "searches": [
+      "anklam.de Klimaschutz, Aktuelle Klimaschutzprojekte, Energie- und Klimatipps, Energieberatung am 30.09.2026 gelesen",
+      "anklam.de Dienstleistung „Förderung: Zuschuss für steckerfertige Photovoltaikanlagen“ am 30.09.2026 abgerufen (Verzeichniseintrag Landesprogramm)",
+      "Websuche „Landkreis Vorpommern-Greifswald OR Anklam Förderung Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe Privathaushalte“ am 30.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.anklam.de/Rathaus/Klimaschutz/Energieberatung/",
+        "finding": "30.09.2026: Energieberatung der Verbraucherzentrale MV mit Hinweis auf Förderprogramme (BAFA, KfW) — kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.anklam.de/Rathaus/Klimaschutz/",
+        "finding": "30.09.2026: Klimaschutzmanagement (BMU-gefördert), Wärmeplanung — kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php",
+        "finding": "30.09.2026: Balkon-PV-Zuschuss ist Landesprogramm des LFI MV (im Katalog)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=2169.288&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ort=2169.1&ModID=10&object=tx%7C3810.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=2169.288&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ort=2169.1&ModID=10&object=tx%7C3810.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=2169.288&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ort=2169.1&ModID=10&object=tx%7C3810.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=2169.288&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ort=2169.1&ModID=10&object=tx%7C3810.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      },
+      {
+        "url": "anklam.de/Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=2169.288&such=F%F6rderung%25Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ort=2169.1&ModID=10&object=tx%7C3810.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
+        "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      }
+    ]
   }
 ]
