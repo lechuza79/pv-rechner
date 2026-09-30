@@ -12,6 +12,8 @@ import type { VideoRequestParams } from "../../lib/video-export-client";
 import type { VideoMailOptions } from "../WidgetVideoDialog";
 import ChartOptionsMenu from '../ChartOptionsMenu';
 import Modal from '../Modal';
+import SelectField from '../SelectField';
+import dialogStyles from '../WidgetVideoDialog.module.css';
 import {controlChartAnimation, downloadChartVideo} from '../../lib/chart-animation-export';
 import EinbettenDialog from '../EinbettenDialog';
 import {WIDGET_MAX_WIDTH_COMPACT} from '../../lib/widget-registry';
@@ -39,9 +41,12 @@ import './dashboard.css';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
+  /** Selection needed to reconstruct this widget when following a shared link. */
+  shareParams?: Record<string, string>;
+  imageFormats?: {label: string; width: number; height: number}[];
   animated?: boolean;
   /** Server-backed video request, already bound to this widget and selected period. */
   videoParams?: VideoRequestParams;
@@ -62,6 +67,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   /** Parameters of the supported embed route; without it, embedding is shown as unavailable. */
   einbetten?: {params: Record<string, string>; height: number};
 }) {
+  const [imageOpen, setImageOpen] = useState(false);
+  const [imageFormat, setImageFormat] = useState(0);
+  const [imageError, setImageError] = useState('');
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);
@@ -116,6 +124,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
       }
     } catch { /* External embeds keep their own directly accessible URL. */ }
     url.searchParams.set('chart', detailId);
+    for (const [key, value] of Object.entries(shareParams ?? {})) url.searchParams.set(key, value);
     url.hash = '';
     if (navigator.clipboard && window.isSecureContext) {
       try {
@@ -143,6 +152,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   const contactPage = new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io');
   contactPage.hash = '';
   contactPage.searchParams.set('chart', detailId);
+  for (const [key, value] of Object.entries(shareParams ?? {})) contactPage.searchParams.set(key, value);
   const contactHref = `/kontakt?${new URLSearchParams({
     topic: 'Widget einbetten',
     message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,
@@ -157,6 +167,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
     shareText: def.shareText,
     shareUrl: def.shareUrl,
     mode: 'node',
+    nodeSize: imageFormats?.[imageFormat],
   });
   const measure = useCallback((action:WidgetAction) => {
     let path=window.location.pathname;
@@ -191,6 +202,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
         }}
         onDownload={async()=>{
           if(chartExport.chartRef.current?.querySelector('[data-export-ready="false"]')) throw new Error('Die Daten sind noch nicht verfügbar. Bitte später erneut versuchen.');
+          if(imageFormats?.length){setImageError('');setImageOpen(true);return;}
           const node=chartExport.chartRef.current;
           if(animated&&node)await controlChartAnimation(node,{mode:'pause'});
           try{await chartExport.downloadPng();}
@@ -279,7 +291,20 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;
-  return detailOpen
+  const imageDialog = imageFormats && <Modal open={imageOpen} onClose={()=>setImageOpen(false)} title="Bild herunterladen" scheme="light" maxWidth={520}>
+    <p style={{margin:'0 0 20px'}}>{frame.title}</p>
+    <label style={{display:'grid',gap:8}}>Bildformat
+      <SelectField ariaLabel="Bildformat" block value={imageFormat} onChange={event=>setImageFormat(Number(event.target.value))}>
+        {imageFormats.map((format,index)=><option key={format.label} value={index}>{format.label}</option>)}
+      </SelectField>
+    </label>
+    {imageError&&<p role="alert">{imageError}</p>}
+    <button className={dialogStyles.submit} style={{marginTop:24}} disabled={chartExport.isExporting} onClick={async()=>{
+      try {await chartExport.downloadPng();setImageOpen(false);}
+      catch {setImageError('Das Bild konnte nicht erstellt werden. Bitte erneut versuchen.');}
+    }}>{chartExport.isExporting?'Bild wird erstellt …':'PNG herunterladen'}</button>
+  </Modal>;
+  return <>{imageDialog}{detailOpen
     ? <Modal open onClose={closeDetail} title={place} ariaLabel={frame.title} maxWidth={880}>{content}</Modal>
-    : content;
+    : content}</>;
 }

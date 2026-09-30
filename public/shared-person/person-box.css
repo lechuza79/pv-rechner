@@ -118,11 +118,11 @@ body[data-lab-splash=none] :is(.hs-tools,.hs-guides):before,body[data-lab-splash
 :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):hover{filter:brightness(1.06)}
 :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):focus-visible{outline:0;box-shadow:inset 0 0 0 3px var(--lab-ink)}
 @media(prefers-reduced-motion:reduce){:is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){transition:none}}
-:is(button:not(.story-preview-card):not(.sc-global-header *),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
+:is(button:not(.story-preview-card):not(.sc-global-header *):not([role="menuitem"]),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
 :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){clip-path:none;border-radius:10px!important;font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
 @media(max-width:850px){.hs-person-section>.hs-wrap:before{top:0;bottom:auto;width:100%;height:240px;background-position:center;background-size:430px auto;opacity:.6}}
 @media(min-width:601px){.hs-person-section>.hs-wrap:before{top:0;bottom:0;width:51%;height:100%;background-position:center;background-size:120% auto;opacity:.65}}
-:is(button:not(.story-preview-card):not(.sc-global-header *),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){border-radius:999px!important}
+:is(button:not(.story-preview-card):not(.sc-global-header *):not([role="menuitem"]),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){border-radius:999px!important}
 :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){border-radius:999px!important;clip-path:none}
 :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){padding-inline:28px!important}
 .hs-person-section:not(.hs-art-ready)>.hs-wrap::before{background-image:none!important}

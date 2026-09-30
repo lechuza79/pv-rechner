@@ -1,0 +1,65 @@
+:global(#atlas-ranking) .host{padding:0!important;height:auto!important;min-height:0;display:block;background:transparent;overflow:visible}
+.widget{display:flex;flex-direction:column;height:auto;min-height:calc(var(--ranking-heading-height,120px) + 370px);box-sizing:border-box;position:relative;text-align:left;overflow:visible}
+.widget :global(.sc-widget-head){position:relative;z-index:2;align-items:flex-start}
+.visual{position:relative;isolation:isolate;flex:1;min-height:0;display:flex;flex-direction:column}
+/* Same layered monochrome treatment as the race and monthly solar widgets. */
+.artwork{position:absolute;inset:-80px -24px -24px;z-index:-1;pointer-events:none;opacity:.16;overflow:visible;mask-image:linear-gradient(transparent,#000 22%,#000 65%,transparent)}
+.backdrop{position:absolute;inset:-10%;width:120%;height:120%;max-width:none;object-fit:cover;object-position:center;filter:grayscale(1)}
+.splash{position:absolute;inset:0;background:url('/brand/feed-in-v4-splashes.svg') center/100% auto no-repeat;filter:grayscale(1) brightness(.3)}
+.badge{position:absolute;width:96px;max-width:none;height:96px;object-fit:contain;left:50%;top:100%;transform:translate(calc(-50% + var(--badge-x,0px)),calc(-50% + var(--badge-offset,0px)));filter:drop-shadow(0 3px 4px rgb(24 50 62 / .18))}
+
+.scope{font:400 13px/1.5 var(--atlas-body);color:var(--atlas-secondary);margin:0;position:relative}
+.unit{font:400 13px/1.5 var(--atlas-body);color:var(--atlas-secondary);margin:8px 0 0}
+.podium{position:relative;display:flex;align-items:flex-end;justify-content:center;align-self:center;width:min(100%,420px);box-sizing:border-box;gap:12px;flex:1;padding-top:40px;min-height:240px}
+.podium::before{content:"";position:absolute;left:0;right:0;bottom:64px;border-top:1px solid color-mix(in srgb,var(--atlas-text) 18%,transparent)}
+.contender{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.label{display:flex;flex-direction:column;gap:8px;align-items:center;margin-bottom:12px;width:100%;font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.label a,.label span{color:var(--atlas-text);text-decoration:none}
+.label strong{font:700 clamp(20px,3vw,30px)/1.1 var(--atlas-display);color:var(--atlas-text)}
+.bar{height:calc(var(--bar-fraction) * var(--ranking-plot-height,160px));width:55%;max-width:80px;background:var(--atlas-text);position:relative;border-radius:10px 10px 0 0}
+.contender[data-own=true] .bar{background:var(--color-cta,#d4ff24);box-shadow:0 5px 14px rgb(23 59 66 / .15)}
+.rank{margin-top:12px;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;background:var(--atlas-card);color:var(--atlas-text);font-weight:700}
+@media(max-width:600px){.podium{gap:8px}.label{font-size:12px}.label strong{font-size:22px}}
+.widget :global(.sc-widget-head h4){font-family:var(--atlas-display);font-weight:700;font-size:24px;line-height:1.25}
+.widget :global(.sc-widget-body){padding:16px 24px 24px;flex:1;display:flex;min-height:0}
+.widget :global(.sc-widget-head){flex-wrap:nowrap;gap:8px}
+.widget :global(.sc-widget-head h4){min-width:0;flex:1}
+.widget :global(.sc-widget-tools){flex-shrink:0}
+
+.widget[data-export-sized]{display:flex;flex-direction:column;min-height:0}
+.widget[data-export-sized] :global(.sc-widget-body){flex:1;min-height:0;display:flex}
+.widget[data-export-sized] .visual{flex:1;min-height:0}
+.widget[data-export-sized] .podium{min-height:0;padding-top:20px}
+
+.widget[data-export-sized] .bar{height:calc(var(--bar-fraction) * clamp(140px,calc(var(--chart-export-height) - 360px),420px))}
+
+.contender[data-own=true] .rank{visibility:hidden}
+.podium{padding-bottom:22px}
+
+@keyframes rankingFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rankingArtworkIn{from{opacity:0}to{opacity:.16}}
+.artwork{animation:rankingArtworkIn .32s ease-out both}
+@media(prefers-reduced-motion:reduce){.artwork{animation:none}}
+
+/* Same timing and order as the municipality reveal: other places, then home. */
+@keyframes rankingBarGrow{from{height:0}}
+@keyframes rankingOwnReveal{from{background:var(--atlas-text);box-shadow:none}to{background:var(--color-cta,#d4ff24);box-shadow:0 5px 14px rgb(23 59 66 / .15)}}
+.visual[data-animate] .bar{animation:rankingBarGrow .85s cubic-bezier(.33,1,.68,1) var(--grow-delay) backwards}
+.visual[data-animate] .contender[data-own=true] .bar{animation:rankingBarGrow .85s cubic-bezier(.33,1,.68,1) var(--grow-delay) backwards,rankingOwnReveal .2s ease-out var(--reveal-delay) backwards}
+.visual[data-animate] .rank,.visual[data-animate] .label>a,.visual[data-animate] .label>span{animation:rankingFadeIn .32s ease-out var(--reveal-delay) backwards}
+.visual[data-animate] .badge{animation:rankingFadeIn .32s ease-out calc(var(--reveal-delay) + 250ms) backwards}
+@media(prefers-reduced-motion:reduce){.visual[data-animate] .bar,.visual[data-animate] .badge,.visual[data-animate] .rank,.visual[data-animate] .label>a,.visual[data-animate] .label>span{animation:none}}
+.widget :global(.sc-widget-eyebrow){display:block;font:500 12px/1.4 var(--atlas-body);text-transform:uppercase;letter-spacing:.08em;color:var(--atlas-secondary);margin-bottom:8px}
+.widget :global(.sc-widget-subtitle){display:block;font:400 16px/1.4 var(--atlas-body);color:var(--atlas-secondary);margin-top:6px}
+
+/* Export positions stay deterministic, independent of the current scroll position. */
+:global([data-sc-export-capture]) .badge{transform:translate(-50%,-50%)}
+@media(prefers-reduced-motion:reduce){.badge{transform:translate(-50%,-50%)}}
+
+@media(prefers-reduced-motion:reduce){.visual[data-animate] .contender[data-own=true] .bar{animation:none}}
+
+/* Standalone image exports size their own title, not the page category set. */
+:global([data-sc-export-capture]) .widget :global(.sc-widget-head){min-height:0}
+
+/* Keep values clear of the overlapping badge, even for very short own bars. */
+.contender[data-own=true] .label{margin-bottom:max(12px,calc(60px - var(--bar-fraction) * var(--ranking-plot-height,160px)))}

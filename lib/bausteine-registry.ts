@@ -763,7 +763,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "Modal", "ContactForm"],
   },
   {
     datei: "components/ChartExportBar.tsx",

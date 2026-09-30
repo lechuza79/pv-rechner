@@ -492,6 +492,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 **Neues Chart: erst der Register-Eintrag, dann die Karte, dann die beiden Fußzeilen aus den Bausteinen.** In dieser Reihenfolge ist ein neues Chart kleiner als das vorige.
 
+**Kommunales Top-3-Ranking:** `RankingPodiumWidget` verwendet dieselbe exportierbare Widget-Hülle und das Register. Nur das Visual wird als PNG in 16:9, 1:1 oder 4:5 exportiert; Vergleichsgruppe und Quellen bleiben im Export erhalten. `WidgetActionMenu.module.css` gestaltet beide Menüvarianten gemeinsam. Kontaktaktionen öffnen das bestehende Kontaktformular im Modal; kopierte Ranking-Links enthalten die Vergleichsauswahl. Aufbau und Herkunft der Illustrationen: `docs/gemeinde-ranking-widget.md`.
+
 ## Das geteilte Bild (Download/Teilen) — BLOCKER
 
 **Ein Bild hat kein Hover, kein Tippen und keine „?"-Knöpfe.** Alles, was die Seite interaktiv erklärt, fehlt im PNG — und das PNG ist genau die Fassung, die auf fremden Seiten, in Chats und in Präsentationen landet, ohne dass jemand nachfragen kann. Ein Bild, dem die Legende, die Skala oder der gewählte Zustand fehlt, ist keine schwache Version der Seite, sondern eine **missverständliche**.

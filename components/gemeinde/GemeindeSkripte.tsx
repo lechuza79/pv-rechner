@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import GemeindeRankingWidget from "./GemeindeRankingWidget";
 import InfoTooltipBindings from "../InfoTooltipBindings";
 
 declare global {
@@ -48,5 +49,5 @@ export default function GemeindeSkripte({ daten, navigationOnly=false }: { daten
       }
     })();
   }, [daten,navigationOnly]);
-  return <InfoTooltipBindings />;
+  return <><InfoTooltipBindings />{!navigationOnly && <GemeindeRankingWidget />}</>;
 }

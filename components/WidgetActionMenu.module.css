@@ -1,0 +1,77 @@
+/* Shared appearance for all widget action menus; callers own positioning only. */
+.menu {
+  box-sizing: border-box;
+  padding: 6px 0;
+  border-radius: 12px;
+  background: var(--widget-surface, var(--color-bg-raised, #f6f8f1));
+  border: 1px solid var(--widget-muted, var(--color-text-muted, #61727a));
+  box-shadow: 0 12px 32px #0004;
+}
+
+.separator {
+  height: 0;
+  margin: 6px 14px;
+  border-top: 1px solid color-mix(in srgb, var(--widget-muted, var(--color-text-muted, currentColor)) 35%, transparent);
+}
+
+/* Buttons and links share one presentation, independent of the host page. */
+.menu .item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--widget-ink, var(--color-text-primary));
+  font-family: var(--atlas-body, "DM Sans", sans-serif);
+  font-size: var(--font-size-body, 16px);
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.menu .item:hover,
+.menu .item:focus-visible {
+  background: color-mix(in srgb, var(--widget-ink, currentColor) 6%, transparent);
+}
+
+.menu .item:focus-visible {
+  outline: 2px solid var(--widget-muted, currentColor);
+  outline-offset: -4px;
+}
+
+.menu .item:disabled { cursor: default; opacity: .5; }
+.menu .contactItem { align-items: start; }
+.menu .followup { min-height: 36px; padding-top: 0; }
+
+.menu .secondary {
+  display: block;
+  margin: 2px 0 0;
+  color: var(--widget-muted, var(--color-text-muted));
+  font: 400 13px/1.4 var(--atlas-body, "DM Sans", sans-serif);
+}
+
+.menu .contactAction {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.menu .item > svg,
+.menu .contactAction svg { opacity: .55; }
+
+.menu .muted { color: var(--widget-muted, var(--color-text-muted)); }
+.menu .accent { color: var(--color-accent); }

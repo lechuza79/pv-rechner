@@ -1,6 +1,0 @@
-/* Keep keyboard focus within the rounded flyout, including its first row. */
-.menu [role="menuitem"]:focus-visible {
-  outline: 2px solid var(--widget-muted, currentColor);
-  outline-offset: -4px;
-  border-radius: 8px;
-}
