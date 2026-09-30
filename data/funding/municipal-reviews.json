@@ -77153,5 +77153,37 @@
         "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
       }
     ]
+  },
+  {
+    "regionId": "01051044",
+    "name": "Heide",
+    "checkedAt": "2026-09-30T06:20:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stadt Heide: kein städtischer Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die gefundene Seite meldet die Bundesförderung des Forschungsprojekts QUARREE100 (24 Mio. €, Wärmenetz im Quartier Rüsdorfer Kamp); die Stadt nennt daneben nur Städtebauförderung. Die Website führt keine Klima- oder Förderrubrik für Bürger.",
+    "searches": [
+      "heide.de Startseite und Menü am 30.09.2026 gelesen: nur QUARREE100 und Städtebauförderung als Förderbezug",
+      "Seite Städtebauförderung und QUARREE100-Energiekonzept am 30.09.2026 gelesen",
+      "Websuche „Stadt Heide Holstein Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger 2026“: nur Portale, kein städtisches Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.heide.de/artikelansicht/millionenfoerderung-fuer-projekt-in-heide-gruene-energie-fuer-buerger-und-unternehmen-1.html",
+        "finding": "30.09.2026: „Der Bund fördert das Projekt QUARREE100 mit 24 Millionen Euro“ — Forschungsprojekt, kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.heide.de/rathaus-buergerservice/staedtebaufoerderung.html",
+        "finding": "30.09.2026: Städtebauförderung, die Stadt beantragt Mittel für ein Fördergebiet — kein Energiezuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "heide.de/artikelansicht/millionenfoerderung-fuer-projekt-in-heide-gruene-energie-fuer-buerger-und-unternehmen-1.html",
+        "disposition": "reviewed",
+        "reason": "Pressemeldung zur Bundesförderung des Forschungsprojekts QUARREE100, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.heide.de/artikelansicht/millionenfoerderung-fuer-projekt-in-heide-gruene-energie-fuer-buerger-und-unternehmen-1.html"
+      }
+    ]
   }
 ]
