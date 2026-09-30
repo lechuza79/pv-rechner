@@ -139,7 +139,7 @@ function asRegion(row: unknown): AtlasRegion {
  */
 const STAMMDATEN_TTL = 60 * 60 * 24 * 7;
 
-async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
+export async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
     supabase.from("mastr_regions").select(REGION_COLUMNS).eq("region_id", regionId).maybeSingle(),

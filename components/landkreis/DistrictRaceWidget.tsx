@@ -22,7 +22,7 @@ declare global {
 export type RaceWording = {title:string;members:string;leaders:string;unit:string};
 export const DISTRICT_RACE_WORDING: RaceWording = {title:"Welche Gemeinde hat die meisten Solaranlagen?",members:"Alle Gemeinden im Landkreis",leaders:"Die zehn führenden Gemeinden",unit:"Orte"};
 
-export default function DistrictRaceWidget({name,stand,rows,history,wording=DISTRICT_RACE_WORDING}:{name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording}) {
+export default function DistrictRaceWidget({regionId,name,stand,rows,history,wording=DISTRICT_RACE_WORDING}:{regionId?:string;name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording}) {
   const [stage,setStage]=useState<HTMLDivElement|null>(null);
   const clock=useRef<HTMLSpanElement>(null);
   useEffect(()=>{
@@ -38,7 +38,7 @@ export default function DistrictRaceWidget({name,stand,rows,history,wording=DIST
     return ()=>{active=false;window.removeEventListener("district-race-ready",start);stage?.replaceChildren();};
   },[rows,history,stage,wording.leaders]);
   return <div className={`${foundation.foundation} sc-dashboard district-race-layout`} data-story-scheme="light">
-    <ExportableWidgetFrame actions="primary" animated exportNote={null} widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
+    <ExportableWidgetFrame actions="primary" animated videoParams={regionId ? {widget:"regional-race",ags:regionId,period:"current"} : undefined} exportNote={null} widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
       headingMeta={<span ref={clock}>{history[0]?.year}</span>}
       context={<>Wir vergleichen {rows.length} {wording.unit} {ortPhrase({name})}. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}>
       <div className="district-race-artwork" aria-hidden="true">

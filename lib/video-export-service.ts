@@ -31,6 +31,22 @@ export type Resolved = { params: VideoExportParams; place: string; dataVersion: 
 
 /** Does the requested period exist in the data the page shows? */
 export async function resolveVideo(params: VideoExportParams): Promise<Resolved | null> {
+  if (params.widget === "regional-race") {
+    const {loadRegionalRace} = await import("./regional-race-server");
+    const {createHash} = await import("node:crypto");
+    const race=await loadRegionalRace(params.ags);
+    if(!race) return null;
+    const dataVersion=createHash("sha256").update(JSON.stringify({stand:race.stand,rows:race.rows,history:race.history})).digest("hex");
+    return {params,place:race.region.name,dataVersion,cacheKey:renderCacheKey({...params,dataVersion,designVersion:VIDEO_DESIGN_VERSION}),label:`Solaranlagen im regionalen Vergleich · ${race.region.name}`};
+  }
+  if (!/^\d{8}$/.test(params.ags)) {
+    const {loadRegionalSolar}=await import("./regional-solar-server");
+    const solar=await loadRegionalSolar(params.ags);
+    const month=solar?.data.monthly.find(row=>row.month===params.period);
+    if(!solar || !month)return null;
+    const dataVersion=`${month.solar.sourceDate}|${solar.version}`;
+    return {params,place:solar.region.name,dataVersion,cacheKey:renderCacheKey({...params,dataVersion,designVersion:VIDEO_DESIGN_VERSION}),label:videoLabel({place:solar.region.name,period:params.period})};
+  }
   const { ladeGemeindePaket } = await import("./gemeinde-paket-server");
   const paket = await ladeGemeindePaket(params.ags);
   const rows = (paket?.monitorPeriods as Json | undefined)?.monthly as Json[] | undefined;
@@ -156,10 +172,11 @@ export async function notifyFinished(): Promise<{ sent: number; failed: number }
   let sent = 0, failed = 0;
   const labels = new Map<string, string>();
   for (const r of rows) {
-    const key = `${r.ags}|${r.period}`;
+    const key = `${r.widget}|${r.ags}|${r.period}`;
     if (!labels.has(key)) {
-      const res = await resolveVideo({ widget: r.widget, ags: r.ags, period: r.period }).catch(() => null);
-      labels.set(key, res?.label ?? videoLabel({ place: r.ags, period: r.period }));
+      const {getRegionByIdUncached} = await import("./atlas");
+      const region = await getRegionByIdUncached(r.ags).catch(() => null);
+      labels.set(key, videoLabel({widget:r.widget, place:region?.name ?? r.ags, period:r.period}));
     }
     const label = labels.get(key)!;
     if (r.job_status === "done") {

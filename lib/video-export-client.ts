@@ -2,7 +2,8 @@
 // to. Resolving means ONLY "the confirmation mail was accepted", never "the
 // video exists". Errors carry German display text.
 
-export type VideoRequestParams = { widget: "gemeinde-solar-monat"; ags: string; period: string };
+export type { VideoExportParams as VideoRequestParams } from "./video-export-config";
+import type { VideoExportParams as VideoRequestParams } from "./video-export-config";
 
 export class VideoRequestError extends Error {
   constructor(public code: "invalid" | "rate_limited" | "unavailable" | "failed", message: string) {

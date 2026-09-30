@@ -9,9 +9,9 @@ import { VIDEO_EXPORT_SQL } from "../video-export-sql";
 const lies = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 
 describe("video export: what may be rendered", () => {
-  it("accepts the pilot widget for Nidda only", () => {
+  it("accepts monthly widgets for valid places", () => {
     expect(checkVideoParams({ widget: "gemeinde-solar-monat", ags: "06440016", period: "2026-08" }).ok).toBe(true);
-    expect(checkVideoParams({ widget: "gemeinde-solar-monat", ags: "09162000", period: "2026-08" })).toEqual({ ok: false, reason: "ags_not_released" });
+    expect(checkVideoParams({ widget: "gemeinde-solar-monat", ags: "09162000", period: "2026-08" }).ok).toBe(true);
   });
   it("rejects addresses, unknown widgets and malformed periods", () => {
     for (const bad of [
@@ -25,6 +25,17 @@ describe("video export: what may be rendered", () => {
   it("builds the render address from the table, never from input", () => {
     expect(VIDEO_WIDGETS["gemeinde-solar-monat"].embedPath({ widget: "gemeinde-solar-monat", ags: "06440016", period: "2026-08" }))
       .toBe("/embed/gemeinde/06440016/monitor");
+  });
+  it("accepts regional racing through the same allowlisted renderer", () => {
+    for (const ags of ["06440", "06", "de"]) {
+      expect(checkVideoParams({widget:"regional-race",ags,period:"current"}).ok).toBe(true);
+    }
+    for (const ags of ["../../secret", "https://example.org", "06440016", "x"]) {
+      expect(checkVideoParams({widget:"regional-race",ags,period:"current"}).ok).toBe(false);
+    }
+    expect(checkVideoParams({widget:"regional-race",ags:"06440",period:"2026-08"}).ok).toBe(false);
+    expect(VIDEO_WIDGETS["regional-race"].periodControl).toBe("none");
+    expect(VIDEO_WIDGETS["regional-race"].embedPath({widget:"regional-race",ags:"06440",period:"current"})).toBe("/embed/regional-race/06440");
   });
   it("normalises addresses so case does not bypass limits", () => {
     expect(normaliseEmail(" Anna@Example.ORG ")).toBe("anna@example.org");

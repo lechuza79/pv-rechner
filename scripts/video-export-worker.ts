@@ -2,7 +2,8 @@
 //
 // Takes one job at a time from the queue (lib/video-export-sql.ts), opens the
 // allowlisted embed page in headless Chromium, runs the page's OWN video export
-// through components/VideoRenderBridge.tsx, stores the MP4 and mails every
+// through components/VideoRenderBridge.tsx, captures the shared export DOM,
+// encodes H.264 with FFmpeg and mails every
 // confirmed requester. Then expires old files and links.
 //
 //   npm run video:worker            one pass: cleanup, render ≤ 1 job, notify
@@ -12,11 +13,11 @@
 // storage variables of lib/video-export-db.ts / -storage.ts, mail settings.
 
 import { mkdtemp, readFile, rm } from "fs/promises";
-import { execFile } from "child_process";
+import { execFile, spawn } from "child_process";
 import { hostname, tmpdir } from "os";
 import path from "path";
 import { chromium } from "playwright";
-import { VIDEO_LIMITS, VIDEO_TTL, VIDEO_WIDGETS, type VideoWidgetId } from "../lib/video-export-config";
+import { VIDEO_LIMITS, VIDEO_TTL, VIDEO_WIDGETS, checkVideoParams, type VideoWidgetId } from "../lib/video-export-config";
 import { callVideoFn, closeVideoDb } from "../lib/video-export-db";
 import { cleanupVideos, notifyFinished } from "../lib/video-export-service";
 import { objectPath, putVideo } from "../lib/video-export-storage";
@@ -49,16 +50,15 @@ function probe(file: string): Promise<{ duration: number; width: number; height:
 
 async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, unknown> }> {
   const def = VIDEO_WIDGETS[job.widget];
-  if (!def || (def.agsAllowlist.length && !def.agsAllowlist.includes(job.ags))) throw new Error("not_allowlisted");
+  if (!def || !checkVideoParams(job).ok) throw new Error("not_allowlisted");
   const url = `${origin()}${def.embedPath(job)}?scVideoRender=1`;
   const dir = await mkdtemp(path.join(tmpdir(), "sc-video-"));
   const browser = await chromium.launch({ headless: true });
   // Closing the browser cancels both rendering and download on timeout.
   const deadline = setTimeout(() => { void browser.close().catch(() => {}); }, VIDEO_TTL.renderTimeoutSeconds * 1000);
-  let progressTimer: ReturnType<typeof setInterval> | undefined;
   try {
     const context = await browser.newContext({
-      viewport: VIEWPORT, deviceScaleFactor: 1, acceptDownloads: true,
+      viewport: VIEWPORT, deviceScaleFactor: 1.5, acceptDownloads: true,
       // Our own automation identity, like the health check (firewall exception).
       // Exactly the health check's string: the firewall exception may match it verbatim.
       userAgent: "solar-check-health-check",
@@ -69,8 +69,10 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     if (!res || !res.ok()) throw new Error(`page_http_${res?.status() ?? "none"}`);
     const card = page.locator(`[data-widget-id="${job.widget}"]`).first();
     await card.locator("[data-chart-animation]").first().waitFor();
+    if (job.widget === "regional-race") await card.locator(".district-race-row").first().waitFor();
     await page.waitForFunction(() => document.documentElement.dataset.scVideoBridge === "ready");
     // Choose the period with the page's own month control, like a visitor.
+    if (def.periodControl === "month") {
     const select = card.locator('select[aria-label="Monat"]');
     if ((await select.inputValue()) !== job.period) {
       const options = await select.locator("option").evaluateAll((o) => o.map((x) => (x as HTMLOptionElement).value));
@@ -80,21 +82,35 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     // The export-only state line must name the requested month before we record.
     const want = formatStoryDate(job.period);
     await card.locator("[data-sc-export-only]").filter({ hasText: want }).first().waitFor({ state: "attached" });
-    const filename = `solar-check-${job.widget}-${job.ags}-${job.period}`;
-    const download = page.waitForEvent("download", { timeout: VIDEO_TTL.renderTimeoutSeconds * 1000 });
+    }
+    // Native Chromium capture uses the same export DOM as PNGs. Avoid serializing
+    // all styles/fonts into an SVG for every frame of a long racing chart.
     const started = Date.now();
-    progressTimer = setInterval(() => {
-      void page.evaluate(() => window.__scVideoProgress ?? 0)
-        .then((progress) => callVideoFn("video_job_progress", { id: job.id, worker: WORKER, progress }))
-        .catch(() => {});
-    }, 5_000);
-    // Observe both promises immediately, including failures during rendering.
-    const [meta, dl] = await Promise.all([
-      page.evaluate(([w, f]) => window.__scVideoRender!({ widgetId: w, filename: f }), [job.widget, filename] as const),
-      download,
-    ]);
-    const file = path.join(dir, "out.mp4");
-    await dl.saveAs(file);
+    const fps=30;
+    const meta=await page.evaluate(widgetId=>window.__scVideoFrame!({widgetId,timeMs:0}),job.widget);
+    const frames=Math.ceil(meta.durationMs/1000*fps);
+    const file=path.join(dir,"out.mp4");
+    const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
+    let encoderError="";
+    encoder.stderr.on("data",chunk=>{encoderError+=chunk.toString();});
+    const encoded=new Promise<void>((resolve,reject)=>{
+      encoder.on("error",reject);
+      encoder.on("close",code=>code===0?resolve():reject(new Error(`encoder failed: ${encoderError.slice(-500)}`)));
+    });
+    // Observe failures immediately while the frame loop is still writing.
+    void encoded.catch(()=>{});
+    let lastProgress=-1;
+    try {
+      for(let frame=0;frame<frames;frame++) {
+        if(frame) await page.evaluate(({widgetId,timeMs})=>window.__scVideoFrame!({widgetId,timeMs}),{widgetId:job.widget,timeMs:frame*1000/fps});
+        const png=await page.screenshot({type:"png",clip:{x:0,y:0,width:meta.width,height:meta.height},animations:"allow",timeout:60_000});
+        await new Promise<void>((resolve,reject)=>encoder.stdin.write(png,error=>error?reject(error):resolve()));
+        const progress=Math.min(99,Math.round((frame+1)/frames*100));
+        if(progress!==lastProgress) {await callVideoFn("video_job_progress",{id:job.id,worker:WORKER,progress});lastProgress=progress;}
+      }
+      encoder.stdin.end();
+      await encoded;
+    } finally {if(encoder.exitCode===null) encoder.kill();}
     const bytes = await readFile(file);
     if (bytes.length < 10_000 || bytes.subarray(4, 8).toString("latin1") !== "ftyp") throw new Error("not_mp4");
     const probed = await probe(file);
@@ -102,7 +118,6 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     return { bytes, info: { encodeMs: Date.now() - started, card: meta, probe: probed } };
   } finally {
     clearTimeout(deadline);
-    clearInterval(progressTimer);
     await browser.close().catch(() => {});
     await rm(dir, { recursive: true, force: true });
   }

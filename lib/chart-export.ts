@@ -523,6 +523,17 @@ export async function captureNodeToBlob(
   presentation: 'export' | 'screen' = 'export',
   size?: {width: number; height: number},
 ): Promise<Blob> {
+  const capture = await prepareNodeCapture(node, presentation, size);
+  try {
+    return await domToBlob(capture.node, {
+      scale, backgroundColor: format?.background,
+      ...(format ? {type:format.type,quality:format.quality} : {}),
+    });
+  } finally {capture.dispose();}
+}
+
+/** Shared export DOM for image capture and native server video frames. */
+export async function prepareNodeCapture(node: HTMLElement, presentation: 'export' | 'screen' = 'export', size?: {width:number;height:number}, visible = false) {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
   // flag on click — that reconciliation undoes any edit we make to the live tree
@@ -581,17 +592,13 @@ export async function captureNodeToBlob(
         edge.style.fontSize = `${size}px`;
       }
     });
-    return await domToBlob(clone, {
-      scale,
-      // Transparent canvas → the card's rounded corners stay rounded. A format
-      // that cannot carry transparency (JPEG) passes its own background instead,
-      // otherwise those corners come out black.
-      backgroundColor: format?.background,
-      ...(format ? { type: format.type, quality: format.quality } : {}),
-    });
-  } finally {
-    wrapper.remove();
-  }
+    if (visible) {
+      wrapper.style.left = '0';
+      wrapper.style.zIndex = '2147483647';
+      clone.setAttribute('data-sc-server-frame', '');
+    }
+    return {node:clone,dispose:()=>wrapper.remove()};
+  } catch(error) {wrapper.remove();throw error;}
 }
 
 /**

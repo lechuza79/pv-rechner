@@ -129,7 +129,7 @@ const confirmationCopy: Record<string, { title: string; text: string }> = {
 /** Shared entry point for emailed links on both site and embed surfaces. */
 export function WidgetVideoConfirmation() {
   const [token, setToken] = useState("");
-  const [context, setContext] = useState<{place?: string; period?: string; outcome: string} | null>(null);
+  const [context, setContext] = useState<{place?: string; period?: string; label?: string; outcome: string} | null>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     const read = () => {
@@ -159,7 +159,7 @@ export function WidgetVideoConfirmation() {
   }
   return <Modal open onClose={() => setToken("")} title={copy.title} maxWidth={520} className={styles.dialog} scheme="light">
     <div className={styles.content}>
-      {context?.place && <div className={styles.context}><IconVideo size={24} aria-hidden="true" /><div>Solarerzeugung im Tagesverlauf in {context.place}<span>{context.period && new Date(`${context.period}-01T12:00:00Z`).toLocaleDateString("de-DE", {month:"long",year:"numeric"})} · MP4-Video</span></div></div>}
+      {context?.place && <div className={styles.context}><IconVideo size={24} aria-hidden="true" /><div>{context.label ?? `Solarerzeugung im Tagesverlauf in ${context.place}`}<span>{context.period && new Date(`${context.period}-01T12:00:00Z`).toLocaleDateString("de-DE", {month:"long",year:"numeric"})} · MP4-Video</span></div></div>}
       <p role="status">{copy.text}</p>
       <ModalSticky>{["pending","unavailable","capacity"].includes(outcome) ? <button className={styles.submit} disabled={busy} onClick={confirm}>{busy ? "Wird bestätigt …" : "Video erstellen"}</button> : <button className={styles.submit} onClick={() => setToken("")}>Schließen</button>}</ModalSticky>
     </div>

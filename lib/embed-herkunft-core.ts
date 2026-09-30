@@ -120,6 +120,8 @@ export const EMBED_WIDGETS = [
   "pv-kostenrennen",
   "pv-zubau-deutschland",
   "region-anlagentyp",
+  "regional-race",
+  "regional-solar",
   "region-solarleistung",
   "simulation",
   "story-preview",
