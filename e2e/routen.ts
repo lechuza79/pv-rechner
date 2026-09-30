@@ -46,6 +46,7 @@ export const SEITEN: Seite[] = [
   // Ratgeber — die Seiten mit live gerechneten Beispielen
   { pfad: "/ratgeber", erwartet: /ratgeber/i },
   { pfad: "/ratgeber/lohnt-sich-pv-mit-speicher", erwartet: /speicher/i },
+  { pfad: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", erwartet: /einspeisevergütung/i },
   { pfad: "/ratgeber/gasheizung-oder-waermepumpe", erwartet: /wärmepumpe|gasheizung/i },
   { pfad: "/ratgeber/waermepumpe-foerderung", erwartet: /wärmepumpe/i },
   // Datenseiten

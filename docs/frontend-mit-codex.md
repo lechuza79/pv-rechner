@@ -270,3 +270,10 @@ and the HTW grid are unchanged.
 Tariff archive tables keep all monthly values in server-rendered HTML. In narrow
 containers the shared Auswahl selects the visible year; desktop retains the full
 matrix. Yearly tables use optional cell bars without replacing exact values.
+
+All articles listed in `lib/ratgeber.ts` and both guide indexes now import
+`EditorialPage` and `EditorialContent.module.css` directly. Use `Breadcrumb`
+with `variant="compact"`; place `ArticleMeta` before the headline. Do not copy
+page, heading or paragraph styles into a local style object. Page-specific
+comparison tables and interactive widgets keep their existing implementations.
+Styling changes do not advance the editorial update date.

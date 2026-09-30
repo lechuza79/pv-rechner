@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { RATGEBER } from "../ratgeber";
 import ContentTable from "../../components/ContentTable";
 
 import ArchivTabelle from "../../app/(site)/einspeiseverguetung-tabelle/ArchivTabellen";
@@ -43,6 +44,14 @@ describe("Shared content lookup table", () => {
     expect(source).not.toMatch(/<table[\s>]/);
     expect(source).not.toMatch(/\b(?:thLeft|tdNum):\s*\{/);
   });
+  it.each(RATGEBER.map(({ slug }) => slug))("keeps %s on the shared article standards", (slug) => {
+    const page = readFileSync(join(root, `app/(site)${slug}/page.tsx`), "utf8");
+    expect(page).toContain("<EditorialPage>");
+    expect(page).toContain("components/EditorialContent.module.css");
+    expect(page).toMatch(/<Breadcrumb\s+variant="compact"/);
+    expect(page).not.toMatch(/style=\{S\.(?:page|wrap|h1|h2|p|subtitle)\}/);
+  });
+
   it("keeps editorial typography in the shared scope", () => {
     const page = readFileSync(join(root, consumers[0]), "utf8");
     expect(page).toContain("<EditorialPage>");

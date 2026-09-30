@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import EditorialPage from "../../../../components/EditorialPage";
+import editorial from "../../../../components/EditorialContent.module.css";
 import ProConLists from "../../../../components/ProConLists";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import Faq from "../../../../components/Faq";
@@ -54,15 +56,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ─── Styles (same content-page conventions as /lohnt-sich-pv-mit-speicher) ───
+// Page-specific comparison and data presentation.
 const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "0 16px 20px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -70,73 +65,8 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: { color: v("--color-text-primary"), marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  card: {
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-    padding: "14px 16px",
-    border: `1px solid ${v("--color-border")}`,
-    marginBottom: 12,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-  },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 8,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  label: {
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    marginBottom: 6,
-    display: "block",
-  },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   positive: { color: v("--color-positive-text"), fontWeight: 600 },
-  muted: { color: v("--color-text-muted") },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  ctaButton: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-pill"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    background: v("--color-cta"),
-    color: v("--color-text-on-accent"),
-    textDecoration: "none",
-  },
-  ctaSecondary: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-md"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    border: `1px solid ${v("--color-border")}`,
-    color: v("--color-accent"),
-    textDecoration: "none",
-  },
   th: {
     textAlign: "left" as const,
     fontSize: v("--font-size-caption"),
@@ -437,9 +367,9 @@ export default async function LohntSichPvOhneEinspeisungPage() {
   const selfMit = daySelf(dayMit);
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
-        <Breadcrumb
+    <EditorialPage>
+
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
@@ -448,12 +378,6 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           jsonLd
         />
 
-        <h1 style={S.h1}>Lohnt sich eine PV-Anlage ohne Einspeisevergütung?</h1>
-        <p style={S.subtitle}>
-          Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — so sieht es ein
-          Reformentwurf vor. Was die Vergütung heute wirklich beiträgt, und ob sich eine
-          Anlage auch mit Vergütung null trägt.
-        </p>
         <ArticleMeta
           headline="Lohnt sich eine PV-Anlage ohne Einspeisevergütung?"
           description="Trägt sich Photovoltaik, wenn die Einspeisevergütung ab 2027 fällt?"
@@ -462,10 +386,17 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           modified="2026-07-26"
         />
 
+        <h1 className={editorial.h1}>Lohnt sich eine PV-Anlage ohne Einspeisevergütung?</h1>
+        <p className={editorial.subtitle}>
+          Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — so sieht es ein
+          Reformentwurf vor. Was die Vergütung heute wirklich beiträgt, und ob sich eine
+          Anlage auch mit Vergütung null trägt.
+        </p>
+
         {/* ── Kurzantwort ── */}
-        <div style={S.hero}>
-          <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Ja — wenn der Eigenverbrauch stimmt.</strong> Eine
+        <div className={editorial.hero}>
+          <span className={editorial.label}>Die Kurzantwort</span>
+          <strong className={editorial.strong}>Ja — wenn der Eigenverbrauch stimmt.</strong> Eine
           PV-Anlage verdient ihr Geld heute vor allem über den selbst verbrauchten Strom:
           Jede selbst genutzte Kilowattstunde spart rund {strompreisCt} ct, die Einspeisung
           bringt nur ca. {feedInCt} ct. Wer mit Speicher, Wärmepumpe oder E-Auto viel vom
@@ -473,23 +404,23 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           zeigt es mit Vergütung null. Ohne nennenswerten Eigenverbrauch kippt die
           Rechnung dagegen: Reine Einspeise-Konzepte tragen sich ohne Vergütung nicht.
         </div>
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginBottom: 0 }}>
           Stand {formatPriceDate(prices.validFrom)} · unverbindliche Näherungswerte, ohne Gewähr.
         </p>
 
         {/* ── EEG-Reform: Sachstand ── */}
-        <h2 style={S.h2}>Was gerade geplant ist — und was nicht</h2>
-        <p style={S.p}>
-          Die Bundesregierung hat <strong style={S.strong}>den Entwurf</strong> der
+        <h2 className={editorial.h2}>Was gerade geplant ist — und was nicht</h2>
+        <p className={editorial.p}>
+          Die Bundesregierung hat <strong className={editorial.strong}>den Entwurf</strong> der
           EEG-Reform 2027 am{" "}
-          <strong style={S.strong}>
+          <strong className={editorial.strong}>
             {eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} im Kabinett beschlossen
           </strong>
           . Wichtig vorweg, weil das leicht zu verwechseln ist: Beschlossen ist damit ein{" "}
           <em>Gesetzentwurf</em>, nicht das Gesetz. Geltendes Recht ist nichts davon.
           Der Sachstand (Stand: {REFORM_STAND}):
         </p>
-        <div style={S.card}>
+        <div className={editorial.card}>
           <span style={S.accent}>Neuanlagen ab 2027:</span> Die feste Einspeisevergütung
           soll für neue Anlagen enden. Für Anlagen unter 25 Kilowatt installierter
           Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe
@@ -509,7 +440,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           <span style={S.accent}>Die Zahlen des Entwurfs:</span> Der beschlossene Entwurf
           vom {eegDatum(EEG_REFORM_STAND.entwurfIso)} setzt für nicht ausgeschriebene
           Solaranlagen einen{" "}
-          <strong style={S.strong}>
+          <strong className={editorial.strong}>
             einheitlichen anzulegenden Wert von{" "}
             {EEG_ENTWURF_WERTE.anzulegenderWertCt.toLocaleString("de-DE", { minimumFractionDigits: 1 })}{" "}
             ct/kWh
@@ -531,10 +462,10 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission; der
           Entwurf stellt sie ausdrücklich unter diesen Vorbehalt.
           <br />
-          <span style={S.muted}>
+          <span className={editorial.muted}>
             Ohne Gewähr — verbindlich ist allein die offizielle Gesetzeslage. Die aktuell
             geltenden Vergütungssätze stehen auf der{" "}
-            <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+            <Link href="/datenstand" className={editorial.link}>Datenstand-Seite</Link>.
           </span>
         </div>
 
@@ -557,8 +488,8 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         />
 
         {/* ── Mechanismus ── */}
-        <h2 style={S.h2}>Warum die Vergütung die Rechnung längst nicht mehr trägt</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Warum die Vergütung die Rechnung längst nicht mehr trägt</h2>
+        <p className={editorial.p}>
           Selbst verbrauchter Strom spart den vollen Strompreis von rund {strompreisCt}{" "}
           ct/kWh. Eingespeister Strom bringt die{" "}
           <GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> von
@@ -568,15 +499,15 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm>, nicht die
           Einspeisung.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Konkret in unserem Beispielhaushalt mit Speicher: Von den jährlichen Einnahmen
           im ersten Jahr kommen rund {eur(ersparnis1)} aus ersparten Stromkosten und nur
           etwa {eur(erloes1)} aus der Einspeisung — die Vergütung steuert also rund{" "}
           {erloesAnteil} % bei. Fällt sie weg, fehlt dieser Anteil; die Anlage bleibt
           trotzdem rentabel, nur langsamer.
         </p>
-        <p style={S.p}>
-          Dazu kommt: Die EEG-Vergütung ist <strong style={S.strong}>schon heute auf{" "}
+        <p className={editorial.p}>
+          Dazu kommt: Die EEG-Vergütung ist <strong className={editorial.strong}>schon heute auf{" "}
           {FEED_IN_YEARS} Jahre begrenzt</strong>. Unser Modell rechnet sie deshalb ohnehin
           nur {FEED_IN_YEARS} Jahre an, danach null — die Eigenverbrauchs-Ersparnis läuft
           über die gesamten {YEARS} Jahre weiter. Eine Anlage, die sich über den
@@ -584,56 +515,56 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </p>
 
         {/* ── Beispielrechnung mit Vergütung null ── */}
-        <h2 style={S.h2}>Beispielrechnung: ohne Vergütung, mit und ohne Speicher</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Beispielrechnung: ohne Vergütung, mit und ohne Speicher</h2>
+        <p className={editorial.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
           Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
-          <strong style={S.strong}>ohne Einspeisevergütung</strong> (Einspeisung auf „Aus"),
+          <strong className={editorial.strong}>ohne Einspeisevergütung</strong> (Einspeisung auf „Aus"),
           also im geplanten Fall ab 2027. Oben wählst du, wie stark der Strompreis steigt —
           das schaltet beide Spalten gleichzeitig:
         </p>
         <SpeicherVergleich tabs={scenarioTabs} columns={vergleichColumns} />
-        <p style={S.p}>
+        <p className={editorial.p}>
           Im UBA-Basismodell (+{(prices.electricityIncrease * 100).toLocaleString("de-DE", { maximumFractionDigits: 2 })} %/Jahr)
           zeigt sich der Speicher-Effekt deutlich:{" "}
-          <strong style={S.strong}>ohne Speicher</strong> amortisiert sich die Anlage
+          <strong className={editorial.strong}>ohne Speicher</strong> amortisiert sich die Anlage
           {ohneRealAmort != null ? ` erst in ~${ohneRealAmort} Jahren` : " kaum im Zeitraum"}
           {" "}({eur(ohneRealGewinn)} Gewinn über {YEARS} Jahre), weil der Mittagsüberschuss
-          unvergütet ins Netz verpufft. <strong style={S.strong}>Mit 10 kWh Speicher</strong>{" "}
+          unvergütet ins Netz verpufft. <strong className={editorial.strong}>Mit 10 kWh Speicher</strong>{" "}
           {mitRealAmort != null ? `sinkt sie auf ~${mitRealAmort} Jahre` : "bleibt sie im Zeitraum"}
           {" "}und der Gewinn steigt auf {eur(mitRealGewinn)} — genau das ist der Kern der
           Debatte: Fällt die Vergütung, wird der Speicher vom Nice-to-have zum tragenden
           Baustein.
         </p>
 
-        <div style={S.card}>
-          <span style={S.label}>Annahmen dieser Rechnung</span>
+        <div className={editorial.card}>
+          <span className={editorial.label}>Annahmen dieser Rechnung</span>
           10 kWp · Strompreis {strompreisCt} ct/kWh · Einspeisung 0 ct/kWh (Vergütung
           weggefallen; heute wären es {feedInCt} ct/kWh Teileinspeisung über{" "}
           {FEED_IN_YEARS} Jahre) · Preisstand {formatPriceDate(prices.validFrom)} · ohne
           Förderung · inkl. Akku-Tausch und 0,5 % Modulalterung pro Jahr · Modell kalibriert
           an HTW-Berlin-Simulationsdaten.
           <br />
-          <span style={S.muted}>
+          <span className={editorial.muted}>
             Alle Beträge sind unverbindliche Näherungswerte ohne Gewähr — mit deinen echten
             Daten (Standort, Verbrauch, Angebotspreis) weicht das Ergebnis ab. Rechne es mit
-            dem <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link> für
+            dem <Link href="/photovoltaik-rechner" className={editorial.link}>PV-Rechner</Link> für
             deinen Fall durch; die Methodik steht offen auf der{" "}
-            <Link href="/methodik" style={S.link}>Methodik-Seite</Link>, alle Preisannahmen
-            auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+            <Link href="/methodik" className={editorial.link}>Methodik-Seite</Link>, alle Preisannahmen
+            auf der <Link href="/datenstand" className={editorial.link}>Datenstand-Seite</Link>.
           </span>
         </div>
 
         {/* ── Was den Eigenverbrauch hebt ── */}
-        <h2 style={S.h2}>Was den Eigenverbrauch hebt</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Was den Eigenverbrauch hebt</h2>
+        <p className={editorial.p}>
           Ohne Vergütung zählt nur noch, wie viel vom eigenen Strom im Haus bleibt. Am
           klarsten sieht man das an einem einzelnen sonnigen Tag ({exDay.label.toLowerCase()})
           bei unserem Beispielhaushalt (3–4 Personen, 10 kWp) — links ohne, rechts mit
           Speicher, sonst gleiche Anlage. Die blaue Linie ist der Speicherstand:
         </p>
-        <div style={S.card}>
+        <div className={editorial.card}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
             <div>
               <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
@@ -666,35 +597,35 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             <DayLegendDot color={DAY_C_SOC} label="Speicherstand" />
           </div>
         </div>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Die grüne und blaue Fläche zusammen ist der selbst genutzte Solarstrom — genau
           das, was ohne Vergütung das Geld verdient. Der Speicher vergrößert sie, indem er
           den Mittagsberg in den Abend schiebt. Dieselbe Logik steckt hinter der Autarkie,
           die unser Rechner ausweist —{" "}
-          <Link href={mitSpNull.href} style={S.link}>im Rechner öffnen und selbst variieren</Link>.
+          <Link href={mitSpNull.href} className={editorial.link}>im Rechner öffnen und selbst variieren</Link>.
         </p>
 
-        <h2 style={S.h2}>Die wichtigsten Hebel — und wo es eng wird</h2>
+        <h2 className={editorial.h2}>Die wichtigsten Hebel — und wo es eng wird</h2>
         <ProConLists
           proTitle="Was den Eigenverbrauch hebt"
           conTitle="Wo es ohne Vergütung eng wird"
           proItems={[
-            { term: "Batteriespeicher", desc: <>verschiebt den Mittagsüberschuss in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet, steht im <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.</> },
-            { term: "Wärmepumpe", desc: <>macht Heizen zum Stromverbrauch und nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.</> },
+            { term: "Batteriespeicher", desc: <>verschiebt den Mittagsüberschuss in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet, steht im <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" className={editorial.link}>Speicher-Ratgeber</Link>.</> },
+            { term: "Wärmepumpe", desc: <>macht Heizen zum Stromverbrauch und nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst spart, rechnet der <Link href="/waermepumpe-rechner" className={editorial.link}>Wärmepumpen-Rechner</Link>.</> },
             { term: "E-Auto", desc: <>wer tagsüber oder über den Speicher lädt, holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund 2.700 kWh zusätzlicher Verbrauch.</> },
             { term: "Verbrauch in den Tag verschieben", desc: <>Spülmaschine, Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und sofort wirksam.</> },
           ]}
           conItems={[
             { term: "Volleinspeisung", desc: <>Konzepte, die den gesamten Strom einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der Vergütung — ohne sie tragen sie sich nicht.</> },
-            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/photovoltaik-rechner" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
-            { term: "Sehr niedriger Verbrauch", desc: <>Ein 1-Personen-Haushalt mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert sich die Amortisation deutlich. Ein <Link href="/balkonkraftwerk/rechner" style={S.link}>Balkonkraftwerk</Link> passt dann oft besser als eine große Dachanlage.</> },
+            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/photovoltaik-rechner" className={editorial.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
+            { term: "Sehr niedriger Verbrauch", desc: <>Ein 1-Personen-Haushalt mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert sich die Amortisation deutlich. Ein <Link href="/balkonkraftwerk/rechner" className={editorial.link}>Balkonkraftwerk</Link> passt dann oft besser als eine große Dachanlage.</> },
             { term: "Überteuerte Angebote", desc: <>Die Rechnung oben gilt für Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten Angebotspreisen schneller — Vergleichsangebote werden wichtiger.</> },
           ]}
         />
 
         {/* ── Ausblick: bidirektionales Laden (V2H) — bewusst NICHT in der ✓-Liste ── */}
-        <div style={{ ...S.card, marginTop: 20 }}>
-          <span style={S.label}>Ausblick: das E-Auto als Speicher</span>
+        <div className={editorial.card} style={{ marginTop: 20 }}>
+          <span className={editorial.label}>Ausblick: das E-Auto als Speicher</span>
           Perspektivisch könnte das E-Auto der größte Eigenverbrauchs-Hebel überhaupt
           werden: Als fahrender Großspeicher mit 40–80 kWh fasst es ein Vielfaches eines
           Heimspeichers, und mit bidirektionalem Laden (Vehicle-to-Home) könnte es
@@ -707,18 +638,18 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </div>
 
         {/* ── CTA ── */}
-        <div style={{ ...S.hero, marginTop: 28 }}>
-          <span style={S.label}>Für deinen Fall durchrechnen</span>
-          <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
+        <div className={editorial.hero} style={{ marginTop: 28 }}>
+          <span className={editorial.label}>Für deinen Fall durchrechnen</span>
+          <p className={editorial.p} style={{ color: v("--color-text-primary"), marginBottom: 14 }}>
             Im Rechner kannst du die Einspeisevergütung mit einem Klick abschalten und
             siehst sofort, wie sich deine Anlage ohne Vergütung trägt — ohne Anmeldung,
             ohne Verkaufsanrufe.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href={mitSpNull.href} style={S.ctaButton}>
+            <Link href={mitSpNull.href} className={editorial.ctaButton}>
               Ohne Vergütung rechnen →
             </Link>
-            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" className={editorial.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>
@@ -740,12 +671,12 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginTop: 16 }}>
           Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
           automatisch aus den aktuellen Marktpreisen berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
           Gewähr; verbindlich ist die offizielle Gesetzeslage.
         </p>
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }
