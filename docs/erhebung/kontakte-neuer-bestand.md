@@ -50,7 +50,16 @@ Dazu ein Ziel: in welche Spalten die Funde geschrieben werden.
 3. **30 zufällige Treffer von Hand gegenlesen.** Jeder Bestand hat eigene
    Fehlerklassen: bei Gemeinden waren es Ratsmitglieder, Hausmeisterdienste und
    städtische Gesellschaften; bei Betrieben werden es andere sein.
-4. **Jede gefundene Fehlerklasse wird eine Regel mit Test** — nie eine
+4. **Die Lücken genauso gegenlesen wie die Treffer — BLOCKER (30.09.2026).**
+   Zehn Einträge ohne Kontakt von Hand öffnen und nachsehen, wo die Adresse
+   wirklich steht. Eine Abdeckungszahl wird erst gemeldet, wenn diese Probe
+   nichts Neues mehr bringt. Bei den Landkreisen wurde dreimal eine Zahl
+   gemeldet (169, 178, 182), und jedes Mal fand der Betreiber, dass mehr geht;
+   jede der drei Ursachen hätte eine Handprobe der Lücken in Minuten gezeigt:
+   Maildomain des Landes (Bayern), Pressestelle drei Ebenen tief (Vorsuche über
+   Sitemap und Website-Suche), Postfach nach dem Amt benannt, aber ohne
+   Rollentext. Ergebnis danach 214 statt 169 von 294.
+5. **Jede gefundene Fehlerklasse wird eine Regel mit Test** — nie eine
    Handkorrektur an einzelnen Zeilen.
 5. **Vor jeder Verwendung** die Belegseite noch einmal abrufen.
 
