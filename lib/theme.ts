@@ -514,9 +514,9 @@ export function getCssVariables(): string {
 
 // ─── Dark / Dusk theme overrides ───────────────────────────────────────────
 // Only the tokens that change per theme; everything else inherits from :root
-// (the light base). data-theme values are the resolved themes from
-// lib/theme-schedule.ts ('light' | 'dusk' | 'dark'), set by the boot script and
-// the ThemeController.
+// (the light base). The public site renders one fixed stage
+// (SITE_THEME_STAGE); the other stages remain for the admin theme editor and
+// for pages that pin a stage themselves.
 //
 // Semantic data colours stay recognisable in every mode: green = positive,
 // red = negative, cyan = highlight, and the energy-mix palette (green =
@@ -745,6 +745,13 @@ export function getThemeOverrides(): string {
     .join('\n');
 }
 
+/**
+ * The one palette stage every public page renders. The site used to follow
+ * the sun and a light/dark preference; that switching is removed (29.09.2026).
+ * s5 is what visitors saw by day and what the partner pages already pinned.
+ */
+export const SITE_THEME_STAGE = "s5";
+
 /** Number of brightness stages (s0 … s6). */
 export const STAGE_COUNT = STAGE_TOKENS.length + 1; // + s6 (the base)
 
@@ -817,16 +824,6 @@ export const globalStyles = `
      60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
      Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
   @media (max-width:640px){:root{--content-lede-top:24px}}
-  /* Smooth theme cross-fade — only enabled while a theme switch is in flight
-     (ThemeController toggles .theme-anim on <html>), so normal hovers stay
-     instant and the initial (boot-script) theme paints without animating.
-     opacity is in the list because this !important rule replaces every
-     element's own transition for its duration: without it, anything fading in
-     during a switch (e.g. the switch's own tooltip) would jump instead. */
-  html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
-    transition:background-color .8s ease,border-color .8s ease,color .8s ease,fill .8s ease,stroke .8s ease,box-shadow .8s ease,background .8s ease,opacity .25s ease !important;
-  }
-  @media (prefers-reduced-motion:reduce){html.theme-anim,html.theme-anim *{transition:none !important}}
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}

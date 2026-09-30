@@ -13,7 +13,7 @@
 }
 
 .card .amount { display:inline-grid; grid-template-columns:auto auto; padding:8px 12px; column-gap:8px; row-gap:0; font-size:var(--sc-feature-amount-size,32px); font-weight:700; line-height:1.15; }
-.amount > small { grid-column:2; color:color-mix(in srgb,currentColor 62%,transparent); margin:0; font-size:var(--font-size-small); font-weight:400; line-height:1.1; }
+.amount > small { grid-column:2; color:inherit; margin:0; font-size:var(--font-size-small); font-weight:400; line-height:1.1; }
 .amount :global(.v3-result-plus) { display:inline-flex; width:.6em; height:.6em; margin-right:.16em; color:color-mix(in srgb,currentColor 62%,transparent); }
 .amount :global(.v3-result-plus) svg { display:block; width:100%; height:100%; }
 .amount :global(.v3-delta-currency) { font-size:.62em; font-weight:400; color:color-mix(in srgb,currentColor 62%,transparent); }

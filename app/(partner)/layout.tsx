@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, getThemeOverrides, globalStyles, v, space, pad } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles, v, space, pad, SITE_THEME_STAGE } from "../../lib/theme";
 import Logo from "../../components/Logo";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
@@ -43,11 +43,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Dieselbe Startstufe wie im Site-Layout, aber ohne die Sonnen-Nachführung:
-// Diese Seite steht auf einer fremden Kundenreise; ein Farbschema, das sich
-// im Tagesverlauf ändert, wäre dort Zierde ohne Nutzen. Der Wert entspricht
-// der hellsten regulären Tagesstufe.
-const THEME_STUFE = "s5";
+// Same fixed palette stage as the public site.
+const THEME_STUFE = SITE_THEME_STAGE;
 
 export default async function PartnerLayout({ children }: { children: React.ReactNode }) {
   const overrideCss = getOverrideCss(await getSavedThemeOverrides());

@@ -951,30 +951,6 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
-    datei: "components/SunControl.tsx",
-    name: "SunControl",
-    zweck:
-      "Das eine Bedienelement der Kopfzeile: wie viel Sonnenstrom gerade entsteht, wofür er gemessen wird und wie hell die Seite dadurch ist.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: ["Icons"],
-    keinBeispielWeil:
-      "Zeigt die tatsächliche Sonneneinstrahlung dieses Augenblicks. Mit erfundenen Werten stünde hier eine Zahl, die nichts misst — genau die Sorte Angabe, gegen die dieses Projekt gebaut ist.",
-  },
-  {
-    datei: "components/ThemeController.tsx",
-    name: "ThemeController",
-    zweck:
-      "Entscheidet, wie hell die Seite ist — von der echten Sonneneinstrahlung geführt, vom Besucher übersteuerbar.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: ["SunControl"],
-    keinBeispielWeil:
-      "Steuert die Helligkeit der ganzen Seite. In einer Karte gezeigt würde er die Galerie selbst umschalten.",
-  },
-  {
     datei: "components/WidgetAutoHeight.tsx",
     name: "WidgetAutoHeight",
     zweck:
