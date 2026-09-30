@@ -77943,5 +77943,37 @@
         "evidenceUrl": "https://www.geesthacht.de/Rathaus-Politik/Umwelt-Klimaschutz/Klimaschutz/"
       }
     ]
+  },
+  {
+    "regionId": "01053083",
+    "name": "Lauenburg/Elbe",
+    "checkedAt": "2026-09-30T11:20:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lauenburg/Elbe hat keinen eigenen Zuschuss für Privathaushalte. Die städtische Seite „Informationen und Förderungen im Klimaschutz“ verweist nur auf Verbraucherzentrale, das Landesprogramm Schleswig-Holstein (im Katalog als Landesprogramm), BAFA, BEG und co2online. Das Klimaschutzkonzept von 2017 führt ein „Kommunales Förderprogramm für erneuerbare Energien/Heizungsaustausch/Sanierungen“ nur unter „Weitere Ideen“; eine Umsetzung ist auf der Stadtseite nicht zu finden.",
+    "searches": [
+      "Städtische Förderseite „Informationen und Förderungen im Klimaschutz für den/die Bauherr/in“ am 30.09.2026 im Browser gelesen",
+      "Klimaschutzkonzept 2017 (PDF) am 30.09.2026 abgerufen und nach „Zuschuss“, „Förderprogramm“ durchsucht: K-103 bzw. Liste „Weitere Ideen“",
+      "Websuche „Lauenburg/Elbe Stadt Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Klimaschutz“ am 30.09.2026: Stadtseite nennt nur Land/Bund; übrige Treffer Portale, Bank, Bürgerinitiative"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lauenburg.de/buergerportal/klimaschutz/informationen-und-foerderungen-im-klimaschutz-fuer-den-die-bauherr-in/",
+        "finding": "30.09.2026: „Klimaschutz-Förderprogramm Schleswig-Holstein, mit BAFA-Fördermitteln kombinierbar: Zuschüsse für nicht-fossile Heizungssysteme … und Photovoltaik-Balkonanlagen“ — Landesprogramm, kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "finding": "30.09.2026: Konzept Mai 2017; „Kommunales Förderprogramm für erneuerbare Energien/Heizungsaustausch/Sanierungen“ steht unter „Weitere Ideen“, nicht als beschlossenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept 2017; ein kommunales Förderprogramm steht dort nur als Idee. Am 30.09.2026 abgerufen und durchsucht.",
+        "evidenceUrl": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf"
+      }
+    ]
   }
 ]
