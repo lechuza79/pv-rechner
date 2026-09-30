@@ -12,6 +12,7 @@ import "server-only";
 export type VideoFn =
   | "video_request_create" | "video_request_discard" | "video_request_confirm" | "video_operator_create"
   | "video_job_progress" | "video_job_status" | "video_job_claim" | "video_job_finish" | "video_pending_notifications"
+  | "video_worker_wakeup"
   | "video_request_notified" | "video_download" | "video_job_file" | "video_cleanup";
 
 type Json = Record<string, unknown>;
