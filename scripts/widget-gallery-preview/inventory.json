@@ -1,0 +1,954 @@
+{
+  "commit": "69b2b5c5ccd8d0810bf7308197743b68522ce6e8",
+  "generatedAt": "2026-09-30T15:12:41.554Z",
+  "entries": [
+    {
+      "key": "kostenrennen",
+      "id": "pv-kostenrennen",
+      "title": "Stromkosten mit und ohne Solaranlage",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Ein Haushalt, mit und ohne Solaranlage, 25 Jahre lang: Die Linien zeichnen Tag für Tag, was jeder Haushalt bis dahin für Strom ausgegeben hat – die Anlage startet mit ihrer Anschaffung vorn und wird überholt, sobald sie bezahlt ist. Das Wetter ist das echte der letzten 25 Jahre (Deutscher Wetterdienst, Monatsraster und Stationstage), sodass kein Jahr und keine Woche der anderen gleicht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+      "sourcePage": "https://solar-check.io/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen",
+      "variants": [
+        {
+          "label": "Amortisations-Rennen",
+          "url": "https://solar-check.io/embed/pv-kostenrennen?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/pv-kostenrennen/page.tsx"
+      ],
+      "uses": [
+        "components/charts/KostenrennenWidget.tsx"
+      ],
+      "sources": [
+        "PVGIS (Europäische Kommission)",
+        "Deutscher Wetterdienst (CDC)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "heizkostenrennen",
+      "id": "heizkostenrennen",
+      "title": "Heizkosten mit Gasheizung und Wärmepumpe",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Ein unsaniertes Einfamilienhaus, neue Gasheizung gegen Wärmepumpe, 20 Jahre lang: Die Linien zeichnen Tag für Tag, was das Haus bis dahin fürs Heizen ausgegeben hat – die Wärmepumpe startet mit ihrer Anschaffung vorn und wird überholt, sobald der Mehrpreis zurück ist. Geheizt wird nach den Gradtagen der letzten 20 Winter (Deutscher Wetterdienst, Tagesmittel der Stationen), sodass kein Winter dem anderen gleicht. Gerechnet mit denselben Annahmen wie unser Wärmepumpen-Rechner, Gaspreis mit Grüngas-Pflicht nach dem IW-Report.",
+      "sourcePage": "https://solar-check.io/ratgeber/gasheizung-oder-waermepumpe#heizkostenrennen",
+      "variants": [
+        {
+          "label": "Heizkosten-Rennen",
+          "url": "https://solar-check.io/embed/heizkostenrennen?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/heizkostenrennen/page.tsx"
+      ],
+      "uses": [
+        "components/charts/HeizkostenrennenWidget.tsx"
+      ],
+      "sources": [
+        "Institut der deutschen Wirtschaft (IW-Report 36/2026)",
+        "Deutscher Wetterdienst (CDC)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "gruengasHeizkosten",
+      "id": "gruengas-heizkosten",
+      "title": "Die Rechnung über 20 Jahre",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Gasheizung mit Grüngas-Pflicht (Heizungsgesetz) gegen Wärmepumpe über 20 Jahre – die Gasheizung wird Jahr für Jahr teurer, die Wärmepumpe bleibt günstig, mit PV noch günstiger. Zahlen nach dem IW-Report. Wähle das ganze Kombi-Widget oder nur einen Teil: die 20-Jahres-Balken (Kurzantwort) oder den Linien-Verlauf.",
+      "sourcePage": "https://solar-check.io/ratgeber/gasheizung-oder-waermepumpe",
+      "variants": [
+        {
+          "label": "Ganzes Widget",
+          "url": "https://solar-check.io/embed/gruengas-heizkosten?"
+        },
+        {
+          "label": "Nur Balken",
+          "url": "https://solar-check.io/embed/gruengas-heizkosten?view=bars"
+        },
+        {
+          "label": "Nur Linien",
+          "url": "https://solar-check.io/embed/gruengas-heizkosten?view=lines"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/gruengas-heizkosten/page.tsx"
+      ],
+      "uses": [
+        "components/charts/GruengasWidget.tsx"
+      ],
+      "sources": [
+        "Institut der deutschen Wirtschaft (IW-Report 36/2026)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "strommix",
+      "id": "strommix",
+      "title": "Strommix Deutschland",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der deutsche Strommix im Zeitverlauf – erneuerbare und fossile Erzeugung nebeneinander, mit wählbarem Zeitraum von 24 Stunden bis zum Maximum.",
+      "sourcePage": "https://solar-check.io/strommix-deutschland",
+      "variants": [
+        {
+          "label": "Strommix",
+          "url": "https://solar-check.io/embed/strommix?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/strommix/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/strommix/client.tsx",
+        "app/(site)/admin/komponenten/KomponentenSchau.tsx"
+      ],
+      "sources": [
+        "Energy-Charts (Fraunhofer ISE)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "strommixAnteil",
+      "id": "strommix-anteil",
+      "title": "Kernenergie im deutschen Strommix",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Wie viel Kernenergie – inklusive rechnerisch importiertem Atomstrom – im deutschen Strommix des laufenden Jahres steckt. Als Donut mit den Anteilen aller Kategorien.",
+      "sourcePage": "https://solar-check.io/atomstrom-import",
+      "variants": [
+        {
+          "label": "Kernenergie-Anteil",
+          "url": "https://solar-check.io/embed/strommix-anteil?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/strommix-anteil/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/strommix-anteil/client.tsx"
+      ],
+      "sources": [
+        "Energy-Charts (Fraunhofer ISE)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "zubauErneuerbareAtom",
+      "id": "zubau-erneuerbare-atom",
+      "title": "Zubau: Erneuerbare vs. Atomkraft",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Wie viel Wind + Solar gegenüber Atomkraft jedes Jahr neu ans Netz geht — wählbar je Land, plus direkter Vergleich Deutschland ↔ China.",
+      "sourcePage": "https://solar-check.io/atomstrom-import",
+      "variants": [
+        {
+          "label": "Zubau EE vs. Atom",
+          "url": "https://solar-check.io/embed/zubau-erneuerbare-atom?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/zubau-erneuerbare-atom/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"
+      ],
+      "sources": [
+        "Ember"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "einspeiseVerlauf",
+      "id": "einspeiseverguetung-verlauf",
+      "title": "Einspeisevergütung seit 2000",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der Verlauf der EEG-Einspeisevergütung für kleine Dachanlagen seit 2000 — Jahresbalken bis 2011, Monatswerte als Linie ab 2012 — mit der interaktiven Ereignis-Timeline der politischen Weichenstellungen. Werte aus dem BNetzA-Archiv und der gesetzlichen Kette, aktualisieren sich an den Stichtagen von selbst.",
+      "sourcePage": "https://solar-check.io/einspeiseverguetung-tabelle",
+      "variants": [
+        {
+          "label": "Vergütungs-Verlauf",
+          "url": "https://solar-check.io/embed/einspeiseverguetung-verlauf?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/einspeiseverguetung-verlauf/page.tsx"
+      ],
+      "uses": [
+        "app/(site)/einspeiseverguetung-tabelle/VerlaufMitMeilensteinen.tsx"
+      ],
+      "sources": [
+        "Bundesnetzagentur & Solarenergie-Förderverein (SFV)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "pvZubau",
+      "id": "pv-zubau-deutschland",
+      "title": "Photovoltaik-Zubau in Deutschland",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der jährliche Photovoltaik-Zubau in Deutschland mit sinkender Einspeisevergütung und steigendem Strompreis auf einer Zeitachse — plus interaktiver Ereignis-Timeline, die die politischen Weichenstellungen erklärt.",
+      "sourcePage": "https://solar-check.io/photovoltaik-zubau-deutschland",
+      "variants": [
+        {
+          "label": "PV-Zubau",
+          "url": "https://solar-check.io/embed/pv-zubau-deutschland?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/pv-zubau-deutschland/page.tsx"
+      ],
+      "uses": [
+        "components/charts/ZubauWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)",
+        "Bundesnetzagentur & Solarenergie-Förderverein (SFV)",
+        "Eurostat"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "solarTrend",
+      "id": "solar-trend-monat",
+      "title": "Solarstrom im Monatsvergleich: Zubau oder Wetter?",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solarstrom gegen den Vorjahresmonat – aufgeteilt in neu gebaute Anlagen und Wetter",
+      "sourcePage": "https://solar-check.io/photovoltaik-zubau-deutschland",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/SolarTrendSection.tsx"
+      ],
+      "sources": [
+        "Energy-Charts (Fraunhofer ISE)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "erzeugung",
+      "id": "erzeugung",
+      "title": "Stromerzeugung in Deutschland",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Die aktuelle Erzeugung aus erneuerbaren Quellen als Radial-Chart der letzten 24 Stunden. Optional wechselt das Widget automatisch durch die Energieträger.",
+      "sourcePage": "https://solar-check.io/strommix-deutschland",
+      "variants": [
+        {
+          "label": "Standard",
+          "url": "https://solar-check.io/embed/erzeugung?"
+        },
+        {
+          "label": "Kompakt",
+          "url": "https://solar-check.io/embed/erzeugung-mini?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/erzeugung/page.tsx"
+      ],
+      "uses": [
+        "components/ErzeugungWidget.tsx"
+      ],
+      "sources": [
+        "Energy-Charts (Fraunhofer ISE)",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "eeAmpel",
+      "id": "ee-ampel",
+      "title": "EE-Ampel",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Zeigt auf einen Blick, ob der deutsche Strom gerade überwiegend erneuerbar ist. Grün heißt: guter Zeitpunkt für Stromverbrauch, etwa fürs Laden des E-Autos. Kompakt für Sidebar oder Faktenbox.",
+      "sourcePage": "https://solar-check.io/strommix-deutschland?range=24h",
+      "variants": [
+        {
+          "label": "EE-Ampel",
+          "url": "https://solar-check.io/embed/ee-ampel?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/ee-ampel/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/ee-ampel/client.tsx"
+      ],
+      "sources": [
+        "Energy-Charts (Fraunhofer ISE)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "karte",
+      "id": "karte",
+      "title": "PV-Anlagen in Deutschland",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der Photovoltaik- und Erneuerbaren-Bestand je Region aus dem Marktstammdatenregister – interaktiv nach Energieträger umschaltbar und bis auf Landkreis-Ebene aufklappbar.",
+      "sourcePage": "https://solar-check.io/",
+      "variants": [
+        {
+          "label": "Karte",
+          "url": "https://solar-check.io/embed/karte?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/karte/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/karte/client.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)",
+        "© BKG (2026)",
+        "Energy-Charts (Fraunhofer ISE)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "anlagenbestand",
+      "id": "anlagenbestand-deutschland",
+      "title": "Solaranlagen in Deutschland",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Wie viele Solaranlagen in Deutschland gemeldet sind, welche Leistung installiert ist und wie sich beides auf Balkonkraftwerke, private und gewerbliche Dächer und Freiflächen verteilt. Stückzahl und Leistung stehen nebeneinander, weil sie gegenläufig sind — nach Anzahl dominieren die kleinen Anlagen, nach Leistung die großen. Monatlich aus dem Marktstammdatenregister.",
+      "sourcePage": "https://solar-check.io/photovoltaik-bestand-deutschland",
+      "variants": [
+        {
+          "label": "Anlagenbestand",
+          "url": "https://solar-check.io/embed/anlagenbestand-deutschland?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/anlagenbestand-deutschland/page.tsx"
+      ],
+      "uses": [
+        "components/charts/AnlagenbestandWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "kennzahl",
+      "id": "kennzahl",
+      "title": "Kennzahl",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Eine einzelne Kennzahl aus dem Marktstammdatenregister als kompakte Kachel: die bundesweit installierte Erneuerbaren-Leistung oder die Anzahl der Anlagen. Zum Einbetten in eine Sidebar oder Faktenbox.",
+      "sourcePage": "https://solar-check.io/",
+      "variants": [
+        {
+          "label": "Leistung",
+          "url": "https://solar-check.io/embed/kennzahl?metric=leistung"
+        },
+        {
+          "label": "Anlagen",
+          "url": "https://solar-check.io/embed/kennzahl?metric=anlagen"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/kennzahl/page.tsx",
+        "app/(embed)/embed/kennzahl/[metric]/[traeger]/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/kennzahl/client.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "gemeindeRanking",
+      "id": "gemeinde-ranking",
+      "title": "Top 3 im Ortsvergleich",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Die Top 3 im Solar-Ranking – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/gemeinde/GemeindeRankingWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)",
+        "Statistisches Bundesamt (Destatis)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "gemeindeSolar",
+      "id": "gemeinde-solar",
+      "title": "Solaranlagen einer Gemeinde",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [
+        {
+          "label": "Höchberg (Beispiel)",
+          "url": "https://solar-check.io/embed/gemeinde-solar?ags=09679147"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/gemeinde-solar/page.tsx",
+        "app/(embed)/embed/gemeinde-solar/[ags]/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/gemeinde-solar/client.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "gemeindeErneuerbare",
+      "id": "gemeinde-erneuerbare",
+      "title": "Erneuerbare Leistung einer Gemeinde",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [
+        {
+          "label": "Höchberg (Beispiel)",
+          "url": "https://solar-check.io/embed/gemeinde-erneuerbare?ags=09679147"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/gemeinde-erneuerbare/page.tsx",
+        "app/(embed)/embed/gemeinde-erneuerbare/[ags]/page.tsx"
+      ],
+      "uses": [
+        "components/atlas/GemeindeErneuerbareWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "gemeindeSolarleistung",
+      "id": "gemeinde-solarleistung",
+      "title": "Solarleistung einer Gemeinde (simuliert)",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [
+        {
+          "label": "Höchberg (Beispiel)",
+          "url": "https://solar-check.io/embed/gemeinde-solarleistung?ags=09679147"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/gemeinde-solarleistung/page.tsx",
+        "app/(embed)/embed/gemeinde-solarleistung/[ags]/page.tsx"
+      ],
+      "uses": [
+        "components/atlas/GemeindeSolarLive.tsx"
+      ],
+      "sources": [
+        "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "gemeindeMeldung",
+      "id": "gemeinde-meldung",
+      "title": "Eine Meldung über eine Gemeinde",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Was die Anlagendaten über eine Gemeinde gerade hergeben – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/social/OrtsStoryAnsicht.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalElectricityValue",
+      "id": "regional-electricity-value",
+      "title": "Wert des Solarstroms (Modellrechnung)",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Wert des Solarstroms – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/DistrictEnergyWidgets.tsx"
+      ],
+      "sources": [
+        "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalFeedInValue",
+      "id": "regional-feed-in-value",
+      "title": "Einspeisevergütung (Modellrechnung)",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Einspeisevergütung – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/DistrictEnergyWidgets.tsx"
+      ],
+      "sources": [
+        "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalCurrentPower",
+      "id": "regional-current-power",
+      "title": "Solarleistung heute (simuliert)",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solarleistung heute (simuliert) – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/LandkreisMonitor.tsx",
+        "components/gemeinde/GemeindeMonitor.tsx"
+      ],
+      "sources": [
+        "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalAnnualGrowth",
+      "id": "regional-annual-growth",
+      "title": "Zubau pro Jahr",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Zubau pro Jahr – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/charts/AnnualGrowthWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalComposition",
+      "id": "regional-composition",
+      "title": "Solarleistung nach Anlagentyp",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solarleistung nach Anlagentyp – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/LandkreisMonitor.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionalRace",
+      "id": "regional-race",
+      "title": "Solaranlagen im regionalen Vergleich",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solaranlagen im regionalen Vergleich – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [
+        "app/(embed)/embed/regional-race/[region]/page.tsx"
+      ],
+      "uses": [
+        "components/landkreis/DistrictRaceWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "gemeindeAnlagenraster",
+      "id": "gemeinde-anlagenraster",
+      "title": "Anteil einer Anlagenart an Anzahl und Solarleistung",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solaranlagen nach Art: Anteil an Anzahl und Leistung – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/LandkreisMonitor.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "gemeindeEnergieJahr",
+      "id": "gemeinde-energie-jahr",
+      "title": "Solar- und Windpotenzial im Jahresverlauf",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solar und Wind über ein Jahr, Tag für Tag modelliert – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/DistrictEnergyWidgets.tsx"
+      ],
+      "sources": [
+        "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "gemeindeSolarMonat",
+      "id": "gemeinde-solar-monat",
+      "title": "Solarerzeugung im Tagesverlauf",
+      "kind": "chart",
+      "publishedGallery": false,
+      "description": "Solarerzeugung über 24 Stunden, jeder Tag eines Monats modelliert – Solar Check",
+      "sourcePage": "https://solar-check.io/solar-atlas",
+      "variants": [],
+      "routes": [],
+      "uses": [
+        "components/landkreis/DistrictEnergyWidgets.tsx"
+      ],
+      "sources": [
+        "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": false
+    },
+    {
+      "key": "regionAnlagentyp",
+      "id": "region-anlagentyp",
+      "title": "Solarleistung eines Bundeslands nach Anlagentyp",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Die installierte Solarleistung eines Bundeslands nach Anlagentyp (private Dächer, Gewerbe, Freifläche) aus dem Marktstammdatenregister — als Donut. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+      "sourcePage": "https://solar-check.io/photovoltaik-foerderung",
+      "variants": [
+        {
+          "label": "Mecklenburg-Vorpommern (Beispiel)",
+          "url": "https://solar-check.io/embed/region-anlagentyp?bl=13"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/region-anlagentyp/[bl]/page.tsx",
+        "app/(embed)/embed/region-anlagentyp/page.tsx"
+      ],
+      "uses": [
+        "components/RegionAnlagentypWidget.tsx"
+      ],
+      "sources": [
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "regionSolarleistung",
+      "id": "region-solarleistung",
+      "title": "Solarleistung eines Bundeslands (simuliert)",
+      "kind": "chart",
+      "publishedGallery": true,
+      "description": "Die aktuelle Solarleistung des Anlagenbestands eines Bundeslands, simuliert aus dem heutigen Wetter — kein Messwert, aber nah dran. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+      "sourcePage": "https://solar-check.io/photovoltaik-foerderung",
+      "variants": [
+        {
+          "label": "Mecklenburg-Vorpommern (Beispiel)",
+          "url": "https://solar-check.io/embed/region-solarleistung?bl=13"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/region-solarleistung/[bl]/page.tsx",
+        "app/(embed)/embed/region-solarleistung/page.tsx"
+      ],
+      "uses": [
+        "components/RegionSolarLive.tsx"
+      ],
+      "sources": [
+        "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
+        "Marktstammdatenregister (Bundesnetzagentur)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "foerderCheck",
+      "id": "foerder-check",
+      "title": "Förder-Check Wärmepumpe",
+      "kind": "tool",
+      "publishedGallery": true,
+      "description": "Ein schlanker Rechner für die BEG-Förderung: Kosten, alte Heizung und Einkommen eingeben, Zuschuss sofort sehen. Verlinkt zum vollen Wärmepumpen-Rechner. Ideal als Faktenbox in einem Ratgeber-Artikel.",
+      "sourcePage": "https://solar-check.io/waermepumpe-rechner",
+      "variants": [
+        {
+          "label": "Förder-Check",
+          "url": "https://solar-check.io/embed/foerder-check?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/foerder-check/page.tsx"
+      ],
+      "uses": [
+        "app/(embed)/embed/foerder-check/client.tsx"
+      ],
+      "sources": [
+        "KfW / BMWE (BEG Heizungsförderung, Merkblatt 458)"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "simulation",
+      "id": "simulation",
+      "title": "Live PV-Simulation",
+      "kind": "tool",
+      "publishedGallery": true,
+      "description": "Die vollständige Live-Simulation: was eine PV-Anlage am eingegebenen Standort gerade beim aktuellen Wetter liefert – mit Haushaltsprofil (Personen, Wärmepumpe, E-Auto), Eigenverbrauch und Tagesverlauf. Standort über die PLZ; per ?plz=… im Code fest vorgebbar.",
+      "sourcePage": "https://solar-check.io/pv-simulation",
+      "variants": [
+        {
+          "label": "Simulation",
+          "url": "https://solar-check.io/embed/simulation?"
+        }
+      ],
+      "routes": [
+        "app/(embed)/embed/simulation/page.tsx",
+        "app/(embed)/embed/simulation/[plz]/[darstellung]/page.tsx"
+      ],
+      "uses": [
+        "components/SimulationPanel.tsx",
+        "app/(embed)/embed/simulation/client.tsx"
+      ],
+      "sources": [
+        "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo"
+      ],
+      "embedDeclared": true
+    },
+    {
+      "key": "rechner",
+      "id": "rechner",
+      "title": "PV-Amortisation",
+      "kind": "tool",
+      "publishedGallery": false,
+      "description": "PV-Amortisation – Solar Check",
+      "sourcePage": "https://solar-check.io/photovoltaik-rechner",
+      "variants": [],
+      "routes": [],
+      "uses": [],
+      "sources": [
+        "PVGIS (Europäische Kommission)"
+      ],
+      "embedDeclared": false
+    }
+  ],
+  "extraRoutes": [
+    "app/(embed)/embed/story-preview/page.tsx",
+    "app/(embed)/embed/gemeinde/[ags]/[ansicht]/page.tsx",
+    "app/(embed)/embed/erzeugung-mini/page.tsx",
+    "app/(embed)/embed/regional-solar/[region]/page.tsx"
+  ],
+  "components": [
+    {
+      "datei": "charts/AnnualGrowthWidget",
+      "art": "widget",
+      "wofuer": "Shared annual growth chart with period selection and export actions for municipality and regional monitors.",
+      "uses": [
+        "components/landkreis/LandkreisMonitor.tsx",
+        "components/gemeinde/GemeindeMonitor.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "ErzeugungWidget",
+      "art": "widget",
+      "wofuer": "Erneuerbaren-Erzeugung als Radial, wechselt auf Wunsch selbst durch die Träger (autoswitchMs).",
+      "uses": [
+        "components/DataSourceList.tsx",
+        "components/charts/JetztImNetz.tsx",
+        "lib/bausteine-registry.ts",
+        "app/(embed)/embed/erzeugung/client.tsx",
+        "app/(embed)/embed/erzeugung/auto.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "charts/JetztDonut",
+      "art": "widget",
+      "wofuer": "Strommix-Momentaufnahme aus dem letzten Punkt einer Erzeugungsreihe.",
+      "uses": [
+        "components/charts/JetztImNetz.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "charts/ZubauWidget",
+      "art": "widget",
+      "wofuer": "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart).",
+      "uses": [
+        "app/(embed)/embed/zubau-erneuerbare-atom/page.tsx",
+        "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx",
+        "components/charts/AnlagenbestandWidget.tsx",
+        "app/(embed)/embed/pv-zubau-deutschland/client.tsx",
+        "lib/faq.ts",
+        "lib/chart-katalog.ts",
+        "app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx",
+        "app/(site)/photovoltaik-zubau-deutschland/client.tsx",
+        "app/(site)/einspeiseverguetung-tabelle/VerlaufMitMeilensteinen.tsx"
+      ]
+    },
+    {
+      "datei": "charts/AnlagenbestandWidget",
+      "art": "widget",
+      "wofuer": "Deutscher Solarbestand nach Anlagentyp: Anteil an der Stückzahl gegen Anteil an der Leistung.",
+      "uses": [
+        "app/(embed)/embed/anlagenbestand-deutschland/client.tsx",
+        "app/(site)/photovoltaik-bestand-deutschland/page.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "charts/KostenrennenMini",
+      "art": "widget",
+      "wofuer": "Kurzfassung des Stromkosten-Rennens für redaktionelle Seiten: nur das Chart, verlinkt auf den Ratgeber.",
+      "uses": [
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "charts/KostenrennenWidget",
+      "art": "widget",
+      "wofuer": "Stromkosten-Rennen: aufgelaufene Stromkosten mit und ohne Solaranlage, Tag für Tag mit echtem Wetter, animiert bis zur bezahlten Anschaffung.",
+      "uses": [
+        "components/charts/KostenrennenMini.tsx",
+        "components/charts/RaceChart.tsx",
+        "app/(embed)/embed/pv-kostenrennen/client.tsx",
+        "lib/chart-katalog.ts",
+        "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx"
+      ]
+    },
+    {
+      "datei": "charts/HeizkostenrennenWidget",
+      "art": "widget",
+      "wofuer": "Heizkosten-Rennen: aufgelaufene Heizkosten einer neuen Gasheizung gegen eine Wärmepumpe, Tag für Tag nach den Gradtagen echter Winter, animiert bis zum bezahlten Mehrpreis.",
+      "uses": [
+        "app/(embed)/embed/heizkostenrennen/client.tsx",
+        "app/(site)/ratgeber/gasheizung-oder-waermepumpe/page.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "charts/GruengasWidget",
+      "art": "widget",
+      "wofuer": "Heizkosten-Varianten über 20 Jahre, wahlweise als Balken oder Vollansicht.",
+      "uses": [
+        "components/charts/RaceChart.tsx",
+        "app/(embed)/embed/gruengas-heizkosten/client.tsx",
+        "app/(site)/ratgeber/gasheizung-oder-waermepumpe/page.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "RegionAnlagentypWidget",
+      "art": "widget",
+      "wofuer": "Anlagentypen einer Region als Donut (Atlas).",
+      "uses": [
+        "lib/bausteine-registry.ts",
+        "app/(embed)/embed/region-anlagentyp/client.tsx",
+        "lib/chart-katalog.ts",
+        "app/(site)/photovoltaik-foerderung/[bundesland]/page.tsx"
+      ]
+    },
+    {
+      "datei": "RegionSolarLive",
+      "art": "widget",
+      "wofuer": "Simulierte Solarleistung eines Bundeslands (Wetter × installierte Leistung).",
+      "uses": [
+        "lib/bausteine-registry.ts",
+        "app/(embed)/embed/region-solarleistung/client.tsx",
+        "lib/chart-katalog.ts",
+        "app/(site)/photovoltaik-foerderung/[bundesland]/page.tsx"
+      ]
+    },
+    {
+      "datei": "MastrHeroSection",
+      "art": "widget",
+      "wofuer": "Karte plus Kennzahlen für Deutschland/Region — Startseite und Karten-Embed.",
+      "uses": [
+        "lib/bausteine-registry.ts",
+        "app/(embed)/embed/karte/client.tsx",
+        "app/(embed)/embed/kennzahl/client.tsx",
+        "app/(embed)/embed/gemeinde-solar/client.tsx",
+        "lib/chart-katalog.ts",
+        "app/(site)/solar-atlas/[[...pfad]]/page.tsx",
+        "app/(site)/photovoltaik-foerderung/[bundesland]/page.tsx"
+      ]
+    },
+    {
+      "datei": "charts/JetztImNetz",
+      "art": "widget",
+      "wofuer": "Live-Block der Strommix-Seite: Mix-Ring und Erzeugungs-Radial nebeneinander, mit einordnenden Sätzen.",
+      "uses": [
+        "lib/chart-katalog.ts",
+        "app/(site)/strommix-deutschland/client.tsx"
+      ]
+    },
+    {
+      "datei": "SolarTrendCard",
+      "art": "widget",
+      "wofuer": "Solarmonat gegen Vorjahresmonat, zerlegt in Zubau und Wetter; blätterbar.",
+      "uses": [
+        "lib/bausteine-registry.ts",
+        "components/SolarTrendSection.tsx",
+        "lib/chart-katalog.ts"
+      ]
+    },
+    {
+      "datei": "SolarTrendSection",
+      "art": "widget",
+      "wofuer": "Die Trend-Karte plus crawlbare Zwölf-Monats-Tabelle (Server-gerendert).",
+      "uses": [
+        "lib/bausteine-registry.ts",
+        "lib/chart-katalog.ts",
+        "app/(site)/photovoltaik-zubau-deutschland/page.tsx"
+      ]
+    }
+  ],
+  "legacySectionCount": 20
+}

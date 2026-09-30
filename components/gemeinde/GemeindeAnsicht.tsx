@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { ComponentProps } from "react";
+import type GemeindeMonitor from "./GemeindeMonitor";
 import type { StoryConcept } from "../../lib/story-konzepte";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 
@@ -14,11 +16,11 @@ const Insights = dynamic(() => import("./GemeindeInsights"), { ssr: false });
 const Monitor = dynamic(() => import("./GemeindeMonitor"), { ssr: false });
 const KopfMonitor = dynamic(() => import("./GemeindeKopfRahmenInhalt"), { ssr: false });
 
-export default function GemeindeAnsicht({ ansicht, paket }: { ansicht: "insights" | "monitor" | "kopf"; paket: GemeindePaket }) {
+export default function GemeindeAnsicht({ ansicht, paket, single }: { single?: ComponentProps<typeof GemeindeMonitor>["single"]; ansicht: "insights" | "monitor" | "kopf"; paket: GemeindePaket }) {
   // Ranking stories stay hidden until their editorial and visual redesign.
   if (ansicht === "insights")
     return <Insights stories={(paket.stories as StoryConcept[]).filter((story) => story.kind !== "rank")} name={paket.name} surfaceScheme="dark" showHeader={false} embedded />;
-  if (ansicht === "monitor") return <Monitor paket={paket} />;
+  if (ansicht === "monitor") return <Monitor paket={paket} single={single} />;
   if (ansicht === "kopf") return <KopfMonitor paket={paket} />;
   return null;
 }

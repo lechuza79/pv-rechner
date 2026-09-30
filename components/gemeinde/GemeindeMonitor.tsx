@@ -242,7 +242,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   );
 }
 
-export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
+export default function GemeindeMonitor({ paket, single }: { paket: GemeindePaket; single?: "currentPower" | "growth" | "anteilsdonut" | "anlagenraster" | keyof MonitorEnergyWidgets }) {
   const weatherSource = useMemo(() => regionalSolarWeatherSource(paket.ags), [paket.ags]);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -290,7 +290,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     .sort((a, b) => a.year - b.year);
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
-  const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf");
+  const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf" && (!single || !["anteilsdonut", "anlagenraster"].includes(single) || item.template === single));
   const widgets = (section: string) => {
     const selected = items.filter((item: Any) => item.section === section);
     return selected.length ? selected.map((item: Any) => <MonitorWidget key={item.story.id} item={item} paket={paket} />) : null;
@@ -299,6 +299,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const missing = (charts?.availability ?? []).some((item: Any) => item.status === "missing");
   return <EnergyMonitor
     rootRef={root}
+    single={single === "anteilsdonut" || single === "anlagenraster" ? "stock" : single}
     kpis={hasHistory && (
         <KpiOverview
           groups={monitorKpiGroups({history:paket.monitorHistory!,population:paket.register?.own.population??0,registerStand:paket.registerStand,populationStand:paket.einwohnerStand})}
