@@ -11,9 +11,21 @@ const result="/photovoltaik-rechner?a=1&s=1&p=2&n=1&ht=2&da=0&az=sued";
 for(const width of [375,1280]) test(`PV draft editing, sharing and layout at ${width}`,async({page})=>{
   await page.setViewportSize({width,height:900});
   await page.addInitScript(()=>{Object.defineProperty(navigator,"clipboard",{value:{writeText:async(text:string)=>{document.documentElement.dataset.copiedLink=text;}}});});
-  await page.goto(result);
+  await page.goto(`${result}&flow=emp`);
   const hero=page.locator(".wp-result-hero");
   await expect(hero).toContainText("Einsparungen über 25 Jahre");
+  const recommendation = hero.locator(".pv-result-recommendation");
+  await expect(recommendation).toContainText("Unsere Empfehlung für deinen Haushalt");
+  await expect(recommendation).toContainText("8 kWp");
+  expect((await recommendation.boundingBox())!.y).toBeLessThan((await hero.locator(".wp-profit-comparison").boundingBox())!.y);
+
+  const specs = recommendation.locator(".pv-result-plant-specs > span");
+  const firstSpec = (await specs.nth(0).boundingBox())!;
+  const secondSpec = (await specs.nth(1).boundingBox())!;
+  expect(secondSpec.y > firstSpec.y || secondSpec.x >= firstSpec.x + firstSpec.width + 16).toBe(true);
+  const introBox = (await recommendation.boundingBox())!;
+  expect((await hero.locator(".wp-overview-head").boundingBox())!.y).toBeGreaterThanOrEqual(introBox.y + introBox.height);
+  await hero.screenshot({path:`/tmp/pv-recommendation-${width}.png`});
   const opener=page.getByRole("button",{name:/Deine Anlage & Rechengrundlagen/});
   const before=await hero.locator(".wp-result-summary").textContent();
   await opener.click();
@@ -30,6 +42,8 @@ for(const width of [375,1280]) test(`PV draft editing, sharing and layout at ${w
   await dialog.locator("input").press("Enter");
   await dialog.getByRole("button",{name:/^Ergebnis neu berechnen/}).click();
   await expect(opener).toContainText("12,5 kWp");
+  await expect(recommendation).toContainText("Deine angepasste Anlage");
+  await expect(recommendation).toContainText("12,5 kWp");
   await page.getByRole("button",{name:"Link zu diesem Ergebnis kopieren"}).click();
   const link=await page.locator("html").getAttribute("data-copied-link");
   expect(link).toContain("ck=12.5");

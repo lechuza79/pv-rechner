@@ -4,14 +4,15 @@ import { IconPlus, IconSettings } from "../Icons";
 import { iconSizes, tokens } from "../../lib/theme";
 
 /** Shared result composition extracted from the accepted balcony result. */
-export default function ResultOverview({ id, saving, years, scenarioLabel, onScenario, onDetails, onSettings, progress, anchor, heroRef, control, children, chart, stats }: {
+export default function ResultOverview({ id, saving, years, scenarioLabel, onScenario, onDetails, onSettings, progress, anchor, heroRef, introduction, control, children, chart, stats }: {
   id: string; saving: number; years: number; scenarioLabel: string;
   onScenario: () => void; onDetails: () => void; onSettings: () => void;
   progress: number; anchor: RefObject<HTMLDivElement | null>; heroRef?: RefObject<HTMLDivElement | null>;
-  control?: ReactNode; children: ReactNode; chart: ReactNode; stats: ReactNode;
+  introduction?: ReactNode; control?: ReactNode; children: ReactNode; chart: ReactNode; stats: ReactNode;
 }) {
   return <section id={id} className="wp-overview" aria-label="Dein Ergebnis">
     <div className="wp-overview-top"><div className="wp-result-column"><div ref={heroRef} className="wp-result-hero">
+      {introduction}
       <div className="wp-overview-head"><div className="wp-result-label">
         <span className="wp-result-label-copy"><strong>{saving >= 0 ? "Einsparungen" : "Mehrkosten"} über {years} Jahre</strong> mit <button type="button" className="wp-assumptions-trigger" onClick={onScenario}>{scenarioLabel}</button></span>
         <div className="wp-result-tools"><button type="button" className="wp-result-details-link" onClick={onDetails}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" onClick={onSettings}><IconSettings size={iconSizes.xl} /></button></div>

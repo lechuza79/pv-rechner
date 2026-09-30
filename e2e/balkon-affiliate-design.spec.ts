@@ -101,9 +101,12 @@ test('BKW result supports funding follow-up and shared chart inspection', async 
   await expect(page.getByRole('button', { name: 'realistischer Preisentwicklung', exact: true })).toBeVisible();
   const amount = page.locator('.wp-profit-amount');
   await expect(amount).toContainText('vs. ausschließlich Netzstrom');
-  const funding = page.getByRole('button', { name: 'Förderung prüfen', exact: true });
-  await funding.click();
+  const funding = page.getByRole('status').filter({ has: page.getByRole('group', { name: 'Standort prüfen', exact: true }) });
+  await funding.getByRole('button', { name: 'Standort eingeben', exact: true }).click();
+  await expect(funding.getByRole('textbox', { name: 'Postleitzahl oder Ort' })).toBeVisible();
+  await funding.getByRole('button', { name: 'Abbrechen', exact: true }).click();
   const location = page.locator('#bkw-einstellungen .wp-question').filter({ hasText: 'Standort & Förderung' });
+  await location.locator('.wp-question-heading').click();
   await expect(location.locator('.wp-question-heading')).toHaveAttribute('aria-expanded', 'true');
   await expect(location.getByRole('textbox', { name: 'Postleitzahl oder Ort' })).toBeVisible();
   await page.getByRole('button', { name: /Ertrag und technische Details/ }).click();

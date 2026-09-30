@@ -864,6 +864,8 @@ export default function PVRechner({
     const dachAuslastung = Math.round((kwp / maxKwp) * 100);
     return { ht, da, nutzbar, maxKwp, grundverbrauch, extraVerbrauch, gesamtVerbrauch, dachAuslastung };
   })() : null;
+  const initialPlant = useRef({ kwp, spKwh });
+  const plantAdjusted = kwp !== initialPlant.current.kwp || spKwh !== initialPlant.current.spKwh;
   // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
 
   return (
@@ -1160,6 +1162,14 @@ export default function PVRechner({
           <div className="wp-ergebnis wp-result-main">
             <ResultOverview id="pv-ueberblick" saving={Math.round(sel.data.total)} years={YEARS}
               scenarioLabel={sel.resultLabel} progress={intro.progress} anchor={intro.anchor} heroRef={resultCardRef}
+              introduction={<div className="pv-result-recommendation">
+                <h2>{empfehlungKontext ? plantAdjusted ? "Deine angepasste Anlage" : "Unsere Empfehlung für deinen Haushalt" : "Deine Anlage im Überblick"}</h2>
+                <div className="pv-result-plant-specs">
+                  <span><strong>{kwp.toLocaleString("de-DE")} kWp</strong> Photovoltaik</span>
+                  <span>{spKwh > 0 ? <><strong>{spKwh.toLocaleString("de-DE")} kWh</strong> Speicher</> : "Ohne Speicher"}</span>
+                  <button type="button" className="wp-result-details-link" onClick={() => {setTechnicalOpen(true); requestAnimationFrame(() => document.getElementById("pv-details")?.scrollIntoView({behavior:"smooth"}));}}>Anlagendetails</button>
+                </div>
+              </div>}
               onScenario={() => document.getElementById("pv-prices-trigger")?.click()}
               onDetails={() => setResultDetailsOpen(true)} onSettings={() => document.getElementById("pv-settings-trigger")?.click()}
               chart={<PvResultRace key={resultRevision} result={sel.data} consumption={gesamtVerbrauch} price={oStrom} rate={sel.strom} monthlyConsumption={monthlyConsumption} autoplay={intro.stage === "race"} />}
@@ -1169,7 +1179,6 @@ export default function PVRechner({
                 <StatCard label="Autarkie" value={String(autarkie)} unit="%" help="Anteil deines Stromverbrauchs, den deine Anlage selbst deckt." />
               </>}>
               <p className="wp-result-summary">Deine PV-Anlage amortisiert sich {be ? <>in <strong>{be.i} Jahren</strong></> : <>nicht innerhalb von {YEARS} Jahren</>}. Über {YEARS} Jahre zahlst du insgesamt <strong>{Math.round(Math.abs(sel.data.total)).toLocaleString("de-DE")} € {sel.data.total >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung, Reststrom, Einspeiseerlöse und gegebenenfalls Speichertausch sind eingerechnet.</p>
-              <p className="pv-result-reason">{kwp.toLocaleString("de-DE")} kWp {spKwh > 0 ? `mit ${spKwh.toLocaleString("de-DE")} kWh Speicher` : "ohne Speicher"}. {empfehlungKontext ? `Ausgangspunkt ist die Empfehlung für deinen Haushalt. Hier rechnest du mit der angezeigten Größe und deinen aktuellen Angaben.` : "Berechnet mit deinen Anlagenangaben."} <button type="button" className="wp-result-details-link" onClick={() => {setTechnicalOpen(true); requestAnimationFrame(() => document.getElementById("pv-details")?.scrollIntoView({behavior:"smooth"}));}}>Details</button></p>
             </ResultOverview>
             <ResultActions copied={copied} onCopy={handleCopy} onForward={handleNativeShare} onWhatsApp={handleWhatsApp} onReset={restart}
               onSave={authState.status === "anon" ? oeffneAnmeldung : handleSave} saveLabel={saved ? "Gespeichert" : saving ? "Speichert …" : "Speichern"} saveDisabled={authState.status === "loading" || saving || saved} />

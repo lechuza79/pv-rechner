@@ -7,7 +7,11 @@
 .pv-calculator-page .wp-result-summary{border-top:1px solid var(--result-rule);padding-top:var(--space-xl);max-width:none}
 
 
-.pv-result-reason{margin-top:var(--space-xl);font-size:var(--result-type-body);line-height:1.65;color:var(--result-muted)}
+.pv-result-recommendation{padding:0 0 var(--space-xxl)}
+body .wp-result-hero>.pv-result-recommendation+.wp-overview-head{margin-top:0}
+.pv-result-recommendation h2{margin:0 0 8px;font-size:var(--font-size-h3);line-height:1.25;color:var(--result-text)}
+.pv-result-plant-specs{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px var(--space-xxl);font-size:var(--result-type-body);line-height:1.4;color:var(--result-muted)}
+.pv-result-plant-specs strong{color:var(--result-text)}
 
 /* Optional editors inherit the same dark control roles as the result settings. */
 .pv-calculator-page .wp-question.is-open{
