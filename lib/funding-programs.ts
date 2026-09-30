@@ -7672,6 +7672,42 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Seiten-Abgleich wird es melden, sobald die Gemeinde es hinschreibt.
   },
 
+  "geesthacht-solar": {
+    id: "geesthacht-solar", name: "Förderung von Photovoltaik- und Solarthermie-Anlagen",
+    traeger: "Stadt Geesthacht", level: "kommune", region: "Geesthacht",
+    bundesland: "Schleswig-Holstein", agsCode: "01053032",
+    url: "https://www.geesthacht.de/output/download.php?fid=3777.1809.1.PDF",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2021", beschlossenIso: "2023-12-08", endetIso: "2025-04-30",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Festbetrag je installierter Leistung für neue Photovoltaik- und Solarthermie-Anlagen auf dem eigenen Gebäude",
+    maxFoerderung: "max. 1.000 € je Objekt und Kalenderjahr, höchstens 50 % der Investitionskosten",
+    rates: [
+      { label: "Photovoltaik ab 3 kWp", value: "ausgelaufen — Anträge bis 30.04.2025; zuvor 150 € je kWp, höchstens 1.000 €", nur: ["pv"] },
+    ],
+    conditions: [
+      "Anträge waren bis 30.04.2025 möglich; die Richtlinie galt bis 30.04.2026. Laut Mitteilung der Stadt vom Januar 2026 ist die Förderung eingestellt",
+      "Antragsberechtigt waren Eigentümer von Wohn- oder Gewerbegebäuden in Geesthacht, die nicht gewerbsmäßig Solarstrom erzeugen; Wohnungseigentümergemeinschaften nur gemeinsam",
+      "Gefördert wurden nur neue Anlagen, installiert von einem Fachbetrieb; der Antrag musste vor dem Vertragsabschluss gestellt werden",
+      "Solarthermie wurde mit 200 € je Quadratmeter Kollektorfläche gefördert (ab 2,5 m², höchstens 1.000 €)",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // GUIDELINE READ IN FULL 30.09.2026 (text PDF, 8 pages, the version still
+    // linked on the city's "Formulare im Bereich Zuschüsse" page): council
+    // 08.12.2023, amended 15.03.2024; § 6 a) "Anträge, welche nach dem
+    // 30.04.2025 eingereicht werden" are excluded; § 14 "bis zum 30. April 2026
+    // befristet"; § 7 PV "150 € pro kWp, max. bis zu 1000 € insgesamt pro
+    // Objekt und Kalenderjahr … Mindestleistung von 3 kWp", "darf 50% der
+    // Investitionskosten nicht überschreiten", cumulation "möglich - sofern
+    // dort nicht andere Regelungen vorgesehen sind" (hence BUND). City press
+    // release (Herzogtum direkt, 20.01.2026, "(pm)"): funding "seit 2021",
+    // "jetzt eingestellt". Taken in as ended (operator 17.08.2026: "gab es, ist
+    // beendet" is a real answer). No balcony, storage or heat-pump component.
+    // The city's service entry "Zuschuss für steckerfertige
+    // Photovoltaikanlagen" is the state programme, already catalogued.
+  },
+
   "hillscheid-energie": {
     id: "hillscheid-energie", name: "Förderung privater Energiegewinnung",
     traeger: "Ortsgemeinde Hillscheid", level: "kommune", region: "Hillscheid",

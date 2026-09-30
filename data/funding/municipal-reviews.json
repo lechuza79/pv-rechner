@@ -77415,5 +77415,533 @@
         "evidenceUrl": "https://berkenthin-amt.de/balkon-solar-foerderung-in-berkenthin/"
       }
     ]
+  },
+  {
+    "regionId": "01053031",
+    "name": "Fuhlenhagen",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fuhlenhagen (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053036",
+    "name": "Grabau",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grabau (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053042",
+    "name": "Groß Pampau",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Pampau (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053052",
+    "name": "Havekost",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Havekost (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053059",
+    "name": "Kankelau",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kankelau (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053071",
+    "name": "Kollow",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kollow (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053089",
+    "name": "Möhnsen",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Möhnsen (Amt Schwarzenbek-Land) hat keine eigene Website; die Gemeinde wird auf der Amtsseite geführt. Dort gibt es keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist der Heizkostenzuschuss des Bundes für nicht leitungsgebundene Energieträger (Härtefallhilfe 2022), kein Förderprogramm im Sinne des Katalogs. Das Amt stellt bis März 2027 erst ein Klimaschutzkonzept auf; die Klimaschutzseite nennt nur eigene Projekte (Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen). Landes- und Bundesprogramme stehen bereits im Katalog.",
+    "searches": [
+      "Amts-Volltextsuche am 30.09.2026 im Browser: Balkonkraftwerk (0 Treffer), Wärmepumpe (0), Förderprogramm (nur Schulverband Kuddewörde-Grande), Zuschuss (Heizkostenzuschuss, BAföG, Wohngeld, Knickpflege-Richtlinie Kollow, Sitzungsprotokolle), Photovoltaik und Solar (Bauleitpläne, Solarkataster, Sitzungen, Klimaschutzmanagerin — kein Zuschuss für Bürger)",
+      "Klimaschutzseite des Amtes am 30.09.2026 gelesen (Klimaschutzkonzept bis März 2027 in Arbeit, Projekte des Amtes)",
+      "Websuche „Förderung Balkonkraftwerk Photovoltaik Gemeinde Fuhlenhagen OR Grabau OR Groß Pampau OR Havekost OR Kankelau OR Kollow OR Möhnsen Zuschuss“ am 30.09.2026: nur allgemeine Übersichten, kein Gemeindeprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1",
+        "finding": "30.09.2026: „Härtefallhilfen … Mehrkosten bei diesen Energieträgern im Jahr 2022 abgefedert“ — Bundesprogramm, über die Länder abgewickelt, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/index.php?ffmod=suche&NavID=3900.11&qs=Balkonkraftwerk",
+        "finding": "30.09.2026: „Es wurden leider keine Einträge für den Suchbegriff Balkonkraftwerk gefunden.“ (ebenso Wärmepumpe)"
+      },
+      {
+        "url": "https://www.amt-schwarzenbek-land.de/Aktuell/Klimaschutz/",
+        "finding": "30.09.2026: „Das Amt Schwarzenbek-Land wird bis März 2027 ein Klimaschutzkonzept erstellen“; Projekte Kläranlagen-PV Havekost, Agri-PV Fuhlenhagen; kein Bürgerzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      },
+      {
+        "url": "amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?NavID=3900.14&such=Heizkostenzuschuss%25f%C3%BCr%25nicht%25leitungsgebundene%25Energietr%C3%A4ger%25online%25beantragen&kuo=1&ModID=10&object=tx%7C3900.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss (Härtefallhilfe des Bundes 2022) für Heizöl, Pellets u. a., kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Dieselbe Dienstleistung mit anderen Navigationsparametern; am 30.09.2026 im Browser gelesen.",
+        "evidenceUrl": "https://www.amt-schwarzenbek-land.de/Digital/B%C3%BCrgerservice-von-A-Z/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-online-beantragen.php?ModID=10&FID=3900.131.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01053067",
+    "name": "Klempau",
+    "checkedAt": "2026-09-30T10:55:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Klempau fördert Balkonkraftwerke mit 200 € je Haushalt (Beschluss 11.07.2024, insgesamt 2.000 €, also zehn Anlagen); Antrag vor der Anschaffung beim Bürgermeister, danach Verwendungsnachweis. So im Katalog (klempau-balkonkraftwerke, aktiv). Die Seite nennt keine Ausschöpfung; bei zehn Plätzen bleibt stille Ausschöpfung möglich. Weitere Zuschüsse der Gemeinde gibt es nicht; das Quartierskonzept betrifft die Wärmeversorgung, keinen Zuschuss.",
+    "searches": [
+      "Programmseite am 30.09.2026 gelesen",
+      "Website-Suche (WordPress) am 30.09.2026: „balkon“ → nur die Programmseite; „solar“ → 0; „förder“ → Programmseite, Quartierskonzept, Veranstaltungen, kein weiterer Zuschuss",
+      "Energie-Ausschuss-Seite am 30.09.2026 gelesen (Quartierskonzept Wärme)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gemeinde-klempau.de/foerderung-von-balkonkraftwerken/",
+        "finding": "30.09.2026: „Dafür ist ein Zuschuss von 200 € pro Haushalt vorgesehen. Insgesamt stehen 2.000 € zur Verfügung, es können also zehn Anlagen gefördert werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-klempau.de/foerderung-von-balkonkraftwerken",
+        "disposition": "reviewed",
+        "reason": "Programmseite des Katalogprogramms klempau-balkonkraftwerke; am 30.09.2026 gelesen, unverändert.",
+        "evidenceUrl": "https://gemeinde-klempau.de/foerderung-von-balkonkraftwerken/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053032",
+    "name": "Geesthacht",
+    "checkedAt": "2026-09-30T11:05:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Geesthacht hat heute keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die städtische Förderung von Photovoltaik- und Solarthermie-Anlagen (150 € je kWp, höchstens 1.000 €) nahm Anträge bis 30.04.2025 an, die Richtlinie galt bis 30.04.2026, und laut Mitteilung der Stadt vom Januar 2026 ist sie eingestellt; sie steht als beendetes Programm im Katalog (geesthacht-solar). Weiter läuft nur die Gründach-Förderung (anderes Thema). Die Dienstleistungseinträge zu Balkonkraftwerken und nicht-fossilen Heizungen beschreiben das Landesprogramm Schleswig-Holstein, das bereits im Katalog steht. Die erfasste Quelle ist ein Link der Stadt auf die KfW.",
+    "searches": [
+      "Klimaschutzseite der Stadt, Abschnitt „Fördermittel“, am 30.09.2026 im Browser gelesen: Gründach-Richtlinie städtisch, sonst Verweise auf Verbraucherzentrale, KfW, BAFA/BEG, IHK",
+      "Stadt-Volltextsuche am 30.09.2026: „Balkonkraftwerk“ (3 Dienstleistungen des Landesprogramms), „Photovoltaik“ (75 Treffer, darunter die städtische Solar-Richtlinie 2024 und Antragsformulare), „Solarthermie“ (29, Richtlinienfassungen 2023/2024), „Förderung“ (582, Landes-/EU-Dienstleistungen), „eingestellt Photovoltaik“ (Bauleitplanung)",
+      "Seite „Formulare im Bereich Zuschüsse“ am 30.09.2026 gelesen: verlinkt weiter die Solar-Richtlinie (Fassung mit Antragsschluss 30.04.2025) und die Gründach-Förderung",
+      "Websuche „Geesthacht Förderung Photovoltaik Solarthermie … verlängert 2025 2026“ am 30.09.2026: Pressemitteilung der Stadt (Herzogtum direkt, 20.01.2026) zur Einstellung",
+      "Gegenprüfung durch zwei unabhängige Prüfer (einer adversarial) am 30.09.2026: alle Werte und die Einstellung bestätigt; keine neue Runde gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.geesthacht.de/output/download.php?fid=3777.1809.1.PDF",
+        "finding": "30.09.2026: § 6 a) „Anträge, welche nach dem 30.04.2025 eingereicht werden“ nicht förderfähig; § 14 „bis zum 30. April 2026 befristet“; § 7 „150 € pro kWp, max. bis zu 1000 €“."
+      },
+      {
+        "url": "https://herzogtum-direkt.de/index.php/2026/01/20/die-staedtische-foerderung-fuer-photovoltaik-und-solarthermie-anlagen-wird-eingestellt/",
+        "finding": "30.09.2026: Pressemitteilung der Stadt: „Die Förderung, die jetzt eingestellt wurde“; Gründächer weiter bis 30.04.2026."
+      },
+      {
+        "url": "https://www.geesthacht.de/Rathaus-Politik/Umwelt-Klimaschutz/Klimaschutz/",
+        "finding": "30.09.2026: Abschnitt „Fördermittel“ nennt als städtisch nur die Gründach-Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "geesthacht.de/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3777.406.1",
+        "disposition": "reviewed",
+        "reason": "Link der Stadt auf die Zuschüsse und Förderkredite der KfW (Bund), kein städtisches Programm; Linkziel auf der Klimaschutzseite am 30.09.2026 im Browser nachgesehen.",
+        "evidenceUrl": "https://www.geesthacht.de/Rathaus-Politik/Umwelt-Klimaschutz/Klimaschutz/"
+      }
+    ]
   }
 ]
