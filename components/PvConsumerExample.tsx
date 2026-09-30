@@ -56,7 +56,7 @@ export default function PvConsumerExample({ initialConsumers, initialSystem, hea
   return <PvConsumerSection variant="editorial" values={values} basis={basis} answered={answered} heading={heading}
     manualSelfConsumption={manualEv !== null} onContinue={continueInCalculator}
     note={<p>Die Beispielrechnung betrachtet {YEARS} Jahre. Sie setzt 20 Jahre feste Einspeisevergütung voraus; eine kürzere Restlaufzeit bei Altanlagen ist hier nicht abgebildet.</p>}
-    settings={<ResultSettings embedded title="Deine Anlage & Rechengrundlagen"
+    settings={<ResultSettings embedded basis={[{label:"PV-Anlage",value:`${system.kwp.toLocaleString("de-DE")} kWp`},{label:"Haushaltsstrom",value:`${system.verbrauch.toLocaleString("de-DE")} kWh/Jahr`},{label:"Speicher",value:`${system.spKwh.toLocaleString("de-DE")} kWh`}]} title="Deine Anlage & Rechengrundlagen"
       summary={`Rechengrundlage: ${system.kwp.toLocaleString('de-DE')} kWp · ${system.verbrauch.toLocaleString('de-DE')} kWh Haushaltsstrom/Jahr · ${system.spKwh.toLocaleString('de-DE')} kWh Speicher`}
       values={plant} onApply={next => {
         const hardwareChanged = next.kwp !== system.kwp || next.spKwh !== system.spKwh;

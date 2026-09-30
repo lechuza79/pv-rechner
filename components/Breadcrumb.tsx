@@ -1,4 +1,6 @@
 import Link from "next/link";
+import AtlasBreadcrumb from "./gemeinde/AtlasBreadcrumb";
+import styles from "./Breadcrumb.module.css";
 import { v } from "../lib/theme";
 import { BASE_URL } from "../lib/seo";
 import { breadcrumbJsonLd, jsonLdHtml } from "../lib/json-ld";
@@ -25,8 +27,10 @@ export default function Breadcrumb({
   items,
   jsonLd = false,
   rightSlot,
+  variant = "default",
 }: {
   items: Crumb[];
+  variant?: "default" | "compact";
   jsonLd?: boolean;
   /** Optionales Element rechts in der Zeile (z. B. die Atlas-Regionssuche). */
   rightSlot?: React.ReactNode;
@@ -50,7 +54,10 @@ export default function Breadcrumb({
           }}
         />
       )}
-      <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
+      {variant === "compact" ? <div className={styles.compact}>
+        <AtlasBreadcrumb parents={crumbs.slice(0, -1).filter((item): item is Crumb & { href: string } => !!item.href).map(item => ({ name: item.label, href: item.href }))} name={crumbs.at(-1)?.label ?? ""} />
+        {rightSlot}
+      </div> : <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
         <span className="crumb-trail">
           {crumbs.map((item, i) => (
             <span key={`${item.label}-${i}`} className="crumb-item" style={S.item}>
@@ -68,7 +75,7 @@ export default function Breadcrumb({
           ))}
         </span>
         {rightSlot && <span className="crumb-right">{rightSlot}</span>}
-      </nav>
+      </nav>}
     </>
   );
 }

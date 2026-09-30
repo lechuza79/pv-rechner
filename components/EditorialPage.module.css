@@ -1,0 +1,23 @@
+.page {
+  --font-size-body: var(--font-size-editorial-body);
+  --font-size-lead: var(--font-size-editorial-intro);
+  --font-size-small: var(--font-size-editorial-note);
+  --font-size-caption: var(--font-size-editorial-label);
+  font-family: var(--font-text);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  min-height: 100vh;
+  --editorial-gutter: 24px;
+  padding: 0 var(--editorial-gutter) 24px;
+}
+.content {
+  max-width: var(--content-max-width);
+  container-type: inline-size;
+  margin: 0 auto;
+}
+.page :where(button, input, select) { font-family: inherit; }
+
+/* Give the introduction, section navigation and article distinct spacing. */
+.content > :global(.v3-section-nav) { margin-block:32px 48px; }
+.content > :global(.v3-section-nav) ~ h2:first-of-type { margin-top:48px; }

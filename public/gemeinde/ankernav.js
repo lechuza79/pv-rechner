@@ -77,7 +77,8 @@
   // schmal ist er ein Menü und startet zu. Der Umschaltpunkt steht hier UND
   // im Stylesheet — zwei Stellen, aber die Alternative wäre, die Breite aus
   // dem Stylesheet zurückzulesen, und das ist die unzuverlässigere von beiden.
-  const schmal = matchMedia("(max-width: 860px)");
+  const collapseAt = Number(nav.dataset.collapseAt) || 860;
+  const schmal = matchMedia(`(max-width: ${collapseAt}px)`);
   const anpassen = () => {
     menue.open = !schmal.matches;
   };

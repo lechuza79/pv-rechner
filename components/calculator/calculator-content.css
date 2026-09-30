@@ -5,3 +5,10 @@
 .sc-calculator-content--inset{width:calc(100% - 2 * var(--calculator-gutter,16px));padding-bottom:32px}
 body .wp-calculator-page{padding-inline:var(--calculator-gutter)!important}
 @container (max-width:900px){body .wp-overview-top{grid-template-columns:minmax(0,1fr);gap:12px}}
+
+.sc-calculator-content--boxed{border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--calculator-gutter,24px);background:var(--color-bg-raised)}
+
+/* Boxed embeds keep carousel content, fades and controls inside their rail. */
+body .sc-calculator-content--boxed .wp-product-carousel{width:100%;margin-inline:0;padding-inline:0}
+.sc-calculator-content--boxed .wp-product-navigation{inset:0;width:100%}
+.sc-calculator-content--boxed .wp-product-carousel-frame{--carousel-fade-color:var(--color-bg-raised)}

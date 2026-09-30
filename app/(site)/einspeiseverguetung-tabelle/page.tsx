@@ -1,3 +1,6 @@
+import Script from "next/script";
+import GemeindeAbschnittNav from "../../../components/gemeinde/GemeindeAbschnittNav";
+import { IconArrowRight } from "../../../components/Icons";
 import { Metadata } from "next";
 import Link from "next/link";
 import ArticleMeta from "../../../components/ArticleMeta";
@@ -5,7 +8,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import Faq from "../../../components/Faq";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { DataSourceNote } from "../../../components/PoweredBy";
-import RelatedLinks from "../../../components/RelatedLinks";
+import ArticleTeasers from "../../../components/ArticleTeasers";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 import {
   EEG_REFORM_VORHABEN_SATZ,
@@ -15,8 +18,13 @@ import {
   feedInGarantieSatz,
 } from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
-import { v } from "../../../lib/theme";
-import { FEED_IN_YEARS } from "../../../lib/constants";
+import styles from "../../../components/EditorialContent.module.css";
+import StickyCta from "../../../components/StickyCta";
+import EditorialPage from "../../../components/EditorialPage";
+import type { CSSProperties } from "react";
+import ExampleCard from "../../../components/ExampleCard";
+import ContentTable from "../../../components/ContentTable";
+import { FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import {
   feedInEndIso,
   feedInPeriodsSince2022,
@@ -36,6 +44,8 @@ import { heuteInBerlin } from "../../../lib/zeit";
 import { verlaufJahre } from "./VerlaufsChart";
 import VerlaufMitMeilensteinen from "./VerlaufMitMeilensteinen";
 import ArchivTabelle from "./ArchivTabellen";
+import { FeedinExamples } from "./NextSteps";
+import PvConsumerExample from "../../../components/PvConsumerExample";
 
 // Jede Zahl auf dieser Seite kommt live aus den geprüften Modulen
 // (feedin-config-Kette, BNetzA-Monatsarchiv, SFV-Jahresreihe) — nichts ist
@@ -61,127 +71,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-// ─── Styles (content-page conventions, same tokens as die anderen Ratgeber) ──
-const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "0 16px 20px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { color: v("--color-text-primary"), marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
-  h3: { color: v("--color-text-primary"), marginTop: 20, marginBottom: 8 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 8,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  card: {
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-    padding: "14px 16px",
-    border: `1px solid ${v("--color-border")}`,
-    marginBottom: 12,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-  },
-  label: {
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    marginBottom: 6,
-    display: "block",
-  },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  muted: { color: v("--color-text-muted") },
-  ctaButton: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-pill"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    background: v("--color-cta"),
-    color: v("--color-text-on-accent"),
-    textDecoration: "none",
-  },
-  ctaSecondary: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-md"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    border: `1px solid ${v("--color-border")}`,
-    color: v("--color-accent"),
-    textDecoration: "none",
-  },
-  th: {
-    textAlign: "right" as const,
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    padding: "8px 6px",
-    borderBottom: `1px solid ${v("--color-border")}`,
-    whiteSpace: "nowrap" as const,
-  },
-  thLeft: {
-    textAlign: "left" as const,
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    padding: "8px 6px",
-    borderBottom: `1px solid ${v("--color-border")}`,
-    whiteSpace: "nowrap" as const,
-  },
-  td: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-muted"),
-    padding: "8px 6px",
-    borderBottom: `1px solid ${v("--color-border")}`,
-    lineHeight: 1.4,
-    whiteSpace: "nowrap" as const,
-  },
-  tdNum: {
-    fontFamily: v("--font-mono"),
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-primary"),
-    textAlign: "right" as const,
-    padding: "8px 6px",
-    borderBottom: `1px solid ${v("--color-border")}`,
-    whiteSpace: "nowrap" as const,
-  },
-  small: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.6,
-  },
-};
+
+
 
 // ─── Formatierung (deutsche Zahlen, Datumsangaben) ───────────────────────────
 const ct = fmtCt;
@@ -235,9 +126,9 @@ export default async function EinspeiseverguetungTabellePage() {
   const faqItems = einspeiseverguetungTabelleFaq();
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
+    <EditorialPage>
         <Breadcrumb
+          variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
@@ -246,96 +137,57 @@ export default async function EinspeiseverguetungTabellePage() {
           jsonLd
         />
 
-        <h1 style={S.h1}>Einspeisevergütung {year}: aktuelle Sätze und die komplette Tabelle</h1>
-        <p style={S.subtitle}>
-          Alle Vergütungssätze für Photovoltaik zum Nachschlagen: die aktuellen Werte, die
-          Halbjahres-Sätze seit 2022, die amtliche Monatstabelle 2012–2022 für
-          Bestandsanlagen und die Jahreswerte zurück bis 2000.
-        </p>
         <ArticleMeta
           headline={`Einspeisevergütung ${year}: aktuelle Sätze & Tabelle seit 2000`}
           description="Aktuelle EEG-Vergütungssätze plus die komplette historische Tabelle — Monatswerte 2012–2022, Halbjahres-Sätze seit 2022, Jahreswerte seit 2000."
           path="/einspeiseverguetung-tabelle"
           published="2026-08-04"
-          modified="2026-08-06"
+          modified="2026-09-30"
         />
+        <h1 className={styles.h1}>Einspeisevergütung: Tabelle {year} und Vorjahre</h1>
 
+        <p className={styles.subtitle}>
+          Die Einspeisevergütung hängt davon ab, wann eine Anlage in Betrieb gegangen ist.
+          Die Tabellen zeigen die aktuellen Sätze und die historischen Werte seit 2000;
+          der Verlauf ordnet die Entwicklung ein.
+        </p>
         {/* ── Kurzantwort ── */}
-        <div style={S.hero}>
-          <span style={S.label}>Die Kurzantwort</span>
+        <div className={styles.hero}>
+          <span className={styles.label}>Die Kurzantwort</span>
           Für neue Anlagen bis {rates.thresholdKwp} kWp gibt es aktuell{" "}
-          <strong style={S.strong}>{ct(rates.teilUnder10)} ct/kWh</strong> bei{" "}
+          <strong className={styles.strong}>{ct(rates.teilUnder10)} ct/kWh</strong> bei{" "}
           Teileinspeisung (Überschusseinspeisung) und{" "}
-          <strong style={S.strong}>{ct(rates.vollUnder10)} ct/kWh</strong> bei
-          Volleinspeisung. Der Satz, mit dem eine Anlage in Betrieb geht, bleibt{" "}
-          {FEED_IN_YEARS} Jahre fest — deshalb steht in den Tabellen unten für jeden
-          Inbetriebnahme-Zeitraum ein eigener Wert, in der Spitze{" "}
-          {ct(maxWert)} ct/kWh ({maxJahr}). Selbst verbrauchter Strom spart mit
-          rund {strompreisCt} ct/kWh heute etwa das {priceRatio}-Fache der Vergütung.
-        </div>
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
-          Alle Werte auf dieser Seite werden live aus den gesetzlichen Sätzen und den
-          amtlichen Archivtabellen gerendert — ohne Gewähr; verbindlich ist die
-          offizielle Quelle.
+          <strong className={styles.strong}>{ct(rates.vollUnder10)} ct/kWh</strong> bei
+          Volleinspeisung.
+        <p className={`${styles.p} ${styles.answerContext}`}>
+          Entscheidend ist das Inbetriebnahmedatum deiner Anlage:
+          {" "}<a href="#aktuelle-saetze" className={styles.link}>ab 30. Juli 2022</a>,
+          {" "}<a href="#bestandsanlage" className={styles.link}>April 2012 bis Juli 2022</a> oder
+          {" "}<a href="#anfangsjahre" className={styles.link}>2000 bis 2011</a>.
+          Für Anfang 2012 gelten die Hinweise an der Monatstabelle.
         </p>
-
-        {/* ── EEG-Reform: Sachstand (geteilte Quelle, kein eigener Rechtssatz) ── */}
-        <div style={S.card}>
-          <span style={S.label}>Geplante EEG-Reform 2027</span>
-          {EEG_REFORM_VORHABEN_SATZ}. {eegVerfahrenSatz()} {eegBestandsschutzSatz()} — an
-          den Tabellen auf dieser Seite ändert der Entwurf nichts. Was die Reform für
-          neue Anlagen bedeutet, steht im Ratgeber{" "}
-          <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>
-            „Lohnt sich PV ohne Einspeisevergütung?"
-          </Link>{" "}
-          <span style={S.muted}>(Stand: {REFORM_STAND})</span>
         </div>
 
-        {/* ── Verlaufs-Chart 2000–2027 mit Ereignis-Timeline (Zubau-Muster) ──
-             Der Chart beantwortet „wie ist der Verlauf und warum?", die
-             Tabellen darunter „was gilt für mich?" — beides sichtbar. Die
-             Meilensteine sind die kuratierten ZUBAU_EVENTS (eine Quelle). ── */}
-        <h2 style={S.h2}>Der Verlauf seit 2000 — und seine Weichenstellungen</h2>
-        <p style={S.p}>
-          Von {ct(maxWert)} ct/kWh in der Spitze ({maxJahr}) auf {ct(rates.teilUnder10)} ct
-          heute: Bis 2011 zeigt der Chart Jahresbalken, ab April 2012 läuft die dann
-          monatlich sinkende Reihe als Linie weiter — jeder Wert ist der Satz, der für
-          Anlagen dieses Inbetriebnahme-Zeitraums {FEED_IN_YEARS} Jahre fest gilt. Beim
-          Überfahren oder Antippen erscheint der exakte Wert; die Punkte darunter
-          markieren die politischen Weichenstellungen (dieselben, die auch unsere
-          Zubau-Datenstory erzählt) — antippen zeigt, was damals entschieden wurde.
-        </p>
-        <VerlaufMitMeilensteinen jahre={chartJahre} />
-        <p style={{ ...S.small, marginBottom: 16, marginTop: 12 }}>
-          Kleinste Dachanlagen-Klasse (bis März 2012: bis 30 kW, ab April 2012: bis 10 kWp), ab dem
-          30.07.2022 Teileinspeisung; 2000–2011 Jahresanfangswerte. Der sichtbare Sprung
-          im Juli 2022 ist die EEG-2023-Anhebung zum Stichtag 30.07.2022 — real, kein
-          Datenfehler; die Linie zeigt für Juli 2022 den bis zum 29.07. gültigen Satz.
-        </p>
+        <GemeindeAbschnittNav theme="light" actions={false} links={[
+          {href:"#aktuelle-saetze",label:"Aktuelle Sätze"},
+          {href:"#beispiele",label:"Beispiele in Euro"},
+          {href:"#bestandsanlage",label:"Ältere Anlage"},
+          {href:"#verlauf",label:"Verlauf seit 2000"},
+        ]} />
+        <Script src="/gemeinde/ankernav.js" strategy="afterInteractive" />
 
         {/* ── Halbjahres-Tabelle seit 30.07.2022 (neueste zuerst — die erste
              Zeile SIND die aktuellen Sätze; die eigene Aktuell-Tabelle entfiel
              bewusst, weil /einspeiseverguetung-rechner diesen Block trägt) ── */}
-        <h2 style={S.h2}>Tabelle: Sätze nach Inbetriebnahme seit dem 30.07.2022</h2>
-        <p style={S.p}>
-          Mit dem EEG 2023 (Sätze ab 30. Juli 2022) wurde die Vergütung erstmals seit
-          Langem wieder angehoben und in{" "}
-          <GlossaryTerm id="teileinspeisung">Teileinspeisung</GlossaryTerm> (der Normalfall:{" "}
-          <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> plus Überschuss
-          ins Netz) und <GlossaryTerm id="volleinspeisung">Volleinspeisung</GlossaryTerm>{" "}
-          geteilt. Maßgeblich ist das Inbetriebnahme-Halbjahr, der Satz bleibt dann{" "}
-          {FEED_IN_YEARS} Jahre fest — die erste Zeile ist also der aktuelle Stand. Die
-          Werte folgen der gesetzlichen Kette aus §§ 48, 49 und 53 EEG:
-        </p>
-        <div style={{ overflowX: "auto", marginBottom: 10 }}>
-          <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 560 }}>
+        <h2 id="aktuelle-saetze" tabIndex={-1} className={styles.h2}>Einspeisevergütung {year}: aktuelle Sätze und Vorjahre</h2>
+        <ContentTable matrix id="aktuelle-verguetungstabelle" caption="Vergütung in ct/kWh" align="center" rowLabelWidth={124} columnWidth={94} columnLabel="Tarifspalte">
             <thead>
               <tr>
-                <th style={S.thLeft}>Inbetriebnahme</th>
-                <th style={S.th}>Teil ≤{rates.thresholdKwp} kWp</th>
-                <th style={S.th}>Teil &gt;{rates.thresholdKwp} kWp*</th>
-                <th style={S.th}>Voll ≤{rates.thresholdKwp} kWp</th>
-                <th style={S.th}>Voll &gt;{rates.thresholdKwp} kWp*</th>
+                <th scope="col">Inbetriebnahme</th>
+                <th scope="col">Teil<br />≤{rates.thresholdKwp} kWp</th>
+                <th scope="col">Teil<br />&gt;{rates.thresholdKwp} kWp*</th>
+                <th scope="col">Voll<br />≤{rates.thresholdKwp} kWp</th>
+                <th scope="col">Voll<br />&gt;{rates.thresholdKwp} kWp*</th>
               </tr>
             </thead>
             <tbody>
@@ -346,50 +198,76 @@ export default async function EinspeiseverguetungTabellePage() {
                 // ununterscheidbar (reine Deko), nicht-null-basierte würden
                 // die Unterschiede dramatisieren (Betreiber-Review 07.08.2026).
                 return (
-                  <tr key={p.fromIso}>
-                    <td style={{ ...S.td, color: aktuell ? v("--color-text-primary") : S.td.color, fontWeight: aktuell ? 700 : 400 }}>
-                      {aktuell ? `seit ${dd(p.fromIso)} (aktuell)` : `${dd(p.fromIso)} – ${dd(p.toIso as string)}`}
-                    </td>
-                    <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.teilUnder10)}</td>
-                    <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.teilOver10)}</td>
-                    <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.vollUnder10)}</td>
-                    <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.vollOver10)}</td>
+                  <tr key={p.fromIso} data-current={aktuell || undefined}>
+                    <th scope="row">
+                      {aktuell ? <>seit {dd(p.fromIso)}<br />(aktuell)</> : <>{dd(p.fromIso)} –<br />{dd(p.toIso as string)}</>}
+                    </th>
+                    <td>{ct(p.rates.teilUnder10)}</td>
+                    <td>{ct(p.rates.teilOver10)}</td>
+                    <td>{ct(p.rates.vollUnder10)}</td>
+                    <td>{ct(p.rates.vollOver10)}</td>
                   </tr>
                 );
               })}
             </tbody>
-          </table>
-        </div>
-        <p style={{ ...S.small, marginBottom: 16 }}>
+        </ContentTable>
+        <p className={styles.p}>
+          Mit dem EEG 2023 (Sätze ab 30. Juli 2022) wurde die Vergütung erstmals seit
+          Langem wieder angehoben und in{" "}
+          <GlossaryTerm id="teileinspeisung">Teileinspeisung</GlossaryTerm> (der Normalfall:{" "}
+          <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> plus Überschuss
+          ins Netz) und <GlossaryTerm id="volleinspeisung">Volleinspeisung</GlossaryTerm>{" "}
+          geteilt. Maßgeblich ist das Inbetriebnahme-Halbjahr, der Satz bleibt dann{" "}
+          {FEED_IN_YEARS} Jahre fest — die erste Zeile ist also der aktuelle Stand. Die
+          Werte folgen der gesetzlichen Kette aus §§ 48, 49 und 53 EEG.
+        </p>
+        <p className={`${styles.p} ${styles.paragraphGap}`}>
           Alle Werte in ct/kWh, feste Einspeisevergütung für Gebäudeanlagen. *Satz für den
           Anlagenteil über {rates.thresholdKwp} kWp (Klasse bis 40 kWp); bei größeren
           Anlagen ergibt sich daraus ein gewichteter Mischsatz, den der{" "}
-          <Link href="/einspeiseverguetung-rechner" style={S.link}>Einspeisevergütungs-Rechner</Link>{" "}
+          <Link href="/einspeiseverguetung-rechner" className={styles.link}>Einspeisevergütungs-Rechner</Link>{" "}
           für deine Anlagengröße ausweist. {FEEDIN_DEGRESSION_SATZ} Nach geltendem Recht
           folgt die nächste <GlossaryTerm id="degression">Absenkung</GlossaryTerm> zum{" "}
           {naechsteAbsenkung}. Vom 30.07.2022 bis zum 31.01.2024 setzte die Absenkung
           gesetzlich aus, deshalb gilt für diesen Zeitraum eine gemeinsame Zeile. Alle
           aktuellen Werte mit Stand-Datum stehen auf der{" "}
-          <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+          <Link href="/datenstand" className={styles.link}>Datenstand-Seite</Link>.
         </p>
 
+        <p className={`${styles.p} ${styles.flushEnd}`}>
+          Die aktuellen Sätze und die historischen Archivwerte haben unterschiedliche
+          Bezugszeiträume. Achte beim Nachschlagen auf das Datum und die Größenklasse
+          im Tabellenkopf. Quellen und Hinweise stehen bei der jeweiligen Tabelle.
+        </p>
+        <FeedinExamples dateIso={todayIso} electricityPrice={prices.electricityPrice} />
+
         {/* ── Monatstabelle 04/2012–07/2022 (BNetzA-Archiv) ── */}
-        <h2 style={S.h2}>Tabelle für Bestandsanlagen: Monatswerte April 2012 bis Juli 2022</h2>
-        <p style={S.p}>
+        <h2 id="bestandsanlage" tabIndex={-1} className={styles.h2}>Einspeisevergütung 2012–2022: Monatstabellen für Bestandsanlagen</h2>
+        <div className={`sc-feature-list ${styles.cardList}`}>
+          <ExampleCard title="Welcher Satz gilt für deine Anlage?" motif="house">
+            <p>Mit Inbetriebnahme-Datum und Anlagengröße findest du deinen Vergütungssatz – und siehst, wie viel bereits ausgezahlt wurde und noch aussteht.</p>
+            <Link href="/einspeiseverguetung-rechner" className="sc-feature-action">Meinen Satz berechnen <IconArrowRight /></Link>
+          </ExampleCard>
+        </div>
+        <p className={styles.p}>Oder direkt nachschlagen: seit 2022 in der <a href="#aktuelle-saetze" className={styles.link}>Tabelle oben</a>,
+          April 2012 bis Juli 2022 in den Monatstabellen, davor in den <a href="#anfangsjahre" className={styles.link}>Jahreswerten seit 2000</a>.</p>
+        <p className={styles.p}>
           Zwischen April 2012 und Juli 2022 änderte sich die Vergütung für neue Anlagen
           meist von Monat zu Monat — überwiegend nach unten, zeitweise stand sie still.
           Für Bestandsanlagen aus dieser Zeit zählt deshalb der{" "}
-          <strong style={S.strong}>Inbetriebnahme-Monat</strong>. Die Tabelle zeigt die
+          <strong className={styles.strong}>Inbetriebnahme-Monat</strong>. Die Tabelle zeigt die
           feste Einspeisevergütung für Dachanlagen auf Wohngebäuden aus den
           Archivtabellen der Bundesnetzagentur; eine getrennte (höhere)
           Volleinspeisungs-Vergütung gab es in dieser Ära noch nicht — es galt ein Satz
           je Größenklasse.
         </p>
-        <h3 style={S.h3}>Anlagen bis 10 kWp</h3>
+        <h3 className={styles.h3}>So liest du die Monatstabellen</h3>
+        <p className={styles.p}>Wähle die passende Größenklasse und das Inbetriebnahmejahr. Die Jahre stehen zum Vergleich nebeneinander. Wische auf kleinen Bildschirmen seitlich zu weiteren Jahren; die Monatsspalte bleibt sichtbar. Am Schnittpunkt von Monat und Jahr findest du deinen Satz in ct/kWh.</p>
+        <h3 className={styles.h3}>Anlagen bis 10 kWp</h3>
         <ArchivTabelle field="u10" />
-        <h3 style={S.h3}>Anlagenteil über 10 bis 40 kWp</h3>
+        <h3 className={styles.h3}>Anlagenteil über 10 bis 40 kWp</h3>
         <ArchivTabelle field="u40" />
-        <p style={{ ...S.small, marginBottom: 16 }}>
+        <p className={`${styles.p} ${styles.paragraphGap}`}>
           Alle Werte in ct/kWh. Januar bis März 2012 gehören noch zur älteren
           Vergütungslogik (zu Jahresbeginn 2012: {ct(wert2012)} ct/kWh). Der
           Juli-2022-Wert gilt nur für Inbetriebnahmen bis zum 29.07. — zum Stichtag
@@ -397,56 +275,93 @@ export default async function EinspeiseverguetungTabellePage() {
           {ct(juliAlt)}, Klasse bis 10 kWp); ab da gilt die Halbjahres-Tabelle oben. Wie
           viel eine Bestandsanlage mit ihrem Satz übers Jahr und über die Laufzeit
           einnimmt, rechnet der{" "}
-          <Link href="/einspeiseverguetung-rechner" style={S.link}>Einspeisevergütungs-Rechner</Link> aus.
+          <Link href="/einspeiseverguetung-rechner" className={styles.link}>Einspeisevergütungs-Rechner</Link> aus.
         </p>
 
         {/* ── Jahreswerte 2000–2011 ── */}
-        <h2 style={S.h2}>Die Anfangsjahre: 2000 bis 2011</h2>
-        <p style={S.p}>
+        <h2 id="anfangsjahre" tabIndex={-1} className={styles.h2}>Die Anfangsjahre: 2000 bis 2011</h2>
+        <p className={styles.p}>
           In den Anfangsjahren des EEG lag die Vergütung um ein Vielfaches höher — in der
           Spitze bei {ct(maxWert)} ct/kWh ({maxJahr}). Die Werte sind Jahresanfangs-Stände
           für die kleinste Dachanlagen-Klasse; für die exakte Vergütung einer konkreten
           Altanlage ist der Bescheid bzw. die Abrechnung des Netzbetreibers maßgeblich —
           aus dieser Zeit gibt es hier bewusst keine Monatswerte.
         </p>
-        <div style={{ overflowX: "auto", marginBottom: 10 }}>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <ContentTable compact showCaption={false} caption="Vergütung in ct/kWh · Inbetriebnahme zum Jahresbeginn">
             <thead>
               <tr>
-                <th style={S.thLeft}>Inbetriebnahme (Jahresbeginn)</th>
-                <th style={S.th}>Vergütung</th>
+                <th scope="col">Inbetriebnahme<br />(Jahresbeginn)</th>
+                <th scope="col">Vergütung (ct/kWh)</th>
               </tr>
             </thead>
             <tbody>
               {vor2012.map((r) => (
                 <tr key={r.year}>
-                  <td style={S.td}>{r.year}</td>
-                  <td style={S.tdNum}>{ct(r.value)} ct/kWh</td>
+                  <th scope="row">{r.year}</th>
+                  <td data-bar style={{ "--table-bar-size": `${r.value / maxWert * 100}%` } as CSSProperties}>{ct(r.value)}</td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
-        <p style={{ ...S.small, marginBottom: 16 }}>
+        </ContentTable>
+        <p className={`${styles.p} ${styles.paragraphGap}`}>
           Klasse: bis 2008 Dachanlagen bis 30 kW (die 10-kWp-Klasse existierte noch
           nicht), ab April 2012 bis 10 kWp.{" "}
           <DataSourceNote source={DATA_SOURCES.eegVerguetung} /> Wie der fallende Satz und
           der Zubau zusammenhängen, zeigt die{" "}
-          <Link href="/photovoltaik-zubau-deutschland" style={S.link}>PV-Zubau-Datenstory</Link>{" "}
+          <Link href="/photovoltaik-zubau-deutschland" className={styles.link}>PV-Zubau-Datenstory</Link>{" "}
           mit dem interaktiven Chart seit 2000.
         </p>
 
+        {/* ── Verlaufs-Chart 2000–2027 mit Ereignis-Timeline (Zubau-Muster) ──
+             Der Chart beantwortet „wie ist der Verlauf und warum?", die
+             Tabellen oben „was gilt für mich?" — beides sichtbar. Die
+             Meilensteine sind die kuratierten ZUBAU_EVENTS (eine Quelle). ── */}
+        <h2 id="verlauf" tabIndex={-1} className={styles.h2}>Wie hat sich die Einspeisevergütung seit 2000 entwickelt?</h2>
+        <p className={styles.p}>
+          Von {ct(maxWert)} ct/kWh in der Spitze ({maxJahr}) auf {ct(rates.teilUnder10)} ct
+          heute: Bis 2011 zeigt der Chart Jahresbalken, ab April 2012 läuft die
+          monatliche Reihe als Linie weiter — jeder Wert ist der Satz, der für
+          Anlagen dieses Inbetriebnahme-Zeitraums {FEED_IN_YEARS} Jahre fest gilt. Beim
+          Überfahren oder Antippen erscheint der exakte Wert; die Punkte darunter
+          markieren wichtige politische Entscheidungen. Tippe ein Ereignis an,
+          um den Hintergrund zu lesen.
+        </p>
+        <VerlaufMitMeilensteinen jahre={chartJahre} />
+        <p className={`${styles.p} ${styles.paragraphGap} ${styles.contextGap}`}>
+          Kleinste Dachanlagen-Klasse (bis März 2012: bis 30 kW, ab April 2012: bis 10 kWp), ab dem
+          30.07.2022 Teileinspeisung; 2000–2011 Jahresanfangswerte. Der sichtbare Sprung
+          im Juli 2022 ist die EEG-2023-Anhebung zum Stichtag 30.07.2022 — real, kein
+          Datenfehler; die Linie zeigt für Juli 2022 den bis zum 29.07. gültigen Satz.
+        </p>
+
+        {/* ── EEG-Reform: Sachstand (geteilte Quelle, kein eigener Rechtssatz) ── */}
+        <aside className={styles.note} aria-labelledby="eeg-reform-hinweis">
+          <header><span className={styles.small}>Stand: {REFORM_STAND}</span><h3 id="eeg-reform-hinweis">Geplante EEG-Reform 2027</h3></header>
+          <p className={styles.p}>{EEG_REFORM_VORHABEN_SATZ}.</p>
+          <p className={styles.p}>{eegVerfahrenSatz()}</p>
+          <p className={styles.p}>{eegBestandsschutzSatz()} — an den Tabellen auf dieser Seite ändert der Entwurf nichts.</p>
+          <p className={styles.p}>Was die Reform für neue Anlagen bedeutet, steht im Ratgeber <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" className={styles.link}>„Lohnt sich PV ohne Einspeisevergütung?"</Link></p>
+        </aside>
+
+        <p className={styles.p}>
+          Der Satz, mit dem eine Anlage in Betrieb geht, bleibt{" "}
+          {FEED_IN_YEARS} Jahre fest — deshalb steht in den Tabellen für jeden
+          Inbetriebnahme-Zeitraum ein eigener Wert, in der Spitze{" "}
+          {ct(maxWert)} ct/kWh ({maxJahr}). Selbst verbrauchter Strom spart mit
+          rund {strompreisCt} ct/kWh heute etwa das {priceRatio}-Fache der Vergütung.
+        </p>
+
         {/* ── Wie lange wird gezahlt ── */}
-        <h2 style={S.h2}>Wie lange wird die Einspeisevergütung gezahlt?</h2>
-        <p style={S.p}>
+        <h2 className={styles.h2}>Wie lange wird die Einspeisevergütung gezahlt?</h2>
+        <p className={styles.p}>
           {feedInGarantieSatz()} Konkret: Eine Anlage, die {jahrgangEnde} in Betrieb
           ging, wird noch bis zum {endeDatum} vergütet; Anlagen mit Inbetriebnahme bis
           Ende {jahrgangEnde - 1} sind bereits aus der Vergütung gelaufen.
         </p>
-        <p style={S.p}>
+        <p className={styles.p}>
           Nach dem Ende der Vergütung läuft die Ersparnis durch{" "}
           <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> unverändert
-          weiter — unser <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link>{" "}
+          weiter — unser <Link href="/photovoltaik-rechner" className={styles.link}>PV-Rechner</Link>{" "}
           kalkuliert genau so: Vergütung nur {FEED_IN_YEARS} Jahre, danach null, die
           Eigenverbrauchs-Ersparnis über die gesamte Laufzeit.
         </p>
@@ -457,68 +372,58 @@ export default async function EinspeiseverguetungTabellePage() {
              wäre Thin Content gegen uns selbst. Zahl + Quelle kommen aus
              lib/marktwert-config.ts (eine Quelle, Realitäts-Anker im Repo);
              Entwurfs-Geldwerte stehen hier KEINE (Council-Vorbehalt). ── */}
-        <h2 style={S.h2}>Was kommt nach der festen Vergütung: der Marktwert Solar</h2>
-        <p style={S.p}>
+        <h2 className={styles.h2}>Was kommt nach der festen Vergütung: der Marktwert Solar</h2>
+        <p className={styles.p}>
           Wo keine feste Einspeisevergütung fließt — nach den {FEED_IN_YEARS} Jahren, oder
           falls die geplante Reform die feste Vergütung für Neuanlagen beendet —, bleibt
           für den Überschuss die Direktvermarktung: Ein Dienstleister verkauft den Strom
           an der Börse, du erhältst den Marktpreis abzüglich einer Gebühr. Maßstab dafür
           ist der <GlossaryTerm id="marktwert-solar">Marktwert Solar</GlossaryTerm>, den
           die Übertragungsnetzbetreiber veröffentlichen: {marktwert.jahr} lag er bei{" "}
-          <strong style={S.strong}>{ct(marktwert.ctKwh)} ct/kWh</strong> — gegenüber{" "}
+          <strong className={styles.strong}>{ct(marktwert.ctKwh)} ct/kWh</strong> — gegenüber{" "}
           {ct(rates.teilUnder10)} ct fester Vergütung und rund {strompreisCt} ct
           Haushaltsstrompreis. Er liegt strukturell unter dem mittleren Börsenpreis, weil
           Solarstrom überall zur selben Zeit anfällt und das große Mittagsangebot den
           Preis genau dann drückt. Wie sich das auf Amortisation und Rendite auswirkt,
           zeigt der interaktive Renditevergleich im Ratgeber{" "}
-          <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>
+          <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" className={styles.link}>
             „Lohnt sich PV ohne Einspeisevergütung?"
           </Link>
           .
         </p>
-        <p style={{ ...S.small, marginBottom: 16 }}>
+        <p className={`${styles.small} ${styles.source} ${styles.paragraphGap}`}>
           <DataSourceNote source={DATA_SOURCES.marktwertSolar} /> Jahresmarktwert{" "}
-          {marktwert.jahr}, Stand siehe <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+          {marktwert.jahr}, Stand siehe <Link href="/datenstand" className={styles.link}>Datenstand-Seite</Link>.
         </p>
 
-        {/* ── CTA ── */}
-        <div style={{ ...S.hero, marginTop: 28 }}>
-          <span style={S.label}>Was bringt dir dein Satz?</span>
-          <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
-            Der Einspeisevergütungs-Rechner nennt den Satz für dein Inbetriebnahme-Datum
-            und rechnet aus, wie viel deine Anlage damit schon eingenommen hat und was
-            noch aussteht — ohne Anmeldung, ohne Verkaufsanrufe.
-          </p>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/einspeiseverguetung-rechner" style={S.ctaButton}>
-              Vergütung berechnen →
-            </Link>
-            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
-              Komplette Rentabilität rechnen
-            </Link>
-          </div>
-        </div>
+        <section id="sc-cta-sentinel">
+          <PvConsumerExample initialSystem={{kwp:10,spKwh:10,verbrauch:PERSONEN[2].verbrauch,ertrag:NATIONAL_AVG_YIELD,strom:prices.electricityPrice}} />
+        </section>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zur Einspeisevergütung" currentPath="/einspeiseverguetung-tabelle" />
 
-        <RelatedLinks
+        <ArticleTeasers title="Weiterlesen"
           currentPath="/einspeiseverguetung-tabelle"
-          links={[
-            { href: "/einspeiseverguetung-rechner", label: "Einspeisevergütung-Rechner", desc: "Satz für dein Inbetriebnahme-Datum plus Lebenslauf-Rechnung: schon erhalten und noch ausstehend." },
-            { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
-            { href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", label: "Lohnt sich PV ohne Einspeisevergütung?", desc: "Was die geplante EEG-Reform für neue Anlagen bedeutet — und warum Eigenverbrauch die Rechnung trägt." },
-            { href: "/photovoltaik-zubau-deutschland", label: "PV-Zubau in Deutschland seit 2000", desc: "Die Datenstory: Wie Einspeisevergütung, Strompreis und Zubau zusammenhängen — mit interaktivem Chart." },
-            { href: "/datenstand", label: "Aktuelle Werte & Annahmen" },
-            { href: "/glossar", label: "Glossar" },
+          items={[
+            { href: "/einspeiseverguetung-rechner", title: "Einspeisevergütung-Rechner", teaser: "Satz für dein Inbetriebnahme-Datum plus Lebenslauf-Rechnung: schon erhalten und noch ausstehend." },
+            { href: "/photovoltaik-rechner", title: "Photovoltaik-Rechner", teaser: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
+            { href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", title: "Lohnt sich PV ohne Einspeisevergütung?", teaser: "Was die geplante EEG-Reform für neue Anlagen bedeutet — und warum Eigenverbrauch die Rechnung trägt." },
+            { href: "/photovoltaik-zubau-deutschland", title: "PV-Zubau in Deutschland seit 2000", teaser: "Die Datenstory: Wie Einspeisevergütung, Strompreis und Zubau zusammenhängen — mit interaktivem Chart." },
+            { href: "/datenstand", title: "Aktuelle Werte & Annahmen", teaser: "Datenstände und Grundlagen unserer Berechnungen." },
+            { href: "/glossar", title: "Glossar", teaser: "Begriffe rund um Photovoltaik verständlich erklärt." },
           ]}
         />
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
+        <p className={`${styles.small} ${styles.closingNote}`}>
           Die aktuellen Sätze folgen automatisch den gesetzlichen Stichtagen, die
           historischen Tabellen sind amtliche Archivstände. Ohne Gewähr; verbindlich sind
           Gesetz und Bescheid.
         </p>
-      </div>
-    </div>
+        <StickyCta
+          startId="bestandsanlage"
+          primaer={{ href: "/einspeiseverguetung-rechner", label: "Vergütung berechnen" }}
+          sekundaer={{ href: "/photovoltaik-rechner", label: "PV durchrechnen" }}
+        />
+</EditorialPage>
   );
 }

@@ -27,7 +27,10 @@ export default function StickyCta({
   primaer,
   sekundaer,
   dritte,
+  startId,
 }: {
+  /** Optional section threshold; existing consumers keep the scroll default. */
+  startId?: string;
   primaer: { href: string; label: string };
   /**
    * Zweite Aktion — entfällt, wo es nur einen nächsten Schritt gibt.
@@ -101,11 +104,18 @@ export default function StickyCta({
   // identischer Knopf neben dem ersten ist Lärm; sinnvoll wird er erst, wenn der
   // erste weggescrollt ist.
   useEffect(() => {
-    const pruefe = () => setGescrollt(window.scrollY > AB_SCROLL_PX);
+    const pruefe = () => {
+      const start = startId ? document.getElementById(startId) : null;
+      setGescrollt(startId ? !!start && start.getBoundingClientRect().top <= 24 : window.scrollY > AB_SCROLL_PX);
+    };
     pruefe();
     window.addEventListener("scroll", pruefe, { passive: true });
-    return () => window.removeEventListener("scroll", pruefe);
-  }, []);
+    window.addEventListener("resize", pruefe);
+    return () => {
+      window.removeEventListener("scroll", pruefe);
+      window.removeEventListener("resize", pruefe);
+    };
+  }, [startId]);
 
   const sichtbar = gescrollt && !hidden;
 

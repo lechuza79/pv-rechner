@@ -114,13 +114,13 @@ export default function PvConsumerSection({ id: suppliedId, values, basis, answe
     <h2 id={`${id}-heading`}>{heading}</h2>
     <p>Wärmepumpe, E-Auto und Klimaanlage können mehr von deinem Solarstrom nutzen. Die Kacheln zeigen den zusätzlichen PV-Vorteil über {YEARS} Jahre. Darunter vergleichst du die laufenden Kosten – bei Heizung, Fahren und Kühlen jeweils mit dem angegebenen Zeitraum.</p>
     <div className="pv-consumer-body">
-    {editorial && settings}
+    {editorial && <header className="pv-consumer-embed-header"><h3>Mehr aus deinem Solarstrom machen <InfoTooltip title="So rechnet das Beispiel">{note}</InfoTooltip></h3>{settings}</header>}
     <div className="pv-consumer-options"><AffiliateCarousel label="Weitere Verbraucher" desktopSlides={editorial ? 2 : 3} previousLabel="Vorherige Verbraucher">
       {PV_CONSUMERS.map(item => {
         const patch = changes[item.kind], removed = patch?.[item.kind] === 'nein';
         const active = values[item.kind] !== 'nein', configured = active || !!patch;
         return <li key={item.kind} data-consumer={item.kind} className="wp-geraete-kachel pv-consumer-card">
-          <ResultChoiceHeader editSelected neutral surface={editorial ? "white" : undefined} clickHint={item.kind === firstAvailable} illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
+          <ResultChoiceHeader wholeCard editSelected neutral surface={editorial ? "white" : undefined} clickHint={item.kind === firstAvailable} illustrationDecorated selected={!removed && configured} title={item.title} illustration={item.illustration}
             actionLabel={`${item.title}: ${removed ? 'Wieder hinzufügen' : active ? 'Bereits berücksichtigt' : patch ? 'Zur Vorschau hinzugefügt' : 'Ergänzen'}`}
             onSelect={() => edit(item.kind)} onRemove={() => remove(item.kind)} onEdit={() => edit(item.kind)}>
             {removed ? 'Entfernt' : !amounts ? <span className="pv-consumer-period">PV-Vorteil nach Neuberechnung</span> : <>
@@ -140,7 +140,7 @@ export default function PvConsumerSection({ id: suppliedId, values, basis, answe
     </Collapse>
     {!editorial && settings}
     {applyBar && <KlebenderKnopf floating kinder={ref => <div ref={ref} className="pv-consumer-apply-anchor">{applyBar}</div>} leiste={applyBar} />}
-    {note}
+    {!editorial && note}
     {editorial && <FlowNav weiterLabel="Genau ausrechnen" weiterAktiv onWeiter={() => action.onContinue!(pending)} />}
     </div>
     <Modal className="pv-consumer-dialog" open={draft !== null} onClose={() => setDraft(null)} title={`${PV_CONSUMERS.find(item => item.kind === kind)?.title} ergänzen`} intro={editorial ? 'Passe die Beispielrechnung an deine Nutzung an.' : 'Erst zur Vorschau hinzufügen, dann gemeinsam übernehmen.'}>

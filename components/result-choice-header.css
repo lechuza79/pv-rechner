@@ -3,7 +3,7 @@
 .sc-result-choice-header>div{min-width:0}
 .sc-result-choice-header strong,.sc-result-choice-header span{display:block}
 .sc-result-choice-header span{font-size:var(--result-type-caption);margin-top:calc(var(--space-xl)/4)}
-.sc-result-choice-action{display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;border:1px solid currentColor;border-radius:var(--radius-pill);padding:0;background:transparent;color:inherit;cursor:pointer}
+.sc-result-choice-action{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;border:1px solid currentColor;border-radius:var(--radius-pill);padding:0;background:transparent;color:inherit;cursor:pointer}
 .sc-result-choice-action:hover{background:color-mix(in srgb,currentColor 10%,transparent)}
 .sc-result-choice-action:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 
@@ -38,3 +38,12 @@
 
 .sc-result-choice-header[data-surface=white]{background:#fff;color:#1e2b26}
 .sc-result-choice-action .wp-solar-pointer{left:50%;margin:0}
+
+/* Selected choices retain the outer ring around a dark, inset check. */
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action{isolation:isolate;color:var(--color-text-primary)}
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--result-canvas,#071e22);z-index:-1}
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action svg{color:var(--result-accent,var(--color-cta))}
+
+.sc-result-choice-header[data-whole-card=true]{cursor:pointer}
+.sc-result-choice-header[data-whole-card=true]:has(.sc-result-choice-action:focus-visible){outline:2px solid var(--color-text-primary);outline-offset:3px}
+.sc-result-choice-header[data-whole-card=true] .sc-result-choice-action:focus-visible{outline:none}

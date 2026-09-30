@@ -1,0 +1,25 @@
+/* The municipality example layout, shared without an editorial variant. */
+.card { row-gap:20px; column-gap:12px; }
+.card > :global(.gemeinde-buerger-title) { grid-column:1/-1; margin:0; font-size:var(--font-size-h3); line-height:1.3; color:var(--color-text-primary); }
+.card > :global(.sc-feature-visual) { position:relative; z-index:0; align-self:start; margin-block:0!important; }
+.card > :global(.sc-feature-content) { position:relative; z-index:1; display:flex; flex-direction:column; align-items:flex-start; gap:24px; }
+.card :global(.gemeinde-buerger-value) { margin:0; font-weight:700; font-size:var(--sc-feature-amount-size,32px); line-height:1.15; }
+.card > :global(.sc-feature-content) > p { font-family:var(--font-text); font-size:var(--font-size-body); font-weight:400; line-height:1.7; color:var(--color-text-secondary); }
+.card > :global(.sc-feature-content) > p, .card > :global(.sc-feature-content) > a { margin:0!important; }
+.card :global(.gemeinde-buerger-value) small { display:block; font-size:var(--font-size-small); font-weight:400; }
+@media(max-width:560px) {
+ .card { gap:16px; }
+ .card > :global(.sc-feature-visual) { margin-block:0!important; width:min(260px,90%); max-width:260px; }
+}
+
+.card .amount { display:inline-grid; grid-template-columns:auto auto; padding:8px 12px; column-gap:8px; row-gap:0; font-size:var(--sc-feature-amount-size,32px); font-weight:700; line-height:1.15; }
+.amount > small { grid-column:2; color:color-mix(in srgb,currentColor 62%,transparent); margin:0; font-size:var(--font-size-small); font-weight:400; line-height:1.1; }
+.amount :global(.v3-result-plus) { display:inline-flex; width:.6em; height:.6em; margin-right:.16em; color:color-mix(in srgb,currentColor 62%,transparent); }
+.amount :global(.v3-result-plus) svg { display:block; width:100%; height:100%; }
+.amount :global(.v3-delta-currency) { font-size:.62em; font-weight:400; color:color-mix(in srgb,currentColor 62%,transparent); }
+.unit { font-family:var(--atlas-number-unit-font,var(--font-text)); font-size:var(--atlas-number-unit-scale,.55em); font-weight:var(--atlas-number-unit-weight,400); color:var(--atlas-number-unit-color,var(--color-text-secondary)); }
+
+/* Match the PV artwork viewport instead of reserving an empty square. */
+.card > :global(solar-illustration[motif="pv-modules-small"]) { --sc-feature-visual-aspect:1000/440; }
+.card > :global(solar-illustration[motif="pv-modules-medium"]) { --sc-feature-visual-aspect:1000/510; }
+.card > :global(solar-illustration[motif="pv-modules-large"]) { --sc-feature-visual-aspect:1000/670; }

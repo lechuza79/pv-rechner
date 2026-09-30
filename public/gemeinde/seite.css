@@ -509,8 +509,7 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 #atlas-ranking .ranking-ratio-help p { line-height: 1.5 }
 
 /* Actions belong to their copy block, independent of illustration height. */
-.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action{display:inline-flex;align-items:center;justify-content:center;gap:12px;width:fit-content;max-width:100%;box-sizing:border-box;min-height:48px;margin:24px 0 0!important;padding:12px 24px!important;border:1px solid var(--atlas-border,#adc2c466);border-radius:999px;background:transparent;color:var(--atlas-ink)!important;font:600 14px/1.4 var(--atlas-display,Montserrat),sans-serif;text-decoration:none;text-align:center}
-.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action:hover{background:color-mix(in srgb,var(--atlas-ink) 6%,transparent)}
+.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action{margin-top:24px}
 .gemeinde-foerder-kopf{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
 .gemeinde-foerder-kopf .atlas-kicker{margin:0}
 .gemeinde-foerder-ebene a{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-decoration-thickness:1px;text-underline-offset:3px}
@@ -549,26 +548,8 @@ dialog.gemeinde-share-dialog{box-sizing:border-box;width:min(560px,calc(100% - 3
 .gemeinde-share-dialog [role=status]:not(:empty){margin-top:12px;font-size:13px}
 @media(max-width:600px){dialog.gemeinde-share-dialog{width:100%;max-width:100%;padding:20px 20px calc(20px + env(safe-area-inset-bottom))}.gemeinde-share-dialog .gemeinde-share-header h2{font-size:20px}}
 
-/* Citizen examples: heading, artwork and savings form one visual group. */
-.solar-page .v3-conclusion .gemeinde-buerger-card{row-gap:20px;column-gap:12px;}
-.solar-page .gemeinde-buerger-card>.gemeinde-buerger-title{grid-column:1/-1;margin:0;font:700 22px/1.3 var(--atlas-display,Montserrat),sans-serif;color:var(--atlas-ink);}
-.solar-page .gemeinde-buerger-card>.sc-feature-visual{position:relative;z-index:0;}
-.solar-page .gemeinde-buerger-card>.sc-feature-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
-.solar-page .gemeinde-buerger-value{margin:0;font:700 var(--sc-feature-amount-size,32px)/1.15 var(--atlas-display,Montserrat),sans-serif;}
 .solar-page .sc-feature-card .gemeinde-foerder-hinweis{box-sizing:border-box;padding:14px 16px!important;border-radius:12px;background:color-mix(in srgb,var(--atlas-ink) 5%,transparent);border:1px solid color-mix(in srgb,var(--atlas-ink) 9%,transparent);}
-@media(max-width:560px){
- .solar-page .v3-conclusion .gemeinde-buerger-card{gap:16px;}
- .solar-page .v3-conclusion .gemeinde-buerger-card>.sc-feature-visual{margin:-36px 0 -88px!important;width:min(260px,90%);max-width:260px;}
- .solar-page .gemeinde-buerger-card>.gemeinde-buerger-title{font-size:20px;}
-}
-
-.solar-page .gemeinde-buerger-value .sc-delta>small{font:400 12px/1.2 var(--atlas-body,"DM Sans"),sans-serif;}
-
-/* One spacing rhythm for the copy, notice and action. */
-.solar-page .gemeinde-buerger-card>.sc-feature-content>p,
-.solar-page .gemeinde-buerger-card>.sc-feature-content>.gemeinde-foerder-hinweis,
-.solar-page .gemeinde-buerger-card>.sc-feature-content>.sc-feature-action{margin:0!important;}
-.solar-page .gemeinde-buerger-card .gemeinde-foerder-hinweis{align-self:stretch;}
+.solar-page .gemeinde-foerder-hinweis{align-self:stretch;}
 @media(max-width:560px){
  .solar-page .gemeinde-foerder-liste .sc-feature-card>.sc-feature-visual{display:none!important;}
  .solar-page .gemeinde-foerder-liste .sc-feature-card{grid-template-columns:minmax(0,1fr);padding-top:16px!important;padding-bottom:24px!important;}

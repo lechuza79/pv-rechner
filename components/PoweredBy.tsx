@@ -29,7 +29,7 @@ export function DataSourceNote({
   const sources = Array.isArray(source) ? source : [source];
   const linkStyle: React.CSSProperties = plain
     ? { color: "inherit", textDecoration: "none" }
-    : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
+    : { color: "inherit", textDecoration: "underline", textUnderlineOffset: ".2em", textDecorationThickness: "1px", textDecorationColor: "color-mix(in srgb, currentColor 40%, transparent)" };
   return (
     // Ein Quellenvermerk kann eine Adresse enthalten, die eine Lizenz
     // vorschreibt (BKG verlangt die Datenquellen-Liste als URL). Ein solcher

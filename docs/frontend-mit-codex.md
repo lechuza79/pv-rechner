@@ -195,6 +195,35 @@ Do not assemble a separate grid on a state, country or embed page. The shared
 composition is covered by `energy-monitor-layout.test.tsx` and the existing
 architecture guard. Region-specific data calculations remain in their adapters.
 
+## Editorial lookup tables (29 September 2026)
+
+`ContentTable` owns numeric typography, row headers, units in a visible caption,
+keyboard scrolling and the pinned first column for editorial lookup tables.
+The feed-in tariff page and both monthly archive tables consume it; their data
+and historical cutoffs stay in the existing feed-in modules. The example lives
+in the existing component gallery. `content-table.test.tsx` protects the shared
+consumer dependencies and rejects local table markup in the migrated consumers.
+
+`EditorialPage` follows the reading column of `/photovoltaik-zubau-deutschland`:
+existing site font tokens, content width, and no additional top padding below the
+shared layout. `EditorialContent.module.css` provides reusable content roles:
+lead text at the lead token with 1.6 line height, body text at the body token with
+1.7 line height. The readability update below supersedes the reference spacing. Do not override font families
+locally; the future font migration belongs in the shared site design.
+
+Editorial readability update: body 16 px, intro 18 px, secondary notes 14 px,
+labels 12 px through dedicated central tokens scoped by EditorialPage. Explanatory
+paragraphs with substantive conditions use the body role, not secondary notes.
+Main sections have 64 px separation. StickyCta supports an optional startId; the
+tariff page starts at the archive section and hides at the inline closing CTA.
+Existing consumers retain the default scroll threshold.
+
+Editorial examples reuse ExampleCard, extracted without changing the municipal
+card markup. Municipal card styles live in the shared component; there is no
+editorial compact variant or separate example stylesheet. Feed-in examples
+use the existing exact self-consumption and weighted tariff functions; their two
+amounts reconcile with year one of calc. Assumptions are visible on demand.
+The consumer area reuses the calculator result view as described below.
 ## Calculator layout boundaries (29 September 2026)
 
 Use CalculatorContent for the question/result column and its supporting sections.
@@ -237,3 +266,7 @@ The HTW cap used for financial self-consumption keeps its interpolated precision
 financial cap caused downward jumps when a small cooling load was added; the
 coherence test now checks every 1 kWh increment in that range. Model assumptions
 and the HTW grid are unchanged.
+
+Tariff archive tables keep all monthly values in server-rendered HTML. In narrow
+containers the shared Auswahl selects the visible year; desktop retains the full
+matrix. Yearly tables use optional cell bars without replacing exact values.

@@ -1,0 +1,90 @@
+.frame {
+  min-width: 0;
+  margin-bottom: var(--table-gap);
+}
+.caption {
+  margin-bottom: var(--table-gap);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+.scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.scroll:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.table {
+  width: 100%;
+  min-width: var(--table-min-width);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.table th, .table td {
+  padding: var(--table-cell-padding);
+  border-bottom: 1px solid var(--color-border);
+  text-align: var(--table-align,right);
+  white-space: nowrap;
+}
+.table thead th {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: 700;
+  vertical-align: middle;
+}
+.table tbody th, .table tbody td {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+.table tbody th { font-weight: 400; }
+.table tbody td { font-weight:700; }
+.table { font-family: var(--font-text); font-style:normal; }
+.table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  border-right: 1px solid var(--color-border);
+}
+.table tbody tr[data-current] > * {
+  background: var(--color-bg-raised);
+  font-weight: 700;
+}
+.table tbody tr:last-child > * { border-bottom: 0; }
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Compact month labels leave room for several years on small screens. */
+.matrix .scroll { padding-bottom:16px; }
+.matrix .table { width:max-content; min-width:100%; table-layout:fixed; }
+.matrix .table :is(th,td) { box-sizing:border-box; width:var(--table-column-width); min-width:var(--table-column-width); padding:8px; }
+.matrix .table th:first-child { width:var(--table-row-label-width); min-width:var(--table-row-label-width); }
+.matrix .table thead th { position:sticky; top:0; z-index:2; }
+.matrix .table thead th:first-child { z-index:3; }
+.compact { width:360px; max-width:100%; }
+.compact .table :is(th,td) { text-align:left; }
+.table td[data-bar] { position:relative; padding-bottom:14px; }
+.table td[data-bar]::after { content:""; position:absolute; left:12px; right:12px; bottom:6px; height:3px; background:linear-gradient(to right,var(--color-text-primary) var(--table-bar-size),transparent var(--table-bar-size)); }
+
+.heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.heading:empty { display:none; }
+.controls { display:flex; gap:8px; margin-bottom:var(--table-gap); }
+.controls button { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; padding:0; border:1px solid var(--color-border); border-radius:var(--radius-pill); background:transparent; color:var(--color-text-primary); cursor:pointer; }
+.controls button:disabled { opacity:.35; cursor:default; }
+.controls button:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+.controls { flex-shrink:0; }

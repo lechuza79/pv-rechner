@@ -1,0 +1,57 @@
+.v3-section-nav {
+ display:flex;align-items:center;justify-content:center;gap:4px;
+ position:sticky;top:calc(var(--v3-nav-top,0px) + 8px);z-index:50;
+ width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;
+ margin:8px auto 24px;padding:6px;border:1px solid var(--atlas-line);
+ border-radius:999px;background:var(--atlas-paper)!important;box-shadow:var(--shadow-md);
+ font-size:14px;line-height:1.3;
+}
+.v3-section-nav a{display:block;padding:10px 16px;border:0;border-radius:999px;color:var(--atlas-muted);text-decoration:none;white-space:nowrap;transition:background-color .18s,color .18s;}
+.v3-section-nav a[aria-current="location"]{background:color-mix(in srgb,var(--atlas-ink) 8%,transparent);color:var(--atlas-ink);}
+.v3-section-nav a:hover{color:var(--atlas-ink);}
+.v3-section-nav a[aria-current="location"]:hover{color:var(--atlas-ink);}
+.v3-section-nav a:focus-visible{outline:2px solid var(--atlas-muted);outline-offset:2px;}
+@media(max-width:600px){.v3-section-nav{font-size:12px;gap:2px;padding:5px;}.v3-section-nav a{padding:9px 12px;}}
+@media(prefers-reduced-motion:reduce){.v3-section-nav a{transition:none;}}
+
+.v3-section-nav .v3-nav-menu{display:flex;align-items:center;min-width:0}
+.v3-section-nav .v3-nav-menu>summary{display:none}
+.v3-section-nav .v3-nav-links{display:flex;align-items:center;gap:4px}
+.v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:none}
+
+@media(max-width:860px){
+  /* Der Abschnittsname gibt NICHT nach: Er ist der Zweck der Leiste („immer
+     der aktive sichtbar"). Nachgeben muss die Beschriftung des Abo-Knopfs —
+     sie steht neben einer Glocke und über einer Seite, die den Ortsnamen im
+     Titel trägt. Einzeilig bleibt sie trotzdem: Die Leiste klebt oben. */
+  .v3-section-nav .v3-nav-menu{display:block;position:relative;flex:0 0 auto}
+  .v3-section-nav .v3-nav-menu>summary{
+    display:flex;align-items:center;gap:6px;list-style:none;cursor:pointer;
+    padding:9px 12px;border-radius:999px;white-space:nowrap;overflow:hidden;
+    background:color-mix(in srgb,var(--atlas-ink) 8%,transparent);color:var(--atlas-ink)}
+  .v3-section-nav .v3-nav-menu>summary::-webkit-details-marker{display:none}
+  .v3-section-nav .v3-nav-menu>summary::marker{content:""}
+  /* Der Pfeil sagt, dass hier mehr dahintersteckt — ohne ihn liest sich der
+     Kopf wie eine Beschriftung, nicht wie ein Menü. */
+  .v3-section-nav .v3-nav-menu>summary::after{
+    content:"";flex:none;width:7px;height:7px;margin-left:2px;
+    border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+    transform:translateY(-2px) rotate(45deg)}
+  .v3-section-nav .v3-nav-menu[open]>summary::after{transform:translateY(1px) rotate(225deg)}
+  .v3-section-nav .v3-nav-aktiv{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .v3-section-nav .v3-nav-links{
+    display:block;position:absolute;z-index:60;top:calc(100% + 8px);left:0;min-width:200px;
+    padding:6px;background:var(--atlas-paper);border:1px solid var(--atlas-line);
+    border-radius:14px;box-shadow:0 12px 32px #18323e1f}
+  .v3-section-nav .v3-nav-links a{display:block}
+
+}
+
+.v3-section-nav[data-theme="light"]{--atlas-ink:var(--color-text-primary);--atlas-muted:var(--color-text-secondary);--atlas-paper:var(--color-bg);--atlas-line:var(--color-border)}
+
+/* The article has no page actions, so its links fit at a narrower width. */
+@media(min-width:641px) and (max-width:860px){
+ .v3-section-nav[data-collapse-at="640"] .v3-nav-menu{display:flex;align-items:center;min-width:0}
+ .v3-section-nav[data-collapse-at="640"] .v3-nav-menu>summary{display:none}
+ .v3-section-nav[data-collapse-at="640"] .v3-nav-links{display:flex;position:static;align-items:center;gap:4px;min-width:0;padding:0;background:transparent;border:0;box-shadow:none}
+}

@@ -235,6 +235,11 @@ export const tokens = {
   '--font-size-micro': '10px',          // Dichte Chart-/Achsenbeschriftungen
   '--font-size-caption': '11px',        // Uppercase-Labels, Hints, dichte Daten
   '--font-size-small': '12px',          // Sekundärtext, Chips, Tabellenzellen
+  // Editorial reading roles; scoped by EditorialPage, without changing tools.
+  '--font-size-editorial-body': '16px',
+  '--font-size-editorial-intro': '18px',
+  '--font-size-editorial-note': '14px',
+  '--font-size-editorial-label': '12px',
   '--font-size-body': '14px',           // Basis: Fließtext, Nav, Fußzeile, Eingabefelder
   '--font-size-lead': '16px',           // Lead/Einleitung, Kartentitel
   // v3 (20.09.2026): h1/h2 taken from the released homepage (48 / 34 px in
@@ -755,6 +760,19 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 
 /** Global reset + animations (shared across all pages) */
 export const globalStyles = `
+/* Shared secondary action feedback across links and buttons. */
+:is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit){transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.sc-feature-action svg{transition:transform .2s ease}
+@media(hover:hover){
+ :is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit):not(:disabled):hover{background:var(--color-cta)!important;color:var(--color-cta-ink)!important;border-color:var(--color-cta)!important}
+ .sc-feature-action:hover svg{transform:translateX(4px)}
+}
+:is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit):focus-visible{outline:2px solid var(--color-text-primary);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+ :is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit),.sc-feature-action svg{transition:none}
+ .sc-feature-action:hover svg{transform:none}
+}
+
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
   /* Überschriften tragen die Display-Schrift — EINE Regel statt einer

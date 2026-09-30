@@ -5,7 +5,7 @@ import { iconSizes } from "../lib/theme";
 import "./result-choice-header.css";
 
 /** Shared calculation selection for scenarios and product offers. */
-export default function ResultChoiceHeader({title,children,selected,onSelect,onRemove,onEdit,actionLabel,illustration,illustrationDecorated=false,editSelected=false,neutral=false,onApply,applyLabel="Übernehmen",className="",surface,clickHint=false}:{title:string;children:ReactNode;selected:boolean;onSelect?:()=>void;onRemove?:()=>void;onEdit?:()=>void;actionLabel?:string;illustration?:string;illustrationDecorated?:boolean;editSelected?:boolean;neutral?:boolean;onApply?:()=>void;applyLabel?:string;className?:string;surface?:"white";clickHint?:boolean}) {
+export default function ResultChoiceHeader({title,children,selected,onSelect,onRemove,onEdit,actionLabel,illustration,illustrationDecorated=false,editSelected=false,neutral=false,onApply,applyLabel="Übernehmen",className="",surface,clickHint=false,wholeCard=false}:{title:string;children:ReactNode;selected:boolean;onSelect?:()=>void;onRemove?:()=>void;onEdit?:()=>void;actionLabel?:string;illustration?:string;illustrationDecorated?:boolean;editSelected?:boolean;neutral?:boolean;onApply?:()=>void;applyLabel?:string;className?:string;surface?:"white";clickHint?:boolean;wholeCard?:boolean}) {
   const header = useRef<HTMLElement>(null);
   const [showHint, setShowHint] = useState(false);
   useEffect(() => {
@@ -19,7 +19,10 @@ export default function ResultChoiceHeader({title,children,selected,onSelect,onR
     observer.observe(header.current);
     return () => observer.disconnect();
   }, [clickHint]);
-  return <><header ref={header} className={`sc-result-choice-header ${className}`} data-selected={selected} data-neutral={neutral} data-surface={surface}>
+  return <><header ref={header} className={`sc-result-choice-header ${className}`} data-whole-card={wholeCard && !!onSelect} onClick={wholeCard ? event => {
+      if ((event.target as HTMLElement).closest("button, a, input, select, textarea")) return;
+      if (!selected || editSelected) { setShowHint(false); onSelect?.(); }
+    } : undefined} data-selected={selected} data-neutral={neutral} data-surface={surface}>
     {illustration && (illustrationDecorated ? <span className="sc-result-choice-art" aria-hidden="true"><img className="sc-result-choice-illustration" src={illustration} alt="" width={160} height={160}/></span> : <img className="sc-result-choice-illustration" src={illustration} alt="" width={96} height={96}/>)}
     <div><strong>{title}</strong><span>{children}</span>{selected && onEdit && <div className="sc-result-choice-controls"><button type="button" className="sc-result-choice-edit" aria-label={`${title}: Angaben bearbeiten`} onClick={onEdit}>Bearbeiten</button>{onRemove && <span className="sc-result-choice-remove-label" aria-hidden="true">Entfernen</span>}</div>}</div>
     {(selected || onSelect) && <button type="button" className="sc-result-choice-action" data-removable={selected && !!onRemove} aria-pressed={selected}

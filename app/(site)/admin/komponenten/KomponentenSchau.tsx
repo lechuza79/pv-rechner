@@ -53,6 +53,9 @@ import type { TiltOrientation } from "../../../../lib/tilt-config";
 import CiteModal from "../../../../components/CiteModal";
 import ChartExportBar from "../../../../components/ChartExportBar";
 import { WIDGETS } from "../../../../lib/widget-registry";
+import EditorialPage from "../../../../components/EditorialPage";
+import ExampleCard from "../../../../components/ExampleCard";
+import ContentTable from "../../../../components/ContentTable";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import ContactPerson from "../../../../components/ContactPerson";
 import Faq from "../../../../components/Faq";
@@ -872,6 +875,17 @@ const BEISPIELE: Record<string, Beispiel> = {
         ]}
       />
     </div>
+  ),
+  ExampleCard: () => <><link rel="stylesheet" href="/design-system/feature-card.css" /><ExampleCard title="10 kWp" motif="house"><p>Beispielanlage mit transparenten Annahmen.</p></ExampleCard></>,
+  EditorialPage: () => <EditorialPage><h2>Nachschlagen und verstehen</h2><p>Eine gemeinsame Schrift für redaktionelle Inhalte und Zahlen.</p></EditorialPage>,
+  ContentTable: () => (
+    <ContentTable caption="Beispielwerte in kWh" minWidth={420}>
+      <thead><tr><th scope="col">Zeitraum</th><th scope="col">Anlage A</th><th scope="col">Anlage B</th></tr></thead>
+      <tbody>
+        <tr data-current><th scope="row">Aktuell</th><td>1.250</td><td>960</td></tr>
+        <tr><th scope="row">Vorher</th><td>1.100</td><td>870</td></tr>
+      </tbody>
+    </ContentTable>
   ),
   ArticleMeta: () => (
     <ArticleMeta

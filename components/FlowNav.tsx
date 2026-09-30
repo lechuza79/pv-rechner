@@ -5,6 +5,17 @@ import { useEffect, useState } from "react";
 import { v } from "../lib/theme";
 import { ModalSticky } from "./Modal";
 
+export const secondaryButtonStyle = {
+  padding: "10px 20px",
+  borderRadius: v("--radius-pill"),
+  fontSize: v("--font-size-body"),
+  fontWeight: 600,
+  background: "transparent",
+  border: `1px solid ${v("--color-border-muted")}`,
+  color: v("--color-text-secondary"),
+  cursor: "pointer",
+} as const;
+
 /**
  * DER Interaktions-Standard für Flow-Schritte (Betreiber-Vorgabe 05.08.2026):
  *
@@ -63,6 +74,7 @@ export function flowSelect(next: () => void) {
  */
 export default function FlowNav({
   weiterAktiv,
+  centered = false,
   onWeiter,
   onZurueck,
   weiterLabel = "Weiter",
@@ -73,6 +85,7 @@ export default function FlowNav({
   onInaktivKlick,
 }: {
   weiterAktiv: boolean;
+  centered?: boolean;
   onWeiter: () => void;
   onZurueck?: () => void;
   weiterLabel?: string;
@@ -122,27 +135,18 @@ export default function FlowNav({
         diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
         Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
         deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein. */}
-    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
+    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: centered ? "center" : "space-between" }}>
       {zurueckSichtbar && onZurueck && (
         <button
           type="button"
           onClick={onZurueck}
-          style={{
-            padding: "10px 20px",
-            borderRadius: v("--radius-pill"),
-            fontSize: v("--font-size-body"),
-            fontWeight: 600,
-            background: "transparent",
-            border: `1px solid ${v("--color-border-muted")}`,
-            color: v("--color-text-secondary"),
-            cursor: "pointer",
-          }}
+          className="sc-button-secondary" style={secondaryButtonStyle}
         >
           {zurueckLabel}
         </button>
       )}
       {/* Rechte Gruppe: Weiter (immer ganz rechts), optionale Sekundär-Aktion darunter. */}
-      <span style={{ marginLeft: "auto", display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: 8, position: "relative" }}>
+      <span style={{ marginLeft: centered ? 0 : "auto", display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: 8, position: "relative" }}>
         {!weiterAktiv && hintSichtbar && (
           <span
             role="tooltip"

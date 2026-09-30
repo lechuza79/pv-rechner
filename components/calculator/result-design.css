@@ -280,7 +280,7 @@ body .wp-product-name{font-family:var(--result-font-heading)!important;font-size
 body .wp-product-badge{display:inline-block;border-radius:var(--radius-sm);padding:5px 8px;background:var(--color-bg-muted);color:var(--color-text-primary);font:var(--result-weight-strong) var(--result-type-caption)/1.4 var(--result-font-body)}
 body .wp-product-extras{display:block;margin-bottom:4px}
 body #wp-geraete>div,body .wp-product-trust>span,body .wp-product-trust>span>span{min-width:0}
-body .wp-product-disclosure{overflow-wrap:anywhere}
+body .wp-product-disclosure{hyphens:auto;overflow-wrap:break-word}
 body #wp-geraete>div:not(.wp-section-heading){grid-template-columns:minmax(0,1fr)}
 body .wp-product-trust{min-width:0}
 body .wp-building-comparison-note details a{color:var(--color-text-primary);text-decoration:underline}
@@ -843,7 +843,17 @@ body .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is
 
 .wp-result-actionbar[data-sticky=false]{position:relative;top:auto}
 
-/* Compact settings for standalone editorial examples. */
-.wp-result-settings-basis{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-sm) var(--space-lg);margin-block:var(--space-xl);font-size:var(--font-size-small)}
-.wp-result-settings-basis p{flex:1 1 240px;margin:0}
-body .wp-result-settings-basis .wp-result-details-link{color:var(--color-text-primary);font-size:inherit;margin:0}
+/* Basis values and editing action form one reusable embed header. */
+.wp-result-settings-basis{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--space-xl);margin-block:var(--space-xl);font-size:var(--font-size-small)}
+.wp-result-settings-basis p{margin:0}
+.wp-result-settings-basis dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;min-width:0}
+.wp-result-settings-basis dl>div{min-width:0;padding-inline:12px;border-inline-start:1px solid var(--color-border)}
+.wp-result-settings-basis dl>div:first-child{padding-inline-start:0;border:0}
+.wp-result-settings-basis dt{color:var(--color-text-muted);margin-bottom:calc(var(--space-xl)/4);hyphens:auto;overflow-wrap:break-word}
+.wp-result-settings-basis dd{margin:0;color:var(--color-text-primary);font-weight:600;line-height:1.5}
+@media(max-width:640px){
+ .wp-result-settings-edit{width:44px;height:44px;padding:10px!important;justify-content:center}
+ .wp-result-settings-edit span{display:none}
+ .wp-result-settings-basis{gap:8px}
+ .wp-result-settings-basis dl>div{padding-inline:8px}
+}
