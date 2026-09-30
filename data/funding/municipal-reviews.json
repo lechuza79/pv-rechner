@@ -76730,5 +76730,428 @@
         "evidenceUrl": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php"
       }
     ]
+  },
+  {
+    "regionId": "01003000",
+    "name": "Lübeck",
+    "checkedAt": "2026-09-30T06:10:00Z",
+    "recheckAt": "2026-10-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Hansestadt Lübeck: kein pauschaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gründachförderung zahlt einen Zuschlag von 10 €/m² für PV-Befestigungen nur auf einem geförderten Solar-Gründach (Begrünungsprogramm, kein PV-Zuschuss). Der Klimafonds „Wir für die Zukunft“ ist eine Projektförderung nach Beiratsempfehlung und Ermessen (Fehlbedarfsfinanzierung, bis 90 %, max. 100.000 € je Projekt); Nr. 3.6 nennt PV-Anlagen von Privatpersonen ausdrücklich als mögliche Einzelmaßnahme (gedeckelt auf 15 % des Fondsvolumens), Nr. 3.4 schließt Investitionen aber von den zuwendungsfähigen Ausgaben aus. Ob Privathaushalte darüber PV oder Balkonkraftwerke bezuschusst bekommen, ist aus der Richtlinie nicht eindeutig; Rückfrage vorgemerkt, nichts in den Katalog aufgenommen.",
+    "searches": [
+      "luebeck.de Klima-Rubrik am 30.09.2026 gelesen: Solarenergie, Energie & Bau, Klimafonds, Gründachförderung",
+      "Förderrichtlinie Gründach (luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf) gelesen: Tabelle 2 „Befestigungen von PV-Anlagen 50 % / 10,00 Euro“ je m² Gründach",
+      "Förderrichtlinie Klimafonds (luebeck.de/file/foerderrichtlinie-klimafonds.pdf) gelesen, Nr. 3.1–3.6, 4, 6.3",
+      "Websuche „Hansestadt Lübeck Förderung Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss 2026“: nur Portale; laut Portal Balkonförderung 2023–2025 ausgelaufen, amtlich nicht gefunden; Stadtwerke-Angebot ist kein kommunaler Zuschuss",
+      "Website-Suche luebeck.de: Suchseite liefert ohne JavaScript keine Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.luebeck.de/file/foerderrichtlinie-klimafonds.pdf",
+        "finding": "30.09.2026: „3.6 Die Förderung von Einzelmaßnahmen für Privatpersonen ist beschränkt auf max. 15% des Fondsvolumens zum Quartalsende. Einzelmaßnahmen sind z.B. PV-Anlagen“; 3.4: „notwendige projektbezogene Sach-, Material und Personalkosten – nicht jedoch Investitionen“."
+      },
+      {
+        "url": "https://www.luebeck.de/de/stadtentwicklung/klima/klimafonds/klimafonds",
+        "finding": "30.09.2026: „Ihre Projektidee könnte mit bis zu 90% gefördert werden“; nächste Beiratssitzung Mitte Dezember 2026, Anträge bis 29.11.2026; Kontakt klimafonds@luebeck.de."
+      },
+      {
+        "url": "https://www.luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf",
+        "finding": "30.09.2026: „Förderzuschlag in Höhe von 10,00 Euro/m² für den Mehraufwand durch Befestigungen von Anlagen für solare Energiegewinnung (PV) bei einem Solar-Gründach“."
+      },
+      {
+        "url": "https://www.luebeck.de/de/rathaus/verwaltung/gebaeudemanagement/gefoerderte-klimaschutzprojekte",
+        "finding": "30.09.2026: „Mit der Kommunalrichtlinie fördert das Bundesumweltministerium seit 2008 den kommunalen Klimaschutz“ — Projekte an städtischen Gebäuden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.luebeck.de/de/rathaus/verwaltung/frauenbuero/aufgaben-und-ziele/frauenfoerderung-im-oeffentlichen-dienst/frauenfoerderung-im-oeffentlichen-dienst",
+        "finding": "30.09.2026: Frauenförderung in der Stadtverwaltung (Rahmenplan, Gleichstellungsgesetz), kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "luebeck.de/de/stadtentwicklung/klima/anpassung-an-den-klimawandel/gruendachpotentialkataster/gruendachfoerderung",
+        "disposition": "reviewed",
+        "reason": "Gründachförderung; PV nur als Befestigungszuschlag auf ein gefördertes Gründach, kein PV-Zuschuss.",
+        "evidenceUrl": "https://www.luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf"
+      },
+      {
+        "url": "luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gründachförderung, Tabelle 2 gelesen.",
+        "evidenceUrl": "https://www.luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf"
+      },
+      {
+        "url": "luebeck.de/file/hl_flyer_gru_ndachfo_rderung_web.pdf",
+        "disposition": "replaced",
+        "reason": "Flyer zu derselben Gründachförderung; durch die gelesene Richtlinie abgedeckt.",
+        "evidenceUrl": "https://www.luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf"
+      },
+      {
+        "url": "luebeck.de/gruendachfoerderung/antrag",
+        "disposition": "replaced",
+        "reason": "Antragsweg derselben Gründachförderung; durch die gelesene Richtlinie abgedeckt.",
+        "evidenceUrl": "https://www.luebeck.de/file/foerderrichtlinie_gruendach_hansestadt_luebeck.pdf"
+      },
+      {
+        "url": "luebeck.de/de/rathaus/verwaltung/gebaeudemanagement/gefoerderte-klimaschutzprojekte",
+        "disposition": "reviewed",
+        "reason": "Förderprojekte an städtischen Gebäuden (Gebäudemanagement), kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.luebeck.de/de/rathaus/verwaltung/gebaeudemanagement/gefoerderte-klimaschutzprojekte"
+      },
+      {
+        "url": "luebeck.de/de/rathaus/verwaltung/frauenbuero/aufgaben-und-ziele/frauenfoerderung-im-oeffentlichen-dienst/frauenfoerderung-im-oeffentlichen-dienst",
+        "disposition": "reviewed",
+        "reason": "Frauenförderung im öffentlichen Dienst, kein Energieprogramm.",
+        "evidenceUrl": "https://www.luebeck.de/de/rathaus/verwaltung/frauenbuero/aufgaben-und-ziele/frauenfoerderung-im-oeffentlichen-dienst/frauenfoerderung-im-oeffentlichen-dienst"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-14T08:00:00Z",
+      "detail": "Beim Klimafonds der Hansestadt Lübeck erfragen, ob Privathaushalte über den Klimafonds Zuschüsse für eigene PV-Anlagen, Batteriespeicher oder Balkonkraftwerke erhalten können und wie Nr. 3.4 (keine Investitionen) und Nr. 3.6 (PV-Anlagen als Einzelmaßnahme) zusammenpassen."
+    },
+    "enquiry": {
+      "id": "klaerung-01003000",
+      "recipient": "klimafonds@luebeck.de",
+      "recipientSource": "https://www.luebeck.de/de/stadtentwicklung/klima/klimafonds/klimafonds",
+      "website": "https://www.luebeck.de/de/stadtentwicklung/klima/klimafonds/klimafonds",
+      "question": "Die Förderrichtlinie des Lübecker Klimafonds nennt in Nr. 3.6 PV-Anlagen als mögliche Einzelmaßnahme für Privatpersonen, schließt in Nr. 3.4 aber Investitionen von den zuwendungsfähigen Ausgaben aus. Können Privathaushalte über den Klimafonds einen Zuschuss für eine eigene Photovoltaikanlage, einen Batteriespeicher oder ein Balkonkraftwerk erhalten — und falls ja, nach welchen Sätzen oder Obergrenzen?"
+    }
+  },
+  {
+    "regionId": "01051003",
+    "name": "Averlak",
+    "checkedAt": "2026-09-30T06:14:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Averlak (Amt Burg-St. Michaelisdonn): kein gemeindlicher oder amtlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite beim Amt nennt keine Förderung; das Amt führt keine Klima- oder Förderrubrik (Menü: Regionales, Bürgerservice & Politik, Kommunale Wärmeplanung). Die sechs gefundenen Förderseiten sind Einträge des landesweiten Zuständigkeitsfinders (Landes-Balkonprogramm, Unternehmens- und Kommunalförderung), keine Programme der Gemeinde.",
+    "searches": [
+      "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Averlak/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
+      "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
+      "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Averlak/",
+        "finding": "30.09.2026: Gemeindeseite Averlak ohne jede Förder- oder Zuschussangabe."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "finding": "30.09.2026: „Weiterleitungsdienst: Deep-Link zum Ursprungsportal Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“ — Landesverfahren, kein Amtsprogramm."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Zuständigkeitsfinder-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“ — Förderung für Kommunen, nicht für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders („Weiterleitungsdienst: Deep-Link zum Ursprungsportal“) zum Landesprogramm Schleswig-Holstein, kein Amts- oder Gemeindeprogramm.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landes-Zuständigkeitsfinder: Förderung für Kommunen selbst, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01051010",
+    "name": "Brickeln",
+    "checkedAt": "2026-09-30T06:14:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Brickeln (Amt Burg-St. Michaelisdonn): kein gemeindlicher oder amtlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite beim Amt nennt keine Förderung; das Amt führt keine Klima- oder Förderrubrik (Menü: Regionales, Bürgerservice & Politik, Kommunale Wärmeplanung). Die sechs gefundenen Förderseiten sind Einträge des landesweiten Zuständigkeitsfinders (Landes-Balkonprogramm, Unternehmens- und Kommunalförderung), keine Programme der Gemeinde.",
+    "searches": [
+      "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Brickeln/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
+      "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
+      "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Brickeln/",
+        "finding": "30.09.2026: Gemeindeseite Brickeln ohne jede Förder- oder Zuschussangabe."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "finding": "30.09.2026: „Weiterleitungsdienst: Deep-Link zum Ursprungsportal Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“ — Landesverfahren, kein Amtsprogramm."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Zuständigkeitsfinder-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“ — Förderung für Kommunen, nicht für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders („Weiterleitungsdienst: Deep-Link zum Ursprungsportal“) zum Landesprogramm Schleswig-Holstein, kein Amts- oder Gemeindeprogramm.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landes-Zuständigkeitsfinder: Förderung für Kommunen selbst, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01051016",
+    "name": "Burg (Dithm.)",
+    "checkedAt": "2026-09-30T06:14:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Burg (Dithm.) (Amt Burg-St. Michaelisdonn): kein gemeindlicher oder amtlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite beim Amt nennt keine Förderung; das Amt führt keine Klima- oder Förderrubrik (Menü: Regionales, Bürgerservice & Politik, Kommunale Wärmeplanung). Die sechs gefundenen Förderseiten sind Einträge des landesweiten Zuständigkeitsfinders (Landes-Balkonprogramm, Unternehmens- und Kommunalförderung), keine Programme der Gemeinde.",
+    "searches": [
+      "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Burg-Dithm-/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
+      "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
+      "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Burg-Dithm-/",
+        "finding": "30.09.2026: Gemeindeseite Burg (Dithm.) ohne jede Förder- oder Zuschussangabe."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "finding": "30.09.2026: „Weiterleitungsdienst: Deep-Link zum Ursprungsportal Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“ — Landesverfahren, kein Amtsprogramm."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Zuständigkeitsfinder-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“ — Förderung für Kommunen, nicht für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders („Weiterleitungsdienst: Deep-Link zum Ursprungsportal“) zum Landesprogramm Schleswig-Holstein, kein Amts- oder Gemeindeprogramm.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landes-Zuständigkeitsfinder: Förderung für Kommunen selbst, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01051051",
+    "name": "Hochdonn",
+    "checkedAt": "2026-09-30T06:14:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Hochdonn (Amt Burg-St. Michaelisdonn): kein gemeindlicher oder amtlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite beim Amt nennt keine Förderung; das Amt führt keine Klima- oder Förderrubrik (Menü: Regionales, Bürgerservice & Politik, Kommunale Wärmeplanung). Die sechs gefundenen Förderseiten sind Einträge des landesweiten Zuständigkeitsfinders (Landes-Balkonprogramm, Unternehmens- und Kommunalförderung), keine Programme der Gemeinde.",
+    "searches": [
+      "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Hochdonn/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
+      "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
+      "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Hochdonn/",
+        "finding": "30.09.2026: Gemeindeseite Hochdonn ohne jede Förder- oder Zuschussangabe."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "finding": "30.09.2026: „Weiterleitungsdienst: Deep-Link zum Ursprungsportal Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“ — Landesverfahren, kein Amtsprogramm."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Zuständigkeitsfinder-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“ — Förderung für Kommunen, nicht für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders („Weiterleitungsdienst: Deep-Link zum Ursprungsportal“) zum Landesprogramm Schleswig-Holstein, kein Amts- oder Gemeindeprogramm.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landes-Zuständigkeitsfinder: Förderung für Kommunen selbst, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01051089",
+    "name": "Quickborn",
+    "checkedAt": "2026-09-30T06:14:00Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gemeinde Quickborn (Amt Burg-St. Michaelisdonn): kein gemeindlicher oder amtlicher Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite beim Amt nennt keine Förderung; das Amt führt keine Klima- oder Förderrubrik (Menü: Regionales, Bürgerservice & Politik, Kommunale Wärmeplanung). Die sechs gefundenen Förderseiten sind Einträge des landesweiten Zuständigkeitsfinders (Landes-Balkonprogramm, Unternehmens- und Kommunalförderung), keine Programme der Gemeinde.",
+    "searches": [
+      "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Quickborn/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
+      "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
+      "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Quickborn/",
+        "finding": "30.09.2026: Gemeindeseite Quickborn ohne jede Förder- oder Zuschussangabe."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "finding": "30.09.2026: „Weiterleitungsdienst: Deep-Link zum Ursprungsportal Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“ — Landesverfahren, kein Amtsprogramm."
+      },
+      {
+        "url": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "30.09.2026: Zuständigkeitsfinder-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“ — Förderung für Kommunen, nicht für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders („Weiterleitungsdienst: Deep-Link zum Ursprungsportal“) zum Landesprogramm Schleswig-Holstein, kein Amts- oder Gemeindeprogramm.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landes-Zuständigkeitsfinder: Förderung für Kommunen selbst, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
+      },
+      {
+        "url": "amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des landesweiten Zuständigkeitsfinders (Unternehmens-, Heizkosten- bzw. Landesförderung), kein Amts- oder Gemeindeprogramm für Privathaushalte; beim Quellen-Screening bereits als keine Förderung gelesen.",
+        "evidenceUrl": "https://www.amt-burg-st-michaelisdonn.de/B%C3%BCrgerservice-Politik/Verwaltung-B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+      }
+    ]
   }
 ]

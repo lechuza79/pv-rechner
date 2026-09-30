@@ -610,7 +610,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   01.12.2026, kein Quotengesetz, keine Änderung an § 43. Einziger neuer
   //   Bundestagsvorgang ist eine Kleine Anfrage (BT-Drs. 21/7563), kein
   //   Gesetzgebungsschritt. Bioheizöl erneut ohne Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-09-27",
+  // 30.09.2026: § 42a und § 43 GModG auf gesetze-im-internet.de (BMJ) im
+  //   Wortlaut gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43
+  //   Stufen 10/15/30/60 % (2029/2030/2035/2040) zellgleich mit
+  //   BIO_TREPPE_STUFEN. Bioheizöl-Suche ohne Trägerquelle mit Preisreihe.
+  geprueftRechtIso: "2026-09-30",
   reviewBy: "2027-07-25",
 };
 
