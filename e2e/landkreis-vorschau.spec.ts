@@ -124,16 +124,17 @@ test("district race uses one widget with footer actions and monitor dates live i
   }
   await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
   await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
-  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild','Animation als Video anfragen',/In Ihrem Design.*Anfragen/]);
+  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild',/Video herunterladen.*Downloadlink per E-Mail/,/In Ihrem Design.*Anfragen/]);
   const originalUrl = page.url();
-  await ranking.getByRole('menuitem',{name:'Animation als Video anfragen'}).click();
-  const contact = page.getByRole('dialog',{name:'Kontakt aufnehmen'});
-  await expect(contact).toBeVisible();
-  await expect(contact.getByRole('textbox',{name:'Nachricht',exact:true})).toHaveValue(/Video/);
+  await ranking.getByRole('menuitem',{name:/Video herunterladen/}).click();
+  const video = page.getByRole('dialog',{name:'Video herunterladen'});
+  await expect(video).toBeVisible();
+  await expect(video.getByRole('textbox',{name:'E-Mail-Adresse',exact:true})).toBeVisible();
   await expect(page).toHaveURL(originalUrl);
-  await contact.getByRole('button',{name:'Schließen',exact:true}).click();
+  await video.getByRole('button',{name:'Schließen',exact:true}).click();
   await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
   await ranking.getByRole('menuitem',{name:/In Ihrem Design/}).click();
+  const contact = page.getByRole('dialog',{name:'Kontakt aufnehmen'});
   await expect(contact).toBeVisible();
   await expect(contact.getByRole('textbox',{name:'Nachricht',exact:true})).toHaveValue(/Logo.*Farben/);
   await expect(page).toHaveURL(originalUrl);
@@ -270,4 +271,25 @@ test('without WebGL the district map falls back to the drawn map with every muni
   const regions=await fallback.locator('path[data-region]').count();
   expect(regions).toBeGreaterThanOrEqual(52); // Landkreis Würzburg: 52 municipalities plus context areas
   await expect(page.locator('[data-region-scene]')).toBeHidden();
+});
+
+test('video dialog distinguishes queued, rendering and downloadable without requiring email',async({page})=>{
+  let status: 'queued'|'rendering'|'done'='queued';
+  await page.route('**/api/video-export/berechtigung',r=>r.fulfill({json:{direct:true}}));
+  await page.route('**/api/video-export/betreiber*',r=>r.fulfill({status:r.request().method()==='POST'?202:200,json:r.request().method()==='POST'?{jobId:'test-video'}:{status,progress:36,...(status==='done'?{downloadUrl:'/test-video.mp4'}:{})}}));
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const ranking=page.locator('#atlas-ranking');
+  await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
+  await ranking.getByRole('menuitem',{name:/Video herunterladen/}).click();
+  const dialog=page.getByRole('dialog',{name:'Video herunterladen'});
+  await dialog.getByRole('button',{name:'Video erstellen',exact:true}).click();
+  await expect(dialog.getByRole('status')).toHaveText('Wartet auf Start');
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0);
+  await expect(dialog).toContainText('erscheint hier der Downloadbutton');
+  await expect(dialog.getByRole('button',{name:'Downloadlink zusätzlich per E-Mail'})).toBeVisible();
+  status='rendering';
+  await expect(dialog.getByRole('progressbar')).toHaveAttribute('value','36',{timeout:10000});
+  status='done';
+  await expect(dialog.getByRole('link',{name:'Video herunterladen',exact:true})).toHaveAttribute('href','/test-video.mp4',{timeout:10000});
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0);
 });
