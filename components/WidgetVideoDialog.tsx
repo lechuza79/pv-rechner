@@ -35,11 +35,11 @@ export default function WidgetVideoDialog({ open, onClose, label, period, place,
   }, [videoParams?.widget, videoParams?.ags]);
   async function startDirect() {
     if (!videoParams || directStatus) return;
-    setError(""); setDirectStatus("Video wird vorbereitet …");
+    setError(""); setProgress(null); setDirectStatus("Auftrag wird übermittelt …");
     const controller = new AbortController(); polling.current = controller;
     try {
       const jobId = await requestWidgetVideoAsOperator(videoParams);
-      const result = await pollWidgetVideo(jobId, {signal:controller.signal, onStatus:job => { setProgress(job.status === "rendering" ? job.progress ?? 0 : null); setDirectStatus(job.status === "rendering" ? "Video wird erstellt …" : "Video wartet auf die Erstellung …"); }});
+      const result = await pollWidgetVideo(jobId, {signal:controller.signal, onStatus:job => { setProgress(job.status === "rendering" ? job.progress ?? 0 : null); setDirectStatus(job.status === "rendering" ? "Video wird erstellt" : "Wartet auf Start"); }});
       if (result.status !== "done" || !result.downloadUrl) throw new Error("render failed");
       setDownloadUrl(result.downloadUrl); setDirectStatus(null);
     } catch (e) {
@@ -85,16 +85,16 @@ export default function WidgetVideoDialog({ open, onClose, label, period, place,
       {direct === null ? <p role="status" aria-live="polite">Wird geladen …</p> : direct ? <div>
         {!directStatus && <p>{downloadUrl ? "Ihr Video ist fertig." : "Erstellen Sie das Video als MP4. Sobald es fertig ist, können Sie es hier herunterladen."}</p>}
         {directStatus && <>
-          <div className={styles.progressHeader}><span>{progress === null ? "In Vorbereitung" : "Video wird erstellt"}</span>{progress !== null && <span>{progress} %</span>}</div>
-          <progress className={styles.progress} max={100} value={progress ?? undefined} aria-label="Fortschritt der Videoerstellung" />
-          <p className={styles.closeHint}>Sie können dieses Fenster schließen. Das Video wird im Hintergrund fertiggestellt.</p>
+          <div className={styles.progressHeader}><span className={styles.progressStatus} role="status"><span className={styles.spinner} aria-hidden="true" />{directStatus}</span>{progress !== null && <span>{progress} %</span>}</div>
+          {progress !== null && <progress className={styles.progress} max={100} value={progress} aria-label="Fortschritt der Videoerstellung" />}
+          <p className={styles.closeHint}>{directStatus === "Wartet auf Start" ? "Ihr Auftrag ist gespeichert. Die Erstellung startet automatisch. " : ""}Sobald das Video fertig ist, erscheint hier der Downloadbutton.</p>
           {onRequest && (state === "sent" ? <p role="status">Bitte bestätigen Sie den Link in Ihrer E-Mail. Danach erhalten Sie den Downloadlink, sobald das Video fertig ist.</p> : notify ? <form onSubmit={submit}>
             <label htmlFor={id}>E-Mail-Adresse</label>
             <input id={id} type="email" autoComplete="email" required maxLength={254} placeholder="name@beispiel.de" value={email} onChange={event => setEmail(event.target.value)} disabled={state === "sending"} />
             <p className={styles.closeHint}>Einmal bestätigen, dann kommt der Downloadlink per E-Mail.</p>
-            <button className={styles.secondary} type="submit" disabled={state === "sending"}>{state === "sending" ? "Wird gesendet …" : "Benachrichtigung anfordern"}</button>
+            <button className={styles.secondary} type="submit" disabled={state === "sending"}>{state === "sending" ? "Wird gesendet …" : "Downloadlink per E-Mail anfordern"}</button>
             <p className={styles.note}><a href="/datenschutz" target="_top">Datenschutz</a></p>
-          </form> : <button type="button" className={styles.secondary} onClick={() => setNotify(true)}>Per E-Mail benachrichtigen</button>)}
+          </form> : <><p className={styles.closeHint}>Nicht warten? Lassen Sie sich den Downloadlink zusätzlich per E-Mail schicken. Danach können Sie dieses Fenster schließen.</p><button type="button" className={styles.secondary} onClick={() => setNotify(true)}>Downloadlink zusätzlich per E-Mail</button></>)}
         </>}
         {error && <p role="alert">{error}</p>}
         <ModalSticky>{downloadUrl ? <a className={styles.submit} href={downloadUrl} download>Video herunterladen</a> : directStatus ? <button className={styles.submit} onClick={onClose}>Fenster schließen</button> : <button className={styles.submit} onClick={startDirect}>Video erstellen</button>}</ModalSticky>
