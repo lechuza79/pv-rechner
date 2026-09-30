@@ -1,4 +1,5 @@
 "use client";
+import { RESULT_SAVINGS_IMAGE } from "./result-assets";
 import type { ReactNode, RefObject } from "react";
 import { IconPlus, IconSettings } from "../Icons";
 import { iconSizes, tokens } from "../../lib/theme";
@@ -17,7 +18,7 @@ export default function ResultOverview({ id, saving, years, scenarioLabel, onSce
         <span className="wp-result-label-copy"><strong>{saving >= 0 ? "Einsparungen" : "Mehrkosten"} über {years} Jahre</strong> mit <button type="button" className="wp-assumptions-trigger" onClick={onScenario}>{scenarioLabel}</button></span>
         <div className="wp-result-tools"><button type="button" className="wp-result-details-link" onClick={onDetails}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" onClick={onSettings}><IconSettings size={iconSizes.xl} /></button></div>
       </div></div>
-      <div className="wp-profit-comparison"><span className="wp-profit-illustration" aria-hidden="true"><img src="/illustrations/funding-check-neon.svg" alt="" width={1024} height={1024} /></span><div className="wp-profit-content"><div className="wp-profit-row">
+      <div className="wp-profit-comparison"><span className="wp-profit-illustration" aria-hidden="true"><img src={RESULT_SAVINGS_IMAGE} alt="" width={640} height={640} loading="eager" fetchPriority="high" /></span><div className="wp-profit-content"><div className="wp-profit-row">
         <div className="wp-profit-amount"><div ref={anchor} className="wp-result-value">{saving > 0 && <span className="wp-result-plus" style={{ color: tokens["--color-positive"] }} aria-label="Plus"><IconPlus size={iconSizes.md} /></span>}<span className="wp-result-count"><span className="wp-result-count-space" aria-hidden="true">{Math.abs(saving).toLocaleString("de-DE")}</span><span className="wp-result-count-live">{Math.round(Math.abs(saving) * progress).toLocaleString("de-DE")}</span></span> <span className="wp-result-currency">€</span></div><div className="wp-reference-inline"><span>vs. ausschließlich Netzstrom</span></div></div>{control}
       </div></div></div>{children}
     </div></div><div className="wp-result-chart">{chart}</div></div>

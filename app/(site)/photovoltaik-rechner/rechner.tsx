@@ -1,4 +1,5 @@
 "use client";
+import MetricValue from "../../../components/MetricValue";
 import CalculatorContent from "../../../components/calculator/CalculatorContent";
 
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
@@ -1120,7 +1121,7 @@ export default function PVRechner({
               </div>
             )}
 
-            <div style={{ marginTop: 24 }}>
+            <div className="wp-flow-footer">
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Berechnen" : "Weiter"}
@@ -1160,16 +1161,23 @@ export default function PVRechner({
 
         {isResult && (
           <div className="wp-ergebnis wp-result-main">
+            <section className="pv-result-recommendation">
+              <div className="pv-result-plant-visual"><img className="pv-result-plant-illustration" src={`/illustrations/pv-modules-v8/pv-modules-${kwp <= 6 ? "small" : kwp <= 9 ? "8kwp" : kwp <= 12 ? "medium" : "large"}-circle-trimmed.webp`} width={640} height={640} alt="" /></div>
+              <div className="pv-result-recommendation-content">
+                <h2>{empfehlungKontext ? plantAdjusted ? "Deine angepasste Anlage" : "Unsere Empfehlung für dein Zuhause" : "Deine Anlage im Überblick"}</h2>
+                <p className="pv-result-recommendation-note">
+                  {empfehlungKontext && !plantAdjusted ? "Für deinen Bedarf auf Basis aktueller Preise und Forschungsdaten berechnet." : "Berechnet mit deiner gewählten Anlagengröße und den aktuellen Angaben zu Verbrauch, Ertrag und Kosten."}{" "}
+                  <button type="button" className="wp-result-details-link" onClick={() => {setTechnicalOpen(true); requestAnimationFrame(() => document.getElementById("pv-details")?.scrollIntoView({behavior:"smooth"}));}}>Details</button>
+                </p>
+                <div className="pv-result-plant-specs">
+                  <div><span className="pv-result-plant-label">Photovoltaik</span><MetricValue value={kwp} unit="kWp" maximumFractionDigits={2} /></div>
+                  <div><span className="pv-result-plant-label">Speicher</span>{spKwh > 0 ? <MetricValue value={spKwh} unit="kWh" maximumFractionDigits={2} /> : <strong>Ohne Speicher</strong>}</div>
+                </div>
+              </div>
+            </section>
             <ResultOverview id="pv-ueberblick" saving={Math.round(sel.data.total)} years={YEARS}
               scenarioLabel={sel.resultLabel} progress={intro.progress} anchor={intro.anchor} heroRef={resultCardRef}
-              introduction={<div className="pv-result-recommendation">
-                <h2>{empfehlungKontext ? plantAdjusted ? "Deine angepasste Anlage" : "Unsere Empfehlung für deinen Haushalt" : "Deine Anlage im Überblick"}</h2>
-                <div className="pv-result-plant-specs">
-                  <span><strong>{kwp.toLocaleString("de-DE")} kWp</strong> Photovoltaik</span>
-                  <span>{spKwh > 0 ? <><strong>{spKwh.toLocaleString("de-DE")} kWh</strong> Speicher</> : "Ohne Speicher"}</span>
-                  <button type="button" className="wp-result-details-link" onClick={() => {setTechnicalOpen(true); requestAnimationFrame(() => document.getElementById("pv-details")?.scrollIntoView({behavior:"smooth"}));}}>Anlagendetails</button>
-                </div>
-              </div>}
+
               onScenario={() => document.getElementById("pv-prices-trigger")?.click()}
               onDetails={() => setResultDetailsOpen(true)} onSettings={() => document.getElementById("pv-settings-trigger")?.click()}
               chart={<PvResultRace key={resultRevision} result={sel.data} consumption={gesamtVerbrauch} price={oStrom} rate={sel.strom} monthlyConsumption={monthlyConsumption} autoplay={intro.stage === "race"} />}

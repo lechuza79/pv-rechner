@@ -26,3 +26,11 @@
 .compact form > button { flex: 0 0 36px; width: 36px; height: 36px; padding: 0; margin-right: 4px; display: grid; place-items: center; }
 .compact ul, .compact > p { position: absolute; bottom: calc(100% + 16px); right: 0; width: 290px; max-width: calc(100vw - 80px); margin: 0; padding: 8px; border-radius: var(--radius-md); background: var(--result-control, var(--color-bg)); color: var(--result-text, var(--color-text-primary)); box-shadow: var(--shadow-toast); max-height: 40dvh; overflow-y: auto; }
 .compact li button { margin: 0; }
+
+/* A field surface always owns its matching foreground and border roles. */
+.flow { --location-fill:var(--result-panel); --location-ink:var(--result-text); --location-muted:var(--result-muted); --location-rule:var(--result-rule); margin:0; }
+.flow form { flex-direction:row; flex-wrap:wrap; gap:8px; }
+.flow input { min-width:100px; background:var(--location-fill); color:var(--location-ink); border-color:var(--location-rule); font-size:var(--font-size-body); }
+.flow input::placeholder { color:var(--location-muted); }
+.flow button:disabled { opacity:1; background:var(--location-fill); color:var(--location-muted); }
+.flow p { color:var(--color-text-secondary); margin:8px 0 0; }

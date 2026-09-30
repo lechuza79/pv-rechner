@@ -76,6 +76,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const [beantwortet, setBeantwortet] = useState<Set<string>>(new Set());
   const markBeantwortet = (key: string) =>
     setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+  const [orientationUnknown, setOrientationUnknown] = useState(false);
   const [orientationId, setOrientationId] = useState<BalkonInputs["orientationId"]>(CFG.defaultOrientation);
   const [presenceId, setPresenceId] = useState<BalkonInputs["presenceId"]>(CFG.defaultPresence);
   const [personen, setPersonen] = useState(1); // Index in PERSONEN (Default: 2 Personen)
@@ -238,7 +239,11 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
     }
 
     const au = q.get("au");
-    if (au && CFG.orientations.some(o => o.id === au)) {
+    if (au === "unknown") {
+      setOrientationUnknown(true);
+      setOrientationId(CFG.defaultOrientation);
+      gesetzt.push("ausrichtung");
+    } else if (au && CFG.orientations.some(o => o.id === au)) {
       setOrientationId(au as BalkonInputs["orientationId"]);
       gesetzt.push("ausrichtung");
     }
@@ -263,9 +268,11 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
   // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
-  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
+  const rememberedLocation = useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
 
   const onPlzChange = (raw: string) => {
+    ++yieldRequest.current;
+    setPlzLoading(false);
     setPlz(raw.replace(/\D/g, "").slice(0, 5));
     setPlzConfirmed(false);
   };
@@ -437,7 +444,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   };
   const shareUrl = () => {
     const url = new URL(window.location.pathname, window.location.origin);
-    const data = { ...writeBalkonHardware(hardware), pe: String(personen), an: presenceId, au: orientationId, set: effectiveSetId, sp: offer ? (storageOn ? "small" : "none") : active.storageId, years: String(horizonYears), extra: String(additionalCosts), shade: String(shadingLossPercent), sc: scenario,
+    const data = { ...writeBalkonHardware(hardware), pe: String(personen), an: presenceId, au: orientationUnknown ? "unknown" : orientationId, set: effectiveSetId, sp: offer ? (storageOn ? "small" : "none") : active.storageId, years: String(horizonYears), extra: String(additionalCosts), shade: String(shadingLossPercent), sc: scenario,
       offer: offer?.id ?? offerId ?? "", plz, inv: oInvest === null ? "" : String(oInvest), strom: oStrom === null ? "" : String(oStrom), verbrauch: oVerbrauch === null ? "" : String(oVerbrauch), funding: fundingContext.enabled ? "1" : "0", wohnform: fundingContext.wohnform ?? "" };
     Object.entries(data).forEach(([key, value]) => { if (value) url.searchParams.set(key, value); });
     url.hash = "bkw-ueberblick";
@@ -479,7 +486,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
               <div>
-                <AccordionField completedStyle="check" label="Personen im Haushalt" open={activeQuestion === "personen"} answered={beantwortet.has("personen")} summary={`${PERSONEN[personen].label} Personen`} onEdit={() => setEditingQuestion("personen")}>
+                <AccordionField completedStyle="check" label="Personen im Haushalt" open={activeQuestion === "personen"} answered={beantwortet.has("personen")} summary={personen === 0 ? "1 Person" : `${PERSONEN[personen].label} Personen`} onEdit={() => setEditingQuestion("personen")}>
                   <div className="wp-person-options" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12}}>
                     {PERSONEN.map((p,i)=><OptionCard key={p.label} group="personen" choiceIndex={i} selected={beantwortet.has("personen") && personen===i} label={p.label === "1" ? "1 Person" : `${p.label} Personen`} sub="" onClick={()=>{setPersonen(i);setOVerbrauch(null);markBeantwortet("personen");setEditingQuestion(null);}}/>)}
                   </div>
@@ -493,7 +500,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                     sonst unvergütet ins Netz. Das entscheidet auch, ob sich ein Speicher lohnt.
                   </InfoTooltip>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
+                <div className="wp-text-options">
                   {CFG.presence.map((p,i) => (
                     <OptionCard key={p.id} group="anwesenheit" choiceIndex={i} selected={beantwortet.has("anwesenheit") && presenceId === p.id} onClick={() => { setPresenceId(p.id); markBeantwortet("anwesenheit"); setEditingQuestion(null); }} label={p.label} sub={p.sub} />
                   ))}
@@ -502,47 +509,10 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                 </AccordionField>
                 <AccordionField completedStyle="check" label="Standort (optional)" open={activeQuestion === "standort"} answered={plzConfirmed} summary={plz} onEdit={()=>setEditingQuestion("standort")}>
 
-                <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchPvgis(plz); }} style={{ display: "flex", gap: 8 }}>
-                  <input
-                    type="text" inputMode="numeric" aria-label="Postleitzahl"
-                    placeholder="PLZ (z. B. 80331)"
-                    value={plz}
-                    onChange={e => onPlzChange(e.target.value)}
-                    style={{
-                      // `minWidth: 0` ist hier kein Feinschliff, sondern das,
-                      // was die Zeile überhaupt schmaler werden lässt: Ein
-                      // Flex-Kind schrumpft von sich aus nicht unter seine
-                      // Eigenbreite, und ein Eingabefeld bringt die aus seiner
-                      // voreingestellten Zeichenzahl mit — rund 20 Zeichen,
-                      // egal wie schmal das Fenster ist. Zusammen mit dem
-                      // Knopf daneben („Übernehmen", umbruchfrei) brauchte die
-                      // Zeile dadurch 339 px. Auf einem 320-px-Telefon zieht
-                      // der Browser daraufhin die ganze Seite auf 339 px auf,
-                      // und jede Seite des Rechners lässt sich seitwärts
-                      // schieben (gemessen 23.09.2026 auf der Produktion, am
-                      // iPhone-SE-Profil und bei 320 px im Fenster).
-                      flex: 1, minWidth: 0,
-                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
-                      borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
-                      background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
-                    }}
-                  />
-                  <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
-                    border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
-                    color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
-                  }}>
-                    {plzLoading ? "…" : plzConfirmed
-                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
-                      : "Übernehmen"}
-                  </button>
-                </form>
-                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive-text') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
-                  {plzConfirmed
-                    ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
-                    : "Mit deiner PLZ prüfen wir den Ertrag und mögliche Förderung vor Ort. Du kannst sie auch später im Ergebnis ergänzen."}
-                </div>
+                <StandortField variant="flow" label="Postleitzahl" plz={plz} onPlzChange={onPlzChange}
+                  loading={plzLoading} confirmed={plzConfirmed} remembered={rememberedLocation} onSubmit={() => fetchPvgis(plz)}
+                  successMessage={`Für diesen Standort rechnen wir mit ${specificYield} kWh je kWp und Jahr.`}
+                  helpText="Mit deiner PLZ prüfen wir den Ertrag vor Ort. Du kannst sie auch später ergänzen." />
                 </AccordionField>
               </div>
             )}
@@ -551,10 +521,13 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
             {step === 1 && (
               <div>
                 <AccordionField completedStyle="check" label="Wie hängen die Module?" open answered={beantwortet.has("ausrichtung")} onEdit={()=>{}}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+                <div className="wp-text-options">
                   {CFG.orientations.map((o,i) => (
-                    <OptionCard key={o.id} choiceIndex={i} selected={beantwortet.has("ausrichtung") && orientationId === o.id} onClick={() => { setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
+                    <OptionCard key={o.id} choiceIndex={i} selected={beantwortet.has("ausrichtung") && !orientationUnknown && orientationId === o.id} onClick={() => { setOrientationUnknown(false); setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
                   ))}
+                  <OptionCard choiceIndex={CFG.orientations.length} selected={orientationUnknown} label="Weiß noch nicht"
+                    sub="Vorläufig mit Südbalkon, senkrecht am Geländer rechnen"
+                    onClick={() => { setOrientationUnknown(true); setOrientationId(CFG.defaultOrientation); markBeantwortet("ausrichtung"); }} />
                 </div>
                 <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
                   Senkrecht am Geländer bringt gut ein Viertel weniger als flach aufgeständert in Südrichtung — der Winkel ist
@@ -604,6 +577,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
               <StatCard label="Ersparnis im 1. Jahr" value={r.savingPerYear.toLocaleString("de-DE")} unit="€" help="Vermiedene Stromkosten im ersten Jahr. Der Kaufpreis wird bei Amortisation und Gesamtvorteil berücksichtigt." />
               <StatCard label="Autarkie" value={String(Math.round(r.autarky * 100))} unit="%" help="Anteil deines Jahresverbrauchs, den das Balkonkraftwerk selbst deckt." />
             </>}>
+                {orientationUnknown && <p className="wp-pv-preset">Ausrichtung noch offen: Diese Beispielrechnung nimmt einen Südbalkon mit senkrechten Modulen am Geländer an.</p>}
                 <p className="wp-result-summary">{Number.isFinite(r.amortYears) && <>Dein Balkonkraftwerk rechnet sich <strong>nach {r.amortYears.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren</strong>. </>}Über {horizonYears} Jahre zahlst du insgesamt <strong>{Math.abs(r.lifetimeSaving).toLocaleString("de-DE")} € {r.lifetimeSaving >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung{additionalCosts > 0 ? ", zusätzliche Kosten" : ""} und Reststrom sind eingerechnet.</p>
                 {offerReason && <p className="bkw-offer-reason">{offerReason} <a href="#bkw-ertrag" onClick={() => setTechnicalOpen(true)}>Details</a>. {storageHelp}</p>}
                 {offer ? <BalkonProduktTeaser offer={offer} /> : <p className="bkw-offer-price-note">{offerId && "Das geteilte Shopangebot ist aktuell nicht verfügbar. "}{hardware ? "Modellrechnung mit den geteilten Geräteangaben und dem gespeicherten Preis; kein aktuelles Kaufangebot." : "Modellrechnung mit typischen Setgrößen und Modellpreisen; aktuell ist kein passendes Shopangebot zugrunde gelegt."} {storageHelp}</p>}

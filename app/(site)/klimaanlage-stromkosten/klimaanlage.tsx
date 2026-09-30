@@ -1,8 +1,11 @@
 "use client";
+import "../../../components/calculator/result-design.css";
+import StandortField from "../../../components/StandortField";
 import StandortPrompt from "../../../components/StandortPrompt";
+import CalculatorContent from "../../../components/calculator/CalculatorContent";
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import FlowNav from "../../../components/FlowNav";
@@ -158,8 +161,10 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
+  const coolingRequest = useRef(0);
   const fetchCooling = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return false;
+    const request = ++coolingRequest.current;
     setPlzLoading(true);
     try {
       const coords = await coordsForPlz(inputPlz);
@@ -175,7 +180,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
       ]);
       if (!res.ok) return false;
       const data = await res.json();
-      if (![data.avg5, data.lastSummer, data.projection].every(Number.isFinite)) return false;
+      if (request !== coolingRequest.current || ![data.avg5, data.lastSummer, data.projection].every(Number.isFinite)) return false;
       if (typeof data.avg5 === "number") {
         setCdhSet({ avg5: data.avg5, lastSummer: data.lastSummer, projection: data.projection });
         setCdhSource(data.source);
@@ -184,15 +189,17 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
       setPlzConfirmed(true);
       return true;
     } catch { return false; }
-    finally { setPlzLoading(false); }
+    finally { if (request === coolingRequest.current) setPlzLoading(false); }
   }, []);
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
   // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
-  useSharedPlz(plz, (shared) => { setPlz(shared); fetchCooling(shared); });
+  const rememberedLocation = useSharedPlz(plz, (shared) => { setPlz(shared); fetchCooling(shared); });
 
   // PLZ ändern → Bestätigung zurücksetzen (Standort muss erneut übernommen werden)
   const onPlzChange = (raw: string) => {
+    ++coolingRequest.current;
+    setPlzLoading(false);
     setPlz(raw.replace(/\D/g, "").slice(0, 5));
     setPlzConfirmed(false);
   };
@@ -220,9 +227,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const potentialNet = Math.round(result.runningCost * (1 - potentialCoverage));
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
+    <div className="wp-calculator-page wp-input-page" style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <CalculatorTheme />
-      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
+      <CalculatorContent>
         <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus
               belongs to the first question, not the title. */}
@@ -245,7 +252,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
             {/* 0: Gerätetyp */}
             {step === 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+              <div className="wp-text-options">
                 {CFG.devices.map(d => {
                   const aktiv = beantwortet.has("geraet") && deviceId === d.id;
                   return (
@@ -268,7 +275,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   </button>
                   );
                 })}
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
+                <div className="wp-text-options-note" style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
                   Der <GlossaryHint /> sagt, wie effizient gekühlt wird: Ein Split-Gerät zieht für dieselbe Kühlung
                   nur einen Bruchteil des Stroms eines Monoblocks. Wir rechnen für alle drei Typen mit der Effizienz
                   im echten Betrieb, damit der Vergleich fair bleibt — die Zahlen vom Typenschild stehen darunter.
@@ -319,7 +326,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     Auftrag des Umweltbundesamtes (CLIMATE CHANGE 14/2023), S. 27, 177 und 184.
                   </InfoTooltip>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+                <div className="wp-text-options">
                   {CFG.exposureOptions.map(opt => (
                     <OptionCard key={opt.id} group="sonne" selected={beantwortet.has("sonne") && exposure === opt.id} onClick={() => { setExposure(opt.id); markBeantwortet("sonne"); }} label={opt.label} sub={opt.sub} />
                   ))}
@@ -354,51 +361,17 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 </div>
 
                 <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wann läuft die Anlage?</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
+                <div className="wp-text-options">
                   {WINDOWS.map(w => (
                     <OptionCard key={w.id} group="zeitfenster" selected={beantwortet.has("zeitfenster") && window_ === w.id} onClick={() => { setWindow(w.id); markBeantwortet("zeitfenster"); }} label={w.label} sub={w.sub} />
                   ))}
                 </div>
 
                 <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für echte Hitzedaten)</div>
-                <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchCooling(plz); }} style={{ display: "flex", gap: 8 }}>
-                  <input
-                    type="text" inputMode="numeric" aria-label="Postleitzahl"
-                    placeholder="PLZ (z. B. 80331)"
-                    value={plz}
-                    onChange={e => onPlzChange(e.target.value)}
-                    style={{
-                      // Siehe Balkon-Rechner: Ohne `minWidth: 0` schrumpft das
-                      // Feld nicht unter seine voreingestellte Zeichenzahl, und
-                      // die Zeile aus Feld und Knopf braucht 339 px statt 320.
-                      flex: 1, minWidth: 0,
-                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
-                      borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
-                      background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
-                    }}
-                  />
-                  <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
-                    border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-bg-muted') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
-                    color: plzConfirmed ? v('--color-text-muted') : plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
-                  }}>
-                    {plzLoading ? "…" : plzConfirmed
-                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
-                      : "Übernehmen"}
-                  </button>
-                </form>
-                {plzConfirmed ? (
-                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
-                    Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden pro Jahr{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
-                    {heatwave && heatwave.hotDays > 0 && ` Aktuell bis ${heatwave.maxTemp} °C.`}
-                  </div>
-                ) : (
-                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
-                    Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt. Mit PLZ nutzen wir die echten
-                    Sommertemperaturen deines Orts.
-                  </div>
-                )}
+                <StandortField variant="flow" label="Postleitzahl" plz={plz} onPlzChange={onPlzChange}
+                  loading={plzLoading} confirmed={plzConfirmed} remembered={rememberedLocation} onSubmit={() => fetchCooling(plz)}
+                  successMessage={`Für diesen Standort rechnen wir mit ${cdh.toLocaleString("de-DE")} Kühlgradstunden pro Jahr${cdhSource === "fallback" ? " (Durchschnitt)" : ""}.`}
+                  helpText="Optional. Ohne PLZ rechnen wir mit dem deutschen Durchschnitt." />
 
                 <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Hast du eine Solaranlage?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -418,7 +391,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             )}
 
             {/* Nav */}
-            <div style={{ marginTop: 24 }}>
+            <div className="wp-flow-footer">
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
@@ -782,7 +755,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             mindestens bildschirmhoch — ein Absatz darunter stünde hinter einer
             leeren Fläche und würde nie gelesen. */}
         <StandNoteView seite={stand} />
-      </div>
+      </CalculatorContent>
     </div>
   );
 }

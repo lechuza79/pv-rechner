@@ -1,4 +1,5 @@
 "use client";
+import { RESULT_SAVINGS_IMAGE } from "../../../components/calculator/result-assets";
 import CalculatorContent from "../../../components/calculator/CalculatorContent";
 
 import "./result-design.css";
@@ -987,7 +988,7 @@ export default function Waermepumpe({
             {step === 4 && (
               <div>
                 <AccordionField completedStyle="check" label="Heizflächen" open={inputOpen("heizsystem")} answered={beantwortet.has("heizsystem")} summary={HEIZSYSTEM.find(h => h.id === heizsystem)?.label} onEdit={() => toggleInput("heizsystem")}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 18 }}>
+                <div className="wp-text-options">
                   {HEIZSYSTEM.map(h => (
                     <OptionCard key={h.id} group="heizsystem" selected={beantwortet.has("heizsystem") && heizsystem === h.id} onClick={() => { setHeizsystem(h.id as typeof heizsystem); markBeantwortet("heizsystem"); setInputEditing("wptyp"); setInputExpanded(previous => { const next = new Set(previous); next.delete("heizsystem"); return next; }); }} label={h.label} sub={h.sub} />
                   ))}
@@ -1079,7 +1080,7 @@ export default function Waermepumpe({
                 </div>
               </div>
               <div className="wp-profit-comparison">
-                <span className="wp-profit-illustration" aria-hidden="true"><img src="/illustrations/funding-check-neon.svg" alt="" width={1024} height={1024} /></span>
+                <span className="wp-profit-illustration" aria-hidden="true"><img src={RESULT_SAVINGS_IMAGE} alt="" width={640} height={640} loading="eager" fetchPriority="high" /></span>
                 <div className="wp-profit-content">
               <div className="wp-profit-row">
               <div ref={resultIntro.anchor} className="wp-result-value" style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>

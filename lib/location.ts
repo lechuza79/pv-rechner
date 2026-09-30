@@ -110,7 +110,8 @@ export function useLocationLinkChange(): LocationLinkChange | null {
  * Adoption happens in an effect (not a state initialiser) so the server and the
  * first client render agree — storage is not readable during SSR.
  */
-export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): void {
+export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): boolean {
+  const [remembered, setRemembered] = useState<string | null>(null);
   const ownedChange = useRef<LocationLinkChange | null>(null);
   useEffect(() => () => { if (ownedChange.current && linkChange === ownedChange.current) dismissLocationLinkChange(); }, []);
   const adopted = useRef(false);
@@ -130,7 +131,7 @@ export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): void 
       pendingChange.current = { previous: stored, next: fromLink };
     }
     if (plz || params.has("plz")) return;
-    if (stored) cb.current(stored);
+    if (stored) { setRemembered(stored); cb.current(stored); }
   }, [plz]);
 
   useEffect(() => {
@@ -152,4 +153,5 @@ export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): void 
       linkChangeListeners.forEach(listener => listener());
     }
   }, [plz]);
+  return remembered !== null && remembered === plz;
 }

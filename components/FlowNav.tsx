@@ -1,4 +1,6 @@
 "use client";
+import { preload } from "react-dom";
+import { RESULT_SAVINGS_IMAGE } from "./calculator/result-assets";
 import { useEffect, useState } from "react";
 import { v } from "../lib/theme";
 import { ModalSticky } from "./Modal";
@@ -88,6 +90,7 @@ export default function FlowNav({
   // Eigene Sprechblase statt title-Attribut: der native Tooltip erscheint
   // verzögert, nach Klicks oft gar nicht und auf Touch nie. Sichtbar bei
   // Hover auf dem inaktiven Button und nach einem Klickversuch (kurz).
+  preload(RESULT_SAVINGS_IMAGE, { as: "image", fetchPriority: "low" });
   const [hintSichtbar, setHintSichtbar] = useState(false);
 
   // Meldung an den Flow-Läufer: Dieser Schritt reagiert jetzt auf Klicks.

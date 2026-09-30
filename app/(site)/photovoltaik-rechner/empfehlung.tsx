@@ -6,7 +6,7 @@ import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 import "../../../components/calculator/result-design.css";
 import "../../../components/calculator/input-design.css";
 import "./pv-flow.css";
-import { useState, useMemo, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useMemo, useCallback, useEffect, Suspense, type ReactNode } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, NATIONAL_AVG_YIELD, SCENARIOS, type Heizsystem } from "../../../lib/constants";
@@ -48,7 +48,7 @@ const PERS_DEFAULT = 1;     // 2 Personen
 const NUTZ_DEFAULT = 1;     // teils zuhause
 
 // ─── URL-State helpers (resilient: kaputte Werte → fallback) ────────────────
-type SP = ReadonlyURLSearchParams;
+type SP = Pick<ReadonlyURLSearchParams, "get">;
 function parseSlug(sp: SP, key: string, slugs: readonly string[], fallback: number): number {
   const raw = sp.get(key);
   if (raw == null) return fallback;
@@ -92,15 +92,7 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, "consumer-wp", "consumer-ea", "co
 // Adresse, damit der Flow dort NICHT herausführt. Ohne diesen Parameter hätte
 // der Empfehlungsweg den Besucher mitten im Vorgang auf solar-check.io
 // abgesetzt — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
-export default function Empfehlung({
-  stand,
-  zielPfad = "/photovoltaik-rechner",
-  eigenerPfad = "/photovoltaik-rechner",
-  ohneZwischenansicht = false,
-  ueberschrift = "Was passt zu dir?",
-  unterzeile = "Wir empfehlen dir die optimale Anlage.",
-  direktHref,
-}: {
+type EmpfehlungProps = {
   stand?: StandSeite;
   zielPfad?: string;
   /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
@@ -121,9 +113,48 @@ export default function Empfehlung({
   /** Der Einstieg für alle, die ihre Anlagengröße schon kennen. Nur auf unserer
    *  eigenen Seite — ein Fachbetrieb bietet diese Abzweigung nicht an. */
   direktHref?: string;
-}) {
+};
+
+export default function Empfehlung(props: EmpfehlungProps) {
+  return <EmpfehlungContent {...props} searchParams={useSearchParams()} />;
+}
+
+function QuerySync({ onChange }: { onChange: (params: URLSearchParams) => void }) {
+  const query = useSearchParams().toString();
+  useEffect(() => onChange(new URLSearchParams(query)), [query, onChange]);
+  return null;
+}
+
+/** The query-free entry renders real questions into cached HTML, before hydration.
+ * Only URL observation suspends; parameterized entries keep their existing path. */
+export function StaticEmpfehlung(props: EmpfehlungProps) {
+  const [entry, setEntry] = useState(() => ({ params: new URLSearchParams(), ready: false, key: 0 }));
+  const syncQuery = useCallback((params: URLSearchParams) => {
+    setEntry(previous => ({
+      params,
+      ready: true,
+      // Prefilled links must initialize answered fields from their own values.
+      // Later edits keep the mounted flow and its current step intact.
+      key: previous.ready ? previous.key : params.toString() ? 1 : 0,
+    }));
+  }, []);
+  return <>
+    <Suspense fallback={null}><QuerySync onChange={syncQuery} /></Suspense>
+    <EmpfehlungContent key={entry.key} {...props} searchParams={entry.params} />
+  </>;
+}
+
+function EmpfehlungContent({
+  stand,
+  zielPfad = "/photovoltaik-rechner",
+  eigenerPfad = "/photovoltaik-rechner",
+  ohneZwischenansicht = false,
+  ueberschrift = "Was passt zu dir?",
+  unterzeile = "Wir empfehlen dir die optimale Anlage.",
+  direktHref,
+  searchParams,
+}: EmpfehlungProps & { searchParams: SP }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const prices = usePrices();
   const feedIn = useFeedInRates();
 
@@ -696,7 +727,7 @@ export default function Empfehlung({
             )}
 
             {/* Navigation */}
-            <div style={{ marginTop: 24 }}>
+            <div className="wp-flow-footer">
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 // Ohne Zwischenansicht führt der Knopf direkt ins Ergebnis — dann muss

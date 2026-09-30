@@ -289,7 +289,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/StandortField.tsx",
     name: "StandortField",
-    zweck: "Die Postleitzahl — der einzige Ort, an dem nach dem Standort gefragt wird.",
+    zweck: "Gemeinsames Standortfeld: Ortssuche, kompakte Eingabe und Flow-Formular mit sichtbarer gespeicherter Herkunft und geprüftem Status.",
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",

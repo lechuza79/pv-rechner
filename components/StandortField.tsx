@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { SuchErgebnis } from "../lib/suche";
 import styles from "./StandortField.module.css";
 import { v, iconSizes } from "../lib/theme";
@@ -9,6 +9,10 @@ import { IconArrowRight, IconCheck, IconClose } from "./Icons";
 // Ertrag (PVGIS). Geteilt zwischen PV-Rechner (ResultHeroCard) und
 // Balkonkraftwerk-Rechner, damit die nachträgliche PLZ-Eingabe überall gleich ist.
 interface StandortFieldProps {
+  variant?: "compact" | "flow";
+  remembered?: boolean;
+  successMessage?: string;
+  helpText?: string;
   searchPlaces?: boolean;
   compact?: boolean;
   checkedPlace?: { plz: string; ags: string; name: string } | null;
@@ -19,14 +23,28 @@ interface StandortFieldProps {
   loading: boolean;
   confirmed: boolean;                      // wurde ein Standort übernommen?
   approximate?: boolean;                   // true = regionaler Näherungswert (~) statt exaktem PVGIS
-  onSubmit: () => void;
+  onSubmit: () => void | boolean | Promise<void | boolean>;
   label?: string;
   submitLabel?: string;
 }
 
 export default function StandortField({
+  variant = "compact", remembered = false, successMessage, helpText,
   plz, onPlzChange, loading, confirmed, approximate = false, onSubmit, label = "Standort", submitLabel, searchPlaces, compact = false, onPlaceSelect, onSearchChange, checkedPlace,
 }: StandortFieldProps) {
+  const submission = useRef(0);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => { ++submission.current; setFailed(false); }, [plz]);
+  const valid = /^\d{5}$/.test(plz);
+  const checked = valid && confirmed && !loading;
+  if (variant === "flow") return <div className={`${styles.field} ${styles.flow}`}>
+    <form onSubmit={async event => { event.preventDefault(); if (!valid || loading || checked) return; setFailed(false); const request = ++submission.current; try { const result = await onSubmit(); if (request === submission.current) setFailed(result === false); } catch { if (request === submission.current) setFailed(true); } }}>
+      <input aria-label={label} value={plz} placeholder="PLZ (z. B. 80331)" inputMode="numeric" maxLength={5}
+        onChange={event => onPlzChange(event.target.value.replace(/\D/g, "").slice(0, 5))} />
+      <button type="submit" disabled={!valid || loading || checked}>{loading ? "Wird geprüft …" : checked ? "Geprüft" : "Standort prüfen"}</button>
+    </form>
+    <p role="status">{remembered ? `Gespeicherter Standort ${plz}. ` : ""}{loading ? "Standortdaten werden geprüft …" : checked ? successMessage ?? "Dieser Standort wird für die Berechnung verwendet." : failed ? "Standort konnte nicht geprüft werden. Bitte erneut versuchen." : helpText ?? "Bitte den Standort prüfen, um ihn für die Berechnung zu verwenden."}</p>
+  </div>;
   if (searchPlaces && onPlaceSelect) return <PlaceField plz={plz} loading={loading} onPick={onPlaceSelect} onSearchChange={onSearchChange} checkedPlace={checkedPlace} submitLabel={submitLabel} compact={compact} />;
   return (
     // flexWrap/rowGap + flexShrink: auf schmalen Schirmen rutscht das Feld lieber in
@@ -54,7 +72,7 @@ export default function StandortField({
             borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
           }}
         />
-        {(submitLabel || plz.length === 5) && !loading && !confirmed && (
+        {(submitLabel || plz.length === 5) && !loading && !checked && (
           <button type="submit" disabled={plz.length !== 5} aria-label={submitLabel ?? "Standort übernehmen"} style={{
             padding: "3px 6px", fontSize: v("--font-size-caption"), fontWeight: 700, lineHeight: 1,
             background: v('--color-cta'), color: v('--color-text-on-accent'),
@@ -62,7 +80,7 @@ export default function StandortField({
           }}>{submitLabel ?? <IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} />}</button>
         )}
         {loading && <span style={{ color: v('--color-accent'), fontSize: v("--font-size-micro") }}>…</span>}
-        {confirmed && <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}
+        {checked && <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}
       </form>
     </div>
   );

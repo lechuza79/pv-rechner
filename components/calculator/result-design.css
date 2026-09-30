@@ -431,7 +431,7 @@ body .wp-selection-details[open]>summary>svg{transform:rotate(180deg)}
 body .wp-selection-details-link{display:inline;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
 
 body .wp-product-trust{position:relative;isolation:isolate;overflow:hidden}
-body .wp-product-trust::before,body .wp-product-trust::after{content:"";position:absolute;z-index:-1;pointer-events:none;background:var(--color-awareness);opacity:.09;mask:url('/design/trust/texture.png') center/contain no-repeat;-webkit-mask:url('/design/trust/texture.png') center/contain no-repeat;width:420px;height:220px}
+body .wp-product-trust::before,body .wp-product-trust::after{content:"";position:absolute;z-index:-1;pointer-events:none;background:var(--color-awareness);opacity:.09;mask:url('/design/trust/texture-calculator.webp') center/contain no-repeat;-webkit-mask:url('/design/trust/texture-calculator.webp') center/contain no-repeat;width:420px;height:220px}
 body .wp-product-trust::before{right:-130px;top:-50px;transform:rotate(-28deg)}
 body .wp-product-trust::after{left:-160px;bottom:-80px;transform:rotate(22deg);opacity:.06}
 body .wp-product-trust>.wp-product-disclosure{margin:16px 0 0;padding:12px 0 0;border:0;border-top:1px solid color-mix(in srgb,var(--color-awareness) 16%,transparent);background:transparent;color:var(--color-awareness);width:100%;box-sizing:border-box}
