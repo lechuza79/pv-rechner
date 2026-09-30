@@ -77975,5 +77975,192 @@
         "evidenceUrl": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01053116",
+    "name": "Schwarzenbek",
+    "checkedAt": "2026-09-30T12:10:54Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarzenbek hat keinen eigenen Zuschuss für Privathaushalte. Die städtische Seite „Neutrale Beratung & Förderung“ nennt nur Verbraucherzentrale, BAFA, KfW und das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (im Katalog als Landesprogramm). Die Projektliste des Klimaschutzkonzepts enthält kein Förderprogramm für Haushalte. Die Treffer unter „Dienstleistungen“ sind Einträge des Landes-Zuständigkeitsfinders.",
+    "searches": [
+      "Städtische Seite „Neutrale Beratung & Förderung“ am 30.09.2026 gelesen",
+      "Seite „Projekte“ (Umsetzung Klimaschutzkonzept) am 30.09.2026 gelesen",
+      "Websuche „Schwarzenbek Stadt Förderprogramm Klimaschutz Zuschuss Balkonkraftwerk Photovoltaik“ am 30.09.2026: nur Stadtseite (Land/Bund) und Portale",
+      "Alle fünf erfassten Dienstleistungs-Adressen am 30.09.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/",
+        "finding": "30.09.2026: „Seit Juni 2020 gibt es ein Klimaschutz-Förderprogramm des Landes Schleswig-Holstein … Stromspeicher, PV-Balkonanlagen …“; daneben nur BAFA/KfW — kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.schwarzenbek.de/Themen/Klimaschutz/Projekte/",
+        "finding": "30.09.2026: Umgesetzte Maßnahmen: Energieberatung, Zukunft zeigen, Straßenbeleuchtung, Stadtradeln, E-Mobilität u. a. — kein Förderprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung",
+        "disposition": "reviewed",
+        "reason": "Städtische Förderseite, am 30.09.2026 erneut gelesen: nur Verbraucherzentrale, BAFA, KfW und Landesprogramm.",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "schwarzenbek.de/Service/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders zum Landesprogramm Balkonkraftwerke; am 30.09.2026 abgerufen. Städtische Förderseite nennt nur das Landesprogramm.",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "schwarzenbek.de/Service/Dienstleistungen/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Förderung für Kommunen, kein Haushaltszuschuss; Adresse zeigt nur die Dienstleistungsliste (30.09.2026).",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "schwarzenbek.de/Service/Dienstleistungen/Einmalige-Leistungen-oder-Zusch%C3%BCsse-bei-der-Aufnahme-eines-Pflegekindes.php",
+        "disposition": "reviewed",
+        "reason": "Pflegekind-Leistung, fachfremd; am 30.09.2026 abgerufen (Dienstleistungsliste).",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "schwarzenbek.de/Service/Dienstleistungen/Kommunale-Projektf%C3%B6rderung-zur-St%C3%A4rkung-kommunaler-Partnerschaften-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Städtepartnerschafts-Förderung, fachfremd; am 30.09.2026 abgerufen.",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "schwarzenbek.de/Service/Dienstleistungen/Zuschuss-zu-Altersabsicherung-als-Pflegeperson-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Pflege-Leistung, fachfremd; am 30.09.2026 abgerufen.",
+        "evidenceUrl": "https://www.schwarzenbek.de/Themen/Klimaschutz/Neutrale-Beratung-F%C3%B6rderung/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053129",
+    "name": "Wentorf bei Hamburg",
+    "checkedAt": "2026-09-30T12:07:48Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wentorf hat keinen eigenen Zuschuss für Privathaushalte. Die Seite „Fördermöglichkeiten“ des Energiequartiers (Sanierungsmanagement, bis Oktober 2026) listet ausschließlich Bundes- (KfW/BAFA) und Landesförderung (IB.SH, „Klimaschutz für Bürgerinnen und Bürger“, Balkonanlagen-Richtlinie des Landes); die Gemeinde selbst bietet Beratung im Quartier an, aber kein Geld.",
+    "searches": [
+      "Seite „Fördermöglichkeiten: Energieeffizienz“ des Energiequartiers am 30.09.2026 gelesen (Tabelle Förderebene: nur Bund und Land)",
+      "Websuche „Wentorf bei Hamburg Gemeinde Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Energiequartier“ am 30.09.2026: nur Quartierseiten, Hamburger Programme (nicht zuständig), Portale",
+      "Übrige erfasste Adressen am 30.09.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten",
+        "finding": "30.09.2026: Tabelle „Förderebene“ nennt nur Bund (KfW/BAFA) und Schleswig-Holstein (IB.SH, Förderung von Photovoltaik-Balkonanlagen über das Serviceportal des Landes) — keine Gemeindeförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten",
+        "disposition": "reviewed",
+        "reason": "Am 30.09.2026 gelesen: nur Bundes- und Landesförderung.",
+        "evidenceUrl": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten"
+      },
+      {
+        "url": "wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten/index.php?object=tx,3080.1&amp;ModID=9&amp;FID=1058.2.1&amp;NavID=3081.83",
+        "disposition": "replaced",
+        "reason": "Kontaktbaustein derselben Fördermöglichkeiten-Seite (Adresse der Gemeinde); inhaltlich durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten"
+      },
+      {
+        "url": "wentorf.de/Rathaus/Kommunale-W%C3%A4rmeplanung-F%C3%B6rderm%C3%B6glichkeiten-und-Energiequartier-hier-finden-Sie-aktuelle-Informationen-aus-und-f%C3%BCr-Ihre-Kommune.php",
+        "disposition": "replaced",
+        "reason": "Meldung verweist auf Wärmeplanung und die Fördermöglichkeiten des Energiequartiers; der Inhalt wird durch die gelesene Fördermöglichkeiten-Seite erledigt (Abruf 30.09.2026 zeigt nur Navigation).",
+        "evidenceUrl": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten"
+      },
+      {
+        "url": "wentorf.de/Rathaus/Amtliche-Bekanntmachungen/Sanierung-der-Au%C3%9Fenbeleuchtung-auf-LED-in-der-Gemeinde-Wentorf-Gymnasium-F%C3%B6rderkennzeichen-03K16652-.php",
+        "disposition": "replaced",
+        "reason": "Bekanntmachung über eine vom Bund geförderte LED-Sanierung am Gymnasium (Förderkennzeichen des Zuwendungsempfängers Gemeinde) — keine Haushaltsförderung; Haushaltsförderung durch die gelesene Fördermöglichkeiten-Seite erledigt.",
+        "evidenceUrl": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten"
+      },
+      {
+        "url": "wentorf.de/Rathaus/Amtliche-Bekanntmachungen/Sanierung-der-Innenbeleuchtung-auf-LED-in-der-Aula-der-Gemeinschaftsschule-der-Gemeinde-Wentorf-F%C3%B6rderkennzeichen-67K22597-.php",
+        "disposition": "replaced",
+        "reason": "Bekanntmachung über eine geförderte LED-Sanierung in der Schul-Aula (Zuwendungsempfänger Gemeinde) — keine Haushaltsförderung; erledigt durch die gelesene Fördermöglichkeiten-Seite.",
+        "evidenceUrl": "https://www.wentorf.de/Themen/Klimaschutz/Energie-W%C3%A4rme/Energiequartier-Wentorf/F%C3%B6rderm%C3%B6glichkeiten"
+      }
+    ]
+  },
+  {
+    "regionId": "01053058",
+    "name": "Juliusburg",
+    "checkedAt": "2026-09-30T12:07:48Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Juliusburg (Amt Lütau, verwaltet von der Stadt Lauenburg/Elbe) hat keinen eigenen Zuschuss für Privathaushalte. Die Gemeindeseite auf amt-luetau.de nennt keine Förderung; die Klimaschutz-Förderseite der verwaltenden Stadt Lauenburg verweist nur auf Land und Bund. Die erfasste Quelle ist das Klimaschutzkonzept der Stadt Lauenburg von 2017 und betrifft Juliusburg nicht.",
+    "searches": [
+      "Gemeindeseite https://www.amt-luetau.de/gemeinden/juliusburg/ und Startseite des Amts am 30.09.2026 gelesen: keine Förderung für Haushalte",
+      "Websuche „Amt Lütau Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Wangelau Juliusburg“ am 30.09.2026: nur Amtsseiten und Portale",
+      "Lauenburger Förderseite (Verwaltung des Amts) am 30.09.2026 gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetau.de/gemeinden/juliusburg/",
+        "finding": "30.09.2026: Gemeindeporträt ohne Hinweis auf ein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.lauenburg.de/buergerportal/klimaschutz/informationen-und-foerderungen-im-klimaschutz-fuer-den-die-bauherr-in/",
+        "finding": "30.09.2026: nur Landesprogramm Schleswig-Holstein, BAFA, BEG — kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "finding": "30.09.2026: Klimaschutzkonzept der Stadt Lauenburg (2017), Förderprogramm nur als „Weitere Idee“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept der Stadt Lauenburg 2017; betrifft Juliusburg nicht und nennt ein kommunales Förderprogramm nur als Idee. Am 30.09.2026 durchsucht (Akte 1033Z).",
+        "evidenceUrl": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01053128",
+    "name": "Wangelau",
+    "checkedAt": "2026-09-30T12:07:48Z",
+    "recheckAt": "2026-12-29T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wangelau (Amt Lütau, verwaltet von der Stadt Lauenburg/Elbe) hat keinen eigenen Zuschuss für Privathaushalte. Die Gemeindeseite auf amt-luetau.de nennt keine Förderung; die Klimaschutz-Förderseite der verwaltenden Stadt Lauenburg verweist nur auf Land und Bund. Die erfasste Quelle ist das Klimaschutzkonzept der Stadt Lauenburg von 2017 und betrifft Wangelau nicht.",
+    "searches": [
+      "Gemeindeseite https://www.amt-luetau.de/gemeinden/wangelau/ und Startseite des Amts am 30.09.2026 gelesen: keine Förderung für Haushalte",
+      "Websuche „Amt Lütau Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Wangelau Juliusburg“ am 30.09.2026: nur Amtsseiten und Portale",
+      "Lauenburger Förderseite (Verwaltung des Amts) am 30.09.2026 gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetau.de/gemeinden/wangelau/",
+        "finding": "30.09.2026: Gemeindeporträt ohne Hinweis auf ein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.lauenburg.de/buergerportal/klimaschutz/informationen-und-foerderungen-im-klimaschutz-fuer-den-die-bauherr-in/",
+        "finding": "30.09.2026: nur Landesprogramm Schleswig-Holstein, BAFA, BEG — kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "finding": "30.09.2026: Klimaschutzkonzept der Stadt Lauenburg (2017), Förderprogramm nur als „Weitere Idee“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept der Stadt Lauenburg 2017; betrifft Wangelau nicht und nennt ein kommunales Förderprogramm nur als Idee. Am 30.09.2026 durchsucht (Akte 1033Z).",
+        "evidenceUrl": "https://www.lauenburg.de/pdf/Klimaschutz/Klimaschutzkonzept_Stadt_Lauenburg_Elbe.pdf"
+      }
+    ]
   }
 ]
