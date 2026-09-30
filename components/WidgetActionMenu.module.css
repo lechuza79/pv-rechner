@@ -39,14 +39,16 @@
   cursor: pointer;
 }
 
+.menu .item:focus { outline: none; }
+
 .menu .item:hover,
 .menu .item:focus-visible {
   background: color-mix(in srgb, var(--widget-ink, currentColor) 6%, transparent);
 }
 
 .menu .item:focus-visible {
-  outline: 2px solid var(--widget-muted, currentColor);
-  outline-offset: -4px;
+  outline: none;
+  box-shadow: inset 3px 0 0 var(--widget-muted, currentColor);
 }
 
 .menu .item:disabled { cursor: default; opacity: .5; }

@@ -38,13 +38,35 @@ export default function GemeindeRahmen({
     let closeTimer: ReturnType<typeof setTimeout> | undefined;
     let lastHeight = startHoehe;
     let previousOverflow = "";
+    let previousAnchor = "";
     let parentScroll = 0;
+    let layoutRoot: HTMLElement | null = null;
+    let layoutStyle: string | null = null;
+    let contentScroll = { x: 0, y: 0 };
     const applyModal = (open: boolean) => {
       if (open === modalOpen) return;
-      const contentOffset = Math.max(0, -frame.getBoundingClientRect().top);
+      const bounds = frame.getBoundingClientRect();
+      const contentOffset = Math.max(0, -bounds.top);
       if (open) {
         parentScroll = window.scrollY;
+        previousAnchor = document.documentElement.style.overflowAnchor;
+        // Moving the frame out of flow must not trigger browser scroll anchoring.
+        document.documentElement.style.overflowAnchor = "none";
         previousOverflow = document.body.style.overflow;
+        contentScroll = { x: frame.contentWindow?.scrollX ?? 0, y: frame.contentWindow?.scrollY ?? 0 };
+        layoutRoot = frame.contentDocument?.querySelector<HTMLElement>("[data-embed-layout-root]") ?? null;
+        if (layoutRoot) {
+          layoutStyle = layoutRoot.getAttribute("style");
+          const layoutBounds = layoutRoot.getBoundingClientRect();
+          // Promote only the dialog viewport. Keep the underlying content at
+          // its original width and screen position instead of reflowing it.
+          layoutRoot.style.position = "fixed";
+          layoutRoot.style.left = `${bounds.left + layoutBounds.left}px`;
+          layoutRoot.style.top = `${bounds.top + layoutBounds.top}px`;
+          layoutRoot.style.margin = "0";
+          layoutRoot.style.width = `${layoutBounds.width}px`;
+          layoutRoot.style.maxWidth = "none";
+        }
         // Keep the document height stable when the frame leaves normal flow.
         if (placeholder.current) placeholder.current.style.height = `${lastHeight}px`;
       }
@@ -61,11 +83,17 @@ export default function GemeindeRahmen({
       frame.style.height = open ? "100dvh" : `${lastHeight}px`;
       document.body.style.overflow = open ? "hidden" : previousOverflow;
       if (open) {
-        frame.contentWindow?.scrollTo({ top: contentOffset, behavior: "instant" });
+        frame.contentWindow?.scrollTo({ top: layoutRoot ? 0 : contentOffset, behavior: "instant" });
       } else {
+        if (layoutRoot) {
+          if (layoutStyle === null) layoutRoot.removeAttribute("style");
+          else layoutRoot.setAttribute("style", layoutStyle);
+          layoutRoot = null;
+        }
         if (placeholder.current) placeholder.current.style.height = "";
-        frame.contentWindow?.scrollTo({ top: 0, behavior: "instant" });
+        frame.contentWindow?.scrollTo({ left: contentScroll.x, top: contentScroll.y, behavior: "instant" });
         window.scrollTo({ top: parentScroll, behavior: "instant" });
+        document.documentElement.style.overflowAnchor = previousAnchor;
       }
       frame.style.backdropFilter = open ? "blur(3px)" : "";
       frame.style.background = open ? "rgba(0,8,10,.48)" : "transparent";
@@ -73,7 +101,8 @@ export default function GemeindeRahmen({
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== location.origin || event.source !== frame.contentWindow || event.data?.type !== nachricht) return;
       const height = Number(event.data.height);
-      lastHeight = Math.min(16000, Math.max(300, Number.isFinite(height) ? Math.ceil(height) + 4 : startHoehe));
+      // Modal viewport measurements must not replace the normal-flow height.
+      if (!modalOpen) lastHeight = Math.min(16000, Math.max(300, Number.isFinite(height) ? Math.ceil(height) + 4 : startHoehe));
       clearTimeout(closeTimer);
       if (vollbild && event.data.modal === true) applyModal(true);
       else if (modalOpen) closeTimer = setTimeout(() => applyModal(false), 240);

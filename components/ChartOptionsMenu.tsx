@@ -77,8 +77,8 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     if (!open) return;
     const outside = (e: PointerEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("pointerdown", outside);
-    requestAnimationFrame(() => items()[0]?.focus());
-    return () => document.removeEventListener("pointerdown", outside);
+    const frame = requestAnimationFrame(() => items()[0]?.focus({ preventScroll: true }));
+    return () => { cancelAnimationFrame(frame); document.removeEventListener("pointerdown", outside); };
   }, [open,group]);
 
   useLayoutEffect(() => {
@@ -159,6 +159,14 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
       </button>}
       {open && (
         <div className={styles.menu} id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
+          onMouseDown={event => {
+            const item = (event.target as HTMLElement).closest<HTMLElement>('[role="menuitem"]');
+            if (event.button !== 0 || !item || item.matches(":disabled")) return;
+            // Native mouse focus can scroll the outer page of an iframe even
+            // when the item is already visible. Keep focus without navigation.
+            event.preventDefault();
+            item.focus({ preventScroll: true });
+          }}
           style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:menuTop??"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",maxHeight:menuMaxHeight,overflowY:"auto" }}>
           {(!footer||group==="share")&&<>
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="copy_link" disabled={busy || copying} className={styles.item} onClick={copyLink}>{copied ? <IconCheck size={16} style={leadingIcon}/> : <IconCopy size={16} style={leadingIcon}/>}<span aria-live="polite">{copied ? "Link kopiert" : copying ? "Link wird kopiert …" : "Link kopieren"}</span></button>
