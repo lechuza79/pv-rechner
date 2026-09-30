@@ -64,6 +64,7 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
       userAgent: "solar-check-health-check",
     });
     const page = await context.newPage();
+    const captureSession = await context.newCDPSession(page);
     page.setDefaultTimeout(60_000);
     const res = await page.goto(url, { waitUntil: "domcontentloaded" });
     if (!res || !res.ok()) throw new Error(`page_http_${res?.status() ?? "none"}`);
@@ -103,7 +104,15 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     try {
       for(let frame=0;frame<frames;frame++) {
         if(frame) await page.evaluate(({widgetId,timeMs})=>window.__scVideoFrame!({widgetId,timeMs}),{widgetId:job.widget,timeMs:frame*1000/fps});
-        const png=await page.screenshot({type:"png",clip:{x:0,y:0,width:meta.width,height:meta.height},animations:"allow",timeout:60_000});
+        // The timeline is already settled by __scVideoFrame. Playwright's
+        // screenshot adds per-frame waits and expensive PNG compression.
+        // Capture the same pixels losslessly through Chromium, with fast PNG
+        // compression; FFmpeg still encodes the unchanged 30 fps output.
+        const screenshot=await captureSession.send("Page.captureScreenshot",{
+          format:"png",optimizeForSpeed:true,fromSurface:true,
+          clip:{x:0,y:0,width:Math.ceil(meta.width),height:Math.ceil(meta.height),scale:1.5},
+        });
+        const png=Buffer.from(screenshot.data,"base64");
         await new Promise<void>((resolve,reject)=>encoder.stdin.write(png,error=>error?reject(error):resolve()));
         const progress=Math.min(99,Math.round((frame+1)/frames*100));
         if(progress!==lastProgress) {await callVideoFn("video_job_progress",{id:job.id,worker:WORKER,progress});lastProgress=progress;}
@@ -177,7 +186,9 @@ async function main() {
   await closeVideoDb();
 }
 
-main().catch(async (e) => {
+// All queue work, notifications and database cleanup are awaited above. Do not
+// keep a completed runner alive through SDK refresh timers or idle sockets.
+main().then(() => process.exit(0)).catch(async (e) => {
   console.error(e instanceof Error ? e.message : e);
   await closeVideoDb();
   process.exit(1);
