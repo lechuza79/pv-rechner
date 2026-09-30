@@ -33,8 +33,7 @@ import {
   type Bestand, type Eintrag, type Ergebnis,
 } from "./lib/kontakt-lauf";
 import { browserSchliessen, rendern } from "./lib/kontakt-browser";
-import { entschluesseltOderRoh } from "../lib/uri-sicher";
-import { suchAdresse, suchFormular, suchseitenLink } from "../lib/funding-url-suche";
+import { KLIMA_POSTFACH, KREIS, PRESSE_POSTFACH, postfachNachName as postfachNachNameAllgemein, vormerken as vormerkenAllgemein, type Vormerkung } from "./lib/kontakt-nachsuche";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
 
 const arg = (name: string) => process.argv.find(a => a.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -125,49 +124,8 @@ const SEEDS = resolve(OUT, "seeds.json");
 const ZIEL = /presse|pressestelle|oeffentlichkeitsarbeit|öffentlichkeitsarbeit|medien(?:service|kontakt)|klimaschutz|klimamanagement|energie(?:beratung|management|agentur)?|nachhaltigkeit/i;
 const seeds = (): Record<string, { url: string; priority: number }[]> => existsSync(SEEDS) ? readJson(SEEDS) : {};
 
-async function holen(url: string): Promise<string | null> {
-  try {
-    const r = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (compatible; solar-check.io contact research)" }, signal: AbortSignal.timeout(15_000), redirect: "follow" });
-    return r.ok ? await r.text() : null;
-  } catch { return null; }
-}
-
-async function vormerken(e: Eintrag): Promise<{ url: string; priority: number }[]> {
-  const host = new URL(e.website!).host.replace(/^www\./, "");
-  const eigen = (u: string) => { try { return new URL(u).host.replace(/^www\./, "") === host; } catch { return false; } };
-  const funde = new Map<string, number>();
-  const nimm = (u: string, text = "") => {
-    if (!eigen(u) || /\.(jpe?g|png|gif|svg|css|js|ics|zip)(\?|$)/i.test(u)) return;
-    const treffer = ZIEL.test(entschluesseltOderRoh(u).replace(/[-_/]/g, " ")) || ZIEL.test(text);
-    if (treffer) funde.set(u.split("#")[0], Math.max(funde.get(u) ?? 0, /presse|klima/i.test(u + text) ? 1000 : 900));
-  };
-  const origin = new URL(e.website!).origin;
-  for (const pfad of ["/sitemap.xml", "/sitemap_index.xml"]) {
-    const xml = await holen(origin + pfad);
-    if (!xml) continue;
-    const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map(m => m[1]);
-    for (const l of locs.filter(l => /sitemap/i.test(l) && l.endsWith(".xml")).slice(0, 8)) {
-      const sub = await holen(l);
-      if (sub) for (const m of sub.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)) nimm(m[1]);
-    }
-    for (const l of locs) nimm(l);
-    if (funde.size) break;
-  }
-  const start = await holen(e.website!);
-  if (start) {
-    const formular = suchFormular(start, e.website!);
-    const suchseite = formular ? null : suchseitenLink(start, e.website!);
-    for (const begriff of ["Pressestelle", "Klimaschutz"]) {
-      const url = formular ? suchAdresse(formular, begriff) : suchseite ? `${suchseite}${suchseite.includes("?") ? "&" : "?"}q=${encodeURIComponent(begriff)}` : null;
-      if (!url) continue;
-      const html = await holen(url);
-      if (!html) continue;
-      for (const m of html.matchAll(/<a\s[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]{0,200}?)<\/a>/gi)) {
-        try { nimm(new URL(m[1], url).href, m[2].replace(/<[^>]+>/g, " ")); } catch { /* malformed link */ }
-      }
-    }
-  }
-  return [...funde].map(([url, priority]) => ({ url, priority })).sort((a, b) => b.priority - a.priority).slice(0, 12);
+async function vormerken(e: Eintrag): Promise<Vormerkung[]> {
+  return vormerkenAllgemein(e.website!, ZIEL, ["Pressestelle", "Klimaschutz"], /presse|klima/i);
 }
 
 function bestandAus(zeilen: Awaited<ReturnType<typeof kreise>>): { bestand: Bestand; eintraege: Map<string, Eintrag> } {
@@ -225,81 +183,8 @@ function summary(anzahl: number) {
   console.log(JSON.stringify(out, null, 1));
 }
 
-/**
- * A mailbox whose NAME is the office ("pressestelle@kreis-lippe.de",
- * "klimaschutz@landkreis-uelzen.de"), published on the district's own site.
- * The engine never takes a role from a mailbox name — right for people and
- * shared inboxes, but it left 24 districts without their obvious press inbox
- * and 14 without their climate inbox (30.09.2026). Used only as a fallback when
- * no role is proven in the text, and recorded with the page it stood on.
- */
-export const PRESSE_POSTFACH = /^(?:presse|pressestelle|pressebuero|medien|oeffentlichkeitsarbeit|kommunikation)[@.-]/;
-export const KLIMA_POSTFACH = /^(?:klimaschutz|klima|klimaschutzmanagement|energie|energieberatung|klimaschutzagentur)[@.-]/;
-export const ALLGEMEIN_POSTFACH = /^(?:poststelle|info|landratsamt|lra|kanzlei|verwaltung|landkreis|kreisverwaltung|kontakt|post|buergerservice|rhk)[@.-]/;
-/** Hosts that publish on every portal and are never the district (hosting, e-invoicing, federal agencies). */
-const FREMD = /verbraucher|vhs|volkshochschule|musikschule|jobcenter|klinik|sparkasse|touris|advantic|ionos|kommune365|komm\.one|bund\.de$|\.bwl\.de$|niedersachsen\.de$|nrw\.de$|rlp\.de$|hessen\.de$/;
-
-/**
- * Every mailbox on the district's own pages, with the domains that count as the
- * district's own. Hand check of the 34 districts without any address
- * (30.09.2026): many write from a domain other than their website
- * ("en-kreis.de" for "enkreis.de", "landratsamt.dillingen.de",
- * "lrakn.de" for Konstanz), and the engine rejected all of them. A mail domain
- * counts as the district's own when three or more distinct addresses on the
- * district's own pages use it — the engine's own institutional rule — or it is
- * the website domain written differently, or a Bavarian district office.
- */
-export function eigenePostfaecher(r: any): { email: string; url: string }[] {
-  const dir = resolve(OUT, "sources", r.id);
-  if (!existsSync(dir)) return [];
-  const site = (h: string) => h.toLowerCase().split(".").slice(-2).join(".");
-  const flach = (h: string) => site(h).replace(/[^a-z0-9]/g, "");
-  const own = site(new URL(r.website).hostname);
-  const funde: { email: string; url: string }[] = [];
-  for (const f of readdirSync(dir).filter(f => f.endsWith(".html"))) {
-    const metaPfad = resolve(dir, f.replace(/\.html$/, ".json"));
-    const meta = existsSync(metaPfad) ? readJson(metaPfad) : {};
-    // Every stored page came from this district's crawl, which follows only
-    // its own links — also after a redirect to another host
-    // ("westerwald-kreis.de" -> "westerwaldkreis.de"), which the first
-    // version of this filter dropped (second hand check, 30.09.2026).
-    const url = meta.finalUrl ?? meta.url ?? r.website;
-    for (const m of readFileSync(resolve(dir, f), "utf8").match(/[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}\b/gi) ?? []) {
-      const email = m.toLowerCase(), domain = email.split("@")[1];
-      if (/de-mail\.de$|\.(png|jpe?g|gif|svg|webp)$/.test(email) || FREMD.test(domain)) continue;
-      funde.push({ email, url });
-    }
-  }
-  const jeDomain = new Map<string, Set<string>>();
-  for (const x of funde) { const d = site(x.email.split("@")[1]); jeDomain.set(d, (jeDomain.get(d) ?? new Set()).add(x.email)); }
-  // The district's name inside its domains: "landkreis-ansbach.de" -> "ansbach".
-  const token = own.split(".")[0].replace(/^(?:landkreis|kreis|lk|lra|landratsamt)-?/, "").replace(/[^a-z0-9]/g, "");
-  const einzelwort = !/-/.test(own.split(".")[0].replace(/^(?:landkreis|kreis|lk|lra|landratsamt)-?/, ""));
-  const ohneTld = (h: string) => h.split(".").slice(0, -1).join(".").replace(/[^a-z0-9]/g, "");
-  const eigen = (email: string) => {
-    const domain = email.split("@")[1], d = site(domain), label = d.split(".")[0].replace(/[^a-z0-9]/g, "");
-    return d === own || flach(domain) === flach(own) || ohneTld(d) === ohneTld(own)
-      // District office hosts: "lra-mil.de", "kreis-fs.de", "kv-rhk.de", "lrahbn.thueringen.de".
-      || /^(?:lra|landratsamt|kreis|kv|kreisverwaltung|lk)[-.]?[a-z-]+\.(?:de|bayern\.de|thueringen\.de)$/.test(domain) && !/\.(?:bayern|thueringen)\.de$/.test(domain) && !/^kreis-[a-z]+-news/.test(domain)
-      || /^(?:lra|landratsamt)[-.]?[a-z-]+\.(?:bayern|thueringen)\.de$/.test(domain)
-      // A one-word district shares its name with its county town
-      // ("kitzingen.de", "goslar.de" are the towns); only a compound name
-      // ("limburg-weilburg.de") is the district's own.
-      // The name inside a domain counts only with an office marker
-      // ("landratsamt-ansbach.de", "lkharburg.de") or as the whole compound
-      // name ("limburg-weilburg.de"); "era-goslar.de" is a solar business and
-      // "kitzingen.de" the county town (third hand check, 30.09.2026).
-      || (token.length >= 5 && label.includes(token) && (/^(?:lra|landratsamt|landkreis|kreis|lk|kv)/.test(label) || (label === token && einzelwort === false)))
-      || (label.length >= 6 && token.startsWith(label))
-      || (!/\.(?:bayern|thueringen)\.de$/.test(domain) && !(einzelwort && label === token) && (jeDomain.get(d)?.size ?? 0) >= 3);
-  };
-  const gesehen = new Set<string>();
-  return funde.filter(x => eigen(x.email) && !gesehen.has(x.email) && gesehen.add(x.email));
-}
-
-export function postfachNachName(r: any, muster: RegExp): { email: string; url: string } | null {
-  return eigenePostfaecher(r).find(x => muster.test(x.email)) ?? null;
-}
+const ALLGEMEIN_POSTFACH = /^(?:poststelle|info|landratsamt|lra|kanzlei|verwaltung|landkreis|kreisverwaltung|kontakt|post|buergerservice|rhk)[@.-]/;
+const postfachNachName = (r: any, muster: RegExp) => postfachNachNameAllgemein(resolve(OUT, "sources", r.id), r.website, KREIS, muster);
 
 /** Same columns as the municipal apply: Klimaschutz, Presse, all belegte Fachkontakte. */
 async function apply() {
