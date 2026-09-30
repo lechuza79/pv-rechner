@@ -1,3 +1,4 @@
+import {regionalRaceData} from "../../lib/regional-race";
 import RegionNavigation from "./RegionNavigation";
 import { packeRankingZellen } from "../../lib/ranking-zellen";
 import {monitorContentForPreview} from '../../lib/monitor-content-preview';
@@ -102,11 +103,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   }
   const foerderProgramme=[...programs.values()].map(programm=>({programm,standLabel:fundingStandLabel(programm),zaehlt:fundingZaehlt(programm),geltungsbereich:districtPrograms.some(p=>p.id===programm.id)?(isDistrict?"Gilt im gesamten Landkreis":"Gilt im gesamten Bundesland"):"Gilt in: "+coverage.get(programm.id)?.join(", ")}));
   const naechstesUpdate=naechsteAktualisierung(IMPORT_TAGE,stand,new Date());
-  const historyEnd = Number(stand.slice(0, 4));
-  const rankingHistory = Array.from({length: historyEnd - 2000 + 1}, (_, index) => {
-    const year = 2000 + index;
-    return {year, sums: Object.fromEntries(foldSiblings(ranking.regions, ranking.cells.filter(cell => cell.year <= year)).map(row => [row.region_id, row.sums]))};
-  });
+  const raceData = regionalRaceData(towns,ranking,stand,basePath);
   const townIds = new Set(towns.map(t => t.region_id));
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
   const comparable=towns.length>1;
@@ -145,9 +142,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     </div>
     {missingGeometry.length > 0 && <p>Für {missingGeometry.map(p => p.name).join(", ")} fehlt der Kartenumriss. Die Werte stehen in der Übersicht.</p>}
     {comparable&&<><section id="atlas-ranking" data-widget-ranking className={`${styles.section} ${styles.raceSection}`} aria-label="Ranking">
-      <DistrictRaceWidget name={region.name} stand={stand} wording={text.race}
-        rows={towns.map(town=>({id:town.region_id,name:town.name,href:town.slug?`${basePath}/${town.slug}`:null,value:sums.get(town.region_id)?.count??0}))}
-        history={rankingHistory.map(frame=>({year:frame.year,rows:towns.map(town=>({id:town.region_id,value:frame.sums[town.region_id]?.alle.count??0}))}))}/>
+      <DistrictRaceWidget regionId={region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>
     </section>
     </>}
     <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>

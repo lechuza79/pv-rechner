@@ -26,7 +26,8 @@ const GRUND = (label: string) =>
   `Diese E-Mail bekommen Sie, weil diese Adresse auf solar-check.io für den Download des Videos „${label}“ eingetragen wurde. ` +
   "Sie wurde bei uns eingegeben und nicht aus einer anderen Quelle übernommen (Art. 13 DSGVO). Ein Ortsabo entsteht nur, wenn Sie es zusätzlich ausgewählt haben.";
 
-export function videoLabel(o: { place: string; period: string }): string {
+export function videoLabel(o: { widget?: string; place: string; period: string }): string {
+  if(o.widget === "regional-race") return `Solaranlagen im regionalen Vergleich · ${o.place}`;
   return `Solarerzeugung im Tagesverlauf in ${o.place} · ${formatStoryDate(o.period)}`;
 }
 

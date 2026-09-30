@@ -5,27 +5,35 @@
 // an address. The renderer builds the address from this table, so no request
 // can point our headless browser at anything we did not list here.
 //
-// PILOT (29.09.2026): one widget, one municipality. Widening means adding a
-// row here and measuring render time for it first; the limits below were set
-// before any production measurement and are deliberately small.
+// Each chart supplies its validated parameters and render surface here.
+// Authentication, queue limits, delivery and the encoder remain shared.
 
 /** Bump when the exported look changes; it is part of the cache key, so a
  *  finished video from the old design is never handed out for the new one. */
-export const VIDEO_DESIGN_VERSION = "2026-09-29.codex-video-contact";
+export const VIDEO_DESIGN_VERSION = "2026-09-30.shared-video-race";
 
-export type VideoWidgetId = "gemeinde-solar-monat";
+export type VideoWidgetId = "gemeinde-solar-monat" | "regional-race";
 
 export type VideoExportParams = { widget: VideoWidgetId; ags: string; period: string };
 
 export const VIDEO_WIDGETS: Record<VideoWidgetId, {
   /** Page that renders the accepted widget, relative to the site. */
   embedPath: (p: VideoExportParams) => string;
-  /** Municipalities released for the pilot. Empty would mean "all" — not used yet. */
+  /** Released places. An empty list accepts valid regions checked against real data. */
   agsAllowlist: readonly string[];
+  regionPattern: RegExp;
+  periodPattern: RegExp;
+  periodControl: "month" | "none";
 }> = {
   "gemeinde-solar-monat": {
-    embedPath: (p) => `/embed/gemeinde/${p.ags}/monitor`,
-    agsAllowlist: ["06440016"], // Nidda
+    embedPath: (p) => /^\d{8}$/.test(p.ags) ? `/embed/gemeinde/${p.ags}/monitor` : `/embed/regional-solar/${p.ags}`,
+    agsAllowlist: [],
+    regionPattern: /^(de|\d{2}|\d{5}|\d{8})$/, periodPattern: /^\d{4}-(0[1-9]|1[0-2])$/, periodControl: "month",
+  },
+  "regional-race": {
+    embedPath: (p) => `/embed/regional-race/${p.ags}`,
+    agsAllowlist: [],
+    regionPattern: /^(de|\d{2}|\d{5})$/, periodPattern: /^current$/, periodControl: "none",
   },
 };
 
@@ -67,8 +75,6 @@ export const VIDEO_TTL = {
   requestRetentionDays: 14,
 } as const;
 
-const AGS = /^\d{8}$/;
-const PERIOD = /^\d{4}-(0[1-9]|1[0-2])$/;
 
 export type ParamsCheck = { ok: true; params: VideoExportParams } | { ok: false; reason: string };
 
@@ -80,10 +86,10 @@ export function checkVideoParams(input: unknown): ParamsCheck {
   // Own keys only: `in` would accept "__proto__" or "toString".
   if (typeof o.widget !== "string" || !Object.hasOwn(VIDEO_WIDGETS, o.widget)) return { ok: false, reason: "widget" };
   const widget = o.widget as VideoWidgetId;
-  if (typeof o.ags !== "string" || !AGS.test(o.ags)) return { ok: false, reason: "ags" };
+  if (typeof o.ags !== "string" || !VIDEO_WIDGETS[widget].regionPattern.test(o.ags)) return { ok: false, reason: "ags" };
   const allow = VIDEO_WIDGETS[widget].agsAllowlist;
   if (allow.length && !allow.includes(o.ags)) return { ok: false, reason: "ags_not_released" };
-  if (typeof o.period !== "string" || !PERIOD.test(o.period)) return { ok: false, reason: "period" };
+  if (typeof o.period !== "string" || !VIDEO_WIDGETS[widget].periodPattern.test(o.period)) return { ok: false, reason: "period" };
   return { ok: true, params: { widget, ags: o.ags, period: o.period } };
 }
 

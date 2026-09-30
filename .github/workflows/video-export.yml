@@ -41,6 +41,9 @@ jobs:
       - run: npx playwright install --with-deps chromium
         if: steps.queue.outputs.pending == 'true'
         timeout-minutes: 8
+      - name: Ensure H.264 encoder
+        if: steps.queue.outputs.pending == 'true'
+        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
       - name: Render queue
         if: steps.queue.outputs.pending == 'true'
         timeout-minutes: 20

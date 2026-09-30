@@ -20,12 +20,24 @@ export async function GET(req: NextRequest) {
     if (!context) return NextResponse.json({ outcome: "invalid" }, { headers });
     const region = await getRegionById(context.ags).catch(() => null);
     return NextResponse.json({
-      place: region?.name ?? "", period: context.period,
+      place: region?.name ?? "", period: context.period === "current" ? undefined : context.period,
+      label: context.widget === "regional-race" ? `Solaranlagen im regionalen Vergleich · ${region?.name ?? ""}` : undefined,
       outcome: context.status === "pending" ? (Date.parse(context.token_expires_at) < Date.now() ? "expired" : "pending") : "already",
     }, { headers });
   }
   const path = context ? await getGemeindePfad(context.ags).catch(() => null) : null;
-  const target = path ? `/solar-atlas/${path.bundesland}/${path.kreis}/${path.gemeinde}` : context ? `/embed/gemeinde/${context.ags}/monitor` : "/solar-atlas";
+  let regionalPath: string | null = null;
+  if (context && !/^\d{8}$/.test(context.ags)) {
+    let region = await getRegionById(context.ags).catch(() => null);
+    const slugs: string[] = [];
+    for (let depth = 0; region && region.level !== "de" && depth < 3; depth++) {
+      if (!region.slug) break;
+      slugs.unshift(region.slug);
+      region = region.parent_region_id ? await getRegionById(region.parent_region_id).catch(() => null) : null;
+    }
+    if (region?.level === "de") regionalPath = `/solar-atlas${slugs.length ? "/" + slugs.join("/") : ""}`;
+  }
+  const target = regionalPath ?? (context?.widget === "regional-race" ? `/embed/regional-race/${context.ags}` : path ? `/solar-atlas/${path.bundesland}/${path.kreis}/${path.gemeinde}` : context ? `/embed/gemeinde/${context.ags}/monitor` : "/solar-atlas");
 
   // Fragments keep the confirmation credential out of page requests/referrers.
   const fragment = `video-confirm=${plausibleToken(token) ? token : "invalid"}`;

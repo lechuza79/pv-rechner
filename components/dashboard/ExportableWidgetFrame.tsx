@@ -8,7 +8,7 @@ import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetF
 import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {embedPath, widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
-import type { VideoRequestParams } from "../../lib/video-export-client";
+import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-export-client";
 import type { VideoMailOptions } from "../WidgetVideoDialog";
 import ChartOptionsMenu from '../ChartOptionsMenu';
 import Modal from '../Modal';
@@ -190,7 +190,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
     if (!node) return null;
     return captureNodeToBlob(node, Math.min(1, 160 / node.getBoundingClientRect().width));
   }, [chartExport.chartRef]);
-  const widgetActions = <ChartOptionsMenu presentation={actions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
+  const widgetActions = <ChartOptionsMenu presentation={actions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
         onRestart={animated?async()=>{
           const node=chartExport.chartRef.current;
           if(node)await controlChartAnimation(node,{mode:'restart'});

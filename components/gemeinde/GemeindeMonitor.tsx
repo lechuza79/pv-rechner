@@ -104,7 +104,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   const role = widgetRole(item);
   const [period, setPeriod] = useState("current");
   const [videoMonth, setVideoMonth] = useState(item.story.solarMonth?.month);
-  const videoParams: VideoRequestParams | undefined = item.template === "radial" && paket.ags === "06440016" && videoMonth ? {widget:"gemeinde-solar-monat", ags:paket.ags, period:videoMonth} : undefined;
+  const videoParams: VideoRequestParams | undefined = item.template === "radial" && videoMonth ? {widget:"gemeinde-solar-monat", ags:paket.ags, period:videoMonth} : undefined;
   const isDonut = item.template === "anteilsdonut";
   const isComposition = item.template === "anlagenraster";
   const hasStockPeriod = isDonut || isComposition;

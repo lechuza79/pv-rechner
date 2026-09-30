@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
-import { isAdminSession } from "../../../../lib/admin-guard";
+import { videoDirectAccess } from "../../../../lib/video-export-entitlement";
 import { openByDownloadToken, openByJob } from "../../../../lib/video-export-service";
 
 // The finished MP4. Two keys open it: the download token from the mail, or
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const job = req.nextUrl.searchParams.get("job");
   let file;
   try {
-    file = job ? ((await isAdminSession()) ? await openByJob(job) : null) : await openByDownloadToken(req.nextUrl.searchParams.get("t"));
+    file = job ? ((await videoDirectAccess()) ? await openByJob(job) : null) : await openByDownloadToken(req.nextUrl.searchParams.get("t"));
   } catch (e) {
     console.error(`video-export file failed: ${e instanceof Error ? e.message : String(e)}`);
     return new NextResponse("Nicht verfügbar", { status: 503, headers: { "Cache-Control": "no-store" } });

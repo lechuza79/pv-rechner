@@ -2644,3 +2644,11 @@ allein reicht nicht, wenn niemand die Gegend kennt: Bestätigen kann nur der Nut
 | `docs/wettbewerb-solantiq.md` | Der einzige direkte Wettbewerber, an seinem eigenen Rechner gemessen — was er kann, was wir können, wo die eine echte Lücke ist |
 | `docs/fachbetriebe-ausbau-ideen.md` | Sechs Ideen des Betreibers für später, je mit dem, was vorher zu klären wäre — nichts davon beschlossen |
 | `docs/quellen/fachbetriebe/google-solar-api-lizenz.md` | Googles Dachanalyse: Lizenz geklärt, Datenqualität gemessen, Ergebnis verworfen — samt der vier Irrtümer, die nicht zurückkommen dürfen |
+
+## Shared server video exports (30 September 2026)
+
+Video-capable monitor charts use one server queue and one entitlement in `lib/video-export-entitlement.ts`. Currently only the operator/admin may render and download directly; a login alone grants nothing. Other visitors confirm their email before a render is queued. Future plan permissions belong in that entitlement, including file delivery, never in individual chart components.
+
+`VIDEO_WIDGETS` in `lib/video-export-config.ts` defines accepted places, period shape, render route and period control for each chart. `ExportableWidgetFrame` binds the shared email request from `videoParams`. Regional races and monthly solar charts at municipal/regional level use that same modal and service. Pages without real source data reject requests; no synthetic fallback.
+
+`prepareNodeCapture` owns the export DOM for both PNG and server MP4. `VideoRenderBridge` advances the existing animation timeline. The worker captures native Chromium frames at 30 fps and encodes H.264 with FFmpeg; it does not rebuild the chart or alter the timeline. Regional racing page and render surface consume `regionalRaceData`. Existing transactional limits, confirmation, caching and expiry remain shared.
