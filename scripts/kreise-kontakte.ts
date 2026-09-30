@@ -14,6 +14,8 @@
  *
  *   --mode=evaluate   offline über bereits geholte Seiten
  *   --mode=research   begrenzte Abrufe je Kreis (Standard-Budget 15)
+ *   --mode=suche      Presse-/Klimaschutzseiten über Sitemap und Website-Suche vormerken
+ *   --mode=browser    zweiter Durchgang mit echtem Browser für Kreise ohne Fachstelle
  *   --mode=summary    Zahlen über alle Ergebnisse
  *   --mode=apply      belegte Fachkontakte eintragen (--schreiben)
  *
@@ -30,6 +32,9 @@ import {
   bewerten, laufen, readJson, recherchieren, writeJson,
   type Bestand, type Eintrag, type Ergebnis,
 } from "./lib/kontakt-lauf";
+import { browserSchliessen, rendern } from "./lib/kontakt-browser";
+import { entschluesseltOderRoh } from "../lib/uri-sicher";
+import { suchAdresse, suchFormular, suchseitenLink } from "../lib/funding-url-suche";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
 
 const arg = (name: string) => process.argv.find(a => a.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -109,6 +114,62 @@ async function kreise(): Promise<(Zeile & { name: string })[]> {
   return (data as Zeile[]).map(z => ({ ...z, name: name.get(z.region_id) ?? z.region_id }));
 }
 
+/**
+ * Pages worth reading first, found per district before the research run.
+ * The plain crawl follows the menu; on a district portal the press office and
+ * the climate office sit three levels deep, and a budget of 30 pages ran out on
+ * other departments (30.09.2026: 111 districts without a Fachstelle, several
+ * with hundreds of addresses read and none of them the right one).
+ */
+const SEEDS = resolve(OUT, "seeds.json");
+const ZIEL = /presse|pressestelle|oeffentlichkeitsarbeit|öffentlichkeitsarbeit|medien(?:service|kontakt)|klimaschutz|klimamanagement|energie(?:beratung|management|agentur)?|nachhaltigkeit/i;
+const seeds = (): Record<string, { url: string; priority: number }[]> => existsSync(SEEDS) ? readJson(SEEDS) : {};
+
+async function holen(url: string): Promise<string | null> {
+  try {
+    const r = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (compatible; solar-check.io contact research)" }, signal: AbortSignal.timeout(15_000), redirect: "follow" });
+    return r.ok ? await r.text() : null;
+  } catch { return null; }
+}
+
+async function vormerken(e: Eintrag): Promise<{ url: string; priority: number }[]> {
+  const host = new URL(e.website!).host.replace(/^www\./, "");
+  const eigen = (u: string) => { try { return new URL(u).host.replace(/^www\./, "") === host; } catch { return false; } };
+  const funde = new Map<string, number>();
+  const nimm = (u: string, text = "") => {
+    if (!eigen(u) || /\.(jpe?g|png|gif|svg|css|js|ics|zip)(\?|$)/i.test(u)) return;
+    const treffer = ZIEL.test(entschluesseltOderRoh(u).replace(/[-_/]/g, " ")) || ZIEL.test(text);
+    if (treffer) funde.set(u.split("#")[0], Math.max(funde.get(u) ?? 0, /presse|klima/i.test(u + text) ? 1000 : 900));
+  };
+  const origin = new URL(e.website!).origin;
+  for (const pfad of ["/sitemap.xml", "/sitemap_index.xml"]) {
+    const xml = await holen(origin + pfad);
+    if (!xml) continue;
+    const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map(m => m[1]);
+    for (const l of locs.filter(l => /sitemap/i.test(l) && l.endsWith(".xml")).slice(0, 8)) {
+      const sub = await holen(l);
+      if (sub) for (const m of sub.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)) nimm(m[1]);
+    }
+    for (const l of locs) nimm(l);
+    if (funde.size) break;
+  }
+  const start = await holen(e.website!);
+  if (start) {
+    const formular = suchFormular(start, e.website!);
+    const suchseite = formular ? null : suchseitenLink(start, e.website!);
+    for (const begriff of ["Pressestelle", "Klimaschutz"]) {
+      const url = formular ? suchAdresse(formular, begriff) : suchseite ? `${suchseite}${suchseite.includes("?") ? "&" : "?"}q=${encodeURIComponent(begriff)}` : null;
+      if (!url) continue;
+      const html = await holen(url);
+      if (!html) continue;
+      for (const m of html.matchAll(/<a\s[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]{0,200}?)<\/a>/gi)) {
+        try { nimm(new URL(m[1], url).href, m[2].replace(/<[^>]+>/g, " ")); } catch { /* malformed link */ }
+      }
+    }
+  }
+  return [...funde].map(([url, priority]) => ({ url, priority })).sort((a, b) => b.priority - a.priority).slice(0, 12);
+}
+
 function bestandAus(zeilen: Awaited<ReturnType<typeof kreise>>): { bestand: Bestand; eintraege: Map<string, Eintrag> } {
   const eintraege = new Map<string, Eintrag>();
   for (const z of zeilen) {
@@ -117,6 +178,7 @@ function bestandAus(zeilen: Awaited<ReturnType<typeof kreise>>): { bestand: Best
     eintraege.set(z.region_id, {
       id: z.region_id, name: z.name.replace(/^(Landkreis|Kreis)\s+/, ""), website,
       baseline: [...new Set(baseline)], verbund: null, gespeicherteSeiten: [], eingabe: baseline,
+      offeneLinks: seeds()[z.region_id] ?? [],
     });
   }
   const bestand: Bestand = {
@@ -163,10 +225,37 @@ function summary(anzahl: number) {
   console.log(JSON.stringify(out, null, 1));
 }
 
+/**
+ * A mailbox whose NAME is the office ("pressestelle@kreis-lippe.de",
+ * "klimaschutz@landkreis-uelzen.de"), published on the district's own site.
+ * The engine never takes a role from a mailbox name — right for people and
+ * shared inboxes, but it left 24 districts without their obvious press inbox
+ * and 14 without their climate inbox (30.09.2026). Used only as a fallback when
+ * no role is proven in the text, and recorded with the page it stood on.
+ */
+const PRESSE_POSTFACH = /^(?:presse|pressestelle|pressebuero|medien|oeffentlichkeitsarbeit|kommunikation)[@.-]/;
+const KLIMA_POSTFACH = /^(?:klimaschutz|klima|klimaschutzmanagement|energie|energieberatung|klimaschutzagentur)[@.-]/;
+function postfachNachName(r: any, muster: RegExp): { email: string; url: string } | null {
+  const dir = resolve(OUT, "sources", r.id);
+  if (!existsSync(dir)) return null;
+  const site = (h: string) => h.toLowerCase().split(".").slice(-2).join(".");
+  const own = site(new URL(r.website).hostname);
+  for (const f of readdirSync(dir).filter(f => f.endsWith(".html"))) {
+    const meta = existsSync(resolve(dir, f.replace(/\.html$/, ".json"))) ? readJson(resolve(dir, f.replace(/\.html$/, ".json"))) : {};
+    for (const m of readFileSync(resolve(dir, f), "utf8").match(/[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,}/gi) ?? []) {
+      const email = m.toLowerCase(), domain = email.split("@")[1];
+      if (/de-mail\.de$/.test(domain) || !muster.test(email)) continue;
+      if (site(domain) !== own && !/^(?:lra|landratsamt)[-.][a-z-]+\.bayern\.de$/.test(domain)) continue;
+      return { email, url: meta.finalUrl ?? meta.url ?? r.website };
+    }
+  }
+  return null;
+}
+
 /** Same columns as the municipal apply: Klimaschutz, Presse, all belegte Fachkontakte. */
 async function apply() {
   const c = await db();
-  let geschrieben = 0, mitFach = 0, nurAllgemein = 0;
+  let geschrieben = 0, mitFach = 0, nurAllgemein = 0, postfach = 0;
   for (const r of ergebnisse()) {
     const k = fachkontakteAus(r);
     const felder: Record<string, unknown> = {
@@ -174,6 +263,8 @@ async function apply() {
       presse_kontakt_email: k.presse?.email ?? null, presse_kontakt_beleg_url: k.presse?.belegUrl ?? null,
       fachkontakte: k.alle.length ? k.alle : null, fachkontakte_at: k.alle.length ? new Date().toISOString() : null,
     };
+    if (!k.presse) { const p = postfachNachName(r, PRESSE_POSTFACH); if (p) { felder.presse_email = p.email; felder.presse_email_quelle = "postfachname"; felder.presse_beleg = p.url; postfach++; } }
+    if (!k.klima) { const p = postfachNachName(r, KLIMA_POSTFACH); if (p) { felder.klima_email = p.email; felder.klima_beleg_url = p.url; postfach++; } }
     if (k.alle.length) mitFach++;
     // A general mailbox with a page is the fallback when no Fachstelle is proven.
     else if (r.general?.length) { nurAllgemein++; felder.email = r.general[0]; }
@@ -182,7 +273,7 @@ async function apply() {
     if (error) throw new Error(`${r.id}: ${error.message}`);
     geschrieben++;
   }
-  console.log(JSON.stringify({ schreiben, mitFach, nurAllgemein, geschrieben }));
+  console.log(JSON.stringify({ schreiben, mitFach, nurAllgemein, postfach, geschrieben }));
 }
 
 async function main() {
@@ -194,6 +285,35 @@ async function main() {
   if (ids) { const wanted = new Set(ids); rows = rows.filter(r => wanted.has(r.id)); }
   const parts = Number(arg("parts") ?? 1), part = Number(arg("part") ?? 0);
   rows = rows.filter((_, i) => i % parts === part);
+  if (mode === "suche") {
+    const ohne = rows.filter(e => { const k = fachkontakteAus(gefiltert(bewerten(bestand, e))); return !k.klima || !k.presse; });
+    const alle = seeds();
+    console.log(`${ohne.length} Kreise ohne Klima- oder Pressestelle · Vorsuche`);
+    for (const e of ohne) {
+      alle[e.id] = await vormerken(e);
+      writeJson(SEEDS, alle);
+      // The research log would otherwise report the district as finished.
+      const log = resolve(OUT, "research", `${e.id}.json`);
+      if (alle[e.id].length && existsSync(log)) (await import("node:fs")).unlinkSync(log);
+      console.log(e.id, e.name, "|", alle[e.id].length, "Seiten vorgemerkt", alle[e.id].slice(0, 2).map(l => l.url).join(" "));
+    }
+    return;
+  }
+  if (mode === "browser") {
+    // Portals that build their menu in the browser left the plain fetch on the
+    // start page (24 of 58 districts without any address, 30.09.2026).
+    const ohneFach = (e: Eintrag) => { const k = fachkontakteAus(gefiltert(bewerten(bestand, e))); return !k.klima && !k.presse; };
+    rows = rows.filter(ohneFach);
+    console.log(`${rows.length} Kreise ohne Fachstelle · Browser-Durchgang`);
+    try {
+      for (const e of rows) {
+        const r = await rendern(bestand, e, Number(arg("seiten") ?? 10));
+        const f = fachkontakteAus(gefiltert(bewerten(bestand, e)));
+        console.log(e.id, e.name, "| gelesen", r.gelesen.length, r.fehler ?? "", "| Klima:", f.klima?.email ?? "—", "| Presse:", f.presse?.email ?? "—");
+      }
+    } finally { await browserSchliessen(); }
+    return;
+  }
   console.log(`${rows.length} Kreise · Modus ${mode}`);
   await laufen(bestand, rows, async e => {
     if (mode === "research") await recherchieren(bestand, e, BUDGET); else bewerten(bestand, e);
