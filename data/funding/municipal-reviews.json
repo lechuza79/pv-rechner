@@ -79313,5 +79313,979 @@
         "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
       }
     ]
+  },
+  {
+    "regionId": "13075017",
+    "name": "Brietzig",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brietzig (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075018",
+    "name": "Brünzow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brünzow (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075025",
+    "name": "Dargelin",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dargelin (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075027",
+    "name": "Dersekow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dersekow (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075028",
+    "name": "Diedrichshagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Diedrichshagen (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075032",
+    "name": "Fahrenwalde",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fahrenwalde (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075042",
+    "name": "Groß Luckow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Luckow (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075050",
+    "name": "Hinrichshagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hinrichshagen (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075059",
+    "name": "Katzow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Katzow (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075060",
+    "name": "Kemnitz",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kemnitz (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075063",
+    "name": "Koblentz",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Koblentz (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075071",
+    "name": "Krugsdorf",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Krugsdorf (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075076",
+    "name": "Levenhagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Levenhagen (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075081",
+    "name": "Loissin",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Loissin (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075091",
+    "name": "Mesekenhagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mesekenhagen (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075097",
+    "name": "Neu Boltenhagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neu Boltenhagen (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075103",
+    "name": "Nieden",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nieden (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075104",
+    "name": "Papendorf",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Papendorf (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075105",
+    "name": "Pasewalk",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pasewalk (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075109",
+    "name": "Polzow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Polzow (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075120",
+    "name": "Rubenow",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rubenow (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075126",
+    "name": "Schönwalde",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönwalde (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075138",
+    "name": "Viereck",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Viereck (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075142",
+    "name": "Weitenhagen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weitenhagen (Amt Landhagen): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "landhagen.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“, „Zuschuss“, „Förderung“ und Hauptmenü am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landhagen.de/?s=Photovoltaik",
+        "finding": "01.10.2026: Volltextsuche des Amts Landhagen: „Photovoltaik“ liefert nur Bebauungspläne für Solar-Sondergebiete (u. a. Dargelin), „Förderung“ nur eine Informationsveranstaltung zur Transformationsförderung für Unternehmen; „Balkonkraftwerk“, „Wärmepumpe“ und „Zuschuss“ ohne Treffer."
+      },
+      {
+        "url": "https://www.landhagen.de/",
+        "finding": "01.10.2026: Das Menü des Amts hat keinen Förder-, Klima- oder Energiebereich."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landhagen.de/einladung-zur-informationsveranstaltung-um-die-transformationsfoerderung-fuer-unternehmen-in-mv",
+        "disposition": "reviewed",
+        "reason": "Einladung zu einer Informationsveranstaltung über Transformationsförderung für Unternehmen in MV; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.landhagen.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "13075146",
+    "name": "Wusterhusen",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wusterhusen (Amt Lubminer Heide): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "amtlubmin.de Hauptmenü vollständig und „Förderprojekte“ am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "01.10.2026: „Förderprojekte im Amt Lubmin“ nennt nur Vorhaben von Amt und Gemeinden (DigitalPakt Schule, Ersatzneubau Grundschule Kemnitz, IREK, Straßenbau Brünzow u. a.); kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amtlubmin.de/",
+        "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Verweis, nicht mehr erreichbar (HTTP 404); kein Förderinhalt. Förderangebot des Amts über die Seite „Förderprojekte“ und das Hauptmenü geprüft.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte von Amt und Gemeinden (Schulen, IREK, Straßenbau); kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13075149",
+    "name": "Zerrenthin",
+    "checkedAt": "2026-10-01T06:49:03Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zerrenthin (Amt Uecker-Randow-Tal (Verwaltung bei der Stadt Pasewalk)): kein kommunaler Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Quellen sind Vereinsseiten, Vorhaben der Verwaltung oder Unternehmensförderung; Menü und Suche des Amts nennen keinen Haushaltszuschuss. Der Landkreis Vorpommern-Greifswald fördert ebenfalls nicht.",
+    "searches": [
+      "pasewalk.de „Fördermöglichkeiten“ (auch Seite des Amts Uecker-Randow-Tal, das unter pasewalk.de/amt-uer-tal geführt wird) am 01.10.2026 gelesen",
+      "pasewalk.de Volltextsuche „Solar“, „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“ am 01.10.2026",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026“ am 01.10.2026 (nur Landesprogramm MV und Portale); Landkreis Vorpommern-Greifswald bereits ohne Haushaltszuschuss abgeschlossen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/",
+        "finding": "01.10.2026: Die Stadt nennt drei eigene Förderungen — Vereinsförderung (bis 500 Euro), „Demokratie leben!“ und den Verfügungsfonds Citymanagement; keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.pasewalk.de/?s=Solar",
+        "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "pasewalk.de/orte/freunde-und-foerderer-des-gymnasiums-pasewalk-1908-e-v",
+        "disposition": "reviewed",
+        "reason": "Vereinsseite (Förderverein bzw. Verein „Sandförderschlauchturm“) im Ortsverzeichnis; das Wort „Förder“ steht nur im Vereinsnamen, kein Zuschuss.",
+        "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
+      }
+    ]
   }
 ]
