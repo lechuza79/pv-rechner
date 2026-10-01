@@ -21,6 +21,7 @@ import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../
 import { liesNotiz } from "../lib/outreach-ruecklauf";
 import { heuteInBerlin } from "../lib/zeit";
 import { domainAus, verlinkendeDomains } from "./lib/verweise";
+import { ordneVerweise, belegteVerweise } from "../lib/verweis-herkunft";
 import { bilanz, quoteText, type Veroeffentlichung } from "../lib/kommunen-veroeffentlichung";
 import { offeneHinweisZeilen } from "../lib/kommunen-hinweise";
 
@@ -183,13 +184,38 @@ async function main(): Promise<void> {
   } else {
     try {
       const { domains } = await verlinkendeDomains(login, pass);
-      const verlinkt = raus.filter((z) => { const d = domainAus(z.website); return !!d && domains.has(d); });
-      log(
-        `    ${verlinkt.length} ${verlinkt.length === 1 ? "angeschriebene Gemeinde verlinkt" : "angeschriebene Gemeinden verlinken"} uns (Backlink-Prüfung)` +
-          (verlinkt.length ? `: ${verlinkt.map((z) => `${z.mastr_regions.name} (${domains.get(domainAus(z.website)!) || domainAus(z.website)})`).join(", ")}` : ""),
+      // Die Presse trägt die Meldung häufiger als die Gemeinde selbst. Nur
+      // gegen Gemeinde-Domains zu prüfen meldete am 01.10.2026 zwei Verweise,
+      // wo acht standen — siehe lib/verweis-herkunft.ts.
+      const gemeindeDomains = new Map<string, string>();
+      for (const z of raus) {
+        const d = domainAus(z.website);
+        if (d) gemeindeDomains.set(d, z.mastr_regions.name);
+      }
+      const beitragsDomains = new Set(
+        ((pubs ?? []) as Veroeffentlichung[]).map((v) => domainAus(v.url)).filter((d): d is string => !!d),
       );
-      const nichtVermerkt = verlinkt.filter((z) => z.outreach_status !== "veroeffentlicht");
-      if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((z) => z.mastr_regions.name).join(", ")}`, "warn");
+      const h = ordneVerweise(domains, gemeindeDomains, beitragsDomains);
+      const belegt = belegteVerweise(h);
+      log(
+        `    ${belegt} ${belegt === 1 ? "Verweis auf uns ist belegt" : "Verweise auf uns sind belegt"} (Backlink-Prüfung, ${domains.size} verlinkende Domains insgesamt)`,
+      );
+      if (h.gemeinden.length) {
+        log(`      Gemeinden (${h.gemeinden.length}): ${h.gemeinden.map((g) => `${g.gemeinde} (${g.domain})`).join(", ")}`);
+      }
+      if (h.beitraege.length) {
+        log(`      Presse und andere Beiträge (${h.beitraege.length}): ${h.beitraege.map((b) => b.domain).join(", ")}`);
+      }
+      if (h.unzugeordnet.length) {
+        log(
+          `      ${h.unzugeordnet.length} verlinkende Domains keiner eigenen Quelle zuzuordnen — nicht mitgezählt, bitte selbst ansehen: ` +
+            h.unzugeordnet.map((u) => u.domain).join(", "),
+        );
+      }
+      const nichtVermerkt = h.gemeinden.filter(
+        (g) => raus.find((z) => domainAus(z.website) === g.domain)?.outreach_status !== "veroeffentlicht",
+      );
+      if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((g) => g.gemeinde).join(", ")}`, "warn");
     } catch (e) {
       log(`Verlinkungen NICHT geprüft: ${(e as Error).message}`, "warn");
     }
