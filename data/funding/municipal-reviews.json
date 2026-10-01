@@ -80287,5 +80287,2069 @@
         "evidenceUrl": "https://www.pasewalk.de/aktuelles/meinpasewalk-app/foerdermoeglichkeiten/"
       }
     ]
+  },
+  {
+    "regionId": "13074",
+    "name": "Landkreis Nordwestmecklenburg",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Nordwestmecklenburg führt kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe von Privathaushalten. Seine Förderseiten betreffen Ländliche Entwicklung, Infrastruktur, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kultur, EU-Projekte und Mobilität (Fahrgastinformation); die Klimaschutzseite nennt Projekte, kein Haushaltsprogramm. Für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "nordwestmecklenburg.de: Förderungen, Förderung Mobilität, Klimaschutz und -anpassung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderung-mobilitaet.html",
+        "finding": "Im Original gelesen (01.10.2026): Projektförderung Mobilität (Dynamische Fahrgastinformation, EFRE/Metropolregion Hamburg) — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderung.html",
+        "finding": "Kreis Nordwestmecklenburg: kein Zuschussprogramm für Privathaushalte (PV/Speicher/Balkon/WP); Lauf 20261001T0802Z"
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen1-copy-1607352305.html",
+        "finding": "Kreis Nordwestmecklenburg: kein Zuschussprogramm für Privathaushalte (PV/Speicher/Balkon/WP); Lauf 20261001T0802Z"
+      }
+    ],
+    "sources": [
+      {
+        "url": "nordwestmecklenburg.de/de/foerderung-mobilitaet.html",
+        "disposition": "reviewed",
+        "reason": "Projektförderung des Kreises (Fahrgastinformation, EFRE) — kein Haushaltszuschuss",
+        "evidenceUrl": "https://www.nordwestmecklenburg.de/de/foerderung-mobilitaet.html"
+      },
+      {
+        "url": "nordwestmecklenburg.de/de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Kreis Nordwestmecklenburg: kein Zuschussprogramm für Privathaushalte (PV/Speicher/Balkon/WP); Lauf 20261001T0802Z",
+        "evidenceUrl": "https://www.nordwestmecklenburg.de/de/foerderung.html"
+      },
+      {
+        "url": "nordwestmecklenburg.de/de/foerderungen.html",
+        "disposition": "reviewed",
+        "reason": "Kreis Nordwestmecklenburg: kein Zuschussprogramm für Privathaushalte (PV/Speicher/Balkon/WP); Lauf 20261001T0802Z",
+        "evidenceUrl": "https://www.nordwestmecklenburg.de/de/foerderungen.html"
+      },
+      {
+        "url": "nordwestmecklenburg.de/de/foerderungen1-copy-1607352305.html",
+        "disposition": "reviewed",
+        "reason": "Kreis Nordwestmecklenburg: kein Zuschussprogramm für Privathaushalte (PV/Speicher/Balkon/WP); Lauf 20261001T0802Z",
+        "evidenceUrl": "https://www.nordwestmecklenburg.de/de/foerderungen1-copy-1607352305.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074003",
+    "name": "Barnekow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Barnekow gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074006",
+    "name": "Bibow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bibow gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074008",
+    "name": "Bobitz",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bobitz gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074010",
+    "name": "Boltenhagen",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Boltenhagen gehört zum Amt Klützer Winkel (Landkreis Nordwestmecklenburg). Weder das Amt Klützer Winkel noch seine Gemeinden führen ein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht von Amt und allen sechs Gemeinden enthält als einzige einschlägige Richtlinie die Boltenhagener „Richtlinie zur Gewährung einer gemeindlichen Förderung privater Aufdach-Solarthermieanlagen“ (seit 01.01.2024, 100 €/m², höchstens 500 € je Haushalt) — Solarthermie liegt außerhalb des Katalogumfangs und wird deshalb nicht aufgenommen. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "kluetzer-winkel.de: Ortsrecht-Verzeichnis (167 Dokumente) gelesen",
+      "kluetzer-winkel.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kluetzer-winkel.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Ortsrecht von Amt, Klütz, Boltenhagen, Kalkhorst, Hohenkirchen, Damshagen und Zierow — einschlägig nur die Boltenhagener Förderrichtlinie für Aufdach-Solarthermie sowie Vereinsförderung; keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://daten.verwaltungsportal.de/dateien/legalframework/5/1/0/3/5/Boltenhagen_Richtlinie_Zuschuss_Aufdach-Solarthermie_1_.pdf",
+        "finding": "Im Original gelesen (01.10.2026, Scan): „einmaligen Investitionszuschusses in Höhe von 100,00 €/m², höchstens jedoch 500,00 Euro je Haushalt“ für Heizungs-/Warmwasser-Solarthermie, in Kraft 01.01.2024 — nicht im Katalogumfang (Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe)."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe 0 Treffer; Solar nur die Solarthermie-Richtlinie Boltenhagen."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.boltenhagen.de/service/investitionen/duenenpromenade/duenenpromenadefoerderung/index.html",
+        "finding": "Landesförderung für den Bau der Dünenpromenade — keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "boltenhagen.de/service/investitionen/duenenpromenade/duenenpromenadefoerderung/index.html",
+        "disposition": "reviewed",
+        "reason": "Landesförderung für den Bau der Dünenpromenade — keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.boltenhagen.de/service/investitionen/duenenpromenade/duenenpromenadefoerderung/index.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074020",
+    "name": "Dragun",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dragun gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074021",
+    "name": "Gadebusch",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gadebusch gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074023",
+    "name": "Glasin",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Glasin gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074030",
+    "name": "Groß Stieten",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Stieten gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074031",
+    "name": "Hohen Viecheln",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohen Viecheln gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074032",
+    "name": "Hohenkirchen",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohenkirchen gehört zum Amt Klützer Winkel (Landkreis Nordwestmecklenburg). Weder das Amt Klützer Winkel noch seine Gemeinden führen ein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht von Amt und allen sechs Gemeinden enthält als einzige einschlägige Richtlinie die Boltenhagener „Richtlinie zur Gewährung einer gemeindlichen Förderung privater Aufdach-Solarthermieanlagen“ (seit 01.01.2024, 100 €/m², höchstens 500 € je Haushalt) — Solarthermie liegt außerhalb des Katalogumfangs und wird deshalb nicht aufgenommen. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "kluetzer-winkel.de: Ortsrecht-Verzeichnis (167 Dokumente) gelesen",
+      "kluetzer-winkel.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kluetzer-winkel.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Ortsrecht von Amt, Klütz, Boltenhagen, Kalkhorst, Hohenkirchen, Damshagen und Zierow — einschlägig nur die Boltenhagener Förderrichtlinie für Aufdach-Solarthermie sowie Vereinsförderung; keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://daten.verwaltungsportal.de/dateien/legalframework/5/1/0/3/5/Boltenhagen_Richtlinie_Zuschuss_Aufdach-Solarthermie_1_.pdf",
+        "finding": "Im Original gelesen (01.10.2026, Scan): „einmaligen Investitionszuschusses in Höhe von 100,00 €/m², höchstens jedoch 500,00 Euro je Haushalt“ für Heizungs-/Warmwasser-Solarthermie, in Kraft 01.01.2024 — nicht im Katalogumfang (Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe)."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe 0 Treffer; Solar nur die Solarthermie-Richtlinie Boltenhagen."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/contact/index/link",
+        "finding": "Kontakt-/Weiterempfehlungslink der Amtsseite ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html",
+        "finding": "EU-geförderte Projekte des Amtes/der Gemeinden — keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken",
+        "finding": "Druckfassung derselben Seite"
+      }
+    ],
+    "sources": [
+      {
+        "url": "kluetzer-winkel.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontakt-/Weiterempfehlungslink der Amtsseite ohne Förderinhalt.",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/contact/index/link"
+      },
+      {
+        "url": "kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html",
+        "disposition": "reviewed",
+        "reason": "EU-geförderte Projekte des Amtes/der Gemeinden — keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html"
+      },
+      {
+        "url": "kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "13074036",
+    "name": "Jesendorf",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Jesendorf gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074039",
+    "name": "Klütz",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klütz gehört zum Amt Klützer Winkel (Landkreis Nordwestmecklenburg). Weder das Amt Klützer Winkel noch seine Gemeinden führen ein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht von Amt und allen sechs Gemeinden enthält als einzige einschlägige Richtlinie die Boltenhagener „Richtlinie zur Gewährung einer gemeindlichen Förderung privater Aufdach-Solarthermieanlagen“ (seit 01.01.2024, 100 €/m², höchstens 500 € je Haushalt) — Solarthermie liegt außerhalb des Katalogumfangs und wird deshalb nicht aufgenommen. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "kluetzer-winkel.de: Ortsrecht-Verzeichnis (167 Dokumente) gelesen",
+      "kluetzer-winkel.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kluetzer-winkel.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Ortsrecht von Amt, Klütz, Boltenhagen, Kalkhorst, Hohenkirchen, Damshagen und Zierow — einschlägig nur die Boltenhagener Förderrichtlinie für Aufdach-Solarthermie sowie Vereinsförderung; keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://daten.verwaltungsportal.de/dateien/legalframework/5/1/0/3/5/Boltenhagen_Richtlinie_Zuschuss_Aufdach-Solarthermie_1_.pdf",
+        "finding": "Im Original gelesen (01.10.2026, Scan): „einmaligen Investitionszuschusses in Höhe von 100,00 €/m², höchstens jedoch 500,00 Euro je Haushalt“ für Heizungs-/Warmwasser-Solarthermie, in Kraft 01.01.2024 — nicht im Katalogumfang (Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe)."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe 0 Treffer; Solar nur die Solarthermie-Richtlinie Boltenhagen."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.kluetz-mv.de/?view=article&id=233:foerderprogramm-naturmomente-laendlicher-tourismus&catid=12",
+        "finding": "Bundeswettbewerb ländlicher Tourismus — keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "kluetz-mv.de/?view=article&amp;id=233:foerderprogramm-naturmomente-laendlicher-tourismus&amp;catid=12",
+        "disposition": "reviewed",
+        "reason": "Bundeswettbewerb ländlicher Tourismus — keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.kluetz-mv.de/?view=article&id=233:foerderprogramm-naturmomente-laendlicher-tourismus&catid=12"
+      }
+    ]
+  },
+  {
+    "regionId": "13074040",
+    "name": "Kneese",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kneese gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074043",
+    "name": "Krembz",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Krembz gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074046",
+    "name": "Lübberstorf",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lübberstorf gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074047",
+    "name": "Lübow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lübow gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074053",
+    "name": "Metelsdorf",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Metelsdorf gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074054",
+    "name": "Mühlen Eichsen",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mühlen Eichsen gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074057",
+    "name": "Neukloster",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukloster gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074060",
+    "name": "Passee",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Passee gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074068",
+    "name": "Roggendorf",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Roggendorf gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074070",
+    "name": "Rögnitz",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rögnitz gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074081",
+    "name": "Veelböken",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Veelböken gehört zum Amt Gadebusch (Landkreis Nordwestmecklenburg). Weder das Amt Gadebusch noch die Stadt Gadebusch oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seite „Energie- und Fördermittelberatung für Privathaushalte“ verlinkt nur auf Förderfinder von Bund und Land; die Volltextsuche der Amtsseite findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Speicher und Steckersolar keine Förderrichtlinie (Solar nur Bebauungsplan Solarpark Deponie, Förderrichtlinie nur Digitalpakt). Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "gadebusch.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Steckersolar, Speicher",
+      "gadebusch.de Klimaschutz / Energie- und Fördermittelberatung / Förderprojekte",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte/",
+        "finding": "Im Original gelesen (01.10.2026): Nur Linkliste zu Energieberatung der Verbraucherzentrale, BAFA, LFI-Förderfinder, Förderwegweiser und KfW — kein eigenes Programm des Amtes."
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026, durchsucht auch Dokumente): Photovoltaik, Balkonkraftwerk, Wärmepumpe, Steckersolar 0 Treffer; Solar nur B-Plan Nr. 35 Solarpark Deponie und Solarpotenzialkataster; Förderrichtlinie nur Digitalpaktförderrichtlinie; Zuschuss nur Wohngeld."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "finding": "Formular 'Barriere melden', kein Förderinhalt"
+      },
+      {
+        "url": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "finding": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
+        "disposition": "reviewed",
+        "reason": "Formular 'Barriere melden', kein Förderinhalt",
+        "evidenceUrl": "https://www.gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F"
+      },
+      {
+        "url": "gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&amp;brotID=900000113&amp;rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/portal/seiten/energie-und-foerdermittelberatung-fuer-privathaushalte-900000108-28390.html?naviID=900000113&brotID=900000113&rubrik=900000006"
+      },
+      {
+        "url": "gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte",
+        "disposition": "reviewed",
+        "reason": "Nur Linkliste auf Bundes-/Landes-Förderfinder und Energieberatung, kein eigenes Programm des Amtes Gadebusch",
+        "evidenceUrl": "https://www.gadebusch.de/stadt-gadebusch/klimaschutz/energie-und-foerdermittelberatung-fuer-privathaushalte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte"
+      },
+      {
+        "url": "gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13074082",
+    "name": "Ventschow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ventschow gehört zum Amt Dorf Mecklenburg-Bad Kleinen (Landkreis Nordwestmecklenburg). Weder das Amt noch eine seiner Gemeinden führt ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht aller neun Gemeinden und des Amtes enthält keine solche Richtlinie; die Förderseite listet nur Bauprojekte der Gemeinden mit EU-, Landes- und Kreismitteln, die Aufrufe zu Fördermittelanträgen betreffen Vereine und Initiativen. Der Landkreis Nordwestmecklenburg hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-dorfmecklenburg-badkleinen.de: Satzungen von Amt, Bad Kleinen, Barnekow, Bobitz, Dorf Mecklenburg, Groß Stieten, Hohen Viecheln, Lübow, Metelsdorf, Ventschow (je Liste gelesen)",
+      "amt-dorfmecklenburg-badkleinen.de Volltextsuche (?s=): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/satzungen-bobitz/",
+        "finding": "Im Original gelesen (01.10.2026): Die Satzungslisten von Amt und allen neun Gemeinden (Hauptsatzungen, Gebühren, Steuern, Straßenreinigung, Feuerwehr u. a.) enthalten keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk und Wärmepumpe ohne Inhaltstreffer; Photovoltaik nur Bebauungspläne für Freiflächen-/Agri-PV und Sitzungsbekanntmachungen; Zuschuss/Förderung nur Schul- und Vereinsförderung."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "finding": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe"
+      },
+      {
+        "url": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "finding": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen an die Gemeinden (Vereinsförderung), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/aufforderung-erinnerung-zur-einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen",
+        "disposition": "reviewed",
+        "reason": "Erinnerung an Zuwendungsanträge von Vereinen/Initiativen für 2027 (Gemeinde Bobitz), keine Förderung von PV/Speicher/Balkon/Wärmepumpe",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/einreichung-von-foerdermittelantraegen"
+      },
+      {
+        "url": "amt-dorfmecklenburg-badkleinen.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler Bauprojekte mit EU-/Landes-/Kreismitteln (Schulen, Straßenbeleuchtung, Radweg), keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.amt-dorfmecklenburg-badkleinen.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "13074087",
+    "name": "Wismar",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Hansestadt Wismar führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Ihre Förderrichtlinie betrifft Kultur, Jugend und Wohlfahrtspflege, daneben Sportförderung und Schüleraustausch; die Volltextsuche findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen und eine Anlage auf einer Schule, zu Balkonkraftwerk und Steckersolar nichts. Die Stadtwerke Wismar werben nur mit Neukundenboni. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "wismar.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Steckersolar, Solar, Zuschuss, Förderprogramm, Förderrichtlinie, Wärmepumpe, Klimaschutz, Richtlinie",
+      "wismar.de Förderrichtlinie der Hansestadt Wismar (Dienstleistung)",
+      "stadtwerke-wismar.de Startseite"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?ModID=10&FID=2634.796.1",
+        "finding": "Im Original gelesen (01.10.2026): „gewährt finanzielle Zuwendungen für Projekte und Leistungen in den Bereichen kulturelle Förderung, Kinder- und Jugendarbeit …“ — Förderrichtlinie für Kultur, Jugend und Wohlfahrtspflege, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.wismar.de/?NavID=2634.438&qs=Photovoltaik",
+        "finding": "Volltextsuche (01.10.2026): Photovoltaik nur Bebauungspläne Freiflächenanlagen, Bürgerschaftsprotokolle und PV-Anlage der Tarnow-Schule; Balkonkraftwerk/Steckersolar/Mini-PV ohne Treffer; Zuschuss nur Wohngeld, Schüleraustausch, Sportförderung."
+      },
+      {
+        "url": "https://www.stadtwerke-wismar.de/",
+        "finding": "Im Original gelesen (01.10.2026): nur Neukundenbonus für Strom- und Gastarife, kein Zuschuss für Photovoltaik, Speicher oder Balkonkraftwerk."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt zwar den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Kein Programm fuer private Anlagen."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=A",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=B",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=D",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=E",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=F",
+        "finding": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderung-Zuschuss-f%C3%BCr-eine-Begegnung-im-Rahmen-einer-bilateralen-Schulpartnerschaft-Sch%C3%BCleraustausch-beantragen.php",
+        "finding": "Dienstleistung „Förderung: Zuschuss für eine Begegnung im Rahmen einer bilateralen Schulpartnerschaft (Schüleraustausch)“ — keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt zwar den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Kein Programm fuer private Anlagen.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=A"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=B"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=D"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=E"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Am 23.09.2026 mit echtem Browser geoeffnet: Die Adresse traegt den Titel Foerderrichtlinie der Hansestadt Wismar, liefert aber das Kategorien-Verzeichnis des Buergerservice. Die Kategorie Foerderprogramme ist leer - kein einziger Eintrag. Dieselbe Seite unter einem Buchstabenfilter des A-Z-Verzeichnisses.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php?NavID=4176.395&such=F%C3%B6rderrichtlinie%25der%25Hansestadt%25Wismar&sfwort=1&kat=125.189&kuo=1&ort=125.2&k_sub=1&startkat=2634.658&ModID=10&object=tx%7C4176.2.1&alpha=F"
+      },
+      {
+        "url": "wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderung-Zuschuss-f%C3%BCr-eine-Begegnung-im-Rahmen-einer-bilateralen-Schulpartnerschaft-Sch%C3%BCleraustausch-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistung „Förderung: Zuschuss für eine Begegnung im Rahmen einer bilateralen Schulpartnerschaft (Schüleraustausch)“ — keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderung-Zuschuss-f%C3%BCr-eine-Begegnung-im-Rahmen-einer-bilateralen-Schulpartnerschaft-Sch%C3%BCleraustausch-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13074089",
+    "name": "Zierow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zierow gehört zum Amt Klützer Winkel (Landkreis Nordwestmecklenburg). Weder das Amt Klützer Winkel noch seine Gemeinden führen ein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht von Amt und allen sechs Gemeinden enthält als einzige einschlägige Richtlinie die Boltenhagener „Richtlinie zur Gewährung einer gemeindlichen Förderung privater Aufdach-Solarthermieanlagen“ (seit 01.01.2024, 100 €/m², höchstens 500 € je Haushalt) — Solarthermie liegt außerhalb des Katalogumfangs und wird deshalb nicht aufgenommen. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "kluetzer-winkel.de: Ortsrecht-Verzeichnis (167 Dokumente) gelesen",
+      "kluetzer-winkel.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kluetzer-winkel.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Ortsrecht von Amt, Klütz, Boltenhagen, Kalkhorst, Hohenkirchen, Damshagen und Zierow — einschlägig nur die Boltenhagener Förderrichtlinie für Aufdach-Solarthermie sowie Vereinsförderung; keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://daten.verwaltungsportal.de/dateien/legalframework/5/1/0/3/5/Boltenhagen_Richtlinie_Zuschuss_Aufdach-Solarthermie_1_.pdf",
+        "finding": "Im Original gelesen (01.10.2026, Scan): „einmaligen Investitionszuschusses in Höhe von 100,00 €/m², höchstens jedoch 500,00 Euro je Haushalt“ für Heizungs-/Warmwasser-Solarthermie, in Kraft 01.01.2024 — nicht im Katalogumfang (Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe)."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe 0 Treffer; Solar nur die Solarthermie-Richtlinie Boltenhagen."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/contact/index/link",
+        "finding": "Kontakt-/Weiterempfehlungslink der Amtsseite ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html",
+        "finding": "EU-geförderte Projekte des Amtes/der Gemeinden — keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken",
+        "finding": "Druckfassung derselben Seite"
+      }
+    ],
+    "sources": [
+      {
+        "url": "kluetzer-winkel.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontakt-/Weiterempfehlungslink der Amtsseite ohne Förderinhalt.",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/contact/index/link"
+      },
+      {
+        "url": "kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html",
+        "disposition": "reviewed",
+        "reason": "EU-geförderte Projekte des Amtes/der Gemeinden — keine Förderung für Privathaushalte",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html"
+      },
+      {
+        "url": "kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite",
+        "evidenceUrl": "https://www.kluetzer-winkel.de/seite/327981/eu-f%C3%B6rdermittel.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "13074090",
+    "name": "Zurow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zurow gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074091",
+    "name": "Züsow",
+    "checkedAt": "2026-10-01T08:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Züsow gehört zum Amt Neukloster-Warin (Landkreis Nordwestmecklenburg). Weder das Amt Neukloster-Warin noch die Stadt Neukloster oder die übrigen amtsangehörigen Gemeinden führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Das Ortsrecht des Amtes (98 Satzungen und Richtlinien) enthält keine Förderrichtlinie; der Menüpunkt „Förderprogramme“ verweist auf die Förderdatenbank des Bundes, die Seite „Förderprogramme“ der Stadt Neukloster ist leer. Der Landkreis hat kein Haushaltsprogramm; für Balkonkraftwerke gilt das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-neukloster-warin.de: Ortsrecht-Verzeichnis (98 Dokumente) gelesen",
+      "amt-neukloster-warin.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher, Richtlinie",
+      "Landkreis Nordwestmecklenburg: Seiten Förderungen und Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neukloster-warin.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Das Ortsrecht des Amtes und seiner Gemeinden (98 Dokumente) enthält keine Förder- oder Zuschussrichtlinie für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-neukloster-warin.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (01.10.2026): Balkonkraftwerk, Photovoltaik, Solar, Förderrichtlinie, Speicher ohne Inhaltstreffer; Zuschuss und Wärmepumpe nur Einträge im Firmen-/Vereinsverzeichnis. Im Menü führt „Förderprogramme“ auf foerderdatenbank.de (Bund)."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/foerderungen.html",
+        "finding": "Im Original gelesen (01.10.2026): Förderseite des Landkreises führt nur Ländliche Entwicklung, Infrastruktur und Wirtschaft, Dorferneuerung, Fischerei, Wohlfahrtspflege, Kulturförderung, EU-Projekte und Infrastrukturprojekte — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.nordwestmecklenburg.de/de/klimaschutz_und_anpassung.html",
+        "finding": "Im Original gelesen (01.10.2026): Klimaschutzseite des Landkreises beschreibt Projekte (u. a. EU-Ostseeprojekt), nennt kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/",
+        "finding": "Für Balkonkraftwerke besteht das Landesprogramm des LFI M-V (im Katalog als Landesprogramm geführt); es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "finding": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen."
+      },
+      {
+        "url": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "finding": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt"
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderdatenbank.de/Foerder-DB/Navigation/root.html",
+        "disposition": "reviewed",
+        "reason": "Menüverweis des Amtes Neukloster-Warin („Förderprogramme“) auf die Förderdatenbank des Bundes — Bundesdatenbank, kein kommunales Programm. Live-Abruf am 01.10.2026 durch Bot-Prüfung des Bundes-Portals gesperrt; der Verweis selbst wurde im Menü der Amtsseite im Original gelesen.",
+        "evidenceUrl": "https://www.foerderdatenbank.de/Foerder-DB/Navigation/root.html"
+      },
+      {
+        "url": "stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html",
+        "disposition": "reviewed",
+        "reason": "Seite 'Förderprogramme' ohne Inhalt (nur Überschrift, 21.09.2026), kein Programm genannt",
+        "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
+      }
+    ]
   }
 ]
