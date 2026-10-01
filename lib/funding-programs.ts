@@ -2254,19 +2254,28 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     stand: "August 2026",
     status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp + je kWh Speicher (derzeit keine Antragsannahme)",
+    coveredCosts: "Zuschuss je kWp nach neuer Richtlinie (derzeit keine Antragsannahme)",
     rates: [
-      { label: "PV-Anlage", value: "300 €/kWp, max. 6.000 €" },
-      { label: "Batteriespeicher", value: "300 €/kWh, max. 3.000 €" },
+      { label: "PV-Anlage", value: "200 €/kWp, höchstens 20 kWp; mit Wärmepumpe 300 €, mit Wallbox 230 €, mit beidem 330 € je kWp" },
     ],
     conditions: [
-      "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an — sie baut das digitale Antragsverfahren um; wie lange das dauert, sagt sie nicht",
+      "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an",
+      "Seit dem 10. September 2026 gilt eine neue Richtlinie; Anträge nimmt die Stadt nach eigener Angabe voraussichtlich ab Oktober 2026 wieder an",
+      "Batteriespeicher werden nach der neuen Richtlinie nicht mehr eigens gefördert",
       "Vollständige Anträge, die vor dem 10. August 2026 eingegangen sind, werden regulär weiterbearbeitet",
       "Mieter ausdrücklich antragsberechtigt",
       "Gefördert werden Gebäude mit bis zu acht Wohneinheiten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 300, speicherPerKwh: 300, pvCap: 6000, speicherCap: 3000,
+    // NEUE RICHTLINIE (01.10.2026, Quartalsprüfung, Council 3/3): In Kraft seit
+    // 10.09.2026, § 3 — „200,- €/kWp … Maximal sind 20 kWp förderfähig",
+    // „Solarstrombatterien sind nicht Gegenstand der Förderung". Die alten Sätze
+    // (300 €/kWp bis 6.000 €, Speicher 300 €/kWh bis 3.000 €) stammten aus der
+    // Richtlinie 2022 und sind gesenkt bzw. gestrichen — die sichere Richtung.
+    // Status bleibt `pausiert`, bis die Seite die Antragsannahme bestätigt; der
+    // Balkon-Satz der neuen Richtlinie ist bewusst NICHT nachgetragen (neuer
+    // Abzug = Vorschlag an den Betreiber).
+    pvPerKwp: 200, pvCap: 4000,
   },
   "nidda-solar": {
     // „Balkonkraftwerk" statt des amtlichen „Mini-PV" (26.08.2026): Die Stadt
@@ -2684,7 +2693,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage (≥ 5 kWp)", value: "150 €/kWp" },
       { label: "Batteriespeicher", value: "100 €/kWh, max. 1.200 €" },
     ],
-    conditions: ["Modul 'Energie erzeugen' aktuell ausgeschöpft"],
+    conditions: [
+      "Modul 'Energie erzeugen' aktuell ausgeschöpft; seit 8. Juni 2026 ist eine Antragstellung bis auf Weiteres nicht möglich",
+      "Große PV-Anlagen ab 5 kWp werden nur für gemeinnützige, eingetragene Vereine bezuschusst, nicht für Privathaushalte",
+      "Speicher nur zusammen mit einer PV-Anlage ab 5 kWp und mindestens 0,5 kWh je kWp",
+    ],
     combinableWith: BUND,
   },
 
@@ -5156,6 +5169,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind natürliche Personen",
       "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert",
+      { text: "Der Stromspeicher muss mindestens 2,5 kWh fassen", nur: ["pv"] as FundingTechnik[] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] as FundingTechnik[] },
       "Die Dachanlage muss mindestens 5 kWp leisten — die unterste Stufe beginnt dort",
       "Anlagen, die vor dem 1. Mai 2022 in Betrieb gingen, sind ausgeschlossen",
       "Der Fördertopf umfasst insgesamt 50.000 €",
@@ -5606,14 +5621,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "beratzhausen-effizient", name: "Beratzhausen effizient",
     traeger: "Markt Beratzhausen", level: "kommune", region: "Beratzhausen",
     bundesland: "Bayern", agsCode: "09375118",
-    url: "https://beratzhausen.com/foerderprogramme/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    // AUSGESCHÖPFT (01.10.2026, Quartalsprüfung, Council 3/3): Die Programm-
+    // Unterseite trägt „Achtung! Förderbudget 2026 ist ausgeschöpft!"; die
+    // Richtlinie sagt, bei Überzeichnung gebe es im laufenden Haushaltsjahr
+    // keine weiteren Mittel. Die vorher hinterlegte Übersicht /foerderprogramme/
+    // trägt den Hinweis nicht — deshalb blieb er unbemerkt.
+    url: "https://beratzhausen.com/beratzhausen-effizient/",
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Balkonkraftwerke, daneben Haushaltsgeräte und Energieberatung",
+    coveredCosts: "Zuschuss für Balkonkraftwerke, daneben Haushaltsgeräte und Energieberatung (Budget 2026 ausgeschöpft)",
     maxFoerderung: "bis zu 50 € fürs Balkonkraftwerk",
     rates: [{ label: "Balkonkraftwerk", value: "bis zu 50 €" }],
     conditions: [
-      "Die Höhe im Einzelfall steht in der Förderrichtlinie, nicht auf der Programmseite",
+      "Das Förderbudget 2026 ist ausgeschöpft; im laufenden Haushaltsjahr werden keine weiteren Mittel bewilligt",
+      "Antrag und schriftliche Förderzusage vor dem Kauf; Balkonkraftwerk bis 800 Wp, eine Anlage je Haushalt",
       "Daneben werden ein Energieberatungsgutschein über 200 € und der Tausch von Haushaltsgeräten gefördert",
     ],
     combinableWith: BUND,
@@ -5641,7 +5662,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Zuschuss für die Dachanlage ist zusätzlich auf 10 % des Kaufpreises begrenzt",
       "Je Haushalt wird ein Balkonkraftwerk gefördert",
       "Eine Beschaffung vor Freigabe der Mittel ist zuschussschädlich",
-      "Für Photovoltaik und Balkonkraftwerke stehen zusammen 7.500 € bereit, vergeben nach Eingang",
+      "Für Photovoltaik, Balkonkraftwerke und die Energieberatungs-Checks stehen zusammen 7.500 € bereit, vergeben nach Eingang",
       "Auf die Förderung besteht kein Rechtsanspruch",
     ],
     combinableWith: BUND,
@@ -9249,7 +9270,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "schwebheim-batteriespeicher", name: "Förderung eines Batteriespeichersystems",
     traeger: "Gemeinde Schwebheim", level: "kommune", region: "Schwebheim",
     bundesland: "Bayern", agsCode: "09678176",
-    url: "https://www.schwebheim.de/foerderung-eines-batteriespeichersystems",
+    url: "https://schwebheim.de/buergerservice/foerderrichtlinie-der-gemeinde-schwebheim-zur-foerderung-eines-batteriespeichersystems/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     // Nr. 9 der Richtlinie: „Die Richtlinie tritt mit Wirkung zum 26.01.2026 in
     // Kraft." Kein `endetIso`: Der 31.12.2026 ist das Auslaufen der Richtlinie,
@@ -9782,8 +9803,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Dachanlage bei Maximalbelegung", value: "50 € je kWp, max. 1.400 €", nur: ["pv"] },
     ],
     conditions: [
-      "Mindestens 300 Watt Modulleistung",
-      "Eigentümer, Hausverwaltungen und Mieter; Mieter brauchen das Einverständnis von Vermieter oder Eigentümergemeinschaft",
+      { text: "Mindestens 300 Watt Modulleistung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Eigentümer, Hausverwaltungen und Mieter; Mieter brauchen das Einverständnis von Vermieter oder Eigentümergemeinschaft", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Antragsberechtigt sind Eigentümer, Eigentümergemeinschaften und Hausverwaltungen; Mieter sind hier nicht genannt", nur: ["pv"] as FundingTechnik[] },
+      { text: "Gefördert wird nur die Maximalbelegung der Dachfläche laut Solarkataster Baden-Württemberg", nur: ["pv"] as FundingTechnik[] },
       "Der Antrag wird nach der Umsetzung gestellt, spätestens sechs Monate nach der Installation",
       "Antragsschluss ist der 15. Dezember 2026",
       "Eine gleichzeitige Förderung durch Bund oder Land Baden-Württemberg ist ausgeschlossen",
@@ -9812,6 +9835,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: [
       { text: "Module bis 2.000 W, Einspeisung höchstens 800 W", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Gebäude, die unter die Photovoltaik-Pflicht in Baden-Württemberg fallen (Neubau, grundlegende Dachsanierung), werden nicht gefördert", nur: ["pv"] as FundingTechnik[] },
+      { text: "Voraussetzung ist die Maximalbelegung der Dachfläche des Hauptgebäudes laut Solarkataster; nur überwiegend zu Wohnzwecken genutzte Gebäude", nur: ["pv"] as FundingTechnik[] },
       "Der Antrag wird spätestens sechs Monate nach Abschluss der Maßnahme gestellt",
       "Für eine Wohneinheit mit bereits geförderter Anlage gibt es keine weitere Förderung",
       "Für dasselbe Vorhaben darf keine andere öffentliche Förderung bestehen oder beantragt sein",
