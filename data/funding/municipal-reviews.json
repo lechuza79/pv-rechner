@@ -27600,7 +27600,7 @@
   {
     "regionId": "07143062",
     "name": "Ransbach-Baumbach",
-    "checkedAt": "2026-09-21T12:40:00Z",
+    "checkedAt": "2026-10-01T12:20:00Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -27623,6 +27623,10 @@
       {
         "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
         "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "finding": "Im Original gelesen (01.10.2026, Lauf 20261001T1203Z): Unterlagen zur Bevölkerungsbeteiligung an der Kommunalen Wärmeplanung (September 2025, 82 Seiten) — Planungsdokument, kein Förderprogramm; der Balkonkraftwerk-Zuschuss der VG bleibt der einzige Haushaltszuschuss."
       }
     ],
     "sources": [
@@ -27637,6 +27641,12 @@
         "disposition": "reviewed",
         "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
         "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "disposition": "reviewed",
+        "reason": "Unterlagen zur Bevölkerungsbeteiligung an der Kommunalen Wärmeplanung (September 2025, 82 Seiten) — Planungsdokument, kein Förderprogramm; der Balkonkraftwerk-Zuschuss der VG bleibt der einzige Haushaltszuschuss",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF"
       }
     ]
   },
@@ -66857,7 +66867,7 @@
   {
     "regionId": "03351023",
     "name": "Wietze",
-    "checkedAt": "2026-09-26T11:30:00Z",
+    "checkedAt": "2026-10-01T12:20:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -66878,6 +66888,10 @@
       {
         "url": "https://www.wietze.de/",
         "finding": "Am 26.09.2026 auf der Startseite als Link-Titel geprüft: Bekanntmachung zum Bebauungsplan an der Steinförder Straße — Treffer nur über den Straßennamen."
+      },
+      {
+        "url": "https://www.wietze.de/rathaus-politik/amtliche-bekanntmachungen/bebauungsplan-jeversen-nr-15-solarpark-jeversen-hier-aufstellungsbeschluss-gem-2-abs-1-baugesetzbuch-baugb-fruehzeitige-beteiligung-der-oeffentlichkeit-gemaess-3-abs-1-baugb/vorentwurf-bebauungsplan-jeversen-nr.-11-solarpark-jeversen.pdf?cid=ixd",
+        "finding": "Im Original gelesen (01.10.2026, Lauf 20261001T1203Z): Vorentwurf Bebauungsplan Solarpark Jeversen (Bauleitplanung für eine Freiflächenanlage) — kein Zuschuss für Privathaushalte."
       }
     ],
     "sources": [
@@ -66892,6 +66906,12 @@
         "disposition": "reviewed",
         "reason": "Bebauungsplan („Steinförder Straße“), Treffer nur über den Straßennamen.",
         "evidenceUrl": "https://www.wietze.de/"
+      },
+      {
+        "url": "wietze.de/rathaus-politik/amtliche-bekanntmachungen/bebauungsplan-jeversen-nr-15-solarpark-jeversen-hier-aufstellungsbeschluss-gem-2-abs-1-baugesetzbuch-baugb-fruehzeitige-beteiligung-der-oeffentlichkeit-gemaess-3-abs-1-baugb/vorentwurf-bebauungsplan-jeversen-nr.-11-solarpark-jeversen.pdf?cid=ixd",
+        "disposition": "reviewed",
+        "reason": "Vorentwurf Bebauungsplan Solarpark Jeversen (Bauleitplanung für eine Freiflächenanlage) — kein Zuschuss für Privathaushalte",
+        "evidenceUrl": "https://www.wietze.de/rathaus-politik/amtliche-bekanntmachungen/bebauungsplan-jeversen-nr-15-solarpark-jeversen-hier-aufstellungsbeschluss-gem-2-abs-1-baugesetzbuch-baugb-fruehzeitige-beteiligung-der-oeffentlichkeit-gemaess-3-abs-1-baugb/vorentwurf-bebauungsplan-jeversen-nr.-11-solarpark-jeversen.pdf?cid=ixd"
       }
     ]
   },
@@ -70793,7 +70813,7 @@
   {
     "regionId": "07338020",
     "name": "Neuhofen",
-    "checkedAt": "2026-09-27T16:50:00Z",
+    "checkedAt": "2026-10-01T12:20:00Z",
     "recheckAt": "2026-11-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -70811,6 +70831,10 @@
       {
         "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
         "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "finding": "Im Original gelesen (01.10.2026, Lauf 20261001T1203Z): Übersicht Förderrichtlinie/Maßnahmen der Ortsgemeinde Otterstadt (Stand 04.12.2024) — Programm der Nachbargemeinde Otterstadt, gilt nicht für Neuhofen."
       }
     ],
     "sources": [
@@ -70825,6 +70849,12 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Zuschüsse der Ortsgemeinde Otterstadt, gelten nur für Otterstadt.",
         "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      },
+      {
+        "url": "vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "disposition": "reviewed",
+        "reason": "Übersicht Förderrichtlinie/Maßnahmen der Ortsgemeinde Otterstadt (Stand 04.12.2024) — Programm der Nachbargemeinde Otterstadt, gilt nicht für Neuhofen",
+        "evidenceUrl": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv"
       }
     ]
   },
