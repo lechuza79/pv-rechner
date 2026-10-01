@@ -295,6 +295,13 @@ Claude (`audience: "claude"`), nicht ans Postfach. Erzwungen von der Schleuse in
 - **`decisions`** — höchstens 5, je höchstens 4 Zeilen. Jede Entscheidung nennt
   die Wahl **und deine Empfehlung** (CLAUDE.md: „eine konkrete Empfehlung
   mitgeben"). Was Claude selbst tun kann, gehört hier nicht hinein.
+  **Sachfragen gehören nie hinein** (Betreiber-Entscheidung 01.10.2026): Ob ein
+  Programm läuft, welcher Betrag gilt, ob wieder eingeschaltet wird, ob ein
+  Eintrag stimmt, entscheidet der Council, und der Wächter setzt es im Rahmen
+  von Teil 4 um. Eine vom Council bestätigte Empfehlung ist keine Frage mehr.
+  Bleibt eine Sachfrage ungeklärt, steht sie mit nächstem Schritt in `details`.
+  In `decisions` stehen nur Geld, neuer Außenkontakt, Produktumfang und
+  Zugänge, die nur der Betreiber erteilen kann.
 - **`done`** — eine Zeile je Änderung, Beleg im Commit. Zum Sehen, nicht zum
   Abnicken.
 - **`details`** — hier darf alles stehen. Die Rechenschaft entfällt nicht, sie
