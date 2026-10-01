@@ -5445,6 +5445,34 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPercentOfCost: 0.15, balkonCap: 120,
   },
 
+  "laudenbach-steckersolar": {
+    id: "laudenbach-steckersolar", name: "Förderung von Stecker-Solaranlagen",
+    traeger: "Gemeinde Laudenbach", level: "kommune", region: "Laudenbach",
+    bundesland: "Baden-Württemberg", agsCode: "08226040",
+    url: "https://www.gemeinde-laudenbach.de/gemeinde-daten/klimaschutz/bauen-wohnen-energie",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines Balkonkraftwerks (Module, Wechselrichter, Verkabelung, Speicher)",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 100 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, Wechselrichter höchstens 800 W",
+      "Antragsberechtigt sind Eigentümer, Mieter und Vermieter im Gemeindegebiet; bei Mietobjekten mit Einbauerlaubnis des Vermieters",
+      "Fördertopf 2026: 1.000 €, vergeben in der Reihenfolge der Anträge, solange Mittel vorhanden sind; ob noch Mittel übrig sind, weiß nur die Gemeinde",
+      "Beantragt wird nach dem Kauf mit Rechnung, Foto der Anlage, Nachweis aus dem Marktstammdatenregister (Anlage und Speicher) und Nachweis der Produktsicherheit",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme betrieben werden",
+      "Ein nachträglich gekaufter Speicher zu einer bereits geförderten Anlage wird nicht gefördert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie Stand 21.04.2026, Nr. 2: "Die Förderhöhe beträgt 20 % der
+    // Anschaffungskosten, maximal 100 Euro je Anlage." Bewusst KEIN
+    // strukturierter Satz (balkonPercentOfCost): Der Topf 2026 ist 1.000 €
+    // klein und vergibt nach Antragseingang; ob im Oktober noch Mittel da sind,
+    // sagt keine Amtsquelle. Ohne bestätigte Restmittel informiert der Eintrag
+    // nur, statt Geld abzuziehen (Wächterlauf 01.10.2026).
+  },
+
   "sandhausen-foerderprogramme": {
     "id": "sandhausen-foerderprogramme",
     "name": "Förderprogramme erneuerbare Energien",

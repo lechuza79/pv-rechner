@@ -455,6 +455,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/gaiberg", destination: "/photovoltaik-foerderung/baden-wuerttemberg/gaiberg", permanent: true },
       { source: "/photovoltaik-foerderung/heddesheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/heddesheim", permanent: true },
       { source: "/photovoltaik-foerderung/leimen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/leimen", permanent: true },
+      { source: "/photovoltaik-foerderung/laudenbach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/laudenbach", permanent: true },
       { source: "/photovoltaik-foerderung/oftersheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/oftersheim", permanent: true },
       { source: "/photovoltaik-foerderung/sandhausen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/sandhausen", permanent: true },
       { source: "/photovoltaik-foerderung/weinheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/weinheim", permanent: true },

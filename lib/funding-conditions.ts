@@ -759,6 +759,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // rule (supply contract counts as start), the 24-month completion window and
   // the Ortsgemeinde territory rule have no test form yet.
   "bellheim-erneuerbare-energien",
+  // Added 1 Oct 2026: page and guideline (21.04.2026) read in full. Application
+  // AFTER purchase with invoice, the five-year operation duty and the small
+  // first-come budget have no test form yet; the entry deducts nothing.
+  "laudenbach-steckersolar",
 ];
 
 /**

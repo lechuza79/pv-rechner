@@ -84065,5 +84065,142 @@
         "evidenceUrl": "https://wittichenau.de/zwei-projekte-bei-mitmachfond-praemiert"
       }
     ]
+  },
+  {
+    "regionId": "08226040",
+    "name": "Laudenbach",
+    "checkedAt": "2026-10-01T18:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Laudenbach fördert Stecker-Solaranlagen (Balkonkraftwerke) mit 20 % der Anschaffungskosten, höchstens 100 € je Anlage, Fördertopf 2026 1.000 € nach Antragseingang (Richtlinie Stand 21.04.2026). Als Katalogeintrag laudenbach-steckersolar aufgenommen, nur als Information ohne Abzug, weil Restmittel nicht belegt sind. Für Dach-Photovoltaik, eigenständige Speicher und Wärmepumpen gibt es keinen kommunalen Zuschuss, nur Beratung (KLiBA) und eine PV-Kampagne.",
+    "searches": [
+      "gemeinde-laudenbach.de: Startseite und Klimaschutz-Unterseiten (Tiefe 2) nach Technikbegriffen durchsucht, Seite „Bauen, Wohnen, Energie“ und Richtlinie im Volltext gelesen (01.10.2026)",
+      "Websuche auf die Domains der Rhein-Neckar-Gemeinden beschränkt („Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“, 01.10.2026)",
+      "Council 3/3 (zwei unabhängige Prüfer, ein adversarialer) am 01.10.2026: Betrag, Bedingungen, Budget und Gemeindeschlüssel bestätigt; Dach-PV, Speicher und Wärmepumpe ohne Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-laudenbach.de/gemeinde-daten/klimaschutz/bauen-wohnen-energie",
+        "finding": "„Wird eine Anlage gefördert, so werden 20 Prozent der Anschaffungskosten erstattet. Pro Anlage ist die Förderhöhe auf 100 Euro begrenzt. Die Gemeinde hat für das Haushaltsjahr 2026 einen Fördertopf von 1.000 Euro bereitgestellt.“ Kein Hinweis auf einen erschöpften Topf."
+      },
+      {
+        "url": "https://www.gemeinde-laudenbach.de/fileadmin/Dateien/Website/Dateien/Klimaschutz/Richtlinie-zur-Foerderung-von-Steckersolaranlagen_Laudenbach_21.04.2026.pdf",
+        "finding": "Richtlinie, aktualisiert 21.04.2026: „Die Förderhöhe beträgt 20 % der Anschaffungskosten, maximal 100 Euro je Anlage.“ Eine Anlage je Wohneinheit, bis 800 W, fünf Jahre Betrieb, Reihenfolge des Antragseingangs, kein Rechtsanspruch."
+      },
+      {
+        "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=2f43af438eb3a7716f0ce544d033a2ce",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=a524b843538b3695da74c1c7f5bdadf7",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=de3e33828e04fffb8f29aa54c5e0ebeb",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&amp;cHash=2f43af438eb3a7716f0ce544d033a2ce",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=2f43af438eb3a7716f0ce544d033a2ce"
+      },
+      {
+        "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&amp;cHash=a524b843538b3695da74c1c7f5bdadf7",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=a524b843538b3695da74c1c7f5bdadf7"
+      },
+      {
+        "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&amp;cHash=de3e33828e04fffb8f29aa54c5e0ebeb",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=de3e33828e04fffb8f29aa54c5e0ebeb"
+      }
+    ]
+  },
+  {
+    "regionId": "08226105",
+    "name": "Edingen-Neckarhausen",
+    "checkedAt": "2026-10-01T18:20:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde schreibt selbst: „Die Gemeinde Edingen-Neckarhausen bietet derzeit keine Förderungen für Photovoltaik-Anlagen und Balkonkraftwerke an.“ Für Speicher und Wärmepumpen fand sich ebenfalls kein kommunaler Zuschuss; die Klimaschutz-Seiten verweisen auf KfW, BAFA und die kostenlose KLiBA-Beratung.",
+    "searches": [
+      "edingen-neckarhausen.de: Startseite und 17 Klimaschutz-/Energie-Unterseiten (Tiefe 2) nach Technikbegriffen durchsucht, Seite „Photovoltaik“ im Volltext gelesen (01.10.2026)",
+      "Websuche auf edingen-neckarhausen.de beschränkt („Förderung Wärmepumpe Batteriespeicher Zuschuss Gemeinde Förderprogramm“, 01.10.2026): nur Photovoltaik-, KLiBA-, Wärmeplanungs- und Vereinsförderungsseiten, kein kommunaler Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.edingen-neckarhausen.de/buerger/bauen-wohnen/klimaschutz-energie/photovoltaik",
+        "finding": "„Kommunale Förderprogramme: Die Gemeinde Edingen-Neckarhausen bietet derzeit keine Förderungen für Photovoltaik-Anlagen und Balkonkraftwerke an.“ Danach nur Hinweis auf KfW 442 und KLiBA-Beratung."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6006897",
+        "finding": "Am 01.10.2026 abgerufen: Antwort 404. Dieselbe Landesportal-Kennung 6006897 ist bei Laudenbach und Neidenstein „Betriebliches und behördliches Mobilitätsmanagement – Förderung beantragen“; keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6007739",
+        "finding": "Am 01.10.2026 abgerufen: Antwort 404. Dieselbe Landesportal-Kennung 6007739 ist bei Laudenbach und Neidenstein „Förderprogramm kommunale Digitallotsen“; keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Beratung und Förderung für Freiberufler; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "finding": "Bereits zuvor als keine Förderung gelesen; Landesportal-Lebenslage „Finanzielle Hilfen und Förderprogramme“ ohne kommunalen Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Fördermaßnahmen und finanziellen Hilfen für Unternehmen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Auslandsaufenthalten; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6006897",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 abgerufen: Antwort 404. Dieselbe Landesportal-Kennung 6006897 ist bei Laudenbach und Neidenstein „Betriebliches und behördliches Mobilitätsmanagement – Förderung beantragen“; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6006897"
+      },
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6007739",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 abgerufen: Antwort 404. Dieselbe Landesportal-Kennung 6007739 ist bei Laudenbach und Neidenstein „Förderprogramm kommunale Digitallotsen“; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/dienstleistungen/6007739"
+      },
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Beratung und Förderung für Freiberufler; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler"
+      },
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Bereits zuvor als keine Förderung gelesen; Landesportal-Lebenslage „Finanzielle Hilfen und Förderprogramme“ ohne kommunalen Zuschuss für private Anlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme"
+      },
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Fördermaßnahmen und finanziellen Hilfen für Unternehmen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen"
+      },
+      {
+        "url": "edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "disposition": "reviewed",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu Auslandsaufenthalten; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte"
+      }
+    ]
   }
 ]
