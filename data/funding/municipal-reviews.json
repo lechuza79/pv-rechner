@@ -82381,5 +82381,990 @@
         "evidenceUrl": "https://www.stadt-neukloster.de/portal/seiten/foerderprogramme-900000084-28450.html"
       }
     ]
+  },
+  {
+    "regionId": "14625020",
+    "name": "Bautzen",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Bautzen führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Behauptung eines Vergleichsportals („bis zu 2.000 €“) verweist auf eine nicht existierende Stadtseite und findet sich auf bautzen.de nirgends; volt-e.de nennt für Bautzen nur SAB, KfW und einen beendeten JTF-Aufruf. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "bautzen.de Bereich Stadtentwicklung/Verkehr/Umwelt und Fördermittel Städtebau",
+      "Suchmaschine site:bautzen.de Photovoltaik Förderung Zuschuss (nur LED-Umstellung, Wohngeld, Bürgerhaushalt)",
+      "Prüfung der Portalbehauptung „bis 2.000 €“ (checkfox.de, volt-e.de)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bautzen.de/buerger-rathaus-politik/stadtentwicklung-verkehr-umwelt",
+        "finding": "Bereich Stadtentwicklung/Verkehr/Umwelt gelesen (01.10.2026): Unterseiten zu Konzepten, LED-Umstellung, EFRE, Stadtwald u. a.; keine Förderseite für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Adresse bautzen.de/klimaschutz antwortet mit 404."
+      },
+      {
+        "url": "https://checkfox.de/ratgeber/photovoltaik-foerderung-in-sachsen",
+        "finding": "Vergleichsportal behauptet „Bautzen – bis zu 2.000 € für PV-Anlagen auf privaten Dächern“ ohne Programmnamen und verlinkt bautzen.de/klimaschutz – diese Seite existiert nicht (HTTP 404, 01.10.2026); die Stadtseite und die Suchmaschinensuche auf bautzen.de kennen kein solches Programm. Behauptung verworfen."
+      },
+      {
+        "url": "https://www.bautzen.de/leben-in-bautzen/wohnen-bauen/bauen/foerdermittel-staedtebau",
+        "finding": "Gelesen (01.10.2026): nur Städtebauförderung für Fördergebiete Südliche Innenstadt und Allende-Viertel."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://bautzen.de/aktuelles/aufruf-zur-umsetzung-der-koordinierungs-und-fachstelle-foerderprogramm-demokratie-leben",
+        "finding": "Abruf liefert die Startseite; das Thema (Bundesprogramm Demokratie leben) betrifft ohnehin keine Energieförderung."
+      },
+      {
+        "url": "https://bautzen.de/anliegen/foerdermittel",
+        "finding": "Abruf liefert nur die Startseite mit Tagesnachrichten (keine eigene Förderseite mehr); kein Programm für private Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bautzen.de/aktuelles/aufruf-zur-umsetzung-der-koordinierungs-und-fachstelle-foerderprogramm-demokratie-leben",
+        "disposition": "reviewed",
+        "reason": "Abruf liefert die Startseite; das Thema (Bundesprogramm Demokratie leben) betrifft ohnehin keine Energieförderung.",
+        "evidenceUrl": "https://bautzen.de/aktuelles/aufruf-zur-umsetzung-der-koordinierungs-und-fachstelle-foerderprogramm-demokratie-leben"
+      },
+      {
+        "url": "bautzen.de/anliegen/foerdermittel",
+        "disposition": "reviewed",
+        "reason": "Abruf liefert nur die Startseite mit Tagesnachrichten (keine eigene Förderseite mehr); kein Programm für private Anlagen.",
+        "evidenceUrl": "https://bautzen.de/anliegen/foerdermittel"
+      }
+    ]
+  },
+  {
+    "regionId": "14625060",
+    "name": "Burkau",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Burkau führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "gemeinde-burkau.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gemeinde-burkau.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (205 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: keine Treffer; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://gemeinde-burkau.de/leader-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „LEADER Förderung - Gemeinde Burkau“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-burkau.de/leader-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „LEADER Förderung - Gemeinde Burkau“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://gemeinde-burkau.de/leader-foerderung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625110",
+    "name": "Doberschau-Gaußig",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Doberschau-Gaußig führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "doberschau-gaussig.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://doberschau-gaussig.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (281 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Energiemanager der Gemeinde (Bundesförderung NKI) und Bericht über einen 40-MW-Solarpark; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://doberschau-gaussig.de/foerderprojekte-in-der-gemeinde.html",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprojekte Gemeinde Doberschau-Gaussig - Gemeinde, Doberschau, Gnaschwitz, Gaussig, Oberlausitz, Ort, Baut“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "doberschau-gaussig.de/foerderprojekte-in-der-gemeinde.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprojekte Gemeinde Doberschau-Gaussig - Gemeinde, Doberschau, Gnaschwitz, Gaussig, Oberlausitz, Ort, Baut“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://doberschau-gaussig.de/foerderprojekte-in-der-gemeinde.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625130",
+    "name": "Elstra",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Elstra führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "elstra.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://elstra.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (168 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Seite Energieberatung (Bürgerservice-Hinweis, kein Zuschuss); keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://elstra.de/foerdermittelaufrufe.html",
+        "finding": "Im Original gelesen (01.10.2026): „Fördermittelaufrufe Wettbewerbe“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elstra.de/foerdermittelaufrufe.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Fördermittelaufrufe Wettbewerbe“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://elstra.de/foerdermittelaufrufe.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625150",
+    "name": "Göda",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Göda führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "goeda.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://goeda.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (47 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: keine Treffer; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://goeda.de/contact/index/link",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Göda); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://goeda.de/seite/646260/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Göda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://goeda.de/seite/646260/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Göda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "goeda.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Göda); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://goeda.de/contact/index/link"
+      },
+      {
+        "url": "goeda.de/seite/646260/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Göda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://goeda.de/seite/646260/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "goeda.de/seite/646260/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Göda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://goeda.de/seite/646260/gef%C3%B6rderte-projekte.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "14625160",
+    "name": "Großdubrau",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Großdubrau führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; ihr Klimaschutzkonzept setzt auf kommunale Dächer und Wärmeplanung.",
+    "searches": [
+      "grossdubrau.de vollständiges Seitenverzeichnis (177 Adressen) nach Energie-/Förderbegriffen durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grossdubrau.de/energie-klimaschutz.html",
+        "finding": "Seite Energie & Klimaschutz gelesen (01.10.2026): Klimaschutzkonzept, Energiemanagement, Solardach-Offensive auf kommunalen Dächern, Wärmeplanung; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://grossdubrau.de/files/category/Klimaschutzkonzept_Gemeinde_Grossdubrau_1801501469718.pdf",
+        "finding": "Klimaschutzkonzept der Gemeinde: Photovoltaik und Wärmepumpen als Potenzial- und Maßnahmenthemen (u. a. Solardach-Offensive auf kommunalen Dächern); es beschreibt kein bestehendes Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://grossdubrau.de/leader-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „geförderte Projekte in der Gemeinde - Gemeinde Großdubrau“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grossdubrau.de/files/category/Klimaschutzkonzept_Gemeinde_Grossdubrau_1801501469718.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept der Gemeinde: Photovoltaik und Wärmepumpen als Potenzial- und Maßnahmenthemen (u. a. Solardach-Offensive auf kommunalen Dächern); es beschreibt kein bestehendes Zuschussprogramm für Privathaushalte.",
+        "evidenceUrl": "https://grossdubrau.de/files/category/Klimaschutzkonzept_Gemeinde_Grossdubrau_1801501469718.pdf"
+      },
+      {
+        "url": "grossdubrau.de/leader-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „geförderte Projekte in der Gemeinde - Gemeinde Großdubrau“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://grossdubrau.de/leader-foerderung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625240",
+    "name": "Hoyerswerda",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Hoyerswerda führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Ihre Förderseiten betreffen Stadtumbau, EFRE und Strukturwandel; die Suche auf hoyerswerda.de findet Photovoltaik nur in Bauleitplanung und kommunalen Projekten.",
+    "searches": [
+      "hoyerswerda.de Kategorie und Schlagworte Förderprogramme",
+      "Suchmaschine site:hoyerswerda.de Photovoltaik OR Balkonkraftwerk OR Solar Förderung (nur Bebauungsplan PV-Anlage Schwarzkollm, Wärmeplanung, Zoo-Dachanlage)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hoyerswerda.de/wirtschaft/strukturwandel/foerderprogramme/",
+        "finding": "Gelesen (01.10.2026): Förderprogramme des Strukturwandels (InvKG, STARK, JTF) für Kommunen und Träger öffentlicher Aufgaben; nichts für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://hoyerswerda.de/kategorie/foerderprogramme",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/schlagwort/foerderprogramm",
+        "finding": "Im Original gelesen (01.10.2026): „förderprogramm › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/schlagwort/foerderprogramme",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/stadtleben/stadtentwicklung/efre-foerderung",
+        "finding": "Im Original gelesen (01.10.2026): „EFRE-Projekte › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-aktive-stadt-und-ortsteilzentren-sop",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprogramm „Aktive Stadt- und Ortsteilzentren – SOP“ › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-stadtumbau-ost-suo",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprogramm „Wachstum und nachhaltige Erneuerung – WEP“ › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://hoyerswerda.de/wirtschaft/strukturwandel/foerderprogramme",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoyerswerda.de/kategorie/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/kategorie/foerderprogramme"
+      },
+      {
+        "url": "hoyerswerda.de/schlagwort/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „förderprogramm › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/schlagwort/foerderprogramm"
+      },
+      {
+        "url": "hoyerswerda.de/schlagwort/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/schlagwort/foerderprogramme"
+      },
+      {
+        "url": "hoyerswerda.de/stadtleben/stadtentwicklung/efre-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „EFRE-Projekte › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/stadtleben/stadtentwicklung/efre-foerderung"
+      },
+      {
+        "url": "hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-aktive-stadt-und-ortsteilzentren-sop",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprogramm „Aktive Stadt- und Ortsteilzentren – SOP“ › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-aktive-stadt-und-ortsteilzentren-sop"
+      },
+      {
+        "url": "hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-stadtumbau-ost-suo",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprogramm „Wachstum und nachhaltige Erneuerung – WEP“ › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/stadtleben/stadtentwicklung/stadtentwicklung/stadtsanierung-stadtumbau-kind/foerderprogramm-stadtumbau-ost-suo"
+      },
+      {
+        "url": "hoyerswerda.de/wirtschaft/strukturwandel/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://hoyerswerda.de/wirtschaft/strukturwandel/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "14625250",
+    "name": "Kamenz",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Kamenz führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Ihr vollständiges Seitenverzeichnis enthält keine solche Förderseite; die gelesenen Förderseiten betreffen EFRE, ESF, LEADER, ÖPNV und einen Landeszuschuss an ein Unternehmen. Der in einem Portal genannte Zuschuss von rund 300 € war das inzwischen ausgelaufene sächsische Landesprogramm.",
+    "searches": [
+      "kamenz.de vollständiges Seitenverzeichnis (1.937 Adressen) nach klima/energie/solar/photovolt/balkon/stecker/waermepump/foerderricht/zuschuss durchsucht – nur eine Nachricht zur Energiesituation",
+      "Suchmaschine site:kamenz.de Balkonkraftwerk OR Steckersolar OR Photovoltaik Zuschuss (nur E-Mobilität/Batteriewerk)"
+    ],
+    "evidence": [
+      {
+        "url": "https://balkonkraftwerk-check.de/photovoltaik-foerderung/sachsen/kamenz/",
+        "finding": "Portal nennt „rund 300 Euro“ – gemeint ist das 2023 angekündigte Landesprogramm des Freistaats, nicht die Stadt; dieses Landesprogramm ist ausgelaufen. Kein städtisches Programm."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://kamenz.de/ausfuehrliche-nachricht/foerdermittelbescheid-fuer-liofit-zeichen-fuer-die-region.html",
+        "finding": "Fördermittelbescheid des Freistaats für das Recyclingzentrum des Unternehmens Liofit; die erwähnte PV-Anlage und Wärmepumpe gehören zu diesem Gewerbebau, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/efre-esf/efre-foerderung-2021-2027.html",
+        "finding": "Im Original gelesen (01.10.2026): „EFRE-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/efre-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „EFRE-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/esf-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „ESF-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/leader-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „LEADER-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/stadtentwicklung-bauwesen/rl-oepnv-foerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „RL-ÖPNV Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://kamenz.de/efre-foerderung.html?cid=10842&file=files%2Finhaltsgrafiken%2FRathaus_Buergerservice%2FBauen_Umwelt%2FEU-Foerderung%2FEndbericht+Klimaschutzkonzept+Kamenz_9_2018.pdf",
+        "finding": "Integriertes Klimaschutzkonzept der Stadt Kamenz (Endbericht 09/2018, seecon) im Original gelesen (01.10.2026): Für private Gebäudeeigentümer sieht es Information, Eigentümerberatung und Arbeitskreise vor; ein städtisches Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen wird weder beschrieben noch beschlossen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kamenz.de/ausfuehrliche-nachricht/foerdermittelbescheid-fuer-liofit-zeichen-fuer-die-region.html",
+        "disposition": "reviewed",
+        "reason": "Fördermittelbescheid des Freistaats für das Recyclingzentrum des Unternehmens Liofit; die erwähnte PV-Anlage und Wärmepumpe gehören zu diesem Gewerbebau, kein Programm für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/ausfuehrliche-nachricht/foerdermittelbescheid-fuer-liofit-zeichen-fuer-die-region.html"
+      },
+      {
+        "url": "kamenz.de/efre-esf/efre-foerderung-2021-2027.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „EFRE-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/efre-esf/efre-foerderung-2021-2027.html"
+      },
+      {
+        "url": "kamenz.de/efre-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „EFRE-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/efre-foerderung.html"
+      },
+      {
+        "url": "kamenz.de/esf-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „ESF-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/esf-foerderung.html"
+      },
+      {
+        "url": "kamenz.de/leader-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „LEADER-Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/leader-foerderung.html"
+      },
+      {
+        "url": "kamenz.de/stadtentwicklung-bauwesen/rl-oepnv-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „RL-ÖPNV Förderung - Willkommen in der Lessingstadt Kamenz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://kamenz.de/stadtentwicklung-bauwesen/rl-oepnv-foerderung.html"
+      },
+      {
+        "url": "kamenz.de/efre-foerderung.html?cid=10842&file=files%2Finhaltsgrafiken%2FRathaus_Buergerservice%2FBauen_Umwelt%2FEU-Foerderung%2FEndbericht+Klimaschutzkonzept+Kamenz_9_2018.pdf",
+        "disposition": "reviewed",
+        "reason": "Integriertes Klimaschutzkonzept der Stadt Kamenz (Endbericht 09/2018, seecon) im Original gelesen (01.10.2026): Für private Gebäudeeigentümer sieht es Information, Eigentümerberatung und Arbeitskreise vor; ein städtisches Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen wird weder beschrieben noch beschlossen.",
+        "evidenceUrl": "https://kamenz.de/efre-foerderung.html?cid=10842&file=files%2Finhaltsgrafiken%2FRathaus_Buergerservice%2FBauen_Umwelt%2FEU-Foerderung%2FEndbericht+Klimaschutzkonzept+Kamenz_9_2018.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "14625290",
+    "name": "Kubschütz",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Kubschütz führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "gemeinde-kubschuetz.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gemeinde-kubschuetz.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (37 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: keine Treffer; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://gemeinde-kubschuetz.de/seite/368268/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (01.10.2026): „geförderte Projekte - gemeinde-kubschuetz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-kubschuetz.de/seite/368268/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „geförderte Projekte - gemeinde-kubschuetz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://gemeinde-kubschuetz.de/seite/368268/gef%C3%B6rderte-projekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625310",
+    "name": "Lauta",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Lauta führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe; ihre Klimaschutzseite verweist nur auf Bundesförderung.",
+    "searches": [
+      "lauta.de vollständiges Seitenverzeichnis (108 Adressen) nach Energie-/Förderbegriffen durchsucht – nur Förderprogramme/Ideenwettbewerbe und Klimaschutz-Seite"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lauta.de/klimaschutz-klimaanpassungen.html",
+        "finding": "Klimaschutzseite gelesen (01.10.2026): verweist für Haushalte ausschließlich auf BAFA-Förderung (Energieberatung, Heizung) und sagt zu Photovoltaik mit Heizpatrone ausdrücklich, dass es dafür keine Förderung gibt; kein städtisches Programm."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://lauta.de/foerderprogramme.html",
+        "finding": "Im Original gelesen (01.10.2026): „Foerderprogramme / Ideenwettbewerbe - Stadt Lauta und seine Ortsteile“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lauta.de/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Foerderprogramme / Ideenwettbewerbe - Stadt Lauta und seine Ortsteile“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://lauta.de/foerderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625330",
+    "name": "Lohsa",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Lohsa führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "lohsa.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://lohsa.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (194 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Pressemitteilung zum Strukturstärkungsgesetz; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://lohsa.de/leader-foerdermassnahmen.html",
+        "finding": "Im Original gelesen (01.10.2026): „LEADER - Einheitsgemeinde Lohsa“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lohsa.de/leader-foerdermassnahmen.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „LEADER - Einheitsgemeinde Lohsa“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://lohsa.de/leader-foerdermassnahmen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625420",
+    "name": "Oßling",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Oßling führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "ossling.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ossling.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (56 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Energiemanagement der Gemeinde (Bundesförderung); keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://ossling.de/contact/index/link",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Oßling); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://ossling.de/seite/849125/f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Oßling“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://ossling.de/seite/849125/f%C3%B6rderprojekte.html?modus=drucken",
+        "finding": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Oßling“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ossling.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Oßling); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://ossling.de/contact/index/link"
+      },
+      {
+        "url": "ossling.de/seite/849125/f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Oßling“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://ossling.de/seite/849125/f%C3%B6rderprojekte.html"
+      },
+      {
+        "url": "ossling.de/seite/849125/f%C3%B6rderprojekte.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Förderprojekte - Gemeinde Oßling“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://ossling.de/seite/849125/f%C3%B6rderprojekte.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "14625430",
+    "name": "Ottendorf-Okrilla",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Ottendorf-Okrilla führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "ottendorf-okrilla.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ottendorf-okrilla.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (113 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: keine Treffer; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://ottendorf-okrilla.de/contact/index/link",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Ottendorf-Okrilla); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html",
+        "finding": "Im Original gelesen (01.10.2026): „Geförderte Projekte der Gemeinde - Gemeinde Ottendorf-Okrilla“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html?modus=drucken",
+        "finding": "Im Original gelesen (01.10.2026): „Geförderte Projekte der Gemeinde - Gemeinde Ottendorf-Okrilla“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ottendorf-okrilla.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Ottendorf-Okrilla); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://ottendorf-okrilla.de/contact/index/link"
+      },
+      {
+        "url": "ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Geförderte Projekte der Gemeinde - Gemeinde Ottendorf-Okrilla“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html"
+      },
+      {
+        "url": "ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Geförderte Projekte der Gemeinde - Gemeinde Ottendorf-Okrilla“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://ottendorf-okrilla.de/seite/623858/auswahl-gef%C3%B6rderter-projekte-der-gemeinde.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "14625480",
+    "name": "Radeberg",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Radeberg führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Der Bereich Energie/Umwelt beschreibt Wärmeplanung, Energiemanagement und das Klimaschutzkonzept; die Suchtreffer zu Förderprogrammen betreffen Sanierungsgebiete und Stadtgrün.",
+    "searches": [
+      "radeberg.de Bereich Energie und Umwelt",
+      "Suchmaschine site:radeberg.de Photovoltaik OR Balkonkraftwerk OR Klimaschutz Förderung (Klimaschutzkonzept, Zukunft Stadtgrün, Wärmeplanung, Energiemanagement)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.radeberg.de/inhalte/radeberg/_inhalt/energie_umwelt/kommunale-waermeplanung/kommunale-waermeplanung",
+        "finding": "Wärmeplanung der Stadt (Bundesförderung NKI) – kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.radeberg.de/inhalte/radeberg/_inhalt/energie_umwelt/energie_umwelt",
+        "finding": "Bereich Energie/Umwelt gelesen (01.10.2026): Energiemanagement, Wärmeplanung, Klimaschutzkonzept; kein Förderprogramm für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/bekanntmachungen/bekanntmachungen/2026_06_26?searchterm=f%C3%B6rderprogramm",
+        "finding": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/informelle_planungen/seko/erste_fortschreibung_insek?searchterm=f%C3%B6rderprogramm",
+        "finding": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/sanierung/sanierung?searchterm=f%C3%B6rderprogramm",
+        "finding": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/bekanntmachungen/bekanntmachungen/2026_06_26?searchterm=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/bekanntmachungen/bekanntmachungen/2026_06_26?searchterm=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/informelle_planungen/seko/erste_fortschreibung_insek?searchterm=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/informelle_planungen/seko/erste_fortschreibung_insek?searchterm=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/sanierung/sanierung?searchterm=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/sanierung/sanierung?searchterm=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "14625490",
+    "name": "Radibor",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Radibor führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; ihre Energieseite betrifft Wärmeplanung und kommunale Projekte.",
+    "searches": [
+      "radibor.de vollständiges Seitenverzeichnis (92 Adressen) nach Energie-/Förderbegriffen durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.radibor.de/gemeinde/energie-klima",
+        "finding": "Seite Energie & Klima gelesen (01.10.2026): Wärmeplanung, Bürgerbefragung, Nahwärme und PV auf Gemeindedächern; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://radibor.de/gemeinde/gemeinde/leader-foerderung",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (An Error Occurred: Not Found); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://radibor.de/gemeinde/leader-foerderung",
+        "finding": "Im Original gelesen (01.10.2026): „Radibor: LEADER-Förderung für ländliche Entwicklung“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "radibor.de/gemeinde/gemeinde/leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (An Error Occurred: Not Found); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://radibor.de/gemeinde/gemeinde/leader-foerderung"
+      },
+      {
+        "url": "radibor.de/gemeinde/leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Radibor: LEADER-Förderung für ländliche Entwicklung“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://radibor.de/gemeinde/leader-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "14625525",
+    "name": "Schirgiswalde-Kirschau",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Schirgiswalde-Kirschau führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "stadt-schirgiswalde-kirschau.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt-schirgiswalde-kirschau.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (125 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Energiemanagement im Verbund mit Hochkirch und Schmölln-Putzkau (Bundesförderung NKI); keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://stadt-schirgiswalde-kirschau.de/wirtschaft-bauen/foerderungen/energiemanagement.html",
+        "finding": "Im Original gelesen (01.10.2026): „Energiemanagement“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-schirgiswalde-kirschau.de/wirtschaft-bauen/foerderungen/energiemanagement.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Energiemanagement“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://stadt-schirgiswalde-kirschau.de/wirtschaft-bauen/foerderungen/energiemanagement.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625550",
+    "name": "Schwepnitz",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Schwepnitz führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "schwepnitz.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://schwepnitz.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (175 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Stellungnahme zum Regionalplan Kapitel Energie; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://ehrenamt.sachsen.de/foerderprogramm-wir-fuer-sachsen.html",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Die angeforderte Seite existiert leider nicht. - sachsen.de); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://schwepnitz.de/durchgefuehrte-foerdervorhaben.html",
+        "finding": "Im Original gelesen (01.10.2026): „durchgeführte Fördervorhaben - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-404.html",
+        "finding": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-409.html",
+        "finding": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung.html",
+        "finding": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ehrenamt.sachsen.de/foerderprogramm-wir-fuer-sachsen.html",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Die angeforderte Seite existiert leider nicht. - sachsen.de); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://ehrenamt.sachsen.de/foerderprogramm-wir-fuer-sachsen.html"
+      },
+      {
+        "url": "schwepnitz.de/durchgefuehrte-foerdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „durchgeführte Fördervorhaben - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://schwepnitz.de/durchgefuehrte-foerdervorhaben.html"
+      },
+      {
+        "url": "schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-404.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-404.html"
+      },
+      {
+        "url": "schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-409.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung-409.html"
+      },
+      {
+        "url": "schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Hinweis auf Projektförderung - Gemeinde Schwepnitz“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://schwepnitz.de/partnergemeinde/articles/hinweis-auf-projektfoerderung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "14625560",
+    "name": "Sohland a. d. Spree",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Sohland a. d. Spree führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "sohland.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://sohland.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (46 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: keine Treffer; keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://sohland.de/contact/index/link",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Sohland a.d. Spree); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://sohland.de/seite/454617/f%C3%B6rdermittel.html",
+        "finding": "Liste geförderter Gemeindeprojekte; Photovoltaik nur als Teil des Umbaus der Skihütte zum Ski- und Wanderzentrum (kommunales Bauvorhaben)."
+      },
+      {
+        "url": "https://sohland.de/seite/454617/f%C3%B6rdermittel.html?modus=drucken",
+        "finding": "Druckfassung derselben Liste geförderter Gemeindeprojekte; Photovoltaik nur am kommunalen Skizentrum."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sohland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Sohland a.d. Spree); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://sohland.de/contact/index/link"
+      },
+      {
+        "url": "sohland.de/seite/454617/f%C3%B6rdermittel.html",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Gemeindeprojekte; Photovoltaik nur als Teil des Umbaus der Skihütte zum Ski- und Wanderzentrum (kommunales Bauvorhaben).",
+        "evidenceUrl": "https://sohland.de/seite/454617/f%C3%B6rdermittel.html"
+      },
+      {
+        "url": "sohland.de/seite/454617/f%C3%B6rdermittel.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Liste geförderter Gemeindeprojekte; Photovoltaik nur am kommunalen Skizentrum.",
+        "evidenceUrl": "https://sohland.de/seite/454617/f%C3%B6rdermittel.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "14625590",
+    "name": "Steinigtwolmsdorf",
+    "checkedAt": "2026-10-01T14:05:00Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Steinigtwolmsdorf führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle bekannten Förderseiten der Gemeinde betreffen kommunale, LEADER- oder Städtebauprojekte, und ihr vollständiges Seitenverzeichnis enthält keine Förderseite für Haushalte. Das sächsische Landesprogramm für Balkonkraftwerke ist ausgelaufen.",
+    "searches": [
+      "steinigtwolmsdorf.de vollständiges Seitenverzeichnis nach Energie-/Förderbegriffen durchsucht",
+      "Suchmaschine Landkreis Bautzen Gemeinde Zuschuss Balkonkraftwerk Förderung 2026 (kein Treffer für Gemeinden des Kreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://steinigtwolmsdorf.de/sitemap.xml",
+        "finding": "Vollständiges Seitenverzeichnis (80 Adressen) am 01.10.2026 nach klima, energie, solar, photovolt, balkon, stecker, waermepump, foerderrichtlinie, foerderprogramm, zuschuss durchsucht: Treffer nur Energiemanagement der Gemeinde (Förderkennzeichen 67K31647, Bundesförderung); keine Förderseite für private Anlagen."
+      },
+      {
+        "url": "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+        "finding": "Das sächsische Landesprogramm für Balkonkraftwerke (Teil B der Richtlinie Erneuerbare Energien und Speicher) ist ausgelaufen; im Wächterlauf 20261001T1203Z an der Amtsquelle bestätigt. Es ist kein kommunales Programm."
+      },
+      {
+        "url": "https://steinigtwolmsdorf.de/contact/index/link",
+        "finding": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Steinigtwolmsdorf); Kontakt-/Linkadresse ohne Förderinhalt."
+      },
+      {
+        "url": "https://steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html",
+        "finding": "Im Original gelesen (01.10.2026): „Fördermittel - Gemeinde Steinigtwolmsdorf“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html?modus=drucken",
+        "finding": "Im Original gelesen (01.10.2026): „Fördermittel - Gemeinde Steinigtwolmsdorf“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "steinigtwolmsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Abruf am 01.10.2026: HTTP 404 (Ein Fehler ist aufgetreten - Gemeinde Steinigtwolmsdorf); Kontakt-/Linkadresse ohne Förderinhalt.",
+        "evidenceUrl": "https://steinigtwolmsdorf.de/contact/index/link"
+      },
+      {
+        "url": "steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Fördermittel - Gemeinde Steinigtwolmsdorf“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html"
+      },
+      {
+        "url": "steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (01.10.2026): „Fördermittel - Gemeinde Steinigtwolmsdorf“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
+        "evidenceUrl": "https://steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html?modus=drucken"
+      }
+    ]
   }
 ]
