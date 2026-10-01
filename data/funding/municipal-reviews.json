@@ -2,15 +2,16 @@
   {
     "regionId": "01001000",
     "name": "Flensburg",
-    "checkedAt": "2026-09-16T14:48:49.499889+00:00",
-    "recheckAt": "2026-10-01T08:00:00Z",
+    "checkedAt": "2026-10-01T06:00:22Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen; lokale Regionalboni gesondert erfasst.",
-    "outcome": "klaerung",
-    "conclusion": "Manuelle Recherche und unabhängige Gegenprüfung: KlimaBonus bietet lokale Regionalboni für PV und Balkonkraftwerke. Kein Euro-Investitionsabzug. Städtische Solarinfo nennt Beratung; die Förderdienstleistung verweist auf das gestoppte Landesprogramm. Ein zusätzlicher aktuell beantragbarer städtischer Zuschuss ist nicht abschließend geklärt.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Handprüfung nach 14 Tagen ohne Antwort auf die Rückfrage vom 17.09.2026 (01.10.2026): Die Volltextsuche des städtischen Bürgerservice nach „Solar\", „Balkon\" und „Heizung\" liefert nur das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger\" (Balkon-PV, Wärmepumpe, Solarthermie u. a.; Träger IB.SH, vorläufig gestoppt seit 16.11.2023) und das Solarkataster. Die Klimaschutz- und Solarseiten der Stadt nennen keinen eigenen Zuschuss. Die frühere Leistung „haushaltsbezogene Solarpanele\" steht nicht mehr im Bürgerservice. Kein städtischer Euro-Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der KlimaBonus der Regionalwährung (100 KlimaBoni PV, 60 Balkonkraftwerk) bleibt als lokaler Bonus ohne Euro-Abzug erfasst. Eine Antwort auf die Rückfrage öffnet den Fall wieder.",
     "searches": [
       "site:flensburg.de Balkonkraftwerk Förderung 2026",
       "site:flensburg.de Solar Förderung Klimaschutz Kontakt",
-      "Flensburg lokale Förderung Klimabonus PV Balkonkraftwerk"
+      "Flensburg lokale Förderung Klimabonus PV Balkonkraftwerk",
+      "flensburg.de Bürgerservice-Volltextsuche „Solar\", „Balkon\", „Förderung\", „Heizung\" (01.10.2026)"
     ],
     "evidence": [
       {
@@ -24,58 +25,54 @@
       {
         "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
         "finding": "Träger nennt PV-Anlage 100 KlimaBoni und Balkonkraftwerk 60 KlimaBoni. Regionalwährung; nicht als Euro-Zuschuss verrechnet. Durch unabhängigen Gegenprüfer ebenfalls gelesen."
+      },
+      {
+        "url": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php?object=tx%2C4204.2&ModID=10&FID=2306.2396.1&NavID=2306.1966&kat=2306.1670&k_sub=1&kuo=1&ort=2306.1&sfwort=1&startkat=2306.1670",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger\" (Wärmepumpe max. 2000 Euro u. a.): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet\". Kein städtisches Programm."
+      },
+      {
+        "url": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Klimaanpassung/Bundes-F%C3%B6rderprogramm-Klimaanpassung",
+        "finding": "Förderzusage des Bundesumweltministeriums an die Stadt selbst (Klimaanpassungsmanagement bis 06/2027); kein Zuschuss für private Haushalte."
       }
     ],
     "sources": [
       {
         "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "replaced",
+        "reason": "Bundesprogramm für Unternehmen (KMU), kein Zuschuss für private Haushalte; Bürgerservice-Suche nach Förderung für Private liefert nur das gestoppte Landesprogramm.",
+        "evidenceUrl": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php?object=tx%2C4204.2&ModID=10&FID=2306.2396.1&NavID=2306.1966&kat=2306.1670&k_sub=1&kuo=1&ort=2306.1&sfwort=1&startkat=2306.1670"
       },
       {
         "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "replaced",
+        "reason": "Adresse zeigt nur noch die Bürgerservice-Übersicht; die Leistung steht nicht mehr im Verzeichnis (Suche „Solar\"/„Balkon\" am 01.10.2026). Balkon-PV im Bürgerservice ist allein das gestoppte Landesprogramm.",
+        "evidenceUrl": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?FID=2306.2280.1&ModID=10"
       },
       {
         "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "reviewed",
+        "reason": "Gelesen: Landesprogramm der IB.SH, vorläufig gestoppt seit 16.11.2023; kein städtisches Programm.",
+        "evidenceUrl": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php?object=tx%2C4204.2&ModID=10&FID=2306.2396.1&NavID=2306.1966&kat=2306.1670&k_sub=1&kuo=1&ort=2306.1&sfwort=1&startkat=2306.1670"
       },
       {
         "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "reviewed",
+        "reason": "Gelesen: Landesprogramm „Klimaschutz für Bürgerinnen und Bürger\", PV-Balkon max. 200 Euro, vorläufig gestoppt seit 16.11.2023.",
+        "evidenceUrl": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?FID=2306.2280.1&ModID=10"
       },
       {
         "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "replaced",
+        "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php?object=tx%2C4204.2&ModID=10&FID=2306.2396.1&NavID=2306.1966&kat=2306.1670&k_sub=1&kuo=1&ort=2306.1&sfwort=1&startkat=2306.1670"
       },
       {
         "url": "flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Klimaanpassung/Bundes-F%C3%B6rderprogramm-Klimaanpassung",
-        "disposition": "open",
-        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
-        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesförderung an die Stadt selbst (Klimaanpassungsmanagement), kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Klimaanpassung/Bundes-F%C3%B6rderprogramm-Klimaanpassung"
       }
-    ],
-    "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-09-16T14:00:00Z",
-      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen und kommunale Zuschüsse abschließend einordnen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
-    },
-    "enquiry": {
-      "id": "klaerung-01001000",
-      "recipient": "klimaschutz@flensburg.de",
-      "recipientSource": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/",
-      "website": "https://www.flensburg.de",
-      "question": "Auf Ihrer Solarenergieseite finde ich Beratung und das Solarkataster; die Dienstleistungsseite für steckerfertige Photovoltaik verweist auf das gestoppte Landesprogramm. Daneben bietet KlimaBonus lokale Boni in Regionalwährung an. Gibt es darüber hinaus derzeit einen beantragbaren Zuschuss der Stadt Flensburg für private Photovoltaikanlagen, Batteriespeicher, Balkonkraftwerke oder Wärmepumpen? Falls ja: Wo finde ich die aktuelle Richtlinie und den Stand der Antragstellung? Falls nein, hilft mir auch diese kurze Auskunft."
-    }
+    ]
   },
   {
     "regionId": "01004000",
@@ -79087,6 +79084,233 @@
         "disposition": "reviewed",
         "reason": "Dienstleistungseintrag (Buchstabenvariante) zum Landesprogramm Balkon-PV des LFI MV, im Katalog vorhanden.",
         "evidenceUrl": "https://www.kreis-vg.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13075106",
+    "name": "Peenemünde",
+    "checkedAt": "2026-10-01T06:02:36Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Peenemünde (Amt Usedom-Nord): kein kommunaler Zuschuss an Privathaushalte. Die Förderseiten des Amtes listen ausschließlich Fördervorhaben der Gemeinden selbst (Strandzugänge, Spielplatz, Schulen, WC-Anlagen) aus EU-, Bundes- und Landesmitteln.",
+    "searches": [
+      "amtusedomnord.de Kategorien „Förderungen der EU/des Bundes/des Landes\" und Startseitenmenü am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026\" am 01.10.2026 (nur Landesprogramm MV und Portale)"
+    ],
+    "evidence": [
+      {
+        "url": "https://amtusedomnord.de/aktuelles/foerderungen-des-landes/",
+        "finding": "01.10.2026: nur geförderte Vorhaben der Gemeinden (Re-Start Innenstädte, Luftqualität an Schulen, Strandzugänge) — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtusedomnord.de/bundesministerium-fuer-wirtschaft-und-energie-foerderung-neubau-von-zwei-wc-anlagen-im-ostseebad-zinnowitz",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesförderung für den Neubau zweier WC-Anlagen der Gemeinde Zinnowitz, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://amtusedomnord.de/aktuelles/foerderungen-des-landes/"
+      },
+      {
+        "url": "amtusedomnord.de/category/foerderungen-der-eu",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste EU-geförderter Gemeindevorhaben, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://amtusedomnord.de/aktuelles/foerderungen-des-landes/"
+      },
+      {
+        "url": "amtusedomnord.de/category/foerderungen-des-bundes",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste bundesgeförderter Gemeindevorhaben (Digitalpakt Schule u. a.), kein Haushaltszuschuss.",
+        "evidenceUrl": "https://amtusedomnord.de/aktuelles/foerderungen-des-landes/"
+      },
+      {
+        "url": "amtusedomnord.de/category/foerderungen-des-landes",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Liste landesgeförderter Gemeindevorhaben, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://amtusedomnord.de/aktuelles/foerderungen-des-landes/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075130",
+    "name": "Strasburg (Uckermark)",
+    "checkedAt": "2026-10-01T06:02:36Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Strasburg (Um.): kein städtischer Zuschuss an Privathaushalte. Die Seite „Geförderte Projekte\" listet nur Vorhaben der Stadt selbst (LED-Straßenbeleuchtung nach Klimaschutzförderrichtlinie, Straßenausbau, Dachsanierung Alte Schmiede).",
+    "searches": [
+      "strasburg.de Startseitenmenü (klima/energie/förder) und „Geförderte Projekte\" samt Unterseiten am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026\" am 01.10.2026 (nur Landesprogramm MV und Portale)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte",
+        "finding": "01.10.2026: geförderte Projekte der Stadt (u. a. „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik\") — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Übersicht geförderter Vorhaben der Stadt.",
+        "evidenceUrl": "https://www.strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte"
+      },
+      {
+        "url": "strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte/ausbau-teilstueck-lange-strasse-strasburg-um",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Straßenausbau der Stadt, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte"
+      },
+      {
+        "url": "strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte/klimaschutz-projekte-gemaess-klimaschutzfoerderrichtlinie-in-der-stadt-strasburg-um",
+        "disposition": "reviewed",
+        "reason": "Gelesen: LED-Straßenbeleuchtung der Stadt nach Landes-Klimaschutzförderrichtlinie, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte"
+      },
+      {
+        "url": "strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte/sanierung-des-daches-der-alten-schmiede-in-gehren-gefoerdert-von-der-beauftragten-der-bundesregierung-fuer-kultur-und-medien-aufgrund-des-beschlusses-des-deutschen-bundesta",
+        "disposition": "reviewed",
+        "reason": "Dachsanierung eines städtischen Gebäudes (BKM-Mittel) laut Übersicht; kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.strasburg.de/rathaus/bauen-und-wohnen/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13075131",
+    "name": "Torgelow",
+    "checkedAt": "2026-10-01T06:02:36Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Torgelow: kein städtischer Zuschuss an Privathaushalte. „Geförderte Maßnahmen\" nennt nur Vorhaben der Stadt (Beckenwasserpumpen Heidebad, Kläranlage, Grundschule); das Startseitenmenü hat außer Wirtschaftsförderung keinen Förderbereich.",
+    "searches": [
+      "torgelow.de Startseitenmenü (klima/energie/förder) und „Geförderte Maßnahmen\" am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026\" am 01.10.2026 (nur Landesprogramm MV und Portale)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.torgelow.de/de/bauen/gefoerderte-massnahmen/gefoerderte-massnahmen/",
+        "finding": "01.10.2026: Fördervorhaben der Stadt, u. a. „Energieeffiziente Umrüstung der Beckenwasserpumpen im Heidebad Torgelow\" — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "torgelow.de/de/bauen/gefoerderte-massnahmen/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Fördervorhaben der Stadt, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.torgelow.de/de/bauen/gefoerderte-massnahmen/gefoerderte-massnahmen/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075136",
+    "name": "Ueckermünde",
+    "checkedAt": "2026-10-01T06:02:36Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ueckermünde: kein städtischer Zuschuss an Privathaushalte. Die Seite „Förderung Altstadtsanierung\" führt ausschließlich Bundes- und Landesprogramme (BEG/KfW, LFI-Modernisierungsdarlehen, Denkmalpflege, Steuerabschreibung); Wohnraumförderung verweist aufs LFI; „Geförderte Maßnahmen\" sind Vorhaben der Stadt.",
+    "searches": [
+      "ueckermuende.de Förderung Altstadtsanierung, Wohnraumförderung, Klimaschutzkonzept und Geförderte Maßnahmen am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026\" am 01.10.2026 (nur Landesprogramm MV und Portale)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ueckermuende.de/bauen-wirtschaft/bauen-wohnen/foerderung-altstadtsanierung/",
+        "finding": "01.10.2026: Tabelle „Fördermittelgeber\" nennt nur Bund (KfW/BAFA), Land M-V (LFI, Kulturministerium) und Finanzamt — kein städtisches Programm."
+      },
+      {
+        "url": "https://www.ueckermuende.de/politik-verwaltung/gefoerderte-massnahmen/",
+        "finding": "01.10.2026: geförderte Vorhaben der Stadt (Fahrradladeinfrastruktur, Ladesäule u. a.) — kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ueckermuende.de/bauen-wirtschaft/bauen-wohnen/foerderung-altstadtsanierung",
+        "disposition": "reviewed",
+        "reason": "Gelesen: nur Bundes- und Landesprogramme.",
+        "evidenceUrl": "https://www.ueckermuende.de/bauen-wirtschaft/bauen-wohnen/foerderung-altstadtsanierung/"
+      },
+      {
+        "url": "ueckermuende.de/portal/seiten/foerderung-altstadtsanierung-900000226-34850.html?naviID=900000203&amp;brotID=900000203&amp;rubrik=900000001",
+        "disposition": "replaced",
+        "reason": "Alte Portaladresse derselben Seite „Förderung Altstadtsanierung\", durch die aktuelle Fassung erledigt.",
+        "evidenceUrl": "https://www.ueckermuende.de/bauen-wirtschaft/bauen-wohnen/foerderung-altstadtsanierung/"
+      },
+      {
+        "url": "ueckermuende.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.ueckermuende.de%2Fbauen-wirtschaft%2Fbauen-wohnen%2Ffoerderung-altstadtsanierung%2F",
+        "disposition": "replaced",
+        "reason": "Formular „Barriere melden\" mit der Förderseite als Parameter, keine eigene Förderquelle; erledigt durch die gelesene Förderseite.",
+        "evidenceUrl": "https://www.ueckermuende.de/bauen-wirtschaft/bauen-wohnen/foerderung-altstadtsanierung/"
+      },
+      {
+        "url": "ueckermuende.de/politik-verwaltung/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Fördervorhaben der Stadt, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.ueckermuende.de/politik-verwaltung/gefoerderte-massnahmen/"
+      }
+    ]
+  },
+  {
+    "regionId": "13075144",
+    "name": "Wolgast",
+    "checkedAt": "2026-10-01T06:02:36Z",
+    "recheckAt": "2026-12-30T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wolgast: kein städtischer Zuschuss an Privathaushalte. EU-Förderprojekte und Klimaschutzprojekte betreffen Vorhaben der Stadt bzw. des Amtes (Turnhalle, Sportforum, Grundschule Lassan, Klimaschutzkonzept für öffentliche Liegenschaften).",
+    "searches": [
+      "wolgast.de Startseitenmenü, EU-Förderprojekte und Klimaschutzprojekte am 01.10.2026 gelesen",
+      "Websuche „Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Stadt Ueckermünde OR Torgelow OR Strasburg OR Wolgast OR Zinnowitz 2026\" am 01.10.2026 (nur Landesprogramm MV und Portale)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wolgast.de/wirtschaft/klimaschutzprojekte/",
+        "finding": "01.10.2026: Klimaschutzkonzept-Leistungen (Straßenbeleuchtung, Biomassepotenzial, Sanierung öffentlicher Liegenschaften) — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/",
+        "finding": "01.10.2026: EU-geförderte Bauvorhaben der Stadt — kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wolgast.de/neus/eu-foerderperiode-2014-2020/baumassnahme-turnhalle-baustrasse",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Sanierung städtische Turnhalle.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
+      },
+      {
+        "url": "wolgast.de/neus/eu-foerderperiode-2014-2020/sanierung-des-sportforums",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Sanierung Sportforum.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
+      },
+      {
+        "url": "wolgast.de/neus/eu-foerderperiode-2014-2020/sanierung-neustadt-lassan",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Straßensanierung in Lassan.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
+      },
+      {
+        "url": "wolgast.de/wirtschaft/eu-foerderprojekte/grundschule-lassan",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Sanierung Grundschule Lassan.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
+      },
+      {
+        "url": "wolgast.de/wirtschaft/eu-foerderprojekte/heizungssystems-grundschule-lassan",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Heizungssystem der Grundschule Lassan, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
+      },
+      {
+        "url": "wolgast.de/wirtschaft/eu-foerderprojekte/schuetzenhaus",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Sanierung Schützenhaus.",
+        "evidenceUrl": "https://www.wolgast.de/wirtschaft/eu-foerderprojekte/"
       }
     ]
   }

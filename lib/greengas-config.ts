@@ -614,7 +614,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   Wortlaut gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43
   //   Stufen 10/15/30/60 % (2029/2030/2035/2040) zellgleich mit
   //   BIO_TREPPE_STUFEN. Bioheizöl-Suche ohne Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-09-30",
+  // 01.10.2026: Chronologie des GModG-Infoportals (gmodg.bund.de) im Original
+  //   gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026, § 42a
+  //   weiter nur Ankündigung eines Gesetzes bis 01.12.2026, kein Quotengesetz.
+  //   Bioheizöl-Suche erneut nur Händler-/Portalseiten, keine Trägerquelle.
+  geprueftRechtIso: "2026-10-01",
   reviewBy: "2027-07-25",
 };
 
