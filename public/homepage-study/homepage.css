@@ -255,7 +255,7 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 .hs-retro-help[hidden]{display:none}.hs-retro-help>div{position:relative;top:auto;margin-bottom:24px}
 .hs-retro-hero .hs-retro-values .hs-currency{font-size:.42em;font-weight:400;opacity:.65;font-family:'DM Sans',sans-serif}
 .hs-scene-simulation .hs-local-atlas{display:block;padding:25px 28px;max-width:560px;border:1px solid #ffffff80;border-radius:18px;background:linear-gradient(135deg,#f9fff799,#e4f0ed66);backdrop-filter:blur(18px) saturate(.88);color:#173b42;box-shadow:inset 0 1px 0 #ffffff80,0 12px 32px #16343e0c}
-:is(.homepage-study,html[data-homepage-preview])[data-dark=true] .hs-local-atlas{background:#e5eee6c9}
+:is(.homepage-study,html[data-homepage-preview])[data-dark=true] .hs-scene-simulation .hs-local-atlas{background:#e5eee6c9}
 @media(max-width:700px){.hs-scene-simulation .hs-retro-hero h2{font-size:32px;max-width:100%}.hs-scene-simulation .hs-local-atlas{padding:22px;max-width:100%}.hs-scene-simulation .hs-local-atlas strong{font-size:21px}}
 /* Programmatic heading focus should not draw a frame; controls retain focus cues. */
 :is(.homepage-study,html[data-homepage-preview]) .hs-journey h2[tabindex="-1"]:focus{outline:none;box-shadow:none}
