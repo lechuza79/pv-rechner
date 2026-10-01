@@ -377,6 +377,13 @@ export const WIDGETS = {
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
+  regionalMap: {
+    id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",
+    place: {title: "Energie im regionalen Vergleich · {ort}", shareText: "Energie im regionalen Vergleich · {ort} – Solar Check"},
+    exampleParams: {ags: "06440"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Energie im regionalen Vergleich – Solar Check",
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg], exportable: false,
+  },
   regionalRace: {
     id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",
     place: {title: "Solaranlagen im regionalen Vergleich · {ort}", shareText: "Solaranlagen im regionalen Vergleich · {ort} – Solar Check"},

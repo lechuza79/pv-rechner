@@ -122,6 +122,7 @@ export const EMBED_WIDGETS = [
   "pv-zubau-deutschland",
   "region-anlagentyp",
   "regional-race",
+  "regional-map",
   "regional-solar",
   "region-solarleistung",
   "simulation",

@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import OnsiteSearch, {type OnsiteSearchItem} from '../../../components/OnsiteSearch';
 import AutoHeightIframe from '../../../components/AutoHeightIframe';
 import SelectField from '../../../components/SelectField';
-import {galleryEntries,type GalleryPlace,type GalleryEntry} from '../../../lib/widget-gallery';
+import {curatedGalleryEntries,GALLERY_CATEGORIES,type GalleryPlace,type GalleryEntry} from '../../../lib/widget-gallery';
 import styles from './gallery.module.css';
 
 async function places(query:string,signal:AbortSignal):Promise<OnsiteSearchItem[]> {
@@ -44,22 +44,21 @@ function Card({entry}:{entry:GalleryEntry}) {
     </div>
   </article>;
 }
-const filters=[['all','Alle'],['regional','Vor Ort'],['energy','Energie & Ausbau'],['cost','Kosten & Rechner']] as const;
 export default function WidgetGallery({place}:{place:GalleryPlace}) {
   const router=useRouter();
   const [pending,startTransition]=useTransition();
   const [query,setQuery]=useState('');
-  const [filter,setFilter]=useState('all');
-  const all=galleryEntries(place);
+  const [filter,setFilter]=useState<string>('comparison');
+  const all=curatedGalleryEntries(place);
   const fold=(s:string)=>s.toLocaleLowerCase('de').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const entries=all.filter(w=>(filter==='all'||filter===w.group)&&fold(w.title+' '+w.id).includes(fold(query)));
+  const entries=all.filter(w=>filter===w.group&&fold(w.title+' '+w.id).includes(fold(query)));
   return <main className={styles.page}>
     <h1>Widgetgalerie</h1>
     <div className={styles.controls}>
       <div className={styles.place}><label>Ort für die regionalen Widgets</label><OnsiteSearch persistent ariaLabel="Ort für die Widgets suchen" placeholder="Ort suchen …" align="left" loadItems={places} onPick={item=>startTransition(()=>router.replace(`/widget-galerie?ort=${item.id}`,{scroll:false}))}/><span role="status">{pending?'Ort wird geladen …':place.name}</span></div>
       <label className={styles.search}>Widgets suchen<input type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Widget oder Thema"/></label>
     </div>
-    <div className={styles.filters} aria-label="Widget-Themen">{filters.map(([id,label])=><button key={id} aria-pressed={id===filter} onClick={()=>setFilter(id)}>{label}</button>)}<span>{entries.length} {entries.length===1?'Widget':'Widgets'}</span></div>
+    <div className={styles.filters} aria-label="Widget-Themen">{GALLERY_CATEGORIES.map(({id,label})=><button key={id} aria-pressed={id===filter} onClick={()=>setFilter(id)}>{label}</button>)}<span>{entries.length} {entries.length===1?'Widget':'Widgets'}</span></div>
     <div className={styles.grid}>{entries.map(entry=><Card key={entry.id} entry={entry}/>)}</div>
     {!entries.length&&<p>Keine Widgets für diese Auswahl.</p>}
   </main>;

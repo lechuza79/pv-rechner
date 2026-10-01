@@ -1,3 +1,4 @@
+import {regionMapMetrics} from '../../lib/region-map-metrics';
 import {regionalRaceData} from "../../lib/regional-race";
 import RegionNavigation from "./RegionNavigation";
 import { packeRankingZellen } from "../../lib/ranking-zellen";
@@ -22,11 +23,11 @@ import RankingTable from "../atlas/RankingTable";
 import LazyDisclosure from "./LazyDisclosure";
 import { DataSourceNote } from "../PoweredBy";
 import { DATA_SOURCES } from "../../lib/data-sources";
-import { foldSiblings, lastFullYear, type AtlasRegion, type AtlasChild, type RankingRegion, type ChildYearRow } from "../../lib/atlas";
-import { STUFEN, pvLeistungTeile, anlagenZahlTeile, speicherKwhTeile } from "../../lib/atlas-format";
+import { lastFullYear, type AtlasRegion, type AtlasChild, type RankingRegion, type ChildYearRow } from "../../lib/atlas";
+import { STUFEN } from "../../lib/atlas-format";
 import { dashboardDate } from "../../lib/dashboard/format";
 import { districtGeometry, childGeometry } from "../../lib/district-geometry";
-import RegionKarte, { type MapValue } from "./RegionKarte";
+import RegionKarte from "./RegionKarte";
 import GemeindeAbschnittNav from "../gemeinde/GemeindeAbschnittNav";
 import GemeindeAboDialog from "../gemeinde/GemeindeAboDialog";
 import GemeindeSkripte from "../gemeinde/GemeindeSkripte";
@@ -72,11 +73,6 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     isDistrict ? districtGeometry(region.region_id) : childGeometry(level as "bundesland" | "de", region.region_id),
     level === "de" ? Promise.resolve([] as Awaited<ReturnType<typeof getFundingPrograms>>) : getFundingPrograms(),
   ]);
-  const sums = new Map(foldSiblings(ranking.regions, ranking.cells).map(r => [r.region_id, r.sums.alle]));
-  const places: MapValue[] = towns.map(town => {
-    const value = sums.get(town.region_id)?.kwp ?? null;
-    return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${basePath}/${town.slug}` : null };
-  }).sort((a, b) => a.name.localeCompare(b.name, "de"));
   // Reuse the map's geographic boundaries for the footer-style navigation cards.
   const outlines = shapes.map(shape => {
     const points = shape.ground.flat(2);
@@ -84,14 +80,8 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const x = Math.min(...xs), y = Math.min(...ys);
     return {id:shape.id, viewBox:`${x} ${y} ${Math.max(...xs)-x} ${Math.max(...ys)-y}`, path:shape.ground.flatMap(poly => poly.map(ring => `M${ring.map(p=>p.join(',')).join('L')}Z`)).join(' ')};
   });
-  const metrics = [
-    { id: "kwp", label: "Installierte Solarleistung", format: pvLeistungTeile },
-    { id: "count", label: "Solaranlagen", format: anlagenZahlTeile },
-    { id: "speicher", label: "Speicherkapazität", format: speicherKwhTeile },
-  ].map(m => ({ id: m.id, label: m.label, values: places.map(p => {
-    const value = sums.get(p.id)?.[m.id as "kwp" | "count" | "speicher"] ?? null;
-    return { ...p, value, formatted: value === null ? { value: "–", unit: "" } : m.format(value) };
-  }) }));
+  const metrics = regionMapMetrics(towns, ranking, basePath);
+  const places = metrics[0].values;
   const districtPrograms = matchFundingForAgs(allPrograms,region.region_id);
   const programs = new Map(districtPrograms.filter(p=>p.level!=="bund").map(p=>[p.id,p]));
   const coverage = new Map<string,string[]>();

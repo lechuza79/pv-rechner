@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {galleryEntries,type GalleryPlace} from '../widget-gallery';
+import {galleryEntries,curatedGalleryEntries,GALLERY_HIDDEN,GALLERY_CATEGORIES,type GalleryPlace} from '../widget-gallery';
 const place:GalleryPlace={ags:'09679147',name:'Höchberg',districtId:'09679',districtName:'Würzburg',stateId:'09',stateName:'Bayern'};
 describe('shared gallery place',()=>{
   it('uses one selected municipality and its actual ancestors across old and new widgets',()=>{
@@ -14,9 +14,22 @@ describe('shared gallery place',()=>{
   });
   it('keeps national widgets and their variants independent of the selected place',()=>{
     const other={...place,ags:'06440016',name:'Nidda',districtId:'06440',stateId:'06'};
-    const national=(p:GalleryPlace)=>galleryEntries(p).filter(w=>w.group!=='regional');
+    const national=(p:GalleryPlace)=>galleryEntries(p).filter(w=>w.group==='energy'||w.group==='cost');
     expect(national(place)).toEqual(national(other));
     expect(galleryEntries(place).find(w=>w.id==='gruengas-heizkosten')?.variants).toHaveLength(3);
     expect(galleryEntries(place).every(w=>w.variants.length>0)).toBe(true);
+  });
+});
+
+describe('gallery curation',()=>{
+  it('hides legacy candidates only from the gallery, preserving their renderers',()=>{
+    const full=galleryEntries(place);
+    const visible=curatedGalleryEntries(place);
+    for(const id of Object.keys(GALLERY_HIDDEN)) {
+      expect(full.some(entry=>entry.id===id)).toBe(true);
+      expect(visible.some(entry=>entry.id===id)).toBe(false);
+    }
+    expect(visible.every(entry=>GALLERY_CATEGORIES.some(category=>category.id===entry.group))).toBe(true);
+    expect(visible.filter(entry=>entry.group==='comparison').map(entry=>entry.id)).toEqual(['regional-map','gemeinde-ranking','regional-race']);
   });
 });

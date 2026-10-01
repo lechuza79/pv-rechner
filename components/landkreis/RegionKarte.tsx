@@ -49,18 +49,19 @@ function MapGestureGuide({ready}:{ready:boolean}) {
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1 }: {
+export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "" }: {
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
   /** Singular of the mapped unit (link hint) and the name of the table below. */
-  member?: string; overview?: string; framingScale?: number;
+  member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string;
 }) {
   const router=useRouter();
   useEffect(()=>{
+    if(presentation!=="hero")return;
     const themeTags=[...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
     const previous=themeTags.map(tag=>tag.content);
     themeTags.forEach(tag=>{tag.content="#08191c";});
     return()=>themeTags.forEach((tag,index)=>{tag.content=previous[index];});
-  },[]);
+  },[presentation]);
   const tooltip=useRef<HTMLDivElement>(null);
   const navigationTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const [pointer,setPointer]=useState({x:0,y:0});
@@ -81,7 +82,8 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   // Side walls of the fallback map: derived here, only once the scene failed.
   const sidePaths = useMemo(() => sceneFailed ? new Map(shapes.map(s => [s.id, sidePathFromPath(s.path)])) : null, [shapes, sceneFailed]);
   const [sceneReady,setSceneReady]=useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(selectedPlace);
+  useEffect(()=>setSelected(selectedPlace),[selectedPlace]);
   const [touchInfo,setTouchInfo]=useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   useEffect(() => {
@@ -133,7 +135,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const right = Math.max(...shapes.map(s => s.bounds[2])) + 32;
   const top = Math.min(...shapes.map(s => Math.min(s.bounds[1], s.anchor[1] - barHeight(byId.get(s.id)?.value ?? null, maximum)))) - 32;
   const bottom = Math.max(...shapes.map(s => s.bounds[3])) + 32;
-  return <div className={styles.map} data-navigating={navigating}>
+  return <div className={styles.map} data-presentation={presentation} data-navigating={navigating}>
     <div className={`${styles.mapTools} sc-dashboard`} role="group" aria-label="Kennzahl der Karte">
       <WidgetSetting label="Kennzahl der Karte" hideLabel size="md" stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
     </div>
@@ -178,7 +180,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       </g>
     </svg>
     </div>}
-    <RegionScene framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
+    <RegionScene standalone={presentation==="widget"} framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
     <MapGestureGuide ready={sceneReady&&!sceneFailed}/>
     {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
       // Portal events still bubble through the React map parent. Keep the card

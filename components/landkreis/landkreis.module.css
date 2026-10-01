@@ -336,3 +336,14 @@
   .heroStage .mapCanvas{grid-area:1/1/2/3;min-width:0}
 }
 @media(max-width:600px){.heroBand .heroHeading h1{font-size:32px}}
+
+/* Standalone maps size against their container, never the page viewport. */
+.map[data-presentation=widget]{container-type:inline-size}
+.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;justify-content:center;max-width:100%}
+.map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
+.map[data-presentation=widget] .sceneLayer{inset:0}
+.mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}
+.mapWidget .map{padding-top:20px}
+.mapWidget .sceneHost::before{background:linear-gradient(0deg,var(--atlas-card),transparent 12%,transparent 92%,var(--atlas-card))}
+.mapWidgetSource{padding:16px var(--widget-padding);font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.mapWidgetSource p{margin:0 0 8px}

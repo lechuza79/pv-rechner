@@ -27,6 +27,7 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  {datei:"landkreis/RegionMapWidget",art:"widget",wofuer:"Shared regional 3D map in a responsive widget frame for gallery, municipality and partner embeds."},
   { datei: "charts/ChartFlag", art: "baustein", wofuer: "Shared value flag positioned above or below a chart segment." },
   { datei: "charts/AnnualGrowthWidget", art: "widget", wofuer: "Shared annual growth chart with period selection and export actions for municipality and regional monitors." },
   { datei: "charts/CurrentPowerWidget", art: "baustein", wofuer: "Shared weather adapter and current solar power dial for municipality, regional monitor and compact header." },

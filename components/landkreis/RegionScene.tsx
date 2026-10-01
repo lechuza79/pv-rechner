@@ -5,7 +5,7 @@ import type { MapValue } from "./RegionKarte";
 import type { createRegionScene, Season } from "./region-scene";
 import styles from "./landkreis.module.css";
 
-type Props = { framingScale?: number; heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
+type Props = { standalone?:boolean; framingScale?: number; heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
   onHover: (id:string|null)=>void; onSelect: (id:string,touch?:boolean)=>void; onReady: (ready:boolean)=>void };
 export default function RegionScene(props:Props) {
   const host=useRef<HTMLDivElement>(null), current=useRef(props);
@@ -18,6 +18,7 @@ export default function RegionScene(props:Props) {
   useEffect(()=>{
     const stage=host.current?.closest<HTMLElement>("[data-map-hero-stage]");
     const band=stage?.closest<HTMLElement>("[data-map-hero-band]");
+    if(current.current.standalone){setFramed(true);return;}
     if(!stage||!band)return;
     const measure=()=>{stage.style.setProperty("--map-headroom",`${Math.max(0,stage.getBoundingClientRect().top-band.getBoundingClientRect().top)}px`);setFramed(true);};
     const observer=new ResizeObserver(measure);observer.observe(band);measure();
