@@ -69,14 +69,17 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     const item = document.createElement('div');
     item.className = 'district-race-row';
     item.dataset.raceTown = row.id;
+    if(stage.dataset.highlight===row.id)item.dataset.highlighted='true';
     const name = document.createElement(row.href ? 'a' : 'span');
     name.className = 'district-race-name'; name.textContent = row.name;
     if (row.href) name.href = row.href;
     const value = document.createElement('strong'); value.className = 'district-race-value';
+    const number = document.createElement('span'); value.append(number);
+    if(stage.dataset.valueUnit){const unit=document.createElement('small');unit.className='district-race-unit';unit.textContent=stage.dataset.valueUnit;value.append(unit);}
     const track = document.createElement('div'); track.className = 'district-race-track'; track.setAttribute('aria-hidden','true');
     const bar = document.createElement('div'); bar.className = 'district-race-bar'; track.append(bar);
     item.append(name,value,track); race.append(item);
-    return [row.id,{row,item,value,bar}];
+    return [row.id,{row,item,value:number,bar}];
   }));
   let frames = history.filter(frame => frame.rows.some(row => row.value > 0));
   if (!frames.length) frames = [{year:'Heute',rows}];

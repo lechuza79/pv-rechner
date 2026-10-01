@@ -1,3 +1,4 @@
+import {raceSettingsFromPeriod,raceQuery} from "./race-settings";
 // Server-rendered widget videos: the one place for what may be rendered and
 // how much of it.
 //
@@ -10,7 +11,7 @@
 
 /** Bump when the exported look changes; it is part of the cache key, so a
  *  finished video from the old design is never handed out for the new one. */
-export const VIDEO_DESIGN_VERSION = "2026-09-30.shared-video-race";
+export const VIDEO_DESIGN_VERSION = "2026-10-01.full-bleed-video-race";
 
 export type VideoWidgetId = "gemeinde-solar-monat" | "regional-race";
 
@@ -31,9 +32,9 @@ export const VIDEO_WIDGETS: Record<VideoWidgetId, {
     regionPattern: /^(de|\d{2}|\d{5}|\d{8})$/, periodPattern: /^\d{4}-(0[1-9]|1[0-2])$/, periodControl: "month",
   },
   "regional-race": {
-    embedPath: (p) => `/embed/regional-race/${p.ags}`,
+    embedPath: (p) => `/embed/regional-race/${p.ags}${p.period==="current"?"":"?"+raceQuery(raceSettingsFromPeriod(p.period))}`,
     agsAllowlist: [],
-    regionPattern: /^(de|\d{2}|\d{5})$/, periodPattern: /^current$/, periodControl: "none",
+    regionPattern: /^(de|\d{2}|\d{5})$/, periodPattern: /^(current|race_(count|kwp|per-capita)_(all|private-roofs)_(all|districts)_(none|\d{2,8}))$/, periodControl: "none",
   },
 };
 
