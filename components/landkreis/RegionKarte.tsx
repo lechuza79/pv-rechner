@@ -13,7 +13,7 @@ import styles from "./landkreis.module.css";
 export type MapValue = { id: string; name: string; value: number | null; formatted: Messwert; href: string | null };
 
 /** Brief touch guidance, shared across regional pages for this tab session. */
-function MapGestureGuide({ready}:{ready:boolean}) {
+function MapGestureGuide({ready,showReplay=true}:{ready:boolean;showReplay?:boolean}) {
   const [step,setStep]=useState(-1);
   const [replay,setReplay]=useState(0);
   useEffect(()=>{
@@ -38,7 +38,7 @@ function MapGestureGuide({ready}:{ready:boolean}) {
   const labels=["Seitlich wischen zum Drehen","Zwei Finger bewegen zum Neigen","Zwei Finger spreizen zum Zoomen"];
   return <>
     {/* Replay is a development aid; the public touch tutorial remains automatic. */}
-    {process.env.NODE_ENV === "development" && <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>}
+    {showReplay && process.env.NODE_ENV === "development" && <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>}
     {step>=0&&<div key={`${replay}-${step}`} className={styles.mapGestureGuide} data-gesture={step}>
     <div className={styles.gestureFingers} aria-hidden="true"><i/>{step>0&&<i/>}</div>
     <span>{labels[step]}</span>
@@ -181,7 +181,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     </svg>
     </div>}
     <RegionScene standalone={presentation==="widget"} framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
-    <MapGestureGuide ready={sceneReady&&!sceneFailed}/>
+    <MapGestureGuide ready={sceneReady&&!sceneFailed} showReplay={presentation!=="widget"}/>
     {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
       // Portal events still bubble through the React map parent. Keep the card
       // fixed under the finger so pointerdown cannot move its link before click.

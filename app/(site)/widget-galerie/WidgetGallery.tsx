@@ -3,6 +3,9 @@ import {useCallback,useEffect,useRef,useState,useTransition} from 'react';
 import {useRouter} from 'next/navigation';
 import OnsiteSearch, {type OnsiteSearchItem} from '../../../components/OnsiteSearch';
 import AutoHeightIframe from '../../../components/AutoHeightIframe';
+import DataSourcesSection from '../../../components/DataSourcesSection';
+import {DataSourceNote} from '../../../components/PoweredBy';
+import {allWidgets} from '../../../lib/widget-registry';
 import SelectField from '../../../components/SelectField';
 import {curatedGalleryEntries,GALLERY_CATEGORIES,type GalleryPlace,type GalleryEntry} from '../../../lib/widget-gallery';
 import styles from './gallery.module.css';
@@ -52,6 +55,7 @@ export default function WidgetGallery({place}:{place:GalleryPlace}) {
   const all=curatedGalleryEntries(place);
   const fold=(s:string)=>s.toLocaleLowerCase('de').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const entries=all.filter(w=>filter===w.group&&fold(w.title+' '+w.id).includes(fold(query)));
+  const sources=[...new Map(allWidgets().filter(widget=>entries.some(entry=>entry.id===widget.id)).flatMap(widget=>widget.sources).map(source=>[source.name,source])).values()];
   return <main className={styles.page}>
     <h1>Widgetgalerie</h1>
     <div className={styles.controls}>
@@ -61,5 +65,6 @@ export default function WidgetGallery({place}:{place:GalleryPlace}) {
     <div className={styles.filters} aria-label="Widget-Themen">{GALLERY_CATEGORIES.map(({id,label})=><button key={id} aria-pressed={id===filter} onClick={()=>setFilter(id)}>{label}</button>)}<span>{entries.length} {entries.length===1?'Widget':'Widgets'}</span></div>
     <div className={styles.grid}>{entries.map(entry=><Card key={entry.id} entry={entry}/>)}</div>
     {!entries.length&&<p>Keine Widgets für diese Auswahl.</p>}
+    {sources.length>0&&<DataSourcesSection><DataSourceNote source={sources}/></DataSourcesSection>}
   </main>;
 }

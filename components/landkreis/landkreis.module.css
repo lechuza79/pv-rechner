@@ -339,7 +339,7 @@
 
 /* Standalone maps size against their container, never the page viewport. */
 .map[data-presentation=widget]{container-type:inline-size}
-.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;justify-content:center;max-width:100%}
+.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;padding-inline:var(--widget-padding);justify-content:flex-start;max-width:100%}
 .map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
 .map[data-presentation=widget] .sceneLayer{inset:0}
 .mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}

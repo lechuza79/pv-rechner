@@ -37,7 +37,7 @@ export function galleryEntries(place:GalleryPlace):GalleryEntry[] {
     else if(w.id==='solar-trend-monat') variants=[{label:'Monatsvergleich',src:'/embed/galerie/solar-trend-monat',height:500}];
     else if(w.id==='regional-map') {
       placeLabel=place.districtName??place.stateName;
-      variants=[{label:placeLabel,src:`/embed/regional-map?ags=${place.districtId??place.stateId}&selected=${place.ags}`,height:650}];
+      variants=[{label:placeLabel,src:`/embed/regional-map?ags=${place.districtId??place.stateId}&source=page`,height:650}];
     } else if(w.id==='regional-race') {
       const region=place.districtId ?? place.stateId;
       placeLabel=place.districtName ?? place.stateName;
