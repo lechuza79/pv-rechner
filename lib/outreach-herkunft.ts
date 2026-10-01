@@ -50,6 +50,9 @@ const POSTFACH = [
   "outlook.com", "outlook.live.com", "outlook.office.com", "outlook.office365.com",
   "email.t-online.de", "t-online.de", "web.de", "gmx.net", "gmx.de",
   "mail.yahoo.com", "mail.zoho.com", "roundcube.", "webmail.", "owa.",
+  // Fremde Postfächer liegen durchweg unter „mail.<domain>" — gemessen an
+  // mail.fernbildmedia.de, das sonst als verweisende Seite gezählt würde.
+  "mail.",
 ];
 
 /** Sicherheitsdienste, die Links in eingehenden Mails vorab öffnen. */
@@ -87,6 +90,9 @@ function trifft(host: string, liste: string[]): boolean {
 export function ordneHerkunft(verweis: string, gemeindeWebsite?: string | null): Herkunft {
   const host = verweis.trim().toLowerCase().replace(/^www\./, "");
   if (!host) return "ohne";
+  // Eine IP-Adresse oder ein Name ohne Punkt ist unser eigener Entwicklungs-
+  // server, keine fremde Seite (gemessen: 127.0.0.1 mit zwei Besuchern).
+  if (/^[\d.]+$/.test(host) || !host.includes(".")) return "intern";
   if (trifft(host, PRUEFDIENST)) return "pruefdienst";
   if (trifft(host, INTERN)) return "intern";
   if (trifft(host, SOZIAL)) return "veroeffentlichung";
