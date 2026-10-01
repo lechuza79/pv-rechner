@@ -8,6 +8,7 @@
  *
  *   --mode=suche      pages worth reading first (sitemap, site search)
  *   --mode=research   read them (budget 15 pages)
+ *   --mode=browser    second pass with a real browser for those still without a find
  *   --mode=summary    counts
  *   --mode=apply      fill only empty rows (--schreiben)
  *
@@ -22,6 +23,7 @@ import { resolve } from "node:path";
 import { KOMMUNEN_ROLLENWERK, KOMMUNEN_SCOPE } from "../lib/contact-municipal-judge";
 import { fachkontakteAus } from "../lib/kommunen-fachkontakt";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
+import { browserSchliessen, rendern } from "./lib/kontakt-browser";
 import { bewerten, laufen, readJson, recherchieren, writeJson, type Bestand, type Eintrag, type Ergebnis } from "./lib/kontakt-lauf";
 import { GEMEINDE, KLIMA_POSTFACH, PRESSE_POSTFACH, postfachNachName, vormerken, type Vormerkung } from "./lib/kontakt-nachsuche";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
@@ -32,7 +34,7 @@ const mode = arg("mode") ?? "research";
 const schreiben = process.argv.includes("--schreiben");
 const SEEDS = resolve(OUT, "seeds.json");
 const ZIEL = /impressum|kontakt|rathaus|verwaltung|buergerservice|bürgerservice|buergerbuero|bürgerbüro|ansprechpartner|presse|klimaschutz/i;
-const ALLGEMEIN_POSTFACH = /^(?:ortsgemeinde|ortsbuergermeister|og|vg[a-z-]*|verbandsgemeinde|gemeinde|rathaus|info|poststelle|stadt|stadtverwaltung|verwaltung|buergerbuero|buergerservice|kontakt|post|amt|vg|markt|marktgemeinde|zentrale)[@.-]/;
+const ALLGEMEIN_POSTFACH = /^(?:ortsgemeinde|ortsbuergermeister|og|vg[a-z-]*|verbandsgemeinde|gemeinde|rathaus|info|poststelle|stadt|stadtverwaltung|verwaltung|buergerbuero|buergerservice|kontakt|post|amt|vg|markt|marktgemeinde|zentrale|webmaster|postfach|hauptamt|sekretariat|ordnungsamt|vgem|gemeindeverwaltung|amtsverwaltung|verwaltungsgemeinschaft|e-?mail|mail|bgm)[@.-]|^buergermeister(?:in)?@/;
 
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_KEY;
@@ -72,7 +74,7 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Eintrag[] }
 }
 
 /** What the follow-up found for one municipality, best first. */
-function fundFuer(r: any): { spalte: "klima" | "presse" | "allgemein"; email: string; beleg: string | null; herkunft: string } | null {
+export function fundFuer(r: any): { spalte: "klima" | "presse" | "allgemein"; email: string; beleg: string | null; herkunft: string } | null {
   const k = fachkontakteAus(r);
   if (k.klima) return { spalte: "klima", email: k.klima.email, beleg: k.klima.belegUrl, herkunft: "nachsuche-beleg" };
   if (k.presse) return { spalte: "presse", email: k.presse.email, beleg: k.presse.belegUrl, herkunft: "nachsuche-beleg" };
@@ -90,7 +92,7 @@ function fundFuer(r: any): { spalte: "klima" | "presse" | "allgemein"; email: st
   return null;
 }
 
-function ergebnisse(): any[] {
+export function ergebnisse(): any[] {
   const dir = resolve(OUT, "results");
   return existsSync(dir) ? readdirSync(dir).filter(f => f.endsWith(".json")).map(f => readJson(resolve(dir, f))) : [];
 }
@@ -127,6 +129,26 @@ async function main() {
   }
   const parts = Number(arg("parts") ?? 1), part = Number(arg("part") ?? 0);
   const rows = eintraege.filter((_, i) => i % parts === part);
+  if (mode === "browser") {
+    // Imprints that decode the address with a script, or portals that build the
+    // menu in the browser, leave the plain fetch empty (hand check, 01.10.2026).
+    const offen = rows.filter(e => { const r = existsSync(resolve(OUT, "results", `${e.id}.json`)) ? readJson(resolve(OUT, "results", `${e.id}.json`)) : null; return !r || !fundFuer(r); });
+    const STATUS = resolve(OUT, "browser-status.json");
+    const status: Record<string, { gelesen: number; fehler: string | null; at: string }> = existsSync(STATUS) ? readJson(STATUS) : {};
+    console.log(`${offen.length} Gemeinden ohne Fund · Browser-Durchgang`);
+    try {
+      for (const e of offen) {
+        if (status[e.id] && !arg("neu")) continue;
+        // One page navigating away mid-read must not end the pass for the rest.
+        const r = await rendern(bestand, e, Number(arg("seiten") ?? 6)).catch((err: any) => ({ gelesen: [] as string[], fehler: String(err?.message ?? err).split("\n")[0].slice(0, 80) }));
+        const f = fundFuer(bewerten(bestand, e));
+        status[e.id] = { gelesen: r.gelesen.length, fehler: r.fehler, at: new Date().toISOString() };
+        writeJson(STATUS, status);
+        console.log(e.id, e.name, "| gelesen", r.gelesen.length, r.fehler ?? "", "|", f ? `${f.spalte}: ${f.email}` : "—");
+      }
+    } finally { await browserSchliessen(); }
+    return;
+  }
   if (mode === "suche") {
     const alle = seeds();
     for (const e of rows) {

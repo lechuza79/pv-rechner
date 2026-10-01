@@ -11,6 +11,8 @@ import {
 } from "../../../../../lib/kommunen-testballon";
 import { askVariante, refToken } from "../../../../../lib/kommunen-ask";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
+import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
+import { windgemeinde } from "../../../../../lib/windgemeinden";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
@@ -52,6 +54,10 @@ export async function POST(req: NextRequest) {
     website: string | null;
     kontakt_url: string | null;
     rollen_email: string | null;
+    presse_email: string | null;
+    klima_email: string | null;
+    presse_kontakt_email: string | null;
+    contacted_at: string | null;
     verwaltung_domain: string | null;
     outreach_status: string;
     kampagne: string | null;
@@ -69,7 +75,7 @@ export async function POST(req: NextRequest) {
       const { data, error } = await serviceDb
         .from("kommunen_kontakt")
         .select(
-          "region_id, website, kontakt_url, rollen_email, verwaltung_domain, outreach_status, kampagne, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
+          "region_id, website, kontakt_url, rollen_email, presse_email, klima_email, presse_kontakt_email, contacted_at, verwaltung_domain, outreach_status, kampagne, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
         )
         .like("region_id", `${prefix}%`)
         .order("region_id")
@@ -84,10 +90,15 @@ export async function POST(req: NextRequest) {
   const index = await buildHookIndex(DEFAULT_HOOK_SETTINGS);
   const hookByRegion = new Map(index.rows.map((r) => [r.regionId, r]));
 
+  // Districts that already received at least one letter.
+  const angeschrieben = new Set(zeilen.filter((z) => z.contacted_at).map((z) => z.region_id.slice(0, 5)));
+
   const kandidaten: Kandidat[] = [];
   for (const z of zeilen) {
     // Schon kontaktiert, gesperrt oder in einer Kampagne → nicht erneut wählen.
     if (z.outreach_status !== "offen" || z.kampagne) continue;
+    if (schub.nurAngeschriebeneKreise && !angeschrieben.has(z.region_id.slice(0, 5))) continue;
+    if (schub.ohneWindgemeinden && windgemeinde(z.region_id)) continue;
     const hook = hookByRegion.get(z.region_id);
     if (!hook || hook.kind !== "sieger") continue; // Testballon nimmt nur echte Sieger
     const reg = Array.isArray(z.mastr_regions) ? z.mastr_regions[0] : z.mastr_regions;
@@ -111,7 +122,9 @@ export async function POST(req: NextRequest) {
       // Kampagne, bekam aber nie eine Mail und fehlte in jeder Auswertung als
       // „nicht erreicht". Dieselbe Prüfung an beiden Enden.
       hatKanal:
-        schub.kanal === "rollen-postfach"
+        schub.kanal === "brief-empfaenger"
+          ? briefKanal(z, reg?.name ?? "")
+          : schub.kanal === "rollen-postfach"
           ? !!z.rollen_email && postfachBefund(z.rollen_email, reg?.name ?? "", z.verwaltung_domain).ok
           : !!(z.kontakt_url || z.rollen_email),
     });
@@ -176,4 +189,13 @@ export async function POST(req: NextRequest) {
         .map(([charge, n]) => ({ charge, n })),
     },
   });
+}
+
+/** The address the letter will really go to passes the same check the send runs. */
+function briefKanal(
+  z: { rollen_email: string | null; presse_email: string | null; klima_email: string | null; presse_kontakt_email: string | null; verwaltung_domain: string | null },
+  name: string,
+): boolean {
+  const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email });
+  return !!ziel.email && postfachBefund(ziel.email, name, z.verwaltung_domain, { belegteRolle: ziel.fach }).ok;
 }

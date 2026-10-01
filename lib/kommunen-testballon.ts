@@ -90,8 +90,19 @@ export type Schub = {
    * wollen, und die Formulare sind zudem der datenschutzfreundlichere, aber
    * nicht automatisierbare Weg.
    */
-  kanal: "rollen-postfach" | "beliebig";
+  kanal: "rollen-postfach" | "beliebig" | "brief-empfaenger";
   regeln: AuswahlRegeln;
+  /**
+   * Only towns in districts that already received letters — the gaps a
+   * missing address left behind (operator, 30.09.2026: "die fehlenden …
+   * Gemeinden in den bereits angeschriebenen Regionen schreiben wir dann an").
+   */
+  nurAngeschriebeneKreise?: boolean;
+  /**
+   * Leave out wind towns: their page does not show the turbines yet, the same
+   * reason the press release skipped them (operator, 30.09.2026).
+   */
+  ohneWindgemeinden?: boolean;
   /**
    * Ab wann dieser Schub versendet werden soll (ISO-Tag).
    *
@@ -229,6 +240,26 @@ export const SCHUEBE: Record<string, Schub> = {
       "Alle acht sind ab dem 27.08.2026 durchgehend ferienfrei; die nächsten Ferien " +
       "beginnen frühestens im Oktober. Der Versand prüft die Ferien ohnehin je " +
       "Gemeinde, die Bündelung spart nur das wiederholte Festschreiben.",
+  },
+  /**
+   * The gaps of the districts already written to, in the three states without
+   * holidays before 17.10.2026 (NRW 17.10., Brandenburg and Saxony-Anhalt 19.10.).
+   * The channel is the letter's real recipient (Klimaschutz before Presse before
+   * the general mailbox) — the follow-up search of 30.09.–01.10.2026 filled most
+   * of these towns into the specialist columns, which "rollen-postfach" ignores.
+   */
+  "mail-luecken-okt": {
+    kampagne: "mail-luecken-okt",
+    bl: ["05", "12", "15"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 200 },
+    nurAngeschriebeneKreise: true,
+    ohneWindgemeinden: true,
+    abIso: "2026-10-06",
+    grund:
+      "Lücken in bereits angeschriebenen Kreisen, die nach der Nachsuche eine geprüfte Adresse haben. " +
+      "Nur Länder ohne Herbstferien vor dem 17.10.2026 (KMK-Kalender); Hessen, Rheinland-Pfalz und " +
+      "Saarland haben ab 05.10. Ferien, die übrigen ab 12./15.10.",
   },
   "mail-nrw": {
     kampagne: "mail-nrw",
