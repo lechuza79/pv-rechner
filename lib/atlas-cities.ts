@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
 import { heuteInBerlin } from "./zeit";
 
@@ -376,6 +376,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "taunusstein", name: "Taunusstein", ags: "06439015", kreis: "Rheingau-Taunus-Kreis", bundesland: "Hessen", yieldKwhKwp: 1036 },
   { slug: "schmelz", name: "Schmelz", ags: "10044117", kreis: "Landkreis Saarlouis", bundesland: "Saarland", yieldKwhKwp: 1060 },
   { slug: "waldalgesheim", name: "Waldalgesheim", ags: "07339062", kreis: "Landkreis Mainz-Bingen", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1094 },
+  { slug: "bellheim", name: "Bellheim", ags: "07334001", kreis: "Landkreis Germersheim", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1138 },
   { slug: "recklinghausen", name: "Recklinghausen", ags: "05562032", kreis: "Kreis Recklinghausen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1010 },
   { slug: "werne", name: "Werne", ags: "05978040", kreis: "Kreis Unna", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1028 },
   { slug: "gerlingen", name: "Gerlingen", ags: "08118019", kreis: "Landkreis Ludwigsburg", bundesland: "Baden-Württemberg", yieldKwhKwp: 1121 },
@@ -662,9 +663,15 @@ export function bundeslaenderWithCities(): { name: string; slug: string }[] {
 // the program status; page CONTENT still comes from the DB. Flip these filters
 // to include inactive programs to re-expand the catalog.
 
-/** True if the city has its own program and that program is currently active. */
+/**
+ * True if the city has its own program, it is currently active AND it funds
+ * rooftop PV. An active balcony-only program (München) is shown as an archive
+ * page: the page is a "Photovoltaik-Förderung" page and must not present a
+ * balcony grant as running PV funding (01.10.2026).
+ */
 export function isCityLive(c: AtlasCity): boolean {
-  return fundingFor(c)?.status === "aktiv";
+  const p = fundingFor(c);
+  return p?.status === "aktiv" && foerdertDach(p);
 }
 
 /** Cities with a live (active) program — drives page generation, sitemap, listings. */
@@ -720,7 +727,7 @@ function programmTraegtStadtseite(p: FundingProgram | undefined): boolean {
 export function isCityArchived(c: AtlasCity): boolean {
   const p = fundingFor(c);
   if (!programmTraegtStadtseite(p)) return false;
-  return ARCHIVE_STATUSES.includes(p!.status);
+  return ARCHIVE_STATUSES.includes(p!.status) || (p!.status === "aktiv" && !foerdertDach(p!));
 }
 
 /** Cities with an inactive (archived) program. */
@@ -842,7 +849,7 @@ export function foerderseiteTraegt(c: AtlasCity): boolean {
   const p = fundingFor(c);
   if (!programmTraegtStadtseite(p)) return false;
   if (p!.status !== "aktiv") return false;
-  return (p!.foerdert ?? ["pv"]).includes("pv");
+  return foerdertDach(p!);
 }
 
 /**

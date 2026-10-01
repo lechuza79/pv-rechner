@@ -92,6 +92,20 @@ export function saetzeFuer<T extends { nur?: FundingTechnik[] }>(rates: T[], tec
   return rates.filter((r) => !technik || !r.nur || r.nur.includes(technik));
 }
 
+/**
+ * Fördert das Programm Dach-Photovoltaik? Ohne Angabe gilt `["pv"]` (siehe
+ * {@link FundingProgram.foerdert}).
+ *
+ * Die Förder-Stadtseite heißt „Photovoltaik-Förderung …" und rechnet
+ * Dachanlagen. Ein LAUFENDES Programm, das nur Balkonkraftwerke fördert
+ * (München seit Dez. 2024), darf dort nicht als laufende PV-Förderung
+ * erscheinen — Titel, Einleitung und Live-Status fragen deshalb diese eine
+ * Funktion, nie den Status allein (01.10.2026).
+ */
+export function foerdertDach(p: Pick<FundingProgram, "foerdert">): boolean {
+  return (p.foerdert ?? ["pv"]).includes("pv");
+}
+
 /** Beschriftung der Technik — eine Quelle, damit Rechner und Seiten gleich sprechen. */
 export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
   pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
@@ -2256,7 +2270,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp nach neuer Richtlinie (derzeit keine Antragsannahme)",
     rates: [
-      { label: "PV-Anlage", value: "200 €/kWp, höchstens 20 kWp; mit Wärmepumpe 300 €, mit Wallbox 230 €, mit beidem 330 € je kWp" },
+      { label: "PV-Anlage", value: "200 €/kWp, höchstens 20 kWp; mit Wärmepumpe 300 €, mit Wallbox 230 €, mit beidem 330 € je kWp", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "200 €/kWp, höchstens 50 % der Gesamtkosten; ein Gerät je Anschluss, bis 2.000 Wp, Wechselrichter höchstens 800 VA", nur: ["balkon"] },
     ],
     conditions: [
       "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an",
@@ -2275,6 +2290,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Status bleibt `pausiert`, bis die Seite die Antragsannahme bestätigt; der
     // Balkon-Satz der neuen Richtlinie ist bewusst NICHT nachgetragen (neuer
     // Abzug = Vorschlag an den Betreiber).
+    // BALKON NACHGETRAGEN ALS TEXT (01.10.2026, Council 3/3 incl. adversarial):
+    // Richtlinie 2026 § 3 Nr. 2 „Förderfähig sind Steckersolargeräte
+    // (Balkonkraftwerke) … Der Zuschuss beträgt 200,- €/kWp, bzw. pro 1.000 Wp,
+    // jedoch maximal 50 % der Gesamtkosten." Kein Rechenwert: Das Minimum aus
+    // Satz je Wp UND Kostenanteil kann das Balkon-Modell nicht ausdrücken
+    // (Gate-Bedingung 3) — und solange `pausiert` gilt, zieht ohnehin nichts ab.
+    foerdert: ["pv", "balkon"],
     pvPerKwp: 200, pvCap: 4000,
   },
   "nidda-solar": {
@@ -2970,10 +2992,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "muenchen-fkg": {
     id: "muenchen-fkg", name: "Förderprogramm Klimaneutrale Gebäude (FKG)",
     traeger: "Landeshauptstadt München", level: "kommune", region: "München", bundesland: "Bayern", agsCode: "09162",
-    url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414150/", stand: "Juni 2026",
-    status: "eingestellt", capped: true, verified: true,
+    // REACTIVATED 01.10.2026. The entry stood on `eingestellt` since June, but
+    // the stop of 18.12.2024 only concerned rooftop PV; the balcony module runs.
+    // Read at the source (Balkon page 10414151) on 01.10.2026: "Gefördert wird
+    // der Kauf und die Installation von steckbaren Photovoltaik-
+    // Stromerzeugungsgeräten … Der Fördersatz beträgt 0,40 Euro je Wp, bis 800
+    // Wp je Wohneinheit, jedoch maximal 50 Prozent der Kosten." Council 3/3
+    // incl. adversarial in the quarterly review and again in the news watcher
+    // run of 01.10.2026 (guideline in force 28.09.2026, Nr. 5.3).
+    // Still NO structured rate: "0,40 €/Wp, höchstens 50 % der Kosten" is the
+    // MINIMUM of two limits, and the balcony model can express only one of
+    // them (balkonProWp caps absolutely, not at a share of the price). 0,40 €/Wp
+    // alone would give 320 € on a 400-€ set where the city pays 200 € — so the
+    // programme informs and deducts nothing (gate condition 3). Because it
+    // funds no rooftop PV, the city page stays an archive-style page
+    // (isCityLive / foerdertDach), not a live "Photovoltaik-Förderung".
+    url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414151/", stand: "Oktober 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Dach-PV seit Dez. 2024 nicht mehr förderfähig — nur noch Balkonkraftwerke",
+    coveredCosts: "Zuschuss je Wp für Balkonkraftwerke; Dach-PV seit Dez. 2024 nicht mehr förderfähig",
     rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp bis 800 Wp je Wohneinheit, höchstens 50 % der Kosten (mit München-Pass 95 % der förderfähigen Kosten)" }],
     conditions: [
       "Für Dach-Photovoltaik seit dem 18.12.2024 keine neuen Anträge mehr möglich",
@@ -4092,21 +4129,43 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
   "herne-klimafoerderung": {
-    id: "herne-klimafoerderung", name: "Förderprogramme Klimaschutz",
+    id: "herne-klimafoerderung", name: "Förderung für Steckersolargeräte und Batteriespeicher",
     traeger: "Stadt Herne", level: "kommune", region: "Herne",
     bundesland: "Nordrhein-Westfalen", agsCode: "05916",
-    url: "https://www.herne.de/Stadt-und-Leben/Klima/Foerderprogramme/",
-    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    // UPDATED 01.10.2026 (Council 3/3 incl. adversarial for the balcony part).
+    // City news 13.07.2026: "Bei der aktuellen Förderung stehen Mittel für
+    // insgesamt 30 Anlagen zur Verfügung, davon 20 Balkonkraftwerke und zehn
+    // Batteriespeicher. … Der Zuschuss für ein Balkonkraftwerk beträgt 100 Euro,
+    // für einen Batteriespeicher 300 Euro." Service portal (Stecker-PV, live
+    // 01.10.2026): "Ab dem 01.07.2026 fördert die Stadt Herne die
+    // Neuanschaffung von Stecker-PV-Anlagen", online form "Antrag: Förderung
+    // Stecker PV 2026"; the guideline accepts no applications after 30.11.2026.
+    // NOT RECORDED AS RUNNING: the battery grant. Its portal page (ID 2243091,
+    // still linked from the news item) answers "konnte nicht gefunden werden"
+    // on 01.10.2026 — that is not proof of an end, but no source confirms it
+    // is open, so `foerdert` names only the balcony part and the battery stays
+    // a text line. That also keeps the city page from turning into a live
+    // "Photovoltaik-Förderung" for a grant nobody can confirm (foerdertDach).
+    // NO STRUCTURED AMOUNT: 20 slots since July, first come first served, and
+    // no page says how many are left. Information only until a source
+    // confirms free slots.
+    url: "https://serviceportal.herne.de/detail/-/vr-bis-detail/dienstleistung/805964/show",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-07-01", endetIso: "2026-11-30",
     eligibility: ["privat"],
-    coveredCosts: "Wechselt jährlich — für 2026 sind Balkonkraftwerke und Speicher angekündigt, aber noch nicht beschlossen",
-    rates: [{ label: "Balkonkraftwerk und Speicher", value: "für 2026 geplant, Konditionen offen" }],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € pauschal, ein Gerät je Antragsteller", nur: ["balkon"] },
+    ],
     conditions: [
-      "Die Stadt wechselt die Förderungen jedes Jahr je nach verfügbaren Mitteln und Nachfrage",
-      "Photovoltaik und Speicher wurden in früheren Jahren gefördert, diese Programme sind ausgelaufen",
-      "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
+      "Mittel für insgesamt 30 Anlagen: 20 Balkonkraftwerke und 10 Batteriespeicher; vergeben in der Reihenfolge des Eingangs — wie viele noch frei sind, nennt die Stadt nicht",
+      "Gefördert werden nur Anlagen, mit deren Errichtung noch nicht begonnen wurde",
+      "Balkonkraftwerke vor allem für Zwei- und Mehrfamilienhäuser; Einfamilienhäuser nur bei nachweislich ungeeignetem Dach",
+      "Anträge nach dem 30. November 2026 werden nicht mehr angenommen",
+      "Angekündigt war daneben ein Zuschuss von 300 € für einen Batteriespeicher zu einer neuen Dachanlage (ab 3 kWh, Module ab 10 m²); seine Antragsseite ist derzeit nicht erreichbar, ob er noch läuft, ist offen",
     ],
     combinableWith: BUND,
-    foerdert: ["pv", "balkon"],
+    foerdert: ["balkon"],
   },
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
@@ -10514,6 +10573,46 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 100,
+  },
+
+  "bellheim-erneuerbare-energien": {
+    id: "bellheim-erneuerbare-energien", name: "Förderung von Maßnahmen zur Nutzung erneuerbarer Energien",
+    traeger: "Ortsgemeinde Bellheim", level: "kommune", region: "Bellheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07334001",
+    // READ AT THE SOURCE 01.10.2026 (relaunched site; the old address
+    // /vg_bellheim/Wirtschaft/Fördermittel (Angebote)/ answers 404 since then).
+    // Page: "2. ORTSGEMEINDE BELLHEIM – Maßnahmen zur Nutzung erneuerbarer
+    // Energien … Für jede Solarthermie-, Photovoltaik- und Holzpelletanlage wird
+    // ein Zuschuss in Höhe von 500,00 € gewährt." Guideline PDF (linked there),
+    // Nr. 5.2: "Für jede Solarthermie-, Photovoltaik- oder Holzpelletanlage wird
+    // der Zuschuss in Form eines Festbetrages in Höhe von 500 € gewährt."
+    // Owner is the ORTSGEMEINDE, not the Verbandsgemeinde (Council of three incl.
+    // adversarial reviewer and Legal-Judge, 24.09.2026). The guideline PDF is a
+    // council draft ("in der heutigen Sitzung", unsigned) — the amount is
+    // confirmed independently by the page, so NO decision date is entered.
+    // Balcony: Nr. 2 excludes Balkonkraftwerke and points to a time-limited
+    // KIPKI grant of 100 €; that grant no longer appears on the relaunched
+    // page, so it is not recorded (unconfirmed state, nothing to claim).
+    url: "https://www.bellheim.de/bauen-umwelt/foerdermittel-angebote/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Festbetrag je Photovoltaik-, Solarthermie- oder Holzpelletanlage",
+    maxFoerderung: "500 € je Anlage",
+    rates: [
+      { label: "Photovoltaikanlage", value: "500 € Festbetrag", nur: ["pv"] },
+      { label: "Solarthermie- oder Holzpelletanlage", value: "500 € Festbetrag" },
+    ],
+    conditions: [
+      "Das Anwesen muss im Gebiet der Ortsgemeinde Bellheim liegen; die Nachbargemeinden der Verbandsgemeinde fördern nicht",
+      "Antragsberechtigt sind Eigentümer, Pächter und Mieter; Pächter und Mieter brauchen die schriftliche Erlaubnis des Eigentümers",
+      "Gefördert werden nur Vorhaben, die bei Antragstellung noch nicht begonnen sind — schon der Liefer- oder Leistungsvertrag gilt als Beginn",
+      "Die Anlage muss binnen 24 Monaten nach dem Bewilligungsbescheid betriebsbereit sein",
+      "Bewilligt wird im Rahmen der Haushaltsmittel in der Reihenfolge des Eingangs; der Antrag geht an die Verbandsgemeindeverwaltung Bellheim",
+      "Balkonkraftwerke sind von dieser Förderung ausgeschlossen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    pvTiers: [{ upTo: 999999, amount: 500 }],
   },
 
   "recklinghausen-stecker-solar": {

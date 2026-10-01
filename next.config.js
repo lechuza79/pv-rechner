@@ -357,6 +357,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/taunusstein", destination: "/photovoltaik-foerderung/hessen/taunusstein", permanent: true },
       { source: "/photovoltaik-foerderung/schmelz", destination: "/photovoltaik-foerderung/saarland/schmelz", permanent: true },
       { source: "/photovoltaik-foerderung/waldalgesheim", destination: "/photovoltaik-foerderung/rheinland-pfalz/waldalgesheim", permanent: true },
+      { source: "/photovoltaik-foerderung/bellheim", destination: "/photovoltaik-foerderung/rheinland-pfalz/bellheim", permanent: true },
       { source: "/photovoltaik-foerderung/recklinghausen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/recklinghausen", permanent: true },
       { source: "/photovoltaik-foerderung/werne", destination: "/photovoltaik-foerderung/nordrhein-westfalen/werne", permanent: true },
       { source: "/photovoltaik-foerderung/gerlingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/gerlingen", permanent: true },

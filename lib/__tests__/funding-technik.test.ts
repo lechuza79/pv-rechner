@@ -4,6 +4,9 @@ import {
   allFundingPrograms, getFundingProgram,
   type FundingProgram, type FundingTechnik,
 } from "../funding-programs";
+import { cityBySlug, isCityLive, isCityArchived, foerderseiteTraegt } from "../atlas-cities";
+import { foerderStadtMeta } from "../foerder-stadt-meta";
+import { buildFundingFaq } from "../funding-faq";
 
 // Der Katalog trägt seit 18.08.2026 drei Techniken statt einer. Diese Datei
 // nagelt fest, was daran schiefgehen KANN — und das ist fast alles dasselbe:
@@ -152,6 +155,24 @@ describe("Realitäts-Anker am echten Katalog", () => {
     expect(technikenVon(m)).toEqual(["balkon"]);
     expect(programmeFuerTechnik(allFundingPrograms(), "pv").map((p) => p.id)).not.toContain("muenchen-fkg");
     expect(programmeFuerTechnik(allFundingPrograms(), "balkon").map((p) => p.id)).toContain("muenchen-fkg");
+  });
+
+  it("ein laufendes Balkon-Programm macht die Photovoltaik-Stadtseite nicht zur laufenden PV-Förderung", () => {
+    // München läuft seit 01.10.2026 wieder (Balkon-Baustein), fördert aber
+    // keine Dachanlagen. Die Seite heißt „Photovoltaik-Förderung" — sie bleibt
+    // deshalb Archiv-Seite und sagt in Titel, Beschreibung und FAQ, was gilt.
+    const muenchen = cityBySlug("muenchen")!;
+    const m = getFundingProgram("muenchen-fkg")!;
+    expect(m.status).toBe("aktiv");
+    expect(isCityLive(muenchen)).toBe(false);
+    expect(isCityArchived(muenchen)).toBe(true);
+    expect(foerderseiteTraegt(muenchen)).toBe(false);
+    const meta = foerderStadtMeta("München", m, 2026);
+    expect(meta.title).toContain("nur Balkonkraftwerke");
+    expect(meta.description).toContain("keine Dachanlagen");
+    expect(buildFundingFaq("München", m)[0].a).not.toMatch(/fördert .* Photovoltaik über/);
+    // Gegenprobe: dasselbe Programm mit Dach-PV wäre eine laufende Seite.
+    expect(foerderStadtMeta("München", { ...m, foerdert: ["pv", "balkon"] }, 2026).title).toBe("Photovoltaik-Förderung München 2026");
   });
 
   it("jeder strukturierte Satz steht in einem Programm, das diese Technik auch führt", () => {

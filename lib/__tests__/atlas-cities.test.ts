@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben, foerderStadtUmleitung, foerderBundeslaender } from "../atlas-cities";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
+import { landProgramBundeslaender, getFundingProgram, foerdertDach } from "../funding-programs";
 import nextConfig from "../../next.config.js";
 
 // Live-Policy (Juni 2026): nur Regionen mit aktivem Programm bekommen eine Seite.
@@ -39,11 +39,16 @@ describe("live cities (only active programs)", () => {
 // pausiert/eingestellt) bekommen eine Archiv-Seite; "unsicher" und "kein
 // Programm" bleiben auf 404.
 describe("archived cities (inactive but published programs)", () => {
-  it("a city is archived iff its program is exhausted/paused/discontinued", () => {
+  it("a city is archived iff its program is exhausted/paused/discontinued — or active without rooftop PV", () => {
+    // Seit 01.10.2026: Ein laufendes Programm OHNE Dach-PV (München, nur
+    // Balkonkraftwerke) ist auf der Photovoltaik-Stadtseite keine laufende
+    // PV-Förderung und wird wie ein Archiv gezeigt (foerdertDach).
     const inactive = ["ausgeschoepft", "pausiert", "eingestellt"];
     for (const c of archivedCities()) {
-      expect(fundingFor(c), c.slug).toBeTruthy();
-      expect(inactive).toContain(fundingFor(c)?.status);
+      const f = fundingFor(c);
+      expect(f, c.slug).toBeTruthy();
+      if (f!.status === "aktiv") expect(foerdertDach(f!), c.slug).toBe(false);
+      else expect(inactive).toContain(f!.status);
     }
   });
   it("includes inactive-program cities and excludes active/unsicher/no-program", () => {

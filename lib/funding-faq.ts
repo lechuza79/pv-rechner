@@ -1,4 +1,5 @@
-import type { FundingProgram } from "./funding-programs";
+import { foerdertDach, type FundingProgram } from "./funding-programs";
+import { nurAndereTechnikSatz } from "./foerder-stadt-meta";
 
 // FAQ wird aus den Förderdaten generiert (nicht separat gespeichert) — so
 // spiegelt sie immer den Live-Stand der Programme aus der DB. Wird auf den
@@ -28,7 +29,11 @@ export function buildFundingFaq(
     const active = program.status === "aktiv";
     faq.push({
       q: `Welche Photovoltaik-Förderung gibt es in ${cityName}?`,
-      a: `In ${cityName} fördert ${program.traeger} Photovoltaik über das Programm „${program.name}". Förderfähig sind ${program.coveredCosts}.`
+      // A programme without rooftop PV (München: balcony only) must not be
+      // described as funding "Photovoltaik" (see foerdertDach).
+      a: (foerdertDach(program)
+        ? `In ${cityName} fördert ${program.traeger} Photovoltaik über das Programm „${program.name}". Förderfähig sind ${program.coveredCosts}.`
+        : `In ${cityName} fördert ${program.traeger} über das Programm „${program.name}" ${nurAndereTechnikSatz(program)}, keine Dachanlagen. ${program.coveredCosts}.`)
         + (active ? "" : ` Das Programm nimmt derzeit allerdings keine neuen Anträge an (${statusText(program.status)}).`),
     });
     faq.push({

@@ -1,4 +1,4 @@
-import { saetzeFuer, FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
+import { saetzeFuer, foerdertDach, FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
 import { ortPraeposition } from "./atlas-orte";
 
 // ─── Title and description of a city funding page ─────────────────────────────
@@ -25,12 +25,26 @@ export function foerderStadtMeta(
   jahr: number | string,
 ): { title: string; description: string } {
   const aktiv = f?.status === "aktiv";
+  // An active programme that funds no rooftop PV (München: balcony only) is not
+  // "Photovoltaik-Förderung" in the sense of this page — see foerdertDach.
+  const ohneDach = !!f && aktiv && !foerdertDach(f);
   const titelVoll = `Photovoltaik-Förderung ${stadt} ${jahr}`;
-  const title = !f || aktiv
+  const title = ohneDach
+    ? `PV-Förderung ${stadt} ${jahr}: ${nurAndereTechnik(f!)}`
+    : !f || aktiv
     ? titelVoll.length <= TITEL_BUDGET ? titelVoll : `PV-Förderung ${stadt} ${jahr}`
     : `PV-Förderung ${stadt} ${jahr}: ${FUNDING_STATUS_LABEL[f.status]}`;
 
   const ort = `${ortPraeposition(stadt)} ${stadt}`;
+  if (ohneDach) {
+    return {
+      title,
+      description: kappe(
+        `Das Programm „${f!.name}“ ${ort} fördert derzeit ${nurAndereTechnikSatz(f!)}, keine Dachanlagen. Was bundesweit gilt und Beispielrechnungen für deine PV-Anlage.`,
+        `Das Förderprogramm ${ort} fördert derzeit ${nurAndereTechnikSatz(f!)}, keine Dachanlagen. Was bundesweit gilt und Beispielrechnungen für deine PV-Anlage.`,
+      ),
+    };
+  }
   if (!f) {
     return {
       title,
@@ -63,4 +77,17 @@ export function foerderStadtMeta(
 function kappe(...kandidaten: (string | null)[]): string {
   const passend = kandidaten.filter((k): k is string => !!k);
   return passend.find((k) => k.length <= BESCHREIBUNG_BUDGET) ?? passend[passend.length - 1];
+}
+
+/** Short title suffix for an active programme without rooftop PV. */
+function nurAndereTechnik(f: FundingProgram): string {
+  const t = f.foerdert ?? [];
+  return t.length === 1 && t[0] === "balkon" ? "nur Balkonkraftwerke" : "keine Dachanlagen";
+}
+
+/** What such a programme does fund, as a sentence fragment ("nur Balkonkraftwerke"). */
+export function nurAndereTechnikSatz(f: FundingProgram): string {
+  const namen: Record<string, string> = { balkon: "Balkonkraftwerke", waermepumpe: "Wärmepumpen" };
+  const liste = (f.foerdert ?? []).filter((t) => t !== "pv").map((t) => namen[t]).filter(Boolean);
+  return liste.length ? `nur ${liste.join(" und ")}` : "andere Maßnahmen";
 }

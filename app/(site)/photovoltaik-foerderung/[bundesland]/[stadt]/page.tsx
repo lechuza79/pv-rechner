@@ -10,7 +10,7 @@ import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { atlasRobots } from "../../../../../lib/atlas-index";
 import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, fundingForFrom, cityIndexFreigegeben, foerderStadtUmleitung } from "../../../../../lib/atlas-cities";
-import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
+import { foerdertDach, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
@@ -22,7 +22,7 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
-import { foerderStadtMeta } from "../../../../../lib/foerder-stadt-meta";
+import { foerderStadtMeta, nurAndereTechnikSatz } from "../../../../../lib/foerder-stadt-meta";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -347,6 +347,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
+            : f.status === "aktiv" && !foerdertDach(f)
+            /* Laufendes Programm ohne Dach-PV (München: nur Balkonkraftwerke) —
+               die Seite darf es nicht als Zuschuss für neue Solaranlagen
+               ausgeben (siehe foerdertDach). */
+            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> derzeit {nurAndereTechnikSatz(f)} — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit gilt die 0 % Mehrwertsteuer auf Kauf und Installation.</>
             : f.status === "aktiv"
             /* Kein „die Stadt": Von den geförderten Orten sind die meisten
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —

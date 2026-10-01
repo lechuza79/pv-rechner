@@ -755,6 +755,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "otterstadt-umweltfoerderung",
   "waldsee-umweltfoerderung",
   "ahrweiler-batteriespeicher",
+  // Added 1 Oct 2026: page and guideline read in full; the start-of-project
+  // rule (supply contract counts as start), the 24-month completion window and
+  // the Ortsgemeinde territory rule have no test form yet.
+  "bellheim-erneuerbare-energien",
 ];
 
 /**
