@@ -1038,12 +1038,14 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "einmal gefördert wurde — eine Auskunft, die nur die Stadt hat.",
       },
       {
-        ausBedingung: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+        ausBedingung: "Gefördert wird ein Balkonkraftwerk mit höchstens zwei Modulen je Haushalt, höchstens 800 W Einspeisung — ob ein Set mit mehr Modulen ganz herausfällt, sagt die Richtlinie nicht eindeutig; wir rechnen deshalb keinen Betrag an",
         warum:
           "Die 800 W sind seit 2024 ohnehin die gesetzliche Obergrenze für " +
           "Steckersolar und damit im Balkon-Rechner der Normalfall. Die Modulzahl " +
           "steht in keiner Prüfform, weil sie sonst nirgends vorkommt — ein eigenes " +
-          "Feld für einen einzigen Fall wäre Zeremonie.",
+          "Feld für einen einzigen Fall wäre Zeremonie. Weil offen ist, ob ein " +
+          "Set mit mehr Modulen ganz herausfällt, rechnet der Balkon-Teil seit " +
+          "01.10.2026 ohnehin keinen Betrag mehr an.",
       },
       {
         ausBedingung: "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",

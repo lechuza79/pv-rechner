@@ -2388,7 +2388,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       // ein einziges Feld „Leistung:" ohne Einheit und fragt die Modulzahl gar
       // nicht ab. Deshalb bleibt die Rechnung, wie sie ist (200 € für alle
       // Sets); wer sie ändern will, braucht eine Auskunft der Stadt.
-      { text: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Gefördert wird ein Balkonkraftwerk mit höchstens zwei Modulen je Haushalt, höchstens 800 W Einspeisung — ob ein Set mit mehr Modulen ganz herausfällt, sagt die Richtlinie nicht eindeutig; wir rechnen deshalb keinen Betrag an", nur: ["balkon"] as FundingTechnik[] },
       { text: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt", nur: ["balkon"] as FundingTechnik[] },
       { text: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung", nur: ["balkon"] as FundingTechnik[] },
       { text: "Je Haushalt wird im Förderzeitraum nur eine Anlage gefördert", nur: ["balkon"] as FundingTechnik[] },
@@ -2413,7 +2413,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     endetIso: "2026-12-31",
     pvPerKwp: 100, pvCap: 1000, pvMin: 4,
     speicherPerKwh: 50, speicherCap: 500,
-    balkonPercentOfCost: 0.5, balkonCap: 200,
+    // BALKON OHNE RECHENWERT (01.10.2026). Mini-PV guideline (Stand 14.08.2025,
+    // Förderzeitraum 2026) § 2: "Pro Haushalt wird im Förderzeitraum nur eine
+    // Mini-PV-Anlage (max. 2 Module) gefördert." Council: primary verifier
+    // "nicht entscheidbar", adversarial verifier "4-Modul-Set nicht
+    // förderfähig". The calculator cannot see the module count, and the
+    // 4-module set got up to 200 € that are disputed — so the balcony part
+    // informs only (50 %, max. 200 € stays as text). Before: balkonPercentOfCost
+    // 0.5, balkonCap 200. Roof PV and storage are unaffected.
     // HALTEDAUER JE TECHNIK GETRENNT (17.09.2026). Hier stand ungemarkt
     // „Haltedauer zehn Jahre" — belegt ist das nur in der PV-Richtlinie
     // („Haltedauer von PVA: 10 Jahre · Haltedauer von Stromspeichern: 10 Jahre").
@@ -13835,6 +13842,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Balkonkraftwerk", value: "pauschal 100 €, begrenzt auf 20 % der Anschaffungskosten", nur: ["balkon"] }],
     conditions: [
       "Zuschussfähig sind Balkonkraftwerke bis 800 Wp; Prototypen und Eigenbau sind ausgenommen, ebenso bereits installierte Anlagen",
+      "Ob die 800 Wp die Modulleistung oder die Einspeiseleistung meinen, lässt die Gemeinde offen — bei einem Set mit mehr als 800 Wp Modulleistung vorher nachfragen; wir rechnen deshalb keinen Betrag an",
       "Antragsberechtigt sind natürliche und juristische Personen mit Hauptwohnsitz in Kumhausen — als Eigentümer, Erbbauberechtigte oder Mieter",
       "Die technischen Anschlussbedingungen und die VDE-Richtlinie für Erzeugungsanlagen am Niederspannungsnetz sind einzuhalten",
       "Der erzeugte Strom wird selbst verbraucht; für eingespeisten Strom wird keine Vergütung nach EEG oder KWKG beansprucht",
@@ -13844,7 +13852,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: ["bund-nullsteuer", "bund-kfw270"],
     foerdert: ["balkon"],
-    balkonPercentOfCost: 0.20, balkonCap: 100,
+    // KEIN RECHENWERT MEHR (01.10.2026). Council of three incl. adversarial
+    // reviewer, again on the original criteria and the application form: both
+    // verifiers "nicht entscheidbar", leaning towards module power ("Wp", the
+    // form asks only "Modulleistung gesamt"). Under that reading our standard
+    // 960-Wp set gets nothing, and we deducted 100 €. A disputed amount is not
+    // deducted: the programme informs (rate as text) until the municipality
+    // says which power is meant. Before: balkonPercentOfCost 0.20, balkonCap 100.
+    //
     // DIE 800 Wp SIND NICHT ENTSCHIEDEN — und deshalb steht hier KEINE
     // Rechengrenze (Council 23.09.2026, zwei Prüfer, einer adversarial).
     //
