@@ -5426,14 +5426,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Leimen", level: "kommune", region: "Leimen",
     bundesland: "Baden-Württemberg", agsCode: "08226041",
     url: "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteil der Gesamtkosten einer Balkonkraftwerk",
     maxFoerderung: "max. 120 € je Antrag",
     rates: [{ label: "Balkonkraftwerk", value: "15 % der Gesamtkosten, max. 120 €" }],
     conditions: [
       "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
-      "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
+      // 02.10.2026: Die Programmseite nennt nur noch „ein begrenztes Budget";
+      // die frühere Angabe „ausreichend Fördermittel" steht dort nicht mehr.
+      "Die Stadt hat ein begrenztes Budget bereitgestellt; über Anträge wird nach den verfügbaren Mitteln entschieden",
       "Beantragt wird nach dem Kauf mit Rechnung, Foto der installierten Anlage und Registrierungsbestätigung aus dem Marktstammdatenregister",
       "In Mietwohnungen ist die Erlaubnis des Vermieters beizulegen",
     ],
@@ -5665,7 +5667,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Heddesheim", level: "kommune", region: "Heddesheim",
     bundesland: "Baden-Württemberg", agsCode: "08226028",
     url: "https://www.heddesheim.de/Umweltfoerderprogramm",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp für die Dachanlage, Pauschale fürs Balkonkraftwerk",
     maxFoerderung: "max. 1.500 € für die Dachanlage",
@@ -5677,6 +5679,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für die Dachanlage ist der Antrag vor der Auftragsvergabe zu stellen",
       "Beim Balkonkraftwerk darf die Rechnung bei Antragstellung höchstens sechs Monate alt sein",
       "Batteriespeicher und Wärmepumpen sind nicht Teil des Programms",
+      // 02.10.2026: Gemeindenachricht „Umweltförderprogramm 2026" vom 22.01.2026
+      // im Original gelesen: „Die Förderung von Photovoltaikanlagen ist in diesem
+      // Jahr letztmalig Bestandteil des Programms. Ab dem Jahr 2027 wird dieser
+      // Förderbaustein entfallen." Bezogen auf den Dach-Baustein; ob auch der
+      // Balkon-Zuschuss endet, sagt die Nachricht nicht — deshalb nur dort.
+      { text: "Laut Gemeinde ist die Förderung von Photovoltaikanlagen 2026 letztmalig Teil des Programms; ab 2027 entfällt dieser Baustein", nur: ["pv"] as FundingTechnik[] },
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],

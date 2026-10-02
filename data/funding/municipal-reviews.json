@@ -84202,5 +84202,149 @@
         "evidenceUrl": "https://www.edingen-neckarhausen.de/rathaus/buergerservice-termine-dienstleistungen-lebenslagen-usw/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte"
       }
     ]
+  },
+  {
+    "regionId": "08226018",
+    "name": "Eppelheim",
+    "checkedAt": "2026-10-02T09:30:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Eppelheim fördert Balkonkraftwerke mit pauschal 75 € (Förderrichtlinien 2026, gültig bis 06.12.2026, im Rahmen der Haushaltsmittel); der Katalogeintrag eppelheim-balkonkraftwerke stimmt mit Betrag und Bedingungen überein. Für Dach-Photovoltaik, Speicher und Wärmepumpen gibt es keinen Zuschuss; bezuschusst wird nur der Wärmepumpen-Check der KLiBA (250 €, direkt verrechnet, Beratung, kein Anlagenzuschuss).",
+    "searches": [
+      "eppelheim.de/klimafoerderungen und Förderrichtlinien 2026 (PDF) im Volltext gelesen (02.10.2026)",
+      "Websuche auf eppelheim.de, leimen.de, heddesheim.de, oftersheim.de beschränkt („Förderung Wärmepumpe Batteriespeicher Photovoltaik Zuschuss“, „Förderprogramm Klimaschutz Zuschuss Bürger 2026“, 02.10.2026): keine weiteren Programme für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eppelheim.de/resources/01%20Website/F%C3%B6rderrichtlinien%202026.pdf",
+        "finding": "„Zusätzlich fördert die Stadt Eppelheim mit einem Zuschuss von pauschal 75 €.“ Bausteine: Balkonkraftwerke, Ökologische Dämmung, Wärmepumpen-Check der KLiBA (Zuschuss pauschal 250 €), Mobilität, Begrünung, Regenwasser; gültig für 2026 bis 06.12.2026."
+      },
+      {
+        "url": "https://www.eppelheim.de/klimafoerderungen",
+        "finding": "Übersicht 02.10.2026: „Folgende Anträge können Sie aktuell herunterladen und einreichen“, darunter „Antrag Förderung Steckersolagerät, Balkonkraftwerk“; Verweis auf „Förderrichtlinien 2026“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eppelheim.de/klimafoerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite am 02.10.2026 gelesen; verweist auf die Förderrichtlinien 2026 und den Balkonkraftwerk-Antrag.",
+        "evidenceUrl": "https://www.eppelheim.de/klimafoerderungen"
+      },
+      {
+        "url": "eppelheim.de/resources/01%20Website/F%C3%B6rderrichtlinien%202026.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie am 02.10.2026 im Volltext gelesen; Balkon 75 € entspricht dem Katalog.",
+        "evidenceUrl": "https://www.eppelheim.de/resources/01%20Website/F%C3%B6rderrichtlinien%202026.pdf"
+      },
+      {
+        "url": "eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpeneignungscheck",
+        "disposition": "replaced",
+        "reason": "Wärmepumpen-Eignungscheck ist in der Richtlinie 2026 als Baustein 2.2 geregelt (Zuschuss zur KLiBA-Beratung, kein Anlagenzuschuss); durch die gelesene Richtlinie erledigt.",
+        "evidenceUrl": "https://www.eppelheim.de/resources/01%20Website/F%C3%B6rderrichtlinien%202026.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "08226028",
+    "name": "Heddesheim",
+    "checkedAt": "2026-10-02T09:30:00Z",
+    "recheckAt": "2026-12-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Heddesheims Umweltförderprogramm zahlt für Dach-PV 150 €/kWp, höchstens 1.500 €, und für steckerfertige PV 100 € je Anlage; Katalog heddesheim-umwelt stimmt. Neu eingetragen: Laut Gemeindenachricht vom 22.01.2026 ist die PV-Förderung 2026 letztmalig Teil des Programms. Speicher und Wärmepumpen werden nicht gefördert. Wiederprüfung vor Jahresende wegen des angekündigten Wegfalls.",
+    "searches": [
+      "heddesheim.de/Umweltfoerderprogramm und Gemeindenachricht „Umweltförderprogramm 2026“ (22.01.2026) im Original gelesen (02.10.2026)",
+      "Websuche auf eppelheim.de, leimen.de, heddesheim.de, oftersheim.de beschränkt („Förderung Wärmepumpe Batteriespeicher Photovoltaik Zuschuss“, „Förderprogramm Klimaschutz Zuschuss Bürger 2026“, 02.10.2026): keine weiteren Programme für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.heddesheim.de/Umweltfoerderprogramm",
+        "finding": "„Photovoltaikanlage an Gebäuden: Förderhöhe 150 €/kWp, höchstens jedoch 1.500 €.“ „Steckerfertige Solarkraftwerke: Förderhöhe 100 € pro Anlage.“"
+      },
+      {
+        "url": "https://www.heddesheim.de/Unsere-Gemeinde/Gemeindenachrichten/Gemeindenachricht?id=5573&item=article&view=publish",
+        "finding": "„Die Förderung von Photovoltaikanlagen ist in diesem Jahr letztmalig Bestandteil des Programms. Ab dem Jahr 2027 wird dieser Förderbaustein entfallen.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "heddesheim.de/Umweltfoerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Am 02.10.2026 gelesen; Beträge entsprechen dem Katalog.",
+        "evidenceUrl": "https://www.heddesheim.de/Umweltfoerderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "08226041",
+    "name": "Leimen",
+    "checkedAt": "2026-10-02T09:30:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Leimen fördert Stecker-Solaranlagen 2026 mit 15 % der Gesamtkosten, höchstens 120 € je Antrag, aus einem begrenzten Budget; der Katalogeintrag leimen-klimaschutz stimmt, die Bedingung zu den Mitteln wurde an den heutigen Wortlaut angepasst. Für Dach-PV, Speicher und Wärmepumpen gibt es keinen kommunalen Zuschuss (nur Energieberatung).",
+    "searches": [
+      "leimen.de Klimaschutzförderungen im Original gelesen (02.10.2026)",
+      "Websuche auf eppelheim.de, leimen.de, heddesheim.de, oftersheim.de beschränkt („Förderung Wärmepumpe Batteriespeicher Photovoltaik Zuschuss“, „Förderprogramm Klimaschutz Zuschuss Bürger 2026“, 02.10.2026): keine weiteren Programme für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
+        "finding": "„Die Förderung beträgt 15% der Gesamtkosten der installierten Stecker-Solaranlage. Die maximale Fördersumme pro Antrag beträgt 120€.“ „Hierfür wurde ein begrenztes Budget … bereitgestellt.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
+        "disposition": "reviewed",
+        "reason": "Am 02.10.2026 gelesen, entspricht dem Katalog.",
+        "evidenceUrl": "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "08226062",
+    "name": "Oftersheim",
+    "checkedAt": "2026-10-02T09:30:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Oftersheims Programm zur Reduzierung der CO₂-Emissionen (gültig ab 01.01.2024) fördert Dach-PV mit 50 €/kWp bis 500 € (Innovationsbonus 150 €/kWp bis 1.500 €) und Balkonkraftwerke mit 15 % bis 150 €, höchstens 1.500 € je Haushalt und Jahr; Katalog oftersheim-co2 stimmt. Speicher nur als Pufferspeicher zur Solarthermie, keine Wärmepumpen-Förderung. Die Seite 3317788 betrifft Klimafolgenanpassung (Versickerung, Fassadengrün).",
+    "searches": [
+      "Programm-PDF (15 Seiten) und Seite 3317788 im Original gelesen (02.10.2026)",
+      "Websuche auf eppelheim.de, leimen.de, heddesheim.de, oftersheim.de beschränkt („Förderung Wärmepumpe Batteriespeicher Photovoltaik Zuschuss“, „Förderprogramm Klimaschutz Zuschuss Bürger 2026“, 02.10.2026): keine weiteren Programme für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oftersheim.de/site/Oftersheim/get/documents_E-1452176986/oftersheim/Dateien/Bauamt/Klimaschutz%20Vordrucke/F%C3%B6rderprogramm%20Reduzierung%20der%20CO2-Emissionen/F%C3%B6rderprogramm%20der%20Gemeinde%20Oftersheim%20zur%20Reduzierung%20der%20CO2%20Emissionen.pdf",
+        "finding": "„wird mit einmalig 50 € je kWp … gefördert. Die Förderung ist auf 500 € je Anlage begrenzt.“ Balkon: „maximal 15 % … höchstens jedoch mit 150 €“. „Förderhöchstbetrag von maximal 1.500 € pro Jahr und Haushalt“."
+      },
+      {
+        "url": "https://www.oftersheim.de/3317788",
+        "finding": "02.10.2026: Klimafolgenanpassung — „Schwammstadtmaßnahmen werden mit 5 € pro m² … gefördert“, Fassadenbegrünung „25 %“ bis 300 €; keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oftersheim.de/3187645",
+        "disposition": "replaced",
+        "reason": "Programmübersicht; maßgeblich ist das am 02.10.2026 gelesene Programm-PDF.",
+        "evidenceUrl": "https://www.oftersheim.de/site/Oftersheim/get/documents_E-1452176986/oftersheim/Dateien/Bauamt/Klimaschutz%20Vordrucke/F%C3%B6rderprogramm%20Reduzierung%20der%20CO2-Emissionen/F%C3%B6rderprogramm%20der%20Gemeinde%20Oftersheim%20zur%20Reduzierung%20der%20CO2%20Emissionen.pdf"
+      },
+      {
+        "url": "oftersheim.de/site/Oftersheim/get/documents_E-1452176986/oftersheim/Dateien/Bauamt/Klimaschutz%20Vordrucke/F%C3%B6rderprogramm%20Reduzierung%20der%20CO2-Emissionen/F%C3%B6rderprogramm%20der%20Gemeinde%20Oftersheim%20zur%20Reduzierung%20der%20CO2%20Emissionen.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 02.10.2026 im Volltext gelesen; entspricht dem Katalog.",
+        "evidenceUrl": "https://www.oftersheim.de/site/Oftersheim/get/documents_E-1452176986/oftersheim/Dateien/Bauamt/Klimaschutz%20Vordrucke/F%C3%B6rderprogramm%20Reduzierung%20der%20CO2-Emissionen/F%C3%B6rderprogramm%20der%20Gemeinde%20Oftersheim%20zur%20Reduzierung%20der%20CO2%20Emissionen.pdf"
+      },
+      {
+        "url": "oftersheim.de/3317788",
+        "disposition": "reviewed",
+        "reason": "Am 02.10.2026 gelesen: Klimafolgenanpassung (Versickerungsmulden 5 €/m², Fassadenbegrünung 25 % bis 300 €); keine Förderung von PV, Speicher, Balkon oder Wärmepumpe.",
+        "evidenceUrl": "https://www.oftersheim.de/3317788"
+      }
+    ]
   }
 ]

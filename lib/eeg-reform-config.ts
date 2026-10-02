@@ -660,7 +660,11 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   öffentliche Anhörung zu 21/7867 am Montag, 05.10.2026, 12.15–14.15 Uhr,
   //   weder abgesagt noch verschoben. Eine 2./3. Lesung vor der Anhörung ist
   //   ausgeschlossen. Zustand und Werte unverändert: Regierungsentwurf.
-  geprueftIso: "2026-10-01",
+  // 02.10.2026: Pressemitteilung des Bundestages vom 30.09.2026 (pm-260929-oea-kw41)
+  //   und Anhörungsseite 1217432 gelesen: öffentliche Anhörung zum EEG am
+  //   05.10.2026, 12.15 Uhr, unverändert angesetzt. Keine 2./3. Lesung vor der
+  //   Anhörung möglich. Zustand und Werte unverändert: Regierungsentwurf.
+  geprueftIso: "2026-10-02",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
