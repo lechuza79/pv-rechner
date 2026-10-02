@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {energieMwhTeile,anteilProzentTeile} from '../../lib/atlas-format';
 import {CompositionArc} from '../charts/CompositionArc';
 import OnsiteSearch from '../OnsiteSearch';
-import {IconArrowRight} from '../Icons';
+import {IconArrowRight,IconArrowLeft} from '../Icons';
 import type {RegionNavigationEnergy} from '../../lib/region-navigation-energy';
 import {checkedNavigationEnergy} from '../../lib/region-navigation-energy';
 import shared from './landkreis.module.css';
@@ -39,6 +39,46 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
     reduced.addEventListener('change',stop);
     return ()=>{stop();reduced.removeEventListener('change',stop);};
   },[query]);
+  const [bounds,setBounds]=useState({prev:false,next:false});
+  useEffect(()=>{
+    const grid=gridRef.current;
+    if(!grid)return;
+    const mobile=window.matchMedia('(max-width:760px)');
+    const reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
+    let visible=false;
+    let pauseUntil=0;
+    const sync=()=>setBounds({prev:grid.scrollLeft>2,next:grid.scrollLeft+grid.clientWidth<grid.scrollWidth-2});
+    const resize=new ResizeObserver(sync);
+    resize.observe(grid);
+    const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;},{threshold:.6});
+    observer.observe(grid);
+    const stop=()=>{pauseUntil=Date.now()+8000;};
+    const section=grid.closest('section')!;
+    section.addEventListener('pointerdown',stop,{passive:true});
+    section.addEventListener('focusin',stop);
+    section.addEventListener('wheel',stop,{passive:true});
+    grid.addEventListener('scroll',sync,{passive:true});
+    sync();
+    // Resume after manual interaction; hovering the section must not disable autoplay forever.
+    const timer=window.setInterval(()=>{
+      if(!mobile.matches||reduced.matches||!visible||document.hidden||Date.now()<pauseUntil||query.trim()||section.contains(document.activeElement))return;
+      if(grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2)return;
+      const first=grid.firstElementChild;
+      if(first)grid.scrollBy({left:first.getBoundingClientRect().width+parseFloat(getComputedStyle(grid).columnGap),behavior:'smooth'});
+    },4500);
+    return ()=>{
+      window.clearInterval(timer);resize.disconnect();observer.disconnect();
+      grid.removeEventListener('scroll',sync);
+      section.removeEventListener('pointerdown',stop);
+      section.removeEventListener('focusin',stop);
+      section.removeEventListener('wheel',stop);
+    };
+  },[query,places.length]);
+  const scrollPlaces=(direction:number)=>{
+    const grid=gridRef.current;
+    if(!grid)return;
+    grid.scrollBy({left:direction*((grid.firstElementChild?.getBoundingClientRect().width??grid.clientWidth)+parseFloat(getComputedStyle(grid).columnGap)),behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  };
   const resultsId=useId();
   const data=checkedNavigationEnergy(energy,places.map(p=>p.id));
   const values=new Map(data?.values.map(v=>[v.regionId,v.mwh]));
@@ -52,6 +92,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
     </div>
     <div className={styles.search}><OnsiteSearch items={searchItems} onQueryChange={setQuery} ariaLabel={title==="Gemeindeübersicht"?"Gemeinde suchen":title==="Kreisübersicht"?"Kreis oder kreisfreie Stadt suchen":"Bundesland suchen"} placeholder={title==="Gemeindeübersicht"?"Gemeinde suchen …":title==="Kreisübersicht"?"Kreis oder Stadt suchen …":"Bundesland suchen …"}/></div></div>
     <p className={styles.srOnly} role="status">{shown.length} von {places.length} Gebieten · alphabetisch</p>
+    <div className={styles.scrollFrame} data-scroll-prev={bounds.prev} data-scroll-next={bounds.next}>
     <ul ref={gridRef} id={resultsId} className={styles.grid}>{shown.map(place=>{
       const mwh=values.get(place.id), share=data&&data.totalMwh>0&&mwh!==undefined?Math.min(1,mwh/data.totalMwh):null;
       const reading=mwh===undefined?null:energieMwhTeile(mwh),percent=share===null?null:anteilProzentTeile(share,1);
@@ -75,6 +116,11 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
 
       </li>;
     })}</ul>
+    {(bounds.prev||bounds.next)&&<nav className={styles.scrollControls} aria-label="Gebiete durchblättern">
+      <button type="button" aria-label="Vorherige Gebiete" aria-controls={resultsId} disabled={!bounds.prev} onClick={()=>scrollPlaces(-1)}><IconArrowLeft size={24}/></button>
+      <button type="button" aria-label="Weitere Gebiete" aria-controls={resultsId} disabled={!bounds.next} onClick={()=>scrollPlaces(1)}><IconArrowRight size={24}/></button>
+    </nav>}
+    </div>
     {!shown.length&&<p>Kein Gebiet gefunden. <button type="button" onClick={()=>setQuery('')}>Suche zurücksetzen</button></p>}
   </section>;
 }
