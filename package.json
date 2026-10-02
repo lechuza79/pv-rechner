@@ -114,6 +114,7 @@
     "stories:refresh": "node scripts/story-refresh.mjs --fetch",
     "stories:prepare": "node --import tsx scripts/story-prepare.ts",
     "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts",
+    "bkw:katalog": "tsx scripts/bkw-katalog-sync.ts",
     "wp:katalog": "tsx scripts/wp-katalog-sync.ts",
     "kreise:pakete": "tsx --conditions=react-server scripts/kreis-paket.ts",
     "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts",

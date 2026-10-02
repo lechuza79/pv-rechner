@@ -26,6 +26,7 @@
  *   CRON_SECRET            für --alert
  */
 
+import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
 import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
@@ -1885,6 +1886,7 @@ export function zeitreserveKnapp(
  *    nicht. Dafür gibt es `eskalationNoetig` weiter oben.
  */
 export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
+  { datei: "product-catalogs.yml", was: "Produktkataloge Wärmepumpen und Balkonkraftwerke" },
   { datei: "foerder-watch.yml", was: "Förder-Seiten-Wächter" },
   { datei: "flows-nightly.yml", was: "Nächtlicher Flow-Läufer" },
   // Fällt dieser Lauf aus, kommt keine Rückmeldung mehr an — und das sieht von
@@ -2585,6 +2587,24 @@ async function main() {
           `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
       );
     }
+  }
+
+  // Read persisted success dates independently of the importer: detect missed runs too.
+  {
+    const access = supabaseZugang();
+    if (access) {
+      try {
+        const response = await fetch(`${access.url}/rest/v1/${CATALOG_TABLE}?select=id,fetched_at,source_at,item_count`, {
+          headers: { apikey: access.key, Authorization: `Bearer ${access.key}` }, signal: AbortSignal.timeout(10_000),
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const problems = catalogProblems(await response.json() as CatalogStatus[]);
+        for (const problem of problems) technical(`catalog:${problem.split(':')[0]}`, false, problem);
+        if (!problems.length) lines.push('Produktkataloge: vollständig; Abrufe und WP-Händlerstand innerhalb ihrer Fristen.');
+      } catch {
+        technical('catalog:unreachable', false, 'Produktkatalog-Überwachung konnte die gespeicherten Stände nicht lesen.');
+      }
+    } else unknown.push('product-catalogs');
   }
 
   // ── Geplante Läufe, die nicht mehr durchkommen ────────────────────────────
