@@ -84414,5 +84414,46 @@
         "evidenceUrl": "https://www.hemsbach.de/neuigkeiten/3618-stadt-erhaelt-90-000-euro-zuschuss-fuer-sanierung-der-koenigshuetter-strasse"
       }
     ]
+  },
+  {
+    "regionId": "08226038",
+    "name": "Ladenburg",
+    "checkedAt": "2026-10-03T05:55:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Ladenburg zahlt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Sie übernimmt nur die 30 € für einen KLiBA-PV-Eignungscheck (Sachleistung, kein Geldzuschuss zur Anlage) und bietet kostenlose KLiBA-Energieberatung an.",
+    "searches": [
+      "ladenburg.de: Photovoltaik-Kampagne, Energieberatung und Gas und Energie im Original gelesen (03.10.2026)",
+      "Websuche auf ladenburg.de beschränkt („Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss“, 03.10.2026): nur PV-Kampagne, Eignungscheck-Meldungen und Altstadt-Regeln zu Solar/Wärmepumpe, kein Zuschussprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ladenburg.de/de/Leben/Umwelt-Klimaschutz/Photovoltaik-Kampagne",
+        "finding": "„Um die PV-Kampagne weiterhin zu unterstützen, übernimmt die Stadt Ladenburg die Kosten in Höhe von 30 € für diesen PV-Eignungscheck, so dass dieser Service für die Bürgerinnen und Bürger kostenfrei ist.“ Kein Zuschuss zur Anlage."
+      },
+      {
+        "url": "https://www.ladenburg.de/ceasy/resource/?download=1&id=2127",
+        "finding": "KLiBA-Infoblatt „Nutzt meine PV-Anlage dem Klimaschutz?“ — allgemeine Information, keine Förderung."
+      },
+      {
+        "url": "https://www.ladenburg.de/de/Leben/Umwelt-Klimaschutz/Energieberatung",
+        "finding": "KLiBA-Energieberatung kostenlos; „Auch über Förderprogramme und Fördermöglichkeiten können Sie sich informieren.“ Kein eigenes städtisches Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ladenburg.de/de/Leben/Umwelt-Klimaschutz/Photovoltaik-Kampagne",
+        "disposition": "reviewed",
+        "reason": "Nur kostenloser PV-Eignungscheck (Sachleistung), kein Zuschuss.",
+        "evidenceUrl": "https://www.ladenburg.de/de/Leben/Umwelt-Klimaschutz/Photovoltaik-Kampagne"
+      },
+      {
+        "url": "ladenburg.de/ceasy/resource/?download=1&id=2127",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt der KLiBA ohne Förderung.",
+        "evidenceUrl": "https://www.ladenburg.de/ceasy/resource/?download=1&id=2127"
+      }
+    ]
   }
 ]
