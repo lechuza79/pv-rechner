@@ -21,7 +21,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
   const gridRef=useRef<HTMLUListElement>(null);
   useEffect(()=>{
     const grid=gridRef.current;
-    grid?.scrollTo({left:0,behavior:'instant'});
+    grid?.scrollTo({left:0,behavior:'auto'});
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
     if(!grid || reduced.matches)return;
     const animations:Animation[]=[];
@@ -62,9 +62,13 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
     // Resume after manual interaction; hovering the section must not disable autoplay forever.
     const timer=window.setInterval(()=>{
       if(!mobile.matches||reduced.matches||!visible||document.hidden||Date.now()<pauseUntil||query.trim()||section.contains(document.activeElement))return;
-      if(grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2)return;
+      if(grid.scrollWidth<=grid.clientWidth+2)return;
+      if(grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2){
+        grid.scrollTo({left:0,behavior:'smooth'});
+        return;
+      }
       const first=grid.firstElementChild;
-      if(first)grid.scrollBy({left:first.getBoundingClientRect().width+parseFloat(getComputedStyle(grid).columnGap),behavior:'smooth'});
+      if(first)grid.scrollBy({left:first.getBoundingClientRect().width+(parseFloat(getComputedStyle(grid).columnGap)||0),behavior:'smooth'});
     },4500);
     return ()=>{
       window.clearInterval(timer);resize.disconnect();observer.disconnect();
@@ -77,7 +81,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
   const scrollPlaces=(direction:number)=>{
     const grid=gridRef.current;
     if(!grid)return;
-    grid.scrollBy({left:direction*((grid.firstElementChild?.getBoundingClientRect().width??grid.clientWidth)+parseFloat(getComputedStyle(grid).columnGap)),behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+    grid.scrollBy({left:direction*((grid.firstElementChild?.getBoundingClientRect().width??grid.clientWidth)+(parseFloat(getComputedStyle(grid).columnGap)||0)),behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
   };
   const resultsId=useId();
   const data=checkedNavigationEnergy(energy,places.map(p=>p.id));

@@ -115,7 +115,7 @@
 }
 /* Overlay the shared arrow icons only for mouse-operated, overflowing rows. */
 .scrollFrame{position:relative}
-@media(min-width:761px) and (hover:hover) and (pointer:fine){
+@media(hover:hover) and (pointer:fine){
   .scrollControls{display:block;position:absolute;inset:0;pointer-events:none}
   .scrollControls button{position:absolute;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:var(--color-bg);color:var(--color-accent);cursor:pointer;pointer-events:auto}
   .scrollControls button:first-child{left:0}
