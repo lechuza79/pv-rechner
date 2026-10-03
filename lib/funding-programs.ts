@@ -5475,6 +5475,37 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // nur, statt Geld abzuziehen (Wächterlauf 01.10.2026).
   },
 
+  "hemsbach-steckersolar": {
+    id: "hemsbach-steckersolar", name: "Förderung von Stecker-Solaranlagen",
+    traeger: "Stadt Hemsbach", level: "kommune", region: "Hemsbach",
+    bundesland: "Baden-Württemberg", agsCode: "08226031",
+    url: "https://www.hemsbach.de/unsere-stadt/klimaschutz",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines Balkonkraftwerks (Module, Wechselrichter, Verkabelung, Speicher bis 3 kWh)",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 100 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, Wechselrichter höchstens 800 W, mit Nachweis der Produktsicherheit; ein Speicher bis 3 kWh je Haushalt zählt zu den Anschaffungskosten",
+      "Bei denkmalgeschützten Gebäuden ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+      "Rechnungsdatum nicht vor dem 01.03.2025",
+      "Antragsberechtigt sind Eigentümer, Mieter und Vermieter im Stadtgebiet sowie gemeinnützige Vereine; bei Mietobjekten mit Einbauerlaubnis des Vermieters",
+      "Fördertopf 2026: 5.000 €, vergeben in der Reihenfolge der Anträge; ist er erschöpft, wird nichts mehr gefördert, und ob noch Mittel übrig sind, weiß nur die Stadt",
+      "Beantragt wird nach dem Kauf mit Rechnung, Foto der Anlage und Nachweis aus dem Marktstammdatenregister",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie vom 24.10.2022, geändert 10.02.2025, in Kraft 01.03.2025,
+    // Nr. 2: "Die Förderhöhe beträgt 20 % der Anschaffungskosten, maximal 100
+    // Euro je Anlage." Stadtseite (02.10.2026): "Die Stadt hat für das
+    // Haushaltsjahr 2026 einen Fördertopf von 5.000 Euro bereitgestellt." Bewusst
+    // KEIN strukturierter Satz: Der Topf vergibt nach Antragseingang, und ob im
+    // Oktober noch Mittel da sind, sagt keine Amtsquelle (Wächterlauf
+    // 02./03.10.2026, Council 3/3 inkl. Gegenprüfer; Denkmalschutz-Nachweis
+    // nach Gegenprüfung ergänzt, Stadtseite am 03.10.2026 live unverändert).
+  },
+
   "sandhausen-foerderprogramme": {
     "id": "sandhausen-foerderprogramme",
     "name": "Förderprogramme erneuerbare Energien",

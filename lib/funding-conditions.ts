@@ -763,6 +763,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // AFTER purchase with invoice, the five-year operation duty and the small
   // first-come budget have no test form yet; the entry deducts nothing.
   "laudenbach-steckersolar",
+  // Added 2 Oct 2026: guideline (in force 01.03.2025) and city page read in
+  // full. Application AFTER purchase, the invoice-date cut-off, the five-year
+  // operation duty and the first-come 2026 budget have no test form yet; the
+  // entry deducts nothing.
+  "hemsbach-steckersolar",
 ];
 
 /**
