@@ -19,6 +19,9 @@ const nextConfig = {
   // No "X-Powered-By: Next.js" — tells an attacker the framework for free.
   poweredByHeader: false,
   outputFileTracingIncludes: {
+    "/fuer-organisationen/kommunen": ["./public/kommunen/index.html"],
+    "/api/windraeder-vorschau/*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
+    "/embed/micro-*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
     "/solar-atlas/*": ["./public/geo/gemeinden/*.geo.json"],
   },
   webpack(config, {webpack}) {

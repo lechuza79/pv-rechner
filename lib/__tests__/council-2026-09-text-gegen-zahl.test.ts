@@ -34,7 +34,7 @@ describe("Das Teilen-Vorschaubild rechnet wie die Seite", () => {
     // Seite: (total + kosten) / YEARS. Im Bild stand total / 25 — um die
     // Investition zu klein, Faktor 2 im Standardfall.
     expect(ogRechnungQuelle).toMatch(/\(result\.total \+ kosten\) \/ YEARS/);
-    expect(lies("app/(site)/photovoltaik-rechner/rechner.tsx")).toMatch(/label="Vorteil im 1. Jahr" value=\{Math.round\(sel.data.years\[1\].j\)/);
+    expect(lies("app/(site)/photovoltaik-rechner/_components/PvResultOverview.tsx")).toMatch(/label="Vorteil im 1. Jahr" value=\{Math.round\(result.years\[1\].j\)/);
     expect(og).toContain("Ø ERSPARNIS / JAHR");
   });
   it("beschriftet den Euro-Betrag als Gewinn", () => {

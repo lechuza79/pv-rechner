@@ -26,14 +26,21 @@ export default function AutoHeightIframe({
   title,
   fallbackHeight,
   framed = true,
+  onReady,
+  loading = "lazy",
+  appearance,
 }: {
   src: string;
   title: string;
   fallbackHeight: number;
   framed?: boolean;
+  onReady?: () => void;
+  loading?: "lazy" | "eager";
+  appearance?: import("../lib/widget-appearance").WidgetAppearance;
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
+  useEffect(() => { if (bereit) onReady?.(); }, [bereit, onReady]);
 
   // Der Pfad hängt an der Adresse, nicht an einer Nachricht: so ist er schon
   // beim ersten Rendern im iframe da und der Knopf blitzt nicht kurz auf.
@@ -66,12 +73,25 @@ export default function AutoHeightIframe({
     // im iframe jemand zu.
   }, [ref, bereit]);
 
+  useEffect(() => {
+    if (!appearance) return;
+    const origin = new URL(quelle, window.location.href).origin;
+    const send = () => ref.current?.contentWindow?.postMessage({type:"widget:appearance",appearance},origin);
+    const receive = (event: MessageEvent) => {
+      if(event.source===ref.current?.contentWindow && event.origin===origin && event.data?.type==='widget:appearance-request')send();
+    };
+    window.addEventListener('message',receive);
+    send();
+    return()=>window.removeEventListener('message',receive);
+  }, [appearance, bereit, quelle, ref]);
+
   return (
     <iframe
       ref={ref}
       src={quelle}
       title={title}
-      loading="lazy"
+      loading={loading}
+      onLoad={() => ref.current?.contentWindow?.postMessage({type:"widget:measure"},new URL(quelle,window.location.href).origin)}
       style={{
         width: "100%",
         height,

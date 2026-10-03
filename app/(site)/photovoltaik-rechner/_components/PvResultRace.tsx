@@ -7,7 +7,7 @@ import { YEAR } from '../../../../lib/constants';
 import type { WidgetDef } from '../../../../lib/widget-registry';
 const euro = (n: number) => `${Math.round(n).toLocaleString('de-DE')} €`;
 const widget: WidgetDef = { id: 'pv-persoenlich', title: 'Deine Stromkosten im Vergleich', kind: 'tool', shareUrl: 'https://solar-check.io/photovoltaik-rechner', shareText: 'Meine Photovoltaik-Rechnung', sources: [{ name: 'Solar Check · PV-Rechenmodell', url: 'https://solar-check.io/methodik' }], embeddable: false };
-export default function PvResultRace({ result, consumption, price, rate, monthlyConsumption, autoplay }: { result: ReturnType<typeof calc>; consumption: number; price: number; rate: number; monthlyConsumption: number[]; autoplay: boolean }) {
+export default function PvResultRace({ result, consumption, price, rate, monthlyConsumption, autoplay, initialProgress = 0 }: { result: ReturnType<typeof calc>; consumption: number; price: number; rate: number; monthlyConsumption: number[]; autoplay: boolean; initialProgress?: number }) {
   const race = useMemo(() => pvResultRace(result, consumption, price, rate, YEAR, monthlyConsumption), [result, consumption, price, rate, monthlyConsumption]);
   // Payback is permanent: a later battery replacement can undo an early crossing.
   let lastNegative = -1;
@@ -27,6 +27,6 @@ export default function PvResultRace({ result, consumption, price, rate, monthly
     zeitraumHilfe={{ title: 'Modellrechnung', ariaLabel: 'Wie genau ist der Verlauf?', inhalt: 'Die Kurve übernimmt die Geldbeträge derselben Rechnung wie das Ergebnis. Mit Standortdaten werden Monatswerte verwendet, sonst gleichmäßig verteilte Jahreswerte. Dazwischen wird interpoliert; das ist keine Wetterprognose.' }}
     ariaLabel={(date, solar, grid) => `Bis ${date}: Photovoltaik ${euro(solar)}, Netzstrom ${euro(grid)}.`}
     exportNote="Modellrechnung aus deinen Angaben. Geldbeträge aus dem PV-Rechenkern, dazwischen interpoliert."
-    dateiname="meine-photovoltaik-rechnung" onsite branding={false} actions={false} autoplay={autoplay} initialProgress={0}
+    dateiname="meine-photovoltaik-rechnung" onsite branding={false} actions={false} autoplay={autoplay} initialProgress={initialProgress}
     tempo={{ ruhigeTage: 365, msJeTagStart: 10, msJeTagEnde: 1 }} /></div>;
 }

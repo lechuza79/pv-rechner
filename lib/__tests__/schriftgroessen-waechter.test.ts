@@ -108,6 +108,7 @@ const GEOMETRIE_GEBUNDEN: { datei: string; grund: string }[] = [
  * Verschieben im Code die Ausnahme nicht ins Leere laufen lässt.
  */
 const ERLAUBTE_ZEILEN: { fragment: string; grund: string }[] = [
+  {fragment:"fontSize={58*unit}",grund:"Radial SVG text scales with its 560-unit drawing coordinates; this is geometry, not an independent interface font size."},
   {
     fragment: "fontSize: 12.5",
     grund:

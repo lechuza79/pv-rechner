@@ -277,3 +277,20 @@ with `variant="compact"`; place `ArticleMeta` before the headline. Do not copy
 page, heading or paragraph styles into a local style object. Page-specific
 comparison tables and interactive widgets keep their existing implementations.
 Styling changes do not advance the editorial update date.
+
+## Data sources — one shared section
+
+Every page-level sources block imports `components/DataSourcesSection.tsx` and
+its `data-sources-section.css`. Place it between the trust section and footer:
+`SiteFuss zwischen` in React, or pass `renderToStaticMarkup(DataSourcesSection)`
+to `siteFussHtml(zwischen)` in document hosts. Do not duplicate section markup,
+headings, typography or spacing. Keep the shared “Daten & Quellen” label.
+Supply an optional `id` for links from charts and maps; the component owns anchor
+spacing. Domain adapters such as `LandscapeSources` supply source content only.
+Keep mandatory inline chart/map attribution in place; the shared section does
+not replace it. Preserve source names, links, licenses and model limitations.
+
+For a new integration: reuse the registered component, supply its content,
+check its position and anchor at desktop and phone widths, and extend
+`data-sources-section.test.tsx` when a new rendering path is introduced.
+The test guards both the React component and document footer placement.

@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {createPortal} from 'react-dom';
 import {useRouter} from 'next/navigation';
 import RegionScene from "./RegionScene";
+import MetricShareCard from "../charts/MetricShareCard";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import "../dashboard/dashboard.css";
 import { barHeight, sidePathFromPath, type ProjectedRegion } from "../../lib/region-perspektive";
@@ -13,7 +14,7 @@ import styles from "./landkreis.module.css";
 export type MapValue = { id: string; name: string; value: number | null; formatted: Messwert; href: string | null };
 
 /** Brief touch guidance, shared across regional pages for this tab session. */
-function MapGestureGuide({ready}:{ready:boolean}) {
+function MapGestureGuide({ready,showReplay=true}:{ready:boolean;showReplay?:boolean}) {
   const [step,setStep]=useState(-1);
   const [replay,setReplay]=useState(0);
   useEffect(()=>{
@@ -38,7 +39,7 @@ function MapGestureGuide({ready}:{ready:boolean}) {
   const labels=["Seitlich wischen zum Drehen","Zwei Finger bewegen zum Neigen","Zwei Finger spreizen zum Zoomen"];
   return <>
     {/* Replay is a development aid; the public touch tutorial remains automatic. */}
-    {process.env.NODE_ENV === "development" && <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>}
+    {showReplay && process.env.NODE_ENV === "development" && <button type="button" className={styles.mapGestureReplay} onClick={()=>setReplay(value=>value+1)}>Gesten zeigen</button>}
     {step>=0&&<div key={`${replay}-${step}`} className={styles.mapGestureGuide} data-gesture={step}>
     <div className={styles.gestureFingers} aria-hidden="true"><i/>{step>0&&<i/>}</div>
     <span>{labels[step]}</span>
@@ -49,18 +50,19 @@ function MapGestureGuide({ready}:{ready:boolean}) {
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1 }: {
+export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "" }: {
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
   /** Singular of the mapped unit (link hint) and the name of the table below. */
-  member?: string; overview?: string; framingScale?: number;
+  member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string;
 }) {
   const router=useRouter();
   useEffect(()=>{
+    if(presentation!=="hero")return;
     const themeTags=[...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
     const previous=themeTags.map(tag=>tag.content);
     themeTags.forEach(tag=>{tag.content="#08191c";});
     return()=>themeTags.forEach((tag,index)=>{tag.content=previous[index];});
-  },[]);
+  },[presentation]);
   const tooltip=useRef<HTMLDivElement>(null);
   const navigationTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const [pointer,setPointer]=useState({x:0,y:0});
@@ -81,7 +83,8 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   // Side walls of the fallback map: derived here, only once the scene failed.
   const sidePaths = useMemo(() => sceneFailed ? new Map(shapes.map(s => [s.id, sidePathFromPath(s.path)])) : null, [shapes, sceneFailed]);
   const [sceneReady,setSceneReady]=useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(selectedPlace);
+  useEffect(()=>setSelected(selectedPlace),[selectedPlace]);
   const [touchInfo,setTouchInfo]=useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   useEffect(() => {
@@ -128,14 +131,16 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     : shape?.kind === "Kreisfreie Stadt"
       ? "Kreisfreie Stadt · gehört nicht zum Landkreis."
       : "Gehört nicht zur Gemeindevergleichsgruppe.";
+  const selectedValue = selected ? byId.get(selected) : undefined;
+  const total = values.reduce((sum,value)=>sum+Math.max(0,value.value??0),0);
   const maximum = Math.max(0, ...values.map(v => v.value ?? 0));
   const left = Math.min(...shapes.map(s => s.bounds[0])) - 32;
   const right = Math.max(...shapes.map(s => s.bounds[2])) + 32;
   const top = Math.min(...shapes.map(s => Math.min(s.bounds[1], s.anchor[1] - barHeight(byId.get(s.id)?.value ?? null, maximum)))) - 32;
   const bottom = Math.max(...shapes.map(s => s.bounds[3])) + 32;
-  return <div className={styles.map} data-navigating={navigating}>
+  return <div className={styles.map} data-presentation={presentation} data-navigating={navigating}>
     <div className={`${styles.mapTools} sc-dashboard`} role="group" aria-label="Kennzahl der Karte">
-      <WidgetSetting label="Kennzahl der Karte" hideLabel size="md" stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
+      <WidgetSetting label="Kennzahl der Karte" hideLabel variant={presentation==="hero"?"hero":"widget"} size={presentation==="hero"?"md":"sm"} stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
     </div>
     <div className={styles.mapCanvas} data-map-canvas onPointerDown={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerMove={event=>{if(!touchInfo||!hovered)setPointer({x:event.clientX,y:event.clientY});}} onPointerLeave={event => {if(event.pointerType!=="touch"&&!touchInfo)setHovered(null);}}>
     {/* Drawn only when the 3D scene fails. It used to be server-rendered and
@@ -178,8 +183,9 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       </g>
     </svg>
     </div>}
-    <RegionScene framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
-    <MapGestureGuide ready={sceneReady&&!sceneFailed}/>
+    <RegionScene standalone={presentation==="widget"} framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
+    {presentation==="widget" && selectedValue && <div className={styles.mapSelection}><MetricShareCard name={selectedValue.name} value={selectedValue.formatted.value} unit={selectedValue.formatted.unit} share={selectedValue.value!==null&&total>0?selectedValue.value/total*100:null} context={member==="Gemeinde"?"vom Landkreis":"vom Gesamtwert"}/></div>}
+    <MapGestureGuide ready={sceneReady&&!sceneFailed} showReplay={presentation!=="widget"}/>
     {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
       // Portal events still bubble through the React map parent. Keep the card
       // fixed under the finger so pointerdown cannot move its link before click.

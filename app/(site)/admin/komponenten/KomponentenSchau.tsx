@@ -1,4 +1,7 @@
 "use client";
+import SecondaryButton from "../../../../components/SecondaryButton";
+import {ControlPanel, ControlField} from "../../../../components/ControlPanel";
+import WidgetSettingsFlyout from "../../../../components/dashboard/WidgetSettingsFlyout";
 import PvConsumerExample from "../../../../components/PvConsumerExample";
 import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { DEFAULT_BALKON_CONFIG } from "../../../../lib/balkon-config";
@@ -21,6 +24,8 @@ import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
+import Script from "next/script";
+import ToolTeaser from "../../../../components/ToolTeaser";
 import ArticleTeasers from "../../../../components/ArticleTeasers";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
@@ -703,7 +708,15 @@ function OnsiteSearchBeispiel() {
     <p aria-live="polite">{query ? `Filter: ${query}` : "Alle Bausteine"}</p></div>;
 }
 
+function ControlPanelExample() {
+  const [enabled, setEnabled] = useState(true);
+  return <ControlPanel><ControlField label="Hintergrundbilder" toggle={{enabled,onChange:setEnabled}} onReset={()=>setEnabled(true)}/></ControlPanel>;
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  SecondaryButton: () => <SecondaryButton onClick={()=>window.alert("Beispielaktion ausgeführt")}>Mehr erfahren</SecondaryButton>,
+  ControlPanel: ControlPanelExample,
+  WidgetSettingsFlyout: () => <WidgetSettingsFlyout title="Widget-Vorschau"><ControlPanelExample/></WidgetSettingsFlyout>,
   OnsiteSearch: OnsiteSearchBeispiel,
  ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
  MetricValue: () => <MetricValue value={12345} signed/>,
@@ -757,6 +770,12 @@ const BEISPIELE: Record<string, Beispiel> = {
     />
   ),
   BackLink: () => <BackLink fallback="/admin" label="Zurück zur Übersicht" />,
+  ToolTeaser: () => (
+    <div style={{maxWidth: 560}}>
+      <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" />
+      <ToolTeaser title="Photovoltaik" description="Passende Solaranlagen finden und konkrete Planungen durchrechnen." motif="house" href="/photovoltaik-rechner" />
+    </div>
+  ),
   ArticleTeasers: () => (
     <ArticleTeasers title="Mehr zum Thema" items={[
       {href: "/laendervergleich", title: "Solarenergie im internationalen Vergleich", teaser: "Wie steht Deutschland beim Solarausbau im Vergleich zu anderen Ländern da?"},

@@ -18,8 +18,21 @@ describe("Shared public navigation", () => {
     ["/atomstrom-import", "monitor"],
     ["/photovoltaik-zubau-deutschland", "monitor"],
     ["/energie-widgets", "organisations"],
+    ["/fuer-organisationen/kommunen", "organisations"],
   ])("owns %s in %s even when other menus link to it", (path, owner) => {
     expect(navigationOwner(path)).toBe(owner);
+  });
+
+  it("exposes the municipal offering and clearly marks the other B2B audiences as upcoming", () => {
+    const $ = load(navigationContent());
+    expect($('[data-section="tools"] summary').text()).toContain('Checks & Rechner');
+    const organisations = $('[data-section="organisations"]');
+    expect(organisations.length).toBe(1);
+    expect(organisations.find('a[href="/fuer-organisationen/kommunen"]').length).toBe(1);
+    expect($('[data-section="local"] a[href="/fuer-organisationen/kommunen"]').length).toBe(1);
+    const upcoming = organisations.find('article').filter((_, el) => $(el).text().includes('Demnächst'));
+    expect(upcoming.length).toBe(3);
+    expect(upcoming.find('a').length).toBe(0);
   });
 
   it("recognizes registry articles with top-level URLs", () => {

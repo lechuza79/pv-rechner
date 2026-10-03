@@ -7,6 +7,55 @@ import {energieTeile, leistungTeile} from '../../lib/gemeinde-einheiten';
 import {ortPhrase} from '../../lib/atlas-orte';
 import {regionDisplayName} from '../../lib/atlas-format';
 
+function roundedRadialPath(points:number[][],rounding=2) {
+ if(!points.length)return '';
+    const coordinate = (p: number[]) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
+    const corners = points.map((current, i) => {
+      const previous = points[(i + points.length - 1) % points.length], next = points[(i + 1) % points.length];
+      const toward = (neighbor: number[]) => {const distance = Math.hypot(neighbor[0] - current[0], neighbor[1] - current[1]), fraction = distance === 0 ? 0 : Math.min(rounding / distance, .25); return current.map((value, axis) => value + (neighbor[axis] - value) * fraction);};
+      return {current, entry: toward(previous), exit: toward(next)};
+    });
+    return corners.map((corner, i) => `${i ? 'L' : 'M'}${coordinate(corner.entry)} Q${coordinate(corner.current)} ${coordinate(corner.exit)}`).join(' ') + ' Z';
+}
+
+export type SolarMicroPoint={time:string;value:number};
+/** A small percentage view of the canonical radial line, using local civil time. */
+export function SolarMicroRadial({points,currentTime,size=96,timeZone='Europe/Berlin',kind='solar',showValue=true,power=false}:{points:SolarMicroPoint[]|null;currentTime?:string;size?:number;timeZone?:string;kind?:'solar'|'wind';showValue?:boolean;power?:boolean}) {
+ // Match SVG units to CSS pixels before the 3D transform; browsers otherwise
+ // disagree about stroke scaling inside the projected card.
+ const unit=size/560;
+ const stroke=(width:number)=>({strokeWidth:`calc(${width*unit}px / var(--chart-projection-scale, 1))`});
+ const upperLineId=useId();
+ const centerMaskId=useId();
+ const valid=points?.filter(p=>Number.isFinite(p.value)&&p.value>=0&&(power||kind==='wind'||p.value<=100)&&Number.isFinite(Date.parse(p.time)))??[];
+ const max=Math.max(...valid.map(p=>p.value),Number.EPSILON);
+ const clock=new Intl.DateTimeFormat('en-GB',{timeZone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+ const point=(p:SolarMicroPoint)=>{
+  const [hour,minute]=clock.format(new Date(p.time)).split(':').map(Number);
+  const angle=(hour+minute/60)/24*Math.PI*2+Math.PI/2;
+  const radius=90+p.value/max*150;
+  return [(280+Math.cos(angle)*radius)*unit,(280+Math.sin(angle)*radius)*unit];
+ };
+ const current=valid.find(p=>p.time===currentTime);
+ if(!valid.length||valid.length!==points?.length||valid.some((p,i)=>i>0&&(Date.parse(p.time)-Date.parse(valid[i-1].time)>(kind==='wind'?61:16)*60000||Date.parse(p.time)<=Date.parse(valid[i-1].time))))return <span role="status">{kind==='wind'?'Winddaten':'Solardaten'} nicht verfügbar</span>;
+ const position=current?point(current):null;
+ return <svg width={size} height={size*640/560} viewBox={`0 ${-80*unit} ${size} ${640*unit}`} role="img" aria-label={`${power?'Modellierte Leistung':kind==='wind'?'Windgeschwindigkeit':'Relative Solarleistung'} heute, äußere Skala ${max===Number.EPSILON?0:max} ${power?'Kilowatt':kind==='wind'?'Meter pro Sekunde':'Prozent'}`} style={{fontFamily:'var(--font-text, sans-serif)',color:'var(--atlas-text, currentColor)'}}>
+  <defs><clipPath id={upperLineId}><rect x="0" y="0" width={560*unit} height={280*unit}/></clipPath><mask id={centerMaskId}><rect width={560*unit} height={560*unit} fill="white"/><circle cx={280*unit} cy={280*unit} r={90*unit} fill="black"/></mask></defs>
+  {[165,240].map(r=><circle key={r} cx={280*unit} cy={280*unit} r={r*unit} fill="none" stroke="currentColor" strokeOpacity=".16" strokeWidth={3*unit} style={stroke(3)}/>)}
+  <path d={roundedRadialPath(valid.map(point),2*unit)} fill="var(--atlas-action, currentColor)" fillOpacity=".10" mask={`url(#${centerMaskId})`}/>
+  <g clipPath={kind==='solar'?`url(#${upperLineId})`:undefined}>
+   <path d={roundedRadialPath(valid.map(point),2*unit)} fill="none" stroke="var(--atlas-action, currentColor)" strokeWidth={7*unit} style={stroke(7)} strokeLinejoin="round"/>
+  </g>
+  {position&&<g aria-label="Aktueller Zeitpunkt">
+   <circle cx={position[0]} cy={position[1]} r={22*unit} fill="#fff" fillOpacity=".2"/>
+   <circle cx={position[0]} cy={position[1]} r={11*unit} fill="#fff" stroke="var(--atlas-card)" strokeWidth={5*unit} style={stroke(5)}/>
+  </g>}
+  <circle cx={280*unit} cy={280*unit} r={90*unit} fill="none" stroke="currentColor" strokeOpacity=".16" strokeWidth={3*unit} style={stroke(3)}/>
+  {showValue&&<text x={280*unit} y={280*unit} textAnchor="middle" dominantBaseline="middle" fill="currentColor" fontWeight="700" fontSize={58*unit}>{current?current.value.toLocaleString('de-DE',{maximumFractionDigits:0})+(kind==='wind'?' m/s':' %'):'–'}</text>}
+  <text x={280*unit} y={-35*unit} textAnchor="middle" fill="currentColor" fillOpacity=".55" dominantBaseline="middle" fontSize={Math.max(38*unit,11)}>12 Uhr</text>
+ </svg>;
+}
+
 /**
  * The one drawing of the solar month recap (template "radial"): one closed
  * 24-hour line per day, the active day highlighted, the backdrop artwork.
@@ -19,7 +68,8 @@ import {regionDisplayName} from '../../lib/atlas-format';
  *    always the month total, larger backdrop modules in the compact card.
  * Class names come from the wrapper's stylesheet (type sizes and motion differ).
  */
-export function MonthlySolarRadial({data, layout, compact, displayDate, frame, playing, focused, onHover, onChoose, classes, animationSample}: {
+export function MonthlySolarRadial({data, layout, compact, displayDate, frame, playing, focused, onHover, onChoose, classes, animationSample, artwork=true}: {
+  artwork?:boolean;
   animationSample?: {index:number;progress:number;value:number};
   data: SolarMonth;
   layout: 'monitor' | 'story';
@@ -44,13 +94,7 @@ export function MonthlySolarRadial({data, layout, compact, displayDate, frame, p
   // to each sample so the hourly profile cannot gain spline overshoots.
   const path = (values: number[]) => {
     const points = values.map((value, i) => point(i + .5, value));
-    const coordinate = (p: number[]) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`;
-    const corners = points.map((current, i) => {
-      const previous = points[(i + points.length - 1) % points.length], next = points[(i + 1) % points.length];
-      const toward = (neighbor: number[]) => {const distance = Math.hypot(neighbor[0] - current[0], neighbor[1] - current[1]), fraction = distance === 0 ? 0 : Math.min(2 / distance, .25); return current.map((value, axis) => value + (neighbor[axis] - value) * fraction);};
-      return {current, entry: toward(previous), exit: toward(next)};
-    });
-    return corners.map((corner, i) => `${i ? 'L' : 'M'}${coordinate(corner.entry)} Q${coordinate(corner.current)} ${coordinate(corner.exit)}`).join(' ') + ' Z';
+    return roundedRadialPath(points);
   };
   const chartViewBox = compact ? radialPreviewViewBox(data.days.flatMap(day => day.mw.map((value, i) => point(i + .5, value))), 280, 90) : '0 0 560 560';
   const [viewX, viewY, viewSize] = chartViewBox.split(' ').map(Number);
@@ -97,7 +141,7 @@ export function MonthlySolarRadial({data, layout, compact, displayDate, frame, p
       <linearGradient id={`${gradientId}-fade`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="white" /><stop offset="35%" stopColor="white" /><stop offset="100%" stopColor="black" /></linearGradient>
       <mask id={`${gradientId}-backdrop`} maskUnits="userSpaceOnUse" x={backdropX} y={backdropY} width={backdropSize} height={backdropSize}><rect x={backdropX} y={backdropY} width={backdropSize} height={backdropSize} fill={`url(#${gradientId}-fade)`} /></mask>
     </defs>
-    <g mask={`url(#${gradientId}-backdrop)`} opacity=".16" pointerEvents="none" aria-hidden="true"><image href="/brand/feed-in-v4-splashes.svg" x={compact ? 280 - viewSize * .8 : viewX - viewSize * .3} y={compact ? 280 - viewSize * .8 : viewY - viewSize * .2} width={viewSize * 1.6} height={viewSize * 1.6} filter={`url(#${gradientId}-mono)`} /><image href="/brand/pv-modules-mono-contained.svg" x={storyCompact ? 280 - viewSize * 1.05 : viewX + viewSize * .06} y={storyCompact ? 280 - viewSize * 1.05 : viewY + viewSize * .06} width={viewSize * (storyCompact ? 2.1 : .88)} height={viewSize * (storyCompact ? 2.1 : .88)} /></g>
+    <g mask={`url(#${gradientId}-backdrop)`} opacity=".16" pointerEvents="none" aria-hidden="true">{artwork&&<image href="/brand/feed-in-v4-splashes.svg" x={compact ? 280 - viewSize * .8 : viewX - viewSize * .3} y={compact ? 280 - viewSize * .8 : viewY - viewSize * .2} width={viewSize * 1.6} height={viewSize * 1.6} filter={`url(#${gradientId}-mono)`} />}{artwork&&<image href="/brand/pv-modules-mono-contained.svg" x={storyCompact ? 280 - viewSize * 1.05 : viewX + viewSize * .06} y={storyCompact ? 280 - viewSize * 1.05 : viewY + viewSize * .06} width={viewSize * (storyCompact ? 2.1 : .88)} height={viewSize * (storyCompact ? 2.1 : .88)} />}</g>
     <defs><radialGradient id={gradientId} gradientUnits="userSpaceOnUse" cx="280" cy="280" r="240"><stop offset="37.5%" stopColor={hasActive ? 'var(--atlas-text)' : 'var(--atlas-action)'} stopOpacity={hasActive ? .06 : .12} /><stop offset="100%" stopColor={hasActive ? 'var(--atlas-text)' : 'var(--atlas-action)'} stopOpacity={hasActive ? .3 : .75} /></radialGradient></defs>
     {(compact ? [0] : [0, max / 3, max * 2 / 3, max]).map((value, i) => <g key={i}><circle cx="280" cy="280" r={90 + value / max * 150} fill="none" stroke="var(--atlas-text)" strokeOpacity={i === 0 ? .22 : .1} strokeDasharray={i % 2 === 0 ? '2 6' : undefined} />{!compact && i === 2 && <g transform={`translate(280,${280 - 90 - value / max * 150})`}><rect x="-22" y="-15" width="44" height="40" rx="2" fill="var(--atlas-card)" /><text textAnchor="middle" dominantBaseline="middle" className={classes.scale}><tspan x="0" y="-3">{scaleLabel(value).value}</tspan><tspan x="0" y="15">{scaleLabel(value).unit}</tspan></text></g>}</g>)}
     {!compact && [0, 6, 12, 18].map(hour => {const angle = hour / 24 * Math.PI * 2 + offset; return <text key={hour} x={280 + Math.cos(angle) * 260} y={280 + Math.sin(angle) * 260 + 5} textAnchor="middle" className={classes.hour}>{String(hour).padStart(2, '0')}{hour === 0 ? ' Uhr' : ''}</text>;})}

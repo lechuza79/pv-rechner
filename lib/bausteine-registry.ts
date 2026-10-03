@@ -110,6 +110,16 @@ export interface Baustein {
 }
 
 export const BAUSTEINE: Baustein[] = [
+  {datei: "components/dashboard/WidgetControls.tsx", name: "WidgetControls", zweck: "Shared segmented month/day controls and playback icon buttons with one geometry.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons"], keinBeispielWeil: "Echte Instanzen in der monatlichen Solar-Vorschau der Widget-Galerie; Auswahl und Tagesknopf verwenden denselben Baustein."},
+  {datei: "components/dashboard/WidgetSetting.tsx", name: "WidgetSetting", zweck: "Shared widget selections with segmented navigation; the Hero stage retains its existing scale.", gruppe: "eingabe", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["WidgetControls", "SelectField", "InfoTooltip", "Icons"]},
+  {datei: "components/dashboard/WidgetPresentationContext.tsx", name: "WidgetPresentationContext", keinBeispielWeil: "Unsichtbarer Kontext für Host-Einstellungen; sein Verhalten wird an den echten Widget-Vorschauen mit Teilen-Optionen sichtbar.", zweck: "Optional host settings shared with widget action frames and consumers.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/dashboard/WidgetPresentation.tsx", name: "WidgetPresentation", keinBeispielWeil: "Der Adapter verarbeitet Nachrichten zwischen Einbettung und übergeordneter Seite; dieses Verhalten lässt sich nur an den echten Widget-Vorschauen prüfen, nicht innerhalb einer Galerie-Karte.", zweck: "Embed presentation adapter for shared themes, artwork and actions.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["WidgetPresentationContext"]},
+  {datei: "components/dashboard/WidgetConfigurationGroup.tsx", name: "WidgetConfigurationGroup", zweck: "Shared configuration and equal height composition for related widgets.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["ControlPanel", "SelectField", "WidgetPreviewCard"]},
+  {datei: "components/dashboard/WidgetPreviewCard.tsx", name: "WidgetPreviewCard", zweck: "Shared widget preview, loading behavior and supported presentation settings.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ControlPanel", "SecondaryButton", "SelectField", "WidgetSettingsFlyout"]},
+  {datei: "components/dashboard/WidgetSettingsFlyout.tsx", name: "WidgetSettingsFlyout", zweck: "Movable settings panel with shared actions and keyboard operation.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons", "SecondaryButton"]},
+  {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Shared secondary action button with icon and consistent token styles.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
+  // ─── Eingabe ───────────────────────────────────────────────────────────────
   // ─── Eingabe ───────────────────────────────────────────────────────────────
   {
     datei: "components/OptionCard.tsx",
@@ -338,7 +348,7 @@ export const BAUSTEINE: Baustein[] = [
       muster: 'role="dialog"',
       bedeutet:
         "Hier entsteht ein zweiter Dialog von Hand. Es gab schon einmal drei, und sie unterschieden sich in Fokus-Rückgabe, Tastatur-Falle, Scroll-Sperre und Verhalten auf dem Handy — Unterschiede, die man erst bemerkt, wenn jemand mit der Tastatur navigiert.",
-      ausser: [],
+      ausser: [{datei: "components/dashboard/WidgetSettingsFlyout.tsx", grund: "Explicitly requested non-modal movable settings: the chart stays interactive, without modal focus trapping or page scroll locking."}],
     },
   },
   {
@@ -439,7 +449,7 @@ export const BAUSTEINE: Baustein[] = [
     gegenprobe: {
       muster: "className\\s*=\\s*[\"']wp-product-trust[\"']",
       bedeutet: "Use AffiliateTrust instead of duplicating its accepted affiliate markup.",
-      ausser: [],
+      ausser: [{datei:"components/dashboard/WidgetSettingsFlyout.tsx",grund:"Non-modal movable settings panel keeps the preview interactive; Modal intentionally traps focus and blocks the page."}],
     },
   },
   {
@@ -488,6 +498,8 @@ export const BAUSTEINE: Baustein[] = [
     zweck: "Running heating cost comparison reused from the PV technical result.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
   },
+  {datei:"app/(site)/photovoltaik-rechner/_components/PvResultOverview.tsx",name:"PvResultOverview",zweck:"Vollständiges PV-Ergebnis für Rechner und Präsentationen aus einer Quelle.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["ResultOverview", "ResultStatCard"]},
+  {datei:"components/PvHouseholdQuestion.tsx",name:"PvHouseholdQuestion",zweck:"Gemeinsame Haushaltsfragen in Rechner und Präsentation.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["OptionCard"]},
   {datei:"components/PvConsumerSection.tsx",name:"PvConsumerSection",zweck:"Gemeinsame Verbraucherauswahl mit Vorschau, Vergleich und Übernahme für Rechner und Ratgeber.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["FlowNav", "Modal", "KlebenderKnopf", "InfoTooltip", "AffiliateCarousel", "PvConsumerComparison", "PvConsumerFields", "ResultChoiceHeader", "MetricValue", "PvCoolingEditor"]},
   {datei:"components/PvConsumerExample.tsx",name:"PvConsumerExample",zweck:"Eigenständige Beispielrechnung mit Rechengrundlagen und Übergabe in den PV-Frageflow.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["PvConsumerFields", "ResultSettings", "PvConsumerSection", "PvPlantFields"]},
   {datei:"components/PvCoolingEditor.tsx",name:"PvCoolingEditor",zweck:"Gemeinsamer Editor für den Kühlstrombedarf in Verbraucherfragen und Ergebniseinstellungen.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["KlimaDetailModal"]},
@@ -593,7 +605,7 @@ export const BAUSTEINE: Baustein[] = [
     datei: "components/StorySlider.tsx",
     name: "StorySlider",
     zweck:
-      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+      "Eine Reihe Teaser mit Einrasten und Navigationspunkten. Optional eine ganze Kachel pro Schritt, ohne Pfeile und mit passender Beschriftung der Punkte sowie automatischem Weiterschalten bei Sichtbarkeit.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
@@ -686,6 +698,16 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "baustein",
     stand: "im-aufbau",
     bestehtAus: [],
+  },
+  {datei:"components/HomepageToolCards.tsx",name:"HomepageToolCards",zweck:"Shared tool selection from the homepage catalogue for municipal presentations.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["ToolTeaser"]},
+  {
+    datei: "components/ToolTeaser.tsx",
+    name: "ToolTeaser",
+    zweck: "Kompakte Tool-Karte mit geschichteter Illustration links, Kreis und Splashes, gemeinsamem Pfeil und Hover-Zustand. Angekündigte Tools verlinken mit Mehr erfahren zur Teaser-Seite.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/ArticleTeasers.tsx",
@@ -786,10 +808,10 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/DataSourcesSection.tsx",
     name: "DataSourcesSection",
-    zweck: "Gemeinsamer Quellenabschnitt unter dem Vertrauensbereich auf Orts- und Landkreis-Seiten.",
+    zweck: "Verbindlicher Quellenabschnitt zwischen Vertrauen und Fußzeile für Orts-, Landkreis- und Produktseiten; Inhalt aus den jeweiligen Datenquellen.",
     gruppe: "struktur",
     ebene: "baustein",
-    stand: "im-aufbau",
+    stand: "verbindlich",
     bestehtAus: [],
   },
   {

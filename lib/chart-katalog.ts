@@ -1,3 +1,5 @@
+// Shared unit rules for all comparable charts and data layers:
+// docs/zentrale-visuals-konzept.md — Shared chart units (2 October 2026).
 // Was es an Chart- und Widget-Bausteinen SCHON gibt — die Liste, die man liest,
 // bevor man ein neues Chart baut.
 //
@@ -27,6 +29,10 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  {datei:"charts/MetricShareCard",art:"baustein",wofuer:"Selected-place annotation showing the map metric and its share of the surrounding region."},
+  {datei:"charts/WeatherMicroTile",art:"widget",wofuer:"Compact weather tile with modelled power, shared timestamp and optional wind day profile."},
+  {datei:"charts/WindMicroCompass",art:"baustein",wofuer:"Wind flow particles scaled to speed, respecting the meteorological origin direction."},
+  {datei:"landkreis/RegionMapWidget",art:"widget",wofuer:"Shared regional 3D map in a responsive widget frame for gallery, municipality and partner embeds."},
   { datei: "charts/ChartFlag", art: "baustein", wofuer: "Shared value flag positioned above or below a chart segment." },
   { datei: "charts/AnnualGrowthWidget", art: "widget", wofuer: "Shared annual growth chart with period selection and export actions for municipality and regional monitors." },
   { datei: "charts/CurrentPowerWidget", art: "baustein", wofuer: "Shared weather adapter and current solar power dial for municipality, regional monitor and compact header." },

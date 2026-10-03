@@ -1,3 +1,4 @@
+@import "./tap-pointer.css";
 @import "./result-tokens.css";
 @import "./input-design.css";
   /* Result surface follows the Atlas V3 paper, ink and blue palette. */
@@ -556,12 +557,6 @@ body .wp-funding-inputs select{max-width:100%;font-size:var(--font-size-body)}
 
 /* The municipality ranking's purple tap indicator, with identical timing and geometry. */
 body .wp-pv-toggle-group{position:relative}
-.wp-solar-pointer{position:absolute;left:18px;top:50%;pointer-events:none;z-index:2}
-.wp-solar-pointer:before,.wp-solar-pointer:after{content:'';position:absolute;left:0;top:0;width:38px;height:38px;border-radius:50%;pointer-events:none;opacity:0;box-sizing:border-box}
-.wp-solar-pointer:before{background:color-mix(in srgb,var(--result-accent) 22%,transparent);border:2px solid var(--result-accent);animation:wp-tap-contact 1.6s 3}
-.wp-solar-pointer:after{border:2px solid var(--result-accent);animation:wp-tap-wave 1.6s 3}
-@keyframes wp-tap-contact{0%,8%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}18%{opacity:1;transform:translate(-50%,-50%) scale(1)}26%{opacity:1;transform:translate(-50%,-50%) scale(.78)}35%{opacity:.85;transform:translate(-50%,-50%) scale(1.06)}46%,100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
-@keyframes wp-tap-wave{0%,25%{opacity:0;transform:translate(-50%,-50%) scale(.78)}29%{opacity:.7;transform:translate(-50%,-50%) scale(.85)}47%{opacity:.25;transform:translate(-50%,-50%) scale(1.85)}60%,100%{opacity:0;transform:translate(-50%,-50%) scale(2.25)}}
 .wp-result-count{display:inline-grid;font-variant-numeric:tabular-nums}
 .wp-result-count>span{grid-area:1/1;text-align:right}
 .wp-result-count-space{visibility:hidden}
@@ -683,7 +678,7 @@ body .wp-funding-flow .wp-funding-local a{color:var(--result-text)}
 }
 
 /* Overlay controls and fades follow Embla's actual scroll bounds. */
-.wp-product-carousel-frame{position:relative;min-width:0}
+.wp-product-carousel-frame{position:relative;min-width:0;container:product-carousel / inline-size}
 .wp-product-navigation{display:none}
 .wp-product-navigation button{position:absolute;z-index:1;top:50%;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--color-border);border-radius:var(--radius-pill);background:var(--color-surface);color:var(--color-text-primary);box-shadow:var(--shadow-sm);cursor:pointer;pointer-events:auto;transform:translateY(-50%)}
 .wp-product-navigation button:first-child{left:16px}
@@ -744,7 +739,7 @@ body .wp-result-actionbar .wp-forward-secondary{background:transparent!important
 }
 
 /* Chart and metrics use the same responsive content inset. */
-body .wp-overview{--wp-content-inset:24px;--wp-stat-inset:20px}
+body .wp-overview{container:calculator-result / inline-size;--wp-content-inset:24px;--wp-stat-inset:20px}
 body .wp-result-chart{padding:24px var(--wp-content-inset) 0!important}
 body .wp-overview .wp-result-stats{margin:16px var(--wp-content-inset) var(--wp-content-inset)!important;padding:var(--wp-stat-inset) 0}
 body .wp-overview .wp-result-stats>div{padding:4px var(--wp-stat-inset)!important}
@@ -753,7 +748,7 @@ body .wp-overview .wp-result-stats>div>div:last-child{white-space:normal;line-he
 .wp-stat-unit{display:inline-block;font-size:.55em;font-weight:400;color:var(--result-muted);vertical-align:baseline}
 @media(max-width:800px){body .wp-overview{--wp-content-inset:16px;--wp-stat-inset:12px}}
 @media(max-width:600px){body .wp-overview{--wp-content-inset:12px;--wp-stat-inset:12px}}
-@media(max-width:480px){
+@container calculator-result (max-width:540px){
  body .wp-overview .wp-result-stats{grid-template-columns:1fr!important;padding:4px var(--wp-stat-inset)}
  body .wp-overview .wp-result-stats>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0!important}
  body .wp-overview .wp-result-stats>div+div{border-left:0!important;border-top:1px solid var(--color-border)!important}
@@ -839,7 +834,7 @@ body .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is
 .wp-profit-amount{min-width:0}
 .wp-profit-amount .wp-reference-inline{margin-top:calc(var(--space-xl)/4)}
 
-@media(min-width:1024px){body .wp-product-carousel-frame[data-desktop-slides] .wp-geraete-kachel{flex:0 0 calc((100% - (var(--carousel-desktop-slides) - 1) * var(--carousel-gap)) / var(--carousel-desktop-slides))}}
+@media(min-width:1024px){@container product-carousel (min-width:760px){body .wp-product-carousel-frame[data-desktop-slides] .wp-geraete-kachel{flex:0 0 calc((100% - (var(--carousel-desktop-slides) - 1) * var(--carousel-gap)) / var(--carousel-desktop-slides))}}}
 
 .wp-result-actionbar[data-sticky=false]{position:relative;top:auto}
 

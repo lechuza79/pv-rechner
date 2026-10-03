@@ -207,13 +207,13 @@ export const tokens = {
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
-  '--font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
-  '--font-chart-number': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
-  '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
+  '--font-heading': "var(--font-montserrat, 'Montserrat'),'Montserrat',system-ui,sans-serif",
+  '--font-chart-number': "var(--font-montserrat, 'Montserrat'),'Montserrat',system-ui,sans-serif",
+  '--font-text': "var(--font-dm-sans, 'DM Sans'),'DM Sans',system-ui,sans-serif",
   // Headings are Montserrat 700 in the new design — on the homepage, on the
   // content template and in the shared footer, which every page already carries.
-  '--font-display': "var(--font-montserrat),Montserrat,var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
-  '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
+  '--font-display': "var(--font-montserrat, 'Montserrat'),Montserrat,var(--font-dm-sans, 'DM Sans'),'DM Sans',system-ui,sans-serif",
+  '--font-mono': "var(--font-jetbrains-mono, 'JetBrains Mono'),'JetBrains Mono',monospace",
 
   // ─── Typografie-Skala (8) ──────────────────────────────────────────────────
   // Vom Betreiber freigegeben am 20.07.2026, in Kraft gesetzt am 01.09.2026.

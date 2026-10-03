@@ -41,9 +41,12 @@ const HAENDE_ICON = (
 export default function PersonBox({
   text,
   knopf = "Nachricht schreiben",
+  kontaktHref = "/kontakt",
 }: {
   text?: React.ReactNode;
   knopf?: string;
+  /** Existing contact route, optionally with a preselected topic and message. */
+  kontaktHref?: string;
 } = {}) {
   return (
     <div className="homepage-study">
@@ -72,7 +75,7 @@ export default function PersonBox({
                 diese Einladung auf, und der zweite führte auf eine Seite, die
                 dasselbe noch einmal erzählt. */}
             <div className="sc-person-actions sc-person-actions-solo">
-              <a href="/kontakt" className="sc-person-primary hs-person-message" title={knopf}>
+              <a href={kontaktHref} className="sc-person-primary hs-person-message" title={knopf}>
                 {NACHRICHT_ICON}
                 <span>{knopf}</span>
               </a>
