@@ -84346,5 +84346,73 @@
         "evidenceUrl": "https://www.oftersheim.de/3317788"
       }
     ]
+  },
+  {
+    "regionId": "08226031",
+    "name": "Hemsbach",
+    "checkedAt": "2026-10-03T05:45:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Hemsbach fördert Stecker-Solaranlagen (Balkonkraftwerke) mit 20 % der Anschaffungskosten, höchstens 100 € je Anlage, Fördertopf 2026 5.000 € nach Antragseingang (Richtlinie in Kraft seit 01.03.2025). Als Katalogeintrag hemsbach-steckersolar aufgenommen, nur als Information ohne Abzug, weil Restmittel nicht belegt sind. Für Dach-Photovoltaik, eigenständige Speicher und Wärmepumpen gibt es keinen kommunalen Zuschuss, nur die KLiBA-Energieberatung.",
+    "searches": [
+      "hemsbach.de: Klimaschutzseite und Richtlinie im Volltext gelesen (02./03.10.2026)",
+      "Volltextsuche der Website (Photovoltaik, Wärmepumpe, Speicher, Förderprogramm) am 03.10.2026: nur Pressemeldungen, kommunale Eigenprojekte, Wärmeplanung und KLiBA-Beratung, kein weiteres Programm für Privathaushalte",
+      "Council 3/3 (zwei unabhängige Prüfer, einer mit Live-Abruf, ein adversarialer) am 03.10.2026: Betrag, Bedingungen, Budget bestätigt; Denkmalschutz-Nachweis ergänzt; Gemeindeschlüssel im Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hemsbach.de/unsere-stadt/klimaschutz",
+        "finding": "„Wird eine Anlage gefördert, so werden 20 Prozent der Anschaffungskosten erstattet. Pro Anlage ist die Förderhöhe auf 100 Euro begrenzt. … Die Stadt hat für das Haushaltsjahr 2026 einen Fördertopf von 5.000 Euro bereitgestellt.“ Am 03.10.2026 live kein Hinweis auf einen erschöpften Topf."
+      },
+      {
+        "url": "https://www.hemsbach.de/images/klimaschutz/Richtlinie-zur-Foerderung-von-Steckersolaranlagen-2025.pdf",
+        "finding": "Richtlinie vom 24.10.2022, geändert 10.02.2025, in Kraft 01.03.2025: „Die Förderhöhe beträgt 20 % der Anschaffungskosten, maximal 100 Euro je Anlage.“ Eine Anlage je Wohneinheit, bis 800 W, Antrag nach Kauf, fünf Jahre Betrieb, Reihenfolge des Antragseingangs."
+      },
+      {
+        "url": "https://www.hemsbach.de/component/tags/tag/mietzuschuss",
+        "finding": "Am 03.10.2026 gelesen: Schlagwort-Übersicht ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.hemsbach.de/neuigkeiten/3618-stadt-erhaelt-90-000-euro-zuschuss-fuer-sanierung-der-koenigshuetter-strasse",
+        "finding": "Am 03.10.2026 abgerufen: Beitrag nicht mehr vorhanden (404); dem Titel nach Landeszuschuss für eine Straßensanierung der Stadt, keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.hemsbach.de/component/finder/search?Itemid=435&q=Photovoltaik",
+        "finding": "Volltextsuche der Stadtseite nach Photovoltaik, Wärmepumpe, Speicher und Förderprogramm (03.10.2026): kein weiteres Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hemsbach.de/unsere-stadt/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite gelesen; Grundlage des Katalogeintrags hemsbach-steckersolar.",
+        "evidenceUrl": "https://www.hemsbach.de/unsere-stadt/klimaschutz"
+      },
+      {
+        "url": "hemsbach.de/images/klimaschutz/Richtlinie-zur-Foerderung-von-Steckersolaranlagen-2025.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie im Volltext gelesen.",
+        "evidenceUrl": "https://www.hemsbach.de/images/klimaschutz/Richtlinie-zur-Foerderung-von-Steckersolaranlagen-2025.pdf"
+      },
+      {
+        "url": "hemsbach.de/images/klimaschutz/Foerderantrag_Stecker_Solaranlagen_Hemsbach_2024.pdf",
+        "disposition": "replaced",
+        "reason": "Antragsformular desselben Programms; Inhalt und Bedingungen sind durch die gelesene Richtlinie 2025 abschließend geregelt.",
+        "evidenceUrl": "https://www.hemsbach.de/images/klimaschutz/Richtlinie-zur-Foerderung-von-Steckersolaranlagen-2025.pdf"
+      },
+      {
+        "url": "hemsbach.de/component/tags/tag/mietzuschuss",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite ohne Förderbezug für Privathaushalte.",
+        "evidenceUrl": "https://www.hemsbach.de/component/tags/tag/mietzuschuss"
+      },
+      {
+        "url": "hemsbach.de/neuigkeiten/3618-stadt-erhaelt-90-000-euro-zuschuss-fuer-sanierung-der-koenigshuetter-strasse",
+        "disposition": "reviewed",
+        "reason": "Pressemeldung zu einem Zuschuss an die Stadt (Straßensanierung), heute 404; keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.hemsbach.de/neuigkeiten/3618-stadt-erhaelt-90-000-euro-zuschuss-fuer-sanierung-der-koenigshuetter-strasse"
+      }
+    ]
   }
 ]
