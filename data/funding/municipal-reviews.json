@@ -84686,5 +84686,69 @@
         "evidenceUrl": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/balkonkraftwerk"
       }
     ]
+  },
+  {
+    "regionId": "08226010",
+    "name": "Dielheim",
+    "checkedAt": "2026-10-04T07:30:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dielheim fördert 2026 nichts mehr: Der Balkonkraftwerk-Zuschuss lief 2023 bis 2025 (291 bewilligte Anlagen) und wird 2026 nicht fortgeführt; die Thermografie-Bezuschussung endete im Winter 2025/2026. Kein Programm für Dach-PV, Speicher oder Wärmepumpe. Den Betrag des beendeten Programms nennt die Gemeindeseite nicht, deshalb nicht als historisches Programm aufgenommen.",
+    "searches": [
+      "dielheim.de Klimaschutz > Förderprogramme im Original gelesen (04.10.2026)",
+      "Websuche „Dielheim Förderung Balkonkraftwerke Zuschuss Richtlinie“: keine Amtsquelle mit Betrag"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.dielheim.de/gemeinde-dielheim/klimaschutz/foerderprogramme",
+        "finding": "„Das Förderprogramm für Balkonkraftwerke wird im Jahr 2026 nicht fortgeführt.“ … „von 2023 bis 2025 erfolgreich die Errichtung von steckerfertigen Photovoltaik-Anlagen (Balkonkraftwerke) bezuschusst.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "dielheim.de/gemeinde-dielheim/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Balkon-Programm 2026 nicht fortgeführt, Thermografie beendet.",
+        "evidenceUrl": "https://www.dielheim.de/gemeinde-dielheim/klimaschutz/foerderprogramme"
+      },
+      {
+        "url": "dielheim.de/gemeinde-dielheim/klimaschutz/foerderprogramme-1",
+        "disposition": "replaced",
+        "reason": "Nicht erreichbare Nebenadresse derselben Förderseite; der Inhalt ist über die gelesene Hauptadresse erledigt.",
+        "evidenceUrl": "https://www.dielheim.de/gemeinde-dielheim/klimaschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "08226049",
+    "name": "Meckesheim",
+    "checkedAt": "2026-10-04T07:30:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Meckesheim nennt auf seinen Förderseiten nur das Landesprogramm ELR; der Bereich Klima & Umwelt führt Beratung, Wärmeplanung, Hitzeschutz und Stadtradeln, aber keinen Zuschuss. Ein Balkonkraftwerk-Zuschuss von 100 € (Gesamttopf 5.000 €) ist nur aus einem Pressebericht vom 27.09.2023 bekannt und steht auf keiner aktuellen Gemeindeseite.",
+    "searches": [
+      "meckesheim.de Rathaus & Service > Förderprogramme und alle Unterseiten von Klima & Umwelt gesichtet (04.10.2026)",
+      "Websuche „Meckesheim Zuschuss Balkonkraftwerk“: keine Amtsquelle; RNZ 27.09.2023 nennt 100 € je Anlage"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.meckesheim.de/rathaus-service/foerderprogramme",
+        "finding": "Nur ELR-Programmausschreibung 2027 und Link zum Entwicklungsprogramm Ländlicher Raum; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.meckesheim.de/rathaus-service/foerderprogramme/entwicklungsprogramm-laendlicher-raum",
+        "finding": "Landesprogramm ELR (Strukturentwicklung), kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "meckesheim.de/rathaus-service/foerderprogramme/entwicklungsprogramm-laendlicher-raum",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm ELR, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.meckesheim.de/rathaus-service/foerderprogramme/entwicklungsprogramm-laendlicher-raum"
+      }
+    ]
   }
 ]
