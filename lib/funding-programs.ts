@@ -5506,6 +5506,80 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // nach Gegenprüfung ergänzt, Stadtseite am 03.10.2026 live unverändert).
   },
 
+  "walldorf-klimaschutz": {
+    id: "walldorf-klimaschutz", name: "Photovoltaik für Wohngebäude, Stecker-Solaranlage, Effizient heizen",
+    traeger: "Stadt Walldorf", level: "kommune", region: "Walldorf",
+    bundesland: "Baden-Württemberg", agsCode: "08226095",
+    url: "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Dachanlage nach Leistung, Speicher nach Kapazität, Balkonkraftwerk nach Material- und Montagekosten, Wärmepumpe als Pauschale ergänzend zur Bundesförderung; die Heizungsoptimierung (hydraulischer Abgleich, Warmwasserspeicher, Heizkörper) fördert die Stadt zusätzlich in Höhe der Bundesförderung, das führen wir hier nicht auf",
+    maxFoerderung: "Dachanlage bis 10.000 € je Gebäude (bei mehr als 3 Wohneinheiten mehr), Speicher zusätzlich bis 5.000 €, Balkonkraftwerk bis 300 € je Wohneinheit, Wärmepumpe bis 12.500 € (bis 3 Wohneinheiten) bzw. 15.000 € (ab 4)",
+    rates: [
+      { label: "Photovoltaik", value: "500 € je kWp, höchstens 10.000 € je Gebäude; bei mehr als 3 Wohneinheiten +600 € je weitere Wohneinheit (mind. 45 m²)", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "500 € je kWh zusammen mit einer neuen Anlage, 250 € je kWh bei Nachrüstung und bei gesetzlich verpflichteten Anlagen; förderfähig je nach Anlagengröße 6 bis 10 kWh", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "50 % der anrechenbaren Kosten, höchstens 300 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "bis 3 Wohneinheiten: Luft/Wasser 5.000 €, Erdsonden 12.500 €, Erdkollektoren 6.250 €; ab 4 Wohneinheiten: 7.000 € / 15.000 € / 7.500 €; dezentrale Geräte 2.000 € je Wohnung", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Dachanlage und Speicher: Antrag und Bewilligung vor der Auftragsvergabe; die Anlage muss binnen zwölf Monaten ab Bewilligung fertig und abgerechnet sein, sonst erlischt der Anspruch", nur: ["pv"] },
+      { text: "Dachanlage: Bei Gebäuden mit Bauantrag ab 01.05.2022 wird nur die Leistung über der gesetzlichen Pflicht (0,06 kWp je m² überbauter Fläche) gefördert; für gesetzlich verpflichtete Anlagen (auch bei umfassender Dachsanierung ab 2023 oder Pflicht aus dem Bebauungsplan) gibt es für den Speicher nur 250 € je kWh", nur: ["pv"] },
+      { text: "Dachanlage: Andere öffentliche Fördermittel werden auf den Zuschuss angerechnet, insgesamt höchstens 50 % der anrechenbaren Kosten; gemietete, geleaste oder per Ratenkauf angeschaffte Anlagen, Eigenleistungen und der Tausch einzelner Module sind nicht förderfähig", nur: ["pv"] },
+      { text: "Dachanlage: Installation durch einen Fachbetrieb; antragsberechtigt sind Eigentümer und Erbbauberechtigte, Eigentümergemeinschaften gemeinschaftlich mit Beschluss, Mieter mit Einverständnis des Eigentümers sowie ortsansässige Vereine und Kirchen", nur: ["pv"] },
+      { text: "Balkonkraftwerk: bis 800 W Wechselrichter und höchstens 2.000 W Modulleistung; beantragt wird nach Kauf und Installation binnen sechs Wochen ab Rechnungsdatum, mit Foto und Registrierung im Marktstammdatenregister; vor dem 01.01.2026 gekaufte Geräte sind ausgeschlossen", nur: ["balkon"] },
+      { text: "Balkonkraftwerk: antragsberechtigt sind Eigentümer und Erbbauberechtigte, Mieter nur mit Einverständnis des Eigentümers; Eigenleistungen sind nicht förderfähig", nur: ["balkon"] },
+      { text: "Wärmepumpe: nur im Bestand als Ersatz einer fossilen Heizung, durch einen Fachbetrieb und nur zusammen mit einem Antrag bei BAFA oder KfW; Antrag UND Bewilligung der Stadt müssen vor Beginn der Maßnahme vorliegen (anders als bei der Bundesförderung genügt der Antrag allein nicht); zusammen mit der Bundesförderung höchstens 60 % der anrechenbaren Kosten", nur: ["waermepumpe"] },
+      { text: "Wärmepumpe: antragsberechtigt sind Eigentümer und dinglich Verfügungsberechtigte, Eigentümergemeinschaften gemeinschaftlich; reine Brauchwasser-Wärmepumpen sind ausgeschlossen", nur: ["waermepumpe"] },
+      "Alle drei Richtlinien gelten vom 01.01.2026 bis 31.12.2027 im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    // Drei Richtlinien der Stadt Walldorf, je in Kraft 01.01.2026, befristet
+    // bis 31.12.2027, gelesen im Volltext am 04.10.2026 (Wächterlauf, Council
+    // 3/3 inkl. Gegenprüfer; MFH-Zuschlag, Kauf-Stichtag Balkon, Anrechnung
+    // anderer Mittel und Bewilligung vor Beginn bei der Wärmepumpe nach der
+    // Gegenprüfung ergänzt):
+    // "15._RL_Photovoltaik_2026.pdf" Nr. 4: "Die Förderung beträgt 500 EUR je
+    // kWp neu installierter Leistung bis zu einer Höhe von maximal 10.000 EUR
+    // pro Gebäude"; "17._RL_Balkonkraftwerk_2026.pdf" Nr. 3: "50 % der
+    // anrechenbaren Kosten, höchstens jedoch 300 EUR pro Wohneinheit";
+    // "21._RL_Effizient_heizen_2026.pdf" Nr. 5. Bewusst KEIN strukturierter
+    // Satz: Bauantrags-Stichtag, Speicherstaffel nach kWp, 50-/60-%-Deckel
+    // inklusive Bundesmitteln und die Verrechnung anderer Fördermittel kann das
+    // Modell nicht abbilden.
+  },
+
+  "hirschberg-steckersolar": {
+    id: "hirschberg-steckersolar", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Gemeinde Hirschberg an der Bergstraße", level: "kommune", region: "Hirschberg an der Bergstraße",
+    bundesland: "Baden-Württemberg", agsCode: "08226107",
+    url: "https://www.hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines neuen Balkonkraftwerks",
+    maxFoerderung: "max. 200 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 200 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, höchstens 800 W Einspeisung, mit Nachweis der Produktsicherheit; nur neue Geräte, keine gebrauchten Komponenten",
+      "Rechnungsdatum nicht vor dem 01.01.2026; beantragt wird nach dem Kauf mit Rechnung, Foto der montierten Anlage und Nachweis aus dem Marktstammdatenregister",
+      "Antragsberechtigt sind Eigentümer, Vermieter und Mieter einer Wohnung oder eines Hauses im Gemeindegebiet sowie gemeinnützige Vereine; bei Mietobjekten mit Einbauerlaubnis des Vermieters; nicht an gewerblich genutzten Gebäuden oder Gebäudeteilen",
+      "Bei denkmalgeschützten Gebäuden ist die denkmalschutzrechtliche Genehmigung nachzuweisen; ausgeschlossen sind Anlagen, die wegen einer rechtlichen Verpflichtung installiert werden müssen, Inselanlagen ohne Netzanschluss, Umbauten und Prototypen sowie Standorte, denen Bau- oder Planungsrecht entgegensteht",
+      "Fördertopf 2026, vergeben in der Reihenfolge der vollständig eingereichten Anträge; ist er erschöpft, wird nichts mehr gefördert, und ob noch Mittel übrig sind, weiß nur die Gemeinde; ein Rechtsanspruch besteht nicht",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme funktionstüchtig betrieben werden; ein Verkauf in dieser Zeit ist zu melden und wird nach Monaten anteilig zurückgefordert, Vermietung oder Funktionslosigkeit sind ebenfalls zu melden, sonst wird der Zuschuss zurückgefordert",
+      "Die Richtlinie gilt vom 01.01.2026 bis 31.12.2026",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie zur Förderung von Stecker-Solargeräten vom 19.01.2026, in
+    // Kraft rückwirkend 01.01.2026 bis 31.12.2026 (Scan, am 04.10.2026 als
+    // Bild gelesen), Nr. 3: "Der Zuschuss beträgt 30% der Anschaffungskosten,
+    // maximal 200,00 Euro je Anlage." Gemeindeseite (04.10.2026): "Die Gemeinde
+    // hat deshalb für das Haushaltsjahr 2026 erneut einen Fördertopf
+    // bereitgestellt. Ist dieser erschöpft, werden keine weiteren Anlagen
+    // gefördert." Bewusst KEIN strukturierter Satz (Topf nach Antragseingang,
+    // Restmittel unbekannt), dieselbe Behandlung wie hemsbach-steckersolar.
+  },
+
   "sandhausen-foerderprogramme": {
     "id": "sandhausen-foerderprogramme",
     "name": "Förderprogramme erneuerbare Energien",

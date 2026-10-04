@@ -84455,5 +84455,236 @@
         "evidenceUrl": "https://www.ladenburg.de/ceasy/resource/?download=1&id=2127"
       }
     ]
+  },
+  {
+    "regionId": "08226095",
+    "name": "Walldorf",
+    "checkedAt": "2026-10-04T07:10:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Walldorf fördert Dach-PV (500 €/kWp, max. 10.000 €), Speicher (500/250 €/kWh), Balkonkraftwerke (50 %, max. 300 €) und Wärmepumpen (Pauschalen 5.000–15.000 €) nach drei Richtlinien 01.01.2026–31.12.2027. Als walldorf-klimaschutz aufgenommen, nur Auskunft ohne Abzug (Council 3/3).",
+    "searches": [
+      "walldorf.de Übersicht „Alle Förderprogramme“ vollständig durchgesehen (04.10.2026): Solar (Stecker, Thermie, PV Wohngebäude, Nichtwohngebäude, Parkplatz), Effizient heizen, Gebäudehülle u. a.",
+      "Richtlinien PV Wohngebäude, Stecker-Solaranlage, Effizient heizen und Merkblatt PV im Volltext gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.walldorf.de/fileadmin/Wirtschaft/Wirtschaftsfoerderung/Foerderprogramme/Barrierefreie_Richtlinien_26.8.26/15._RL_Photovoltaik_2026.pdf",
+        "finding": "„Die Förderung beträgt 500 EUR je kWp neu installierter Leistung bis zu einer Höhe von maximal 10.000 EUR pro Gebäude.“"
+      },
+      {
+        "url": "https://www.walldorf.de/fileadmin/Wirtschaft/Wirtschaftsfoerderung/Foerderprogramme/Barrierefreie_Richtlinien_26.8.26/17._RL_Balkonkraftwerk_2026.pdf",
+        "finding": "„50 % der anrechenbaren Kosten, höchstens jedoch 300 EUR pro Wohneinheit gefördert.“"
+      },
+      {
+        "url": "https://www.walldorf.de/fileadmin/Wirtschaft/Wirtschaftsfoerderung/Foerderprogramme/Barrierefreie_Richtlinien_26.8.26/21._RL_Effizient_heizen_2026.pdf",
+        "finding": "Wärmepumpen-Pauschalen Luft/Wasser 5.000 €, Erdsonden 12.500 € (bis 3 WE); Gesamtförderung inkl. Bund max. 60 %."
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-wohngebaeude",
+        "finding": "Programm Dach-PV/Speicher, aufgenommen. (gelesen 04.10.2026)"
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/stecker-solaranlage",
+        "finding": "Programm Balkonkraftwerk, aufgenommen. (gelesen 04.10.2026)"
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-nichtwohngebaeude",
+        "finding": "Nichtwohngebäude, nicht privater Haushalt. (gelesen 04.10.2026)"
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-auf-parkplatzueberdachungen",
+        "finding": "Parkplatzüberdachung, außerhalb des Rechnerumfangs. (gelesen 04.10.2026)"
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/thermische-solaranlage",
+        "finding": "Solarthermie, außerhalb des Rechnerumfangs. (gelesen 04.10.2026)"
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/",
+        "finding": "Übersichtsseite, führt auf dieselben Programme. (gelesen 04.10.2026)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-wohngebaeude",
+        "disposition": "reviewed",
+        "reason": "Programm Dach-PV/Speicher, aufgenommen.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-wohngebaeude"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/stecker-solaranlage",
+        "disposition": "reviewed",
+        "reason": "Programm Balkonkraftwerk, aufgenommen.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/stecker-solaranlage"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-nichtwohngebaeude",
+        "disposition": "reviewed",
+        "reason": "Nichtwohngebäude, nicht privater Haushalt.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-nichtwohngebaeude"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-auf-parkplatzueberdachungen",
+        "disposition": "reviewed",
+        "reason": "Parkplatzüberdachung, außerhalb des Rechnerumfangs.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-auf-parkplatzueberdachungen"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/thermische-solaranlage",
+        "disposition": "reviewed",
+        "reason": "Solarthermie, außerhalb des Rechnerumfangs.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/thermische-solaranlage"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-1/bauen-und-sanieren/foerderprogramme-bauen-und-sanieren",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite, führt auf dieselben Programme.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/gewerbe",
+        "disposition": "reviewed",
+        "reason": "Gewerbeförderung, nicht privater Haushalt.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "08226107",
+    "name": "Hirschberg an der Bergstraße",
+    "checkedAt": "2026-10-04T07:10:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hirschberg fördert Balkonkraftwerke mit 30 %, max. 200 € je Anlage (Richtlinie 01.01.–31.12.2026, Topf nach Antragseingang). Als hirschberg-steckersolar aufgenommen, nur Auskunft ohne Abzug (Council 2/2 inkl. Gegenprüfer). Kein Programm für Dach-PV, Speicher oder Wärmepumpe auf der Klimaschutzseite.",
+    "searches": [
+      "hirschberg-bergstrasse.de Klimaschutz: kommunales Förderprogramm und geförderte Projekte gelesen (04.10.2026)",
+      "Richtlinie vom 19.01.2026 (Scan) vollständig als Bild gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hirschberg-bergstrasse.de/fileadmin/Dateien/Cross7/Startseite/Klimaschutz/Kommunales_Forderprogramm/Forderrichtlinie_2026.pdf",
+        "finding": "„Der Zuschuss beträgt 30% der Anschaffungskosten, maximal 200,00 Euro je Anlage.“"
+      },
+      {
+        "url": "https://www.hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm",
+        "finding": "„für das Haushaltsjahr 2026 erneut einen Fördertopf bereitgestellt. Ist dieser erschöpft, werden keine weiteren Anlagen gefördert.“"
+      },
+      {
+        "url": "https://www.hirschberg-bergstrasse.de/klimaschutz/gefoerderte-projekte",
+        "finding": "Von der Gemeinde selbst erhaltene Fördermittel, kein Programm für Haushalte. (gelesen 04.10.2026)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm",
+        "disposition": "reviewed",
+        "reason": "Balkonkraftwerk-Programm, aufgenommen.",
+        "evidenceUrl": "https://www.hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm"
+      },
+      {
+        "url": "hirschberg-bergstrasse.de/fileadmin/Dateien/Cross7/Startseite/Klimaschutz/Kommunales_Forderprogramm/Feedback_Stecker-Solargerate.pdf",
+        "disposition": "reviewed",
+        "reason": "Erfahrungsberichte aus 2023, keine Förderbedingungen.",
+        "evidenceUrl": "https://www.hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm"
+      },
+      {
+        "url": "hirschberg-bergstrasse.de/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Von der Gemeinde selbst erhaltene Fördermittel, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.hirschberg-bergstrasse.de/klimaschutz/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "08226082",
+    "name": "Schriesheim",
+    "checkedAt": "2026-10-04T07:10:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schriesheim hat keinen kommunalen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; angeboten wird nur die kostenlose KLiBA-Energieberatung. Der Websuchen-Hinweis auf eine Stecker-Solar-Förderung der Bauverwaltung ließ sich auf keiner Amtsseite belegen.",
+    "searches": [
+      "schriesheim.de: Klimaschutz & Energie, Energieberatung und Förderprogramme (Wirtschaftsförderung) im Original gelesen (03./04.10.2026)",
+      "Dienstleistungsliste des Bürgerservice nach Stecker/Balkon/Photovoltaik/Solar durchsucht: kein Treffer (04.10.2026)",
+      "Volltextsuche der Website im Browser (liefert keine Treffer, Seite lädt Ergebnisse nicht) und Websuche „Schriesheim Förderung Stecker-Solargeräte“: keine Amtsquelle"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schriesheim.de/de/Leben/Bauen-Wohnen/Klimaschutz-Energie",
+        "finding": "Klimaschutzkonzept, Straßenbeleuchtung, Energiemanagement, Wärmeplanung, Energieberatung — kein Zuschussprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.schriesheim.de/energieberatung",
+        "finding": "Kostenfreie KLiBA-Beratung „auch über Förderprogramme“, kein eigenes Programm."
+      },
+      {
+        "url": "https://www.schriesheim.de/foerderprogramme",
+        "finding": "Nur Wirtschaftsförderung, kein Programm für Haushalte. (gelesen 04.10.2026)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "schriesheim.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Nur Wirtschaftsförderung, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.schriesheim.de/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "08226013",
+    "name": "Eberbach",
+    "checkedAt": "2026-10-04T07:10:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eberbach zahlt derzeit keinen Zuschuss: Die Förderseite listet Fassadensanierung Altstadt, LEADER, ELR, Balkonkraftwerk-Information und CLIMAP; die Balkonkraftwerk-Seite (Stand 25.10.2024) enthält nur allgemeine Information. Ein früherer Zuschuss von 200 € je Anlage ist nur aus der Presse (RNZ) bekannt, nicht amtlich belegt; daher nicht als historisches Programm aufgenommen.",
+    "searches": [
+      "eberbach.de Förderprogramme mit allen Unterseiten gelesen (04.10.2026)",
+      "Websuche auf eberbach.de und rnz.de nach Zuschuss Photovoltaik/Balkonkraftwerk: RNZ-Bericht über früheren 200-€-Zuschuss; städtische Mitteilung 19.04.2024 ist entfernt (404), Archiv ohne Kopie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/balkonkraftwerk",
+        "finding": "Nur Information zu 800 W und vereinfachter MaStR-Registrierung, kein Zuschuss genannt."
+      },
+      {
+        "url": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme",
+        "finding": "Fassadensanierung, LEADER, ELR, ELR-MOGENA, Balkonkraftwerk, CLIMAP (kostenpflichtiger Energiebericht)."
+      },
+      {
+        "url": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/fassadensanierung",
+        "finding": "Fassadenprogramm Altstadt, außerhalb des Umfangs. (gelesen 04.10.2026)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "eberbach.de/wirtschaft-und-bau/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht ohne Zuschuss für Haushalts-PV, -Speicher oder -Wärmepumpe.",
+        "evidenceUrl": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme"
+      },
+      {
+        "url": "eberbach.de/wirtschaft-und-bau/foerderprogramme/balkonkraftwerk",
+        "disposition": "reviewed",
+        "reason": "Nur Information, kein Zuschuss.",
+        "evidenceUrl": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/balkonkraftwerk"
+      },
+      {
+        "url": "eberbach.de/wirtschaft-und-bau/foerderprogramme/fassadensanierung",
+        "disposition": "reviewed",
+        "reason": "Fassadenprogramm Altstadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/fassadensanierung"
+      },
+      {
+        "url": "eberbach.de/auth/index.html?secure=true&amp;url=%2Fwirtschaft-und-bau%2Ffoerderprogramme%2Fbalkonkraftwerk",
+        "disposition": "replaced",
+        "reason": "Anmeldeweiche auf dieselbe Balkonkraftwerk-Seite, die direkt gelesen wurde.",
+        "evidenceUrl": "https://www.eberbach.de/wirtschaft-und-bau/foerderprogramme/balkonkraftwerk"
+      }
+    ]
   }
 ]

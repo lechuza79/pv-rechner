@@ -768,6 +768,15 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // operation duty and the first-come 2026 budget have no test form yet; the
   // entry deducts nothing.
   "hemsbach-steckersolar",
+  // Added 4 Oct 2026: three Walldorf guidelines (PV, plug-in solar, heating)
+  // read in full. Approval before contract, the post-2022 building-permit
+  // cut-off, kWp-tiered storage and caps incl. federal funds have no test
+  // form yet; the entry deducts nothing.
+  "walldorf-klimaschutz",
+  // Added 4 Oct 2026: Hirschberg guideline (scan, read as image) and town page.
+  // Application after purchase, invoice-date cut-off, five-year operation and
+  // the first-come 2026 budget have no test form yet; deducts nothing.
+  "hirschberg-steckersolar",
 ];
 
 /**

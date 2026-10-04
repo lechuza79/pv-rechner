@@ -459,6 +459,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/heddesheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/heddesheim", permanent: true },
       { source: "/photovoltaik-foerderung/leimen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/leimen", permanent: true },
       { source: "/photovoltaik-foerderung/hemsbach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hemsbach", permanent: true },
+      { source: "/photovoltaik-foerderung/walldorf", destination: "/photovoltaik-foerderung/baden-wuerttemberg/walldorf", permanent: true },
+      { source: "/photovoltaik-foerderung/hirschberg-bergstrasse", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hirschberg-bergstrasse", permanent: true },
       { source: "/photovoltaik-foerderung/laudenbach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/laudenbach", permanent: true },
       { source: "/photovoltaik-foerderung/oftersheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/oftersheim", permanent: true },
       { source: "/photovoltaik-foerderung/sandhausen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/sandhausen", permanent: true },
