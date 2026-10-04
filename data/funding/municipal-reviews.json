@@ -67156,8 +67156,8 @@
   {
     "regionId": "03351024",
     "name": "Winsen (Aller)",
-    "checkedAt": "2026-09-26T12:45:00Z",
-    "recheckAt": "2026-10-03T08:00:00Z",
+    "checkedAt": "2026-10-04T05:50:00Z",
+    "recheckAt": "2026-10-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "klaerung",
     "conclusion": "Heute kein laufender Zuschuss erkennbar: Das Ortsrecht der Gemeinde (am 26.09.2026 gelesen) führt keine Energie-Förderrichtlinie, die Umwelt-Rubrik nur Hochwasserschutz und Lärmaktionsplan. Offen ist ein früheres Programm: Die Gruppe „Gemeinsam für Winsen“ beantragte am 21.06.2022 eine Einmalprämie von 150 € für Balkonkraftwerke (12 Monate), und die Celler Zeitung titelte „Winser Förderung für Balkonkraftwerke wackelt“ (Artikel hinter Bezahlschranke, nicht gelesen). Ob und wann es lief, ist nicht belegt — ein beendetes Programm wäre aufzunehmen.",
@@ -67166,7 +67166,9 @@
       "Umwelt-Rubrik winsen-aller.de am 26.09.2026",
       "Antrag der Gruppe „Gemeinsam für Winsen“ vom 21.06.2022 gelesen",
       "Websuche „Winsen (Aller) Balkonkraftwerk Förderung 150 Euro Gemeinderat beschlossen“ am 26.09.2026",
-      "Ratsinformationssystem sitzungsdienst-winsen-aller.de: Betreff-Filter griff nicht, nur aktuelle Vorlagen ab 2025 sichtbar"
+      "Ratsinformationssystem sitzungsdienst-winsen-aller.de: Betreff-Filter griff nicht, nur aktuelle Vorlagen ab 2025 sichtbar",
+      "Websuche (04.10.2026) nach Ratsbeschluss Balkonkraftwerk-Förderung Winsen (Aller) 2022/2023: kein Beschluss auffindbar",
+      "Google-Suche auf cz.de (04.10.2026): Celler Zeitung 21.10.2022 „Winser Förderung für Balkonkraftwerke wackelt“ und „Winsen erwägt Förderung von Balkonkraftwerken“; Artikel hinter Bot-Prüfung, nicht gelesen und nicht umgangen"
     ],
     "evidence": [
       {
@@ -67184,6 +67186,10 @@
       {
         "url": "https://winsen-aller.de/bauen-u-wirtschaft/bauen/ausweisung-von-photovoltaik-freiflaechen.html",
         "finding": "Am 26.09.2026 gelesen: Bauleitplanung für Freiflächen-Photovoltaik, kein Förderprogramm."
+      },
+      {
+        "url": "https://winsen-aller.de/impressum.html",
+        "finding": "Funktionspostfach der Gemeinde: „E-Mail: info(at)winsen-aller.de“ (Impressum, 04.10.2026)."
       }
     ],
     "sources": [
@@ -67195,9 +67201,16 @@
       }
     ],
     "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-10-03T08:00:00Z",
-      "detail": "Ratsinformationssystem Winsen (Aller) für 2022/2023 nach dem Antrag „Balkonkraftwerke“ durchsehen (Bau-, Planungs- und Umweltausschuss, Rat) und den Artikel der Celler Zeitung im echten Browser lesen; wurde ein Programm beschlossen, Laufzeit und Betrag belegen und als beendetes Programm aufnehmen, sonst negativ abschließen."
+      "kind": "enquiry",
+      "dueAt": "2026-10-18T08:00:00Z",
+      "detail": "Sachfrage an die Gemeinde im bestehenden Versandlauf; Zustellbeleg prüfen, Antwort im Original lesen. Bestätigt die Gemeinde ein Programm, mit Zeitraum und Betrag nach Gate aufnehmen (auch beendet); sonst negativ abschließen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-03351024",
+      "recipient": "info@winsen-aller.de",
+      "recipientSource": "https://winsen-aller.de/impressum.html",
+      "website": "https://winsen-aller.de",
+      "question": "2022 wurde im Gemeinderat eine Prämie von 150 € für Balkonkraftwerke beantragt. Auf winsen-aller.de finde ich dazu keine Richtlinie und auch sonst kein Förderprogramm der Gemeinde für Balkonkraftwerke, Photovoltaik, Speicher oder Wärmepumpen. Hat die Gemeinde Winsen (Aller) einen solchen Zuschuss eingeführt? Falls ja: Läuft er noch, und wo finde ich die Richtlinie? Falls er beendet ist oder nie beschlossen wurde, hilft mir auch diese kurze Auskunft (mit Zeitraum und Betrag, falls es ihn gab)."
     }
   },
   {
