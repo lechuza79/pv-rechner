@@ -33,7 +33,7 @@ function TabletScreen({ags,name}:{ags:string;name:string}) {
  },[]);
  // The embedded document owns scrolling. Its scaled viewport must fit the screen,
  // rather than clipping a tall, non-interactive document behind the device rim.
- return <div className="device-screen"><div className="dashboard-viewport" ref={screen}><iframe key={ags} title={`Energiemonitor ${name}`} src={`/embed/gemeinde/${ags}/monitor`} loading="eager" className="municipal-dashboard-frame" style={{width:1280,height:viewport.height,transform:`scale(${viewport.scale})`,transformOrigin:'top left'}}/></div></div>;
+ return <div className="device-screen"><div className="dashboard-viewport" ref={screen}><iframe key={ags} title={`Energiemonitor ${name}`} src={`/embed/gemeinde/${ags}/monitor`} loading="lazy" className="municipal-dashboard-frame" style={{width:1280,height:viewport.height,transform:`scale(${viewport.scale})`,transformOrigin:'top left'}}/></div></div>;
 }
 function PlaceLink({place}:{place:{ags:string;name:string}}) {
  return <a className="municipal-place-link" target="_blank" rel="noopener noreferrer" href={`https://solar-check.io/api/atlas/goto?ags=${place.ags}`} aria-label={`${place.name}: Gemeindeseite in neuem Tab öffnen`}><strong>{place.name}</strong><IconExternal size={16}/></a>;
@@ -55,27 +55,15 @@ function StoryPreview() {
 
  const [place,setPlace]=useState({ags:'06440016',name:'Nidda'});
  const [data,setData]=useState<StoryConcept[]|null>(null),[error,setError]=useState(false);
+ const [visible,setVisible]=useState(false);
  useEffect(()=>{
   const node=demo.current;if(!node)return;
-  let started=false;const timers:ReturnType<typeof setTimeout>[]=[];let pointer:HTMLElement|null=null;
-  const observer=new IntersectionObserver(([entry])=>{
-   if(!entry.isIntersecting||started||!node.querySelector('.story-caption-toggle'))return;
-   started=true;
-   timers.push(setTimeout(()=>{
-    node.querySelector<HTMLButtonElement>('[aria-label="Story pausieren"]')?.click();
-    const button=node.querySelector<HTMLButtonElement>('.story-reader-slide[aria-hidden="false"] .story-caption-toggle');
-    if(!button||button.getAttribute('aria-expanded')==='true')return;
-    pointer=document.createElement('span');pointer.className='wp-solar-pointer';pointer.style.left='60%';pointer.style.setProperty('--result-accent','#b59aee');button.append(pointer);
-    timers.push(setTimeout(()=>button.click(),440));
-    timers.push(setTimeout(()=>pointer?.remove(),1350));
-    timers.push(setTimeout(()=>{if(button.getAttribute('aria-expanded')==='true')button.click();node.querySelector<HTMLButtonElement>('[aria-label="Story fortsetzen"]')?.click()},16000));
-   },3000));
-  },{threshold:.55});observer.observe(node);
-  return()=>{observer.disconnect();timers.forEach(clearTimeout);pointer?.remove()};
- },[data]);
+  const observer=new IntersectionObserver(([entry])=>setVisible(entry.isIntersecting&&entry.intersectionRatio>=.35),{threshold:[0,.35]});
+  observer.observe(node);return()=>observer.disconnect();
+ },[]);
  useEffect(()=>{const controller=new AbortController();setData(null);setError(false);
  fetch(`/api/kommunen/vorschau?ags=${place.ags}`,{signal:controller.signal}).then(r=>{if(!r.ok)throw new Error('Story load failed');return r.json();}).then(p=>setData(p.stories.filter((s:StoryConcept)=>s.kind!=='rank'))).catch(e=>{if(e.name!=='AbortError')setError(true);});return()=>controller.abort();},[place.ags]);
- return <><div className="municipal-place-picker"><span>Datenstories aus</span><div className="municipal-place-controls"><PlaceLink place={place}/><RegionSearch align="left" onPick={(ags,name,kreisfrei)=>setPlace({ags:kreisfrei?ags.padEnd(8,'0'):ags,name})}/></div></div><DeviceStage><div ref={demo} className="municipal-story-demo"><ChartFlag className="municipal-story-flag municipal-story-flag-visual" edge="end" placement="left"><strong>Zahlen sichtbar machen.</strong><span>Lokale Entwicklungen auf einen Blick.</span></ChartFlag><ChartFlag className="municipal-story-flag municipal-story-flag-copy" edge="end" placement="left"><strong>Mehr erfahren.</strong><span>Ein Tap öffnet Einordnung und Quellen.</span></ChartFlag><div className="device-shell device-phone"><div className="device-notch" aria-hidden="true"/><div className="device-screen">{error?<p role="status">Die Stories konnten nicht geladen werden. Bitte wählen Sie einen anderen Ort.</p>:data===null?<p role="status">Stories werden geladen …</p>:data.length?<MunicipalStoryModal key={place.ags} stories={data} name={place.name} initial={Math.max(0,data.findIndex(s=>s.kind==='facts'))} surfaceScheme="dark" inline onClose={()=>{}}/>:<p role="status">Für diesen Ort liegen noch keine Stories vor.</p>}</div></div></div></DeviceStage></>;
+ return <><div className="municipal-place-picker"><span>Beispielhaft aus</span><div className="municipal-place-controls"><PlaceLink place={place}/><RegionSearch align="left" onPick={(ags,name,kreisfrei)=>setPlace({ags:kreisfrei?ags.padEnd(8,'0'):ags,name})}/></div></div><DeviceStage><div ref={demo} className="municipal-story-demo"><ChartFlag className="municipal-story-flag municipal-story-flag-visual" edge="end" placement="left"><strong>Zahlen sichtbar machen.</strong><span>Lokale Entwicklungen auf einen Blick.</span></ChartFlag><ChartFlag className="municipal-story-flag municipal-story-flag-copy" edge="end" placement="left"><strong>Mehr erfahren.</strong><span>Ein Tap öffnet Einordnung und Quellen.</span></ChartFlag><div className="device-shell device-phone"><div className="device-notch" aria-hidden="true"/><div className="device-screen">{error?<p role="status">Die Stories konnten nicht geladen werden. Bitte wählen Sie einen anderen Ort.</p>:data===null?<p role="status">Stories werden geladen …</p>:data.length?<MunicipalStoryModal key={place.ags} stories={data} name={place.name} initial={Math.max(0,data.findIndex(s=>s.kind==='facts'))} surfaceScheme="dark" open={visible} inline onClose={()=>{}}/>:<p role="status">Für diesen Ort liegen noch keine Stories vor.</p>}</div></div></div></DeviceStage></>;
 }
 createRoot(document.getElementById('municipal-story-detail')!).render(<StoryPreview/>);
 

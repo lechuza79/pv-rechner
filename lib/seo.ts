@@ -13,6 +13,11 @@ export function brandOgImage(title: string, subtitle = ""): string {
   return `${BASE_URL}/api/og?${p.toString()}`;
 }
 
+/** Shared atlas card with the approved tablet composition and regional headline. */
+export function atlasOgImage(name: string): string {
+  return `${BASE_URL}/api/og?${new URLSearchParams({ view: "atlas", name })}`;
+}
+
 /**
  * OG image (1200x630) featuring a live snapshot of Germany's current renewable
  * generation as a radial chart, rendered by /api/og in "energy" mode. Used on

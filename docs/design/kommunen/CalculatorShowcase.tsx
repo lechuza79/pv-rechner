@@ -25,7 +25,7 @@ import '../../../app/(site)/photovoltaik-rechner/pv-flow.css';
 export const scenes=[
  {title:'Wenige Fragen. Einfach verständlich.',copy:'Ihre Bürgerinnen und Bürger beantworten klare Fragen zu Haus und Alltag. Fachwissen ist dafür nicht nötig.'},
  {title:'Ein klares Ergebnis.',copy:'Kosten, Amortisation und langfristige Ersparnis werden direkt sichtbar – ohne Anmeldung.'},
- {title:'Ausführliche Erläuterung.',copy:'Der animierte Kostenvergleich zeigt, wie sich die Ausgaben über die Jahre entwickeln – und wann sich die Solaranlage bezahlt macht.'},
+ {title:'Ausführliche Erläuterung.',copy:'Verständliche Erläuterungen machen Ergebnisse, Annahmen und Zusammenhänge nachvollziehbar. Grafiken und Vergleiche zeigen, wie Kosten, Ersparnis und Eigenverbrauch zusammenhängen.'},
  {title:'Mehr verstehen. Fundiert entscheiden.',copy:'Zusätzliche Verbraucher ausprobieren und die Auswirkungen auf die eigene Rechnung verstehen.'},
 ];
 const initialConsumers:PvConsumerValues={nutzung:1,wp:'nein',ea:'nein',eaKm:15000,klima:'nein',klimaRooms:2,klimaKwh:null,wpHaustyp:0,wpWohnflaeche:DEFAULT_WP_BUILDING.wohnflaeche,wpInsulation:DEFAULT_WP_BUILDING.insulationIdx,wpHeizsystem:DEFAULT_WP_BUILDING.heizsystem};

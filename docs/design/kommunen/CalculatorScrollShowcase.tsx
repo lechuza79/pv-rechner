@@ -13,7 +13,7 @@ const scrollScenes=[...scenes.slice(0,3),
 const benefits=[
  ['Wenige Fragen zu Haus und Alltag','Ohne technisches Vorwissen starten','Direkt zur persönlichen Beispielrechnung'],
  ['Investition und Amortisation einordnen','Ersparnis über die gesamte Laufzeit sehen','Ergebnis direkt und ohne Anmeldung'],
- ['Kostenentwicklung Jahr für Jahr verfolgen','Solarstrom mit Netzstrom vergleichen','Annahmen und Zusammenhänge verstehen'],
+ ['Ergebnisse und Rechenannahmen nachvollziehen','Kosten und Ersparnis anschaulich vergleichen','Zusammenhänge und Fachbegriffe verstehen'],
  ['Heizkosten mit Gas oder Heizöl vergleichen','Zusätzlichen Nutzen des Solarstroms erkennen'],
  ['Laden zu Hause berücksichtigen','Fahrkosten und PV-Vorteil vergleichen'],
 ];

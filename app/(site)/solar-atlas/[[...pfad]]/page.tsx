@@ -11,7 +11,7 @@ import ArticleTeasers from "../../../../components/ArticleTeasers";
 import { atlasEditorialLinks } from "../../../../lib/atlas-editorial-links";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
-import { pageMetadata } from "../../../../lib/seo";
+import { atlasOgImage, pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
 import { atlasIsIndexable, atlasRobots, atlasUebersichtRobots, kreisseiteIndexierbar } from "../../../../lib/atlas-index";
 import { verlinkendeGemeinden } from "../../../../lib/atlas-outreach-freigabe";
@@ -124,6 +124,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   if (!region) return { robots: atlasRobots(false) };
   return {
     ...pageMetadata({
+      ogImage: atlasOgImage(region.name),
       title: seitenTitel(region),
       description:
         region.level === "de"

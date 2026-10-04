@@ -1,5 +1,7 @@
 /** Build the reviewed composition from the same shared components as the preview. */
 import { build } from 'esbuild';
+import { createHash } from 'node:crypto';
+import { municipalHeroCss, municipalSubline } from '../docs/design/kommunen/hero-presentation';
 import { readFile, writeFile, mkdir, rm, rename, access } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -57,14 +59,29 @@ async function main() {
       'shared-landscape-places': resolve(root, 'lib/landscape-places.ts'),
       'shared-landscape-styles': resolve(root, 'components/landkreis/wind-map.module.css'),
     },
+    plugins: [{ name: 'external-tree-textures', setup(b) {
+      b.onLoad({ filter: /ez-tree\.es\.js$/ }, async ({path}) => {
+        const contents = await readFile(path, 'utf8');
+        const writes: Promise<void>[] = [];
+        const transformed = contents.replace(/"data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)"/g, (_, type, encoded) => {
+          const bytes = Buffer.from(encoded, 'base64');
+          const hash = createHash('sha256').update(bytes).digest('hex').slice(0, 16);
+          const name = `tree-${hash}.${type === 'jpeg' ? 'jpg' : 'png'}`;
+          writes.push(writeFile(resolve(assets, name), bytes));
+          return JSON.stringify(`/kommunen/${name}`);
+        });
+        if (!writes.length) throw new Error('Tree texture format changed; review the municipal asset extraction.');
+        await Promise.all(writes);
+        return {contents: transformed, loader: 'js'};
+      });
+    }}],
     external: ['/fonts/*', '/design/*'], define: runtime, outfile: resolve(assets, 'landscape-client.js'),
   });
   const shared = createRequire(import.meta.url)(resolve(temporary, 'shared.cjs'));
   const template = await readFile(resolve(source, 'kommunen.html'), 'utf8');
-  const fallbackHero = template.match(/<section class="sc-waitlist-preview">[\s\S]*?<\/section>/)?.[0];
-  if (!fallbackHero) throw new Error('Reviewed hero text missing from municipal composition.');
+  const fallbackHero = `<style>${municipalHeroCss({referenceControls:'municipal-initial-controls'})}</style><section class="hero" aria-labelledby="hero-title"><header class="site-header">${shared.NEON_KOPF_INNEN}</header><div class="hero-copy" style="position:absolute"><h1 id="hero-title">Die Energiewende vor Ort.<br><span>Für alle verständlich.</span></h1><p class="municipal-subline">${municipalSubline}</p></div><div class="municipal-initial-controls" style="position:absolute;z-index:2"><a class="municipal-discover" href="#landscape-notes">Mehr entdecken</a><button type="button" disabled aria-label="Zum Windpark, sobald die Ansicht geladen ist">Zum Windpark</button></div></section>`;
   let html = shared.renderSharedParts(scrollTemplate(template))
-    .replace('<div id="municipal-landscape-hero"></div>', `<div id="municipal-landscape-hero"><header class="site-header">${shared.NEON_KOPF_INNEN}</header>${fallbackHero}</div>`)
+    .replace('<div id="municipal-landscape-hero"></div>', `<div id="municipal-landscape-hero">${fallbackHero}</div>`)
     .replace(/<title>[\s\S]*?<\/title>/, kommunenMetadata())
     .replace('<meta name="robots" content="noindex,nofollow">', '')
     .replace(/<p class="draft-note">[\s\S]*?<\/p>/, '')

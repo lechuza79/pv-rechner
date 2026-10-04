@@ -92,7 +92,6 @@ main{container-type:inline-size}
 .municipal-place-link svg{color:var(--atlas-action)}
 .municipal-place-link:hover{background:color-mix(in srgb,var(--atlas-text) 13%,transparent)}
 .device-stage-tablet{position:relative;isolation:isolate}
-.device-stage-tablet::before{content:"";position:absolute;inset:-20px 0 0;z-index:-1;pointer-events:none;background:var(--atlas-action);mask:url('/design-lab/splash-color-web.svg') center/125% 125% no-repeat;opacity:.85}
 
 /* The shared search and municipality link form one compact control group. */
 .municipal-place-picker{justify-content:flex-start;flex-wrap:wrap;gap:8px}
@@ -107,7 +106,6 @@ main{container-type:inline-size}
 .municipal-dashboard-section .municipal-place-controls{background:var(--atlas-card);border-radius:6px}
 .municipal-standalone-widget{margin:48px 12px 0;padding:24px 0 48px;min-width:0}
 .municipal-standalone-widget h3{font-size:var(--font-size-h3);margin-bottom:24px}
-.device-stage-tablet::before{inset:-65px -45px -30px;mask-size:110% 110%;transform:rotate(-8deg);opacity:1}
 html{overflow-x:clip}
 @media(max-width:800px){.municipal-dashboard-section>.municipal-product-preview{grid-row:1}.municipal-dashboard-section>.municipal-product-copy{padding-top:0;padding-bottom:40px}.municipal-dashboard-section::before{top:140px}.municipal-standalone-widget{margin-top:24px;padding-bottom:0}}
 
@@ -299,9 +297,9 @@ html{overflow-x:clip}
 
 /* Scroll variant: the same components, revealed in document order. */
 [data-calculator-layout=scroll] .municipal-calculator-section{display:block}
-[data-calculator-layout=scroll] .municipal-calculator-section>.municipal-product-copy{max-width:680px;margin-bottom:64px}
+[data-calculator-layout=scroll] .municipal-calculator-section>.municipal-product-copy{max-width:600px;margin-bottom:112px}
 [data-calculator-layout=scroll] #municipal-calculator-explanation{display:none}
-[data-calculator-layout=scroll] .municipal-try-tools{margin-top:80px}
+[data-calculator-layout=scroll] .municipal-try-tools{margin-top:128px}
 [data-calculator-layout=scroll] :is(#dashboard-section,#calculators-section,#stories-section,#communication-section,#pilot,#mitgestalten){scroll-margin-top:96px}
 .municipal-scroll-steps{display:grid;gap:112px}
 .municipal-scroll-step{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:64px;opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
@@ -346,7 +344,7 @@ html{overflow-x:clip}
 
 
 .municipal-consumer-sequence{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:start}
-.municipal-consumer-sequence>.municipal-scroll-copy{position:sticky;top:120px;padding-top:48px}
+.municipal-consumer-sequence>.municipal-scroll-copy{position:static;padding-top:48px}
 .municipal-consumer-trigger{height:1px}
 .municipal-consumer-addition{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(12px);transition:grid-template-rows .65s ease,opacity .65s ease,transform .65s ease}
 .municipal-consumer-addition>div{min-height:0;overflow:hidden}
@@ -414,3 +412,33 @@ body[data-calculator-layout=scroll]{overflow-x:clip}
 
 /* Hide the obsolete hero link before the landscape client mounts. */
 #municipal-landscape-hero .v3-scroll-indicator{display:none!important}
+
+/* Municipal product introduction and alternating consumer layout. */
+#moeglichkeiten{border-top:1px solid var(--color-border);padding-top:64px}
+#moeglichkeiten>.municipal-products{margin-top:24px}
+#dashboard-section{padding-top:0}
+@media(min-width:701px){
+ .municipal-consumer-sequence>.municipal-scroll-copy{grid-column:1;grid-row:1}
+ .municipal-consumer-sequence>.municipal-scroll-visual{grid-column:2;grid-row:1;justify-self:end}
+}
+/* Fade only the landscape; controls and source links stay fully usable. */
+#municipal-landscape-hero [data-region-scene]{mask-image:linear-gradient(to bottom,#000 calc(100% - 140px),transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 140px),transparent 100%)}
+
+/* Keep related introductions close and give the following sections room. */
+#communication-section{margin-top:112px}
+#municipal-story-detail>.municipal-place-picker{flex-direction:column;align-items:flex-start}
+#widget-settings>[class*="_settings"]>div{grid-template-columns:220px 180px minmax(260px,320px);justify-content:start}
+@media(min-width:701px){
+ .municipal-try-tools .homepage-tool-teasers{display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+ .municipal-try-tools .homepage-tool-teasers>.sc-tool-teaser{flex:0 1 340px;min-width:0;box-sizing:border-box}
+ #stories-section>.municipal-product-copy{padding-top:88px}
+}
+@media(max-width:800px){
+ #moeglichkeiten{padding-top:40px}
+ #widget-settings>[class*="_settings"]>div{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+}
+@media(max-width:700px){
+ [data-calculator-layout=scroll] .municipal-calculator-section>.municipal-product-copy{margin-bottom:72px}
+ [data-calculator-layout=scroll] .municipal-try-tools{margin-top:88px}
+ #communication-section{margin-top:80px}
+}
