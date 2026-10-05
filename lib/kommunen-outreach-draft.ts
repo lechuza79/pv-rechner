@@ -209,6 +209,12 @@ export type DraftContext = {
    * bleibt reiner Text.
    */
   widgetUrl?: string | null;
+  /**
+   * The municipal product page, as one closing sentence (operator, 05.10.2026:
+   * "auf die Kommunen-Produktlanding verweisen"). An addition, not the hook:
+   * the ready-made news item is what got published so far, so it stays first.
+   */
+  kommunenUrl?: string | null;
 };
 
 export type OutreachDraft = { subject: string; body: string; bodyHtml: string; meldung: string };
@@ -710,6 +716,10 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
         } Für Kommunen ist das kostenfrei; wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
+  const kommunenAbsatz = c.kommunenUrl
+    ? `\n\nWas wir Kommunen darüber hinaus anbieten, vom Energiemonitor über Rechner bis zu fertigen Datengeschichten, steht hier: ${c.kommunenUrl}`
+    : "";
+
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
   // die Zahl kein Zufallstreffer ist.
   //
@@ -771,7 +781,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
