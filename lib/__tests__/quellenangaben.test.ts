@@ -72,6 +72,7 @@ describe("Quellenangaben", () => {
     const veraendert: Record<string, string> = {
       energyCharts: "Viertelstunden zu Wochenwerten gemittelt; nuclear-import.ts leitet eine Größe ab, die so nicht geliefert wird",
       ember: "Länderreihen werden bei jedem Sync neu gerechnet",
+      smard: "lib/smard.ts fasst Energieträger zu unseren Kategorien zusammen und rechnet Energie je Viertelstunde in Leistung um",
       nexGddp: "wir zeigen nicht die Modellwerte, sondern die daraus berechnete Veränderung je Rasterfeld",
       dwd: "scripts/dwd-strahlung-sync.ts mittelt das 1-km-Raster zu einem Jahreswert für Deutschland",
     };

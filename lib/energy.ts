@@ -15,6 +15,10 @@ export interface GenerationData {
   license: string;
   country: string;
   resolution?: string;
+  /** Upstream down: this is our last stored copy (see lib/energy-letzter-stand.ts). */
+  stale?: boolean;
+  /** Energy-Charts down, numbers from SMARD (see lib/smard.ts). */
+  fallback?: "smard";
 }
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────
@@ -169,6 +173,10 @@ export interface NuclearImportData {
   avg_share_pct: number;
   source: string;
   license: string;
+  /** Upstream down: this is our last stored copy (see lib/energy-letzter-stand.ts). */
+  stale?: boolean;
+  /** Energy-Charts down, numbers from SMARD (see lib/smard.ts). */
+  fallback?: "smard";
 }
 
 /** Calculated nuclear import from neighboring countries */

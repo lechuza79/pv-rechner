@@ -9,6 +9,7 @@ import {
 } from "../../../../components/WidgetExport";
 import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { useGenerationMix } from "../../../../lib/energy";
+import { quellenHinweis } from "../../../../lib/energy-ersatzstand";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import {
   WIDGET_SETTINGS_DEFAULTS,
@@ -155,10 +156,14 @@ export default function EeAmpelWidget() {
               {current ? `${Math.round(current.pct)} %` : <LoadingDots />}
             </div>
             <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 2 }}>
-              Anteil Erneuerbare gerade
+              {genData.stale ? "Anteil Erneuerbare zuletzt gemeldet" : "Anteil Erneuerbare gerade"}
             </div>
             <div style={{ fontSize: "var(--font-size-small)", lineHeight: 1.45, marginTop: 8 }}>
-              {level ? LEVELS[level].text : "Die aktuellen Erzeugungsdaten werden geladen."}
+              {/* Upstream down, last stored copy: the level texts speak about
+                  "now", so they give way to the note with the real time. */}
+              {genData.stale && current
+                ? quellenHinweis(genData, current.ts)
+                : level ? LEVELS[level].text : "Die aktuellen Erzeugungsdaten werden geladen."}
             </div>
           </div>
         </div>
@@ -169,6 +174,14 @@ export default function EeAmpelWidget() {
           ? `Ø letzte 24 Std: ${Math.round(stats.eeSharePct)} % · Stand ${formatTime(current.ts, "time")} Uhr`
           : ""}
       </div>
+      {/* Live numbers from SMARD while Energy-Charts is down: the note carries
+          the attribution SMARD's licence requires. (A stored copy is named in
+          the level text above instead.) */}
+      {genData.fallback === "smard" && !genData.stale && current && (
+        <div role="status" style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", paddingTop: 4 }}>
+          {quellenHinweis(genData, current.ts)}
+        </div>
+      )}
 
       <div style={{ marginTop: 12 }}>
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2 }} />

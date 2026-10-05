@@ -54,6 +54,10 @@ const LESEPFADE = [
   "lib/social-fundvorrat.ts",
   // Public route of the simulation page (ten-year retrospective per postcode).
   "lib/solar-rueckblick-server.ts",
+  // Durable fallback of the energy routes (strommix, live radial, widgets).
+  // Read exactly when Energy-Charts is down — a slow database on top must not
+  // hold the visitor longer than the error response would have.
+  "lib/energy-letzter-stand.ts",
 ];
 
 /**
