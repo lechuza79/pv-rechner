@@ -625,7 +625,7 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 03.10.2026: GModG-Infoportal (gmodg.bund.de) im Original gelesen — kein
   //   Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Suche: nur
   //   Ankündigung der Quote ab 2028, keine Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-10-04",
+  geprueftRechtIso: "2026-10-05",
   reviewBy: "2027-07-25",
 };
 

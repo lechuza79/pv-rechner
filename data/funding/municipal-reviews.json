@@ -40039,12 +40039,13 @@
   {
     "regionId": "09572137",
     "name": "Kalchreuth",
-    "checkedAt": "2026-09-20T00:25:05Z",
-    "recheckAt": "2026-10-04T08:00:00Z",
+    "checkedAt": "2026-10-05T10:33:46Z",
+    "recheckAt": "2026-10-19T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "Übersichtsseite des Landkreises Erlangen-Höchstadt zu den Förderprogrammen seiner Gemeinden (20.09.2026 gelesen) — HINWEISGEBER, nicht Quelle: Sie sagt selbst, sie erhebe keinen Anspruch auf Vollständigkeit, und war bei Spardorf und Uttenreuth messbar veraltet. Jede Zahl an der Richtlinie der Gemeinde selbst belegt.",
-      "kalchreuth.de aufgerufen; die vom Landkreis verlinkte Richtlinie der Gemeinde im Volltext gelesen"
+      "kalchreuth.de aufgerufen; die vom Landkreis verlinkte Richtlinie der Gemeinde im Volltext gelesen",
+      "05.10.2026 Handprüfung erneuert: Förderseite kalchreuth.de/wirtschaft-verkehr-bauen/foerderung-regenerative-energien neu gelesen; die Richtlinie liegt unter einer neuen Dateiadresse (…/9/4/b/1/94b1e81c…), Inhalt gegen die Fassung vom 20.09. verglichen"
     ],
     "evidence": [
       {
@@ -40054,6 +40055,10 @@
       {
         "url": "https://www.kalchreuth.de/",
         "finding": "Auf der Startseite der Gemeinde ist am 20.09.2026 keine aktuelle Förderseite erreichbar; die Adresse rathaus-buergerservice/foerderprogramme antwortet mit 404. Die einzige auffindbare Fassung der Richtlinie ist die von 2023."
+      },
+      {
+        "url": "https://www.kalchreuth.de/_Resources/Persistent/9/4/b/1/94b1e81c61aa6a8e20b7811dc643d82518a7f49d/Richtlinie%20zur%20Gew%C3%A4hrung%20von%20Zusch%C3%BCssen%20zur%20Minderung%20des%20Energieverbrauchs%20und%20zur%20Nutzung%20regenerativer%20Energiequellen%20%28Endfassung%29.pdf",
+        "finding": "05.10.2026 gelesen: neue Dateiadresse, Inhalt unverändert — weiterhin Nr. 8 „Diese Richtlinie tritt zum 01.04.2023 in Kraft und endet mit Ablauf des laufenden Haushaltsjahres“, Unterschriftszeile „Kalchreuth, den ….03.2023“. Keine neue Fassung; die Frage nach der Fortgeltung bleibt offen, Rückfrage weiter erforderlich."
       }
     ],
     "outcome": "klaerung",
@@ -40068,7 +40073,7 @@
     ],
     "nextAction": {
       "kind": "enquiry",
-      "dueAt": "2026-10-04T08:00:00Z",
+      "dueAt": "2026-10-06T08:00:00Z",
       "detail": "Bei der Gemeinde Kalchreuth erfragen, ob die Förderrichtlinie vom 01.04.2023 im Haushaltsjahr 2026 fortgilt und ob der Zuschuss von 500 € für den Austausch einer fossilen Heizung derzeit beantragt werden kann."
     },
     "enquiry": {
@@ -84761,6 +84766,62 @@
         "disposition": "reviewed",
         "reason": "Landesprogramm ELR, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.meckesheim.de/rathaus-service/foerderprogramme/entwicklungsprogramm-laendlicher-raum"
+      }
+    ]
+  },
+  {
+    "regionId": "08226056",
+    "name": "Neckargemünd",
+    "checkedAt": "2026-10-05T10:34:59Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neckargemünd hat 2026 keinen kommunalen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Angeboten werden der kostenlose PV-Eignungscheck mit der KLiBA, das Schulprogramm Klimaschutz-Plus und die Erstellung eines Vorreiterkonzepts (KSI, Laufzeit bis 30.11.2026). Ein 150-€-Balkonzuschuss (15.000-€-Topf) ist nur aus der Presse von 2023 (RNZ 27.09.2023) bekannt; keine Amtsseite führt ihn, Betrag und Laufzeit sind an keiner Amtsquelle belegt.",
+    "searches": [
+      "neckargemuend.de: Klimaschutz und -anpassung, Klimaschutz (12.06.2026), Klimaschutz-Projekte, Photovoltaik-Initiative, Abgeschlossene Projekte und Neuigkeiten Klimaschutz im Original gelesen (05.10.2026)",
+      "Volltextsuche der Website (/suche.html) antwortet mit 404; ersatzweise Rubrik-Navigation vollständig durchgegangen",
+      "Websuche (04.10.2026): Balkonkraftwerk Förderung Neckargemünd — nur RNZ-Artikel 27.09.2023"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neckargemuend.de/start/miteinander/photovoltaik-initiative.html",
+        "finding": "„Photovoltaik-Initiative – Holen Sie sich die Sonne aufs Dach“: kostenfreier PV-Eignungscheck mit der KLiBA, Informationen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.neckargemuend.de/3826739.html",
+        "finding": "„KSI: Erstellung eines integrierten Vorreiterkonzepts für Klimaschutz“, Laufzeit 01.12.2025–30.11.2026 — Förderung der Stadt durch den Bund, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.neckargemuend.de/2622607.html",
+        "finding": "Klimaschutz-Projekte: Hofflohmarkt, STADTRADELN, Pestizidfreie Kommune, Photovoltaik-Initiative, Earth Hour, Aktion „alles LeuchtED“, Klima- und Energietage 2023 — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.neckargemuend.de/2448854_2449261_2622549_2665402_3775021_3892993_3887020.html",
+        "finding": "„KLiBA Klimaschutzprogramm Schulen“ — „Förderprogramm für Schulen: Energie und Klimaschutz lebendig vermitteln“, Anmeldeschluss 17.07.2026 (05.10.2026 gelesen)."
+      },
+      {
+        "url": "https://www.neckargemuend.de/start/erleben/foerderprojekte+fuer+kinder+und+eltern.html",
+        "finding": "„Förderprojekte für Kinder und Eltern“: Sprachförderung „Deutsch für den Schulstart“ (05.10.2026 gelesen)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neckargemuend.de/2448854_2449261_2622549_2665402_3775021_3892993_3887020.html",
+        "disposition": "reviewed",
+        "reason": "„KLiBA Klimaschutzprogramm Schulen – Förderprogramm für Schulen“, Anmeldeschluss 17.07.2026; Programm für Schulen, nicht für Haushalte.",
+        "evidenceUrl": "https://www.neckargemuend.de/2448854_2449261_2622549_2665402_3775021_3892993_3887020.html"
+      },
+      {
+        "url": "neckargemuend.de/start/erleben/foerderprojekte+fuer+kinder+und+eltern.html",
+        "disposition": "reviewed",
+        "reason": "„Förderprojekte für Kinder und Eltern“: Sprachförderung „Deutsch für den Schulstart“ — Bildung, keine Energieförderung.",
+        "evidenceUrl": "https://www.neckargemuend.de/start/erleben/foerderprojekte+fuer+kinder+und+eltern.html"
+      },
+      {
+        "url": "neckargemuend.de/auth/index.html?secure=true&amp;url=%2Fstart%2Ferleben%2Ffoerderprojekte+fuer+kinder+und+eltern.html",
+        "disposition": "replaced",
+        "reason": "Anmeldeweiche des CMS auf dieselbe Seite „Förderprojekte für Kinder und Eltern“; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.neckargemuend.de/start/erleben/foerderprojekte+fuer+kinder+und+eltern.html"
       }
     ]
   }
