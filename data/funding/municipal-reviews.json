@@ -86961,5 +86961,185 @@
         "evidenceUrl": "https://www.bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573/"
       }
     ]
+  },
+  {
+    "regionId": "08226098",
+    "name": "Wiesloch",
+    "checkedAt": "2026-10-05T16:05:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Wiesloch zahlt derzeit keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutzseiten der Stadt nennen als Angebot für Bürger nur den von der Stadt bezahlten kostenlosen PV-Eignungscheck der KLiBA und die Energieberatung; die Seite zu geförderten Klimaschutzmaßnahmen beschreibt Fördermittel, die die Stadt selbst für eigene Projekte erhält. Ein früherer Balkonkraftwerk-Zuschuss lief nach einem Sekundärbericht 2024 aus; auf den Amtsseiten steht kein laufendes Programm. Die übrigen Quellen sind allgemeine service-bw-Texte.",
+    "searches": [
+      "05.10.2026: Klimaschutz-Übersicht wiesloch.de und Unterseiten Erneuerbare Energien, Energieberatung, Energiesparen, Kommunale Wärmeplanung, Geförderte Klimaschutzmaßnahmen gelesen",
+      "05.10.2026: Websuche 'Wiesloch Zuschuss Balkonkraftwerk Photovoltaik Förderprogramm Stadt 2026' (Treffer: Sekundärübersicht nennt keinen Balkon-Zuschuss, früheres Programm bis 01.07.2024)",
+      "05.10.2026: Sekundärübersicht Rhein-Neckar (balkon-kraft-werke.de, Stand 12.06.2026) gelesen: Wiesloch ohne Balkonkraftwerk-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wiesloch.de/umwelt--mobilitaet/klimaschutz/gefoerderte-klimaschutzmassnahmen",
+        "finding": "Fördermittel, die die Stadt für eigene Vorhaben erhält (KfW 444 Entsiegelung u. a.); kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.wiesloch.de/umwelt--mobilitaet/klimaschutz/erneuerbare-energien",
+        "finding": "PV-Offensive für kommunale Dächer und Freiflächen; für Bürger nur kostenloser PV-Eignungscheck der KLiBA, kein Zuschuss."
+      },
+      {
+        "url": "https://www.wiesloch.de/umwelt--mobilitaet/klimaschutz/energieberatung",
+        "finding": "Kostenlose KLiBA-Energieberatung im Rathaus; Verweis auf Förderung durch KfW, BAFA, Land; kein eigenes städtisches Programm genannt."
+      },
+      {
+        "url": "https://www.wiesloch.de/-/dienstleistungen/vbid1475",
+        "finding": "service-bw-Text zur Bundesförderung effiziente Gebäude, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wiesloch.de/umwelt--mobilitaet/klimaschutz/gefoerderte-klimaschutzmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Fördermittel der Stadt für eigene Projekte, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.wiesloch.de/umwelt--mobilitaet/klimaschutz/gefoerderte-klimaschutzmassnahmen"
+      },
+      {
+        "url": "wiesloch.de/auth/index.html?secure=true&amp;url=%2Fumwelt--mobilitaet%2Fklimaschutz%2Fgefoerderte-klimaschutzm",
+        "disposition": "reviewed",
+        "reason": "Login-Weiterleitung auf dieselbe Seite, inhaltlich dort gelesen.",
+        "evidenceUrl": "https://www.wiesloch.de/umwelt--mobilitaet/klimaschutz/gefoerderte-klimaschutzmassnahmen"
+      },
+      {
+        "url": "wiesloch.de/-/dienstleistungen/vbid1475",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "wiesloch.de/-/dienstleistungen/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "wiesloch.de/-/dienstleistungen/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "wiesloch.de/-/lebenslagen/leb5000372",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "wiesloch.de/-/lebenslagen/leb5000550",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "wiesloch.de/-/lebenslagen/leb5001819",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zu Bundes- oder Landesprogrammen, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.wiesloch.de/-/dienstleistungen/vbid1475"
+      }
+    ]
+  },
+  {
+    "regionId": "08226020",
+    "name": "Eschelbronn",
+    "checkedAt": "2026-10-05T16:05:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Eschelbronn zahlt keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Ihre Seite 'Förderprogramme für Privat und Gewerbe' verweist nur auf die Strukturfördermittelkarte des Rhein-Neckar-Kreises und auf deinförderprojekt.de, nennt aber kein Programm der Gemeinde. Eine Websuche ergab keinen Hinweis auf einen kommunalen Zuschuss.",
+    "searches": [
+      "05.10.2026: Seite eschelbronn.de/energie-umwelt/foerderprogramme-fuer-privat-und-gewerbe gelesen",
+      "05.10.2026: Websuchen 'Eschelbronn Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung' und site-Suche eschelbronn.de nach Balkonkraftwerk/Photovoltaik Zuschuss: keine kommunalen Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eschelbronn.de/energie-umwelt/foerderprogramme-fuer-privat-und-gewerbe",
+        "finding": "Nur Verweise auf Strukturfördermittelkarte des Kreises und deinförderprojekt.de; kein Gemeindeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eschelbronn.de/energie-umwelt/foerderprogramme-fuer-privat-und-gewerbe",
+        "disposition": "reviewed",
+        "reason": "Verweisseite ohne eigenes Programm.",
+        "evidenceUrl": "https://www.eschelbronn.de/energie-umwelt/foerderprogramme-fuer-privat-und-gewerbe"
+      }
+    ]
+  },
+  {
+    "regionId": "08226029",
+    "name": "Heiligkreuzsteinach",
+    "checkedAt": "2026-10-05T16:05:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Heiligkreuzsteinach zahlt keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Seite Förderprogramme nennt nur Zuschüsse im Sanierungsgebiet Ortsmitte (Landessanierungsprogramm), das Kommunalinvestitionsförderprogramm und LEADER. Die Energieberatungsseite beschreibt eine PV-Informationskampagne des Gemeindeverwaltungsverbands Schönau mit BUND und KLiBA, ohne Zuschuss.",
+    "searches": [
+      "05.10.2026: Seiten Förderprogramme und Energieberatung auf heiligkreuzsteinach.de gelesen",
+      "05.10.2026: Websuchen zu Heiligkreuzsteinach und Balkonkraftwerk/Photovoltaik-Zuschuss: keine kommunalen Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html",
+        "finding": "Sanierungsgebiet Ortsmitte, KInvFG, LEADER; kein Energie-Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.heiligkreuzsteinach.de/seite/721995/energieberatung.html",
+        "finding": "PV-Kampagne GVV Schönau mit Beratung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Städtebau- und Strukturförderung, kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite.",
+        "evidenceUrl": "https://www.heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "heiligkreuzsteinach.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, kein Förderinhalt.",
+        "evidenceUrl": "https://www.heiligkreuzsteinach.de/seite/721994/f%C3%B6rderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "08226091",
+    "name": "Waibstadt",
+    "checkedAt": "2026-10-05T16:05:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Waibstadt zahlt keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Seite Förderprogramme nennt das Landesprogramm Streuobst-Baumschnitt, Fördermittel für die Sanierung der Grundschule Daisbach und die Nationale Klimaschutzinitiative. Weitere Treffer auf waibstadt.de sind service-bw-Texte zu L-Bank-Darlehen und Bundesförderung.",
+    "searches": [
+      "05.10.2026: Seite waibstadt.de/unsere-stadt/wirtschaftstandort+waibstadt/foerderprogramme gelesen",
+      "05.10.2026: site-Suche waibstadt.de nach Photovoltaik, Balkonkraftwerk, Wärmepumpe Zuschuss: nur service-bw-Verfahrensbeschreibungen (vbid695, vbid1475) und Flächennutzungsplan",
+      "05.10.2026: Websuche 'Waibstadt Heiligkreuzsteinach Zuschuss Balkonkraftwerk Förderprogramm Gemeinde': keine kommunalen Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.waibstadt.de/unsere-stadt/wirtschaftstandort+waibstadt/foerderprogramme",
+        "finding": "Streuobst, KInvFG-Sanierung, Nationale Klimaschutzinitiative; kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "waibstadt.de/unsere-stadt/wirtschaftstandort+waibstadt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Kein Energie-Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.waibstadt.de/unsere-stadt/wirtschaftstandort+waibstadt/foerderprogramme"
+      }
+    ]
   }
 ]
