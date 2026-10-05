@@ -32,7 +32,19 @@ export type V2Recheck = {
  * 05.10.2026: all gaps filled since 01.10. would have been turned away at the
  * last step). The fresh recheck of the page still has to pass.
  */
-export type Handbeleg = { email: string; url: string; quelle: string; rolle?: string };
+export type Handbeleg = {
+  email: string;
+  url: string;
+  quelle: string;
+  rolle?: string;
+  /**
+   * The page sits behind a browser check a plain fetch cannot pass; a person
+   * read it in a real browser on `geprueftAm`. Then that reading counts as the
+   * recheck, for as long as a recheck may be old.
+   */
+  liveNichtLesbar?: boolean;
+  geprueftAm?: string;
+};
 
 export type V2Urteil = { ok: true; belegteRolle: boolean } | { ok: false; grund: string };
 
@@ -47,6 +59,11 @@ export function v2Urteil(
 ): V2Urteil {
   const e = email.trim().toLowerCase();
   if (handbeleg && handbeleg.email.trim().toLowerCase() === e) {
+    if (handbeleg.liveNichtLesbar && handbeleg.geprueftAm) {
+      const alter = (now.getTime() - Date.parse(`${handbeleg.geprueftAm}T12:00:00Z`)) / 86_400_000;
+      if (alter <= maxAgeDays + 1) return { ok: true, belegteRolle: true };
+      return { ok: false, grund: `Handprüfung im Browser älter als ${maxAgeDays} Tage — neu ansehen` };
+    }
     const r = recheckUrteil(e, recheck, now, maxAgeDays);
     if (!r.ok) return r;
     return { ok: true, belegteRolle: true };

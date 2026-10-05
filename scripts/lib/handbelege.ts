@@ -38,10 +38,35 @@ export async function handbelegNachpruefen(id: string, b: Handbeleg) {
     return out;
   }
   const host = new URL(b.url).hostname.replace(/^www\./, "");
-  const html = entschleiere(decodeEntities(deobfuscatePublishedMail(live.html)));
+  // '<span class="at"></span>' stands for "@" on several municipal sites (Rheine).
+  const roh = live.html.replace(/<span[^>]*class=["']at["'][^>]*>\s*<\/span>/gi, "@");
+  const html = entschleiere(decodeEntities(deobfuscatePublishedMail(wsmnAufloesen(roh))));
   out.ok =
     contactCandidates(html, b.url, host).some((c) => c.email.toLowerCase() === email) ||
     html.toLowerCase().includes(email);
   if (!out.ok) out.reason = "Adresse steht nicht mehr auf der Seite";
   return out;
+}
+
+/**
+ * The "wsmn('…')" mail cloak of one municipal CMS (Tecklenburg, Borken): every
+ * third character from position 1, reversed, then a fixed letter swap. Read
+ * from the page's own script on 05.10.2026; the decoded address is appended
+ * next to the call so the normal search finds it.
+ */
+export function wsmnAufloesen(html: string): string {
+  return html.replace(/wsmn\('([^']*)'\)/g, (ganz, ml: string) => {
+    let m = "";
+    for (let i = 0; i < ml.length / 3; i++) m = ml.substr(i * 3 + 1, 1) + m;
+    const mail = m
+      .replace(/\?.*$/, "")
+      .replace(/a/g, "@")
+      .replace(/e/g, ".")
+      .replace(/\*/g, "a")
+      .replace(/;/g, "e")
+      .replace(/:/g, "o")
+      .replace(/,/g, "u")
+      .replace(/!/g, "i");
+    return `${ganz} ${mail} `;
+  });
 }
