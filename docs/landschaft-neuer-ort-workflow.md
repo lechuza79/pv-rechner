@@ -17,7 +17,7 @@ Das Werkzeug `scripts/stage-workflow.py` hat fünf Aktionen:
 | --- | --- |
 | `plan` | Liest Bestand, zählt Anlagen, nennt fehlende Quellen bzw. Länderanbindung. Kein Download. Exit 2 bei fehlenden Voraussetzungen. |
 | `run` | Verarbeitet einen unterstützten neuen Ort auf Hetzner, mit gemeinsamer Sperre und isoliertem Kandidatenverzeichnis. Keine Veröffentlichung. |
-| `status` | Liest Ergebnis/Fehler des Auftrags. `not-started`, `running`, `failed` und `needs-review` sind unterschiedliche Zustände. |
+| `status` | Liest Ergebnis/Fehler des Auftrags. `not-started`, `running`, `interrupted`, `failed` und `needs-review` sind unterschiedliche Zustände. |
 | `check` | Prüft die erzeugten Daten: Ortsidentität, Anlagen-IDs, echte Maße/Leistungen, Gelände, Ziele, Quellenbelege. Lücken bleiben sichtbar. |
 | `verify-live` | Vergleicht öffentliche Szene mit geprüftem Kandidaten und ruft die tatsächlichen Wetterwege für Ort, Solar und jeden Windpark ab. Kein Ersatz für Browserabnahme. |
 

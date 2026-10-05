@@ -132,4 +132,15 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(all('stale' in error for error in result['errors']))
 
 
+    def test_killed_or_reused_worker_is_not_reported_running(self):
+        path=self.root/'jobs/stages'/(self.place+'.json')
+        w.write(path,dict(status='running',pid=1234,processBirth='old',stageReady=False))
+        with patch.object(w.os,'kill',side_effect=ProcessLookupError()):
+            self.assertEqual(w.job_status(self.root,self.place)['status'],'interrupted')
+        with patch.object(w.os,'kill'),patch.object(w,'process_birth',return_value='different'):
+            self.assertEqual(w.job_status(self.root,self.place)['status'],'interrupted')
+        with patch.object(w.os,'kill'),patch.object(w,'process_birth',return_value='old'):
+            self.assertEqual(w.job_status(self.root,self.place)['status'],'running')
+
+
 if __name__=='__main__':unittest.main()

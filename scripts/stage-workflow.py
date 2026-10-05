@@ -162,6 +162,34 @@ def check(directory, place):
                          'publication-and-public-link-verification'])
 
 
+def process_birth(pid):
+    try:
+        return Path('/proc/'+str(pid)+'/stat').read_text().rpartition(')')[2].split()[19]
+    except (OSError, IndexError):
+        return None
+
+
+def job_status(root, place):
+    path = root/'jobs/stages'/(place+'.json')
+    if not path.exists():
+        return dict(status='not-started', **plan(root, place))
+    state = read(path)
+    if state.get('status') == 'running':
+        pid = state.get('pid')
+        alive = False
+        if isinstance(pid, int) and pid > 0:
+            try:
+                os.kill(pid, 0)
+                alive = not state.get('processBirth') or process_birth(pid) == state['processBirth']
+            except ProcessLookupError:
+                pass
+            except PermissionError:
+                alive = True
+        if not alive:
+            state.update(status='interrupted', error='Recorded worker is no longer active; inspect the service journal before retrying', stageReady=False)
+    return state
+
+
 def run(root, place, osm_file):
     root = root.resolve()
     (root/'queue').mkdir(parents=True, exist_ok=True)
@@ -190,7 +218,7 @@ def run(root, place, osm_file):
                     raise ValueError('Unexpected candidate input path')
             (candidate/'logs').mkdir(exist_ok=True)
             status_path = root/'jobs/stages'/(place+'.json')
-            state = dict(preparation, status='running', startedAt=timestamp(), log=str(root/'logs'/('stage-'+place+'.log')))
+            state = dict(preparation, status='running', pid=os.getpid(), processBirth=process_birth(os.getpid()), startedAt=timestamp(), log=str(root/'logs'/('stage-'+place+'.log')))
             write(status_path, state)
             command = [sys.executable, str(SCRIPTS/'landscape-niedersachsen-worker.py'), '--root', str(candidate),
                        '--municipality', place, '--osm-file', str(osm_file.resolve())]
@@ -286,10 +314,9 @@ def main():
             directory = args.directory or args.root/'candidates'/args.place/'public/geo/landscape-tours'/args.place
             result = check(directory, args.place) if args.action == 'check' else verify_live(directory, args.place, args.base_url)
         else:
-            path = args.root/'jobs/stages'/(args.place+'.json')
-            result = read(path) if path.exists() else dict(status='not-started', **plan(args.root, args.place))
+            result = job_status(args.root, args.place)
         print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
-        if result.get('technicalChecksPassed') is False or result.get('liveDataChecksPassed') is False or result.get('status') in ('failed', 'failed-validation'):
+        if result.get('technicalChecksPassed') is False or result.get('liveDataChecksPassed') is False or result.get('status') in ('failed', 'failed-validation', 'interrupted'):
             return 1
         if result.get('blockers'):
             return 2
