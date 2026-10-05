@@ -154,7 +154,7 @@ export default function FlowNav({
         diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
         Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
         deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein. */}
-    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 4, width: "100%", justifyContent: centered ? "center" : "space-between" }}>
+    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 8, marginTop: 4, width: "100%", justifyContent: centered ? "center" : "space-between" }}>
       {zurueckSichtbar && onZurueck && (
         <ActionButton
           type="button"

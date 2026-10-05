@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-for (const width of [375, 624, 1280, 1440]) {
+for (const width of [320, 375, 624, 1280, 1440]) {
   test(`calculator actions share one button style at ${width}`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: 'reduce' });

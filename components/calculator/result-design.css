@@ -843,7 +843,7 @@ body .wp-product-funded-price .wp-funded-empty{grid-column:1 / -1;padding-inline
 .wp-action-save{margin-left:0}
 .wp-result-actionbar-secondary{flex-wrap:wrap}
 .wp-result-actionbar-inner{flex-wrap:wrap;gap:20px}
-.wp-product-actions{container:action-row / inline-size;flex-wrap:nowrap;gap:8px!important}
+.wp-product-actions{container:action-row / inline-size;flex-wrap:nowrap;gap:6px!important}
 .wp-product-actions>.wp-product-shop{flex:1}
 @media(max-width:420px){
  .wp-result-actionbar-secondary{flex:1 1 100%;justify-content:center}
