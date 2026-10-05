@@ -1,4 +1,5 @@
 "use client";
+import niddaSolarRegister from "../../public/geo/nidda-preview/solar-register.json";
 import HeroLandscapeTour from "./HeroLandscapeTour";
 import {IconArrowRight} from "../Icons";
 import LocationMicroCard from "./LocationMicroCard";
@@ -81,7 +82,7 @@ function LoadedBuildingMap({ data, overview, solar,municipalHero,sceneOnly,onRea
   if(municipalHero)return <HeroLandscapeTour sceneOnly={sceneOnly} onReady={onReady} data={{...projected,municipality:'06440016',name:'Nidda',stops:[
     {id:'nidda-market',name:'Nidda',kind:'town',...projected.destinations.town},
     {id:'nidda-windpark',name:'Windpark Fauerbach',kind:'wind',capacityKw:projected.turbines.every(t=>t.ratedKw!=null)?projected.turbines.reduce((sum,t)=>sum+(t.ratedKw??0),0):null,...projected.destinations.park},
-    {id:'nidda-sewage',name:'Kläranlage Nidda',kind:'solar',capacityKw:null,...projected.destinations.solar}
+    {id:'nidda-sewage',name:niddaSolarRegister.label,kind:'solar',capacityKw:niddaSolarRegister.capacityKw,...projected.destinations.solar}
   ]}}/>;
   const sceneContent=<>
       <RegionScene cardBottomSpace={reference?180:90} locationCard={municipalHero?{visible:!flying,id:currentStop==='Windpark Fauerbach'?'nidda-windpark':currentStop==='Kläranlage Nidda'?'nidda-sewage':'nidda-market',content:<LocationMicroCard name={currentStop} weather={weather}/>} :undefined} windConditions={weather} onFlight={onFlight} {...projected} heightEnvelope={envelope} values={values} windScale={1}

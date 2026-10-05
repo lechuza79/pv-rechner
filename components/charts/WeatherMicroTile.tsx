@@ -15,7 +15,8 @@ export function WeatherMicroTile(props:Props){
  const time=props.validAt??(props.kind==='solar'?props.chart.currentTime:undefined);
  const value=props.kind==='solar'?props.chart.points?.find(p=>p.time===props.chart.currentTime)?.value:props.chart.speedMs;
  const power=powerDisplay(value);
- const unit=props.kind==='solar'?power.unit:'m/s';
+ const relativeSolar=props.kind==='solar'&&props.chart.power===false;
+ const unit=props.kind==='solar'?(relativeSolar?'%':power.unit):'m/s';
  const direction=props.kind==='wind'&&props.chart.directionDeg!=null?['N','NO','O','SO','S','SW','W','NW'][Math.round(((props.chart.directionDeg%360+360)%360)/45)%8]:null;
  // Power samples carry their own model timestamp.
  const dayCurrent=props.kind==='wind'?props.day?.filter(p=>Date.parse(p.time)<=Date.parse(time??'')).at(-1):undefined;
@@ -28,8 +29,8 @@ export function WeatherMicroTile(props:Props){
    <div className={styles.row}>
     <div className={styles.chart}>{props.kind==='solar'?<SolarMicroRadial {...props.chart} size={80} showValue={false}/>:<WindMicroCompass {...props.chart} size={80} showValue={false}/>}</div>
     <div className={styles.info}>
-     <span className={styles.detail}>{props.kind==='solar'?'Modellierte Leistung':'Aktuell'}</span>
-     <div className={styles.value}>{value==null?'–':(props.kind==='solar'?power.value!:value).toLocaleString('de-DE',{maximumFractionDigits:props.kind==='wind'?2:1})} <small>{unit}</small></div>
+     <span className={styles.detail}>{props.kind==='solar'?(relativeSolar?'Modellierte Auslastung':'Modellierte Leistung'):'Aktuell'}</span>
+     <div className={styles.value}>{value==null?'–':(props.kind==='solar'&&!relativeSolar?power.value!:value).toLocaleString('de-DE',{maximumFractionDigits:props.kind==='wind'?2:1})} <small>{unit}</small></div>
      <span className={styles.detail}>{props.kind==='solar'?props.place??'Solar':value===0?'Windstille':direction?`aus ${direction}`:'Richtung fehlt'}</span>
     </div>
    </div>
