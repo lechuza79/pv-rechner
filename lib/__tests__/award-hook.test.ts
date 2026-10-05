@@ -98,10 +98,15 @@ describe("selectHook", () => {
     expect(h.level).toBe("bund");
   });
 
-  it("ein echter Sieg schlägt ein Podium auf höherer Ebene", () => {
+  it("die höhere Ebene schlägt den besseren Platz (DE > BL > Kreis, 05.10.2026)", () => {
     const h = selectHook([P({ level: "kreis", rank: 1 }), P({ level: "bund", rank: 2 })]);
+    expect(h.kind).toBe("podium");
+    expect(h.level).toBe("bund");
+  });
+
+  it("innerhalb einer Ebene schlägt ein Sieg das Podium", () => {
+    const h = selectHook([P({ level: "land", rank: 2 }), P({ level: "land", rank: 1 })]);
     expect(h.kind).toBe("sieger");
-    expect(h.level).toBe("kreis");
   });
 
   it("greift die Glaubwürdigkeits-Schwelle (kleine Gruppe zählt nicht als Sieg)", () => {

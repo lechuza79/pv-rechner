@@ -140,7 +140,7 @@ export async function GET(req: NextRequest) {
     // eine, und wir hätten 16 davon an info@ oder stadt@ geschickt.
     // Vor beiden stehen die belegten Fachkontakte der Kontaktsuche: Klimaschutz
     // zuerst, dann Presse (lib/kommunen-fachkontakt.ts).
-    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email });
+    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email, rollenQuelle: z.rollen_email_quelle });
     const verwaltungDomain = (ziel.fach && ziel.email ? verwaltungDomainVon(z.fachkontakte, ziel.email) : null) ?? z.verwaltung_domain;
     const belegUrl = ziel.email === z.klima_email ? z.klima_beleg_url : z.presse_kontakt_beleg_url;
     if (!ziel.email) {
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
     // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
     // Eine Presseadresse ist per Bauart ein Funktionspostfach — die Prüfung
     // auf Personennamen greift dort nicht, die Domain-Prüfung schon.
-    const postfach = postfachBefund(ziel.email, name ?? "", verwaltungDomain, { belegteRolle: ziel.fach });
+    const postfach = postfachBefund(ziel.email, name ?? "", verwaltungDomain, { belegteRolle: ziel.belegt });
     if (!postfach.ok) {
       skip(postfach.grund);
       continue;

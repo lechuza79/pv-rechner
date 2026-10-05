@@ -26,6 +26,7 @@ type Zeile = {
   contacted_at: string | null;
   notes: string | null;
   rollen_email: string | null;
+  rollen_email_quelle: string | null;
   presse_email: string | null;
   klima_email: string | null;
   presse_kontakt_email: string | null;
@@ -37,7 +38,7 @@ type Zeile = {
 async function alleZeilen(): Promise<Zeile[]> {
   const out: Zeile[] = [];
   const felder =
-    "region_id,outreach_status,kampagne,contacted_at,notes,rollen_email,presse_email,klima_email,presse_kontakt_email,verwaltung_domain,website,mastr_regions(name,population)";
+    "region_id,outreach_status,kampagne,contacted_at,notes,rollen_email,rollen_email_quelle,presse_email,klima_email,presse_kontakt_email,verwaltung_domain,website,mastr_regions(name,population)";
   for (let o = 0; ; o += 1000) {
     const r = await fetch(`${url}/rest/v1/kommunen_kontakt?select=${felder}&order=region_id`, {
       headers: { ...kopf, Range: `${o}-${o + 999}` },

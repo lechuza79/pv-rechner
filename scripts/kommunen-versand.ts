@@ -51,6 +51,7 @@ import { berlinOffset, heuteInBerlin } from "../lib/zeit";
 import { execFileSync } from "node:child_process";
 import { v2Urteil, type V2Urteil } from "../lib/contact-v2-gate";
 import { RECHECK_MAX_AGE_DAYS, REPO_ROOT, outDir, rulesVersion } from "./lib/contact-v2-config";
+import { handbelegLesen, handbelegNachpruefen } from "./lib/handbelege";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -313,9 +314,22 @@ function sperreNehmen(): () => void {
   };
 }
 
-function kontaktPruefung(briefe: Brief[]): Map<string, V2Urteil> {
+async function kontaktPruefung(briefe: Brief[]): Promise<Map<string, V2Urteil>> {
   const out = outDir();
-  const recipients = briefe.map(b => ({ organizationId: b.region_id, email: b.empfaenger }));
+  const now = new Date();
+  const urteile = new Map<string, V2Urteil>();
+  // Proven by hand or by the follow-up search: recheck the publishing page here.
+  const ueberContactSuche: Brief[] = [];
+  for (const b of briefe) {
+    const beleg = handbelegLesen(b.region_id);
+    if (beleg && beleg.email.toLowerCase() === b.empfaenger.trim().toLowerCase()) {
+      const recheck = await handbelegNachpruefen(b.region_id, beleg);
+      if (!recheck.ok) console.log(`✗ ${b.region_id} ${b.empfaenger} — ${recheck.reason}`);
+      urteile.set(b.region_id, v2Urteil(b.empfaenger, null, { ...recheck }, "", now, RECHECK_MAX_AGE_DAYS, beleg));
+    } else ueberContactSuche.push(b);
+  }
+  if (!ueberContactSuche.length) return urteile;
+  const recipients = ueberContactSuche.map(b => ({ organizationId: b.region_id, email: b.empfaenger }));
   const file = resolve(out, `recheck-batch-${Date.now()}.json`);
   mkdirSync(out, { recursive: true });
   writeFileSync(file, JSON.stringify(recipients));
@@ -326,8 +340,10 @@ function kontaktPruefung(briefe: Brief[]): Map<string, V2Urteil> {
   }
   const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
   const rules = rulesVersion();
-  const now = new Date();
-  return new Map(briefe.map(b => [b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS)]));
+  for (const b of ueberContactSuche) {
+    urteile.set(b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS));
+  }
+  return urteile;
 }
 
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
@@ -344,7 +360,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   // die Adresse steht, wird noch einmal abgerufen. Ersetzt die erste
   // Generation, die verlangte, dass bundesweit KEINE Gemeinde mehr offen ist —
   // ein Zustand, der nie eintrat und den Versand dauerhaft sperrte.
-  const kontakt = kontaktPruefung(p.paket.slice(0, limit));
+  const kontakt = await kontaktPruefung(p.paket.slice(0, limit));
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];
   const dkim = await dkimAktiv(absenderDomain);
@@ -642,6 +658,18 @@ async function main(): Promise<void> {
   if (hat("vorschau")) {
     zeigeListe(paket);
     return zeigeVorschau(paket, zahl("n", 5));
+  }
+
+  // Dry run of the last check before sending: who would the evidence gate turn away?
+  if (hat("pruefen")) {
+    const urteile = await kontaktPruefung(paket.paket.slice(0, limit));
+    const abgelehnt = [...urteile.entries()].filter(([, u]) => !u.ok);
+    for (const [id, u] of abgelehnt) {
+      const b = paket.paket.find((x) => x.region_id === id)!;
+      log(`${b.name} (${id}) ${b.empfaenger} — ${(u as { grund: string }).grund}`, "err");
+    }
+    log(`${urteile.size - abgelehnt.length} von ${urteile.size} bestehen die Prüfung vor dem Versand.`, abgelehnt.length ? "warn" : "ok");
+    return;
   }
 
   const test = arg("test");

@@ -104,6 +104,14 @@ export type Schub = {
    */
   ohneWindgemeinden?: boolean;
   /**
+   * Whole districts (five-digit keys): every open town in them, whatever its
+   * best ranking (operator, 05.10.2026: "wir schicken doch nicht nur erste
+   * Plätze" — the hook is the largest ground, DE > BL > district, and a town
+   * without any ranking gets the neutral letter). A district is never split
+   * across days; days are packed up to `regeln.chargeGroesse`.
+   */
+  kreise?: string[];
+  /**
    * Ab wann dieser Schub versendet werden soll (ISO-Tag).
    *
    * AM SCHUB, NICHT IM TEST. Die Ferienprüfung stand mit einem festen Stichtag
@@ -248,6 +256,18 @@ export const SCHUEBE: Record<string, Schub> = {
    * the general mailbox) — the follow-up search of 30.09.–01.10.2026 filled most
    * of these towns into the specialist columns, which "rollen-postfach" ignores.
    */
+  "kreise-2026-10": {
+    kampagne: "kreise-2026-10",
+    bl: ["05", "12", "15"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 100 },
+    kreise: ["05166", "05334", "05366", "05382", "05554", "05566", "05754", "12060", "12061", "12063", "12064", "12069", "12071", "15081", "15083", "15085", "15087", "15088", "15089", "15090"],
+    abIso: "2026-10-06",
+    grund:
+      "Ganze Kreise statt Einzelgemeinden (Betreiber, 05.10.2026): die 20 Kreise des ersten Lückenschubs " +
+      "in NRW, Brandenburg und Sachsen-Anhalt, jede offene Gemeinde mit ihrem größten Aufhänger. " +
+      "Ferien dort erst ab 17.10. (NRW) bzw. 19.10.2026.",
+  },
   "mail-luecken-okt": {
     kampagne: "mail-luecken-okt",
     bl: ["05", "12", "15"],
@@ -288,6 +308,58 @@ export const SCHUEBE: Record<string, Schub> = {
  *     Großstädten besteht — der Ausbau soll für kleine Gemeinden funktionieren.
  *  4. Charge 1 (50) nimmt die STÄRKSTEN aus beiden Töpfen — die Sieger zuerst.
  */
+/**
+ * Day batches of whole districts. One mailbox gets at most one letter a day:
+ * towns sharing an administration mailbox (Amt, Verbandsgemeinde) move to the
+ * next day — twenty identical letters in one inbox read as a mass mailing.
+ */
+export function waehleGanzeKreise(kandidaten: Kandidat[], proTag: number, postfach: (k: Kandidat) => string): Auswahl {
+  const erreichbar = kandidaten.filter((k) => k.hatKanal);
+  const nachKreis = new Map<string, Kandidat[]>();
+  for (const k of erreichbar) {
+    const kr = k.regionId.slice(0, 5);
+    nachKreis.set(kr, [...(nachKreis.get(kr) ?? []), k]);
+  }
+  // Split each district into rounds: round n holds the n-th town per mailbox.
+  const runden: Kandidat[][] = [];
+  for (const [, liste] of [...nachKreis.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const zaehler = new Map<string, number>();
+    const proRunde = new Map<number, Kandidat[]>();
+    for (const k of liste.sort((a, b) => b.population - a.population)) {
+      const pf = postfach(k);
+      const n = zaehler.get(pf) ?? 0;
+      zaehler.set(pf, n + 1);
+      proRunde.set(n, [...(proRunde.get(n) ?? []), k]);
+    }
+    for (const n of [...proRunde.keys()].sort((a, b) => a - b)) runden.push(proRunde.get(n)!);
+  }
+  // Pack: a district round always lands on one day.
+  const gewaehlt: { regionId: string; charge: number }[] = [];
+  const tage: number[] = [];
+  const tagVonKreis = new Map<string, number>();
+  for (const runde of runden) {
+    const kr = runde[0].regionId.slice(0, 5);
+    const frueheste = (tagVonKreis.get(kr) ?? -1) + 1; // the next round of a district waits a day
+    let tag = frueheste;
+    while ((tage[tag] ?? 0) + runde.length > proTag && (tage[tag] ?? 0) > 0) tag++;
+    tage[tag] = (tage[tag] ?? 0) + runde.length;
+    tagVonKreis.set(kr, tag);
+    for (const k of runde) gewaehlt.push({ regionId: k.regionId, charge: tag + 1 });
+  }
+  return {
+    gewaehlt,
+    bericht: {
+      poolGesamt: kandidaten.length,
+      ohneKanal: kandidaten.length - erreichbar.length,
+      verbundGeschwister: erreichbar.length - runden.filter((r, i) => runden.findIndex((x) => x[0].regionId.slice(0, 5) === r[0].regionId.slice(0, 5)) === i).reduce((a, r) => a + r.length, 0),
+      kleinGewaehlt: 0,
+      grossGewaehlt: 0,
+      kleinFehlend: 0,
+      grossFehlend: 0,
+    },
+  };
+}
+
 export function waehleTestballon(kandidaten: Kandidat[], regeln = TESTBALLON_REGELN): Auswahl {
   const poolGesamt = kandidaten.length;
   const erreichbar = kandidaten.filter((k) => k.hatKanal);

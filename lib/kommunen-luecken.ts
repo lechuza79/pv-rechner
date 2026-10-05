@@ -28,6 +28,7 @@ export type LueckenZeile = {
   klima_email: string | null;
   presse_kontakt_email: string | null;
   verwaltung_domain: string | null;
+  rollen_email_quelle?: string | null;
 };
 
 export type LueckenUmfeld = {
@@ -78,9 +79,10 @@ export function lueckeVon(z: LueckenZeile, u: LueckenUmfeld): Luecke | null {
     presseEmail: z.presse_email,
     klimaEmail: z.klima_email,
     presseKontaktEmail: z.presse_kontakt_email,
+    rollenQuelle: z.rollen_email_quelle,
   });
   if (!ziel.email) return { grund: "keine-adresse", detail: stand ?? "keine Adresse gefunden" };
-  const befund = postfachBefund(ziel.email, z.name, z.verwaltung_domain, { belegteRolle: ziel.fach });
+  const befund = postfachBefund(ziel.email, z.name, z.verwaltung_domain, { belegteRolle: ziel.belegt });
   if (!befund.ok) return { grund: "keine-adresse", detail: `${ziel.email}: ${befund.grund}` };
 
   if (u.hookKind !== "sieger") return { grund: "kein-aufhaenger", detail: u.hookKind ?? "kein Rang" };

@@ -25,6 +25,15 @@ export type V2Recheck = {
   reason: string | null;
 };
 
+/**
+ * An address proven by hand or by the follow-up search, with the page that
+ * publishes it. Those never enter the contact search's own selection, so
+ * without this the send refused every address found after it (measured
+ * 05.10.2026: all gaps filled since 01.10. would have been turned away at the
+ * last step). The fresh recheck of the page still has to pass.
+ */
+export type Handbeleg = { email: string; url: string; quelle: string; rolle?: string };
+
 export type V2Urteil = { ok: true; belegteRolle: boolean } | { ok: false; grund: string };
 
 export function v2Urteil(
@@ -34,18 +43,30 @@ export function v2Urteil(
   rules: string,
   now: Date,
   maxAgeDays: number,
+  handbeleg: Handbeleg | null = null,
 ): V2Urteil {
   const e = email.trim().toLowerCase();
+  if (handbeleg && handbeleg.email.trim().toLowerCase() === e) {
+    const r = recheckUrteil(e, recheck, now, maxAgeDays);
+    if (!r.ok) return r;
+    return { ok: true, belegteRolle: true };
+  }
   if (!result) return { ok: false, grund: "kein Ergebnis der Kontaktsuche" };
   if (result.rules !== rules) return { ok: false, grund: "Ergebnis stammt aus älteren Regeln — Kontaktsuche neu auswerten" };
   if (result.verdict !== "better" && result.verdict !== "equivalent") {
     return { ok: false, grund: `Kontaktvergleich ${result.verdict === "worse" ? "zeigt einen verlorenen Kontakt" : "ist ungeklärt"}` };
   }
   if (!result.selected.map(s => s.toLowerCase()).includes(e)) return { ok: false, grund: "Adresse gehört nicht zur geprüften Auswahl" };
+  const r = recheckUrteil(e, recheck, now, maxAgeDays);
+  if (!r.ok) return r;
+  const belegteRolle = result.proofs.some(p => p.email.toLowerCase() === e && p.channels.length > 0);
+  return { ok: true, belegteRolle };
+}
+
+function recheckUrteil(e: string, recheck: V2Recheck | null, now: Date, maxAgeDays: number): V2Urteil {
   if (!recheck || recheck.email.toLowerCase() !== e) return { ok: false, grund: "keine Nachprüfung der Adresse vor diesem Versand" };
   const age = (now.getTime() - Date.parse(recheck.checkedAt)) / 86_400_000;
   if (!(age >= 0 && age <= maxAgeDays)) return { ok: false, grund: `Nachprüfung älter als ${maxAgeDays} Tage` };
   if (!recheck.ok) return { ok: false, grund: `Adresse steht nicht mehr auf der Seite (${recheck.reason ?? "unbekannt"})` };
-  const belegteRolle = result.proofs.some(p => p.email.toLowerCase() === e && p.channels.length > 0);
-  return { ok: true, belegteRolle };
+  return { ok: true, belegteRolle: false };
 }

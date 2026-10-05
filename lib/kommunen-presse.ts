@@ -182,17 +182,22 @@ export function empfaengerFuerBrief(o: {
   /** Belegte Fachkontakte der Kontaktsuche, siehe lib/kommunen-fachkontakt.ts. */
   klimaEmail?: string | null;
   presseKontaktEmail?: string | null;
-}): { email: string | null; anPresse: boolean; fach: boolean; rolle: EmpfaengerRolle } {
+  /** Where the general mailbox came from; "handpruefung" means a person read the page. */
+  rollenQuelle?: string | null;
+}): { email: string | null; anPresse: boolean; fach: boolean; rolle: EmpfaengerRolle; belegt: boolean } {
   // Belegte Fachkontakte schlagen jedes Funktionspostfach — sie sind Personen
   // oder Stellen, deren Rolle auf der Seite der Verwaltung steht. Klimaschutz
   // ist der bevorzugte Kontakt (Betreiber, 19.09.2026), Presse der zweite.
   const klima = (o.klimaEmail ?? "").trim();
-  if (klima) return { email: klima, anPresse: false, fach: true, rolle: "klima" };
+  if (klima) return { email: klima, anPresse: false, fach: true, rolle: "klima", belegt: true };
   const presseKontakt = (o.presseKontaktEmail ?? "").trim();
-  if (presseKontakt) return { email: presseKontakt, anPresse: true, fach: true, rolle: "presse-kontakt" };
+  if (presseKontakt) return { email: presseKontakt, anPresse: true, fach: true, rolle: "presse-kontakt", belegt: true };
   const presse = (o.presseEmail ?? "").trim();
-  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true, fach: false, rolle: "presse-postfach" };
-  return { email: o.rollenEmail?.trim() || null, anPresse: false, fach: false, rolle: "allgemein" };
+  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true, fach: false, rolle: "presse-postfach", belegt: false };
+  // A mailbox a person verified on the administration's own page is proven the
+  // way a contact-search find is: its name no longer decides (05.10.2026 —
+  // "organisation@rhinow.de" is the Amt's office, the name check called it a surname).
+  return { email: o.rollenEmail?.trim() || null, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
 }
 
 /**
