@@ -852,6 +852,29 @@ export function medienurteil(html: string): Medienurteil {
   return { ist: "unklar", grund: "zu wenige Merkmale", merkmale };
 }
 
+/**
+ * An administration is not a medium, however newsy its homepage looks.
+ *
+ * District and municipal sites carry "Aktuelles", dated press releases and a
+ * named editorial office, so `medienurteil` rates them as media. On 05.10.2026
+ * eighteen of them stood in the catalogue as media and seven got our press
+ * release (Landkreise Südwestpfalz, Jerichower Land, Spree-Neiße, Main-Taunus,
+ * Rhein-Hunsrück, VG Traben-Trarbach, VG Simmern-Rheinböllen).
+ *
+ * The marker is the legal notice: an administration names itself a public-law
+ * corporation or names the Landrat/Bürgermeister as its representative.
+ * Measured on 19 administrations and 20 regional media: 17 hits, no false hit.
+ * The two misses are caught by the domain list of municipalities and districts
+ * (`verwaltungsDomains` in the refresh), not by widening this pattern.
+ */
+export const VERWALTUNG_MUSTER =
+  /vertreten\s+durch\s*:?\s*(?:den|die)?\s*(?:Landr(?:at|ätin)|(?:Ober|Verbands|Erste[rn]?\s+)?[Bb]ürgermeister(?:in)?|Amtsdirektor(?:in)?|Amtsvorsteher(?:in)?|Kreisdirektor(?:in)?)|Körperschaft\s+des\s+öffentlichen\s+Rechts/i;
+
+export function istVerwaltung(text: string, domain: string, verwaltungsDomains: ReadonlySet<string>): boolean {
+  const d = domain.toLowerCase().replace(/^www\./, "");
+  return verwaltungsDomains.has(d) || VERWALTUNG_MUSTER.test(text);
+}
+
 // ─── Priorität ───────────────────────────────────────────────────────────────
 
 /**

@@ -22,7 +22,7 @@ describe('real press refresh write paths',()=>{
     const contacts = new Map<string, Record<string, unknown>>([['name:anna',{schluessel:'name:anna',mail:'anna@ort.de',stand:'vorgemerkt',notiz:'keep'}]]);
     const db = {from:()=>({delete:()=>{throw Error('Deletion forbidden');}})};
     const profil = scriptFunction('profil', {
-      makeClient:async()=>db, alleZeilen:async()=>[{domain:'ort.de',paket:1,profil_at:null}],
+      makeClient:async()=>db, alleZeilen:async()=>[{domain:'ort.de',paket:1,profil_at:null}], verwaltungsDomains:async()=>new Set<string>(),
       observedFields, log:()=>{}, pool:async(items:unknown[],_n:number,fn:(x:unknown)=>Promise<void>)=>Promise.all(items.map(fn)),
       holeMedium:async()=>failed?{fehler:'HTTP 503'}:Object.assign([],{incomplete:partial}),
       werteAus:()=>({domain:'ort.de',ist_medium:'medium',kontakte:[{domain:'ort.de',schluessel:'name:anna',name:'Anna',mail:null}],belege:[]}),

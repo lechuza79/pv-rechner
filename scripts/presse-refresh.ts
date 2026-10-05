@@ -55,6 +55,7 @@ import {
   gattungAus,
   reichweiteAus,
   medienurteil,
+  istVerwaltung,
   prioritaet,
   aufhaenger,
   type Rolle,
@@ -444,6 +445,27 @@ interface Seite {
   art: Seitenart | "start";
 }
 
+/**
+ * Websites of every municipality and district we know. A press catalogue
+ * entry on one of these is an administration, never a newsroom.
+ */
+async function verwaltungsDomains(sb: SupabaseLike): Promise<Set<string>> {
+  // Only the website: `verwaltung_domain` can be a mail provider (one
+  // municipality's office uses t-online.de), and t-online.de is a medium.
+  const zeilen = await alleZeilen<{ website: string | null }>(
+    sb,
+    "kommunen_kontakt",
+    "website",
+    (q) => q.order("region_id"),
+  );
+  const out = new Set<string>();
+  for (const z of zeilen) {
+    const d = z.website?.toLowerCase().replace(/^https?:\/\//, "").split("/")[0].replace(/^www\./, "");
+    if (d) out.add(d);
+  }
+  return out;
+}
+
 async function holeText(url: string): Promise<{ html: string; url: string } | null> {
   return (await holeMit(url, UA)) ?? (await holeMit(url, UA_KOMPATIBEL));
 }
@@ -517,7 +539,7 @@ interface Auswertung {
   belege: Record<string, unknown>[];
 }
 
-function werteAus(domain: string, seiten: Seite[]): Auswertung {
+function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlySet<string>): Auswertung {
   // Ohne Startseite trägt die erste erreichbare Seite die Grundangaben. Themen
   // lassen sich dann NICHT messen — und das steht dann auch so im Katalog,
   // statt einer Null, die wie „kein Thema" aussieht.
@@ -540,7 +562,10 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
   const gesamtText = seiten.map((s) => sichtbarerText(s.html)).join("\n");
   const medientyp = medientypAus(gesamtText);
 
-  const urteil = medienurteil(grund.html);
+  // An administration's homepage looks like a newsroom; its legal notice does not.
+  const urteil = istVerwaltung(gesamtText, domain, verwaltungsDomains)
+    ? { ist: "kein-medium" as const, grund: "Verwaltung", merkmale: [] }
+    : medienurteil(grund.html);
 
   // Reichweite NUR von Mediadaten- und Über-uns-Seiten. Auf einer Startseite ist
   // jede große Zahl genauso oft eine Fördersumme aus einer Schlagzeile.
@@ -907,6 +932,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
     return;
   }
   log(`${offen.length} Medien werden gelesen`);
+  const verwaltung = await verwaltungsDomains(sb);
 
   let medienZeilen: Record<string, unknown>[] = [];
   let kontaktZeilen: Record<string, unknown>[] = [];
@@ -961,7 +987,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       log(`${m.domain}: ${res.fehler}`, "err");
       return;
     }
-    const a = werteAus(m.domain, res);
+    const a = werteAus(m.domain, res, verwaltung);
     const partial = !!res.incomplete;
     medienZeilen.push({
       ...observedFields({
@@ -1622,7 +1648,7 @@ async function eichen(domain: string): Promise<void> {
     log(`${domain}: ${res.fehler}`, "err");
     return;
   }
-  const a = werteAus(domain, res);
+  const a = werteAus(domain, res, await verwaltungsDomains(await makeClient()));
   // eslint-disable-next-line no-console
   console.log(
     JSON.stringify(
