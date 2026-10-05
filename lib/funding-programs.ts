@@ -931,7 +931,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     "bundesland": "Bayern",
     "agsCode": "09376161",
     "url": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/",
-    "stand": "September 2026",
+    "stand": "Oktober 2026",
     "status": "aktiv",
     "capped": true,
     "verified": true,
@@ -939,27 +939,79 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "privat"
     ],
     "foerdert": [
-      "pv"
+      "pv",
+      "balkon"
     ],
     "coveredCosts": "Kommunales Klimaschutzförderprogramm",
     "rates": [
       {
         "label": "Neue oder erweiterte PV-Anlage mit neuem Speicher",
-        "value": "700 € pauschal"
+        "value": "700 € pauschal",
+        "nur": [
+          "pv"
+        ]
       },
       {
         "label": "PV-Anlage, Speicher und Wallbox gemeinsam",
-        "value": "800 € pauschal"
+        "value": "800 € pauschal",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "label": "Balkonkraftwerk ab 800 Wp zusammen mit neuem Speicher ab 1.000 Wh",
+        "value": "15 % der Kosten, höchstens 180 €",
+        "nur": [
+          "balkon"
+        ]
       }
     ],
     "conditions": [
       "Vor Bestellung oder Kauf den Antrag stellen und die Bewilligung abwarten",
-      "PV-Anlage oder Erweiterung mindestens 4 kWp und neuer Speicher mindestens 4 kWh",
-      "Für volljährige Privatpersonen mit Hauptwohnsitz in Schwandorf und Eigentümergemeinschaften mit dort ansässiger Vertretung",
-      "Für Wohngebäude und zugehörige Nebenanlagen im Stadtgebiet",
-      "Innerhalb von zwölf Monaten umsetzen",
+      {
+        "text": "PV-Anlage oder Erweiterung mindestens 4 kWp und neuer Speicher mindestens 4 kWh",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Für volljährige Privatpersonen mit Hauptwohnsitz in Schwandorf und Eigentümergemeinschaften mit dort ansässiger Vertretung",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Für Wohngebäude und zugehörige Nebenanlagen im Stadtgebiet",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Innerhalb von zwölf Monaten umsetzen",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Gefördert wird nur der gemeinsame Neukauf von Balkonkraftwerk (ab 800 Wp) und Speicher (ab 1.000 Wh); Balkonkraftwerk oder Speicher allein, Nachrüstung, Gebrauchtkauf, gemietete oder geleaste Anlagen und Inselanlagen sind ausgeschlossen",
+        "nur": [
+          "balkon"
+        ]
+      },
+      {
+        "text": "Für natürliche Personen und örtliche eingetragene Vereine mit Hauptwohnsitz in Schwandorf, Eigentümer wie Mieter; Anlage im Stadtgebiet und im Marktstammdatenregister angemeldet",
+        "nur": [
+          "balkon"
+        ]
+      },
+      {
+        "text": "Innerhalb von sechs Monaten umsetzen; Balkon-Fördertopf 10.000 € je Haushaltsjahr; laut Stadt seit 1. Oktober 2026 im Programm",
+        "nur": [
+          "balkon"
+        ]
+      },
       "Mindestens fünf Jahre betreiben",
-      "Freiwilliger Zuschuss im Rahmen des Jahresbudgets"
+      "Freiwilliger Zuschuss im Rahmen des Jahresbudgets; Richtlinie gilt bis 31.12.2027"
     ],
     "combinableWith": [
       "bund-nullsteuer",
