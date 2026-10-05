@@ -43,6 +43,10 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Architektur-Mindset:** Das Projekt startete als rein clientseitige App. Die Richtung ist klar: gespeicherte Berechnungen, Accounts, Dashboards, Community sind denkbar. Architekturentscheidungen sollen diese Evolution nicht verbauen — aber auch nichts vorbauen, was noch nicht gebraucht wird. Beispiel: Berechnung als Pure Function, nicht als fest verdrahtete UI-Logik.
 
+## Neue Orte für die Kommunen-Stage
+
+**Neue Orte vor einem Gemeinde-Aussand:** Einstieg ist [`docs/landschaft-neuer-ort-workflow.md`](docs/landschaft-neuer-ort-workflow.md), ausführbarer Plan/Serverlauf/Prüfung `scripts/stage-workflow.py`. Bestehenden Hetzner-Bestand und zentrale Stage verwenden. Bundesweit vorbereitete Registerinventare sind keine fertigen Szenen; unterstützte Länderadapter und offene Fälle stehen im Runbook. Wetterfreischaltung, Park-Metadaten, Quellenprüfung, Browserabnahme und öffentliche Linkprüfung gehören zum Abschluss. Keine individuellen Szenenkopien, keine stillen Datenersatzwerte, keine Veröffentlichung allein wegen eines abgeschlossenen Datenlaufs.
+
 ## Projektüberblick
 
 "Solar Check" (solar-check.io) ist ein kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Nutzer beantworten 5 Fragen und bekommen sofort ein Ergebnis mit Amortisationschart und Szenariovergleich. Alle Berechnungsannahmen sind im Ergebnis transparent editierbar.
