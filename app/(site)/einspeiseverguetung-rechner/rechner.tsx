@@ -1,9 +1,11 @@
 "use client";
+import "../../../components/calculator/result-tokens.css";
+import "../../../components/calculator/input-design.css";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import InlineEdit from "../../../components/InlineEdit";
-import FlowNav, { flowSelect } from "../../../components/FlowNav";
+import FlowNav, { FlowFooter, flowSelect } from "../../../components/FlowNav";
 import OptionCard from "../../../components/OptionCard";
 import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
@@ -270,7 +272,7 @@ export default function EinspeiseRechner() {
       : `Inbetriebnahme ${ibMonat !== null ? MONATE[ibMonat - 1] : ""} ${ibJahr ?? ""}`;
 
   return (
-    <div>
+    <div className={isResult ? "sc-feed-in-flow wp-result-page" : "sc-feed-in-flow wp-input-page"} data-calculator-state={isResult ? "result" : "input"}>
       {/* ── Fortschritt ── */}
       {!isResult && (
         <div style={{ display: "flex", gap: 6, marginBottom: 22 }}>
@@ -301,7 +303,7 @@ export default function EinspeiseRechner() {
             />
           </div>
           <div style={{ marginTop: space.lg }}>
-            <FlowNav weiterAktiv={anlage !== null} onWeiter={next} zurueckSichtbar={false} onZurueck={back} onInaktivKlick={() => setOptionsNudge(true)} />
+            <FlowFooter><FlowNav weiterAktiv={anlage !== null} onWeiter={next} zurueckSichtbar={false} onZurueck={back} onInaktivKlick={() => setOptionsNudge(true)} /></FlowFooter>
           </div>
         </div>
       )}
@@ -345,13 +347,13 @@ export default function EinspeiseRechner() {
               Das Datum liegt in der Zukunft — gerechnet wird mit den aktuellen Sätzen für Neuanlagen.
             </p>
           )}
-          <FlowNav
+          <FlowFooter><FlowNav
             weiterAktiv={datumGesetzt}
             onWeiter={next}
             onZurueck={back}
             inaktivHinweis="Bitte Monat und Jahr wählen."
             onInaktivKlick={() => setOptionsNudge(true)}
-          />
+          /></FlowFooter>
         </div>
       )}
 
@@ -381,12 +383,12 @@ export default function EinspeiseRechner() {
               style={{ width: 160, padding: "10px 12px", borderRadius: v("--radius-md"), border: `1px solid ${customKwp ? v("--color-accent") : v("--color-border")}`, background: v("--color-bg-muted"), fontSize: v("--font-size-body"), fontFamily: v("--font-text"), color: v("--color-text-primary") }}
             />
           </div>
-          <FlowNav
+          <FlowFooter><FlowNav
             weiterAktiv={customKwp !== "" ? customKwpGueltig() : kwp !== null}
             onWeiter={() => { if (customKwp === "" || commitCustom()) next(); }}
             onZurueck={back}
             onInaktivKlick={() => setOptionsNudge(true)}
-          />
+          /></FlowFooter>
         </div>
       )}
 
@@ -409,7 +411,7 @@ export default function EinspeiseRechner() {
               sub="Alles geht ins Netz — z. B. Scheunendach ohne Verbrauch"
             />
           </div>
-          <FlowNav weiterAktiv={mode !== null} onWeiter={next} onZurueck={back} onInaktivKlick={() => setOptionsNudge(true)} />
+          <FlowFooter><FlowNav weiterAktiv={mode !== null} onWeiter={next} onZurueck={back} onInaktivKlick={() => setOptionsNudge(true)} /></FlowFooter>
         </div>
       )}
 
@@ -482,7 +484,7 @@ export default function EinspeiseRechner() {
             Daraus schätzen wir den Eigenverbrauch — was du selbst verbrauchst, wird nicht
             eingespeist und taucht deshalb nicht in der Vergütung auf.
           </p>
-          <FlowNav weiterAktiv={(verbrauchMode ? oVerbrauch !== null : personenIdx !== null) && speicherKwh !== null} onWeiter={next} onZurueck={back} weiterLabel="Ergebnis anzeigen" inaktivHinweis={verbrauchMode ? "Bitte Verbrauch eintragen und Speicher wählen." : "Bitte Personen und Speicher wählen."} onInaktivKlick={() => setOptionsNudge(true)} />
+          <FlowFooter><FlowNav weiterAktiv={(verbrauchMode ? oVerbrauch !== null : personenIdx !== null) && speicherKwh !== null} onWeiter={next} onZurueck={back} weiterLabel="Ergebnis anzeigen" inaktivHinweis={verbrauchMode ? "Bitte Verbrauch eintragen und Speicher wählen." : "Bitte Personen und Speicher wählen."} onInaktivKlick={() => setOptionsNudge(true)} /></FlowFooter>
         </div>
       )}
 

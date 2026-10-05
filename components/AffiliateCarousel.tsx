@@ -6,7 +6,18 @@ import { iconSizes, space } from '../lib/theme';
 
 /** One product list, driven by Embla; optionally becomes a desktop sidebar. */
 export default function AffiliateCarousel({ children, label, desktopSidebar = false, desktopSlides, previousLabel = "Vorherige Angebote" }: { children: ReactNode; label: string; desktopSidebar?: boolean; desktopSlides?: number; previousLabel?: string }) {
-  const [ref, api] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', breakpoints: desktopSidebar ? { '(min-width: 1440px)': { active: false } } : {} });
+  const [sidebarActive, setSidebarActive] = useState(false);
+  const [ref, api] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', active: !sidebarActive });
+  useEffect(() => {
+    if (!api || !desktopSidebar) return;
+    const shell = api.rootNode().closest<HTMLElement>('.sc-calculator-content[data-calculator-offers="true"]');
+    if (!shell) return;
+    const sync = () => setSidebarActive(shell.clientWidth >= 1188);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(shell);
+    return () => observer.disconnect();
+  }, [api, desktopSidebar]);
   const [bounds, setBounds] = useState({ prev: false, next: false });
   useEffect(() => {
     if (!api) return;

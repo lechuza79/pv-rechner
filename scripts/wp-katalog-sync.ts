@@ -13,6 +13,9 @@
 // Händlerseite stillschweigend eine alte Datei liefern — oder gar keine, und
 // das fiele erst auf, wenn jemand die Preise nachrechnet.
 
+import { merchantTimestamp } from "../lib/product-catalog";
+import { pipeline } from "node:stream/promises";
+import { Writable } from "node:stream";
 import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
 import { existsSync, readFileSync } from "node:fs";
@@ -40,7 +43,7 @@ ladeUmgebung();
 
 
 const HAENDLER = "Heizungsdiscount24 DE";
-const SCHREIB_BLOCK = 500;
+
 
 const nurMessen = process.argv.includes("--dry");
 
@@ -58,7 +61,7 @@ function feedListeUrl(): string {
 
 /** Sucht in der Feed-Liste den Datenstrom des Händlers. */
 async function feedAdresse(): Promise<{ url: string; produkte: number; stand: string }> {
-  const antwort = await fetch(feedListeUrl());
+  const antwort = await fetch(feedListeUrl(), { signal: AbortSignal.timeout(60_000) });
   if (!antwort.ok) throw new Error(`Feed-Liste nicht abrufbar: HTTP ${antwort.status}`);
 
   const text = await antwort.text();
@@ -119,30 +122,26 @@ const HERKUNFT_SPALTE = /(land|origin|herkunft|country|manufactur)/i;
 
 /** Lädt den Datenstrom und filtert die Geräte heraus. */
 async function geraeteLaden(url: string): Promise<WpGeraet[]> {
-  const antwort = await fetch(url);
+  const antwort = await fetch(url, { signal: AbortSignal.timeout(120_000) });
   if (!antwort.ok || !antwort.body) throw new Error(`Datenstrom nicht abrufbar: HTTP ${antwort.status}`);
 
   const geraete: WpGeraet[] = [];
   let gesehen = 0;
   const herkunftSpalten = new Set<string>();
 
-  await new Promise<void>((fertig, fehler) => {
-    Readable.fromWeb(antwort.body as never)
-      .pipe(createGunzip())
-      .pipe(parse({ columns: true, relax_quotes: true, skip_records_with_error: true }))
-      .on("data", (zeile: FeedZeile) => {
+  await pipeline(
+    Readable.fromWeb(antwort.body as never), createGunzip(),
+    parse({ columns: true, relax_quotes: true }),
+    new Writable({ objectMode: true, write(zeile: FeedZeile, _encoding, done) {
+      try {
         gesehen++;
-        if (gesehen === 1) {
-          for (const spalte of Object.keys(zeile)) {
-            if (HERKUNFT_SPALTE.test(spalte)) herkunftSpalten.add(spalte);
-          }
-        }
+        if (gesehen === 1) for (const spalte of Object.keys(zeile)) if (HERKUNFT_SPALTE.test(spalte)) herkunftSpalten.add(spalte);
         const g = geraetAusZeile(zeile);
         if (g) geraete.push(g);
-      })
-      .on("end", () => fertig())
-      .on("error", fehler);
-  });
+        done();
+      } catch (error) { done(error as Error); }
+    } }),
+  );
 
   console.log(`  ${gesehen} Artikel gelesen, ${geraete.length} Geräte erkannt`);
 
@@ -160,7 +159,7 @@ async function geraeteLaden(url: string): Promise<WpGeraet[]> {
   return geraete;
 }
 
-async function schreibe(geraete: WpGeraet[], abgerufenIso: string): Promise<void> {
+async function schreibe(geraete: WpGeraet[], abgerufenIso: string, sourceIso: string): Promise<void> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) throw new Error("Supabase-Zugang fehlt (URL oder Service-Key).");
@@ -185,21 +184,13 @@ async function schreibe(geraete: WpGeraet[], abgerufenIso: string): Promise<void
     abgerufen_am: abgerufenIso,
   }));
 
-  for (let i = 0; i < zeilen.length; i += SCHREIB_BLOCK) {
-    const block = zeilen.slice(i, i + SCHREIB_BLOCK);
-    const { error } = await db.from(WP_KATALOG_TABELLE).upsert(block, { onConflict: "id" });
-    if (error) throw new Error(`Schreiben fehlgeschlagen: ${error.message}`);
-  }
-
-  // Erst jetzt aufräumen, was dieser Lauf nicht mehr gesehen hat. In dieser
-  // Reihenfolge gibt es keinen Moment, in dem die Tabelle leer ist — ein
-  // Seitenaufbau währenddessen sieht den alten oder den neuen Stand, nie nichts.
-  const { error, count } = await db
-    .from(WP_KATALOG_TABELLE)
-    .delete({ count: "exact" })
-    .neq("abgerufen_am", abgerufenIso);
-  if (error) throw new Error(`Aufräumen fehlgeschlagen: ${error.message}`);
-  console.log(`  ${zeilen.length} Geräte geschrieben, ${count ?? 0} nicht mehr angebotene entfernt`);
+  const { data: count, error } = await db.rpc('replace_product_catalog', {
+    p_catalog: 'wp', p_payload: zeilen, p_fetched_at: abgerufenIso, p_source_at: sourceIso,
+  });
+  if (error) throw new Error(`Schreiben fehlgeschlagen: ${error.message}`);
+  const check = await db.from(WP_KATALOG_TABELLE).select('id', { count: 'exact', head: true });
+  if (check.error || count !== zeilen.length || check.count !== count) throw new Error('Schreibprüfung fehlgeschlagen');
+  console.log(`  ${count} Geräte atomar geschrieben; nicht mehr angebotene Einträge ersetzt. Händlerstand ${sourceIso}`);
 }
 
 async function main() {
@@ -209,6 +200,7 @@ async function main() {
   const feed = await feedAdresse();
   console.log(`  Datenstrom ${HAENDLER}: ${feed.produkte} Artikel, Stand ${feed.stand}`);
 
+  const sourceIso = merchantTimestamp(feed.stand);
   const geraete = await geraeteLaden(feed.url);
   if (geraete.length === 0) {
     // Ein leeres Ergebnis ist nie ein gültiger Katalog. Es zu schreiben hieße,
@@ -225,7 +217,7 @@ async function main() {
     console.log("Probelauf beendet.");
     return;
   }
-  await schreibe(geraete, abgerufenIso);
+  await schreibe(geraete, abgerufenIso, sourceIso);
 }
 
 main().catch((e) => {

@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createCache, fetchPublicPower, clampAbsoluteRange, safeCountry } from "../../../../lib/energy-api";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { supabase } from "../../../../lib/supabase-server";
 import { GENERATION_STACK_KEYS, trimIncompleteTail } from "../../../../lib/chart-utils";
+import { ladeLetztenStand, speichereLetztenStand } from "../../../../lib/energy-letzter-stand";
+import { fetchSmardGeneration } from "../../../../lib/smard";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 // In-memory cache (TTL scales with time range)
 const cache = createCache<GenerationResponse>(5 * 60 * 1000);
@@ -20,6 +23,43 @@ interface GenerationResponse {
   license: string;
   country: string;
   resolution: string;
+  /**
+   * Set only when the upstream failed and this is an earlier copy. The points
+   * keep their own timestamps; the flag lets the page say why they are old.
+   */
+  stale?: boolean;
+  /**
+   * Set when Energy-Charts failed and the series comes from SMARD instead.
+   * Travels with a stored copy too, so the credit always names who supplied
+   * the numbers on screen.
+   */
+  fallback?: "smard";
+}
+
+/**
+ * Longest window served from SMARD. Above it the quarter-hour files multiply
+ * (13 carriers × one file per week); 30 days are ~65 small requests, a year
+ * would be ~700. Longer windows fall through to the stored copy.
+ */
+const SMARD_MAX_HOURS = 720;
+
+/**
+ * Upstream failed: serve the newest copy we have, marked as stale. First the
+ * instance's memory, then the durable copy (which survives cold starts — the
+ * memory alone was empty on most instances during the 05.10.2026 outage).
+ */
+async function staleFallback(
+  store: { getStale(key: string): GenerationResponse | null },
+  cacheKey: string,
+  country: string,
+): Promise<NextResponse> {
+  const stale = store.getStale(cacheKey) ?? (await ladeLetztenStand<GenerationResponse>("generation", cacheKey));
+  if (stale && stale.data.length > 0) {
+    return NextResponse.json({ ...stale, stale: true }, {
+      headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+    });
+  }
+  return NextResponse.json({ data: [], source: "error", license: "", country, resolution: "none" }, { status: 502 });
 }
 
 // ─── Downsample: average N consecutive data points into 1 ─────────────────────
@@ -207,22 +247,31 @@ export async function GET(req: NextRequest) {
     // successful requests, so a single second attempt catches them — while a
     // real outage still ends after two tries instead of making a visitor wait
     // out the full backoff chain before the stale fallback below takes over.
-    const rows = await fetchPublicPower(country, startStr, endStr, 15000, 1);
-
-    if (rows.length === 0) {
-      const stale = store.getStale(cacheKey);
-      if (stale) {
-        return NextResponse.json(stale, {
-          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
-        });
-      }
-      return NextResponse.json({ data: [], source: "error", license: "", country, resolution: "none" }, { status: 502 });
+    let data: GenerationDataPoint[] = [];
+    try {
+      const rows = await fetchPublicPower(country, startStr, endStr, 15000, 1);
+      data = rows.map((r) => ({ ts: r.ts, ...r.data }));
+    } catch (e) {
+      console.error("Energy-Charts generation fetch failed:", e instanceof Error ? e.message : e);
     }
 
-    let data: GenerationDataPoint[] = rows.map((r) => ({
-      ts: r.ts,
-      ...r.data,
-    }));
+    // Energy-Charts failed: live data from SMARD (Germany only) before any
+    // stored copy — a fresh series from a second source beats an old one.
+    let fallback: GenerationResponse["fallback"];
+    if (data.length === 0 && country === "de" && rangeHours <= SMARD_MAX_HOURS) {
+      try {
+        // Rolling windows from the clock, not from startStr: that string labels
+        // a UTC time "+01:00" and would shift the SMARD window by an hour.
+        const endMs = isAbsolute ? Date.parse(endStr) : Date.now();
+        const startMs = isAbsolute ? Date.parse(startStr) : endMs - hoursBack * 3600000;
+        data = await fetchSmardGeneration(startMs, endMs, "quarterhour");
+        if (data.length > 0) fallback = "smard";
+      } catch (e) {
+        console.error("SMARD generation fallback failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
+    if (data.length === 0) return staleFallback(store, cacheKey, country);
 
     // Cut the latency tail (newest points where solar/wind aren't reported yet)
     // once, at the source, so every consumer — charts, widgets, period stats —
@@ -251,15 +300,13 @@ export async function GET(req: NextRequest) {
       resolution = "1h";
     }
 
-    const response: GenerationResponse = {
-      data,
-      source: "Fraunhofer ISE / Energy-Charts",
-      license: "CC BY 4.0",
-      country,
-      resolution,
-    };
+    const response: GenerationResponse = fallback === "smard"
+      ? { data, source: DATA_SOURCES.smard.name, license: DATA_SOURCES.smard.license, country, resolution, fallback }
+      : { data, source: "Fraunhofer ISE / Energy-Charts", license: "CC BY 4.0", country, resolution };
 
     store.set(cacheKey, response);
+    // After the response: the copy is for the next outage, not for this visitor.
+    if (data.length > 0) after(() => speichereLetztenStand("generation", cacheKey, response));
 
     const maxAge = isPast ? 2592000 : 300; // 30 days for past periods
     return NextResponse.json(response, {
@@ -267,16 +314,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (e) {
     console.error("Energy generation fetch error:", e);
-    // Return stale cached data if available
-    const stale = store.getStale(cacheKey);
-    if (stale) {
-      return NextResponse.json(stale, {
-        headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
-      });
-    }
-    return NextResponse.json(
-      { data: [], source: "error", license: "", country, resolution: "none" },
-      { status: 502 }
-    );
+    return staleFallback(store, cacheKey, country);
   }
 }

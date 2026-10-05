@@ -1,0 +1,39 @@
+.action {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 24px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 35%, transparent);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: 600 14px/1.25 var(--font-text);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color .22s ease, color .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.action[data-variant="primary"] {
+  background: var(--color-cta);
+  color: var(--color-cta-ink, var(--color-text-on-accent));
+  border-color: transparent;
+  box-shadow: 0 2px 6px rgb(8 32 37 / 14%);
+}
+.action[data-icon-only] { width: 44px; height: 44px; padding: 0; flex: 0 0 44px; }
+.action > svg { width: 18px; height: 18px; flex-shrink: 0; }
+.action:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(.94); }
+.action:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.action[data-active] { background: var(--color-accent-dim); }
+.action:disabled, .action[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) { .action { transition: none; } }
+
+/* Collapse optional labels against the action row, not the surrounding carousel. */
+@container action-row (max-width: 350px) {
+  .action[data-action-button][data-collapse-label] { width: 44px; height: 44px; padding: 0; flex: 0 0 44px; }
+  .action[data-collapse-label] > span { display: none; }
+}

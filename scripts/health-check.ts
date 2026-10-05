@@ -26,6 +26,7 @@
  *   CRON_SECRET            für --alert
  */
 
+import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
 import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
@@ -414,6 +415,97 @@ export function wetterBefund(b: WetterFrische | null, jetzt: Date): string[] {
     );
   }
   return befunde;
+}
+
+/**
+ * Kommen auf der Strommix-Seite Erzeugungsdaten an?
+ *
+ * Am 05.10.2026 lieferte der Datendienst von Energy-Charts stundenlang nur
+ * HTTP 503, und die Seite zeigte drei leere Kästen — während dieser Check
+ * durchgehend grün war: Er prüfte, ob die SEITE lädt, und die lädt auch ohne
+ * Daten. Gemessen wird deshalb die Antwort, aus der die Seite ihre Zahlen
+ * holt. Mit Zufallszahl, damit sie nicht aus dem CDN kommt.
+ */
+export type EnergieBefund = { status: number; punkte: number; stale: boolean; smard?: boolean; letzterPunkt: string | null };
+
+async function messeEnergiedaten(): Promise<EnergieBefund | null> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/energy/generation?hours=24&hc=${Date.now()}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    const body = (await res.json().catch(() => null)) as { data?: { ts: string }[]; stale?: boolean; fallback?: string } | null;
+    const data = Array.isArray(body?.data) ? body!.data! : [];
+    return {
+      status: res.status,
+      punkte: data.length,
+      stale: body?.stale === true,
+      smard: body?.fallback === "smard",
+      letzterPunkt: data.length ? data[data.length - 1].ts : null,
+    };
+  } catch {
+    return null; // nicht nachsehen können ist kein Befund
+  }
+}
+
+/**
+ * Ab diesem Alter des neuesten Punkts ist ein Upstream-Ausfall nicht mehr „die
+ * übliche Störung bei Fraunhofer", sondern ein Grund nachzusehen, ob es an uns
+ * liegt (geänderte Schnittstelle, Sperre, falsche Parameter). Kürzere Ausfälle
+ * fängt der Ersatzstand ab; die stehen nur im Protokoll.
+ */
+export const ENERGIE_MAX_ALTER_STUNDEN = 6;
+
+/**
+ * Urteil über die Energiedaten. `warnungen` = steht im Protokoll (Fraunhofer
+ * gestört, der Ersatzstand greift — wir können daran nichts ändern);
+ * `fuerClaude` = braucht Analyse (kein Ersatzstand, oder seit Stunden nichts
+ * Neues).
+ */
+export function energieBefund(b: EnergieBefund | null, jetzt: Date): { warnungen: string[]; fuerClaude: string[] } {
+  const leer = { warnungen: [] as string[], fuerClaude: [] as string[] };
+  if (!b) return leer;
+  if (b.status !== 200 || b.punkte === 0) {
+    return {
+      warnungen: [],
+      fuerClaude: [
+        `Die Strommix-Daten antworten mit HTTP ${b.status} und ${b.punkte} Punkten — die Seite zeigt leere Kästen. ` +
+          "Weder Energy-Charts noch der gespeicherte Ersatzstand liefern. Zuerst prüfen, ob die Tabelle " +
+          "energy_letzter_stand existiert und gefüllt wird (Einrichtung über die Energie-Setup-Route).",
+      ],
+    };
+  }
+  const alterStunden = b.letzterPunkt ? (jetzt.getTime() - Date.parse(b.letzterPunkt)) / 3600000 : null;
+  const alt = alterStunden !== null && alterStunden > ENERGIE_MAX_ALTER_STUNDEN;
+  if (b.stale) {
+    const satz =
+      `Energy-Charts liefert gerade nicht; die Strommix-Seite zeigt den gespeicherten Stand` +
+      (alterStunden !== null ? ` von vor ${Math.round(alterStunden)} Stunden.` : ".");
+    return alt
+      ? {
+          warnungen: [],
+          fuerClaude: [
+            `${satz} Das dauert länger als ${ENERGIE_MAX_ALTER_STUNDEN} Stunden — nachsehen, ob die Schnittstelle ` +
+              "sich geändert hat oder uns sperrt, statt auf Fraunhofer zu warten.",
+          ],
+        }
+      : { warnungen: [satz], fuerClaude: [] };
+  }
+  if (b.smard && !alt) {
+    // Energy-Charts down, SMARD covers it with live numbers. Nothing for us to
+    // fix — but it belongs in the log, so a long outage stays visible.
+    return { warnungen: ["Energy-Charts liefert gerade nicht; die Strommix-Seite zeigt Live-Zahlen von SMARD."], fuerClaude: [] };
+  }
+  if (alt) {
+    return {
+      warnungen: [],
+      fuerClaude: [
+        `Die Strommix-Daten kommen frisch, aber ihr neuester Punkt ist ${Math.round(alterStunden!)} Stunden alt — ` +
+          "Energy-Charts liefert veraltete Reihen oder unsere Abfrage schneidet zu viel ab.",
+      ],
+    };
+  }
+  return leer;
 }
 
 /** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
@@ -1885,6 +1977,7 @@ export function zeitreserveKnapp(
  *    nicht. Dafür gibt es `eskalationNoetig` weiter oben.
  */
 export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
+  { datei: "product-catalogs.yml", was: "Produktkataloge Wärmepumpen und Balkonkraftwerke" },
   { datei: "foerder-watch.yml", was: "Förder-Seiten-Wächter" },
   { datei: "flows-nightly.yml", was: "Nächtlicher Flow-Läufer" },
   // Fällt dieser Lauf aus, kommt keine Rückmeldung mehr an — und das sieht von
@@ -2357,6 +2450,18 @@ async function main() {
   );
   technical("preview-image", false, ...vorschaubildBefund(vorschau));
   technical("weather-freshness", false, ...wetterBefund(await messeWetterFrische(), new Date()));
+
+  // ── Kommen auf der Strommix-Seite Erzeugungsdaten an? ─────────────────────
+  const energie = await messeEnergiedaten();
+  lines.push(
+    energie === null
+      ? "Strommix-Daten: nicht messbar (Produktion antwortete gar nicht)."
+      : `Strommix-Daten: HTTP ${energie.status}, ${energie.punkte} Punkte${energie.stale ? ", gespeicherter Ersatzstand" : energie.smard ? ", aus SMARD (Energy-Charts gestört)" : ""}` +
+          `${energie.letzterPunkt ? `, neuester Punkt ${energie.letzterPunkt}` : ""}.`,
+  );
+  const energieUrteil = energieBefund(energie, new Date());
+  warnings.push(...energieUrteil.warnungen);
+  technical("energy-data", false, ...energieUrteil.fuerClaude);
   if (!vorschau) { unknown.push("preview-image"); technical("preview-measurement", true, "Vorschaubild-Prüfung nicht erreichbar."); }
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
@@ -2585,6 +2690,24 @@ async function main() {
           `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
       );
     }
+  }
+
+  // Read persisted success dates independently of the importer: detect missed runs too.
+  {
+    const access = supabaseZugang();
+    if (access) {
+      try {
+        const response = await fetch(`${access.url}/rest/v1/${CATALOG_TABLE}?select=id,fetched_at,source_at,item_count`, {
+          headers: { apikey: access.key, Authorization: `Bearer ${access.key}` }, signal: AbortSignal.timeout(10_000),
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const problems = catalogProblems(await response.json() as CatalogStatus[]);
+        for (const problem of problems) technical(`catalog:${problem.split(':')[0]}`, false, problem);
+        if (!problems.length) lines.push('Produktkataloge: vollständig; Abrufe und WP-Händlerstand innerhalb ihrer Fristen.');
+      } catch {
+        technical('catalog:unreachable', false, 'Produktkatalog-Überwachung konnte die gespeicherten Stände nicht lesen.');
+      }
+    } else unknown.push('product-catalogs');
   }
 
   // ── Geplante Läufe, die nicht mehr durchkommen ────────────────────────────

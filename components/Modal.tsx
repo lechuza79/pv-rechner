@@ -61,6 +61,11 @@ const MOBILE_MAX_PX = 640;
  */
 const ModalKontext = createContext<{ scrollt: boolean; header: HTMLDivElement | null } | null>(null);
 
+/** Shared controls detect dialog ownership instead of relying on every caller. */
+export function useInModal(): boolean {
+  return useContext(ModalKontext) !== null;
+}
+
 /** Render contextual controls in the dialog header while retaining local state. */
 export function ModalHeader({ children }: { children: ReactNode }) {
   const context = useContext(ModalKontext);
@@ -72,6 +77,7 @@ export function ModalHeader({ children }: { children: ReactNode }) {
  *  seinem Hintergrund bis an beide Kanten zu reichen. */
 const DIALOG_PAD_X = space.xl;
 const DIALOG_PAD_BOTTOM = space.xl;
+const ModalStickyOwnership = createContext(false);
 
 /**
  * Legt den primären Knopf an den unteren Rand des Dialogs — er bleibt stehen,
@@ -92,7 +98,8 @@ const DIALOG_PAD_BOTTOM = space.xl;
  */
 export function ModalSticky({ children }: { children: ReactNode }) {
   const kontext = useContext(ModalKontext);
-  if (!kontext) return <>{children}</>;
+  const owned = useContext(ModalStickyOwnership);
+  if (!kontext || owned) return <>{children}</>;
   return (
     <div
       style={{
@@ -118,7 +125,7 @@ export function ModalSticky({ children }: { children: ReactNode }) {
         borderTop: kontext.scrollt ? `1px solid ${v("--color-border")}` : "1px solid transparent",
       }}
     >
-      {children}
+      <ModalStickyOwnership.Provider value={true}>{children}</ModalStickyOwnership.Provider>
     </div>
   );
 }
@@ -164,7 +171,7 @@ function useMediaQuery(query: string): boolean {
   );
 }
 
-export default function Modal({
+function LocalModal({
   open,
   onClose,
   title,
@@ -414,7 +421,7 @@ export default function Modal({
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
-        <ModalKontext.Provider value={{ scrollt, header }}>{children}</ModalKontext.Provider>
+        <ModalKontext.Provider value={{ scrollt, header }}><ModalStickyOwnership.Provider value={false}>{children}</ModalStickyOwnership.Provider></ModalKontext.Provider>
       </div>
     </div>,
     document.body,
@@ -457,3 +464,45 @@ const S: Record<string, React.CSSProperties> = {
   // der Seite dahinter, von der der Leser gerade kommt.
   intro: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginBottom: space.xl, lineHeight: 1.5 },
 };
+
+
+const HOST_MODAL_EVENT = "sc:host-modal";
+type HostModalRequest = {token:object;props:ModalProps|null;accepted:boolean};
+
+/** Same-origin embeds delegate dialogs to the host, which owns focus and scroll. */
+export function EmbeddedModalHost() {
+  const [request,setRequest]=useState<HostModalRequest|null>(null);
+  useEffect(()=>{
+    const receive=(event:Event)=>{
+      const detail=(event as CustomEvent<HostModalRequest>).detail;
+      detail.accepted=true;
+      setRequest(current=>detail.props?detail:current?.token===detail.token?null:current);
+    };
+    window.addEventListener(HOST_MODAL_EVENT,receive);
+    return()=>window.removeEventListener(HOST_MODAL_EVENT,receive);
+  },[]);
+  return request?.props?<LocalModal {...request.props}/>:null;
+}
+
+export default function Modal(props:ModalProps) {
+  const token=useRef({});
+  const [local,setLocal]=useState(false);
+  useEffect(()=>{
+    if(!props.open){setLocal(false);return;}
+    let host:Window|null=null;
+    try {
+      if(window.parent!==window&&window.parent.location.origin===window.location.origin)host=window.parent;
+    } catch { /* Third-party embeds keep their own dialog. */ }
+    const detail:HostModalRequest={token:token.current,props,accepted:false};
+    host?.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail}));
+    setLocal(!detail.accepted);
+  },[props.open,props.onClose,props.title,props.ariaLabel,props.intro,props.maxWidth,props.className,props.scheme,props.children]);
+  useEffect(()=>()=>{
+    try { if(window.parent!==window)window.parent.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail:{token:token.current,props:null,accepted:false}})); } catch { /* Cross-origin host. */ }
+  },[]);
+  useEffect(()=>{
+    if(props.open)return;
+    try { if(window.parent!==window)window.parent.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail:{token:token.current,props:null,accepted:false}})); } catch { /* Cross-origin host. */ }
+  },[props.open]);
+  return local?<LocalModal {...props}/>:null;
+}

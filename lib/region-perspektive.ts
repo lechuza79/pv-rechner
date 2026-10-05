@@ -8,7 +8,7 @@ export type RegionGeometry = {
 };
 export type ProjectedRegion = { id: string; name: string; kind?: string; ground: Point[][][]; groundAnchor: Point; groundTrees: Point[]; trees: Point[]; path: string; anchor: Point; bounds: [number, number, number, number] };
 
-function polygons(feature: RegionGeometry): Point[][][] {
+export function polygons(feature: RegionGeometry): Point[][][] {
   return feature.geometry.type === "Polygon"
     ? [feature.geometry.coordinates as Point[][]]
     : feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates as Point[][][] : [];
@@ -75,10 +75,10 @@ function roundRing(ring: Point[]): Point[] {
   return out.length >= 4 ? out : ring.map(rp);
 }
 
-export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
+export function regionProjection(features: RegionGeometry[]) {
   const valid = features.map(feature => ({ feature, polygons: polygons(feature) })).filter(f => f.polygons.length);
   const points = valid.flatMap(f => f.polygons.flat(2));
-  if (!points.length) return [];
+  if (!points.length) throw new Error("Region has no geometry");
   const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
   const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
   const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
@@ -95,6 +95,14 @@ export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
     const [x, y] = raw(p);
     return [500 + (x - (minX + maxX) / 2) * scale, 420 + (y - (minY + maxY) / 2) * scale];
   };
+  const groundPoint = ([x, y]: Point): Point => [(x-cx)*correction*scale, (cy-y)*scale];
+  // Same local metric projection for land, turbine locations and dimensions.
+  return { valid, project, groundPoint, unitsPerMetre: scale / (6371008.8 * Math.PI / 180) };
+}
+
+export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
+  if (!features.some(feature => polygons(feature).length)) return [];
+  const {valid, project, groundPoint} = regionProjection(features);
   return valid.map(({ feature, polygons: shapes }) => {
     const largest = shapes.reduce((a, b) => area(a[0]) > area(b[0]) ? a : b);
     const projected = shapes.flat(2).map(project);
@@ -108,7 +116,6 @@ export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
         }
       }
     }
-    const groundPoint = ([x, y]: Point): Point => [(x-cx)*correction*scale, (cy-y)*scale];
     const ground = shapes.map(poly => poly.map(ring => roundRing(ring.map(groundPoint))));
     const groundLargest = largest.map(ring => ring.map(groundPoint));
     const groundTrees: Point[] = [];

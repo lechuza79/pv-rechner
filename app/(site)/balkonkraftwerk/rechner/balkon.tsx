@@ -4,7 +4,7 @@ import CalculatorContent from "../../../../components/calculator/CalculatorConte
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
 import AffiliateDetails from "../../../../components/AffiliateDetails";
-import FlowNav from "../../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
@@ -461,7 +461,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   return (
     <div data-flow-ready={flowReady} className={isResult ? "wp-calculator-page wp-result-page bkw-result-page" : "wp-calculator-page wp-input-page"} style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <CalculatorTheme />
-      <CalculatorContent>
+      <CalculatorContent state={isResult ? "result" : "input"} withOffers={isResult}>
         <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus
               belongs to the first question, not the title. */}
@@ -538,7 +538,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
             )}
 
             {/* Nav */}
-            <div className="wp-flow-footer">
+            <FlowFooter>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
@@ -548,7 +548,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                 zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </div>
         )}
 
@@ -563,7 +563,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
 
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
-          <div className="wp-ergebnis wp-result-main bkw-result-main">
+          <div className="wp-ergebnis wp-result-main wp-result-layout bkw-result-main">
 
           <ResultOverview id="bkw-ueberblick" saving={r.lifetimeSaving} years={horizonYears}
             scenarioLabel={(SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).resultLabel}

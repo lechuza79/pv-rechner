@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { resolveSlugPath } from "../../lib/atlas";
 import { getRegionAtlasData } from "../../lib/mastr-data";
-import { pageMetadata } from "../../lib/seo";
+import { atlasOgImage, pageMetadata } from "../../lib/seo";
 import { atlasSeitenTitel } from "../../lib/atlas-titel";
 import { atlasLevelReleased, atlasOrtEinzelfreigabe, atlasRobots, ortsseiteIndexierbar } from "../../lib/atlas-index";
 import { verlinkendeGemeinden } from "../../lib/atlas-outreach-freigabe";
@@ -31,6 +31,7 @@ export async function gemeindeMetadata(params: GemeindeParams, { vorschau }: { v
   const anlagen = atlasLevelReleased("gemeinde") || einzeln ? (await getRegionAtlasData(region.region_id)).solar.total_count : 0;
   const meta: Metadata = {
     ...pageMetadata({
+      ogImage: atlasOgImage(region.name),
       title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: ortsseitenPfad(region.region_id, params.bundesland, params.kreis, params.gemeinde),

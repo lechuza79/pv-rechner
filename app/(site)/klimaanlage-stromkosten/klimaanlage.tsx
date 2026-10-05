@@ -8,7 +8,7 @@ import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 import { useState, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
-import FlowNav from "../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import StandNoteView from "../../../components/StandNoteView";
 import { type StandSeite } from "../../../lib/stand-format";
@@ -227,9 +227,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const potentialNet = Math.round(result.runningCost * (1 - potentialCoverage));
 
   return (
-    <div className="wp-calculator-page wp-input-page" style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
+    <div className={isResult ? "wp-calculator-page wp-result-page" : "wp-calculator-page wp-input-page"} style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <CalculatorTheme />
-      <CalculatorContent>
+      <CalculatorContent state={isResult ? "result" : "input"}>
         <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
           {/* In the question steps as small as the PV calculator's head: the focus
               belongs to the first question, not the title. */}
@@ -391,7 +391,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             )}
 
             {/* Nav */}
-            <div className="wp-flow-footer">
+            <FlowFooter>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
@@ -401,7 +401,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </div>
         )}
 

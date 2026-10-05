@@ -1,0 +1,444 @@
+/* Municipal composition. Shared shell, navigation, cards and waitlist styles stay intact. */
+body{background:var(--color-page-canvas);color:var(--color-text-primary)}
+main{container-type:inline-size}
+.sc-waitlist-preview h1{font-size:var(--font-size-h1);text-wrap:balance}
+.sc-waitlist-art .sc-waitlist-visual{max-width:380px}
+.municipal-section{margin:64px 0}
+.municipal-section h2{font-size:var(--font-size-h1);line-height:1.2;letter-spacing:-.025em;max-width:760px;margin:0 0 24px;text-wrap:balance}
+.municipal-section>.eyebrow{font-size:var(--font-size-small);margin-bottom:16px;color:var(--color-text-secondary)}
+.section-intro{max-width:720px;margin-bottom:32px}
+.municipal-tools{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.municipal-tools p{margin-bottom:16px}
+.municipal-tools ul{padding-left:24px;margin:0 0 24px;color:var(--color-text-secondary)}
+.municipal-tools li{margin-bottom:8px}
+.maturity{display:block;border-top:1px solid var(--color-border-muted);padding-top:16px;margin-top:auto;font-size:var(--font-size-small);color:var(--color-text-secondary)}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.fit>ul{list-style:none;padding:0;margin:0}
+.fit li{border-top:1px solid var(--color-border-muted);padding:24px 0}
+.fit strong,.fit span{display:block}
+.fit span{margin-top:8px;color:var(--color-text-secondary)}
+.sc-waitlist-plan.municipal-section>h2{font:500 var(--font-size-small)/1.5 'DM Sans',sans-serif;letter-spacing:.08em;max-width:none}
+.contact-copy p{color:inherit}
+.draft-note{text-align:center;margin:32px 0 0;color:var(--color-text-secondary);font-size:var(--font-size-small)}
+#moeglichkeiten,#mitgestalten{scroll-margin-top:32px}
+@media(max-width:700px){
+ .municipal-tools,.fit{grid-template-columns:1fr}
+ .fit{gap:24px}
+ .municipal-section{margin:48px 0}
+ .sc-waitlist-art{width:min(100%,260px)}
+}
+.municipal-secondary{margin-top:16px}
+.municipal-tool-action{margin-top:auto;padding-top:16px;border-top:1px solid var(--color-border-muted)}
+.municipal-tool{display:flex;flex-direction:column;margin-bottom:0}
+/* Placement only: content and presentation come from the shared renderers. */
+.municipal-tool{min-width:0}
+#municipal-calculators{--sc-nav-base:var(--font-size-body)}
+#municipal-stories{margin:24px 0;min-width:0}
+#municipal-search{margin-bottom:24px}
+
+#municipal-stories .story-strip{width:100%;margin-inline:0;left:auto;transform:none}
+
+.municipal-pilot-terms{max-width:var(--sc-layout-reading);margin:32px auto 0;color:var(--color-text-secondary)}
+
+/* Product-section composition; previews retain their shared renderers. */
+.municipal-products{display:grid;gap:96px;margin-top:64px}
+.municipal-product{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:64px;align-items:start}
+.municipal-product-copy h3{margin-top:24px;font-size:var(--font-size-h2);line-height:1.25}
+.municipal-product-copy ul{padding-left:20px;color:var(--color-text-secondary)}
+.municipal-product-copy li{margin-bottom:12px}
+.municipal-product-preview{min-width:0}
+.municipal-place-picker{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px;color:var(--color-text-primary)}
+.municipal-dashboard-frame{display:block;width:100%;height:720px;border:0;border-radius:var(--radius-md);background:var(--color-bg)}
+@media(max-width:800px){.municipal-product{grid-template-columns:1fr;gap:24px}.municipal-products{gap:64px;margin-top:40px}}
+
+/* Device frame reference: LIAB docs/00-assets/liab-landing-final.html (phone shell). */
+.device-stage{perspective:1400px;padding:24px 12px 40px}
+.device-shell{position:relative;margin:auto;background:linear-gradient(145deg,#28282c,#1a1a1d);box-shadow:0 30px 80px #0005,0 0 0 1px #ffffff20,5px 6px 0 #101114;padding:8px}
+.device-screen{width:100%;height:100%;overflow:hidden;background:var(--color-bg);border-radius:22px}
+.device-phone{width:min(100%,340px);height:660px;border-radius:30px;transform:rotateY(-7deg) rotateX(3deg);padding-top:30px}
+.device-notch{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:72px;height:18px;border-radius:9999px;background:#000;z-index:2}
+.device-tablet{width:100%;aspect-ratio:4/3;border-radius:28px;transform:rotateY(-9deg) rotateX(6deg)}
+.device-tablet .municipal-dashboard-frame{height:100%;border-radius:0}
+.municipal-product-dark{background:var(--atlas-surface);color:var(--atlas-text);padding:64px 40px;border-radius:var(--radius-lg);--color-text-primary:var(--atlas-text);--color-text-secondary:var(--atlas-secondary);--color-accent:var(--atlas-action);--color-border-muted:var(--atlas-border)}
+.municipal-product-dark h3,.municipal-product-dark .municipal-place-picker,.municipal-product-dark a{color:inherit}
+.municipal-product-dark .municipal-product-copy>span{color:var(--color-text-secondary)}
+@media(min-width:801px){.municipal-product:nth-child(even){grid-template-columns:minmax(0,3fr) minmax(0,2fr)}.municipal-product:nth-child(even)>.municipal-product-preview{grid-column:1;grid-row:1}.municipal-product:nth-child(even)>.municipal-product-copy{grid-column:2;grid-row:1}}
+@media(max-width:800px){.municipal-product-dark{padding:32px 20px}.device-stage{padding:16px 0 32px}.device-tablet{transform:rotateY(-5deg) rotateX(4deg)}.device-phone{transform:none}.municipal-place-picker{gap:8px;font-size:var(--font-size-small)}}
+
+/* Monochrome hardware and a shared, restrained hover treatment. */
+.device-stage{--device-tone:var(--color-page-canvas);--device-edge:color-mix(in srgb,var(--device-tone),#000 24%)}
+.device-shell{background:var(--device-tone);box-shadow:0 24px 56px color-mix(in srgb,var(--device-tone),#000 24%),inset 0 0 0 1px color-mix(in srgb,var(--device-tone),#fff 18%),5px 6px 0 var(--device-edge);transition:transform 450ms cubic-bezier(.2,.8,.2,1),box-shadow 450ms}
+.device-notch{background:var(--device-edge)}
+.municipal-product-dark .device-stage{--device-tone:var(--atlas-card);padding-bottom:12px}
+.device-tablet .device-screen{background:var(--atlas-surface);position:relative}
+.device-tablet .municipal-dashboard-frame{max-width:none;background:transparent;color-scheme:normal}
+.municipal-product-dark{position:relative;isolation:isolate;background:none;border-radius:0;padding:64px 0 0}
+.municipal-product-dark::before{content:"";position:absolute;inset:0 0 90px;z-index:-1;background:var(--atlas-card);box-shadow:0 0 0 100vmax var(--atlas-card);clip-path:inset(0 -100vmax)}
+.municipal-dashboard-link{margin:0 0 12px;font-size:var(--font-size-small)}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .device-phone{transform:translateY(var(--device-lift,0px)) rotateY(var(--device-y,-7deg)) rotateX(var(--device-x,3deg))}
+ .device-tablet{transform:translateY(var(--device-lift,0px)) rotateY(var(--device-y,-9deg)) rotateX(var(--device-x,6deg))}
+}
+@media(max-width:800px){.municipal-product-dark{padding:40px 0 0}.municipal-product-dark::before{bottom:48px}.device-stage-tablet{padding-inline:8px}}
+@media(prefers-reduced-motion:reduce){.device-shell{transition:none}}
+
+/* Keep content away from the hardware rim, using the original monitor canvas. */
+.device-tablet .device-screen{padding:0 clamp(26px,4vw,40px);box-sizing:border-box}
+.dashboard-viewport{position:relative;width:100%;height:100%;overflow:hidden;border-radius:0}
+.device-tablet iframe{display:block;border:0;pointer-events:auto}
+.device-phone .device-screen{padding:8px;box-sizing:border-box;background:var(--atlas-surface)}
+
+.municipal-place-link{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-md);background:color-mix(in srgb,var(--atlas-text) 7%,transparent);text-decoration:none;vertical-align:middle}
+.municipal-place-link svg{color:var(--atlas-action)}
+.municipal-place-link:hover{background:color-mix(in srgb,var(--atlas-text) 13%,transparent)}
+.device-stage-tablet{position:relative;isolation:isolate}
+
+/* The shared search and municipality link form one compact control group. */
+.municipal-place-picker{justify-content:flex-start;flex-wrap:wrap;gap:8px}
+.municipal-place-controls{display:flex;align-items:center;gap:4px}
+.municipal-place-link{border-radius:6px}
+.municipal-place-link svg{color:var(--atlas-secondary)}
+.municipal-place-controls>div{border-radius:6px;background:color-mix(in srgb,var(--atlas-text) 7%,transparent);padding:4px}
+.municipal-dashboard-section::before{top:150px;bottom:0}
+.municipal-dashboard-section>.municipal-product-copy{padding-top:150px}
+.municipal-dashboard-section .municipal-place-picker{color:var(--atlas-text)}
+.municipal-dashboard-section .municipal-place-picker>span{color:var(--color-page-ink,#18323e)}
+.municipal-dashboard-section .municipal-place-controls{background:var(--atlas-card);border-radius:6px}
+.municipal-standalone-widget{margin:48px 12px 0;padding:24px 0 48px;min-width:0}
+.municipal-standalone-widget h3{font-size:var(--font-size-h3);margin-bottom:24px}
+html{overflow-x:clip}
+@media(max-width:800px){.municipal-dashboard-section>.municipal-product-preview{grid-row:1}.municipal-dashboard-section>.municipal-product-copy{padding-top:0;padding-bottom:40px}.municipal-dashboard-section::before{top:140px}.municipal-standalone-widget{margin-top:24px;padding-bottom:0}}
+
+.municipal-standalone-widget{max-width:420px;margin-inline:auto}
+
+.municipal-dashboard-section::before{background:linear-gradient(to bottom,var(--atlas-card),var(--atlas-surface) 85%);box-shadow:none;left:calc((100% - 100vw)/2);right:calc((100% - 100vw)/2)}
+.municipal-standalone-widget{display:grid;gap:56px;max-width:560px}
+.municipal-map-widget{min-width:0}
+.municipal-map-widget h3{font-size:var(--font-size-h3)}
+.municipal-map-stage{position:relative;height:420px}
+.municipal-map-widget>p{font-size:var(--font-size-small);color:var(--atlas-secondary)}
+
+/* The gallery spans the product section, independent of the tablet column. */
+#municipal-widget-gallery{grid-column:1/-1;min-width:0;padding-bottom:48px}
+.municipal-standalone-widget{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:32px;max-width:none;margin:0;padding:0}
+.municipal-standalone-widget>*{min-width:0}
+.municipal-map-widget [data-map-hero-stage]{position:relative}
+@media(max-width:1000px){.municipal-standalone-widget{grid-template-columns:repeat(2,minmax(0,1fr))}.municipal-map-widget{grid-column:1/-1;grid-row:2}}
+@media(max-width:600px){.municipal-standalone-widget{grid-template-columns:1fr;gap:40px}.municipal-map-widget{grid-column:auto;grid-row:auto}}
+
+/* Homepage markup and artwork, adapted only through the light host palette. */
+.homepage-tool-cards[data-theme=light]{--lab-ink:var(--color-text-primary);color:var(--color-text-primary)}
+
+.homepage-tool-cards .hs-five-tools .hs-tool{grid-column:auto;background:var(--color-bg-raised,var(--color-page-canvas));border:1px solid var(--color-border-muted);border-radius:var(--radius-md);padding:24px;color:var(--color-text-primary)}
+.homepage-tool-cards .hs-tool p,.homepage-tool-cards .hs-tool-top{color:var(--color-text-secondary)}
+
+.homepage-tool-cards .hs-tool-actions a{color:var(--color-text-primary);border-color:var(--color-border-muted)}
+#mitgestalten .hs-person-section{background:transparent!important}
+.municipal-story-demo{position:relative;width:min(100%,340px);margin:auto}
+.municipal-story-demo .municipal-story-flag[data-edge]{bottom:auto;left:auto;transform:none;position:absolute;z-index:3;max-width:210px;white-space:normal;font-size:14px;line-height:1.4;pointer-events:none}
+.municipal-story-demo .municipal-story-flag-visual[data-edge]{top:110px;right:calc(100% - 30px)}
+.municipal-story-demo .municipal-story-flag-copy[data-edge]{top:530px;right:calc(100% - 30px)}
+@media(max-width:800px){.municipal-story-demo .municipal-story-flag[data-edge]{bottom:auto;left:auto;transform:none;font-size:12px;max-width:165px;right:auto;left:-12px}.municipal-story-demo .municipal-story-flag-visual[data-edge]{top:88px}.municipal-story-demo .municipal-story-flag-copy[data-edge]{top:545px}}
+
+/* Keep the homepage card grid and action rows intact; only adapt the palette. */
+.homepage-tool-cards{--hs-muted:var(--color-text-secondary);--hs-line:var(--color-border-muted)}
+.homepage-tool-cards .hs-tool{--solar-circle:var(--color-bg-subtle,#dce5db)}
+.homepage-tool-cards .hs-tool-actions{display:grid}
+.municipal-place-controls>.municipal-place-link,.municipal-place-controls>div{height:40px;box-sizing:border-box}
+.municipal-place-controls>div{display:flex;align-items:center;padding:0 4px}
+
+/* The shared widget group owns its responsive grid and card sizing. */
+#municipal-widget-gallery>.atlas-section.atlas-wrap{padding:0;max-width:none;width:100%}
+
+/* Page composition: open widget section and a floating place tile. */
+#municipal-widget-gallery #widget-settings{background:transparent;border-radius:0;border-top:1px solid var(--atlas-border);padding:40px 0 0;color:var(--atlas-text)}
+#widget-settings>p{max-width:760px;color:var(--color-text-secondary);margin:0 0 32px}
+#municipal-dashboard{position:relative;padding-top:40px}
+#municipal-dashboard>.municipal-place-picker{position:absolute;top:92px;left:28px;z-index:5;transform:none;width:fit-content;max-width:100%;box-sizing:border-box;padding:10px 14px;background:#fff;color:var(--color-page-ink,#18323e);border-radius:var(--radius-md);box-shadow:0 10px 30px #0002;margin:0;--color-bg:#fff;--color-bg-muted:var(--color-page-canvas);--color-text-primary:var(--color-page-ink,#18323e);--color-text-secondary:var(--color-page-ink,#18323e);--color-text-muted:var(--color-page-ink,#18323e);--color-accent:var(--color-page-ink,#18323e);--color-border:var(--atlas-border)}
+#municipal-dashboard>.municipal-place-picker>span{color:inherit}
+#municipal-dashboard .municipal-place-controls{background:transparent}
+#municipal-dashboard .municipal-place-link,#municipal-dashboard .municipal-place-controls>div{background:color-mix(in srgb,var(--color-page-ink,#18323e) 6%,transparent)}
+#municipal-dashboard .municipal-place-link svg{color:inherit;opacity:.65}
+.municipal-dashboard-section::before{top:240px}
+.municipal-dashboard-section .device-stage-tablet{padding-inline:0}
+@media(min-width:801px){.municipal-dashboard-section{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:40px}.municipal-dashboard-section>.municipal-product-copy{padding-top:240px}}
+@media(max-width:800px){.municipal-dashboard-section::before{top:240px}}
+.municipal-calculator-variant{margin-top:32px}.municipal-calculator-variant>summary{cursor:pointer;color:var(--color-text-secondary)}
+.calculator-showcase-nav{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.calculator-showcase-viewport{overflow:hidden}
+.calculator-showcase-track{display:flex;align-items:flex-start}
+.calculator-showcase-slide{flex:0 0 100%;min-width:0;box-sizing:border-box;padding:0 2px}
+.calculator-showcase-panel{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:24px;max-width:760px;margin:auto}
+.calculator-showcase-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.calculator-showcase-slide>h3,.calculator-showcase-slide>p{max-width:760px;margin:0 auto 20px}
+.calculator-showcase-panel h4{margin:0 0 24px}.calculator-showcase-note{font-size:var(--font-size-small);color:var(--color-text-secondary);margin-top:24px}
+.municipal-products{grid-template-columns:minmax(0,1fr)}
+.municipal-product,#municipal-calculator-demo{min-width:0}
+.calculator-showcase-nav>*{min-width:0;max-width:100%}
+
+/* The calculator uses the same interactive device shell as the story preview. */
+.calculator-device-preview .device-stage{--device-tone:var(--color-page-canvas)}
+.calculator-phone{width:min(100%,400px);height:740px}
+.calculator-phone.device-phone .device-screen{background:var(--color-page-canvas);padding:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.calculator-phone-content{padding:24px 16px 32px;min-width:0}
+.calculator-phone .calculator-showcase-nav{gap:8px;margin-bottom:24px}
+.calculator-phone .calculator-showcase-nav>*{width:100%}
+.calculator-phone .calculator-showcase-slide>h3{font-size:24px;line-height:1.2}
+.calculator-phone .calculator-showcase-slide>p{font-size:16px;line-height:1.5}
+.calculator-phone .calculator-showcase-panel{padding:16px}
+.calculator-phone .calculator-showcase-stats{grid-template-columns:1fr;gap:12px}
+@media(max-width:480px){.calculator-phone{height:700px}.calculator-phone-content{padding-inline:12px}}
+
+.calculator-live-frame{display:block;width:100%;height:100%;border:0;background:var(--color-page-canvas)}
+.municipal-calculator-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:64px}
+.municipal-calculator-section>#municipal-calculators{grid-column:1;grid-row:1}
+.municipal-calculator-section>.municipal-product-copy{grid-column:2;grid-row:1}
+@media(max-width:700px){.municipal-calculator-section{grid-template-columns:minmax(0,1fr);gap:32px}.municipal-calculator-section>.municipal-product-copy{grid-column:1;grid-row:2}}
+/* Smaller hardware; preserve a real 390 px calculator viewport inside it. */
+.calculator-phone{width:min(100%,280px);height:550px;transform:rotateZ(-7deg) rotateY(-12deg) rotateX(9deg)}
+.calculator-phone.device-phone .device-screen{overflow:hidden}
+.calculator-live-frame{max-width:none;pointer-events:none}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){.calculator-phone{transform:translateY(var(--device-lift,0px)) rotateZ(-7deg) rotateY(var(--device-y,-12deg)) rotateX(var(--device-x,9deg))}}
+
+.calculator-device-preview .device-stage{perspective:900px}
+.calculator-device-preview .calculator-phone{transform:translateY(var(--device-lift,0px)) rotateZ(-7deg) rotateY(-28deg) rotateX(24deg)}
+.calculator-demo-caption{text-align:center;color:var(--color-text-secondary);font-size:var(--font-size-small);margin:12px 0 0}
+
+/* Editorial callouts point from the left towards the story and its caption. */
+.municipal-story-demo .municipal-story-flag[data-edge]{width:250px;max-width:250px;box-sizing:border-box;padding:18px 20px;text-align:left;right:calc(100% - 40px);left:auto}
+.municipal-story-demo .municipal-story-flag strong{font-size:16px;line-height:1.3;white-space:normal;margin-bottom:8px}
+.municipal-story-demo .municipal-story-flag span{display:block;font-size:13px;line-height:1.5}
+@media(max-width:800px){.municipal-story-demo{width:min(calc(100% - 48px),340px);margin-right:0}.municipal-story-demo .municipal-story-flag[data-edge]{width:190px;max-width:190px;right:calc(100% - 145px);left:auto;padding:14px}.municipal-story-demo .municipal-story-flag strong{font-size:14px}.municipal-story-demo .municipal-story-flag span{font-size:12px}}
+
+/* Callout placement follows the preview column, not the browser breakpoint. */
+#municipal-story-detail{container-type:inline-size}
+.municipal-story-demo{width:min(100%,340px);margin-inline:auto}
+.municipal-story-demo .municipal-story-flag[data-edge]{width:190px;max-width:190px;padding:12px 14px;left:auto;right:calc(100% - 20px)}
+.municipal-story-demo .municipal-story-flag strong{font-size:14px;margin-bottom:5px}
+.municipal-story-demo .municipal-story-flag span{font-size:12px;line-height:1.4}
+@container(max-width:560px){.municipal-story-demo .municipal-story-flag[data-edge]{width:155px;max-width:155px;right:auto;left:max(calc((340px - 100cqi)/2),-160px)}.municipal-story-demo .municipal-story-flag strong{font-size:13px}}
+
+.calculator-device-preview .calculator-phone{transform:translateY(var(--device-lift,0px)) rotateZ(-7deg) rotateY(28deg) rotateX(-24deg)}
+.calculator-scene-copy{margin-top:32px;border-top:1px solid var(--color-border-muted);padding-top:24px}
+.calculator-scene-text{min-height:180px;animation:calculator-copy-in .6s ease both}
+.calculator-scene-count{font-size:var(--font-size-small);color:var(--color-text-secondary);margin:0 0 8px}
+.calculator-scene-text h4{font-size:var(--font-size-h3);line-height:1.25;margin:0 0 12px}
+.calculator-scene-options{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.calculator-without-device .calculator-phone{width:min(100%,500px);height:520px;padding:0;border-radius:0;transform:none;box-shadow:none;background:transparent}
+.calculator-without-device .device-notch{display:none}
+.calculator-without-device .device-screen{border-radius:var(--radius-md)}
+@keyframes calculator-copy-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.calculator-scene-text{animation:none}}
+
+/* Plain calculator excerpts occupy the preview column without hardware spacing. */
+.calculator-without-device .device-stage{padding:0;perspective:none}
+.calculator-without-device .device-screen{border-radius:0}
+#municipal-dashboard>.municipal-place-picker{max-width:calc(100% - 56px)}
+
+/* Keep the guided calculator preview compact beside its explanation. */
+.calculator-scene-copy{margin-top:24px;padding-top:20px}
+.calculator-scene-text{min-height:150px}
+.calculator-scene-text h4{font-size:20px}
+.calculator-scene-text>p:last-child{font-size:16px;line-height:1.55}
+.calculator-scene-options{margin-top:12px}
+
+/* Real calculator sections, sized by their content rather than a scrolling viewport. */
+.municipal-calculator-components{width:min(100%,500px);margin-inline:auto;min-width:0}
+.municipal-calculator-station{min-height:390px;display:grid;align-content:center}
+.municipal-question-station{padding:0;border:0;background:transparent}
+.municipal-question-options{position:relative}
+.municipal-demo-pointer{left:30%;top:75%;--result-accent:#b59aee}
+
+
+
+
+
+
+.municipal-calculator-components .calculator-demo-caption{font-size:12px;line-height:1.5}
+
+/* Overlaid stations reserve the tallest example while fading between steps. */
+.municipal-calculator-carousel{overflow:hidden;touch-action:pan-y pinch-zoom}
+.municipal-calculator-track{display:grid;align-items:start}
+.municipal-calculator-track>.municipal-calculator-station{grid-area:1/1;min-width:0;box-sizing:border-box;display:flex;align-items:flex-start;padding:4px;min-height:620px}
+.municipal-calculator-station>div,.municipal-calculator-station>section{width:100%;box-sizing:border-box}
+.municipal-question-content{min-height:255px;animation:calculator-question-in .35s ease}
+.calculator-copy-stack{display:grid}
+.calculator-copy-stack>.calculator-scene-text{grid-area:1/1;min-height:150px;animation:none;opacity:0;visibility:hidden;transform:translateY(5px);transition:opacity .3s ease,transform .3s ease,visibility .3s}
+.calculator-copy-stack>.calculator-scene-text[data-active=true]{opacity:1;visibility:visible;transform:none}
+.municipal-carousel-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px}
+.municipal-carousel-nav button{appearance:none;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;color:var(--color-text-primary);box-shadow:none}
+.municipal-carousel-nav .municipal-carousel-arrow{width:42px;height:42px;border:1px solid var(--color-border-muted);border-radius:50%;background:transparent}
+.municipal-carousel-nav .municipal-carousel-arrow:disabled{opacity:.3;cursor:default}
+.municipal-carousel-dots{display:flex;gap:4px}
+.municipal-carousel-dots button{width:32px;height:42px;border:0;background:transparent}
+.municipal-carousel-dots button span{width:7px;height:7px;border-radius:50%;background:var(--color-text-secondary);opacity:.35;transition:width .3s,opacity .3s}
+.municipal-carousel-dots button[aria-current] span{width:22px;border-radius:6px;opacity:1}
+.municipal-carousel-nav button:focus-visible{outline:2px solid var(--color-text-primary);outline-offset:3px}
+/* Avoid pill-shaped answer cards inherited from generic page button styling. */
+
+
+
+@keyframes calculator-question-in{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.municipal-question-content{animation:none}.calculator-copy-stack>.calculator-scene-text,.municipal-carousel-dots button span{transition:none}}
+.municipal-calculator-track>.municipal-calculator-station{opacity:1;visibility:visible;transform:translateY(0);transition:opacity .4s ease,transform .4s ease,visibility .4s}
+.municipal-calculator-track>.municipal-calculator-station[aria-hidden=true]{opacity:0;visibility:hidden;transform:translateY(10px);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.municipal-calculator-track>.municipal-calculator-station{transition:none}}
+
+
+.municipal-calculator-section>.municipal-try-tools{grid-column:1/-1;grid-row:2;position:relative;z-index:2;margin-bottom:-144px}
+.municipal-try-tools>h3{margin:0 0 24px}
+.municipal-try-tools .homepage-study.hs-tools{padding:0;background:transparent}
+.municipal-try-tools .hs-five-tools{margin:0;gap:20px}
+.municipal-calculator-section+ .municipal-product-dark{padding-top:100px}
+@media(max-width:800px){.municipal-calculator-section>.municipal-try-tools{grid-row:3;margin-bottom:-104px}.municipal-calculator-section+ .municipal-product-dark{padding-top:80px}}
+
+@media(max-width:700px){.municipal-try-tools .hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Scroll variant: the same components, revealed in document order. */
+[data-calculator-layout=scroll] .municipal-calculator-section{display:block}
+[data-calculator-layout=scroll] .municipal-calculator-section>.municipal-product-copy{max-width:600px;margin-bottom:112px}
+[data-calculator-layout=scroll] #municipal-calculator-explanation{display:none}
+[data-calculator-layout=scroll] .municipal-try-tools{margin-top:128px}
+[data-calculator-layout=scroll] :is(#dashboard-section,#calculators-section,#stories-section,#communication-section,#pilot,#mitgestalten){scroll-margin-top:96px}
+.municipal-scroll-steps{display:grid;gap:112px}
+.municipal-scroll-step{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:64px;opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+.municipal-scroll-step[data-revealed=true]{opacity:1;transform:none}
+.municipal-scroll-visual{width:min(100%,500px);margin-inline:auto;min-width:0}
+.municipal-scroll-copy h4{margin:16px 0;font-size:var(--font-size-h3)}
+.municipal-scroll-copy p{font-size:var(--font-size-body);line-height:1.6}
+@media(max-width:700px){.municipal-scroll-step{grid-template-columns:minmax(0,1fr);gap:28px}.municipal-scroll-copy{grid-row:1}.municipal-scroll-steps{gap:72px}}
+@media(prefers-reduced-motion:reduce){.municipal-scroll-step{opacity:1;transform:none;transition:none}}
+
+@media(min-width:701px){
+ .municipal-scroll-step:nth-child(even)>.municipal-scroll-visual{grid-column:2;grid-row:1}
+ .municipal-scroll-step:nth-child(even)>.municipal-scroll-copy{grid-column:1;grid-row:1}
+}
+
+/* Compact shared tool teasers; retain the overlap while clearing the next content. */
+.homepage-tool-teasers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.homepage-tool-teaser-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 12px}
+
+[data-calculator-layout=scroll] .municipal-calculator-section+.municipal-product-dark{padding-top:184px}
+@media(max-width:900px){.homepage-tool-teasers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){[data-calculator-layout=scroll] .municipal-calculator-section+.municipal-product-dark{padding-top:152px}}
+@media(max-width:480px){.homepage-tool-teasers{grid-template-columns:minmax(0,1fr)}}
+
+[data-calculator-layout=scroll] .v3-section-nav:not([data-after-hero=true]){visibility:hidden;pointer-events:none}
+.municipal-dashboard-section .municipal-product-copy>p{margin-bottom:28px}
+.municipal-scroll-visual .municipal-race-station{padding:20px}
+.municipal-consumer-sequence{display:grid;gap:32px}
+.municipal-consumer-sequence .pv-consumer-scenarios{margin-block:0}
+@media(min-width:801px){
+ [data-calculator-layout=scroll] #stories-section{padding-top:248px}
+ #municipal-dashboard>.municipal-place-picker{left:-36px;top:100px}
+}
+@media(min-width:701px){
+ .municipal-consumer-sequence .municipal-scroll-step>.municipal-scroll-visual{grid-column:1;grid-row:1}
+ .municipal-consumer-sequence .municipal-scroll-step>.municipal-scroll-copy{grid-column:2;grid-row:1}
+}
+@media(max-width:700px){
+ [data-calculator-layout=scroll] #municipal-dashboard .device-stage-tablet{width:135%;max-width:none}
+ [data-calculator-layout=scroll] #municipal-dashboard{overflow:visible}
+}
+
+
+.municipal-consumer-sequence{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:start}
+.municipal-consumer-sequence>.municipal-scroll-copy{position:static;padding-top:48px}
+.municipal-consumer-trigger{height:1px}
+.municipal-consumer-addition{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(12px);transition:grid-template-rows .65s ease,opacity .65s ease,transform .65s ease}
+.municipal-consumer-addition>div{min-height:0;overflow:hidden}
+.municipal-consumer-addition[data-revealed=true]{grid-template-rows:1fr;opacity:1;transform:none}
+.municipal-scroll-copy .municipal-consumer-addition h4{margin-top:40px}
+@media(max-width:700px){.municipal-consumer-sequence{grid-template-columns:minmax(0,1fr);gap:28px}.municipal-consumer-sequence>.municipal-scroll-copy{position:static;padding-top:0;grid-row:1}}
+@media(prefers-reduced-motion:reduce){.municipal-consumer-addition{transition:none;transform:none}}
+
+.municipal-consumer-mobile-copy{display:none}
+@media(max-width:700px){.municipal-consumer-mobile-copy{display:block;margin:32px 0}.municipal-consumer-sequence>.municipal-scroll-copy .municipal-consumer-addition{display:none}}
+
+@media(max-width:700px){.homepage-tool-teasers{grid-template-columns:minmax(0,1fr)}}
+
+/* The full calculator consumer section owns its horizontal card row. */
+.municipal-consumer-sequence>.municipal-scroll-visual{width:min(100%,500px);max-width:500px}
+@media(min-width:701px){.municipal-consumer-sequence{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px}}
+@media(max-width:700px){.municipal-consumer-sequence>.municipal-scroll-copy .municipal-consumer-addition{display:grid}}
+@media(prefers-reduced-motion:no-preference){.municipal-consumer-sequence .pv-consumer-comparison>div:not([hidden]){animation:municipal-consumer-chart-in .6s ease both}}
+@keyframes municipal-consumer-chart-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Editorial rhythm uses readable copy and separators crossed by the next visual. */
+.municipal-scroll-copy p:not(.eyebrow),.municipal-step-benefits{font-size:clamp(18px,1.6vw,21px);line-height:1.6}
+.municipal-step-benefits{padding-left:1.1em;margin:24px 0 0;color:var(--color-text-secondary)}
+.municipal-step-benefits li+li{margin-top:10px}
+.municipal-scroll-step+.municipal-scroll-step,.municipal-consumer-sequence{position:relative;padding-top:32px}
+.municipal-scroll-step+.municipal-scroll-step:before,.municipal-consumer-sequence:before{content:"";position:absolute;top:0;inset-inline:0;border-top:1px solid var(--color-border)}
+.municipal-scroll-step+.municipal-scroll-step>.municipal-scroll-visual,.municipal-consumer-sequence>.municipal-scroll-visual{position:relative;margin-top:-48px}
+
+@media(max-width:700px){
+ .municipal-tools-viewport{min-width:0;width:100%;overflow:hidden}
+ .municipal-tool-slide{width:100%;min-width:0;display:flex;touch-action:pan-y pinch-zoom}
+ .municipal-tool-slide .sc-tool-teaser{width:100%;min-width:0;box-sizing:border-box}
+ .municipal-scroll-step+.municipal-scroll-step>.municipal-scroll-visual,.municipal-consumer-sequence>.municipal-scroll-visual{margin-top:0}
+}
+
+.municipal-consumer-sequence .pv-consumer-scenarios{border:0;padding-block:0}
+.municipal-consumer-sequence .pv-consumer-options{margin-top:0}
+
+/* The tools introduction starts without a separator; only subsequent steps divide. */
+[data-calculator-layout=scroll] #calculators-section{border-top:0}
+@media(prefers-reduced-motion:no-preference){
+ .municipal-question-options [data-flow-option]{animation:municipal-answer-in .38s both;animation-delay:calc(var(--answer-order,0) * 65ms)}
+ .municipal-question-options [data-flow-option]:nth-child(2){--answer-order:1}
+ .municipal-question-options [data-flow-option]:nth-child(3){--answer-order:2}
+ .municipal-question-options [data-flow-option]:nth-child(4){--answer-order:3}
+ .municipal-question-options[data-leaving=true] [data-flow-option]{animation-name:municipal-answer-out;animation-duration:.3s}
+}
+@keyframes municipal-answer-in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes municipal-answer-out{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-24px)}}
+
+/* Keep the reused tap hint visible until the visitor makes the selection. */
+.municipal-consumer-sequence .wp-solar-pointer{--tap-pointer-color:#b59aee;--tap-pointer-repeats:infinite}
+
+#municipal-landscape-hero{width:100vw;margin-inline:calc(50% - 50vw);min-height:100svh}
+
+/* Location-specific credits share the existing page source area. */
+
+/* Keep the intentional tablet crop inside the page without horizontal page scrolling. */
+body[data-calculator-layout=scroll]{overflow-x:clip}
+
+@media(max-width:700px){
+ [data-calculator-layout=scroll] .municipal-calculator-section>.municipal-try-tools{margin-bottom:-160px}
+ .municipal-tools-viewport [data-slider-controls]{--color-text-muted:#dfe9e6}
+}
+
+/* Hide the obsolete hero link before the landscape client mounts. */
+#municipal-landscape-hero .v3-scroll-indicator{display:none!important}
+
+/* Municipal product introduction and alternating consumer layout. */
+#moeglichkeiten{border-top:1px solid var(--color-border);padding-top:64px}
+#moeglichkeiten>.municipal-products{margin-top:24px}
+#dashboard-section{padding-top:0}
+@media(min-width:701px){
+ .municipal-consumer-sequence>.municipal-scroll-copy{grid-column:1;grid-row:1}
+ .municipal-consumer-sequence>.municipal-scroll-visual{grid-column:2;grid-row:1;justify-self:end}
+}
+/* Fade only the landscape; controls and source links stay fully usable. */
+#municipal-landscape-hero [data-region-scene]{mask-image:linear-gradient(to bottom,#000 calc(100% - 140px),transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 140px),transparent 100%)}
+
+/* Keep related introductions close and give the following sections room. */
+#communication-section{margin-top:112px}
+#municipal-story-detail>.municipal-place-picker{flex-direction:column;align-items:flex-start}
+#widget-settings>[class*="_settings"]>div{grid-template-columns:220px 180px minmax(260px,320px);justify-content:start}
+@media(min-width:701px){
+ .municipal-try-tools .homepage-tool-teasers{display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+ .municipal-try-tools .homepage-tool-teasers>.sc-tool-teaser{flex:0 1 340px;min-width:0;box-sizing:border-box}
+ #stories-section>.municipal-product-copy{padding-top:88px}
+}
+@media(max-width:800px){
+ #moeglichkeiten{padding-top:40px}
+ #widget-settings>[class*="_settings"]>div{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+}
+@media(max-width:700px){
+ [data-calculator-layout=scroll] .municipal-calculator-section>.municipal-product-copy{margin-bottom:72px}
+ [data-calculator-layout=scroll] .municipal-try-tools{margin-top:88px}
+ #communication-section{margin-top:80px}
+}

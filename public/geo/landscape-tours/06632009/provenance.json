@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-10-02T09:09:04.627126+00:00",
+  "name": "Heringen (Werra)",
+  "buildings": 2233,
+  "wind": 17,
+  "solarFootprints": 2,
+  "terrainResolutionMetres": 20,
+  "crs": "ETRS89_UTM32",
+  "heightReference": "DHHN2016_NH",
+  "osmAttribution": "© OpenStreetMap contributors · ODbL-1.0",
+  "buildingLicense": "dl-de/by-2-0 · HVBG Hessen",
+  "terrainLicense": "dl-de/zero-2-0 · HVBG Hessen",
+  "sourceHashes": {
+    "heringen-lod.zip": "4a32b3092d52ef14e70ee665f55d042ec96f8395c130572fd7ca67827e1a463e",
+    "heringen-dgm.tif": "6d8ef70f6d8eb021c993669a44678ef45bbd8233a3e2b9a810e5217ca3d5e135"
+  },
+  "limitations": [
+    "Bounded building windows around destinations, not full municipality building coverage.",
+    "PV modules reconstructed within mapped footprint, inclination and rows are schematic.",
+    "Park register linkage unknown; no park power estimated from municipality aggregate.",
+    "Weather-driven animation is illustrative, not measured operation or RPM.",
+    "Solar footprints are the verified mapped subset, not a complete register inventory of all ground-mounted solar plants."
+  ],
+  "boundarySource": "ALKIS Verwaltungsgrenzen Hessen · HVBG · dl-de/zero-2-0",
+  "boundaryUrl": "https://umweltatlas.hessen.de/arcgis/rest/services/geobasis/alkis_grenzen/MapServer/4/query?where=GEM_NR%3D%27632009%27&outFields=GEM_NR,GEM_NA&outSR=4326&f=geojson",
+  "minimumBoundaryDistanceMetres": 75.2,
+  "sources": [
+    {
+      "file": "heringen-lod.zip",
+      "url": "https://gds.hessen.de/downloadcenter/20261002/3D-Daten/3D-Geb%C3%A4udemodelle/3D-Geb%C3%A4udemodelle%20LoD2/Landkreis%20Hersfeld-Rotenburg/Heringen_%28Werra%29-LoD2.zip",
+      "sha256": "4a32b3092d52ef14e70ee665f55d042ec96f8395c130572fd7ca67827e1a463e"
+    },
+    {
+      "file": "heringen-dgm.tif",
+      "url": "https://inspire-hessen.de/raster/dgm1/ows?SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=he_dgm1&FORMAT=GTIFF&SUBSET=e(562600,572600)&SUBSET=n(5634500,5642100)&SCALESIZE=e(601),n(401)",
+      "sha256": "6d8ef70f6d8eb021c993669a44678ef45bbd8233a3e2b9a810e5217ca3d5e135"
+    }
+  ],
+  "osmSource": "https://overpass-api.de/api/interpreter",
+  "solarEvidence": [
+    "https://www.openstreetmap.org/way/1484161571",
+    "https://www.openstreetmap.org/way/1484161572"
+  ]
+}

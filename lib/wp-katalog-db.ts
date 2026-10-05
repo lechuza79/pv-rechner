@@ -62,6 +62,7 @@ interface Zeile {
   aufbau: string | null;
   umfang: string | null;
   abgerufen_am: string;
+  haendlerstand_am: string | null;
 }
 
 function ausZeile(z: Zeile): WpGeraet {
@@ -110,7 +111,7 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     supabase
       .from(WP_KATALOG_TABELLE)
       .select(
-        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,versand_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,umfang,abgerufen_am",
+        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,versand_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,umfang,abgerufen_am,haendlerstand_am",
       )
       .eq("bauart", bauart)
       .eq("lieferbar", true),
@@ -146,12 +147,16 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     (aeltester, z) => (z.abgerufen_am < aeltester ? z.abgerufen_am : aeltester),
     zeilen[0].abgerufen_am,
   );
+  const merchantFresh = zeilen.every(z => {
+    const age = Date.now() - Date.parse(z.haendlerstand_am ?? '');
+    return Number.isFinite(age) && age >= -300_000 && age <= KATALOG_MAX_ALTER_TAGE * 86_400_000;
+  });
   const alterTage = (Date.now() - new Date(abgerufenIso).getTime()) / 86_400_000;
 
   return {
     geraete: zeilen.map(ausZeile),
     abgerufenIso,
-    frisch: alterTage <= KATALOG_MAX_ALTER_TAGE,
+    frisch: merchantFresh && alterTage <= KATALOG_MAX_ALTER_TAGE,
     erreichbar: true,
   };
 }

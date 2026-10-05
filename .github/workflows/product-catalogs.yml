@@ -1,0 +1,44 @@
+name: Product catalogues
+on:
+  schedule:
+    - cron: "43 6 * * *"
+    - cron: "43 0,12,18 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: product-catalogues
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        catalog: ${{ fromJSON((github.event_name == 'workflow_dispatch' || github.event.schedule == '43 6 * * *') && '["wp","bkw"]' || '["bkw"]') }}
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      AWIN_FEED_LIST_URL: ${{ secrets.AWIN_FEED_LIST_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Import and verify, retry once on failure
+        if: matrix.catalog == 'bkw' || github.event_name == 'workflow_dispatch' || github.event.schedule == '43 6 * * *'
+        env:
+          CATALOG: ${{ matrix.catalog }}
+        run: |
+          for attempt in 1 2; do
+            if npm run "$CATALOG:katalog"; then
+              echo "$CATALOG: import and read-back verified" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            if [ "$attempt" = "1" ]; then sleep 20; fi
+          done
+          echo "::error::Catalogue import failed twice; last complete catalogue is retained."
+          exit 1

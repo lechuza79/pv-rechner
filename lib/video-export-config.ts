@@ -11,7 +11,7 @@ import {raceSettingsFromPeriod,raceQuery} from "./race-settings";
 
 /** Bump when the exported look changes; it is part of the cache key, so a
  *  finished video from the old design is never handed out for the new one. */
-export const VIDEO_DESIGN_VERSION = "2026-10-01.full-bleed-video-race";
+export const VIDEO_DESIGN_VERSION = "2026-10-02.race-shared-dynamic-units";
 
 export type VideoWidgetId = "gemeinde-solar-monat" | "regional-race";
 

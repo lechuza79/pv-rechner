@@ -27,5 +27,14 @@ for (const width of [320, 375]) for (const path of [
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(width + 1);
   }
+  const dialog = page.getByRole('dialog');
+  const dialogBounds = (await dialog.boundingBox())!;
+  expect(dialogBounds.x).toBeGreaterThanOrEqual(0);
+  expect(dialogBounds.x + dialogBounds.width).toBeLessThanOrEqual(width + 1);
+  for (const action of await dialog.locator('[data-flow-nav] [data-action-button]').all()) {
+    const bounds = (await action.boundingBox())!;
+    expect(bounds.x).toBeGreaterThanOrEqual(dialogBounds.x);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(dialogBounds.x + dialogBounds.width);
+  }
   await page.screenshot({ path: `/tmp/price-source-${path.startsWith('/balkon') ? 'bkw' : 'pv'}-${width}.png`, fullPage: false });
 });

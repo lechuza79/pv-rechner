@@ -763,6 +763,25 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // AFTER purchase with invoice, the five-year operation duty and the small
   // first-come budget have no test form yet; the entry deducts nothing.
   "laudenbach-steckersolar",
+  // Added 2 Oct 2026: guideline (in force 01.03.2025) and city page read in
+  // full. Application AFTER purchase, the invoice-date cut-off, the five-year
+  // operation duty and the first-come 2026 budget have no test form yet; the
+  // entry deducts nothing.
+  "hemsbach-steckersolar",
+  // Added 4 Oct 2026: three Walldorf guidelines (PV, plug-in solar, heating)
+  // read in full. Approval before contract, the post-2022 building-permit
+  // cut-off, kWp-tiered storage and caps incl. federal funds have no test
+  // form yet; the entry deducts nothing.
+  "walldorf-klimaschutz",
+  // Added 4 Oct 2026: Hirschberg guideline (scan, read as image) and town page.
+  // Application after purchase, invoice-date cut-off, five-year operation and
+  // the first-come 2026 budget have no test form yet; deducts nothing.
+  "hirschberg-steckersolar",
+  // Added 5 Oct 2026: Schwetzingen KlimaIMPULS guideline 2025 (read as image),
+  // continued unchanged in 2026 per the town page. Application after purchase,
+  // three-month deadline and the first-come budget have no test form; deducts
+  // nothing.
+  "schwetzingen-klimaimpuls",
 ];
 
 /**

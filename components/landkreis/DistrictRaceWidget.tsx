@@ -1,6 +1,7 @@
 "use client";
 
 import {defaultRaceSettings,racePeriod,type RaceSettings} from "../../lib/race-settings";
+import {formatRaceValue,raceValueUnit} from "../../lib/race-value-format";
 import {ortPhrase} from "../../lib/atlas-orte";
 import {useEffect, useRef, useState} from "react";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
@@ -14,7 +15,7 @@ type RaceRow = {id:string;name:string;href:string|null;value:number};
 type RaceFrame = {year:number;rows:{id:string;value:number}[]};
 declare global {
   interface Window {
-    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean})=>Promise<void>;
+    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number,frameMaximum:number)=>string;unit?:(frameMaximum:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean})=>Promise<void>;
   }
 }
 
@@ -32,7 +33,7 @@ export default function DistrictRaceWidget({regionId,name,stand,rows,history,wor
       if(!active||started||!stage||!clock.current||!window.solarDistrictRace)return;
       started=true;
       void window.solarDistrictRace({stage,label:`${Math.min(10,rows.length)} führende ${wording.unit} im Zeitverlauf`,clockHost:clock.current,rows,history,
-        format:value=>settings.metric==='count'?Math.round(value).toLocaleString("de-DE"):settings.metric==='kwp'?(value/1000).toLocaleString("de-DE",{maximumFractionDigits:1}):Math.round(value).toLocaleString("de-DE"),animate:true,current:()=>active,skip:()=>false});
+        format:(value,max)=>formatRaceValue(value,settings.metric,max),unit:max=>raceValueUnit(settings.metric,max),animate:true,current:()=>active,skip:()=>false});
     }
     window.addEventListener("district-race-ready",start);
     start();

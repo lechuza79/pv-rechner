@@ -14,9 +14,9 @@ function fixture() {
   controls.minZoom = .7; controls.maxZoom = 3;
   let invalidations = 0;
   const adapter = source.match(/const disposeTrackpad = bindTrackpadGestures\(canvas, \{[\s\S]*?\n  \}\);/)![0];
-  const dispose = new Function('bindTrackpadGestures', 'canvas', 'controls', 'events', 'invalidate',
+  const dispose = new Function('bindTrackpadGestures', 'canvas', 'controls', 'events', 'invalidate', 'stopFlight',
     `let spinVelocity=2,resumeRotationAt=0; ${adapter}; return disposeTrackpad;`
-  )(bindTrackpadGestures, canvas, controls, {hover(){}}, () => invalidations++);
+  )(bindTrackpadGestures, canvas, controls, {hover(){}}, () => invalidations++, () => {});
   const emit = (type: string, props: object) => {
     const event = new Event(type, {cancelable:true});
     Object.assign(event, {deltaY:0,deltaMode:0,ctrlKey:false}, props);
@@ -56,6 +56,6 @@ describe('Region map trackpad integration', () => {
     expect(blocked).toBe(0);
     wheel({ctrlKey:false,stopImmediatePropagation(){blocked++;}});
     expect(blocked).toBe(1);
-    expect(source).toContain('dispose(){disposeTrackpad();');
+    expect(source).toMatch(/dispose\(\)\{[^}]*disposeTrackpad\(\)/);
   });
 });

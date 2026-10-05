@@ -1,3 +1,4 @@
+import {previewData} from "./preview-data";
 import 'server-only';
 import {brotliDecompressSync} from 'node:zlib';
 import {cache} from 'react';
@@ -34,7 +35,7 @@ export type DistrictContent = DistrictComputed & {prepared:DistrictPrepared;prev
 
 const UNAVAILABLE_MONITOR:DistrictMonitor={status:'unavailable',reason:'not-prepared',energy:null,sites:null};
 
-async function readObject(path:string):Promise<Buffer|null>{
+async function readObjectLive(path:string):Promise<Buffer|null>{
   const url=process.env.SUPABASE_URL??process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.SUPABASE_SERVICE_KEY;
   if(!url||!key)throw new Error('kreis-paket: Supabase-Zugang fehlt');
@@ -46,6 +47,10 @@ async function readObject(path:string):Promise<Buffer|null>{
   if(res.status===400||res.status===404)return null;
   if(!res.ok)throw new Error(`kreis-paket/${path}: HTTP ${res.status}`);
   return Buffer.from(await res.arrayBuffer());
+}
+
+function readObject(path:string):Promise<Buffer|null>{
+  return previewData("district-object-v1:"+path,()=>readObjectLive(path));
 }
 
 const unavailable=(reason:'not-published'|'read-error'|DistrictRefusal):DistrictContent=>({monitor:UNAVAILABLE_MONITOR,stories:[],prepared:{state:'unavailable',reason}});

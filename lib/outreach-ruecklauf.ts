@@ -77,6 +77,11 @@ const ZITAT_TRENNER = [
   "datenschutz-hinweis (art. 14 dsgvo)",
   "von: ",
   "am .* schrieb",
+  // English mail clients ("On Wednesday, September 30, 2026 … wrote:").
+  // Anchored to a line start: "on" inside a word ("online") must not cut the
+  // reply. Missing until 05.10.2026 — a newsroom's fee offer was classified as
+  // an objection because the search ran through our own quoted footer.
+  "(^|\\n)on .* wrote:",
 ];
 
 /** Den zitierten Teil abschneiden. Übrig bleibt, was der Mensch geschrieben hat. */

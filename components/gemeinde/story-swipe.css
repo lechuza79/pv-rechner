@@ -207,3 +207,11 @@
 
 /* Shared export footer (migrated templates): hidden on the page, spacing only; colours come from the export palette. */
 .story-export-shared{display:none;box-sizing:border-box;padding:0 20px 20px}
+
+/* Embedded presentation of the existing reader, without modal positioning. */
+.story-reader-inline{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;background:var(--atlas-surface);overflow:hidden}
+.story-reader-inline>h3{margin:12px 16px 8px;font-size:18px}
+.story-reader-inline>.story-progress-row{padding:0 12px 8px;flex:none;order:0}
+.story-reader-inline .story-reader-body{flex:1;min-height:0}
+.story-reader-inline .story-reader-actions{gap:2px}
+.story-reader-inline .story-reader-bottom{padding:8px}

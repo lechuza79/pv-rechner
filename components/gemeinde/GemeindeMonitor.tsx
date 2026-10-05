@@ -12,6 +12,7 @@ import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-exp
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
 import { WIDGETS } from "../../lib/widget-registry";
+import {WidgetArtwork} from "../dashboard/WidgetArtwork";
 import { ExportableWidgetFrame } from "../dashboard/ExportableWidgetFrame";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
 import { MonitorMonthlySolarChart } from "./MonitorMonthlySolarChart";
@@ -153,6 +154,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : isValuation ? monthLabel(chosenValue?.month ?? item.story.period) : undefined,
         filename: `solar-check-${item.template}-${paket.ags}`,
         animated: item.template === "radial",
+        restartAction: !item.story.solarMonth,
         videoParams,
         videoPeriod: videoMonth ? monthLabel(videoMonth) : undefined,
         onVideoRequest: videoParams ? (email: string, options: import("../WidgetVideoDialog").VideoMailOptions) => requestWidgetVideo({...videoParams, email, ...options}) : undefined,
@@ -162,6 +164,8 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   return (
     <Frame
       {...exportProps}
+      data-monthly-profile={item.story.solarMonth?true:undefined}
+      artwork={item.story.solarMonth?<WidgetArtwork src="/brand/pv-modules-mono-contained.svg" texture="/brand/feed-in-v4-splashes.svg"/>:undefined}
       title={item.template === "radial" ? `${role.title} ${ortPhrase({name:paket.name})}` : role.title}
       kind={role.kind}
       className={chart.visualTheme}
@@ -242,7 +246,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   );
 }
 
-export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
+export default function GemeindeMonitor({ paket, single }: { paket: GemeindePaket; single?: "currentPower" | "growth" | "anteilsdonut" | "anlagenraster" | keyof MonitorEnergyWidgets }) {
   const weatherSource = useMemo(() => regionalSolarWeatherSource(paket.ags), [paket.ags]);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -290,7 +294,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     .sort((a, b) => a.year - b.year);
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
-  const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf");
+  const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf" && (!single || !["anteilsdonut", "anlagenraster"].includes(single) || item.template === single));
   const widgets = (section: string) => {
     const selected = items.filter((item: Any) => item.section === section);
     return selected.length ? selected.map((item: Any) => <MonitorWidget key={item.story.id} item={item} paket={paket} />) : null;
@@ -299,6 +303,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const missing = (charts?.availability ?? []).some((item: Any) => item.status === "missing");
   return <EnergyMonitor
     rootRef={root}
+    single={single === "anteilsdonut" || single === "anlagenraster" ? "stock" : single}
     kpis={hasHistory && (
         <KpiOverview
           groups={monitorKpiGroups({history:paket.monitorHistory!,population:paket.register?.own.population??0,registerStand:paket.registerStand,populationStand:paket.einwohnerStand})}

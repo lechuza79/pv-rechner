@@ -618,7 +618,14 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026, § 42a
   //   weiter nur Ankündigung eines Gesetzes bis 01.12.2026, kein Quotengesetz.
   //   Bioheizöl-Suche erneut nur Händler-/Portalseiten, keine Trägerquelle.
-  geprueftRechtIso: "2026-10-01",
+  // 02.10.2026: GModG-Infoportal (gmodg.bund.de) im Original gelesen — kein
+  //   Quotengesetz nach § 42a, keine Änderung an § 43; jüngster Eintrag weiter
+  //   die Überarbeitung nach Inkrafttreten. Bioheizöl-Suche: nur HVO-Mengen
+  //   (BAFA/UFOP) und Diesel-Großhandelsnotierungen, keine Endkunden-Preisreihe.
+  // 03.10.2026: GModG-Infoportal (gmodg.bund.de) im Original gelesen — kein
+  //   Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Suche: nur
+  //   Ankündigung der Quote ab 2028, keine Trägerquelle mit Preisreihe.
+  geprueftRechtIso: "2026-10-05",
   reviewBy: "2027-07-25",
 };
 
