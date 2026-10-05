@@ -234,7 +234,10 @@ export type Placement = {
   schlusslicht: boolean;
 };
 
-export type HookKind = "sieger" | "podium" | "perzentil" | "neutral";
+/** "platz": any place in the better half — every town gets a letter with its
+ *  best place (operator, 05.10.2026: "es gibt auch andere Plätze als die
+ *  Podestplätze"). It never counts as an award on the town page. */
+export type HookKind = "sieger" | "podium" | "perzentil" | "platz" | "neutral";
 
 export type Hook = {
   kind: HookKind;
@@ -388,6 +391,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
     if (p.total >= settings.minTotal && p.rank === 1) kind = "sieger";
     else if (p.total >= settings.minTotal && p.rank <= 3) kind = "podium";
     else if (p.total >= settings.minTotal && ratio <= settings.percentileCut) kind = "perzentil";
+    else if (p.total >= settings.minTotal && ratio <= 0.5) kind = "platz";
     if (!kind) continue;
 
     // THE LARGEST GROUND COMES FIRST (operator, 30.09. and 05.10.2026: "Rang ist
@@ -395,7 +399,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
     // in the district. The kind of place only decides within one level.
     const lvl = levelRank(p.level);
     let score = (settings.preferHigherLevel ? lvl : 4 - lvl) * 1000;
-    score += kind === "sieger" ? 300 : kind === "podium" ? 200 : 100;
+    score += kind === "sieger" ? 300 : kind === "podium" ? 200 : kind === "perzentil" ? 100 : 50;
     if (settings.preferBuerger && cat.traeger === "buerger") score += 5;
     score += Math.min(p.total, 1000) / 200; // größere Grundgesamtheit = beeindruckender
     score += (1 - ratio) * 3; // Feinschliff nach Platz
@@ -527,6 +531,11 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
         // private Solarleistung" und "bei Balkonkraftwerke je 1.000 Einwohner" —
         // genau der Fehler, vor dem `themaDativ` in lib/awards.ts warnt. Der
         // bestehende Test prueft nur den Betreff, deshalb lief es lange mit.
+        einstieg: `${n.gemeinde} liegt bei ${themaDativ} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
+      };
+    case "platz":
+      return {
+        betreff: `${kurz} ${phrase} auf Platz ${hook.rank}${vonN} ${woKurz}`,
         einstieg: `${n.gemeinde} liegt bei ${themaDativ} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
       };
     case "perzentil": {

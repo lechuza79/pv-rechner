@@ -121,8 +121,13 @@ describe("selectHook", () => {
   });
 
   it("liefert neutral, wenn nichts trägt", () => {
-    expect(selectHook([P({ rank: 50, total: 100 })]).kind).toBe("neutral");
+    expect(selectHook([P({ rank: 51, total: 100 })]).kind).toBe("neutral");
     expect(selectHook([]).kind).toBe("neutral");
+  });
+
+  it("nennt jeden Platz aus der besseren Hälfte, aber keinen darunter", () => {
+    expect(selectHook([P({ rank: 50, total: 100 })]).kind).toBe("platz");
+    expect(selectHook([P({ rank: 12, total: 40 })]).rank).toBe(12);
   });
 
   it("bevorzugt Bürger bei sonst gleichem Sieg", () => {
