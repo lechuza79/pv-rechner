@@ -15,6 +15,11 @@ for (const width of [375, 624, 1280, 1440]) {
     }));
     for (const position of positions) expect(position.top).toBeCloseTo(positions[0].top, 0);
     const row = (await product.boundingBox())!;
+    const forward = product.locator('.wp-product-forward');
+    if (await forward.locator('span').evaluate(el => getComputedStyle(el).display === 'none')) {
+      expect((await forward.boundingBox())!.width).toBeCloseTo(44, 0);
+    }
+
     expect(positions.at(-1)!.right).toBeLessThanOrEqual(row.x + row.width + 1);
     await expect(product.getByRole('button', { name: 'An deinen Heizungsbauer weiterleiten' })).toBeVisible();
 
