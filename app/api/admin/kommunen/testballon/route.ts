@@ -104,9 +104,11 @@ export async function POST(req: NextRequest) {
     if (z.region_id.length !== 8) continue; // district administrations get their own letter
     if (schub.ohneWindgemeinden && windgemeinde(z.region_id)) continue;
     const hook = hookByRegion.get(z.region_id) ?? null;
-    // Whole districts take every town with its largest hook (DE > BL > district),
-    // or the neutral letter; the older batches only took first places.
-    if (!schub.kreise && (!hook || hook.kind !== "sieger")) continue;
+    // Whole districts take every town with a hook — win, podium or top tenth,
+    // the largest level first (DE > BL > district); the older batches only took
+    // first places. Towns without any hook get no letter.
+    if (!hook || hook.kind === "neutral") continue;
+    if (!schub.kreise && hook.kind !== "sieger") continue;
     const reg = Array.isArray(z.mastr_regions) ? z.mastr_regions[0] : z.mastr_regions;
     kandidaten.push({
       regionId: z.region_id,

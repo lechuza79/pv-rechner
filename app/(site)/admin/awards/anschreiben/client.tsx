@@ -17,7 +17,7 @@ export type HooksPayload = {
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 const KIND_LABEL: Record<HookKind, string> = {
-  sieger: "Sieg", podium: "Podium", perzentil: "Top-Prozent", platz: "Platz", neutral: "neutral",
+  sieger: "Sieg", podium: "Podium", perzentil: "Top-Prozent", neutral: "neutral",
 };
 function kindColor(k: HookKind): string {
   if (k === "sieger") return v("--color-positive");
@@ -34,7 +34,7 @@ function detailHref(r: HookExample): string | null {
 
 export default function HooksClient({ payload }: { payload: HooksPayload }) {
   const { total, dist, settings, q, mode, rows } = payload;
-  const kinds: HookKind[] = ["sieger", "podium", "perzentil", "platz", "neutral"];
+  const kinds: HookKind[] = ["sieger", "podium", "perzentil", "neutral"];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.lg }}>

@@ -387,7 +387,7 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
 
   const [stats, kreisNames] = await Promise.all([loadAwardStats(), loadKreisNames()]);
   const placements = computePlacements(stats);
-  const dist: Record<HookKind, number> = { sieger: 0, podium: 0, perzentil: 0, platz: 0, neutral: 0 };
+  const dist: Record<HookKind, number> = { sieger: 0, podium: 0, perzentil: 0, neutral: 0 };
   const rows: HookExample[] = stats.map((g) => {
     const hook = selectHook(placements.get(g.regionId), settings);
     dist[hook.kind]++;

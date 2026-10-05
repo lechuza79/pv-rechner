@@ -46,7 +46,7 @@ export const LUECKEN_GRUENDE = {
   "kein-ziel": "kein Ziel (aufgelöst oder gemeindefrei)",
   gesperrt: "gesperrt (Widerspruch oder dauerhaft unzustellbar)",
   "keine-adresse": "keine verwendbare Adresse",
-  "kein-aufhaenger": "kein Platz in der besseren Hälfte",
+  "kein-aufhaenger": "kein Aufhänger (weder Sieg, Podium noch oberes Zehntel)",
   windgemeinde: "Windgemeinde, wartet auf Windräder auf der Seite",
   eingeplant: "in einem Schub eingeplant, noch nicht verschickt",
   nachholen: "Brief kam nicht an, neue Adresse liegt vor",
@@ -85,7 +85,7 @@ export function lueckeVon(z: LueckenZeile, u: LueckenUmfeld): Luecke | null {
   const befund = postfachBefund(ziel.email, z.name, z.verwaltung_domain, { belegteRolle: ziel.belegt });
   if (!befund.ok) return { grund: "keine-adresse", detail: `${ziel.email}: ${befund.grund}` };
 
-  if (!u.hookKind || u.hookKind === "neutral") return { grund: "kein-aufhaenger", detail: "kein Platz in der besseren Hälfte" };
+  if (!u.hookKind || u.hookKind === "neutral") return { grund: "kein-aufhaenger", detail: "kein Sieg, Podium oder oberes Zehntel" };
   if (u.windgemeinde) return { grund: "windgemeinde", detail: null };
   if (z.outreach_status === STATUS_BOUNCE_BEHOBEN) return { grund: "nachholen", detail: ziel.email };
   if (z.kampagne) return { grund: "eingeplant", detail: z.kampagne };

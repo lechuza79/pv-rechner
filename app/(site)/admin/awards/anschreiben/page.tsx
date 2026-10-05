@@ -40,7 +40,7 @@ export default async function AnschreibenPage({
       .slice(0, 25);
   } else {
     mode = "beispiele";
-    const kinds: HookKind[] = ["sieger", "podium", "perzentil", "platz", "neutral"];
+    const kinds: HookKind[] = ["sieger", "podium", "perzentil", "neutral"];
     rows = [];
     for (const k of kinds) {
       const pool = index.rows.filter((r) => r.population >= 3000 && r.population <= 40000 && r.kind === k);
