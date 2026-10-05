@@ -174,8 +174,9 @@
         id: r.region_id,
         name: r.name,
         value: m.value(r, owner),
-        href:
-          G.kreisBase + r.slug,
+        // A peer without a slug (no own page) gets no link; "/null" was
+        // crawled ~200 times a day as a 404 (request log 05.10.2026).
+        href: r.slug ? G.kreisBase + r.slug : null,
       }))
       .sort((a, b) => b.value - a.value || a.name.localeCompare(b.name, "de"))
       .map((r, i, all) => ({
