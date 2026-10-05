@@ -1,4 +1,5 @@
 import SunCalc from './suncalc.cjs';
+import {seasonalFoliage} from './seasonal-foliage.js';
 export const clamp=(x,min=0,max=1)=>Math.max(min,Math.min(max,x));
 export function sceneState(date,location,weather){
  const sun=SunCalc.getPosition(date,location.lat,location.lon),alt=sun.altitude*180/Math.PI;
@@ -7,9 +8,9 @@ export function sceneState(date,location,weather){
  const phase=alt<-12?'night':alt<12?(hour<12?'dawn':'dusk'):'day';
  const code=weather.code||0,snow=[71,73,75,77,85,86].includes(code),rainCodes=[51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99];
  const rain=snow?0:clamp(Math.max(weather.rain||0,rainCodes.includes(code)?.15:0)/2.5,0,1);
- return {phase,solarElevation:alt,fog:[45,48].includes(code)?1:0,cloudLow:weather.cloudLow??null,cloudMid:weather.cloudMid??null,cloudHigh:weather.cloudHigh??null,cloud:clamp(weather.cloud/100),rain,snow,wind:clamp(weather.wind/15,0,2.4),direction:Math.sin((weather.direction??270)*Math.PI/180)*-1,
+ return {phase,solarElevation:alt,fog:[45,48].includes(code)?1:0,cloudLow:weather.cloudLow??null,cloudMid:weather.cloudMid??null,cloudHigh:weather.cloudHigh??null,cloud:clamp(weather.cloud/100),rain,snow,wind:clamp(weather.wind/15,0,8),direction:Math.sin((weather.direction??270)*Math.PI/180)*-1,
   sunX:clamp(.5+sun.azimuth/Math.PI*.45,.07,.93)*100,sunY:clamp(.75-alt/90*.65,.15,.8)*100,
-  daylight:clamp((alt+6)/35),season:[11,0,1].includes(date.getMonth())?'winter':[8,9,10].includes(date.getMonth())?'autumn':'summer'};
+  daylight:clamp((alt+6)/35),foliage:seasonalFoliage(date),season:[11,0,1].includes(date.getMonth())?'winter':[8,9,10].includes(date.getMonth())?'autumn':'summer'};
 }
 export function validateWeather(json){
  const c=json?.current,keys=['temperature_2m','cloud_cover','wind_speed_10m','wind_direction_10m','weather_code','rain','showers'];
