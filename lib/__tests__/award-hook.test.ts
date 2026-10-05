@@ -83,8 +83,9 @@ describe("selectHook", () => {
   });
 
   // Dintesheim: Brief „Platz 1", verlinkte Seite „an letzter Stelle im Landkreis".
-  it("überspringt Gemeinden, die auf ihrer eigenen Seite Schlusslicht sind", () => {
-    expect(selectHook([P({ rank: 1, total: 69, schlusslicht: true })]).kind).toBe("neutral");
+  it("gibt Schlusslichtern der eigenen Seite keinen Spitzenplatz, nur ihren Platz", () => {
+    expect(selectHook([P({ rank: 1, total: 69, schlusslicht: true })]).kind).toBe("platz");
+    expect(selectHook([P({ rank: 40, total: 69, schlusslicht: true })]).kind).toBe("neutral");
   });
 
   it("wählt einen Sieg", () => {

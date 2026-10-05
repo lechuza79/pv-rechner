@@ -382,7 +382,6 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
   for (const p of placements ?? []) {
     if (p.spike) continue; // Datenfehler-Verdacht → kein Aufhänger (fällt auf neutral)
     if (p.duenn) continue; // zu wenig Bestand für eine Aussage
-    if (p.schlusslicht) continue; // die verlinkte Seite würde den Satz widerlegen
     const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
     if (!cat) continue;
     const ratio = p.rank / Math.max(p.total, 1);
@@ -392,6 +391,12 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
     else if (p.total >= settings.minTotal && p.rank <= 3) kind = "podium";
     else if (p.total >= settings.minTotal && ratio <= settings.percentileCut) kind = "perzentil";
     else if (p.total >= settings.minTotal && ratio <= 0.5) kind = "platz";
+    if (!kind) continue;
+    // A town in the last quarter of its district by installed capacity (which is
+    // mostly size) gets no top-place headline — "Platz 1" next to "Platz 103 von
+    // 107" on its own page reads as a contradiction. Its plain better-half place
+    // stays, so every town still gets a letter (05.10.2026).
+    if (p.schlusslicht && kind !== "platz") kind = ratio <= 0.5 ? "platz" : null;
     if (!kind) continue;
 
     // THE LARGEST GROUND COMES FIRST (operator, 30.09. and 05.10.2026: "Rang ist
