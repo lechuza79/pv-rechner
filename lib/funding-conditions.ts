@@ -777,6 +777,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Application after purchase, invoice-date cut-off, five-year operation and
   // the first-come 2026 budget have no test form yet; deducts nothing.
   "hirschberg-steckersolar",
+  // Added 5 Oct 2026: Schwetzingen KlimaIMPULS guideline 2025 (read as image),
+  // continued unchanged in 2026 per the town page. Application after purchase,
+  // three-month deadline and the first-come budget have no test form; deducts
+  // nothing.
+  "schwetzingen-klimaimpuls",
 ];
 
 /**

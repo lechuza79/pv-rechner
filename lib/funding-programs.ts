@@ -5580,6 +5580,41 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Restmittel unbekannt), dieselbe Behandlung wie hemsbach-steckersolar.
   },
 
+  "schwetzingen-klimaimpuls": {
+    id: "schwetzingen-klimaimpuls", name: "KlimaIMPULS – SolarIMPULS: Zuschuss für Balkonkraftwerke",
+    traeger: "Stadt Schwetzingen", level: "kommune", region: "Schwetzingen",
+    bundesland: "Baden-Württemberg", agsCode: "08226084",
+    url: "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Solarmodul eines neu angeschafften Balkonkraftwerks",
+    maxFoerderung: "max. 200 € je Anlage und Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Modul, höchstens 2 Module (max. 200 € je Anlage und Wohn- bzw. Nutzungseinheit)" }],
+    conditions: [
+      "Neu angeschafft und installiert, höchstens 800 W (AC) am Wechselrichter und 2.000 W Modulleistung, nach den geltenden Normen und im Marktstammdatenregister angemeldet; die Anlage darf auch an Fassade, Terrasse oder Dach hängen; nicht gefördert werden reine Inselanlagen mit Batterie, Prototypen, Eigenbau- und gebrauchte Anlagen",
+      "Antragsberechtigt sind Eigentümer, Vermieter und Mieter von Wohnraum in Schwetzingen; Mieter mit Einverständniserklärung des Vermieters, in einer Eigentümergemeinschaft mit schriftlicher Einverständniserklärung der Gemeinschaft; gewerblich genutzter Flächenanteil der Wohneinheit unter 50 %",
+      "Beantragt wird nach Kauf UND Installation; der Antrag muss spätestens drei Monate nach dem Kaufdatum bei der Stadt eingegangen sein, mit Rechnung, Zahlungsbeleg und Foto der installierten Anlage; gefördert werden nur Käufe ab dem 01.06.2025",
+      "Mittel werden in der Reihenfolge vollständiger Anträge reserviert, bis die Haushaltsmittel erschöpft sind; unvollständige Anträge reservieren nichts, fehlende Unterlagen sind binnen zehn Werktagen nachzureichen; ob noch Mittel übrig sind, weiß nur die Stadt; ein Rechtsanspruch besteht nicht",
+      "Über alle KlimaIMPULS-Bausteine zusammen höchstens 1.000 € je Haushalt und Jahr; die Stadt kann vor Ort kontrollieren und bei nicht erfüllten Bedingungen zurückfordern",
+      "Die Förderrichtlinie 2025 (gültig bis 31.12.2025) gilt laut Stadt 2026 unverändert weiter: Fortführung beschlossen vom Technischen Ausschuss am 03.12.2025 unter Vorbehalt der Haushaltsgenehmigung durch die Kommunalaufsicht; der Baustein tritt außer Kraft, sobald eine Bundes-, Landes- oder Kreisförderung für Balkonkraftwerke besteht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Förderrichtlinie 2025 KlimaIMPULS (Stand 22.04.2025, gültig 01.06.–
+    // 31.12.2025), am 05.10.2026 im Volltext gelesen (PDF, Seiten als Bild),
+    // Nr. 5.3: "Die Neuanschaffung eines Steckersolargeräts wird einmalig mit
+    // einem pauschalen Zuschuss von 100 Euro pro Photovoltaikmodul gefördert.
+    // Förderfähig sind maximal 2 Module, d.h. der Förderhöchstbetrag liegt bei
+    // 200 Euro je Anlage und Wohn- bzw. Nutzungseinheit." Stadtseite
+    // (05.10.2026): "Für alle Schwetzinger/innen bedeutet dies, dass die
+    // Förderrichtlinie 2025 auch im Jahr 2026 unverändert weiter gilt."
+    // Council 2/2 incl. adversarial reviewer (05.10.2026): all amounts
+    // confirmed; purchase cut-off, budget-approval caveat, written consent and
+    // the automatic end on federal/state/district funding added afterwards.
+    // Bewusst KEIN strukturierter Satz (Haushaltstopf nach Antragseingang,
+    // Antrag nach Kauf), dieselbe Behandlung wie hirschberg-steckersolar.
+  },
+
   "sandhausen-foerderprogramme": {
     "id": "sandhausen-foerderprogramme",
     "name": "Förderprogramme erneuerbare Energien",

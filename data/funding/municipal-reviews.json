@@ -84824,5 +84824,89 @@
         "evidenceUrl": "https://www.neckargemuend.de/start/erleben/foerderprojekte+fuer+kinder+und+eltern.html"
       }
     ]
+  },
+  {
+    "regionId": "08226003",
+    "name": "Altlußheim",
+    "checkedAt": "2026-10-05T10:43:17Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altlußheim hat keinen kommunalen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Angeboten werden PV-Eignungschecks und kostenlose Energieberatung mit der KLiBA sowie die ehrenamtliche Nachbarschaftsberatung Energie5; die geförderten Klimaschutzprojekte sind Vorhaben der Gemeinde selbst (Energiemanagement, Lüftung Rheinfrankenhalle).",
+    "searches": [
+      "altlussheim.de Rubrik Klimaschutz vollständig gelesen (05.10.2026): kommunaler Klimaschutz, aktuell geförderte Klimaschutzprojekte, Energieberatung/KLiBA, Klimaschutzinitiative „na klar“, Energie5, Wärmeplanung",
+      "Volltextsuche der Website (/suche) antwortet mit 404",
+      "Websuche „Altlußheim Förderung Balkonkraftwerk Zuschuss Gemeinde“ (05.10.2026): kein Treffer zu Altlußheim"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.altlussheim.de/leben-wohnen/klimaschutz/kommunaler-klimaschutz",
+        "finding": "„Die KLiBA Heidelberg bietet in Zusammenarbeit mit der Gemeinde Altlußheim PV-Eignungschecks an“ — Beratung, kein Zuschuss."
+      },
+      {
+        "url": "https://www.altlussheim.de/leben-wohnen/klimaschutz/energieberatung/kliba",
+        "finding": "Kostenlose KLiBA-Energieberatung; verweist auf die Karte des PV-Netzwerks mit Kommunen, die Förderprogramme haben — Altlußheim nennt kein eigenes."
+      },
+      {
+        "url": "https://www.altlussheim.de/leben-wohnen/klimaschutz/aktuell-gefoerderte-klimaschutzprojekte",
+        "finding": "Kommunale Klimaschutzprojekte der Gemeinde (Einführung kommunales Energiemanagement, Lüftungsanlage Rheinfrankenhalle) — Förderung der Gemeinde, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.altlussheim.de/rathaus-buergerservice/buergerservice/lebenslagen-service-bw/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "finding": "Lebenslagen-Eintrag „Förderprogramme für Auslandsaufenthalte“ (Erasmus+) — Bildung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "altlussheim.de/leben-wohnen/klimaschutz/aktuell-gefoerderte-klimaschutzprojekte",
+        "disposition": "reviewed",
+        "reason": "Projekte der Gemeinde (Energiemanagement), kein Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.altlussheim.de/leben-wohnen/klimaschutz/aktuell-gefoerderte-klimaschutzprojekte"
+      },
+      {
+        "url": "altlussheim.de/rathaus-buergerservice/buergerservice/lebenslagen-service-bw/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "disposition": "reviewed",
+        "reason": "Erasmus+ (Auslandsaufenthalte), keine Energieförderung.",
+        "evidenceUrl": "https://www.altlussheim.de/rathaus-buergerservice/buergerservice/lebenslagen-service-bw/5000550/foerderprogramme-fuer-auslandsaufenthalte"
+      }
+    ]
+  },
+  {
+    "regionId": "08226084",
+    "name": "Schwetzingen",
+    "checkedAt": "2026-10-05T10:47:07Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Schwetzingen fördert Balkonkraftwerke mit 100 € je Modul, höchstens 200 € je Anlage und Wohneinheit (KlimaIMPULS, Richtlinie 2025, laut Stadt 2026 unverändert fortgeführt, Haushaltsmittel nach Antragseingang). Als schwetzingen-klimaimpuls aufgenommen, nur Auskunft ohne Abzug (Council 2/2 inkl. Gegenprüfer). Für Dach-PV gibt es nur den kostenlosen PV-Eignungscheck (2025: 30 Plätze), keinen Zuschuss; kein Programm für Speicher oder Wärmepumpen. Wiederprüfung zum Jahresende, weil die Fortführung an den Haushalt gebunden ist.",
+    "searches": [
+      "schwetzingen.de Förderprogramme (Umwelt- und Klimaschutz) im Original gelesen (05.10.2026)",
+      "Förderrichtlinie KlimaIMPULS 2025 im Volltext gelesen (PDF, Seiten 1–4 und 13–18 als Bild)",
+      "Websuche nach Antragsstopp oder neuer Richtlinie 2026 (Gegenprüfer, 05.10.2026): kein Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html",
+        "finding": "„dass die Förderrichtlinie 2025 auch im Jahr 2026 unverändert weiter gilt. Ab sofort können wieder Anträge für das Schwetzinger Klimaschutz-Förderprogramm KlimaIMPULS gestellt werden.“"
+      },
+      {
+        "url": "https://www.schwetzingen.de/site/Schwetzingen_2021/get/params_E1979088060_Dattachment/3322388/F%C3%B6rderrichtlinie%20KlimaIMPULS%202025.pdf",
+        "finding": "Nr. 5.3: „pauschalen Zuschuss von 100 Euro pro Photovoltaikmodul … Förderhöchstbetrag liegt bei 200 Euro je Anlage und Wohn- bzw. Nutzungseinheit“; Nr. 6: PV-Eignungscheck, Eigenbeteiligung 30 € für 30 Beratungen 2025 übernommen; III c: höchstens 1.000 € je Haushalt und Jahr."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "KlimaIMPULS-Programmseite; Balkonbaustein aufgenommen.",
+        "evidenceUrl": "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html"
+      },
+      {
+        "url": "schwetzingen.de/auth/index.html?secure=true&amp;url=%2Fstartseite%2Fstadtentwicklung%2Ffoerderprogramme.html",
+        "disposition": "replaced",
+        "reason": "Anmeldeweiche des CMS auf dieselbe Programmseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html"
+      }
+    ]
   }
 ]
