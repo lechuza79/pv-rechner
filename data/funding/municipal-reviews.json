@@ -86867,5 +86867,99 @@
         "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=48f812e14d6e4a8ba4ca9868e4281189"
       }
     ]
+  },
+  {
+    "regionId": "08226009",
+    "name": "Brühl",
+    "checkedAt": "2026-10-05T14:38:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Brühl (Baden) fördert nach den Umwelt-Förderrichtlinien 2026 (gültig 01.01.–31.12.2026) Stromspeicher zu PV-Anlagen mit 80 € je kWh, höchstens 1.600 € je Anlage, und Dachanlagen über 10 kWp mit 150 € je kWp oberhalb von 10 kWp, höchstens 1.500 €, ohne PV-Pflicht nach § 23 KlimaG BW. Der Katalogeintrag bruehl-baden-umweltschutz stimmt mit der Richtlinie überein und ist an der Amtsquelle bestätigt. Für Balkonkraftwerke und Wärmepumpen gibt es keinen Zuschuss; die Heizungspumpen-Tauschaktion betrifft Umwälzpumpen, nicht Wärmepumpen. Kein Hinweis auf erschöpfte Mittel. Wiederprüfung zum Jahresende, weil die Richtlinie dann ausläuft.",
+    "searches": [
+      "Umwelt-Förderrichtlinien Gemeinde Brühl 2026 (Stand 18.11.2025) im Volltext gelesen, Abschnitte I–X (05.10.2026)",
+      "Förderübersicht ks-foerderungen und alle dort erfassten Unterseiten gelesen, Seitentext nach Ausschöpfungshinweis, Balkon/Stecker und Wärmepumpe durchsucht (05.10.2026)",
+      "Wegweiser-Eintrag „Förderung von Photovoltaikanlagen“ gelesen (05.10.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bruehl-baden.de/tools/downloads/?aktuelles=1575",
+        "finding": "Richtlinie 2026 Nr. IV a: „Stromspeicher für Strom aus Photovoltaikanlagen mit 80 € / kWh Speicherkapazität, maximal mit 1.600 € pro PV-Anlage“; IV b: „die Leistung über 10 kWpeak mit 150,- € pro kWpeak, maximal mit 1.500 €“; „gelten bis 31.12.2026“. Kein Abschnitt zu Balkonkraftwerken oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen",
+        "finding": "Übersichtsseite Förderungen: kein Hinweis auf ausgeschöpfte Mittel, keine Förderung für Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124/",
+        "finding": "Seite „Richtlinien für die Förderung von Umweltschutzmaßnahmen ab 01.01.2026“ mit Download der Richtlinie (dieselbe Datei wie aktuelles=1575)."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/",
+        "finding": "„Richtlinie der Gemeinde Brühl zur Förderung des Brühler Fahrrad-Trolley“ – nicht einschlägig."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420/",
+        "finding": "„Richtlinie der Gemeinde Brühl zur Förderung der Heizungspumpen-Tauschaktion“ – Umwälzpumpen, keine Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435/",
+        "finding": "„Gemeinde Brühl beteiligt sich mit 50 Euro an den Kosten“ für Energieberichte (CLIMAP) – Beratung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573/",
+        "finding": "„Die Gemeinde Brühl fördert … Photovoltaikanlagen mit einer Leistung von mehr als 10 kWpeak … 150,- € pro kWpeak, maximal mit 1.500 €“ – deckungsgleich mit der Richtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bruehl-baden.de/tools/downloads/?aktuelles=1575",
+        "disposition": "reviewed",
+        "reason": "Richtlinie 2026 im Volltext; Speicher- und PV-Zuschuss im Katalog bestätigt.",
+        "evidenceUrl": "https://www.bruehl-baden.de/tools/downloads/?aktuelles=1575"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht ohne Ausschöpfungshinweis.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124",
+        "disposition": "reviewed",
+        "reason": "Downloadseite derselben Richtlinie.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/2419",
+        "disposition": "replaced",
+        "reason": "Kurzadresse leitet auf die Trolley-Richtlinie weiter; durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419",
+        "disposition": "reviewed",
+        "reason": "Fahrrad-Trolley, nicht einschlägig.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420",
+        "disposition": "reviewed",
+        "reason": "Umwälzpumpentausch, keine Wärmepumpe.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435",
+        "disposition": "reviewed",
+        "reason": "Zuschuss zu Energieberichten, nicht einschlägig.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435/"
+      },
+      {
+        "url": "bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573",
+        "disposition": "reviewed",
+        "reason": "Wegweiser-Text zum PV-Zuschuss, deckungsgleich mit Richtlinie.",
+        "evidenceUrl": "https://www.bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573/"
+      }
+    ]
   }
 ]
