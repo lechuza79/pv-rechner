@@ -86111,5 +86111,855 @@
         "evidenceUrl": "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html"
       }
     ]
+  },
+  {
+    "regionId": "08226037",
+    "name": "Ketsch",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Ketsch zahlt nach allem, was auf ihrer Website und in Presseberichten steht, keine eigenen Zuschüsse an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle sechs bekannten Quellen sind allgemeine Texte des Landesportals service-bw zu Bundes-, Landes- und EU-Programmen. Die Klimaschutz- und Solarkataster-Seiten der Gemeinde nennen keinen Zuschuss. Die Solaraktivitäten der Gemeinde betreffen eigene Dächer (Solaroffensive) und eine Bürgerenergie-Anlage am Klärwerk.",
+    "searches": [
+      "05.10.2026: Alle sechs bekannten service-bw-Quellen auf ketsch.de abgerufen und gelesen",
+      "05.10.2026: Startseite ketsch.de, Navigation Umwelt und Natur, Seiten Klimaschutz, Klimaschutzkonzept und Solarkataster gelesen",
+      "05.10.2026: Suche auf ketsch.de nach Balkonkraftwerk (keine Ergebnisse), Steckersolar (keine Ergebnisse), Photovoltaik (10), Wärmepumpe (6), Förderrichtlinie (15), Klimaschutzfonds (keine Ergebnisse), Solar und Speicher; Trefferlisten durchgesehen, nur service-bw-Texte und Infoseiten",
+      "05.10.2026: Websuchen 'Ketsch Förderprogramm Balkonkraftwerk Gemeinde Zuschuss', 'Ketsch Zuschuss Photovoltaik Wärmepumpe Gemeinde Klimaschutz Förderung 2026', 'Ketsch Gemeinderat Balkonkraftwerke Förderung Steckersolar Zuschuss', 'Ketsch Förderprogramm Gemeinde Photovoltaik Speicher Zuschuss schwetzinger-zeitung', 'Ketsch Gemeinde fördert Bürger Zuschuss Solaranlage Balkonkraftwerk Ketscher Nachrichten': kein kommunales Programm gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ketsch.de/-/dienstleistungen/vbid1475",
+        "finding": "service-bw-Text zur Bundesförderung: „Die Bundesförderung für effiziente Gebäude (BEG) fasst frühere Förderprogramme … zusammen“. Kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ketsch.de/-/dienstleistungen/vbid6001927",
+        "finding": "service-bw-Text zur Bundesförderung der Energieberatung: „Anspruch auf eine Förderung in Höhe von 80 Prozent“. Nicht kommunal, kein PV/WP-Zuschuss."
+      },
+      {
+        "url": "https://www.ketsch.de/-/dienstleistungen/vbid6007739",
+        "finding": "Landesprogramm für Verwaltungsmitarbeitende: „Mitarbeitende in den Verwaltungen … als digitale Multiplikatoren auszubilden“. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.ketsch.de/-/lebenslagen/leb5000372",
+        "finding": "Lebenslage zu Landes-Förderbanken für Gründer: „L-Bank, Bürgschaftsbank Baden-Württemberg sowie Mittelständische Beteiligungsgesellschaft“. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.ketsch.de/-/lebenslagen/leb5000550",
+        "finding": "Lebenslage Auslandsaufenthalte: „Erasmus+ (2021 - 2027) ist das EU-Programm für allgemeine und berufliche Bildung“. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.ketsch.de/-/lebenslagen/leb5001819",
+        "finding": "Lebenslage E-Mobilität: „Das Ministerium für Verkehr Baden-Württemberg fördert … die Anschaffung von E-Fahrzeugen“. Landesförderung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.ketsch.de/startseite/umwelt-und-natur/klimaschutz.html",
+        "finding": "Klimaschutz-Leitbild der Gemeinde, allgemein „etwa durch die Förderung von erneuerbaren Energien“. Kein Zuschussprogramm, keine Beträge."
+      },
+      {
+        "url": "https://www.ketsch.de/startseite/umwelt-und-natur/solarkataster.html",
+        "finding": "Infoseite „Mit dem eigenen Dach Geld sparen!“ zum Solarkataster. Kein Hinweis auf einen Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.ketsch.de/site/ketsch-2024/search/3481303/index.html?query=Balkonkraftwerk",
+        "finding": "Seitensuche: „keine Ergebnisse“. Auch für Steckersolar und Klimaschutzfonds keine Ergebnisse."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ketsch.de/-/dienstleistungen/vbid1475",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zur Bundesförderung effiziente Gebäude (BEG), kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ketsch.de/-/dienstleistungen/vbid1475"
+      },
+      {
+        "url": "ketsch.de/-/dienstleistungen/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "service-bw-Text zur Bundesförderung der Energieberatung, nicht kommunal.",
+        "evidenceUrl": "https://www.ketsch.de/-/dienstleistungen/vbid6001927"
+      },
+      {
+        "url": "ketsch.de/-/dienstleistungen/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm Kommunale Digitallotsen, kein Bezug zu Energieförderung.",
+        "evidenceUrl": "https://www.ketsch.de/-/dienstleistungen/vbid6007739"
+      },
+      {
+        "url": "ketsch.de/-/lebenslagen/leb5000372",
+        "disposition": "reviewed",
+        "reason": "Lebenslage zu Landes-Förderbanken für Unternehmen, nicht einschlägig.",
+        "evidenceUrl": "https://www.ketsch.de/-/lebenslagen/leb5000372"
+      },
+      {
+        "url": "ketsch.de/-/lebenslagen/leb5000550",
+        "disposition": "reviewed",
+        "reason": "Lebenslage Auslandsaufenthalte (Erasmus+), nicht einschlägig.",
+        "evidenceUrl": "https://www.ketsch.de/-/lebenslagen/leb5000550"
+      },
+      {
+        "url": "ketsch.de/-/lebenslagen/leb5001819",
+        "disposition": "reviewed",
+        "reason": "Lebenslage E-Mobilitätsförderung des Landes, nicht einschlägig.",
+        "evidenceUrl": "https://www.ketsch.de/-/lebenslagen/leb5001819"
+      }
+    ]
+  },
+  {
+    "regionId": "08226063",
+    "name": "Plankstadt",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Plankstadt hat derzeit kein belegtes kommunales Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Auf einen CDU-Antrag zur Förderung privater Balkonkraftwerke beschloss der Gemeinderat am 19.02.2024 einstimmig nur, ein Gesamtkonzept zur Förderung des PV-Ausbaus erstellen zu lassen. Ein daraus entstandenes Programm ist auf der Website, in der Seitensuche und in Presseberichten nicht auffindbar. Das Projekt von 2023 (30 Balkonkraftwerke für Mieter der Gemeindewohnungen gegen geringes Entgelt) war eine Leihgabe der Gemeinde, kein Zuschuss für Privathaushalte.",
+    "searches": [
+      "05.10.2026: Alle sechs bekannten service-bw-Quellen auf plankstadt.de abgerufen und gelesen",
+      "05.10.2026: Startseite plankstadt.de, Seiten Umwelt- und Klimaschutz, Energie sparen und Klimaschutzkonzept gelesen",
+      "05.10.2026: Suche auf plankstadt.de nach Balkonkraftwerk (keine Ergebnisse), Steckersolar (keine Ergebnisse), Klimaschutzfonds (keine Ergebnisse), Photovoltaik (7), Wärmepumpe (5), Förderrichtlinie (15), Solar und Speicher; Trefferlisten durchgesehen",
+      "05.10.2026: Ratsinformationssystem gelesen: Sitzung ksinr=189 und Sitzungsvorlage SV/441/2023/4 (PDF) zum CDU-Antrag Balkonkraftwerke",
+      "05.10.2026: Schwetzinger Zeitung (Artikel 21.09.2023 und 04.03.2024) und ichmachs.jetzt-Projektseite gelesen",
+      "05.10.2026: Websuchen 'Plankstadt Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Gemeinde', 'Plankstadt Gemeinderat Förderung Photovoltaik private Gebäude Konzept…', 'Plankstadt Zuschuss Wärmepumpe Photovoltaik Gemeinde Förderrichtlinie 2025 2026', 'Plankstadt Photovoltaik Gesamtkonzept CDU Antrag Ergebnis…', 'plankstadt-sitzungsdienst Förderkonzept Photovoltaik private Haushalte': kein beschlossenes Programm gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.plankstadt.de/-/2261636/leb5000372",
+        "finding": "service-bw-Lebenslage zu Landes-Förderbanken (L-Bank, „Bürgschaftsbank“) für Unternehmen. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.plankstadt.de/-/2261636/leb5000550",
+        "finding": "service-bw-Lebenslage Auslandsaufenthalte („Erasmus+“). Nicht einschlägig."
+      },
+      {
+        "url": "https://www.plankstadt.de/-/2261636/leb5001645",
+        "finding": "„Durch das Landesgemeindeverkehrsfinanzierungsgesetz (LGVFG) werden Vorhaben … ÖPNV … gefördert“. Landesförderung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.plankstadt.de/-/2261640/vbid1475",
+        "finding": "service-bw-Text „Bundesförderung für effiziente Gebäude (BEG)“. Bundesprogramm, kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.plankstadt.de/-/2261640/vbid6001927",
+        "finding": "Bundesförderung Energieberatung: „Anspruch auf eine Förderung in Höhe von 80 Prozent“. Nicht kommunal."
+      },
+      {
+        "url": "https://www.plankstadt.de/-/2261640/vbid6007739",
+        "finding": "Landesprogramm Kommunale Digitallotsen („digitale Multiplikatoren“). Nicht einschlägig."
+      },
+      {
+        "url": "https://plankstadt-sitzungsdienst.komm.one/bi/getfile.asp?id=12342&type=do",
+        "finding": "Sitzungsvorlage SV/441/2023/4 vom 09.02.2024, Beschlussvorschlag: „Der Gemeinderat beauftragt die Verwaltung, zunächst ein Gesamtkonzept zur Förderung des Photovoltaikausbaus … zu erstellen“. Kein Förderbetrag beschlossen."
+      },
+      {
+        "url": "https://plankstadt-sitzungsdienst.komm.one/bi/si0057.asp?__ksinr=189",
+        "finding": "TOP Ö 14 „Antrag zur Förderung privater Balkonkraftwerke – Beschluss: Einstimmig beschlossen“, laut Vorlage nur der Konzeptauftrag."
+      },
+      {
+        "url": "https://www.ichmachs.jetzt/was-laeuft-denn-schon/plankstadt-balkonkraftwerke-fuer-mieter",
+        "finding": "„Was: Leihgabe von Balkonkraftwerken Wann: 2023“; „30 Balkonkraftwerke … den Mieterinnen und Mietern ihrer Gemeindewohnungen … gegen ein geringes Entgelt“; „nach kurzer Zeit vergeben“. Kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.plankstadt.de/home/unsere+gemeinde/umwelt-+und+klimaschutz.html",
+        "finding": "Seite Umwelt- und Klimaschutz mit Infoveranstaltung zu GEG und Heizungen, erwähnt nur Förderungen allgemein („unter Inanspruchnahme der Förderungen“). Kein kommunales Programm."
+      },
+      {
+        "url": "https://www.plankstadt.de/site/Plankstadt2018/search/2235044/index.html?query=Balkonkraftwerk",
+        "finding": "Seitensuche: „keine Ergebnisse“. Auch für Steckersolar und Klimaschutzfonds keine Ergebnisse."
+      }
+    ],
+    "sources": [
+      {
+        "url": "plankstadt.de/-/2261636/leb5000372",
+        "disposition": "reviewed",
+        "reason": "service-bw-Lebenslage zu Förderbanken für Unternehmen, nicht einschlägig.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261636/leb5000372"
+      },
+      {
+        "url": "plankstadt.de/-/2261636/leb5000550",
+        "disposition": "reviewed",
+        "reason": "service-bw-Lebenslage Auslandsaufenthalte, nicht einschlägig.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261636/leb5000550"
+      },
+      {
+        "url": "plankstadt.de/-/2261636/leb5001645",
+        "disposition": "reviewed",
+        "reason": "Landesförderung Mobilität nach LGVFG, nicht einschlägig.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261636/leb5001645"
+      },
+      {
+        "url": "plankstadt.de/-/2261640/vbid1475",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zur Bundesförderung BEG, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261640/vbid1475"
+      },
+      {
+        "url": "plankstadt.de/-/2261640/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung Energieberatung, nicht kommunal.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261640/vbid6001927"
+      },
+      {
+        "url": "plankstadt.de/-/2261640/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm Kommunale Digitallotsen, nicht einschlägig.",
+        "evidenceUrl": "https://www.plankstadt.de/-/2261640/vbid6007739"
+      }
+    ]
+  },
+  {
+    "regionId": "08226106",
+    "name": "Helmstadt-Bargen",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Helmstadt-Bargen hat kein auffindbares kommunales Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutz-Seite der Gemeinde verweist nur auf die Kreiskampagne „Ich.Machs.Jetzt.“ und den Netzmonitor. Die Seitensuche findet weder Balkonkraftwerk, Steckersolar noch Klimaschutzfonds. Ein in Zusammenfassungen der Websuche behaupteter „Kommunaler Klimaschutzfonds“ (bis 10 %, max. 10.000 €) steht auf keiner gelesenen Seite, auch nicht auf den Energieberater-Seiten, auf die die Suche verwies. Die Angabe ist damit unbelegt.",
+    "searches": [
+      "05.10.2026: Alle sechs bekannten service-bw-Quellen auf helmstadt-bargen.de abgerufen und gelesen",
+      "05.10.2026: Startseite helmstadt-bargen.de, Klimaschutz-Seite (/pb/2764024.html), Links und Partner sowie Aktuelles gelesen",
+      "05.10.2026: Suche auf helmstadt-bargen.de nach Balkonkraftwerk, Steckersolar und Klimaschutzfonds (je keine Ergebnisse), Photovoltaik (20), Wärmepumpe (9), Förderrichtlinie (15), Solar und Speicher; Trefferlisten durchgesehen, nur service-bw-Texte, Bebauungspläne und Infoseiten",
+      "05.10.2026: Energieberater-Seiten enwendo.de (helmstadt-bargen und helmstadt) sowie energie-bw.com gelesen und im Quelltext nach ‚Klimaschutzfonds‘ durchsucht: 0 Treffer",
+      "05.10.2026: Websuchen 'Helmstadt-Bargen Förderung Photovoltaik Balkonkraftwerk Gemeinde Zuschuss', '\"Klimaschutzfonds\" \"Helmstadt-Bargen\"', 'Helmstadt-Bargen Gemeinderat Zuschuss …', 'Helmstadt-Bargen Nachrichtenblatt Förderung Balkonkraftwerk Zuschuss Gemeinde 2025', 'lokalmatador Helmstadt-Bargen Förderprogramm …': kein belegtes Programm",
+      "05.10.2026 (Hauptlauf, Gegenprüfung): Websuche „\"Helmstadt-Bargen\" Klimaschutzfonds Förderung“; die vier verlinkten Seiten (ee-experten.com, energie-bw.com, fs-energieberater.de, Herbstgruß des Bürgermeisters auf helmstadt-bargen.de) abgerufen und nach „Klimaschutzfonds“ und „10.000“ durchsucht: kein Treffer, die Angabe stammt nur aus der Suchzusammenfassung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132602/vbid1475",
+        "finding": "service-bw-Text „Bundesförderung für effiziente Gebäude (BEG)“. Kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132602/vbid6001927",
+        "finding": "Bundesförderung Energieberatung: „Anspruch auf eine Förderung in Höhe von 80 Prozent“. Nicht kommunal."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132602/vbid6007739",
+        "finding": "Landesprogramm Kommunale Digitallotsen („digitale Multiplikatoren“). Nicht einschlägig."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132610/leb5000372",
+        "finding": "service-bw-Lebenslage zu Landes-Förderbanken („Bürgschaftsbank“). Nicht einschlägig."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132610/leb5000550",
+        "finding": "service-bw-Lebenslage Auslandsaufenthalte („Erasmus+“). Nicht einschlägig."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/-/132610/leb5001819",
+        "finding": "„Das Ministerium für Verkehr Baden-Württemberg fördert … E-Fahrzeugen“. Landesförderung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/2764024.html",
+        "finding": "Klimaschutz-Seite der Gemeinde: „Bei uns findest du viele Tipps und Infos zum Klimaschutz speziell für den Rhein-Neckar-Kreis“ (Kampagne ichmachs.jetzt) plus Netzmonitor. Kein Förderprogramm."
+      },
+      {
+        "url": "https://www.helmstadt-bargen.de/pb/site/Helmstadt-Bargen/search/132557/index.html?query=Klimaschutzfonds",
+        "finding": "Seitensuche nach Klimaschutzfonds: „keine Ergebnisse“. Ebenso für Balkonkraftwerk und Steckersolar."
+      },
+      {
+        "url": "https://enwendo.de/energieberatung/helmstadt-bargen",
+        "finding": "Seite eines privaten Energieberaters mit Abschnitt „Welche regionalen Förderprogramme gibt es in Helmstadt-Bargen?“, der nur BEG/BAFA/KfW nennt. Das Wort „Klimaschutzfonds“ kommt im Quelltext nicht vor. Die Behauptung aus der Websuche ist unbelegt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "helmstadt-bargen.de/pb/-/132602/vbid1475",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Text zur Bundesförderung BEG, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132602/vbid1475"
+      },
+      {
+        "url": "helmstadt-bargen.de/pb/-/132602/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung Energieberatung, nicht kommunal.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132602/vbid6001927"
+      },
+      {
+        "url": "helmstadt-bargen.de/pb/-/132602/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm Kommunale Digitallotsen, nicht einschlägig.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132602/vbid6007739"
+      },
+      {
+        "url": "helmstadt-bargen.de/pb/-/132610/leb5000372",
+        "disposition": "reviewed",
+        "reason": "service-bw-Lebenslage zu Förderbanken für Unternehmen, nicht einschlägig.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132610/leb5000372"
+      },
+      {
+        "url": "helmstadt-bargen.de/pb/-/132610/leb5000550",
+        "disposition": "reviewed",
+        "reason": "service-bw-Lebenslage Auslandsaufenthalte, nicht einschlägig.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132610/leb5000550"
+      },
+      {
+        "url": "helmstadt-bargen.de/pb/-/132610/leb5001819",
+        "disposition": "reviewed",
+        "reason": "Lebenslage E-Mobilitätsförderung des Landes, nicht einschlägig.",
+        "evidenceUrl": "https://www.helmstadt-bargen.de/pb/-/132610/leb5001819"
+      }
+    ]
+  },
+  {
+    "regionId": "08226017",
+    "name": "Epfenbach",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Epfenbach hat kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle sechs erfassten Quellen sind allgemeine Texte des Landesportals service-bw (Förderbanken, Erasmus+, LGVFG, E-Mobilität des Landes, BEG beim BAFA, Digitallotsen). Die Seite zum Klimaschutzkonzept beschreibt nur das Konzept des GVV Waibstadt (2016/17) ohne Bürgerzuschüsse; die Websuche der Gemeinde findet zu Balkonkraftwerk und Steckersolar nichts.",
+    "searches": [
+      "05.10.2026: alle 6 erfassten Quellen auf epfenbach.de abgerufen und gelesen",
+      "05.10.2026: Startseite epfenbach.de und Seite Klimaschutzkonzept (/3223083) gelesen",
+      "05.10.2026: Suche auf der Website nach Förderung, Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Steckersolar, Klimaschutz",
+      "05.10.2026: Websuchen „Epfenbach Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ und „Epfenbach Nachrichtenblatt Förderung Photovoltaik Wärmepumpe Gemeinderat Zuschuss“: kein Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.epfenbach.de/-/225086/leb5000372",
+        "finding": "Landesportal-Text: „Das Land Baden-Württemberg und seine Förderbanken (L-Bank, Bürgschaftsbank …)“ – an Gründer und Unternehmen, kein Programm der Gemeinde."
+      },
+      {
+        "url": "https://www.epfenbach.de/-/225086/leb5000550",
+        "finding": "Landesportal-Text: „Erasmus+ (2021 - 2027) ist das EU-Programm für allgemeine und berufliche Bildung“ – nicht einschlägig."
+      },
+      {
+        "url": "https://www.epfenbach.de/-/225086/leb5001645",
+        "finding": "Landesportal-Text zum Landesgemeindeverkehrsfinanzierungsgesetz – Verkehrsförderung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.epfenbach.de/-/225086/leb5001819",
+        "finding": "Landesportal-Text: „Das Ministerium für Verkehr Baden-Württemberg fördert … E-Fahrzeugen“ – keine Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.epfenbach.de/-/225098/vbid1475",
+        "finding": "Landesportal-Text zur Bundesförderung für effiziente Gebäude (BEG) beim BAFA – kein Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.epfenbach.de/-/225098/vbid6007739",
+        "finding": "Landesportal-Text zu kommunalen Digitallotsen – Verwaltungsprogramm, nicht einschlägig."
+      },
+      {
+        "url": "https://www.epfenbach.de/3223083",
+        "finding": "„Klimaschutzkonzept für den Gemeindeverwaltungsverband (GVV) Waibstadt“, Laufzeit 01.02.2016 bis 31.01.2017 – keine Zuschüsse an Bürger."
+      },
+      {
+        "url": "https://www.epfenbach.de/site/Epfenbach-2025/search/210322/quickSearchResult.html?quicksearch=true&query=Balkonkraftwerk",
+        "finding": "Websuche der Gemeinde: kein Treffer für Balkonkraftwerk (ebenso Steckersolar); zu Photovoltaik nur das L-Bank-Förderdarlehen des Landes."
+      }
+    ],
+    "sources": [
+      {
+        "url": "epfenbach.de/-/225086/leb5000372",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu Förderbanken des Landes für Gründer/Unternehmen; kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225086/leb5000372"
+      },
+      {
+        "url": "epfenbach.de/-/225086/leb5000550",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu Erasmus+; nicht einschlägig.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225086/leb5000550"
+      },
+      {
+        "url": "epfenbach.de/-/225086/leb5001645",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zur Verkehrsförderung nach LGVFG; nicht einschlägig.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225086/leb5001645"
+      },
+      {
+        "url": "epfenbach.de/-/225086/leb5001819",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zur E-Mobilitätsförderung des Landes; nicht einschlägig.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225086/leb5001819"
+      },
+      {
+        "url": "epfenbach.de/-/225098/vbid1475",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zur BEG beim BAFA; keine Förderung der Gemeinde.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225098/vbid1475"
+      },
+      {
+        "url": "epfenbach.de/-/225098/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu kommunalen Digitallotsen; nicht einschlägig.",
+        "evidenceUrl": "https://www.epfenbach.de/-/225098/vbid6007739"
+      }
+    ]
+  },
+  {
+    "regionId": "08226104",
+    "name": "Lobbach",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lobbach hat kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Förderseite der Gemeinde nennt nur Landessanierungsprogramm (LSP), ELR und Klimaberatungstermine; die übrigen Quellen sind allgemeine Landesportal-Texte. Treffer zu Balkonkraftwerken im Amtsblatt Elsenztal sind nur Energiespartipps mit dem allgemeinen Hinweis, viele Kommunen förderten.",
+    "searches": [
+      "05.10.2026: alle 5 erfassten Quellen auf lobbach.de abgerufen und gelesen; Förderseite selbst gegengeprüft",
+      "05.10.2026: Startseite und Seite Kommunale Wärmeplanung gelesen",
+      "05.10.2026: Suche auf der Website nach Balkonkraftwerk, Balkon, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Steckersolar, Solar",
+      "05.10.2026: Amtsblatt Elsenztal KW 9 und KW 14/2026 nach Förderhinweisen durchsucht",
+      "05.10.2026: Websuchen nach Gemeinderatsbeschluss/Zuschuss Balkonkraftwerk Photovoltaik Lobbach: kein Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lobbach.de/wirtschaft-handel/foerderprogramme",
+        "finding": "Förderseite der Gemeinde nennt nur „Landessanierungsprogramm (LSP)“, ELR und Klimaberatung – kein Zuschuss für PV, Balkonkraftwerk oder Wärmepumpe (am 05.10.2026 selbst gegengeprüft)."
+      },
+      {
+        "url": "https://www.lobbach.de/rathaus-service/buergerservice/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "finding": "Landesportal-Text zu kommunalen Digitallotsen – nicht einschlägig."
+      },
+      {
+        "url": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler",
+        "finding": "Landesportal-Text zu Beratungs- und Fördermaßnahmen für Freiberufler – nicht einschlägig."
+      },
+      {
+        "url": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen",
+        "finding": "Landesportal-Text zu Innovationsgutscheinen für Unternehmen – nicht einschlägig."
+      },
+      {
+        "url": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "finding": "Landesportal-Text zu Erasmus+ – nicht einschlägig."
+      },
+      {
+        "url": "https://www.lobbach.de/fileadmin/Dateien/Website/Dateien/Amtsblatt/Amtsblatt_GVV_2026_KW_14_Lobbach.pdf",
+        "finding": "Energiespartipp zu Stecker-Solargeräten: „In vielen Kommunen gibt es Förderprogramme in Form von Zuschüssen.“ – kein Programm Lobbachs."
+      },
+      {
+        "url": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "finding": "Am 05.10.2026 im Hauptlauf gelesen: Landesportal-Lebenslage „Das Land Baden-Württemberg und seine Förderbanken (L-Bank, Bürgschaftsbank …)“ für Gründer und Mittelstand; kein Programm der Gemeinde, keine PV-, Balkon- oder Wärmepumpenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lobbach.de/rathaus-service/buergerservice/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu kommunalen Digitallotsen; nicht einschlägig.",
+        "evidenceUrl": "https://www.lobbach.de/rathaus-service/buergerservice/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen"
+      },
+      {
+        "url": "lobbach.de/rathaus-service/buergerservice/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu Gründungshilfen für Freiberufler; nicht einschlägig.",
+        "evidenceUrl": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000198/beratung-und-foerdermassnahmen-fuer-freiberufler"
+      },
+      {
+        "url": "lobbach.de/rathaus-service/buergerservice/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu Innovationsförderung für Unternehmen; nicht einschlägig.",
+        "evidenceUrl": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000542/foerdermassnahmen-und-finanzielle-hilfen"
+      },
+      {
+        "url": "lobbach.de/rathaus-service/buergerservice/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu Erasmus+; nicht einschlägig.",
+        "evidenceUrl": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte"
+      },
+      {
+        "url": "lobbach.de/wirtschaft-handel/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderseite; nur LSP, ELR und Klimaberatung, keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.lobbach.de/wirtschaft-handel/foerderprogramme"
+      },
+      {
+        "url": "lobbach.de/rathaus-service/buergerservice/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Lebenslage zu Förderbanken des Landes für Gründer und Unternehmen; nicht einschlägig.",
+        "evidenceUrl": "https://www.lobbach.de/rathaus-service/buergerservice/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "08226086",
+    "name": "Spechbach",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Spechbach hat kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Startseite und Landesportal-Texte nennen keines; die Websuche der Gemeinde findet zu Balkonkraftwerk/Steckersolar nichts, zu Photovoltaik und Wärmepumpe nur Landes- und Bundestexte. Im Haushaltsplan 2026 steht unter Klimaschutzmaßnahmen nur die Erstellung eines Klimaschutzkonzepts (3.000 €). Ein Suchmaschinen-Snippet über einen Wärmepumpenzuschuss der Gemeinde ist am Original widerlegt (Landesportal-Text zur BEG beim BAFA).",
+    "searches": [
+      "05.10.2026: alle 3 erfassten Quellen (Startseite, zwei service-bw-Seiten) abgerufen und gelesen",
+      "05.10.2026: Suche auf der Website nach Balkonkraftwerk, Balkon, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Steckersolar, Solar",
+      "05.10.2026: Amtsblatt KW 39/2026 und Haushaltsplan 2026 nach Förderansätzen durchsucht",
+      "05.10.2026: Websuchen „Spechbach Gemeinde Förderung Balkonkraftwerk Steckersolar Wärmepumpe Zuschuss“ und Gemeinderatsbeschluss Förderprogramm: kein Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.spechbach.de/startseite",
+        "finding": "Startseite (Weiterleitung von spechbach.de) gelesen: kein Förder- oder Klimaschutzprogramm für Bürger."
+      },
+      {
+        "url": "https://www.spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen",
+        "finding": "Landesportal-Text: „richtet sich an Arbeitgeberinnen und Arbeitgeber mit Sitz in Baden-Württemberg“ – nicht einschlägig."
+      },
+      {
+        "url": "https://www.spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "finding": "Landesportal-Text zu kommunalen Digitallotsen – nicht einschlägig."
+      },
+      {
+        "url": "https://www.spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/1475/massnahmen-zur-nutzung-erneuerbarer-energien-foerderung-beantragen",
+        "finding": "Landesportal-Text zur BEG, „Zuständigkeit Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA)“ – kein Wärmepumpenzuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.spechbach.de/fileadmin/Dateien/Dokumente/Haushalt___Finanzen/HH-Plan_2026_Endfassung.pdf",
+        "finding": "Haushaltsplan 2026, Klimaschutzmaßnahmen: „Erstellung Klimaschutzkonzept 3.000 €“ – kein Ansatz für Zuschüsse an Privatleute."
+      }
+    ],
+    "sources": [
+      {
+        "url": "spechbach.de",
+        "disposition": "reviewed",
+        "reason": "Startseite gelesen; kein Förderprogramm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.spechbach.de/startseite"
+      },
+      {
+        "url": "spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zum Mobilitätsmanagement für Arbeitgeber; nicht einschlägig.",
+        "evidenceUrl": "https://www.spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen"
+      },
+      {
+        "url": "spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Text zu kommunalen Digitallotsen; nicht einschlägig.",
+        "evidenceUrl": "https://www.spechbach.de/rathaus-service/buergerservice/dienstleistungen-aus-service-bw/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen"
+      }
+    ]
+  },
+  {
+    "regionId": "08226068",
+    "name": "Reilingen",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Seite 'Umweltförderprogramme' der Gemeinde Reilingen nennt am 05.10.2026 nur Zuschüsse für elektrische Hof-/Garagentorantriebe, (E-)Lastenräder/-anhänger, die kostenfreie KLiBA-PV-Beratung und einen Zuschuss zum Thermografie-Paket; keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Ein Zeitungsartikel vom 11.04.2023 kündigte nur an, dass es 'möglicherweise demnächst' einen Gemeindezuschuss für Balkonkraftwerke geben könnte; ein Beschluss oder Programm dazu ist weder auf der Gemeindeseite noch in den Suchergebnissen zu finden.",
+    "searches": [
+      "05.10.2026: Bekannte Quelle reilingen.de/.../foerderprogramme vollständig gelesen",
+      "05.10.2026: Startseite reilingen.de und Navigation 'Umwelt & Lokale Agenda' / 'Bauen & Wohnen' durchgesehen; Seiten Regenerative Energien, Heizalternativen, Solaranlagen eintragen, Energieberatung gelesen",
+      "05.10.2026: Websuche 'Reilingen Förderprogramm Balkonkraftwerk Zuschuss Gemeinde'",
+      "05.10.2026: Websuche 'Reilingen Gemeinderat Balkonkraftwerke Förderung beschlossen'",
+      "05.10.2026: Websuche 'Reilingen Steckersolar Zuschuss 2026'",
+      "05.10.2026: Websuche zu Gemeinderatsbeschluss Balkonkraftwerk-Zuschuss Reilingen 2023 (ohne Treffer)",
+      "05.10.2026: Artikel der Schwetzinger Zeitung vom 11.04.2023 zur möglichen Balkonkraftwerk-Förderung gelesen",
+      "05.10.2026: Ein Suchfeld auf reilingen.de wurde nicht gefunden (nur Sprunganker '#suchbereich'), daher nur über die Navigation gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.reilingen.de/de/buergerinfo/umwelt-lokale-agenda/foerderprogramme",
+        "finding": "Seite 'Umweltförderprogramme' (HTTP 200): nur 'Elektrische Garagen- und Hoftorantriebe werden gefördert', Lastenräder ('höchstens jedoch 250 Euro für Lastenräder'), kostenfreie KLiBA-PV-Beratung und Thermografie-Zuschuss 60 €. Kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.reilingen.de/de/leben/bauen-wohnen/energieberatung",
+        "finding": "KLiBA-Energieberatung; einziger Gemeindezuschuss: 'Die Gemeindeverwaltung Reilingen bezuschusst das Thermografie-Paket der AVR Energie-GmbH.'"
+      },
+      {
+        "url": "https://www.reilingen.de/de/buergerinfo/umwelt-lokale-agenda/regenerative-energien",
+        "finding": "Informations- und Linkseite zu erneuerbaren Energien (u. a. Link 'Unternehmensvereinigung Solarwirtschaft e.V. - Solarförderung'); kein kommunales Förderprogramm."
+      },
+      {
+        "url": "https://www.schwetzinger-zeitung.de/orte/reilingen_artikel,-reilingen-balkon-wird-zur-energiequelle-foerderung-fuer-balkonkraftwerke-in-reilingen-_arid,2071420.html",
+        "finding": "Artikel vom 11.4.2023: 'Für die Anschaffung derartiger Module gibt es möglicherweise demnächst einen Gemeindezuschuss.' Nur eine Absicht; auf der aktuellen Förderseite steht kein solches Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "reilingen.de/de/buergerinfo/umwelt-lokale-agenda/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Offizielle Förderseite der Gemeinde, am 05.10.2026 erneut gelesen: nur Torantriebe, Lastenräder, PV-Beratung, Thermografie – keine PV-/Speicher-/Balkon-/Wärmepumpenförderung.",
+        "evidenceUrl": "https://www.reilingen.de/de/buergerinfo/umwelt-lokale-agenda/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "08226058",
+    "name": "Neidenstein",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle bekannten Quellen sind entweder der Hinweis auf die kostenfreie KLiBA-Energieberatung oder allgemeine service-bw-Einträge des Landesportals (Mobilitätsmanagement, Digitallotsen, Breitband, Baufinanzierung, Auslandsaufenthalte, LGVFG, Fördermaßnahmen für Unternehmen). Die Website-Suche nach Förderung, Förderprogramm, Balkon, Photovoltaik, Wärmepumpe und Steckersolar ergab nur Bebauungspläne, Landesportal-Einträge (z. B. L-Bank-Förderdarlehen PV) und die KLiBA-Seite. Ein eigener Zuschuss der Gemeinde für PV, Speicher, Balkonkraftwerke oder Wärmepumpen ist nicht erkennbar.",
+    "searches": [
+      "05.10.2026: Alle 8 bekannten Quell-URLs auf neidenstein.de abgerufen und gelesen (alle HTTP 200)",
+      "05.10.2026: Startseite neidenstein.de, Navigation 'Leben & Wohnen / Bauen' durchgesehen",
+      "05.10.2026: Website-Suche (tx_solr) nach 'Förderung', 'Förderprogramm', 'Zuschuss', 'Balkon', 'Photovoltaik', 'Wärmepumpe', 'Steckersolar' (Steckersolar: keine Treffer)",
+      "05.10.2026: Websuche 'Neidenstein Förderung Photovoltaik Balkonkraftwerk Gemeinde Zuschuss'",
+      "05.10.2026: Websuche 'Neidenstein Förderprogramm Gemeinde Klimaschutz Zuschuss Wärmepumpe Steckersolar' (keine relevanten Treffer)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/aktuelles/18/kliba-energieberatung",
+        "finding": "Hinweis auf kostenfreie KLiBA-Initialberatung: 'Nutzen Sie die kostenfreie Serviceleistung Ihrer Kommune!' Nur Beratung, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen",
+        "finding": "Landesportal-Eintrag: Förderprogramm B²MM 'richtet sich an Arbeitgeberinnen und Arbeitgeber mit Sitz in Baden-Württemberg'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "finding": "Landesportal-Eintrag: Ziel ist, 'Mitarbeitende in den Verwaltungen … als digitale Multiplikatoren auszubilden'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6024811/breitbandvorhaben-foerdermittel-abrechnen",
+        "finding": "Landesportal-Eintrag: 'Das Land fördert den kommunalen Breitbandausbau in Baden-Württemberg'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000345/baufinanzierung-und-foerderungen",
+        "finding": "Landesportal-Lebenslage: 'Im Rahmen der Förderprogramme von Bund und Land können Sie beim Bau…' unterstützt werden. Keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000542/beschreibung",
+        "finding": "Landesportal-Lebenslage 'Fördermaßnahmen und finanzielle Hilfen': 'Baden-Württemberg gibt Innovationsgutscheine an kleine und mittlere Unternehmen aus.' Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "finding": "Landesportal-Lebenslage zu Erasmus+: 'das EU-Programm für allgemeine und berufliche Bildung, Jugend und Sport'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5001645/landesgemeindeverkehrsfinanzierungsgesetz",
+        "finding": "Landesportal-Eintrag zum LGVFG: Förderung von Vorhaben in 'öffentlicher Personennahverkehr (ÖPNV), Rad- und Fußverkehr und Straßenbau'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "finding": "Am 05.10.2026 im Hauptlauf gelesen: Landesportal-Lebenslage „Das Land Baden-Württemberg und seine Förderbanken (L-Bank, Bürgschaftsbank …)“ für Gründer und Mittelstand; kein Programm der Gemeinde, keine PV-, Balkon- oder Wärmepumpenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neidenstein.de/de/rathaus-service/aktuelles/18/kliba-energieberatung",
+        "disposition": "reviewed",
+        "reason": "KLiBA-Beratungshinweis der Gemeinde; nur kostenfreie Beratung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/aktuelles/18/kliba-energieberatung"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zu einem Landesprogramm für Arbeitgeber; nicht kommunal, nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6006897/betriebliches-und-behoerdliches-mobilitaetsmanagement-foerderung-beantragen"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zum Landesprogramm Digitallotsen für Verwaltungen; nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6007739/foerderprogramm-kommunale-digitallotsen-weitergabevertrag-abschliessen"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6024811/breitbandvorhaben-foerdermittel-abrechnen",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zur Breitbandförderung des Landes für Kommunen; nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/dienstleistungen/6024811/breitbandvorhaben-foerdermittel-abrechnen"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000345/baufinanzierung-und-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zu Bundes- und Landesförderung für Wohneigentum; keine kommunale Förderung.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000345/baufinanzierung-und-foerderungen"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000542/beschreibung",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zu Fördermaßnahmen für Unternehmen (Innovationsgutscheine); nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000542/beschreibung"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zu Erasmus+ und Auslandsaufenthalten; nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000550/foerderprogramme-fuer-auslandsaufenthalte"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5001645/landesgemeindeverkehrsfinanzierungsgesetz",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zur LGVFG-Verkehrsförderung für Kommunen; nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5001645/landesgemeindeverkehrsfinanzierungsgesetz"
+      },
+      {
+        "url": "neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Landesportal-Lebenslage zu Förderbanken des Landes für Gründer und Unternehmen; nicht einschlägig.",
+        "evidenceUrl": "https://www.neidenstein.de/de/rathaus-service/buergerdienste/lebenslagen/5000372/finanzielle-hilfen-und-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "08226006",
+    "name": "Bammental",
+    "checkedAt": "2026-10-05T14:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle sechs bekannten Quellen sind allgemeine service-bw-Einträge des Landesportals (Mobilitätsmanagement, Digitallotsen, LuKIFG-Kommunalinfrastruktur, Baufinanzierung, Finanzhilfen für Unternehmen, Förderung Elektromobilität des Verkehrsministeriums). Der Klimaschutzbereich der Gemeinde (Klimaschutzziele, Thermografie-Aktion, Wärmeplanung, Klimaschutz RNK, KLiBA-Energieberatung) und die Website-Suche nach Photovoltaik, Balkon, Wärmepumpe, Steckersolar, Pellet und Solarthermie zeigen kein eigenes Zuschussprogramm der Gemeinde für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Ein Suchmaschinen-Auszug behauptete Pauschalzuschüsse der Gemeinde für Pellet und Solarthermie; die Website-Suche nach diesen Begriffen hat keine Treffer, die Behauptung ist also nicht belegt und beträfe ohnehin nicht die gefragten Techniken.",
+    "searches": [
+      "05.10.2026: Alle 6 bekannten Quell-URLs auf bammental.de abgerufen und gelesen (alle HTTP 200)",
+      "05.10.2026: Startseite bammental.de und Navigation 'Klimaschutz' gelesen: Klimaschutzziele, Thermografie-Aktion 2025/26, Klimaschutz RNK, Energieberatung KliBA, Zahlen & Fakten/Energie",
+      "05.10.2026: Website-Suche (tx_solr) nach 'Förderung', 'Förderprogramm', 'Zuschuss', 'Zuschüsse', 'Balkon', 'Photovoltaik', 'Wärmepumpe', 'Steckersolar', 'Pellet', 'Solarthermie', 'Stromspeicher'",
+      "05.10.2026: Websuche 'Bammental Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Gemeinde'",
+      "05.10.2026: Websuche 'Bammental Förderung Wärmepumpe Gemeinde Zuschuss Klimaschutz'"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=9870f7cedd2fae8bfbd2e464f30f9f36",
+        "finding": "service-bw-Eintrag B²MM: 'richtet sich an Arbeitgeberinnen und Arbeitgeber mit Sitz in Baden-Württemberg'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=66173c793a5a1b8485aa417e6f1eeb78",
+        "finding": "service-bw-Eintrag Digitallotsen: 'Mitarbeitende in den Verwaltungen … als digitale Multiplikatoren auszubilden'. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6028365&cHash=a8a87882fddd12bd8a6ce54ec8eb4cbe",
+        "finding": "service-bw-Eintrag LuKIFG: 'Antragstellerin und Zuwendungsempfängerin ist ausschließlich die jeweilige Kommune.' Nicht für Haushalte."
+      },
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000345&cHash=f1789ec750c30e09e2e07ce33412eb38",
+        "finding": "service-bw-Lebenslage Baufinanzierung: 'Im Rahmen der Förderprogramme von Bund und Land können Sie…' unterstützt werden. Keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000372&cHash=91f9c36fcc522462f0beb22ce7f229aa",
+        "finding": "service-bw-Lebenslage 'Finanzielle Hilfen und Förderprogramme': Programme von 'L-Bank, Bürgschaftsbank Baden-Württemberg' für Gründer und Mittelstand. Nicht einschlägig."
+      },
+      {
+        "url": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=48f812e14d6e4a8ba4ca9868e4281189",
+        "finding": "service-bw-Lebenslage 'Förderung Elektromobilität': 'Das Ministerium für Verkehr Baden-Württemberg fördert mit verschiedenen Förderprogrammen…'. Landesförderung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.bammental.de/gemeinde-bammental/klimaschutz/energieberatung-kliba",
+        "finding": "KLiBA berät 'im Auftrag der Gemeinde Bammental alle Bürger … kostenfrei'; nur Beratung, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.bammental.de/gemeinde-bammental/klimaschutz/klimaschutzziele",
+        "finding": "Klimaschutzkonzept-Seite (NKI-gefördertes Projekt '1. April 2023 bis 31. März 2025'); kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&amp;cHash=9870f7cedd2fae8bfbd2e464f30f9f36",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zum Landesprogramm Mobilitätsmanagement für Arbeitgeber; nicht einschlägig.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=9870f7cedd2fae8bfbd2e464f30f9f36"
+      },
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&amp;cHash=66173c793a5a1b8485aa417e6f1eeb78",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag zum Landesprogramm Digitallotsen; nicht einschlägig.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=66173c793a5a1b8485aa417e6f1eeb78"
+      },
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6028365&amp;cHash=a8a87882fddd12bd8a6ce54ec8eb4cbe",
+        "disposition": "reviewed",
+        "reason": "Allgemeiner service-bw-Eintrag LuKIFG (Förderung kommunaler Infrastruktur, Empfänger nur Kommunen); nicht einschlägig.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6028365&cHash=a8a87882fddd12bd8a6ce54ec8eb4cbe"
+      },
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000345&amp;cHash=f1789ec750c30e09e2e07ce33412eb38",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zu Bundes- und Landesförderung für Wohneigentum; keine kommunale Förderung.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000345&cHash=f1789ec750c30e09e2e07ce33412eb38"
+      },
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000372&amp;cHash=91f9c36fcc522462f0beb22ce7f229aa",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zu Finanzhilfen für Gründer/Mittelstand (L-Bank etc.); nicht einschlägig.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5000372&cHash=91f9c36fcc522462f0beb22ce7f229aa"
+      },
+      {
+        "url": "bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&amp;cHash=48f812e14d6e4a8ba4ca9868e4281189",
+        "disposition": "reviewed",
+        "reason": "Allgemeine service-bw-Lebenslage zur Elektromobilitätsförderung des Landes; nicht kommunal, nicht einschlägig.",
+        "evidenceUrl": "https://www.bammental.de/verwaltung-gemeinderat/rathaus-service/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=48f812e14d6e4a8ba4ca9868e4281189"
+      }
+    ]
+  },
+  {
+    "regionId": "08226009",
+    "name": "Brühl",
+    "checkedAt": "2026-10-05T14:38:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Brühl (Baden) fördert nach den Umwelt-Förderrichtlinien 2026 (gültig 01.01.–31.12.2026) Stromspeicher zu PV-Anlagen mit 80 € je kWh, höchstens 1.600 € je Anlage, und Dachanlagen über 10 kWp mit 150 € je kWp oberhalb von 10 kWp, höchstens 1.500 €, ohne PV-Pflicht nach § 23 KlimaG BW. Der Katalogeintrag bruehl-baden-umweltschutz stimmt mit der Richtlinie überein und ist an der Amtsquelle bestätigt. Für Balkonkraftwerke und Wärmepumpen gibt es keinen Zuschuss; die Heizungspumpen-Tauschaktion betrifft Umwälzpumpen, nicht Wärmepumpen. Kein Hinweis auf erschöpfte Mittel. Wiederprüfung zum Jahresende, weil die Richtlinie dann ausläuft.",
+    "searches": [
+      "Umwelt-Förderrichtlinien Gemeinde Brühl 2026 (Stand 18.11.2025) im Volltext gelesen, Abschnitte I–X (05.10.2026)",
+      "Förderübersicht ks-foerderungen und alle dort erfassten Unterseiten gelesen, Seitentext nach Ausschöpfungshinweis, Balkon/Stecker und Wärmepumpe durchsucht (05.10.2026)",
+      "Wegweiser-Eintrag „Förderung von Photovoltaikanlagen“ gelesen (05.10.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bruehl-baden.de/tools/downloads/?aktuelles=1575",
+        "finding": "Richtlinie 2026 Nr. IV a: „Stromspeicher für Strom aus Photovoltaikanlagen mit 80 € / kWh Speicherkapazität, maximal mit 1.600 € pro PV-Anlage“; IV b: „die Leistung über 10 kWpeak mit 150,- € pro kWpeak, maximal mit 1.500 €“; „gelten bis 31.12.2026“. Kein Abschnitt zu Balkonkraftwerken oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen",
+        "finding": "Übersichtsseite Förderungen: kein Hinweis auf ausgeschöpfte Mittel, keine Förderung für Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124/",
+        "finding": "Seite „Richtlinien für die Förderung von Umweltschutzmaßnahmen ab 01.01.2026“ mit Download der Richtlinie (dieselbe Datei wie aktuelles=1575)."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/",
+        "finding": "„Richtlinie der Gemeinde Brühl zur Förderung des Brühler Fahrrad-Trolley“ – nicht einschlägig."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420/",
+        "finding": "„Richtlinie der Gemeinde Brühl zur Förderung der Heizungspumpen-Tauschaktion“ – Umwälzpumpen, keine Wärmepumpen."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435/",
+        "finding": "„Gemeinde Brühl beteiligt sich mit 50 Euro an den Kosten“ für Energieberichte (CLIMAP) – Beratung, nicht einschlägig."
+      },
+      {
+        "url": "https://www.bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573/",
+        "finding": "„Die Gemeinde Brühl fördert … Photovoltaikanlagen mit einer Leistung von mehr als 10 kWpeak … 150,- € pro kWpeak, maximal mit 1.500 €“ – deckungsgleich mit der Richtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bruehl-baden.de/tools/downloads/?aktuelles=1575",
+        "disposition": "reviewed",
+        "reason": "Richtlinie 2026 im Volltext; Speicher- und PV-Zuschuss im Katalog bestätigt.",
+        "evidenceUrl": "https://www.bruehl-baden.de/tools/downloads/?aktuelles=1575"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht ohne Ausschöpfungshinweis.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124",
+        "disposition": "reviewed",
+        "reason": "Downloadseite derselben Richtlinie.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/richtlinien-fuer-die-foerderung-von-umweltschutzmassnahmen-ab-01012026-id_3124/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/2419",
+        "disposition": "replaced",
+        "reason": "Kurzadresse leitet auf die Trolley-Richtlinie weiter; durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419",
+        "disposition": "reviewed",
+        "reason": "Fahrrad-Trolley, nicht einschlägig.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-bruehler-fahrrad-trolley-id_2419/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420",
+        "disposition": "reviewed",
+        "reason": "Umwälzpumpentausch, keine Wärmepumpe.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/foerderrichtlinie-heizungspumpentausch-id_2420/"
+      },
+      {
+        "url": "bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435",
+        "disposition": "reviewed",
+        "reason": "Zuschuss zu Energieberichten, nicht einschlägig.",
+        "evidenceUrl": "https://www.bruehl-baden.de/umweltundklimaschutz/ks-foerderungen/zuschuss-der-gemeinde-bruehl-fuer-energieberichte-ueber-das-innovationsprojekt-climap-der-mvv-regioplan-gmbh-id_2435/"
+      },
+      {
+        "url": "bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573",
+        "disposition": "reviewed",
+        "reason": "Wegweiser-Text zum PV-Zuschuss, deckungsgleich mit Richtlinie.",
+        "evidenceUrl": "https://www.bruehl-baden.de/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573/"
+      }
+    ]
   }
 ]
