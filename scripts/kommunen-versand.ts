@@ -316,7 +316,6 @@ function sperreNehmen(): () => void {
 
 async function kontaktPruefung(briefe: Brief[]): Promise<Map<string, V2Urteil>> {
   const out = outDir();
-  const now = new Date();
   const urteile = new Map<string, V2Urteil>();
   // Proven by hand or by the follow-up search: recheck the publishing page here.
   const ueberContactSuche: Brief[] = [];
@@ -325,7 +324,8 @@ async function kontaktPruefung(briefe: Brief[]): Promise<Map<string, V2Urteil>> 
     if (beleg && beleg.email.toLowerCase() === b.empfaenger.trim().toLowerCase()) {
       const recheck = await handbelegNachpruefen(b.region_id, beleg);
       if (!recheck.ok) console.log(`✗ ${b.region_id} ${b.empfaenger} — ${recheck.reason}`);
-      urteile.set(b.region_id, v2Urteil(b.empfaenger, null, { ...recheck }, "", now, RECHECK_MAX_AGE_DAYS, beleg));
+      // "now" AFTER the recheck: a check stamped later than "now" counts as negative age.
+      urteile.set(b.region_id, v2Urteil(b.empfaenger, null, { ...recheck }, "", new Date(), RECHECK_MAX_AGE_DAYS, beleg));
     } else ueberContactSuche.push(b);
   }
   if (!ueberContactSuche.length) return urteile;
@@ -340,6 +340,7 @@ async function kontaktPruefung(briefe: Brief[]): Promise<Map<string, V2Urteil>> 
   }
   const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
   const rules = rulesVersion();
+  const now = new Date();
   for (const b of ueberContactSuche) {
     urteile.set(b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS));
   }
