@@ -11127,7 +11127,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Müden (Aller)", level: "kommune", region: "Müden (Aller)",
     bundesland: "Niedersachsen", agsCode: "03151018",
     url: "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026",
+    // 05.10.2026: guideline PDF (fid 4019.105.1) blocked in 3 runs (403/"nA"),
+    // programme page read live and unchanged (application window 01.04.–31.12.2026,
+    // subject to funds). Amounts only stand in the guideline -> "unsicher" until read.
+    status: "unsicher", capped: true, verified: true,
     endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Haushalt, gestaffelt nach Anlagenleistung",

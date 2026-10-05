@@ -87141,5 +87141,109 @@
         "evidenceUrl": "https://www.waibstadt.de/unsere-stadt/wirtschaftstandort+waibstadt/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "08226036",
+    "name": "Ilvesheim",
+    "checkedAt": "2026-10-05T18:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Ilvesheim zahlt derzeit keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Seiten zu Stadtentwicklung und Umwelt (Klimaschutz, Gemeinwohl-PV-Anlage, Wärmeplanung, Energiemanagement) beschreiben kommunale Projekte und verweisen Bürger auf die KLiBA-Energieberatung. Die beiden Quellen des Vorrats sind Mitteilungsblatt-Meldungen zu einem Sanierungsgebiet und zu einer Landesförderung für eine Feldwegbrücke.",
+    "searches": [
+      "05.10.2026: ilvesheim.de Klimaschutz und Gemeinwohl-PV-Anlage gelesen, Umweltmenü der Startseite durchgesehen",
+      "05.10.2026: Websuche 'Ilvesheim Zuschuss/Förderprogramm Balkonkraftwerk Photovoltaik' ohne Treffer zu einem Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ilvesheim.de/gemeinde-wirtschaft/stadtentwicklung-umwelt/klimaschutz",
+        "finding": "Klimaschutzatlas und Ziele des Rhein-Neckar-Kreises; kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.ilvesheim.de/gemeinde-wirtschaft/stadtentwicklung-umwelt/gemeindewohl-pv-anlage-solarstrom-fuer-ilvesheim-und-gemeinnuetzige-projekte",
+        "finding": "Gemeinschafts-PV-Anlage der Gemeinde; kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/1420/sanierungsgebiet-noerdlich-des-kanals-satzung-und-foerderrichtlinien",
+        "finding": "Städtebauliches Sanierungsgebiet, keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/3168/feldwegbruecke-in-ilvesheim-land-foerdert-wichtigen-ausbau-der-verkehrssicherheit",
+        "finding": "Landesförderung für eine Brücke, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/1420/sanierungsgebiet-noerdlich-des-kanals-satzung-und-foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Städtebauliches Sanierungsgebiet, keine Förderung für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/1420/sanierungsgebiet-noerdlich-des-kanals-satzung-und-foerderrichtlinien"
+      },
+      {
+        "url": "ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/3168/feldwegbruecke-in-ilvesheim-land-foerdert-wichtigen-ausbau-der-verkehrssicherheit",
+        "disposition": "reviewed",
+        "reason": "Landesförderung für eine Brücke, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.ilvesheim.de/rathaus-service/mitteilungsblatt/amtliche-mitteilungen/3168/feldwegbruecke-in-ilvesheim-land-foerdert-wichtigen-ausbau-der-verkehrssicherheit"
+      }
+    ]
+  },
+  {
+    "regionId": "08226055",
+    "name": "Neckarbischofsheim",
+    "checkedAt": "2026-10-05T18:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Neckarbischofsheim zahlt derzeit keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Sitemap der Stadt (368 Seiten) enthält keine Seite zu einem Zuschuss oder Balkonkraftwerk; für Bürger nennt die Stadt nur die kostenlose KLiBA-Energieberatung mit Verweis auf Förderung von KfW, BAFA, Land und Kommune allgemein. Die Quelle des Vorrats ist der service-bw-Text zum Landesprogramm STÄRKE (Familienbildung).",
+    "searches": [
+      "05.10.2026: Sitemap neckarbischofsheim.de (368 Adressen) nach Klima, Energie, Umwelt, Solar, Förder, Zuschuss, Balkon durchsucht",
+      "05.10.2026: Meldung 'Energieberatung – Ein Service Ihrer Stadt' (25.11.2025) gelesen",
+      "05.10.2026: Websuche 'Neckarbischofsheim Zuschuss/Förderprogramm Balkonkraftwerk Photovoltaik' ohne Treffer zu einem Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neckarbischofsheim.de/unsere-stadt/aktuelles/energieberatung-ein-service-ihrer-stadt-neckarbischofsheim/",
+        "finding": "Kostenlose KLiBA-Initialberatung; kein eigenes städtisches Förderprogramm genannt."
+      },
+      {
+        "url": "https://www.neckarbischofsheim.de/rathaus-service/dienstleistungen-a-z/landesprogramm-staerke-informationen-und-foerderung-erhalten/",
+        "finding": "service-bw-Text zum Landesprogramm STÄRKE (Familienbildung), kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neckarbischofsheim.de/rathaus-service/dienstleistungen-a-z/landesprogramm-staerke-informationen-und-foerderung-erhalten",
+        "disposition": "reviewed",
+        "reason": "service-bw-Text zum Landesprogramm STÄRKE (Familienbildung), kein Energieprogramm.",
+        "evidenceUrl": "https://www.neckarbischofsheim.de/rathaus-service/dienstleistungen-a-z/landesprogramm-staerke-informationen-und-foerderung-erhalten/"
+      }
+    ]
+  },
+  {
+    "regionId": "08226099",
+    "name": "Wilhelmsfeld",
+    "checkedAt": "2026-10-05T18:30:00Z",
+    "recheckAt": "2027-01-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Wilhelmsfeld zahlt derzeit keinen eigenen Zuschuss an Privathaushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutzseite der Gemeinde verweist nur auf die kostenlose KLiBA-Beratung und den Wärmepass. Die Quelle des Vorrats ist das Klimaschutzkonzept des Gemeindeverwaltungsverbands Schönau von 2019, ein Maßnahmenkatalog und kein Förderprogramm.",
+    "searches": [
+      "05.10.2026: wilhelmsfeld.de Klimaschutz und Klimaschutz GVV gelesen; Klimaschutzkonzept nach Titel und Datum (Mai 2019) eingeordnet",
+      "05.10.2026: Websuche 'Wilhelmsfeld Zuschuss/Förderprogramm Balkonkraftwerk Photovoltaik' ohne Treffer zu einem Programm der Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilhelmsfeld.de/bauen-wohnen/klimaschutz",
+        "finding": "KLiBA-Beratung und Wärmepass; kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilhelmsfeld.de/fileadmin/Dateien/Dateien/Klimaschutzkonzept/20190521_ksk-gvv-schoenau-1_-_Klimaschutzkonzept.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept 2019 des Verbands, Maßnahmenvorschläge statt laufendem Förderprogramm.",
+        "evidenceUrl": "https://www.wilhelmsfeld.de/bauen-wohnen/klimaschutz"
+      }
+    ]
   }
 ]
