@@ -11,12 +11,15 @@ import GemeindeAnsicht from "../../../../../../components/gemeinde/GemeindeAnsic
  * with the page's own. The page renders their text for crawlers itself; these
  * frames are the interactive layer. Never indexed (embed layout metadata).
  */
-// One day: the package changes with the monthly run, and invalidating by
-// route pattern does not reach pages built on demand (lib/atlas-revalidate-routen.ts).
-export const revalidate = 86400;
-export function generateStaticParams() {
-  return [];
-}
+// Built on every request, never stored (05.10.2026). These frames are loaded
+// by whoever loads the municipality page, and over 11,000 addresses that is
+// almost only crawlers that never ask twice: each stored copy was a paid
+// cache write (up to three per page visit) for a read that never came. The
+// same reasoning and the same switch as the deep rankings
+// (app/(site)/solar-atlas/ranking-tief). A render reads only the town's
+// package, which the data cache keeps for a day, so it stays cheap.
+// Guarded by lib/__tests__/gemeinde-einbettung-ohne-ablage.test.ts.
+export const dynamic = "force-dynamic";
 
 const ANSICHTEN = ["insights", "monitor", "kopf"] as const;
 
