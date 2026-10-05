@@ -117,7 +117,8 @@ export const BAUSTEINE: Baustein[] = [
   {datei: "components/dashboard/WidgetConfigurationGroup.tsx", name: "WidgetConfigurationGroup", zweck: "Shared configuration and equal height composition for related widgets.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["ControlPanel", "SelectField", "WidgetPreviewCard"]},
   {datei: "components/dashboard/WidgetPreviewCard.tsx", name: "WidgetPreviewCard", zweck: "Shared widget preview, loading behavior and supported presentation settings.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ControlPanel", "SecondaryButton", "SelectField", "WidgetSettingsFlyout"]},
   {datei: "components/dashboard/WidgetSettingsFlyout.tsx", name: "WidgetSettingsFlyout", zweck: "Movable settings panel with shared actions and keyboard operation.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons", "SecondaryButton"]},
-  {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Shared secondary action button with icon and consistent token styles.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/ActionButton.tsx", name: "ActionButton", zweck: "One primary, secondary and icon action style for native buttons and links.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: []},
+  {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Compatibility wrapper for the shared secondary ActionButton.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["ActionButton"]},
   {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
   // ─── Eingabe ───────────────────────────────────────────────────────────────
   // ─── Eingabe ───────────────────────────────────────────────────────────────
@@ -248,11 +249,11 @@ export const BAUSTEINE: Baustein[] = [
     datei: "components/FlowNav.tsx",
     name: "FlowNav",
     zweck:
-      "Zurück links, Weiter rechts, Weiter gesperrt bis eine gültige Auswahl da ist — die Schrittführung jedes Frage-Flows.",
+      "Zurück links, Weiter rechts, Weiter gesperrt bis eine gültige Auswahl da ist — die Schrittführung jedes Frage-Flows. FlowFooter richtet Seitenaktionen an der gesamten Rechnerhülle aus; eingebettete Schritte behalten ihren Dialogfuß.",
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Modal"],
+    bestehtAus: ["ActionButton", "Modal"],
   },
   {
     datei: "components/PersonBox.tsx",
@@ -367,7 +368,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "Modal"],
   },
   {
     datei: "components/KlebenderKnopf.tsx",
@@ -377,7 +378,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Modal"],
     keinBeispielWeil:
       "Der Baustein zeigt sich erst, wenn der beobachtete Knopf aus dem Bild gescrollt ist. In einer Galerie mit vielen kleinen Beispielen nebeneinander ist er entweder immer sichtbar (dann ist es nicht dieser Baustein) oder nie — und eine klebende Leiste am Fenster­rand würde die übrigen Beispiele überdecken. Zu sehen ist er im Ergebnis jedes Rechners.",
   },
@@ -455,7 +456,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/AffiliateActions.tsx", name: "AffiliateActions",
     zweck: "Identische Produktaktionen zum Weiterleiten, Kaufen und Kopieren.",
-    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["ActionButton", "Icons"],
     gegenprobe: {
       muster: "className\\s*=\\s*[\"']wp-product-actions[\"']",
       bedeutet: "Use AffiliateActions instead of duplicating its accepted affiliate markup.",
@@ -545,7 +546,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/calculator/ResultActions.tsx", name: "ResultActions",
     zweck: "Gemeinsame Ergebnisaktionen: im Inhalt, beim Scrollen oben haftend.",
-    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["ActionButton", "Icons"],
   },
   {
     datei: "components/calculator/BalkonRace.tsx", name: "BalkonRace",
@@ -559,7 +560,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "verbindlich",
-    bestehtAus: ["Icons", "Modal", "FlowNav", "AccordionField"],
+    bestehtAus: ["ActionButton", "Icons", "Modal", "FlowNav", "AccordionField"],
   },
   {
     datei: "components/ResultSection.tsx",
@@ -633,7 +634,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Modal"],
     keinBeispielWeil:
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },

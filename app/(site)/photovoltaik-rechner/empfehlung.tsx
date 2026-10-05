@@ -30,7 +30,7 @@ import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
-import FlowNav from "../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
 
@@ -574,7 +574,7 @@ function EmpfehlungContent({
         {folgeToast}
       </Toast>
 
-      <CalculatorContent>
+      <CalculatorContent state={isRecommendation ? "result" : "input"}>
 
         {/* Klein gehalten: Der Fokus gehört der ersten Frage, nicht dem Titel. */}
         <div style={{ textAlign: "center", marginBottom: 16 }}>
@@ -727,7 +727,7 @@ function EmpfehlungContent({
             )}
 
             {/* Navigation */}
-            <div className="wp-flow-footer">
+            <FlowFooter>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 // Ohne Zwischenansicht führt der Knopf direkt ins Ergebnis — dann muss
@@ -743,7 +743,7 @@ function EmpfehlungContent({
                 zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </div>
         )}
 

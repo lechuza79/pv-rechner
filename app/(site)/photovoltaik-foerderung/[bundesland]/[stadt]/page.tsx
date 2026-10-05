@@ -250,7 +250,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
 
   return (
     <div style={S.page}>
-      <div style={S.wrap}>
+      <div style={S.wrap} data-page-content>
         {/* Kein zusätzlicher Zurück-Pfeil über der Spur: Das Bundesland stand
             damit zweimal übereinander — einmal als Pfeil, einmal als Station.
             Wie im Atlas trägt allein die Spur die Navigation nach oben. */}

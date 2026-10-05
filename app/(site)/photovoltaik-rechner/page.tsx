@@ -50,6 +50,7 @@ const UNTERZEILE = "Welche Anlage lohnt sich für dich? Wir empfehlen Größe un
 export default function RechnerPage() {
   return (
     <ErrorBoundary>
+      <div className="sc-calculator-page-boundary">
       <StaticEmpfehlung
         ohneZwischenansicht
         stand={standSeite("/photovoltaik-rechner")}
@@ -60,6 +61,7 @@ export default function RechnerPage() {
       <CalculatorContent inset>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
       </CalculatorContent>
+      </div>
     </ErrorBoundary>
   );
 }

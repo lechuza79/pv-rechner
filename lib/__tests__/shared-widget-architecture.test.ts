@@ -7,6 +7,13 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  'components/FlowNav.tsx':['./calculator/usePageActionLayout','./Modal','./ActionButton'],
+  'components/AffiliateActions.tsx':['./ActionButton'],
+  'components/calculator/ResultActions.tsx':['../ActionButton'],
+  'components/SecondaryButton.tsx':['./ActionButton'],
+  'components/KlebenderKnopf.tsx':['./calculator/usePageActionLayout'],
+  'components/StickyCta.tsx':['./calculator/usePageActionLayout'],
+  'components/Toast.tsx':['./calculator/usePageActionLayout'],
   'components/PvConsumerSection.tsx':['./PvConsumerFields','./PvConsumerComparison','./ResultChoiceHeader','./KlebenderKnopf','../lib/pv-consumer-model'],
   'components/PvConsumerExample.tsx':['./PvConsumerSection','./ResultSettings','./PvPlantFields'],
   'app/(site)/photovoltaik-rechner/rechner.tsx':['../../../components/PvConsumerSection','../../../components/PvPlantFields'],

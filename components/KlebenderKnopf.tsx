@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { v, KLEBELEISTE_VAR } from "../lib/theme";
+import { usePageActionLayout } from "./calculator/usePageActionLayout";
+import { ModalSticky, useInModal } from "./Modal";
 
 /**
  * Die klebende Aktionsleiste am unteren Rand des Ergebnisses.
@@ -54,6 +56,8 @@ export default function KlebenderKnopf({
 }) {
   const ankerRef = useRef<HTMLDivElement>(null);
   const leisteRef = useRef<HTMLDivElement>(null);
+  const layout = usePageActionLayout(ankerRef);
+  const inModal = useInModal();
   const [zeigen, setZeigen] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -86,6 +90,7 @@ export default function KlebenderKnopf({
   // ihn mitzählt, schiebt alles darüber 64 px zu hoch. Und nicht über die
   // Bildschirmposition — während die Leiste einfährt, steht sie noch woanders.
   useEffect(() => {
+    if (inModal) return;
     const wurzel = document.documentElement;
     const setzen = () => {
       const box = leisteRef.current;
@@ -108,10 +113,11 @@ export default function KlebenderKnopf({
       beobachter.disconnect();
       wurzel.style.removeProperty(KLEBELEISTE_VAR);
     };
-  }, [sichtbar]);
+  }, [sichtbar, inModal]);
 
   const bar = (
       <div
+        className={layout?.className}
         ref={leisteRef}
         aria-hidden={!sichtbar}
         inert={!sichtbar}
@@ -123,22 +129,24 @@ export default function KlebenderKnopf({
           bottom: 0,
           zIndex: 60,
           background: floating ? "transparent" : `linear-gradient(to top, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 0%, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 55%, color-mix(in srgb, ${v("--color-bg")} 50%, transparent) 78%, transparent 100%)`,
-          padding: `${floating ? 0 : 64}px 12px calc(12px + env(safe-area-inset-bottom))`,
+          padding: `${floating ? 0 : 64}px ${layout?.style.width ? 0 : 12}px calc(12px + env(safe-area-inset-bottom))`,
+          ...layout?.style,
           transform: sichtbar ? "none" : "translateY(130%)",
           // Hide immediately when the inline action enters the viewport.
           // An exit animation would paint both copies during the handover.
           visibility: floating && !sichtbar ? "hidden" : "visible",
           transition: floating && !sichtbar ? "none" : "transform 0.28s ease",
           pointerEvents: sichtbar ? "auto" : "none",
+          ...(inModal ? { position: "static", left: "auto", right: "auto", transform: "none", padding: 0 } : {}),
         }}
       >
-        <div style={{ maxWidth: floating ? 820 : 640, margin: "0 auto", display: "flex", gap: 8 }}>
+        <div style={{ maxWidth: layout?.style.width ? "none" : floating ? 820 : 640, width: "100%", margin: "0 auto", display: "flex", gap: 8 }}>
           {leiste}
         </div>
       </div>
   );
-  // Escape layout containment so the floating action is fixed to the viewport.
-  return <>{kinder(ankerRef)}{floating ? (mounted ? createPortal(bar, document.body) : null) : bar}</>;
+  // All page actions escape containment; their horizontal bounds follow the originating shell.
+  return <>{kinder(ankerRef)}{inModal ? (sichtbar ? <ModalSticky>{bar}</ModalSticky> : null) : mounted ? createPortal(bar, document.body) : null}</>;
 }
 
 /**

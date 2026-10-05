@@ -1,4 +1,5 @@
 "use client";
+import ActionButton, { ActionLink } from "../../../../components/ActionButton";
 import SecondaryButton from "../../../../components/SecondaryButton";
 import {ControlPanel, ControlField} from "../../../../components/ControlPanel";
 import WidgetSettingsFlyout from "../../../../components/dashboard/WidgetSettingsFlyout";
@@ -714,6 +715,7 @@ function ControlPanelExample() {
 }
 
 const BEISPIELE: Record<string, Beispiel> = {
+  ActionButton: () => <div style={{display:"flex",gap:8,flexWrap:"wrap"}}><ActionButton variant="primary">Speichern</ActionButton><ActionButton>Weiterleiten</ActionButton><ActionButton iconOnly aria-label="Beispielaktion">+</ActionButton><ActionLink href="/waermepumpe-rechner">Zum Rechner</ActionLink></div>,
   SecondaryButton: () => <SecondaryButton onClick={()=>window.alert("Beispielaktion ausgeführt")}>Mehr erfahren</SecondaryButton>,
   ControlPanel: ControlPanelExample,
   WidgetSettingsFlyout: () => <WidgetSettingsFlyout title="Widget-Vorschau"><ControlPanelExample/></WidgetSettingsFlyout>,

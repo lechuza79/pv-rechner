@@ -52,7 +52,7 @@ import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconChevronDown, IconSun } from "../../../components/Icons";
-import FlowNav from "../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
@@ -880,7 +880,7 @@ export default function PVRechner({
           onApply={kwh => { setKlimaKwh(kwh); setOEv(null); }}
         />
 
-      <CalculatorContent>
+      <CalculatorContent state={isResult ? "result" : "input"}>
 
         {!isResult && <div style={{textAlign:"center", marginBottom:24}}><h1>PV-Rechner</h1><p>Berechne deine Anlage mit deinen eigenen Angaben.</p></div>}
 
@@ -1092,7 +1092,7 @@ export default function PVRechner({
               </div>
             )}
 
-            <div className="wp-flow-footer">
+            <FlowFooter>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Berechnen" : "Weiter"}
@@ -1101,7 +1101,7 @@ export default function PVRechner({
                 zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </div>
         )}
 

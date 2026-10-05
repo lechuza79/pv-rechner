@@ -228,12 +228,12 @@ body .wp-profit-content .wp-profit-row{margin:0 0 8px;gap:8px 16px}
 body .wp-profit-content .wp-reference-inline{margin:0;gap:6px}
 body .wp-profit-illustration{position:relative;display:block;width:136px;height:136px;overflow:visible}
 body .wp-profit-illustration img{position:absolute;width:192px;height:192px;max-width:none;left:50%;top:50%;transform:translate(-50%,-50%)}
-@media(max-width:600px){body .wp-profit-comparison{grid-template-columns:72px minmax(0,1fr);gap:8px}body .wp-profit-illustration{width:72px;height:88px}body .wp-profit-illustration img{width:112px;height:112px}body .wp-profit-content .wp-pv-switch{flex-direction:row;padding:0}body .wp-profit-content .wp-reference-inline{font-size:12px!important}body .wp-profit-content .wp-reference-inline select{font-size:12px!important;max-width:calc(100% - 24px)}}
+@container calculator-result (max-width:600px){body .wp-profit-comparison{grid-template-columns:72px minmax(0,1fr);gap:8px}body .wp-profit-illustration{width:72px;height:88px}body .wp-profit-illustration img{width:112px;height:112px}body .wp-profit-content .wp-pv-switch{flex-direction:row;padding:0}body .wp-profit-content .wp-reference-inline{font-size:12px!important}body .wp-profit-content .wp-reference-inline select{font-size:12px!important;max-width:calc(100% - 24px)}}
 
 body .wp-profit-illustration:before{content:"";position:absolute;inset:8px;border-radius:50%;background:#e2e9df}
 body .wp-profit-row .wp-result-value{font-size:clamp(40px,4.6vw,60px)!important}
 body .wp-result-currency{font-family:var(--result-font-body);font-size:.62em;font-weight:400;letter-spacing:0}
-@media(max-width:600px){body .wp-profit-comparison{grid-template-columns:80px minmax(0,1fr);gap:16px}body .wp-profit-illustration{width:80px;height:88px}body .wp-profit-illustration img{width:128px;height:128px}body .wp-profit-illustration:before{inset:8px 4px}body .wp-profit-row .wp-result-value{font-size:36px!important}}
+@container calculator-result (max-width:600px){body .wp-profit-comparison{grid-template-columns:80px minmax(0,1fr);gap:16px}body .wp-profit-illustration{width:80px;height:88px}body .wp-profit-illustration img{width:128px;height:128px}body .wp-profit-illustration:before{inset:8px 4px}body .wp-profit-row .wp-result-value{font-size:36px!important}}
 
 body .wp-profit-illustration:before{content:none}
 
@@ -288,6 +288,7 @@ body .wp-building-comparison-note details a{color:var(--color-text-primary);text
 
 /* Full-width result followed by the product comparison. Embla shares this breakpoint. */
 body .wp-result-layout,body .wp-result-primary{min-width:0}
+body .wp-result-layout{max-width:820px;margin-inline:auto}
 body .wp-result-layout .wp-overview-top{grid-template-columns:minmax(0,1fr)}
 body .wp-result-layout .wp-result-hero{max-width:none}
 body .wp-result-layout .wp-geraete-spalte{margin-top:56px;padding-top:40px}
@@ -303,8 +304,6 @@ body .wp-result-layout .wp-geraete-kachel{flex:0 0 88%}
 
 /* Product media and the secondary installer handoff. */
 body .wp-product-incomplete{position:absolute;right:10px;top:10px;z-index:1;padding:6px 9px;border-radius:var(--radius-sm);background:var(--color-bg-muted);color:var(--color-text-primary);font:var(--result-weight-strong) var(--result-type-caption)/1.4 var(--result-font-body)}
-body .wp-product-forward{margin-top:10px;padding:12px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:transparent;color:var(--color-text-primary);font:var(--result-weight-strong) var(--result-type-ui)/1.4 var(--result-font-body);cursor:pointer}
-body .wp-product-forward:hover{background:var(--color-bg-muted)}
 body .wp-product-package-note{margin:0;font-size:var(--result-type-ui);line-height:1.5;color:var(--color-text-secondary)}
 .wp-product-share-text{box-sizing:border-box;width:100%;padding:12px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-text-primary);font:inherit;line-height:1.5;resize:vertical}
 .wp-product-share-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
@@ -316,15 +315,9 @@ body .wp-product-heading{gap:12px!important}
 body .wp-product-name{min-height:0!important;font-size:var(--result-type-ui)!important;line-height:1.4!important}
 body .wp-product-incomplete{right:10px;top:10px;background:var(--color-status-highlight);color:var(--color-on-status-highlight)}
 body .wp-product-actions{display:flex;align-items:center;gap:6px;margin-top:12px}
-body .wp-product-actions>a,body .wp-product-actions>button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:8px 10px;border:1px solid var(--color-border);border-radius:999px;background:transparent;color:var(--color-text-primary);font:600 var(--result-type-caption)/1.3 var(--result-font-body);text-decoration:none;cursor:pointer;margin:0}
-body .wp-product-actions .wp-product-shop{background:var(--result-accent);border-color:transparent;flex:1}
-body .wp-product-actions .wp-product-forward{flex:1}
-body .wp-product-actions .wp-product-copy{flex:0 0 40px;width:40px;padding:0}
 body .wp-product-funding{margin-top:auto;padding:8px 0;text-align:left;border:0;background:none;color:var(--color-text-primary);font:600 var(--result-type-caption)/1.4 var(--result-font-body);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 body .wp-product-copy-status{margin:6px 0 0;font-size:var(--result-type-caption)}
 .wp-product-share-actions>*{border-radius:999px}
-body .wp-product-actions>a,body .wp-product-actions>button{white-space:nowrap;padding-inline:7px}
-body .wp-product-actions .wp-product-forward{flex:1.2}
 body .wp-product-actions svg{flex-shrink:0}
 
 /* Explicit compact desktop tracks, rather than stretching cards across the page. */
@@ -332,14 +325,6 @@ body .wp-product-actions svg{flex-shrink:0}
   body .wp-result-layout .wp-geraete-reihe{justify-content:center}
   body .wp-result-layout .wp-geraete-kachel{flex:0 1 320px}
 }
-body .wp-product-actions>a,body .wp-product-actions>button{font-family:var(--result-font-heading);font-size:var(--result-type-ui);font-weight:600;padding-inline:8px}
-body .wp-product-actions .wp-product-forward{flex:1.25}
-body .wp-product-actions .wp-product-copy{flex-basis:36px;width:36px;padding:0}
-body .wp-product-actions .wp-product-shop{flex:1}
-body .wp-product-actions .wp-product-shop svg{display:none}
-body .wp-product-actions .wp-product-shop svg{display:none!important}
-body .wp-product-actions>a,body .wp-product-actions>button{padding-inline:6px}
-body .wp-product-actions .wp-product-copy{padding:0}
 
 /* Bound intermediate carousel cards; add a sidebar only where the result keeps its reading width. */
 body .wp-result-layout .wp-geraete-kachel,body .wp-product-carousel-frame .wp-geraete-kachel{flex:0 0 min(88%,320px);min-width:0}
@@ -350,8 +335,8 @@ body .wp-product-funding-estimate>strong{display:block;margin-top:6px;font-famil
 body .wp-product-funding-estimate small{display:block;font:400 var(--result-type-ui)/1.5 var(--result-font-body)}
 body .wp-product-funding-estimate p{margin:8px 0}
 body .wp-product-funding-estimate button{border:1px solid var(--color-border);border-radius:999px;padding:8px 12px;background:transparent;color:inherit;font:inherit;cursor:pointer}
-@media(min-width:1440px){
-  body .wp-result-layout{display:grid;grid-template-columns:minmax(0,820px) 320px;grid-template-rows:auto 1fr;gap:32px 48px;justify-content:center;align-items:start}
+@container calculator-shell (min-width:1188px){
+  body .wp-result-layout{max-width:none;margin-inline:0;display:grid;grid-template-columns:820px clamp(320px,calc(45.454545cqi - 220px),360px);grid-template-rows:auto 1fr;gap:32px clamp(48px,calc(54.545455cqi - 600px),96px);justify-content:center;align-items:start}
   body .wp-result-primary{margin:0;min-width:0}
   body .wp-result-layout .wp-geraete-spalte{grid-column:2;grid-row:1 / span 2;margin:0;padding:0;border:0;min-width:0}
   body .wp-result-layout>.wp-adjustments{grid-column:1;grid-row:2;margin-top:0;min-width:0}
@@ -589,7 +574,7 @@ body .wp-result-foot{max-width:none;border:0;padding:24px;border-radius:var(--ra
 .wp-price-settings [role=tab][aria-selected=true]{border-color:var(--color-text-primary)!important}
 .wp-price-settings [role=tab]>div{text-transform:none!important;letter-spacing:0!important;font-family:var(--font-text)!important;font-size:var(--font-size-small)!important}
 @media(max-width:600px){body .wp-result-foot{padding:20px}.wp-result-actions{flex-direction:column}.wp-result-share>span{flex-basis:100%;margin:4px 0 0!important}}
-@media(min-width:1200px){body .wp-result-layout .wp-geraete-spalte{grid-row:1}body .wp-result-layout>.wp-adjustments{grid-row:2}}
+@container calculator-shell (min-width:1188px){body .wp-result-layout .wp-geraete-spalte{grid-row:1}body .wp-result-layout>.wp-adjustments{grid-row:2}}
 
 .wp-alternative-scroll{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding-bottom:8px}
 .wp-alternative-scroll .wp-geraete-kachel{scroll-snap-align:start}
@@ -714,18 +699,13 @@ body .wp-result-actions>.wp-forward-secondary{background:var(--color-accent);col
 .wp-result-share{display:flex;align-items:center}
 
 /* Match the municipality navigation: in flow first, then sticky at the top. */
-.wp-result-actionbar{position:sticky;top:calc(var(--v3-nav-top,0px) + 8px);z-index:50;align-self:start;width:100%;max-width:100%;box-sizing:border-box;margin:24px auto;min-height:62px}
+.wp-result-actionbar{position:sticky;top:calc(var(--v3-nav-top,0px) + 8px);z-index:50;align-self:start;width:fit-content;max-width:min(640px,calc(100% - 24px));box-sizing:border-box;margin:24px auto;min-height:62px}
 .wp-result-actionbar-inner,.wp-result-actionbar-secondary{display:flex;align-items:center;gap:8px;min-width:0}
-.wp-result-actionbar-inner{position:relative;justify-content:space-between;width:100%;box-sizing:border-box;padding:6px;border:1px solid transparent;border-radius:var(--radius-pill)}
-.wp-result-actionbar.is-stuck .wp-result-actionbar-inner{width:max-content;max-width:100%;margin:auto;background:var(--color-bg);border-color:var(--color-border)}
-.wp-result-actionbar .wp-result-share{flex-wrap:nowrap;margin:0!important;gap:4px!important}
-.wp-result-actionbar .wp-result-share button{border-color:var(--color-accent)!important;width:48px!important;height:48px!important;aspect-ratio:1;border-radius:var(--radius-pill)!important;padding:0!important;flex:none}
-.wp-result-actionbar .wp-forward-secondary,.wp-result-actionbar .wp-save-primary{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:var(--radius-pill);font:600 var(--font-size-body)/1.3 var(--font-text);cursor:pointer;white-space:nowrap}
-body .wp-result-actionbar .wp-forward-secondary{background:transparent!important;border:1px solid var(--color-accent)!important;color:var(--color-text-primary)!important}
-.wp-result-actionbar .wp-save-primary{min-width:140px;margin-left:auto;background:var(--color-cta);color:var(--color-cta-ink);border:1px solid transparent}
+.wp-result-actionbar-inner{position:relative;justify-content:center;box-sizing:border-box;padding:8px 12px;border:1px solid transparent;border-radius:var(--radius-pill);background:transparent;box-shadow:0 0 0 transparent;transition:background-color .22s ease,border-color .22s ease,box-shadow .22s ease}
+.wp-result-actionbar.is-stuck .wp-result-actionbar-inner{background:var(--color-bg);border-color:var(--color-border);box-shadow:0 6px 20px rgb(8 32 37 / 16%)}
 .wp-actionbar-status{position:absolute;top:calc(100% + 8px);left:0;font-size:var(--result-type-caption);background:var(--color-bg);border-radius:var(--radius-sm);padding:4px 8px}
 .wp-actionbar-status:empty{display:none}
-@media(min-width:1440px){
+@container calculator-shell (min-width:1188px){
  body .wp-result-layout{grid-template-rows:auto auto 1fr}
  body .wp-result-layout .wp-geraete-spalte{grid-row:1 / span 3}
  body .wp-result-layout>.wp-result-actionbar{grid-column:1;grid-row:2}
@@ -733,9 +713,6 @@ body .wp-result-actionbar .wp-forward-secondary{background:transparent!important
 }
 @media(max-width:600px){
  .wp-result-actionbar-inner,.wp-result-actionbar-secondary{gap:4px}
- .wp-result-actionbar .wp-forward-secondary,.wp-result-actionbar .wp-save-primary{padding:0 10px}
- .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is-stuck .wp-save-primary{font-size:var(--font-size-small)}
- .wp-result-actionbar .wp-forward-secondary>svg{display:none}
 }
 
 /* Chart and metrics use the same responsive content inset. */
@@ -793,14 +770,6 @@ body .wp-funding-modal{background:transparent!important}
 @media(max-width:400px){.wp-funding-toast-content>span{flex-basis:100%}}
 .wp-funding-toast-content button{font:inherit;font-weight:700;color:var(--color-awareness-dim);background:var(--color-awareness);border:1px solid var(--color-awareness);border-radius:var(--radius-pill);min-height:44px;padding:10px 18px;cursor:pointer}
 
-.wp-result-actionbar.is-stuck .wp-result-share button{width:36px!important;height:36px!important}
-.wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is-stuck .wp-save-primary{height:36px;min-width:0;padding-inline:14px}
-@media(max-width:420px){
- .wp-result-actionbar .wp-forward-secondary,.wp-result-actionbar .wp-save-primary{font-size:var(--font-size-small)}
- .wp-result-actionbar .wp-result-share button{width:36px!important;height:36px!important}
- .wp-result-actionbar .wp-save-primary{min-width:0}
- .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is-stuck .wp-save-primary{padding-inline:10px}
-}
 .wp-funding-modal .wp-question-heading{color:var(--result-text)}
 .wp-funding-modal .wp-question-summary{color:var(--result-muted)}
 
@@ -829,7 +798,6 @@ body .sc-result-funding [role="switch"] { font-size:var(--result-type-ui)!import
 /* Neutral counterpart keeps the funding row consistent across offers. */
 body .wp-product-funded-price[data-empty="true"]{background:var(--color-bg-muted);border-color:var(--color-border);color:var(--color-text-secondary)}
 body .wp-product-funded-price .wp-funded-empty{grid-column:1 / -1;padding-inline:12px 34px;font:400 var(--result-type-body)/1.4 var(--result-font-body)}
-body .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is-stuck .wp-result-share button{border-color:var(--color-border)!important}
 
 .wp-profit-amount{min-width:0}
 .wp-profit-amount .wp-reference-inline{margin-top:calc(var(--space-xl)/4)}
@@ -852,3 +820,36 @@ body .wp-result-actionbar.is-stuck .wp-forward-secondary,.wp-result-actionbar.is
  .wp-result-settings-basis{gap:8px}
  .wp-result-settings-basis dl>div{padding-inline:8px}
 }
+
+/* Balcony offers use the same full-width result boundary and desktop rail. */
+.bkw-result-main> :not(.bkw-offers){min-width:0}
+@container calculator-shell (min-width:1188px){
+ body .bkw-result-main> :not(.bkw-offers){grid-column:1;width:100%;margin-inline:0;justify-self:stretch}
+ body .bkw-result-main>.bkw-offers{grid-column:2;grid-row:1 / span 3;min-width:0;margin:0}
+ body .bkw-result-main .wp-product-carousel{width:100%;margin:0;padding:0;overflow:visible!important}
+ body .bkw-result-main .wp-geraete-reihe{flex-direction:column;transform:none!important;gap:20px!important}
+ body .bkw-result-main .wp-geraete-kachel{flex:0 0 auto;width:100%}
+ body .bkw-result-main .wp-product-navigation{display:none}
+}
+
+/* A sidebar must not inherit the full-viewport carousel below 1440px. */
+@container calculator-shell (min-width:1188px){
+ body .wp-geraete-spalte .wp-product-carousel{width:100%;margin:0;padding:0;overflow:visible!important}
+ body .wp-geraete-spalte .wp-product-navigation{display:none}
+}
+
+/* Action rows own placement only; ActionButton owns every button surface. */
+.wp-action-icons{display:flex;align-items:center;gap:8px}
+.wp-action-save{margin-left:0}
+.wp-result-actionbar-secondary{flex-wrap:wrap}
+.wp-result-actionbar-inner{flex-wrap:wrap;gap:20px}
+.wp-product-actions{container:action-row / inline-size;flex-wrap:nowrap;gap:8px!important}
+.wp-product-actions>[data-action-button]:not([data-icon-only]){flex:1}
+@media(max-width:420px){
+ .wp-result-actionbar-secondary{flex:1 1 100%;justify-content:center}
+ .wp-result-actionbar-inner{gap:12px;border-radius:24px}
+}
+
+@media(prefers-reduced-motion:reduce){.wp-result-actionbar-inner{transition:none}}
+
+body .wp-result-layout>.wp-result-actionbar{width:fit-content;justify-self:center}

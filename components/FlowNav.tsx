@@ -1,20 +1,39 @@
 "use client";
-import { preload } from "react-dom";
+import { createPortal, preload } from "react-dom";
 import { RESULT_SAVINGS_IMAGE } from "./calculator/result-assets";
-import { useEffect, useState } from "react";
-import { v } from "../lib/theme";
-import { ModalSticky } from "./Modal";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { usePageActionLayout } from "./calculator/usePageActionLayout";
+import { v, KLEBELEISTE_VAR } from "../lib/theme";
+import { ModalSticky, useInModal } from "./Modal";
+import ActionButton from "./ActionButton";
 
-export const secondaryButtonStyle = {
-  padding: "10px 20px",
-  borderRadius: v("--radius-pill"),
-  fontSize: v("--font-size-body"),
-  fontWeight: 600,
-  background: "transparent",
-  border: `1px solid ${v("--color-border-muted")}`,
-  color: v("--color-text-secondary"),
-  cursor: "pointer",
-} as const;
+/** Page flows use the complete calculator shell; embedded flows retain local controls. */
+export function FlowFooter({ children, embedded = false }: { children: ReactNode; embedded?: boolean }) {
+  const anchor = useRef<HTMLDivElement>(null);
+  const controls = useRef<HTMLDivElement>(null);
+  const inModal = useInModal();
+  const local = embedded || inModal;
+  const [height, setHeight] = useState(0);
+  const layout = usePageActionLayout(anchor);
+  useEffect(() => {
+    if (local || !layout || !controls.current) return;
+    const element = controls.current;
+    const update = () => {
+      setHeight(element.offsetHeight);
+      document.documentElement.style.setProperty(KLEBELEISTE_VAR, `${element.offsetHeight}px`);
+    };
+    update();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(element);
+    return () => { observer?.disconnect(); document.documentElement.style.removeProperty(KLEBELEISTE_VAR); };
+  }, [local, !!layout]);
+  const footer = <div ref={controls} className="wp-flow-footer">{children}</div>;
+  // FlowNav already registers its controls with ModalSticky; never nest a second dialog footer.
+  if (local) return footer;
+  return <div ref={anchor} className="wp-flow-footer-space" style={{ height }}>
+    {layout && createPortal(<div className={`${layout.className} sc-page-flow-actions`} style={layout.style}>{footer}</div>, document.body)}
+  </div>;
+}
 
 /**
  * DER Interaktions-Standard für Flow-Schritte (Betreiber-Vorgabe 05.08.2026):
@@ -135,15 +154,15 @@ export default function FlowNav({
         diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
         Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
         deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein. */}
-    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: centered ? "center" : "space-between" }}>
+    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 4, width: "100%", justifyContent: centered ? "center" : "space-between" }}>
       {zurueckSichtbar && onZurueck && (
-        <button
+        <ActionButton
           type="button"
           onClick={onZurueck}
-          className="sc-button-secondary" style={secondaryButtonStyle}
+          variant="secondary"
         >
           {zurueckLabel}
-        </button>
+        </ActionButton>
       )}
       {/* Rechte Gruppe: Weiter (immer ganz rechts), optionale Sekundär-Aktion darunter. */}
       <span style={{ marginLeft: centered ? 0 : "auto", display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: 8, position: "relative" }}>
@@ -181,7 +200,7 @@ export default function FlowNav({
           den Grund. Nur das DOM-Attribut sagt das eben nicht.
           Der inaktive Zustand dimmt per OPACITY statt mit einer festen Farbe,
           damit er in allen Theme-Stufen (s0–s6) gleichermassen leichter wirkt. */}
-      <button
+      <ActionButton
         type="button"
         onClick={() => {
           if (weiterAktiv) { onWeiter(); return; }
@@ -194,20 +213,10 @@ export default function FlowNav({
         data-flow-next
         aria-disabled={!weiterAktiv}
         aria-label={weiterAktiv ? undefined : `${weiterLabel} — ${inaktivHinweis}`}
-        style={{
-          padding: "11px 22px",
-          borderRadius: v("--radius-pill"),
-          fontSize: v("--font-size-body"),
-          fontWeight: 700,
-          background: weiterAktiv ? v("--color-cta") : v("--color-bg-muted"),
-          color: weiterAktiv ? v("--color-text-on-accent") : v("--color-text-muted"),
-          border: weiterAktiv ? "none" : `1px solid ${v("--color-border")}`,
-          cursor: weiterAktiv ? "pointer" : "not-allowed",
-          opacity: weiterAktiv ? 1 : 0.55,
-        }}
+        variant="primary"
       >
         {weiterLabel}
-      </button>
+      </ActionButton>
       {nebenWeiter}
       </span>
     </div>
