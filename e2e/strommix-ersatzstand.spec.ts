@@ -56,7 +56,7 @@ test("no copy at all: the live block says so instead of an empty frame", async (
   await page.goto("/strommix-deutschland");
   // Client retries three times (3 s, 8 s) before giving up.
   await expect(page.getByText("Die Erzeugungsdaten sind gerade nicht erreichbar.").first()).toBeVisible({ timeout: 30000 });
-  await expect(page.getByText("Daten konnten nicht geladen werden")).toBeVisible();
+  await expect(page.getByText("Daten konnten nicht geladen werden")).toBeVisible({ timeout: 30000 });
 });
 
 test("SMARD live: numbers shown, SMARD named and credited, 'gerade' stays", async ({ page }) => {
