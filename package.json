@@ -23,6 +23,8 @@
     "windgemeinden:build": "tsx scripts/windgemeinden-build.ts",
     "mastr:wind": "tsx scripts/mastr-wind-anlagen.ts",
     "bestaende:abgleich": "tsx scripts/bestaende-abgleich.ts",
+    "windbetreiber": "tsx scripts/windbetreiber-refresh.ts",
+    "windbetreiber:kontakte": "tsx scripts/windbetreiber-kontakte.ts",
     "mastr:umschluesseln": "tsx scripts/mastr-ags-umschluesseln.ts",
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "kommunen:versand": "tsx scripts/kommunen-versand.ts",

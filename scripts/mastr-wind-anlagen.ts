@@ -41,6 +41,9 @@ export type WindZeile = {
   abschaltung_tierschutz: boolean | null;
   /** Key into the EEG payment data, where measured feed-in per plant lives. */
   eeg_nr: string | null;
+  /** Register number of the operator (ABR…). The operator's own row lives in
+   *  windbetreiber; this is the only link from a turbine to who runs it. */
+  betreiber_nr: string | null;
 };
 
 /** Catalogue codes → the words they stand for (manufacturer, on/offshore). */
@@ -102,6 +105,7 @@ export function windZeile(row: Record<string, string>, katalog: Katalog): WindZe
     abschaltung_nachts: jaNein(row.AuflagenAbschaltungSchallimmissionsschutzNachts),
     abschaltung_tierschutz: jaNein(row.AuflagenAbschaltungTierschutz),
     eeg_nr: text(row.EegMaStRNummer),
+    betreiber_nr: text(row.AnlagenbetreiberMastrNummer),
   };
 }
 
@@ -151,6 +155,7 @@ async function main() {
   for (const z of zeilen) status.set(z.status, (status.get(z.status) ?? 0) + 1);
   console.log(`  Status-Codes: ${[...status].map(([k, v]) => `${k}=${v}`).join(", ")}`);
   console.log(`  in Betrieb mit EEG-Nummer: ${zaehle((z) => !!z.eeg_nr)}`);
+  console.log(`  in Betrieb mit Betreiber-Nummer: ${zaehle((z) => !!z.betreiber_nr)}`);
   console.log(`  in Betrieb stillgelegt-Datum gesetzt: ${zaehle((z) => !!z.stilllegung)}`);
   const mw = inBetrieb.reduce((s, z) => s + (z.brutto_kw ?? 0), 0) / 1000;
   console.log(`  Leistung in Betrieb: ${Math.round(mw).toLocaleString("de-DE")} MW`);

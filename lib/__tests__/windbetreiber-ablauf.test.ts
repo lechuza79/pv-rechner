@@ -1,0 +1,74 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { describe, expect, it } from "vitest";
+
+// The rules are tested in windbetreiber.test.ts. This checks that the run
+// really USES them on every path that writes a website — a rule that exists
+// but is bypassed by one write looks exactly like a rule that works.
+const quelle = readFileSync(resolve(__dirname, "../../scripts/windbetreiber-refresh.ts"), "utf8");
+
+function rumpf(name: string): string {
+  const start = quelle.indexOf(`async function ${name}(`);
+  expect(start, `${name} fehlt`).toBeGreaterThan(-1);
+  const auf = quelle.indexOf("{", quelle.indexOf(")", start));
+  let tiefe = 0;
+  for (let i = auf; i < quelle.length; i++) {
+    if (quelle[i] === "{") tiefe++;
+    else if (quelle[i] === "}" && --tiefe === 0) return quelle.slice(auf, i + 1);
+  }
+  throw new Error(name);
+}
+
+describe("Windbetreiber-Lauf", () => {
+  it("writes a website only from a proven check, on every path", () => {
+    // Every write of the website columns goes through websiteFelder(), and
+    // websiteFelder() is only ever fed the winner of besterBeleg() or a check
+    // whose result is "belegt".
+    const schreibstellen = quelle.match(/websiteFelder\(([^)]*)\)/g) ?? [];
+    expect(schreibstellen.length).toBeGreaterThanOrEqual(3);
+    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|p: Pruefung \| null)\)/);
+    expect(rumpf("impressumLauf")).toMatch(/const best = besterBeleg\(/);
+    expect(rumpf("sucheLauf")).toMatch(/const best = besterBeleg\(/);
+    expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
+    // No other place sets the website column directly.
+    expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string)/g) ?? []).toEqual([]);
+  });
+
+  it("checks a hand-found website with the same rule as a machine-found one", () => {
+    const m = rumpf("manuell");
+    expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
+    // A different evidence page is allowed, a different rule is not.
+    expect(m).toMatch(/impressumBelegt\(sichtbarerText\(html\), akteurVon\(z\), domain\)/);
+    expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
+  });
+
+  it("checks every candidate against the other stocks before its imprint counts", () => {
+    const p = rumpf("pruefen");
+    expect(p.indexOf("abgleichen(")).toBeGreaterThan(-1);
+    expect(p.indexOf("abgleichen(")).toBeLessThan(p.indexOf("impressumBelegt("));
+  });
+
+  it("refuses a register read that loses operators", () => {
+    expect(rumpf("registerLesen")).toMatch(/Betreiber-Nummern fehlen im Akteursverzeichnis/);
+  });
+
+  it("stores the register read before writing it", () => {
+    const r = rumpf("registerLesen");
+    expect(r.indexOf("writeFileSync(datei")).toBeGreaterThan(-1);
+  });
+
+  it("reports a website without proof and a 'none' without a note as violations", () => {
+    const s = rumpf("stand");
+    expect(s).toMatch(/Website ohne Beleg/);
+    expect(s).toMatch(/ohne belegte Prüfung/);
+    expect(s).toMatch(/steht in einem anderen Bestand/);
+    expect(s).toMatch(/ohne Notiz, was gesucht wurde/);
+    expect(s).toMatch(/process\.exitCode = 1/);
+  });
+
+  it("never lets a report start the 20-minute register read", () => {
+    expect(rumpf("stand")).not.toMatch(/registerLesen\(/);
+    expect(rumpf("offenListe")).not.toMatch(/registerLesen\(/);
+    expect(rumpf("sucheLauf")).not.toMatch(/registerLesen\(/);
+  });
+});
