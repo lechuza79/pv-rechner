@@ -15,7 +15,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
-import { freigeben, type Pruefling } from "./lib/kontakt-freigabe";
+import { freigabeUrteil, freigeben, type Pruefling } from "./lib/kontakt-freigabe";
+
+/** The block reasons the wind stock carried before this run (two-strike rule). */
+let vorherWind = new Map<string, string | null>();
 import { heuteInBerlin } from "../lib/zeit";
 import { host } from "../lib/kontakt-suche";
 
@@ -87,14 +90,18 @@ const BESTAENDE: Record<string, Bestand> = {
     async laden(c) {
       // Only contacts found on the operator's own proven website; a register
       // mailbox has no page that could be re-read.
-      const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url", "mastr_nr",
+      const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url, kontakt_sperrgrund", "mastr_nr",
         q => q.eq("aktiv", true).not("kontakt_email", "is", null).not("website", "is", null));
+      vorherWind = new Map(z.map(r => [r.mastr_nr, r.kontakt_sperrgrund]));
       return z.map(r => ({ schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true }));
     },
     async schreiben(c, schluessel, heute, grund) {
-      const { error } = await c.from("windbetreiber").update(grund
-        ? { kontakt_freigabe_am: null, kontakt_sperrgrund: grund }
-        : { kontakt_freigabe_am: heute, kontakt_sperrgrund: null }).eq("mastr_nr", schluessel);
+      // One unreadable read is no finding; the second in a row blocks.
+      const u = freigabeUrteil(grund, vorherWind.get(schluessel));
+      const felder = !u.grund ? { kontakt_freigabe_am: heute, kontakt_sperrgrund: null }
+        : u.sperren ? { kontakt_freigabe_am: null, kontakt_sperrgrund: u.grund }
+        : { kontakt_sperrgrund: u.grund };
+      const { error } = await c.from("windbetreiber").update(felder).eq("mastr_nr", schluessel);
       if (error) throw new Error(`${schluessel}: ${error.message}`);
     },
   },

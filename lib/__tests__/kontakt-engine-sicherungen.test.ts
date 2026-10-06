@@ -11,7 +11,7 @@ import { nurBekannteSpalten, spaltenAusDdl } from "../ddl-spalten";
 import { WINDBETREIBER_SQL } from "../windbetreiber-sql";
 import { kontaktFelder, websiteFelder } from "../windbetreiber";
 import { BEZAHLTE_SUCHE_FLAG, BezahlteSucheGesperrt, bezahlteSucheFreigabe } from "../../scripts/lib/bezahlte-suche";
-import { aufEigenerWebsite } from "../../scripts/lib/kontakt-freigabe";
+import { aufEigenerWebsite, ERSTER_FEHLVERSUCH, FUNDSTELLE_ENTFERNT, FUNDSTELLE_UNLESBAR, freigabeUrteil } from "../../scripts/lib/kontakt-freigabe";
 
 const WURZEL = resolve(__dirname, "../..");
 const lies = (p: string) => readFileSync(resolve(WURZEL, p), "utf8");
@@ -228,6 +228,25 @@ describe("Klasse 29 — falsch eingeordnet heißt übergeben, nicht nur markiere
     expect(u).toMatch(/herkunft: "suche"/);
     expect(u).toMatch(/!\/b\(\?:ü\|ue\)rger\/i\.test\(z\.name\)/);
     expect(u).toMatch(/!bekannt\.has\(z\.website\)/);
+  });
+});
+
+describe("Klasse 35 — ein einzelner Lesefehler sperrt keinen Kontakt (Outreach, 06.10.2026)", () => {
+  it("blocks at once only for a finding about the source", () => {
+    expect(freigabeUrteil("Adresse steht nicht mehr auf der Fundstelle", null)).toEqual({ grund: "Adresse steht nicht mehr auf der Fundstelle", sperren: true });
+    expect(freigabeUrteil(FUNDSTELLE_ENTFERNT, null).sperren).toBe(true);
+    expect(freigabeUrteil(null, `${ERSTER_FEHLVERSUCH} ${FUNDSTELLE_UNLESBAR}`)).toEqual({ grund: null, sperren: false });
+  });
+  it("marks a first unreadable read and blocks at the second", () => {
+    const erst = freigabeUrteil(FUNDSTELLE_UNLESBAR, null);
+    expect(erst).toEqual({ grund: `${ERSTER_FEHLVERSUCH} ${FUNDSTELLE_UNLESBAR}`, sperren: false });
+    expect(freigabeUrteil(FUNDSTELLE_UNLESBAR, erst.grund).sperren).toBe(true);
+  });
+  it("the wind release writes through the rule and keeps the release on a first failure", () => {
+    const k = lies("scripts/kontakte-freigabe.ts");
+    expect(k).toMatch(/const u = freigabeUrteil\(grund, vorherWind\.get\(schluessel\)\);/);
+    expect(k).toMatch(/: \{ kontakt_sperrgrund: u\.grund \};/);
+    expect(lies("scripts/lib/kontakt-freigabe.ts")).toMatch(/HTTP 40\[4\]\|HTTP 410\/\.test\(da\.fehler/);
   });
 });
 

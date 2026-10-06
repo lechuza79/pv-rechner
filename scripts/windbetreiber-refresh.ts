@@ -40,6 +40,7 @@ import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
 import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeufeCheck, vorflug, zugangCheck, type Check } from "./lib/vorflug";
 import { fehlendeSpalten } from "../lib/ddl-spalten";
 import { fetchLive } from "./lib/kontakt-lauf";
+import { ERSTER_FEHLVERSUCH } from "./lib/kontakt-freigabe";
 import { findCachedZip, listZipEntries, streamXmlRecords } from "./mastr-bnetza-refresh";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -666,7 +667,7 @@ async function stand() {
     if (kv) verstoesse.push(`${z.mastr_nr} ${z.name}: ${kv}`);
     if (z.kontakt_email) { mitKontakt++; kwKontakt += kw; }
     if (z.kontakt_freigabe_am) freigegeben++;
-    if (z.kontakt_sperrgrund) gesperrt++;
+    if (z.kontakt_sperrgrund && !z.kontakt_sperrgrund.startsWith(ERSTER_FEHLVERSUCH)) gesperrt++;
   }
   const mw = (kw: number) => `${Math.round(kw / 1000).toLocaleString("de-DE")} MW`;
   const anteil = (kw: number, g: number) => (g ? `${((kw / g) * 100).toFixed(1)} %` : "–");
@@ -682,7 +683,8 @@ async function stand() {
   console.log(`  Kontakt von der eigenen Website: ${mitKontakt} (${anteil(kwKontakt, gesamtKw)} der Leistung) · freigegeben ${freigegeben} · gesperrt ${gesperrt}`);
   // Per website, not per operator: one search answers for all its operators.
   // A blocked contact (no mail server, gone from its page) is no contact.
-  const ohneKontakt = new Set(zeilen.filter((z) => z.website && (!z.kontakt_email || z.kontakt_sperrgrund)).map((z) => z.website!));
+  const gesperrt_ = (g: string | null) => !!g && !g.startsWith(ERSTER_FEHLVERSUCH);
+  const ohneKontakt = new Set(zeilen.filter((z) => z.website && (!z.kontakt_email || gesperrt_(z.kontakt_sperrgrund))).map((z) => z.website!));
   const kontaktVonHand = new Set(zeilen.filter((z) => z.website && ohneKontakt.has(z.website) && (z.kontakt_hand_notiz ?? "").startsWith(VON_HAND)).map((z) => z.website!));
   const kontaktOffen = [...ohneKontakt].filter((d) => !kontaktVonHand.has(d)).length;
   console.log(`  Websites ohne Kontakt: ${ohneKontakt.size}, davon von Hand bestätigt ${kontaktVonHand.size}, noch für die Handprüfung ${kontaktOffen}`);

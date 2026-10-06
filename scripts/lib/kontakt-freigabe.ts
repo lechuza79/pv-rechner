@@ -46,7 +46,7 @@ function nimmtMails(domain: string): Promise<boolean> {
  * blocked with a reason that states something we never observed — the same
  * fault class as a check date nobody checked.
  */
-async function adressenAuf(url: string, domain: string, gesucht: string[]): Promise<{ gefunden: Set<string>; gelesen: boolean }> {
+async function adressenAuf(url: string, domain: string, gesucht: string[]): Promise<{ gefunden: Set<string>; gelesen: boolean; fehler: string | null }> {
   const gefunden = new Set<string>();
   let gelesen = false;
   const lesen = (html: string) => {
@@ -55,10 +55,29 @@ async function adressenAuf(url: string, domain: string, gesucht: string[]): Prom
   };
   const live = await fetchLive(url);
   if ("html" in live) lesen(live.html);
-  if (gelesen && gesucht.every(m => gefunden.has(m))) return { gefunden, gelesen };
+  if (gelesen && gesucht.every(m => gefunden.has(m))) return { gefunden, gelesen, fehler: null };
   const gerendert = await seiteGerendert(url);
   if (gerendert) lesen(gerendert);
-  return { gefunden, gelesen };
+  return { gefunden, gelesen, fehler: "error" in live ? live.error : null };
+}
+
+/** A page that is gone says something about the SOURCE; anything else about our attempt. */
+export const FUNDSTELLE_ENTFERNT = "Fundstelle entfernt (HTTP 404/410)";
+export const FUNDSTELLE_UNLESBAR = "Fundstelle war nicht lesbar";
+/** The mark of a first failed read: the release stands until a second one. */
+export const ERSTER_FEHLVERSUCH = "1. Fehlversuch:";
+
+/**
+ * What to write after a check, given what stood there before. The same
+ * address failed in one run and passed in the next because an office page
+ * was slow or showed a bot check (outreach, 06.10.2026): one unreadable read
+ * is no finding. A contact is blocked when the address has left its page, the
+ * page is gone (404/410), or the page could not be read TWICE in a row.
+ */
+export function freigabeUrteil(grund: string | null, vorher: string | null | undefined): { grund: string | null; sperren: boolean } {
+  if (grund !== FUNDSTELLE_UNLESBAR) return { grund, sperren: grund !== null };
+  if ((vorher ?? "").startsWith(ERSTER_FEHLVERSUCH) || vorher === FUNDSTELLE_UNLESBAR) return { grund, sperren: true };
+  return { grund: `${ERSTER_FEHLVERSUCH} ${FUNDSTELLE_UNLESBAR}`, sperren: false };
 }
 
 /** No single proof page may hold the run; see mitFrist in kontakt-browser. */
@@ -98,12 +117,12 @@ export async function freigeben(
         const da = await mitFrist(
           adressenAuf(url, pruef[0].domain, pruef.map(p => p.email)),
           SEITE_MAX_MS,
-          { gefunden: new Set<string>(), gelesen: false },
+          { gefunden: new Set<string>(), gelesen: false, fehler: null },
         );
         for (const p of pruef) {
           const grund = da.gelesen
             ? (da.gefunden.has(p.email) ? null : "Adresse steht nicht mehr auf der Fundstelle")
-            : "Fundstelle war nicht lesbar";
+            : /HTTP 40[4]|HTTP 410/.test(da.fehler ?? "") ? FUNDSTELLE_ENTFERNT : FUNDSTELLE_UNLESBAR;
           const u = { schluessel: p.schluessel, email: p.email, grund };
           ergebnis.push(u);
           await opts.urteil?.(u);
