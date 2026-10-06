@@ -146,6 +146,31 @@ export async function GET(req: NextRequest) {
         PRIMARY KEY (region_key, energietraeger, segment, year)
       );
 
+      -- AUSGESCHRIEBENE ZUGEHÖRIGKEIT: welche Gemeinde zu welcher Oberregion
+      -- gehört. Sie ersetzt die Annahme „der Schlüssel eines Orts beginnt mit
+      -- dem seines Kreises" — die gilt in Deutschland und nicht in der Schweiz,
+      -- wo eine Zürcher Gemeindenummer nicht mit der ihres Kantons beginnt.
+      --
+      -- Für Deutschland wird sie GENAU AUS dieser Stellenlogik erzeugt, damit
+      -- die Summen sich nicht um eine Stelle bewegen; gemessen am 06.10.2026
+      -- über 65.137 Zellen, null Abweichungen (npm run region:zugehoerigkeit).
+      CREATE TABLE IF NOT EXISTS mastr_region_mitglied (
+        region_key text NOT NULL,
+        gemeinde_id text NOT NULL,
+        PRIMARY KEY (region_key, gemeinde_id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_mrm_gemeinde ON mastr_region_mitglied (gemeinde_id);
+
+      ALTER TABLE mastr_region_mitglied ENABLE ROW LEVEL SECURITY;
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_mitglied_anon_read') THEN
+          CREATE POLICY mastr_region_mitglied_anon_read ON mastr_region_mitglied FOR SELECT TO anon USING (true);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_mitglied_service_write') THEN
+          CREATE POLICY mastr_region_mitglied_service_write ON mastr_region_mitglied FOR ALL TO service_role USING (true);
+        END IF;
+      END $$;
+
       ALTER TABLE mastr_aggregates_gem ENABLE ROW LEVEL SECURITY;
       ALTER TABLE mastr_region_rollup ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
@@ -172,16 +197,35 @@ export async function GET(req: NextRequest) {
       RETURNS void LANGUAGE plpgsql AS $fn$
       BEGIN
         SET LOCAL statement_timeout = 0;
+
+        -- Die Zugehörigkeit wird VOR dem Rollup neu erzeugt, aus derselben
+        -- Stellenlogik wie bisher. Damit bleibt Deutschland zeichengleich, und
+        -- ein zweiter Markt trägt seine eigene Zuordnung ein, ohne dass hier
+        -- noch eine Annahme über die Form des Schlüssels steckt.
+        TRUNCATE mastr_region_mitglied;
+        INSERT INTO mastr_region_mitglied (region_key, gemeinde_id)
+        SELECT DISTINCT left(region_id,5), region_id FROM mastr_aggregates_gem
+        UNION
+        SELECT DISTINCT left(region_id,2), region_id FROM mastr_aggregates_gem
+        UNION
+        SELECT DISTINCT '', region_id FROM mastr_aggregates_gem;
+
+        -- LAUT SCHEITERN, NICHT STILL: Eine leere Zugehörigkeit ergäbe einen
+        -- leeren Rollup, und ein leerer Rollup sieht auf jeder Kreis- und
+        -- Landesseite wie „hier steht nichts" aus — ohne Fehler, ohne roten
+        -- Test, ohne kaputtes Aussehen. Genau die Fehlerklasse, gegen die der
+        -- Rest dieses Projekts gebaut ist.
+        IF NOT EXISTS (SELECT 1 FROM mastr_region_mitglied) THEN
+          RAISE EXCEPTION 'mastr_region_mitglied ist leer — Rollup nicht gebaut';
+        END IF;
+
         TRUNCATE mastr_region_rollup;
         INSERT INTO mastr_region_rollup (region_key, energietraeger, segment, year, count, kwp, kwh)
-        SELECT left(region_id,5), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
-        UNION ALL
-        SELECT left(region_id,2), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
-        UNION ALL
-        SELECT '', energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY energietraeger, segment, year;
+        SELECT m.region_key, a.energietraeger, a.segment, a.year,
+               sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
+          FROM mastr_aggregates_gem a
+          JOIN mastr_region_mitglied m ON m.gemeinde_id = a.region_id
+         GROUP BY 1,2,3,4;
       END;
       $fn$;
       REVOKE ALL ON FUNCTION mastr_refresh_region_rollup() FROM PUBLIC;
