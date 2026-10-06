@@ -365,6 +365,11 @@ export const GEPARKT = /(?:diese |the )?domain (?:ist |is )?(?:zu verkaufen|steh
 /** Offices that act as c/o address without running anything. */
 export const BERATER = /wirtschaftspr(?:ü|ue)f|steuerberat|rechtsanw(?:a|ä)lt|kanzlei|notar(?:iat)?\b|treuhand/i;
 
+/** The provider block or the page title names an adviser's office ("PKF Wulf Gruppe – Wirtschaftsprüfer & Steuerberater"). */
+export function istBeraterSeite(impressum: string): boolean {
+  return BERATER.test(anbieterBlock(impressum)) || BERATER.test(impressum.slice(0, 200));
+}
+
 /** Imprints of hosting providers: their default page stands where a customer has no site yet. */
 const HOSTER = /(?:^|\.)(?:ionos\.(?:de|com)|goneo\.de|checkdomain\.de|united-domains\.de|inwx\.(?:com|de)|strato\.de|hosteurope\.de|all-inkl\.com|1und1\.de|domainfactory\.de|df\.eu|hetzner\.(?:de|com)|netcup\.de|godaddy\.com|sedo\.com|dan\.com)$/i;
 
@@ -415,7 +420,7 @@ export function beurteilen(
     // the letters arrive there, the operator does not live there — 42 EWF
     // companies stood on a Husum tax firm's site (06.10.2026). The ADDRESS
     // proves nothing on such a site; the operator's own name still would.
-    if (b?.wie === "anschrift" && BERATER.test(anbieterBlock(abruf.impressum))) b = null;
+    if (b?.wie === "anschrift" && istBeraterSeite(abruf.impressum)) b = null;
     if (b?.wie === "name") {
       const block = anbieterBlock(abruf.impressum);
       const imBlock = !!block && !!impressumBelegt(block, a, domain, ortsWoerter);
@@ -440,7 +445,7 @@ export function beurteilen(
   }
   // A mailbox an adviser keeps per park (tauberbischofsheim@pkf-wulf.de) is
   // post at the adviser, not the operator's website.
-  const beraterSeite = !!abruf.impressum && BERATER.test(anbieterBlock(abruf.impressum));
+  const beraterSeite = !!abruf.impressum && istBeraterSeite(abruf.impressum);
   if (quelle === "register-mail" && erreichbar && !beraterSeite && funktionsPostfach(postfach, a.Firmenname)) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Funktionspostfach im Marktstammdatenregister: ${postfach}` }, seite: abruf.impressum ? "impressum" : "startseite" };
   }

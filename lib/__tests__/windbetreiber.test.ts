@@ -424,7 +424,7 @@ describe("house numbers and adviser offices (06.10.2026)", () => {
   });
   it("an adviser's per-park mailbox in the register proves no website", () => {
     const a = akteur("Windpark Tauberbischofsheim GmbH & Co. KG", "Irgendwo", "1", "99999");
-    const imp = "Impressum Angaben gemäß § 5 TMG PKF WULF GRUPPE Wirtschaftsprüfungsgesellschaft Löwentorstraße 6 70376 Stuttgart";
+    const imp = "PKF Wulf Gruppe – Wirtschaftsprüfer & Steuerberater springe zum Hauptinhalt Menü Impressum PKF WULF GRUPPE GmbH Löwentorstraße 6 70376 Stuttgart";
     expect(beurteilen(a, "pkf-wulf.de", "register-mail", { impressum: imp, startseite: "PKF Wulf" }, "tauberbischofsheim@pkf-wulf.de").ergebnis).not.toBe("belegt");
   });
 
