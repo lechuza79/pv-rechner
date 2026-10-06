@@ -1,10 +1,10 @@
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
 import { Metadata } from "next";
 import { ErrorBoundary } from "../../../../components/ErrorBoundary";
 import Faq from "../../../../components/Faq";
 import StandNote from "../../../../components/StandNote";
 import { pvRechnerFaq } from "../../../../lib/faq";
 import { pageMetadata } from "../../../../lib/seo";
-import { v } from "../../../../lib/theme";
 import PVRechner from "../rechner";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -68,10 +68,12 @@ export default async function RechnerErgebnisPage(props: {
   const searchParams = await props.searchParams;
   return (
     <ErrorBoundary>
+      <div className="sc-calculator-page-boundary">
       <PVRechner initialParams={searchParams} />
-      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" }}>
+      <CalculatorContent inset>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
-        <StandNote pfad="/photovoltaik-rechner" />
+        <StandNote variant="cards" pfad="/photovoltaik-rechner" />
+      </CalculatorContent>
       </div>
     </ErrorBoundary>
   );

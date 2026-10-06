@@ -1,3 +1,4 @@
+import {widgetEventName, type WidgetAction, type WidgetScope} from "./widget-analytics";
 import { track } from "@vercel/analytics";
 
 // ─── Reichweitenmessung: Zähler, kein Nutzungsprofil. ────────────────────────
@@ -72,6 +73,9 @@ export const EVENTS = [
   // Trichter Balkonkraftwerk
   "balkon_schritt_ausrichtung",
   "balkon_ergebnis",
+  // Shop click totals by placement, without product or visitor properties.
+  "balkon_shop_ergebnis",
+  "balkon_shop_angebote",
   // Herkunft aus den Outreach-Briefen: zwei Namen statt einer Eigenschaft
   "brief_aufruf_direkt",
   "brief_aufruf_verweis",
@@ -141,4 +145,11 @@ export type Funnel = readonly (AnalyticsEvent | null)[];
 export function trackFunnelStep(funnel: Funnel, erreichterSchritt: number) {
   const name = funnel[erreichterSchritt];
   if (name) trackEvent(name);
+}
+
+/** Counts a catalogued widget action; no properties or visitor identifiers. */
+export function trackWidgetEvent(id:string,scope:WidgetScope,action:WidgetAction) {
+  const name=widgetEventName(id,scope,action);
+  if(!name)return;
+  try {track(name);} catch {/* Measurement must never interrupt a widget. */}
 }

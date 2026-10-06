@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aboAufraeumen } from "../../../../lib/gemeinde-abo";
 import { wartelisteAufraeumen } from "../../../../lib/warteliste";
+import { fundingAnfragenAufraeumen } from "../../../../lib/funding-anfragen-loeschen";
 
 // ─── Verfallene Abo-Einträge löschen ─────────────────────────────────────────
 //
@@ -37,5 +38,10 @@ export async function GET(req: NextRequest) {
   // The waitlist makes the same two promises (privacy policy, confirmation
   // mail) and rides on the same daily call.
   const wartelisteGeloescht = await wartelisteAufraeumen(jetzt);
-  return NextResponse.json({ ok: true, ...ergebnis, wartelisteGeloescht });
+  // A third published retention promise rides on the same nightly call:
+  // recipient and mail texts of questions to funding bodies go three years
+  // after the answer (privacy policy, section 15). Its own schedule would be
+  // one more run that can fail without anyone noticing.
+  const foerderAnfragenGeleert = await fundingAnfragenAufraeumen(jetzt);
+  return NextResponse.json({ ok: true, ...ergebnis, wartelisteGeloescht, foerderAnfragenGeleert });
 }

@@ -47,7 +47,20 @@ export interface WidgetPlaceTemplates {
   shareText: string;
 }
 
+/** Supported presentation and data rules, shared by gallery and consumers. */
+export interface WidgetConfiguration {
+  themes: readonly ('light' | 'dark' | 'hero')[];
+  previewWidth?: number;
+  /** Only present when the actual widget consumes the live autoplay setting. */
+  autoplay?: boolean;
+  background: boolean;
+  sharing: boolean;
+  data: string;
+  period: string;
+}
+
 export interface WidgetDef {
+  configuration?: WidgetConfiguration;
   /** Embed slug + gallery anchor, e.g. "gruengas-heizkosten". */
   id: string;
   title: string;
@@ -146,6 +159,7 @@ export const WIDGETS = {
   },
   strommix: {
     id: "strommix",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "24 Stunden, 7 Tage, 30 Tage oder Jahr"},
     title: "Strommix Deutschland",
     kind: "chart",
     shareUrl: `${SITE}/strommix-deutschland`,
@@ -155,6 +169,7 @@ export const WIDGETS = {
   },
   strommixAnteil: {
     id: "strommix-anteil",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "Laufendes Jahr, verfügbare Wochen"},
     title: "Kernenergie im deutschen Strommix",
     kind: "chart",
     shareUrl: `${SITE}/atomstrom-import`,
@@ -164,6 +179,7 @@ export const WIDGETS = {
   },
   zubauErneuerbareAtom: {
     id: "zubau-erneuerbare-atom",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "Verfügbare Datensatzjahre"},
     title: "Zubau: Erneuerbare vs. Atomkraft",
     kind: "chart",
     // Ziel ist die Atomstrom-Seite, NICHT der Ländervergleich: der steht noch
@@ -268,6 +284,14 @@ export const WIDGETS = {
   // ── Kommune und Region: eine Karte, je Aufruf ein anderer Ort ───────────────
   // Titel und Teilen-Text tragen den Ort erst zur Laufzeit (widgetForPlace);
   // hier steht die Gattung, damit Galerie und Übersicht etwas Sinnvolles zeigen.
+  gemeindeRanking: {
+    id: "gemeinde-ranking", title: "Top 3 im Ortsvergleich", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Anlagenzahl; drei führende Gemeinden im Landkreis", period: "Aktueller Registerstand"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Die Top 3 im Solar-Ranking – Solar Check",
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.destatis],
+    cta: { label: "Orte vergleichen", href: "/solar-atlas" },
+    embeddable: false,
+  },
   gemeindeSolar: {
     id: "gemeinde-solar",
     title: "Solaranlagen einer Gemeinde",
@@ -335,8 +359,25 @@ export const WIDGETS = {
     // Fällt weg, sobald die Route steht.
     embeddable: false,
   },
+  microSolar: {
+    id: "micro-solar", title: "Tagesverlauf · Solar", kind: "chart",
+    configuration: {previewWidth: 250, themes: ["light", "dark", "hero"], background: false, sharing: false, data: "Modellierte Solarleistung des örtlichen Anlagenbestands", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
+    place: {title: "Tagesverlauf · Solar · {ort}", shareText: "Tagesverlauf · Solar in {ort} – Solar Check"},
+    exampleParams: {ags: BEISPIEL_GEMEINDE},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Tagesverlauf · Solar – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], exportable: false,
+  },
+  microWind: {
+    id: "micro-wind", title: "Windstärke und Tagesverlauf", kind: "chart",
+    configuration: {previewWidth: 512, themes: ["light", "dark", "hero"], background: false, sharing: false, autoplay: true, data: "Wind in 100 m Höhe und modellierte Windleistung", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
+    place: {title: "Windstärke und Tagesverlauf · {ort}", shareText: "Windstärke und Tagesverlauf in {ort} – Solar Check"},
+    exampleParams: {ags: BEISPIEL_GEMEINDE},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Windstärke und Tagesverlauf – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], exportable: false,
+  },
   regionalElectricityValue: {
     id: "regional-electricity-value", title: "Wert des Solarstroms (Modellrechnung)", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Modellierter Solarstromwert in Euro", period: "Ausgewählter Monat"},
     place: {title: "Wert des Solarstroms · {ort}", shareText: "Wert des Solarstroms · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Wert des Solarstroms – Solar Check",
@@ -344,6 +385,7 @@ export const WIDGETS = {
   },
   regionalFeedInValue: {
     id: "regional-feed-in-value", title: "Einspeisevergütung (Modellrechnung)", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Modellierte Einspeisevergütung in Euro", period: "Ausgewählter Monat"},
     place: {title: "Einspeisevergütung · {ort}", shareText: "Einspeisevergütung · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Einspeisevergütung – Solar Check",
@@ -351,6 +393,7 @@ export const WIDGETS = {
   },
   regionalCurrentPower: {
     id: "regional-current-power", title: "Solarleistung heute (simuliert)", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Modellierte Solarleistung des Anlagenbestands", period: "Heute"},
     place: {title: "Solarleistung heute (simuliert) · {ort}", shareText: "Solarleistung heute (simuliert) · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung heute (simuliert) – Solar Check",
@@ -358,6 +401,7 @@ export const WIDGETS = {
   },
   regionalAnnualGrowth: {
     id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Jährlicher Zubau an Solaranlagen", period: "Verfügbare Registerjahre"},
     place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",
@@ -365,13 +409,23 @@ export const WIDGETS = {
   },
   regionalComposition: {
     id: "regional-composition", title: "Solarleistung nach Anlagentyp", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Solarleistung nach Anlagenart", period: "Aktueller Registerstand"},
     place: {title: "Solarleistung nach Anlagentyp · {ort}", shareText: "Solarleistung nach Anlagentyp · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
+  regionalMap: {
+    id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Gemeinden im Landkreis; Kennzahl im Chart wählbar", period: "Aktueller Registerstand"},
+    place: {title: "Energie im regionalen Vergleich · {ort}", shareText: "Energie im regionalen Vergleich · {ort} – Solar Check"},
+    exampleParams: {ags: "06440"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Energie im regionalen Vergleich – Solar Check",
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg], exportable: false,
+  },
   regionalRace: {
     id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Vergleichsebene, Anlagenart und Kennzahl wählbar", period: "Verfügbare Registerjahre"},
     place: {title: "Solaranlagen im regionalen Vergleich · {ort}", shareText: "Solaranlagen im regionalen Vergleich · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solaranlagen im regionalen Vergleich – Solar Check",
@@ -383,6 +437,7 @@ export const WIDGETS = {
     // district monitor and in stories. One identity for monitor export, story
     // export and later embeds.
     id: "gemeinde-anlagenraster",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Anteil einer Anlagenart an Anzahl und Leistung", period: "Aktueller Registerstand"},
     title: "Anteil einer Anlagenart an Anzahl und Solarleistung",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },
@@ -402,6 +457,7 @@ export const WIDGETS = {
     // municipality and district monitor and stories. Weather from our ERA5
     // archive, capacity from the register.
     id: "gemeinde-energie-jahr",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Modelliertes Solar- und Windpotenzial", period: "Ausgewähltes Jahr"},
     title: "Solar- und Windpotenzial im Jahresverlauf",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },
@@ -420,6 +476,7 @@ export const WIDGETS = {
     // Template "radial": modelled solar output over 24 hours for every day of
     // one month, municipality and district monitor and stories.
     id: "gemeinde-solar-monat",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Modellierte Solarerzeugung über 24 Stunden", period: "Ausgewählter Monat"},
     title: "Solarerzeugung im Tagesverlauf",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },

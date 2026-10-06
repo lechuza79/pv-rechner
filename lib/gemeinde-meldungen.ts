@@ -68,7 +68,9 @@ export const MIN_BATTERIEN_FUER_MELDUNG = 5;
  */
 export { FEED_IN_YEARS } from "./constants";
 import { FEED_IN_YEARS } from "./constants";
-import { jahrInBerlin } from "./zeit";
+import { jahrInBerlin, tagInBerlin } from "./zeit";
+import { tagMonatJahr } from "./stand-format";
+import type { FundingTechnik } from "./funding-programs";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -112,6 +114,22 @@ export type MeldungsFoerderung = {
   zaehlt: boolean;
 };
 
+/**
+ * Ein Förderprogramm, das wieder Anträge annimmt.
+ *
+ * Kommt aus dem Förder-Verlauf (`wiederOffenSeit`), nie aus einer Vermutung:
+ * Nur ein mitgeschriebener Wechsel von einem anderen Status auf „aktiv" zählt.
+ * Das Datum ist der Tag UNSERER Feststellung, nicht der des Ratsbeschlusses —
+ * deshalb sagt der Satz „haben wir festgestellt" und nicht „seit".
+ */
+export type MeldungsWiederOffen = {
+  name: string;
+  /** Wann wir den Wechsel festgestellt haben (ISO-Zeitpunkt). */
+  festgestelltAm: string;
+  /** Welche Techniken das Programm fördert — für die Auswahl im Förder-Abo. */
+  foerdert: FundingTechnik[];
+};
+
 /** Die Platzierung, soweit die Meldung sie braucht. Kommt aus dem Award-Kern. */
 export type MeldungsPlatzierung = {
   /** Was gemessen wird, im Klartext — nie der interne Kategorietitel. */
@@ -152,6 +170,15 @@ export type Meldung = {
    * Meldung ergänzt, muss sich entscheiden, wo sie steht.
    */
   gewicht: number;
+  /**
+   * Wann das Ereignis festgestellt wurde. Nur an Meldungen, die an einem
+   * einzelnen Ereignis hängen: Der Versand schickt sie einem Abonnenten nur,
+   * wenn sie NACH seinem letzten Stand liegen — sonst stünde dieselbe
+   * Nachricht in jeder Mail.
+   */
+  festgestelltAm?: string;
+  /** Welche Techniken die Meldung betrifft; ohne Angabe betrifft sie alle. */
+  techniken?: FundingTechnik[];
 };
 
 // ─── Hilfsgrößen ─────────────────────────────────────────────────────────────
@@ -234,6 +261,11 @@ function meldungZubau(d: MeldungsDaten): Meldung | null {
   return {
     schluessel: `zubau-${jahr}`,
     art: "bewegung",
+    // WHY A DATE: without one this was a permanent "movement" — every send run
+    // would have mailed the same year's build-out again. The year is news once,
+    // when it is over; German midnight on 1 January of the following year.
+    // Later data stands still correct the number, but they are not new news.
+    festgestelltAm: `${jahr + 1}-01-01T00:00:00+01:00`,
     titel: `${anlagenWort(zeile.count)} kamen ${jahr} in ${d.name} dazu`,
     text:
       `${jahr} gingen ${wo(d.name)} ${anlagenWort(zeile.count)} mit zusammen ` +
@@ -261,6 +293,10 @@ function meldungAuslauf(d: MeldungsDaten, heuteJahr: number): Meldung | null {
   return {
     schluessel: `auslauf-${heuteJahr}`,
     art: "stichtag",
+    // Once per year and subscriber: the deadline is news from 1 January on.
+    // Unlike a movement it is NOT hidden from someone who subscribes later in
+    // the year — the deadline still lies ahead of them (see meldungenFuerAbo).
+    festgestelltAm: `${heuteJahr}-01-01T00:00:00+01:00`,
     titel: `${anlagenWort(betroffen)} in ${d.name} verlieren Ende ${heuteJahr} die Einspeisevergütung`,
     text:
       `${grossWo(d.name)} stehen ${anlagenWort(betroffen)} auf privaten Dächern, die ` +
@@ -304,6 +340,33 @@ function meldungFoerderung(d: MeldungsDaten, programme: MeldungsFoerderung[]): M
       `die Kombination zulässt. Verbindlich ist immer die Auskunft der Gemeinde.`,
     gewicht: 90,
   };
+}
+
+/**
+ * Ein Förderprogramm nimmt wieder Anträge an.
+ *
+ * Die zweite Meldung mit einer Handlung dahinter: Wer auf einen leeren Topf
+ * gewartet hat, kann jetzt beantragen. Sie ist eine BEWEGUNG, altert also —
+ * aber nicht nach Tagen, sondern je Abonnent: Der Versand schickt sie nur, wenn
+ * die Feststellung nach seiner letzten Mail liegt (`festgestelltAm`).
+ */
+function meldungenWiederOffen(d: MeldungsDaten, programme: MeldungsWiederOffen[]): Meldung[] {
+  return programme.map((p) => {
+    const tag = tagMonatJahr(tagInBerlin(new Date(p.festgestelltAm)));
+    return {
+      schluessel: `wieder-offen-${p.name}-${p.festgestelltAm.slice(0, 10)}`,
+      art: "bewegung",
+      titel: `Förderprogramm „${p.name}“ nimmt wieder Anträge an`,
+      text:
+        `Am ${tag} haben wir beim regelmäßigen Abruf der Programmseite festgestellt, dass ` +
+        `„${p.name}“ ${wo(d.name)} wieder Anträge annimmt. Wer darauf gewartet hat, sollte ` +
+        `nicht zu lange zögern — solche Töpfe sind oft schnell wieder leer. ` +
+        `Verbindlich ist immer die Auskunft der Gemeinde.`,
+      gewicht: 95,
+      festgestelltAm: p.festgestelltAm,
+      techniken: p.foerdert,
+    };
+  });
 }
 
 /**
@@ -383,15 +446,18 @@ export function gemeindeMeldungen(opts: {
   daten: MeldungsDaten;
   foerderung?: MeldungsFoerderung[];
   platzierung?: MeldungsPlatzierung | null;
+  /** Programme, die wieder Anträge annehmen — aus dem Förder-Verlauf. */
+  wiederOffen?: MeldungsWiederOffen[];
   /** Das laufende Jahr. Hereingereicht, nicht aus der Uhr gelesen — sonst
    *  liefert dieselbe Funktion im Test je nach Kalendertag ein anderes
    *  Ergebnis (dieselbe Fehlerklasse wie ein Vergleich ohne Uhr im
    *  Förder-Verlauf). */
   heuteJahr: number;
 }): Meldung[] {
-  const { daten, foerderung = [], platzierung = null, heuteJahr } = opts;
+  const { daten, foerderung = [], platzierung = null, wiederOffen = [], heuteJahr } = opts;
 
   return [
+    ...meldungenWiederOffen(daten, wiederOffen),
     meldungAuslauf(daten, heuteJahr),
     meldungFoerderung(daten, foerderung),
     meldungPlatzierung(daten, platzierung),
@@ -411,6 +477,60 @@ export function gemeindeMeldungen(opts: {
  * Stichtag bevorsteht. Für den stillen Fall gibt es die Quartals-Standmeldung,
  * und die entscheidet der Versand, nicht diese Funktion.
  */
+/**
+ * Which messages a subscriber mail may carry at all (operator decision,
+ * 27.09.2026): only "Förderprogramm nimmt wieder Anträge an". The others
+ * (build-out, payment end, ranking, stock) read badly as mail and are to be
+ * rebuilt with the editorial/story system first. They stay on the page — this
+ * gate is about the mail only.
+ *
+ * An allowlist, not a blocklist: a new message type added later must not slip
+ * into mails before someone has looked at it.
+ */
+export const ABO_MAIL_FREIGEGEBEN = ["wieder-offen-"] as const;
+
+export function fuerAboMailFreigegeben(meldungen: Meldung[]): Meldung[] {
+  return meldungen.filter((m) => ABO_MAIL_FREIGEGEBEN.some((p) => m.schluessel.startsWith(p)));
+}
+
 export function hatNachricht(meldungen: Meldung[]): boolean {
   return meldungen.some((m) => m.art === "bewegung" || m.art === "stichtag");
+}
+
+/**
+ * Welche Meldungen gehören in DIESE Mail?
+ *
+ * Zwei Filter, beide je Abonnent:
+ * - Eine Meldung, die an einem Ereignis hängt (`festgestelltAm`), zählt nur,
+ *   wenn sie nach seiner letzten Mail liegt — oder, vor der ersten, nach seiner
+ *   Bestätigung. Sonst stünde „nimmt wieder Anträge an" in jeder Mail, und wer
+ *   sich heute anmeldet, bekäme eine Wiederöffnung von vor drei Monaten als
+ *   Neuigkeit.
+ * - Im Förder-Abo hat der Abonnent Techniken gewählt; eine Meldung über eine
+ *   andere Technik gehört nicht hinein. Das Bestands-Abo trägt dort keine
+ *   Auswahl (immer alle), der Filter lässt dann alles durch.
+ */
+export function meldungenFuerAbo(
+  meldungen: Meldung[],
+  abo: {
+    letzteMailAm: string | null;
+    bestaetigtAm: string | null;
+    quelle: "gemeinde" | "foerderung";
+    technikenGewaehlt: FundingTechnik[];
+  },
+): Meldung[] {
+  return meldungen.filter((m) => {
+    // Ein Stichtag gilt auch für den, der sich nach dem 1. Januar anmeldet —
+    // die Frist liegt noch vor ihm. Gemessen wird deshalb nur an der letzten
+    // Mail. Eine Bewegung dagegen ist für einen später Angemeldeten keine
+    // Neuigkeit mehr; dort zählt vor der ersten Mail die Bestätigung.
+    const stand = m.art === "stichtag" ? abo.letzteMailAm : (abo.letzteMailAm ?? abo.bestaetigtAm);
+    // Als Zeitpunkt verglichen, nicht als Text: Die Datenbank schreibt
+    // „+00:00", der Lauf „Z" — als Zeichenkette liefe der Vergleich daneben.
+    if (m.festgestelltAm && stand && Date.parse(m.festgestelltAm) <= Date.parse(stand)) return false;
+    if (abo.quelle === "foerderung" && m.techniken?.length) {
+      return m.techniken.some((t) => abo.technikenGewaehlt.includes(t));
+    }
+    return true;
+  });
 }

@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import ArticleMeta from "../../../components/ArticleMeta";
 import Breadcrumb from "../../../components/Breadcrumb";
+import EditorialPage from "../../../components/EditorialPage";
+import editorial from "../../../components/EditorialContent.module.css";
 import Faq from "../../../components/Faq";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import RelatedLinks from "../../../components/RelatedLinks";
@@ -28,40 +30,8 @@ export const metadata: Metadata = pageMetadata({
 });
 
 // ─── Styles (content-page conventions, same tokens as the Ratgeber) ──────────
+// Page-specific comparison and data presentation.
 const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "0 16px 20px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { color: v("--color-text-primary"), marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 8,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   th: {
     textAlign: "right" as const,
     fontSize: v("--font-size-caption"),
@@ -73,19 +43,14 @@ const S = {
     borderBottom: `1px solid ${v("--color-border")}`,
     whiteSpace: "nowrap" as const,
   },
-  small: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.6,
-  },
 };
 
 export default function NeigungswinkelPage() {
   const faqItems = neigungswinkelFaq();
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
-        <Breadcrumb
+    <EditorialPage>
+
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
@@ -93,13 +58,6 @@ export default function NeigungswinkelPage() {
           ]}
           jsonLd
         />
-        <h1 style={S.h1}>Photovoltaik-Neigungswinkel: Was dein Dach wirklich bringt</h1>
-        <p style={S.subtitle}>
-          Die Tabelle zeigt für jede Kombination aus Dachneigung und Ausrichtung, wie viel
-          Ertrag im Vergleich zum perfekten Dach übrig bleibt — gerechnet aus den
-          Sonnenstandsdaten der EU-Kommission, nicht aus Faustformeln.
-        </p>
-
         <ArticleMeta
           headline="Photovoltaik-Neigungswinkel: Tabelle & optimaler Winkel"
           description="Ertrag je Dachneigung und Ausrichtung, als Anteil vom Optimum — mit Schnell-Check."
@@ -108,16 +66,23 @@ export default function NeigungswinkelPage() {
           modified="2026-08-04"
         />
 
-        <div style={S.hero}>
-          <span style={S.strong}>Die kurze Antwort:</span> Das Optimum liegt bei einem
+        <h1 className={editorial.h1}>Photovoltaik-Neigungswinkel: Was dein Dach wirklich bringt</h1>
+        <p className={editorial.subtitle}>
+          Die Tabelle zeigt für jede Kombination aus Dachneigung und Ausrichtung, wie viel
+          Ertrag im Vergleich zum perfekten Dach übrig bleibt — gerechnet aus den
+          Sonnenstandsdaten der EU-Kommission, nicht aus Faustformeln.
+        </p>
+
+        <div className={editorial.hero}>
+          <span className={editorial.strong}>Die kurze Antwort:</span> Das Optimum liegt bei einem
           Süddach mit {TILT_OPTIMUM.minAngle} bis {TILT_OPTIMUM.maxAngle} Grad Neigung.
           Aber der Spielraum ist groß — zwischen 25 und 50 Grad verliert ein Süddach fast
           nichts, und selbst ein Ost-West-Dach liefert noch rund {tiltPct("ostwest", 30)} Prozent
           je Seite. Ein „falsches" Dach ist fast nie ein Grund, auf Photovoltaik zu verzichten.
         </div>
 
-        <h2 style={S.h2}>Die Tabelle: Ertrag nach Neigung und Ausrichtung</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Die Tabelle: Ertrag nach Neigung und Ausrichtung</h2>
+        <p className={editorial.p}>
           Alle Werte in Prozent des optimalen Ertrags (Süd, {TILT_OPTIMUM.minAngle}–{TILT_OPTIMUM.maxAngle}°
           = 100 %). 0° ist ein Flachdach, 90° eine senkrechte Fassade. Südost und Südwest
           sowie Ost und West unterscheiden sich um höchstens einen Punkt und sind deshalb
@@ -163,36 +128,36 @@ export default function NeigungswinkelPage() {
             </tbody>
           </table>
         </div>
-        <p style={{ ...S.small, marginBottom: 24 }}>
+        <p className={editorial.small} style={{ marginBottom: 24 }}>
           <DataSourceNote source={DATA_SOURCES.pvgis} /> Referenzstandort Mitte Deutschlands
           ({TILT_REFERENCE.method}), Abruf {TILT_REFERENCE.fetchedIso.split("-").reverse().join(".")}.
           Die Prozentwerte gelten in ganz Deutschland nahezu unverändert; der absolute Ertrag
           deines Orts kommt in unseren Rechnern live von PVGIS.
         </p>
 
-        <h2 style={S.h2}>Schnell-Check für dein Dach</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Schnell-Check für dein Dach</h2>
+        <p className={editorial.p}>
           Ausrichtung und Neigung wählen — der Wert zeigt, wie nah dein Dach am Optimum liegt.
         </p>
         <TiltCheck />
 
-        <h2 style={S.h2}>Warum der Winkel weniger wichtig ist, als viele denken</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Warum der Winkel weniger wichtig ist, als viele denken</h2>
+        <p className={editorial.p}>
           Die Sonne wandert über Tag und Jahr — deshalb gibt es keinen Winkel, der immer
           perfekt ist, sondern nur einen besten Kompromiss übers Jahr. Genau darum ist die
           Kurve um das Optimum so flach: Ob {TILT_OPTIMUM.minAngle}° oder 25°, macht am
           Jahresende nur wenige Prozent aus. Spürbar wird es erst bei steilen Fassaden
           ({tiltPct("sued", 90)} % bei Süd) oder bei Norddächern.
         </p>
-        <p style={S.p}>
-          <span style={S.strong}>Wichtiger als der Winkel sind in der Praxis:</span> Verschattung
+        <p className={editorial.p}>
+          <span className={editorial.strong}>Wichtiger als der Winkel sind in der Praxis:</span> Verschattung
           (Bäume, Gauben, Nachbargebäude), die nutzbare Fläche — und die Frage, wie viel vom
-          Solarstrom du selbst verbrauchst. Eine <Link href="/photovoltaik-rechner" style={S.link}>passend
+          Solarstrom du selbst verbrauchst. Eine <Link href="/photovoltaik-rechner" className={editorial.link}>passend
           dimensionierte Anlage</Link> auf einem 90-%-Dach schlägt eine zu kleine Anlage auf dem
           perfekten Dach.
         </p>
-        <p style={S.p}>
-          <span style={S.strong}>Ost-West hat einen versteckten Vorteil:</span> Die Erzeugung
+        <p className={editorial.p}>
+          <span className={editorial.strong}>Ost-West hat einen versteckten Vorteil:</span> Die Erzeugung
           verteilt sich auf Morgen und Abend — also auf die Stunden, in denen zu Hause
           tatsächlich Strom gebraucht wird. Das erhöht den Eigenverbrauch, und der spart pro
           Kilowattstunde rund das Vierfache der Einspeisevergütung.
@@ -210,7 +175,7 @@ export default function NeigungswinkelPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }

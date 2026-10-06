@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ErzeugungWidget from "./client";
+import ErzeugungEmbedAuto from "./auto";
 
 export const metadata: Metadata = {
   title: "Stromerzeugung Deutschland — Solar Check Widget",
@@ -8,21 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function ErzeugungEmbedPage(
-  props: {
-    searchParams?: Promise<{ auto?: string }>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  return <ErzeugungWidget autoswitchMs={parseAuto(searchParams?.auto)} />;
-}
-
-// Akzeptiert "1" (= 6000 ms Default-Intervall) oder eine Ganzzahl in ms.
-// Werte unter 1000 oder über 60000 werden geclamped.
-function parseAuto(raw: string | undefined): number {
-  if (!raw) return 0;
-  if (raw === "1") return 6000;
-  const n = parseInt(raw, 10);
-  if (!Number.isFinite(n) || n <= 0) return 0;
-  return Math.min(60_000, Math.max(1000, n));
+// Static: `?auto=` is read in the browser (./auto.tsx), not from searchParams.
+export default function ErzeugungEmbedPage() {
+  return <ErzeugungEmbedAuto />;
 }

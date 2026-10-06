@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { computeGemeindePotential, type GemeindePotential } from "../../lib/gemeinde-potential";
 import { DEFAULT_PRICES } from "../../lib/prices-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../lib/heatpump-config";
+import ExampleCard, { ExampleAmount } from "../ExampleCard";
 import { LoadingDots } from "../LoadingDots";
 
 /**
@@ -19,13 +20,6 @@ import { LoadingDots } from "../LoadingDots";
 const eur = (n: number) => Math.round(n).toLocaleString("de-DE");
 const rund = (n: number, auf: number) => Math.round(n / auf) * auf;
 
-const plus = (
-  <span className="v3-result-plus" aria-label="Plus">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-      <path d="M12 4v16M4 12h16" />
-    </svg>
-  </span>
-);
 const pfeil = (
   <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -77,13 +71,7 @@ export default function GemeindeBeispiele({
     p == null ? (
       fehler ? <span className="v3-delta-value">–</span> : <LoadingDots size={6} />
     ) : wert != null && wert > 0 ? (
-      <>
-        {plus}
-        <span className="v3-delta-value">
-          {eur(wert)} <span className="v3-delta-currency">€</span>
-        </span>
-        <small>{zeitraum}</small>
-      </>
+      <ExampleAmount amount={eur(wert)} period={zeitraum} />
     ) : (
       <span className="v3-delta-value">keine Ersparnis</span>
     );
@@ -122,7 +110,11 @@ export default function GemeindeBeispiele({
   ];
 
   return (
-    <section className="atlas-section v3-conclusion">
+    // Die Sprungmarke der Leiste zeigt auf den ANFANG dieses Abschnitts,
+    // nicht auf den Förderblock darin: Sie heißt „Bürger & Förderung", und
+    // wer sie anklickt, soll bei den Beispielrechnungen landen, unter denen
+    // die Förderung steht.
+    <section className="atlas-section v3-conclusion" id="atlas-buerger">
       <div className="atlas-wrap">
         <div className="atlas-head">
           <details className="v3-calculation-help">
@@ -147,13 +139,9 @@ export default function GemeindeBeispiele({
         </div>
         <div className="v3-examples sc-feature-list">
           {karten.map((k) => (
-            <article key={k.titel} className="sc-feature-card gemeinde-buerger-card">
-              <h3 className="gemeinde-buerger-title">{k.titel}</h3>
-              {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
-              <solar-illustration class="v3-example-art sc-feature-visual" motif={k.motif} label={k.titel} circle="" loading="lazy" loading-margin="1200" />
-              <div className="v3-example-copy sc-feature-content">
+            <ExampleCard key={k.titel} title={k.titel} motif={k.motif} className="gemeinde-buerger-card">
                 <div className="gemeinde-buerger-value">
-                  <span className="v3-result-amount sc-delta">{betrag(k.wert, k.zeitraum)}</span>
+                  {betrag(k.wert, k.zeitraum)}
                 </div>
                 <p>{k.text}</p>
                 {/* Gibt es für DIESE Technik hier einen Zuschuss, steht es an
@@ -176,8 +164,7 @@ export default function GemeindeBeispiele({
               <a className="v3-example-cta sc-feature-action" href={k.href}>
                 {k.cta} {pfeil}
               </a>
-              </div>
-            </article>
+            </ExampleCard>
           ))}
         </div>
         {/* Der Zuschuss der Gemeinde gehört zu den Beispielrechnungen: Er

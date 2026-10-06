@@ -1,3 +1,4 @@
+import { HOUSEHOLD_ELECTRICITY_INCREASE } from "./electricity-projection";
 // ─── Price Configuration (shared between server + client) ─────────────────────
 
 export interface PriceConfig {
@@ -23,11 +24,8 @@ export const DEFAULT_PRICES: PriceConfig = {
   batteryBase: 1500,       // € fixe Installations-Basis (Wechselrichter + Montage, ~stabil)
   batteryPerKwh: 225,      // €/kWh Zell-Preis, trackt Markt (2-Quellen-Mittel Q2/2026: ~3.750 €/10 kWh all-in)
   electricityPrice: 0.312, // €/kWh Haushaltsstrom (BNetzA Strompreismonitor 06/2026)
-  // Strompreis-STEIGERUNG p.a.: bewusste Modell-Konvention, KEIN gescrapter
-  // Marktwert und daher NICHT wächter-überwacht (der Scraper pflegt nur das
-  // Preis-Niveau). 2026er Prognosen 0,5–2 %/Jahr. Bei größeren Prognose-Shifts
-  // manuell prüfen — es gibt keine Live-Quelle, die das automatisch korrigiert.
-  electricityIncrease: 0.02,
+  // Model assumption, independent of market-price snapshots and cached rows.
+  electricityIncrease: HOUSEHOLD_ELECTRICITY_INCREASE,
   validFrom: "2026-06-16",
   source: null,
 };

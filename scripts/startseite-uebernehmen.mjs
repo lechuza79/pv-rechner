@@ -126,6 +126,8 @@ const PATCHES = [
 {"datei": "dynamic-hero/dist/test.js", "to": "A=B,scRetrospective(B).catch(()=>{}),s.textContent=H?", "why": "Start the prepared result read as soon as a valid postcode is known.", "from": "A=B,s.textContent=H?"},
 {"datei": "dynamic-hero/dist/test.js", "to": "let C=await scRetrospective(H);", "why": "Reuse the prefetched result and bound retries to avoid lingering placeholders.", "from": "let R=await fetch(\"/simulation-retrospective?plz=\"+H,{signal:AbortSignal.timeout(7e4)});if(!R.ok)throw Error(\"Quelle derzeit nicht erreichbar\");let C=await R.json();"},
 {"datei": "dynamic-hero/dist/test.js", "to": "Deine Solarbilanz wird geladen \\u2026", "why": "The server reads prepared results; no historical weather calculation runs here.", "from": "Historische Wetterdaten werden geladen und berechnet \\u2026"},
+  { datei: "dynamic-hero/dist/test.js", from: "<a href=\"${ie}/energie-widgets\"><solar-illustration class=\"hs-audience-art\" motif=\"audience-municipalities\"", to: "<a href=\"${ie}/fuer-organisationen/kommunen\"><solar-illustration class=\"hs-audience-art\" motif=\"audience-municipalities\"", why: "Municipal audience card links to the approved organisation offering." },
+  { datei: "dynamic-hero/dist/test.js", from: "Unsere Tools.", to: "Unsere Energie-Angebote.", why: "Use the approved umbrella wording." },
   {
     datei: "dynamic-hero/dist/test.js",
     from: 'function R(){W=!0,a.dataset.sceneBoot=',
@@ -345,6 +347,22 @@ const VORSCHAU = /Solar-Check-Dynamisch|[?&]homepage=1|rechner-uebersicht|foregr
 const textdateien = [...kopiert.filter((f) => /\.(js|css|json|svg)$/.test(f)).map((f) => join(PUBLIC, f)), join(ZIEL, "app/_neon/startseite.html"), join(ZIEL, "app/_neon/simulation.html")];
 const reste = textdateien.filter((f) => VORSCHAU.test(readFileSync(f, "utf8")));
 if (reste.length) throw new Error(`Vorschau-Verweise übrig in:\n  ${reste.join("\n  ")}`);
+
+// ─── Links onto redirected addresses → their final address ──────────────────
+// The package links a few addresses we have since moved (28.09.2026:
+// /pv-bedarf-berechnen on the homepage tools). The table comes from
+// next.config.js, not from a list here (scripts/endadressen.mjs). Runs BEFORE
+// the sections are read out of the bundle, so the no-JS block inherits the
+// final addresses too.
+const { weiterleitungsZiele, aufEndadressen } = await import("./endadressen.mjs");
+const ziele = await weiterleitungsZiele();
+for (const f of textdateien) {
+  const { text, ersetzt } = aufEndadressen(readFileSync(f, "utf8"), ziele);
+  if (ersetzt.length) {
+    writeFileSync(f, text);
+    console.log(`Umgeleitete Links ersetzt in ${f}: ${ersetzt.join(", ")}`);
+  }
+}
 
 // ─── Sections as data ───────────────────────────────────────────────────────
 // The homepage renders the script-built sections server-side so a crawler

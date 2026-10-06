@@ -6,8 +6,10 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
+import { nurBalkon } from "./foerder-stadt-meta";
+import { heuteInBerlin } from "./zeit";
 
 export interface AtlasCity {
   slug: string;
@@ -375,6 +377,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "taunusstein", name: "Taunusstein", ags: "06439015", kreis: "Rheingau-Taunus-Kreis", bundesland: "Hessen", yieldKwhKwp: 1036 },
   { slug: "schmelz", name: "Schmelz", ags: "10044117", kreis: "Landkreis Saarlouis", bundesland: "Saarland", yieldKwhKwp: 1060 },
   { slug: "waldalgesheim", name: "Waldalgesheim", ags: "07339062", kreis: "Landkreis Mainz-Bingen", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1094 },
+  { slug: "bellheim", name: "Bellheim", ags: "07334001", kreis: "Landkreis Germersheim", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1138 },
   { slug: "recklinghausen", name: "Recklinghausen", ags: "05562032", kreis: "Kreis Recklinghausen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1010 },
   { slug: "werne", name: "Werne", ags: "05978040", kreis: "Kreis Unna", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1028 },
   { slug: "gerlingen", name: "Gerlingen", ags: "08118019", kreis: "Landkreis Ludwigsburg", bundesland: "Baden-Württemberg", yieldKwhKwp: 1121 },
@@ -470,6 +473,25 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
   { slug: "bickenbach", name: "Bickenbach", ags: "07140014", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
   { slug: "hausbay", name: "Hausbay", ags: "07140047", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "horn", name: "Horn", ags: "07140058", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "reckershausen", name: "Reckershausen", ags: "07140122", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
+  { slug: "unzenberg", name: "Unzenberg", ags: "07140154", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "henau", name: "Henau", ags: "07140050", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1044 },
+  { slug: "metzenhausen", name: "Metzenhausen", ags: "07140094", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1061 },
+  { slug: "kappel", name: "Kappel", ags: "07140062", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1075 },
+  { slug: "reich-hunsrueck", name: "Reich", ags: "07140123", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "benzweiler", name: "Benzweiler", ags: "07140011", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1066 },
+  { slug: "bubach", name: "Bubach", ags: "07140020", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064 },
+  { slug: "fronhofen", name: "Fronhofen", ags: "07140039", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076 },
+  { slug: "rayerschied", name: "Rayerschied", ags: "07140121", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1048 },
+  { slug: "beltheim", name: "Beltheim", ags: "07140010", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "beltheim-energiespar" },
+  { slug: "dommershausen", name: "Dommershausen", ags: "07140202", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1059, fundingId: "dommershausen-energiespar" },
+  // Yield measured at postcode 56288 (Kastellaun): Roth has no entry in the
+  // postcode table yet (truncated table, separate task).
+  { slug: "roth-hunsrueck", name: "Roth (Hunsrück)", ags: "07140131", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1064, fundingId: "roth-hunsrueck-energie-klima" },
+  // Two programmes on this key (energy-saving guideline with roof PV, and a
+  // heating-only guideline); the page shows the one that funds roof PV.
+  { slug: "neuerkirch", name: "Neuerkirch", ags: "07140101", kreis: "Rhein-Hunsrück-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1076, fundingId: "neuerkirch-energiespar" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
   // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
   // above: the Verbandsgemeinde's balcony grant is as specific as the town's
@@ -477,6 +499,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, fundingId: "hoehr-grenzhausen-energie" },
   { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
   { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
+  { slug: "otterstadt", name: "Otterstadt", ags: "07338021", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1121 },
+  { slug: "waldsee", name: "Waldsee", ags: "07338026", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1109 },
   { slug: "boeblingen", name: "Böblingen", ags: "08115003", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
   { slug: "holzgerlingen", name: "Holzgerlingen", ags: "08115024", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1128 },
   { slug: "wernau", name: "Wernau (Neckar)", ags: "08116072", kreis: "Landkreis Esslingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1138 },
@@ -487,6 +511,12 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "gaiberg", name: "Gaiberg", ags: "08226022", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1084 },
   { slug: "heddesheim", name: "Heddesheim", ags: "08226028", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1072 },
   { slug: "leimen", name: "Leimen", ags: "08226041", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1114 },
+  { slug: "hemsbach", name: "Hemsbach", ags: "08226031", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1069 },
+  { slug: "walldorf", name: "Walldorf", ags: "08226095", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1123 },
+  { slug: "hirschberg-bergstrasse", name: "Hirschberg (Bergstraße)", ags: "08226107", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1051 },
+  { slug: "schwetzingen", name: "Schwetzingen", ags: "08226084", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "hockenheim", name: "Hockenheim", ags: "08226032", fundingId: "hockenheim-stadtwerke-balkon", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1113 },
+  { slug: "laudenbach", name: "Laudenbach", ags: "08226040", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1075 },
   { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
   { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
   { slug: "weinheim", name: "Weinheim", ags: "08226096", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1049 },
@@ -529,6 +559,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023 },
   { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108 },
   { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007 },
+  { slug: "kaufungen", name: "Kaufungen", ags: "06633015", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 978 },
   { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097 },
   { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
   { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052 },
@@ -596,6 +627,68 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // Gemeinde Niederkrüchten (Kreis Viersen), 21.09.2026: Förderprogramm Klimaschutz
   // 2026. Standort-Ertrag über /api/pvgis an der repräsentativen Lage gemessen (PLZ 41366).
   { slug: "niederkruechten", name: "Niederkrüchten", ags: "05166020", kreis: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1065 },
+
+  // Reine Balkon-Programme ohne bisherigen Eintrag, 06.10.2026 (Betreiber-
+  // Entscheidung: jeder Ort mit Balkon-Programm bekommt seine Förderseite,
+  // formuliert als „Balkonkraftwerk-Förderung"). Namen und Schlüssel aus der
+  // PLZ-Gemeinde-Tabelle, die Fördergebiete aus dem Katalog; Standort-Ertrag
+  // über /api/pvgis an der repräsentativen Lage gemessen. Samt- und
+  // Verbandsgemeinden: je Mitgliedsgemeinde eine Seite (Muster Ostheide).
+  { slug: "mehren", name: "Mehren", ags: "07132069", kreis: "Landkreis Altenkirchen", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1025 },
+  { slug: "holzminden", name: "Holzminden", ags: "03255023", kreis: "Landkreis Holzminden", bundesland: "Niedersachsen", yieldKwhKwp: 954 },
+  // Kreisprogramm: ein Kreis hat keinen einen Messpunkt — gemessen an der
+  // Kreisstadt Stadthagen (PLZ 31655), wie ein Handwert zu lesen.
+  { slug: "landkreis-schaumburg", name: "Landkreis Schaumburg", ags: "03257", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  { slug: "suedheide", name: "Südheide", ags: "03351026", kreis: "Landkreis Celle", bundesland: "Niedersachsen", yieldKwhKwp: 973 },
+  { slug: "cremlingen", name: "Cremlingen", ags: "03158006", kreis: "Landkreis Wolfenbüttel", bundesland: "Niedersachsen", yieldKwhKwp: 1030 },
+  { slug: "goedenstorf", name: "Gödenstorf", ags: "03353013", kreis: "Landkreis Harburg", bundesland: "Niedersachsen", yieldKwhKwp: 997 },
+  // Würselen liegt auch im Gebiet des (pausierten) Kreisprogramms der
+  // StädteRegion, gleich spezifisch — deshalb fundingId.
+  { slug: "wuerselen", name: "Würselen", ags: "05334036", kreis: "StädteRegion Aachen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1070, fundingId: "wuerselen-balkonkraftwerke" },
+  { slug: "eckental", name: "Eckental", ags: "09572121", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1065 },
+  { slug: "fritzlar", name: "Fritzlar", ags: "06634005", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1046 },
+  { slug: "ehningen", name: "Ehningen", ags: "08115013", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
+  { slug: "mauer", name: "Mauer", ags: "08226048", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1115 },
+  { slug: "rauschenberg", name: "Rauschenberg", ags: "06534017", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1038 },
+  { slug: "schwarzenfeld", name: "Schwarzenfeld", ags: "09376163", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1074 },
+  { slug: "kumhausen", name: "Kumhausen", ags: "09274146", kreis: "Landkreis Landshut", bundesland: "Bayern", yieldKwhKwp: 1122 },
+  { slug: "mutterstadt", name: "Mutterstadt", ags: "07338019", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1121 },
+  { slug: "adendorf", name: "Adendorf", ags: "03355001", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
+  // Samtgemeinde Ilmenau
+  { slug: "barnstedt", name: "Barnstedt", ags: "03355006", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  { slug: "deutsch-evern", name: "Deutsch Evern", ags: "03355014", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "embsen", name: "Embsen", ags: "03355016", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 994 },
+  { slug: "melbeck", name: "Melbeck", ags: "03355024", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  // Samtgemeinde Scharnebeck
+  { slug: "artlenburg", name: "Artlenburg", ags: "03355003", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
+  { slug: "brietlingen", name: "Brietlingen", ags: "03355011", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
+  { slug: "echem", name: "Echem", ags: "03355015", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "hittbergen", name: "Hittbergen", ags: "03355018", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1015 },
+  { slug: "hohnstorf-elbe", name: "Hohnstorf (Elbe)", ags: "03355019", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1015 },
+  { slug: "luedersburg", name: "Lüdersburg", ags: "03355021", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "rullstorf", name: "Rullstorf", ags: "03355032", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "scharnebeck", name: "Scharnebeck", ags: "03355033", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  // Verbandsgemeinde Ransbach-Baumbach
+  { slug: "alsbach", name: "Alsbach", ags: "07143001", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "breitenau", name: "Breitenau", ags: "07143006", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "caan", name: "Caan", ags: "07143007", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "deesen", name: "Deesen", ags: "07143009", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "hundsdorf", name: "Hundsdorf", ags: "07143038", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1023 },
+  { slug: "nauort", name: "Nauort", ags: "07143050", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "oberhaid", name: "Oberhaid", ags: "07143059", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "ransbach-baumbach", name: "Ransbach-Baumbach", ags: "07143062", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1023 },
+  { slug: "sessenbach", name: "Sessenbach", ags: "07143068", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "wirscheid", name: "Wirscheid", ags: "07143082", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "wittgert", name: "Wittgert", ags: "07143084", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  // Verbandsgemeinde Höhr-Grenzhausen: die Stadt selbst und Hillscheid tragen
+  // ihre eigenen Dach-Programme (fundingId oben), die übrigen beiden das
+  // Balkon-Programm der Verbandsgemeinde.
+  { slug: "hilgert", name: "Hilgert", ags: "07143030", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1004 },
+  { slug: "kammerforst", name: "Kammerforst", ags: "07143040", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1004 },
+  { slug: "oberviechtach", name: "Oberviechtach", ags: "09376151", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1051 },
+  { slug: "maxhuette-haidhof", name: "Maxhütte-Haidhof", ags: "09376141", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1073 },
+  { slug: "bruck-i-d-opf", name: "Bruck i.d.OPf.", ags: "09376117", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1079 },
+  { slug: "bad-kreuznach", name: "Bad Kreuznach", ags: "07133006", kreis: "Landkreis Bad Kreuznach", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1116 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {
@@ -640,9 +733,28 @@ export function bundeslaenderWithCities(): { name: string; slug: string }[] {
 // the program status; page CONTENT still comes from the DB. Flip these filters
 // to include inactive programs to re-expand the catalog.
 
-/** True if the city has its own program and that program is currently active. */
+/**
+ * Does the programme fund a technology a funding city page is written for —
+ * rooftop PV, or balcony systems (then the page is worded as
+ * "Balkonkraftwerk-Förderung", see stadtseiteFall)? A heat-pump-only programme
+ * does not: a page titled "Photovoltaik-Förderung" would promise money it does
+ * not pay. Since 06.10.2026 (operator decision); before, balcony-only
+ * programmes were held back, first for low search volume (19.08.2026), which
+ * lib/seo-grundregeln.ts rejects as a reason.
+ */
+export function foerdertStadtseitenTechnik(p: FundingProgram): boolean {
+  return foerdertDach(p) || nurBalkon(p);
+}
+
+/**
+ * True if the city has its own program, it is currently active AND it funds
+ * rooftop PV or balcony systems. An active balcony-only programme is a live
+ * page since 06.10.2026, worded as "Balkonkraftwerk-Förderung" (München was an
+ * archive page from 01.10.2026 until then).
+ */
 export function isCityLive(c: AtlasCity): boolean {
-  return fundingFor(c)?.status === "aktiv";
+  const p = fundingFor(c);
+  return p?.status === "aktiv" && foerdertStadtseitenTechnik(p);
 }
 
 /** Cities with a live (active) program — drives page generation, sitemap, listings. */
@@ -698,7 +810,7 @@ function programmTraegtStadtseite(p: FundingProgram | undefined): boolean {
 export function isCityArchived(c: AtlasCity): boolean {
   const p = fundingFor(c);
   if (!programmTraegtStadtseite(p)) return false;
-  return ARCHIVE_STATUSES.includes(p!.status);
+  return ARCHIVE_STATUSES.includes(p!.status) || (p!.status === "aktiv" && !foerdertStadtseitenTechnik(p!));
 }
 
 /** Cities with an inactive (archived) program. */
@@ -798,10 +910,14 @@ export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): bo
  *      eingestellter Topf ergibt eine Förderseite ohne abrufbares Geld — sie
  *      beantwortet die Frage nicht, für die jemand kommt (Göttingen, Weyhe,
  *      Feucht); dieselbe Begründung wie beim zurückgenommenen Archiv-Schub.
- *   2. Es muss DACH-Photovoltaik fördern. Eine Seite mit dem Titel
- *      „Photovoltaik-Förderung“, die nur Balkonkraftwerke fördert, hält nicht,
- *      was sie verspricht — betrifft heute 35 Orte, die eine eigene
- *      Seitenfamilie brauchen.
+ *   2. Es muss DACH-Photovoltaik ODER Balkonkraftwerke fördern. Ein reines
+ *      Balkon-Programm trägt seit dem 06.10.2026 (Betreiber-Entscheidung) seine
+ *      Seite unter derselben Adresse, aber als „Balkonkraftwerk-Förderung“
+ *      formuliert — dieselbe Weiche (stadtseiteFall), keine eigene
+ *      Seitenfamilie. Zurückgehalten wurden diese Orte vorher wegen geringer
+ *      gemessener Nachfrage, und die ist kein Grund (seo-grundregeln). Ein
+ *      reines Wärmepumpen-Programm trägt weiterhin keine Seite: Unter
+ *      „Photovoltaik-Förderung“ verspräche es Geld, das es nicht zahlt.
  *
  * NICHT geprüft wird hier der BELEG-Zustand (`fundingZaehlt`), und das ist eine
  * bewusste Trennung: Der Beleg entscheidet, ob ein Betrag im Rechner Geld
@@ -820,7 +936,7 @@ export function foerderseiteTraegt(c: AtlasCity): boolean {
   const p = fundingFor(c);
   if (!programmTraegtStadtseite(p)) return false;
   if (p!.status !== "aktiv") return false;
-  return (p!.foerdert ?? ["pv"]).includes("pv");
+  return foerdertStadtseitenTechnik(p!);
 }
 
 /**
@@ -833,6 +949,48 @@ export function foerderseiteTraegt(c: AtlasCity): boolean {
  */
 export function indexedCities(): AtlasCity[] {
   return publishedCities();
+}
+
+// Die Menge hängt am Kalendertag (Releaseplan) und kostet einen Durchlauf über
+// alle Städte. Beim Build ruft sie jede der ~280 Stadtrouten — einmal je Tag
+// gerechnet genügt.
+let landSlugsCache: { tag: string; slugs: ReadonlySet<string> } | null = null;
+function landSlugsHeute(): ReadonlySet<string> {
+  const tag = heuteInBerlin();
+  if (landSlugsCache?.tag !== tag) {
+    landSlugsCache = { tag, slugs: new Set(foerderBundeslaender().map((b) => b.slug)) };
+  }
+  return landSlugsCache.slugs;
+}
+
+/**
+ * Wohin eine Förder-Stadtadresse führt, die gerade KEINE Seite trägt.
+ *
+ * ANLASS (Audit 28.09.2026): Rund 185 der 298 flachen Weiterleitungen in
+ * next.config.js endeten auf einer 404 — sie zeigen fest auf die Stadtadresse,
+ * und ob es dort eine Seite gibt, entscheidet der Programmstatus. Die Liste in
+ * next.config.js ist historisch und bleibt fest (Test in atlas-cities.test.ts);
+ * die Entscheidung gehört an die Route, weil sie sich mit dem Status ändert.
+ *
+ * Deshalb: Ein BEKANNTER Ort ohne Seite leitet (vorübergehend, 307) auf die
+ * Förderseite seines Bundeslands um — oder auf die Förder-Übersicht, wo das
+ * Land keine eigene Seite hat. Ein unbekannter Ort bleibt eine harte 404.
+ * Vorübergehend, weil die Stadtseite zurückkommt, sobald ihr Programm die
+ * Schwelle wieder besteht (foerderseiteTraegt).
+ *
+ * Gibt `null` zurück, wenn die Stadt selbst eine Seite hat.
+ */
+export function foerderStadtUmleitung(
+  c: AtlasCity,
+  /** Slugs der Länder mit eigener Förderseite — nur zum Wiederverwenden in
+   *  Schleifen; die Berechnung läuft sonst je Aufruf über alle Städte. */
+  landSlugs: ReadonlySet<string> = landSlugsHeute(),
+): string | null {
+  if (isCityPublished(c)) return null;
+  const bl = slugify(c.bundesland);
+  return landSlugs.has(bl)
+    ? `/photovoltaik-foerderung/${bl}`
+    : "/photovoltaik-foerderung";
 }
 
 /** Bundesländer with at least one published city (live or archived). */

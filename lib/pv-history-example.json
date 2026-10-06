@@ -1,0 +1,197 @@
+{
+  "checkedAt": "2026-09-30",
+  "kwp": 5,
+  "startYear": 2004,
+  "endYear": 2023,
+  "nominalRevenue": 56931.46540182047,
+  "realRevenue2025": 74891.66711482998,
+  "annualDegradationPercent": 0.5,
+  "feedInCt": 57.4,
+  "annualResults": [
+    {
+      "year": 2004,
+      "hours": 8784,
+      "unagedKwh": 5125.174970000007,
+      "generationKwh": 5125.174970000007,
+      "nominalRevenue": 2941.8504327800038,
+      "realRevenue2004": 2941.8504327800038,
+      "realRevenue2025": 4471.465932118235
+    },
+    {
+      "year": 2005,
+      "hours": 8760,
+      "unagedKwh": 5271.966634999992,
+      "generationKwh": 5245.606801824992,
+      "nominalRevenue": 3010.978304247545,
+      "realRevenue2004": 2962.950429455867,
+      "realRevenue2025": 4503.536874696635
+    },
+    {
+      "year": 2006,
+      "hours": 8760,
+      "unagedKwh": 5339.482919999997,
+      "generationKwh": 5286.221577872997,
+      "nominalRevenue": 3034.2911856991,
+      "realRevenue2004": 2939.0115107858433,
+      "realRevenue2025": 4467.15091227923
+    },
+    {
+      "year": 2007,
+      "hours": 8760,
+      "unagedKwh": 5038.981519999996,
+      "generationKwh": 4963.774090941306,
+      "nominalRevenue": 2849.2063282003096,
+      "realRevenue2004": 2697.8317298897855,
+      "realRevenue2025": 4100.569674233976
+    },
+    {
+      "year": 2008,
+      "hours": 8784,
+      "unagedKwh": 5026.694925000019,
+      "generationKwh": 4926.91252053299,
+      "nominalRevenue": 2828.0477867859363,
+      "realRevenue2004": 2610.004976987711,
+      "realRevenue2025": 3967.0773902095007
+    },
+    {
+      "year": 2009,
+      "hours": 8760,
+      "unagedKwh": 4970.671999999976,
+      "generationKwh": 4847.6416701777935,
+      "nominalRevenue": 2782.5463186820534,
+      "realRevenue2004": 2559.1767747511544,
+      "realRevenue2025": 3889.8210578823664
+    },
+    {
+      "year": 2010,
+      "hours": 8760,
+      "unagedKwh": 5060.263625000008,
+      "generationKwh": 4910.34071179549,
+      "nominalRevenue": 2818.5355685706113,
+      "realRevenue2004": 2565.7951486874354,
+      "realRevenue2025": 3899.8806561720494
+    },
+    {
+      "year": 2011,
+      "hours": 8760,
+      "unagedKwh": 5579.588264999987,
+      "generationKwh": 5387.2076705533955,
+      "nominalRevenue": 3092.2572028976488,
+      "realRevenue2004": 2755.5447519154604,
+      "realRevenue2025": 4188.2905892580375
+    },
+    {
+      "year": 2012,
+      "hours": 8784,
+      "unagedKwh": 5179.759430000003,
+      "generationKwh": 4976.158851795272,
+      "nominalRevenue": 2856.315180930486,
+      "realRevenue2004": 2498.1077154920936,
+      "realRevenue2025": 3796.9991336469598
+    },
+    {
+      "year": 2013,
+      "hours": 8760,
+      "unagedKwh": 4800.3746800000135,
+      "generationKwh": 4588.628128823518,
+      "nominalRevenue": 2633.872545944699,
+      "realRevenue2004": 2268.9213553680443,
+      "realRevenue2025": 3448.6472969995584
+    },
+    {
+      "year": 2014,
+      "hours": 8760,
+      "unagedKwh": 5137.503839999998,
+      "generationKwh": 4886.331947530802,
+      "nominalRevenue": 2804.75453788268,
+      "realRevenue2004": 2392.992701470116,
+      "realRevenue2025": 3637.229554977646
+    },
+    {
+      "year": 2015,
+      "hours": 8760,
+      "unagedKwh": 5289.515094999988,
+      "generationKwh": 5005.7568351455775,
+      "nominalRevenue": 2873.3044233735613,
+      "realRevenue2004": 2438.5080926408427,
+      "realRevenue2025": 3706.4106794628274
+    },
+    {
+      "year": 2016,
+      "hours": 8784,
+      "unagedKwh": 5187.211554999982,
+      "generationKwh": 4884.396704477766,
+      "nominalRevenue": 2803.6437083702376,
+      "realRevenue2004": 2366.86553064519,
+      "realRevenue2025": 3597.517558424547
+    },
+    {
+      "year": 2017,
+      "hours": 8760,
+      "unagedKwh": 4969.602924999992,
+      "generationKwh": 4656.093998210942,
+      "nominalRevenue": 2672.5979549730805,
+      "realRevenue2004": 2223.468423120758,
+      "realRevenue2025": 3379.5611069628476
+    },
+    {
+      "year": 2018,
+      "hours": 8760,
+      "unagedKwh": 5702.814415000012,
+      "generationKwh": 5316.335363099353,
+      "nominalRevenue": 3051.5764984190287,
+      "realRevenue2004": 2494.7648845382887,
+      "realRevenue2025": 3791.9181973219124
+    },
+    {
+      "year": 2019,
+      "hours": 8760,
+      "unagedKwh": 5361.422365000008,
+      "generationKwh": 4973.089014502578,
+      "nominalRevenue": 2854.5530943244794,
+      "realRevenue2004": 2300.8558609529973,
+      "realRevenue2025": 3497.186152745267
+    },
+    {
+      "year": 2020,
+      "hours": 8784,
+      "unagedKwh": 5371.695805000002,
+      "generationKwh": 4957.705246956341,
+      "nominalRevenue": 2845.72281175294,
+      "realRevenue2004": 2282.269695025858,
+      "realRevenue2025": 3468.9361075268334
+    },
+    {
+      "year": 2021,
+      "hours": 8760,
+      "unagedKwh": 4929.759634999998,
+      "generationKwh": 4527.079457849101,
+      "nominalRevenue": 2598.543608805384,
+      "realRevenue2004": 2021.3695191677189,
+      "realRevenue2025": 3072.3808527000615
+    },
+    {
+      "year": 2022,
+      "hours": 8760,
+      "unagedKwh": 5558.9490249999935,
+      "generationKwh": 5079.350064217935,
+      "nominalRevenue": 2915.5469368610948,
+      "realRevenue2004": 2121.840874194735,
+      "realRevenue2025": 3225.092301300975
+    },
+    {
+      "year": 2023,
+      "hours": 8760,
+      "unagedKwh": 5103.558325000003,
+      "generationKwh": 4639.932007525402,
+      "nominalRevenue": 2663.3209723195805,
+      "realRevenue2004": 1830.31998269092,
+      "realRevenue2025": 2781.995085910513
+    }
+  ],
+  "sources": {
+    "weather": "https://open-meteo.com/en/docs/historical-weather-api",
+    "tariff": "https://www.bgbl.de/xaver/bgbl/start.xav?start=%2F%2F%2A%5B%40attr_id%3D%27bgbl103s3074.pdf%27%5D",
+    "inflation": "https://genesis.destatis.de/datenbank/online/table/61111-0001/"
+  }
+}

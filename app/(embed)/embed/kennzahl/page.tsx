@@ -1,28 +1,12 @@
-import type { Metadata } from "next";
-import KennzahlWidget, { Metric } from "./client";
-import type { Energietraeger } from "../../../../lib/mastr-data";
+import KennzahlWidget from "./client";
+import { WIDGET_METADATA } from "./meta";
 
-export const metadata: Metadata = {
-  title: "Kennzahl (Anlagenbestand) — Solar Check Widget",
-  description:
-    "Installierte Leistung bzw. Anzahl der EE-Anlagen in Deutschland aus dem Marktstammdatenregister. Live-Daten via solar-check.io.",
-  robots: { index: false, follow: false },
-};
+// This address answers only requests without `metric`/`traeger` (the defaults).
+// Any request carrying them is rewritten by the middleware onto the static twin
+// `[metric]/[traeger]/page.tsx` (lib/embed-pfad-weiche.ts) — reading
+// searchParams here would make the route dynamic, i.e. never cached.
+export const metadata = WIDGET_METADATA;
 
-const METRICS: Metric[] = ["leistung", "anlagen"];
-const TRAEGER: Energietraeger[] = ["gesamt", "solar", "wind", "biomasse", "wasser", "speicher"];
-
-export default async function KennzahlEmbedPage(
-  props: {
-    searchParams?: Promise<{ metric?: string; traeger?: string }>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  const metric = (METRICS as string[]).includes(searchParams?.metric ?? "")
-    ? (searchParams!.metric as Metric)
-    : "leistung";
-  const traeger = (TRAEGER as string[]).includes(searchParams?.traeger ?? "")
-    ? (searchParams!.traeger as Energietraeger)
-    : "gesamt";
-  return <KennzahlWidget metric={metric} traeger={traeger} />;
+export default function KennzahlEmbedPage() {
+  return <KennzahlWidget metric="leistung" traeger="gesamt" />;
 }

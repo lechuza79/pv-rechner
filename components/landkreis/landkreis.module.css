@@ -75,6 +75,8 @@
 .sceneLayer[hidden]{display:none}
 .sceneHost{width:100%;height:100%}
 .sceneHost canvas{display:block;width:100%;height:100%}
+.sceneHost output[data-flight-metrics]{position:absolute;bottom:12px;left:24px;right:24px;z-index:4;font:400 11px/1.5 DMSans,sans-serif;color:var(--color-text-primary);background:var(--color-bg-raised);width:fit-content;max-width:calc(100% - 48px);padding:6px 10px;border-radius:6px;pointer-events:none}
+.sceneHost [data-flight-plan]{position:absolute;right:24px;top:140px;width:180px;height:140px;padding:12px;z-index:4;color:var(--color-text-primary);background:var(--color-bg-raised);border-radius:12px;pointer-events:none}
 .scenePin{position:absolute;transform:translate(-50%,-100%);border:1px solid var(--atlas-secondary);border-radius:12px 12px 12px 2px;width:23px;height:23px;padding:0;background:var(--atlas-card);color:var(--atlas-text);font-size:9px;font-weight:700;cursor:pointer;line-height:21px}
 .bar{fill:var(--color-brand)}
 .mapTooltip{z-index:3}
@@ -312,3 +314,46 @@
 
 .mapGestureReplay{position:absolute;bottom:12px;right:12px;z-index:4;min-height:44px;padding:8px 12px;border:1px solid #ffffff30;border-radius:20px;background:#08191ccc;color:#fff;font:inherit;font-size:12px;cursor:pointer}
 .mapGestureReplay:focus-visible{outline:2px solid white;outline-offset:3px}
+
+.sceneLayer button.sceneLocation{position:absolute;transform:translate(-50%,calc(-100% - 16px));padding:6px 9px;border:0!important;box-shadow:none!important;border-radius:5px;background:var(--atlas-card);color:var(--atlas-text);font:400 12px/1.4 DMSans,var(--font-dm-sans,'DM Sans'),sans-serif!important;white-space:nowrap;cursor:pointer;pointer-events:auto}
+.sceneLocation::after{content:"";position:absolute;left:50%;top:100%;height:16px;border-left:1px solid currentColor}
+.sceneLocation{left:0;top:0}
+
+.sceneLocationMarker{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 16px));z-index:2;pointer-events:auto;font:400 12px/1.4 DMSans,sans-serif;transition:width .3s ease}
+.sceneLocationCard{width:250px;max-width:calc(100% - 24px);z-index:3}
+.sceneLocationPin{width:40px;height:44px}
+:is(.sceneLayer,.sceneLocationOverlay) .sceneLocationPin button{width:40px;height:44px;padding:7px!important;min-height:0;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;color:var(--color-text-primary)!important}
+.sceneLocationPin svg{width:26px;height:30px;display:block}
+.sceneLocationPin button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.sceneLocationMarker{transition:none}}
+
+/* A billboard has a fixed world size and a foot at its exact ground coordinate. */
+.sceneLocationCard{transform-origin:50% 100%;transform:translate(-50%,-100%) scale(var(--location-scale,1)) translateY(-18px)}
+.sceneLocationCard[data-scene-sign="true"]{transform-origin:0 0}
+.sceneSignStem{position:absolute;top:100%;left:50%;height:var(--scene-sign-stem,18px);border-left:1px solid var(--color-accent-dark)}
+
+/* Arrival cards follow their location while keeping the reveal independent of movement. */
+.sceneCardReveal{opacity:1;transform:scale(1);transform-origin:50% calc(100% + var(--scene-sign-stem,18px));transition:transform .65s cubic-bezier(.22,1,.36,1),opacity .25s ease}
+.sceneLocationCard[data-card-visible="false"]{pointer-events:none}
+.sceneLocationCard[data-card-visible="false"] .sceneCardReveal{opacity:0;transform:scale(.025)}
+@media(prefers-reduced-motion:reduce){.sceneCardReveal{animation:none;transition:none}}
+
+.sceneLocationOverlay{position:absolute;inset:0;z-index:4;pointer-events:none}
+
+/* Invisible accessible hit targets follow the actual 3D billboards. */
+.sceneLocationMarker[data-scene-pin="true"]{transform:translate(-50%,-100%)}
+.sceneLocationMarker[data-scene-pin="true"] svg{visibility:hidden}
+
+/* Standalone maps size against their container, never the page viewport. */
+.map[data-presentation=widget]{container-type:inline-size}
+.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;padding-inline:var(--widget-padding);justify-content:flex-start;max-width:100%}
+.map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
+.map[data-presentation=widget] .sceneLayer{inset:0}
+.mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}
+.mapWidget .map{padding-top:0}
+.mapWidget .sceneHost::before{background:linear-gradient(0deg,var(--atlas-card),transparent 12%,transparent 92%,var(--atlas-card))}
+.mapWidgetSource{padding:16px var(--widget-padding);font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.mapWidgetSource p{margin:0 0 8px}
+
+.mapWidget :global(.sc-widget-head){padding-bottom:16px}
+.mapSelection{position:absolute;top:8px;left:var(--widget-padding);z-index:4;max-width:calc(100% - var(--widget-padding));pointer-events:none}

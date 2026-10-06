@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import ArticleMeta from "../../../../../components/ArticleMeta";
 import Breadcrumb from "../../../../../components/Breadcrumb";
+import EditorialPage from "../../../../../components/EditorialPage";
+import editorial from "../../../../../components/EditorialContent.module.css";
 import Faq from "../../../../../components/Faq";
 import GlossaryTerm from "../../../../../components/GlossaryTerm";
 import RelatedLinks from "../../../../../components/RelatedLinks";
@@ -44,27 +46,8 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Wann er sich trägt — und wann nicht.",
 });
 
+// Page-specific comparison and data presentation.
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { marginBottom: 10 },
-  subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
-  h2: { marginTop: 32, marginBottom: 10 },
-  p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 20,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  // Die drei Möglichkeiten nebeneinander — das ist die Kernaussage der Seite und
-  // gehört deshalb als Vergleich hin, nicht als Fließtext.
   karten: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))",
@@ -82,13 +65,8 @@ const S = {
   karteZahl: { fontFamily: v("--font-mono"), fontSize: v("--font-size-h2"), fontWeight: 700, lineHeight: 1.1, color: v("--color-text-primary") },
   karteEinheit: { fontFamily: v("--font-text"), fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-muted"), marginLeft: 4 },
   karteSub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginTop: 6 },
-
   tabelleWrap: { overflowX: "auto" as const, margin: "0 0 10px" },
   tabelle: { width: "100%", borderCollapse: "collapse" as const, fontSize: v("--font-size-small") },
-  // Kopfzellen duerfen umbrechen: Bei 375 px zwingt ein `nowrap` die Tabelle
-  // sonst 50 px ueber ihren Rahmen und damit in den Seitwaerts-Scroll, obwohl
-  // sie mit zweizeiligen Ueberschriften bequem passt. Die Zahlen darunter
-  // bleiben einzeilig — ein umbrochenes „7,2 J." waere unlesbar.
   th: {
     textAlign: "left" as const,
     fontWeight: 700,
@@ -210,14 +188,14 @@ export default function BalkonSpeicherPage() {
   const besterGewinn = Math.max(...drei.map(d => d.r.lifetimeSaving));
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
+    <EditorialPage>
+
         {/* Elternteil ist das THEMA, nicht die Ratgeber-Liste — die Seite liegt
             unter /balkonkraftwerk/. Dieselbe Begründung wie beim Anmelde-Ratgeber:
             eine Krümelspur, die eine Hierarchie behauptet, die die Adresse nicht
             hat, ist im strukturierten Datensatz eine Falschaussage. Der
             Ratgeber-Charakter bleibt über den Registry-Eintrag erhalten. */}
-        <Breadcrumb
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Balkonkraftwerk", href: "/balkonkraftwerk" },
@@ -227,14 +205,6 @@ export default function BalkonSpeicherPage() {
           jsonLd
         />
 
-        <h1 style={S.h1}>Lohnt sich ein Balkonkraftwerk mit Speicher?</h1>
-        <p style={S.subtitle}>
-          Das Balkonkraftwerk selbst rechnet sich fast immer. Der Speicher ist eine zweite,
-          eigene Entscheidung: noch einmal eine Anschaffung in der Größenordnung der Module,
-          aber mit deutlich kürzerer Lebensdauer. Hier steht durchgerechnet, wann er sich
-          trägt und wann nicht.
-        </p>
-
         <ArticleMeta
           headline="Lohnt sich ein Balkonkraftwerk mit Speicher?"
           description="Wann sich ein Balkonspeicher trägt und wann nicht — für jede Haushaltsgröße durchgerechnet, mit dem Wirkungsgrad eines real vermessenen Systems statt dem aus dem Datenblatt."
@@ -243,29 +213,37 @@ export default function BalkonSpeicherPage() {
           modified="2026-08-19"
         />
 
-        <div style={S.hero}>
-          <span style={S.strong}>Die kurze Antwort:</span> Manchmal — und zwar genau dann,
+        <h1 className={editorial.h1}>Lohnt sich ein Balkonkraftwerk mit Speicher?</h1>
+        <p className={editorial.subtitle}>
+          Das Balkonkraftwerk selbst rechnet sich fast immer. Der Speicher ist eine zweite,
+          eigene Entscheidung: noch einmal eine Anschaffung in der Größenordnung der Module,
+          aber mit deutlich kürzerer Lebensdauer. Hier steht durchgerechnet, wann er sich
+          trägt und wann nicht.
+        </p>
+
+        <div className={editorial.hero}>
+          <span className={editorial.strong}>Die kurze Antwort:</span> Manchmal — und zwar genau dann,
           wenn mittags viel Strom übrig bleibt. Ein Speicher kann nichts erzeugen, er kann
           nur verschieben. Im Beispiel unten bleiben ohne Speicher{" "}
           {kwh(ohne.feedInKwh)} kWh im Jahr ungenutzt; ein Speicher mit{" "}
           {speicherKlein.kwh.toLocaleString("de-DE")} kWh holt davon{" "}
           {kwh(klein.storageAddedKwh)} kWh zurück und ist nach{" "}
-          <span style={S.strong}>{jahre(klein.storagePayback)} Jahren</span> wieder drin —
+          <span className={editorial.strong}>{jahre(klein.storagePayback)} Jahren</span> wieder drin —
           bei rund {CFG.storageLifeYears} Jahren Lebensdauer. Das reicht — bleibt aber nur
           knapp unter unserer Empfehlungsschwelle von {CFG.storageRecommendMaxPayback} Jahren.
           In großen Haushalten, in denen tagsüber jemand da ist, spielt der Speicher seinen
           Preis gar nicht mehr ein — und an einem einzelnen Modul erst recht nicht.
         </div>
 
-        <h2 style={S.h2}>Der Beispielfall</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Der Beispielfall</h2>
+        <p className={editorial.p}>
           Alle Zahlen auf dieser Seite gelten für denselben Haushalt, damit sie
           untereinander vergleichbar bleiben: zwei Personen mit {eur(haushaltKwh)} kWh
           Jahresverbrauch, Homeoffice-Tage, ein Standard-Set mit{" "}
           {eur(CFG.sets.find(s => s.id === REF.setId)!.moduleWp)} Wp senkrecht am
           Südgeländer, gerechnet mit dem deutschen Durchschnittsertrag. Es sind dieselben
           Rechenwege wie im{" "}
-          <Link href="/balkonkraftwerk/rechner" style={S.link}>Balkonkraftwerk-Rechner</Link>
+          <Link href="/balkonkraftwerk/rechner" className={editorial.link}>Balkonkraftwerk-Rechner</Link>
           {" "}— dort lässt sich der Fall auf den eigenen Haushalt und die eigene
           Postleitzahl umstellen.
         </p>
@@ -284,44 +262,44 @@ export default function BalkonSpeicherPage() {
             </div>
           ))}
         </div>
-        <p style={S.small}>
+        <p className={editorial.small}>
           Gewinn nach {CFG.lifetimeYears} Jahren heißt: alles, was der eingesparte Strom in
           dieser Zeit wert ist, abzüglich der Anschaffung. Mit steigendem Strompreis und
           nachlassender Modulleistung gerechnet. Alle drei gelten dem Standard-Set mit
           zwei Modulen — mit vier Modulen fällt der Vergleich anders aus, dazu weiter unten.
         </p>
 
-        <h2 style={S.h2}>Zwei Entscheidungen, nicht eine</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Zwei Entscheidungen, nicht eine</h2>
+        <p className={editorial.p}>
           Die Module rechnen sich für sich genommen: {eur(ohne.invest)} € Anschaffung, rund{" "}
           {eur(ohne.savingPerYear)} € Ersparnis im ersten Jahr, nach etwa{" "}
           {jahre(ohne.amortYears)} Jahren wieder drin. Daraus folgt aber nicht, dass sich
           auch der Speicher rechnet — er ist eine zusätzliche Ausgabe mit einer eigenen
           Rechnung, und die geht anders aus.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Der Unterschied liegt in der Lebensdauer. Module laufen{" "}
           {CFG.lifetimeYears} Jahre und länger, ein Akku realistisch{" "}
           {CFG.storageLifeYears}. Der Speicher muss sich also{" "}
-          <span style={S.strong}>innerhalb seiner eigenen Lebensdauer</span> bezahlt machen,
+          <span className={editorial.strong}>innerhalb seiner eigenen Lebensdauer</span> bezahlt machen,
           nicht innerhalb der Lebensdauer der Anlage. Darin steckt die Falle: Über{" "}
           {CFG.lifetimeYears} Jahre gerechnet geht fast jeder Speicher irgendwann auf — nur
           läuft er die {CFG.lifetimeYears} Jahre nicht.
         </p>
 
-        <h2 style={S.h2}>Wann sich der Speicher trägt — und wann nicht</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Wann sich der Speicher trägt — und wann nicht</h2>
+        <p className={editorial.p}>
           Der Speicher lebt vom Überschuss. Was tagsüber ohnehin verbraucht wird, muss er
           nicht zwischenlagern; was abends fehlt, kann er nur liefern, wenn mittags etwas
           übrig war. Deshalb hängt seine Amortisation an zwei Größen, und beide wirken
           anders herum, als man erwartet: Je{" "}
-          <span style={S.strong}>kleiner</span> der Haushalt und je{" "}
-          <span style={S.strong}>weniger</span> tagsüber jemand zu Hause ist, desto besser
+          <span className={editorial.strong}>kleiner</span> der Haushalt und je{" "}
+          <span className={editorial.strong}>weniger</span> tagsüber jemand zu Hause ist, desto besser
           rechnet er sich.
         </p>
         <div style={S.tabelleWrap}>
           <table style={S.tabelle}>
-            <caption style={{ ...S.small, textAlign: "left", paddingBottom: 8 }}>
+            <caption className={editorial.small} style={{ textAlign: "left", paddingBottom: 8 }}>
               Jahre, bis sich ein {speicherKlein.kwh.toLocaleString("de-DE")}-kWh-Speicher
               für {eur(speicherKlein.price)} € selbst bezahlt hat. Grün: schafft es innerhalb
               von {CFG.storageRecommendMaxPayback} Jahren.
@@ -339,7 +317,7 @@ export default function BalkonSpeicherPage() {
                 <tr key={zeile.label}>
                   <th scope="row" style={{ ...S.th, fontWeight: 400, color: v("--color-text-muted") }}>
                     {zeile.label} {zeile.label === "1" ? "Person" : "Personen"}
-                    <span style={{ ...S.small, display: "block", fontFamily: v("--font-mono") }}>
+                    <span className={editorial.small} style={{ display: "block", fontFamily: v("--font-mono") }}>
                       {eur(zeile.verbrauch)} kWh
                     </span>
                   </th>
@@ -357,12 +335,12 @@ export default function BalkonSpeicherPage() {
             </tbody>
           </table>
         </div>
-        <p style={S.small}>
+        <p className={editorial.small}>
           „Nie" heißt: Der Speicher spielt seinen Preis innerhalb seiner Lebensdauer von{" "}
           {CFG.storageLifeYears} Jahren nicht wieder ein. Gerechnet für das Standard-Set am
           Südgeländer; eine andere Ausrichtung verschiebt die ganze Tabelle.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Für Dachanlagen hört man die umgekehrte Faustregel — dort heißt es, ein Speicher
           lohne sich vor allem für große Haushalte. Bei Steckersolar stimmt das nicht, und
           der Grund ist der{" "}
@@ -379,8 +357,8 @@ export default function BalkonSpeicherPage() {
           verbrauchen, sondern für die, die zum falschen Zeitpunkt verbrauchen.
         </p>
 
-        <h2 style={S.h2}>Der größte Hebel ist nicht der Speicher</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Der größte Hebel ist nicht der Speicher</h2>
+        <p className={editorial.p}>
           Wer über einen Speicher nachdenkt, sollte zuerst über Module nachdenken. Derselbe
           Haushalt, derselbe Speicher, nur eine andere Set-Größe:
         </p>
@@ -401,7 +379,7 @@ export default function BalkonSpeicherPage() {
                   <tr key={s.label}>
                     <th scope="row" style={{ ...S.th, fontWeight: 400, color: v("--color-text-muted") }}>
                       {s.label}
-                      <span style={{ ...S.small, display: "block", fontFamily: v("--font-mono") }}>
+                      <span className={editorial.small} style={{ display: "block", fontFamily: v("--font-mono") }}>
                         {eur(s.moduleWp)} Wp
                       </span>
                     </th>
@@ -415,7 +393,7 @@ export default function BalkonSpeicherPage() {
             </tbody>
           </table>
         </div>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Mehr Module erzeugen mehr Überschuss, und erst der macht den Speicher wirtschaftlich.
           Ein einzelnes Modul erzeugt so wenig Übrigbleibendes, dass sich daran kein Akku
           amortisiert — wer dort einen Speicher dazukauft, kauft ihn für{" "}
@@ -425,11 +403,11 @@ export default function BalkonSpeicherPage() {
           Reihenfolge lautet also: erst die Fläche ausreizen, dann über Speicherung reden.
         </p>
 
-        <h2 style={S.h2}>Ob der größere Speicher lohnt, entscheidet die Modulfläche</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Ob der größere Speicher lohnt, entscheidet die Modulfläche</h2>
+        <p className={editorial.p}>
           Am Standard-Set ist er ein schlechtes Geschäft. Zwischen den beiden gängigen Größen
           liegen {mehrKapazitaet} Prozent mehr Kapazität und {mehrPreis} Prozent mehr Preis —
-          aber nur <span style={S.strong}>{mehrStrom} Prozent mehr Strom</span>. Zwei Module
+          aber nur <span className={editorial.strong}>{mehrStrom} Prozent mehr Strom</span>. Zwei Module
           erzeugen gar nicht genug Überschuss, um den größeren Akku regelmäßig zu füllen:
           Die zusätzlichen {zusatzKapazitaet.toLocaleString("de-DE", { maximumFractionDigits: 1 })} kWh
           Kapazität werden im Jahr rechnerisch {proz(zusatzLadungen)}-mal gefüllt und kosten{" "}
@@ -441,21 +419,21 @@ export default function BalkonSpeicherPage() {
           und ganz ohne {eur(ohne.lifetimeSaving)} € — er ist dort nicht nur schlechter als
           der kleine, sondern schlechter als gar keiner.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Mit vier Modulen dreht sich das um, und zwar nach derselben Regel, nicht als
           Ausnahme von ihr: Jetzt fällt genug Überschuss an, um die größere Kapazität zu
           füllen. Der große Speicher trägt sich dann nach{" "}
           {jahre(maxGross.storagePayback)} Jahren und ist mit{" "}
-          <span style={S.strong}>{eur(maxGross.lifetimeSaving)} €</span> die beste der drei
+          <span className={editorial.strong}>{eur(maxGross.lifetimeSaving)} €</span> die beste der drei
           Möglichkeiten — vor {eur(maxKlein.lifetimeSaving)} € mit dem kleinen und{" "}
           {eur(maxOhne.lifetimeSaving)} € ohne.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Daraus folgt die Reihenfolge der Entscheidung: Die Speichergröße steht nicht am
           Anfang, sondern am Ende. Erst steht fest, wie viel Fläche du hast, daraus ergibt
           sich, wie viel Strom übrig bleibt — und erst daraus, wie groß der Akku sein darf.
           Genau so entscheidet auch unser Rechner: Für diesen Beispielhaushalt empfiehlt er{" "}
-          <Link href="/balkonkraftwerk/rechner" style={S.link}>
+          <Link href="/balkonkraftwerk/rechner" className={editorial.link}>
             {empfohlenesSet.label.toLowerCase().startsWith("1") ? "ein Modul" : empfohlenesSet.label}
             {empfohlenerSpeicher.kwh > 0
               ? ` mit ${empfohlenerSpeicher.kwh.toLocaleString("de-DE")}-kWh-Speicher`
@@ -463,10 +441,10 @@ export default function BalkonSpeicherPage() {
           </Link>.
         </p>
 
-        <h2 style={S.h2}>Der Wirkungsgrad, mit dem wir rechnen</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Der Wirkungsgrad, mit dem wir rechnen</h2>
+        <p className={editorial.p}>
           Ein Speicher gibt weniger heraus, als er aufnimmt. Wir rechnen über den ganzen
-          Umlauf mit <span style={S.strong}>{roundtripProzent} Prozent</span> — von jeder
+          Umlauf mit <span className={editorial.strong}>{roundtripProzent} Prozent</span> — von jeder
           eingelagerten Kilowattstunde gehen {verlustWh} Wattstunden verloren, also{" "}
           {pct(1 - CFG.storageRoundtrip)} Prozent. Das ist kein Schätzwert und keine Herstellerangabe, sondern der Wert,
           den die HTW Berlin für genau diese Geräteklasse in ihrem Stecker-Solar-Simulator
@@ -474,44 +452,44 @@ export default function BalkonSpeicherPage() {
           {pct(STORAGE_ROUNDTRIP_KETTE.entladen)} Prozent beim Entladen und{" "}
           {pct(STORAGE_ROUNDTRIP_KETTE.batterie)} Prozent in der Batterie selbst.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Dieser Wert ist eher zu freundlich als zu streng. Die Hochschule schreibt
           ausdrücklich, dass Standby-Verluste und Regelungsabweichungen darin{" "}
-          <span style={S.strong}>nicht</span> enthalten sind — und die Elektronik eines
+          <span className={editorial.strong}>nicht</span> enthalten sind — und die Elektronik eines
           Balkonspeichers läuft rund um die Uhr, auch in den vielen Stunden, in denen weder
           geladen noch entladen wird. Der reale Wirkungsgrad liegt darunter, nicht darüber.
           Wer mit einer Zahl aus einem Datenblatt rechnet, rechnet den Speicher schön.
         </p>
 
-        <h2 style={S.h2}>Warum hier kein Gerätetest steht</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Warum hier kein Gerätetest steht</h2>
+        <p className={editorial.p}>
           Wir testen keine Geräte, und deshalb steht auf dieser Seite auch kein Test — auch
           nicht als Wort. Was ein Labor misst, ist die eine Hälfte der Frage: Kapazität,
           Wirkungsgrad, Verarbeitung, Verhalten bei Kälte. Die andere Hälfte entscheidet
           sich in deinem Haushalt, und die kann kein Prüfstand beantworten: Wie viel
           Überschuss entsteht überhaupt, und was ist er wert?
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Genau diese Hälfte rechnen wir. Für die erste sind Verbraucherorganisationen und
           Fachmedien die richtige Adresse — sie haben Messgeräte, wir haben ein Modell. Und
           ein Hinweis, der in beide Richtungen zählt, auch für diese Seite: Wer eine
           Kaufempfehlung liest, sollte als Erstes nachsehen, wer sie schreibt, was er
           verkauft und woher seine Zahlen stammen. Unsere stehen offen im{" "}
-          <Link href="/datenstand" style={S.link}>Datenstand</Link>, samt Quelle und
+          <Link href="/datenstand" className={editorial.link}>Datenstand</Link>, samt Quelle und
           Prüfdatum.
         </p>
 
-        <h2 style={S.h2}>Mehrwertsteuer: beim Speicher wird es unübersichtlich</h2>
-        <p style={S.p}>{BALKON_RECHT.nullsteuer}</p>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Mehrwertsteuer: beim Speicher wird es unübersichtlich</h2>
+        <p className={editorial.p}>{BALKON_RECHT.nullsteuer}</p>
+        <p className={editorial.p}>
           Praktisch heißt das: Wer den Speicher gleich mit dem Set kauft, hat die Frage nicht.
           Wer ihn später einzeln nachkauft, sollte vor der Bestellung nachsehen, welcher
           Steuersatz auf der Rechnung steht — bei einem Gerät für {eur(speicherKlein.price)} €
           geht es um einen Betrag, der die Amortisation spürbar verschiebt.
         </p>
 
-        <h2 style={S.h2}>Was der Speicher sonst noch bringt</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Was der Speicher sonst noch bringt</h2>
+        <p className={editorial.p}>
           Hier lohnt es sich, zwei Größen auseinanderzuhalten, die oft in einen Topf
           geworfen werden. Der{" "}
           <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> — der Anteil des
@@ -521,7 +499,7 @@ export default function BalkonSpeicherPage() {
           Anteil deines Verbrauchs, den du selbst deckst — steigt nur von{" "}
           {proz(ohne.autarky * 100)} auf {proz(klein.autarky * 100)} Prozent.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Beide Zahlen sind richtig, und der Unterschied ist der Punkt: Der Speicher holt
           fast alles heraus, was die Module liefern — die Module liefern aber nur einen
           kleinen Teil dessen, was ein Haushalt braucht. Netzunabhängig wird ein
@@ -530,8 +508,8 @@ export default function BalkonSpeicherPage() {
           sich nicht rechnet — die grauen Zellen der Tabelle oben —, bezahlst du sie, und
           dann ist es eine Entscheidung über Unabhängigkeit und keine Geldanlage.
         </p>
-        <p style={S.p}>
-          Was ein Balkonspeicher in aller Regel <span style={S.strong}>nicht</span> ist: eine
+        <p className={editorial.p}>
+          Was ein Balkonspeicher in aller Regel <span className={editorial.strong}>nicht</span> ist: eine
           Notstromversorgung. Ob ein bestimmtes Gerät bei Stromausfall überhaupt etwas
           liefert, steht im Datenblatt des Geräts und ist keine Eigenschaft der Gattung —
           verlass dich nicht darauf, ohne es dort nachgelesen zu haben.
@@ -539,12 +517,12 @@ export default function BalkonSpeicherPage() {
 
         <Faq items={balkonSpeicherFaq()} title="Häufige Fragen zum Balkonspeicher" currentPath="/balkonkraftwerk/ratgeber/mit-speicher" />
 
-        <p style={{ ...S.small, marginTop: 28 }}>
-          <span style={S.strong}>Quelle des Wirkungsgrads:</span> HTW Berlin,
+        <p className={editorial.small} style={{ marginTop: 28 }}>
+          <span className={editorial.strong}>Quelle des Wirkungsgrads:</span> HTW Berlin,
           Forschungsgruppe Solarspeichersysteme: „Web-App: Stecker-Solar-Simulator —
           Dokumentation der Berechnungsgrundlagen", Version 3.0, Berlin, Mai 2024,
           Kapitel 4.2. Die Ertrags- und Verbrauchsrechnung dahinter steht in unserer{" "}
-          <Link href="/methodik" style={S.link}>Methodik</Link>. Keine Rechts- oder
+          <Link href="/methodik" className={editorial.link}>Methodik</Link>. Keine Rechts- oder
           Steuerberatung — verbindlich ist die Auskunft deines Finanzamts.
         </p>
 
@@ -561,10 +539,10 @@ export default function BalkonSpeicherPage() {
           ]}
         />
 
-        <p style={{ ...S.small, marginTop: 24 }}>
-          Zurück zur <Link href="/ratgeber" style={S.link}>Ratgeber-Übersicht</Link>.
+        <p className={editorial.small} style={{ marginTop: 24 }}>
+          Zurück zur <Link href="/ratgeber" className={editorial.link}>Ratgeber-Übersicht</Link>.
         </p>
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }

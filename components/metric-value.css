@@ -1,0 +1,1 @@
+.sc-metric-value{display:inline-flex!important;align-items:baseline;gap:.2em;font-family:var(--font-heading);font-size:clamp(24px,3vw,34px)!important;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap}.sc-metric-value>strong{font:inherit;font-weight:700}.sc-metric-value>.sc-metric-affix{display:inline;font:400 .65em/1 var(--font-text);opacity:.55;margin:0}

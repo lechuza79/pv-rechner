@@ -38,7 +38,8 @@ test.describe("Rechner flow", () => {
 
     // Result page: amortization figure + 25-year return must be visible
     await expect(page.getByText(/Amortisation/i).first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByText(/Rendite|Ersparnis/i).first()).toBeVisible();
+    await expect(page.locator(".wp-result-summary")).toBeVisible();
+    await expect(page.locator(".wp-result-summary")).toContainText(/Über 25 Jahre.*€ (weniger|mehr)/);
 
     // The result should contain at least one € or year figure
     const bodyText = await page.locator("body").innerText();
@@ -54,13 +55,15 @@ test.describe("Rechner flow", () => {
 
     const kopf = page.getByRole("button", { name: /Einspeisung und Vergütung/ }).first();
     await expect(kopf).toBeVisible({ timeout: 10_000 });
-    // Zugeklappt: Modus, Satz und Laufzeit stehen in der Kopfzeile.
-    await expect(kopf).toContainText("Teileinspeisung");
+    // The summary exposes the applied rate and regime before editing.
+    await expect(kopf).toContainText("heutige Konditionen");
     await expect(kopf).toContainText("ct");
     await expect(kopf).toHaveAttribute("aria-expanded", "false");
 
     await kopf.click();
-    await expect(kopf).toHaveAttribute("aria-expanded", "true");
+    const dialog = page.getByRole("dialog", { name: "Einspeisung und Vergütung", exact: true });
+    await expect(dialog).toBeVisible();
+    const originalSummary = await kopf.innerText();
 
     // Dritter Reiter: eigener Satz statt des amtlichen Werts.
     await page.getByRole("button", { name: /Eigener Satz/ }).first().click();
@@ -71,7 +74,12 @@ test.describe("Rechner flow", () => {
     await input.fill("12,3");
     await input.press("Enter");
 
-    await expect(kopf).toContainText("eigener Satz 12,30 ct");
+    await expect(kopf).toHaveText(originalSummary, { useInnerText: true });
+    await dialog.getByRole("button", { name: "Ergebnis neu berechnen", exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    await expect(kopf).toContainText("12,3 ct/kWh");
+    await kopf.click();
+    await expect(dialog.getByRole("button", { name: /ct bearbeiten/ }).first()).toContainText("12,3");
   });
 
   test("share URL with params loads straight to the result page", async ({ page }) => {
@@ -93,9 +101,11 @@ test.describe("Rechner flow", () => {
   // Without the roof factor an east/west roof was shown as a due-south one.
   test("orientation changes the yield shown on the result", async ({ page }) => {
     const ertrag = async () => {
-      const body = await page.locator("body").innerText();
-      const m = body.match(/([\d.]+)\s*kWh\/kWp/);
-      return m ? parseInt(m[1].replace(/\./g, "")) : null;
+      const summary = page.getByRole("button", { name: /Ertrag und technische Details/ });
+      await expect(summary).toBeVisible();
+      const text = await summary.innerText();
+      const match = text.match(/([\d.]+)\s*kWh\/Jahr/);
+      return match ? parseInt(match[1].replace(/\./g, "")) : null;
     };
 
     // Same configuration twice, once due south, once east/west (da=0 = Satteldach).
@@ -107,7 +117,7 @@ test.describe("Rechner flow", () => {
     await expect(page.getByText(/Amortisation/i).first()).toBeVisible({ timeout: 10_000 });
     const ostwest = await ertrag();
 
-    expect(sued).toBe(1000);
-    expect(ostwest).toBe(800);
+    expect(sued).toBe(10000);
+    expect(ostwest).toBe(8000);
   });
 });

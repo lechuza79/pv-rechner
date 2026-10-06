@@ -563,6 +563,63 @@ describe("Wächter-Lauf 11.09.2026", () => {
   });
 });
 
+describe("Quartals-Vollprüfung 01.10.2026", () => {
+  // Beratzhausen: „Achtung! Förderbudget 2026 ist ausgeschöpft!" auf der
+  // Programm-Unterseite (Council 3/3). Die Übersicht trug den Hinweis nicht.
+  it("Beratzhausen ist für 2026 ausgeschöpft und verweist auf die Programmseite", () => {
+    const p = getFundingProgram("beratzhausen-effizient")!;
+    expect(p.status).toBe("ausgeschoepft");
+    expect(p.url).toBe("https://beratzhausen.com/beratzhausen-effizient/");
+  });
+
+  // Bad Homburg: neue Richtlinie seit 10.09.2026 — 200 €/kWp, höchstens
+  // 20 kWp; Speicher nicht mehr eigens gefördert. Status bleibt pausiert.
+  it("Bad Homburg trägt die gesenkten Sätze der neuen Richtlinie und keinen Speichersatz", () => {
+    const p = getFundingProgram("badhomburg-energiespar")!;
+    expect(p.status).toBe("pausiert");
+    expect(p.pvPerKwp).toBe(200);
+    expect(p.pvCap).toBe(4000);
+    expect(p.speicherPerKwh).toBeUndefined();
+    expect(p.speicherCap).toBeUndefined();
+  });
+
+  // Mühlhausen an der Sulz: „Die Mindestkapazität des Stromspeichers wird mit
+  // 2,5 kWh festgelegt." — als sichtbare Bedingung der Dachanlage.
+  it("Mühlhausen nennt die Mindestgröße des Speichers", () => {
+    const p = getFundingProgram("muehlhausen-sulz-pv")!;
+    const texte = p.conditions.map((c) => (typeof c === "string" ? c : c.text));
+    expect(texte.some((t) => t.includes("2,5 kWh"))).toBe(true);
+  });
+
+  // Kenzingen: „Gebäude, die unter die Photovoltaik-Pflicht fallen, werden
+  // nicht gefördert." — gilt nur der Dachanlage.
+  it("Kenzingen schließt Gebäude mit PV-Pflicht von der Dachförderung aus", () => {
+    const p = getFundingProgram("kenzingen-aktiv-klimaschutz")!;
+    const c = p.conditions.find((x) => typeof x !== "string" && x.text.includes("Photovoltaik-Pflicht"));
+    expect(c && typeof c !== "string" ? c.nur : undefined).toEqual(["pv"]);
+  });
+
+  // Denzlingen: 300-W-Grenze und Mieter gelten nur für Balkonmodule (1.1);
+  // die Dachanlage (1.2) beantragen nur Eigentümer und Hausverwaltungen.
+  it("Denzlingen ordnet 300 W und Mieter dem Balkonkraftwerk zu", () => {
+    const p = getFundingProgram("denzlingen-klimaschutz")!;
+    for (const c of p.conditions) {
+      const text = typeof c === "string" ? c : c.text;
+      if (text.includes("300 Watt") || text.includes("und Mieter")) {
+        expect(typeof c === "string" ? undefined : c.nur).toEqual(["balkon"]);
+      }
+    }
+  });
+
+  // Göttingen: große PV-Anlagen nur für gemeinnützige Vereine.
+  it("Göttingen sagt, dass der PV-Satz nur Vereinen gilt", () => {
+    const p = getFundingProgram("goettingen-klimafonds")!;
+    const texte = p.conditions.map((c) => (typeof c === "string" ? c : c.text));
+    expect(texte.some((t) => t.includes("gemeinnützige"))).toBe(true);
+    expect(p.status).toBe("ausgeschoepft");
+  });
+});
+
 describe("atlas-cities registry", () => {
   it("every city fundingId resolves to a real program", () => {
     for (const c of ATLAS_CITIES) {

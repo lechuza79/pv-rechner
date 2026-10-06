@@ -1,3 +1,4 @@
+import Logo from "./Logo";
 import { tokens, v } from "../lib/theme";
 import { type DataSource, sourceLabel } from "../lib/data-sources";
 
@@ -28,7 +29,7 @@ export function DataSourceNote({
   const sources = Array.isArray(source) ? source : [source];
   const linkStyle: React.CSSProperties = plain
     ? { color: "inherit", textDecoration: "none" }
-    : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
+    : { color: "inherit", textDecoration: "underline", textUnderlineOffset: ".2em", textDecorationThickness: "1px", textDecorationColor: "color-mix(in srgb, currentColor 40%, transparent)" };
   return (
     // Ein Quellenvermerk kann eine Adresse enthalten, die eine Lizenz
     // vorschreibt (BKG verlangt die Datenquellen-Liste als URL). Ein solcher
@@ -82,7 +83,7 @@ export function dataSourceCredit(source: DataSource): string {
  * fixed brand colours (it's a logo); the link text follows the widget accent so
  * it fits the host theme (on the default theme the accent IS the brand blue).
  */
-export function PoweredBy({ label = "Powered by" }: { label?: string } = {}) {
+export function PoweredBy({ label = "Powered by", light = false }: { label?: string; light?: boolean } = {}) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
       <span>{label}</span>
@@ -99,8 +100,7 @@ export function PoweredBy({ label = "Powered by" }: { label?: string } = {}) {
           fontWeight: 600,
         }}
       >
-        <SolarCheckMark />
-        <span>solar-check.io</span>
+        {light ? <Logo width={90} variant="result" /> : <><SolarCheckMark /><span>solar-check.io</span></>}
       </a>
     </span>
   );

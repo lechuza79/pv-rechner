@@ -1,4 +1,5 @@
-import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG, AUTARKY_X, AUTARKY_Y, AUTARKY_GRID, AUTARKY_HTW_YIELD } from "./constants";
+import { electricityPriceAtYear } from "./electricity-projection";
+import { FUEL_PRICE_INFLATION, YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG, AUTARKY_X, AUTARKY_Y, AUTARKY_GRID, AUTARKY_HTW_YIELD } from "./constants";
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
@@ -24,7 +25,7 @@ export function co2SurchargeOverToday(i: number): number {
 /** Generalized fuel cost over arbitrary horizon.
  *  fuelKwh = thermischer Bedarf / Kesselwirkungsgrad (bereits berechnet).
  */
-export function calcFuelCost({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = 0.02 }: {
+export function calcFuelCost({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = FUEL_PRICE_INFLATION }: {
   fuelKwh: number;
   pricePerKwh: number;
   co2PerKwh: number;
@@ -41,7 +42,7 @@ export function calcFuelCost({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, i
 }
 
 /** Per-year fuel cost breakdown (for charting WP vs Gas over time). */
-export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = 0.02 }: {
+export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = FUEL_PRICE_INFLATION }: {
   fuelKwh: number;
   pricePerKwh: number;
   co2PerKwh: number;
@@ -76,7 +77,7 @@ export function calcWpGridCost(wpKwh: number, autarky: number, strompreis: numbe
   let total = 0;
   const gridFraction = 1 - autarky;
   for (let i = 0; i < years; i++) {
-    const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+    const sp = electricityPriceAtYear(strompreis, i, stromSteigerung);
     total += wpKwh * gridFraction * sp;
   }
   return Math.round(total);
@@ -283,7 +284,7 @@ export function calcEigenverbrauchExakt({ personenIdx, nutzungIdx, speicherKwh, 
   // (Rechenmodell-Council, Betreiber-Entscheidung 05.09.2026: HTW gegen HTW).
   // Identität: selbst genutzte kWh = Autarkie × Verbrauch = EV × Ertrag.
   const evMaxBilanz = gesamt / jahresertrag;
-  const autarkieHtw = calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch: gesamt, ertragKwp }) / 100;
+  const autarkieHtw = calcAutarkieExakt({ kwp, speicherKwh, gesamtVerbrauch: gesamt, ertragKwp }) / 100;
   const evMax = autarkieHtw > 0 ? Math.min(evMaxBilanz, autarkieHtw * evMaxBilanz) : evMaxBilanz;
   const ev = Math.min(evBase + evBoost, evMax, 0.90) * 100;
   // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
@@ -314,7 +315,14 @@ function interpAxis(grid: number[][], xi0: number, xi1: number, tx: number, yi: 
   return a + (b - a) * tx;
 }
 
-export function calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch, ertragKwp }: { kwp: number; speicherKwh: number; gesamtVerbrauch: number; ertragKwp: number }): number {
+type AutarkieInputs = { kwp: number; speicherKwh: number; gesamtVerbrauch: number; ertragKwp: number };
+
+/** Rounded display/reference value; financial caps use the unrounded interpolation. */
+export function calcAutarkie(inputs: AutarkieInputs): number {
+  return Math.round(calcAutarkieExakt(inputs));
+}
+
+function calcAutarkieExakt({ kwp, speicherKwh, gesamtVerbrauch, ertragKwp }: AutarkieInputs): number {
   if (gesamtVerbrauch <= 0 || kwp <= 0) return 0;
   // x auf tatsächlichen Ertrag normieren: HTW rechnet mit 1024 kWh/kWp, unser
   // Standort liefert ertragKwp — dieselbe erzeugte Energie, andere kWp-Zahl.
@@ -331,7 +339,7 @@ export function calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch, ertragKwp }: {
   const top = interpAxis(AUTARKY_GRID, xi, xi + 1, tx, yi);
   const bot = interpAxis(AUTARKY_GRID, xi, xi + 1, tx, yi + 1);
   const frac = top + (bot - top) * ty;
-  return Math.round(frac * 100);
+  return frac * 100;
 }
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────
@@ -446,7 +454,7 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // Mit Jahresprofil ist die Menge des Jahres die Summe seiner Monate; die
       // Alterung der Module kommt obendrauf.
       const deg = Math.pow(1 - DEGRAD, i - 1) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1) * (profilJahr && ertragKwp > 0 ? profilSumme / ertragKwp : 1);
-      const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i - 1);
+      const sp = verlauf?.strompreisImJahr?.(i) ?? electricityPriceAtYear(strompreis, i - 1, stromSteigerung);
       const fracsJahr = profilJahr && profilSumme > 0 ? profilJahr.map((m) => m / profilSumme) : fracs;
       const monthlyEvJahr = profilJahr && fracsJahr ? buildMonthlyEv(eigenverbrauch / 100, fracsJahr) : monthlyEv;
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage

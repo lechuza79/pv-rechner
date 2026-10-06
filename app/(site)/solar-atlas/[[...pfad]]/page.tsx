@@ -1,16 +1,20 @@
+import { packeRankingZellen } from "../../../../lib/ranking-zellen";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
+import ArticleTeasers from "../../../../components/ArticleTeasers";
+import { atlasEditorialLinks } from "../../../../lib/atlas-editorial-links";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
-import { pageMetadata } from "../../../../lib/seo";
+import { atlasOgImage, pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
-import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
+import { atlasIsIndexable, atlasRobots, atlasUebersichtRobots, kreisseiteIndexierbar } from "../../../../lib/atlas-index";
+import { verlinkendeGemeinden } from "../../../../lib/atlas-outreach-freigabe";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
 import AtlasKpiRow from "../../../../components/atlas/AtlasKpiRow";
@@ -20,7 +24,8 @@ import {
   getRegionById,
   getAncestors,
   getChildren,
-  getRankingData,
+  getEinzelgemeinden,
+  mitEndpfad,
   childLevelOf,
   lastFullYear,
   currentYear,
@@ -28,12 +33,16 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { foerderBundeslaender } from "../../../../lib/atlas-cities";
 import { atlasSeitenTitel } from "../../../../lib/atlas-titel";
 import { GROESSENKLASSEN_WARUM } from "../../../../lib/gemeindegroesse";
 import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { getFundingPrograms } from "../../../../lib/funding-data";
+import { preloadPublishedPackage } from "../../../../lib/district-monitor-server";
+import { getRankingDataForPage } from "../../../../lib/atlas-ranking-server";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
 import { isDistrictMember } from "../../../../lib/district-package";
@@ -115,6 +124,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   if (!region) return { robots: atlasRobots(false) };
   return {
     ...pageMetadata({
+      ogImage: atlasOgImage(region.name),
       title: seitenTitel(region),
       description:
         region.level === "de"
@@ -126,7 +136,13 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
           : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
-    robots: atlasRobots(atlasIsIndexable(region.level)),
+    // Übersicht: nicht freigegeben heißt noindex, aber FOLLOW — sie ist der
+    // einzige interne Weg zu den freigegebenen Ortsseiten darunter.
+    robots: atlasUebersichtRobots(
+      region.level === "landkreis"
+        ? kreisseiteIndexierbar(region.region_id, await verlinkendeGemeinden().catch(() => [] as string[]))
+        : atlasIsIndexable(region.level),
+    ),
   };
 }
 
@@ -140,6 +156,11 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
  * verzögert die erste Antwortbyte für ALLE Atlas-Seiten. Beide Reads unten sind
  * `unstable_cache`-gedeckt und werden im Body ohnehin gebraucht — sie kosten also
  * keinen zusätzlichen Datenbank-Zugriff.
+ *
+ * The page's other reads are only STARTED here, not awaited (startAtlasReads):
+ * they run while the shell waits for the child list of the redirect decision.
+ * They used to begin only afterwards — on a cold district page four waits in
+ * a row instead of one.
  */
 export default async function AtlasPage(props: { params: Promise<Params> }) {
   const params = await props.params;
@@ -147,24 +168,77 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   if (!region) notFound();
 
   const childLevel = childLevelOf(region);
+  // Started, not awaited: see startAtlasReads. Only regions that have a body.
+  const reads = childLevel ? startAtlasReads(region) : null;
 
   // A kreisfreie Stadt sits at Kreis level but has exactly one Gemeinde beneath
   // it — itself. A ranking of one row is nonsense, so send it to the leaf page
   // that actually says something.
   if (region.level === "landkreis") {
-    const kids = await getChildren(region);
+    const kids = await (reads ? reads.kinder : getChildren(region));
     if (kids.length === 1 && kids[0].slug) {
-      redirect(`/solar-atlas/${(params.pfad ?? []).join("/")}/${kids[0].slug}`);
+      permanentRedirect(`/solar-atlas/${(params.pfad ?? []).join("/")}/${kids[0].slug}`);
     }
   }
-  if (!childLevel) notFound();
+  if (!childLevel || !reads) notFound();
 
   return (
     <Suspense fallback={<AtlasSkeleton />}>
-      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} />
+      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} reads={reads} />
     </Suspense>
   );
 }
+
+/**
+ * Every read of the page body, started at once (28.09.2026).
+ *
+ * A cold district page used to wait in series: slug → child list (redirect
+ * check) → atlas numbers, ranking, ancestors → funding catalogue → monitor
+ * package. None of the later ones depends on an earlier result except through
+ * the region itself, so they all start as soon as the region is known. The
+ * funding catalogue and the monitor package are only warmed here; the district
+ * component picks them up (getFundingPrograms joins a running read,
+ * preloadPublishedPackage is request-cached). Each promise gets a no-op catch so
+ * that a redirect or 404 thrown before the body awaits it does not surface as
+ * an unhandled rejection; the body still sees the original error.
+ *
+ * Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
+ */
+function startAtlasReads(region: AtlasRegion) {
+  const refChain =
+    region.level === "bundesland" ? [{ key: "de", ags: "de" }] : [];
+  const kinder = getChildren(region);
+  const reads = {
+    atlas: getRegionAtlasData(region.region_id),
+    kinder,
+    ancestors: getAncestors(region),
+    // Cells from the monitor package when it has them (one read instead of up
+    // to ~11 database pages), else the database — see getRankingDataForPage.
+    ranking: getRankingDataForPage(region, kinder),
+    // Nur eine Landesseite listet Kreise — und damit kreisfreie Städte, deren
+    // Kreisadresse auf die Gemeindeseite weiterleitet (siehe mitEndpfad).
+    einzel: region.level === "bundesland" ? getEinzelgemeinden(region.region_id) : Promise.resolve({} as Record<string, string>),
+    // Per-capita comparison with the parent levels (Bundesland → Deutschland).
+    // Districts on the region design have none; Deutschland has no parent.
+    refData: Promise.all(
+      refChain.map(async (r) => {
+        const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
+        return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
+      }),
+    ),
+    // The Land's own rank among its siblings; why the error is swallowed is
+    // explained where the body uses it.
+    geschwister:
+      region.level === "bundesland"
+        ? getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [] as Awaited<ReturnType<typeof getChildren>>)
+        : Promise.resolve([] as Awaited<ReturnType<typeof getChildren>>),
+  };
+  for (const p of Object.values(reads)) void p.catch(() => {});
+  if (region.level !== "de") void getFundingPrograms().catch(() => {});
+  preloadPublishedPackage(region.level === "landkreis" ? "district" : "region", region.region_id);
+  return reads;
+}
+type AtlasReads = ReturnType<typeof startAtlasReads>;
 
 /**
  * Levels served by the regional page on the accepted district design. Bundesland
@@ -178,19 +252,26 @@ async function AtlasBody({
   region,
   childLevel,
   pfad,
+  reads,
 }: {
   region: AtlasRegion;
   childLevel: Exclude<ReturnType<typeof childLevelOf>, null>;
   pfad: string[] | undefined;
+  reads: AtlasReads;
 }) {
   const params: Params = { pfad };
   const onRegionDesign = REGION_DESIGN_LEVELS.has(region.level);
-  const [atlas, children, ancestors, ranking] = await Promise.all([
-    getRegionAtlasData(region.region_id),
-    getChildren(region),
-    getAncestors(region),
-    getRankingData(region),
+  const [atlas, kinderRoh, ancestors, rankingRoh, einzel, refData, geschwister] = await Promise.all([
+    reads.atlas,
+    reads.kinder,
+    reads.ancestors,
+    reads.ranking,
+    reads.einzel,
+    reads.refData,
+    reads.geschwister,
   ]);
+  const children = mitEndpfad(kinderRoh, einzel);
+  const ranking = { ...rankingRoh, regions: mitEndpfad(rankingRoh.regions, einzel) };
 
   const crumbs: Crumb[] = [
     { label: "Energie-Atlas", href: "/solar-atlas" },
@@ -214,23 +295,10 @@ async function AtlasBody({
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
 
-  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
-  // Kreis → Bundesland/Deutschland, Bundesland → Deutschland; Default ist die
-  // nächsthöhere Ebene. Deutschland selbst hat keinen Elternteil → keine Tendenz.
-  const refChain =
-    region.level === "landkreis"
-      ? [{ key: "bundesland", ags: region.region_id.slice(0, 2) }, { key: "de", ags: "de" }]
-      : region.level === "bundesland"
-        ? [{ key: "de", ags: "de" }]
-        : [];
-  // Per-capita comparison with the parent levels: old page, and kept on the new
-  // design for Bundesland/Deutschland (existing content, removal is a product decision).
-  const refData = region.level === "landkreis" && onRegionDesign ? [] : await Promise.all(
-    refChain.map(async (r) => {
-      const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
-      return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
-    }),
-  );
+  // Reference levels for the per-capita tendency (refData, read in
+  // startAtlasReads): Bundesland → Deutschland, the next level up by default.
+  // Deutschland has no parent; districts are on the region design, which does
+  // not show this comparison.
   type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
   const perCapOf = (a: AtlasData, pop: number | null) =>
     pop
@@ -253,7 +321,7 @@ async function AtlasBody({
    * Der eigene Platz unter den Geschwistern — nur für Bundesländer.
    *
    * Die Rangliste der 16 liegt in den Kindern der Deutschland-Region und trägt
-   * dort bereits `rankDach`; wir lesen sie, statt eine zweite zu rechnen (zwei
+   * dort bereits `rank`; wir lesen sie, statt eine zweite zu rechnen (zwei
    * Ranglisten laufen auseinander, das ist im Projekt schon passiert).
    *
    * DER FEHLER WIRD GESCHLUCKT — und das ist hier kein Kaschieren, sondern der
@@ -271,12 +339,12 @@ async function AtlasBody({
    * läuft ohnehin für die Deutschland-Seite; die 16 Länderseiten teilen sich
    * denselben Eintrag. Zusätzliche Last entsteht also höchstens einmal je
    * Stunde, nicht je Aufruf.
+   *
+   * It is read in startAtlasReads, together with all other reads.
    */
-  const geschwister =
-    region.level === "bundesland"
-      ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
-      : [];
-  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
+  // Gesamtleistung je Einwohner — dieselbe Größe wie Kennzahl und Einstiegssatz
+  // (siehe RegionKind.wPerCapita in lib/region-highlight.ts).
+  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rank ?? null;
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
     { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
@@ -303,7 +371,7 @@ async function AtlasBody({
     kindWort,
     kinder: children.map((c) => ({
       name: c.name,
-      wPerCapitaDach: c.wPerCapitaDach,
+      wPerCapita: c.wPerCapita,
       count: c.count,
       // Dieselbe Adresse wie in der Rangliste weiter unten — der Absatz öffnet
       // also keinen neuen Crawl-Weg, er benennt einen bestehenden.
@@ -383,47 +451,17 @@ async function AtlasBody({
   // First local design reference only; metadata, structured data and index
   // policy remain on the existing route and share the existing sources.
   if (onRegionDesign) {
-    // Bundesland/Deutschland keep the existing extra content of the old page
-    // (highlight paragraph, per-capita comparison, ranking tiles,
-    // international comparison, funding link) until a product decision says otherwise.
+    // Regional pages share the monitor, ranking table and funding section.
     const keepExtras = region.level !== "landkreis";
     const einordnungNode = keepExtras && einordnung.length > 0 ? einordnung.map((teil, idx) => {
       if (typeof teil === "string") return teil;
       if ("href" in teil) return <Link key={`${teil.href}-${idx}`} href={teil.href}>{teil.text}</Link>;
       return <strong key={`w-${idx}`}>{teil.text}</strong>;
     }) : null;
-    const zusatz = keepExtras ? <>
-      <div style={S.section}>
-        <h2 style={S.h2}>Kennzahlen im Vergleich</h2>
-        <AtlasKpiRow groups={[{ tiles: kpiTiles }]} regionPerCap={regionPerCap} references={kpiRefs} defaultRefKey={defaultRefKey} />
-      </div>
-      <div style={S.section}>
-        <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
-        <p style={S.sub}>{`Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune. ${GROESSENKLASSEN_WARUM}`}</p>
-        <div style={S.rangKacheln}>
-          {rankingKategorienGruppiert().buerger.map((k) => (
-            <Link key={k.slug} href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`} style={S.rangKachel}>
-              <span style={S.rangKachelTitel}>{k.thema}</span>
-              <span style={S.rangKachelCta}>Rangliste ansehen <IconArrowRight size={12} /></span>
-            </Link>
-          ))}
-        </div>
-      </div>
-      {region.level === "de" && (
-        <div style={S.section}>
-          <h2 style={S.h2}>Deutschland im internationalen Vergleich</h2>
-          <p style={S.sub}>Wie der deutsche Ausbau gegenüber anderen Ländern dasteht, zeigt der Ländervergleich.</p>
-          <Link href="/laendervergleich" style={S.link}>Photovoltaik-Ausbau im Ländervergleich</Link>
-        </div>
-      )}
-      {region.level === "bundesland" && region.slug && (
-        <div style={S.section}>
-          <h2 style={S.h2}>Förderung</h2>
-          <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
-          <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>Förderprogramme in {region.name}</Link>
-        </div>
-      )}
-    </> : null;
+    const relatedLinks = atlasEditorialLinks[region.region_id] ?? [];
+    const zusatz = relatedLinks.length > 0
+      ? <ArticleTeasers title="Mehr zum Thema" items={relatedLinks} currentPath={basePath} />
+      : null;
     return <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
@@ -510,7 +548,7 @@ async function AtlasBody({
             </p>
             <RankingTable
               regions={ranking.regions}
-              cells={ranking.cells}
+              zellen={packeRankingZellen(ranking.cells, ranking.regions)}
               basePath={basePath}
               lastFullYear={lastYear}
               popInMillions={childLevel === "bundesland"}
@@ -594,12 +632,12 @@ async function AtlasBody({
           </div>
         )}
 
-        {region.level === "bundesland" && region.slug && (
+        {region.level === "bundesland" && region.slug && foerderBundeslaender().some((b) => b.slug === region.slug) && (
           <div style={S.section}>
             <h2 style={S.h2}>Förderung</h2>
             <p style={S.sub}>Zuschüsse von Land und Kommunen — getrennt vom Bestand geführt</p>
             <Link href={`/photovoltaik-foerderung/${region.slug}`} style={S.link}>
-              Förderprogramme in {region.name}
+              Förderprogramme {ortPhrase(region)}
             </Link>
           </div>
         )}

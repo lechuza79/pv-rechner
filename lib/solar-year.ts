@@ -523,8 +523,10 @@ export const SOLAR_YEAR_DE: Record<string, SolarDayType[][]> = {
 };
 
 /** Monatsertrag der Referenzreihe in kWh/kWp fuer eine Ausrichtung. */
-export function referenceMonthKwh(orientation: string, month: number): number {
-  const months = SOLAR_YEAR_DE[orientation] ?? SOLAR_YEAR_DE.sued_flach;
+export function referenceMonthKwh(
+  orientation: string, month: number, referenceYear: Record<string, SolarDayType[][]> = SOLAR_YEAR_DE,
+): number {
+  const months = referenceYear[orientation] ?? referenceYear.sued_flach;
   return months[month].reduce((s, t) => s + (t.days * t.w.reduce((a, b) => a + b, 0)) / 1000, 0);
 }
 

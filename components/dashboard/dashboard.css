@@ -12,6 +12,7 @@
 .sc-widget[data-columns="3"]{grid-column:1/-1;}
 .sc-widget-head {display:flex;align-items:start;justify-content:space-between;gap:16px;padding:var(--widget-padding) var(--widget-padding) 0;}
 .sc-widget-head h4 {font-size:var(--widget-title-size);line-height:1.35;margin:0;}
+.sc-widget-subtitle {display:block;margin-top:8px;color:var(--widget-muted);font-size:14px;font-weight:400;line-height:1.5;}
 .sc-widget-context {padding:0 var(--widget-padding);margin-block:12px;color:var(--widget-muted);font-size:12px;line-height:1.5;}
 .sc-widget-body {min-width:0;}
 .sc-widget-help {position:relative;}
@@ -152,7 +153,28 @@
 
 @container(min-width:851px){.sc-widget-grid>.sc-widget:has(.sc-share-donut){grid-column:span 2;}}
 /* Footer rows of an exportable widget (ExportableWidgetFrame). */
-.sc-widget-actions{padding:0 var(--widget-padding) var(--widget-padding);}
+.sc-widget-actions{padding:4px;flex-shrink:0;}
 .sc-widget-actions>div{margin-top:4px!important;}
 /* Help right beside the headline (charts with an options menu). */
 .sc-widget-title-help{display:inline-flex;vertical-align:middle;margin-left:8px;}
+
+/* Shared video-export overlay, excluded from captured frames. */
+.sc-widget{position:relative;}
+.sc-video-overlay{position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:var(--widget-surface);color:var(--widget-ink);}
+.sc-video-preview{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:top center;opacity:.22;pointer-events:none;}
+.sc-video-message{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;max-width:320px;padding:24px;text-align:center;background:var(--widget-surface);border-radius:var(--widget-radius);box-shadow:0 4px 24px rgb(0 0 0 / .12);}
+.sc-video-message p{margin:0;font-size:14px;line-height:1.5;color:var(--widget-muted);}
+.sc-video-message progress{width:100%;height:8px;accent-color:var(--widget-accent);}
+.sc-video-message a,.sc-video-message button{font:inherit;color:var(--widget-ink);text-underline-offset:4px;}
+.sc-video-message button{border:1px solid var(--widget-muted);background:transparent;padding:8px 16px;border-radius:var(--widget-radius);cursor:pointer;}
+
+.sc-video-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:180px;width:100%;animation:sc-video-state-in .25s ease-out;}
+@keyframes sc-video-state-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.sc-video-state{animation:none}}
+
+/* Shared widget controls; the hero stage retains its separate scale. */
+.sc-widget-setting[data-variant=widget] .sc-setting-stepper>button svg{width:16px;height:16px;}
+.sc-widget-setting[data-variant=widget] .sc-setting-stepper{box-shadow:none;}
+.sc-widget-setting[data-variant=widget][data-size=sm] .sc-setting-stepper select{height:36px;}
+
+.sc-widget-actions{position:relative;z-index:1;}

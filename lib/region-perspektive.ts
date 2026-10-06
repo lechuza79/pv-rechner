@@ -6,9 +6,9 @@ export type RegionGeometry = {
   properties: { id: string; name: string; kind?: string; kreis?: string };
   geometry: { type: string; coordinates: unknown };
 };
-export type ProjectedRegion = { id: string; name: string; kind?: string; ground: Point[][][]; groundAnchor: Point; groundTrees: Point[]; sidePath: string; trees: Point[]; path: string; anchor: Point; bounds: [number, number, number, number] };
+export type ProjectedRegion = { id: string; name: string; kind?: string; ground: Point[][][]; groundAnchor: Point; groundTrees: Point[]; trees: Point[]; path: string; anchor: Point; bounds: [number, number, number, number] };
 
-function polygons(feature: RegionGeometry): Point[][][] {
+export function polygons(feature: RegionGeometry): Point[][][] {
   return feature.geometry.type === "Polygon"
     ? [feature.geometry.coordinates as Point[][]]
     : feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates as Point[][][] : [];
@@ -59,10 +59,26 @@ export function interiorPoint(rings: Point[][]): Point {
   return best;
 }
 
-export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
+/** Serialised coordinates carry one decimal. The map is drawn about 850 units
+ * wide; a tenth of a unit is invisible even zoomed in, and the unrounded
+ * thirteen decimals made the atlas overview pages several hundred kilobytes
+ * heavier (Deutschland 750 kB of map props compressed). */
+const r1 = (v: number) => Math.round(v * 10) / 10;
+const rp = ([x, y]: Point): Point => [r1(x), r1(y)];
+/** Rounding can merge neighbouring vertices; drop the repeats, never a ring. */
+function roundRing(ring: Point[]): Point[] {
+  const out: Point[] = [];
+  for (const p of ring) {
+    const q = rp(p), last = out[out.length - 1];
+    if (!last || last[0] !== q[0] || last[1] !== q[1]) out.push(q);
+  }
+  return out.length >= 4 ? out : ring.map(rp);
+}
+
+export function regionProjection(features: RegionGeometry[]) {
   const valid = features.map(feature => ({ feature, polygons: polygons(feature) })).filter(f => f.polygons.length);
   const points = valid.flatMap(f => f.polygons.flat(2));
-  if (!points.length) return [];
+  if (!points.length) throw new Error("Region has no geometry");
   const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
   const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
   const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
@@ -79,6 +95,14 @@ export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
     const [x, y] = raw(p);
     return [500 + (x - (minX + maxX) / 2) * scale, 420 + (y - (minY + maxY) / 2) * scale];
   };
+  const groundPoint = ([x, y]: Point): Point => [(x-cx)*correction*scale, (cy-y)*scale];
+  // Same local metric projection for land, turbine locations and dimensions.
+  return { valid, project, groundPoint, unitsPerMetre: scale / (6371008.8 * Math.PI / 180) };
+}
+
+export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
+  if (!features.some(feature => polygons(feature).length)) return [];
+  const {valid, project, groundPoint} = regionProjection(features);
   return valid.map(({ feature, polygons: shapes }) => {
     const largest = shapes.reduce((a, b) => area(a[0]) > area(b[0]) ? a : b);
     const projected = shapes.flat(2).map(project);
@@ -92,8 +116,7 @@ export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
         }
       }
     }
-    const groundPoint = ([x, y]: Point): Point => [(x-cx)*correction*scale, (cy-y)*scale];
-    const ground = shapes.map(poly => poly.map(ring => ring.map(groundPoint)));
+    const ground = shapes.map(poly => poly.map(ring => roundRing(ring.map(groundPoint))));
     const groundLargest = largest.map(ring => ring.map(groundPoint));
     const groundTrees: Point[] = [];
     if (feature.properties.kind === "Gemeindefreies Gebiet") {
@@ -104,25 +127,34 @@ export function projectRegions(features: RegionGeometry[]): ProjectedRegion[] {
         }
       }
       if (!groundTrees.length) groundTrees.push(groundPoint(interiorPoint(largest)));
+      groundTrees.forEach((p, i) => { groundTrees[i] = rp(p); });
     }
     return {
-      ground, groundAnchor: groundPoint(interiorPoint(largest)), groundTrees,
-      sidePath: shapes.flatMap(shape => shape.flatMap(ring => ring.slice(1).map((p, i) => {
-        const a = project(ring[i]), b = project(p), depth = 14;
-        return `M${a[0]},${a[1]}L${b[0]},${b[1]}L${b[0]},${b[1]+depth}L${a[0]},${a[1]+depth}Z`;
-      }))).join(""),
-      trees,
+      ground, groundAnchor: rp(groundPoint(interiorPoint(largest))), groundTrees,
+      trees: trees.map(rp),
       id: feature.properties.id,
       name: feature.properties.name,
       kind: feature.properties.kind,
-      anchor: project(interiorPoint(largest)),
-      bounds: [Math.min(...px), Math.min(...py), Math.max(...px), Math.max(...py)] as [number, number, number, number],
-      path: shapes.flatMap(shape => shape.map(ring => ring.map((p, i) => {
-        const [x, y] = project(p);
-        return `${i ? "L" : "M"}${x.toFixed(2)},${y.toFixed(2)}`;
-      }).join("") + "Z")).join(""),
+      anchor: rp(project(interiorPoint(largest))),
+      bounds: [r1(Math.min(...px)), r1(Math.min(...py)), r1(Math.max(...px)), r1(Math.max(...py))] as [number, number, number, number],
+      path: shapes.flatMap(shape => shape.map(ring => roundRing(ring.map(project)).map(([x, y], i) =>
+        `${i ? "L" : "M"}${x},${y}`).join("") + "Z")).join(""),
     };
   });
+}
+
+/** The side walls of the flat fallback map, derived from its outline path.
+ * Only drawn when the 3D scene fails, so it is built in the browser on demand
+ * instead of being shipped with every page (it was 60 % of the map props). */
+export function sidePathFromPath(path: string, depth = 14): string {
+  const r = (v: number) => Math.round(v * 10) / 10;
+  return path.split("Z").filter(Boolean).flatMap(ring => {
+    const pts = ring.slice(1).split("L").map(p => p.split(",").map(Number) as Point);
+    return pts.slice(1).map((b, i) => {
+      const a = pts[i];
+      return `M${a[0]},${a[1]}L${b[0]},${b[1]}L${b[0]},${r(b[1]+depth)}L${a[0]},${r(a[1]+depth)}Z`;
+    });
+  }).join("");
 }
 
 export function barHeight(value: number | null, maximum: number) {

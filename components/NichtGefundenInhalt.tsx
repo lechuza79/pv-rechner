@@ -35,9 +35,15 @@ const PFEIL = (
   </svg>
 );
 
-export default function NichtGefundenInhalt() {
+/**
+ * `innerhalbMain`: inside the site layout the page content already sits in the
+ * layout's <main>; a second one would nest landmarks. The global 404 has no
+ * such frame and keeps its own.
+ */
+export default function NichtGefundenInhalt({ innerhalbMain = false }: { innerhalbMain?: boolean } = {}) {
+  const Huelle = innerhalbMain ? "div" : "main";
   return (
-    <main className="sc-nf">
+    <Huelle className="sc-nf">
       <link rel="stylesheet" href="/shared-404/nicht-gefunden.css" precedence="default" />
       <div className="sc-nf-intro">
         <p className="sc-nf-eyebrow">{NICHT_GEFUNDEN.augenbraue}</p>
@@ -55,6 +61,6 @@ export default function NichtGefundenInhalt() {
           ))}
         </div>
       </section>
-    </main>
+    </Huelle>
   );
 }

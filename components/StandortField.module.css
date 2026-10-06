@@ -1,0 +1,36 @@
+.field { margin-block: var(--space-xl); color: var(--result-muted, var(--color-text-secondary)); font: var(--font-size-body)/1.5 var(--font-text); }
+.field label { display:block; margin-bottom:calc(var(--space-xl)/2); }
+.field form { display:flex; gap:calc(var(--space-xl)/2); }
+.field input { flex:1; min-width:0; padding:12px; border:1px solid var(--result-rule, var(--color-border)); border-radius:var(--radius-sm); background:var(--result-control,var(--color-bg-muted)); color:var(--result-text,var(--color-text-primary)); font:inherit; }
+.field input::placeholder { color:var(--result-muted,var(--color-text-muted)); font-weight:400; opacity:.7; }
+.field input:focus-visible { outline:2px solid var(--result-accent,var(--color-accent)); outline-offset:2px; }
+.field button { padding:12px 16px; border:0; border-radius:var(--radius-pill); font:600 var(--font-size-body)/1.2 var(--font-text); cursor:pointer; background:var(--color-cta); color:var(--color-text-on-accent); }
+.field button:disabled { background:var(--result-control,var(--color-bg-muted)); color:var(--result-muted,var(--color-text-muted)); opacity:.35; cursor:not-allowed; }
+.field ul { list-style:none; padding:0; margin:8px 0 0; }
+.field li button { width:100%; text-align:left; border-radius:var(--radius-sm); background:var(--result-control,var(--color-bg-muted)); color:var(--result-text,var(--color-text-primary)); margin-top:4px; }
+.field li span { display:block; font-size:var(--font-size-small); font-weight:400; color:var(--result-muted,var(--color-text-secondary)); }
+.field p { font-size:var(--font-size-small); }
+@media(max-width:440px) { .field form { flex-direction:column; } }
+
+.inputWrap { position:relative; flex:1; min-width:0; display:flex; }
+.inputWrap input { width:100%; padding-right:48px; }
+.field .clear { position:absolute; right:4px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:40px; height:40px; padding:0; background:transparent; color:var(--result-muted,var(--color-text-secondary)); }
+.field .clear:hover { color:var(--result-text,var(--color-text-primary)); }
+
+/* Compact editor replaces a prompt button without adding another row. */
+.compact { position: relative; margin: 0; min-width: 0; }
+.compact label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.compact form { flex-direction: row; align-items: center; gap: 0; border-radius: var(--radius-pill); background: var(--result-control, var(--color-bg)); }
+.compact input { width: 100%; min-height: 44px; padding: 8px 10px; font-size: 16px; border: 0; border-radius: var(--radius-pill); background: transparent; }
+.compact .clear { display: none; }
+.compact form > button { flex: 0 0 36px; width: 36px; height: 36px; padding: 0; margin-right: 4px; display: grid; place-items: center; }
+.compact ul, .compact > p { position: absolute; bottom: calc(100% + 16px); right: 0; width: 290px; max-width: calc(100vw - 80px); margin: 0; padding: 8px; border-radius: var(--radius-md); background: var(--result-control, var(--color-bg)); color: var(--result-text, var(--color-text-primary)); box-shadow: var(--shadow-toast); max-height: 40dvh; overflow-y: auto; }
+.compact li button { margin: 0; }
+
+/* A field surface always owns its matching foreground and border roles. */
+.flow { --location-fill:var(--result-panel); --location-ink:var(--result-text); --location-muted:var(--result-muted); --location-rule:var(--result-rule); margin:0; }
+.flow form { flex-direction:row; flex-wrap:wrap; gap:8px; }
+.flow input { min-width:100px; background:var(--location-fill); color:var(--location-ink); border-color:var(--location-rule); font-size:var(--font-size-body); }
+.flow input::placeholder { color:var(--location-muted); }
+.flow button:disabled { opacity:1; background:var(--location-fill); color:var(--location-muted); }
+.flow p { color:var(--color-text-secondary); margin:8px 0 0; }

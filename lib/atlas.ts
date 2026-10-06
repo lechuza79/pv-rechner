@@ -9,6 +9,7 @@
 // Gemeinde is the only stored grain; Kreis, Bundesland and DE are prefix rollups.
 
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 import { withDbTimeout } from "./db-timeout";
 import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
@@ -138,7 +139,7 @@ function asRegion(row: unknown): AtlasRegion {
  */
 const STAMMDATEN_TTL = 60 * 60 * 24 * 7;
 
-async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
+export async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
     supabase.from("mastr_regions").select(REGION_COLUMNS).eq("region_id", regionId).maybeSingle(),
@@ -189,7 +190,11 @@ const LEVEL_FALLBACK: Record<string, string> = {
  * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
  * Route geschont.
  */
-export async function searchRegions(q: string, timeoutMs?: number): Promise<RegionHit[]> {
+export async function searchRegions(
+  q: string,
+  timeoutMs?: number,
+  levels: ("bundesland" | "landkreis" | "gemeinde")[] = ["bundesland", "landkreis", "gemeinde"],
+): Promise<RegionHit[]> {
   const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
   if (term.length < 2) return [];
   const supabase = await db();
@@ -198,7 +203,7 @@ export async function searchRegions(q: string, timeoutMs?: number): Promise<Regi
       .from("mastr_regions")
       .select("region_id, level, name, bezeichnung, population, parent_region_id")
       .ilike("name", `%${term}%`)
-      .in("level", ["bundesland", "landkreis", "gemeinde"])
+      .in("level", levels)
       .not("slug", "is", null)
       .order("population", { ascending: false, nullsFirst: false })
       .limit(40),
@@ -234,39 +239,86 @@ export async function searchRegions(q: string, timeoutMs?: number): Promise<Regi
  * kreisfreie Stadt) apart from "landkreis-wuerzburg" and lets twenty Neustadts
  * coexist.
  */
-async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
-  const supabase = await db();
+/**
+ * Walks the slug chain from Deutschland over rows already fetched: each segment
+ * is matched within its parent, exactly like the segment-by-segment lookup.
+ * Pure, so the rule is testable without a database.
+ */
+export function walkSlugPath(rows: AtlasRegion[], slugs: string[]): AtlasRegion | null {
   let parent = "de";
   let region: AtlasRegion | null = null;
   for (const slug of slugs) {
-    const { data, error } = await withDbTimeout(
-      supabase.from("mastr_regions").select(REGION_COLUMNS).eq("parent_region_id", parent).eq("slug", slug).maybeSingle(),
-      "resolveSlugPath",
-    );
-    if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
-    if (!data) return null;
-    region = asRegion(data);
+    const hits = rows.filter((r) => r.parent_region_id === parent && r.slug === slug);
+    if (hits.length > 1) throw new Error(`resolveSlugPath failed: slug "${slug}" is not unique below ${parent}`);
+    if (hits.length === 0) return null;
+    region = hits[0];
     parent = region.region_id;
   }
   return region;
 }
 
+/**
+ * ONE query for the whole path instead of one per segment (28.09.2026). The
+ * segments used to be looked up one after another — three round trips for a
+ * Gemeinde page, in front of everything else the page reads. All rows carrying
+ * any of the slugs come back at once (a few dozen even for "neustadt"), and the
+ * chain is walked in memory by the same parent rule.
+ */
+async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
+  if (slugs.length === 0) return null;
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase.from("mastr_regions").select(REGION_COLUMNS).in("slug", [...new Set(slugs)]),
+    "resolveSlugPath",
+  );
+  if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
+  const rows = (data ?? []) as AtlasRegion[];
+  // PostgREST caps a response silently; a capped list could miss the one row
+  // the chain needs. Never observed (a slug is shared by a few dozen places at
+  // most), but a silent miss would be a wrong 404, so refuse instead.
+  if (rows.length >= 1000) throw new Error(`resolveSlugPath: ${rows.length} rows for ${slugs.join("/")}, response may be truncated`);
+  const region = walkSlugPath(rows, slugs);
+  return region ? asRegion(region) : null;
+}
+
 // Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
-// + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
-// Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL): eine Gemeindeseite löst drei
-// Segmente einzeln und nacheinander auf (Bundesland → Kreis → Gemeinde); das war
-// der häufigste Verursacher der Atlas-Timeouts.
-export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
+// + Render). Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL).
+const resolveSlugPathCached = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
   revalidate: STAMMDATEN_TTL,
   tags: [ATLAS_DATEN_TAG],
 });
 
+// Request-scoped dedupe on top of the data cache: generateMetadata and the page
+// resolve the same path concurrently, and unstable_cache does not join two
+// concurrent misses — on a cold data cache both went to the database. React's
+// cache() keys by argument identity, hence the joined string.
+const resolveSlugPathForRequest = cache((path: string) => resolveSlugPathCached(path.split("/")));
+export function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | null> {
+  return resolveSlugPathForRequest(slugs.join("/"));
+}
+
+/** The ancestor ids a nested AGS implies: parent, its Land prefix, Deutschland. */
+export function ancestorIdsGuess(region: Pick<AtlasRegion, "region_id" | "parent_region_id">): string[] {
+  if (!region.parent_region_id) return [];
+  const ids = [region.parent_region_id];
+  if (region.region_id.length > 2) ids.push(region.region_id.slice(0, 2));
+  ids.push("de");
+  return [...new Set(ids)];
+}
+
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
 export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> {
+  // The AGS is nested, so the chain is known in advance for the regular case
+  // (Kreis → Land → Deutschland): request all links at once instead of one
+  // round trip per level. The walk below still follows parent_region_id and
+  // fetches anything the guess missed, so an irregular chain stays correct.
+  const guessed = new Map<string, Promise<AtlasRegion | null>>();
+  for (const id of ancestorIdsGuess(region)) guessed.set(id, getRegionById(id));
+  for (const p of guessed.values()) void p.catch(() => {});
   const chain: AtlasRegion[] = [];
   let cursor = region.parent_region_id;
   while (cursor) {
-    const parent = await getRegionById(cursor);
+    const parent = await (guessed.get(cursor) ?? getRegionById(cursor));
     if (!parent) break;
     chain.unshift(parent);
     cursor = parent.parent_region_id;
@@ -286,7 +338,62 @@ export async function atlasPathForRegionId(regionId: string): Promise<string | n
   if (!region?.slug) return null;
   const ancestors = await getAncestors(region);
   const parts = [...ancestors, region].map((r) => r.slug).filter((s): s is string => !!s);
+  // Eine kreisfreie Stadt auf Kreisebene leitet auf ihre einzige Gemeinde weiter
+  // (siehe Atlas-Route) — gleich die Endadresse ausgeben, nicht die Weiterleitung.
+  const einzel = region.level === "landkreis" ? (await getEinzelgemeinden(region.region_id.slice(0, 2)))[region.region_id] : undefined;
+  if (einzel) parts.push(einzel);
   return `/solar-atlas/${parts.join("/")}`;
+}
+
+/**
+ * Kreise mit genau EINER Gemeinde (kreisfreie Städte, Stadtkreise) → Slug dieser
+ * Gemeinde, je Bundesland.
+ *
+ * WARUM: Die Atlas-Route leitet eine solche Kreisadresse dauerhaft auf die
+ * Gemeindeseite weiter (eine Rangliste mit einer Zeile ist Unsinn). Die
+ * Landesseiten verlinkten trotzdem die Kreisadresse — jeder Link auf eine
+ * kreisfreie Stadt war ein Umweg über eine Weiterleitung (Audit 28.09.2026:
+ * /solar-atlas/bayern/amberg → /solar-atlas/bayern/amberg/amberg).
+ *
+ * WIE: Die einzige Gemeinde eines solchen Kreises trägt den Schlüssel
+ * <Kreis>000. Am 28.09.2026 gegen das ganze Register gemessen: 107 Kreise haben
+ * eine Gemeinde <Kreis>000, genau diese 107 haben genau eine Gemeinde, und kein
+ * Kreis mit genau einer Gemeinde hat eine andere. Der Slug der Gemeinde weicht
+ * in einem Fall vom Kreis-Slug ab — deshalb gelesen, nicht abgeleitet.
+ * Eine Abfrage je Land statt je Kreis.
+ */
+async function getEinzelgemeindenUncached(landId: string): Promise<Record<string, string>> {
+  if (!/^\d{2}$/.test(landId)) return {};
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, parent_region_id, slug")
+      .eq("level", "gemeinde")
+      .like("region_id", `${landId}___000`),
+    "getEinzelgemeinden",
+  );
+  if (error) throw new Error(`getEinzelgemeinden failed: ${error.message}`);
+  const out: Record<string, string> = {};
+  for (const r of (data ?? []) as { region_id: string; parent_region_id: string | null; slug: string | null }[]) {
+    if (r.slug && r.parent_region_id && r.region_id === `${r.parent_region_id}000`) out[r.parent_region_id] = r.slug;
+  }
+  return out;
+}
+
+export const getEinzelgemeinden = unstable_cache(getEinzelgemeindenUncached, ["einzelgemeinden-v1"], {
+  revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
+});
+
+/**
+ * Dieselben Zeilen, aber der Slug einer kreisfreien Stadt trägt ihre Gemeinde
+ * gleich mit („amberg/amberg"). Alle Bausteine bauen ihren Link als
+ * `${basePath}/${slug}` — so zeigt jeder davon auf die Endadresse, ohne dass
+ * jeder einzeln davon wissen muss. Nur für Kreis-Zeilen einer Landesseite.
+ */
+export function mitEndpfad<T extends { region_id: string; slug: string | null }>(zeilen: T[], einzel: Record<string, string>): T[] {
+  return zeilen.map((z) => (z.slug && einzel[z.region_id] ? { ...z, slug: `${z.slug}/${einzel[z.region_id]}` } : z));
 }
 
 /** The level of a region's children, or null if it is a leaf. */
@@ -763,20 +870,50 @@ async function getRankingDataUncached(
   if (!childLevel) return { regions: [], cells: [] };
 
   const supabase = await db();
-  const [cells, regionsRes] = await Promise.all([
+  const [cells, regions] = await Promise.all([
     loadAllCells(supabase, prefixOf(region.region_id), LEVEL_LEN[childLevel]),
-    withDbTimeout(
-      supabase
-        .from("mastr_regions")
-        .select("region_id, name, slug, population")
-        .eq("parent_region_id", region.region_id),
-      "getRankingData/regions",
-    ),
+    queryRankingRegions(supabase, region),
   ]);
-  if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
-
-  return { regions: regionsRes.data as RankingRegion[], cells };
+  return { regions, cells };
 }
+
+/**
+ * The ranking cells alone, uncached — the database path of the table. Also the
+ * reader of the package run (scripts/kreis-paket.ts), which stores exactly
+ * this result in the region/district package (lib/ranking-package.ts).
+ */
+export async function loadRankingCells(region: AtlasRegion): Promise<ChildYearRow[]> {
+  const childLevel = childLevelOf(region);
+  if (!childLevel) return [];
+  return loadAllCells(await db(), prefixOf(region.region_id), LEVEL_LEN[childLevel]);
+}
+
+async function getRankingRegionsUncached(region: AtlasRegion): Promise<RankingRegion[]> {
+  if (!childLevelOf(region)) return [];
+  return queryRankingRegions(await db(), region);
+}
+
+async function queryRankingRegions(supabase: Awaited<ReturnType<typeof db>>, region: AtlasRegion): Promise<RankingRegion[]> {
+  const regionsRes = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, name, slug, population")
+      .eq("parent_region_id", region.region_id),
+    "getRankingData/regions",
+  );
+  if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
+  return regionsRes.data as RankingRegion[];
+}
+
+/**
+ * The table's region list alone (one small query): the page takes the cells
+ * from the precomputed package when it has them (lib/atlas-ranking-server.ts)
+ * and needs only this from the database.
+ */
+export const getRankingRegions = unstable_cache(getRankingRegionsUncached, ["ranking-regions-v1"], {
+  revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
+});
 
 // Kreis-/Regions-Rangliste: über alle Gemeinden desselben Kreises identisch —
 // cachen spart die wiederholte Zellen-Aggregation auf jeder Gemeinde-Seite.
@@ -791,48 +928,100 @@ export const getRankingData = unstable_cache(getRankingDataUncached, ["ranking-d
  * A Kreis with 55 Gemeinden across 5 segments and 25 years is ~6.900 cells, and
  * PostgREST caps a response at 1000 rows *without saying so* — the first attempt
  * here returned exactly 1000 and would have shown most Gemeinden as zero. Hence
- * .range() until a short page arrives, and a hard stop rather than a silent
- * truncation if the payload ever grows past what a page should carry.
+ * paging, and a hard stop rather than a silent truncation if the payload ever
+ * grows past what a page should carry.
+ *
+ * The first page also asks for the total (28.09.2026); the remaining pages are
+ * then requested a few at a time instead of strictly one after another. Bayern
+ * has ~13 pages: on a cold data cache that was 13 round trips in series, about
+ * 2.4 s before its Land page could render. At most CELL_PAGE_PARALLEL requests
+ * run at once — each page re-runs the aggregate on the database, and a burst of
+ * thirteen would be exactly the parallel load the Atlas has fallen over before.
+ * If the total is missing, or the pages do not add up to it (a data run landed
+ * in between), the plain sequential walk is the fallback.
  */
+const CELL_PAGE = 1000;
+const CELL_MAX = 20_000;
+export const CELL_PAGE_PARALLEL = 4;
+
+/** Page start offsets after the first page, grouped into batches that run concurrently. */
+export function cellPageBatches(total: number, page = CELL_PAGE, parallel = CELL_PAGE_PARALLEL): number[][] {
+  const starts: number[] = [];
+  for (let from = page; from < total; from += page) starts.push(from);
+  const batches: number[][] = [];
+  for (let i = 0; i < starts.length; i += parallel) batches.push(starts.slice(i, i + parallel));
+  return batches;
+}
+
 async function loadAllCells(
   supabase: Awaited<ReturnType<typeof db>>,
   prefix: string,
   childLen: number,
 ): Promise<ChildYearRow[]> {
-  const PAGE = 1000;
-  const MAX = 20_000;
-  const all: ChildYearRow[] = [];
-  for (let from = 0; from < MAX; from += PAGE) {
-    const { data, error } = await withDbTimeout(
+  const page = async (from: number, withCount = false) => {
+    const { data, error, count } = await withDbTimeout(
       supabase
-        .rpc("mastr_children_by_year", {
-          p_prefix: prefix,
-          p_child_len: childLen,
-          p_traeger: ["solar", "speicher"],
-          p_year_min: null,
-        })
+        .rpc(
+          "mastr_children_by_year",
+          {
+            p_prefix: prefix,
+            p_child_len: childLen,
+            p_traeger: ["solar", "speicher"],
+            p_year_min: null,
+          },
+          withCount ? { count: "exact" } : undefined,
+        )
         // Stable order is required for paging — without it rows can repeat or vanish.
         .order("region_id", { ascending: true })
         .order("segment", { ascending: true })
         .order("year", { ascending: true })
-        .range(from, from + PAGE - 1),
+        .range(from, from + CELL_PAGE - 1),
       "mastr_children_by_year",
     );
     if (error) throw new Error(`mastr_children_by_year failed: ${error.message}`);
-    const rows = (data ?? []) as ChildYearRow[];
-    all.push(
-      ...rows.map((r) => ({
-        region_id: r.region_id,
-        segment: r.segment,
-        year: Number(r.year),
-        count: Number(r.count),
-        kwp: Number(r.kwp),
-        kwh: Number(r.kwh),
-      })),
-    );
-    if (rows.length < PAGE) return all;
+    return { rows: ((data ?? []) as ChildYearRow[]).map(asCell), count: count ?? null };
+  };
+
+  const first = await page(0, true);
+  if (first.rows.length < CELL_PAGE) return first.rows;
+  const total = first.count;
+  if (total !== null && total > CELL_MAX) throw tooLarge(prefix);
+  if (total !== null) {
+    const all = [...first.rows];
+    let consistent = true;
+    for (const batch of cellPageBatches(total)) {
+      const pages = await Promise.all(batch.map((from) => page(from)));
+      for (const [i, p] of pages.entries()) {
+        const expected = Math.min(CELL_PAGE, total - batch[i]);
+        if (p.rows.length !== expected) consistent = false;
+        all.push(...p.rows);
+      }
+    }
+    if (consistent && all.length === total) return all;
   }
-  throw new Error(`Ranking payload exceeds ${MAX} cells for prefix "${prefix}" — refusing to ship a truncated table`);
+  // Sequential walk: no total, or the data changed between the pages.
+  const all: ChildYearRow[] = [];
+  for (let from = 0; from < CELL_MAX; from += CELL_PAGE) {
+    const { rows } = await page(from);
+    all.push(...rows);
+    if (rows.length < CELL_PAGE) return all;
+  }
+  throw tooLarge(prefix);
+}
+
+function asCell(r: ChildYearRow): ChildYearRow {
+  return {
+    region_id: r.region_id,
+    segment: r.segment,
+    year: Number(r.year),
+    count: Number(r.count),
+    kwp: Number(r.kwp),
+    kwh: Number(r.kwh),
+  };
+}
+
+function tooLarge(prefix: string): Error {
+  return new Error(`Ranking payload exceeds ${CELL_MAX} cells for prefix "${prefix}" — refusing to ship a truncated table`);
 }
 
 // ─── Leaderboards ─────────────────────────────────────────────────────────────

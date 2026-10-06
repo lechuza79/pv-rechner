@@ -35,6 +35,12 @@ const TRAINING_CRAWLER = [
   "CCBot", // Common Crawl — Sammelbecken, aus dem viele Modelle schöpfen
   "Bytespider",
   "Omgilibot",
+  // Operator decision 05.10.2026: 84 % of all requests, rendered every town
+  // page plus its frames and ignored the ranking disallow. It does not honour
+  // this file, so the real block is a firewall rule (deny on its user agent);
+  // listed here so the file states the same. Link previews come from
+  // facebookexternalhit, which stays open.
+  "Meta-ExternalAgent",
 ];
 
 // BEWUSST NICHT GESPERRT, obwohl sie Training bedienen — sie bedienen eben nicht
@@ -45,8 +51,6 @@ const TRAINING_CRAWLER = [
 //     Zitierfall. Eine Sperre hätte uns aus Gemini-Antworten genommen, ohne
 //     dass irgendetwas kaputtgegangen wäre — die Sorte Fehler, die man erst an
 //     ausbleibendem Verkehr merkt.
-//   Meta-ExternalAgent nennt in Metas eigener Beschreibung neben dem Training
-//     ausdrücklich das Indexieren von Inhalten für Produkte.
 //   Diffbot baut einen Wissensgraphen und führt Quellen.
 //
 // Wer einen dieser Namen doch aufnimmt, prüft vorher die Doku des Anbieters und

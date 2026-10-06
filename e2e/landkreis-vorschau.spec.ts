@@ -91,7 +91,7 @@ test("district content uses municipality width while scene stays full bleed", as
   await page.screenshot({path:'scratch/landkreis/width-and-artwork.png'});
 });
 
-test("district race uses one widget and monitor dates live in help",async({page})=>{
+test("district race uses one widget with footer actions and monitor dates live in help",async({page})=>{
   test.setTimeout(120000);
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.goto(route,{waitUntil:'domcontentloaded'});
@@ -122,9 +122,23 @@ test("district race uses one widget and monitor dates live in help",async({page}
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     if(width===451||width===1226)await page.screenshot({path:`scratch/landkreis/race-widget-${width}.png`});
   }
-  await ranking.getByRole('button',{name:'Informationen zu Welche Gemeinde hat die meisten Solaranlagen?'}).click();
-  await expect(page.getByRole('tooltip')).toContainText('Registerstand:');
-  await page.keyboard.press('Escape');
+  await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
+  await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
+  await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild',/Video herunterladen.*Downloadlink per E-Mail/,/In Ihrem Design.*Anfragen/]);
+  const originalUrl = page.url();
+  await ranking.getByRole('menuitem',{name:/Video herunterladen/}).click();
+  const video = page.getByRole('dialog',{name:'Video herunterladen'});
+  await expect(video).toBeVisible();
+  await expect(video.getByRole('textbox',{name:'E-Mail-Adresse',exact:true})).toBeVisible();
+  await expect(page).toHaveURL(originalUrl);
+  await video.getByRole('button',{name:'Schließen',exact:true}).click();
+  await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
+  await ranking.getByRole('menuitem',{name:/In Ihrem Design/}).click();
+  const contact = page.getByRole('dialog',{name:'Kontakt aufnehmen'});
+  await expect(contact).toBeVisible();
+  await expect(contact.getByRole('textbox',{name:'Nachricht',exact:true})).toHaveValue(/Logo.*Farben/);
+  await expect(page).toHaveURL(originalUrl);
+  await contact.getByRole('button',{name:'Schließen',exact:true}).click();
   const annualHelp=page.locator('#atlas-data').getByRole('button',{name:'Informationen zu Zubau pro Jahr'});
   await annualHelp.scrollIntoViewIfNeeded();
   await annualHelp.hover();
@@ -186,7 +200,7 @@ test('district basics show complete monthly totals and working comparisons',asyn
     await page.screenshot({path:`scratch/landkreis/basics-${width}.png`});
   }
   await basics.getByRole('button',{name:'Kennzahlen: Erklärung'}).click();
-  await expect(page.getByRole('tooltip')).toContainText('Vollständige Summe aller Gemeinden');
+  await expect(page.getByRole('tooltip')).toContainText('Vollständige Summe aller Teilgebiete');
 });
 
 test('district energy widgets retain complete periods and fit mobile',async({page})=>{
@@ -231,7 +245,7 @@ test('district chart proportions and source footer remain responsive',async({pag
   await art.scrollIntoViewIfNeeded();
   await expect.poll(()=>art.evaluate(e=>!!e.shadowRoot?.querySelector('svg'))).toBe(true);
   const footer=page.locator('[data-page-footer]');
-  expect(await footer.evaluate(e=>Math.abs(e.getBoundingClientRect().top-document.querySelector('main')!.getBoundingClientRect().bottom))).toBeLessThan(1);
+  expect(await footer.evaluate(e=>Math.abs(e.getBoundingClientRect().top-document.querySelector('.solar-page')!.getBoundingClientRect().bottom))).toBeLessThan(1);
   expect(await footer.locator('.sc-data-sources').evaluate(e=>e.previousElementSibling?.classList.contains('sc-trust'))).toBe(true);
   await expect(page.locator('[data-sc-fuss]:visible')).toHaveCount(1);
   await page.setViewportSize({width:451,height:793});
@@ -257,4 +271,28 @@ test('without WebGL the district map falls back to the drawn map with every muni
   const regions=await fallback.locator('path[data-region]').count();
   expect(regions).toBeGreaterThanOrEqual(52); // Landkreis Würzburg: 52 municipalities plus context areas
   await expect(page.locator('[data-region-scene]')).toBeHidden();
+});
+
+test('video dialog distinguishes queued, rendering and downloadable without requiring email',async({page})=>{
+  let status: 'queued'|'rendering'|'done'='queued';
+  await page.route('**/api/video-export/berechtigung',r=>r.fulfill({json:{direct:true}}));
+  await page.route('**/api/video-export/betreiber*',r=>r.fulfill({status:r.request().method()==='POST'?202:200,json:r.request().method()==='POST'?{jobId:'test-video'}:{status,progress:36,...(status==='done'?{downloadUrl:'/test-video.mp4'}:{})}}));
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const ranking=page.locator('#atlas-ranking');
+  await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
+  await ranking.getByRole('menuitem',{name:/Video herunterladen/}).click();
+  const dialog=page.getByRole('dialog',{name:'Video herunterladen'});
+  await dialog.getByRole('button',{name:'Video erstellen',exact:true}).click();
+  await expect(dialog.getByRole('status')).toHaveText('Wartet auf Start');
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0);
+  await expect(dialog).toContainText('erscheint hier der Downloadbutton');
+  await expect(dialog.getByText('Sie können dieses Fenster schließen. Wir schicken Ihnen den Downloadlink automatisch per E-Mail.')).toBeVisible();
+  await expect(dialog.getByRole('textbox')).toHaveCount(0);
+  await expect(dialog.getByRole('button',{name:'Downloadlink zusätzlich per E-Mail'})).toHaveCount(0);
+  await page.screenshot({path:test.info().outputPath('video-automatic-mail.png')});
+  status='rendering';
+  await expect(dialog.getByRole('progressbar')).toHaveAttribute('value','36',{timeout:10000});
+  status='done';
+  await expect(dialog.getByRole('link',{name:'Video herunterladen',exact:true})).toHaveAttribute('href','/test-video.mp4',{timeout:10000});
+  await expect(dialog.getByRole('progressbar')).toHaveCount(0);
 });

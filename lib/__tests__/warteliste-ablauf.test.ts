@@ -1,0 +1,23 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { NextRequest } from 'next/server';
+const mocks = vi.hoisted(() => ({ enter:vi.fn(), receipt:vi.fn(), release:vi.fn(), send:vi.fn(), confirm:vi.fn(), unsubscribe:vi.fn() }));
+vi.mock('../warteliste',()=>({wartelisteEintragen:mocks.enter,wartelisteBelegSetzen:mocks.receipt,wartelisteVersandFehlgeschlagen:mocks.release,wartelisteBestaetigen:mocks.confirm,wartelisteAbmelden:mocks.unsubscribe}));
+vi.mock('../abo-versand',()=>({sendeAboMail:mocks.send}));
+import {POST as signup} from '../../app/api/warteliste/anmelden/route';
+import {GET as confirmGet,POST as confirmPost} from '../../app/warteliste/bestaetigen/route';
+import {GET as unsubscribeGet,POST as unsubscribePost} from '../../app/warteliste/abmelden/route';
+import {wartelisteBestaetigenLink,wartelisteAbmeldeLink} from '../warteliste-links';
+const id='0f8fad5b-d9cb-469f-a165-70867728950e'; let n=0;
+const req=(consent='electric-car-v1')=>new NextRequest('https://solar-check.io/api/warteliste/anmelden',{method:'POST',headers:{'content-type':'application/json','x-real-ip':`flow-${++n}`},body:JSON.stringify({email:'test@example.com',elapsedMs:3000,consent})});
+const post=(url:string)=>new NextRequest(url,{method:'POST',body:new URLSearchParams({t:new URL(url).searchParams.get('t')!})});
+beforeEach(()=>{vi.resetAllMocks();process.env.ABO_HMAC_SECRET='test-only-secret-with-enough-characters';mocks.enter.mockResolvedValue({art:'bestaetigung-noetig',eintrag:{id,liste:'elektroauto'}});mocks.send.mockResolvedValue({ok:true,beleg:'test-receipt'});});
+describe('Waitlist lifecycle and failures',()=>{
+ it.each([['electric-car-v1','Elektroauto-Check'],['offer-check-v2','Angebotscheck']])('sends the correct product for %s',async(consent,title)=>{expect((await signup(req(consent))).status).toBe(200);expect(mocks.send).toHaveBeenCalledWith(expect.objectContaining({subject:expect.stringContaining(title)}));expect(mocks.receipt).toHaveBeenCalledWith(id,'test-receipt');});
+ it('does not send when already subscribed or inside resend window',async()=>{mocks.enter.mockResolvedValue({art:'still'});expect((await signup(req())).status).toBe(200);expect(mocks.send).not.toHaveBeenCalled();});
+ it('reports send failure, releases retry lock and succeeds on retry',async()=>{mocks.send.mockResolvedValueOnce({ok:false,fehler:'test failure'});expect((await signup(req())).status).toBe(503);expect(mocks.release).toHaveBeenCalledWith(id);expect((await signup(req())).status).toBe(200);});
+ it('does not claim success without storage',async()=>{mocks.enter.mockResolvedValue({art:'keine-db'});expect((await signup(req())).status).toBe(503);expect(mocks.send).not.toHaveBeenCalled();});
+ it('mail scanner GET requests do not confirm or unsubscribe',async()=>{await confirmGet(new NextRequest(wartelisteBestaetigenLink('https://solar-check.io',id,Date.now())));unsubscribeGet(new NextRequest(wartelisteAbmeldeLink('https://solar-check.io',id)));expect(mocks.confirm).not.toHaveBeenCalled();expect(mocks.unsubscribe).not.toHaveBeenCalled();});
+ it('expired confirmation does not touch the record',async()=>{const r=await confirmPost(post(wartelisteBestaetigenLink('https://solar-check.io',id,Date.now()-49*3600000)));expect(await r.text()).toContain('Der Link ist abgelaufen');expect(mocks.confirm).not.toHaveBeenCalled();});
+ it('unsubscribe storage failure offers retry instead of false success',async()=>{mocks.unsubscribe.mockRejectedValue(new Error('database unavailable'));const r=await unsubscribePost(post(wartelisteAbmeldeLink('https://solar-check.io',id)));const html=await r.text();expect(html).toContain('Noch einmal versuchen');expect(html).not.toContain('<h1>Ausgetragen</h1>');});
+ it('confirmation of an unsubscribed entry does not promise a subscription',async()=>{mocks.confirm.mockResolvedValue({ok:true,eintrag:{id,liste:'elektroauto',status:'abgemeldet'}});expect(await (await confirmPost(post(wartelisteBestaetigenLink('https://solar-check.io',id,Date.now())))).text()).toContain('Du hast dich ausgetragen');});
+});

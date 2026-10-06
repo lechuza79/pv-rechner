@@ -1,4 +1,6 @@
 import "server-only";
+import { FAQ_CSS } from "./faq-design";
+import { BEV_TEASER, BEV_TEASER_COPY } from "./bev-teaser";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homeFaq, pvSimulationFaq, type FaqEntry } from "./faq";
@@ -9,6 +11,7 @@ import { standSeite } from "./stand";
 import { liveSatz } from "./stand-format";
 import { siteFussHtml } from "./site-fuss";
 import SEKTIONEN from "./startseite-sektionen.json";
+import { tokens } from "./theme";
 
 /**
  * The redesigned homepage and PV simulation, served as the approved documents.
@@ -48,6 +51,14 @@ export const ANALYTICS_SRC = "/_vercel/insights/script.js";
 
 export const ANALYTICS_HTML =
   `<script>${ANALYTICS_SETUP}</script>` + `<script defer src="${ANALYTICS_SRC}"></script>`;
+
+/**
+ * The one token of the site's type scale the shared menu reads. React pages
+ * carry the whole theme; these standalone pages did not, so the menu fell back
+ * to a larger size here than on every other page. From the theme, never typed.
+ */
+export const NAV_TOKENS_CSS = `:root{--font-size-body:${tokens["--font-size-body"]}}`;
+export const NAV_TOKENS_HTML = `<style>${NAV_TOKENS_CSS}</style>`;
 
 export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -94,6 +105,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
   return [
+    NAV_TOKENS_HTML,
     `<title>${esc(s.titel)}</title>`,
     `<meta name="description" content="${esc(s.beschreibung)}">`,
     `<meta name="keywords" content="${esc(KEYWORDS)}">`,
@@ -130,31 +142,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
  * FAQ using shared homepage typography and the dark editorial surface:
  * type roles. Plain <details>, no script — readable before anything loads.
  */
-const FAQ_CSS = `
-.sc-faq{background:#08191c;color:#e8eee9;padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
-.sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
-.sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-secondary-label-size,13px);line-height:1.5;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a7bcbb;margin:0 0 16px}
-.sc-faq details{border-bottom:1px solid #aec4bd30}
-.sc-faq details:last-child{border-bottom:0}
-.sc-faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:92px;box-sizing:border-box;padding:28px 0;font-size:var(--sc-type-title-size,20px);line-height:1.4;font-weight:500;transition:color 180ms ease}
-.sc-faq summary:hover{color:#d4ff24}
-.sc-faq summary::-webkit-details-marker{display:none}
-.sc-faq summary::after{content:"";width:10px;height:10px;margin-right:4px;flex:none;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 240ms ease}
-.sc-faq details[open]:not([data-closing]) summary::after{transform:rotate(225deg)}
-.sc-faq summary:focus-visible{outline:2px solid #d4ff24;outline-offset:4px}
-.sc-faq-answer{overflow:hidden}
-.sc-faq p{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;margin:0 0 24px;max-width:680px}
-.sc-faq a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.sc-faq .sc-faq-cta{display:inline-block;margin:0 0 28px;font-size:var(--sc-type-action-size,14px);font-weight:500}
-@media(prefers-reduced-motion:reduce){.sc-faq summary,.sc-faq summary::after{transition:none}}
-.sc-live{background:var(--sc-surface-light);padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
-.sc-live-wrap{max-width:var(--sc-layout-widget,760px);margin:0 auto}
-.sc-live h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-compact-size,clamp(26px,3vw,38px));line-height:1.25;margin:0 0 12px}
-.sc-live p{font-size:var(--sc-type-body-size,16px);line-height:1.6;margin:0 0 24px}
-.sc-live iframe{display:block;width:100%;border:0;min-height:560px}
-.sc-live .sc-stand{font-size:var(--sc-type-eyebrow-size);line-height:1.7;margin:32px 0 0;padding:24px 0 0;border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent)}
-.sc-live .sc-stand a{color:inherit}
-`;
+
 
 function antwortHtml(f: FaqEntry, aktuellerPfad: string): string {
   let text = esc(f.a);
@@ -255,9 +243,7 @@ function statischeSektionen(): string {
       (k) =>
         `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
         `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
-        // The waitlist is a dialog, so the script builds a button on the last
-        // card and there is no page to link to. Without script the card states
-        // the fact and offers no action — a link that leads nowhere is worse.
+        // Render the links supplied by the imported scene sections.
         (k.links.length ? `<div class="sc-statisch-aktionen">${k.links.map(pfeil).join("")}</div>` : "") +
         `</li>`,
     )
@@ -275,7 +261,7 @@ function statischeSektionen(): string {
     `<p class="sc-statisch-kicker">${esc(d.einleitung.kicker)}</p>` +
     `<h2 id="feature-title">${esc(d.einleitung.titel)}</h2>` +
     `<p>${esc(d.einleitung.text)}</p>` +
-    `<ul class="sc-statisch-karten">${karten}</ul>` +
+    `<ul class="sc-statisch-karten">${karten}<li class="sc-statisch-karte"><p class="sc-statisch-kennung">06 / ELEKTROAUTO-CHECK · Demnächst</p><h3>${esc(BEV_TEASER_COPY.titel)}</h3><p>${esc(BEV_TEASER_COPY.text)}</p><div class="sc-statisch-aktionen">${pfeil({text:"Mehr Info",href:"/elektroauto-check"})}</div></li></ul>` +
     `<section class="sc-statisch-block" aria-labelledby="sc-statisch-atlas">` +
     `<p class="sc-statisch-kicker">${esc(d.atlas.kicker)}</p>` +
     `<h2 id="sc-statisch-atlas">${esc(d.atlas.titel)}</h2>` +
@@ -327,5 +313,5 @@ export function neonSeiteHtml(seite: NeonSeite): string {
   return vorlage
     .replace("<!--SC:KOPF-->", kopf(seite, faq))
     .replace("<!--SC:STATISCH-->", seite === "startseite" ? statischeSektionen() : "")
-    .replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
+    .replace("<!--SC:VOR-FUSS-->", (seite === "startseite" ? `<template id="sc-bev-teaser">${BEV_TEASER}</template><script src="/homepage-study/bev-v1/register.js" defer></script><script src="/homepage-study/bev-teaser.js" defer></script>` : "") + vorFuss(seite, faq));
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { resolve } from "path";
 import { load } from "cheerio";
@@ -165,50 +165,76 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
 // Ratgeber unter seiner alten Adresse, waehrend die Fusszeile daneben schon die
 // neue trug. Zwei Adressen, ein Ziel, derselbe Ankertext.
 describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
-  const config = readFileSync(resolve(__dirname, "../../next.config.js"), "utf8");
-  /** Alle Quellpfade aus dem redirects()-Block von next.config.js — das sind
-   *  die Adressen, die es nicht mehr gibt.
+  /** Alte Adresse → Endadresse, aus next.config.js gelesen — dieselbe Tabelle,
+   *  mit der die Übernahme des Design-Pakets Links umschreibt
+   *  (scripts/endadressen.mjs). Nur bedingungslose, exakte Weiterleitungen:
+   *  Der Wurzelpfad steht dort mit einer `has`-Bedingung und ist keine
+   *  verschwundene Adresse; `headers()` und `rewrites()` benutzen dasselbe
+   *  Feld `source`, meinen aber Seiten, die es sehr wohl gibt.
    *
-   *  NUR dieser Block: `headers()` und `rewrites()` benutzen dasselbe Feld
-   *  `source`, meinen aber Seiten, die es sehr wohl gibt (/dashboard, /plz.json).
-   *  Ein Test, der die mitzaehlt, meldet dreizehn Fehlalarme und wird dann
-   *  abgeschaltet statt gelesen. */
-  const redirectBlock = config.slice(config.indexOf("async redirects()"));
-  const weitergeleitet = [...redirectBlock.matchAll(/source:\s*"(\/[^"*:]+)"/g)]
-    .map(m => m[1])
-    // Der Wurzelpfad steht dort mit einer `has`-Bedingung (nur mit Query-Param)
-    // und ist keine verschwundene Adresse.
-    .filter(pfad => pfad !== "/");
+   *  Bis 28.09.2026 las der Test die Quellen per Regex aus dem Dateitext und
+   *  verfehlte dabei die Einträge mit Anführungszeichen um den Schlüssel
+   *  (`"source": …`, der ganze Förder-Block) — und er prüfte nur doppelte
+   *  Anführungszeichen in .ts/.tsx. Drei Bausteine mit '/pv-bedarf-berechnen'
+   *  und der Werkzeug-Block der Startseite (JSON aus dem Design-Paket) lagen
+   *  deshalb außerhalb seines Blicks. */
+  let ziele: Map<string, string> = new Map();
+  let linkMuster: (alt: string) => RegExp = () => /$^/;
+  let alleLinkMuster: (alte: Iterable<string>) => RegExp = () => /$^/;
+  beforeAll(async () => {
+    const mod = await import("../../scripts/endadressen.mjs");
+    ziele = await mod.weiterleitungsZiele();
+    linkMuster = mod.linkMuster;
+    alleLinkMuster = mod.alleLinkMuster;
+  });
 
-  it("findet die Weiterleitungen ueberhaupt", () => {
-    expect(weitergeleitet.length).toBeGreaterThan(10);
+  it("findet die Weiterleitungen ueberhaupt — auch den Förder-Block", () => {
+    expect(ziele.size).toBeGreaterThan(250);
+    expect(ziele.get("/photovoltaik-foerderung/verl")).toBe("/photovoltaik-foerderung/nordrhein-westfalen/verl");
+    expect(ziele.has("/")).toBe(false);
   });
 
   // 20 Sekunden statt fünf — siehe analytics-ereignisse.test.ts: Diese Prüfung
   // liest den ganzen Quellbaum und wird unter paralleler Last langsam, ohne
   // dass am Code etwas falsch wäre.
-  it("keine Seite und kein Baustein verlinkt eine weitergeleitete Adresse", () => {
-    const wurzeln = [resolve(__dirname, "../../app"), resolve(__dirname, "../../components"), resolve(__dirname, "../../lib")];
+  it("keine Seite, kein Baustein und kein ausgeliefertes Paket verlinkt eine weitergeleitete Adresse", () => {
+    const wurzel = resolve(__dirname, "../..");
+    // Quelltext plus das, was aus dem Design-Paket unverändert ausgeliefert
+    // wird: Startseiten-Bündel, Seitenvorlagen, gemeinsames Menü und Fuß.
+    const ordner = ["app", "components", "lib", "public/dynamic-hero/dist", "public/shared-nav", "public/shared-footer", "public/homepage-study"]
+      .map((o) => resolve(wurzel, o))
+      .filter((o) => existsSync(o));
+    const alle = alleLinkMuster(ziele.keys());
     const treffer: string[] = [];
-    const suchen = (ordner: string) => {
-      for (const eintrag of readdirSync(ordner, { withFileTypes: true })) {
-        const voll = resolve(ordner, eintrag.name);
+    const suchen = (dir: string) => {
+      for (const eintrag of readdirSync(dir, { withFileTypes: true })) {
+        const voll = resolve(dir, eintrag.name);
         if (eintrag.isDirectory()) {
           if (eintrag.name === "node_modules" || eintrag.name === "__tests__") continue;
           suchen(voll);
-        } else if (/\.tsx?$/.test(eintrag.name)) {
+        } else if (/\.(tsx?|json|m?js|html)$/.test(eintrag.name)) {
           const inhalt = readFileSync(voll, "utf8");
-          for (const alt of weitergeleitet) {
-            // Nur exakte Adressen als String-Literal — ein laengerer Pfad, der
-            // zufaellig damit beginnt, ist eine andere Seite.
-            if (inhalt.includes(`"${alt}"`)) treffer.push(`${eintrag.name}: ${alt}`);
+          for (const alt of new Set([...inhalt.matchAll(alle)].map((x) => x[2]))) {
+            treffer.push(`${voll.slice(wurzel.length + 1)}: ${alt}`);
           }
         }
       }
     };
-    wurzeln.forEach(suchen);
+    ordner.forEach(suchen);
     expect(treffer, `interne Links auf weitergeleitete Adressen: ${treffer.join(", ")}`).toEqual([]);
   }, 20_000);
+
+  it("das Muster trifft Links in allen drei Schreibweisen, aber keine längeren Pfade", () => {
+    const m = linkMuster("/pv-bedarf-berechnen");
+    for (const ja of ['href="/pv-bedarf-berechnen"', "['x','/pv-bedarf-berechnen']", 'href="${ie}/pv-bedarf-berechnen"', '"/pv-bedarf-berechnen?haus=1"']) {
+      m.lastIndex = 0;
+      expect(m.test(ja), ja).toBe(true);
+    }
+    for (const nein of ['"/pv-bedarf-berechnen/x"', "Kommentar `/pv-bedarf-berechnen` im Text"]) {
+      m.lastIndex = 0;
+      expect(m.test(nein), nein).toBe(false);
+    }
+  });
 });
 
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {

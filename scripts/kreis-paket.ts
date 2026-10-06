@@ -136,7 +136,7 @@ async function main() {
   const rows: { region_id: string; name: string; level: string; bezeichnung: string | null; parent_region_id: string | null }[] = [];
   for (let from = 0; ; from += 1000) {
     const page = await mitWiederholung("mastr_regions", async () => {
-      const r = await fetch(`${url}/rest/v1/mastr_regions?select=region_id,name,level,bezeichnung,parent_region_id&level=in.(landkreis,gemeinde)&order=region_id`, {
+      const r = await fetch(`${url}/rest/v1/mastr_regions?select=region_id,name,level,bezeichnung,parent_region_id&level=in.(de,bundesland,landkreis,gemeinde)&order=region_id`, {
         headers: { ...kopf, Range: `${from}-${from + 999}` },
       });
       if (!r.ok) throw new Error(`mastr_regions: HTTP ${r.status}`);
@@ -146,6 +146,11 @@ async function main() {
     if (page.length < 1000) break;
   }
   const districts = districtsFromRegister(rows);
+  // Bundesländer and Deutschland, built in the same generation (lib/region-package.ts).
+  const { regionsFromRegister } = await import("../lib/region-package");
+  const { regions, skipped } = regionsFromRegister(rows, districts);
+  if (regions.length !== 17) throw new Error(`Register nennt ${regions.length} statt 16 Länder + Deutschland — Abbruch`);
+  if (skipped.length) console.log(`Nicht summiert (aufgelöste Kreise, gemeindefreie Gebiete; werden auf Anlagenfreiheit geprüft): ${skipped.join(" ")}`);
   const townTags = new Map(
     (await store.listEntries(""))
       .filter((e) => /^\d{8}\.json\.br$/.test(e.name) && e.metadata?.eTag)
@@ -161,6 +166,23 @@ async function main() {
   });
   if (!meta?.source_url) throw new Error("Registerstand der Datenbank nicht lesbar");
   const registerEdition = `${meta.source_url}|${meta.imported_at}`;
+
+  // Ranking cells (lib/ranking-package.ts): read with the page's own reader and
+  // stamped with the import date the page compares against — the same row the
+  // page reads (lib/mastr-data.ts, mastr_meta id 1). If the import changes while
+  // the run reads, the run stops: cells of one import under the date of another
+  // would pass the page's check.
+  const { loadRankingCells } = await import("../lib/atlas");
+  const { encodeRankingCells } = await import("../lib/ranking-package");
+  const importDate = () =>
+    mitWiederholung("mastr_meta id 1", async () => {
+      const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, { headers: kopf });
+      if (!r.ok) throw new Error(`mastr_meta: HTTP ${r.status}`);
+      const at = ((await r.json()) as { imported_at: string | null }[])[0]?.imported_at;
+      if (typeof at !== "string" || at.length < 10) throw new Error("Importdatum der Datenbank nicht lesbar");
+      return at.slice(0, 10);
+    });
+  const rankingStand = await importDate();
 
   const t0 = Date.now();
   const result = await refreshDistricts({
@@ -178,6 +200,28 @@ async function main() {
     dryRun: flag("trocken"),
     log: (l) => console.log(l),
     lock: flag("trocken") ? undefined : lock,
+    regions,
+    // Empty only if the register has no row at all below the key (any energy
+    // source, any year): a town key matches itself, a Kreis key all its towns.
+    confirmEmpty: async (ids) => {
+      // One existence query per key (limit 1): a shared row limit across keys
+      // could fill up with one key's rows and hide another's.
+      const empty = new Set<string>();
+      for (const id of ids) {
+        const rows = await mitWiederholung(`leer ${id}`, async () => {
+          const r = await fetch(`${url}/rest/v1/mastr_aggregates_gem?select=region_id&region_id=like.${id}*&limit=1`, { headers: kopf });
+          if (!r.ok) throw new Error(`mastr_aggregates_gem: HTTP ${r.status}`);
+          return (await r.json()) as unknown[];
+        });
+        if (!rows.length) empty.add(id);
+      }
+      return empty;
+    },
+    ranking: async (regionId, level) => {
+      const cells = await mitWiederholung(`Rangliste ${regionId}`, () => loadRankingCells({ region_id: regionId, level } as never));
+      if ((await importDate()) !== rankingStand) throw new Error(`Registerimport hat während des Laufs gewechselt (${regionId}) — Abbruch, die bisherige Generation bleibt`);
+      return encodeRankingCells(cells, rankingStand);
+    },
   });
   const dauer = ((Date.now() - t0) / 1000).toFixed(0);
 
@@ -190,9 +234,9 @@ async function main() {
   } else if (result.status === "aktuell") zeile = `Alle ${result.districts} Kreispakete aktuell (Generation ${result.generation}); nichts neu gebaut.`;
   else if (result.status === "plan") {
     const why = result.rebuild.reduce<Record<string, number>>((a, r) => ({ ...a, [r.why]: (a[r.why] ?? 0) + 1 }), {});
-    zeile = `Plan: ${result.rebuild.length} Kreise bauen (${Object.entries(why).map(([k, v]) => `${k} ${v}`).join(", ")}), ${result.drop.length} entfallen. Nichts geschrieben.`;
+    zeile = `Plan: ${result.rebuild.length} Kreise bauen (${Object.entries(why).map(([k, v]) => `${k} ${v}`).join(", ")}), ${result.drop.length} entfallen, Länder/Bund ${result.regions ? "neu bauen" : "aktuell"}. Nichts geschrieben.`;
   } else {
-    zeile = `Generation ${result.generation} veröffentlicht (vorher ${result.previous ?? "keine"}): ${result.rebuilt} gebaut, ${result.kept} übernommen, ${result.dropped.length} entfallen, ${result.missingTowns} Gemeinden ohne Paket, ${(result.bytes / 1e6).toFixed(1)} MB, ${dauer} s.`;
+    zeile = `Generation ${result.generation} veröffentlicht (vorher ${result.previous ?? "keine"}): ${result.rebuilt} gebaut, ${result.kept} übernommen, ${result.dropped.length} entfallen, ${result.regionsRebuilt} Länder/Bund-Pakete, ${result.missingTowns} Gemeinden ohne Paket, ${(result.bytes / 1e6).toFixed(1)} MB, ${dauer} s.`;
     for (const w of result.warnings) console.warn(`⚠ ${w}`);
     if (!flag("ohne-invalidierung")) {
       const base = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";

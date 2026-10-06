@@ -50,7 +50,16 @@ Dazu ein Ziel: in welche Spalten die Funde geschrieben werden.
 3. **30 zufällige Treffer von Hand gegenlesen.** Jeder Bestand hat eigene
    Fehlerklassen: bei Gemeinden waren es Ratsmitglieder, Hausmeisterdienste und
    städtische Gesellschaften; bei Betrieben werden es andere sein.
-4. **Jede gefundene Fehlerklasse wird eine Regel mit Test** — nie eine
+4. **Die Lücken genauso gegenlesen wie die Treffer — BLOCKER (30.09.2026).**
+   Zehn Einträge ohne Kontakt von Hand öffnen und nachsehen, wo die Adresse
+   wirklich steht. Eine Abdeckungszahl wird erst gemeldet, wenn diese Probe
+   nichts Neues mehr bringt. Bei den Landkreisen wurde dreimal eine Zahl
+   gemeldet (169, 178, 182), und jedes Mal fand der Betreiber, dass mehr geht;
+   jede der drei Ursachen hätte eine Handprobe der Lücken in Minuten gezeigt:
+   Maildomain des Landes (Bayern), Pressestelle drei Ebenen tief (Vorsuche über
+   Sitemap und Website-Suche), Postfach nach dem Amt benannt, aber ohne
+   Rollentext. Ergebnis danach 214 statt 169 von 294.
+5. **Jede gefundene Fehlerklasse wird eine Regel mit Test** — nie eine
    Handkorrektur an einzelnen Zeilen.
 5. **Vor jeder Verwendung** die Belegseite noch einmal abrufen.
 
@@ -62,3 +71,48 @@ Dazu ein Ziel: in welche Spalten die Funde geschrieben werden.
 - Ein bekannter, bestätigter Kontakt verschwindet nicht, weil ein neuer gefunden
   wurde.
 - „Nichts gefunden" und „noch nicht gesucht" bleiben unterscheidbar.
+
+## Bestände, die schon laufen
+
+| Bestand | Skript | Was anders ist als bei den Gemeinden |
+|---|---|---|
+| Gemeinden | `scripts/contact-municipal-v2.ts` | der Ausgangsfall |
+| Fachbetriebe | `scripts/fachbetriebe-kontakte.ts` | Gratis-Postfächer im Impressum zählen, verwandte Domains |
+| Versorger | `scripts/versorger-kontakte.ts` | nur Presse, Kundenservice ist fremde Einheit |
+| Presse | `scripts/presse-kontakte.ts` | Impressum zuerst, Pflichtangabe nach § 18 MStV |
+| Landkreise | `scripts/kreise-kontakte.ts` | siehe unten |
+
+### Landkreise (30.09.2026)
+
+Die Kreise sind ein Sonderfall der Kommunen: dasselbe Rollenwerk
+(Klimaschutz/Energie und Presse), dieselben Spalten in der Kontaktliste. Drei
+Unterschiede, jeder aus einer Messung:
+
+- **Die Zuständigkeit ist umgedreht.** Für eine Gemeinde ist eine Kreis-Domain
+  eine fremde Behörde; für einen Kreis ist sie die eigene, und die Gemeinden
+  auf seinem Portal sind die fremden.
+- **Eine Landesdomain als Maildomain.** Bayerische Landratsämter schreiben von
+  `lra-xx.bayern.de`, ihre Website heißt `landkreis-xx.de`. Die Maschine
+  vergleicht registrierbare Domains, sieht also nur `bayern.de`. Zugelassen
+  wird `bayern.de` im Bestand, danach eingeengt auf Landratsamts-Hosts — ein
+  Ministerium oder Wasserwirtschaftsamt unter derselben Endung ist nie der
+  Kreis. Vorher hatte die Hälfte Bayerns keinen Kontakt. **Wer ein Land mit
+  gemeinsamer Verwaltungsdomain erschließt (Bayern, Österreich `gv.at`, die
+  Schweiz `admin.ch`), braucht dieselbe Einengung** — die Maschine selbst
+  unterscheidet Hosts unter einer Landesdomain nicht.
+- **Die Gebäudeverwaltung ist keine Klimaschutzstelle.** Hochbau und
+  Gebäudemanagement stehen auf den Klimaschutz-Seiten der Kreise (eigene
+  Liegenschaften) und wurden als Energie gelesen; das Vorzimmer des Landrats
+  als Presse. Beides in 2 von 30 handgelesenen Treffern.
+
+Seitenbudget 30 statt 15: Kreisportale sind groß, mit 15 Seiten blieben
+Klimaschutzseiten ungelesen, die in der Linkliste schon standen.
+
+## Auf andere Länder übertragen
+
+Übertragbar ohne Änderung: Ablauf, Belegpflicht, Zwischenspeicher, Nachprüfung
+der Belegseite, Tauglichkeit der Postfächer. Je Land neu: das Rollenwerk (es
+trägt deutsche Wörter — „Klimaschutzmanager", „Pressestelle"), die
+Namensvarianten der Domains und, wo es eine gibt, die Einengung einer
+gemeinsamen Verwaltungsdomain. Das Rollenwerk ist die Stelle, an der ein
+neues Land Arbeit kostet; alles andere ist Konfiguration.

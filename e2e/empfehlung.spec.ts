@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { akkordeonWaehlen, akkordeonOeffnen, waehle, weiterKlicken } from "./flows";
 
 // Recommendation flow smoke test.
-// Three steps: Haus + Dach → Haushalt → Großverbraucher → Empfehlung-Zwischenseite.
+// Three steps: Haus + Dach → Haushalt → Großverbraucher → Ergebnis.
 // Confirms the algorithm runs end-to-end without state-passing breakage.
 //
 // Geklickt wird über die geteilten Helfer (e2e/flows.ts), NICHT mit einem
@@ -30,15 +30,19 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
 
   // Step 1: Haushalt — 3-4 persons + teils zuhause
   await waehle(page, "3–4 Personen");
+  await akkordeonOeffnen(page, "Nutzungsprofil");
   await waehle(page, "Teils zuhause");
   await weiterKlicken(page);
 
-  // Step 2: Großverbraucher — keep WP/EA at default (nein), proceed.
+  // Explicitly confirm that no additional consumers are present.
+  await akkordeonWaehlen(page, "Wärmepumpe", 0);
+  await akkordeonWaehlen(page, "Elektroauto", 0);
+  await akkordeonWaehlen(page, "Klimaanlage", 0);
   await weiterKlicken(page);
 
-  // The recommendation lives at ?view=ergebnis — wait for the state change
+  // The flow now leads directly into the result — wait for the state change
   // rather than for text, so a failure says WHICH step broke.
-  await page.waitForURL(/view=ergebnis/, { timeout: 10_000 });
+  await page.waitForURL(/flow=emp/, { timeout: 10_000 });
 
   // Recommendation page: must show kWp suggestion + reasoning
   // Visible matches only: the site menu carries the same words in its closed flyouts.
@@ -102,7 +106,7 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
     // Die Nord-Ausrichtung ist verworfen und die Frage wieder offen — sonst
     // rechnete der Flow still mit dem Bestfall weiter.
     await expect(page).not.toHaveURL(/az=nord/);
-    await expect(page.getByRole("button", { name: /^Süd\b/ })).toBeVisible();
+    await expect(page).toHaveURL(/az=sued/);
   });
 });
 
@@ -121,10 +125,40 @@ test("ohne PLZ steht der Dach-Abschlag trotzdem da", async ({ page }) => {
   await akkordeonWaehlen(page, DACHFORM, SATTELDACH);
   await akkordeonWaehlen(page, "Ausrichtung", 2); // Ost / West
 
+  await akkordeonOeffnen(page, "Ausrichtung");
   const hinweis = page.getByText(/Gerechnet wird mit .* kWh je kWp/);
   await expect(hinweis).toBeVisible();
   // „im Bundesmittel", nicht „für deinen Standort" — ohne PLZ kennen wir keinen.
   await expect(hinweis).toContainText("im Bundesmittel");
   // Und der Abschlag ist beziffert, statt still zu verschwinden.
   await expect(hinweis).toContainText(/\d+ % des Optimums/);
+});
+
+test("unknown orientation uses the shared skip path and preserves the roof choice", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto("/photovoltaik-rechner");
+  await akkordeonWaehlen(page, "Haustyp", 0);
+  await expect(page.locator('img[src*="roof-gable.webp"]')).toBeVisible();
+  await expect(page.getByRole("button", { name: "Weiß ich nicht — überspringen", exact: true })).toHaveCount(0);
+  await akkordeonWaehlen(page, "Dachform", 2);
+  await akkordeonOeffnen(page, "Dachform");
+  await page.getByText("Dachfläche und Neigung anpassen", {exact:true}).click();
+  await page.getByRole("button", { name: "20° Flach", exact: true }).click();
+  await page.locator('[data-flow-akkordeon-offen="Ausrichtung"]').getByRole("button", { name: "Weiß ich nicht — überspringen", exact: true }).click();
+  await expect(page.locator('[data-flow-akkordeon-offen="Ausrichtung"]')).toBeVisible();
+  await weiterKlicken(page);
+  await expect(page.getByRole("heading", { name: "Haushalt", exact: true })).toBeVisible();
+  await expect(page.getByText(/Für die unbekannte Ausrichtung rechnen wir mit Süd/)).toBeVisible();
+  await expect(page).toHaveURL(/dach=walm/);
+  await expect(page).toHaveURL(/ng=20/);
+  await waehle(page, "1 Person");
+  await akkordeonOeffnen(page, "Nutzungsprofil");
+  await waehle(page, "Tagsüber weg");
+  await weiterKlicken(page);
+  await akkordeonWaehlen(page, "Wärmepumpe", 0);
+  await akkordeonWaehlen(page, "Elektroauto", 0);
+  await akkordeonWaehlen(page, "Klimaanlage", 0);
+  await weiterKlicken(page);
+  await expect(page).toHaveURL(/flow=emp/);
+  await expect(page.getByText("Deine PV-Anlage amortisiert sich", { exact: false }).first()).toBeVisible();
 });

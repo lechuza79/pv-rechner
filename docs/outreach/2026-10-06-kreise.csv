@@ -1,0 +1,443 @@
+ags;name;ebene;kreis;bundesland;stand
+05166;Kreis Viersen;kreis;Kreis Viersen;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05334;Städteregion Aachen;kreis;Städteregion Aachen;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05366;Kreis Euskirchen;kreis;Kreis Euskirchen;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05382;Kreis Rhein-Sieg-Kreis;kreis;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05554;Kreis Borken;kreis;Kreis Borken;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05566;Kreis Steinfurt;kreis;Kreis Steinfurt;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+05754;Kreis Gütersloh;kreis;Kreis Gütersloh;Nordrhein-Westfalen;Kreisverwaltung, Brief offen
+12060;Landkreis Barnim;kreis;Landkreis Barnim;Brandenburg;Kreisverwaltung, Brief offen
+12061;Landkreis Dahme-Spreewald;kreis;Landkreis Dahme-Spreewald;Brandenburg;Kreisverwaltung, Brief offen
+12063;Landkreis Havelland;kreis;Landkreis Havelland;Brandenburg;Kreisverwaltung, Brief offen
+12064;Landkreis Märkisch-Oderland;kreis;Landkreis Märkisch-Oderland;Brandenburg;Kreisverwaltung, Brief offen
+12069;Landkreis Potsdam-Mittelmark;kreis;Landkreis Potsdam-Mittelmark;Brandenburg;Kreisverwaltung, Brief offen
+12071;Landkreis Spree-Neiße;kreis;Landkreis Spree-Neiße;Brandenburg;Kreisverwaltung, Brief offen
+15081;Landkreis Altmarkkreis Salzwedel;kreis;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15083;Landkreis Börde;kreis;Landkreis Börde;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15085;Landkreis Harz;kreis;Landkreis Harz;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15087;Landkreis Mansfeld-Südharz;kreis;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15088;Landkreis Saalekreis;kreis;Landkreis Saalekreis;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15089;Landkreis Salzlandkreis;kreis;Landkreis Salzlandkreis;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+15090;Landkreis Stendal;kreis;Landkreis Stendal;Sachsen-Anhalt;Kreisverwaltung, Brief offen
+05166004;Brüggen;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05166008;Grefrath;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05166012;Kempen;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05166016;Nettetal;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05166020;Niederkrüchten;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05166024;Schwalmtal;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05166028;Tönisvorst;gemeinde;Kreis Viersen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334002;Aachen;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334004;Alsdorf;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05334012;Eschweiler;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334016;Herzogenrath;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05334020;Monschau;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334024;Roetgen;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334028;Simmerath;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334032;Stolberg (Rhld.);gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05334036;Würselen;gemeinde;Städteregion Aachen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366008;Blankenheim;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366012;Dahlem;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366016;Euskirchen;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366020;Hellenthal;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366024;Kall;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366028;Mechernich;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366032;Nettersheim;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366036;Schleiden;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05366040;Weilerswist;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05366044;Zülpich;gemeinde;Kreis Euskirchen;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382004;Alfter;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382008;Bad Honnef;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382012;Bornheim;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382016;Eitorf;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382020;Hennef (Sieg);gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382028;Lohmar;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382032;Meckenheim;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05382036;Much;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382040;Neunkirchen-Seelscheid;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05382044;Niederkassel;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382048;Rheinbach;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382052;Ruppichteroth;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382056;Sankt Augustin;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382060;Siegburg;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382068;Troisdorf;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382072;Wachtberg;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05382076;Windeck;gemeinde;Kreis Rhein-Sieg-Kreis;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05554004;Ahaus;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554012;Borken;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05554016;Gescher;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554028;Heiden;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554032;Isselburg;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554036;Legden;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554040;Raesfeld;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554044;Reken;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554048;Rhede;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554052;Schöppingen;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554056;Stadtlohn;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05554060;Südlohn;gemeinde;Kreis Borken;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566004;Altenberge;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566012;Greven;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566020;Hopsten;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566024;Horstmar;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566028;Ibbenbüren;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566032;Ladbergen;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566036;Laer;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566040;Lengerich;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05566044;Lienen;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566048;Lotte;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566052;Metelen;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566060;Neuenkirchen;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566064;Nordwalde;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566068;Ochtrup;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566076;Rheine;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566080;Saerbeck;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566084;Steinfurt;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566088;Tecklenburg;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566092;Westerkappeln;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05566096;Wettringen;gemeinde;Kreis Steinfurt;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754004;Borgholzhausen;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754012;Halle (Westf.);gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05754016;Harsewinkel;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754020;Herzebrock-Clarholz;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754024;Langenberg;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754028;Rheda-Wiedenbrück;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Adresse wird geprüft
+05754032;Rietberg;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief morgen oder diese Woche
+05754036;Schloß Holte-Stukenbrock;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Adresse wird geprüft
+05754040;Steinhagen;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+05754048;Versmold;gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Adresse wird geprüft
+05754052;Werther (Westf.);gemeinde;Kreis Gütersloh;Nordrhein-Westfalen;Brief, Aufhänger noch offen
+12060005;Ahrensfelde;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060012;Althüttendorf;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060020;Bernau bei Berlin;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060024;Biesenthal;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060034;Breydin;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060036;Britz;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060045;Chorin;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060052;Eberswalde;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060068;Friedrichswalde;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060092;Hohenfinow;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060100;Joachimsthal;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060128;Liepe;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060149;Lunow-Stolzenhagen;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060154;Marienwerder;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060161;Melchow;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060172;Niederfinow;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060176;Oderberg;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060181;Panketal;gemeinde;Landkreis Barnim;Brandenburg;Brief morgen oder diese Woche
+12060185;Parsteinsee;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12060192;Rüdnitz;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060198;Schorfheide;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060269;Wandlitz;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060280;Werneuchen;gemeinde;Landkreis Barnim;Brandenburg;Brief, Aufhänger noch offen
+12060296;Ziethen;gemeinde;Landkreis Barnim;Brandenburg;Adresse wird geprüft
+12061005;Alt Zauche-Wußwerk/Stara Niwa-Wózwjerch;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061017;Bersteland;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061020;Bestensee;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061061;Byhleguhre-Byhlen/Beła Góra-Bělin;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief morgen oder diese Woche
+12061097;Drahnsdorf;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061112;Eichwalde;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061164;Golßen;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061192;Groß Köris;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief morgen oder diese Woche
+12061216;Halbe;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061217;Heidesee;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief morgen oder diese Woche
+12061219;Heideblick;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061224;Jamlitz;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061244;Kasel-Golzig;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief morgen oder diese Woche
+12061260;Königs Wusterhausen;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Adresse wird geprüft
+12061265;Krausnick-Groß Wasserburg;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061308;Lieberose;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061316;Lübben (Spreewald) / Lubin (Błota);gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061320;Luckau;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061328;Märkisch Buchholz;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Adresse wird geprüft
+12061329;Märkische Heide/Markojska Góla;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061332;Mittenwalde;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061344;Münchehofe;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Adresse wird geprüft
+12061352;Neu Zauche/Nowa Niwa;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061405;Rietzneuendorf-Staakow;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061428;Schlepzig/Słopišća;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061433;Schönefeld;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061435;Schönwald;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Windgemeinde
+12061444;Schulzendorf;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief morgen oder diese Woche
+12061448;Schwerin;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Adresse wird geprüft
+12061450;Schwielochsee/Gójacki Jazor;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Windgemeinde
+12061470;Spreewaldheide/Błośańska Góla;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061471;Steinreich;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061476;Straupitz (Spreewald)/Tšupc (Błota);gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061492;Teupitz;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Adresse wird geprüft
+12061510;Unterspreewald;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12061540;Wildau;gemeinde;Landkreis Dahme-Spreewald;Brandenburg;Brief, Aufhänger noch offen
+12063056;Dallgow-Döberitz;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063080;Falkensee;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063088;Friesack;gemeinde;Landkreis Havelland;Brandenburg;Brief morgen oder diese Woche
+12063094;Gollenberg;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063112;Großderschau;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063134;Havelaue;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063142;Wiesenaue;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063148;Ketzin/Havel;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063161;Kleßen-Görne;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063165;Kotzen;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063186;Märkisch Luch;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063189;Milower Land;gemeinde;Landkreis Havelland;Brandenburg;Brief morgen oder diese Woche
+12063202;Mühlenberge;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063208;Nauen;gemeinde;Landkreis Havelland;Brandenburg;Brief morgen oder diese Woche
+12063212;Nennhausen;gemeinde;Landkreis Havelland;Brandenburg;Brief morgen oder diese Woche
+12063228;Paulinenaue;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063240;Pessin;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063244;Premnitz;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063252;Rathenow;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063256;Retzow;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063260;Rhinow;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063273;Schönwalde-Glien;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063274;Seeblick;gemeinde;Landkreis Havelland;Brandenburg;Adresse wird geprüft
+12063293;Stechow-Ferchesar;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12063357;Wustermark;gemeinde;Landkreis Havelland;Brandenburg;Brief, Aufhänger noch offen
+12064009;Alt Tucheband;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064029;Altlandsberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064044;Bad Freienwalde (Oder);gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064053;Beiersdorf-Freudenberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064057;Bleyen-Genschmar;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064061;Bliesdorf;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064084;Buckow (Märkische Schweiz);gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064125;Falkenberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064128;Falkenhagen (Mark);gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064130;Fichtenhöhe;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064153;Garzau-Garzin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief morgen oder diese Woche
+12064172;Golzow;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064190;Gusow-Platkow;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief morgen oder diese Woche
+12064205;Heckelberg-Brunow;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064222;Höhenland;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064227;Hoppegarten;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064266;Küstriner Vorland;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064268;Lebus;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064274;Letschin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064288;Lietzen;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064290;Lindendorf;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Windgemeinde
+12064303;Märkische Höhe;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064317;Müncheberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064336;Neuenhagen bei Berlin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064340;Neuhardenberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064349;Neulewin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064365;Neutrebbin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064370;Oberbarnim;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief morgen oder diese Woche
+12064371;Oderaue;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064380;Petershagen/Eggersdorf;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064388;Podelzig;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064393;Prötzel;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064417;Reichenow-Möglin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064420;Reitwein;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064428;Rüdersdorf bei Berlin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief morgen oder diese Woche
+12064448;Seelow;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064472;Strausberg;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064480;Treplin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064482;Vierlinden;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064484;Waldsieversdorf;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064512;Wriezen;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Brief, Aufhänger noch offen
+12064538;Zechin;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12064539;Zeschdorf;gemeinde;Landkreis Märkisch-Oderland;Brandenburg;Adresse wird geprüft
+12069018;Beetzsee;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief morgen oder diese Woche
+12069019;Beetzseeheide;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069020;Bad Belzig;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069028;Bensdorf;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069052;Borkheide;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069056;Borkwalde;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069076;Brück;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069089;Buckautal;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069216;Golzow;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069224;Görzke;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069232;Gräben;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069249;Groß Kreutz (Havel);gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief morgen oder diese Woche
+12069270;Havelsee;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Adresse wird geprüft
+12069304;Kleinmachnow;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069306;Kloster Lehnin;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069345;Linthe;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069397;Michendorf;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069402;Mühlenfließ;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Windgemeinde
+12069448;Niemegk;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069454;Nuthetal;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069460;Päwesin;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069470;Planebruch;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069474;Planetal;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069485;Rabenstein/Fläming;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069537;Rosenau;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief morgen oder diese Woche
+12069541;Roskow;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069590;Schwielowsee;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069596;Seddiner See;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069616;Teltow;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069632;Treuenbrietzen;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069648;Wenzlow;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069656;Werder (Havel);gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069665;Wiesenburg/Mark;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069680;Wollin;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069688;Wusterwitz;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12069696;Ziesar;gemeinde;Landkreis Potsdam-Mittelmark;Brandenburg;Brief, Aufhänger noch offen
+12071028;Briesen/Brjazyna;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071041;Dissen-Striesow/Dešno-Strjažow;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071044;Döbern/Derbno;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071052;Drachhausen/Hochoza;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071057;Drebkau/Drjowk;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071060;Drehnow/Drjenow;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071074;Felixsee/Feliksowy Jazor;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071076;Forst (Lausitz)/Baršć (Łužyca);gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071153;Groß Schacksdorf-Simmersdorf;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071160;Guben;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071164;Guhrow/Góry;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071176;Heinersbrück/Móst;gemeinde;Landkreis Spree-Neiße;Brandenburg;Adresse wird geprüft
+12071189;Jämlitz-Klein Düben;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071193;Jänschwalde/Janšojce;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071244;Kolkwitz/Gołkojce;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief morgen oder diese Woche
+12071294;Neiße-Malxetal/Dolina Nysa-Małksa;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071301;Neuhausen/Spree / Kopańce/Sprjewja;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief morgen oder diese Woche
+12071304;Peitz/Picnjo;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071337;Schenkendöbern/Derbno;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071341;Schmogrow-Fehrow/Smogorjow-Prjawoz;gemeinde;Landkreis Spree-Neiße;Brandenburg;Adresse wird geprüft
+12071372;Spremberg/Grodk;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071384;Tauer/Turjej;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071386;Teichland/Gatojce;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071392;Tschernitz/Cersk;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071401;Turnow-Preilack/Turnow-Pśiłuk;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071408;Welzow/Wjelcej;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+12071412;Werben/Wjerbno;gemeinde;Landkreis Spree-Neiße;Brandenburg;Adresse wird geprüft
+12071414;Wiesengrund/Łukojce;gemeinde;Landkreis Spree-Neiße;Brandenburg;Brief, Aufhänger noch offen
+15081026;Apenburg-Winterfeld;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief morgen oder diese Woche
+15081030;Arendsee (Altmark);gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081045;Beetzendorf;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081095;Dähre;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081105;Diesdorf;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Adresse wird geprüft
+15081225;Jübar;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081240;Kalbe (Milde);gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081290;Kuhfelde;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Adresse wird geprüft
+15081440;Rohrberg;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Adresse wird geprüft
+15081455;Salzwedel;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15081545;Wallstawe;gemeinde;Landkreis Altmarkkreis Salzwedel;Sachsen-Anhalt;Adresse wird geprüft
+15083020;Altenhausen;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083025;Am Großen Bruch;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083030;Angern;gemeinde;Landkreis Börde;Sachsen-Anhalt;Windgemeinde
+15083035;Ausleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083060;Beendorf;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083115;Bülstringen;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief morgen oder diese Woche
+15083120;Burgstall;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083125;Calvörde;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083130;Colbitz;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083190;Eilsleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083205;Erxleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Adresse wird geprüft
+15083230;Flechtingen;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083245;Gröningen;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083270;Haldensleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083275;Harbke;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083298;Hohe Börde;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083320;Hötensleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083323;Ingersleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083355;Kroppenstedt;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083361;Loitsche-Heinrichsberg;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083390;Niedere Börde;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083411;Oebisfelde-Weferlingen;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083415;Oschersleben (Bode);gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083440;Rogätz;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083485;Sommersdorf;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083490;Sülzetal;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief morgen oder diese Woche
+15083505;Ummendorf;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083515;Völpke;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083531;Wanzleben-Börde;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083535;Wefensleben;gemeinde;Landkreis Börde;Sachsen-Anhalt;Adresse wird geprüft
+15083557;Westheide;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief morgen oder diese Woche
+15083565;Wolmirstedt;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15083580;Zielitz;gemeinde;Landkreis Börde;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085040;Ballenstedt;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief morgen oder diese Woche
+15085055;Blankenburg (Harz);gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085090;Ditfurt;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085110;Falkenstein/Harz;gemeinde;Landkreis Harz;Sachsen-Anhalt;Windgemeinde
+15085125;Groß Quenstedt;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085135;Halberstadt;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085140;Harsleben / Harschlewe;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief morgen oder diese Woche
+15085145;Harzgerode;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085160;Hedersleben;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085185;Huy;gemeinde;Landkreis Harz;Sachsen-Anhalt;Adresse wird geprüft
+15085190;Ilsenburg (Harz);gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085227;Nordharz;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief morgen oder diese Woche
+15085228;Oberharz am Brocken;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085230;Osterwieck;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085235;Quedlinburg;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085285;Schwanebeck;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085287;Selke-Aue;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085330;Thale;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15085365;Wegeleben;gemeinde;Landkreis Harz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087010;Ahlsdorf;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087015;Allstedt;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Windgemeinde
+15087031;Arnstein;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief morgen oder diese Woche
+15087045;Benndorf;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087055;Berga;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087070;Blankenheim;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087075;Bornstedt;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087101;Brücken-Hackpfüffel;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087125;Edersleben;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087130;Eisleben;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087165;Gerbstedt;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087205;Helbra;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087210;Hergisdorf;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087250;Kelbra (Kyffhäuser);gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087260;Klostermansfeld;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087275;Mansfeld;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087370;Sangerhausen;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087386;Seegebiet Mansfelder Land;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Windgemeinde
+15087412;Südharz;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087440;Wallhausen;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15087470;Wimmelburg;gemeinde;Landkreis Mansfeld-Südharz;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088020;Bad Dürrenberg;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088025;Bad Lauchstädt;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088030;Barnstädt;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088065;Braunsbedra;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088100;Farnstädt;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088150;Kabelsketal;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088195;Landsberg;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088205;Leuna;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief morgen oder diese Woche
+15088216;Wettin-Löbejün;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088220;Merseburg;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088235;Mücheln (Geiseltal);gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088250;Nemsdorf-Göhrendorf;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088265;Obhausen;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15088305;Querfurt;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088319;Salzatal;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088330;Schkopau;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief morgen oder diese Woche
+15088340;Schraplau;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15088355;Steigra;gemeinde;Landkreis Saalekreis;Sachsen-Anhalt;Adresse wird geprüft
+15089005;Alsleben (Saale);gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089015;Aschersleben;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089026;Barby;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief morgen oder diese Woche
+15089030;Bernburg (Saale);gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089041;Bördeaue;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089042;Bördeland;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Windgemeinde
+15089043;Börde-Hakel;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089045;Borne;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089055;Calbe (Saale);gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089075;Egeln;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089130;Giersleben;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089165;Güsten;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089175;Hecklingen;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089185;Ilberstedt;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089195;Könnern;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089235;Nienburg (Saale);gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief morgen oder diese Woche
+15089245;Plötzkau;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15089305;Schönebeck (Elbe);gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Adresse wird geprüft
+15089307;Seeland;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief morgen oder diese Woche
+15089365;Wolmirsleben;gemeinde;Landkreis Salzlandkreis;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090003;Aland;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Adresse wird geprüft
+15090007;Altmärkische Höhe;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Adresse wird geprüft
+15090008;Altmärkische Wische;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Adresse wird geprüft
+15090010;Arneburg;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090070;Bismark (Altmark);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Windgemeinde
+15090135;Eichstedt (Altmark);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090220;Hassel;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief morgen oder diese Woche
+15090225;Havelberg;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090245;Hohenberg-Krusemark;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief morgen oder diese Woche
+15090270;Iden;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090285;Kamern;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090310;Klietz;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090415;Osterburg (Altmark);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090435;Rochau;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090445;Sandau (Elbe);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief morgen oder diese Woche
+15090485;Schollene;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090520;Seehausen (Altmark);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090535;Stendal;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090546;Tangerhütte;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Brief, Aufhänger noch offen
+15090610;Werben (Elbe);gemeinde;Landkreis Stendal;Sachsen-Anhalt;Adresse wird geprüft
+15090631;Wust-Fischbeck;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Windgemeinde
+15090635;Zehrental;gemeinde;Landkreis Stendal;Sachsen-Anhalt;Adresse wird geprüft

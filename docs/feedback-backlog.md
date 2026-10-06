@@ -167,3 +167,22 @@ Umschalter sind die Antwort, nicht ein Sonderweg in der Rechnung.
 NICHT ERNEUT VORLEGEN. Wer diese Beobachtung wieder macht (sie fällt beim
 Umschalten auf Deutschland sofort auf), soll sie hier wiederfinden statt sie
 noch einmal als Befund zu melden.
+
+
+## Datenstories und redaktionelle Wiederverwendung (30.09.2026)
+
+### ⬜ Frühe private PV-Anlagen: Kosten und Einnahmen über die Förderzeit
+**Quelle:** Betreiber, Einspeisevergütungs-Seitenrunde.
+**Idee:** Historische private Dachanlagen als Datenstory: ein bis zwei gut belegte große Anlagen sowie Größen vergleichbar mit heutigen Hausanlagen. Reale Inbetriebnahme, Leistung, damalige Anschaffungskosten und möglichst Ertrags-/Abrechnungsdaten recherchieren. Keine unbelegten Größenrekorde.
+**Darstellung:** Anschaffung, kumulierte Einspeiseerlöse, laufende Kosten und Überschuss getrennt zeigen; Modellrechnung klar von echten Abrechnungen unterscheiden. Optional vorhandenen Einspeisevergütungsrechner als persönlichen Anschluss verwenden.
+**Erster Überschlag:** 2004, 5 kWp, 950 kWh/kWp im ersten Jahr, 0,5 % jährlicher Ertragsrückgang, Volleinspeisung, 57,4 ct/kWh: rund 52.016 Euro über 20 Betriebsjahre vor Kosten und Steuern; zusätzliche Fördermonate nicht eingerechnet. Kein reales Betreiberergebnis.
+**Kostenquelle zum Vertiefen:** IEA PVPS, National Survey Report Germany 2007, Tabelle 5a, S.17: für kleine Dachanlagen (2–5 kW) 2004 rund 5.300 Euro/kW einschließlich Umsatzsteuer. Die pauschale Tabellenüberschrift nennt 19 %, obwohl frühere Jahre enthalten sind; deshalb vor Netto-/Brutto-Umrechnung historisches Original und steuerliche Behandlung prüfen. Keine ungeprüfte Übertragung auf Großanlagen. https://iea-pvps.org/wp-content/uploads/2020/01/nsr_2007_DEU.pdf
+**Vergütung:** https://www.sfv.de/artikel/eeg_20002004_einspeiseverguetung
+**Status:** Entscheidung vom 30.09.2026: Den historischen Rendite- und Steuervergleich nicht in den Artikel übernehmen. Stattdessen ein kurzer erklärender Einstieg vor den bestehenden 5-/10-/15-kWp-Beispielen mit Anschluss an den vorhandenen Rechner. Das Gedankenexperiment bleibt eine separate Datenstory im Backlog; keine Freigabe für einen zusätzlichen Rechner oder die Veröffentlichung der Vergleichszahlen. Die [ältere Pilot-Auswertung](pv-history-pilot-2026-09-30.md) dokumentiert Zwischenstände und ist keine Veröffentlichungsgrundlage. Für die spätere Story gleiche Laufzeiten, historische und zukünftige Daten, Inflation, Steuern sowie absoluten Überschuss und Rendite auf das eingesetzte Kapital nachvollziehbar trennen. Reale Betreiberfälle bleiben zu recherchieren.
+
+### ⬜ Vorhandene Datenstories in Ratgeberseiten wiederverwenden
+**Quelle:** Betreiber, 30.09.2026.
+Bestehende passende Datenstories als kompakte Einstiege, Visuals oder verlinkte Ausschnitte in Ratgeber integrieren, insbesondere auf der Einspeisevergütungsseite. Gemeinsame Widgets und Datenquellen verwenden; keine kopierten Geschichten-/Chart-Versionen. Auswahl und Platzierung später entscheiden.
+
+### ⬜ Alle Rechner-Einstiege prüfen
+Betreiberauftrag 30.09.2026: PV-Rechner und weitere Rechner-Einstiege in die Optimierungsrunde aufnehmen. [Inventar und Messgrenzen](pv-history-pilot-2026-09-30.md). Vorhandene Schritt-/Ergebnisereignisse auswerten; Vercel-Bounce nicht als Rechner-Abbruchquote behandeln. Noch kein flächiger Umbau.

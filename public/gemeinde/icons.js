@@ -2,7 +2,8 @@ const solarLiveIcons={"Share": "<svg class=\"sc-live-icon\" aria-hidden=\"true\"
 (()=>{
 function apply(){
  document.querySelectorAll('.solar-page a,.solar-page button,.atlas-sticky button,.atlas-dialog button').forEach(el=>{
- if(el.closest('.font-lab')||el.querySelector('.sc-live-icon'))return;
+ // React owns the shared chart menu, including icon placement and labels.
+ if(el.closest('.font-lab,.sc-chart-options')||el.querySelector('.sc-live-icon'))return;
  const text=el.textContent.trim();let name;
  if(/kopiert/i.test(text))name='Check';else if(/teilen/i.test(text))name='Share';else if(/einbetten|widget einbetten/i.test(text))name='Code';else if(/herunterladen|download/i.test(text))name='Download';else if(/kopieren|übernehmen/i.test(text))name='Copy';else if(/abonnieren/i.test(text))name='Glocke';
  if(name){el.querySelectorAll('svg').forEach(s=>s.remove());const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode())n.textContent=n.textContent.replace(/[↗→↓✓]|<\/>/g,'').trim()+' ';el.insertAdjacentHTML(name==='Glocke'?'afterbegin':'beforeend',solarLiveIcons[name]);return;}

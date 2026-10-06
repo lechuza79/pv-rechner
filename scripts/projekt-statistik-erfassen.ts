@@ -32,6 +32,7 @@ import {
   type Arbeitstag,
 } from "../lib/projekt-statistik";
 import { heuteInBerlin } from "../lib/zeit";
+import { zaehlstand } from "./lib/zaehlstand";
 
 
 const SCHREIBEN = process.argv.includes("--schreiben");
@@ -490,6 +491,11 @@ async function main() {
   await schreibe("projekt_arbeitszeit", [...arbeitszeit.values()].map((a) => ({
     tag: a.tag, minuten: a.minuten, minuten_parallel: a.minutenParallel,
   })));
+  // Der Zählstand gehört zur Bestandszeile: Die interne Ansicht kann ihn zur
+  // Laufzeit nicht erheben (im ausgelieferten Bündel gibt es weder das
+  // Arbeitsverzeichnis noch git), und aus dem Code eine zweite Zählung zu bauen
+  // hieße, zwei Zahlen für dieselbe Menge zu führen.
+  const mengen = zaehlstand();
   await schreibe("projekt_bestand", [{
     tag: bestand.tag,
     dateien: bestand.dateien,
@@ -498,6 +504,12 @@ async function main() {
     testdateien: bestand.testdateien,
     testfaelle: bestand.testfaelle,
     commits_gesamt: bestand.commitsGesamt,
+    rechner: mengen.rechner,
+    seiten: mengen.seiten,
+    widgets: mengen.widgets,
+    routen: mengen.routen,
+    komponenten: mengen.komponenten,
+    foerderprogramme: mengen.foerderprogramme,
   }]);
   console.log("\nAbgelegt.");
 }

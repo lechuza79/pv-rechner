@@ -101,3 +101,21 @@ describe("Kanalname im Vermerk", () => {
     expect(zeile).not.toContain("Postfach");
   });
 });
+
+describe("Was keine fremde Seite ist", () => {
+  it("hält den eigenen Entwicklungsserver heraus", () => {
+    // Gemessen am 01.10.2026: 127.0.0.1 stand mit zwei Besuchern in der
+    // Herkunftsliste und wäre als verweisende Seite gezählt worden.
+    expect(ordneHerkunft("127.0.0.1")).toBe("intern");
+    expect(ordneHerkunft("localhost")).toBe("intern");
+  });
+
+  it("erkennt ein fremdes Postfach an seinem Hostnamen", () => {
+    expect(ordneHerkunft("mail.fernbildmedia.de")).toBe("brief");
+  });
+
+  it("hält eine echte Seite weiterhin für eine echte Seite", () => {
+    expect(ordneHerkunft("trier.de")).toBe("andere");
+    expect(ordneHerkunft("ln-online.de")).toBe("andere");
+  });
+});

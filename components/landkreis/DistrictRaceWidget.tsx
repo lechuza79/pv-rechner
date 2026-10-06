@@ -1,8 +1,9 @@
 "use client";
 
+import {defaultRaceSettings,racePeriod,type RaceSettings} from "../../lib/race-settings";
+import {formatRaceValue,raceValueUnit} from "../../lib/race-value-format";
 import {ortPhrase} from "../../lib/atlas-orte";
 import {useEffect, useRef, useState} from "react";
-import InfoTooltip from "../InfoTooltip";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
 import {WIDGETS} from "../../lib/widget-registry";
 import {dashboardDate} from "../../lib/dashboard/format";
@@ -14,7 +15,7 @@ type RaceRow = {id:string;name:string;href:string|null;value:number};
 type RaceFrame = {year:number;rows:{id:string;value:number}[]};
 declare global {
   interface Window {
-    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean})=>Promise<void>;
+    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number,frameMaximum:number)=>string;unit?:(frameMaximum:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean})=>Promise<void>;
   }
 }
 
@@ -23,7 +24,7 @@ declare global {
 export type RaceWording = {title:string;members:string;leaders:string;unit:string};
 export const DISTRICT_RACE_WORDING: RaceWording = {title:"Welche Gemeinde hat die meisten Solaranlagen?",members:"Alle Gemeinden im Landkreis",leaders:"Die zehn führenden Gemeinden",unit:"Orte"};
 
-export default function DistrictRaceWidget({name,stand,rows,history,wording=DISTRICT_RACE_WORDING}:{name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording}) {
+export default function DistrictRaceWidget({regionId,name,stand,rows,history,wording=DISTRICT_RACE_WORDING,settings=defaultRaceSettings}:{regionId?:string;name:string;stand:string;rows:RaceRow[];history:RaceFrame[];wording?:RaceWording;settings?:RaceSettings}) {
   const [stage,setStage]=useState<HTMLDivElement|null>(null);
   const clock=useRef<HTMLSpanElement>(null);
   useEffect(()=>{
@@ -31,23 +32,22 @@ export default function DistrictRaceWidget({name,stand,rows,history,wording=DIST
     function start(){
       if(!active||started||!stage||!clock.current||!window.solarDistrictRace)return;
       started=true;
-      void window.solarDistrictRace({stage,label:`${wording.leaders} im Zeitverlauf`,clockHost:clock.current,rows,history,
-        format:value=>Math.round(value).toLocaleString("de-DE"),animate:true,current:()=>active,skip:()=>false});
+      void window.solarDistrictRace({stage,label:`${Math.min(10,rows.length)} führende ${wording.unit} im Zeitverlauf`,clockHost:clock.current,rows,history,
+        format:(value,max)=>formatRaceValue(value,settings.metric,max),unit:max=>raceValueUnit(settings.metric,max),animate:true,current:()=>active,skip:()=>false});
     }
     window.addEventListener("district-race-ready",start);
     start();
     return ()=>{active=false;window.removeEventListener("district-race-ready",start);stage?.replaceChildren();};
-  },[rows,history,stage,wording.leaders]);
+  },[rows,history,stage,wording.leaders,settings.metric]);
   return <div className={`${foundation.foundation} sc-dashboard district-race-layout`} data-story-scheme="light">
-    <ExportableWidgetFrame animated widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
+    <ExportableWidgetFrame actions="primary" animated videoParams={regionId ? {widget:"regional-race",ags:regionId,period:racePeriod(settings)} : undefined} exportNote={null} widget={WIDGETS.regionalRace} place={name} stand={dashboardDate(stand)} filename={`solar-check-race-${name}`} className="district-race-widget" data-story-scheme="light" title={wording.title} kind="time-series"
       headingMeta={<span ref={clock}>{history[0]?.year}</span>}
-      context={<>Wir vergleichen <InfoTooltip label={`${rows.length} ${wording.unit} ${ortPhrase({name})}`} ariaLabel={`Verglichene ${wording.unit}`}>{wording.members}, unabhängig von ihrer Einwohnerzahl.</InfoTooltip>. Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.</>}
-      help={<p>{wording.leaders} im Zeitverlauf. Verglichen werden alle {rows.length} {wording.unit} {ortPhrase({name})}, unabhängig von ihrer Einwohnerzahl. Heutiger Anlagenbestand nach Inbetriebnahmejahr. Registerstand: {dashboardDate(stand)}.</p>}>
+      context={<>Wir vergleichen {rows.length} {wording.unit} {ortPhrase({name})}. {settings.segment==='private-roofs'?'Berücksichtigt werden ausschließlich private Dachanlagen, ohne Balkonkraftwerke.':'Berücksichtigt werden private und gewerbliche Anlagen einschließlich Freiflächen.'}{settings.metric==='per-capita'&&' Je Einwohner, mit einheitlichem aktuellem Bevölkerungsstand.'}</>}>
       <div className="district-race-artwork" aria-hidden="true">
         <div className="district-race-splashes"/>
         <div className="district-race-panels"/>
       </div>
-      <div ref={setStage} data-chart-animation="race" className="district-race-plot"/>
+      <div ref={setStage} data-chart-animation="race" className="district-race-plot" data-highlight={settings.highlight} data-value-unit={settings.metric==='kwp'?'MWp':settings.metric==='per-capita'?'Wp':undefined}/>
     </ExportableWidgetFrame>
   </div>;
 }

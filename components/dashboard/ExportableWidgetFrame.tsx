@@ -1,12 +1,21 @@
 "use client";
-import {useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
+import {useCallback, useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
+import {trackWidgetEvent} from "../../lib/analytics";
+import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
+import {captureNodeToBlob} from '../../lib/chart-export';
+import {useWidgetPresentation} from './WidgetPresentationContext';
+import {widgetActionPresentation} from '../../lib/widget-appearance';
 import {WidgetFrame} from './WidgetFrame';
-import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetFooter, WidgetSourceEdge} from '../WidgetExport';
+import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetSourceEdge} from '../WidgetExport';
 import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {embedPath, widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
+import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-export-client";
+import type { VideoMailOptions } from "../WidgetVideoDialog";
 import ChartOptionsMenu from '../ChartOptionsMenu';
 import Modal from '../Modal';
+import SelectField from '../SelectField';
+import dialogStyles from '../WidgetVideoDialog.module.css';
 import {controlChartAnimation, downloadChartVideo} from '../../lib/chart-animation-export';
 import EinbettenDialog from '../EinbettenDialog';
 import {WIDGET_MAX_WIDTH_COMPACT} from '../../lib/widget-registry';
@@ -20,7 +29,7 @@ import './dashboard.css';
  * A monitor widget that can be shared and downloaded through the shared export
  * pipeline — no second footer, no second image renderer:
  *  • page: an options menu top right (Teilen, Download, Einbetten; ChartOptionsMenu)
- *    or, with actions="bar", the registry footer row (WidgetFooter) — same handlers;
+ *    or a responsive primary action row — same handlers;
  *    subject-matter help beside the headline; everything interactive ExportIgnore'd;
  *  • image: the chosen state as text instead of the selector, the texts behind
  *    "?" and the brand line (WidgetExportFooter), the vertical source edge with
@@ -34,10 +43,23 @@ import './dashboard.css';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, stateLabel, settings, children, className = '', filename, actions = 'menu', einbetten, animated = false, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+  /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
+  sourceVisible?: boolean;
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
+  /** Selection needed to reconstruct this widget when following a shared link. */
+  shareParams?: Record<string, string>;
+  imageFormats?: {label: string; width: number; height: number}[];
   animated?: boolean;
+  /** Omit when the chart already owns playback controls. */
+  restartAction?: boolean;
+  /** Server-backed video request, already bound to this widget and selected period. */
+  videoParams?: VideoRequestParams;
+  videoPeriod?: string;
+  onVideoRequest?: (email: string, options: VideoMailOptions) => Promise<void>;
+  /** Null omits a redundant location note when the introduction already names it. */
+  exportNote?: string | null;
   /** Place shown (municipality or district) — names title, share text and image note. */
   place: string;
   /** Data date for the source edge. */
@@ -47,14 +69,36 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
   filename: string;
   children: ReactNode;
   /** Presentation of the same actions: a compact options menu (monitor charts) or the prominent footer row. */
-  actions?: 'menu' | 'bar';
+  actions?: 'menu' | 'bar' | 'primary';
   /** Parameters of the supported embed route; without it, embedding is shown as unavailable. */
   einbetten?: {params: Record<string, string>; height: number};
 }) {
+  const presentation=useWidgetPresentation();
+  const effectiveActions=widgetActionPresentation(presentation.sharing, actions);
+  const [imageOpen, setImageOpen] = useState(false);
+  const [imageFormat, setImageFormat] = useState(0);
+  const [imageError, setImageError] = useState('');
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);
+  const [videoPaused,setVideoPaused]=useState(false);
   const [videoProgress,setVideoProgress]=useState<number|null>(null);
+  useEffect(()=>{
+    if(videoProgress===null){setVideoPaused(false);return;}
+    const sync=()=>setVideoPaused(document.hidden);
+    sync();document.addEventListener('visibilitychange',sync);
+    return()=>document.removeEventListener('visibilitychange',sync);
+  },[videoProgress!==null]);
+  const [videoFile,setVideoFile]=useState<{url:string;filename:string}|null>(null);
+  const [videoPreview,setVideoPreview]=useState<string|null>(null);
+  const [videoError,setVideoError]=useState<string|null>(null);
+  useEffect(()=>()=>{if(videoFile)URL.revokeObjectURL(videoFile.url);},[videoFile]);
+  useEffect(()=>()=>{if(videoPreview)URL.revokeObjectURL(videoPreview);},[videoPreview]);
+  const closeVideo = async () => {
+    setVideoFile(null);setVideoError(null);setVideoPreview(null);
+    const node=chartExport.chartRef.current;
+    if(node)await controlChartAnimation(node,{mode:'restore'});
+  };
   const [detailOpen, setDetailOpen] = useState(false);
   // Include the title because one template can render multiple stock segments.
   const detailId = `${filename}-${frame.title}`;
@@ -88,6 +132,7 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
       }
     } catch { /* External embeds keep their own directly accessible URL. */ }
     url.searchParams.set('chart', detailId);
+    for (const [key, value] of Object.entries(shareParams ?? {})) url.searchParams.set(key, value);
     url.hash = '';
     if (navigator.clipboard && window.isSecureContext) {
       try {
@@ -112,32 +157,60 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
     catch { setLiveUrl(undefined); }
   }, []);
   const def = widgetForPlace(widget, place, liveUrl);
+  const contactPage = new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io');
+  contactPage.hash = '';
+  contactPage.searchParams.set('chart', detailId);
+  for (const [key, value] of Object.entries(shareParams ?? {})) contactPage.searchParams.set(key, value);
+  const contactHref = `/kontakt?${new URLSearchParams({
+    topic: 'Widget einbetten',
+    message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,
+  })}`;
+  const designContactHref = `/kontakt?${new URLSearchParams({
+    topic: 'Widget im eigenen Design',
+    message: `Ich möchte dieses Diagramm als Export mit meinem Logo und meinen Farben anfragen.\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMein gewünschtes Design und Exportformat:\n`,
+  })}`;
   const chartExport = useChartExport({
     context: {title: def.title},
     filename,
     shareText: def.shareText,
     shareUrl: def.shareUrl,
     mode: 'node',
+    nodeSize: imageFormats?.[imageFormat],
   });
-  // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
+  const measure = useCallback((action:WidgetAction) => {
+    let path=window.location.pathname;
+    try {path=window.top?.location.pathname??path;} catch {/* External embeds retain their own scope. */}
+    trackWidgetEvent(widget.id,widgetScope(path),action);
+  },[widget.id]);
+  useEffect(()=>{
+    const node=chartExport.chartRef.current;if(!node)return;
+    const observer=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>=.25)){measure('visible');observer.disconnect();}
+    },{threshold:.25});
+    observer.observe(node);
+    return()=>observer.disconnect();
+  },[measure,detailOpen,chartExport.chartRef]);
+  // Keep text left-aligned; individual plots can use the gutter to center independently.
   const edgeColumns = def.sources.length > 1 ? 2 : 1;
-  const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;box-sizing:border-box;`;
-  const content = <ExportNotesProvider>
-    <WidgetFrame
-      {...frame}
-      data-chart-detail-open={detailOpen ? true : undefined}
-      ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
-      className={`${foundation.foundation} sc-dashboard ${className}`}
-      {...{[EXPORT_BRIGHTEST_ATTR]: '', [EXPORT_CSS_ATTR]: exportCss}}
-      settings={settings && <>
-        <ExportIgnore inline>{settings}</ExportIgnore>
-        {stateLabel && <ExportOnly display="inline-block" style={{fontSize: "var(--atlas-label-size)", color: "var(--atlas-secondary)"}}>{stateLabel}</ExportOnly>}
-      </>}
-      helpPlacement={actions === 'menu' ? 'title' : 'tools'}
-      menu={actions === 'menu' ? <ChartOptionsMenu label={frame.title} busy={chartExport.isExporting||videoProgress!==null}
+  const exportCss = `position:relative;--chart-export-source-gutter:${SOURCE_EDGE_WIDTH * edgeColumns + EDGE_GAP + 6}px;padding-right:var(--chart-export-source-gutter);box-sizing:border-box;text-align:left;`;
+  const loadVideoThumbnail = useCallback(async () => {
+    const node = chartExport.chartRef.current;
+    if (!node) return null;
+    return captureNodeToBlob(node, Math.min(1, 160 / node.getBoundingClientRect().width));
+  }, [chartExport.chartRef]);
+  const widgetActions = <ChartOptionsMenu help={frame.help} showDownload={def.exportable!==false} presentation={effectiveActions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
+        onRestart={animated&&restartAction?async()=>{
+          const node=chartExport.chartRef.current;
+          if(node)await controlChartAnimation(node,{mode:'restart'});
+        }:undefined}
         onShare={copyDetailLink}
+        onForward={async()=>{
+          if(navigator.share)await navigator.share({title:frame.title,url:contactPage.toString()});
+          else await copyDetailLink();
+        }}
         onDownload={async()=>{
           if(chartExport.chartRef.current?.querySelector('[data-export-ready="false"]')) throw new Error('Die Daten sind noch nicht verfügbar. Bitte später erneut versuchen.');
+          if(imageFormats?.length){setImageError('');setImageOpen(true);return;}
           const node=chartExport.chartRef.current;
           if(animated&&node)await controlChartAnimation(node,{mode:'pause'});
           try{await chartExport.downloadPng();}
@@ -151,27 +224,94 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
           },
           video:async()=>{
             const node=chartExport.chartRef.current;if(!node)return;
+            setVideoFile(null);setVideoError(null);
             setVideoProgress(0);
-            try{await downloadChartVideo(node,filename,setVideoProgress);}finally{setVideoProgress(null);}
+            try {
+              await controlChartAnimation(node,{mode:'pause'});
+              setVideoPreview(URL.createObjectURL(await captureNodeToBlob(node,1,undefined,'screen')));
+              setVideoFile(await downloadChartVideo(node,filename,setVideoProgress));
+              measure("video_complete");
+            } catch(error) {
+              measure("video_error");
+              setVideoError(error instanceof Error?error.message:'Video konnte nicht erstellt werden.');
+              throw error;
+            } finally {
+              setVideoProgress(null);
+            }
           },
         }:undefined}
         // Only a supported embed route yields a code; the monitor charts have none yet (registry: embeddable false).
-        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true)} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} /> : undefined}
+        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true)} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} />;
+  const content = <ExportNotesProvider>
+    <WidgetFrame
+      {...frame}
+      data-widget-id={widget.id}
+      onClickCapture={event=>{
+        const target=event.target instanceof Element?event.target.closest('button,a,[role="button"],[role="menuitem"]'):null;
+        if(!target||target.getAttribute('aria-disabled')==='true')return;
+        const action=target.getAttribute('data-widget-action') as WidgetAction|null;
+        measure(action&&WIDGET_ACTIONS.includes(action)?action:'interact');
+      }}
+      onChangeCapture={()=>measure('settings')}
+      data-chart-detail-open={detailOpen ? true : undefined}
+      ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
+      className={`${foundation.foundation} sc-dashboard ${className}`}
+      {...{[EXPORT_BRIGHTEST_ATTR]: '', [EXPORT_CSS_ATTR]: exportCss}}
+      settings={settings && <>
+        <ExportIgnore inline>{settings}</ExportIgnore>
+        {stateLabel && <ExportOnly display="inline-block" style={{fontSize: "var(--atlas-label-size)", color: "var(--atlas-secondary)"}}>{stateLabel}</ExportOnly>}
+      </>}
+      helpPlacement={effectiveActions === 'menu' ? 'title' : 'tools'}
+      menu={effectiveActions === 'menu' ? widgetActions : undefined}
       footer={<>
-        {videoProgress!==null&&<ExportIgnore><p role="status">Video wird erstellt: {videoProgress} % · Bitte diesen Tab geöffnet lassen.</p></ExportIgnore>}
-        {actions === 'bar' && <div className="sc-widget-actions"><WidgetFooter widget={def} chartExport={chartExport} onsite showCta={false} /></div>}
+        {(videoProgress!==null||videoFile||videoError)&&<ExportIgnore inline={false} style={{position:'absolute',inset:0,zIndex:5,borderRadius:'inherit',overflow:'hidden'}}>
+          <div className="sc-video-overlay" data-video-overlay="">
+            {videoPreview&&<img className="sc-video-preview" src={videoPreview} alt=""/>}
+            <div className="sc-video-message" role="status" aria-live="polite">
+              <div className="sc-video-state" key={videoProgress!==null?"progress":videoFile?"complete":"error"}>
+              {videoProgress!==null?<>
+                <strong>{videoPaused ? "Videoexport pausiert" : "Video wird erstellt"}: {videoProgress} %</strong>
+                <progress aria-label="Videoexport" max={100} value={videoProgress}/>
+                <p>{videoPaused ? "Geht automatisch weiter, sobald dieser Tab wieder sichtbar ist." : "Im Hintergrund pausiert der Export und läuft bei Ihrer Rückkehr weiter. Bitte die Seite nicht schließen oder neu laden."}</p>
+              </>:videoFile?<>
+                <strong>Dein Video ist fertig.</strong>
+                <a href={videoFile.url} download={videoFile.filename}>MP4 herunterladen</a>
+                <p>Falls der Download nicht automatisch gestartet ist.</p>
+                <button type="button" onClick={closeVideo}>Schließen</button>
+              </>:<>
+                <p>{videoError}</p>
+                <button type="button" onClick={closeVideo}>Schließen</button>
+              </>}
+              </div>
+            </div>
+          </div>
+        </ExportIgnore>}
+        {effectiveActions === 'primary' && <div className="sc-widget-actions">{widgetActions}</div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
         <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
-          <WidgetSourceEdge widget={def} stand={stand} visible={false} spalten={edgeColumns} />
+          <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible} spalten={edgeColumns} />
         </div>
         {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
           width={WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: def.shareUrl.replace("https://solar-check.io", ""), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
-        <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={`Ort: ${place}`} /></ExportOnly>
+        <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={exportNote === null ? undefined : exportNote ?? `Ort: ${place}`} /></ExportOnly>
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;
-  return detailOpen
+  const imageDialog = imageFormats && <Modal open={imageOpen} onClose={()=>setImageOpen(false)} title="Bild herunterladen" scheme="light" maxWidth={520}>
+    <p style={{margin:'0 0 20px'}}>{frame.title}</p>
+    <label style={{display:'grid',gap:8}}>Bildformat
+      <SelectField ariaLabel="Bildformat" block value={imageFormat} onChange={event=>setImageFormat(Number(event.target.value))}>
+        {imageFormats.map((format,index)=><option key={format.label} value={index}>{format.label}</option>)}
+      </SelectField>
+    </label>
+    {imageError&&<p role="alert">{imageError}</p>}
+    <button className={dialogStyles.submit} style={{marginTop:24}} disabled={chartExport.isExporting} onClick={async()=>{
+      try {await chartExport.downloadPng();setImageOpen(false);}
+      catch {setImageError('Das Bild konnte nicht erstellt werden. Bitte erneut versuchen.');}
+    }}>{chartExport.isExporting?'Bild wird erstellt …':'PNG herunterladen'}</button>
+  </Modal>;
+  return <>{imageDialog}{detailOpen
     ? <Modal open onClose={closeDetail} title={place} ariaLabel={frame.title} maxWidth={880}>{content}</Modal>
-    : content;
+    : content}</>;
 }

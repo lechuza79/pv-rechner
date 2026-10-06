@@ -1,10 +1,24 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import "./calculator/result-design.css";
+import "./balkon-angebot.css";
+import ResultChoiceHeader from "./ResultChoiceHeader";
+import { useId, useMemo, useState } from "react";
 import Image from "next/image";
+import { trackEvent } from "../lib/analytics";
+import { useBalkonAngebote, type BalkonKatalog } from "../lib/use-balkon-angebote";
+import AffiliateProductTeaser from "./AffiliateProductTeaser";
+import AffiliateTrust from "./AffiliateTrust";
+import AffiliateActions from "./AffiliateActions";
+import AffiliateCarousel from "./AffiliateCarousel";
+import Modal from "./Modal";
+import AffiliateFundedPrice from "./AffiliateFundedPrice";
+import AffiliateDetails from "./AffiliateDetails";
 import { v } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
-import { angebotUrl, type ShopAngebot, type ShopAngebote } from "../lib/shop-solakon";
-import { empfiehlAngebot, type AngebotBasis, type BewertetesAngebot } from "../lib/shop-angebot";
+import { angebotUrl, type ShopAngebot } from "../lib/shop-solakon";
+import type { BalkonFundingContext } from "../lib/balkon-funding";
+import { DEFAULT_BALKON_CONFIG } from "../lib/balkon-config";
+import { empfehlungAusBewertung, speicherAnnahme, empfiehlAngebot, type AngebotBasis, type BewertetesAngebot } from "../lib/shop-angebot";
 import { preisTeile, jahreDativ, produktSpeicherTeile, pvLeistungTeile } from "../lib/atlas-format";
 
 /**
@@ -149,17 +163,34 @@ function ZumShop({ angebot, hervor }: { angebot: ShopAngebot; hervor: boolean })
 }
 
 /** Preis und was er einbringt — in beiden Darstellungen gleich aufgebaut. */
-function Preisblock({ eintrag, gross }: { eintrag: BewertetesAngebot; gross: boolean }) {
+function Preisblock({ eintrag, gross, result = false, showSavings = true, onFundingDetails }: { showSavings?: boolean; onFundingDetails?: () => void; eintrag: BewertetesAngebot; gross: boolean; result?: boolean }) {
   const preis = preisTeile(eintrag.angebot.preis);
   const amort = isFinite(eintrag.ergebnis.amortYears)
-    ? jahreDativ(eintrag.ergebnis.amortYears)
-    : "rechnet sich nicht";
+    ? `bezahlt nach ${jahreDativ(eintrag.ergebnis.amortYears)}`
+    : `innerhalb von ${eintrag.ergebnis.annualCosts.grid.length} Jahren nicht amortisiert`;
+  if (result) {
+    const netPrice = preisTeile(Math.max(0, eintrag.angebot.preis - eintrag.fundingEuro));
+    return <div className="bkw-product-calculation">
+      <div className="bkw-product-price-row">
+        <strong>{preis.value} <small>{preis.unit}</small></strong>
+        <span>{amort}</span>
+      </div>
+      {eintrag.fundingEuro > 0 && <AffiliateFundedPrice amount={netPrice.value} helpTitle="Setpreis nach Förderung" helpLabel="Wie wird der Setpreis mit Förderung berechnet?" onDetails={eintrag.fundingNeedsInput ? onFundingDetails : undefined}>
+        {eintrag.fundingNotes?.map(note => <p key={note}>{note}</p>)}
+        Vom Shoppreis werden {nf(eintrag.fundingEuro)} € Förderung für dieses Set abgezogen. Voraussetzung ist, dass du die Programmbedingungen erfüllst und noch Mittel verfügbar sind. Beim Händler zahlst du den vollen Preis; die Förderung wird separat ausgezahlt. Zusätzliche Kosten sind in diesem Setpreis nicht enthalten.
+      </AffiliateFundedPrice>}
+      {eintrag.fundingEuro <= 0 && <AffiliateFundedPrice amount={preis.value} emptyLabel={eintrag.fundingLabel ?? "Keine Förderung"} helpTitle="Förderung für dieses Set" helpLabel="Warum wird keine Förderung berücksichtigt?">
+        {eintrag.fundingReasons?.map(reason => <p key={reason}>{reason}</p>)}
+      </AffiliateFundedPrice>}
+      {showSavings && <p><strong>{nf(eintrag.ergebnis.lifetimeSaving)} € Vorteil über {eintrag.ergebnis.annualCosts.grid.length} Jahre</strong> nach Anschaffung{eintrag.fundingEuro > 0 ? " und Förderung" : ""}. {nf(eintrag.ergebnis.savingPerYear)} € Ersparnis im ersten Jahr.</p>}
+    </div>;
+  }
   return (
     <div>
       <div style={{ whiteSpace: "nowrap" }}>
         <span style={{
-          fontSize: gross ? v("--font-size-h2") : v("--font-size-h3"),
-          fontWeight: 700, color: v("--color-text-primary"),
+          fontSize: gross ? v("--font-size-display-sm") : v("--font-size-h3"),
+          fontWeight: 700, fontFamily: v("--font-heading"), color: v("--color-text-primary"),
         }}>
           {preis.value}
         </span>{" "}
@@ -168,7 +199,7 @@ function Preisblock({ eintrag, gross }: { eintrag: BewertetesAngebot; gross: boo
         </span>
       </div>
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-        {nf(eintrag.ergebnis.savingPerYear)} €/Jahr · bezahlt nach {amort}
+        {nf(eintrag.ergebnis.savingPerYear)} € im 1. Jahr · {amort}
       </div>
     </div>
   );
@@ -225,7 +256,7 @@ function Empfehlung({ eintrag }: { eintrag: BewertetesAngebot }) {
           }}>
             Rechnet sich am besten
           </div>
-          <div style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), marginTop: 2 }}>
+          <div style={{ fontSize: v("--font-size-h3"), fontWeight: 700, fontFamily: v("--font-heading"), color: v("--color-text-primary"), marginTop: 2 }}>
             {angebot.produkt}
           </div>
           <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
@@ -269,30 +300,41 @@ function Alternative({ eintrag }: { eintrag: BewertetesAngebot }) {
   );
 }
 
-export default function BalkonAngebot({ basis, foerderungEuro = 0 }: { basis: AngebotBasis; foerderungEuro?: number }) {
-  const [daten, setDaten] = useState<ShopAngebote | null>(null);
-  const [fehlgeschlagen, setFehlgeschlagen] = useState(false);
-
-  useEffect(() => {
-    let aktiv = true;
-    fetch("/api/shop/balkon")
-      .then(r => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d: ShopAngebote) => { if (aktiv) setDaten(d); })
-      .catch(() => { if (aktiv) setFehlgeschlagen(true); });
-    return () => { aktiv = false; };
-  }, []);
+export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, design, example, katalog, ratedOffers, selectedOfferId, onCalculate, onFundingDetails }: { onFundingDetails?: () => void; selectedOfferId?: string; onCalculate?: (offer: ShopAngebot) => void; basis: AngebotBasis; foerderungEuro?: number; funding?: BalkonFundingContext; design?: "result"; example?: { description: string }; katalog?: BalkonKatalog; ratedOffers?: BewertetesAngebot[] }) {
+  const disclosureId = useId();
+  const ownCatalogue = useBalkonAngebote(katalog === undefined);
+  const { daten, fehlgeschlagen } = katalog ?? ownCatalogue;
 
   const empfehlung = useMemo(
-    () => (daten ? empfiehlAngebot(daten.angebote, basis) : null),
-    [daten, basis],
+    () => ratedOffers ? empfehlungAusBewertung(ratedOffers) : (daten ? empfiehlAngebot(daten.angebote, basis, DEFAULT_BALKON_CONFIG, funding) : null),
+    [daten, basis, funding, ratedOffers],
   );
 
-  // Kommt der Abruf nicht durch, verschwindet der Block ganz. Ein Kaufhinweis
-  // ohne Preis wäre schlechter als keiner — und der Rechner darüber ist
-  // vollständig, er braucht diesen Block nicht.
-  if (fehlgeschlagen || !daten || !empfehlung) return null;
+  // A failed price fetch must not look like an empty product catalogue.
+  if (fehlgeschlagen || !daten || !empfehlung) {
+    if (design !== "result" && !example) return null;
+    return <div className="bkw-offer-result wp-input-page">
+      <div className="wp-section-heading"><h2>Passende Sets zu kaufen</h2></div>
+      <p className="bkw-offer-intro" role="status">{fehlgeschlagen
+        ? "Die aktuellen Shopangebote konnten gerade nicht geladen werden. Deine Berechnung funktioniert trotzdem."
+        : !daten ? "Aktuelle Shopangebote werden geladen …" : "Zurzeit gibt es keine passenden lieferbaren Sets aus unserem Partnerangebot."}</p>
+    </div>;
+  }
 
   const alle = [empfehlung.beste, ...empfehlung.alternativen];
+
+  if (design === "result" || example) return <div className="bkw-offer-result wp-input-page">
+    <div className="wp-section-heading"><h2>Passende Sets zu kaufen</h2></div>
+    <p className="bkw-offer-intro">{example ? <>Beispielrechnung: {example.description} Die Sets werden über {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen.</> : <>Diese Sets sind mit deinen Angaben durchgerechnet und mit Blick auf {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen. Mögliche Förderung wird für jedes Set einzeln berücksichtigt.{!!basis.additionalCosts && <> Deine zusätzlichen Kosten von {basis.additionalCosts.toLocaleString("de-DE")} € sind jeweils eingerechnet.</>}</>}</p>
+    <AffiliateCarousel label="Weitere Balkonkraftwerke" desktopSidebar={design === "result" && !example}>
+      {alle.map((entry, index) => <li key={entry.angebot.id} className="wp-geraete-kachel"><ResultProduct entry={entry} recommended={index === 0} selected={entry.angebot.id === selectedOfferId} onCalculate={onCalculate} onFundingDetails={onFundingDetails} date={daten.abgerufenIso} /></li>)}
+    </AffiliateCarousel>
+    <p className="bkw-offer-price-note">Preisstand {datumKurz(daten.abgerufenIso)} · Maßgeblich sind Preis und Versandbedingungen im Shop.</p>
+    <AffiliateTrust id={disclosureId}
+      promise={example ? "Die Reihenfolge folgt dem berechneten Vorteil in dieser Beispielrechnung – nicht unserer Provision. Für deinen Haushalt kann ein anderes Set passen." : "Die Empfehlungen sind nach dem berechneten Vorteil für deinen Bedarf ausgewählt – nicht nach unserer Provision."}
+      disclosure={<>Solar Check nimmt am Partnerprogramm von {daten.angebote[0]?.haendlerName} teil. Die Sets stammen von unserem Partner {daten.angebote[0]?.haendlerName}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</>}
+    />
+  </div>;
 
   return (
     <div
@@ -356,10 +398,71 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0 }: { basis: An
         Solar Check nimmt am Partnerprogramm von {daten.angebote[0]?.haendlerName} teil und
         erhält für vermittelte Käufe eine Provision.{" "}
         {alle.some(a => a.angebot.speicherKwh > 0) && (
-          <>Die Speichergröße ist die Herstellerangabe der Batteriekapazität; nutzbar ist etwas
-          weniger, der Speichernutzen fällt hier also eher am oberen Rand aus.</>
+          <>Die Speichergröße ist die Herstellerangabe der Batteriekapazität; bei Solakon ONE berücksichtigen wir 15 % Mindestladung. Die Rechnung setzt einen eingerichteten Smart Meter voraus; dessen Lieferumfang ist nicht bestätigt. Zusätzliche Kosten bitte ergänzen.</>
         )}
       </div>
     </div>
   );
+}
+
+
+/** Domain data inside the same product card and actions used by the WP result. */
+function ResultProduct({ entry, recommended, selected, onCalculate, onFundingDetails, date }: { onFundingDetails?: () => void; entry: BewertetesAngebot; recommended: boolean; selected: boolean; onCalculate?: (offer: ShopAngebot) => void; date: string }) {
+  const [shareOpen, setShareOpen] = useState(false);
+  const [status, setStatus] = useState("");
+  const offer = entry.angebot;
+  const image = modellBild(offer);
+  const url = angebotUrl(offer, undefined, recommended ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative");
+  const message = `${offer.produkt} – ${ausstattung(offer)}\n${offer.preis.toLocaleString("de-DE", { minimumFractionDigits: 2 })} € (Stand ${datumKurz(date)})\n${url}`;
+  return <article className="wp-product-card" data-recommended={selected}>
+    <div className="bkw-product-showcase" data-selected={selected}>
+    <ResultChoiceHeader className="bkw-product-header" actionLabel={selected ? "In deiner Berechnung" : "Damit berechnen"} selected={selected} title={recommended ? "Größte Ersparnis" : "Alternative"} onSelect={onCalculate ? ()=>onCalculate(offer) : undefined}>
+      {nf(entry.ergebnis.lifetimeSaving)} € Ersparnis über {entry.ergebnis.annualCosts.grid.length} Jahre
+    </ResultChoiceHeader>
+    <div className="wp-product-heading">
+      <a href={url} onClick={() => trackEvent("balkon_shop_angebote")} target="_blank" rel="nofollow sponsored noopener" referrerPolicy="origin" className="wp-product-image" aria-label={`${offer.produkt} im Shop ansehen`}>
+        <div className="wp-product-rank"><span /><span>ANZEIGE</span></div>
+        <span className="wp-product-photo">{BILDER_FREIGEGEBEN && image && <Image src={image} alt="" fill loading="eager" sizes="(max-width:800px) 80vw, 400px" />}</span>
+        <span className="wp-product-name wp-product-image-title">{offer.produkt}</span>
+      </a>
+    </div>
+    </div>
+    <p className="bkw-offer-intro">{ausstattung(offer)}</p>
+    <Preisblock eintrag={entry} gross result showSavings={false} onFundingDetails={onFundingDetails} />
+    <AffiliateDetails>
+      <div className="bkw-product-details">
+      <section><h4>Preis und Ersparnis</h4>
+      <p>{nf(entry.ergebnis.savingPerYear)} € Ersparnis im ersten Jahr. Die Ersparnis über {entry.ergebnis.annualCosts.grid.length} Jahre berücksichtigt Anschaffung{entry.fundingEuro > 0 ? " und Förderung" : ""}.</p>
+      <p>Shoppreis: {preisTeile(offer.preis).value} € brutto. Stand {datumKurz(date)}; maßgeblich sind Preis und Versandbedingungen im Shop.{entry.fundingEuro > 0 && " Beim Kauf zahlst du den Shoppreis; die Förderung wird separat ausgezahlt."}</p>
+      </section>
+      <section><h4>Förderung</h4>
+      {(entry.fundingEuro > 0 ? entry.fundingNotes : entry.fundingReasons)?.map(text => <p key={text}>{text}</p>)}
+      {entry.fundingEuro > 0 && <p>Angerechnete Förderung für dieses Set: {entry.fundingEuro.toLocaleString("de-DE")} €.</p>}
+      </section>
+      <section><h4>Ausstattung und Speicher</h4>
+      <p>{offer.variante}</p>
+      {offer.speicherKwh > 0 && <p>{entry.storageComparison ? <>Gegenüber einem Set gleicher Modulleistung ohne Speicher: {entry.storageComparison.additionalInvestment.toLocaleString("de-DE", { maximumFractionDigits: 0 })} € Mehrkosten nach Förderung. {entry.storageComparison.payback === 0 ? "Keine zusätzlichen Anschaffungskosten für den Speicher." : Number.isFinite(entry.storageComparison.payback) ? `Durch den zusätzlichen Speicherertrag nach ${entry.storageComparison.payback.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Jahren ausgeglichen.` : "Innerhalb des betrachteten Zeitraums und der angenommenen Speicherlebensdauer nicht ausgeglichen."}</> : "Für den Speicher allein können wir keine Amortisation nennen: Ein vergleichbares Set ohne Speicher fehlt."}</p>}
+      <p>Wechselrichter: {offer.inverterW} W. {offer.speicherKwh > 0 ? <>{speicherAnnahme(offer)}</> : "Ohne Speicher."}</p>
+      {BILDER_FREIGEGEBEN && <p>Bildmaterial: {offer.haendlerName}. Abgebildet sind die Module; den Speicherumfang beschreibt die gewählte Variante.</p>}
+      </section></div>
+    </AffiliateDetails>
+    <AffiliateActions allowReferrer url={url} onShopClick={() => trackEvent("balkon_shop_angebote")} onForward={() => { setStatus(""); setShareOpen(true); }} onCopy={async () => {
+      try { await navigator.clipboard.writeText(url); setStatus("Link kopiert"); }
+      catch { setStatus("Kopieren nicht möglich. Nutze Weiterleiten."); }
+    }} />
+    {status && !shareOpen && <p className="wp-product-copy-status" role="status">{status}</p>}
+    <Modal open={shareOpen} onClose={() => setShareOpen(false)} title="Balkonkraftwerk weiterleiten">
+      <textarea className="wp-product-share-text" aria-label="Produktnachricht" readOnly rows={6} value={message} />
+      <div className="wp-product-share-actions"><button type="button" onClick={async () => {
+        try { await navigator.clipboard.writeText(message); setStatus("Nachricht kopiert"); }
+        catch { setStatus("Bitte den Nachrichtentext markieren und kopieren."); }
+      }}>Nachricht kopieren</button><a href={`mailto:?subject=${encodeURIComponent(offer.produkt)}&body=${encodeURIComponent(message)}`}>E-Mail vorbereiten</a></div>
+      <p role="status">{status}</p>
+    </Modal>
+  </article>;
+}
+
+/** Reuse the approved image mapping, specifications and affiliate URL. */
+export function BalkonProduktTeaser({ offer }: { offer: ShopAngebot }) {
+  return <AffiliateProductTeaser allowReferrer onShopClick={() => trackEvent("balkon_shop_ergebnis")} name={`${offer.haendlerName} ${offer.produkt}`} image={BILDER_FREIGEGEBEN ? modellBild(offer) : null} description={ausstattung(offer)} url={angebotUrl(offer, undefined, "bkw-rechner-empfehlung")} disclosure={<>Unsere Partnerangebote sortieren wir nach deinem berechneten Vorteil – nicht nach unserer Provision.</>} />;
 }

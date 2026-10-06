@@ -12,7 +12,7 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 // Merge stored prices with defaults — guards against stale cache from an older code
 // version that didn't yet ship a field (e.g. electricityPrice). Without this, the
 // missing field becomes undefined and propagates as NaN through calc().
-function mergeWithDefaults(data: Partial<PriceConfig>): PriceConfig {
+export function mergeWithDefaults(data: Partial<PriceConfig>): PriceConfig {
   return {
     pvPriceSmall: typeof data.pvPriceSmall === "number" ? data.pvPriceSmall : DEFAULT_PRICES.pvPriceSmall,
     pvPriceLarge: typeof data.pvPriceLarge === "number" ? data.pvPriceLarge : DEFAULT_PRICES.pvPriceLarge,
@@ -20,7 +20,7 @@ function mergeWithDefaults(data: Partial<PriceConfig>): PriceConfig {
     batteryBase: typeof data.batteryBase === "number" ? data.batteryBase : DEFAULT_PRICES.batteryBase,
     batteryPerKwh: typeof data.batteryPerKwh === "number" ? data.batteryPerKwh : DEFAULT_PRICES.batteryPerKwh,
     electricityPrice: typeof data.electricityPrice === "number" ? data.electricityPrice : DEFAULT_PRICES.electricityPrice,
-    electricityIncrease: typeof data.electricityIncrease === "number" ? data.electricityIncrease : DEFAULT_PRICES.electricityIncrease,
+    electricityIncrease: DEFAULT_PRICES.electricityIncrease,
     validFrom: typeof data.validFrom === "string" ? data.validFrom : DEFAULT_PRICES.validFrom,
     source: data.source ?? DEFAULT_PRICES.source,
   };

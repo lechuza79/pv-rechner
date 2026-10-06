@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import EditorialPage from "../../../../components/EditorialPage";
+import editorial from "../../../../components/EditorialContent.module.css";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import { RATGEBER } from "../../../../lib/ratgeber";
 import { pageMetadata } from "../../../../lib/seo";
@@ -44,11 +46,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
+// Page-specific comparison and data presentation.
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { marginBottom: 10 },
-  lede: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 28, lineHeight: 1.6 },
   karte: {
     display: "block",
     background: v("--color-bg-accent"),
@@ -60,17 +59,15 @@ const S = {
   },
   karteTitel: { fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 },
   karteText: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.6 },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
 };
 
 export default function BalkonRatgeberUebersicht() {
   const artikel = RATGEBER.filter(r => r.slug.startsWith(PRAEFIX));
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
-        <Breadcrumb
+    <EditorialPage>
+
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Balkonkraftwerk", href: "/balkonkraftwerk" },
@@ -78,12 +75,12 @@ export default function BalkonRatgeberUebersicht() {
           ]}
           jsonLd
         />
-        <h1 style={S.h1}>Balkonkraftwerk-Ratgeber</h1>
-        <p style={S.lede}>
+        <h1 className={editorial.h1}>Balkonkraftwerk-Ratgeber</h1>
+        <p className={editorial.subtitle}>
           Was man wissen muss, bevor man ein Steckersolargerät kauft, anmeldet oder um
           einen Speicher ergänzt. Jeder Artikel rechnet seine Beispiele mit demselben
           Modell wie der{" "}
-          <Link href="/balkonkraftwerk/rechner" style={S.link}>Balkonkraftwerk-Rechner</Link>,
+          <Link href="/balkonkraftwerk/rechner" className={editorial.link}>Balkonkraftwerk-Rechner</Link>,
           damit hier nichts steht, was der Rechner anders sagt.
         </p>
 
@@ -104,11 +101,11 @@ export default function BalkonRatgeberUebersicht() {
           ]}
         />
 
-        <p style={{ ...S.small, marginTop: 24 }}>
+        <p className={editorial.small} style={{ marginTop: 24 }}>
           Alle Ratgeber der Seite — auch zu Photovoltaik und Wärmepumpe — stehen in der{" "}
-          <Link href="/ratgeber" style={S.link}>Ratgeber-Übersicht</Link>.
+          <Link href="/ratgeber" className={editorial.link}>Ratgeber-Übersicht</Link>.
         </p>
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }

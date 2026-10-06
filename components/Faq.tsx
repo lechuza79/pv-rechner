@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { FaqEntry, FaqLink } from "../lib/faq";
-import { IconChevronDown } from "./Icons";
-import { faqContentGap, iconSizes, v } from "../lib/theme";
+import { FAQ_CSS } from "../lib/faq-design";
+import { faqContentGap } from "../lib/theme";
 import { jsonLdHtml } from "../lib/json-ld";
 
 // Visible FAQ accordion + matching FAQPage JSON-LD, both rendered from the same
@@ -14,19 +14,7 @@ import { jsonLdHtml } from "../lib/json-ld";
 // duplicating an inline link are suppressed.
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const linkStyle = { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 };
-
-// Scoped styles: hide the native marker, animate the chevron, reveal the answer.
-const faqCss = `
-.faq-heading{font-size:var(--font-size-caption);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:0 0 6px}
-.faq-item{border-bottom:1px solid var(--color-border)}
-.faq-summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;font-size:var(--font-size-h3);font-weight:700;color:var(--color-text-primary);line-height:1.35}
-.faq-summary::-webkit-details-marker{display:none}
-.faq-chevron{flex:none;color:var(--color-text-muted);transition:transform 0.22s ease}
-.faq-item[open] .faq-summary .faq-chevron{transform:rotate(180deg)}
-.faq-item[open] .faq-answer{animation:faqReveal 0.22s ease-out}
-@keyframes faqReveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-`;
+const linkStyle = { color: "inherit" };
 
 /** Replace the first occurrence of each phrase in `text` with a link. */
 function linkify(text: string, links: FaqLink[]): ReactNode[] {
@@ -68,8 +56,10 @@ export default function Faq({
   items,
   title = "Häufige Fragen",
   currentPath,
+  theme = "light",
 }: {
   items: FaqEntry[];
+  theme?: "light" | "dark";
   title?: string;
   /** Path of the page this FAQ renders on. Links/CTAs pointing here are
    *  suppressed — no point sending a reader to the page they're already on. */
@@ -88,14 +78,14 @@ export default function Faq({
   return (
     // Abstand aus faqContentGap (lib/theme) — dieselbe Quelle nutzt das
     // Akkordeon der Atomstrom-Seite, sonst driften die beiden FAQ-Bausteine.
-    <section style={{ marginTop: faqContentGap, marginBottom: 24 }}>
-      <style dangerouslySetInnerHTML={{ __html: faqCss }} />
+    <section className="sc-faq" data-theme={theme} data-layout={theme === "light" ? "inline" : undefined} style={{ marginTop: faqContentGap, marginBottom: 24 }}>
+      <style dangerouslySetInnerHTML={{ __html: FAQ_CSS }} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
-      <h2 className="faq-heading">{title}</h2>
-      <div>
+      <h2>{title}</h2>
+      <div className="sc-faq-wrap">
         {items.map((item) => {
           // Don't link the page we're already on.
           const links = (item.links ?? []).filter((l) => l.href !== currentPath);
@@ -111,35 +101,15 @@ export default function Faq({
             <details key={item.q} className="faq-item">
               <summary className="faq-summary">
                 <span>{item.q}</span>
-                <span className="faq-chevron" style={{ display: "flex" }}>
-                  <IconChevronDown size={iconSizes.md} />
-                </span>
               </summary>
-              <div className="faq-answer" style={{ paddingBottom: 16 }}>
-                <p
-                  style={{
-                    fontSize: v("--font-size-body"),
-                    fontWeight: 400,
-                    color: v("--color-text-muted"),
-                    lineHeight: 1.7,
-                    margin: "0 0 12px",
-                  }}
-                >
+              <div className="sc-faq-answer">
+                <p>
                   {linkify(item.a, links)}
                 </p>
                 {cta && (
                   <Link
                     href={cta.href}
-                    style={{
-                      display: "inline-block",
-                      padding: "8px 16px",
-                      borderRadius: v("--radius-pill"),
-                      fontSize: v("--font-size-small"),
-                      fontWeight: 700,
-                      background: v("--color-cta"),
-                      color: v("--color-text-on-accent"),
-                      textDecoration: "none",
-                    }}
+                    className="sc-faq-cta"
                   >
                     {cta.label} →
                   </Link>

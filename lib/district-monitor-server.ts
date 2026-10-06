@@ -1,11 +1,16 @@
+import {previewData} from "./preview-data";
 import 'server-only';
 import {brotliDecompressSync} from 'node:zlib';
+import {cache} from 'react';
 import {GEMEINDE_PAKET_BUCKET} from './gemeinde-paket-server';
 import {energyYearTitle} from './story-energy-year-labels';
 import {DB_READ_TIMEOUT_MS,withDbTimeout} from './db-timeout';
 import {ATLAS_DATEN_TAG,KREIS_PAKET_TAG} from './atlas-revalidate-routen';
 import {DISTRICT_POINTER_PATH,checkDistrictPackage,checkManifest,type DistrictComputed,type DistrictMonitor,type DistrictRefusal} from './district-package';
 import type {StoryConcept} from './story-konzepte';
+import {checkRegionPackage} from './region-package';
+import {decodeRankingCells} from './ranking-package';
+import type {ChildYearRow} from './atlas';
 
 /**
  * The district page reads ONE precomputed package (lib/district-package.ts),
@@ -25,12 +30,12 @@ import type {StoryConcept} from './story-konzepte';
  */
 export type DistrictPrepared =
   | {state:'current'|'older-edition';editions:string[];generation:string;builtAt:string}
-  | {state:'unavailable';reason:'not-published'|DistrictRefusal};
-export type DistrictContent = DistrictComputed & {prepared:DistrictPrepared};
+  | {state:'unavailable';reason:'not-published'|'read-error'|DistrictRefusal};
+export type DistrictContent = DistrictComputed & {prepared:DistrictPrepared;preview?:boolean};
 
 const UNAVAILABLE_MONITOR:DistrictMonitor={status:'unavailable',reason:'not-prepared',energy:null,sites:null};
 
-async function readObject(path:string):Promise<Buffer|null>{
+async function readObjectLive(path:string):Promise<Buffer|null>{
   const url=process.env.SUPABASE_URL??process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.SUPABASE_SERVICE_KEY;
   if(!url||!key)throw new Error('kreis-paket: Supabase-Zugang fehlt');
@@ -44,7 +49,11 @@ async function readObject(path:string):Promise<Buffer|null>{
   return Buffer.from(await res.arrayBuffer());
 }
 
-const unavailable=(reason:'not-published'|DistrictRefusal):DistrictContent=>({monitor:UNAVAILABLE_MONITOR,stories:[],prepared:{state:'unavailable',reason}});
+function readObject(path:string):Promise<Buffer|null>{
+  return previewData("district-object-v1:"+path,()=>readObjectLive(path));
+}
+
+const unavailable=(reason:'not-published'|'read-error'|DistrictRefusal):DistrictContent=>({monitor:UNAVAILABLE_MONITOR,stories:[],prepared:{state:'unavailable',reason}});
 
 /** Same-cycle test: the register database and the town packages are built days apart within one month. */
 export function preparedState(editions:string[],stand:string):'current'|'older-edition'{
@@ -52,20 +61,81 @@ export function preparedState(editions:string[],stand:string):'current'|'older-e
   return newest&&stand&&newest.slice(0,7)<stand.slice(0,7)?'older-edition':'current';
 }
 
-export async function loadDistrictContent(regionId:string,members:string[],stand:string):Promise<DistrictContent>{
+/**
+ * Pointer, manifest entry and package body of one region, read once per
+ * request (React cache). Split from the checks below so a page can START the
+ * read before it knows the member list the check needs (preloadPublishedPackage):
+ * the two reads are the longest wait of a cold district page, and they used to
+ * begin only after every other read had finished.
+ */
+type Published = {found:false}|{found:true;generation:string;raw:unknown};
+const readPublished=cache(async(kind:'district'|'region',regionId:string):Promise<Published>=>{
+  const fixtureDir=process.env.NODE_ENV==='development'?process.env.REGIONAL_UI_FIXTURES:undefined;
+  if(fixtureDir && /^(de|\d{2}|\d{5})$/.test(regionId)) {
+    const {readFile}=await import('node:fs/promises');
+    const {join}=await import('node:path');
+    const body=await readFile(join(fixtureDir,`${kind}-${regionId}.json`),'utf8').catch(error=>{
+      if(error.code==='ENOENT')return null;
+      throw error;
+    });
+    if(body)return {found:true,generation:'local-preview',raw:JSON.parse(body)};
+  }
   const pointer=await readObject(DISTRICT_POINTER_PATH);
   const manifest=pointer?JSON.parse(pointer.toString('utf8')):null;
-  if(!manifest||!checkManifest(manifest))return unavailable('not-published');
-  const entry=manifest.districts[regionId];
-  if(!entry)return unavailable('not-published');
+  if(!manifest||!checkManifest(manifest))return {found:false};
+  const entry=kind==='district'?manifest.districts[regionId]:manifest.regions?.[regionId];
+  if(!entry)return {found:false};
   const body=await readObject(entry.path);
-  if(!body)return unavailable('not-published');
-  const check=checkDistrictPackage(JSON.parse(brotliDecompressSync(body).toString('utf8')),regionId,members);
+  if(!body)return {found:false};
+  return {found:true,generation:manifest.generation,raw:JSON.parse(brotliDecompressSync(body).toString('utf8'))};
+});
+
+/** Starts the package read without waiting; loadDistrictContent/loadRegionContent pick it up. */
+export function preloadPublishedPackage(kind:'district'|'region',regionId:string):void{
+  void readPublished(kind,regionId).catch(()=>{});
+}
+
+export async function loadDistrictContent(regionId:string,members:string[],stand:string):Promise<DistrictContent>{
+  const published=await readPublished('district',regionId);
+  if(!published.found)return unavailable('not-published');
+  const check=checkDistrictPackage(published.raw,regionId,members);
   if(!check.ok)return unavailable(check.reason);
   const {pkg}=check;
   // Story titles of energy years follow the current code, like the town reader.
   const stories=pkg.content.stories.map((s:StoryConcept)=>s.energyYear?{...s,title:energyYearTitle(s.energyYear)}:s);
-  return {monitor:pkg.content.monitor,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:manifest.generation,builtAt:pkg.builtAt}};
+  return {monitor:pkg.content.monitor,preview:published.generation==='local-preview',childEnergy:pkg.content.childEnergy,stories,prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+}
+
+/**
+ * Bundesland and Deutschland: the region package of the same generation
+ * (lib/region-package.ts). `children` are the page's child regions (Kreise
+ * resp. Bundesländer); a different child list refuses the package. Same three
+ * outcomes as a district. `monitor.sites` is always null here: the live power
+ * widget has no upper-level source yet; `stories` is always empty.
+ */
+export async function loadRegionContent(regionId:string,children:string[],stand:string):Promise<DistrictContent>{
+  const published=await readPublished('region',regionId);
+  if(!published.found)return unavailable('not-published');
+  const check=checkRegionPackage(published.raw,regionId,children);
+  if(!check.ok)return unavailable(check.reason);
+  const {pkg}=check;
+  return {monitor:pkg.content.monitor,preview:published.generation==='local-preview',childEnergy:pkg.content.childEnergy,stories:[],prepared:{state:preparedState(pkg.editions,stand),editions:pkg.editions,generation:published.generation,builtAt:pkg.builtAt}};
+}
+
+/**
+ * The ranking table's cells from the same published package the monitor reads
+ * (lib/ranking-package.ts), or null: no package, a package for another
+ * membership/version, one built before the field existed, or cells of another
+ * register import than `stand`. The caller then reads the database. Only the
+ * published generation — the local preview fixtures carry no ranking.
+ */
+export async function loadPackagedRankingCells(kind:'district'|'region',regionId:string,children:string[],stand:string|null):Promise<ChildYearRow[]|null>{
+  if(!stand)return null;
+  const published=await readPublished(kind,regionId);
+  if(!published.found)return null;
+  const check=kind==='district'?checkDistrictPackage(published.raw,regionId,children):checkRegionPackage(published.raw,regionId,children);
+  if(!check.ok)return null;
+  return decodeRankingCells(check.pkg.ranking,stand);
 }
 
 /** The daily power endpoint consumes the same package. */

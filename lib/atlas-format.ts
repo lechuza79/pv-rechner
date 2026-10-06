@@ -263,8 +263,8 @@ export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
  * Prozent ist eine Einheit wie kWp: Sie wird nicht getippt, sondern kommt hier
  * her. Zwischen Zahl und Zeichen steht im Deutschen ein Leerzeichen (DIN 5008).
  */
-export const anteilProzentTeile = (anteil: number): Messwert => ({
-  value: prozentGerundet(anteil).toLocaleString("de-DE"),
+export const anteilProzentTeile = (anteil: number, stellen?: number): Messwert => ({
+  value: stellen === undefined ? prozentGerundet(anteil).toLocaleString("de-DE") : anteil > 0 && anteil * 100 < 10 ** -stellen ? `< ${dez(10 ** -stellen, stellen)}` : dez(anteil * 100, stellen),
   unit: "%",
 });
 export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
@@ -363,9 +363,12 @@ export function prozentGerundet(anteil: number): number {
  * batterieMittelTeile: Unter 10 % würde die Rundung Segmente einebnen, die sich
  * in der Legende sichtbar unterscheiden (0,4 % und 1,4 % wären beide „1 %" bzw.
  * „0 %"). Oberhalb trägt die Nachkommastelle nichts und macht die Legende unruhig.
+ * Ein Anteil über null, der auch mit einer Nachkommastelle null wäre, heißt
+ * „unter 0,1 %" — „0,0 %" behauptete, es gebe ihn nicht.
  */
 export function anteilProzentFeinTeile(anteil: number): Messwert {
   const p = anteil * 100;
+  if (p > 0 && p < 0.05) return { value: "unter 0,1", unit: "%" };
   return {
     value:
       p >= 9.95
@@ -449,4 +452,14 @@ export function formatDataAsOf(iso: string): string {
   const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
   if (!m) return iso;
   return `${MONATE_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
+}
+
+/** Compact monthly energy: choose the largest unit that keeps a value >= 1. */
+export function energieMwhTeile(mwh: number): Messwert {
+  const magnitude = Math.abs(mwh);
+  const divisor = magnitude >= 1_000_000 ? 1_000_000 : magnitude >= 1_000 ? 1_000 : 1;
+  return {
+    value: mwh > 0 && mwh < 0.1 ? "< 0,1" : dez(mwh / divisor, 1),
+    unit: divisor === 1_000_000 ? "TWh" : divisor === 1_000 ? "GWh" : "MWh",
+  };
 }

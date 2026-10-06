@@ -40,6 +40,8 @@ const SOZIAL = [
   "facebook.com", "fb.com", "fb.me", "instagram.com", "linkedin.com", "lnkd.in",
   "x.com", "twitter.com", "t.co", "threads.net", "threads.com", "mastodon.social",
   "nebenan.de", "nextdoor.de", "whatsapp.com", "t.me", "youtube.com", "bsky.app",
+  // App referrers (Android sends the package name, not a host).
+  "com.linkedin.android", "reddit.com", "com.reddit.frontpage",
 ];
 
 /** Postfächer und Mail-Programme. Ein Klick von hier kam aus unserem Brief. */
@@ -48,6 +50,9 @@ const POSTFACH = [
   "outlook.com", "outlook.live.com", "outlook.office.com", "outlook.office365.com",
   "email.t-online.de", "t-online.de", "web.de", "gmx.net", "gmx.de",
   "mail.yahoo.com", "mail.zoho.com", "roundcube.", "webmail.", "owa.",
+  // Fremde Postfächer liegen durchweg unter „mail.<domain>" — gemessen an
+  // mail.fernbildmedia.de, das sonst als verweisende Seite gezählt würde.
+  "mail.",
 ];
 
 /** Sicherheitsdienste, die Links in eingehenden Mails vorab öffnen. */
@@ -65,10 +70,12 @@ const SUCHE = [
   // Baidu sah am 22.09.2026 als „andere Seite" aus und landete damit als
   // Veröffentlichungs-Hinweis für Wallertheim im Wochenbericht.
   "baidu.com",
+  "kagi.com",
 ];
 
 /** Unsere eigenen Oberflächen. */
-const INTERN = ["vercel.com", "solar-check.io"];
+// awin.com: our affiliate network's dashboards, not a reader.
+const INTERN = ["vercel.com", "solar-check.io", "awin.com"];
 
 function trifft(host: string, liste: string[]): boolean {
   return liste.some((m) => (m.endsWith(".") || m.includes("/") ? host.includes(m) : host === m || host.endsWith(`.${m}`)));
@@ -83,9 +90,14 @@ function trifft(host: string, liste: string[]): boolean {
 export function ordneHerkunft(verweis: string, gemeindeWebsite?: string | null): Herkunft {
   const host = verweis.trim().toLowerCase().replace(/^www\./, "");
   if (!host) return "ohne";
+  // Eine IP-Adresse oder ein Name ohne Punkt ist unser eigener Entwicklungs-
+  // server, keine fremde Seite (gemessen: 127.0.0.1 mit zwei Besuchern).
+  if (/^[\d.]+$/.test(host) || !host.includes(".")) return "intern";
   if (trifft(host, PRUEFDIENST)) return "pruefdienst";
   if (trifft(host, INTERN)) return "intern";
   if (trifft(host, SOZIAL)) return "veroeffentlichung";
+  // "suche.t-online.de" would otherwise match the mailbox entry "t-online.de".
+  if (host.startsWith("suche.") || host.includes("search.")) return "suche";
   if (trifft(host, POSTFACH)) return "brief";
   if (trifft(host, SUCHE)) return "suche";
 

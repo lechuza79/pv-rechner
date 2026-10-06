@@ -245,7 +245,7 @@ test.describe("Gemeinde-Monitor: Monatsrückblick", () => {
   });
 });
 
-// The monitor options menu: exactly Link kopieren, Download, Einbetten; keyboard, focus, Escape, outside tap.
+// The shared monitor menu: keyboard, focus, dismissal and contextual contact dialogs.
 test.describe("Gemeinde-Monitor: Optionsmenü", () => {
   test("Tastatur, Fokus, Escape und Tippen daneben; Einbetten ehrlich als nicht verfügbar", async ({ page }) => {
     await page.goto("/embed/gemeinde/09679202/monitor");
@@ -259,17 +259,30 @@ test.describe("Gemeinde-Monitor: Optionsmenü", () => {
     await button.focus();
     await page.keyboard.press("Enter");
     const items = widget.getByRole("menuitem");
-    await expect(items).toHaveText([/Link kopieren/, /Download/, /Einbetten/]);
+    await expect(items).toHaveText([/Informationen zum Diagramm/, /Link kopieren/, /Weiterleiten/, /Download/, /In Ihrem Design.*Anfragen/, /Einbetten.*noch nicht verfügbar.*Anfragen/]);
     await expect(items.first()).toBeFocused();
     await page.keyboard.press("ArrowDown");
     await expect(items.nth(1)).toBeFocused();
     await page.keyboard.press("End");
-    await expect(items.nth(2)).toBeFocused();
-    await expect(items.nth(2)).toHaveAttribute("aria-disabled", "true");
-    await expect(items.nth(2)).toContainText("noch nicht verfügbar");
+    await expect(items.last()).toBeFocused();
+    const embed = widget.getByRole('menuitem', {name:/^Einbetten/});
+    await expect(embed).toBeEnabled();
+    await expect(embed).toContainText("noch nicht verfügbar");
     await page.keyboard.press("Escape");
     await expect(widget.getByRole("menu")).toHaveCount(0);
     await expect(button).toBeFocused();
+
+    const originalUrl = page.url();
+    for (const name of [/^Einbetten/, /In Ihrem Design/]) {
+      await button.click();
+      await widget.getByRole('menuitem', {name}).click();
+      const contact = page.getByRole('dialog', {name:'Kontakt aufnehmen'});
+      await expect(contact).toBeVisible();
+      await expect(contact.getByRole('textbox', {name:'Nachricht',exact:true})).toHaveValue(/Widget:/);
+      await expect(page).toHaveURL(originalUrl);
+      await contact.getByRole('button', {name:'Schließen',exact:true}).click();
+      await expect(button).toBeFocused();
+    }
 
     await button.click();
     await expect(widget.getByRole("menu")).toBeVisible();

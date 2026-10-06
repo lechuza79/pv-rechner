@@ -1,3 +1,4 @@
+import { electricityPriceAtYear } from "./electricity-projection";
 // Das Amortisations-Rennen: ein Haushalt, einmal ohne und einmal mit Anlage,
 // 25 Jahre, Monat für Monat mit dem Wetter, wie es wirklich war.
 //
@@ -156,7 +157,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const steigerung = p.stromSteigerung ?? prices.electricityIncrease;
   const strompreis = prices.electricityPrice;
   const wetter = p.wetter ?? "dwd";
-  const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + steigerung, i - 1);
+  const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? electricityPriceAtYear(strompreis, i - 1, steigerung);
 
   const referenz = haushalte.find((h) => h.kwp <= 0);
   if (!referenz) throw new Error("Kostenrennen braucht einen Haushalt ohne Anlage als Referenz");

@@ -30,7 +30,7 @@ export function monitorKpiGroups({history,population,registerStand,populationSta
         // Einheit nach der Größe des Orts: ein Dorf mit einem Balkonkraftwerk
         // zeigte sonst „0,0 MWp" — eine Null, wo eine Anlage steht.
         (() => {
-          const m = reihenMassstab(current.solarKwp, "kWp", "MWp");
+          const m = reihenMassstab(current.solarKwp, "kWp", "MWp", "GWp");
           return metric("solar-power", "Installierte Leistung", (r) => r.solarKwp / m.teiler, m.unit, m.digits);
         })(),
         // Without a population figure a per-resident value would be invented.
@@ -43,7 +43,7 @@ export function monitorKpiGroups({history,population,registerStand,populationSta
       items: [
         metric("battery-count", "Speicher", (r) => r.batteryCount, "Stk.", 0),
         (() => {
-          const m = reihenMassstab(current.batteryKwh, "kWh", "MWh");
+          const m = reihenMassstab(current.batteryKwh, "kWh", "MWh", "GWh");
           return metric("battery-capacity", "Kapazität", (r) => r.batteryKwh / m.teiler, m.unit, m.digits);
         })(),
       ],

@@ -605,7 +605,30 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   Original gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026,
   //   kein Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Gegensuche
   //   erneut ohne Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-09-26",
+  // 27.09.2026: GModG-Infoportal (gmodg.bund.de, Neuigkeiten) im Original
+  //   gelesen — § 42a weiter nur als Ankündigung eines Gesetzes bis zum
+  //   01.12.2026, kein Quotengesetz, keine Änderung an § 43. Einziger neuer
+  //   Bundestagsvorgang ist eine Kleine Anfrage (BT-Drs. 21/7563), kein
+  //   Gesetzgebungsschritt. Bioheizöl erneut ohne Trägerquelle mit Preisreihe.
+  // 30.09.2026: § 42a und § 43 GModG auf gesetze-im-internet.de (BMJ) im
+  //   Wortlaut gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43
+  //   Stufen 10/15/30/60 % (2029/2030/2035/2040) zellgleich mit
+  //   BIO_TREPPE_STUFEN. Bioheizöl-Suche ohne Trägerquelle mit Preisreihe.
+  // 01.10.2026: Chronologie des GModG-Infoportals (gmodg.bund.de) im Original
+  //   gelesen — jüngster Eintrag weiter die Verkündung vom 28.07.2026, § 42a
+  //   weiter nur Ankündigung eines Gesetzes bis 01.12.2026, kein Quotengesetz.
+  //   Bioheizöl-Suche erneut nur Händler-/Portalseiten, keine Trägerquelle.
+  // 02.10.2026: GModG-Infoportal (gmodg.bund.de) im Original gelesen — kein
+  //   Quotengesetz nach § 42a, keine Änderung an § 43; jüngster Eintrag weiter
+  //   die Überarbeitung nach Inkrafttreten. Bioheizöl-Suche: nur HVO-Mengen
+  //   (BAFA/UFOP) und Diesel-Großhandelsnotierungen, keine Endkunden-Preisreihe.
+  // 03.10.2026: GModG-Infoportal (gmodg.bund.de) im Original gelesen — kein
+  //   Quotengesetz nach § 42a, keine Änderung an § 43. Bioheizöl-Suche: nur
+  //   Ankündigung der Quote ab 2028, keine Trägerquelle mit Preisreihe.
+  // 06.10.2026: § 43 GModG im Volltext (gesetze-im-internet.de) gelesen —
+  //   Stufen 10/15/30/60 % ab 2029/2030/2035/2040 unverändert; kein
+  //   Quotengesetz nach § 42a. Bioheizöl-Suche: keine Trägerquelle mit Preisreihe.
+  geprueftRechtIso: "2026-10-06",
   reviewBy: "2027-07-25",
 };
 

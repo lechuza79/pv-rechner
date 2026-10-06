@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
+import { energieQuelle, quellenHinweis, letzterZeitpunkt } from "../../../lib/energy-ersatzstand";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import JetztImNetz from "../../../components/charts/JetztImNetz";
 import EventTimeline from "../../../components/charts/EventTimeline";
@@ -11,7 +12,7 @@ import {
   formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS, CHART_MARGIN,
 } from "../../../lib/chart-utils";
 import { v, iconSizes, space, pad } from "../../../lib/theme";
-import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
+import { sourceLabel } from "../../../lib/data-sources";
 import { STROMMIX_MILESTONES, milestonesForYear, strommixTimelineEvents } from "../../../lib/strommix-milestones";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -256,6 +257,8 @@ export default function EnergieClient() {
   const { data: nuclearData, loading: nuclearLoading, error: nuclearError } = useNuclearImport(hours, dateRange);
 
   const stats = useMemo(() => calcPeriodStats(genData.data, genData.resolution), [genData.data, genData.resolution]);
+  // Energy-Charts down: SMARD's live numbers or our stored copy, said next to the chart.
+  const quellenNotiz = quellenHinweis(genData, letzterZeitpunkt(genData.data));
 
   // Check if domestic nuclear data is present (only before April 2023)
   const hasDomesticNuclear = useMemo(() => {
@@ -360,7 +363,7 @@ export default function EnergieClient() {
           text: "Rechnerischer Wert: Stromflüsse über die Grenze multipliziert mit dem Kernenergie-Anteil des Nachbarlands. Heimische Kernkraft läuft seit April 2023 nicht mehr.",
         }] : []),
       ],
-      source: sourceLabel(DATA_SOURCES.energyCharts),
+      source: sourceLabel(energieQuelle(genData)),
     },
     filename: `solar-check-strommix-${selected}.png`,
     shareText: `Strommix Deutschland (${rangeLabel}) – ${stats ? `${Math.round(stats.eeSharePct)}% Erneuerbare` : ""}`,
@@ -368,16 +371,9 @@ export default function EnergieClient() {
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      {/* Hero */}
-      <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <h1 style={{}}>
-          Strommix Deutschland – live
-        </h1>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
-          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
-        </p>
-      </div>
-
+      {/* The hero (h1 + intro) lives in page.tsx: this component reads the URL
+          and renders only in the browser, so a heading here was missing from
+          the server HTML (SEO audit 27.09.2026). */}
       {/* Zwei eigenständige Live-Widgets — VOR dem Strommix-Widget, das aus
           Zeitraum-Umschalter, Kachelreihe und Verlaufs-Chart besteht. Sie
           standen zuerst zwischen Kacheln und Chart und wirkten dadurch wie ein
@@ -632,10 +628,17 @@ export default function EnergieClient() {
         <h3 style={{ fontSize: v("--font-size-body"), fontWeight: 700, margin: 0, paddingLeft: 8 }}>
           Stromerzeugung nach Energieträger
         </h3>
-        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale || quellenNotiz ? 6 : 12, paddingLeft: 8 }}>
           {rangeLabel}
         </div>
-        {isStale && (
+        {/* Energy-Charts down, the route serves our last stored copy: say why
+            the curve ends early and when, instead of an empty box. */}
+        {quellenNotiz && !loading && (
+          <div role="status" style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8 }}>
+            {quellenNotiz}
+          </div>
+        )}
+        {isStale && !genData.stale && (
           <div style={{
             fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8,
             display: "flex", alignItems: "center", gap: 6,
@@ -784,7 +787,7 @@ export default function EnergieClient() {
           lineHeight: 1.6,
         }}
       >
-        Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)}
+        Datenquelle: {sourceLabel(energieQuelle(genData))}
         {" · "}
         <a href="/atomstrom-import" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
           Wie viel Atomstrom importiert Deutschland?

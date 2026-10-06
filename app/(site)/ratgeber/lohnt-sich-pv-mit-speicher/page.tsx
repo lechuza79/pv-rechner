@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import EditorialPage from "../../../../components/EditorialPage";
+import editorial from "../../../../components/EditorialContent.module.css";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import ProConLists from "../../../../components/ProConLists";
 import { IconArrowUp } from "../../../../components/Icons";
@@ -45,16 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-// ─── Styles (same content-page conventions as /methodik) ────────────────────
+// Page-specific comparison and data presentation.
 const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "0 16px 20px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -62,74 +56,9 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: { color: v("--color-text-primary"), marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  card: {
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-    padding: "14px 16px",
-    border: `1px solid ${v("--color-border")}`,
-    marginBottom: 12,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-  },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 8,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  label: {
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    marginBottom: 6,
-    display: "block",
-  },
   mono: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small") },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   positive: { color: v("--color-positive-text"), fontWeight: 600 },
-  muted: { color: v("--color-text-muted") },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  ctaButton: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-pill"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    background: v("--color-cta"),
-    color: v("--color-text-on-accent"),
-    textDecoration: "none",
-  },
-  ctaSecondary: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-md"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    border: `1px solid ${v("--color-border")}`,
-    color: v("--color-accent"),
-    textDecoration: "none",
-  },
   th: {
     textAlign: "left" as const,
     fontSize: v("--font-size-caption"),
@@ -391,9 +320,9 @@ export default async function LohntSichPvMitSpeicherPage() {
   const faqItems = pvSpeicherFaq(prices);
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
-        <Breadcrumb
+    <EditorialPage>
+
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
@@ -402,11 +331,6 @@ export default async function LohntSichPvMitSpeicherPage() {
           jsonLd
         />
 
-        <h1 style={S.h1}>Lohnt sich eine PV-Anlage mit Speicher?</h1>
-        <p style={S.subtitle}>
-          Der ehrliche Realitätscheck: wann sich ein Batteriespeicher rechnet, wann nicht —
-          und was die Werbeversprechen gern weglassen.
-        </p>
         <ArticleMeta
           headline="Lohnt sich eine PV-Anlage mit Speicher?"
           description="Wann sich ein Batteriespeicher zur PV-Anlage rechnet — und wann nicht."
@@ -415,30 +339,36 @@ export default async function LohntSichPvMitSpeicherPage() {
           modified="2026-09-05"
         />
 
+        <h1 className={editorial.h1}>Lohnt sich eine PV-Anlage mit Speicher?</h1>
+        <p className={editorial.subtitle}>
+          Der ehrliche Realitätscheck: wann sich ein Batteriespeicher rechnet, wann nicht —
+          und was die Werbeversprechen gern weglassen.
+        </p>
+
         {/* ── Kurzantwort ── */}
-        <div style={S.hero}>
-          <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Meistens ja — inzwischen.</strong> Bei den aktuellen
+        <div className={editorial.hero}>
+          <span className={editorial.label}>Die Kurzantwort</span>
+          <strong className={editorial.strong}>Meistens ja — inzwischen.</strong> Bei den aktuellen
           Speicherpreisen verdient ein passend dimensionierter Speicher seinen Aufpreis in
           typischen Haushalten innerhalb seiner Lebensdauer zurück und erhöht den Gesamtgewinn
           der Anlage deutlich. Das war vor einigen Jahren anders: Die Antwort ist mit den
           Preisen gekippt, nicht die Physik. Es bleiben aber klare Fälle, in denen sich ein
           Speicher <em>nicht</em> rechnet — sie stehen weiter unten.
         </div>
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginBottom: 0 }}>
           Stand {formatPriceDate(prices.validFrom)} · unverbindliche Näherungswerte, ohne Gewähr.
         </p>
 
         {/* ── Warum der Speicher die Rechnung verändert ── */}
-        <h2 style={S.h2}>Warum ein Speicher die Rechnung verändert</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Warum ein Speicher die Rechnung verändert</h2>
+        <p className={editorial.p}>
           Eine PV-Anlage produziert am meisten Strom mittags — verbraucht wird aber vor allem
           morgens und abends. Ohne Speicher fließt der Überschuss ins Netz, und dafür gibt es
           nur die <GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> von
           aktuell {feedInCt} ct/kWh. Selbst verbrauchter Strom spart dagegen den vollen
           Strompreis von rund {strompreisCt} ct/kWh.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Genau diese Lücke ist das Geschäftsmodell des Speichers: Er verschiebt den
           Mittagsüberschuss in den Abend und die Nacht. Jede so verschobene Kilowattstunde
           ist rund das Vierfache wert. Der{" "}
@@ -447,7 +377,7 @@ export default async function LohntSichPvMitSpeicherPage() {
           {rows[0].ev} auf {rows[2].ev} %. Wie weit genau, hängt an der Anlagengröße im
           Verhältnis zum Verbrauch; die Tabelle zeigt es für diesen Haushalt.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Ob sich das <em>rechnet</em>, entscheidet der Preis pro Kilowattstunde{" "}
           <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm>. Und der ist
           in den letzten Jahren stark gefallen — deshalb fällt die Antwort heute anders aus
@@ -455,19 +385,19 @@ export default async function LohntSichPvMitSpeicherPage() {
         </p>
 
         {/* ── Eigenverbrauch vs. Autarkie ── */}
-        <h2 style={S.h2}>Eigenverbrauch und Autarkie — nicht verwechseln</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Eigenverbrauch und Autarkie — nicht verwechseln</h2>
+        <p className={editorial.p}>
           Zwei Prozentzahlen, die oft durcheinandergehen — und mit denen sich hervorragend
           schönrechnen lässt:
         </p>
-        <div style={S.card}>
+        <div className={editorial.card}>
           <span style={S.accent}>Eigenverbrauch</span> — wie viel deines <em>erzeugten</em>{" "}
           Solarstroms nutzt du selbst? Das ist die Größe, die Geld verdient.
           <br />
           <span style={S.accent}>Autarkie</span> — wie viel deines <em>Verbrauchs</em> deckst
           du aus eigener Sonne? Das ist die gefühlte Unabhängigkeit vom Netz.
         </div>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Die oft beworbenen „70–80 % Unabhängigkeit" beziehen sich auf die{" "}
           <GlossaryTerm id="autarkie">Autarkie</GlossaryTerm> — nicht auf den Eigenverbrauch,
           und sie sind kein Renditeversprechen. Wichtig zu wissen: Die Autarkie sättigt bei
@@ -478,15 +408,15 @@ export default async function LohntSichPvMitSpeicherPage() {
         </p>
 
         {/* ── Beispielrechnung ── */}
-        <h2 style={S.h2}>Beispielrechnung: 10 kWp mit und ohne Speicher</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Beispielrechnung: 10 kWp mit und ohne Speicher</h2>
+        <p className={editorial.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
           Ertrag von {EX.ertragKwp} kWh pro kWp (deutscher Schnitt bei optimaler Ausrichtung, ohne
-          Standortdaten). Gerechnet mit unserem Modell im realistischen Szenario
-          (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
+          Standortdaten). Gerechnet mit unserem Modell im UBA-Basismodell
+          (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE", { maximumFractionDigits: 2 })} %/Jahr):
         </p>
-        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
+        <div className={editorial.card} style={{ padding: "6px 10px", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
@@ -545,8 +475,8 @@ export default async function LohntSichPvMitSpeicherPage() {
             </tbody>
           </table>
         </div>
-        <p style={S.p}>
-          Das Entscheidende ist der <strong style={S.strong}>Blick auf den Aufpreis</strong>:
+        <p className={editorial.p}>
+          Das Entscheidende ist der <strong className={editorial.strong}>Blick auf den Aufpreis</strong>:
           Der 10-kWh-Speicher kostet hier {eur(speicherAufpreis)} extra und holt diesen
           Aufpreis über den zusätzlichen Eigenverbrauch in rund {aufpreisPayback} Jahren
           wieder herein — deutlich innerhalb seiner Lebensdauer. Über 25 Jahre wächst der
@@ -556,35 +486,34 @@ export default async function LohntSichPvMitSpeicherPage() {
         </p>
 
         {/* ── Zwei Beispiele mit Chart + Kacheln + Deep-Link in den Rechner ── */}
-        <p style={{ ...S.p, marginTop: 18 }}>
-          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das realistische
-          Szenario, die blasseren Linien der vorsichtige und der günstige Verlauf. Ein Klick
+        <p className={editorial.p} style={{ marginTop: 18 }}>
+          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das UBA-Basismodell, die blasseren Linien sind Sensitivitäten von einem Prozentpunkt darunter und darüber. Ein Klick
           öffnet die Anlage direkt im Rechner, wo du jede Annahme anpassen kannst:
         </p>
         <TeaserCard row={ohne} title="10 kWp ohne Speicher" badge="10 kWp · kein Speicher" />
         <TeaserCard row={mit10} title="10 kWp mit 10 kWh Speicher" badge="10 kWp · 10 kWh" />
 
-        <p style={S.p}>
-          Ehrlichkeitshalber eingerechnet: ein <strong style={S.strong}>Akku-Tausch nach{" "}
+        <p className={editorial.p}>
+          Ehrlichkeitshalber eingerechnet: ein <strong className={editorial.strong}>Akku-Tausch nach{" "}
           {BATTERY_LIFETIME_YEARS} Jahren</strong> (zu dann voraussichtlich niedrigeren
           Preisen) und die Modulalterung von 0,5 % pro Jahr. Nicht enthalten: Wartungskosten
           (ca. 150–250 €/Jahr, betreffen alle Varianten gleichermaßen) und regionale
           Förderung, die das Ergebnis weiter verbessern kann.
         </p>
-        <div style={S.card}>
-          <span style={S.label}>Annahmen dieser Rechnung</span>
+        <div className={editorial.card}>
+          <span className={editorial.label}>Annahmen dieser Rechnung</span>
           Strompreis {strompreisCt} ct/kWh · Einspeisevergütung {feedInCt} ct/kWh
           (Teileinspeisung, 20 Jahre) · Preisstand {formatPriceDate(prices.validFrom)} ·
           ohne Förderung · Modell kalibriert an HTW-Berlin-Simulationsdaten.
           <br />
-          <span style={S.muted}>
+          <span className={editorial.muted}>
             Alle Beträge sind unverbindliche Näherungswerte ohne Gewähr — mit deinen echten
             Daten (Standort, Verbrauch, Angebotspreis) weicht das Ergebnis ab. Rechne es mit
             dem{" "}
-            <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link>{" "}
+            <Link href="/photovoltaik-rechner" className={editorial.link}>PV-Rechner</Link>{" "}
             für deinen Fall durch; die Methodik steht offen auf der{" "}
-            <Link href="/methodik" style={S.link}>Methodik-Seite</Link>, alle Preisannahmen
-            auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+            <Link href="/methodik" className={editorial.link}>Methodik-Seite</Link>, alle Preisannahmen
+            auf der <Link href="/datenstand" className={editorial.link}>Datenstand-Seite</Link>.
           </span>
         </div>
 
@@ -594,8 +523,8 @@ export default async function LohntSichPvMitSpeicherPage() {
             die Seite kreditiert zentral). Die Preise sind dieselben wie in der
             Beispielrechnung darüber, sonst widersprächen sich zwei Zahlen auf
             einer Seite. ── */}
-        <h2 id="kostenrennen" style={S.h2}>Das Rennen: mit oder ohne Anlage?</h2>
-        <p style={S.p}>
+        <h2 id="kostenrennen" className={editorial.h2}>Das Rennen: mit oder ohne Anlage?</h2>
+        <p className={editorial.p}>
           Derselbe Beispielhaushalt zweimal — einmal bleibt er beim Netzstrom, einmal legt er
           sich die {EX.kwp}-kWp-Anlage aufs Dach. Die Linien zeichnen Tag für Tag, was jeder bis
           dahin für Strom ausgegeben hat, mit dem Wetter, wie es in den letzten 25 Jahren
@@ -613,7 +542,7 @@ export default async function LohntSichPvMitSpeicherPage() {
         </div>
 
         {/* ── Wann ja / wann nein (zwei Listen nebeneinander) ── */}
-        <h2 style={S.h2}>Lohnt sich ein Speicher — für wen?</h2>
+        <h2 className={editorial.h2}>Lohnt sich ein Speicher — für wen?</h2>
         <ProConLists
           proTitle="Wann es sich lohnt"
           conTitle="Wo es eng wird"
@@ -630,28 +559,28 @@ export default async function LohntSichPvMitSpeicherPage() {
             { term: "Überdimensionierung", desc: "Ab einer gewissen Größe ist der Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu großen Speichers arbeitet kaum." },
           ]}
         />
-        <p style={S.p}>
-          Ein Sonderfall ist die <strong style={S.strong}>Wärmepumpe</strong>: Sie erhöht
+        <p className={editorial.p}>
+          Ein Sonderfall ist die <strong className={editorial.strong}>Wärmepumpe</strong>: Sie erhöht
           zwar den Stromverbrauch stark, zieht aber rund 80 % davon zwischen Oktober und
           April — genau dann, wenn die Sonne wenig liefert und der Speicher selten voll
           wird. Der Speicher-Nutzen fällt bei Wärmepumpen-Haushalten deshalb kleiner aus,
           als die reine Verbrauchsmenge vermuten lässt; unser Modell rechnet diese
           Saisonkorrektur explizit ein. Was eine Wärmepumpe selbst spart, zeigt der{" "}
-          <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
+          <Link href="/waermepumpe-rechner" className={editorial.link}>Wärmepumpen-Rechner</Link>.
         </p>
 
         {/* ── CTA ── */}
-        <div style={{ ...S.hero, marginTop: 28 }}>
-          <span style={S.label}>Für deinen Fall durchrechnen</span>
-          <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
+        <div className={editorial.hero} style={{ marginTop: 28 }}>
+          <span className={editorial.label}>Für deinen Fall durchrechnen</span>
+          <p className={editorial.p} style={{ color: v("--color-text-primary"), marginBottom: 14 }}>
             Fünf Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
             Annahmen sind im Ergebnis sichtbar und anpassbar.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/photovoltaik-rechner?direkt=1" style={S.ctaButton}>
+            <Link href="/photovoltaik-rechner?direkt=1" className={editorial.ctaButton}>
               Anlage mit Speicher rechnen →
             </Link>
-            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" className={editorial.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>
@@ -673,11 +602,11 @@ export default async function LohntSichPvMitSpeicherPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginTop: 16 }}>
           Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
           automatisch aus den aktuellen Marktpreisen berechnet ({year}).
         </p>
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }

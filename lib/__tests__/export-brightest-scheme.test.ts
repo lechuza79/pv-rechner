@@ -29,6 +29,9 @@ describe('export default palette for Atlas visuals', () => {
   it('the capture marks its wrapper, so the exclusion can apply', () => {
     const src = read('lib/chart-export.ts');
     const capture = src.slice(src.indexOf('export async function captureNodeToBlob'));
-    expect(capture.slice(0, capture.indexOf('domToBlob'))).toMatch(/wrapper\.setAttribute\(EXPORT_CAPTURE_ATTR/);
+    expect(capture.slice(0, capture.indexOf('domToBlob'))).toContain('await prepareNodeCapture(node, presentation, size)');
+    const prepare = src.slice(src.indexOf('export async function prepareNodeCapture'));
+    expect(prepare).toMatch(/wrapper\.setAttribute\(EXPORT_CAPTURE_ATTR/);
+    expect(read('components/VideoRenderBridge.tsx')).toContain('await prepareNodeCapture(node,"export",undefined,true)');
   });
 });

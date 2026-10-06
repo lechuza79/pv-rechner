@@ -17,7 +17,7 @@ export function wartelisteErgebnis(
     `<div class="intro"><h1>${esc(titel)}</h1>` +
     saetze.map((s) => `<p>${esc(s)}</p>`).join("") +
     form +
-    `<p><a href="/angebot-pruefen" style="text-decoration:underline">Zur Seite „Angebot prüfen“</a></p></div>`;
+    `<p><a href="/" style="text-decoration:underline">Zur Startseite</a></p></div>`;
   return htmlAntwort(
     neonUnterseiteHtml({ titel: `${titel} – Solar Check`, beschreibung: titel, pfad, krume: "Warteliste", inhalt, index: false }),
   );

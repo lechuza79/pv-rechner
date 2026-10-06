@@ -3,17 +3,15 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createHmac } from "node:crypto";
 
+import { kennungAusGeheimnis, kennungsSchluessel, KENNUNG_LAENGE, KENNUNG_MUSTER } from "../fachbetrieb-kennung";
+
 /**
- * Die Kennung der betriebseigenen Seite steht an ZWEI Stellen: im Modul, das
- * die Seite auflöst, und im Skript, das die Adresse zum Verschicken ausgibt.
- * Die Verdopplung ist unvermeidlich — das Modul trägt `server-only` und lässt
- * sich in einem Node-Skript nicht laden.
- *
- * Laufen die beiden auseinander, führt JEDER verschickte Link ins Leere, und
- * zwar lautlos: Die Seite antwortet mit einer sauberen 404, kein Test wird rot,
- * kein Fehler taucht auf. Das ist genau die Fehlerklasse, die dieses Projekt
- * als „von außen unsichtbar" führt — deshalb hält dieser Test beide Fassungen
- * aneinander, statt auf Sorgfalt zu vertrauen.
+ * Die Kennung der betriebseigenen Seite wird an ZWEI Stellen gebraucht: im
+ * Modul, das die Seite auflöst, und im Skript, das die Adresse zum Verschicken
+ * ausgibt. Laufen die beiden auseinander, führt JEDER verschickte Link ins
+ * Leere, und zwar lautlos (saubere 404, kein roter Test). Seit 28.09.2026
+ * rechnen beide aus EINER Quelle (`lib/fachbetrieb-kennung.ts`); dieser Test
+ * hält fest, dass keiner der beiden wieder eine eigene Fassung baut.
  */
 
 /** Wirft Zeilen- und Blockkommentare weg — geprüft wird, was ausgeliefert
@@ -25,55 +23,50 @@ function ohneKommentare(quelle: string): string {
 const wurzel = resolve(__dirname, "../..");
 const MODUL = readFileSync(resolve(wurzel, "lib/fachbetrieb-seite.ts"), "utf8");
 const SKRIPT = readFileSync(resolve(wurzel, "scripts/fachbetrieb-link.ts"), "utf8");
-
-/** Holt den Kern der Ableitung aus einer Datei: Algorithmus, Präfix, Länge. */
-function rezept(quelle: string): { algo: string; praefix: string; laenge: string } {
-  const algo = quelle.match(/createHmac\(\s*"([a-z0-9]+)"/)?.[1] ?? "";
-  const praefix = quelle.match(/\.update\(`([^$]*)\$\{/)?.[1] ?? "";
-  const laenge = quelle.match(/\.slice\(0,\s*(\d+)\)/)?.[1] ?? "";
-  return { algo, praefix, laenge };
-}
+const TESTBETRIEB = readFileSync(resolve(wurzel, "scripts/_testbetrieb.ts"), "utf8");
 
 describe("Kennung der betriebseigenen Seite", () => {
-  it("Modul und Versand-Skript rechnen dieselbe Kennung", () => {
-    const m = rezept(MODUL);
-    const s = rezept(SKRIPT);
-    expect(m.algo).toBeTruthy();
-    expect(m.praefix).toBeTruthy();
-    expect(m.laenge).toBeTruthy();
-    expect(s).toEqual(m);
+  it("Modul und Skripte rechnen aus EINER Quelle, keiner baut sie nach", () => {
+    for (const [name, quelle] of [["Modul", MODUL], ["Link-Skript", SKRIPT], ["Testbetrieb", TESTBETRIEB]] as const) {
+      const code = ohneKommentare(quelle);
+      expect(code, `${name} muss die geteilte Ableitung benutzen`).toMatch(/kennungAusGeheimnis\(/);
+      expect(code, `${name} darf keine eigene HMAC-Fassung tragen`).not.toMatch(/createHmac/);
+    }
   });
 
-  it("beide senken die Domain auf Kleinschreibung", () => {
-    // Ohne das liefert dieselbe Domain je nach Schreibweise zwei Kennungen —
-    // und welche im Brief landet, entscheidet dann der Zufall der Erfassung.
-    for (const [name, quelle] of [["Modul", MODUL], ["Skript", SKRIPT]] as const) {
-      expect(quelle, `${name} muss die Domain kleinschreiben`).toMatch(/domain\.toLowerCase\(\)/);
-    }
+  it("der Schlüssel ist ABGELEITET, nicht der Cron-Schlüssel selbst", () => {
+    // Derselbe Schlüssel für Cron-Zugang und öffentliche Kennungen vermischte
+    // zwei Zwecke. Die alte Rechnung (Cron-Schlüssel direkt) darf nicht mehr
+    // herauskommen.
+    const alt = createHmac("sha256", "testgeheimnis").update("fachbetrieb:beispiel-solar.de").digest("hex").slice(0, 16);
+    expect(kennungAusGeheimnis("beispiel-solar.de", "testgeheimnis")).not.toBe(alt);
+    expect(kennungsSchluessel("testgeheimnis").equals(Buffer.from("testgeheimnis"))).toBe(false);
+  });
+
+  it("die Domain wird kleingeschrieben", () => {
+    // Sonst liefert dieselbe Domain je nach Schreibweise zwei Kennungen.
+    expect(kennungAusGeheimnis("Beispiel-Solar.DE", "g")).toBe(kennungAusGeheimnis("beispiel-solar.de", "g"));
   });
 
   it("die Kennung ist lang genug, um nicht geraten zu werden", () => {
     // 16 Hex-Zeichen sind 64 Bit. Kürzer wäre die Adresse durchprobierbar —
     // und damit eine Auskunft darüber, welche Betriebe wir erfasst haben.
-    expect(Number(rezept(MODUL).laenge)).toBeGreaterThanOrEqual(16);
+    expect(KENNUNG_LAENGE).toBeGreaterThanOrEqual(16);
+    expect(kennungAusGeheimnis("x.de", "g")).toHaveLength(KENNUNG_LAENGE);
   });
 
-  it("die Prüfung der Kennung passt zu ihrer Länge", () => {
-    // Ein zu enges oder zu weites Muster wirft entweder gültige Adressen weg
-    // oder lässt Unsinn bis in die Datenbankabfrage durch.
-    const laenge = rezept(MODUL).laenge;
-    expect(MODUL).toContain(`[0-9a-f]{${laenge}}`);
+  it("die Prüfung der Kennung passt zu ihrer Länge und wird benutzt", () => {
+    expect(KENNUNG_MUSTER.test(kennungAusGeheimnis("x.de", "g"))).toBe(true);
+    expect(KENNUNG_MUSTER.test("0".repeat(KENNUNG_LAENGE + 1))).toBe(false);
+    expect(ohneKommentare(MODUL)).toMatch(/KENNUNG_MUSTER\.test\(kennung\)/);
   });
 
   it("die Ableitung ist stabil (Beispielrechnung)", () => {
-    // Hält den Algorithmus selbst fest, nicht nur die Übereinstimmung der
-    // beiden Fassungen: Änderten sich beide gleichzeitig, wären alle bereits
-    // verschickten Links tot.
-    const kennung = createHmac("sha256", "testgeheimnis")
-      .update("fachbetrieb:beispiel-solar.de")
-      .digest("hex")
-      .slice(0, 16);
-    expect(kennung).toBe("faa52a0d3fbbd3ce");
+    // Hält den Algorithmus selbst fest: Änderte er sich, wären alle bereits
+    // verschickten Links tot. Der Wert hat sich am 28.09.2026 mit dem
+    // abgeleiteten Schlüssel einmal bewusst geändert — damals war noch keine
+    // Partner-Adresse verschickt.
+    expect(kennungAusGeheimnis("beispiel-solar.de", "testgeheimnis")).toBe("d616bf54335003a2");
   });
 });
 

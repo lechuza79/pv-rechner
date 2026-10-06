@@ -1,0 +1,32 @@
+/* Questions and results share their respective width with all supporting sections. */
+.wp-calculator-page{--calculator-gutter:clamp(16px,3vw,32px)}
+.sc-calculator-content{--calculator-content-width:760px}
+.sc-calculator-content:has(>[data-calculator-state="result"]),.sc-calculator-content[data-calculator-state="result"],.sc-calculator-content:has(>.wp-calculator-page>.sc-calculator-content[data-calculator-state="result"]){--calculator-content-width:820px}
+.sc-calculator-content[data-calculator-offers="true"],.sc-calculator-content:has(>.wp-calculator-page>.sc-calculator-content[data-calculator-offers="true"]){--calculator-content-width:1276px}
+.sc-calculator-content{width:100%;max-width:var(--calculator-content-width,760px);margin-inline:auto;container:calculator-shell / inline-size;box-sizing:border-box;min-width:0}
+.sc-calculator-content--inset{width:calc(100% - 2 * var(--calculator-gutter,16px));padding-bottom:32px}
+body .wp-calculator-page{padding-inline:var(--calculator-gutter)!important}
+.sc-calculator-content--inset>.wp-calculator-page{padding-inline:0!important}
+.sc-calculator-content[data-calculator-offers="true"]> :not(.wp-ergebnis){max-width:820px;margin-inline:auto}
+@container calculator-shell (min-width:1188px){.sc-calculator-content[data-calculator-offers="true"]> :not(.wp-ergebnis){margin-inline:0}}
+@container (max-width:900px){body .wp-overview-top{grid-template-columns:minmax(0,1fr);gap:12px}}
+
+.sc-calculator-content--boxed{border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--calculator-gutter,24px);background:var(--color-bg-raised)}
+
+/* Boxed embeds keep carousel content, fades and controls inside their rail. */
+body .sc-calculator-content--boxed .wp-product-carousel{width:100%;margin-inline:0;padding-inline:0}
+.sc-calculator-content--boxed .wp-product-navigation{inset:0;width:100%}
+.sc-calculator-content--boxed .wp-product-carousel-frame{--carousel-fade-color:var(--color-bg-raised)}
+
+/* Dialog offers remain within the dialog even on a desktop-sized viewport. */
+body [data-shared-modal="true"] .wp-product-carousel{width:100%;margin-inline:0;padding-inline:0}
+body [data-shared-modal="true"] .wp-product-navigation{inset:0;width:100%}
+body [data-shared-modal="true"] .wp-product-carousel-frame{--carousel-fade-color:var(--color-bg)}
+body .sc-feed-in-flow.wp-result-page{padding:0!important}
+
+/* Supporting siblings follow only the calculator on this page, never a dialog. */
+.sc-calculator-page-boundary{--calculator-gutter:clamp(16px,3vw,32px);container:calculator-page / inline-size}
+.sc-calculator-page-boundary:has(>.wp-calculator-page>.sc-calculator-content[data-calculator-state="result"])>.sc-calculator-content--inset{--calculator-content-width:820px}
+@container calculator-page (min-width:1252px){
+ .sc-calculator-page-boundary:has(>.wp-calculator-page>.sc-calculator-content[data-calculator-offers="true"])>.sc-calculator-content--inset{margin-left:max(32px,calc((100% - 1276px)/2));margin-right:auto}
+}

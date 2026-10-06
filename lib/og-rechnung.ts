@@ -174,6 +174,8 @@ export function ogRechnung(params: OgParams): OgRechnung {
  * Ein Schlüssel, der weder gelesen noch hier steht, macht den Test rot.
  */
 export const OG_NICHT_GELESEN: Record<string, string> = {
+  ags: "Exact location for the funding lookup; the image does not fetch funding programmes, like foe.",
+  flaeche: "Roof area explains the recommendation; the selected system size is already carried in a/ck.",
   plz: "Anzeige im Bild; der Ertrag kommt über `er`, den der Link mitträgt.",
   foe: "Ob ein Programm Geld abzieht, hängt am Abruf-Nachweis in der Datenbank; das Bild läuft ohne.",
   flow: "Herkunft des Links (Empfehlungsweg), rechnet nicht.",

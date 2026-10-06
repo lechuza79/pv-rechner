@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { seiteFuerKennung, kurzname, anzeigename } from "../../../../lib/fachbetrieb-seite";
 import { anfrageMailBetreff, anfrageMailHtml } from "../../../../lib/fachbetrieb-anfrage-mail";
 import { anfrageMerken, ausErgebnisUrl } from "../../../../lib/fachbetrieb-anfrage-statistik";
+import { pruefeFotos } from "../../../../lib/fachbetrieb-anfrage-fotos";
+import { istVermutlichBot } from "../../../../lib/formular-bremse";
 
 /**
  * Der Rückkanal: Ein Nutzer schickt sein Rechenergebnis an den Fachbetrieb,
@@ -106,6 +108,15 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
   }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
+  }
+
+  // Honigtopf und Mindest-Ausfüllzeit. Antwort trotzdem „Erfolg", ohne etwas
+  // zu senden — sonst lernt die Maschine, welches Signal sie verraten hat.
+  if (istVermutlichBot(payload)) {
+    return NextResponse.json({ success: true });
+  }
 
   const kennung = typeof payload.kennung === "string" ? payload.kennung : "";
   const name = typeof payload.name === "string" ? payload.name.trim().slice(0, NAME_MAX) : "";
@@ -118,26 +129,15 @@ export async function POST(req: Request) {
   const feld = (k: string, max: number) =>
     typeof payload[k] === "string" ? (payload[k] as string).trim().slice(0, max) : "";
   // Fotos werden DURCHGEREICHT, nicht gespeichert: Sie gehen als Anhang an den
-  // Betrieb und liegen danach nirgends bei uns. Zwei Bilder, vom Browser
-  // vorher auf wenige hundert Kilobyte verkleinert — die Größengrenze unten
-  // sagt, warum.
-  const rohFotos = Array.isArray(payload.fotos) ? payload.fotos : [];
-  const fotos = rohFotos
-    .slice(0, 2)
-    .map((f) => (f && typeof f === "object" ? (f as { name?: unknown; inhalt?: unknown }) : {}))
-    .filter((f) => typeof f.name === "string" && typeof f.inhalt === "string")
-    .map((f) => ({
-      // Der Dateiname kommt vom Client. Alles außer Buchstaben, Ziffern, Punkt
-      // und Strich fliegt raus — ein Name mit Pfadanteilen hat in einem Anhang
-      // nichts verloren.
-      filename: (f.name as string).replace(/[^\w.\- ]+/g, "").slice(0, 80) || "foto.jpg",
-      content: f.inhalt as string,
-    }))
-    // Die Grenze liegt UNTER dem, was die Plattform als Anfragetext annimmt
-    // (4,5 MB): Der Browser verkleinert jedes Bild vorher auf wenige hundert
-    // Kilobyte, alles darüber ist entweder ein Umweg an dieser Verkleinerung
-    // vorbei oder ein Versuch, die Route als Ablage zu benutzen.
-    .filter((f) => f.content.length < 1_500_000);
+  // Betrieb und liegen danach nirgends bei uns. Höchstens zwei Bilder, und ob
+  // es wirklich Bilder sind, entscheiden die ersten Bytes, nicht Name oder
+  // Typangabe des Browsers — sonst trüge eine beliebige Datei unseren Absender
+  // (Begründung und Formate in lib/fachbetrieb-anfrage-fotos.ts).
+  const fotoPruefung = pruefeFotos(payload.fotos);
+  if (!fotoPruefung.ok) {
+    return NextResponse.json({ error: "Bitte nur bis zu zwei Fotos (JPEG, PNG, WebP oder HEIC) anhängen." }, { status: 400 });
+  }
+  const fotos = fotoPruefung.fotos;
 
   const strasse = feld("strasse", 160);
   const plz = feld("plz", 10);

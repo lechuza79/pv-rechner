@@ -50,6 +50,22 @@ jobs:
 
       - run: npm ci
 
+      # DMARC reports for solar-check.io and life-is-a-binge.com land in this
+      # mailbox (since 30.09.2026). They are read and moved to the "DMARC"
+      # folder BEFORE the reply intake, which would otherwise count them as
+      # machine mail. A failing domain must not stop the intake, so the step
+      # may fail and the last step turns the run red afterwards.
+      - name: DMARC-Berichte auswerten und ablegen
+        id: dmarc
+        continue-on-error: true
+        run: npm run dmarc:berichte -- --ablegen --melden
+        env:
+          OUTREACH_IMAP_HOST: ${{ secrets.OUTREACH_IMAP_HOST }}
+          OUTREACH_IMAP_PORT: ${{ secrets.OUTREACH_IMAP_PORT }}
+          OUTREACH_IMAP_USER: ${{ secrets.OUTREACH_IMAP_USER }}
+          OUTREACH_IMAP_PASS: ${{ secrets.OUTREACH_IMAP_PASS }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
       # Der Zeitraum ist bewusst größer als der Abstand zweier Läufe: Fällt ein
       # Tag aus, holt der nächste ihn mit. Doppelt eingetragen wird dabei
       # nichts — das verhindert die Dublettenprüfung im Skript.
@@ -63,3 +79,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
+      - name: DMARC-Befund sichtbar machen
+        if: steps.dmarc.outcome == 'failure'
+        run: |
+          echo "DMARC-Auswertung ist durchgefallen oder konnte nicht laufen — siehe Schritt oben."
+          exit 1

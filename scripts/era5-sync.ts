@@ -8,6 +8,11 @@
  *   npm run era5:sync -- --month=2026-08
  *   npm run era5:sync -- --year=2025
  *   npm run era5:sync -- --month=2026-08 --pruefen   (nur nachsehen, nichts laden)
+ *   npm run era5:sync -- --year=2016 --nur=wind_u_component_100m,wind_v_component_100m
+ *
+ * `--nur=` limits the run to some variables. Older years are only needed for
+ * the long-term wind mean; loading radiation and temperature with them would
+ * triple the download for data nothing reads.
  */
 import { initWasm, LruBlockCache, OmDataType, OmHttpBackend } from '@openmeteo/file-reader';
 import {
@@ -160,7 +165,11 @@ async function main() {
   const jobs: { variable: Era5Variable; chunk: number }[] = [];
   let ready = 0;
   const revise = flag('revision');
-  for (const variable of ERA5_VARIABLES) {
+  const only = arg('nur').split(',').filter(Boolean);
+  const unknown = only.filter((name) => !(ERA5_VARIABLES as readonly string[]).includes(name));
+  if (unknown.length) throw new Error(`--nur: unbekannte Größe ${unknown.join(', ')}`);
+  const variables = only.length ? ERA5_VARIABLES.filter((name) => only.includes(name)) : ERA5_VARIABLES;
+  for (const variable of variables) {
     for (const chunk of chunks) {
       if (era5BlockReady(variable, chunk)) {
         if (!revise) { ready++; continue; }
@@ -174,7 +183,7 @@ async function main() {
   }
   console.log(
     `Zeitraum ${iso(from * 3600000).slice(0, 13)} bis ${iso(to * 3600000).slice(0, 13)} · ` +
-      `${chunks.length} Blöcke × ${ERA5_VARIABLES.length} Größen · ${ready} vorhanden, ${jobs.length} offen`,
+      `${chunks.length} Blöcke × ${variables.length} Größen · ${ready} vorhanden, ${jobs.length} offen`,
   );
   if (flag('pruefen') || jobs.length === 0) {
     console.log(jobs.length === 0 ? 'Nichts zu tun.' : 'Nur geprüft, nichts geladen.');

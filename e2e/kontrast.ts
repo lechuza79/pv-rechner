@@ -3,28 +3,6 @@
 // Steht getrennt vom Test, damit derselbe Messkopf auch von Hand über eine
 // einzelne Seite laufen kann, ohne den ganzen Lauf anzuwerfen.
 
-/**
- * Die Tagesstufe festnageln — BLOCKER für jeden Test, der Farben misst.
- *
- * Das Theme folgt der Sonne: sieben Stufen, und welche gilt, entscheidet die
- * Uhr des Rechners, auf dem der Test läuft. Ein Farbtest ohne diese Zeile
- * misst deshalb morgens etwas anderes als abends — am 23.09.2026 gleich
- * zweimal beobachtet: Ein Pixeltest der Ranglisten-Köpfe lief tagsüber grün
- * und wurde abends rot (ein einziger Bildpunkt, der auf der gedämpften Palette
- * zufällig die Farbe der Platzierungs-Box traf), und dieser Kontrasttest fand
- * lokal am Tag nichts und auf dem Prüfrechner am Abend zwei echte Befunde.
- *
- * Gepinnt wird über die EIGENE Einstellung der Site (hell/dunkel), nicht über
- * einen gesetzten Zustand am Dokument: Damit misst der Test einen Zustand, den
- * es wirklich gibt, und keinen konstruierten.
- */
-export type Tagesstufe = "light" | "dark";
-
-/** Als Startskript in die Seite legen, VOR dem ersten Aufruf. */
-export function stufePinnen(stufe: Tagesstufe): string {
-  return `try{localStorage.setItem('sc-theme-pref',${JSON.stringify(stufe)})}catch(e){}`;
-}
-
 /** Ein Textstück, das sich auf seinem Grund nicht ausreichend abhebt. */
 export type Kontrastbefund = {
   /** Der gelesene Text, gekürzt — damit ein roter Lauf sagt, WO. */

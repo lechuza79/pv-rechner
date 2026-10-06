@@ -9,10 +9,11 @@
 // split is derived, not listed: a word that matches a page is a topic word, the
 // rest is looked up as a place.
 
-import { searchRegions, getRegionById, type RegionHit } from "./atlas";
+import { searchRegions, getRegionById, atlasPathForRegionId, type RegionHit } from "./atlas";
 import { gemeindenZurPlz, gemeindeGeo } from "./atlas-geo";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 import { bundeslandByAgs } from "./mastr-regions";
+import { regionDisplayName } from "./atlas-format";
 import { ATLAS_CITIES, isCityPublished, cityPath, foerderBundeslaender, slugify } from "./atlas-cities";
 import { DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import {
@@ -210,4 +211,68 @@ export async function suche(qRoh: string): Promise<SuchErgebnis> {
 
   const seiten = seitenAnfrage ? gruppiere(suchePassendeSeiten(seitenAnfrage)) : [];
   return { q, orte, seiten, orteNichtVerfuegbar };
+}
+
+/** One suggestion of the place fields in the "Vor Ort" menu. */
+export type OrtVorschlag = { name: string; gattung: string; kontext: string; href: string };
+
+/**
+ * Suggestions for the place fields in the "Vor Ort" menu: `ort` finds towns
+ * (Gemeinden, kreisfreie Städte, city states), `kreis` finds Landkreise. A
+ * postcode works in both — in the Kreis field it resolves to the Kreis the
+ * town lies in. Deliberately lighter than `suche()`: one link per place (its
+ * atlas page), no funding or calculator lookups, since this runs while typing.
+ */
+export async function ortVorschlaege(qRoh: string, ebene: "ort" | "kreis"): Promise<OrtVorschlag[]> {
+  const q = qRoh.trim().slice(0, 80);
+  if (normalisiere(q).length < 2) return [];
+  const plz = /^\d{5}$/.test(q) ? q : null;
+  const treffer: RegionHit[] = [];
+
+  if (plz) {
+    const gesehen = new Set<string>();
+    for (const e of (await gemeindenZurPlz(plz)).slice(0, MAX_ORTE)) {
+      const region = await getRegionById(aktuellerGemeindeschluessel(e.ags)).catch(() => null);
+      if (!region) continue;
+      let hit: RegionHit = { region_id: region.region_id, name: regionDisplayName(region.name), label: region.bezeichnung ?? "Gemeinde", parent_region_id: region.parent_region_id ?? null };
+      if (ebene === "kreis") {
+        // A kreisfreie Stadt has no Landkreis above it; its town page is the answer.
+        if (hit.label === "Kreisfreie Stadt" || !hit.parent_region_id || hit.parent_region_id.length !== 5) continue;
+        const kreis = await getRegionById(hit.parent_region_id).catch(() => null);
+        if (!kreis || kreis.bezeichnung === "Kreisfreie Stadt") continue;
+        hit = { region_id: kreis.region_id, name: regionDisplayName(kreis.name), label: kreis.bezeichnung ?? "Landkreis", parent_region_id: kreis.parent_region_id ?? null };
+      }
+      if (gesehen.has(hit.region_id)) continue;
+      gesehen.add(hit.region_id);
+      treffer.push(hit);
+    }
+  } else if (!/^\d+$/.test(q)) {
+    const hits = await searchRegions(q, DB_SOFT_READ_TIMEOUT_MS, ebene === "kreis" ? ["landkreis"] : ["gemeinde", "landkreis", "bundesland"]);
+    treffer.push(
+      ...hits.filter((h) =>
+        ebene === "kreis"
+          ? h.label !== "Kreisfreie Stadt"
+          : h.region_id.length === 8 || h.label === "Kreisfreie Stadt" || /^(02|04|11)$/.test(h.region_id),
+      ),
+    );
+  }
+
+  // City states stand as Land and as city (Berlin, Hamburg): one entry.
+  const eindeutig = treffer.filter(
+    (h) => !(h.region_id.length === 2 && treffer.some((o) => o !== h && o.name === h.name)),
+  );
+  return Promise.all(
+    eindeutig.slice(0, MAX_ORTE).map(async (h) => ({
+      name: h.name,
+      // "Landkreis Würzburg · Landkreis" says it twice.
+      gattung: h.name.startsWith(h.label) ? "" : h.label,
+      // "Berlin · Berlin" says nothing: a city state is its own Land.
+      kontext: await kontextVon(h).then((k) => (k === h.name ? "" : k)),
+      // The page itself, not the redirect route: one hop less, and a link
+      // that says where it goes. The route stays as the fallback.
+      href:
+        (await atlasPathForRegionId(seitenSchluessel(h.region_id, h.label)).catch(() => null)) ??
+        `/api/atlas/goto?ags=${seitenSchluessel(h.region_id, h.label)}`,
+    })),
+  );
 }

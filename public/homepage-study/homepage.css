@@ -201,7 +201,8 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 /* Shared typography roles, agreed 2026-09-08; integrate into lib/theme.ts on handoff. */
 @font-face{font-family:Montserrat;src:url('/homepage-study/montserrat-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
 :is(.homepage-study,html[data-homepage-preview]){--font-display:Montserrat,sans-serif;--font-display-weight:700;--font-display-tracking:normal;--font-chart-number:var(--font-display);--font-chart-number-weight:700}
-:is(.homepage-study,html[data-homepage-preview]) :is(h1,h2,h3),:is(.homepage-study,html[data-homepage-preview]) h1 *{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:normal}
+/* The shared header keeps its own type on every page. */
+:is(.homepage-study,html[data-homepage-preview]) :is(h1,h2,h3):not(.sc-global-header *),:is(.homepage-study,html[data-homepage-preview]) h1 *{font-family:var(--font-display);font-weight:var(--font-display-weight);letter-spacing:normal}
 :is(.homepage-study,html[data-homepage-preview]) .sc-chart-number,:is(.homepage-study,html[data-homepage-preview]) .hs-value,:is(.homepage-study,html[data-homepage-preview]) .hs-race-legend b,:is(.homepage-study,html[data-homepage-preview]) #hs-race-year,:is(.homepage-study,html[data-homepage-preview]) #hs-race-output{font-family:var(--font-chart-number);font-weight:700;letter-spacing:normal;font-variant-numeric:tabular-nums}
 :is(.homepage-study,html[data-homepage-preview]) .hs-value small{font-family:'DM Sans',sans-serif;font-weight:400;letter-spacing:normal}
 @media(min-width:1280px){:is(.homepage-study,html[data-homepage-preview]) h1{font-size:64px}}
@@ -254,7 +255,7 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 .hs-retro-help[hidden]{display:none}.hs-retro-help>div{position:relative;top:auto;margin-bottom:24px}
 .hs-retro-hero .hs-retro-values .hs-currency{font-size:.42em;font-weight:400;opacity:.65;font-family:'DM Sans',sans-serif}
 .hs-scene-simulation .hs-local-atlas{display:block;padding:25px 28px;max-width:560px;border:1px solid #ffffff80;border-radius:18px;background:linear-gradient(135deg,#f9fff799,#e4f0ed66);backdrop-filter:blur(18px) saturate(.88);color:#173b42;box-shadow:inset 0 1px 0 #ffffff80,0 12px 32px #16343e0c}
-:is(.homepage-study,html[data-homepage-preview])[data-dark=true] .hs-local-atlas{background:#e5eee6c9}
+:is(.homepage-study,html[data-homepage-preview])[data-dark=true] .hs-scene-simulation .hs-local-atlas{background:#e5eee6c9}
 @media(max-width:700px){.hs-scene-simulation .hs-retro-hero h2{font-size:32px;max-width:100%}.hs-scene-simulation .hs-local-atlas{padding:22px;max-width:100%}.hs-scene-simulation .hs-local-atlas strong{font-size:21px}}
 /* Programmatic heading focus should not draw a frame; controls retain focus cues. */
 :is(.homepage-study,html[data-homepage-preview]) .hs-journey h2[tabindex="-1"]:focus{outline:none;box-shadow:none}
@@ -1178,3 +1179,21 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.h
 @media(prefers-reduced-motion:reduce){html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.hs-scroll-invitation[data-hero-tone]{transition:none}}
 
 @media(prefers-reduced-transparency:reduce){.homepage-study .hs-retro-secondary.hs-scroll-invitation{backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* Six equal tool cards: three desktop columns, two tablet columns, one mobile column. */
+.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:repeat(3,minmax(0,1fr))}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool:nth-child(n){grid-column:auto;grid-row:auto;display:flex;flex-direction:column;width:auto;justify-self:stretch;grid-template-rows:none;padding:26px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-top{min-height:24px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-art{width:100%;height:150px;flex:none;margin:12px 0 8px;align-self:auto}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool h3{margin:12px 0 14px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool:first-child .hs-tool-art solar-illustration{width:220px;height:220px;max-width:100%;left:auto;top:-12px}
+.hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-actions{margin-top:auto}
+@media(max-width:850px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:1fr}.hs-tools .hs-five-tools.hs-six-tools .hs-tool:nth-child(n){padding:24px}}
+
+/* Shared hero copy geometry for homepage and landscape integrations. */
+:root{--sc-hero-copy-width:720px;--sc-hero-copy-gap:75px;--sc-hero-mobile-description-width:285px}
+@media(min-width:1100px) and (max-width:1279px){:root{--sc-hero-copy-width:600px}}
+@media(min-width:701px) and (max-width:1099px){:root{--sc-hero-copy-width:360px;--sc-hero-copy-gap:60px}}
+@media(max-width:700px){:root{--sc-hero-copy-width:calc(100% - 2 * var(--sc-page-inset));--sc-hero-copy-gap:70px}}
+@media(min-width:701px){:is(.homepage-study,html[data-homepage-preview]) .hero-copy{width:var(--sc-hero-copy-width);padding-top:var(--sc-hero-copy-gap)}}

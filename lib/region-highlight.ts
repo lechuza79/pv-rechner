@@ -19,10 +19,22 @@ import { fmtWattProKopf, fmtAnteilProzent, prozentGerundet } from "./atlas-forma
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
+/** Was die Pro-Kopf-Zahlen dieses Absatzes messen — EIN Wortlaut für Rang und Spitze. */
+const PRO_KOPF_GROESSE = "Solarleistung je Einwohner";
+
 export type RegionKind = {
   name: string;
-  /** Dach-Leistung je Einwohner — der faire Bürger-Vergleich (Freifläche raus). */
-  wPerCapitaDach: number | null;
+  /**
+   * Solarleistung je Einwohner, ALLE Anlagen — dieselbe Größe wie die Kennzahl
+   * „Leistung je Einwohner" im Energiemonitor und der Durchschnitt im
+   * Einstiegssatz. Bis 09/2026 stand hier die reine Dachleistung, beschriftet
+   * als „je Einwohner": Auf /solar-atlas lag der Spitzenreiter (1.494 Wp, nur
+   * Dach) dadurch UNTER dem Bundesschnitt (1.546 Wp, alles), und die
+   * Bayern-Seite nannte für Dingolfing-Landau 4.291 Wp, während dessen eigene
+   * Seite 6.445 zeigte. Zwei Maße in einem Absatz sind derselbe Fehler wie
+   * eine falsche Einheit.
+   */
+  wPerCapita: number | null;
   count: number;
   /** Adresse der Unterseite. Fehlt sie, bleibt der Name unverlinkter Text. */
   href?: string | null;
@@ -55,7 +67,7 @@ export type RegionHighlightInput = {
   kindWort: string;
   /** Die Kinder-Regionen mit ihren Kennzahlen. */
   kinder: RegionKind[];
-  /** Rang dieser Region unter ihren Geschwistern (1 = stärkste), Dach je Einwohner. */
+  /** Rang dieser Region unter ihren Geschwistern (1 = stärkste), Solarleistung je Einwohner. */
   rang?: number | null;
   /** Wie viele Geschwister es insgesamt gibt. */
   rangVon?: number | null;
@@ -72,9 +84,10 @@ export type RegionHighlightInput = {
  * Platz unter den Geschwistern.
  *
  * Der wertvollste Satz der Seite, weil er auf jeder Seite einen anderen Inhalt
- * hat und nirgends sonst steht. Bewusst mit der Dach-Leistung je Einwohner:
- * Absolute Zahlen messen die Größe des Gebiets, nicht seinen Ausbau, und
- * Freiflächen-Parks vergiften den Pro-Kopf-Wert kleiner Gebiete.
+ * hat und nirgends sonst steht. Gemessen an der Solarleistung je Einwohner —
+ * derselben Größe, die die Kennzahl der Seite und der Einstiegssatz nennen
+ * (siehe `RegionKind.wPerCapita`). Absolute Zahlen messen die Größe des
+ * Gebiets, nicht seinen Ausbau.
  */
 function rangSatz(i: RegionHighlightInput): string | null {
   if (!i.rang || !i.rangVon || !i.rangGattung || !i.name) return null;
@@ -91,7 +104,7 @@ function rangSatz(i: RegionHighlightInput): string | null {
           // Dativ. Deutsche Pluralformen bekommen dort ein -n, außer sie enden
           // schon auf -n oder -s.
           `liegt ${name} auf Platz ${i.rang} von ${i.rangVon} ${dativPlural(i.rangGattung)}`;
-  return `Gemessen an der Dachleistung je Einwohner ${wo}.`;
+  return `Gemessen an der ${PRO_KOPF_GROESSE} ${wo}.`;
 }
 
 /**
@@ -115,14 +128,14 @@ function rangSatz(i: RegionHighlightInput): string | null {
  */
 function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
   const mitWert = i.kinder.filter(
-    (k): k is RegionKind & { wPerCapitaDach: number } => k.wPerCapitaDach !== null,
+    (k): k is RegionKind & { wPerCapita: number } => k.wPerCapita !== null,
   );
   if (mitWert.length < 3) return null;
-  const sortiert = [...mitWert].sort((a, b) => b.wPerCapitaDach - a.wPerCapitaDach);
+  const sortiert = [...mitWert].sort((a, b) => b.wPerCapita - a.wPerCapita);
   const spitze = sortiert[0];
   const schluss = sortiert[sortiert.length - 1];
   const spanne =
-    schluss.wPerCapitaDach > 0 ? spitze.wPerCapitaDach / schluss.wPerCapitaDach : 1;
+    schluss.wPerCapita > 0 ? spitze.wPerCapita / schluss.wPerCapita : 1;
 
   /**
    * Name (verlinkt, wenn es die Seite gibt) plus Wert in Klammern.
@@ -131,15 +144,15 @@ function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
    * Satzes, nicht zum Namen des Gebiets. Verlinkt wird „Landkreis Biberach" —
    * das ist auch der Ankertext, den Google liest.
    */
-  const mitWertGenannt = (k: RegionKind & { wPerCapitaDach: number }): HighlightTeil[] => {
+  const mitWertGenannt = (k: RegionKind & { wPerCapita: number }): HighlightTeil[] => {
     const teile: HighlightTeil[] = [];
     const artikel = artikelVon(k.name);
     if (artikel) teile.push(artikel);
     teile.push(k.href ? { text: k.name, href: k.href } : k.name);
     teile.push(
       " (",
-      { text: fmtWattProKopf(Math.round(k.wPerCapitaDach)), stark: true } as HighlightTeil,
-      " je Einwohner)",
+      { text: fmtWattProKopf(Math.round(k.wPerCapita)), stark: true } as HighlightTeil,
+      ` ${PRO_KOPF_GROESSE})`,
     );
     return teile;
   };
@@ -259,7 +272,7 @@ function auffaelligkeit(i: RegionHighlightInput): { rang: number; spitze: number
 
   // Spanne: Ein Feld, in dem der Erste ein Vielfaches des Letzten hat, erklärt
   // die Region besser als ihr Mittelwert.
-  const werte = i.kinder.map((k) => k.wPerCapitaDach).filter((w): w is number => w !== null);
+  const werte = i.kinder.map((k) => k.wPerCapita).filter((w): w is number => w !== null);
   let spitze = werte.length >= 3 ? 1 : 0;
   if (werte.length >= 3) {
     const max = Math.max(...werte);

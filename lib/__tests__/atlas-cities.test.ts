@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben } from "../atlas-cities";
-import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
+import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben, foerderStadtUmleitung, foerderBundeslaender } from "../atlas-cities";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { landProgramBundeslaender, getFundingProgram, foerdertDach } from "../funding-programs";
 import nextConfig from "../../next.config.js";
 
 // Live-Policy (Juni 2026): nur Regionen mit aktivem Programm bekommen eine Seite.
@@ -19,7 +21,9 @@ describe("live cities (only active programs)", () => {
     expect(slugs).toContain("wuerzburg"); // aktiv
     expect(slugs).toContain("regensburg"); // aktiv
     expect(slugs).not.toContain("schweinfurt"); // eingestellt (Council Juli 2026)
-    expect(slugs).not.toContain("muenchen"); // eingestellt
+    // München fördert seit 01.10.2026 wieder, aber nur Balkonkraftwerke —
+    // seit 06.10.2026 eine laufende Seite als „Balkonkraftwerk-Förderung".
+    expect(slugs).toContain("muenchen"); // aktiv, nur Balkon
     expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
     // Dresden hatte lange gar kein Programm. Seit dem 02.09.2026 gilt für die
     // Stadt das sächsische LANDESprogramm — und ein Landesprogramm eines
@@ -37,16 +41,24 @@ describe("live cities (only active programs)", () => {
 // pausiert/eingestellt) bekommen eine Archiv-Seite; "unsicher" und "kein
 // Programm" bleiben auf 404.
 describe("archived cities (inactive but published programs)", () => {
-  it("a city is archived iff its program is exhausted/paused/discontinued", () => {
+  it("a city is archived iff its program is exhausted/paused/discontinued — or active without rooftop PV AND without balcony systems", () => {
+    // 01.10.2026: Ein laufendes Programm OHNE Dach-PV wurde wie ein Archiv
+    // gezeigt. Seit 06.10.2026 ist ein reines Balkon-Programm eine laufende
+    // Seite („Balkonkraftwerk-Förderung"); Archiv bleibt nur, was weder Dach-PV
+    // noch Balkon fördert (z. B. nur Wärmepumpen).
     const inactive = ["ausgeschoepft", "pausiert", "eingestellt"];
     for (const c of archivedCities()) {
-      expect(fundingFor(c), c.slug).toBeTruthy();
-      expect(inactive).toContain(fundingFor(c)?.status);
+      const f = fundingFor(c);
+      expect(f, c.slug).toBeTruthy();
+      if (f!.status === "aktiv") {
+        expect(foerdertDach(f!), c.slug).toBe(false);
+        expect(f!.foerdert ?? [], c.slug).not.toContain("balkon");
+      } else expect(inactive).toContain(f!.status);
     }
   });
   it("includes inactive-program cities and excludes active/unsicher/no-program", () => {
     const slugs = archivedCities().map((c) => c.slug);
-    expect(slugs).toContain("muenchen"); // eingestellt
+    expect(slugs).not.toContain("muenchen"); // aktiv, nur Balkon → live
     expect(slugs).toContain("karlsruhe"); // ausgeschoepft
     expect(slugs).toContain("duesseldorf"); // pausiert
     expect(slugs).not.toContain("wuerzburg"); // aktiv
@@ -210,5 +222,55 @@ describe("slug redirects stay in sync with atlas-cities", () => {
       expect(r!.destination).toBe(cityPath(c));
       expect(r!.permanent).toBe(true);
     }
+  });
+});
+
+// Audit 28.09.2026: ~185 der 298 flachen Förder-Weiterleitungen endeten auf
+// einer 404, weil ihr Ziel eine Stadtadresse ohne veröffentlichte Seite ist.
+// Die Liste bleibt fest (Test oben); die Stadtroute leitet einen bekannten Ort
+// ohne Seite auf die Seite seines Bundeslands. Geprüft wird die ENDADRESSE jeder
+// Weiterleitung, nicht nur das erste Ziel.
+describe("no Förder redirect ends on a 404", () => {
+  const landSlugs = new Set(foerderBundeslaender().map((b) => b.slug));
+  const landSeiten = new Set([...landSlugs].map((s) => `/photovoltaik-foerderung/${s}`));
+  const stadtSeiten = new Map(ATLAS_CITIES.map((c) => [cityPath(c), c]));
+  const veroeffentlicht = new Set(publishedCities().map((c) => c.slug));
+
+  /** Final address a request to `pfad` lands on, or null for a 404. */
+  function endziel(pfad: string): string | null {
+    if (pfad === "/photovoltaik-foerderung" || landSeiten.has(pfad)) return pfad;
+    const c = stadtSeiten.get(pfad);
+    if (!c) return null;
+    const um = foerderStadtUmleitung(c, landSlugs);
+    if (um === null) return veroeffentlicht.has(c.slug) ? pfad : null;
+    return endziel(um);
+  }
+
+  it("every /photovoltaik-foerderung redirect reaches an existing page", async () => {
+    const redirects = await nextConfig.redirects!();
+    const foerder = redirects.filter((r: { source: string }) => r.source.startsWith("/photovoltaik-foerderung/"));
+    expect(foerder.length).toBeGreaterThan(100);
+    const tot = foerder.filter((r: { destination: string }) => endziel(r.destination) === null).map((r: { source: string }) => r.source);
+    expect(tot, "Weiterleitungen, die auf einer 404 enden").toEqual([]);
+  });
+
+  it("a known city without a page points at its Bundesland page (or the overview), never at itself", () => {
+    const ohneSeite = ATLAS_CITIES.filter((c) => !veroeffentlicht.has(c.slug));
+    // Der Fall ist real, sonst prüft der Test nichts.
+    expect(ohneSeite.length).toBeGreaterThan(0);
+    for (const c of ohneSeite) {
+      const um = foerderStadtUmleitung(c, landSlugs);
+      expect(um, c.slug).not.toBeNull();
+      expect(um === "/photovoltaik-foerderung" || landSeiten.has(um!), `${c.slug} → ${um}`).toBe(true);
+    }
+    for (const c of ATLAS_CITIES.filter((x) => veroeffentlicht.has(x.slug))) expect(foerderStadtUmleitung(c, landSlugs), c.slug).toBeNull();
+  });
+
+  it("the city route builds EVERY known city and redirects the unpublished ones", () => {
+    const src = readFileSync(join(__dirname, "../../app/(site)/photovoltaik-foerderung/[bundesland]/[stadt]/page.tsx"), "utf8");
+    // Mit publishedCities() in generateStaticParams wären unveröffentlichte
+    // Städte wieder harte 404 (dynamicParams = false).
+    expect(src).toMatch(/generateStaticParams\(\)\s*\{\s*return ATLAS_CITIES\.map/);
+    expect(src).toMatch(/const umleitung = foerderStadtUmleitung\(city\);\s*if \(umleitung\) redirect\(umleitung\)/);
   });
 });

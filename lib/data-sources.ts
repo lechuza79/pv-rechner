@@ -98,6 +98,24 @@ export const DATA_SOURCES = {
     note: "aggregiert",
   },
   /**
+   * Fallback for the live German generation mix while Energy-Charts is down
+   * (lib/smard.ts). Licence read at the source on 05.10.2026
+   * (smard.de/home/datennutzung, excerpt in docs/quellen/smard-lizenz/): all
+   * market data "unter einer Creative Commons Namensnennung 4.0 International
+   * Lizenz"; attribution must read exactly "Bundesnetzagentur | SMARD.de" —
+   * hence the name below, never shortened. § 111d EnWG makes the data free
+   * for public use in the first place.
+   */
+  smard: {
+    name: "Bundesnetzagentur | SMARD.de",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://www.smard.de",
+    // We regroup SMARD's carriers into our categories and convert energy per
+    // quarter-hour into average power — a change in the sense of Sec. 3(a)(1)(B).
+    note: "umgerechnet",
+  },
+  /**
    * Yearly country electricity data (mix, capacity additions, CO₂).
    *
    * CC BY 4.0 am 22.08.2026 an der Primärquelle geprüft (ember-energy.org/creative-commons):

@@ -1,3 +1,4 @@
+import {regionNavigationEnergy, type RegionNavigationEnergy} from "./region-navigation-energy";
 /**
  * The precomputed package behind one district page (Landkreis).
  *
@@ -18,9 +19,14 @@
  * then does the pointer `kreise/v<N>/aktuell.json` switch. A failed or partial
  * run leaves the previous pointer — and so the last complete generation — live.
  *
- * Bump DISTRICT_PACKAGE_VERSION whenever the package shape or the aggregation
- * / story selection changes: the pointer path carries the version, so an older
- * deployment keeps reading its own generation while the new one is built.
+ * Two numbers, two purposes — do not mix them up:
+ *   DISTRICT_PACKAGE_VERSION   the package SHAPE. It is in the pointer path, so
+ *                              a bump leaves a new deployment without packages
+ *                              until the next run has built them.
+ *   DISTRICT_CONTENT_REVISION  the aggregation / story selection BEHAVIOUR. It
+ *                              is only in the fingerprint: the next run rebuilds
+ *                              every district, the live pointer stays readable.
+ * Bump the revision whenever the same inputs can yield a different package.
  */
 import { createHash } from "node:crypto";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
@@ -28,10 +34,25 @@ import { aggregateDistrictMonitor, type DistrictMonitorResult } from "./district
 import { aggregateDistrictEnergy, type DistrictEnergy } from "./district-energy";
 import { selectDistrictStories } from "./district-stories";
 import type { StoryConcept } from "./story-konzepte";
+import type { RankingSnapshot } from "./ranking-package";
 import { paketFuer } from "../components/gemeinde/paket-teile";
 import { aktuellerGemeindeschluessel } from "./ags-nachfolger";
 
 export const DISTRICT_PACKAGE_VERSION = 1;
+/**
+ * Part of every district fingerprint (and through them of every region one).
+ * WHY (28.09.2026): the rule "register-confirmed empty towns add zero" went live
+ * on 26.09.2026 without a version bump. The fingerprint did not change, so the
+ * daily runs kept Nordfriesland's package from 25.09.2026 — "unavailable
+ * (history)" because of Gröde, which has no plant — and Schleswig-Holstein and
+ * Deutschland above it stayed unavailable too ("0 gebaut, 294 übernommen"),
+ * until someone started a full run by hand. Revision 2 is that rule.
+ * Revision 3 (28.09.2026): district, Land and Deutschland packages carry the
+ * ranking table's cells (lib/ranking-package.ts). The next run of the package
+ * workflow rebuilds every package; until then the page reads the database.
+ */
+// Revision 4: include child monthly energy for navigation without request-time fanout.
+export const DISTRICT_CONTENT_REVISION = 4;
 export const DISTRICT_PACKAGE_PREFIX = `kreise/v${DISTRICT_PACKAGE_VERSION}`;
 export const DISTRICT_POINTER_PATH = `${DISTRICT_PACKAGE_PREFIX}/aktuell.json`;
 /** unstable_cache and the fetch data cache refuse entries above 2 MB; stay well below. */
@@ -39,7 +60,7 @@ export const DISTRICT_PACKAGE_MAX_BYTES = 1_500_000;
 
 export type DistrictSite = { ags: string; kwp: number };
 export type DistrictMonitor = DistrictMonitorResult & { energy: DistrictEnergy | null; sites: DistrictSite[] | null };
-export type DistrictComputed = { monitor: DistrictMonitor; stories: StoryConcept[] };
+export type DistrictComputed = { monitor: DistrictMonitor; stories: StoryConcept[]; childEnergy?: RegionNavigationEnergy | null };
 
 /** One district's members, straight from the region register. */
 export type DistrictMembership = { regionId: string; name: string; members: string[] };
@@ -55,9 +76,18 @@ export type DistrictPackage = {
   editions: string[];
   /** Members without a published town package (their data is absent, not zero). */
   missing: string[];
+  /**
+   * Members the register confirmed at build time to have NO plant of any kind
+   * (e.g. Gröde, 7 residents). Their packages carry no history because there is
+   * nothing to count; they add zero, so they are left out of the sums instead of
+   * making the whole district "unavailable". Absent in older packages.
+   */
+  empty?: string[];
   fingerprint: string;
   builtAt: string;
   content: DistrictComputed;
+  /** The ranking table's cells of the member towns (lib/ranking-package.ts); absent before revision 3. */
+  ranking?: RankingSnapshot;
 };
 
 export type DistrictManifestEntry = { path: string; fingerprint: string; members: number; editions: string[]; missing: number; bytes: number };
@@ -68,6 +98,8 @@ export type DistrictManifest = {
   publishedAt: string;
   previousGeneration: string | null;
   districts: Record<string, DistrictManifestEntry>;
+  /** Bundesländer and Deutschland (lib/region-package.ts), same generation. Absent in older pointers. */
+  regions?: Record<string, DistrictManifestEntry>;
 };
 
 const sorted = (xs: string[]) => [...xs].sort();
@@ -79,16 +111,25 @@ const sorted = (xs: string[]) => [...xs].sort();
  * when every town is present and on one edition, stories by the accepted
  * selection. `packets[i]` belongs to `ids[i]`; null means "no package".
  */
-export function computeDistrictContent(ids: string[], packets: (GemeindePaket | null)[], town: string): DistrictComputed {
+export function computeDistrictContent(ids: string[], packets: (GemeindePaket | null)[], town: string, empty: ReadonlySet<string> = new Set()): DistrictComputed {
   const stories: StoryConcept[][] = packets.map((p) => (p ? (paketFuer("geschichten", p).stories as StoryConcept[]) : []));
-  const sites = packets.flatMap((p) => (p?.register ? [{ ags: p.ags, kwp: p.register.own.sums.alle.kwp }] : []));
-  const slim = packets.map((p) => (p ? { ags: p.ags, registerStand: p.registerStand, monitorHistory: p.monitorHistory, monitorPeriods: p.monitorPeriods } : null));
+  // Register-confirmed empty towns add zero: leave them out of every sum.
+  const keep = ids.map((a, i) => !(empty.has(a) && isEmptyTown(packets[i])));
+  const sumIds = ids.filter((_, i) => keep[i]);
+  const sumPackets = packets.filter((_, i) => keep[i]);
+  const sites = sumPackets.flatMap((p) => (p?.register ? [{ ags: p.ags, kwp: p.register.own.sums.alle.kwp }] : []));
+  const slim = sumPackets.map((p) => (p ? { ags: p.ags, registerStand: p.registerStand, monitorHistory: p.monitorHistory, monitorPeriods: p.monitorPeriods } : null));
   const monitor: DistrictMonitor = {
-    ...aggregateDistrictMonitor(ids, slim, slim[0]?.registerStand ?? ""),
-    energy: aggregateDistrictEnergy(ids, slim, town),
-    sites: sites.length === ids.length && slim.every((p) => p?.registerStand === slim[0]?.registerStand) ? sites : null,
+    ...aggregateDistrictMonitor(sumIds, slim, slim[0]?.registerStand ?? ""),
+    energy: aggregateDistrictEnergy(sumIds, slim, town),
+    sites: sites.length === sumIds.length && slim.every((p) => p?.registerStand === slim[0]?.registerStand) ? sites : null,
   };
-  return { monitor, stories: selectDistrictStories(stories) };
+  return { monitor, stories: selectDistrictStories(stories), childEnergy: regionNavigationEnergy(ids, packets, monitor.energy, new Set(ids.filter((_,i)=>!keep[i]))) };
+}
+
+/** A published town package that holds nothing to sum: no history, no periods, no register figures. */
+export function isEmptyTown(p: GemeindePaket | null): boolean {
+  return !!p && !p.monitorHistory && !p.monitorPeriods && !p.register;
 }
 
 /** What a district's package is computed from; changes whenever any input changes. */
@@ -98,12 +139,12 @@ export function computeDistrictContent(ids: string[], packets: (GemeindePaket | 
  * input: story selection prefers earlier towns on ties, and float sums follow
  * it. A new import therefore rebuilds every district once.
  */
-export function districtFingerprint(d: DistrictMembership, townTags: ReadonlyMap<string, string>, registerEdition = ""): string {
-  const input = [DISTRICT_PACKAGE_VERSION, GEMEINDE_PAKET_VERSION, registerEdition, d.regionId, d.name, sorted(d.members).map((a) => [a, townTags.get(a) ?? null])];
+export function districtFingerprint(d: DistrictMembership, townTags: ReadonlyMap<string, string>, registerEdition = "", revision = DISTRICT_CONTENT_REVISION): string {
+  const input = [DISTRICT_PACKAGE_VERSION, revision, GEMEINDE_PAKET_VERSION, registerEdition, d.regionId, d.name, sorted(d.members).map((a) => [a, townTags.get(a) ?? null])];
   return createHash("sha256").update(JSON.stringify(input)).digest("hex");
 }
 
-export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePaket | null)[], fingerprint: string, builtAt: string): DistrictPackage {
+export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePaket | null)[], fingerprint: string, builtAt: string, emptyTowns: ReadonlySet<string> = new Set()): DistrictPackage {
   if (packets.length !== d.members.length) throw new Error(`${d.regionId}: ${packets.length} Pakete für ${d.members.length} Gemeinden`);
   packets.forEach((p, i) => {
     if (p && p.ags !== d.members[i]) throw new Error(`${d.regionId}: Paket ${p.ags} an Stelle von ${d.members[i]}`);
@@ -116,9 +157,10 @@ export function buildDistrictPackage(d: DistrictMembership, packets: (GemeindePa
     members: sorted(d.members),
     editions: sorted([...new Set(packets.flatMap((p) => (p ? [p.registerStand] : [])))]),
     missing: d.members.filter((_, i) => !packets[i]),
+    ...(d.members.some((a, i) => emptyTowns.has(a) && isEmptyTown(packets[i])) ? { empty: sorted(d.members.filter((a, i) => emptyTowns.has(a) && isEmptyTown(packets[i]))) } : {}),
     fingerprint,
     builtAt,
-    content: computeDistrictContent(d.members, packets, d.name),
+    content: computeDistrictContent(d.members, packets, d.name, emptyTowns),
   };
 }
 

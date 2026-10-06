@@ -100,7 +100,7 @@ export default function SharedSiteHeader({ aktiv }: { aktiv?: string } = {}) {
     <Link className="brand" href="/" aria-label="Solar Check – Startseite"><Logo width={166} /></Link>
     <details className="sc-react-fallback">
       <summary>Menü</summary>
-      <div dangerouslySetInnerHTML={{ __html: navigationContent() }} />
+      <div dangerouslySetInnerHTML={{ __html: navigationContent({ idPrefix: "sc-fallback-local" }) }} />
       {/* Same switch as the magnifier: without JavaScript the search is a link. */}
       {SUCHE_IM_MENUE && <Link href="/suche">Suche</Link>}
       <Link href="/login">Login</Link>

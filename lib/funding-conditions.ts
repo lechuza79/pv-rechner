@@ -158,6 +158,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-ruedesheim-balkonkraftwerke",
   // VG Bad Kreuznach, ebenfalls am 24.09.2026 als beendetes Programm aufgenommen.
   "vg-bad-kreuznach-balkonkraftwerke",
+  // VG Römerberg-Dudenhofen, added 28.09.2026 as a closed programme; application came after the purchase.
+  "vg-roemerberg-dudenhofen-balkonkraftwerke",
   // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
   "donauwoerth-kleinst-pv",
   // Gemeinde Südheide, aufgenommen am 26.09.2026; alle Bedingungen stehen auf
@@ -528,6 +530,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // would suggest the remaining conditions are met once the date fits, for a
   // programme that has no money left. Written out rather than half-captured.
   "gifhorn-kreis-balkonkraftwerke",
+  // Added 27 Sep 2026 as a closed county programme (no calculation fields),
+  // bound to low-income households like Gifhorn; the guideline text itself is
+  // no longer retrievable, only the county's archived overview page.
+  "rhein-hunsrueck-einkommensschwache-haushalte",
+  // Added 27 Sep 2026 as a closed historical programme (no calculation fields).
+  "niederzissen-photovoltaik",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
@@ -544,6 +552,30 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
   // minimum, three-year own use and council budget release have no test form.
   "goedenstorf-stecker-solar",
+  // Added 28 Sep 2026: status unsicher (guideline scan of 2014, no current
+  // budget); "je volle 0,25 kWp" and the craftsman bonus have no test form.
+  "essel-co2-minderung",
+  // Added 28 Sep 2026: submission in the invoice year, first come first
+  // served and one grant per unit and user have no test form.
+  "oberviechtach-stecker-solar",
+  // Added 28 Sep 2026: submission in the invoice year, first come first
+  // served, annual budget and one grant per unit and user have no test form.
+  "maxhuette-haidhof-stecker-solar",
+  // Added 28 Sep 2026: landlord consent, grid registration proof and one
+  // system per dwelling unit have no test form.
+  "bruck-opf-balkonkraftwerke",
+  // Added 28 Sep 2026: ended (measures to be finished by 31.12.2024).
+  "buchholz-aller-balkonkraftwerke",
+  // Added 28 Sep 2026: ended (guideline expired 31.12.2023).
+  "landkreis-hildesheim-balkonkraftwerke",
+  // Added 28 Sep 2026: status unsicher (no 2026 budget published); extra
+  // cost over a standard system, listed-building permit and five-year use
+  // have no test form.
+  "hildesheim-denkmal-solar",
+  // Added 28 Sep 2026: status unsicher (guideline of 2006, no current budget
+  // published); "je volle 0,25 kWp" and the building/measure cap conflict
+  // have no test form.
+  "grethem-co2-minderung",
   // Added 22 Sep 2026: exhausted; two-month main residence, application after
   // installation and three-year operation have no test form.
   "grossheide-balkonmodule",
@@ -639,6 +671,122 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // the owner rule, the one-year tenancy for balcony devices and the re-funding
   // blocks have no test form yet.
   "bickenbach-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule
+  // (incl. balcony), the 30 kWp limit and the own-consumption purpose of the
+  // storage have no test form yet.
+  "horn-hunsrueck-energieeinsparung",
+  // Added 26 Sep 2026: guideline read in full, information only; the energy
+  // consultation, the owner rule and the start-after-entry-into-force rule have
+  // no test form yet.
+  "reckershausen-energiespar",
+  // Added 26 Sep 2026: guideline read in full; the energy check, the owner rule,
+  // the shared PV/storage maximum and the heat-pump limits have no test form yet.
+  "reich-hunsrueck-energiespar",
+  // Added 27 Sep 2026: guideline read in full; first residence, the owner rule
+  // for PV/storage/heating, the 4-year balcony holding period and the
+  // subsidiarity clause have no test form yet.
+  "benzweiler-energiespar",
+  // Added 27 Sep 2026: closed historical programme (funding period ended
+  // 31.12.2022); the owner rule and the renewables-only heating rule have no
+  // test form yet.
+  "kuelz-hunsrueck-heizung-ee",
+  // Added 30 Sep 2026: closed (applications until 30.04.2025, guideline
+  // expired 30.04.2026); owner rule, specialist-firm rule and the 50 % cost
+  // cap have no test form.
+  "geesthacht-solar",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
+  // the energy check and the unregulated balcony eligibility have no test form yet.
+  "bubach-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // for PV/storage/heating, the 2-year balcony holding period and the
+  // 15-month application window have no test form yet.
+  "rayerschied-energiespar",
+  // Added 27 Sep 2026: guideline read in full; the energy check, the owner rule
+  // and the unregulated balcony eligibility have no test form yet.
+  "neuerkirch-energiespar",
+  // Added 27 Sep 2026: heating-only guideline read in full; the owner rule and
+  // the renewables-only heating rule have no test form yet.
+  "neuerkirch-heizung-ee",
+  // Added 27 Sep 2026: guideline read in full, information only; the owner
+  // rule, PV-only-with-storage and the power-or-heat-per-building rule have no
+  // test form yet.
+  "fronhofen-regenerativ",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the 15 kWp
+  // scope, the 3-month application window and the per-household total have no
+  // test form yet.
+  "beltheim-energiespar",
+  // Added 27 Sep 2026: guideline read in full; main residence, the owner rule
+  // for PV/storage/heating, the one-year balcony residence and the re-funding
+  // periods have no test form yet.
+  "dommershausen-energiespar",
+  // Added 27 Sep 2026: guideline read in full (scanned pages); the no-business
+  // rule and the 3-month application window have no test form yet.
+  "roth-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: closed historical programme (term ended 31.12.2025).
+  "michelbach-hunsrueck-energie-klima",
+  // Added 27 Sep 2026: VG-wide guideline read in full, information only; the
+  // 40-year building age, the 10,000 EUR minimum cost and the approval-before-start
+  // rule have no test form yet.
+  "vg-kastellaun-dorfzentren-klimaschutz",
+  // Added 27 Sep 2026: Weilerbach point-based prize (no euro per point in the
+  // guideline) and the village heat-pump grant (underfloor heating, mandatory
+  // consultation, pro-rata cut), both information only.
+  "vg-weilerbach-meilenstein-preisgeld",
+  "weilerbach-energieeinsparmassnahmen",
+  // Added 27 Sep 2026: village-renewal guideline read in full, information only;
+  // the 50-year building age, the 20,000 EUR minimum cost after federal funding
+  // and the year-end council decision have no test form yet.
+  "beltheim-dorferneuerung-klimaschutz",
+  // Added 27 Sep 2026: village-development guideline read in full, information
+  // only; the 50-year building age, the 20,000 EUR minimum cost and the
+  // five-year payout have no test form yet.
+  "alterkuelz-dorfentwicklung",
+  // Added 27 Sep 2026: guidelines read in full; the energy consultation, the
+  // owner rule (Unzenberg: one-year residence for the balcony), the
+  // own-consumption purpose of the storage and the water-based heating
+  // requirement for heat pumps have no test form yet.
+  "unzenberg-energiespar",
+  "henau-energiespar",
+  "metzenhausen-energiespar",
+  "kappel-energie",
+  // Added 27 Sep 2026: guidelines read in full (scans, page by page); the
+  // three-month window AFTER the start, the photo evidence and the 10-to-30-year
+  // age of the replaced heating have no test form yet.
+  "otterstadt-umweltfoerderung",
+  "waldsee-umweltfoerderung",
+  "ahrweiler-batteriespeicher",
+  // Added 1 Oct 2026: page and guideline read in full; the start-of-project
+  // rule (supply contract counts as start), the 24-month completion window and
+  // the Ortsgemeinde territory rule have no test form yet.
+  "bellheim-erneuerbare-energien",
+  // Added 1 Oct 2026: page and guideline (21.04.2026) read in full. Application
+  // AFTER purchase with invoice, the five-year operation duty and the small
+  // first-come budget have no test form yet; the entry deducts nothing.
+  "laudenbach-steckersolar",
+  // Added 2 Oct 2026: guideline (in force 01.03.2025) and city page read in
+  // full. Application AFTER purchase, the invoice-date cut-off, the five-year
+  // operation duty and the first-come 2026 budget have no test form yet; the
+  // entry deducts nothing.
+  "hemsbach-steckersolar",
+  // Added 4 Oct 2026: three Walldorf guidelines (PV, plug-in solar, heating)
+  // read in full. Approval before contract, the post-2022 building-permit
+  // cut-off, kWp-tiered storage and caps incl. federal funds have no test
+  // form yet; the entry deducts nothing.
+  "walldorf-klimaschutz",
+  // Added 4 Oct 2026: Hirschberg guideline (scan, read as image) and town page.
+  // Application after purchase, invoice-date cut-off, five-year operation and
+  // the first-come 2026 budget have no test form yet; deducts nothing.
+  "hirschberg-steckersolar",
+  // Added 5 Oct 2026: Schwetzingen KlimaIMPULS guideline 2025 (read as image),
+  // continued unchanged in 2026 per the town page. Application after purchase,
+  // three-month deadline and the first-come budget have no test form; deducts
+  // nothing.
+  "schwetzingen-klimaimpuls",
+  // Added 6 Oct 2026: Stadtwerke Hockenheim balcony (2023 guideline) and heat
+  // pump hybrid (2024 guideline), both tied to being a Stadtwerke customer;
+  // deduct nothing.
+  "hockenheim-stadtwerke-balkon",
+  "hockenheim-stadtwerke-hauswaerme",
 ];
 
 /**
@@ -918,12 +1066,14 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "einmal gefördert wurde — eine Auskunft, die nur die Stadt hat.",
       },
       {
-        ausBedingung: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+        ausBedingung: "Gefördert wird ein Balkonkraftwerk mit höchstens zwei Modulen je Haushalt, höchstens 800 W Einspeisung — ob ein Set mit mehr Modulen ganz herausfällt, sagt die Richtlinie nicht eindeutig; wir rechnen deshalb keinen Betrag an",
         warum:
           "Die 800 W sind seit 2024 ohnehin die gesetzliche Obergrenze für " +
           "Steckersolar und damit im Balkon-Rechner der Normalfall. Die Modulzahl " +
           "steht in keiner Prüfform, weil sie sonst nirgends vorkommt — ein eigenes " +
-          "Feld für einen einzigen Fall wäre Zeremonie.",
+          "Feld für einen einzigen Fall wäre Zeremonie. Weil offen ist, ob ein " +
+          "Set mit mehr Modulen ganz herausfällt, rechnet der Balkon-Teil seit " +
+          "01.10.2026 ohnehin keinen Betrag mehr an.",
       },
       {
         ausBedingung: "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",

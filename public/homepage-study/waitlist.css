@@ -1,0 +1,43 @@
+/* Shared product preview, using the existing light shell and dark/neon action palette. */
+.sc-waitlist-preview{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:center;margin:64px 0 56px}
+.sc-waitlist-preview .intro{margin:0;max-width:580px}
+.sc-waitlist-preview h1{font-size:clamp(32px,3.4vw,46px);line-height:1.15;letter-spacing:-.035em}
+.sc-waitlist-preview .intro>p:not(.eyebrow){font-size:18px;line-height:1.6;margin-bottom:24px}
+.sc-waitlist-preview .eyebrow{margin:0 0 18px}
+/* Match the approved homepage teaser badge. */
+:is(.sc-waitlist-preview,.homepage-tool-teaser-heading) .hs-coming{display:inline-block;font-size:10px;line-height:1.5;padding:4px 8px;border:1px solid transparent;border-radius:20px;letter-spacing:0;background:#e8d5ff;color:#562581;font-weight:600}
+.sc-waitlist-jump{display:inline-flex;align-items:center;gap:20px;font-size:14px;font-weight:600;padding:10px 0;border-bottom:1px solid #173b4240}
+.sc-waitlist-jump:hover{border-color:currentColor}
+.sc-waitlist-art{position:relative;display:grid;place-items:center;isolation:isolate}
+.sc-waitlist-art:before{content:"";position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:#dbe5da;z-index:-1}
+.sc-waitlist-visual{display:block;width:100%;max-width:420px;height:auto}
+.sc-waitlist-plan{margin:0 0 56px}
+.sc-waitlist-plan>h2{font:500 12px/1.5 'DM Sans',sans-serif;color:#4a675e;letter-spacing:.08em;text-transform:uppercase;margin:0 0 24px}
+.sc-waitlist-features{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.sc-waitlist-features li{border-top:1px solid #173b4230;padding-top:20px}
+.sc-waitlist-number{font-size:12px;color:#4a675e;display:block;margin-bottom:16px}
+.sc-waitlist-features h3{font:700 18px/1.35 Montserrat,sans-serif;letter-spacing:-.02em;margin:0 0 12px}
+.sc-waitlist-features p{margin:0;color:#4a675e;font-size:16px;line-height:1.6}
+.sc-waitlist.sc-waitlist-signup{margin:0;width:100%;max-width:none;max-height:none;overflow:visible;padding:40px;border-radius:24px;background:#08191c;color:#e8eee9}
+.sc-waitlist-signup [data-wl-formular]:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.sc-waitlist-signup .eyebrow{font-size:12px;letter-spacing:.08em;color:#a7bcbb;margin:0 0 16px}
+.sc-waitlist-signup h2{font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:-.025em;padding:0;margin:0 0 16px;scroll-margin-top:32px}
+.sc-waitlist-signup-copy>p:last-child{color:#a7bcbb;font-size:16px;line-height:1.6;margin:0}
+.sc-waitlist-signup form{margin:0;gap:12px}
+.sc-waitlist-signup form button{min-height:48px}
+.sc-waitlist-signup .sc-waitlist-consent{color:#a7bcbb;margin-top:4px}
+.sc-waitlist-signup .sc-waitlist-consent a{text-decoration:underline;text-underline-offset:3px}
+.sc-waitlist-signup [role=status]:empty{display:none}
+@media(max-width:700px){
+ .sc-waitlist-preview{grid-template-columns:1fr;gap:20px;margin:36px 0 32px}
+ .sc-waitlist-art{width:min(100%,300px);justify-self:center}
+ .sc-waitlist-plan{margin-bottom:32px}
+ .sc-waitlist-features{grid-template-columns:1fr;gap:24px}
+ .sc-waitlist-features li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px 12px;padding-top:18px}
+ .sc-waitlist-number{grid-row:1/3;margin:3px 0 0}
+ .sc-waitlist-features h3{margin:0}
+ .sc-waitlist-features p{grid-column:2}
+ .sc-waitlist.sc-waitlist-signup{padding:28px 24px}
+ .sc-waitlist-signup [data-wl-formular]:not([hidden]){grid-template-columns:1fr;gap:28px}
+}
+@media(prefers-reduced-motion:no-preference){html:has(.sc-waitlist-preview){scroll-behavior:smooth}}

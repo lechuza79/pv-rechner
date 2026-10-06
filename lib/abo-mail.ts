@@ -82,7 +82,8 @@ export const ABO_PFLICHTANGABEN: {
   {
     was: "Grund der Zusendung",
     nichtBeiUmstellung: true,
-    pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t),
+    // Formal address too: the video export mails say "Sie" like its dialog.
+    pruefe: (t) => /Diese E-Mail (bekommst du|bekommen Sie), weil/.test(t),
   },
 ];
 

@@ -1,6 +1,7 @@
 "use client";
 import { useId, type CSSProperties } from "react";
 import { v, RESULT_LOGO_COLORS } from "../lib/theme";
+import { useBildInhaltBereit } from "../lib/nur-im-bild";
 
 // Horizontal logo, inline so its colours are code, not baked pixels.
 //
@@ -28,6 +29,9 @@ export { RESULT_LOGO_COLORS };
 export default function Logo({ width = 130, variant = "theme" }: { width?: number; variant?: "theme" | "result" }) {
   const uid = useId();
   const gradId = `logo-grad-${uid}`;
+  // Inside a hidden image-only footer the paths follow after hydration; the
+  // frame (size, label) is there from the start. Everywhere else: at once.
+  const bereit = useBildInhaltBereit();
 
   return (
     <svg
@@ -39,8 +43,10 @@ export default function Logo({ width = 130, variant = "theme" }: { width?: numbe
       aria-label="solar-check.io"
       style={{ display: "block", flexShrink: 0, height: "auto", ...(variant === "result" ? (RESULT_LOGO_COLORS as unknown as CSSProperties) : {}) }}
     >
-      <g transform={`scale(${MARK_SCALE})`}>
-          <path opacity="0.4" d="M38.2923 14.3953L16.2601 36.2935C15.8678 36.6834 15.2334 36.6808 14.8444 36.2876L2.70186 24.0173C2.31399 23.6254 2.3166 22.9934 2.70771 22.6047L24.7399 0.706489C25.1322 0.316556 25.7666 0.319184 26.1556 0.712354L38.2981 12.9827C38.686 13.3746 38.6834 14.0066 38.2923 14.3953Z" fill={`url(#${gradId})`} />
+      {bereit && <>
+      {/* Without the faded top face, center the visible mark on the wordmark. */}
+      <g transform={`${variant === "result" ? "translate(0 -4) " : ""}scale(${MARK_SCALE})`}>
+      {variant !== "result" && <path opacity="0.4" d="M38.2923 14.3953L16.2601 36.2935C15.8678 36.6834 15.2334 36.6808 14.8444 36.2876L2.70186 24.0173C2.31399 23.6254 2.3166 22.9934 2.70771 22.6047L24.7399 0.706489C25.1322 0.316556 25.7666 0.319184 26.1556 0.712354L38.2981 12.9827C38.686 13.3746 38.6834 14.0066 38.2923 14.3953Z" fill={`url(#${gradId})`} />}
           <path d="M40.2109 24.0278L17.7109 46.7706C17.0825 47.4058 16 46.9608 16 46.0673V39.1755C16 38.9122 16.1039 38.6594 16.2891 38.4722L38.7891 15.7294C39.4175 15.0942 40.5 15.5392 40.5 16.4327V23.3245C40.5 23.5878 40.3961 23.8405 40.2109 24.0278Z" fill={v("--color-brand")} />
           <path d="M40.2109 35.0278L17.7109 57.7706C17.0825 58.4058 16 57.9608 16 57.0673V50.1755C16 49.9122 16.1039 49.6594 16.2891 49.4722L38.7891 26.7294C39.4175 26.0942 40.5 26.5392 40.5 27.4327V34.3245C40.5 34.5878 40.3961 34.8405 40.2109 35.0278Z" fill={v("--color-brand")} />
           <path d="M14.9467 48.9727L1.71302 35.5076C1.08561 34.8692 -0.000185013 35.3135 -0.000185013 36.2086V43.0909C-0.000185013 43.3531 0.102806 43.6048 0.286606 43.7918L13.5203 57.2568C14.1477 57.8952 15.2335 57.451 15.2335 56.5559V49.6736C15.2335 49.4114 15.1305 49.1597 14.9467 48.9727Z" fill={v("--color-brand-deep")} />
@@ -54,6 +60,7 @@ export default function Logo({ width = 130, variant = "theme" }: { width?: numbe
           <stop offset="1" stopColor={v("--color-brand-deep")} stopOpacity="0" />
         </linearGradient>
       </defs>
+      </>}
     </svg>
   );
 }

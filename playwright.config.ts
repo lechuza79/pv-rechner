@@ -98,7 +98,7 @@ export default defineConfig({
     // Lauf brach dann mit „nicht erreichbar" ab, was wie ein Testfehler aussah,
     // aber keiner war. Gegen den Build entfällt das Übersetzen komplett.
     command: process.env.E2E_BUILD
-      ? `next build && next start -p ${E2E_PORT}`
+      ? `npm run build && next start -p ${E2E_PORT}`
       : `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env.CI,

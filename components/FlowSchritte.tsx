@@ -14,9 +14,12 @@ import { IconCheck } from "./Icons";
  * On narrow screens only the current step keeps its name next to the number,
  * so five steps still fit a phone.
  */
-export default function FlowSchritte({ schritte, aktiv, onSprung }: {
+export default function FlowSchritte({ schritte, aktiv, onSprung, allowJumpAhead = false, completedSteps }: {
   /** One word per step, in order. */
   schritte: string[];
+  /** Allow reviewing future steps while the caller guards final completion. */
+  allowJumpAhead?: boolean;
+  completedSteps?: readonly boolean[];
   aktiv: number;
   /** Go back to a completed step. Without it the done steps are plain text. */
   onSprung?: (i: number) => void;
@@ -27,7 +30,7 @@ export default function FlowSchritte({ schritte, aktiv, onSprung }: {
       <nav aria-label="Fortschritt" className="sc-fs">
         <ol>
           {schritte.map((name, i) => {
-            const zustand = i < aktiv ? "fertig" : i === aktiv ? "aktiv" : "offen";
+            const zustand = i === aktiv ? "aktiv" : (completedSteps ? completedSteps[i] : i < aktiv) ? "fertig" : "offen";
             const inhalt = (
               <>
                 <span className="sc-fs-punkt" aria-hidden="true">
@@ -38,8 +41,8 @@ export default function FlowSchritte({ schritte, aktiv, onSprung }: {
             );
             return (
               <li key={name} data-zustand={zustand} aria-current={zustand === "aktiv" ? "step" : undefined}>
-                {zustand === "fertig" && onSprung
-                  ? <button type="button" onClick={() => onSprung(i)} aria-label={`Zurück zu Schritt ${i + 1}: ${name}`}>{inhalt}</button>
+                {(zustand === "fertig" || (allowJumpAhead && zustand === "offen")) && onSprung
+                  ? <button type="button" onClick={() => onSprung(i)} aria-label={`${i < aktiv ? "Zurück zu" : "Zu"} Schritt ${i + 1}: ${name}`}>{inhalt}</button>
                   : <div>{inhalt}</div>}
               </li>
             );

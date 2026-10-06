@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import styles from "./WidgetActionMenu.module.css";
 import { v, iconSizes } from "../lib/theme";
 import {
   IconDownload,
@@ -48,7 +49,7 @@ export interface ChartActionBarProps {
   /** Animierte Charts: die Animation als Video aufnehmen (läuft in Echtzeit). */
   onDownloadVideo?: () => void;
   isRecording?: boolean;
-  onCopyLink: () => void;
+  onCopyLink: () => void | Promise<void>;
   onWhatsApp: () => void;
   onTwitter: () => void;
   onShareImage?: () => void;
@@ -145,11 +146,10 @@ export default function ChartActionBar({
     setOpen(false);
     fn();
   };
-  const copyLink = () => {
-    setOpen(false);
-    onCopyLink();
+  const copyLink = async () => {
+    await onCopyLink();
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+
   };
 
   const btn: React.CSSProperties = {
@@ -191,7 +191,7 @@ export default function ChartActionBar({
           <IconMore size={icon} />
         </button>
         {open && (
-          <div style={{ ...S.menu, ...(menuUp ? S.menuUpRight : S.menuBelowRight), ...seite }} role="menu">
+          <div style={{ ...S.menu, ...(menuUp ? S.menuUpRight : S.menuBelowRight), ...seite }} role="menu" className={styles.menu}>
             {showDownload && (
               <>
                 <MenuItem
@@ -200,7 +200,7 @@ export default function ChartActionBar({
                   onClick={run(onDownload)}
                   disabled={isExporting}
                 />
-                <div style={S.divider} />
+                <div className={styles.separator} />
               </>
             )}
             {onDownloadVideo && (
@@ -211,10 +211,10 @@ export default function ChartActionBar({
                   onClick={run(onDownloadVideo)}
                   disabled={isRecording}
                 />
-                <div style={S.divider} />
+                <div className={styles.separator} />
               </>
             )}
-            <MenuItem icon={IconLink} label="Link kopieren" onClick={copyLink} />
+            <MenuItem icon={copied ? IconCheck : IconLink} label={copied ? "Link kopiert" : "Link kopieren"} onClick={copyLink} />
             {canNativeShare && onShareImage && (
               <MenuItem icon={IconShare} label="Als Bild teilen" onClick={run(onShareImage)} />
             )}
@@ -223,11 +223,11 @@ export default function ChartActionBar({
             {onCite && <MenuItem icon={IconQuote} label="Zitieren" onClick={run(onCite)} />}
             {onEmbed && (
               <>
-                <div style={S.divider} />
+                <div className={styles.separator} />
                 <MenuItem icon={IconCode} label="Einbetten" onClick={run(onEmbed)} />
               </>
             )}
-            <div style={S.divider} />
+            <div className={styles.separator} />
             <MenuItem
               icon={IconHelpCircle}
               label="Anbieter & Impressum"
@@ -274,14 +274,14 @@ export default function ChartActionBar({
           <IconShare size={icon} />
         </button>
         {open && (
-          <div style={{ ...S.menu, ...seite }} role="menu">
-            <MenuItem icon={IconLink} label="Link kopieren" onClick={copyLink} />
+          <div style={{ ...S.menu, ...seite }} role="menu" className={styles.menu}>
+            <MenuItem icon={copied ? IconCheck : IconLink} label={copied ? "Link kopiert" : "Link kopieren"} onClick={copyLink} />
             {canNativeShare && onShareImage && (
               <MenuItem icon={IconShare} label="Als Bild teilen" onClick={run(onShareImage)} />
             )}
             <MenuItem icon={IconWhatsApp} label="WhatsApp" onClick={run(onWhatsApp)} />
             <MenuItem icon={IconTwitter} label="X" onClick={run(onTwitter)} />
-            <div style={S.divider} />
+            <div className={styles.separator} />
             <MenuItem
               icon={IconHelpCircle}
               label="Anbieter & Impressum"
@@ -326,14 +326,9 @@ function MenuItem({
       onClick={onClick}
       disabled={disabled}
       role="menuitem"
-      style={{
-        ...S.item,
-        ...(accent ? S.itemAccent : null),
-        ...(muted ? S.itemMuted : null),
-        ...(disabled ? { opacity: 0.5, cursor: "wait" } : null),
-      }}
+      className={[styles.item, accent && styles.accent, muted && styles.muted].filter(Boolean).join(" ")}
     >
-      <Icon size={iconSizes.md} color={accent ? v("--color-accent") : muted ? v("--color-text-muted") : v("--color-text-secondary")} />
+      <Icon size={16} />
       <span>{label}</span>
     </button>
   );
@@ -347,11 +342,6 @@ const S: Record<string, React.CSSProperties> = {
     // überschreibt sie (`seite`).
     right: 0,
     minWidth: MENU_BREITE,
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-md"),
-    boxShadow: v("--shadow-lg"),
-    padding: 5,
     zIndex: 100,
   },
   // ⋯ menu at the top-right of a widget → open downward, right-aligned.
@@ -368,26 +358,6 @@ const S: Record<string, React.CSSProperties> = {
     left: "auto",
     right: 0,
   },
-  item: {
-    display: "flex",
-    alignItems: "center",
-    gap: 9,
-    width: "100%",
-    padding: "8px 10px",
-    fontSize: v("--font-size-small"),
-    fontWeight: 500,
-    color: v("--color-text-primary"),
-    background: "transparent",
-    border: 0,
-    borderRadius: 6,
-    cursor: "pointer",
-    fontFamily: "inherit",
-    textAlign: "left" as const,
-    whiteSpace: "nowrap" as const,
-  },
-  itemAccent: { color: v("--color-accent"), fontWeight: 700 },
-  itemMuted: { color: v("--color-text-muted"), fontWeight: 400, fontSize: v("--font-size-small") },
-  divider: { height: 1, background: v("--color-border"), margin: "4px 2px" },
   toast: {
     position: "absolute",
     bottom: 44,

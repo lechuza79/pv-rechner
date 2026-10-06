@@ -1,3 +1,4 @@
+import { heuteInBerlin } from "../zeit";
 import { describe, it, expect } from "vitest";
 import {
   angeboteAusShopify,
@@ -9,7 +10,8 @@ import {
   type ShopifyProdukt,
   type ShopAngebot,
 } from "../shop-solakon";
-import { besteAngebote, bewerteAngebot, empfiehlAngebot, guenstigsteJeKombination } from "../shop-angebot";
+import { configFuerAngebot, besteAngebote, bewerteAngebot, empfiehlAngebot, guenstigsteJeKombination } from "../shop-angebot";
+import { FUNDING_PROGRAMS } from "../funding-programs";
 import { calcBalkon } from "../balkon";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
 import { preisTeile, jahreDativ, produktSpeicherTeile } from "../atlas-format";
@@ -376,5 +378,69 @@ describe("Produktbild", () => {
     );
     // Die Zuordnung fällt auf null zurück, nicht auf ein Standardbild.
     expect(quelle).toMatch(/MODELL_BILD\[a\.moduleWp\] \?\? null/);
+  });
+});
+
+
+describe("shop-backed main calculation", () => {
+  it("uses the exact hardware and deducts funding once without changing generation", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh > 0)!;
+    const card = bewerteAngebot(offer, BASIS).ergebnis;
+    const cfg = configFuerAngebot(offer);
+    const gross = calcBalkon({ ...BASIS, setId: "duo", storageId: "small" }, cfg);
+    expect(gross).toEqual(card);
+    expect(gross.invest).toBe(offer.preis);
+    expect(gross.moduleKwp).toBe(offer.moduleWp / 1000);
+    expect(gross.storageKwh).toBe(offer.speicherKwh);
+    const net = calcBalkon({ ...BASIS, setId: "duo", storageId: "small", invest: Math.max(0, offer.preis - 200) }, cfg);
+    expect(net.invest).toBe(offer.preis - 200);
+    expect(net.lifetimeSaving - gross.lifetimeSaving).toBe(200);
+    expect(net.annualYield).toBe(gross.annualYield);
+    expect(net.selfUsedKwh).toBe(gross.selfUsedKwh);
+    expect(net.annualCosts).toEqual(gross.annualCosts);
+    const ownPrice = calcBalkon({ ...BASIS, setId: "duo", storageId: "small", invest: 999 }, cfg);
+    expect(ownPrice.storageKwh).toBe(offer.speicherKwh);
+    expect(ownPrice.invest).toBe(999);
+  });
+});
+
+
+describe("funded offer explanations", () => {
+  const program = { ...FUNDING_PROGRAMS["landkreis-oldenburg-steckersolar"], lastVerified: heuteInBerlin(), pageSeenAt: new Date().toISOString() };
+  it("explains the applied storage condition and needs no further input", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh > 0)!;
+    const rated = bewerteAngebot(offer, BASIS, CFG, { programs: [program], enabled: true });
+    expect(rated.fundingEuro).toBeGreaterThan(0);
+    expect(rated.fundingNeedsInput).toBe(false);
+    expect(rated.fundingNotes).toContain("Landkreis Oldenburg: Gefördert werden nur Balkonkraftwerke mit Speicher.");
+  });
+  it("does not claim an unapplied storage grant for a set without storage", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh === 0)!;
+    const rated = bewerteAngebot(offer, BASIS, CFG, { programs: [program], enabled: true });
+    expect(rated.fundingEuro).toBe(0);
+    expect(rated.fundingNotes).toEqual([]);
+  });
+  it("keeps the action when a housing answer is still missing", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh > 0)!;
+    const rated = bewerteAngebot(offer, BASIS, CFG, { programs: [{ ...program, nurWohnform: "mieter" }], enabled: true });
+    expect(rated.fundingNeedsInput).toBe(true);
+    expect(rated.fundingNotes).toEqual([]);
+  });
+});
+
+
+describe("Solakon factory reserve", () => {
+  it("reduces usable storage without changing nominal size, price or PV yield", () => {
+    const offer = angeboteAusShopify(ROH).find(a => a.lieferbar && a.speicherKwh > 0)!;
+    const config = configFuerAngebot(offer);
+    expect(config.storage.find(s => s.id === "small")!.usableBatteryKwh).toBeCloseTo(offer.speicherKwh * .85);
+    const nominalConfig = { ...config, storage: config.storage.map(s => ({ ...s, usableBatteryKwh: s.kwh })) };
+    const inputs = { ...BASIS, setId: "duo" as const, storageId: "small" as const };
+    const adjusted = calcBalkon(inputs, config), nominal = calcBalkon(inputs, nominalConfig);
+    expect(adjusted.invest).toBe(nominal.invest);
+    expect(adjusted.storageKwh).toBe(nominal.storageKwh);
+    expect(adjusted.annualYield).toBe(nominal.annualYield);
+    expect(adjusted.selfUsedKwh).toBeLessThan(nominal.selfUsedKwh);
+    expect(adjusted.lifetimeSaving).toBeLessThan(nominal.lifetimeSaving);
   });
 });

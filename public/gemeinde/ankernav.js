@@ -22,10 +22,12 @@
   const kopf = nav.querySelector(".v3-nav-aktiv");
   if (!marken.length) return;
 
-  // Nach der Reihenfolge IM DOKUMENT, nicht nach der im Menü — gemessen
-  // (23.09.2026): Der Förderabschnitt steht auf der Seite VOR dem
-  // Energiemonitor, im Menü dahinter. Wer die Menüreihenfolge für die
-  // Lesereihenfolge hält, zeigt im Energiemonitor „Förderung" an.
+  // Nach der Reihenfolge IM DOKUMENT, nicht nach der im Menü. Beide stimmen
+  // seit dem 24.09.2026 überein — aber wer sich darauf verlässt, zeigt beim
+  // nächsten eingeschobenen Abschnitt wieder den falschen Namen an. Gemessen
+  // war genau das der Fall: Der Förderabschnitt stand auf der Seite vor dem
+  // Energiemonitor und im Menü dahinter, und die Leiste meldete im
+  // Energiemonitor „Förderung".
   const abschnitte = marken
     .map((a) => ({ a, ziel: document.querySelector(a.getAttribute("href")) }))
     .filter((x) => x.ziel)
@@ -75,7 +77,8 @@
   // schmal ist er ein Menü und startet zu. Der Umschaltpunkt steht hier UND
   // im Stylesheet — zwei Stellen, aber die Alternative wäre, die Breite aus
   // dem Stylesheet zurückzulesen, und das ist die unzuverlässigere von beiden.
-  const schmal = matchMedia("(max-width: 860px)");
+  const collapseAt = Number(nav.dataset.collapseAt) || 860;
+  const schmal = matchMedia(`(max-width: ${collapseAt}px)`);
   const anpassen = () => {
     menue.open = !schmal.matches;
   };

@@ -6,12 +6,10 @@ import {
   UNLESBAR_UNTER,
   grenzeFuer,
   kontrastVon,
-  stufePinnen,
   ueberlegen,
   zahlen,
   zeile,
   type Kontrastbefund,
-  type Tagesstufe,
 } from "./kontrast";
 
 // ─── Kein Text verschwindet auf seinem Grund ─────────────────────────────────
@@ -57,13 +55,9 @@ const EIGENER_ORT = {
   plz: "80331",
 };
 
-// BEIDE ENDEN DER TAGESSTUFEN, nicht die gerade geltende. Das Theme hat sieben
-// Stufen, von voller Sonne bis Nacht, und sie unterscheiden sich nicht nur im
-// Grund: Textfarben, Signalfarben und Ränder werden je Stufe eigens gesetzt.
-// Wer nur eine misst, prüft die Site, die er gerade zufällig vor sich hat —
-// genau so entgingen dem ersten Lauf 53 schwarze Diagramm-Beschriftungen, die
-// nur nachts auf dunklem Grund stehen.
-const STUFEN: Tagesstufe[] = ["light", "dark"];
+// Seit 29.09.2026 rendert die Site EINE feste Palette (keine Umschaltung nach
+// Einstellung, Systemvorgabe oder Sonne mehr). Gemessen wird deshalb genau
+// diese eine; Stufen, die niemand mehr sieht, zu prüfen, wäre Scheinarbeit.
 
 /**
  * Seiten, über die dieser Wächter kein Urteil fällen kann.
@@ -92,11 +86,10 @@ const STUFEN: Tagesstufe[] = ["light", "dark"];
  */
 const NOCH_KEIN_URTEIL: string[] = ["/solar-atlas/bayern/landkreis-wuerzburg/hoechberg"];
 
-for (const stufe of STUFEN) {
+{
   for (const { pfad } of SEITEN) {
     if (NOCH_KEIN_URTEIL.includes(pfad)) continue;
-    test(`${pfad} (${stufe}): kein Text unter ${UNLESBAR_UNTER}:1`, async ({ page }) => {
-      await page.addInitScript(stufePinnen(stufe));
+    test(`${pfad}: kein Text unter ${UNLESBAR_UNTER}:1`, async ({ page }) => {
       await page.addInitScript((ort) => {
         try {
           window.localStorage.setItem("solarcheck.home-gemeinde.v1", JSON.stringify(ort));
@@ -195,7 +188,7 @@ for (const stufe of STUFEN) {
 
       expect(
         befunde.length,
-        `${pfad} (${stufe}): ${befunde.length} Textstellen unter der Lesbarkeitsgrenze ` +
+        `${pfad}: ${befunde.length} Textstellen unter der Lesbarkeitsgrenze ` +
           `(${knapp.length} verschiedene Farbpaare)\n  ` +
           knapp.map(zeile).join("\n  "),
       ).toBe(0);

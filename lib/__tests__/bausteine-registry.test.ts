@@ -72,7 +72,7 @@ describe("Bausteine-Register", () => {
         if (anderer === b.name) continue;
         // Relativer Import innerhalb desselben Ordners — so importieren sich
         // die geteilten Bausteine untereinander.
-        if (new RegExp(`from ["']\\./${anderer}["']`).test(quelle)) wirklich.add(anderer);
+        if (new RegExp(`from ["'](?:\\./|\\.\\./)+(?:[\\w-]+/)*${anderer}["']`).test(quelle)) wirklich.add(anderer);
       }
       for (const d of b.bestehtAus) {
         if (!namen.has(d)) fehler.push(`${b.name}: „${d}“ steht nicht im Register`);
@@ -192,4 +192,39 @@ describe("Bausteine-Register", () => {
     // anderen — sonst prüft die Schleife oben über eine leere Menge.
     expect(verwendetVon("Modal").length).toBeGreaterThan(3);
   });
+});
+
+it("keeps optional calculator inputs on the shared disclosure component", () => {
+  const consumers = {
+    "components/DachField.tsx": ["Dachfläche und Neigung anpassen"],
+    "app/(site)/photovoltaik-rechner/empfehlung.tsx": ["Ich kenne meine Dachfläche", "Gebäudeangaben anpassen"],
+  };
+  for (const [file, labels] of Object.entries(consumers)) {
+    const source = lies(file);
+    for (const label of labels) expect(source, `${file}: ${label}`).toContain(`<OptionalDisclosure label="${label}"`);
+  }
+});
+
+
+it("reuses calculation selection and consumer questions in both result contexts", () => {
+  const pv = readFileSync("app/(site)/photovoltaik-rechner/rechner.tsx", "utf8");
+  const bkw = readFileSync("components/BalkonAngebot.tsx", "utf8");
+  const section = lies("components/PvConsumerSection.tsx");
+  expect(pv).toContain("<PvConsumerSection");
+  expect(section).toContain("<ResultChoiceHeader");
+  expect(bkw).toContain("<ResultChoiceHeader");
+  expect(pv).toContain("<PvConsumerFields");
+  expect(section).toContain("<PvConsumerFields");
+});
+
+it("reuses the comparison components inside consumer cards", () => {
+  const pv = lies("app/(site)/photovoltaik-rechner/rechner.tsx");
+  const comparison = lies("components/PvConsumerComparison.tsx");
+  const section = lies("components/PvConsumerSection.tsx");
+  expect(pv).toContain("<PvConsumerSection");
+  expect(section).toContain("<PvConsumerComparison");
+  expect(comparison).toContain("<HeatPumpRunningComparison");
+  expect(comparison).toContain('<OptionalDisclosure label={label}>');
+  expect(section).toContain('<AffiliateCarousel label="Weitere Verbraucher"');
+  expect(lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx")).not.toContain("calcFossilReference");
 });

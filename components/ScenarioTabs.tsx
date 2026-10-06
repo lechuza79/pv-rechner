@@ -9,7 +9,7 @@
 // sie je Rechner kippt (für PV ist ein hoher Strompreis gut, für die
 // Wärmepumpe schlecht) — die Komponente rendert nur, was sie bekommt.
 import { ReactNode } from "react";
-import { v } from "../lib/theme";
+import { v, space, pad } from "../lib/theme";
 
 export interface ScenarioTab {
   id: string;
@@ -18,6 +18,7 @@ export interface ScenarioTab {
   sub: string;
   /** Erklärsatz des aktiven Szenarios (unter den Tabs). */
   explain: string;
+  source?: { href: string; label: string };
 }
 
 export default function ScenarioTabs({
@@ -35,19 +36,22 @@ export default function ScenarioTabs({
 }) {
   const active = tabs.find((t) => t.id === selected) ?? tabs[0];
   return (
-    <div style={{ background: v("--color-bg"), borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, marginBottom: 16, overflow: "hidden" }}>
+    <div style={{ background: v("--color-bg"), borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, marginBottom: space.xl, overflow: "hidden" }}>
       <div style={{ display: "flex" }} role="tablist" aria-label="Strompreis-Szenario">
         {tabs.map((t) => {
           const on = t.id === active.id;
           return (
             <button
               key={t.id}
+              type="button"
               role="tab"
               aria-selected={on}
               onClick={() => onSelect(t.id)}
               style={{
-                flex: 1,
-                padding: "10px 6px",
+                flex: "1 1 auto",
+                minWidth: 0,
+                font: "inherit",
+                padding: pad("lg", "sm"),
                 cursor: "pointer",
                 textAlign: "center",
                 background: on ? v("--color-accent-dim") : "transparent",
@@ -56,16 +60,17 @@ export default function ScenarioTabs({
                 transition: "background .15s, border-color .15s",
               }}
             >
-              <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v("--color-accent") : v("--color-text-muted") }}>{t.label}</div>
-              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), fontFamily: v("--font-mono"), marginTop: 2 }}>{t.sub}</div>
+              <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), whiteSpace: "nowrap" }}>{t.label}</div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: space.xs }}>{t.sub}</div>
             </button>
           );
         })}
       </div>
-      <div style={{ padding: "12px 16px" }}>
+      <div style={{ padding: pad("xl") }}>
         {children}
-        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+        <div style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
           {active.explain}
+          {active.source && <div style={{ marginTop: space.md, fontSize: v("--font-size-small") }}><a style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: v("--underline-offset") }} href={active.source.href} target="_blank" rel="noopener noreferrer">{active.source.label}</a></div>}
         </div>
       </div>
     </div>

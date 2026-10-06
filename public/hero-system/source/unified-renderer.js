@@ -1,3 +1,4 @@
+import {treeWindResponse} from './wind-motion.js';
 import {solarLight} from './solar-light.js';
 import * as THREE from 'three';
 import {createTreeAsync} from './tree-async.js';
@@ -5,6 +6,9 @@ import preset from './node_modules/@dgreenheck/ez-tree/src/lib/presets/ash_small
 import {createFlightStudy} from './flight-models.js';
 import {createPanelStudy} from './panel-study.js';
 import {createRainField} from './rain-field.js';
+import {prepareSeasonalLeaves,prepareTreeWind} from './seasonal-leaves.js';
+import {createFallingLeaves} from './falling-leaves.js';
+import {treeOptions,createLeafTexture} from './tree-species.js';
 export async function createUnifiedRenderer(container,panelImage,onFallback,onReady,options={}){
  const timings={};let stamp=performance.now();const checkpoint=name=>{timings[name]=Math.round(performance.now()-stamp);stamp=performance.now();container.dataset.bootTimings=JSON.stringify(timings);};
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
@@ -13,14 +17,18 @@ export async function createUnifiedRenderer(container,panelImage,onFallback,onRe
  checkpoint('renderer');
  const treesScene=new THREE.Scene(),treeCamera=new THREE.OrthographicCamera(-80,80,48,-4,.1,500);treeCamera.position.set(0,16,120);treeCamera.lookAt(0,16,0);
  const ambient=new THREE.HemisphereLight(0xdceefa,0x657368,2.5),sun=new THREE.DirectionalLight(0xffe3b3,2.4);sun.position.set(-40,65,40);treesScene.add(ambient,sun);
- const trees=[];
+ const trees=[],leafTextures=['linden','maple'].map(createLeafTexture);
  const positions=[[-62,.85],[-36,.72],[46,.82],[72,1.02]];
  for(const [i,[x,s]] of positions.entries()){
   // Yield between independent tree builds so input and painting are not blocked.
   await new Promise(resolve=>setTimeout(resolve,0));
-const p=structuredClone(preset);p.seed=26867+i*91;p.bark.textured=false;p.bark.tint=0x627269;p.leaves.count=26;p.leaves.size=3.1;p.leaves.tint=0x879c7a;p.branch.sections={0:8,1:7,2:5,3:3};p.branch.segments={0:6,1:4,2:3,3:3};const t=await createTreeAsync(p);for(const mesh of [t.branchesMesh,t.leavesMesh]){mesh.material.transparent=false;mesh.material.opacity=1;mesh.material.forceSinglePass=true;}t.leavesMesh.material.alphaTest=.35;t.leavesMesh.material.alphaToCoverage=true;t.position.set(x,-5,0);t.scale.setScalar(s);treesScene.add(t);trees.push(t);checkpoint('tree'+i);}
+const species=i%2?'maple':'linden',p=treeOptions(preset,species,i);const t=await createTreeAsync(p);t.userData.species=species;t.leavesMesh.material.map=leafTextures[i%2];for(const mesh of [t.branchesMesh,t.leavesMesh]){mesh.material.transparent=false;mesh.material.opacity=1;mesh.material.forceSinglePass=true;}t.leavesMesh.material.alphaTest=.35;t.leavesMesh.material.alphaToCoverage=true;t.position.set(x,-5,0);t.scale.setScalar(s);treesScene.add(t);trees.push(t);checkpoint('tree'+i);}
  if(options.foreground==='branch')trees[3].position.x=24;
  const treePositions=trees.map(t=>t.position.x);
+ const foliage=trees.map((tree,i)=>prepareSeasonalLeaves(tree.leavesMesh,tree.options.leaves.billboard==='double'?8:4,i*10000,tree.userData.species));
+ trees.forEach((tree,i)=>tree.userData.foliage=foliage[i]);
+ const treeWind=trees.map((tree,i)=>prepareTreeWind(tree,i*1.7));
+ const fallingLeaves=createFallingLeaves(treesScene,trees);
  treesScene.fog=new THREE.Fog(0xc4d2d3,75,190);
  const panelStudy=options.panels!=='image'?createPanelStudy(renderer,options):null;
  checkpoint('panels');
@@ -67,7 +75,9 @@ const p=structuredClone(preset);p.seed=26867+i*91;p.bark.textured=false;p.bark.t
   treesScene.fog.near=state.fog?75:150;treesScene.fog.far=state.fog?190:600;
   treesScene.fog.color.setHex(night?0x192b3b:state.rain>0?0xa4b6c0:0xc4d2d3);
   ambient.intensity=.35+light.daylight*(state.rain>0?1.05:2.15);sun.intensity=2.4*light.sun*(1-state.cloud*.85);sun.color.setHex(warm?0xffb979:0xffe3b3);sun.position.x=(state.sunX/100-.5)*120;
-  trees.forEach((t,i)=>{t.rotation.z=Math.sin(time*.65+i*.8)*.009*wind;t.update(time);t.leavesMesh.visible=state.season!=='winter';t.leavesMesh.material.color.setHex(state.season==='autumn'?0xd7a16b:0x879c7a);const shader=t.leavesMesh.material.userData.shader;if(shader)shader.uniforms.uWindStrength.value.set(wind*1.7,0,Math.abs(wind)*.7);});
+  const response=treeWindResponse(wind);
+  trees.forEach((t,i)=>{t.rotation.z=-response.trunk*(.65+Math.sin(time*.65+i*.8)*.35);t.update(time);foliage[i].update(state);treeWind[i].update(time,response.twig);const shader=t.leavesMesh.material.userData.shader;if(shader){shader.uniforms.uWindStrength.value.set(response.leaf*2.3,0,Math.abs(response.leaf)*.85);shader.uniforms.uWindFrequency.value=.85+i*.06;}});
+  fallingLeaves.update(time,state,wind,quality==='low');
   renderer.info.reset();renderer.setViewport(0,0,width,height);renderer.clear();
   const th=height*(width<700?.4:.48),bottom=height*(width<700?.16:.17);renderer.setViewport(0,0,width,th+bottom);renderer.render(treesScene,treeCamera);if(!timings.firstFrame)timings.treesDraw=Math.round(performance.now()-started);
   renderer.setViewport(0,0,width,height);renderer.clearDepth();
@@ -81,5 +91,5 @@ const p=structuredClone(preset);p.seed=26867+i*91;p.bark.textured=false;p.bark.t
   return {cpu:performance.now()-started,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality};
  }
  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();dead=true;container.dataset.unifiedReady='false';canvas.hidden=true;onFallback('3D wurde vom Gerät angehalten. Standbild aktiv.');});
- return {simulateLoss(){renderer.forceContextLoss();},get ready(){return loaded&&!dead;},resize,render,dispose(){dead=true;panelImage?.removeEventListener('load',usePanelImage);canvas.remove();hazeQuad.geometry.dispose();hazeMaterial.dispose();rain.dispose();flight?.dispose();panelStudy?.dispose();trees.forEach(t=>t.traverse(o=>{o.geometry?.dispose();if(o.material)o.material.dispose();}));panelMaterial.map?.dispose();panelMesh.geometry.dispose();panelMaterial.dispose();renderer.dispose();}};
+ return {simulateLoss(){renderer.forceContextLoss();},get ready(){return loaded&&!dead;},resize,render,dispose(){dead=true;panelImage?.removeEventListener('load',usePanelImage);canvas.remove();hazeQuad.geometry.dispose();hazeMaterial.dispose();rain.dispose();fallingLeaves.dispose();leafTextures.forEach(texture=>texture.dispose());flight?.dispose();panelStudy?.dispose();trees.forEach(t=>t.traverse(o=>{o.geometry?.dispose();if(o.material)o.material.dispose();}));panelMaterial.map?.dispose();panelMesh.geometry.dispose();panelMaterial.dispose();renderer.dispose();}};
 }

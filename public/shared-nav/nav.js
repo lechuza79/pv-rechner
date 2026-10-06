@@ -116,13 +116,97 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  // one: closing it at once looks like a lost click while the next page loads.
  // Same-page links, new tabs and modifier clicks close it, since nothing else will.
  nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&!staysOpenFor(a,e))close();});
- const restored=e=>{if(e.persisted){close(true);search?.close();}};window.addEventListener('pageshow',restored);
+ const local=mountLocal(nav);
+ const restored=e=>{if(e.persisted){close(true);search?.close();local.reset();}};window.addEventListener('pageshow',restored);
  const outside=e=>{if(!header.contains(e.target)&&!nav.contains(e.target))close();};
- const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
+ const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button,input,select')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
  document.addEventListener('click',outside);document.addEventListener('keydown',keyboard);
- const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
 
- return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();delete header.dataset.globalNav;};
+ return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();search?.destroy();local.destroy();delete header.dataset.globalNav;};
+}
+
+/**
+ * "Vor Ort": the town and Landkreis fields suggest places while typing; Enter
+ * opens the first suggestion (waiting for it if it has not arrived yet). The
+ * Bundesland card opens a list of the Länder. Suggestions and the Länder list
+ * share one dropdown: only one is open, and outside click or Escape closes it
+ * (Escape here does not close the whole menu). Arrow keys move through it.
+ */
+function mountLocal(nav){
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const unavailable='<p class="sc-local-note" role="status">Die Ortssuche antwortet gerade nicht. Bitte gleich noch einmal versuchen.</p>';
+ const drops=[];
+ const closeAll=except=>drops.forEach(d=>{if(d!==except)d.close();});
+ // Arrow keys inside an open dropdown; `back` receives focus above the first item.
+ const arrows=(list,back)=>list.addEventListener('keydown',e=>{
+  const items=[...list.querySelectorAll('a')],i=items.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'&&i<items.length-1){e.preventDefault();items[i+1].focus();}
+  else if(e.key==='ArrowUp'){e.preventDefault();(i>0?items[i-1]:back).focus();}
+ });
+ nav.querySelectorAll('[data-local-search]').forEach(form=>{
+  const level=form.dataset.localSearch,input=form.querySelector('input'),results=form.querySelector('.sc-local-results');
+  let timer,controller,hits=[],pending=null;
+  const drop={close(){results.hidden=true;},open(){if(results.innerHTML){closeAll(drop);results.hidden=false;}}};drops.push(drop);
+  const show=html=>{results.innerHTML=html;if(html&&document.activeElement===input)drop.open();else if(!html)drop.close();};
+  const clear=()=>{clearTimeout(timer);controller?.abort();hits=[];pending=null;show('');};
+  const run=(q,retry=true)=>{
+   controller?.abort();const own=controller=new AbortController();
+   // A slow answer must not look like a dead field: after a moment, say so.
+   const slow=setTimeout(()=>{if(input.value.trim()===q&&!own.signal.aborted)show('<p class="sc-local-note" role="status">Suche läuft …</p>');},300);
+   pending=(async()=>{
+    try{
+     const response=await fetch(`/api/suche/orte?ebene=${level}&q=${encodeURIComponent(q)}`,{signal:own.signal});
+     if(!response.ok)throw new Error(String(response.status));
+     const data=await response.json();
+     if(input.value.trim()!==q)return;
+     // One quiet retry before admitting a hiccup (a slow database moment).
+     if(data.nichtVerfuegbar&&retry){await new Promise(r=>setTimeout(r,1200));if(!own.signal.aborted&&input.value.trim()===q)await run(q,false);return;}
+     hits=data.orte??[];
+     show(hits.length
+      ?hits.map(h=>`<a href="${esc(h.href)}"><strong>${esc(h.name)}</strong><span>${esc([h.gattung,h.kontext].filter(Boolean).join(' · '))}</span></a>`).join('')
+      :data.nichtVerfuegbar?unavailable
+      :`<p class="sc-local-note" role="status">Zu „${esc(q)}“ haben wir ${level==='kreis'?'keinen Landkreis':'keinen Ort'} gefunden.</p>`);
+    }catch(e){
+     if(e?.name==='AbortError')return;
+     if(retry){await new Promise(r=>setTimeout(r,1200));if(!own.signal.aborted&&input.value.trim()===q)await run(q,false);return;}
+     hits=[];show(unavailable);
+    }
+    finally{clearTimeout(slow);}
+   })();
+   return pending;
+  };
+  // A postcode only means something once it is complete; "97" is not a miss.
+  const complete=q=>q.length>=2&&!(/^\d+$/.test(q)&&q.length<5);
+  input.addEventListener('input',()=>{const q=input.value.trim();clear();if(!complete(q))return;timer=setTimeout(()=>run(q),200);});
+  input.addEventListener('focus',()=>drop.open());
+  input.addEventListener('keydown',e=>{if(e.key==='ArrowDown'&&!results.hidden){const first=results.querySelector('a');if(first){e.preventDefault();first.focus();}}});
+  arrows(results,input);
+  // Focus first: focusing the field reopens its suggestions.
+  form.addEventListener('keydown',e=>{if(e.key==='Escape'&&!results.hidden){e.stopPropagation();input.focus();drop.close();}});
+  // Enter goes to the first place — also when it is pressed before the
+  // suggestions have arrived: then it waits for them instead of leaving.
+  form.addEventListener('submit',async e=>{
+   e.preventDefault();
+   const q=input.value.trim();if(!complete(q))return;
+   if(!hits.length){clearTimeout(timer);await(pending??run(q));}
+   if(hits[0]&&input.value.trim()===q)location.href=hits[0].href;
+  });
+  drop.reset=()=>{clear();input.value='';};
+  drop.root=form;
+ });
+ const land=nav.querySelector('[data-local-land]');
+ if(land){
+  const toggle=land.querySelector('button'),list=land.querySelector('.sc-local-land-list');
+  const drop={close(){list.hidden=true;toggle.setAttribute('aria-expanded','false');land.classList.remove('is-open');},open(){closeAll(drop);list.hidden=false;toggle.setAttribute('aria-expanded','true');land.classList.add('is-open');},root:land};drops.push(drop);
+  land.dataset.ready='';drop.close();
+  toggle.addEventListener('click',()=>list.hidden?drop.open():drop.close());
+  toggle.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();drop.open();list.querySelector('a')?.focus();}});
+  arrows(list,toggle);
+  land.addEventListener('keydown',e=>{if(e.key==='Escape'&&!list.hidden){e.stopPropagation();drop.close();toggle.focus();}});
+ }
+ const outside=e=>drops.forEach(d=>{if(!d.root.contains(e.target))d.close();});
+ document.addEventListener('click',outside);
+ return {reset(){drops.forEach(d=>{d.reset?.();d.close();});},destroy(){document.removeEventListener('click',outside);drops.forEach(d=>d.reset?.());}};
 }
 
 /**

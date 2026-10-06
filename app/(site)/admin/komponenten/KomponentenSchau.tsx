@@ -1,6 +1,19 @@
 "use client";
+import ActionButton, { ActionLink } from "../../../../components/ActionButton";
+import SecondaryButton from "../../../../components/SecondaryButton";
+import {ControlPanel, ControlField} from "../../../../components/ControlPanel";
+import WidgetSettingsFlyout from "../../../../components/dashboard/WidgetSettingsFlyout";
+import PvConsumerExample from "../../../../components/PvConsumerExample";
+import BalkonAngebot from "../../../../components/BalkonAngebot";
+import { DEFAULT_BALKON_CONFIG } from "../../../../lib/balkon-config";
+import { SCENARIOS } from "../../../../lib/constants";
 
 import { useState } from "react";
+import ChartFlag from "../../../../components/charts/ChartFlag";
+import MetricValue from "../../../../components/MetricValue";
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
+import ResultChoiceHeader from "../../../../components/ResultChoiceHeader";
+import OptionalDisclosure from "../../../../components/OptionalDisclosure";
 import { AccordionField } from "../../../../components/AccordionField";
 import BackLink from "../../../../components/BackLink";
 import Breadcrumb from "../../../../components/Breadcrumb";
@@ -12,8 +25,12 @@ import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
+import Script from "next/script";
+import ToolTeaser from "../../../../components/ToolTeaser";
+import ArticleTeasers from "../../../../components/ArticleTeasers";
 import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
+import OnsiteSearch from "../../../../components/OnsiteSearch";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
 import StorySlider from "../../../../components/StorySlider";
@@ -28,6 +45,7 @@ import DataSourcesSection from "../../../../components/DataSourcesSection";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
+import StandortPrompt from "../../../../components/StandortPrompt";
 import StandortField from "../../../../components/StandortField";
 import StandNoteView from "../../../../components/StandNoteView";
 import { AuswahlSkipper } from "../../../../components/AuswahlSkipper";
@@ -41,6 +59,9 @@ import type { TiltOrientation } from "../../../../lib/tilt-config";
 import CiteModal from "../../../../components/CiteModal";
 import ChartExportBar from "../../../../components/ChartExportBar";
 import { WIDGETS } from "../../../../lib/widget-registry";
+import EditorialPage from "../../../../components/EditorialPage";
+import ExampleCard from "../../../../components/ExampleCard";
+import ContentTable from "../../../../components/ContentTable";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import ContactPerson from "../../../../components/ContactPerson";
 import Faq from "../../../../components/Faq";
@@ -393,6 +414,17 @@ function FlowNavBeispiel() {
   );
 }
 
+function StandortPromptBeispiel() {
+  const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState("");
+  return <div>
+    <button type="button" onClick={() => setOpen(true)}>Standort-Hinweis öffnen</button>
+    {place && <p>Gewählter Beispielstandort: {place}</p>}
+    <StandortPrompt open={open} onClose={() => setOpen(false)} message="Standort im Hinweis eingeben"
+      onSave={async selected => { setPlace(`${selected.plz} ${selected.name}`); }} />
+  </div>;
+}
+
 function StandortBeispiel() {
   const [plz, setPlz] = useState("");
   const [bestaetigt, setBestaetigt] = useState(false);
@@ -616,17 +648,13 @@ function ZitierBeispiel() {
 
 
 function SzenarienBeispiel() {
-  const [gewaehlt, setGewaehlt] = useState("real");
+  const [gewaehlt, setGewaehlt] = useState("realistic");
   return (
     <div style={{ maxWidth: 520 }}>
       <ScenarioTabs
         selected={gewaehlt}
         onSelect={setGewaehlt}
-        tabs={[
-          { id: "pess", label: "Pessimistisch", sub: "+1 %/Jahr", explain: "Der Strompreis steigt kaum — die Ersparnis wächst langsam." },
-          { id: "real", label: "Realistisch", sub: "+2 %/Jahr", explain: "Der Strompreis steigt etwa wie die allgemeine Teuerung." },
-          { id: "opti", label: "Optimistisch", sub: "+5 %/Jahr", explain: "Der Strompreis steigt deutlich — die Anlage rechnet sich schneller." },
-        ]}
+        tabs={SCENARIOS}
       />
     </div>
   );
@@ -673,7 +701,28 @@ function MultitoolBeispiel() {
   );
 }
 
+function OnsiteSearchBeispiel() {
+  const [query,setQuery]=useState("");
+  return <div style={{width:"100%",maxWidth:400}}><OnsiteSearch
+    items={[{id:"charts",label:"Charts"},{id:"maps",label:"Karten"},{id:"forms",label:"Formulare"}]}
+    ariaLabel="Baustein suchen" placeholder="Baustein suchen …" onQueryChange={setQuery}/>
+    <p aria-live="polite">{query ? `Filter: ${query}` : "Alle Bausteine"}</p></div>;
+}
+
+function ControlPanelExample() {
+  const [enabled, setEnabled] = useState(true);
+  return <ControlPanel><ControlField label="Hintergrundbilder" toggle={{enabled,onChange:setEnabled}} onReset={()=>setEnabled(true)}/></ControlPanel>;
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  ActionButton: () => <div style={{display:"flex",gap:8,flexWrap:"wrap"}}><ActionButton variant="primary">Speichern</ActionButton><ActionButton>Weiterleiten</ActionButton><ActionButton iconOnly aria-label="Beispielaktion">+</ActionButton><ActionLink href="/waermepumpe-rechner">Zum Rechner</ActionLink></div>,
+  SecondaryButton: () => <SecondaryButton onClick={()=>window.alert("Beispielaktion ausgeführt")}>Mehr erfahren</SecondaryButton>,
+  ControlPanel: ControlPanelExample,
+  WidgetSettingsFlyout: () => <WidgetSettingsFlyout title="Widget-Vorschau"><ControlPanelExample/></WidgetSettingsFlyout>,
+  OnsiteSearch: OnsiteSearchBeispiel,
+ ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
+ MetricValue: () => <MetricValue value={12345} signed/>,
+  CalculatorContent: () => <CalculatorContent><p>Fragen, Ergebnis und ergänzende Inhalte folgen derselben Inhaltskante.</p></CalculatorContent>,
   Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
@@ -681,6 +730,8 @@ const BEISPIELE: Record<string, Beispiel> = {
   SelectField: AuswahlBeispiel,
   PresetNumberInput: ZahlenfeldBeispiel,
   InlineEdit: ZahlBeispiel,
+  ResultChoiceHeader: () => <ResultChoiceHeader title="Deine Berechnung" selected>3.300 € Vorteil über 25 Jahre</ResultChoiceHeader>,
+  OptionalDisclosure: () => <OptionalDisclosure label="Angaben anpassen"><p>Hier stehen die optionalen Eingaben.</p></OptionalDisclosure>,
   AccordionField: AkkordeonBeispiel,
   StatusBadge: () => (
     <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -721,6 +772,18 @@ const BEISPIELE: Record<string, Beispiel> = {
     />
   ),
   BackLink: () => <BackLink fallback="/admin" label="Zurück zur Übersicht" />,
+  ToolTeaser: () => (
+    <div style={{maxWidth: 560}}>
+      <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" />
+      <ToolTeaser title="Photovoltaik" description="Passende Solaranlagen finden und konkrete Planungen durchrechnen." motif="house" href="/photovoltaik-rechner" />
+    </div>
+  ),
+  ArticleTeasers: () => (
+    <ArticleTeasers title="Mehr zum Thema" items={[
+      {href: "/laendervergleich", title: "Solarenergie im internationalen Vergleich", teaser: "Wie steht Deutschland beim Solarausbau im Vergleich zu anderen Ländern da?"},
+      {href: "/ratgeber", title: "Photovoltaik verstehen", teaser: "Verständliche Entscheidungshilfen zu Anlage, Speicher und Eigenverbrauch.", cta: "Zu den Ratgebern"},
+    ]} />
+  ),
   RelatedLinks: () => (
     <div style={{ maxWidth: 460 }}>
       <RelatedLinks
@@ -748,6 +811,7 @@ const BEISPIELE: Record<string, Beispiel> = {
   FlowNav: FlowNavBeispiel,
   FlowSchritte: FlowSchritteBeispiel,
   StandortField: StandortBeispiel,
+  StandortPrompt: StandortPromptBeispiel,
   AuswahlSkipper: SkipperBeispiel,
   ErrorBoundary: AbsturzBeispiel,
   Icons: IconsBeispiel,
@@ -755,10 +819,13 @@ const BEISPIELE: Record<string, Beispiel> = {
   ChartOptionsMenu: () => (
     <Reihe>
       <Zustand name="Einbetten verfügbar">
-        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+        <ChartOptionsMenu contactHref={`/kontakt?${new URLSearchParams({topic:"Widget einbetten",message:"Frage zum Einbetten: Beispiel-Diagramm (Komponentenschau)"})}`} label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ onEmbed: () => {} }} />
+      </Zustand>
+      <Zustand name="Primary-Fußleiste">
+        <ChartOptionsMenu presentation="footer" contactHref="/kontakt?topic=Widget%20einbetten" label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{onEmbed: () => {}}} />
       </Zustand>
       <Zustand name="Einbetten nicht verfügbar">
-        <ChartOptionsMenu label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
+        <ChartOptionsMenu contactHref={`/kontakt?${new URLSearchParams({topic:"Widget einbetten",message:"Frage zum Einbetten: Beispiel-Diagramm (Komponentenschau)"})}`} label="Beispiel-Diagramm" onShare={() => {}} onDownload={() => {}} embed={{ unavailable: "Für dieses Diagramm noch nicht verfügbar." }} />
       </Zustand>
     </Reihe>
   ),
@@ -829,6 +896,17 @@ const BEISPIELE: Record<string, Beispiel> = {
         ]}
       />
     </div>
+  ),
+  ExampleCard: () => <><link rel="stylesheet" href="/design-system/feature-card.css" /><ExampleCard title="10 kWp" motif="house"><p>Beispielanlage mit transparenten Annahmen.</p></ExampleCard></>,
+  EditorialPage: () => <EditorialPage><h2>Nachschlagen und verstehen</h2><p>Eine gemeinsame Schrift für redaktionelle Inhalte und Zahlen.</p></EditorialPage>,
+  ContentTable: () => (
+    <ContentTable caption="Beispielwerte in kWh" minWidth={420}>
+      <thead><tr><th scope="col">Zeitraum</th><th scope="col">Anlage A</th><th scope="col">Anlage B</th></tr></thead>
+      <tbody>
+        <tr data-current><th scope="row">Aktuell</th><td>1.250</td><td>960</td></tr>
+        <tr><th scope="row">Vorher</th><td>1.100</td><td>870</td></tr>
+      </tbody>
+    </ContentTable>
   ),
   ArticleMeta: () => (
     <ArticleMeta
@@ -973,12 +1051,21 @@ export default function KomponentenSchau() {
         );
       })}
 
+      <section id="pv-consumer-example" style={{ maxWidth: 820, margin: `0 auto ${space.huge}` }}>
+        <PvConsumerExample />
+      </section>
+      <section id="balkon-offer-example" style={{ maxWidth: 820, margin: `0 auto ${space.huge}` }}>
+        <BalkonAngebot
+          example={{ description: "3.800 kWh Haushaltsstrom im Jahr, teilweise tagsüber zu Hause, Südbalkon." }}
+          basis={{ orientationId: DEFAULT_BALKON_CONFIG.defaultOrientation, presenceId: DEFAULT_BALKON_CONFIG.defaultPresence, haushaltKwh: 3800, specificYield: DEFAULT_BALKON_CONFIG.specificYield, stromPrice: DEFAULT_BALKON_CONFIG.stromPrice }}
+        />
+      </section>
+
       <div id="gruppe-zusammensetzungen" style={{ marginBottom: space.huge }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
           <h2 style={{ margin: 0 }}>Zusammensetzungen</h2>
           <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-            Kennen ein Fach und sind deshalb nicht allgemein einsetzbar — hier ohne Beispiel, weil eines
-            ohne echte Daten eine Attrappe wäre.
+            Verbinden gemeinsame Bausteine mit Fachlogik. Die folgenden Beispiele sind vollständig bedienbar.
           </span>
         </div>
         <div

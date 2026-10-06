@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { v, space } from "../lib/theme";
 import { IconChevronLeft, IconChevronRight } from "./Icons";
 
@@ -29,14 +30,25 @@ import { IconChevronLeft, IconChevronRight } from "./Icons";
 export default function StorySlider({
   children,
   ariaLabel,
+  fullWidth = false,
+  itemLabel = "Meldung",
+  arrows = true,
+  autoplay = false,
 }: {
   /** Die Teaser. Jeder wird zu einer Station der Spur. */
   children: React.ReactNode[];
   /** Wofür diese Reihe steht — für Screenreader, die keine Überschrift sehen. */
   ariaLabel: string;
+  /** Show one full card per snap with optional compact navigation. */
+  fullWidth?: boolean;
+  itemLabel?: string;
+  arrows?: boolean;
+  /** Advance complete slides while visible, pausing for interaction. */
+  autoplay?: boolean;
 }) {
   const schleife = children.length >= MIN_FUER_SCHLEIFE;
 
+  const auto = useMemo(() => Autoplay({delay:5000,playOnInit:false,stopOnInteraction:false,stopOnMouseEnter:true,stopOnFocusIn:true}), []);
   const [spurRef, embla] = useEmblaCarousel({
     loop: schleife,
     align: "start",
@@ -47,7 +59,22 @@ export default function StorySlider({
     // Zeigt der Nutzer eine reduzierte Bewegung an, springt die Spur, statt zu
     // gleiten. Die Bewegung ist hier Zierde; das Blättern selbst bleibt.
     duration: 25,
-  });
+  }, autoplay ? [auto] : []);
+
+  useEffect(() => {
+    if (!embla || !autoplay) return;
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+    const sync = () => {
+      if (visible && !document.hidden && !motion.matches) auto.play();
+      else auto.stop();
+    };
+    const observer = new IntersectionObserver(([entry]) => {visible=entry.isIntersecting;sync();}, {threshold:0.5});
+    observer.observe(embla.rootNode());
+    document.addEventListener("visibilitychange", sync);
+    motion.addEventListener("change", sync);
+    return () => {observer.disconnect();auto.stop();document.removeEventListener("visibilitychange",sync);motion.removeEventListener("change",sync);};
+  }, [embla, autoplay, auto]);
 
   const [kannZurueck, setKannZurueck] = useState(false);
   const [kannVor, setKannVor] = useState(false);
@@ -84,7 +111,7 @@ export default function StorySlider({
       <div ref={spurRef} style={S.fenster} role="group" aria-label={ariaLabel}>
         <div style={S.spur}>
           {children.map((kind, i) => (
-            <div key={i} style={S.station}>
+            <div key={i} style={{...S.station, ...(fullWidth ? {flex:"0 0 100%"} : {})}}>
               {kind}
             </div>
           ))}
@@ -95,7 +122,7 @@ export default function StorySlider({
           verdeckten die Pfeile deren Aktionsknöpfe, und auf einer schmalen
           Karte gibt es keine Fläche, auf der sie nichts verdecken. */}
       {zeigen && (
-        <div style={S.leiste}>
+        <div data-slider-controls style={{...S.leiste, ...(!arrows ? {justifyContent:"center"} : {})}}>
           {/* Punkte statt einer Bildlaufleiste: Mit Schleife hat die Spur kein
               Ende, eine Leiste hätte also nichts anzuzeigen. Sie sagen, wo man
               ist und wie viel es gibt. */}
@@ -105,16 +132,16 @@ export default function StorySlider({
                 key={i}
                 type="button"
                 onClick={() => embla?.scrollTo(i)}
-                aria-label={`Meldung ${i + 1} von ${stationen.length}`}
+                aria-label={`${itemLabel} ${i + 1} von ${stationen.length}`}
                 aria-current={i === aktiv ? "true" : undefined}
                 style={{
                   ...S.punkt,
-                  background: i === aktiv ? v("--color-cta") : v("--color-border"),
+                  background: "transparent",
                 }}
-              />
+              ><span aria-hidden="true" style={{width:7,height:7,borderRadius:"50%",background:i===aktiv?v("--color-cta"):v("--color-text-muted"),opacity:i===aktiv?1:.4}}/></button>
             ))}
           </div>
-          <div style={S.pfeile}>
+          {arrows && <div style={S.pfeile}>
             <button
               type="button"
               onClick={() => embla?.scrollPrev()}
@@ -133,7 +160,7 @@ export default function StorySlider({
             >
               <IconChevronRight size={16} />
             </button>
-          </div>
+          </div>}
         </div>
       )}
     </div>
@@ -177,8 +204,11 @@ const S: Record<string, React.CSSProperties> = {
   },
   punkte: { display: "flex", gap: space.xs, alignItems: "center" },
   punkt: {
-    width: 7,
-    height: 7,
+    width: 24,
+    height: 24,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 0,
     borderRadius: "50%",
     border: "none",

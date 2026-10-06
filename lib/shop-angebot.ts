@@ -15,12 +15,20 @@
 
 import { calcBalkon, type BalkonInputs, type BalkonResult } from "./balkon";
 import { DEFAULT_BALKON_CONFIG, type BalkonConfig } from "./balkon-config";
-import type { ShopAngebot } from "./shop-solakon";
+import { balkonFunding, type BalkonFundingContext } from "./balkon-funding";
+import { fundingZaehlt } from "./funding-programs";
+import { angebotModulAnzahl, type ShopAngebot } from "./shop-solakon";
 
 /** Ein Angebot mit dem, was es für diesen Haushalt bedeutet. */
 export interface BewertetesAngebot {
   angebot: ShopAngebot;
   ergebnis: BalkonResult;
+  fundingEuro: number;
+  fundingNeedsInput?: boolean;
+  fundingNotes?: string[];
+  fundingLabel?: string;
+  fundingReasons?: string[];
+  storageComparison?: { additionalInvestment: number; payback: number } | null;
 }
 
 /** Die Haushaltsangaben, die für alle Angebote gleich sind. */
@@ -35,10 +43,14 @@ export type AngebotBasis = Omit<BalkonInputs, "setId" | "storageId" | "invest">;
  * hielte eine zweite Tür auf, durch die irgendwann jemand andere Zahlen
  * hineinreicht als die, die der Rechner selbst benutzt.
  */
-function configFuerAngebot(angebot: ShopAngebot, cfg: BalkonConfig): BalkonConfig {
+export function configFuerAngebot(angebot: Pick<ShopAngebot, "moduleWp" | "inverterW" | "speicherKwh" | "preis"> & { haendler?: string; batteryCoupling?: "ac" | "dc" }, cfg: BalkonConfig = DEFAULT_BALKON_CONFIG): BalkonConfig {
   const set = cfg.sets.find(s => s.id === "duo")!;
   const speicher = cfg.storage.find(s => s.id === "small")!;
 
+  // Solakon ONE: direct PV input (2600 W), shared AC output (800 W).
+  // Source: https://www.solakon.de/cdn/shop/files/Solakon_ONE_Datenblatt.pdf
+  // Solakon ONE default minimum charge: 15%, unavailable to the household.
+  // https://serviceportal.solakon.de/help/solakon-one/minimale-ladung-speicherheizung-am-solakon-one
   return {
     ...cfg,
     sets: [{ ...set, moduleWp: angebot.moduleWp, inverterW: angebot.inverterW, price: angebot.preis }],
@@ -46,7 +58,7 @@ function configFuerAngebot(angebot: ShopAngebot, cfg: BalkonConfig): BalkonConfi
     // bereits. Ihn zusätzlich anzusetzen zählte ihn doppelt.
     storage: [
       { ...cfg.storage.find(s => s.id === "none")!, kwh: 0, price: 0 },
-      { ...speicher, kwh: angebot.speicherKwh, price: 0 },
+      { ...speicher, kwh: angebot.speicherKwh, usableBatteryKwh: angebot.haendler === "solakon" ? angebot.speicherKwh * .85 : undefined, price: 0, batteryCoupling: angebot.haendler === "solakon" ? "dc" : angebot.batteryCoupling },
     ],
   };
 }
@@ -56,13 +68,26 @@ export function bewerteAngebot(
   angebot: ShopAngebot,
   basis: AngebotBasis,
   cfg: BalkonConfig = DEFAULT_BALKON_CONFIG,
+  funding?: BalkonFundingContext,
 ): BewertetesAngebot {
   const eigen = configFuerAngebot(angebot, cfg);
+  const assessment = balkonFunding(angebot, angebot.preis, funding);
   const ergebnis = calcBalkon(
-    { ...basis, setId: "duo", storageId: angebot.speicherKwh > 0 ? "small" : "none" },
+    { ...basis, setId: "duo", storageId: angebot.speicherKwh > 0 ? "small" : "none", invest: assessment.investment },
     eigen,
   );
-  return { angebot, ergebnis };
+  return {
+    angebot, ergebnis, fundingEuro: assessment.grant,
+    fundingLabel: assessment.label, fundingReasons: assessment.reasons,
+    fundingNeedsInput: !!funding?.programs.some(program => fundingZaehlt(program) && program.nurWohnform && !funding.wohnform),
+    fundingNotes: assessment.stack.applied.flatMap(({ program }) => {
+      const scope = program.region ?? program.name;
+      return [
+        ...(program.balkonNurMitSpeicher ? [`${scope}: Gefördert werden nur Balkonkraftwerke mit Speicher.`] : []),
+        ...(program.nurWohnform ? [`${scope}: Die Förderung gilt nur für ${program.nurWohnform === "mieter" ? "Mieterinnen und Mieter" : "Eigentümerinnen und Eigentümer"}.`] : []),
+      ];
+    }),
+  };
 }
 
 /**
@@ -113,10 +138,25 @@ export function besteAngebote(
   angebote: ShopAngebot[],
   basis: AngebotBasis,
   cfg: BalkonConfig = DEFAULT_BALKON_CONFIG,
+  funding?: BalkonFundingContext,
 ): BewertetesAngebot[] {
-  return guenstigsteJeKombination(angebote)
-    .map(a => bewerteAngebot(a, basis, cfg))
+  const rated = guenstigsteJeKombination(angebote)
+    .map(a => bewerteAngebot(a, basis, cfg, funding))
     .sort((a, b) => b.ergebnis.lifetimeSaving - a.ergebnis.lifetimeSaving);
+  for (const entry of rated) {
+    const reference = rated.find(other => other.angebot.moduleWp === entry.angebot.moduleWp && other.angebot.inverterW === entry.angebot.inverterW && other.angebot.speicherKwh === 0);
+    if (!reference || entry.angebot.speicherKwh === 0) { entry.storageComparison = null; continue; }
+    const additionalInvestment = entry.ergebnis.invest - reference.ergebnis.invest;
+    let payback = additionalInvestment <= 0 ? 0 : Infinity;
+    let accumulated = 0;
+    for (let year = 0; year < Math.min(cfg.storageLifeYears, entry.ergebnis.annualCosts.grid.length); year++) {
+      const benefit = reference.ergebnis.annualCosts.balcony[year] - entry.ergebnis.annualCosts.balcony[year];
+      if (!Number.isFinite(payback) && benefit > 0 && accumulated + benefit >= additionalInvestment) payback = year + (additionalInvestment - accumulated) / benefit;
+      accumulated += benefit;
+    }
+    entry.storageComparison = { additionalInvestment, payback };
+  }
+  return rated;
 }
 
 /**
@@ -132,8 +172,50 @@ export function empfiehlAngebot(
   angebote: ShopAngebot[],
   basis: AngebotBasis,
   cfg: BalkonConfig = DEFAULT_BALKON_CONFIG,
+  funding?: BalkonFundingContext,
 ): AngebotsEmpfehlung | null {
-  const bewertet = besteAngebote(angebote, basis, cfg);
+  return empfehlungAusBewertung(besteAngebote(angebote, basis, cfg, funding));
+}
+
+export function empfehlungAusBewertung(bewertet: BewertetesAngebot[]): AngebotsEmpfehlung | null {
   if (bewertet.length === 0) return null;
-  return { beste: bewertet[0], alternativen: bewertet.slice(1, 3) };
+  // Keep an affordable, battery-free comparison visible even when it ranks lower.
+  const best = bewertet[0];
+  const cheapest = [...bewertet].sort((a, b) => a.ergebnis.invest - b.ergebnis.invest)[0];
+  const withoutBattery = bewertet.find(entry => entry.angebot.speicherKwh === 0);
+  const candidates = [cheapest, withoutBattery, ...bewertet].filter((entry): entry is BewertetesAngebot => !!entry);
+  const alternatives = [...new Map(candidates.filter(entry => entry !== best).map(entry => [entry.angebot.id, entry])).values()].slice(0, 2);
+  return { beste: best, alternativen: alternatives };
+}
+
+/** Explain the existing offer ranking without claiming a market-wide optimum. */
+export function angebotBegruendung(selected: BewertetesAngebot | undefined, ranked: BewertetesAngebot[], years: number, customPrice = false): string | null {
+  if (!selected) return null;
+  const { angebot: offer, ergebnis: result } = selected;
+  const withStorage = offer.speicherKwh > 0;
+  const everydayReason = withStorage
+    ? "Mit Speicher nutzt du deinen Solarstrom auch später am Tag."
+    : "Ohne Speicher sparst du dir dessen Anschaffungskosten.";
+  const count = angebotModulAnzahl(offer);
+  const size = count ? `Das Set mit ${count} Modulen` : "Dieses Set";
+  const otherSizes = ranked.filter(entry => entry.angebot.moduleWp !== offer.moduleWp);
+  const sizeReason = !customPrice && ranked[0]?.angebot.id === offer.id && result.lifetimeSaving > 0 && otherSizes.length > 0
+    ? `${size} bringt dir unter den verglichenen Größen den größten finanziellen Vorteil.`
+    : `${size} liegt deiner Rechnung zugrunde.`;
+  const explain = (reason: string) => `${sizeReason} ${reason}`;
+  if (customPrice) return explain(`${everydayReason} Gerechnet wird mit deinem eigenen Preis.`);
+  if (ranked.length < 2) return explain(`${everydayReason} Für einen Vergleich fehlen weitere passende Angebote.`);
+  if (ranked[0].angebot.id !== offer.id) return explain(everydayReason);
+  if (result.lifetimeSaving <= 0) return explain(`Über ${years} Jahre entsteht bei deinen Angaben kein berechneter Vorteil gegenüber reinem Netzstrom.`);
+  const opposite = ranked.find(entry => entry.angebot.moduleWp === offer.moduleWp && entry.angebot.inverterW === offer.inverterW && (entry.angebot.speicherKwh > 0) !== withStorage);
+  if (!opposite || result.lifetimeSaving <= opposite.ergebnis.lifetimeSaving) return explain(everydayReason);
+  return explain(withStorage
+    ? "Bei dir lohnt sich der Speicher: Du nutzt mehr Solarstrom selbst und sparst damit mehr, als er zusätzlich kostet."
+    : "Bei dir rechnet sich das Set ohne Speicher besser: Die zusätzliche Ersparnis mit Speicher deckt dessen Mehrkosten nicht.");
+}
+
+/** Explain the actual storage assumptions without claiming a verified bundle accessory. */
+export function speicherAnnahme(hardware: { haendler?: string; speicherKwh: number }): string {
+  if (hardware.haendler !== "solakon") return "Die angegebene Speichergröße ist die Nennkapazität; die tatsächlich nutzbare Kapazität ist nicht belegt. Die Rechnung setzt eine zum Verbrauch passende Speichersteuerung voraus.";
+  return `Von ${hardware.speicherKwh.toLocaleString("de-DE")} kWh Nennkapazität rechnen wir mit ${(hardware.speicherKwh * .85).toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh nach 15 % Mindestladung (Werkseinstellung). Die bedarfsgerechte Abgabe setzt einen kompatiblen, eingerichteten Smart Meter voraus. Ohne aktiven Energieplan sind laut Hersteller 200 W voreingestellt. Ob der Smart Meter im Set enthalten ist, ist nicht bestätigt; zusätzliche Kauf- und Installationskosten bitte unter Zusatzkosten ergänzen.`;
 }

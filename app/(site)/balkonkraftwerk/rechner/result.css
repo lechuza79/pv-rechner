@@ -1,0 +1,48 @@
+/* BKW-specific composition; the visual language comes from the shared WP result. */
+body .bkw-result-page{background:var(--color-page-canvas)!important}
+.bkw-result-main{max-width:100%;min-width:0}
+.bkw-result-main>.wp-overview,.bkw-adjustments{max-width:100%;margin-inline:auto}
+.bkw-result-main>.wp-overview .wp-overview-top{grid-template-columns:minmax(0,1fr)}
+.bkw-result-page .wp-result-value{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.bkw-result-page .wp-result-plus{color:var(--color-positive)}
+.bkw-offers{margin-block:var(--space-huge)}
+.bkw-adjustments{margin-block:var(--space-huge)!important;--color-bg:var(--result-panel);--color-bg-muted:var(--result-control);--color-text-primary:var(--result-text);--color-text-secondary:var(--result-muted);--color-text-muted:var(--result-muted);--color-accent:var(--result-accent);--color-accent-dim:color-mix(in srgb,var(--result-accent) 12%,transparent);--color-border:var(--result-rule);font-size:var(--result-type-body)}
+.bkw-adjustments h2{font-size:var(--font-size-h3);margin-bottom:var(--space-xxl)}
+
+.bkw-result-page .wp-result-summary{max-width:none}
+
+
+
+.bkw-profit-amount{min-width:0}
+.bkw-profit-amount .wp-reference-inline{margin-top:calc(var(--space-xl)/4)}
+.bkw-result-main>.bkw-adjustments+.bkw-adjustments{margin-top:var(--space-xl)!important}
+
+.bkw-result-disclaimer{margin-top:var(--space-xxl);text-align:center;font-size:var(--font-size-caption);color:var(--color-text-faint)}
+.bkw-result-main>.sc-stand-cards{max-width:100%;margin-inline:auto}
+
+.bkw-offer-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--space-xl);margin-block:var(--space-xl)}
+
+.bkw-offer-reason{font-size:var(--font-size-body);line-height:1.65;color:var(--result-muted);margin-block:var(--space-xl)}
+
+.bkw-offer-reason a { color: inherit; text-underline-offset: 3px; }
+#bkw-ertrag { scroll-margin-top: 100px; }
+
+.bkw-adjustments .wp-funding-location { margin-block: var(--space-xl); }
+
+.bkw-technical-content { display:grid; gap:var(--space-xl); font:400 var(--result-type-body)/1.6 var(--result-font-body); color:var(--result-muted); }
+.bkw-technical-content p,.bkw-technical-content dl { margin:0; }
+.bkw-technical-content h3 { font:700 var(--result-type-body)/1.4 var(--result-font-heading); color:var(--result-text); margin:0 0 calc(var(--space-xl)/2); }
+.bkw-technical-content strong { color:var(--result-text); }
+.bkw-yield-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-xl); }
+.bkw-yield-summary dt { font-size:var(--result-type-caption); }
+.bkw-yield-summary dd { margin:calc(var(--space-xl)/4) 0 0; color:var(--result-text); font:700 var(--result-type-body)/1.4 var(--result-font-heading); }
+.bkw-yield-summary small { font:400 var(--result-type-caption)/1.4 var(--result-font-body); }
+.bkw-power-chart { padding:var(--space-xl); background:var(--result-control); border-radius:var(--radius-md); }
+.bkw-technical-note { margin-block:var(--space-xl); font-size:var(--result-type-ui); }
+.bkw-technical-content .wp-card-disclosure { color:var(--result-muted); }
+.bkw-technical-content .wp-card-disclosure summary { color:var(--result-text); }
+
+/* The header extends behind a separate white image panel. */
+
+
+/* Keep one spacing rhythm instead of stacking inherited margins and gaps. */

@@ -550,18 +550,10 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     }
   });
 
-  it("Wärmepumpenstrom kostet im PV-Ergebnis den Wärmepumpen-Tarif", () => {
-    // Der Block bezahlt den Grundpreis des separaten Zählers. Dann muss er auch
-    // den Tarif rechnen, den es nur mit diesem Zähler gibt — sonst trägt er die
-    // Kosten des einen Falls und den Preis des anderen.
-    const quelle = readFileSync(join(ROOT, "app/(site)/photovoltaik-rechner/_components/ResultStats.tsx"), "utf8");
-    const zeile = quelle.split("\n").find(z => z.includes("calcWpGridCost("));
-    expect(zeile, "Der Heizkosten-Block ruft calcWpGridCost nicht mehr auf").toBeTruthy();
-    expect(
-      /wpTarif/.test(zeile ?? ""),
-      `Der Wärmepumpenstrom wird mit einem anderen Preis gerechnet als im ` +
-      `Wärmepumpen-Rechner: ${zeile?.trim().slice(0, 120)}`,
-    ).toBe(true);
+  it("Wärmepumpenstrom uses the shared household tariff without a second meter", () => {
+    const source = readFileSync(join(ROOT, "components/HeatPumpRunningComparison.tsx"), "utf8");
+    expect(source).toMatch(/calcWpGridCost\(wpKwh, wpCoverage, strompreis, stromSteigerung, HEATING_YEARS\)/);
+    expect(source).not.toMatch(/wpTarif|wpGrundpreis/);
   });
 });
 
@@ -728,10 +720,10 @@ describe("Modell-Kohärenz: der Kaufblock sagt, wovor er rechnet", () => {
     // Kaufblock rechnet mit dem Kassenpreis — unter „dieselbe Rechnung wie oben"
     // stand „bezahlt nach 3,0 Jahren" neben einer Kachel mit 1,8.
     const rechner = readFileSync(join(ROOT, "app/(site)/balkonkraftwerk/rechner/balkon.tsx"), "utf8");
-    expect(rechner).toMatch(/<BalkonAngebot[^>]*foerderungEuro=\{foerderung\}/);
+    expect(rechner).toMatch(/besteAngebote\(katalog.daten\?\.angebote \?\? \[\], angebotBasis, CFG, fundingContext\)/);
+    expect(rechner).toMatch(/<BalkonAngebot[^>]*ratedOffers=\{ratedOffers\}/);
     const block = readFileSync(join(ROOT, "components/BalkonAngebot.tsx"), "utf8");
-    expect(block).toMatch(/foerderungEuro > 0 \?/);
-    expect(block).toMatch(/vor der Förderung/);
+    expect(block).toMatch(/empfehlungAusBewertung\(ratedOffers\)/);
   });
 });
 
@@ -742,6 +734,18 @@ describe("investment caller coherence", () => {
       const r = calcHeatPump(input);
       expect(r.gasInvest).toBe(fossilReplacementInvestment(input.fuelKind ?? "gas", CFG, r.heizlastKw));
       expect(r.investBrutto).toBe(calcInvestBrutto(input.wpType, r.auslegungKw, false, CFG));
+    }
+  });
+});
+
+describe('no rounded autonomy in financial self-consumption', () => {
+  it('adding a small cooling load cannot reduce self-used solar energy', () => {
+    const household = {personenIdx:2,nutzungIdx:1,speicherKwh:0,wp:'geplant',wpKwh:5000,ea:'nein',eaKm:15000,kwp:10,ertragKwp:1050,baseKwh:3800};
+    let previous = calcEigenverbrauchExakt({...household,klima:'nein'});
+    for (let cooling=1;cooling<=600;cooling++) {
+      const current = calcEigenverbrauchExakt({...household,klima:'geplant',klimaKwh:cooling});
+      expect(current,`cooling ${cooling} kWh/year`).toBeGreaterThanOrEqual(previous-1e-10);
+      previous=current;
     }
   });
 });

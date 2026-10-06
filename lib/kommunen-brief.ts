@@ -3,6 +3,7 @@ import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
 import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
+import { kommunenSeiteUrl } from "./kommunen-seite";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
@@ -188,6 +189,10 @@ export async function briefFuerGemeinde(
     // Brief-Klick mehr, sondern dauerhaft jeder Aufruf des eingebauten Widgets
     // — die Zählung würde von da an etwas anderes messen, als sie behauptet.
     widgetUrl: `${SITE_URL}/embed/gemeinde-solar?ags=${regionId}`,
+    // Without the origin tag: the product page is a static document without the
+    // tag reader, so the tag would measure nothing there. With the place, once
+    // its scene is published.
+    kommunenUrl: kommunenSeiteUrl(SITE_URL, regionId),
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,

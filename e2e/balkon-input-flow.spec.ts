@@ -1,0 +1,26 @@
+import {test,expect} from '@playwright/test';
+for(const width of [375,1280])test(`balcony input uses shared questions and preserves answers at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:1000});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('/balkonkraftwerk/rechner',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('[data-flow-ready]')).toHaveAttribute('data-flow-ready','true');
+ const question=(name:string)=>page.locator(`[data-flow-akkordeon-offen="${name}"]`);
+ await expect(question('Personen im Haushalt')).toBeVisible();
+ await expect(page.locator('[data-flow-next]')).toHaveAttribute('aria-disabled','true');
+ await question('Personen im Haushalt').getByRole('button',{name:'2 Personen',exact:true}).click();
+ await expect(question('Tagsüber zuhause')).toBeVisible();
+ await question('Tagsüber zuhause').getByRole('button',{name:/Teils zuhause/}).click();
+ await expect(question('Standort (optional)')).toBeVisible();
+ await page.getByRole('button',{name:/Personen im Haushalt/}).click();
+ await expect(question('Personen im Haushalt').getByRole('button',{name:'2 Personen',exact:true})).toHaveAttribute('aria-pressed','true');
+ await page.locator('.sc-calculator-content').first().screenshot({path:`/tmp/bkw-input-${width}.png`});
+ await page.getByRole('button',{name:'Weiter',exact:true}).click();
+ await question('Wie hängen die Module?').locator('[data-flow-wahl]').first().click();
+ await page.getByRole('button',{name:'Zurück',exact:true}).click();
+ await expect(question('Personen im Haushalt').getByRole('button',{name:'2 Personen',exact:true})).toHaveAttribute('aria-pressed','true');
+ await page.getByRole('button',{name:'Weiter',exact:true}).click();
+ await expect(question('Wie hängen die Module?').locator('[aria-pressed=true]')).toHaveCount(1);
+ await page.getByRole('button',{name:'Empfehlung anzeigen',exact:true}).click();
+ await expect(page.locator('#bkw-ueberblick')).toBeVisible({timeout:60000});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});

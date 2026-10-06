@@ -20,7 +20,7 @@
       "links": [
         {
           "text": "Passende Anlage finden",
-          "href": "/pv-bedarf-berechnen"
+          "href": "/photovoltaik-rechner"
         },
         {
           "text": "Anlage durchrechnen",
@@ -115,7 +115,7 @@
   },
   "organisationen": {
     "kicker": "Solar Check für Unternehmen & Organisationen",
-    "titel": "Unsere Tools. Für deine Kunden, deine Bürger, dein Publikum.",
+    "titel": "Unsere Energie-Angebote. Für deine Kunden, deine Bürger, dein Publikum.",
     "eintraege": [
       {
         "titel": "Für Fachbetriebe",
@@ -125,7 +125,7 @@
       {
         "titel": "Für Kommunen",
         "text": "Lokale Energiedaten zeigen und teilen",
-        "href": "/energie-widgets"
+        "href": "/fuer-organisationen/kommunen"
       },
       {
         "titel": "Für Versorger",

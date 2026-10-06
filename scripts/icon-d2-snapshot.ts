@@ -135,7 +135,9 @@ async function main() {
   if (gaps > total * 0.01) throw new Error(`${gaps} Postleitzahlen mit Lücken; Schnappschuss wird nicht geschrieben.`);
   console.log(`${total - missingHeight - gaps} Postleitzahlen, ${shards.size} Dateien, ${missingHeight} ohne Höhe, ${gaps} mit Lücken.`);
 
-  if (flag('lokal')) {
+  // --auch-lokal: upload AND keep a copy, so the regional curves
+  // (scripts/region-solartag.ts) run on the same files without downloading them.
+  if (flag('lokal') || flag('auch-lokal')) {
     const dir = 'scripts/.cache/icon-d2';
     mkdirSync(dir, { recursive: true });
     for (const [key, shard] of Array.from(shards)) {
@@ -143,7 +145,7 @@ async function main() {
       renameSync(`${dir}/${key}.json.tmp`, `${dir}/${key}.json`);
     }
     console.log('Lokal geschrieben nach', dir);
-    return;
+    if (flag('lokal')) return;
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;

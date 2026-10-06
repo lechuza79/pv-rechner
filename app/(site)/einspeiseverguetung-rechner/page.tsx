@@ -1,3 +1,5 @@
+import CalculatorContent from "../../../components/calculator/CalculatorContent";
+import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 import { Metadata } from "next";
 import Faq from "../../../components/Faq";
 import RelatedLinks from "../../../components/RelatedLinks";
@@ -97,7 +99,8 @@ function SaetzeBlock() {
 export default function EinspeiseverguetungPage() {
   return (
     <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 32px" }}>
-      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto" }}>
+      <CalculatorTheme />
+      <CalculatorContent>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h1 style={{ color: v("--color-text-primary") }}>
             Einspeisevergütung-Rechner
@@ -121,7 +124,7 @@ export default function EinspeiseverguetungPage() {
             { href: "/datenstand", label: "Aktuelle Werte & Annahmen" },
           ]}
         />
-      </div>
+      </CalculatorContent>
     </div>
   );
 }

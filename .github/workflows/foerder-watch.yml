@@ -77,7 +77,21 @@ jobs:
     # dürfen und sollen: Setup ~2, Amtsseiten ~7, AGS + bekannte Seiten ~8,
     # Technik/Bericht/Leseliste am Ende ~10. Zusammen rund 82 — 95 lässt Luft,
     # ohne die Notbremse abzuschaffen.
-    timeout-minutes: 95
+    #
+    # AUF 125 MINUTEN GEZOGEN (05.10.2026). Zwei Läufe in Folge (03./04.10.)
+    # endeten „cancelled", jedes Mal exakt 95 Minuten nach dem Start; am 04.10.
+    # waren alle Schritte schon durch, abgeschnitten wurde die Beweis-Ablage am
+    # Ende, am 03.10. die Leseliste. Gewachsen sind die beiden Schritte OHNE
+    # eigenes Limit (die mit der 14-Tage-Frist), nicht die abschneidbaren:
+    #   Amtsseiten          7 min (23.08.) → 21 (29.09.) → 29 min (04.10.)
+    #   bekannte Seiten     8 min (23.08.) → 11 (29.09.) → 14 min (04.10.)
+    # Grund ist der Katalog (über 300 Programme, jedes mit Abrufleiter). Gemessene
+    # Summe am 04.10.: 95 min; die Suche hat ihr Limit (40) dabei nicht
+    # ausgeschöpft (29 min). 125 = gemessene 95 + die 11 Minuten, die die Suche
+    # noch nehmen darf + rund 20 Minuten Wachstum des Katalogs. Kein Kostengrund
+    # (öffentliches Repo), und kein Hochsetzen, damit ein Befund verschwindet:
+    # Der Befund ist gewachsene Arbeit an der Frist der Förderprogramme.
+    timeout-minutes: 125
     steps:
       - uses: actions/checkout@v4
 
@@ -325,6 +339,24 @@ jobs:
         run: |
           curl -sS --fail-with-body -H "Authorization: Bearer $CRON_SECRET" \
             "$BASIS/api/abo/aufraeumen"
+
+      # Abo-Meldungen versenden. Seit 27.09.2026 trägt eine Abo-Mail NUR die
+      # Meldung „Förderprogramm nimmt wieder Anträge an" (Freigabe im Code,
+      # ABO_MAIL_FREIGEGEBEN) — alle anderen Meldungsarten warten auf den
+      # Umbau mit der Redaktion. Der Lauf schickt nur, wo sich für einen
+      # Abonnenten seit seiner letzten Mail etwas bewegt hat; an den meisten
+      # Tagen verschickt er nichts. Hier statt in einem eigenen Zeitplan aus
+      # demselben Grund wie das Aufräumen darüber: ein Lauf mehr, der
+      # ausfallen kann, ohne es zu melden.
+      - name: Abo-Meldungen versenden
+        if: always()
+        timeout-minutes: 6
+        env:
+          BASIS: ${{ secrets.HEALTH_BASE_URL || 'https://solar-check.io' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body --max-time 320 -H "Authorization: Bearer $CRON_SECRET" \
+            "$BASIS/api/abo/versenden"
 
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem

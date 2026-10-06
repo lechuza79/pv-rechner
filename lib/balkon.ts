@@ -1,3 +1,4 @@
+import { electricityPriceAtYear } from "./electricity-projection";
 // Balkon-PV / Steckersolar — reine Berechnungsfunktionen.
 //
 // Ertrag, Eigenverbrauch und Speicher-Nutzen kommen aus der Stunden-Simulation
@@ -7,7 +8,7 @@
 
 import { DEFAULT_BALKON_CONFIG, type BalkonConfig, type BalkonSetId, type BalkonOrientationId, type BalkonPresenceId, type BalkonStorageId } from "./balkon-config";
 import { DEFAULT_PRICES } from "./prices-config";
-import { simulateBalkonYear, monthlyFromAnnual } from "./balkon-sim";
+import { simulateSolarYear, monthlyFromAnnual } from "./balkon-sim";
 
 export interface BalkonInputs {
   setId: BalkonSetId;
@@ -19,7 +20,10 @@ export interface BalkonInputs {
   /** 12 Monatswerte kWh/kWp aus PVGIS. Ohne PLZ null → Fallback aus specificYield. */
   monthlyYield?: number[] | null;
   stromPrice: number;      // €/kWh
-  priceIncrease?: number;  // jährlicher Strompreisanstieg (Default: PV-Systemwert, 2 %)
+  priceIncrease?: number;  // jährlicher Strompreisanstieg (Default: shared household projection)
+  horizonYears?: 10 | 20;
+  additionalCosts?: number;
+  shadingLossPercent?: number;
   invest?: number;         // optional überschriebene Anschaffung (Set + Speicher)
 }
 
@@ -36,6 +40,8 @@ export interface BalkonResult {
   invest: number;           // € (Set + Speicher, oder Override)
   amortYears: number;       // Jahre (Infinity wenn keine Ersparnis)
   co2PerYear: number;       // kg/a
+  annualCosts: { grid: number[]; balcony: number[] };
+  monthlyCosts: { grid: number[][]; balcony: number[][] };
   lifetimeSaving: number;   // € über die Lebensdauer, abzüglich Investition
 
   // Speicher-Aufschlüsselung (für ehrliche Darstellung der Mehrkosten)
@@ -195,9 +201,12 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
 
   // Standort: echtes PVGIS-Monatsprofil, sonst deutscher Durchschnitt aus der
   // Jahressumme. Beides in kWh/kWp je Monat — dieselbe Quelle wie im PV-Rechner.
-  const monthlyYieldPerKwp = inputs.monthlyYield && inputs.monthlyYield.length === 12
+  const unshadedMonthlyYield = inputs.monthlyYield && inputs.monthlyYield.length === 12
     ? inputs.monthlyYield
     : monthlyFromAnnual(inputs.specificYield);
+  // User-entered loss reduces generation before inverter and storage dispatch.
+  const shading = Number.isFinite(inputs.shadingLossPercent) ? clamp(inputs.shadingLossPercent!, 0, 100) / 100 : 0;
+  const monthlyYieldPerKwp = unshadedMonthlyYield.map(yieldKwh => yieldKwh * (1 - shading));
 
   // Der Haushalt als geteiltes Lastprofil (BDEW H0): tagQuote steuert Tag/Nacht.
   // Balkon-PV kennt keine WP/E-Auto/Klima-Zuschläge — der Rechner fragt nur nach
@@ -213,8 +222,8 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
   // Zwei Läufe: ohne Speicher als Referenz, mit Speicher für die aktive Wahl.
   // Der Speicher-Nutzen ist damit eine echte Differenz aus der Simulation und
   // keine angenommene Quote.
-  const simNoBattery = simulateBalkonYear({ ...simBase, batteryKwh: 0 });
-  const sim = storage.kwh > 0 ? simulateBalkonYear({ ...simBase, batteryKwh: storage.kwh }) : simNoBattery;
+  const simNoBattery = simulateSolarYear({ ...simBase, batteryKwh: 0 });
+  const sim = storage.kwh > 0 ? simulateSolarYear({ ...simBase, batteryKwh: storage.kwh, batteryCoupling: storage.batteryCoupling, usableBatteryKwh: storage.usableBatteryKwh, batteryPowerLimits: storage.batteryPowerLimits }) : simNoBattery;
 
   const annualYield = sim.annualYield;
   const clipped = sim.clippedKwh > 0;
@@ -224,9 +233,9 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
   const selfShare = annualYield > 0 ? selfUsedKwh / annualYield : 0;
   const feedInKwh = sim.feedInKwh;
 
-  const invest = inputs.invest ?? (set.price + storage.price);
-  // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleicher Wert aus
-  // der Preis-Config, „realistisch" 2 %/Jahr), compoundend p·(1+g)^i.
+  const additionalCosts = Number.isFinite(inputs.additionalCosts) ? Math.max(0, inputs.additionalCosts!) : 0;
+  const invest = (inputs.invest ?? (set.price + storage.price)) + additionalCosts;
+  // Shared household-price projection; an explicit sensitivity can override the rate.
   const priceIncrease = inputs.priceIncrease ?? DEFAULT_PRICES.electricityIncrease;
 
   // Jahr-1-Ersparnis (für die Anzeige „pro Jahr").
@@ -243,15 +252,33 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
   // denen die kumulierte Ersparnis die (Mehr-)Kosten übersteigt (linear
   // interpoliert). Rechnet sich ein Speicher erst nach seiner Lebensdauer, bleibt
   // seine Amortisation „unendlich" — der ehrliche „lohnt sich nicht"-Fall.
+  const annualCosts = { grid: [] as number[], balcony: [] as number[] };
+  const monthlyCosts = { grid: [] as number[][], balcony: [] as number[][] };
+  // Normalize rounded monthly outputs back to the annual ledger. The chart and
+  // calculation therefore retain identical totals, including battery retirement.
+  const weights = (values: number[]) => {
+    const sum = values.reduce((a, b) => a + b, 0);
+    return sum > 0 ? values.map(value => value / sum) : values.map(() => 1 / 12);
+  };
+  const consumptionWeights = weights(sim.monthly.map(month => month.consumption));
+  const directWeights = weights(simNoBattery.monthly.map(month => month.selfUsed));
+  const storageWeights = weights(sim.monthly.map((month, i) => Math.max(0, month.selfUsed - simNoBattery.monthly[i].selfUsed)));
   let lifetimeGross = 0;
   let cumTotal = 0, cumStorage = 0;
   let amortYears = Infinity, storagePayback = Infinity;
-  for (let i = 0; i < cfg.lifetimeYears; i++) {
+  for (let i = 0; i < (inputs.horizonYears ?? cfg.lifetimeYears); i++) {
     const deg = Math.pow(1 - cfg.degradation, i);
-    const sp = inputs.stromPrice * Math.pow(1 + priceIncrease, i);
+    const sp = electricityPriceAtYear(inputs.stromPrice, i, priceIncrease);
     const storageSaving = i < cfg.storageLifeYears ? storageAddedKwh * deg * sp : 0;
     const yearSaving = baseSelfUsedKwh * deg * sp + storageSaving;
     lifetimeGross += yearSaving;
+    annualCosts.grid.push(inputs.haushaltKwh * sp);
+    annualCosts.balcony.push(inputs.haushaltKwh * sp - yearSaving);
+    const gridMonths = consumptionWeights.map(weight => inputs.haushaltKwh * sp * weight);
+    monthlyCosts.grid.push(gridMonths);
+    monthlyCosts.balcony.push(gridMonths.map((cost, month) => cost
+      - baseSelfUsedKwh * deg * sp * directWeights[month]
+      - storageSaving * storageWeights[month]));
 
     const prevTotal = cumTotal;
     cumTotal += yearSaving;
@@ -269,7 +296,7 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
   return {
     moduleKwp, inverterKw, annualYield, clipped, selfShare,
     selfUsedKwh, feedInKwh, savingPerYear, autarky, invest,
-    amortYears, co2PerYear, lifetimeSaving,
+    amortYears, co2PerYear, lifetimeSaving, annualCosts, monthlyCosts,
     storageKwh: storage.kwh, storagePrice: storage.price,
     baseSelfUsedKwh, baseSavingPerYear, storageAddedKwh, storagePayback,
   };

@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 import {
   ANBIETER,
   anbieterFuer,
@@ -505,5 +505,74 @@ describe("Quellenangabe der KI-Messungen", () => {
     // ohne ihn steht da nur eine Zahlenreihe ohne Erklärung, und der Leser
     // nimmt die größte.
     for (const m of MESSUNGEN) expect(m.aufbau.length, m.quelle).toBeGreaterThan(40);
+  });
+});
+
+describe("Eine Zusammensetzung für Befehl und Ansicht", () => {
+  // Der Kommandozeilen-Lauf liest die Kosten aus den Buchungsunterlagen, die
+  // interne Ansicht aus der Ablage. Die RECHNUNG darf davon nicht abhängen:
+  // Zwei Fassungen würden auseinanderlaufen, und der Unterschied fiele
+  // niemandem auf, weil beide Seiten plausible Zahlen zeigen.
+  const bilanzDatei = readFileSync(join(__dirname, "..", "projekt-bilanz.ts"), "utf8");
+  const skript = readFileSync(
+    join(__dirname, "..", "..", "scripts", "projekt-kosten-erfassen.ts"),
+    "utf8",
+  );
+  const ansicht = readFileSync(join(__dirname, "..", "projekt-bilanz-db.ts"), "utf8");
+
+  it("die Zusammensetzung steht in der geteilten Datei", () => {
+    expect(bilanzDatei).toMatch(/export function bilanzAus\(/);
+  });
+
+  it("beide Aufrufer rufen sie, keiner baut die Bilanz selbst zusammen", () => {
+    for (const [name, quelle] of [["Erfassungslauf", skript], ["Ansicht", ansicht]] as const) {
+      expect(quelle, `${name} ruft die geteilte Zusammensetzung`).toMatch(/bilanzAus\(/);
+      // Die drei Schritte, die vor der eigentlichen Bilanz nötig sind, dürfen
+      // NUR in der geteilten Datei stehen. Baut ein Aufrufer sie nach, ist das
+      // der Anfang der zweiten Fassung.
+      expect(quelle, `${name} rechnet die Frühphase nicht selbst hoch`).not.toMatch(
+        /stundenHochgerechnet\s*=/,
+      );
+      expect(quelle, `${name} bildet die Überlappung nicht selbst`).not.toMatch(
+        /ueberlappendeMonate\s*=/,
+      );
+      expect(quelle, `${name} ruft die Aufwandsschätzung nicht selbst`).not.toMatch(
+        /schaetzeAufwand\(/,
+      );
+    }
+  });
+
+  it("die Ansicht liest nur, sie schreibt nicht", () => {
+    // Eine Ansicht, die schreibt, verschmutzt die Messreihe aus jedem laufenden
+    // Arbeitsstand — dieselbe Lehre wie bei der verworfenen Herkunftszählung.
+    expect(ansicht).not.toMatch(/\.(insert|upsert|update|delete)\(/);
+  });
+
+  it("die Ansicht bleibt auf dem Server", () => {
+    // Die Leseschicht zieht den Dienstschlüssel und die volle Rechenkette; ohne
+    // diese Grenze landet beides im Browser-Bündel.
+    expect(ansicht).toMatch(/^import "server-only";/m);
+  });
+
+  it("ohne Zählstand wird nicht geschätzt", () => {
+    // Eine Bestandszeile von vor dem 27.09.2026 trägt dort Nullen. Damit
+    // gerechnet käme eine Schätzung heraus, die nur die Posten ohne Mengenbezug
+    // enthält: plausibel aussehend und deutlich zu klein.
+    expect(ansicht).toMatch(/hatZaehlstand/);
+  });
+
+  it("die Zählung des Bestands steht an einer Stelle", () => {
+    // Sie liest den Dateibaum über git und gehört deshalb nicht in `lib/`; beide
+    // Erfassungsläufe nehmen dasselbe Modul.
+    const statistikSkript = readFileSync(
+      join(__dirname, "..", "..", "scripts", "projekt-statistik-erfassen.ts"),
+      "utf8",
+    );
+    expect(skript).toMatch(/from "\.\/lib\/zaehlstand"/);
+    expect(statistikSkript).toMatch(/from "\.\/lib\/zaehlstand"/);
+    // Und keiner der beiden zählt selbst nach.
+    for (const quelle of [skript, statistikSkript]) {
+      expect(quelle).not.toMatch(/function zaehlstand\(/);
+    }
   });
 });

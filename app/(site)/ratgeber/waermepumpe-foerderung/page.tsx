@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import EditorialPage from "../../../../components/EditorialPage";
+import editorial from "../../../../components/EditorialContent.module.css";
 import ProConLists from "../../../../components/ProConLists";
 import Faq from "../../../../components/Faq";
 import RelatedLinks from "../../../../components/RelatedLinks";
@@ -77,52 +79,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ─── Styles (same content-page conventions as the other Ratgeber) ───────────
+// Page-specific comparison and data presentation.
 const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "20px 16px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: 60, paddingBottom: 88 },
-  h1: { color: v("--color-text-primary"), marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  card: {
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-    padding: "14px 16px",
-    border: `1px solid ${v("--color-border")}`,
-    marginBottom: 12,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-  },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 8,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  // Der einzige rot gerahmte Kasten der Seite. Er gehört der Reihenfolge-Regel,
-  // weil sie die einzige Aussage hier ist, bei der ein Fehler den ganzen
-  // Zuschuss kostet — ein zweiter roter Kasten würde ihn entwerten.
   warn: {
     background: v("--color-negative-dim"),
     border: `1px solid ${v("--color-negative-border")}`,
@@ -154,39 +112,8 @@ const S = {
     alignItems: "center",
     justifyContent: "center",
   },
-  label: {
-    fontSize: v("--font-size-caption"),
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    marginBottom: 6,
-    display: "block",
-  },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   positive: { color: v("--color-positive-text"), fontWeight: 600 },
-  muted: { color: v("--color-text-muted") },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  ctaButton: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-pill"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    background: v("--color-cta"),
-    color: v("--color-text-on-accent"),
-    textDecoration: "none",
-  },
-  ctaSecondary: {
-    display: "inline-block",
-    padding: "10px 18px",
-    borderRadius: v("--radius-md"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    border: `1px solid ${v("--color-border")}`,
-    color: v("--color-accent"),
-    textDecoration: "none",
-  },
   th: {
     textAlign: "left" as const,
     fontSize: v("--font-size-caption"),
@@ -332,9 +259,9 @@ export default async function WaermepumpeFoerderungPage() {
   const staffel = HP.begEinkommensStaffel;
 
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
-        <Breadcrumb
+    <EditorialPage>
+
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
@@ -343,12 +270,6 @@ export default async function WaermepumpeFoerderungPage() {
           jsonLd
         />
 
-        <h1 style={S.h1}>Wärmepumpen-Förderung {JAHR}: Wie viel Zuschuss gibt es wirklich?</h1>
-        <p style={S.subtitle}>
-          Der Staat übernimmt beim Heizungstausch einen erheblichen Teil der Kosten — aber
-          wie viel genau, hängt davon ab, wer du bist und was du bisher heizt. Hier steht,
-          wie sich der Zuschuss zusammensetzt.
-        </p>
         <ArticleMeta
           headline={`Wärmepumpen-Förderung ${JAHR}: Wie viel Zuschuss gibt es wirklich?`}
           description="Grundförderung, Klima-Bonus, Einkommens-Bonus: wie sich der BEG-Zuschuss zusammensetzt."
@@ -357,34 +278,41 @@ export default async function WaermepumpeFoerderungPage() {
           modified="2026-08-25"
         />
 
+        <h1 className={editorial.h1}>Wärmepumpen-Förderung {JAHR}: Wie viel Zuschuss gibt es wirklich?</h1>
+        <p className={editorial.subtitle}>
+          Der Staat übernimmt beim Heizungstausch einen erheblichen Teil der Kosten — aber
+          wie viel genau, hängt davon ab, wer du bist und was du bisher heizt. Hier steht,
+          wie sich der Zuschuss zusammensetzt.
+        </p>
+
         {/* ── Kurzantwort ── */}
-        <div style={S.hero}>
-          <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Zwischen {pct(STUFE.grundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
+        <div className={editorial.hero}>
+          <span className={editorial.label}>Die Kurzantwort</span>
+          <strong className={editorial.strong}>Zwischen {pct(STUFE.grundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
           Jeder Heizungstausch im Bestand bekommt die Grundförderung von {pct(STUFE.grundfoerderung)} —
           auch Vermieter. Selbstnutzende Eigentümer können über den Klima-Bonus und einen
           einkommensabhängigen Bonus auf bis zu {pct(HP.begMaxRateLowIncome)} kommen. Gefördert
           werden Kosten bis {eur(STUFE.maxCap)} für die erste Wohnung, der maximale Zuschuss
           liegt damit bei {eur(maxZuschuss)}. Im Neubau gibt es diesen Zuschuss dagegen nicht.
         </div>
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginBottom: 0 }}>
           Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), gültig ab {gueltigAb} · unverbindliche
           Näherungswerte, ohne Gewähr — verbindlich ist die Zusage der KfW.
         </p>
-        <p style={{ ...S.p, marginTop: 12 }}>
+        <p className={editorial.p} style={{ marginTop: 12 }}>
           Bevor du weiterliest, die eine Sache, die den ganzen Zuschuss kosten kann:{" "}
-          <a href={`#${BEG_ANTRAG_ANKER}`} style={S.link}>
+          <a href={`#${BEG_ANTRAG_ANKER}`} className={editorial.link}>
             Der Antrag muss vor dem ersten verbindlichen Auftrag gestellt sein
           </a>{" "}
           — sonst gibt es nichts, egal wie hoch der Satz wäre.
         </p>
 
         {/* ── Bestand vs. Neubau ── */}
-        <h2 style={S.h2}>Zuerst die wichtigste Weiche: Bestand oder Neubau?</h2>
-        <p style={S.p}>
-          Der bezuschusste Fall ist der <strong style={S.strong}>Heizungstausch im bestehenden
+        <h2 className={editorial.h2}>Zuerst die wichtigste Weiche: Bestand oder Neubau?</h2>
+        <p className={editorial.p}>
+          Der bezuschusste Fall ist der <strong className={editorial.strong}>Heizungstausch im bestehenden
           Gebäude</strong>. Nur dafür gibt es den prozentualen Zuschuss, um den es auf dieser
-          Seite geht. Baust du <strong style={S.strong}>neu</strong>, wird die Wärmepumpe nicht
+          Seite geht. Baust du <strong className={editorial.strong}>neu</strong>, wird die Wärmepumpe nicht
           direkt bezuschusst — dort läuft die Förderung über zinsgünstige Kredite der KfW im
           Programm „Klimafreundlicher Neubau“, die das ganze Gebäude betreffen, nicht die
           einzelne Heizung. Für den Rest dieser Seite gilt also: bestehendes Haus, alte
@@ -392,15 +320,15 @@ export default async function WaermepumpeFoerderungPage() {
         </p>
 
         {/* ── Die drei Bausteine ── */}
-        <h2 style={S.h2}>Wie sich der Zuschuss zusammensetzt</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Wie sich der Zuschuss zusammensetzt</h2>
+        <p className={editorial.p}>
           Der Fördersatz der{" "}
           <GlossaryTerm id="beg">BEG</GlossaryTerm>-Heizungsförderung ist kein fester Wert,
           sondern wird aus bis zu drei Bausteinen zusammengesetzt. Alle beziehen sich auf die
           förderfähigen Kosten (gedeckelt bei {eur(STUFE.maxCap)} für die erste Wohnung):
         </p>
 
-        <div style={S.card}>
+        <div className={editorial.card}>
           <span style={S.accent}>1. Grundförderung — {pct(STUFE.grundfoerderung)}</span>
           <br />
           Bekommt jeder Heizungstausch im Bestand, ohne Bedingungen an Person oder alte
@@ -413,7 +341,7 @@ export default async function WaermepumpeFoerderungPage() {
           {NAECHSTE && NAECHSTE.grundfoerderung < STUFE.grundfoerderung && (
             <>
               {" "}
-              <strong style={S.strong}>
+              <strong className={editorial.strong}>
                 Für Anträge ab {NAECHSTE.bezeichnung} sinkt dieser Anteil auf{" "}
                 {pct(NAECHSTE.grundfoerderung)}
               </strong>{" "}
@@ -424,53 +352,53 @@ export default async function WaermepumpeFoerderungPage() {
             </>
           )}
         </div>
-        <div style={S.card}>
+        <div className={editorial.card}>
           <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(STUFE.klimaBonus)}</span>
           <br />
-          Nur für <strong style={S.strong}>selbstnutzende Eigentümer</strong>, die eine noch
+          Nur für <strong className={editorial.strong}>selbstnutzende Eigentümer</strong>, die eine noch
           funktionierende alte Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und
-          Nachtspeicherheizungen zählen <strong style={S.strong}>unabhängig vom Alter</strong>.
+          Nachtspeicherheizungen zählen <strong className={editorial.strong}>unabhängig vom Alter</strong>.
           Zentrale Gasheizungen und Biomasseheizungen (Holz, Pellets) zählen erst{" "}
-          <strong style={S.strong}>ab 20 Jahren</strong> — maßgeblich ist, dass die
+          <strong className={editorial.strong}>ab 20 Jahren</strong> — maßgeblich ist, dass die
           Inbetriebnahme am Tag der Antragstellung mindestens 20 Jahre zurückliegt; das
           Baujahr steht auf dem Typenschild am Kessel. Dieser Bonus sinkt ab dem
           1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Anträgen ab
           dem 1. August 2028 ganz.
         </div>
-        <div style={S.card}>
+        <div className={editorial.card}>
           <span style={S.accent}>
             3. Einkommens-Bonus — +{pct(staffel[0].rate)} / +{pct(staffel[1].rate)} / +{pct(staffel[2].rate)}
           </span>
           <br />
           Ebenfalls nur für selbstnutzende Eigentümer, gestaffelt nach dem{" "}
-          <strong style={S.strong}>zu versteuernden Haushaltsjahreseinkommen</strong>: bis{" "}
+          <strong className={editorial.strong}>zu versteuernden Haushaltsjahreseinkommen</strong>: bis{" "}
           {eur(staffel[0].maxIncome)} gibt es +{pct(staffel[0].rate)}, bis {eur(staffel[1].maxIncome)}{" "}
           +{pct(staffel[1].rate)}, bis {eur(staffel[2].maxIncome)} +{pct(staffel[2].rate)}. Maßgeblich
           ist das zu versteuernde Einkommen aus dem Steuerbescheid, nicht das Bruttogehalt — es
           liegt meist deutlich darunter.
         </div>
-        <p style={S.p}>
-          Dazu kommt ein <strong style={S.strong}>Familienzuschlag</strong>: Lebt mindestens
+        <p className={editorial.p}>
+          Dazu kommt ein <strong className={editorial.strong}>Familienzuschlag</strong>: Lebt mindestens
           ein minderjähriges Kind im Haushalt, wird das anzusetzende Einkommen einmalig um{" "}
           {eur(HP.begFamilienzuschlag)} gesenkt — das kann eine höhere Bonusstufe auslösen. Die
           Anzahl der Kinder spielt dabei keine Rolle, es zählt nur ja oder nein.
         </p>
-        <p style={S.p}>
-          Alle Bausteine zusammen sind <strong style={S.strong}>gedeckelt</strong>: höchstens{" "}
+        <p className={editorial.p}>
+          Alle Bausteine zusammen sind <strong className={editorial.strong}>gedeckelt</strong>: höchstens{" "}
           {pct(HP.begMaxRate)} im Regelfall, {pct(HP.begMaxRateLowIncome)} nur in der untersten
           Einkommensstufe. Selbst wenn die Prozente rechnerisch höher lägen, ist bei diesen
           Werten Schluss.
         </p>
 
         {/* ── Beispielrechnung ── */}
-        <h2 style={S.h2}>Beispiel: dieselbe Wärmepumpe, fünf Haushalte</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Beispiel: dieselbe Wärmepumpe, fünf Haushalte</h2>
+        <p className={editorial.p}>
           Zur Veranschaulichung dieselbe Anlage für alle: ein freistehendes Einfamilienhaus,{" "}
           {EX_WOHNFLAECHE} m², teilsaniert, mit einer Luft-Wärmepumpe. Die Investition liegt
           bei rund {eur(investBrutto)} (aus der Heizlast gerechnet, wie im Rechner). Nur die
           Person und die alte Heizung ändern sich — und damit der Zuschuss:
         </p>
-        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
+        <div className={editorial.card} style={{ padding: "6px 10px", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
@@ -484,7 +412,7 @@ export default async function WaermepumpeFoerderungPage() {
               {rows.map((r, i) => (
                 <tr key={r.label}>
                   <td style={{ ...S.td, borderBottom: i === rows.length - 1 ? "none" : undefined }}>
-                    <span style={{ ...S.strong, display: "block" }}>{r.label}</span>
+                    <span className={editorial.strong} style={{ display: "block" }}>{r.label}</span>
                     <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{r.desc}</span>
                   </td>
                   <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: r.highlight ? v("--color-positive-text") : v("--color-text-primary") }}>
@@ -501,10 +429,10 @@ export default async function WaermepumpeFoerderungPage() {
             </tbody>
           </table>
         </div>
-        <p style={S.p}>
-          Zwei Dinge fallen auf: Der <strong style={S.strong}>Vermieter</strong> bekommt nur die
+        <p className={editorial.p}>
+          Zwei Dinge fallen auf: Der <strong className={editorial.strong}>Vermieter</strong> bekommt nur die
           Grundförderung — Klima- und Einkommens-Bonus sind an die Selbstnutzung gebunden. Und
-          die <strong style={S.strong}>Familie mit Kind</strong> profitiert vom Familienzuschlag:
+          die <strong className={editorial.strong}>Familie mit Kind</strong> profitiert vom Familienzuschlag:
           Mit 48.000 € Einkommen läge sie eigentlich in der untersten Bonusstufe, durch den
           Abzug von {eur(HP.begFamilienzuschlag)} rutscht sie eine Stufe höher.
         </p>
@@ -517,11 +445,11 @@ export default async function WaermepumpeFoerderungPage() {
             der Stelle, die niemand liest. Der Anker `antrag-reihenfolge` kommt
             aus lib/beg-antrag.ts, damit verweisende Seiten ihn importieren
             können, statt ihn abzutippen. */}
-        <h2 id={BEG_ANTRAG_ANKER} style={{ ...S.h2, scrollMarginTop: 80 }}>
+        <h2 id={BEG_ANTRAG_ANKER} className={editorial.h2} style={{ scrollMarginTop: 80 }}>
           Die Reihenfolge entscheidet — sonst ist der Zuschuss weg
         </h2>
         <div style={S.warn}>
-          <strong style={S.strong}>
+          <strong className={editorial.strong}>
             Der Zuschuss ist verloren, wenn das Vorhaben vor dem Antrag beginnt.
           </strong>{" "}
           Nicht ein Teil davon — der ganze Betrag, im Beispiel oben bis zu{" "}
@@ -530,26 +458,26 @@ export default async function WaermepumpeFoerderungPage() {
           bereits begonnene Maßnahme ist ein nachträglicher Antrag im Verfahren nicht
           vorgesehen.
         </div>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Dann kommt es darauf an, was „beginnen“ heißt — und das ist enger gefasst,
-          als die meisten befürchten. <strong style={S.strong}>Als Beginn zählt</strong>{" "}
+          als die meisten befürchten. <strong className={editorial.strong}>Als Beginn zählt</strong>{" "}
           {BEG_VORHABENBEGINN.zaehltAlsBeginn.join(" oder ")}.{" "}
           {BEG_VORHABENBEGINN.keineNachtraeglicheBedingung}
         </p>
-        <p style={S.p}>
-          <strong style={S.strong}>Ausdrücklich nicht als Beginn zählen</strong>{" "}
+        <p className={editorial.p}>
+          <strong className={editorial.strong}>Ausdrücklich nicht als Beginn zählen</strong>{" "}
           {BEG_VORHABENBEGINN.zaehltNicht.join(" sowie ")}. Reden kostet also nichts —
           und das ist die Entwarnung, die die meisten brauchen: Angebote einholen und
           sich beraten lassen ist nicht nur erlaubt, es ist der erste Schritt.
         </p>
 
-        <div style={{ ...S.card, padding: "4px 16px 14px" }}>
-          <span style={{ ...S.label, marginTop: 12 }}>So läuft es der Reihe nach</span>
+        <div className={editorial.card} style={{ padding: "4px 16px 14px" }}>
+          <span className={editorial.label} style={{ marginTop: 12 }}>So läuft es der Reihe nach</span>
           {BEG_ANTRAG_SCHRITTE.map((s, i) => (
             <div key={s.titel} style={{ ...S.stepRow, borderTop: i === 0 ? "none" : undefined }}>
               <span style={S.stepNum} aria-hidden>{i + 1}</span>
               <div>
-                <strong style={{ ...S.strong, display: "block", marginBottom: 2 }}>
+                <strong className={editorial.strong} style={{ display: "block", marginBottom: 2 }}>
                   {s.titel}
                 </strong>
                 {s.text}
@@ -558,8 +486,8 @@ export default async function WaermepumpeFoerderungPage() {
           ))}
         </div>
 
-        <p style={S.p}>
-          <strong style={S.strong}>Und zwischen Antrag und Zusage?</strong>{" "}
+        <p className={editorial.p}>
+          <strong className={editorial.strong}>Und zwischen Antrag und Zusage?</strong>{" "}
           {BEG_VORHABENBEGINN.nachAntragVorZusage} Die KfW selbst nennt in ihrem
           Merkblatt nur den Start nach der Zusage. In der Praxis heißt das: Der
           Vertrag unter Vorbehalt löst keinen Vorhabenbeginn aus und hält dir trotzdem
@@ -572,14 +500,14 @@ export default async function WaermepumpeFoerderungPage() {
             zu 30 Monate lang „Geld weg" gemeldet, obwohl sein Anspruch besteht —
             und in genau der Richtung, in der jemand aufgibt und den Zuschuss
             liegen lässt. Gefunden vom zweiten Legal-Judge am 25.08.2026. */}
-        <p style={S.p}>
+        <p className={editorial.p}>
           Nach der Zusage laufen zwei Fristen weiter. Das Vorhaben muss innerhalb von{" "}
-          <strong style={S.strong}>{BEG_ANTRAG_FRISTEN.bewilligungMonate} Monaten</strong>{" "}
+          <strong className={editorial.strong}>{BEG_ANTRAG_FRISTEN.bewilligungMonate} Monaten</strong>{" "}
           ab Zugang der Zusage abgeschlossen sein — als Abschluss gilt das Datum der
           letzten Rechnung. Die Nachweise gehören innerhalb von{" "}
-          <strong style={S.strong}>{BEG_ANTRAG_FRISTEN.nachweisNachAbschlussMonate} Monaten</strong>{" "}
+          <strong className={editorial.strong}>{BEG_ANTRAG_FRISTEN.nachweisNachAbschlussMonate} Monaten</strong>{" "}
           nach diesem Abschluss ins Kundenportal. Die harte Grenze ist die zweite:{" "}
-          <strong style={S.strong}>
+          <strong className={editorial.strong}>
             {BEG_ANTRAG_FRISTEN.nachweisSpaetestensNachBewilligungMonate} Monate nach
             Ablauf der {BEG_ANTRAG_FRISTEN.bewilligungMonate} Monate
           </strong>{" "}
@@ -589,14 +517,14 @@ export default async function WaermepumpeFoerderungPage() {
           Die Förderrichtlinie schreibt die Einreichung dort vor. Ausdrücklich an die
           zweite geknüpft ist nur der Verlust des Anspruchs.
         </p>
-        <p style={S.p}>
-          <strong style={S.strong}>Der dritte Weg ist der leiseste.</strong>{" "}
+        <p className={editorial.p}>
+          <strong className={editorial.strong}>Der dritte Weg ist der leiseste.</strong>{" "}
           {BEG_KEINE_AUFSTOCKUNG}
         </p>
-        <p style={S.p}>
-          <strong style={S.strong}>Selbst einbauen?</strong> {BEG_EIGENLEISTUNG}
+        <p className={editorial.p}>
+          <strong className={editorial.strong}>Selbst einbauen?</strong> {BEG_EIGENLEISTUNG}
         </p>
-        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small") }}>
           {BEG_ANTRAG_GELTUNGSBEREICH} Das beschreibt das Verfahren, wie die KfW es
           veröffentlicht, und ist keine Rechts- oder Förderberatung. Auf die Zusage
           besteht kein Anspruch — und sie allein ist verbindlich.
@@ -605,8 +533,8 @@ export default async function WaermepumpeFoerderungPage() {
         </p>
 
         {/* ── Interaktiver Förder-Check (Embed) ── */}
-        <h2 id="foerder-check" style={{ ...S.h2, scrollMarginTop: 80 }}>Deine Förderung selbst ausrechnen</h2>
-        <p style={S.p}>
+        <h2 id="foerder-check" className={editorial.h2} style={{ scrollMarginTop: 80 }}>Deine Förderung selbst ausrechnen</h2>
+        <p className={editorial.p}>
           Beantworte ein paar Fragen — Gebäude, alte Heizung, Einkommen — und der Förder-Check
           führt dich Schritt für Schritt zu deinem BEG-Zuschuss. Er rechnet mit derselben
           geprüften Engine wie die Tabelle oben, ohne Anmeldung:
@@ -619,15 +547,15 @@ export default async function WaermepumpeFoerderungPage() {
         <div style={{ marginTop: 8, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
           <DataSourceNote source={DATA_SOURCES.beg} />
         </div>
-        <p style={{ ...S.p, marginTop: 14 }}>
+        <p className={editorial.p} style={{ marginTop: 14 }}>
           Für die vollständige Rechnung — inklusive Betriebskosten, Vergleich mit deiner alten
           Gas- oder Ölheizung und der{" "}
           <GlossaryTerm id="amortisation">Amortisation</GlossaryTerm> über 20 Jahre — geht es
-          weiter im <a href="#wp-rechner" style={S.link}>Wärmepumpen-Rechner</a>.
+          weiter im <a href="#wp-rechner" className={editorial.link}>Wärmepumpen-Rechner</a>.
         </p>
 
         {/* ── Wer bekommt viel / wenig ── */}
-        <h2 style={S.h2}>Wer bekommt viel — und wer wenig?</h2>
+        <h2 className={editorial.h2}>Wer bekommt viel — und wer wenig?</h2>
         <ProConLists
           proTitle="Voller Zuschuss wahrscheinlich"
           conTitle="Nur der Grundanteil"
@@ -659,51 +587,51 @@ export default async function WaermepumpeFoerderungPage() {
              vollständig. */}
         {kfw && (
           <>
-            <h2 style={S.h2}>Und wie oft kommt das wirklich vor?</h2>
-            <p style={S.p}>
+            <h2 className={editorial.h2}>Und wie oft kommt das wirklich vor?</h2>
+            <p className={editorial.p}>
               Die Übersicht darüber sagt, wer welchen Bonus bekommen <em>kann</em>. Der
               Förderreport der KfW sagt, wie oft es tatsächlich passiert ist.
             </p>
-            <div style={S.card}>
+            <div className={editorial.card}>
               <KfwFoerderpraxis daten={kfw} nackt />
             </div>
           </>
         )}
 
         {/* ── Ehrlicher Hinweis ── */}
-        <div style={S.card}>
-          <span style={S.label}>Ehrlich gesagt</span>
+        <div className={editorial.card}>
+          <span className={editorial.label}>Ehrlich gesagt</span>
           Wenn du das Alter deiner zentralen Gas- oder Biomasseheizung nicht kennst, ist der
           Klima-Bonus unsicher — er hängt bei diesen an der 20-Jahre-Grenze. Bei Öl, Kohle,
           Gas-Etagen- und Nachtspeicherheizungen ist er dagegen unabhängig vom Alter sicher.
           Plane einen unsicheren Bonus lieber nicht fest ein, bis du das Baujahr am Typenschild
           oder in den Schornsteinfeger-Unterlagen geprüft hast.
           <br />
-          <span style={S.muted}>
+          <span className={editorial.muted}>
             Alle Beträge auf dieser Seite sind unverbindliche Näherungswerte ohne Gewähr und
             ersetzen keine Förderberatung. Verbindlich ist allein die Zusage der
             KfW; wie der Antrag zeitlich zum Auftrag stehen muss, steht oben unter{" "}
-            <a href={`#${BEG_ANTRAG_ANKER}`} style={S.link}>
+            <a href={`#${BEG_ANTRAG_ANKER}`} className={editorial.link}>
               Die Reihenfolge entscheidet
             </a>
             . Stand und Quelle der Fördersätze findest du auf der{" "}
-            <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+            <Link href="/datenstand" className={editorial.link}>Datenstand-Seite</Link>.
           </span>
         </div>
 
         {/* ── CTA ── */}
-        <div style={{ ...S.hero, marginTop: 28 }}>
-          <span style={S.label}>Lohnt sich die Wärmepumpe für dich?</span>
-          <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
+        <div className={editorial.hero} style={{ marginTop: 28 }}>
+          <span className={editorial.label}>Lohnt sich die Wärmepumpe für dich?</span>
+          <p className={editorial.p} style={{ color: v("--color-text-primary"), marginBottom: 14 }}>
             Der Zuschuss ist nur die halbe Rechnung — entscheidend ist, was die Wärmepumpe über
             20 Jahre gegenüber Gas oder Öl spart. Das rechnet der Wärmepumpen-Rechner mit deinen
             Daten durch, ohne Anmeldung.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <a href="#wp-rechner" style={S.ctaButton}>
+            <a href="#wp-rechner" className={editorial.ctaButton}>
               Wärmepumpe durchrechnen →
             </a>
-            <Link href="/photovoltaik-foerderung" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-foerderung" className={editorial.ctaSecondary}>
               PV-Förderung vor Ort
             </Link>
           </div>
@@ -718,11 +646,11 @@ export default async function WaermepumpeFoerderungPage() {
              hier den Ausblick liest und im Januar wiederkommt, hätte sich die
              veränderten Zahlen sonst nicht erklären können. Alle Werte aus dem
              Fahrplan, kein getippter Prozentsatz. */}
-        <h2 style={S.h2}>Was sich {NAECHSTE ? NAECHSTE.bezeichnung : "in den nächsten Jahren"} ändert</h2>
+        <h2 className={editorial.h2}>Was sich {NAECHSTE ? NAECHSTE.bezeichnung : "in den nächsten Jahren"} ändert</h2>
         {NAECHSTE && NAECHSTE.grundfoerderung < STUFE.grundfoerderung ? (
           <>
-            <p style={S.p}>
-              <strong style={S.strong}>
+            <p className={editorial.p}>
+              <strong className={editorial.strong}>
                 Der Grundfördersatz für Wärmepumpen halbiert sich von{" "}
                 {pct(STUFE.grundfoerderung)} auf {pct(NAECHSTE.grundfoerderung)}.
               </strong>{" "}
@@ -731,15 +659,15 @@ export default async function WaermepumpeFoerderungPage() {
               tagesgenauen Termin nennt sie allerdings nicht, sondern nur das erste Quartal
               2027. Maßgeblich ist, wann der Antrag eingeht, nicht wann eingebaut wird.
             </p>
-            <p style={S.p}>
-              <strong style={S.strong}>Es ist trotzdem keine Kürzung für alle.</strong> Zum
+            <p className={editorial.p}>
+              <strong className={editorial.strong}>Es ist trotzdem keine Kürzung für alle.</strong> Zum
               selben Zeitpunkt kommt ein neuer Bonus von{" "}
               {pct(BEG_WERTSCHOEPFUNGS_BONUS.satz)} dazu, wenn die Wärmepumpe ihren Ursprung in
               der EU hat — genau so viel, wie die Halbierung wegnimmt. Für ein solches Gerät
               bleibt der Zuschuss also gleich. Wer eines von außerhalb einbaut, bekommt
               dagegen wirklich nur noch die Hälfte des Grundzuschusses.
               {" "}
-              <strong style={S.strong}>
+              <strong className={editorial.strong}>
                 Woran sich der Ursprung entscheidet, legt die Richtlinie allerdings nicht
                 selbst fest
               </strong>{" "}
@@ -749,7 +677,7 @@ export default async function WaermepumpeFoerderungPage() {
               veröffentlicht ist. Anders als beim Klima- und beim Einkommens-Bonus spielt es
               hier keine Rolle, ob man selbst im Haus wohnt.
             </p>
-            <p style={S.p}>
+            <p className={editorial.p}>
               Daneben sinken ab {NACH_NAECHSTE ? NACH_NAECHSTE.bezeichnung : "Februar 2027"} in
               halbjährlichen Schritten auch der Klima-Geschwindigkeits-Bonus und der Betrag,
               bis zu dem Kosten überhaupt angerechnet werden. Wer den Heizungstausch ohnehin
@@ -760,7 +688,7 @@ export default async function WaermepumpeFoerderungPage() {
             </p>
           </>
         ) : (
-          <p style={S.p}>
+          <p className={editorial.p}>
             Die Boni und der Förderhöchstbetrag sinken in halbjährlichen Schritten weiter. Wer
             den Heizungstausch ohnehin plant, sichert sich mit einem Antrag zu den aktuellen
             Sätzen den heute gültigen Zuschuss. Das ist eine allgemeine Einordnung, keine
@@ -786,13 +714,13 @@ export default async function WaermepumpeFoerderungPage() {
             eingefrorenen Momentaufnahme.
 
             Kein Wert getippt: alles aus BEG_FAHRPLAN, mit Fundstelle je Stufe. */}
-        <h2 style={S.h2}>Alle Stufen auf einen Blick</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Alle Stufen auf einen Blick</h2>
+        <p className={editorial.p}>
           Maßgeblich ist der Tag, an dem der Antrag eingeht — nicht der Einbau. Wer heute
           beantragt, rechnet mit der markierten Zeile, auch wenn die Anlage erst nächstes
           Jahr läuft.
         </p>
-        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
+        <div className={editorial.card} style={{ padding: "6px 10px", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
@@ -825,7 +753,7 @@ export default async function WaermepumpeFoerderungPage() {
                           übrigen tragen ihre eigene Bezeichnung, die absichtlich
                           unscharf ist, wo die Richtlinie keinen Tag nennt
                           („Anfang 2027"). */}
-                      <span style={{ ...S.strong, display: "block" }}>
+                      <span className={editorial.strong} style={{ display: "block" }}>
                         {stufe.bezeichnung === "heute" ? formatFullDate(stufe.abIso) : stufe.bezeichnung}
                       </span>
                       <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
@@ -850,7 +778,7 @@ export default async function WaermepumpeFoerderungPage() {
             </tbody>
           </table>
         </div>
-        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small") }}>
           Der Klima-Bonus setzt weiterhin Selbstnutzung und eine funktionierende alte Heizung
           voraus, der Einkommens-Bonus kommt gegebenenfalls oben drauf — die Tabelle zeigt die
           Stufen, nicht deine Bedingungen. Der Höchstbetrag gilt der ersten Wohnung. Quelle:
@@ -871,7 +799,7 @@ export default async function WaermepumpeFoerderungPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
-        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
+        <p className={editorial.p} style={{ fontSize: v("--font-size-small"), marginTop: 16 }}>
           Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), gültig ab {gueltigAb}; unsere Werte auf dem Stand vom {standDatum}. Die
           Fördersätze auf dieser Seite werden direkt aus den geprüften Werten berechnet und
           bleiben so mit dem Rechner konsistent.
@@ -879,12 +807,12 @@ export default async function WaermepumpeFoerderungPage() {
         {/* Sentinel: sobald sichtbar, blendet sich die Sticky-Leiste aus, damit
             sie den Footer/Rechtstext nicht verdeckt. */}
         <div id="sc-cta-sentinel" style={{ height: 1 }} aria-hidden />
-      </div>
+
       <StickyCta
         primaer={{ href: "#wp-rechner", label: "Wärmepumpe rechnen" }}
         sekundaer={{ href: "#foerder-check", label: "Förderung berechnen" }}
       />
       <WpRechnerModal />
-    </div>
+    </EditorialPage>
   );
 }

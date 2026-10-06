@@ -15,6 +15,8 @@ import {
 } from "../../../../lib/funding-programs";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../../../../lib/balkon-config";
 import { gemeindeGeo } from "../../../../lib/atlas-geo";
+import { ATLAS_CITIES, cityPath, fundingForFrom, isCityPublished, type AtlasCity } from "../../../../lib/atlas-cities";
+import { nurBalkon } from "../../../../lib/foerder-stadt-meta";
 import { pageMetadata } from "../../../../lib/seo";
 import { v, space, pad, sectionGap, iconSizes } from "../../../../lib/theme";
 
@@ -135,6 +137,21 @@ export default async function BalkonFoerderungPage() {
   // Nur für kommunale Programme: Ein Landes- oder Kreisprogramm hat keinen
   // einen Ort, auf den sich ein Rechner einstellen ließe — dort auf gut Glück
   // eine Postleitzahl zu setzen hieße, einen Standort zu erfinden.
+  // Die Förderseiten der Orte (seit 06.10.2026 trägt jedes reine
+  // Balkon-Programm eine, formuliert als „Balkonkraftwerk-Förderung"). Dieselbe
+  // Zuordnung wie Stadtseite und Sitemap (fundingForFrom), nur veröffentlichte
+  // Seiten — ein Link auf eine Umleitung wäre ein Umweg. Programme, die auch
+  // Dachanlagen fördern, verlinken hier nicht: Deren Seite spricht von
+  // Photovoltaik-Förderung, nicht von dem, was diese Liste sucht.
+  const alleProgramme = await getFundingPrograms();
+  const seitenFuer = new Map<string, AtlasCity[]>();
+  for (const c of ATLAS_CITIES) {
+    const f = fundingForFrom(alleProgramme, c);
+    if (!f || !nurBalkon(f) || !isCityPublished(c)) continue;
+    if (!seitenFuer.has(f.id)) seitenFuer.set(f.id, []);
+    seitenFuer.get(f.id)!.push(c);
+  }
+
   const plzFuer = new Map<string, string>();
   for (const p of programme) {
     if (p.level !== "kommune") continue;
@@ -236,6 +253,19 @@ export default async function BalkonFoerderungPage() {
                             <IconExternal size={iconSizes.sm} />
                           </a>
                         </div>
+                        {seitenFuer.get(p.id) && (
+                          <div style={S.zeile}>
+                            Förderseite:{" "}
+                            {seitenFuer.get(p.id)!.map((c, i) => (
+                              <span key={c.slug}>
+                                {i > 0 && " · "}
+                                <Link href={cityPath(c)} style={{ color: v("--color-accent"), fontWeight: 600 }}>
+                                  {c.name}
+                                </Link>
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         {/* Nur wo es etwas zu holen gibt: Bei einem
                             ausgeschöpften Topf führte der Knopf in eine
                             Rechnung, die den Zuschuss ohnehin weglässt. */}

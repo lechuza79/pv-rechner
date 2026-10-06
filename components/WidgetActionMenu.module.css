@@ -1,0 +1,101 @@
+/* Shared appearance for all widget action menus; callers own positioning only. */
+.menu {
+  box-sizing: border-box;
+  padding: 6px 0 18px;
+  scroll-padding-block: 6px 18px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--widget-muted, #61727a) transparent;
+  overscroll-behavior: contain;
+  border-radius: 12px;
+  background: var(--widget-surface, var(--color-bg-raised, #f6f8f1));
+  border: 1px solid var(--widget-muted, var(--color-text-muted, #61727a));
+  box-shadow: 0 12px 32px #0004;
+}
+
+.separator {
+  height: 0;
+  margin: 6px 14px;
+  border-top: 1px solid color-mix(in srgb, var(--widget-muted, var(--color-text-muted, currentColor)) 35%, transparent);
+}
+
+/* Buttons and links share one presentation, independent of the host page. */
+.menu .item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 0;
+  box-shadow: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--widget-ink, var(--color-text-primary));
+  font-family: var(--atlas-body, "DM Sans", sans-serif);
+  font-size: var(--font-size-body, 16px);
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.menu .item:focus { outline: none; }
+
+.menu .item:hover,
+.menu .item:focus-visible {
+  background: color-mix(in srgb, var(--widget-ink, currentColor) 6%, transparent);
+}
+
+.menu .item:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--widget-ink, currentColor) 12%, transparent);
+}
+
+.menu .item:disabled { cursor: default; opacity: .5; }
+.menu .contactItem { align-items: start; }
+.menu .followup { min-height: 36px; padding-top: 0; }
+
+.menu .secondary {
+  display: block;
+  margin: 2px 0 0;
+  color: var(--widget-muted, var(--color-text-muted));
+  font: 400 13px/1.4 var(--atlas-body, "DM Sans", sans-serif);
+}
+
+.menu .contactAction {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.menu .item > svg,
+.menu .contactAction svg { opacity: .55; }
+
+.menu .muted { color: var(--widget-muted, var(--color-text-muted)); }
+.menu .accent { color: var(--color-accent); }
+
+/* Container sizing makes the same primary actions usable in grids and embeds. */
+ .actions { display:flex; align-items:center; gap:8px; padding:8px clamp(12px,4cqi,24px); border-radius:calc(var(--widget-radius,24px) - 4px); background:color-mix(in srgb,var(--widget-ink) 5%,transparent); container:widget-actions / inline-size; }
+.action { display:inline-flex; flex:0 0 44px; width:44px; min-width:0; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:0; border:1px solid color-mix(in srgb,var(--widget-ink) 25%,transparent); border-radius:var(--radius-md,12px); background:transparent; color:var(--widget-ink); font:inherit; font-size:var(--font-size-body,16px); font-weight:400; cursor:pointer; }
+.action svg { width:16px; height:16px; flex-shrink:0; opacity:.6; }
+.actionLabel { display:none; }
+.shareAction { flex:1 1 auto; width:auto; margin-left:auto; padding-inline:12px; }
+.action:hover { background:color-mix(in srgb,var(--widget-ink) 6%,transparent); }
+.action:focus-visible { outline:2px solid var(--widget-ink); outline-offset:3px; }
+.action:disabled { opacity:.5; cursor:wait; }
+.restart { flex:0 0 44px; padding:0; }
+@container widget-actions (max-width: 260px) { .action { flex-basis:36px; width:36px; } .shareAction { flex:1 1 auto; width:auto; padding-inline:6px; gap:4px; } }
+
+.menu::-webkit-scrollbar{width:8px;}
+.menu::-webkit-scrollbar-thumb{background:var(--widget-muted,#61727a);border:2px solid var(--widget-surface,#163338);border-radius:8px;}
+
+.scrollHint{position:sticky;top:-6px;z-index:1;padding:6px 14px;background:var(--widget-surface,var(--color-bg-raised));color:var(--widget-muted);font:400 12px/1.4 var(--atlas-body,sans-serif);border-bottom:1px solid color-mix(in srgb,currentColor 25%,transparent);}

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "homepage:race": "node scripts/homepage-race-build.mjs",
-    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\"",
+    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\" && npm run kommunen:build",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
@@ -20,10 +20,13 @@
     "mastr:refresh-bnetza": "NODE_OPTIONS=--max-old-space-size=8192 tsx scripts/mastr-bnetza-refresh.ts",
     "destatis:gemeinden": "tsx scripts/destatis-gemeinden.ts",
     "destatis:gebietsaenderungen": "tsx scripts/destatis-gebietsaenderungen.ts",
+    "windgemeinden:build": "tsx scripts/windgemeinden-build.ts",
+    "mastr:wind": "tsx scripts/mastr-wind-anlagen.ts",
     "mastr:umschluesseln": "tsx scripts/mastr-ags-umschluesseln.ts",
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "kommunen:versand": "tsx scripts/kommunen-versand.ts",
     "kommunen:ruecklauf": "tsx scripts/kommunen-ruecklauf.ts",
+    "dmarc:berichte": "tsx scripts/dmarc-berichte.ts",
     "kommunen:bounce": "tsx scripts/kommunen-bounce-fix.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\"",
     "atlas:verify": "tsx scripts/atlas-verify.ts",
@@ -63,6 +66,8 @@
     "orts:visual": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/orts-visual-werkbank.tsx",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
+    "kommunen:auswertung": "tsx scripts/kommunen-auswertung.ts",
+    "traffic:bericht": "tsx scripts/traffic-bericht.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
     "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
@@ -98,6 +103,7 @@
     "era5:gegen-messung": "tsx scripts/era5-vs-dwd.ts",
     "dwd:stationen": "tsx scripts/dwd-stations-build.ts",
     "wetter:schnappschuss": "tsx scripts/icon-d2-snapshot.ts",
+    "wetter:regionen": "tsx --conditions=react-server scripts/region-solartag.ts",
     "wetter:radar-abgleich": "tsx scripts/radar-vs-stations.ts",
     "wetter:ortspunkte": "tsx scripts/plz-wetterpunkt-build.ts",
     "wetter:vorhersage": "tsx scripts/wetter-vorhersage.ts",
@@ -108,9 +114,14 @@
     "stories:refresh": "node scripts/story-refresh.mjs --fetch",
     "stories:prepare": "node --import tsx scripts/story-prepare.ts",
     "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts",
+    "bkw:katalog": "tsx scripts/bkw-katalog-sync.ts",
     "wp:katalog": "tsx scripts/wp-katalog-sync.ts",
     "kreise:pakete": "tsx --conditions=react-server scripts/kreis-paket.ts",
-    "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts"
+    "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts",
+    "video:db": "tsx scripts/video-export-db.ts",
+    "video:worker": "tsx --conditions react-server scripts/video-export-worker.ts",
+    "kommunen:luecken": "tsx --conditions=react-server scripts/kommunen-luecken.ts",
+    "kommunen:build": "tsx scripts/kommunen-build.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
@@ -133,10 +144,12 @@
     "d3-array": "^3.2.4",
     "d3-shape": "^3.2.0",
     "embla-carousel-auto-scroll": "^8.6.0",
+    "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "mailparser": "^3.9.25",
+    "mediabunny": "^1.60.0",
     "modern-screenshot": "^4.7.0",
-    "next": "^15.5.22",
+    "next": "^15.5.26",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "seek-bzip": "^2.0.0",
@@ -150,6 +163,7 @@
     "@types/mailparser": "^3.4.6",
     "@types/node": "25.5.0",
     "@types/nodemailer": "^8.0.1",
+    "@types/pg": "^8.23.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/sax": "^1.2.7",
@@ -161,11 +175,17 @@
     "imapflow": "^1.7.1",
     "netcdfjs": "^4.0.0",
     "nodemailer": "^9.0.5",
+    "pg": "^8.23.0",
     "sax": "^1.6.0",
     "server-only": "^0.0.1",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.28"
+    }
   }
 }

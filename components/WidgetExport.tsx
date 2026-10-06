@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
+import { NurImBild } from "../lib/nur-im-bild";
 import { useExportNotes } from "./export-notes";
 import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
@@ -41,7 +42,8 @@ export function ExportOnly({
   style?: React.CSSProperties;
 }) {
   const props = { [EXPORT_ONLY_ATTR]: display, style: { display: "none", ...style } };
-  return <div {...props}>{children}</div>;
+  // Heavy artwork inside (the logo) follows after hydration — lib/nur-im-bild.ts.
+  return <div {...props}><NurImBild.Provider value={true}>{children}</NurImBild.Provider></div>;
 }
 
 /**
@@ -459,7 +461,7 @@ export function WidgetSourceEdge({
         fontSize: SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
-        color: v("--color-text-faint"),
+        color: "var(--widget-muted, var(--color-text-faint))",
         pointerEvents: "none",
         opacity: visible ? 1 : 0,
         transition: "opacity .18s ease-out",
@@ -572,7 +574,7 @@ export function WidgetExportFooter({
           <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
-                <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />
+                <PoweredBy light label={brandLabel(widget?.kind ?? "chart")} />
                 <span> · {OWN_WORK_LICENSE.code}</span>
               </>
             ) : (

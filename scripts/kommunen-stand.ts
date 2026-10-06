@@ -15,11 +15,15 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { versandfenster } from "../lib/schulferien";
+import { kommunenVersandtag } from "../lib/kommunen-versandtag";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../lib/outreach-status";
 import { liesNotiz } from "../lib/outreach-ruecklauf";
 import { heuteInBerlin } from "../lib/zeit";
 import { domainAus, verlinkendeDomains } from "./lib/verweise";
+import { ordneVerweise, belegteVerweise } from "../lib/verweis-herkunft";
+import { ordneHerkunft } from "../lib/outreach-herkunft";
+import { aggregat, ANALYTICS_SEIT } from "../lib/web-analytics";
 import { bilanz, quoteText, type Veroeffentlichung } from "../lib/kommunen-veroeffentlichung";
 import { offeneHinweisZeilen } from "../lib/kommunen-hinweise";
 
@@ -176,22 +180,84 @@ async function main(): Promise<void> {
   // The hand-set status misses every publication nobody noted: Nidda linked to
   // us for weeks and stood here as "answered" only (21.09.2026). The backlink
   // measurement is read every time; if it cannot be read, that is said.
+  const gemeindeDomains = new Map<string, string>();
+  for (const z of raus) {
+    const d = domainAus(z.website);
+    if (d) gemeindeDomains.set(d, z.mastr_regions.name);
+  }
+  const beitragsDomains = new Set(
+    ((pubs ?? []) as Veroeffentlichung[]).map((v) => domainAus(v.url)).filter((d): d is string => !!d),
+  );
+
+  // Zweite Quelle: Wer uns Besucher schickt, verlinkt uns — und zwar
+  // nachweislich benutzt. Die Backlink-Datenbank kennt nur, was ihr eigener
+  // Crawler gefunden hat; am 01.10.2026 fehlten ihr trier.de (13 Besucher),
+  // ln-online.de (9), riedstadt.de und lokalo.de vollständig.
+  const besucherJeDomain = new Map<string, number>();
+  try {
+    const zeilen = (await aggregat({
+      datensatz: "visits",
+      zeitraum: { seit: ANALYTICS_SEIT, bis: heuteInBerlin(new Date(Date.now() + 86_400_000)) },
+      nach: ["referrerHostname"],
+      limit: 100,
+    })) as { referrerHostname?: string; visitors?: number }[];
+    for (const z of zeilen) {
+      const host = (z.referrerHostname ?? "").trim().toLowerCase().replace(/^www\./, "");
+      const n = Number(z.visitors ?? 0);
+      if (!host || n <= 0) continue;
+      // Suchmaschinen, soziale Netze, Postfächer und Prüfdienste sind kein
+      // Verweis von einer Seite — dieselbe Einordnung wie in der Auswertung.
+      if (ordneHerkunft(host) !== "andere" && !gemeindeDomains.has(host)) continue;
+      besucherJeDomain.set(host, n);
+    }
+  } catch (e) {
+    log(`Besucherherkunft für die Verweise nicht lesbar: ${(e as Error).message}`, "warn");
+  }
+
+  // The hand-set status misses every publication nobody noted: Nidda linked to
+  // us for weeks and stood here as "answered" only (21.09.2026). The backlink
+  // measurement is read every time; if it cannot be read, that is said.
   const login = process.env.DATAFORSEO_LOGIN, pass = process.env.DATAFORSEO_PASSWORD;
+  let verlinkend = new Map<string, string>();
+  let indexGelesen = false;
   if (!login || !pass) {
-    log("Verlinkungen NICHT geprüft: Zugang zur Backlink-Prüfung fehlt", "warn");
+    log("Backlink-Prüfung NICHT gelesen: Zugang fehlt — gezählt wird nur, was Besucher belegen", "warn");
   } else {
     try {
-      const { domains } = await verlinkendeDomains(login, pass);
-      const verlinkt = raus.filter((z) => { const d = domainAus(z.website); return !!d && domains.has(d); });
-      log(
-        `    ${verlinkt.length} ${verlinkt.length === 1 ? "angeschriebene Gemeinde verlinkt" : "angeschriebene Gemeinden verlinken"} uns (Backlink-Prüfung)` +
-          (verlinkt.length ? `: ${verlinkt.map((z) => `${z.mastr_regions.name} (${domains.get(domainAus(z.website)!) || domainAus(z.website)})`).join(", ")}` : ""),
-      );
-      const nichtVermerkt = verlinkt.filter((z) => z.outreach_status !== "veroeffentlicht");
-      if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((z) => z.mastr_regions.name).join(", ")}`, "warn");
+      verlinkend = (await verlinkendeDomains(login, pass)).domains;
+      indexGelesen = true;
     } catch (e) {
-      log(`Verlinkungen NICHT geprüft: ${(e as Error).message}`, "warn");
+      log(`Backlink-Prüfung NICHT gelesen: ${(e as Error).message}`, "warn");
     }
+  }
+  {
+    const h = ordneVerweise({ verlinkend, besucherJeDomain, gemeinden: gemeindeDomains, beitragsDomains });
+    const belegt = belegteVerweise(h);
+    const quellen = indexGelesen
+      ? `Backlink-Prüfung ${verlinkend.size} Domains + Besucherherkunft`
+      : "nur Besucherherkunft";
+    log(`    ${belegt} ${belegt === 1 ? "Verweis auf uns ist belegt" : "Verweise auf uns sind belegt"} (${quellen})`);
+    const zeile = (v: { domain: string; quelle: string; besucher?: number }) =>
+      `${v.domain}${v.quelle === "besucher" ? " (nur über Besucher bekannt)" : ""}`;
+    if (h.gemeinden.length) {
+      log(`      Gemeinden (${h.gemeinden.length}): ${h.gemeinden.map((g) => `${g.gemeinde} — ${zeile(g)}`).join(", ")}`);
+    }
+    if (h.beitraege.length) {
+      log(`      Presse und andere Beiträge (${h.beitraege.length}): ${h.beitraege.map(zeile).join(", ")}`);
+    }
+    if (h.besucher.length) {
+      log(`      Weitere Seiten, die uns Besucher schicken (${h.besucher.length}): ${h.besucher.map((b) => `${b.domain} (${b.besucher})`).join(", ")}`);
+    }
+    if (h.unzugeordnet.length) {
+      log(
+        `      ${h.unzugeordnet.length} verlinkende Domains ohne Besucher und ohne eigene Quelle — nicht mitgezählt, bitte selbst ansehen: ` +
+          h.unzugeordnet.map((u) => u.domain).join(", "),
+      );
+    }
+    const nichtVermerkt = h.gemeinden.filter(
+      (g) => raus.find((z) => domainAus(z.website) === g.domain)?.outreach_status !== "veroeffentlicht",
+    );
+    if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((g) => g.gemeinde).join(", ")}`, "warn");
   }
 
   // Die Abos sind der eigentliche Ertrag: Wer sich einträgt, hat eingewilligt —
@@ -304,10 +370,11 @@ async function main(): Promise<void> {
   // lib/zeit.ts) — mit der Weltzeit fiele die Auskunft nachts auf den Vortag.
   const heuteIso = heuteInBerlin(jetzt);
   const fenster = versandfenster("06", heuteIso);
-  log(
-    fenster.frei ? "Heute darf gesendet werden (Beispiel Hessen)." : `Heute nicht: ${fenster.grund}`,
-    fenster.frei ? "ok" : "warn",
-  );
+  // Same two checks as the send script, in the same order — the weekday rule
+  // was missing here once and the overview said "go" on a Saturday.
+  const tag = kommunenVersandtag(jetzt);
+  const grund = !tag.ok ? tag.grund : !fenster.frei ? fenster.grund : null;
+  log(grund ? `Heute nicht: ${grund}` : "Heute darf gesendet werden (Beispiel Hessen).", grund ? "warn" : "ok");
 }
 
 main().catch((e) => {

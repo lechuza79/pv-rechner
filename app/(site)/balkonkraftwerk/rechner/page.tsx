@@ -1,9 +1,10 @@
+import CalculatorContent from "../../../../components/calculator/CalculatorContent";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ErrorBoundary } from "../../../../components/ErrorBoundary";
 import Faq from "../../../../components/Faq";
 import RelatedLinks from "../../../../components/RelatedLinks";
-import StandNote from "../../../../components/StandNote";
+import { standSeite } from "../../../../lib/stand";
 import { balkonFaq } from "../../../../lib/faq";
 import { pageMetadata } from "../../../../lib/seo";
 import { v } from "../../../../lib/theme";
@@ -39,9 +40,10 @@ export default function BalkonPage() {
 
   return (
     <ErrorBoundary>
-      <Balkon />
+      <div className="sc-calculator-page-boundary">
+      <Balkon stand={standSeite("/balkonkraftwerk/rechner")} />
 
-      <div style={S.wrap}>
+      <CalculatorContent inset>
         <h2 style={S.h2}>Was der Balkonkraftwerk-Rechner berechnet</h2>
         <p style={S.p}>
           Der Rechner beantwortet die eine Frage, an der alles hängt:{" "}
@@ -95,13 +97,6 @@ export default function BalkonPage() {
 
         <Faq items={balkonFaq()} title="Häufige Fragen zum Balkonkraftwerk" currentPath="/balkonkraftwerk/rechner" />
 
-        {/* Aktualisierungsstand. Zwei Daten, weil es zwei Sachen sind: die
-            Marktpreise stammen aus der Config-Prüfung, die Rechtsangaben aus dem
-            Tag, an dem Gesetz und Erlass zuletzt aufgeschlagen wurden. Ein
-            gemeinsames Datum wäre für eines von beiden gelogen. Welche Stände
-            diese Seite trägt, steht in lib/stand.ts — dieselbe Quelle, aus der
-            die Sitemap ihr `lastmod` nimmt. */}
-        <StandNote pfad="/balkonkraftwerk/rechner" />
 
         <RelatedLinks
           currentPath="/balkonkraftwerk/rechner"
@@ -113,6 +108,7 @@ export default function BalkonPage() {
             { href: "/glossar", label: "Glossar" },
           ]}
         />
+</CalculatorContent>
       </div>
     </ErrorBoundary>
   );

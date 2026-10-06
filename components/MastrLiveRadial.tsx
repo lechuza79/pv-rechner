@@ -124,8 +124,8 @@ function visualAngleFromHour(h: number): number {
 }
 
 function visualAngleFromTs(ts: string): number {
-  const d = new Date(ts);
-  const h = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
+  const parts = new Intl.DateTimeFormat("en-GB", {timeZone:"Europe/Berlin", hour:"2-digit", minute:"2-digit", hourCycle:"h23"}).formatToParts(new Date(ts));
+  const h = Number(parts.find(p => p.type === "hour")?.value) + Number(parts.find(p => p.type === "minute")?.value) / 60;
   return visualAngleFromHour(h);
 }
 
@@ -407,7 +407,7 @@ export function MastrLiveRadial({
   // Betreiber hat genau das gemeldet, als api.energy-charts.info kurz nicht
   // auflösbar war. Ein Platzhalter in derselben Größe sagt stattdessen, was
   // los ist, und hält das Layout ruhig.
-  if (loading || !latest) {
+  if ((loading && !injected) || !latest) {
     // Der Platzhalter steht INNERHALB der Karte, nicht an ihrer Stelle: Sonst
     // fehlt im Ladezustand der Rahmen, die Karte wirkt abwesend und das Layout
     // springt, sobald die Daten eintreffen. Genau darüber ist der
@@ -450,6 +450,7 @@ export function MastrLiveRadial({
   const displayClock = displayDate.toLocaleTimeString("de-DE", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Berlin",
   });
   // Always show the timestamp of the shown reading (latest or hovered). The live
   // feed lags the wall clock by ~1–3h, so a relative "gerade eben"/"vor X Min"
@@ -858,7 +859,16 @@ export function MastrLiveRadial({
             cy={CY}
             r={INNER_R}
             fill="var(--radial-center-surface, var(--widget-surface, var(--color-bg)))"
+            style={{filter: "drop-shadow(0 2px 3px rgb(0 0 0 / 18%))"}}
           />
+          {/* A short arc marks a zero reading without inventing a generation bar. */}
+          {display.mw === 0 && (() => {
+            const angle = visualAngleFromTs(display.ts);
+            const radius = INNER_R + 1.5;
+            const [sx, sy] = pointAt(CX, CY, angle - 3, radius);
+            const [ex, ey] = pointAt(CX, CY, angle + 3, radius);
+            return <path data-zero-reading-marker="" d={`M ${sx} ${sy} A ${radius} ${radius} 0 0 1 ${ex} ${ey}`} fill="none" stroke={accentLatest} strokeWidth={dim.barStrokeLatest} strokeLinecap="round" pointerEvents="none"><title>{`${freshness}: 0 ${unit}`}</title></path>;
+          })()}
         </svg>
 
         {/* Zentrum: Wert (Position bleibt fest, Inhalt swappt bei Hover) */}
@@ -878,12 +888,13 @@ export function MastrLiveRadial({
             textAlign: "center",
           }}
         >
+          <time dateTime={display.ts} style={{fontSize: `min(${dim.centerLabel}px, 15cqi)`, lineHeight: 1.2, color: labelColor, marginBottom: 5, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums"}}>{freshness}</time>
           <div
             style={{
               fontSize: `min(var(--radial-center-size, ${dim.centerBig}px), ${100 / Math.max(3, centerText.length * .72)}cqi)`,
               whiteSpace: "nowrap",
               fontWeight: 700,
-              color: kopfKachel ? v("--color-cta") : v("--color-text-primary"),
+              color: secondaryBars ? "var(--widget-accent, var(--color-text-primary))" : v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
               fontFamily: v("--font-mono"),
               letterSpacing: -0.3,
@@ -901,7 +912,7 @@ export function MastrLiveRadial({
               letterSpacing: 0.5,
             }}
           >
-            {kopfKachel ? `${unit} jetzt` : unit}
+            {unit}
           </div>
         </div>
       </div>

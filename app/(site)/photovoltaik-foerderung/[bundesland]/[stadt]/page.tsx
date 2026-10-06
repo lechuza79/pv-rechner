@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../../components/GlossaryTerm";
 import { IconArrowRight, IconExternal } from "../../../../../components/Icons";
@@ -9,12 +9,12 @@ import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { atlasRobots } from "../../../../../lib/atlas-index";
-import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom, cityIndexFreigegeben } from "../../../../../lib/atlas-cities";
+import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, fundingForFrom, cityIndexFreigegeben, foerderStadtUmleitung } from "../../../../../lib/atlas-cities";
 import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
-import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FundingTechnikTabs from "../../../../../components/FundingTechnikTabs";
 import StickyCta from "../../../../../components/StickyCta";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../components/atlas/GemeindeAboBox";
@@ -22,6 +22,8 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
+import { foerderStadtMeta, nurAndereTechnikSatz, nurBalkon, stadtseiteFall } from "../../../../../lib/foerder-stadt-meta";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
 import { atlasPathForRegionId } from "../../../../../lib/atlas";
@@ -29,36 +31,34 @@ import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
-// Published = regions with an active OR archived (exhausted/paused/discontinued)
-// program. Regions that never had a program — or whose status is "unsicher" —
-// still 404.
+// EVERY known city gets a route; unknown slugs stay a hard 404 (no on-demand
+// rendering of arbitrary addresses). A known city without a published page
+// redirects to its Bundesland page (foerderStadtUmleitung) instead of 404ing —
+// next.config.js points ~300 historic flat URLs at these addresses, and whether
+// a page exists there changes with the program status (audit 28.09.2026: about
+// 185 of them ended on a 404). The decision is re-made on every revalidation,
+// so a program that becomes active again gets its page back without a deploy
+// of the redirect list.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return publishedCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
+  return ATLAS_CITIES.map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
 export async function generateMetadata(props: { params: Promise<{ bundesland: string; stadt: string }> }): Promise<Metadata> {
   const params = await props.params;
   const city = cityBySlug(params.stadt);
-  if (!city || slugify(city.bundesland) !== params.bundesland) return {};
+  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityPublished(city)) return {};
   // Auch der Seitentitel muss über die abgeleitete Zuordnung gehen — sonst
   // verspricht die Überschrift „Zuschüsse", während die Seite darunter ein
   // eingestelltes Programm zeigt.
   const f = fundingForFrom(await getFundingPrograms(), city);
-  const active = f?.status === "aktiv";
-  const year = new Date().getFullYear();
+  const meta = foerderStadtMeta(city.name, f, heuteInBerlin(new Date()).slice(0, 4));
   return {
     ...pageMetadata({
       path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
-      title: active || !f
-        ? `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`
-        : `Photovoltaik-Förderung ${city.name} ${year} – aktueller Status & Bestand`,
-      description: active
-        ? `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister, das ${f!.name} und Beispielrechnungen für deine PV-Anlage.`
-        : f
-        ? `Lohnt sich Photovoltaik in ${city.name}? Anlagenbestand aus dem Marktstammdatenregister, der Status des ${f.name} (derzeit ${FUNDING_STATUS_LABEL[f.status]}) und ehrliche Beispielrechnungen für deine PV-Anlage.`
-        : `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister und Beispielrechnungen für deine PV-Anlage.`,
+      title: meta.title,
+      description: meta.description,
       ogImageTitle: `Photovoltaik in ${city.name}`,
       ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
     }),
@@ -170,9 +170,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const city = cityBySlug(params.stadt);
   // Guard the hierarchy: the Bundesland segment must match the city, otherwise
   // a wrong-Bundesland URL would render a valid page under a bogus parent.
-  // Also guard the publish policy: only regions with a live or archived program
-  // have a page (no-program / "unsicher" slugs 404).
-  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityPublished(city)) notFound();
+  if (!city || slugify(city.bundesland) !== params.bundesland) notFound();
+  // Publish policy: a known city without a page goes to its Bundesland page
+  // (temporary — the page returns once the program qualifies again). Routing
+  // decision BEFORE any data read, so the status code is still ours to set.
+  const umleitung = foerderStadtUmleitung(city);
+  if (umleitung) redirect(umleitung);
 
   let atlas: RegionAtlas | null = null;
   try {
@@ -247,7 +250,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
 
   return (
     <div style={S.page}>
-      <div style={S.wrap}>
+      <div style={S.wrap} data-page-content>
         {/* Kein zusätzlicher Zurück-Pfeil über der Spur: Das Bundesland stand
             damit zweimal übereinander — einmal als Pfeil, einmal als Station.
             Wie im Atlas trägt allein die Spur die Navigation nach oben. */}
@@ -313,7 +316,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             <h1 style={S.h1}>
           {f ? (
             <>
-              Photovoltaik-Förderung in{" "}
+              {nurBalkon(f) ? "Balkonkraftwerk-Förderung" : "Photovoltaik-Förderung"} in{" "}
               {atlasPfad ? (
                 <Link
                   href={atlasPfad}
@@ -344,13 +347,27 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
+            : stadtseiteFall(f) === "balkon"
+            /* Balcony-only programme (München, and since 06.10.2026 every
+               balcony-only place): a Balkonkraftwerk-Förderung page. The VAT
+               half-sentence follows BALKON_RECHT ("auf das Set"). */
+            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> Balkonkraftwerke — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit fällt auf das Set zusätzlich keine Mehrwertsteuer an.</>
+            : stadtseiteFall(f) === "ohneDach"
+            /* Laufendes Programm ohne Dach-PV (München: nur Balkonkraftwerke) —
+               die Seite darf es nicht als Zuschuss für neue Solaranlagen
+               ausgeben (siehe foerdertDach). */
+            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> derzeit {nurAndereTechnikSatz(f)} — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit gilt die 0 % Mehrwertsteuer auf Kauf und Installation.</>
+            : stadtseiteFall(f) === "darlehen"
+            /* Ein Darlehen ist kein Zuschuss — das Wort fällt hier nicht
+               (Kaufungen, Betreiber-Entscheidung 01.10.2026). */
+            ? <>In {city.name} gibt es für neue Solaranlagen ein <span style={S.strong}>zinsloses Darlehen</span> über das Programm <span style={S.strong}>„{f.name}“</span> — der Betrag wird in Raten zurückgezahlt. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
             : f.status === "aktiv"
             /* Kein „die Stadt": Von den geförderten Orten sind die meisten
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
                für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
                fördert, steht ohnehin als Träger in der Karte darunter. */
-            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm{nurBalkon(f) ? " für Balkonkraftwerke" : ""} — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
         </div>
 
@@ -401,7 +418,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
                           In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
                           ans Netz gegangen — {tempo.vorjahr === 1 ? "im gesamten Vorjahr war es 1" : `im gesamten Jahr ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
-                          Wer den Zuschuss noch will, sollte den Antrag nicht aufschieben.
+                          Wer {stadtseiteFall(f) === "darlehen" ? "das Darlehen" : "den Zuschuss"} noch will, sollte den Antrag nicht aufschieben.
                         </span>
                       </div>
                     )}
@@ -522,12 +539,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           <ExampleCards examples={examples} />
           {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} ist {FUNDING_STATUS_NOTE[f.status]} —
+              Die Förderung über das Programm „{f.name}“ ist {FUNDING_STATUS_NOTE[f.status]} —
               die Beispiele rechnen daher ohne. Aktuellen Status vor einem Antrag direkt beim Programm prüfen.
             </p>
           ) : f && !examples[0]?.foerderComputable ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} hängt vom Anlagentyp ab (siehe oben) und ist hier
+              Die Förderung über das Programm „{f.name}“ hängt vom Anlagentyp ab (siehe oben) und ist hier
               nicht pauschal pro Anlage eingerechnet.
             </p>
           ) : null}

@@ -22,7 +22,15 @@ export function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const t = String((await req.formData().catch(() => null))?.get("t") ?? "");
   const id = wartelisteId(pruefeAbmeldung(t));
-  if (id) await wartelisteAbmelden(id, new Date().toISOString()).catch(() => undefined);
+  if (id) {
+    try {
+      await wartelisteAbmelden(id, new Date().toISOString());
+    } catch {
+      return wartelisteErgebnis(PFAD, "Das hat gerade nicht geklappt", [
+        "Wir konnten dich im Moment nicht austragen. Bitte versuche es noch einmal.",
+      ], { label: "Noch einmal versuchen", token: t });
+    }
+  }
   return wartelisteErgebnis(PFAD, "Ausgetragen", [
     "Von uns kommt zu dieser Warteliste keine Mail mehr. Wir halten noch fest, dass du eingetragen warst und dich ausgetragen hast. Das brauchen wir als Nachweis deiner Einwilligung, und es wird für nichts anderes verwendet.",
   ]);

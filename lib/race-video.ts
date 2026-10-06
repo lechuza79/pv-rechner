@@ -34,13 +34,12 @@ export interface VideoFrameDaten {
 }
 
 /** Das erste Aufnahmeformat, das der Browser beherrscht — oder null. */
-export function videoFormat(): { mime: string; ext: string } | null {
+export function videoFormat(mp4Only = false): { mime: string; ext: string } | null {
   if (typeof window === "undefined" || typeof MediaRecorder === "undefined") return null;
   const kandidaten: [string, string][] = [
-    ["video/webm;codecs=vp9", "webm"],
-    ["video/webm;codecs=vp8", "webm"],
-    ["video/webm", "webm"],
-    ["video/mp4", "mp4"],
+    ["video/mp4;codecs=avc1.42E01E", "mp4"],
+    ["video/mp4;codecs=avc1", "mp4"],
+    ...(mp4Only ? [] : [["video/mp4", "mp4"], ["video/webm;codecs=vp9", "webm"], ["video/webm;codecs=vp8", "webm"], ["video/webm", "webm"]] as [string,string][]),
   ];
   for (const [mime, ext] of kandidaten) {
     if (MediaRecorder.isTypeSupported(mime)) return { mime, ext };

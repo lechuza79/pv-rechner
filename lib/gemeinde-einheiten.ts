@@ -18,7 +18,17 @@
  */
 export type Messgroesse = { value: string; unit: string };
 
-const de = (wert: number, stellen: number) => wert.toLocaleString("de-DE", { maximumFractionDigits: stellen });
+// One formatter per option set, built once (28.09.2026). `toLocaleString` with
+// options builds a new Intl.NumberFormat on EVERY call; the monitor charts call
+// this for every day of a year, and the profile of a district page showed this
+// one line as the largest single cost of its server render (≈ 230 ms over seven
+// pages). Same locale, same options, therefore the same strings.
+const FORMATTER = {
+  stellen0: new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 }),
+  stellen1: new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 }),
+  signifikant2: new Intl.NumberFormat("de-DE", { maximumSignificantDigits: 2 }),
+};
+const de = (wert: number, stellen: 0 | 1) => (stellen === 1 ? FORMATTER.stellen1 : FORMATTER.stellen0).format(wert);
 
 /** Erzeugte Energie eines Tages, Monats oder Jahres. */
 export function energieTeile(mwh: number): Messgroesse {
@@ -29,20 +39,27 @@ export function energieTeile(mwh: number): Messgroesse {
 
 /** Momentanleistung — kW/MW, nie „Peak": gemeint ist, was gerade fließt. */
 export function leistungTeile(mw: number): Messgroesse {
-  if (mw >= 1) return { value: mw.toLocaleString("de-DE", { maximumSignificantDigits: 2 }), unit: "MW" };
-  return { value: (mw * 1000).toLocaleString("de-DE", { maximumSignificantDigits: 2 }), unit: "kW" };
+  if (mw >= 1) return { value: FORMATTER.signifikant2.format(mw), unit: "MW" };
+  return { value: FORMATTER.signifikant2.format(mw * 1000), unit: "kW" };
 }
 
 /**
  * Maßstab für eine Kennzahl-REIHE: Die Einheit hängt am heutigen Wert und gilt
  * dann für alle Monate der Reihe — sonst stünde derselbe Verlauf mal in kWp,
  * mal in MWp, und die Kurve spränge ohne Anlass.
+ *
+ * Die dritte Stufe (`riesig`, ab einer Million) kam mit den Länder- und
+ * Deutschland-Seiten: Ohne sie stand dort „33.482,1 MWh" statt „33,5 GWh" und
+ * die Solarleistung in MWp neben „129,2 GWp" aus dem Formatierer der Seite.
+ * Dieselbe Schwelle wie in lib/atlas-format.ts.
  */
 export function reihenMassstab(
   heute: number,
   klein: string,
   gross: string,
+  riesig?: string,
 ): { teiler: number; unit: string; digits: number } {
+  if (riesig && heute >= 1_000_000) return { teiler: 1_000_000, unit: riesig, digits: 1 };
   if (heute >= 1000) return { teiler: 1000, unit: gross, digits: 1 };
   // Unter zehn zählt die Nachkommastelle: ein halbes Kilowatt als „1 kWp"
   // zu runden verdoppelt die Anlage des Dorfes.

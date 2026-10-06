@@ -72,12 +72,14 @@ export default async function FachbetriebSeite(props: {
               /* Das Zeichen des Betriebs, rund beschnitten mit feiner Kante.
                  Rund, weil die Favicons in jedem Seitenverhältnis kommen — ein
                  quadratischer Rahmen zeigt bei einem breiten Logo vor allem
-                 Leerraum. Ohne Herkunftsangabe geladen, damit sein Server nicht
-                 erfährt, von welcher Seite der Abruf kommt; fehlt es, bleibt der
-                 Platz leer, statt eine Marke zu behaupten, die es nicht gibt. */
+                 Leerraum. Geladen über UNSEREN Server, nie direkt von seinem:
+                 sonst ginge die IP-Adresse jedes Besuchers an einen Dritten
+                 (Legal-Checkliste 2). Die Route nimmt nur die Kennung und
+                 prüft Ziel, Größe und Format — `lib/fremdbild.ts`; bei jedem
+                 Fehler antwortet sie mit 404, und es erscheint kein Zeichen. */
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={seite.logoUrl}
+                src={`/api/fachbetrieb-logo/${seite.kennung}`}
                 alt=""
                 width={30}
                 height={30}

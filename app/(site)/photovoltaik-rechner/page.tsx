@@ -1,13 +1,12 @@
+import CalculatorContent from "../../../components/calculator/CalculatorContent";
 import { Metadata } from "next";
-import { Suspense } from "react";
 import { ErrorBoundary } from "../../../components/ErrorBoundary";
 import Faq from "../../../components/Faq";
 import { pvRechnerFaq } from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
 import { standSeite } from "../../../lib/stand";
 import { DIREKT_KEY } from "../../../lib/share-keys";
-import { v } from "../../../lib/theme";
-import Empfehlung from "./empfehlung";
+import { StaticEmpfehlung } from "./empfehlung";
 
 /**
  * DIE NACKTE RECHNER-ADRESSE IST FÜR ALLE GLEICH — und darf deshalb aus dem
@@ -32,10 +31,9 @@ import Empfehlung from "./empfehlung";
  * Ergebnis über die Umschreibung auf `./ergebnis`. Welche Parameter wohin
  * führen, entscheidet `traegtRechnung` in lib/share-keys.ts.
  *
- * Der Empfehlungsweg liest seine Antworten im Browser aus der Adresse und
- * braucht dafür eine Suspense-Grenze. Ihre Ersatzanzeige trägt die Überschrift:
- * Mit `fallback={null}` (so stand es unter der alten Adresse) lieferte der
- * Server eine Seite ganz ohne Überschrift aus.
+ * The query-free entry renders the actual first step into cached HTML.
+ * URL observation alone sits behind Suspense, so hydration does not insert
+ * the entire calculator above already-visible FAQ and footer content.
  */
 export const metadata: Metadata = pageMetadata({
   path: "/photovoltaik-rechner",
@@ -52,23 +50,17 @@ const UNTERZEILE = "Welche Anlage lohnt sich für dich? Wir empfehlen Größe un
 export default function RechnerPage() {
   return (
     <ErrorBoundary>
-      <Suspense
-        fallback={
-          <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px", textAlign: "center" }}>
-            <h1 style={{ color: v("--color-text-primary"), fontSize: v("--font-size-h2") }}>{UEBERSCHRIFT}</h1>
-            <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 6 }}>{UNTERZEILE}</p>
-          </div>
-        }
-      >
-        <Empfehlung
-          stand={standSeite("/photovoltaik-rechner")}
-          ueberschrift={UEBERSCHRIFT}
-          unterzeile={UNTERZEILE}
-          direktHref={`/photovoltaik-rechner?${DIREKT_KEY}=1`}
-        />
-      </Suspense>
-      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" }}>
+      <div className="sc-calculator-page-boundary">
+      <StaticEmpfehlung
+        ohneZwischenansicht
+        stand={standSeite("/photovoltaik-rechner")}
+        ueberschrift={UEBERSCHRIFT}
+        unterzeile={UNTERZEILE}
+        direktHref={`/photovoltaik-rechner?${DIREKT_KEY}=1`}
+      />
+      <CalculatorContent inset>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
+      </CalculatorContent>
       </div>
     </ErrorBoundary>
   );

@@ -186,4 +186,149 @@ All explanatory tooltips use `components/InfoTooltip.tsx`. Supply content plus `
 
 `lib/__tests__/shared-tooltip-conventions.test.ts` rejects new independent tooltip renderers in app/components/municipality scripts. Existing chart-value readouts and the navigation label have named, bounded exceptions; do not broaden the exceptions to make a new help tooltip pass. This test runs with `npm test` in CI.
 
-The same reuse requirement applies to every accepted shared component, not only tooltips. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.
+The same reuse requirement applies to every accepted shared component, not only tooltips. Reuse means importing the component, not copying its markup, CSS class pattern or behavior. Extend the shared component when needed; if it does not exist, create it once, register it and migrate the affected consumers together. The authoritative catalogs remain `lib/bausteine-registry.ts`, `lib/chart-katalog.ts` and `lib/widget-registry.ts` (do not create a parallel registry); frame/menu/modal/export, settings, maps, composition, annual energy, monthly solar, current power and growth belong there. `shared-widget-architecture.test.ts` guards their existing consumer dependencies and rejects widget-local menu/encoder implementations. Existing widget/export tests additionally protect source attribution and the light export theme. A new accepted shared component must extend the catalog and the relevant architecture/behavior test in the same change. A page-specific layout is an explicit option of that component, not a copied implementation.
+
+The complete energy monitor uses `components/dashboard/EnergyMonitor.tsx`.
+Municipality and regional adapters supply widget content and availability only;
+section order, headings, grid and spacing follow the accepted municipality page.
+Do not assemble a separate grid on a state, country or embed page. The shared
+composition is covered by `energy-monitor-layout.test.tsx` and the existing
+architecture guard. Region-specific data calculations remain in their adapters.
+
+## Editorial lookup tables (29 September 2026)
+
+`ContentTable` owns numeric typography, row headers, units in a visible caption,
+keyboard scrolling and the pinned first column for editorial lookup tables.
+The feed-in tariff page and both monthly archive tables consume it; their data
+and historical cutoffs stay in the existing feed-in modules. The example lives
+in the existing component gallery. `content-table.test.tsx` protects the shared
+consumer dependencies and rejects local table markup in the migrated consumers.
+
+`EditorialPage` follows the reading column of `/photovoltaik-zubau-deutschland`:
+existing site font tokens, content width, and no additional top padding below the
+shared layout. `EditorialContent.module.css` provides reusable content roles:
+lead text at the lead token with 1.6 line height, body text at the body token with
+1.7 line height. The readability update below supersedes the reference spacing. Do not override font families
+locally; the future font migration belongs in the shared site design.
+
+Editorial readability update: body 16 px, intro 18 px, secondary notes 14 px,
+labels 12 px through dedicated central tokens scoped by EditorialPage. Explanatory
+paragraphs with substantive conditions use the body role, not secondary notes.
+Main sections have 64 px separation. StickyCta supports an optional startId; the
+tariff page starts at the archive section and hides at the inline closing CTA.
+Existing consumers retain the default scroll threshold.
+
+Editorial examples reuse ExampleCard, extracted without changing the municipal
+card markup. Municipal card styles live in the shared component; there is no
+editorial compact variant or separate example stylesheet. Feed-in examples
+use the existing exact self-consumption and weighted tariff functions; their two
+amounts reconcile with year one of calc. Assumptions are visible on demand.
+The consumer area reuses the calculator result view as described below.
+## Calculator layout boundaries (29 September 2026)
+
+Use CalculatorContent for the question/result column and its supporting sections.
+The shared CSS owns input width (760 px), result width (820 px) and page gutters.
+Results with offers reserve a separate 320 px rail and 48 px gap when their
+actual container has 1188 px available. With more room, the rail grows to
+360 px and the gap to 96 px at a complete width of 1276 px; the main result
+remains 820 px. A wide browser must not activate that
+rail inside a narrow dialog. State and offer capacity belong to the individual
+calculator shell, rather than another calculator mounted elsewhere on the page.
+Do not override direct-child div widths or give FAQ/source sections a separate
+width. CalculatorTheme must be mounted throughout the flow, not only after a
+result appears; all five calculator routes use its fixed palette. The shared
+layout browser tests check input steps, result and offer geometry, painted text
+inside its own card, page and dialog action bounds, theme independence and the
+balcony storage switch updating the actual product and merchant link. Geometry
+counterprobes must reject the original constrained result and narrow action bar.
+
+FlowFooter owns page question actions and measures their height to reserve space.
+Its navigation row is centered and capped at 640 px; page action surfaces are
+centered on the complete shell and capped at 820 px.
+The offer rail does not increase the maximum action-surface width.
+Dialog context keeps actions inside the dialog through ModalSticky.
+Consumer previews apply together through one fixed page footer; individual cards
+open their existing editors. Hide unrelated temporary notices while that footer
+is active. Use MetricValue for the benefit amount and OptionalDisclosure with
+heading/description for comparison headers. AffiliateCarousel.desktopSlides sets
+the visible desktop count; navigation requires actual content overflow.
+
+## Reusable consumer and offer sections (29 September 2026)
+
+`PvConsumerSection` owns consumer drafts, remove/restore, comparison charts and
+explicit application. `PVRechner` supplies its applied values and calculation
+basis; `PvConsumerExample` supplies an editable article example and a handover
+into the regular question flow (`direkt=1&eingabe=1`). Articles import the example,
+never the full calculator. The section owns its styles and uses instance-specific
+IDs. `PvPlantFields` and `PvCoolingEditor` are shared with the result settings.
+The consumer calculation lives in `lib/pv-consumer-model.ts`; card
+benefits and annual/fossil comparisons retain their distinct meanings.
+
+The editorial variant keeps the introduction outside the box, uses white cards,
+shows the basis through `ResultSettings embedded`, and ends with methodology and
+“Genau ausrechnen”. It has no apply footer. Inspect the real example in the
+component gallery; do not recreate its markup in individual articles.
+
+`BalkonAngebot` also works outside the calculator. Supply the same `basis` and an
+`example.description` for an article example. Its product styles travel with the
+component. Ranking, prices, product details and partner disclosures remain shared;
+example wording never implies the visitor has already supplied personal inputs.
+
+The HTW cap used for financial self-consumption keeps its interpolated precision.
+`calcAutarkie` still rounds for display/reference callers. Rounding before the
+financial cap caused downward jumps when a small cooling load was added; the
+coherence test now checks every 1 kWh increment in that range. Model assumptions
+and the HTW grid are unchanged.
+
+Tariff archive tables keep all monthly values in server-rendered HTML. In narrow
+containers the shared Auswahl selects the visible year; desktop retains the full
+matrix. Yearly tables use optional cell bars without replacing exact values.
+
+All articles listed in `lib/ratgeber.ts` and both guide indexes now import
+`EditorialPage` and `EditorialContent.module.css` directly. Use `Breadcrumb`
+with `variant="compact"`; place `ArticleMeta` before the headline. Do not copy
+page, heading or paragraph styles into a local style object. Page-specific
+comparison tables and interactive widgets keep their existing implementations.
+Styling changes do not advance the editorial update date.
+
+## Data sources — one shared section
+
+Every page-level sources block imports `components/DataSourcesSection.tsx` and
+its `data-sources-section.css`. Place it between the trust section and footer:
+`SiteFuss zwischen` in React, or pass `renderToStaticMarkup(DataSourcesSection)`
+to `siteFussHtml(zwischen)` in document hosts. Do not duplicate section markup,
+headings, typography or spacing. Keep the shared “Daten & Quellen” label.
+Supply an optional `id` for links from charts and maps; the component owns anchor
+spacing. Domain adapters such as `LandscapeSources` supply source content only.
+Keep mandatory inline chart/map attribution in place; the shared section does
+not replace it. Preserve source names, links, licenses and model limitations.
+
+For a new integration: reuse the registered component, supply its content,
+check its position and anchor at desktop and phone widths, and extend
+`data-sources-section.test.tsx` when a new rendering path is introduced.
+The test guards both the React component and document footer placement.
+
+## Action buttons
+
+ActionButton and ActionLink own primary, secondary and icon actions: 44 px
+minimum height, 14 px text, 18 px icons, pill radius and 24 px horizontal
+padding. Primary actions carry a subtle shadow. Result action groups are
+centered at their natural width, capped at 640 px; the sticky transition changes
+only the surface, never button size or group geometry.
+ResultActions, AffiliateActions, FlowNav and SecondaryButton reuse them directly.
+Rows own placement and wrapping only; sticky states must not shrink buttons.
+Product actions stay on one row. Below 350 px of actual row width, optional
+share labels collapse to the central 44 px icon variant while keeping their
+accessible label and title; the shop action retains its full text and padding.
+Native disabled and aria-disabled semantics remain with the caller.
+The component gallery demonstrates every variant. Browser checks compare actual
+computed styles in result rows, product cards and the question flow.
+
+### Accepted initial chart limitation (5 October 2026)
+
+The operator approved releasing the calculator layout and button fixes while
+RaceChart labels can still clip at the first timeline position. This is a
+separate, unchanged chart issue, not a calculation or button regression.
+Layout checks retain strict bounds and measure chart text at the final timeline
+position; the initial-position defect remains explicitly recorded in the browser
+suite. Do not broaden this acceptance to hero values, controls, or later positions.

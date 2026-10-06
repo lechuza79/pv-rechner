@@ -1,0 +1,262 @@
+{
+  "03458": {
+    "wind-1": {
+      "name": "Windanlagen bei Dötlingen / Ganderkesee",
+      "latitude": 52.97703,
+      "longitude": 8.49052
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hatten / Hude (Oldb)",
+      "latitude": 53.06135,
+      "longitude": 8.38896
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Winkelsett",
+      "latitude": 52.85502,
+      "longitude": 8.5158
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hatten",
+      "latitude": 53.04083,
+      "longitude": 8.3344
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Wardenburg",
+      "latitude": 53.00542,
+      "longitude": 8.22039
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Dötlingen",
+      "latitude": 52.93389,
+      "longitude": 8.44153
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Wildeshausen",
+      "latitude": 52.92558,
+      "longitude": 8.34324
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Hude (Oldb)",
+      "latitude": 53.14022,
+      "longitude": 8.38308
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Groß Ippener",
+      "latitude": 53.00894,
+      "longitude": 8.62398
+    },
+    "wind-10": {
+      "name": "Windanlagen bei Großenkneten",
+      "latitude": 52.97683,
+      "longitude": 8.21894
+    },
+    "wind-11": {
+      "name": "Windanlagen bei Prinzhöfte",
+      "latitude": 52.93019,
+      "longitude": 8.5481
+    },
+    "wind-12": {
+      "name": "Windanlagen bei Wildeshausen",
+      "latitude": 52.85759,
+      "longitude": 8.38675
+    },
+    "wind-13": {
+      "name": "Windanlagen bei Prinzhöfte",
+      "latitude": 52.93437,
+      "longitude": 8.51444
+    },
+    "wind-14": {
+      "name": "Windanlagen bei Dötlingen",
+      "latitude": 52.95501,
+      "longitude": 8.50098
+    },
+    "wind-15": {
+      "name": "Windanlagen bei Wardenburg",
+      "latitude": 53.01245,
+      "longitude": 8.11535
+    },
+    "wind-16": {
+      "name": "Windanlagen bei Ganderkesee",
+      "latitude": 53.0241,
+      "longitude": 8.44395
+    },
+    "wind-17": {
+      "name": "Windanlagen bei Ganderkesee",
+      "latitude": 53.11592,
+      "longitude": 8.58394
+    },
+    "wind-18": {
+      "name": "Windanlagen bei Ganderkesee",
+      "latitude": 53.00072,
+      "longitude": 8.54387
+    },
+    "wind-19": {
+      "name": "Windanlagen bei Prinzhöfte",
+      "latitude": 52.94807,
+      "longitude": 8.54198
+    },
+    "wind-20": {
+      "name": "Windanlagen bei Wildeshausen",
+      "latitude": 52.82509,
+      "longitude": 8.44349
+    }
+  },
+  "03458009": {
+    "wind-1": {
+      "name": "Windanlagen Hatten",
+      "latitude": 53.04083,
+      "longitude": 8.3344
+    },
+    "wind-2": {
+      "name": "Windanlagen Hatten",
+      "latitude": 53.05618,
+      "longitude": 8.40282
+    }
+  },
+  "06632009": {
+    "wind-1": {
+      "name": "Heringen-Waltersberg",
+      "latitude": 50.87645,
+      "longitude": 9.90959
+    },
+    "wind-2": {
+      "name": "BürgerWindpark Gaishecke",
+      "latitude": 50.91494,
+      "longitude": 9.93702
+    },
+    "wind-3": {
+      "name": "Windanlagen Heringen (Werra)",
+      "latitude": 50.86544,
+      "longitude": 10.0136
+    }
+  },
+  "07335": {
+    "wind-1": {
+      "name": "Windanlagen bei Heiligenmoschel / Niederkirchen",
+      "latitude": 49.58221,
+      "longitude": 7.72882
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lambsborn / Martinshöhe",
+      "latitude": 49.35975,
+      "longitude": 7.44791
+    },
+    "wind-3": {
+      "name": "Langwieden",
+      "latitude": 49.37466,
+      "longitude": 7.51911
+    },
+    "wind-4": {
+      "name": "BEE Kapiteltal GmbH ＆ Co. KG",
+      "latitude": 49.47246,
+      "longitude": 7.81267
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Oberarnbach",
+      "latitude": 49.37968,
+      "longitude": 7.59531
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Olsbrücken",
+      "latitude": 49.55131,
+      "longitude": 7.65431
+    },
+    "wind-7": {
+      "name": "WP Linden",
+      "latitude": 49.34444,
+      "longitude": 7.62824
+    },
+    "wind-8": {
+      "name": "Windpark Kollweiler",
+      "latitude": 49.5258,
+      "longitude": 7.5847
+    },
+    "wind-9": {
+      "name": "Enkenbach-Alsenborn",
+      "latitude": 49.51128,
+      "longitude": 7.88392
+    },
+    "wind-10": {
+      "name": "WP_Niederkirchen",
+      "latitude": 49.55759,
+      "longitude": 7.72114
+    },
+    "wind-11": {
+      "name": "WP Queidersbach",
+      "latitude": 49.36588,
+      "longitude": 7.61949
+    }
+  },
+  "09679": {
+    "wind-1": {
+      "name": "Windanlagen bei Altertheim / Helmstadt / Neubrunn",
+      "latitude": 49.73902,
+      "longitude": 9.71539
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ochsenfurt / Sommerhausen",
+      "latitude": 49.71468,
+      "longitude": 10.04934
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bergtheim",
+      "latitude": 49.89908,
+      "longitude": 10.14482
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hettstadt / Leinach",
+      "latitude": 49.83077,
+      "longitude": 9.82648
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Remlingen",
+      "latitude": 49.82942,
+      "longitude": 9.69378
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Bütthard / Riedenheim",
+      "latitude": 49.583,
+      "longitude": 9.92209
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Güntersleben",
+      "latitude": 49.88658,
+      "longitude": 9.88707
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Reichenberg",
+      "latitude": 49.69786,
+      "longitude": 9.88672
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Ochsenfurt / Sonderhofen",
+      "latitude": 49.60162,
+      "longitude": 10.03986
+    },
+    "wind-10": {
+      "name": "Windanlagen bei Uettingen",
+      "latitude": 49.8099,
+      "longitude": 9.72836
+    },
+    "wind-11": {
+      "name": "Windanlagen bei Aub",
+      "latitude": 49.52957,
+      "longitude": 10.01732
+    },
+    "wind-12": {
+      "name": "Windanlagen bei Theilheim",
+      "latitude": 49.773,
+      "longitude": 10.036
+    },
+    "wind-13": {
+      "name": "Windanlagen bei Bieberehren",
+      "latitude": 49.4854,
+      "longitude": 9.98528
+    },
+    "wind-14": {
+      "name": "Windanlagen bei Kirchheim",
+      "latitude": 49.66914,
+      "longitude": 9.85018
+    }
+  }
+}

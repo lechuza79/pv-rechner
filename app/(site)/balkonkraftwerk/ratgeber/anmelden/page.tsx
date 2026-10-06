@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import ArticleMeta from "../../../../../components/ArticleMeta";
 import Breadcrumb from "../../../../../components/Breadcrumb";
+import EditorialPage from "../../../../../components/EditorialPage";
+import editorial from "../../../../../components/EditorialContent.module.css";
 import Faq from "../../../../../components/Faq";
 import RelatedLinks from "../../../../../components/RelatedLinks";
 import { balkonAnmeldenFaq } from "../../../../../lib/faq";
@@ -20,41 +22,8 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Durchs Formular, mit Frist und Fallen.",
 });
 
+// Page-specific comparison and data presentation.
 const S = {
-  page: {
-    background: v("--color-bg"),
-    fontFamily: v("--font-text"),
-    color: v("--color-text-primary"),
-    minHeight: "100vh",
-    padding: "0 16px 20px",
-  },
-  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { marginBottom: 10 },
-  subtitle: {
-    fontSize: v("--font-size-lead"),
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.6,
-  },
-  h2: { marginTop: 32, marginBottom: 10 },
-  p: {
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-muted"),
-    lineHeight: 1.7,
-    marginBottom: 12,
-  },
-  strong: { fontWeight: 700, color: v("--color-text-primary") },
-  hero: {
-    background: v("--color-bg-accent"),
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 20,
-    fontSize: v("--font-size-body"),
-    color: v("--color-text-primary"),
-    lineHeight: 1.7,
-  },
-  link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
   schrittNr: {
     flexShrink: 0,
     width: 26,
@@ -73,8 +42,8 @@ const S = {
 
 export default function AnmeldenPage() {
   return (
-    <div style={S.page}>
-      <div style={S.wrap}>
+    <EditorialPage>
+
         {/* Elternteil ist das THEMA, nicht die Ratgeber-Liste. Die Seite liegt
             unter /balkonkraftwerk/ — eine Krümelspur, die stattdessen „Ratgeber"
             behauptet, beschreibt eine Hierarchie, die die Adresse nicht hat.
@@ -83,7 +52,7 @@ export default function AnmeldenPage() {
             Hierarchie im strukturierten Datensatz auch inhaltlich schief.
             Der Ratgeber-Charakter geht dabei nicht verloren: Der Eintrag steht
             weiter in der Registry und damit in der Übersicht unter /ratgeber. */}
-        <Breadcrumb
+        <Breadcrumb variant="compact"
           items={[
             { label: "Start", href: "/" },
             { label: "Balkonkraftwerk", href: "/balkonkraftwerk" },
@@ -92,13 +61,6 @@ export default function AnmeldenPage() {
           ]}
           jsonLd
         />
-        <h1 style={S.h1}>Balkonkraftwerk anmelden: einmal Register, sonst nichts</h1>
-        <p style={S.subtitle}>
-          Dass man anmelden muss, schreibt jeder. Hier steht, was im Formular zu tun ist —
-          welche Kategorie, welche zwei Leistungsangaben, welches Datum. Und ein Check,
-          der dir deine Frist ausrechnet.
-        </p>
-
         <ArticleMeta
           headline="Balkonkraftwerk anmelden: Anleitung, Frist und Fristen-Check"
           description="Schritt für Schritt durchs Marktstammdatenregister, mit den Stellen, an denen es real schiefgeht."
@@ -107,23 +69,30 @@ export default function AnmeldenPage() {
           modified="2026-08-16"
         />
 
-        <div style={S.hero}>
-          <span style={S.strong}>Die kurze Antwort:</span> Eine einzige Registrierung im
+        <h1 className={editorial.h1}>Balkonkraftwerk anmelden: einmal Register, sonst nichts</h1>
+        <p className={editorial.subtitle}>
+          Dass man anmelden muss, schreibt jeder. Hier steht, was im Formular zu tun ist —
+          welche Kategorie, welche zwei Leistungsangaben, welches Datum. Und ein Check,
+          der dir deine Frist ausrechnet.
+        </p>
+
+        <div className={editorial.hero}>
+          <span className={editorial.strong}>Die kurze Antwort:</span> Eine einzige Registrierung im
           Marktstammdatenregister der Bundesnetzagentur, kostenlos, in wenigen Minuten.
-          Beim Netzbetreiber ist seit Mai 2024 <span style={S.strong}>nichts</span> mehr
+          Beim Netzbetreiber ist seit Mai 2024 <span className={editorial.strong}>nichts</span> mehr
           zu melden — {SOLARPAKET_ENTFALLEN} ist entfallen. Zeit hast du einen Monat ab
           dem Tag, an dem die Module das erste Mal Strom liefern.
         </div>
 
-        <h2 style={S.h2}>Wann läuft meine Frist ab?</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Wann läuft meine Frist ab?</h2>
+        <p className={editorial.p}>
           Ein Monat ab Inbetriebnahme — aber nicht „plus 30 Tage". Die Frist endet an dem
           Tag des Folgemonats, der dieselbe Zahl trägt, und wenn es diesen Tag dort nicht
           gibt, am Monatsletzten. Wer am 31. Januar startet, hat bis zum 28. Februar Zeit,
           nicht bis zum 2. März.
         </p>
         <Fristencheck />
-        <p style={{ ...S.small, marginBottom: 24 }}>
+        <p className={editorial.small} style={{ marginBottom: 24 }}>
           Gerechnet nach den allgemeinen Fristenregeln des Bürgerlichen Gesetzbuchs, die
           auch für gesetzliche Fristen gelten (§§ 186 bis 188 BGB): Der Tag der
           Inbetriebnahme zählt nicht mit, die Frist endet mit Ablauf des entsprechenden
@@ -132,8 +101,8 @@ export default function AnmeldenPage() {
           ist die sichere.
         </p>
 
-        <h2 style={S.h2}>Die Anmeldung, Schritt für Schritt</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Die Anmeldung, Schritt für Schritt</h2>
+        <p className={editorial.p}>
           Fünf Schritte, und bei jedem gibt es eine Stelle, an der es typischerweise
           hakt — die steht jeweils dabei.
         </p>
@@ -165,7 +134,7 @@ export default function AnmeldenPage() {
                     color: v("--color-text-secondary"),
                     lineHeight: 1.6,
                   }}>
-                    <span style={{ ...S.strong, fontSize: v("--font-size-small") }}>Hier hakt es: </span>
+                    <span className={editorial.strong} style={{ fontSize: v("--font-size-small") }}>Hier hakt es: </span>
                     {schritt.falle}
                   </div>
                 )}
@@ -174,51 +143,51 @@ export default function AnmeldenPage() {
           ))}
         </ol>
 
-        <h2 style={S.h2}>Wonach du im Formular suchst</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Wonach du im Formular suchst</h2>
+        <p className={editorial.p}>
           Das Register führt die Geräte als{" "}
-          <span style={S.strong}>{MASTR_KATEGORIE}</span> und nennt das umgangssprachliche
+          <span className={editorial.strong}>{MASTR_KATEGORIE}</span> und nennt das umgangssprachliche
           Wort in derselben Zeile mit. Es gibt dafür einen eigenen, kurzen Assistenten —
           wer ihn übersieht, landet im langen Formular für Dachanlagen, mit Feldern, die
           es für ein Balkongerät gar nicht gibt.
         </p>
 
-        <h2 style={S.h2}>Was 2024 wegfiel — und was nicht</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Was 2024 wegfiel — und was nicht</h2>
+        <p className={editorial.p}>
           Das Solarpaket hat die Anmeldung im Mai 2024 spürbar verkürzt: Die Meldung beim
           Netzbetreiber ist weg, und für das Gerät selbst sind nur noch wenige Angaben
-          nötig. Was <span style={S.strong}>nicht</span> wegfiel, ist die Registrierungspflicht
+          nötig. Was <span className={editorial.strong}>nicht</span> wegfiel, ist die Registrierungspflicht
           im Register und ihre Frist. Beides gilt unverändert. Wer online liest, die
           Anmeldung sei abgeschafft worden, verwechselt die beiden.
         </p>
 
-        <h2 style={S.h2}>Wenn die Frist schon abgelaufen ist</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Wenn die Frist schon abgelaufen ist</h2>
+        <p className={editorial.p}>
           {BALKON_RECHT.anmeldeFrist} Im Netz kursiert dazu eine hohe Bußgeld-Summe. Sie steht
-          zwar im Gesetz, meint aber die Obergrenze für <span style={S.strong}>alle</span>
+          zwar im Gesetz, meint aber die Obergrenze für <span className={editorial.strong}>alle</span>
           Verstöße dieser Kategorie — gewerbliche Großanlagen eingeschlossen. Auf ein
           Balkongerät lässt sie sich nicht übertragen: Das Gesetz bemisst ein Bußgeld nach
           Bedeutung der Tat und Vorwurf, bei bloßer Fahrlässigkeit halbiert sich der Rahmen,
           und die Bundesnetzagentur nennt auf ihren Seiten zum Steckersolar selbst keine
           Summe. Wir schreiben die Zahl deshalb nicht hin.
         </p>
-        <p style={S.p}>
+        <p className={editorial.p}>
           Wie häufig überhaupt Bußgelder verhängt werden, ist nicht öffentlich belegt — auch
           das oft zitierte „es wird nie verfolgt" lässt sich auf keine amtliche Quelle
           zurückführen. Praktisch bleibt es dabei: Die Registrierung lässt sich jederzeit
           nachholen, und das ist in jedem Fall besser als sie zu lassen.
         </p>
 
-        <h2 style={S.h2}>Anbringen ist eine andere Frage als anmelden</h2>
-        <p style={S.p}>
+        <h2 className={editorial.h2}>Anbringen ist eine andere Frage als anmelden</h2>
+        <p className={editorial.p}>
           Die Registrierung sagt nichts darüber, ob du das Gerät überhaupt montieren darfst.
           Dafür gilt seit 2024 eine eigene Regel: {BALKON_RECHT.mieteEigentum}
         </p>
 
         <Faq items={balkonAnmeldenFaq()} title="Häufige Fragen zur Anmeldung" currentPath="/balkonkraftwerk/ratgeber/anmelden" />
 
-        <p style={{ ...S.small, marginTop: 28 }}>
-          <span style={S.strong}>Stand:</span> Rechtliche Angaben geprüft am{" "}
+        <p className={editorial.small} style={{ marginTop: 28 }}>
+          <span className={editorial.strong}>Stand:</span> Rechtliche Angaben geprüft am{" "}
           {new Date(`${BALKON_RECHT.geprueftIso}T00:00:00`).toLocaleDateString("de-DE", {
             day: "numeric", month: "long", year: "numeric",
           })}{" "}
@@ -237,10 +206,10 @@ export default function AnmeldenPage() {
           ]}
         />
 
-        <p style={{ ...S.small, marginTop: 24 }}>
-          Zurück zur <Link href="/ratgeber" style={S.link}>Ratgeber-Übersicht</Link>.
+        <p className={editorial.small} style={{ marginTop: 24 }}>
+          Zurück zur <Link href="/ratgeber" className={editorial.link}>Ratgeber-Übersicht</Link>.
         </p>
-      </div>
-    </div>
+
+    </EditorialPage>
   );
 }

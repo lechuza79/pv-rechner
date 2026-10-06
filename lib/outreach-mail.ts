@@ -168,6 +168,20 @@ export const ROLLEN_WORTE = [
   "verbandsgemeinde",
   "vg",
   "amt",
+  // Function mailboxes the send check rejected as surnames although the
+  // administration publishes them as its contact (measured 05.10.2026 on the
+  // gap list: 160 such rejections in districts already written to).
+  "sekretariat",
+  "service",
+  "buergerservice",
+  "buergeramt",
+  "zentrale",
+  "magistrat",
+  "bgm",
+  "ob",
+  "og",
+  "mail",
+  "email",
 ];
 
 /**
@@ -255,6 +269,7 @@ export function postfachBefund(
   }
   const kern = ortKern(ortsname);
   const domainStamm = domain.split(".").slice(0, -1).join(".");
+  const domainWorte = ohneUmlaute(domainStamm).split(/[.-]+/).filter(Boolean);
 
   const istRollenwort = (t: string) =>
     ROLLEN_WORTE.map(ohneUmlaute).includes(t) ||
@@ -265,7 +280,11 @@ export function postfachBefund(
     // ROLLEN_WORTE; die Prüfung hielt „medien" für einen Nachnamen und warf den
     // Brief am 03.09.2026 aus dem Versand. Wer die Presse-Wortliste erweitert,
     // muss nicht daran denken, hier nachzuziehen.
-    istPressePostfach(`${t}@example.org`);
+    istPressePostfach(`${t}@example.org`) ||
+    // The office's own name as mailbox: "vgzell@vg-zell.de", "simmern@simmern.de",
+    // "amtschwaan@…" — role prefix plus a word of the domain, or the domain word itself.
+    (t.length >= 4 && domainWorte.includes(t)) ||
+    ["vg", "amt", "og", "sv", "gem"].some((p) => t.startsWith(p) && t.length - p.length >= 4 && domainWorte.join("").includes(t.slice(p.length)));
 
   if (ROLLEN_WORTE_TECHNISCH.includes(teile[0])) {
     return { ok: false, grund: `${teile[0]}@ betreut die Website, nicht die Verwaltung` };
@@ -375,7 +394,8 @@ export function mailKopfzeilen(_o: { widerspruchAn: string }): Record<string, st
  * Spamfilter anspringt. Über eine Vormittagsstunde verteilt ist es das Muster
  * eines Menschen, der Mails schreibt.
  */
-export const PAUSE_MS = 90_000;
+// 60 s since 05.10.2026: 100 letters a day in under two hours (operator).
+export const PAUSE_MS = 60_000;
 
 /**
  * Tagespensum — GEMESSEN ANGEHOBEN, nicht geraten (26.08.2026: 25 → 40).
@@ -397,7 +417,10 @@ export const PAUSE_MS = 90_000;
  * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
  * Spam-Ordner dagegen sofort.
  */
-export const MAX_JE_LAUF = 65;
+export const MAX_JE_LAUF = 100;
+// 100 statt 65 am 05.10.2026 (Betreiber): ganze Kreise an einem Tag, Kreisverwaltung
+// und alle ihre Gemeinden. Getragen von 96 Pressemails an einem Tag am 30.09.2026
+// ohne einen Zustellfehler.
 // 50 statt 40 am 26.08.2026, damit der Schub Niedersachsen/Bremen (48 Gemeinden)
 // an einem Tag durchgeht statt an zwei. Der Sprung ist damit 20 → 48 in einem
 // Schritt; die Messung deckt bisher 20 ab. Was ihn trotzdem trägt, ist der

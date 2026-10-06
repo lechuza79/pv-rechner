@@ -5,6 +5,7 @@ import { v, space, pad, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck, IconClose } from "./Icons";
 import Modal from "./Modal";
 import FlowNav from "./FlowNav";
+import { GEOEFFNET_FELD, HONIGTOPF_FELD } from "../lib/formular-bremse";
 
 /**
  * Der Rückkanal: Der Nutzer schickt sein fertiges Ergebnis an den Betrieb,
@@ -155,11 +156,22 @@ export default function ErgebnisAnBetrieb({
   const [gesendet, setGesendet] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
   const dateiRef = useRef<HTMLInputElement>(null);
+  // Bot brakes (lib/formular-bremse.ts): the hidden honeypot field and the
+  // moment the dialog was opened — the server drops requests that come back
+  // faster than a human can fill three steps.
+  const [falle, setFalle] = useState("");
+  const geoeffnetAm = useRef<number | null>(null);
+
+  function oeffnen(): void {
+    if (geoeffnetAm.current === null) geoeffnetAm.current = Date.now();
+    setOffen(true);
+  }
 
   useEffect(() => {
-    const auf = () => setOffen(true);
-    window.addEventListener(RUECKKANAL_OEFFNEN, auf);
-    return () => window.removeEventListener(RUECKKANAL_OEFFNEN, auf);
+    window.addEventListener(RUECKKANAL_OEFFNEN, oeffnen);
+    return () => window.removeEventListener(RUECKKANAL_OEFFNEN, oeffnen);
+    // oeffnen only touches a ref and a state setter — both stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -223,6 +235,8 @@ export default function ErgebnisAnBetrieb({
           ort: ort.trim(),
           fotos,
           ergebnisUrl,
+          [HONIGTOPF_FELD]: falle,
+          [GEOEFFNET_FELD]: geoeffnetAm.current,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -258,7 +272,7 @@ export default function ErgebnisAnBetrieb({
               Vertreterbesuch. Die Zeile darunter sagt NICHT „im nächsten
               Schritt": Die Übersicht der Angaben steht im dritten, unmittelbar
               vor dem Absenden. */}
-          <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
+          <button type="button" onClick={oeffnen} style={S.aufmachen}>
             <span style={S.aufmachenInner}>
               Unverbindlich bei {partner.name} anfragen
               <IconArrowRight size={iconSizes.md} />
@@ -400,6 +414,18 @@ export default function ErgebnisAnBetrieb({
               placeholder="damit man Sie erreichen kann"
             />
 
+            {/* Honigtopf — für Menschen unsichtbar, für Ausfüll-Roboter nicht. */}
+            <input
+              type="text"
+              name={HONIGTOPF_FELD}
+              value={falle}
+              onChange={(e) => setFalle(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: -9999, width: 1, height: 1, opacity: 0 }}
+            />
+
             <label htmlFor="rk-nachricht" style={{ ...S.label, marginTop: space.lg }}>
               Nachricht <span style={S.optional}>(optional)</span>
             </label>
@@ -419,12 +445,14 @@ export default function ErgebnisAnBetrieb({
               {anschriftText ? `, die Adresse (${anschriftText})` : ""}
               {fotos.length ? `, ${fotos.length === 1 ? "ein Bild" : `${fotos.length} Bilder`}` : ""}
               {nachricht.trim() ? ", Ihre Nachricht" : ""} und einen Link auf diese
-              Rechnung. Sonst nichts, und niemand sonst bekommt etwas davon.
+              Rechnung. Sonst nichts. Zugestellt wird das per E-Mail über
+              unseren Versanddienstleister, der die Mail 30 Tage aufbewahrt; in
+              unserer Datenbank speichern wir sie nicht.
             </div>
 
             <p style={S.klein}>
               Wie wir mit Ihren Angaben umgehen, steht in unserer{" "}
-              <a href="/datenschutz" style={S.link}>
+              <a href="/datenschutz#fachbetrieb-anfrage" style={S.link}>
                 Datenschutzerklärung
               </a>
               .

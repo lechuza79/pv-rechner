@@ -11,8 +11,8 @@
 .district-race-value{grid-column:3;grid-row:1;font-size:13px;font-variant-numeric:tabular-nums;}
 .district-race-track{grid-column:2/4;grid-row:2;height:8px;overflow:hidden;contain:paint;}
 .district-race-bar{width:100%;height:100%;background:var(--widget-ink);border-radius:0 999px 999px 0;transform-origin:left;}
-.district-race::before{content:"";position:absolute;left:40px;top:20px;bottom:10px;width:1px;background:var(--widget-muted);opacity:.45;pointer-events:none;}
-.district-race-positions{position:absolute;inset:0 auto 0 0;width:32px;z-index:1;pointer-events:none;}
+.district-race::before{content:"";position:absolute;left:40px;top:20px;bottom:10px;width:1px;background:var(--widget-muted);opacity:.45;pointer-events:none;z-index:2;}
+.district-race-positions{position:absolute;inset:0 auto 0 0;width:32px;z-index:3;pointer-events:none;}
 .district-race-rank{position:absolute;left:2px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--widget-ink);font-weight:700;text-align:center;line-height:1;font-variant-numeric:tabular-nums;}
 @container(max-width:340px){.district-race-plot{padding-inline:16px;}}
 @media(prefers-reduced-motion:reduce){.district-race-row{transition:none;}}
@@ -28,3 +28,10 @@
  .district-race-panels{background-size:auto 105%;background-position:0% 65%;}
  .district-race-splashes{background-size:auto 120%;background-position:0% center;}
 }
+
+.district-race-row[data-highlighted=true] .district-race-bar{background:var(--color-cta,#d4ff24)}
+.district-race-row[data-highlighted=true] .district-race-name{font-weight:800}
+
+.district-race-value{display:flex;align-items:baseline;gap:.35em}
+.district-race-unit{font-size:var(--atlas-number-unit-scale,.72em);font-weight:var(--atlas-number-unit-weight,400);color:var(--widget-muted);opacity:.75}
+.district-race-row[data-highlighted=true] .district-race-track{overflow:visible;contain:none;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .16))}

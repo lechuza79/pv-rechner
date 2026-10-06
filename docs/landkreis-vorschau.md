@@ -278,6 +278,13 @@ generations referenced by the current and the previous pointer are kept.
    `npm run kreise:pakete` (or `-- --alle`). `npm run kreise:vergleich -- --kreise=…`
    compares published packages with the former request-time computation.
 
+**Behaviour change** (aggregation, empty-town rule, story selection — same inputs, other
+result). Bump `DISTRICT_CONTENT_REVISION`: it is part of every fingerprint, so the next
+run (the push-triggered one) rebuilds all districts and regions; the pointer path stays,
+the live generation stays readable. Without it the daily run keeps every old package
+("0 gebaut, 294 übernommen") — that is what kept Nordfriesland, Schleswig-Holstein and
+Deutschland "unavailable" from 26 to 28 September 2026.
+
 **Format change.** Bump `DISTRICT_PACKAGE_VERSION`: the pointer path carries it, so
 the running deployment keeps reading its generation while the push-triggered run
 builds the new one; the new deployment shows "being recalculated" until that run

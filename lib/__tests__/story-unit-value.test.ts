@@ -24,6 +24,19 @@ describe('individual monthly valuation',()=>{
   const full=unitMonthValue([unit],weather('2026-08'),'2026-08',.3);
   expect(result.unitCount).toBe(1);expect(result.totalMwh/full.totalMwh).toBeCloseTo(15/31);
  });
+ it('values a month before the first commissioning as a true zero, not a gap',()=>{
+  // Wiedenborstel: only unit from 12.04.2026 — March has nothing to value, but is computable.
+  const result=unitMonthValue([{...unit,day:'2026-04-12',kwp:.5}],weather('2026-03'),'2026-03',.3);
+  expect(result).toMatchObject({euro:0,feedInEuro:0,totalMwh:0,unitCount:0,approximateTariffCount:0,unknownModeCount:0,commercialSelfUseUnknownCount:0});
+ });
+ it('keeps an inventory without any active unit as a gap',()=>{
+  expect(()=>unitMonthValue([],weather('2026-03'),'2026-03',.3)).toThrow('No contributing units');
+  expect(()=>unitMonthValue([{...unit,status:'37'}],weather('2026-03'),'2026-03',.3)).toThrow('No contributing units');
+ });
+ it('still rejects incomplete weather in a month without units',()=>{
+  const w=weather('2026-03');w.hourly.shortwave_radiation[200]=null as unknown as number;
+  expect(()=>unitMonthValue([{...unit,day:'2026-04-12'}],w,'2026-03',.3)).toThrow('Missing weather');
+ });
  it('evaluates expiry at the story month, not the runtime clock',()=>{
   expect(unitTariff({...unit,day:'2006-01-01'},'2026-12-31').eligible).toBe(true);
   expect(unitTariff({...unit,day:'2006-01-01'},'2027-01-01').eligible).toBe(false);

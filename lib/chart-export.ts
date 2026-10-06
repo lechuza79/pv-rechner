@@ -520,7 +520,20 @@ export async function captureNodeToBlob(
   node: HTMLElement,
   scale = 2,
   format?: { type: string; quality?: number; background?: string },
+  presentation: 'export' | 'screen' = 'export',
+  size?: {width: number; height: number},
 ): Promise<Blob> {
+  const capture = await prepareNodeCapture(node, presentation, size);
+  try {
+    return await domToBlob(capture.node, {
+      scale, backgroundColor: format?.background,
+      ...(format ? {type:format.type,quality:format.quality} : {}),
+    });
+  } finally {capture.dispose();}
+}
+
+/** Shared export DOM for image capture and native server video frames. */
+export async function prepareNodeCapture(node: HTMLElement, presentation: 'export' | 'screen' = 'export', size?: {width:number;height:number}, visible = false) {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
   // flag on click — that reconciliation undoes any edit we make to the live tree
@@ -535,10 +548,11 @@ export async function captureNodeToBlob(
   const wrapper = document.createElement('div');
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
-  applyBrightestStage(wrapper);
-  wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
+  if(presentation==='export')applyBrightestStage(wrapper);
+  if(presentation==='export')wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
   const clone = node.cloneNode(true) as HTMLElement;
-  applyExportMarkers(clone);
+  if(presentation==='export')applyExportMarkers(clone);
+  clone.querySelectorAll('[data-video-overlay]').forEach(overlay=>overlay.remove());
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
   // text (matches the print footers that already use the plain DataSourceNote).
   clone
@@ -556,7 +570,13 @@ export async function captureNodeToBlob(
   };
   freeze(clone);
   clone.querySelectorAll<HTMLElement | SVGElement>('*').forEach(freeze);
-  clone.style.width = `${rect.width}px`;
+  clone.style.width = `${size?.width ?? rect.width}px`;
+  if (size) {
+    clone.style.height = `${size.height}px`;
+    clone.style.setProperty('--chart-export-height', `${size.height}px`);
+    clone.style.minHeight = '0';
+    clone.setAttribute('data-export-sized', '');
+  }
   clone.style.margin = '0';
   wrapper.appendChild(clone);
   document.body.appendChild(wrapper);
@@ -572,17 +592,18 @@ export async function captureNodeToBlob(
         edge.style.fontSize = `${size}px`;
       }
     });
-    return await domToBlob(clone, {
-      scale,
-      // Transparent canvas → the card's rounded corners stay rounded. A format
-      // that cannot carry transparency (JPEG) passes its own background instead,
-      // otherwise those corners come out black.
-      backgroundColor: format?.background,
-      ...(format ? { type: format.type, quality: format.quality } : {}),
-    });
-  } finally {
-    wrapper.remove();
-  }
+    if (visible) {
+      wrapper.style.left = '0';
+      wrapper.style.zIndex = '2147483647';
+      clone.setAttribute('data-sc-server-frame', '');
+      // Video has no transparent corners. Fill the entire captured rectangle.
+      clone.style.setProperty('border-radius', '0', 'important');
+      wrapper.style.backgroundColor = getComputedStyle(clone).backgroundColor;
+      wrapper.style.width = `${Math.ceil(clone.getBoundingClientRect().width)}px`;
+      wrapper.style.height = `${Math.ceil(clone.getBoundingClientRect().height)}px`;
+    }
+    return {node:clone,dispose:()=>wrapper.remove()};
+  } catch(error) {wrapper.remove();throw error;}
 }
 
 /**
@@ -615,11 +636,12 @@ export async function exportNode(
   options: {
     filename?: string;
     mode: 'download' | 'share';
+    size?: {width: number; height: number};
     shareTitle?: string;
     shareText?: string;
   },
 ): Promise<Blob | null> {
-  const blob = await captureNodeToBlob(node);
+  const blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
   const filename = options.filename || 'solar-check-chart.png';
 
   if (options.mode === 'download') {

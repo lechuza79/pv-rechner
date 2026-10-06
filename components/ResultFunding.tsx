@@ -4,6 +4,7 @@ import Link from "next/link";
 import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
 import Modal from "./Modal";
+import Switch from "./Switch";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "./FundingProgramParts";
 import { fundingStandLabel, FUNDING_TECHNIK_FUER, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
@@ -73,6 +74,8 @@ function FundingProgramModal({
 
 interface ResultFundingProps {
   title?: string;
+  showAllProgramsLink?: boolean;
+  design?: "result";
   showInvestmentTotal?: boolean;
   federalFundingIncluded?: boolean;
   loading: boolean;
@@ -116,7 +119,7 @@ interface ResultFundingProps {
 }
 
 export default function ResultFunding({
-  title = "Förderung", showInvestmentTotal = true, federalFundingIncluded = true,
+  showAllProgramsLink = true, design, title = "Förderung", showInvestmentTotal = true, federalFundingIncluded = true,
   loading, candidates, chosenAgs, onChooseAgs,
   programs, applied, total, enabled, onToggle, brutto, technik = "pv", hinweis, kopf,
 }: ResultFundingProps) {
@@ -126,7 +129,7 @@ export default function ResultFunding({
   const ProgramLink = ({ p, children }: { p: FundingProgram; children?: React.ReactNode }) => (
     <button
       onClick={() => setModalProgram(p)}
-      style={{ border: "none", background: "transparent", padding: 0, font: "inherit", color: v("--color-accent"), cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}
+      style={{ border: "none", background: "transparent", padding: 0, font: "inherit", textAlign: "left", maxWidth: "32ch", minWidth: 0, overflowWrap: "anywhere", color: design === "result" ? "var(--result-muted)" : v("--color-text-secondary"), cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}
     >
       {children ?? p.name}
     </button>
@@ -163,7 +166,7 @@ export default function ResultFunding({
   // der sich ändern könnte — der DOM-Knoten bleibt über Renders derselbe.
   // Wer das je wieder in eine Komponente umschreibt, bringt den Fehler zurück.
   const karte = (children?: React.ReactNode, akzent = false) => (
-    <div style={akzent ? { ...card, borderColor: v("--color-positive") } : card}>
+    <div className={design === "result" ? "sc-result-funding" : undefined} style={akzent ? { ...card, borderColor: v("--color-positive") } : card}>
       {heading}
       {kopf ? <div style={{ marginBottom: 14 }}>{kopf}</div> : null}
       {children}
@@ -213,24 +216,13 @@ export default function ResultFunding({
     <>
       {hasGrant ? (
         <>
-          <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: enabled ? 12 : 0 }}>
-            <span style={{
-              position: "relative", width: 38, height: 22, borderRadius: 999, flexShrink: 0,
-              background: enabled ? v("--color-positive") : v("--color-border-muted"), transition: "background 0.15s",
-            }}>
-              <span style={{
-                position: "absolute", top: 2, left: enabled ? 18 : 2, width: 18, height: 18, borderRadius: "50%",
-                background: v("--color-bg"), transition: "left 0.15s", boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-              }} />
-              <input type="checkbox" checked={enabled} onChange={(e) => onToggle(e.target.checked)} style={{ position: "absolute", opacity: 0, width: "100%", height: "100%", margin: 0, cursor: "pointer" }} />
-            </span>
-            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-primary"), fontWeight: 600 }}>
-              Förderung anrechnen{ortLabel ? ` (${ortLabel})` : ""}
-            </span>
-          </label>
+          <div style={{ marginBottom: enabled ? 12 : 0 }}>
+            <Switch an={enabled} onChange={onToggle} label="Förderung anrechnen"
+              text={`Förderung anrechnen${ortLabel ? ` (${ortLabel})` : ""}`} />
+          </div>
 
           {enabled ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: v("--font-size-small") }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: design === "result" ? "var(--result-type-body)" : v("--font-size-small") }}>
               {applied.map(({ program, amount }) => (
                 <div key={program.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                   <ProgramLink p={program} />
@@ -241,7 +233,7 @@ export default function ResultFunding({
                 <span style={{ color: v("--color-text-secondary") }}>Investition nach Förderung</span>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>{nf(effektiv)} €</span>
               </div>}
-              <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
+              <p style={{ fontSize: design === "result" ? "var(--result-type-caption)" : v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
                 Fördersätze ohne Gewähr — verbindlich ist die offizielle Quelle des Programms, Budgets können erschöpft sein.
               </p>
             </div>
@@ -287,9 +279,9 @@ export default function ResultFunding({
         <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted"), margin: "10px 0 0" }}>{hinweis}</p>
       ) : null}
 
-      <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none" }}>
+      {showAllProgramsLink && <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none" }}>
         Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
-      </Link>
+      </Link>}
 
       <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} technik={technik} />
     </>,

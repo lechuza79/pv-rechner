@@ -201,18 +201,19 @@ export const tokens = {
   // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.06)',    // cards, subtle lift
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.08)',   // menus, popovers, tooltips
+  '--shadow-toast': '0 12px 32px rgba(3,20,22,0.24)', // persistent floating notices
   '--shadow-lg': '0 8px 28px rgba(0,0,0,0.10)',   // dropdowns, modals
 
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
-  '--font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
-  '--font-chart-number': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
-  '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
+  '--font-heading': "var(--font-montserrat, 'Montserrat'),'Montserrat',system-ui,sans-serif",
+  '--font-chart-number': "var(--font-montserrat, 'Montserrat'),'Montserrat',system-ui,sans-serif",
+  '--font-text': "var(--font-dm-sans, 'DM Sans'),'DM Sans',system-ui,sans-serif",
   // Headings are Montserrat 700 in the new design — on the homepage, on the
   // content template and in the shared footer, which every page already carries.
-  '--font-display': "var(--font-montserrat),Montserrat,var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
-  '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
+  '--font-display': "var(--font-montserrat, 'Montserrat'),Montserrat,var(--font-dm-sans, 'DM Sans'),'DM Sans',system-ui,sans-serif",
+  '--font-mono': "var(--font-jetbrains-mono, 'JetBrains Mono'),'JetBrains Mono',monospace",
 
   // ─── Typografie-Skala (8) ──────────────────────────────────────────────────
   // Vom Betreiber freigegeben am 20.07.2026, in Kraft gesetzt am 01.09.2026.
@@ -234,6 +235,11 @@ export const tokens = {
   '--font-size-micro': '10px',          // Dichte Chart-/Achsenbeschriftungen
   '--font-size-caption': '11px',        // Uppercase-Labels, Hints, dichte Daten
   '--font-size-small': '12px',          // Sekundärtext, Chips, Tabellenzellen
+  // Editorial reading roles; scoped by EditorialPage, without changing tools.
+  '--font-size-editorial-body': '16px',
+  '--font-size-editorial-intro': '18px',
+  '--font-size-editorial-note': '14px',
+  '--font-size-editorial-label': '12px',
   '--font-size-body': '14px',           // Basis: Fließtext, Nav, Fußzeile, Eingabefelder
   '--font-size-lead': '16px',           // Lead/Einleitung, Kartentitel
   // v3 (20.09.2026): h1/h2 taken from the released homepage (48 / 34 px in
@@ -322,6 +328,9 @@ export const tokens = {
   '--radius-pill': '999px',             // Knöpfe und Aktionen
   '--radius-sm': '10px',                // Small: inputs, checkboxes, pills
   '--radius-md': '16px',                // Medium: buttons, cards, panels
+  '--space-xl': '16px',
+  '--space-xxl': '24px',
+  '--space-huge': '48px',
   '--radius-lg': '24px',                // Large: hero cards, outer containers
 
   // ─── Layout (3) ────────────────────────────────────────────────────────────
@@ -351,6 +360,7 @@ export const tokens = {
   // kleiner (Override in globalStyles → 24px, Total 72px), weil der große
   // Abstand dort zu viel leeren Raum über der Überschrift lässt.
   '--content-lede-top': '48px',
+  '--header-min-height': '48px', // Reserve the hydrated navigation controls before first paint.
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -504,9 +514,9 @@ export function getCssVariables(): string {
 
 // ─── Dark / Dusk theme overrides ───────────────────────────────────────────
 // Only the tokens that change per theme; everything else inherits from :root
-// (the light base). data-theme values are the resolved themes from
-// lib/theme-schedule.ts ('light' | 'dusk' | 'dark'), set by the boot script and
-// the ThemeController.
+// (the light base). The public site renders one fixed stage
+// (SITE_THEME_STAGE); the other stages remain for the admin theme editor and
+// for pages that pin a stage themselves.
 //
 // Semantic data colours stay recognisable in every mode: green = positive,
 // red = negative, cyan = highlight, and the energy-mix palette (green =
@@ -735,6 +745,13 @@ export function getThemeOverrides(): string {
     .join('\n');
 }
 
+/**
+ * The one palette stage every public page renders. The site used to follow
+ * the sun and a light/dark preference; that switching is removed (29.09.2026).
+ * s5 is what visitors saw by day and what the partner pages already pinned.
+ */
+export const SITE_THEME_STAGE = "s5";
+
 /** Number of brightness stages (s0 … s6). */
 export const STAGE_COUNT = STAGE_TOKENS.length + 1; // + s6 (the base)
 
@@ -750,7 +767,20 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 
 /** Global reset + animations (shared across all pages) */
 export const globalStyles = `
-  html{scroll-behavior:smooth}
+/* Shared secondary action feedback across links and buttons. */
+:is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit){transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.sc-feature-action svg{transition:transform .2s ease}
+@media(hover:hover){
+ :is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit):not(:disabled):hover{background:var(--color-cta)!important;color:var(--color-cta-ink)!important;border-color:var(--color-cta)!important}
+ .sc-feature-action:hover svg{transform:translateX(4px)}
+}
+:is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit):focus-visible{outline:2px solid var(--color-text-primary);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+ :is(.sc-button-secondary,.sc-feature-action,.wp-result-settings-edit),.sc-feature-action svg{transition:none}
+ .sc-feature-action:hover svg{transform:none}
+}
+
+  @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
   *{box-sizing:border-box;margin:0;padding:0}
   /* Überschriften tragen die Display-Schrift — EINE Regel statt einer
      font-family an jeder Überschrift. Die enge Laufweite ist am Original
@@ -784,7 +814,7 @@ export const globalStyles = `
      Inhaltsspalte eingezogen. Gemessen auf der Startseite bei 1024 px — Logo
      bei x=51 (5 %), Deckel 1600. Unsere Seiten hatten 16 px festen Rand, das
      Logo saß deshalb sichtbar weiter außen als auf den neuen Seiten. */
-  .sc-react-header{max-width:var(--header-frame-max)}
+  .sc-react-header{max-width:var(--header-frame-max);min-height:var(--header-min-height)}
   /* Das Logo auf hellem Grund ist NEUTRAL, nicht limette: Marke in gedecktem
      Petrol, Wortmarke in der Textfarbe. Die drei Werte stehen so im Kopf der
      neuen Seiten (components/DesignHeader.css) und sind von dort übernommen —
@@ -794,16 +824,6 @@ export const globalStyles = `
      60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
      Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
   @media (max-width:640px){:root{--content-lede-top:24px}}
-  /* Smooth theme cross-fade — only enabled while a theme switch is in flight
-     (ThemeController toggles .theme-anim on <html>), so normal hovers stay
-     instant and the initial (boot-script) theme paints without animating.
-     opacity is in the list because this !important rule replaces every
-     element's own transition for its duration: without it, anything fading in
-     during a switch (e.g. the switch's own tooltip) would jump instead. */
-  html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
-    transition:background-color .8s ease,border-color .8s ease,color .8s ease,fill .8s ease,stroke .8s ease,box-shadow .8s ease,background .8s ease,opacity .25s ease !important;
-  }
-  @media (prefers-reduced-motion:reduce){html.theme-anim,html.theme-anim *{transition:none !important}}
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}

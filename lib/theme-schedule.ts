@@ -5,12 +5,11 @@
 // centre of Germany (no user location needed) and classify the current local
 // clock time into one of three themes.
 //
-// The resolved values ('light' | 'dusk' | 'dark') map 1:1 onto the `data-theme`
-// attribute so this module, the no-flash boot script in app/(site)/layout.tsx,
-// and the CSS override blocks in lib/theme.ts all speak the same language.
-//
-// NOTE: The boot script in layout.tsx inlines a compact copy of this same
-// formula (it cannot import modules before first paint). Keep them in sync.
+// NOTE (29.09.2026): the public site no longer switches its palette by
+// preference or sun — it renders the fixed SITE_THEME_STAGE (lib/theme.ts).
+// The solar geometry here stays in use for the live solar readings
+// (lib/solar-now.ts, weather); the stage mapping is kept for those tests and
+// the admin theme editor's stage ids.
 
 /** Geographic centre of Germany — drives the daylight approximation. */
 export const DE_LAT = 51.16;
@@ -175,50 +174,4 @@ export function stageId(n: number): ThemeStage {
 /** True for the light-background stages (dark text). */
 export function isLightStage(stage: ThemeStage): boolean {
   return Number(stage.slice(1)) >= FIRST_LIGHT_STAGE;
-}
-
-// What the user can choose. The in-between stages are steps of the automatic
-// sun cycle, not things you pick — so the manual switch stays a clean
-// light/dark flip (brightest ↔ darkest).
-export type ThemePref = "auto" | "light" | "dark";
-
-/**
- * Resolve the effective theme stage from a stored preference.
- * `solar` is the live reading; it only ever drives the automatic mode — picking
- * "Hell" by hand pins the brightest stage however dark it is outside. null (no
- * data yet, or request failed) falls back to the sun position, which is also
- * what the boot script paints with.
- */
-export function resolveTheme(
-  pref: ThemePref,
-  date: Date,
-  solar: SolarConditions | null = null,
-): ThemeStage {
-  if (pref === "light") return stageId(STAGE_COUNT - 1);
-  if (pref === "dark") return stageId(0);
-  return stageId(sunStage(date, solar));
-}
-
-/**
- * The manual mode a click from auto lands on: always the opposite of what is
- * currently on screen, so one click does what people expect.
- */
-export function oppositeOf(resolved: ThemeStage): ThemePref {
-  return isLightStage(resolved) ? "dark" : "light";
-}
-
-/**
- * Next preference when the switch is clicked: auto → opposite → other → auto.
- * `firstManual` is the mode the last click-out-of-auto landed on; it makes the
- * cycle symmetric (both manual modes stay reachable whichever way auto went).
- */
-export function cycleFrom(
-  pref: ThemePref,
-  resolved: ThemeStage,
-  firstManual: ThemePref | null,
-): ThemePref {
-  if (pref === "auto") return oppositeOf(resolved);
-  const first = firstManual ?? pref;
-  if (pref === first) return first === "light" ? "dark" : "light";
-  return "auto";
 }

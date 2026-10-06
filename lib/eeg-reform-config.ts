@@ -640,7 +640,37 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Durchgang ändert den Entwurf nicht; sie geht mit der Gegenäußerung der
   //   Bundesregierung an den Bundestag. Zustand und Werte unverändert:
   //   Regierungsentwurf, im Ausschuss für Wirtschaft und Energie.
-  geprueftIso: "2026-09-26",
+  // 27.09.2026: Beide amtlichen Seiten im Original gelesen. Bundesrat 470/26
+  //   führt unverändert Plenarberatung 25.09.26 (1068. Sitzung, TOP 56:
+  //   Stellungnahme) samt 470/26(B). Das Textarchiv des Bundestages (kw39,
+  //   Stand 27.09.2026) bestätigt die erste Lesung: 21/7867 wurde „dem
+  //   federführenden Ausschuss für Wirtschaft und Energie zur weiteren Beratung
+  //   überwiesen". Zustand und Werte unverändert: Regierungsentwurf.
+  // 29.09.2026: Mitteilung des Ausschusses für Wirtschaft und Energie vom
+  //   25.09.2026 im Original gelesen (bundestag.de, to_47_05-10-2026_oeA_EEG.pdf):
+  //   Die 47. Sitzung am 05.10.2026 ist eine öffentliche Anhörung zu
+  //   BT-Drucksache 21/7867. Die Ausschussberatung läuft also noch; eine
+  //   2./3. Lesung vor diesem Termin ist ausgeschlossen. Zustand und Werte
+  //   unverändert: Regierungsentwurf, im Ausschuss.
+  // 30.09.2026: Anhörungsseite des Ausschusses (bundestag.de, Anhörung EEG 2027)
+  //   im Original gelesen: öffentliche Anhörung zu 21/7867 am 05.10.2026, kein
+  //   Hinweis auf eine 2./3. Lesung. Zustand und Werte unverändert.
+  // 01.10.2026: Anhörungsseite des Ausschusses für Wirtschaft und Energie
+  //   (bundestag.de, wp21_a09_Anhoerungen/1217432) erneut im Original gelesen:
+  //   öffentliche Anhörung zu 21/7867 am Montag, 05.10.2026, 12.15–14.15 Uhr,
+  //   weder abgesagt noch verschoben. Eine 2./3. Lesung vor der Anhörung ist
+  //   ausgeschlossen. Zustand und Werte unverändert: Regierungsentwurf.
+  // 02.10.2026: Pressemitteilung des Bundestages vom 30.09.2026 (pm-260929-oea-kw41)
+  //   und Anhörungsseite 1217432 gelesen: öffentliche Anhörung zum EEG am
+  //   05.10.2026, 12.15 Uhr, unverändert angesetzt. Keine 2./3. Lesung vor der
+  //   Anhörung möglich. Zustand und Werte unverändert: Regierungsentwurf.
+  // 03.10.2026: Textarchiv des Bundestages zur 1. Lesung (kw39, 1211294) im
+  //   Original gelesen: Überweisung an den Ausschuss für Wirtschaft und Energie,
+  //   keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
+  // 06.10.2026: Textarchiv des Bundestages (kw41-pa-wirtschaft-stromsektor-1218072,
+  //   Stand 06.10.2026) im Original gelesen: Anhörung zu 21/7867 am 05.10.2026
+  //   fand statt; keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
+  geprueftIso: "2026-10-06",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

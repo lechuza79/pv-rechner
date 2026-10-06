@@ -92,6 +92,20 @@ export function saetzeFuer<T extends { nur?: FundingTechnik[] }>(rates: T[], tec
   return rates.filter((r) => !technik || !r.nur || r.nur.includes(technik));
 }
 
+/**
+ * Fördert das Programm Dach-Photovoltaik? Ohne Angabe gilt `["pv"]` (siehe
+ * {@link FundingProgram.foerdert}).
+ *
+ * Die Förder-Stadtseite heißt „Photovoltaik-Förderung …" und rechnet
+ * Dachanlagen. Ein LAUFENDES Programm, das nur Balkonkraftwerke fördert
+ * (München seit Dez. 2024), darf dort nicht als laufende PV-Förderung
+ * erscheinen — Titel, Einleitung und Live-Status fragen deshalb diese eine
+ * Funktion, nie den Status allein (01.10.2026).
+ */
+export function foerdertDach(p: Pick<FundingProgram, "foerdert">): boolean {
+  return (p.foerdert ?? ["pv"]).includes("pv");
+}
+
 /** Beschriftung der Technik — eine Quelle, damit Rechner und Seiten gleich sprechen. */
 export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
   pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
@@ -917,7 +931,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     "bundesland": "Bayern",
     "agsCode": "09376161",
     "url": "https://www.schwandorf.de/Schnellzugriff-Startseite/Klimaschutz-und-Energie/Kommunales-Klimaschutzf%C3%B6rderprogramm/",
-    "stand": "September 2026",
+    "stand": "Oktober 2026",
     "status": "aktiv",
     "capped": true,
     "verified": true,
@@ -925,27 +939,79 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "privat"
     ],
     "foerdert": [
-      "pv"
+      "pv",
+      "balkon"
     ],
     "coveredCosts": "Kommunales Klimaschutzförderprogramm",
     "rates": [
       {
         "label": "Neue oder erweiterte PV-Anlage mit neuem Speicher",
-        "value": "700 € pauschal"
+        "value": "700 € pauschal",
+        "nur": [
+          "pv"
+        ]
       },
       {
         "label": "PV-Anlage, Speicher und Wallbox gemeinsam",
-        "value": "800 € pauschal"
+        "value": "800 € pauschal",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "label": "Balkonkraftwerk ab 800 Wp zusammen mit neuem Speicher ab 1.000 Wh",
+        "value": "15 % der Kosten, höchstens 180 €",
+        "nur": [
+          "balkon"
+        ]
       }
     ],
     "conditions": [
       "Vor Bestellung oder Kauf den Antrag stellen und die Bewilligung abwarten",
-      "PV-Anlage oder Erweiterung mindestens 4 kWp und neuer Speicher mindestens 4 kWh",
-      "Für volljährige Privatpersonen mit Hauptwohnsitz in Schwandorf und Eigentümergemeinschaften mit dort ansässiger Vertretung",
-      "Für Wohngebäude und zugehörige Nebenanlagen im Stadtgebiet",
-      "Innerhalb von zwölf Monaten umsetzen",
+      {
+        "text": "PV-Anlage oder Erweiterung mindestens 4 kWp und neuer Speicher mindestens 4 kWh",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Für volljährige Privatpersonen mit Hauptwohnsitz in Schwandorf und Eigentümergemeinschaften mit dort ansässiger Vertretung",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Für Wohngebäude und zugehörige Nebenanlagen im Stadtgebiet",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Innerhalb von zwölf Monaten umsetzen",
+        "nur": [
+          "pv"
+        ]
+      },
+      {
+        "text": "Gefördert wird nur der gemeinsame Neukauf von Balkonkraftwerk (ab 800 Wp) und Speicher (ab 1.000 Wh); Balkonkraftwerk oder Speicher allein, Nachrüstung, Gebrauchtkauf, gemietete oder geleaste Anlagen und Inselanlagen sind ausgeschlossen",
+        "nur": [
+          "balkon"
+        ]
+      },
+      {
+        "text": "Für natürliche Personen und örtliche eingetragene Vereine mit Hauptwohnsitz in Schwandorf, Eigentümer wie Mieter; Anlage im Stadtgebiet und im Marktstammdatenregister angemeldet",
+        "nur": [
+          "balkon"
+        ]
+      },
+      {
+        "text": "Innerhalb von sechs Monaten umsetzen; Balkon-Fördertopf 10.000 € je Haushaltsjahr; laut Stadt seit 1. Oktober 2026 im Programm",
+        "nur": [
+          "balkon"
+        ]
+      },
       "Mindestens fünf Jahre betreiben",
-      "Freiwilliger Zuschuss im Rahmen des Jahresbudgets"
+      "Freiwilliger Zuschuss im Rahmen des Jahresbudgets; Richtlinie gilt bis 31.12.2027"
     ],
     "combinableWith": [
       "bund-nullsteuer",
@@ -2254,19 +2320,36 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     stand: "August 2026",
     status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp + je kWh Speicher (derzeit keine Antragsannahme)",
+    coveredCosts: "Zuschuss je kWp nach neuer Richtlinie (derzeit keine Antragsannahme)",
     rates: [
-      { label: "PV-Anlage", value: "300 €/kWp, max. 6.000 €" },
-      { label: "Batteriespeicher", value: "300 €/kWh, max. 3.000 €" },
+      { label: "PV-Anlage", value: "200 €/kWp, höchstens 20 kWp; mit Wärmepumpe 300 €, mit Wallbox 230 €, mit beidem 330 € je kWp", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "200 €/kWp, höchstens 50 % der Gesamtkosten; ein Gerät je Anschluss, bis 2.000 Wp, Wechselrichter höchstens 800 VA", nur: ["balkon"] },
     ],
     conditions: [
-      "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an — sie baut das digitale Antragsverfahren um; wie lange das dauert, sagt sie nicht",
+      "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an",
+      "Seit dem 10. September 2026 gilt eine neue Richtlinie; Anträge nimmt die Stadt nach eigener Angabe voraussichtlich ab Oktober 2026 wieder an",
+      "Batteriespeicher werden nach der neuen Richtlinie nicht mehr eigens gefördert",
       "Vollständige Anträge, die vor dem 10. August 2026 eingegangen sind, werden regulär weiterbearbeitet",
       "Mieter ausdrücklich antragsberechtigt",
       "Gefördert werden Gebäude mit bis zu acht Wohneinheiten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 300, speicherPerKwh: 300, pvCap: 6000, speicherCap: 3000,
+    // NEUE RICHTLINIE (01.10.2026, Quartalsprüfung, Council 3/3): In Kraft seit
+    // 10.09.2026, § 3 — „200,- €/kWp … Maximal sind 20 kWp förderfähig",
+    // „Solarstrombatterien sind nicht Gegenstand der Förderung". Die alten Sätze
+    // (300 €/kWp bis 6.000 €, Speicher 300 €/kWh bis 3.000 €) stammten aus der
+    // Richtlinie 2022 und sind gesenkt bzw. gestrichen — die sichere Richtung.
+    // Status bleibt `pausiert`, bis die Seite die Antragsannahme bestätigt; der
+    // Balkon-Satz der neuen Richtlinie ist bewusst NICHT nachgetragen (neuer
+    // Abzug = Vorschlag an den Betreiber).
+    // BALKON NACHGETRAGEN ALS TEXT (01.10.2026, Council 3/3 incl. adversarial):
+    // Richtlinie 2026 § 3 Nr. 2 „Förderfähig sind Steckersolargeräte
+    // (Balkonkraftwerke) … Der Zuschuss beträgt 200,- €/kWp, bzw. pro 1.000 Wp,
+    // jedoch maximal 50 % der Gesamtkosten." Kein Rechenwert: Das Minimum aus
+    // Satz je Wp UND Kostenanteil kann das Balkon-Modell nicht ausdrücken
+    // (Gate-Bedingung 3) — und solange `pausiert` gilt, zieht ohnehin nichts ab.
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 200, pvCap: 4000,
   },
   "nidda-solar": {
     // „Balkonkraftwerk" statt des amtlichen „Mini-PV" (26.08.2026): Die Stadt
@@ -2357,7 +2440,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       // ein einziges Feld „Leistung:" ohne Einheit und fragt die Modulzahl gar
       // nicht ab. Deshalb bleibt die Rechnung, wie sie ist (200 € für alle
       // Sets); wer sie ändern will, braucht eine Auskunft der Stadt.
-      { text: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Gefördert wird ein Balkonkraftwerk mit höchstens zwei Modulen je Haushalt, höchstens 800 W Einspeisung — ob ein Set mit mehr Modulen ganz herausfällt, sagt die Richtlinie nicht eindeutig; wir rechnen deshalb keinen Betrag an", nur: ["balkon"] as FundingTechnik[] },
       { text: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt", nur: ["balkon"] as FundingTechnik[] },
       { text: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung", nur: ["balkon"] as FundingTechnik[] },
       { text: "Je Haushalt wird im Förderzeitraum nur eine Anlage gefördert", nur: ["balkon"] as FundingTechnik[] },
@@ -2382,7 +2465,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     endetIso: "2026-12-31",
     pvPerKwp: 100, pvCap: 1000, pvMin: 4,
     speicherPerKwh: 50, speicherCap: 500,
-    balkonPercentOfCost: 0.5, balkonCap: 200,
+    // BALKON OHNE RECHENWERT (01.10.2026). Mini-PV guideline (Stand 14.08.2025,
+    // Förderzeitraum 2026) § 2: "Pro Haushalt wird im Förderzeitraum nur eine
+    // Mini-PV-Anlage (max. 2 Module) gefördert." Council: primary verifier
+    // "nicht entscheidbar", adversarial verifier "4-Modul-Set nicht
+    // förderfähig". The calculator cannot see the module count, and the
+    // 4-module set got up to 200 € that are disputed — so the balcony part
+    // informs only (50 %, max. 200 € stays as text). Before: balkonPercentOfCost
+    // 0.5, balkonCap 200. Roof PV and storage are unaffected.
     // HALTEDAUER JE TECHNIK GETRENNT (17.09.2026). Hier stand ungemarkt
     // „Haltedauer zehn Jahre" — belegt ist das nur in der PV-Richtlinie
     // („Haltedauer von PVA: 10 Jahre · Haltedauer von Stromspeichern: 10 Jahre").
@@ -2415,8 +2505,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // daneben. Der Seiten-Wächter meldet den Wechsel einmalig als „nicht
     // vergleichbar"; das ist der Preis und in seiner Bauart vorgesehen.
     url: "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen",
+    // BUDGET 2026 AUSGESCHÖPFT (29.09.2026, zweimal unabhängig an der
+    // Programmseite gelesen): „Das für Neuanträge im Jahr 2026 zur Verfügung
+    // stehende Fördermittelbudget ist vollständig ausgeschöpft. Ab sofort
+    // können keine neuen Förderanträge mehr angenommen werden." Der Hinweis
+    // steht über der ganzen Seite, gilt also Dachanlage, Speicher UND
+    // Balkonkraftwerk. Die Richtlinie (Version 2, 02.10.2025) läuft „bis zum
+    // 31.12.2026" — eine Neuauflage 2027 ist nicht angekündigt.
     stand: "September 2026",
-    status: "aktiv", capped: true, verified: true,
+    status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Staffel-Pauschalen für Dachanlage und Speicher, dazu eine Pauschale fürs Balkonkraftwerk",
     rates: [
@@ -2677,7 +2774,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage (≥ 5 kWp)", value: "150 €/kWp" },
       { label: "Batteriespeicher", value: "100 €/kWh, max. 1.200 €" },
     ],
-    conditions: ["Modul 'Energie erzeugen' aktuell ausgeschöpft"],
+    conditions: [
+      "Modul 'Energie erzeugen' aktuell ausgeschöpft; seit 8. Juni 2026 ist eine Antragstellung bis auf Weiteres nicht möglich",
+      "Große PV-Anlagen ab 5 kWp werden nur für gemeinnützige, eingetragene Vereine bezuschusst, nicht für Privathaushalte",
+      "Speicher nur zusammen mit einer PV-Anlage ab 5 kWp und mindestens 0,5 kWh je kWp",
+    ],
     combinableWith: BUND,
   },
 
@@ -2950,10 +3051,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "muenchen-fkg": {
     id: "muenchen-fkg", name: "Förderprogramm Klimaneutrale Gebäude (FKG)",
     traeger: "Landeshauptstadt München", level: "kommune", region: "München", bundesland: "Bayern", agsCode: "09162",
-    url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414150/", stand: "Juni 2026",
-    status: "eingestellt", capped: true, verified: true,
+    // REACTIVATED 01.10.2026. The entry stood on `eingestellt` since June, but
+    // the stop of 18.12.2024 only concerned rooftop PV; the balcony module runs.
+    // Read at the source (Balkon page 10414151) on 01.10.2026: "Gefördert wird
+    // der Kauf und die Installation von steckbaren Photovoltaik-
+    // Stromerzeugungsgeräten … Der Fördersatz beträgt 0,40 Euro je Wp, bis 800
+    // Wp je Wohneinheit, jedoch maximal 50 Prozent der Kosten." Council 3/3
+    // incl. adversarial in the quarterly review and again in the news watcher
+    // run of 01.10.2026 (guideline in force 28.09.2026, Nr. 5.3).
+    // Still NO structured rate: "0,40 €/Wp, höchstens 50 % der Kosten" is the
+    // MINIMUM of two limits, and the balcony model can express only one of
+    // them (balkonProWp caps absolutely, not at a share of the price). 0,40 €/Wp
+    // alone would give 320 € on a 400-€ set where the city pays 200 € — so the
+    // programme informs and deducts nothing (gate condition 3). Because it
+    // funds no rooftop PV, the city page is a "Balkonkraftwerk-Förderung" page
+    // (stadtseiteFall "balkon", since 06.10.2026), never "Photovoltaik-Förderung".
+    url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414151/", stand: "Oktober 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Dach-PV seit Dez. 2024 nicht mehr förderfähig — nur noch Balkonkraftwerke",
+    coveredCosts: "Zuschuss je Wp für Balkonkraftwerke; Dach-PV seit Dez. 2024 nicht mehr förderfähig",
     rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp bis 800 Wp je Wohneinheit, höchstens 50 % der Kosten (mit München-Pass 95 % der förderfähigen Kosten)" }],
     conditions: [
       "Für Dach-Photovoltaik seit dem 18.12.2024 keine neuen Anträge mehr möglich",
@@ -4072,21 +4188,43 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
   "herne-klimafoerderung": {
-    id: "herne-klimafoerderung", name: "Förderprogramme Klimaschutz",
+    id: "herne-klimafoerderung", name: "Förderung für Steckersolargeräte und Batteriespeicher",
     traeger: "Stadt Herne", level: "kommune", region: "Herne",
     bundesland: "Nordrhein-Westfalen", agsCode: "05916",
-    url: "https://www.herne.de/Stadt-und-Leben/Klima/Foerderprogramme/",
-    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    // UPDATED 01.10.2026 (Council 3/3 incl. adversarial for the balcony part).
+    // City news 13.07.2026: "Bei der aktuellen Förderung stehen Mittel für
+    // insgesamt 30 Anlagen zur Verfügung, davon 20 Balkonkraftwerke und zehn
+    // Batteriespeicher. … Der Zuschuss für ein Balkonkraftwerk beträgt 100 Euro,
+    // für einen Batteriespeicher 300 Euro." Service portal (Stecker-PV, live
+    // 01.10.2026): "Ab dem 01.07.2026 fördert die Stadt Herne die
+    // Neuanschaffung von Stecker-PV-Anlagen", online form "Antrag: Förderung
+    // Stecker PV 2026"; the guideline accepts no applications after 30.11.2026.
+    // NOT RECORDED AS RUNNING: the battery grant. Its portal page (ID 2243091,
+    // still linked from the news item) answers "konnte nicht gefunden werden"
+    // on 01.10.2026 — that is not proof of an end, but no source confirms it
+    // is open, so `foerdert` names only the balcony part and the battery stays
+    // a text line. That also keeps the city page from turning into a live
+    // "Photovoltaik-Förderung" for a grant nobody can confirm (foerdertDach).
+    // NO STRUCTURED AMOUNT: 20 slots since July, first come first served, and
+    // no page says how many are left. Information only until a source
+    // confirms free slots.
+    url: "https://serviceportal.herne.de/detail/-/vr-bis-detail/dienstleistung/805964/show",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-07-01", endetIso: "2026-11-30",
     eligibility: ["privat"],
-    coveredCosts: "Wechselt jährlich — für 2026 sind Balkonkraftwerke und Speicher angekündigt, aber noch nicht beschlossen",
-    rates: [{ label: "Balkonkraftwerk und Speicher", value: "für 2026 geplant, Konditionen offen" }],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € pauschal, ein Gerät je Antragsteller", nur: ["balkon"] },
+    ],
     conditions: [
-      "Die Stadt wechselt die Förderungen jedes Jahr je nach verfügbaren Mitteln und Nachfrage",
-      "Photovoltaik und Speicher wurden in früheren Jahren gefördert, diese Programme sind ausgelaufen",
-      "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
+      "Mittel für insgesamt 30 Anlagen: 20 Balkonkraftwerke und 10 Batteriespeicher; vergeben in der Reihenfolge des Eingangs — wie viele noch frei sind, nennt die Stadt nicht",
+      "Gefördert werden nur Anlagen, mit deren Errichtung noch nicht begonnen wurde",
+      "Balkonkraftwerke vor allem für Zwei- und Mehrfamilienhäuser; Einfamilienhäuser nur bei nachweislich ungeeignetem Dach",
+      "Anträge nach dem 30. November 2026 werden nicht mehr angenommen",
+      "Angekündigt war daneben ein Zuschuss von 300 € für einen Batteriespeicher zu einer neuen Dachanlage (ab 3 kWh, Module ab 10 m²); seine Antragsseite ist derzeit nicht erreichbar, ob er noch läuft, ist offen",
     ],
     combinableWith: BUND,
-    foerdert: ["pv", "balkon"],
+    foerdert: ["balkon"],
   },
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
@@ -5149,6 +5287,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind natürliche Personen",
       "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert",
+      { text: "Der Stromspeicher muss mindestens 2,5 kWh fassen", nur: ["pv"] as FundingTechnik[] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] as FundingTechnik[] },
       "Die Dachanlage muss mindestens 5 kWp leisten — die unterste Stufe beginnt dort",
       "Anlagen, die vor dem 1. Mai 2022 in Betrieb gingen, sind ausgeschlossen",
       "Der Fördertopf umfasst insgesamt 50.000 €",
@@ -5338,14 +5478,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Leimen", level: "kommune", region: "Leimen",
     bundesland: "Baden-Württemberg", agsCode: "08226041",
     url: "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteil der Gesamtkosten einer Balkonkraftwerk",
     maxFoerderung: "max. 120 € je Antrag",
     rates: [{ label: "Balkonkraftwerk", value: "15 % der Gesamtkosten, max. 120 €" }],
     conditions: [
       "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
-      "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
+      // 02.10.2026: Die Programmseite nennt nur noch „ein begrenztes Budget";
+      // die frühere Angabe „ausreichend Fördermittel" steht dort nicht mehr.
+      "Die Stadt hat ein begrenztes Budget bereitgestellt; über Anträge wird nach den verfügbaren Mitteln entschieden",
       "Beantragt wird nach dem Kauf mit Rechnung, Foto der installierten Anlage und Registrierungsbestätigung aus dem Marktstammdatenregister",
       "In Mietwohnungen ist die Erlaubnis des Vermieters beizulegen",
     ],
@@ -5355,6 +5497,244 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Vorgänger-Session ihre 15 % hatte. Ohne ihn hätte ein 800-€-Set 120 statt
     // 45 € Förderung gezeigt: derselbe Prozentsatz, dreifacher Betrag.
     balkonPercentOfCost: 0.15, balkonCap: 120,
+  },
+
+  "laudenbach-steckersolar": {
+    id: "laudenbach-steckersolar", name: "Förderung von Stecker-Solaranlagen",
+    traeger: "Gemeinde Laudenbach", level: "kommune", region: "Laudenbach",
+    bundesland: "Baden-Württemberg", agsCode: "08226040",
+    url: "https://www.gemeinde-laudenbach.de/gemeinde-daten/klimaschutz/bauen-wohnen-energie",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines Balkonkraftwerks (Module, Wechselrichter, Verkabelung, Speicher)",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 100 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, Wechselrichter höchstens 800 W",
+      "Antragsberechtigt sind Eigentümer, Mieter und Vermieter im Gemeindegebiet; bei Mietobjekten mit Einbauerlaubnis des Vermieters",
+      "Fördertopf 2026: 1.000 €, vergeben in der Reihenfolge der Anträge, solange Mittel vorhanden sind; ob noch Mittel übrig sind, weiß nur die Gemeinde",
+      "Beantragt wird nach dem Kauf mit Rechnung, Foto der Anlage, Nachweis aus dem Marktstammdatenregister (Anlage und Speicher) und Nachweis der Produktsicherheit",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme betrieben werden",
+      "Ein nachträglich gekaufter Speicher zu einer bereits geförderten Anlage wird nicht gefördert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie Stand 21.04.2026, Nr. 2: "Die Förderhöhe beträgt 20 % der
+    // Anschaffungskosten, maximal 100 Euro je Anlage." Bewusst KEIN
+    // strukturierter Satz (balkonPercentOfCost): Der Topf 2026 ist 1.000 €
+    // klein und vergibt nach Antragseingang; ob im Oktober noch Mittel da sind,
+    // sagt keine Amtsquelle. Ohne bestätigte Restmittel informiert der Eintrag
+    // nur, statt Geld abzuziehen (Wächterlauf 01.10.2026).
+  },
+
+  "hemsbach-steckersolar": {
+    id: "hemsbach-steckersolar", name: "Förderung von Stecker-Solaranlagen",
+    traeger: "Stadt Hemsbach", level: "kommune", region: "Hemsbach",
+    bundesland: "Baden-Württemberg", agsCode: "08226031",
+    url: "https://www.hemsbach.de/unsere-stadt/klimaschutz",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines Balkonkraftwerks (Module, Wechselrichter, Verkabelung, Speicher bis 3 kWh)",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 100 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, Wechselrichter höchstens 800 W, mit Nachweis der Produktsicherheit; ein Speicher bis 3 kWh je Haushalt zählt zu den Anschaffungskosten",
+      "Bei denkmalgeschützten Gebäuden ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+      "Rechnungsdatum nicht vor dem 01.03.2025",
+      "Antragsberechtigt sind Eigentümer, Mieter und Vermieter im Stadtgebiet sowie gemeinnützige Vereine; bei Mietobjekten mit Einbauerlaubnis des Vermieters",
+      "Fördertopf 2026: 5.000 €, vergeben in der Reihenfolge der Anträge; ist er erschöpft, wird nichts mehr gefördert, und ob noch Mittel übrig sind, weiß nur die Stadt",
+      "Beantragt wird nach dem Kauf mit Rechnung, Foto der Anlage und Nachweis aus dem Marktstammdatenregister",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie vom 24.10.2022, geändert 10.02.2025, in Kraft 01.03.2025,
+    // Nr. 2: "Die Förderhöhe beträgt 20 % der Anschaffungskosten, maximal 100
+    // Euro je Anlage." Stadtseite (02.10.2026): "Die Stadt hat für das
+    // Haushaltsjahr 2026 einen Fördertopf von 5.000 Euro bereitgestellt." Bewusst
+    // KEIN strukturierter Satz: Der Topf vergibt nach Antragseingang, und ob im
+    // Oktober noch Mittel da sind, sagt keine Amtsquelle (Wächterlauf
+    // 02./03.10.2026, Council 3/3 inkl. Gegenprüfer; Denkmalschutz-Nachweis
+    // nach Gegenprüfung ergänzt, Stadtseite am 03.10.2026 live unverändert).
+  },
+
+  "walldorf-klimaschutz": {
+    id: "walldorf-klimaschutz", name: "Photovoltaik für Wohngebäude, Stecker-Solaranlage, Effizient heizen",
+    traeger: "Stadt Walldorf", level: "kommune", region: "Walldorf",
+    bundesland: "Baden-Württemberg", agsCode: "08226095",
+    url: "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Dachanlage nach Leistung, Speicher nach Kapazität, Balkonkraftwerk nach Material- und Montagekosten, Wärmepumpe als Pauschale ergänzend zur Bundesförderung; die Heizungsoptimierung (hydraulischer Abgleich, Warmwasserspeicher, Heizkörper) fördert die Stadt zusätzlich in Höhe der Bundesförderung, das führen wir hier nicht auf",
+    maxFoerderung: "Dachanlage bis 10.000 € je Gebäude (bei mehr als 3 Wohneinheiten mehr), Speicher zusätzlich bis 5.000 €, Balkonkraftwerk bis 300 € je Wohneinheit, Wärmepumpe bis 12.500 € (bis 3 Wohneinheiten) bzw. 15.000 € (ab 4)",
+    rates: [
+      { label: "Photovoltaik", value: "500 € je kWp, höchstens 10.000 € je Gebäude; bei mehr als 3 Wohneinheiten +600 € je weitere Wohneinheit (mind. 45 m²)", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "500 € je kWh zusammen mit einer neuen Anlage, 250 € je kWh bei Nachrüstung und bei gesetzlich verpflichteten Anlagen; förderfähig je nach Anlagengröße 6 bis 10 kWh", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "50 % der anrechenbaren Kosten, höchstens 300 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "bis 3 Wohneinheiten: Luft/Wasser 5.000 €, Erdsonden 12.500 €, Erdkollektoren 6.250 €; ab 4 Wohneinheiten: 7.000 € / 15.000 € / 7.500 €; dezentrale Geräte 2.000 € je Wohnung", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Dachanlage und Speicher: Antrag und Bewilligung vor der Auftragsvergabe; die Anlage muss binnen zwölf Monaten ab Bewilligung fertig und abgerechnet sein, sonst erlischt der Anspruch", nur: ["pv"] },
+      { text: "Dachanlage: Bei Gebäuden mit Bauantrag ab 01.05.2022 wird nur die Leistung über der gesetzlichen Pflicht (0,06 kWp je m² überbauter Fläche) gefördert; für gesetzlich verpflichtete Anlagen (auch bei umfassender Dachsanierung ab 2023 oder Pflicht aus dem Bebauungsplan) gibt es für den Speicher nur 250 € je kWh", nur: ["pv"] },
+      { text: "Dachanlage: Andere öffentliche Fördermittel werden auf den Zuschuss angerechnet, insgesamt höchstens 50 % der anrechenbaren Kosten; gemietete, geleaste oder per Ratenkauf angeschaffte Anlagen, Eigenleistungen und der Tausch einzelner Module sind nicht förderfähig", nur: ["pv"] },
+      { text: "Dachanlage: Installation durch einen Fachbetrieb; antragsberechtigt sind Eigentümer und Erbbauberechtigte, Eigentümergemeinschaften gemeinschaftlich mit Beschluss, Mieter mit Einverständnis des Eigentümers sowie ortsansässige Vereine und Kirchen", nur: ["pv"] },
+      { text: "Balkonkraftwerk: bis 800 W Wechselrichter und höchstens 2.000 W Modulleistung; beantragt wird nach Kauf und Installation binnen sechs Wochen ab Rechnungsdatum, mit Foto und Registrierung im Marktstammdatenregister; vor dem 01.01.2026 gekaufte Geräte sind ausgeschlossen", nur: ["balkon"] },
+      { text: "Balkonkraftwerk: antragsberechtigt sind Eigentümer und Erbbauberechtigte, Mieter nur mit Einverständnis des Eigentümers; Eigenleistungen sind nicht förderfähig", nur: ["balkon"] },
+      { text: "Wärmepumpe: nur im Bestand als Ersatz einer fossilen Heizung, durch einen Fachbetrieb und nur zusammen mit einem Antrag bei BAFA oder KfW; Antrag UND Bewilligung der Stadt müssen vor Beginn der Maßnahme vorliegen (anders als bei der Bundesförderung genügt der Antrag allein nicht); zusammen mit der Bundesförderung höchstens 60 % der anrechenbaren Kosten", nur: ["waermepumpe"] },
+      { text: "Wärmepumpe: antragsberechtigt sind Eigentümer und dinglich Verfügungsberechtigte, Eigentümergemeinschaften gemeinschaftlich; reine Brauchwasser-Wärmepumpen sind ausgeschlossen", nur: ["waermepumpe"] },
+      "Alle drei Richtlinien gelten vom 01.01.2026 bis 31.12.2027 im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    // Drei Richtlinien der Stadt Walldorf, je in Kraft 01.01.2026, befristet
+    // bis 31.12.2027, gelesen im Volltext am 04.10.2026 (Wächterlauf, Council
+    // 3/3 inkl. Gegenprüfer; MFH-Zuschlag, Kauf-Stichtag Balkon, Anrechnung
+    // anderer Mittel und Bewilligung vor Beginn bei der Wärmepumpe nach der
+    // Gegenprüfung ergänzt):
+    // "15._RL_Photovoltaik_2026.pdf" Nr. 4: "Die Förderung beträgt 500 EUR je
+    // kWp neu installierter Leistung bis zu einer Höhe von maximal 10.000 EUR
+    // pro Gebäude"; "17._RL_Balkonkraftwerk_2026.pdf" Nr. 3: "50 % der
+    // anrechenbaren Kosten, höchstens jedoch 300 EUR pro Wohneinheit";
+    // "21._RL_Effizient_heizen_2026.pdf" Nr. 5. Bewusst KEIN strukturierter
+    // Satz: Bauantrags-Stichtag, Speicherstaffel nach kWp, 50-/60-%-Deckel
+    // inklusive Bundesmitteln und die Verrechnung anderer Fördermittel kann das
+    // Modell nicht abbilden.
+  },
+
+  "hirschberg-steckersolar": {
+    id: "hirschberg-steckersolar", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Gemeinde Hirschberg an der Bergstraße", level: "kommune", region: "Hirschberg an der Bergstraße",
+    bundesland: "Baden-Württemberg", agsCode: "08226107",
+    url: "https://www.hirschberg-bergstrasse.de/klimaschutz/kommunales-forderprogramm",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines neuen Balkonkraftwerks",
+    maxFoerderung: "max. 200 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 200 € je Anlage" }],
+    conditions: [
+      "Eine Anlage je Wohneinheit, höchstens 800 W Einspeisung, mit Nachweis der Produktsicherheit; nur neue Geräte, keine gebrauchten Komponenten",
+      "Rechnungsdatum nicht vor dem 01.01.2026; beantragt wird nach dem Kauf mit Rechnung, Foto der montierten Anlage und Nachweis aus dem Marktstammdatenregister",
+      "Antragsberechtigt sind Eigentümer, Vermieter und Mieter einer Wohnung oder eines Hauses im Gemeindegebiet sowie gemeinnützige Vereine; bei Mietobjekten mit Einbauerlaubnis des Vermieters; nicht an gewerblich genutzten Gebäuden oder Gebäudeteilen",
+      "Bei denkmalgeschützten Gebäuden ist die denkmalschutzrechtliche Genehmigung nachzuweisen; ausgeschlossen sind Anlagen, die wegen einer rechtlichen Verpflichtung installiert werden müssen, Inselanlagen ohne Netzanschluss, Umbauten und Prototypen sowie Standorte, denen Bau- oder Planungsrecht entgegensteht",
+      "Fördertopf 2026, vergeben in der Reihenfolge der vollständig eingereichten Anträge; ist er erschöpft, wird nichts mehr gefördert, und ob noch Mittel übrig sind, weiß nur die Gemeinde; ein Rechtsanspruch besteht nicht",
+      "Die Anlage muss mindestens fünf Jahre ab Inbetriebnahme funktionstüchtig betrieben werden; ein Verkauf in dieser Zeit ist zu melden und wird nach Monaten anteilig zurückgefordert, Vermietung oder Funktionslosigkeit sind ebenfalls zu melden, sonst wird der Zuschuss zurückgefordert",
+      "Die Richtlinie gilt vom 01.01.2026 bis 31.12.2026",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Richtlinie zur Förderung von Stecker-Solargeräten vom 19.01.2026, in
+    // Kraft rückwirkend 01.01.2026 bis 31.12.2026 (Scan, am 04.10.2026 als
+    // Bild gelesen), Nr. 3: "Der Zuschuss beträgt 30% der Anschaffungskosten,
+    // maximal 200,00 Euro je Anlage." Gemeindeseite (04.10.2026): "Die Gemeinde
+    // hat deshalb für das Haushaltsjahr 2026 erneut einen Fördertopf
+    // bereitgestellt. Ist dieser erschöpft, werden keine weiteren Anlagen
+    // gefördert." Bewusst KEIN strukturierter Satz (Topf nach Antragseingang,
+    // Restmittel unbekannt), dieselbe Behandlung wie hemsbach-steckersolar.
+  },
+
+  "schwetzingen-klimaimpuls": {
+    id: "schwetzingen-klimaimpuls", name: "KlimaIMPULS – SolarIMPULS: Zuschuss für Balkonkraftwerke",
+    traeger: "Stadt Schwetzingen", level: "kommune", region: "Schwetzingen",
+    bundesland: "Baden-Württemberg", agsCode: "08226084",
+    url: "https://www.schwetzingen.de/startseite/stadtentwicklung/foerderprogramme.html",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Solarmodul eines neu angeschafften Balkonkraftwerks",
+    maxFoerderung: "max. 200 € je Anlage und Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Modul, höchstens 2 Module (max. 200 € je Anlage und Wohn- bzw. Nutzungseinheit)" }],
+    conditions: [
+      "Neu angeschafft und installiert, höchstens 800 W (AC) am Wechselrichter und 2.000 W Modulleistung, nach den geltenden Normen und im Marktstammdatenregister angemeldet; die Anlage darf auch an Fassade, Terrasse oder Dach hängen; nicht gefördert werden reine Inselanlagen mit Batterie, Prototypen, Eigenbau- und gebrauchte Anlagen",
+      "Antragsberechtigt sind Eigentümer, Vermieter und Mieter von Wohnraum in Schwetzingen; Mieter mit Einverständniserklärung des Vermieters, in einer Eigentümergemeinschaft mit schriftlicher Einverständniserklärung der Gemeinschaft; gewerblich genutzter Flächenanteil der Wohneinheit unter 50 %",
+      "Beantragt wird nach Kauf UND Installation; der Antrag muss spätestens drei Monate nach dem Kaufdatum bei der Stadt eingegangen sein, mit Rechnung, Zahlungsbeleg und Foto der installierten Anlage; gefördert werden nur Käufe ab dem 01.06.2025",
+      "Mittel werden in der Reihenfolge vollständiger Anträge reserviert, bis die Haushaltsmittel erschöpft sind; unvollständige Anträge reservieren nichts, fehlende Unterlagen sind binnen zehn Werktagen nachzureichen; ob noch Mittel übrig sind, weiß nur die Stadt; ein Rechtsanspruch besteht nicht",
+      "Über alle KlimaIMPULS-Bausteine zusammen höchstens 1.000 € je Haushalt und Jahr; die Stadt kann vor Ort kontrollieren und bei nicht erfüllten Bedingungen zurückfordern",
+      "Die Förderrichtlinie 2025 (gültig bis 31.12.2025) gilt laut Stadt 2026 unverändert weiter: Fortführung beschlossen vom Technischen Ausschuss am 03.12.2025 unter Vorbehalt der Haushaltsgenehmigung durch die Kommunalaufsicht; der Baustein tritt außer Kraft, sobald eine Bundes-, Landes- oder Kreisförderung für Balkonkraftwerke besteht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Förderrichtlinie 2025 KlimaIMPULS (Stand 22.04.2025, gültig 01.06.–
+    // 31.12.2025), am 05.10.2026 im Volltext gelesen (PDF, Seiten als Bild),
+    // Nr. 5.3: "Die Neuanschaffung eines Steckersolargeräts wird einmalig mit
+    // einem pauschalen Zuschuss von 100 Euro pro Photovoltaikmodul gefördert.
+    // Förderfähig sind maximal 2 Module, d.h. der Förderhöchstbetrag liegt bei
+    // 200 Euro je Anlage und Wohn- bzw. Nutzungseinheit." Stadtseite
+    // (05.10.2026): "Für alle Schwetzinger/innen bedeutet dies, dass die
+    // Förderrichtlinie 2025 auch im Jahr 2026 unverändert weiter gilt."
+    // Council 2/2 incl. adversarial reviewer (05.10.2026): all amounts
+    // confirmed; purchase cut-off, budget-approval caveat, written consent and
+    // the automatic end on federal/state/district funding added afterwards.
+    // Bewusst KEIN strukturierter Satz (Haushaltstopf nach Antragseingang,
+    // Antrag nach Kauf), dieselbe Behandlung wie hirschberg-steckersolar.
+  },
+
+  "hockenheim-stadtwerke-balkon": {
+    id: "hockenheim-stadtwerke-balkon", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadtwerke Hockenheim", level: "kommune", region: "Hockenheim",
+    bundesland: "Baden-Württemberg", agsCode: "08226032",
+    url: "https://www.stadtwerke-hockenheim.de/Service/Foerderung/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für ein neues Balkonkraftwerk (nur Stromkunden der Stadtwerke)",
+    maxFoerderung: "max. 300 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk (Bestandskunden der Stadtwerke)", value: "150 € pauschal" },
+      { label: "Balkonkraftwerk (Neukunden oder Vertrag „Naturstrom“)", value: "300 € pauschal" },
+    ],
+    conditions: [
+      "Nur Kunden der Stadtwerke Hockenheim: 150 € für Bestandskunden, 300 € für Neukunden oder Bestandskunden, die einen Vertrag für das Produkt „Naturstrom“ abschließen",
+      "Der Antrag muss VOR dem Kauf gestellt werden; eine rückwirkende Antragstellung ist nicht möglich; die Nachweise (Rechnung, Foto der montierten Anlage, Konformitätsnachweis) müssen binnen drei Monaten nach dem Antrag folgen",
+      "Höchstens eine Anlage je Haushalt; Eigentümer mehrerer Wohnungen nur für eine Wohnung je Förderjahr; Mieter nur mit schriftlicher Zustimmung des Vermieters",
+      "Nur neue Geräte mit Konformitätsnachweis (z. B. CE, Netzanschlussnorm 4105) in ausschließlich zu Wohnzwecken genutzten Gebäuden auf Hockenheimer Gemarkung; gewerblich genutzte Orte sind ausgeschlossen, bei Kulturdenkmälern ist eine denkmalschutzrechtliche Genehmigung nötig",
+      "Vergeben wird in der Reihenfolge des Antragseingangs, solange die Mittel im Antragsjahr reichen; ein Rechtsanspruch besteht nicht; ob noch Mittel übrig sind, wissen nur die Stadtwerke",
+      "Die Stadtwerke beschriften Antrag und Richtlinie mit 2026, verlinkt sind aber die Fassungen von 2023/2024 (Richtlinie in Kraft seit 01.07.2023; nennt noch Geräte bis 600 W, verweist aber auf die jeweils aktuelle VDE-Definition) — Beträge und Bedingungen im Zweifel bei den Stadtwerken erfragen",
+      "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Stadtwerke page read 06.10.2026: "Die Stadtwerke Hockenheim legen auch in
+    // diesem Jahr drei neue Förderprogramme … auf" with download "Förderantrag
+    // Balkonkraftwerke 2026"; the linked guideline (Foerderprogramm-und-
+    // richtlinien-2023.pdf) Nr. 6.1/6.2: "pauschal 150 Euro für Bestandskunden
+    // … oder pauschal 300 Euro für Neukunden bzw. Bestandskunden, die einen
+    // Vertrag zur Abnahme des Produktes ‚Naturstrom‘ … abschließen", Nr. 11:
+    // "tritt am 01.07.2023 in Kraft". Council 2/2 incl. adversarial reviewer;
+    // adversarial note: the 2026 labels point to 2023/2024 files, and the page
+    // text names a 2025 guideline that is not linked — kept as a condition.
+    // No structured rate: customer tie-in and remaining budget cannot be
+    // modelled — same treatment as schwerin-pv.
+  },
+
+  "hockenheim-stadtwerke-hauswaerme": {
+    id: "hockenheim-stadtwerke-hauswaerme", name: "Förderprogramm Hauswärmeanlagen",
+    traeger: "Stadtwerke Hockenheim", level: "kommune", region: "Hockenheim",
+    bundesland: "Baden-Württemberg", agsCode: "08226032",
+    url: "https://www.stadtwerke-hockenheim.de/Service/Foerderung/Richtlinien-zur-Foerderung-Hauswaermeanlagen.pdf",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für eine Wärmepumpe in Kombination mit Photovoltaik oder Solarthermie (nur Vollkunden der Stadtwerke)",
+    maxFoerderung: "max. 450 € (Wärmepumpen-Hybrid mit Naturstrom-Vertrag)",
+    rates: [
+      { label: "Wärmepumpe mit Photovoltaik oder Solarthermie", value: "350 € pauschal, +100 € bei Neukunden oder Vertrag „Naturstrom“" },
+    ],
+    conditions: [
+      "Gefördert wird nur die Umstellung auf die Kombination Wärmepumpe mit Photovoltaik oder Wärmepumpe mit Solarthermie, nicht die Wärmepumpe allein; daneben gibt es 200 € für Solarthermie und 250 € für Erdgas-Hybridsysteme, jeweils ebenfalls +100 € bei Neukunden oder Vertrag „Naturstrom“",
+      "Antragsberechtigt sind nur Tarifkunden, die ihre gesamte Energie (Strom und Heizung über Strom oder Erdgas) von den Stadtwerken Hockenheim beziehen; Mieter mit schriftlicher Zustimmung des Vermieters",
+      "Der Antrag muss vor Beginn der Maßnahme gestellt werden; ausgeführt oder abgenommen durch einen Fachbetrieb; höchstens eine Maßnahme je Kunde und Jahr; nur auf Hockenheimer Gemarkung, nicht gewerblich genutzt",
+      "Vergeben wird in der Reihenfolge des Antragseingangs, solange die Mittel im Antragsjahr reichen; ein Rechtsanspruch besteht nicht",
+      "Ausgezahlt wird nach Inbetriebnahme gegen Rechnung; wird die Anlage binnen zwei Jahren stillgelegt oder wesentlich geändert, kann der Zuschuss zurückgefordert werden",
+      "Die verlinkte Richtlinie ist die Fassung vom 01.05.2024; die Stadtwerke bieten das Programm laut ihrer Seite auch 2026 an",
+      "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // Scanned guideline (Richtlinien-zur-Foerderung-Hauswaermeanlagen.pdf, in
+    // force 01.05.2024) read as images 06.10.2026: Nr. 2.2 "Wärmepumpe und
+    // Photovoltaik / Wärmepumpe und Solarthermie", Nr. 6.2 "Hybridheizungs-
+    // systeme mit einer Wärmepumpe 350 Euro", Nr. 6.4 "+100 Euro für Neukunden
+    // bzw. Bestandskunden … Naturstrom", Nr. 3.1 "die ihre gesamte Energie
+    // (Strom und Heizung über Strom oder Erdgas) von den Stadtwerken Hockenheim
+    // beziehen". Council 2/2. No structured rate (customer tie-in, combination
+    // requirement); deducts nothing.
   },
 
   "sandhausen-foerderprogramme": {
@@ -5549,7 +5929,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Heddesheim", level: "kommune", region: "Heddesheim",
     bundesland: "Baden-Württemberg", agsCode: "08226028",
     url: "https://www.heddesheim.de/Umweltfoerderprogramm",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp für die Dachanlage, Pauschale fürs Balkonkraftwerk",
     maxFoerderung: "max. 1.500 € für die Dachanlage",
@@ -5561,6 +5941,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für die Dachanlage ist der Antrag vor der Auftragsvergabe zu stellen",
       "Beim Balkonkraftwerk darf die Rechnung bei Antragstellung höchstens sechs Monate alt sein",
       "Batteriespeicher und Wärmepumpen sind nicht Teil des Programms",
+      // 02.10.2026: Gemeindenachricht „Umweltförderprogramm 2026" vom 22.01.2026
+      // im Original gelesen: „Die Förderung von Photovoltaikanlagen ist in diesem
+      // Jahr letztmalig Bestandteil des Programms. Ab dem Jahr 2027 wird dieser
+      // Förderbaustein entfallen." Bezogen auf den Dach-Baustein; ob auch der
+      // Balkon-Zuschuss endet, sagt die Nachricht nicht — deshalb nur dort.
+      { text: "Laut Gemeinde ist die Förderung von Photovoltaikanlagen 2026 letztmalig Teil des Programms; ab 2027 entfällt dieser Baustein", nur: ["pv"] as FundingTechnik[] },
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
@@ -5599,14 +5985,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "beratzhausen-effizient", name: "Beratzhausen effizient",
     traeger: "Markt Beratzhausen", level: "kommune", region: "Beratzhausen",
     bundesland: "Bayern", agsCode: "09375118",
-    url: "https://beratzhausen.com/foerderprogramme/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    // AUSGESCHÖPFT (01.10.2026, Quartalsprüfung, Council 3/3): Die Programm-
+    // Unterseite trägt „Achtung! Förderbudget 2026 ist ausgeschöpft!"; die
+    // Richtlinie sagt, bei Überzeichnung gebe es im laufenden Haushaltsjahr
+    // keine weiteren Mittel. Die vorher hinterlegte Übersicht /foerderprogramme/
+    // trägt den Hinweis nicht — deshalb blieb er unbemerkt.
+    url: "https://beratzhausen.com/beratzhausen-effizient/",
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Balkonkraftwerke, daneben Haushaltsgeräte und Energieberatung",
+    coveredCosts: "Zuschuss für Balkonkraftwerke, daneben Haushaltsgeräte und Energieberatung (Budget 2026 ausgeschöpft)",
     maxFoerderung: "bis zu 50 € fürs Balkonkraftwerk",
     rates: [{ label: "Balkonkraftwerk", value: "bis zu 50 €" }],
     conditions: [
-      "Die Höhe im Einzelfall steht in der Förderrichtlinie, nicht auf der Programmseite",
+      "Das Förderbudget 2026 ist ausgeschöpft; im laufenden Haushaltsjahr werden keine weiteren Mittel bewilligt",
+      "Antrag und schriftliche Förderzusage vor dem Kauf; Balkonkraftwerk bis 800 Wp, eine Anlage je Haushalt",
       "Daneben werden ein Energieberatungsgutschein über 200 € und der Tausch von Haushaltsgeräten gefördert",
     ],
     combinableWith: BUND,
@@ -5634,7 +6026,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Zuschuss für die Dachanlage ist zusätzlich auf 10 % des Kaufpreises begrenzt",
       "Je Haushalt wird ein Balkonkraftwerk gefördert",
       "Eine Beschaffung vor Freigabe der Mittel ist zuschussschädlich",
-      "Für Photovoltaik und Balkonkraftwerke stehen zusammen 7.500 € bereit, vergeben nach Eingang",
+      "Für Photovoltaik, Balkonkraftwerke und die Energieberatungs-Checks stehen zusammen 7.500 € bereit, vergeben nach Eingang",
       "Auf die Förderung besteht kein Rechtsanspruch",
     ],
     combinableWith: BUND,
@@ -6664,6 +7056,112 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Speicherstaffel 300/400/500/600 €.
   },
 
+  // ─── Aufgenommen am 27.09.2026: Umweltförderrichtlinien der Ortsgemeinden
+  // Otterstadt und Waldsee (VG Rheinauen, Rhein-Pfalz-Kreis) ──────────────────
+  //
+  // Found through the source queue (VG page "Klimaschutz > Förderungen", four
+  // municipality rows). The VG page links a guideline, an overview of measures
+  // and an application form for EACH of the two Ortsgemeinden; Altrip and
+  // Neuhofen have none there. Both guidelines are scans without a text layer
+  // and were read page by page on 27.09.2026 (Otterstadt: "Richtlinien zur
+  // Umweltförderung der Ortsgemeinde Otterstadt vom Dezember 2024", signed
+  // 04.12.2024; Waldsee: "… vom Januar 2024", signed 05.01.2024), the overviews
+  // as text (Otterstadt "Stand 04.12.2024", Waldsee "Stand 01.01.2025").
+  //
+  // Overview, item 2.1: "Installation von PV-Anlagen/ Solaranlagen/
+  // Balkonkraftwerke — 10 %, max. 500 €"; 2.2: "Batteriespeicher für neue oder
+  // bestehende Solaranlagen — 10 %, max. 250 €"; 1.3: "Umstellung Öl- oder
+  // Gasheizung auf regenerative Quellen — 10 %, max. 500 €".
+  //
+  // WHAT IS COMPUTED: 10 % of the cost, at most 500 EUR, for the roof system
+  // (same form as Ostheide) and for a balcony system. NOT computed: the storage
+  // line — `percentOfCost` already acts on the cost the calculator passes, and
+  // a separate 10 %/250 EUR storage share cannot be expressed next to it
+  // (Horneburg pattern: shown, not deducted) — and the heating line, which is
+  // tied to replacing an oil or gas heating that is 10 to 30 years old, an
+  // age the calculator does not ask.
+  //   Known edge of `percentOfCost`: it acts on the whole cost passed in, so a
+  //   very small roof system with a large storage could show up to 500 EUR
+  //   where the two separate lines would pay less (e.g. 1 kWp + 4,000 EUR
+  //   storage: 350 EUR real, 500 EUR computed). A roof system of normal size
+  //   reaches the 500 EUR cap on its own, so the typical case is exact.
+  //
+  // THE APPLICATION COMES AFTER THE START: § 6 (1) "Der Antrag ist innerhalb
+  // von drei Monaten nach Beginn der Maßnahme schriftlich … zu stellen", and
+  // the VG page repeats it as its only highlighted note. The usual "apply
+  // first" advice would be wrong here, and so would missing the three months.
+  //
+  // Source addresses: Otterstadt has its own "Zuschüsse" page linking guideline
+  // and form (checked 27.09.2026); Waldsee has none (404), so its entry cites
+  // its guideline PDF on the VG site instead of the shared VG overview page.
+  //
+  // Funds are set "jährlich im Rahmen der Haushaltsplanung" (§ 5); neither
+  // page names a 2026 budget or a stop. Status `aktiv` on the strength of the
+  // VG page offering the forms today; no deduction happens until a probe is
+  // logged at the authority source.
+  "otterstadt-umweltfoerderung": {
+    id: "otterstadt-umweltfoerderung", name: "Richtlinien zur Umweltförderung",
+    traeger: "Ortsgemeinde Otterstadt", level: "kommune", region: "Otterstadt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338021",
+    url: "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-12-04",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    coveredCosts: "10 % der Kosten, gedeckelt je Maßnahme — Photovoltaik, Balkonkraftwerk, Batteriespeicher, Heizungsumstieg, daneben Dämmung, Fenster und Begrünung",
+    maxFoerderung: "max. 500 € Photovoltaik bzw. Balkonkraftwerk, 250 € Speicher, 500 € Heizungsumstieg",
+    rates: [
+      { label: "Photovoltaik- oder Solaranlage", value: "10 % der Kosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "10 % der Kosten, höchstens 250 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "10 % der Kosten, höchstens 500 €", nur: ["balkon"] },
+      { label: "Umstieg von Öl oder Gas auf erneuerbare Wärme", value: "10 % der Kosten, höchstens 500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Antrag wird NACH Beginn gestellt, aber spätestens drei Monate nach der Auftragserteilung — wer die Frist verpasst, bekommt nichts",
+      "Antragsberechtigt sind Einwohner von Otterstadt sowie Eigentümer, die binnen eines Jahres nach dem Antrag dort wohnen; die Maßnahme muss im Ort liegen",
+      "Die Umsetzung ist mit Fotos zu belegen; bei Photovoltaik ist die Anmeldung im Marktstammdatenregister nachzuweisen",
+      { text: "Gefördert werden nur neue Module; auf Neubauten nur, wenn keine gesetzliche oder baurechtliche Pflicht zur Anlage besteht", nur: ["pv", "balkon"] },
+      { text: "Gefördert wird der Austausch einer 10 bis 30 Jahre alten Öl- oder Gasheizung; ältere nur, wenn sie nicht unter die Austauschpflicht fallen", nur: ["waermepumpe"] },
+      "Andere Förderungen dürfen dazukommen; der Zuschuss der Gemeinde ist nachrangig und sinkt bei einer Überfinanzierung",
+      "Mittel werden jährlich im Haushalt bereitgestellt und nach Eingang vergeben; kein Rechtsanspruch",
+      "Die Bewilligung verfällt, wenn sie nicht spätestens im Folgejahr abgerufen wird",
+    ],
+    combinableWith: BUND,
+    percentOfCost: 0.10, pvCap: 500,
+    balkonPercentOfCost: 0.10, balkonCap: 500,
+  },
+  "waldsee-umweltfoerderung": {
+    id: "waldsee-umweltfoerderung", name: "Richtlinien zur Umweltförderung",
+    traeger: "Ortsgemeinde Waldsee", level: "kommune", region: "Waldsee",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338026",
+    url: "https://www.vg-rheinauen.de/verwaltung-politik/satzungen/ortsgemeinde-waldsee/umweltfoerderrichtlinien-og-waldsee.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-01-05",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    coveredCosts: "10 % der Kosten, gedeckelt je Maßnahme — Photovoltaik, Balkonkraftwerk, Batteriespeicher, Heizungsumstieg, daneben Dämmung, Fenster und Begrünung",
+    maxFoerderung: "max. 500 € Photovoltaik bzw. Balkonkraftwerk, 250 € Speicher, 500 € Heizungsumstieg",
+    rates: [
+      { label: "Photovoltaik- oder Solaranlage", value: "10 % der Kosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "10 % der Kosten, höchstens 250 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "10 % der Kosten, höchstens 500 €", nur: ["balkon"] },
+      { label: "Umstieg von Öl oder Gas auf erneuerbare Wärme", value: "10 % der Kosten, höchstens 500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Antrag wird NACH Beginn gestellt, aber spätestens drei Monate nach Auftragserteilung oder Materialbestellung — wer die Frist verpasst, bekommt nichts",
+      "Antragsberechtigt sind Einwohner von Waldsee; die Maßnahme muss im Ort liegen",
+      "Die Umsetzung ist mit Fotos zu belegen",
+      { text: "Gefördert werden nur neue Module; auf Neubauten nur, wenn keine gesetzliche oder baurechtliche Pflicht zur Anlage besteht", nur: ["pv", "balkon"] },
+      { text: "Gefördert wird der Austausch einer 10 bis 30 Jahre alten Öl- oder Gasheizung; ältere nur, wenn sie nicht unter die Austauschpflicht fallen", nur: ["waermepumpe"] },
+      "Andere Förderungen dürfen dazukommen; der Zuschuss der Gemeinde ist nachrangig und sinkt bei einer Überfinanzierung",
+      "Mittel werden jährlich im Haushalt bereitgestellt und nach Eingang vergeben; kein Rechtsanspruch",
+      "Die Bewilligung verfällt, wenn sie nicht spätestens im Folgejahr abgerufen wird",
+    ],
+    combinableWith: BUND,
+    percentOfCost: 0.10, pvCap: 500,
+    balkonPercentOfCost: 0.10, balkonCap: 500,
+  },
+
   "limburgerhof-balkonkraftwerke": {
     id: "limburgerhof-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Limburgerhof", level: "kommune", region: "Limburgerhof",
@@ -7256,6 +7754,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind Menschen, die in Walddorfhäslach zur Miete oder im Eigentum wohnen",
       "Das Gerät muss auf Walddorfhäslacher Gemarkung betrieben werden",
+      "Mieterinnen und Mieter legen die schriftliche Zustimmung der Vermieterin oder des Vermieters vor",
+      "Bei einem Kulturdenkmal oder Prüffall ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+      "Hersteller oder Verkäufer bestätigen die Produktsicherheit in einer Eigen- oder Konformitätserklärung (z. B. CE-Kennzeichnung, Netzanschlussnorm 4105)",
       "Entschieden wird im Rahmen der verfügbaren Haushaltsmittel",
     ],
     combinableWith: BUND,
@@ -7556,6 +8057,42 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Seiten-Abgleich wird es melden, sobald die Gemeinde es hinschreibt.
   },
 
+  "geesthacht-solar": {
+    id: "geesthacht-solar", name: "Förderung von Photovoltaik- und Solarthermie-Anlagen",
+    traeger: "Stadt Geesthacht", level: "kommune", region: "Geesthacht",
+    bundesland: "Schleswig-Holstein", agsCode: "01053032",
+    url: "https://www.geesthacht.de/output/download.php?fid=3777.1809.1.PDF",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2021", beschlossenIso: "2023-12-08", endetIso: "2025-04-30",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Festbetrag je installierter Leistung für neue Photovoltaik- und Solarthermie-Anlagen auf dem eigenen Gebäude",
+    maxFoerderung: "max. 1.000 € je Objekt und Kalenderjahr, höchstens 50 % der Investitionskosten",
+    rates: [
+      { label: "Photovoltaik ab 3 kWp", value: "ausgelaufen — Anträge bis 30.04.2025; zuvor 150 € je kWp, höchstens 1.000 €", nur: ["pv"] },
+    ],
+    conditions: [
+      "Anträge waren bis 30.04.2025 möglich; die Richtlinie galt bis 30.04.2026. Laut Mitteilung der Stadt vom Januar 2026 ist die Förderung eingestellt",
+      "Antragsberechtigt waren Eigentümer von Wohn- oder Gewerbegebäuden in Geesthacht, die nicht gewerbsmäßig Solarstrom erzeugen; Wohnungseigentümergemeinschaften nur gemeinsam",
+      "Gefördert wurden nur neue Anlagen, installiert von einem Fachbetrieb; der Antrag musste vor dem Vertragsabschluss gestellt werden",
+      "Solarthermie wurde mit 200 € je Quadratmeter Kollektorfläche gefördert (ab 2,5 m², höchstens 1.000 €)",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // GUIDELINE READ IN FULL 30.09.2026 (text PDF, 8 pages, the version still
+    // linked on the city's "Formulare im Bereich Zuschüsse" page): council
+    // 08.12.2023, amended 15.03.2024; § 6 a) "Anträge, welche nach dem
+    // 30.04.2025 eingereicht werden" are excluded; § 14 "bis zum 30. April 2026
+    // befristet"; § 7 PV "150 € pro kWp, max. bis zu 1000 € insgesamt pro
+    // Objekt und Kalenderjahr … Mindestleistung von 3 kWp", "darf 50% der
+    // Investitionskosten nicht überschreiten", cumulation "möglich - sofern
+    // dort nicht andere Regelungen vorgesehen sind" (hence BUND). City press
+    // release (Herzogtum direkt, 20.01.2026, "(pm)"): funding "seit 2021",
+    // "jetzt eingestellt". Taken in as ended (operator 17.08.2026: "gab es, ist
+    // beendet" is a real answer). No balcony, storage or heat-pump component.
+    // The city's service entry "Zuschuss für steckerfertige
+    // Photovoltaikanlagen" is the state programme, already catalogued.
+  },
+
   "hillscheid-energie": {
     id: "hillscheid-energie", name: "Förderung privater Energiegewinnung",
     traeger: "Ortsgemeinde Hillscheid", level: "kommune", region: "Hillscheid",
@@ -7747,6 +8284,1112 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // consultation for Nr. 2-9, without saying "before"; the condition text says
     // no more than that. Guideline and form are silent on other public funding.
     // Adversarial reviewer: every rate confirmed, "before" rejected (fixed).
+  },
+
+  "horn-hunsrueck-energieeinsparung": {
+    id: "horn-hunsrueck-energieeinsparung", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Horn", level: "kommune", region: "Horn",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140058",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/horn/energiesparrichtlinie-durchgeschrieben-horn.pdf?cid=2dj",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2022-05-12",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp, Anteil der Speicherkosten, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "max. 1.500 € Dachanlage, 1.500 € Speicher (als Kombigerät mit integriertem Speicher zusammen bis 3.000 €), 150 € Balkonkraftwerk; insgesamt 5.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik", value: "100 € je kWp, max. 1.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "25 % der Anschaffungskosten, max. 1.500 €, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "150 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes in Horn — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist ein Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde",
+      { text: "Dach- und Fassadenanlagen bis 30 kWp, zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt zunächst für Anschaffungen, die bis 31.12.2026 abgeschlossen sind; der Gemeinderat kann sie verlängern",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    endetIso: "2026-12-31",
+    pvPerKwp: 100, pvCap: 1500,
+    balkonPercentOfCost: 0.3, balkonCap: 150,
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 6 pages; the copy on
+    // horn-hunsrueck.de, "Energiesparrichtlinie (11/24)", has the same body
+    // plus device list and application form, 9 pages): council decision
+    // 12.05.2022, in force retroactively 01.07.2021 (§ 8 (6)), last amended
+    // 18.11.2024. § 4 (3) PV "100 € je kWp … auf 1.500 € je Anlage und Gebäude
+    // begrenzt"; § 4 (4) storage 25 % max 1,500 € — NOT computed (the model has
+    // no storage percentage); § 4 (5) PV with integrated storage 3,000 € but
+    // limited to 100 €/kWp + 25 % without repeating the 1,500 € PV cap, so a
+    // large combined system can get more for its PV part — the computed value
+    // errs low, the combined maximum stands in maxFoerderung; § 4 (11)
+    // balcony 150 € max 30 % — computed. § 2 (2): everything in § 1 (3),
+    // including the balcony (Nr. 10), only for owners of a residential building
+    // — hence nurWohnform. § 3 (5) energy check required for all of § 1 (3).
+    // § 8 (5) funding independent of other grants, so BUND. § 8 (7) term until
+    // 31.12.2026 bounds the measures ("bis 31.12.2026 abgeschlossen"),
+    // so endetIso switches the deduction off (corrected 26.09.2026, Nidda
+    // precedent; the first entry treated it as a mere guideline term). Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "bubach-energiespar": {
+    id: "bubach-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Bubach", level: "kommune", region: "Bubach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140020",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/bubach/richtlinie-zur-foerderung-der-energieeinsparung-bubach.pdf?cid=63j",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-08-07",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Festbetrag für ein Balkonkraftwerk mit Prozentgrenze; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.000 €, Speicher max. 2.000 €, Balkonkraftwerk max. 200 €, Heizungsanlagen zusammen max. 2.000 €; insgesamt 5.000 € je Antragsteller",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "200 € je kWp, max. 2.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.000 €, höchstens 30 % der Anschaffungskosten, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "200 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung, Hybridheizung)", value: "zusammen bis 2.000 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Bubach",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Bubach und nur mit einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; bis 30 € davon übernimmt die Gemeinde", nur: ["pv", "waermepumpe"] },
+      { text: "Wer das Balkonkraftwerk beantragen darf, regelt die Richtlinie nicht ausdrücklich; einen Energie-Check verlangt sie dafür nicht", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gibt es bis 4.000 €, begrenzt auf 200 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung auf dem Vordruck an das Ortsbürgermeisteramt",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 200, pvCap: 2000, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 200,
+    // GUIDELINE READ IN FULL 27.09.2026 — pages 1-8 are SCANNED (no text
+    // layer), read page by page as images; byte-identical to the copy saved
+    // 26.09.2026. Council 07.08.2018 (period 2018-2020), in force 01.09.2018
+    // (§ 9 (6)), consolidated 11.01.2021, last amended 06.12.2024 (7th
+    // amendment). § 1 (3) Nr. 1 roof PV "bis zu einer Gesamtleistung von
+    // 10 kWp je Anlage", hence pvMax: 10. § 4 (2) "200 € je kWp Leistung
+    // dieser Anlage gefördert. Die Förderung ist auf 2.000 € je Anlage und
+    // Gebäude begrenzt" — computed. § 4 (3) storage 2,000 € max 30 % and
+    // § 4 (4) combined unit 4,000 € (200 €/kWp, 30 % of storage share) —
+    // information only. § 4 (11) balcony (§ 1 (3) Nr. 13) "einmalige
+    // Förderung von 200 €, höchstens jedoch 30 % der Anschaffungskosten" —
+    // computed. § 4 (7) heating Nr. 6-9 incl. heat pump "insgesamt 2.000 €",
+    // 30 % — not computed. § 4 (12) total 5,000 € per applicant. § 2 (2):
+    // Nr. 1-11 only for owners; § 2 names NO eligible group for Nr. 13
+    // (balcony), so no nurWohnform — it would invent a restriction the text
+    // does not make. § 3 (1): energy check for Nr. 1-11, not for the balcony.
+    // § 9 (7): the VG guideline takes priority for identical items (it covers
+    // appliances and consultation only, per the VG guideline read for the
+    // Tiefenbach review on 26.09.2026). § 9 (8): double funding only with
+    // another Bubach programme is excluded; other funders are combinable, so
+    // BUND. § 9 (9)/(10): period and measures "bis zum 31.12.2027", so
+    // endetIso. Found through the VG Simmern-Rheinböllen sitemap; the
+    // municipality was not in the catalogue.
+  },
+
+  "rayerschied-energiespar": {
+    id: "rayerschied-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Rayerschied", level: "kommune", region: "Rayerschied",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140121",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/rayerschied/richtlinie-energieeinsparung-rayerschied.pdf?cid=65j",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2019-02-21",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Anteil eines Balkonkraftwerks; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 2.500 €, Balkonkraftwerk max. 300 €, Heizungsanlagen zusammen max. 2.500 €; insgesamt 10.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung)", value: "zusammen bis 2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Rayerschied",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Rayerschied und nur nach einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, und während der Laufzeit genügt ein Check", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Mieter und Eigentümer eines Wohngebäudes in Rayerschied beantragen; es muss mindestens zwei Jahre im eigenen Eigentum bleiben", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) bis 10 kWp gibt es bis 5.000 €, begrenzt auf 250 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz; ob der Zuschuss neben der Bundesförderung für die Wärmepumpe gezahlt wird, lässt die Richtlinie offen (Doppelförderung ist ausgeschlossen) — vorher beim Ortsbürgermeister klären", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie (01.01.2020); der Antrag geht spätestens 12 Monate nach Fertigstellung mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Eine Doppelförderung ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 7 pages, byte-identical to
+    // the copy saved 26.09.2026): council 21.02.2019, in force retroactively
+    // 01.01.2020 (§ 8 (7)), 4th amendment 05.08.2025, § 8 (10)/(11) period and
+    // measures "bis zum 31.12.2027" (footnotes cite a 5th amendment), so
+    // endetIso. § 1 (3) Nr. 2 roof PV "bis zu einer Gesamtleistung von 10 kWp
+    // je Anlage", hence pvMax: 10. § 4 (3) "250 € je kWp … auf 2.500 € je
+    // Anlage und Gebäude begrenzt" — computed. § 4 (4) storage 2,500 € max
+    // 30 % and § 4 (5) combined unit max 5,000 € — information only. § 4 (13)
+    // balcony (Nr. 14) "30 % der Anschaffungskosten, jedoch höchstens 300,00 €"
+    // — computed. § 4 (9) heating Nr. 8-10 incl. heat pump max 2,500 € and
+    // 30 % — not computed. § 4 (16) total 10,000 €. § 2 (3): Nr. 1-11 only for
+    // owners; § 2 (5): Nr. 13-16 (incl. balcony) tenants AND owners, so no
+    // nurWohnform. § 3 (1): energy check for Nr. 1-11 (PV, storage, heat pump),
+    // one check suffices during the term; § 1 (1) the town pays the 40 € own
+    // share. § 5 (2) application within 12 months (the text layer reads "1215":
+    // "12" plus footnote 15, checked on the rendered page). § 8 (4)
+    // balcony kept 2 years. § 8 (8): a VG Simmern energy guideline takes
+    // priority for identical items — it covers appliances and consultation
+    // only (see Bubach), so not PV, storage or balcony. § 8 (9): double funding
+    // excluded, VG/district programmes are none; no federal cash grant for PV or
+    // a balcony, so BUND; for the heat pump (BEG exists) the text leaves stacking
+    // open, hence the heat-pump condition — nothing is computed there. Council
+    // 27.09.2026: two verifiers incl. an adversarial one confirm every computed
+    // value; they caught the 12-month deadline. Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "neuerkirch-energiespar": {
+    id: "neuerkirch-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Neuerkirch", level: "kommune", region: "Neuerkirch",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140101",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-zur-foerderung-der-energieeinsparung-neuerkirch-durchgeschrieben.pdf?cid=66g",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2017-08-09",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Festbetrag für ein Balkonkraftwerk mit Prozentgrenze",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 3.000 €, Balkonkraftwerk max. 300 €; insgesamt 6.000 € je Antragsteller",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "3.000 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "300 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Maßnahmen an Gebäuden in Neuerkirch",
+      { text: "Dachanlage und Speicher nur für Eigentümer eines Wohngebäudes in Neuerkirch und nur nach einem Energie-Check vor Ort durch ein anerkanntes Institut; bis 40 € davon übernimmt die Gemeinde", nur: ["pv"] },
+      { text: "Wer das Balkonkraftwerk beantragen darf, regelt die Richtlinie nicht ausdrücklich; einen Energie-Check verlangt sie dafür nicht", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; der Speicher muss dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Der Antrag geht auf dem Vordruck an den Ortsbürgermeister — vor dem Vorhaben mit dem Angebot oder danach mit der Rechnung; ausgezahlt wird nach Schlussrechnung und Abnahme",
+      "Eine Doppelförderung ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gefördert wird nur, was bis 31.12.2027 angeschafft bzw. abgeschlossen ist",
+      "Bewilligt wird im Rahmen der Haushaltsmittel nach Eingang der vollständigen Unterlagen; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    endetIso: "2027-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 10,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, byte-identical to the copy
+    // saved 26.09.2026): council 09.08.2017, in force retroactively 01.04.2017
+    // (§ 8 (7)), 7th amendment 13.11.2025, § 8 (8)/(9) term and measures "bis
+    // zum 31.12.2027", so endetIso. § 1 (3) Nr. 2 roof PV "bis zu einer
+    // Gesamtleistung von 10 kWp je Anlage", hence pvMax: 10. § 4 (2) "einmalig
+    // mit 250 € je kWp … auf 2.500 € je Anlage begrenzt" — computed. § 4 (3)
+    // storage 3,000 € max 30 % — information only. § 4 (7) balcony (Nr. 7)
+    // "einmalige Förderung von 300,00 €, höchstens jedoch 30 % der
+    // Anschaffungskosten" — computed as min(30 %, 300 €). § 4 (9) total 6,000 €.
+    // § 2 (2): Nr. 2-6 only for owners; § 2 names NO eligible group for Nr. 7
+    // (balcony), so no nurWohnform. § 3 (1): energy check for Nr. 2-6, not for
+    // the balcony; § 4 (1) Nr. 2 check costs up to 40 €. No heat pump in this
+    // guideline — the town's separate heating guideline is its own entry
+    // (neuerkirch-heizung-ee). § 8 (5): a VG guideline takes priority for
+    // identical items (appliances and consultation only, see Bubach). § 8 (6):
+    // double funding excluded, VG/district programmes are none, so BUND. Found
+    // through the VG Simmern-Rheinböllen sitemap; the municipality was not in
+    // the catalogue.
+  },
+
+  "neuerkirch-heizung-ee": {
+    id: "neuerkirch-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
+    traeger: "Ortsgemeinde Neuerkirch", level: "kommune", region: "Neuerkirch",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140101",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/neuerkirch/richtlinie-heizung-erneuerbare-energien-neuerkirch-durchgeschrieben.pdf?cid=2ty",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2014-05-12",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "max. 4.000 € je Objekt",
+    rates: [
+      { label: "Heizungsanlage (Wärmepumpe an wasserführender Heizung, Holz/Pellet, Solarthermie)", value: "bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer von Gebäuden in Neuerkirch; jedes Gebäude wird nur einmal gefördert",
+      "Gefördert werden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpen nur an einem wasserführenden Heizungsnetz",
+      "Auch bereits errichtete Anlagen können gefördert werden",
+      "Auch der Anschluss an das örtliche Nahwärmenetz wird mit bis zu 4.000 € je Übergabestation gefördert; beim Netz Neuerkirch-Külz geht das Geld als Baukostenzuschuss direkt an den Netzbetreiber",
+      "Die Richtlinie von 2014 nennt kein Enddatum; die Gemeinde verweist auf ihrer Website weiterhin darauf. Einen eigenen Betrag nennt der Haushaltsplan 2026/2027 dafür nicht",
+      "Mittel gibt es nur im Rahmen des Haushalts, kein Rechtsanspruch",
+    ],
+    combinableWith: null,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, byte-identical to
+    // the copy saved 26.09.2026, published on the VG Simmern-Rheinböllen site
+    // next to the town's energy-saving guideline): dated 12.05.2014, last
+    // amended by council 05.05.2015, in force the day after publication (§ 6
+    // (3)), NO end date — unlike the near-identical Külz guideline, which an
+    // amendment in 2022 ended. § 2 owners, one subsidy per building. § 3 (1)
+    // Nr. 3 heat pumps "an ein wasserführendes Heizungsnetz angeschlossen";
+    // § 3 (3) only fully renewable; § 3 (5) already built plants eligible.
+    // § 4 (1) "höchstens 4.000,00 Euro" per object, amount "richtet sich nach
+    // den förderfähigen Kosten" — no rate, so nothing to compute. § 4 (3) district
+    // heating 4,000 € per transfer station. combinableWith null: the guideline
+    // says nothing on combination. STATUS AKTIV rests on the town's own page
+    // (neuerkirch.de/bauen-wohnen, read 27.09.2026): "Bestehende Gebäude …
+    // können weiterhin an das Nahwärmenetz angeschlossen werden. Der Anschluss
+    // wird gefördert wie auch alternative Maßnahmen zur Wärmegewinnung …
+    // Einzelheiten … Richtlinie … vom 12.05 2014". The budget plan 2026/2027
+    // names no own line (118,000 € split into energy-saving guideline, Leben
+    // mittendrin, sports, greening), which the conditions say openly.
+  },
+
+  "fronhofen-regenerativ": {
+    id: "fronhofen-regenerativ", name: "Richtlinie zur Förderung von regenerativer Strom- und Wärmeversorgung",
+    traeger: "Ortsgemeinde Fronhofen", level: "kommune", region: "Fronhofen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140039",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/fronhofen/foerderrichtlinie-erneuerbare-energien-fronhofen-durchgeschrieben.pdf?cid=2bd",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2015-01-19",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Photovoltaikanlage mit Speicher, eines nachgerüsteten Speichers oder einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "Photovoltaikanlage mit Speicher max. 4.000 €, nachgerüsteter Speicher max. 3.000 €, Heizungsanlage max. 4.000 € je Objekt; je Gebäude nur Strom oder Wärme",
+    rates: [
+      { label: "Photovoltaik nur zusammen mit einem Speicher", value: "bis 4.000 € für Anlage und Speicher nach den förderfähigen Kosten", nur: ["pv"] },
+      { label: "Speicher an einer seit 01.01.2009 bestehenden Anlage", value: "bis 3.000 € nach den förderfähigen Kosten", nur: ["pv"] },
+      { label: "Heizungsanlage (u. a. Wärmepumpe oder Solarthermie an wasserführender Heizung; auch Holz-/Pelletkessel)", value: "bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer von Gebäuden in Fronhofen; jedes Gebäude wird nur einmal gefördert — entweder für Strom oder für Wärme",
+      { text: "Eine neue Photovoltaikanlage wird nur zusammen mit einem Speicher gefördert, der überwiegend der Eigenversorgung dient und nicht gewinnorientiert betrieben wird", nur: ["pv"] },
+      { text: "Gefördert werden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpe und Solarthermie nur an einem wasserführenden Heizungsnetz. Auch seit 01.01.2009 bereits errichtete Heizungen können gefördert werden", nur: ["waermepumpe"] },
+      "Der Betrag richtet sich nach den nachgewiesenen Kosten für Planung, Anschaffung und Installation; einen festen Satz nennt die Richtlinie nicht",
+      "Der Antrag geht auf dem Vordruck an den Ortsbürgermeister oder die Verbandsgemeindeverwaltung — vor dem Vorhaben mit dem Angebot oder danach mit der Rechnung",
+      "Ausgezahlt wird nach Schlussrechnung und Abnahme in zwei gleichen Teilen: im Jahr der Fertigstellung und im Jahr danach",
+      "Auch der Anschluss an das Nahwärmenetz Fronhofen wird gefördert (Baukostenzuschuss bis 4.000 €, direkt an den Netzbetreiber)",
+      "Die Richtlinie von 2015 nennt kein Enddatum; im Haushalt stehen für diese Förderung (einschließlich Nahwärme-Anschlüssen) 2026 16.000 € und ab 2027 jährlich 4.000 €, das Geld ist also knapp. Reichen die Mittel nicht, entscheidet der Eingang der vollständigen Unterlagen; kein Rechtsanspruch",
+    ],
+    combinableWith: null,
+    foerdert: ["pv", "waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, byte-identical to
+    // the copy saved 26.09.2026): council 19.01.2015, in force the day after
+    // publication (§ 8 (3)), NO end date. § 1 (2) PV "in Verbindung mit
+    // Energiespeichern"; § 3 (1) 1.3.2 new PV only combined with storage
+    // "überwiegend zur Eigenversorgung … nicht gewinnorientiert", 1.3.1 storage
+    // retrofit for PV existing since 01.01.2009, 1.1.x biomass boilers, heat
+    // pumps and solar thermal on a water-based heating system. § 4 1.2 new PV
+    // incl. storage "höchstens 4.000,- Euro", 1.3 retrofit storage "höchstens
+    // 3.000,00 Euro", 1. heating max 4,000 € per object; § 4 2. amount "richtet
+    // sich nach den förderfähigen Kosten" — no rate, nothing computed. § 2
+    // owners, one subsidy per building "entweder für Wärme- oder für
+    // Stromversorgung". § 6 (2) paid in two equal parts across two years.
+    // STATUS AKTIV rests on the double budget 2026/2027 dated 30.04.2026
+    // (haushaltssatzung-und-plan-2027-fronhofen.pdf, read 27.09.2026), account
+    // 28100.541900: "16.000 € für die Auszahlung von Fördersummen gem.
+    // Richtlinien der OG (Förderung regenerativer Strom-/Wärmeversorgung)" in
+    // 2026, "ab 2027: Förderung 4.000 €" (may include district-heating
+    // connection payouts). Council 27.09.2026: two verifiers incl. an
+    // adversarial one confirm status and amounts. combinableWith null: the guideline
+    // says nothing on combination. Found through the VG Simmern-Rheinböllen
+    // sitemap; the municipality was not in the catalogue.
+  },
+
+  "kuelz-hunsrueck-heizung-ee": {
+    id: "kuelz-hunsrueck-heizung-ee", name: "Richtlinie zur Förderung von Heizungsanlagen mit erneuerbaren Energieträgern",
+    traeger: "Ortsgemeinde Külz (Hunsrück)", level: "kommune", region: "Külz (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140076",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/kuelz/foerderrichtlinie-kuelz-durchgeschriebene-fassung.pdf?cid=2jp",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2014-02-24", endetIso: "2022-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zu Planung, Anschaffung und Installation einer Heizungsanlage, die ausschließlich mit erneuerbaren Energien betrieben wird",
+    maxFoerderung: "max. 4.000 € je Objekt",
+    rates: [
+      { label: "Heizungsanlage (Wärmepumpe an wasserführender Heizung, Holz/Pellet, Solarthermie)", value: "ausgelaufen — Förderperiode bis 31.12.2022; zuvor bis 4.000 € je Objekt nach den förderfähigen Kosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Die Förderperiode endete am 31.12.2022; berücksichtigt wurden Maßnahmen, die bis 30.06.2023 abgeschlossen waren. Eine Neuauflage ist nicht bekannt",
+      "Antragsberechtigt waren Eigentümer von Gebäuden in Külz; jedes Gebäude konnte nur einmal gefördert werden",
+      "Gefördert wurden nur Anlagen, die ausschließlich mit erneuerbaren Energien betrieben werden; Wärmepumpen nur an einem wasserführenden Heizungsnetz",
+      "Auch der Anschluss an das örtliche Nahwärmenetz wurde mit 4.000 € je Übergabestation gefördert",
+    ],
+    combinableWith: null,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 4 pages, saved 26.09.2026
+    // from the VG Simmern-Rheinböllen sitemap): council decision 24.02.2014,
+    // amended 13.04.2015 and 05.09.2022. § 3 (1) Nr. 2 heat pumps "an ein
+    // wasserführendes Heizungsnetz angeschlossen"; § 4 (1) "höchstens
+    // 4.000,00 Euro" per object, amount "richtet sich nach den förderfähigen
+    // Kosten" — no rate, so nothing to compute. § 6 (4) "Förderperiode … bis
+    // zum 31.12.2022 begrenzt", § 6 (5) only measures "bis zum 30.06.2023
+    // getätigt bzw. abgeschlossen". No PV, storage or balcony. Taken in as
+    // ended (operator 17.08.2026: "gab es, ist beendet" is a real answer, and a
+    // relaunch will be noticed). No newer guideline in the Külz folder of the
+    // sitemap. combinableWith null: the guideline says nothing on combination.
+  },
+
+  "beltheim-energiespar": {
+    id: "beltheim-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Beltheim", level: "kommune", region: "Beltheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140010",
+    url: "https://beltheim.de/fileadmin/user_upload/gemeinde/Satzungen_und_Gebuehrenordnungen/00_Energiesparrichtlinie_Beltheim_Neufassung_gueltig_ab_01-01-2025_mit_Unterschrift.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-11-18", beginntIso: "2025-01-01", endetIso: "2029-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp mit Prozentgrenze, Anteil der Speicherkosten, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.500 €, Speicher max. 1.500 €, Balkonkraftwerk max. 300 €; insgesamt 2.500 € je Haushalt über die Laufzeit",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 15 kWp)", value: "100 € je kWp, höchstens 20 % der Gesamtkosten und max. 1.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "20 % der Anschaffungskosten, max. 1.500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Beltheim, auch juristische Personen; gefördert werden Maßnahmen an Gebäuden in Beltheim",
+      { text: "Gefördert werden Dachanlagen bis 15 kWp je Anlage zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie (01.01.2025) begonnen werden; der Antrag geht spätestens drei Monate nach der Anschaffung mit Rechnung und Zahlungsnachweis an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2029; insgesamt zahlt die Gemeinde je Haushalt höchstens 2.500 €",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1500, pvMax: 15,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF, 6 pages, read page by
+    // page; the VG Kastellaun climate page links the same file): council
+    // 18.11.2024, in force 01.01.2025 (§ 7 (6)), term "zunächst bis zum
+    // 31.12.2029" (§ 7 (7)). § 2 (2) roof PV "bis zu einer Gesamtleistung von
+    // 15 kWp je Anlage", hence pvMax: 15 (safe direction). § 5 (2) "100 € je
+    // kWp … auf maximal 20 % der Gesamtkosten je Anlage begrenzt, höchstens
+    // jedoch mit 1.500,- €": the 20 % cap binds only below 500 €/kWp, far under
+    // the calculator's market prices, so the kWp rate is computed. § 5 (3)
+    // storage "bis zu 20 % der Anschaffungskosten … höchstens jedoch mit
+    // 1.500,- €" — not computed (the model has no storage percentage). § 5 (5)
+    // balcony 30 % max 300 € — computed. § 5 (4) power-to-heat (heating rods,
+    // hot-water heat pumps storing own PV power) 20 % max 500 € — a hot-water
+    // heat pump is no heating system, so not listed under waermepumpe. § 5 (6)
+    // 2,500 € per household for the whole term. § 3 (1) owners AND tenants for
+    // everything, so no nurWohnform. § 7 (3) paid independently of other
+    // funding; no federal cash grant for PV or balcony, so BUND.
+  },
+
+  "dommershausen-energiespar": {
+    id: "dommershausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Dommershausen", level: "kommune", region: "Dommershausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140202",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_2025-03-24_Energiesparrichtlinie_der_Ortsgemeinde_Dommershausen_final.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-03-27", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp mit Prozentgrenze, Festbetrag für einen Speicher und für eine Heizungsanlage mit Prozentgrenze, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.500 €, Speicher max. 1.500 €, Balkonkraftwerk max. 300 €, Heizungsanlage max. 2.500 €; insgesamt 5.000 € je Haushalt",
+    rates: [
+      { label: "Photovoltaik", value: "150 € je kWp, max. 1.500 € und höchstens 20 % der Gesamtkosten", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "1.500 €, höchstens 20 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Heizungsanlage (Pellet-Zentralheizung, Wärmepumpe)", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nur mit Hauptwohnsitz in Dommershausen und für Maßnahmen an einem Wohngebäude in Dommershausen",
+      { text: "Dachanlage, Speicher und Heizungsanlage nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Dommershausen; über diese Anträge entscheidet der Gemeinderat", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Eigentümer und Mieter beantragen, die seit mindestens einem Jahr in Dommershausen wohnen", nur: ["balkon"] },
+      { text: "Gefördert werden Photovoltaikanlagen auf Dächern und an Wänden zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht vorher mit Angebot oder danach mit Rechnung an den Ortsbürgermeister",
+      "Eine erneute Förderung ist erst nach zehn Jahren (Dachanlage, Speicher, Heizung) bzw. fünf Jahren (Balkonkraftwerk) möglich",
+      "Die Richtlinie gilt bis 31.12.2027; Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 150, pvCap: 1500,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, linked from the VG Kastellaun
+    // climate page "Förderungen"): council 27.03.2025, in force the day after
+    // publication, term "rückwirkend zum 01.01.2025 … zunächst bis zum
+    // 31.12.2027" (§ 7 (5)/(6)). Same template as bickenbach-energiespar:
+    // § 5 (5) PV "150 € je kWp … auf 1.500 € je Anlage begrenzt, höchstens
+    // jedoch mit 20% der Gesamtkosten" — the 20 % cap binds only below
+    // 750 €/kWp, so the kWp rate is computed. § 5 (6) storage flat 1,500 € max
+    // 20 % — not computed (no storage percentage in the model). § 5 (7) balcony
+    // "maximal 300 €, höchstens mit 30%" — computed. § 5 (4) heating Nr. 5
+    // (Pellet, "Wärmepumpe / Wärmetauscher") 2,500 € max 30 % — not computed.
+    // § 3 (2) Nr. 2-7 and 10 owners only; § 3 (1) Nr. 1, 8, 9 owners or tenants
+    // for at least a year; § 3 (3) main residence. No energy consultation
+    // required (unlike Bickenbach). § 4 (5) re-funding after 5/10 years. The
+    // guideline is silent on other public funding. No beginntIso: § 7 (6) says
+    // "rückwirkend zum 01.01.2025", but § 4 (4) funds only measures begun after
+    // entry into force (§ 7 (5), day after publication) — verifier flagged the
+    // conflict, so the start date is left out.
+  },
+
+  "roth-hunsrueck-energie-klima": {
+    id: "roth-hunsrueck-energie-klima", name: "Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz",
+    traeger: "Ortsgemeinde Roth", level: "kommune", region: "Roth (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140131",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/2026-02-17__Foerderprogramm_Engergie_Klima_Roth_mit_Unterschrift.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-01-20", beginntIso: "2026-01-01", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, Anteil eines Balkonkraftwerks",
+    maxFoerderung: "Dachanlage max. 1.000 €, Speicher max. 600 €, Balkonkraftwerk max. 200 €",
+    rates: [
+      { label: "Photovoltaik", value: "100 € je kWp, max. 1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "100 € je kWh, max. 600 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Roth; Gewerbebetriebe und Gewerbegebäude sind ausgeschlossen",
+      { text: "Gefördert werden Dachanlagen zum Eigenverbrauch und zur Einspeisung; ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Je Haushalt wird ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten des Programms (01.01.2026) begonnen werden; der Antrag geht spätestens drei Monate nach der Anschaffung schriftlich mit Rechnung, Zahlungs- und Montagenachweis an den Ortsbürgermeister",
+      "Das Programm läuft bis 31.12.2027; Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1000,
+    speicherPerKwh: 100, speicherCap: 600,
+    balkonPercentOfCost: 0.2, balkonCap: 200,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF, 5 pages, read page by
+    // page; linked from the VG Kastellaun climate page): council 20.01.2026,
+    // in force retroactively 01.01.2026 (§ 7 (6)), term until 31.12.2027
+    // (§ 7 (7)). § 5 (5) PV "100,- Euro je kWp … maximal 1000,- Euro",
+    // § 5 (6) storage "100,- Euro je kWh … maximal 600,- Euro", § 5 (2)
+    // balcony "maximal 200,- Euro, höchstens 20 %" — all computed. § 5 (7)
+    // wallbox 100 € per household (needs a pure EV registered at the address,
+    // § 4 (5)) and appliances/mowers/pumps — outside our techniques. § 3 (1)
+    // owners AND tenants, so no nurWohnform. § 7 (3) paid independently of
+    // other funding as long as the total does not exceed the cost; no federal
+    // cash grant for PV or balcony, so BUND. Slug carries "hunsrueck": the
+    // Bavarian town Roth already owns "roth".
+  },
+
+  "michelbach-hunsrueck-energie-klima": {
+    id: "michelbach-hunsrueck-energie-klima", name: "Förderprogramm Erneuerbare Energien, Energieeinsparung und Klimaschutz",
+    traeger: "Ortsgemeinde Michelbach", level: "kommune", region: "Michelbach (Hunsrück)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140095",
+    url: "https://kastellaun.de/fileadmin/user_upload/Klimaschutz/PDFs/00_Foerderprogramm_Engergie_Klima_Michelbach.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-11-14", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss für ein Balkonkraftwerk",
+    maxFoerderung: "100 € je Haushalt, höchstens der Kaufpreis",
+    rates: [
+      { label: "Balkonkraftwerk", value: "ausgelaufen — Laufzeit bis 31.12.2025; zuvor 100 € je Haushalt, höchstens der Kaufpreis", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt waren Eigentümer und Mieter eines Wohngebäudes oder einer Wohnung in Michelbach; Gewerbebetriebe ausgeschlossen",
+      "Gefördert wurden Maßnahmen, mit denen nach dem 22.05.2024 begonnen wurde; der Antrag ging spätestens drei Monate nach der Anschaffung an den Ortsbürgermeister",
+      "Die Laufzeit war auf den 31.12.2025 beschränkt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 6 pages, still linked from
+    // the VG Kastellaun climate page "Förderungen"): council 14.11.2024,
+    // financed from KIPKI and the municipal budget; § 5 (2) balcony "einmalig
+    // mit 100,- Euro je Haushalt … maximal jedoch die Höhe des Kaufpreises";
+    // § 7 (6) "Die Laufzeit der Fördermaßnahme ist bis zum 31.12.2025
+    // beschränkt". No roof PV, storage or heat pump. Taken in as ended (operator
+    // 17.08.2026: "gab es, ist beendet" is a real answer); no successor
+    // programme found on the VG page. Not in ATLAS_CITIES — a closed
+    // balcony-only programme gets no Photovoltaik-Förderung page.
+  },
+
+  "vg-kastellaun-dorfzentren-klimaschutz": {
+    id: "vg-kastellaun-dorfzentren-klimaschutz", name: "Richtlinie zur Schaffung vitaler Dorfzentren/Beseitigung von Leerstand und für Klimaschutzmaßnahmen",
+    traeger: "Verbandsgemeinde Kastellaun", level: "kommune", region: "Verbandsgemeinde Kastellaun",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140064",
+    // ALL 19 MEMBERS, counted twice: the VG's own list of Ortsgemeinden
+    // (kastellaun.de/gemeinden/ortsgemeinden, 18) plus the town of Kastellaun,
+    // and de.wikipedia "Verbandsgemeinde Kastellaun" (19, read 27.09.2026).
+    // Each name resolved against mastr_regions under 07140; the Rhein-Hunsrück
+    // district holds 137 municipalities, so the five-digit district key would
+    // be wrong. Lahr, Mörsdorf and Zilshausen carry 5xx keys (moved in from
+    // Cochem-Zell), Dommershausen and Mastershausen 2xx.
+    agsCodes: [
+      "07140001", "07140009", "07140010", "07140018", "07140021", "07140042",
+      "07140046", "07140055", "07140064", "07140073", "07140095", "07140131",
+      "07140147", "07140153", "07140202", "07140204", "07140502", "07140503",
+      "07140504",
+    ],
+    url: "https://kastellaun.de/fileadmin/user_upload/Aktualisierung_Richtlinie_01.08.25.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-09-02", beginntIso: "2025-08-01", endetIso: "2027-07-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Objekt für Maßnahmen an mindestens 40 Jahre alten Gebäuden, darunter die Umstellung der Heizung auf erneuerbare Energien",
+    maxFoerderung: "2.000 € je Objekt",
+    rates: [
+      { label: "Umstellung der Heizung auf erneuerbare Energien, zum Beispiel auf eine Wärmepumpe", value: "2.000 € pauschal je Objekt, wenn die förderfähigen Kosten mindestens 10.000 € betragen", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert wird ältere Bausubstanz: Das Gebäude ist mindestens 40 Jahre alt und wurde in dieser Zeit nicht nennenswert baulich verbessert",
+      "Die förderfähigen Kosten (Beratung, Planung, Herstellung) müssen mindestens 10.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, ebenfalls mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen",
+      "Mit der Maßnahme darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Beginn begonnen werden; Antrag schriftlich beim Fachbereich 3 der Verbandsgemeinde",
+      "Antragsberechtigt sind die Eigentümer; gefördert wird grundsätzlich in den Bauflächen des Flächennutzungsplans, in begründeten Ausnahmefällen auch außerhalb",
+      "Maßgeblich sind die am Ende nachgewiesenen Kosten: Liegen sie unter 10.000 €, entfällt die gesamte Förderung",
+      "Beginn innerhalb von 12 Monaten, Abschluss innerhalb von 36 Monaten nach der Bewilligung; ein erneuter Antrag für dasselbe Objekt frühestens 15 Jahre nach Fertigstellung",
+      "Die Richtlinie gilt vom 01.08.2025 für zwei Jahre; Vergabe nach Eingang, soweit Haushaltsmittel bereitstehen, kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (6-page scan with a text layer; all six
+    // pages checked as images by the council, the age rule sits on pages 1–2,
+    // amount and minimum cost on page 3, the term on page 6). Still listed with
+    // an application form on kastellaun.de/klimaschutz/klimaschutz/foerderungen/. Live copy fetched the same day
+    // (kastellaun.de without www., with referer; www. answers 403) is
+    // byte-identical to the copy saved 27.09.2026 02:0x UTC
+    // (sha256 2ad4604e…d33894). Council of the VG 02.09.2025, second amendment,
+    // "tritt rückwirkend am 01. August 2025 in Kraft und hat eine
+    // Geltungsdauer von zwei Jahren" → endetIso 31.07.2027. § 4 Nr. 5 lists
+    // "Umstellung des Heizungssystems auf Erneuerbare Energien" among the
+    // energetic measures; § 1 limits eligible objects to buildings of at least
+    // 40 years. The source contradicts itself on WHICH measures are exempt:
+    // § 1 says "Nr. 9-11", § 4 puts the exemption before Nr. 10–12 (water
+    // retention, unsealing, greening). Nr. 5 is exempt under neither reading,
+    // so the heating switch keeps the age rule; § 1 softens it to "im
+    // Wesentlichen" older buildings, the condition text states the rule.
+    // § 6 minimum costs 10,000 €, § 7 "Der Zuschuss beträgt 2.000,- Euro je
+    // Objekt". No roof PV, no storage, no balcony. INFORMATION ONLY: the
+    // calculator knows neither the building's age nor its renovation history,
+    // so a flat 2,000 € would be deducted from cases the guideline excludes.
+    // § 10 paid "unabhängig von sonstigen Förderungen", other guidelines' rules
+    // on multiple funding apply → BUND. The three member villages with their
+    // own city page (Beltheim, Dommershausen, Roth) are pinned to their own
+    // programmes via fundingId, because both keys are eight digits long and
+    // fundingFor would otherwise return nothing.
+  },
+
+  "vg-weilerbach-meilenstein-preisgeld": {
+    id: "vg-weilerbach-meilenstein-preisgeld", name: "MEILENSTEIN-Preisgeld zur Erreichung der „100% Zero Emission Village“",
+    traeger: "Verbandsgemeinde Weilerbach", level: "kommune", region: "Verbandsgemeinde Weilerbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07335049",
+    // ALL 8 MEMBERS as named in the guideline itself ("Ortsgemeinden Erzenhausen,
+    // Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach,
+    // Schwedelbach und Weilerbach"), each resolved against mastr_regions under
+    // 07335. The programme page lists 11 names; Albersbach and Fockenberg-Limbach
+    // are village parts of Reichenbach-Steegen, Pörrbach of Schwedelbach
+    // (council verifier, de.wikipedia, 27.09.2026). The Kaiserslautern district
+    // key 07335 would cover the other Verbandsgemeinden and is wrong here.
+    agsCodes: [
+      "07335005", "07335006", "07335019", "07335024",
+      "07335040", "07335043", "07335049", "07335501",
+    ],
+    url: "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-10-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Preisgeld nach Punkten für Maßnahmen im Gebäudesektor, darunter Photovoltaik ab 5 kWp, Batteriespeicher und Wärmepumpen bei einer Sanierung",
+    maxFoerderung: "Betrag je Punkt legt die Verbandsgemeinde jedes Jahr im Haushalt fest",
+    rates: [
+      { label: "Photovoltaik", value: "Punkte je nach Größe: ein Punkt für 5 bis 20 kWp, zwei über 20 kWp, drei über 30 kWp, höchstens sechs; der Eurobetrag je Punkt steht nicht in der Richtlinie", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "ein zusätzlicher Punkt", nur: ["pv"] },
+      { label: "Wärmepumpe (nur bei einer Sanierung)", value: "ein Punkt", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Ein Preisgeld, keine feste Summe: Betrag je Punkt und Jahressumme beschließt die Verbandsgemeinde im Haushalt; reicht die Summe nicht, wird sie gleichmäßig auf alle Punkte verteilt",
+      "Antrag vor Beginn der Maßnahme, also vor Auftrag oder Materialbestellung; nachträglich ist keine Berücksichtigung möglich",
+      "Ausgezahlt wird einmal im Jahr bei der Meilensteinverleihung; Stichtag für die vollständigen Nachweise ist der 30. September",
+      { text: "Photovoltaik erst ab 5 kWp, auch im Neubau; nachzuweisen sind Rechnungen und Zahlungsbelege", nur: ["pv"] },
+      { text: "Wärmepumpe nur bei einer Sanierung: Der Heizungsbauer muss bestätigen, dass mindestens 65 % des Energiebedarfs des Gebäudes erneuerbar gedeckt werden, bei Anlagen mit Umwälzpumpe ist der hydraulische Abgleich nachzuweisen, und einzureichen ist der Förderbescheid von BAFA oder KfW", nur: ["waermepumpe"] },
+      "Antragsberechtigt sind Eigentümer von Gebäuden in den Ortsgemeinden Erzenhausen, Eulenbis, Kollweiler, Mackenbach, Reichenbach-Steegen, Rodenbach, Schwedelbach und Weilerbach, auch bei vermieteten Gebäuden",
+      "Kombinierbar mit anderen öffentlichen Fördermitteln, solange zusammen nicht mehr als die Kosten gezahlt wird; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 ("Richtlinie vom 28.4.2014, geändert …
+    // am 01.09.2025", 8 pages; "Die Änderung der Richtlinie tritt zum 01.10.2025
+    // in Kraft"), saved and live copy hash-identical (council verifier A):
+    // .../vg-richtlinie-zur-vergabe-der-preisgelder-2025.pdf?cid=kj4.
+    // INFORMATION ONLY, and it has to stay so: "Das Preisgeld pro Punkt sowie
+    // die Preisgeldsumme, die jährlich zur Verfügung gestellt wird, werden im
+    // Rahmen der Haushaltsplanungen festgelegt." A 2022 press release names
+    // 30,000 EUR a year, and a search snippet of a 2021 guideline "250 Euro"
+    // per point — neither could be confirmed for 2025/2026, so no amount.
+    // The one-year implementation rule stands only on the page, not in the
+    // guideline, and is therefore not listed as a condition. Alive: the
+    // Amtsblatt "Weilerbach aktuell" 29/2026 reports the ceremony of
+    // 07.07.2026 for 2024/2025 (70 applicants). Council: two verifiers incl.
+    // adversarial, 27.09.2026, all facts confirmed.
+  },
+
+  "weilerbach-energieeinsparmassnahmen": {
+    id: "weilerbach-energieeinsparmassnahmen", name: "Förderprogramm für Energieeinsparmaßnahmen im Rahmen des Klimaschutzkonzeptes",
+    traeger: "Ortsgemeinde Weilerbach", level: "kommune", region: "Weilerbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07335049",
+    url: "https://www.weilerbach.de/klimabuero/foerdermoeglichkeiten-in-der-verbandsgemeinde-weilerbach/og-weilerbach-foerderrichtlinie-foerderprogramm-fuer-energieeinsparmassnahmen-ab-2023.pdf?cid=edj",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-07-13",
+    eligibility: ["privat"],
+    coveredCosts: "10 % der Investition für Heizungstechnik ohne Gas- oder Ölbrennwert, darunter Wärmepumpen mit Flächenheizung",
+    maxFoerderung: "1.500 € je Haus (2.000 € mit Bedarfsenergieausweis oder Energieberatung)",
+    rates: [
+      { label: "Wärmepumpe mit Flächenheizung", value: "10 % der Investition, höchstens 1.500 € je Haus, mit Bedarfsenergieausweis oder Energieberatung nach BAFA/KfW höchstens 2.000 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Wärmepumpen werden nur zusammen mit einer Flächenheizung gefördert",
+      "Voraussetzung ist eine kostenlose Erst-Energieberatung durch die Verbandsgemeinde Weilerbach oder die Kreisverwaltung Kaiserslautern; die Verbandsgemeinde bietet sie nach eigener Angabe zurzeit nicht an, und der Landkreis verweist auf die Beratung der Stadt Kaiserslautern und der Verbraucherzentrale. Vor dem Auftrag deshalb beim Energiebüro der Verbandsgemeinde klären, welche Beratung anerkannt wird",
+      "Antrag vor Beginn der Maßnahme; schon die Beauftragung gilt als Beginn",
+      "Für Eigentumswohnungen gelten die halben Sätze, in Häusern mit mehr als zwei Wohnungen der halbe Satz je Wohnung",
+      "Ausgezahlt wird einmal im Jahr nach dem 31. Oktober; reicht das Jahresbudget nicht, bekommen alle Anträge denselben Anteil",
+      "Nur für Gebäude in der Gemarkung Weilerbach; Nachweise spätestens 12 Monate nach dem Antrag, kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (3 pages, council of the Ortsgemeinde
+    // 13.07.2023, header "seit 01.07.2023", closing clause "rückwirkend zum
+    // 01.01.2023" — the source contradicts itself, so no beginntIso). Linked as
+    // "neue Richtlinie ab Juli 2023" on the VG programme page; the older page
+    // /energiebuero/weitere-zuschuesse still links the superseded 2022 version
+    // with identical amounts. "Anträge können bis auf weiteres eingereicht
+    // werden." Information only: the underfloor-heating rule, the mandatory
+    // consultation and the pro-rata cut have no form in the calculator, and
+    // the pro-rata rule means 10 % is a ceiling, not a promise. The consultation
+    // note ("Zur Zeit findet keine Erst-Energieberatung statt") stands on the
+    // VG page and concerns the VG's own offer; whether the district still
+    // offers one is unclear: kaiserslautern-kreis.de/verwaltung/klimaschutz/
+    // energieberatung/ offers no service of its own and points to the city and
+    // the Verbraucherzentrale (adversarial verifier, 27.09.2026).
+  },
+
+  "beltheim-dorferneuerung-klimaschutz": {
+    id: "beltheim-dorferneuerung-klimaschutz", name: "Richtlinie zur Gewährung von Zuschüssen für Maßnahmen im Rahmen der Dorferneuerung und für Klimaschutz",
+    traeger: "Ortsgemeinde Beltheim", level: "kommune", region: "Beltheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140010",
+    url: "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Beltheim/Richtlinie_Beltheim_01.01.26.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-02-23", beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten energetischer Maßnahmen an mindestens 50 Jahre alten Gebäuden; auch die Erneuerung der Heizungsanlage allein zählt, unabhängig von der Technik",
+    maxFoerderung: "max. 8.000 € je Förderung; je Kind unter 18 Jahren mit Kindergeld im Haushalt steigt der Höchstbetrag um 10 % (höchstens 800 € je Kind). Bei einer Heizung ist der Zuschuss meist deutlich kleiner, weil die Bundesförderung vorher abgezogen wird",
+    rates: [
+      { label: "Erneuerung der Heizungsanlage als energetische Maßnahme (technikoffen, also auch eine Wärmepumpe)", value: "10 % der förderfähigen Kosten, max. 8.000 €; bei der Heizung wird die Bundesförderung (BAFA, KfW) vorher von der Rechnung abgezogen", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert wird ältere Bausubstanz: Das Objekt ist mindestens 50 Jahre alt, und an ihm wurden keine grundlegenden baulichen Verbesserungen durchgeführt",
+      "Die förderfähigen Kosten müssen mindestens 20.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen. Liegen die nachgewiesenen Kosten am Ende unter der Grenze, entfällt die gesamte Förderung. Ob die Grenze bei einer Heizung vor oder nach dem Abzug der Bundesförderung gilt, sagt die Richtlinie nicht",
+      "Antragsberechtigt sind die Eigentümer oder Käufer; der Antrag mit Kostenvoranschlägen und Fotos geht vor Baubeginn an die Ortsgemeinde oder die Verbandsgemeinde Kastellaun, begonnen werden darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Baubeginn",
+      "Über die Bewilligung entscheidet der Gemeinderat jeweils zum Ende eines Kalenderjahres nach einer Bewertungsmatrix und im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht. Einem vorzeitigen Baubeginn kann die Verbandsgemeinde mit zwei Wochen Vorlauf zustimmen, ein Anspruch auf den Zuschuss entsteht daraus nicht",
+      "Beginn innerhalb von sechs Monaten, Abschluss innerhalb von drei Jahren nach der Bewilligung; eine erneute Förderung desselben Objekts erst 15 Jahre nach Fertigstellung",
+      "Die Richtlinie gilt seit 01.01.2026 und nennt kein Enddatum",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (6-page scan with a text layer, linked
+    // from Beltheim's page on kastellaun.de; live copy fetched without www. with
+    // referer is byte-identical to the copy saved in run 0401Z, sha256
+    // f80b8071…9d25285). Council 23.02.2026, in force 01.01.2026 (Nr. 6), no
+    // end date. Nr. 2 e) "Maßnahmen zur energetischen Sanierung (u. a. …
+    // Erneuerung/Optimierung der Heizungsanlage …). Wird die Erneuerung/
+    // Optimierung der Heizungsanlage gefördert, werden staatliche Förderungen
+    // (z. B. BAFA, KFW) von der Rechnungssumme abgezogen." Nr. 3: objects of at
+    // least 50 years without fundamental improvements (the exemption is for
+    // Nr. 2 g) only); Nr. 3 a) eligible costs DIN 276 KG 100, 300–500, 700
+    // (KG 400 = technical systems, so heating counts), at least 20,000 €;
+    // Nr. 3 c) own work materials at least 10,000 €. Nr. 4 a) "10 % der Bau-
+    // … kosten – jedoch max. 8.000 €"; Nr. 4 d) +10 % of the maximum per child,
+    // at most 800 € per child. Nr. 5 a) owners or buyers; 5 e) council decides
+    // at the end of each calendar year by an assessment matrix; 5 f)
+    // complementary to other programmes; 5 g) start 6 months / finish 3 years;
+    // 5 j) re-funding after 15 years. Run 0201Z had filed this guideline as
+    // "not relevant" because it funds no PV, storage or balcony — it overlooked
+    // the heating item. Handled like vg-kastellaun-dorfzentren-klimaschutz:
+    // INFORMATION ONLY, the calculator knows neither the building's age nor the
+    // cost of the whole renovation, and the heating base is the invoice MINUS
+    // federal funding, which the flat model cannot express. BUND: the guideline
+    // subtracts BAFA/KfW from its own base instead of excluding them. Council
+    // 27.09.2026 (two reviewers, one adversarial): heating renewal alone is an
+    // eligible measure (2 e) is not tied to 2 b)'s design-upgrade rule or to an
+    // area); the 20,000 € threshold may be tested after the federal
+    // subtraction — the text does not say, so the condition says so. The
+    // assessment matrix ("Anlage") is not part of the PDF and was not seen.
+  },
+
+  "alterkuelz-dorfentwicklung": {
+    id: "alterkuelz-dorfentwicklung", name: "Richtlinien über die Gewährung von Zuschüssen für Maßnahmen im Rahmen der Dorfentwicklung",
+    traeger: "Ortsgemeinde Alterkülz", level: "kommune", region: "Alterkülz",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140001",
+    url: "https://kastellaun.de/fileadmin/user_upload/downloads/2019/Gemeinden/Ortsgemeinden/Alterk%C3%BClz/Richtlinie_Alterkuelz_ab_01.01.2022.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-10-12", beginntIso: "2022-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten energetischer Maßnahmen an mindestens 50 Jahre alten Gebäuden; auch die Erneuerung der Heizungsanlage allein zählt, unabhängig von der Technik",
+    maxFoerderung: "max. 5.000 €; der Zuschuss steigt um 20 % je Kind bis 17 Jahre, das bei Fertigstellung im Haushalt lebt",
+    rates: [
+      { label: "Erneuerung der Heizungsanlage als energetische Maßnahme (technikoffen, also auch eine Wärmepumpe)", value: "10 % der förderfähigen Kosten, max. 5.000 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Das Gebäude muss bei der Bewilligung mindestens 50 Jahre alt sein; gemeint ist im Wesentlichen ältere Bausubstanz ohne nennenswerte bauliche Verbesserungen",
+      "Die förderfähigen Kosten müssen mindestens 20.000 € betragen; bei Eigenleistung zählen nur die Materialkosten, mindestens 10.000 €, und die Verbandsgemeinde muss die fachgerechte Ausführung bescheinigen. Liegen die nachgewiesenen Kosten am Ende unter der Grenze, entfällt die gesamte Förderung",
+      "Kinder, die nach der Antragstellung geboren werden, erhöhen den Zuschuss nicht",
+      "Antragsberechtigt sind die Eigentümer oder Käufer; der Antrag auf dem Formblatt geht vor Baubeginn an die Ortsgemeinde oder die Verbandsgemeinde Kastellaun, begonnen werden darf erst nach der Bewilligung oder der Zustimmung zum vorzeitigen Baubeginn",
+      "Der Zuschuss wird über fünf Jahre in gleichen Raten jeweils zum 1. Juli ausgezahlt",
+      "Beginn innerhalb von sechs Monaten, Abschluss innerhalb von drei Jahren nach der Bewilligung; eine erneute Förderung desselben Objekts erst 15 Jahre nach Fertigstellung",
+      "Über die Bewilligung entscheidet der Gemeinderat im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht. Die Gemeinde kann Antragsfristen setzen und gibt sie mindestens einen Monat vor Ablauf im Amtsblatt Kastellaun bekannt",
+      "Die Richtlinie gilt seit 01.01.2022 und nennt kein Enddatum",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // GUIDELINE READ IN FULL 27.09.2026 (5 pages, two files on Alterkülz's page
+    // on kastellaun.de: a scan and a typed copy, same wording in the checked
+    // clauses 2.6, 3.1, 4.1, 4.2, 6; the scan is linked as url). Council
+    // 12.10.2021, in force 01.01.2022 (Nr. 6), no end date. 2.6 "Maßnahmen zur
+    // energetischen Sanierung (u. a. … Erneuerung/Optimierung der
+    // Heizungsanlage, Fenster)"; 3.1 eligible costs DIN 276 KG 100, 300–500,
+    // 700, at least 20,000 €; 3.2 own work materials at least 10,000 €; 3.7
+    // buildings at least 50 years at approval; 4.1 "10 % der Bau- … kosten –
+    // jedoch maximal 5.000 Euro"; 4.2 +20 % per child up to 17 for 2.6; 4.3
+    // paid in five yearly instalments on 1 July; 5.1 deadlines via Amtsblatt;
+    // 5.2 owners or buyers; 5.5 complementary to other programmes; 5.8
+    // re-funding after 15 years. INFORMATION ONLY, same reasoning as
+    // beltheim-dorferneuerung-klimaschutz. Unlike Beltheim the guideline does
+    // not subtract federal funding. BUND per 5.5. Council 27.09.2026: 3.7 (50
+    // years at approval) is the operative age rule; "keine nennenswerten
+    // Verbesserungen" stands only in the preamble, softened by "im
+    // Wesentlichen", so the condition says "gemeint ist". 4.2 raises the grant
+    // itself, not the cap; whether that can exceed 5,000 € is left open.
+  },
+
+  "benzweiler-energiespar": {
+    id: "benzweiler-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Benzweiler", level: "kommune", region: "Benzweiler",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140011",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/benzweiler/energiesparrichtline-benzweiler-mit-anlagen-benzweiler.pdf?cid=5ly",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-09-05",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbetrag für einen Speicher mit Prozentgrenze, Anteil eines Balkonkraftwerks; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage max. 2.500 €, Speicher max. 2.500 €, Balkonkraftwerk max. 300 €, Heizungsanlagen zusammen max. 2.500 €; insgesamt 7.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 30 kWp)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten, ein Speicher je Gebäude", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Anschaffungskosten, max. 300 €", nur: ["balkon"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung)", value: "zusammen bis 2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur mit Erstwohnsitz in Benzweiler; gefördert wird nur an einem privat genutzten Gebäude im Ort",
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes in Benzweiler", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk können Mieter und Eigentümer beantragen; es muss mindestens vier Jahre im eigenen Eigentum bleiben", nur: ["balkon"] },
+      { text: "Gefördert werden Dachanlagen bis 30 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gibt es bis 5.000 €, begrenzt auf 250 € je kWp und höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz und nur nach einem Energie-Check vor Ort, z. B. durch die Verbraucherzentrale; den Eigenanteil von 30 € übernimmt die Gemeinde, bei einem anderen Institut die Hälfte bis 200 €", nur: ["waermepumpe"] },
+      "Eine Doppelförderung derselben Maßnahme ist ausgeschlossen; die Programme der Verbandsgemeinde („Leben Mittendrin“) und des Kreises („Dorferneuerung“) gelten nicht als Doppelförderung",
+      "Gibt es für dieselbe Maßnahme eine Förderung von anderer Seite, ist sie zuerst zu nutzen; die Gemeinde zahlt dann nur den Unterschied bis zu ihrem Betrag",
+      "Der Antrag geht spätestens sechs Monate nach Fertigstellung mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Gefördert wird nur, was bis 31.12.2026 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    endetIso: "2026-12-31",
+    pvPerKwp: 250, pvCap: 2500, pvMax: 30,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (text PDF, 7 pages, byte-identical to
+    // the copy saved 26.09.2026): council meeting 05.09.2023 for the funding
+    // period 2023-2024, signed 05.10.2023, in force retroactively 01.01.2023
+    // (§ 8 (7)), 1st amendment 09.10.2024 extended it: § 8 (10)/(11) period
+    // and measures "bis zum 31.12.2026 getätigt bzw. abgeschlossen", so
+    // endetIso switches the deduction off (Nidda precedent). § 4 (3) PV
+    // "250,00 € je kWp … auf 2.500,00 € je Anlage und Gebäude begrenzt" —
+    // computed; § 1 (3) Nr. 2 roof systems up to 30 kWp, hence pvMax: 30 (the
+    // cap is reached at 10 kWp anyway). § 4 (4) storage 2,500 € max 30 % —
+    // no model form, information only. § 4 (5) combined unit 5,000 € limited
+    // to 250 €/kWp and 30 % of the storage share — text only. § 4 (13)
+    // balcony "30 % der Anschaffungskosten, jedoch höchstens 300,00 €" —
+    // computed. § 4 (9) heating Nr. 8-10 incl. heat pump max 2,500 € and 30 %
+    // — not computed (percentage heat-pump tripwire). § 2 (3): PV, storage and
+    // heating only for owners with first residence; § 2 (5): the balcony
+    // (Nr. 14) for tenants AND owners — hence NO nurWohnform (it would lock
+    // tenants out of the balcony deduction). § 3 (1): the energy check is
+    // required only for Nr. 5-6 and 10-11, i.e. insulation, windows, heat
+    // pump and ventilation — not for PV, storage or balcony. § 8 (4): balcony
+    // kept 4 years. § 8 (8): other funding first, municipality pays the
+    // difference — no federal cash grant exists for PV or a balcony, so BUND
+    // (zero-VAT and a KfW loan) does not reduce the amount; for a heat pump
+    // the BEG grant would take precedence, which is why that part stays
+    // uncomputed. § 8 (9): VG and district programmes are no double funding.
+    // Found through the VG Simmern-Rheinböllen sitemap; the municipality was
+    // not in the catalogue.
+  },
+
+  "reich-hunsrueck-energiespar": {
+    id: "reich-hunsrueck-energiespar", name: "Richtlinie zur Förderung der Energieeinsparung in Haushalten",
+    traeger: "Ortsgemeinde Reich", level: "kommune", region: "Reich",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140123",
+    url: "https://www.sim-rhb.de/gemeinden-verbaende/ortsgemeinden-staedte/reich/energiesparrichtlinie-reich-durchgeschrieben.pdf?cid=57d",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-04-10",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp oder Festbetrag für einen Speicher, jeweils mit Prozentgrenze; Heizungsanlagen einschließlich Wärmepumpe",
+    maxFoerderung: "Dachanlage und Speicher zusammen max. 1.500 €; Heizungsanlage max. 1.500 €; insgesamt 5.000 € je Antragsteller und Gebäude",
+    rates: [
+      { label: "Photovoltaik (Dachanlage bis 10 kWp)", value: "200 € je kWp, max. 1.500 € und höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "1.500 €, höchstens 30 % der Anschaffungskosten — zusammen mit der Dachanlage insgesamt nur einmal bis 1.500 €", nur: ["pv"] },
+      { label: "Heizungsanlage (Solarthermie, Holz/Pellet, Wärmepumpe an wasserführender Heizung, Austausch Öl/Gas)", value: "bis 1.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes in Reich",
+      "Voraussetzung ist ein Energie-Check vor Ort durch ein anerkanntes Institut, z. B. die Verbraucherzentrale; die Gemeinde übernimmt dafür bis 40 €, sofern die Verbandsgemeinde ihn nicht schon fördert",
+      { text: "Gefördert werden Dachanlagen bis 10 kWp zum Eigenverbrauch und zur Einspeisung; wer den Strom ausschließlich an Dritte verkauft, wird nicht gefördert. Ein Speicher muss überwiegend dem Eigenverbrauch dienen, je Gebäude wird einer gefördert", nur: ["pv"] },
+      { text: "Bei einer Anlage mit eingebautem Speicher (Kombigerät) gilt ebenfalls 200 € je kWp bis 1.500 €, zusätzlich höchstens 30 % des Kostenanteils für den Speicher", nur: ["pv"] },
+      { text: "Wärmepumpen nur an einem wasserführenden Heizungsnetz und nicht im Neubau", nur: ["waermepumpe"] },
+      "Gefördert werden nur Maßnahmen nach Inkrafttreten der Richtlinie; der Antrag geht mit Rechnung auf dem Vordruck an den Ortsbürgermeister",
+      "Gefördert wird nur, was bis 31.12.2026 angeschafft bzw. abgeschlossen ist",
+      "Reichen die Haushaltsmittel eines Jahres nicht, wird nach Antragseingang im Folgejahr ausgezahlt; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    endetIso: "2026-12-31",
+    pvPerKwp: 200, pvCap: 1500, pvMax: 10,
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 8 pages): council decision
+    // 10.04.2018, in force retroactively 01.04.2017 (§ 9 (6)), last amended
+    // 04.03.2026 (9th amendment, energy check 40 €). § 1 (3) Nr. 1 "Photovoltaik-
+    // anlagen auf Dächern bis zu einer Gesamtleistung von 10 kWp je Anlage" —
+    // read as the eligible object, hence pvMax: 10 (the safe direction: the cap
+    // is reached at 7.5 kWp anyway, so only larger systems are affected).
+    // § 4 (2) "200 € je kWp … auf 1.500 € je Anlage und Gebäude begrenzt";
+    // § 4 (4) PV OR storage per funding period, together max 1,500 € and 30 %
+    // of cost. The 30 % limit binds only below 667 €/kWp, far under the
+    // calculator's market prices, so the kWp rate is computed (same trade-off
+    // as Bickenbach/Allendorf). Storage NOT computed: flat 1,500 € max 30 %
+    // has no model form, and it shares the 1,500 € with the PV part. § 4 (8)
+    // heating incl. heat pump (§ 1 (3) Nr. 8, not in new builds) max 1,500 €
+    // and 30 % — not computed (percentage heat-pump tripwire). § 2 (2): owners
+    // only; § 3 (1) energy check for § 1 (3) Nr. 1-10. § 9 (8): federal and
+    // state programmes are no double funding, so BUND. § 9 (9)/(10) term until
+    // 31.12.2026: § 9 (10) accepts only measures "bis zum 31.12.2026 getätigt
+    // bzw. abgeschlossen", so the date bounds the MEASURE, not just the text —
+    // endetIso switches the deduction off (Nidda precedent). The council
+    // extended it before; if it does again, lift endetIso with the new source.
+    // § 4 (5) combined unit: 1,500 € but also max 30 % of the storage share —
+    // text only; the calculator does not know a combined unit. § 9 (7): a VG guideline
+    // would take priority for identical items; the VG's own guideline covers
+    // only appliances and consultation. Found through the VG
+    // Simmern-Rheinböllen sitemap; the municipality was not in the catalogue.
+  },
+
+  "reckershausen-energiespar": {
+    id: "reckershausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Reckershausen", level: "kommune", region: "Reckershausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140122",
+    url: "https://reckershausen.de/wp-content/uploads/2026/05/Energiesparrichtlinie-2025.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2016-04-19",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbetrag für einen Speicher mit Prozentgrenze",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher; insgesamt 6.000 € je Haushalt",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je weiteres kWp bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Reckershausen",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      "Ein Speicher muss überwiegend dem Eigenverbrauch dienen",
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht vorher mit Angebot oder danach mit Rechnung an den Ortsbürgermeister, über Dachanlage und Speicher entscheidet der Gemeinderat",
+      "Die Richtlinie ist bis 31.12.2027 verlängert; der Gemeinderat kann sie erneut verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // GUIDELINE READ IN FULL 26.09.2026 (text PDF, 5 pages): council decision
+    // 19.04.2016, last amended 07.10.2025, term extended to 31.12.2027 (§ 7 (6)).
+    // DELIBERATELY WITHOUT A COMPUTED RATE. § 5 (4) PV "200 € je kWp bis zu
+    // einer Leistung von bis zu 5 kWp und darüber hinaus 300 € je kWp von 5 kWp
+    // bis zu einer Leistung von 10 kWp … auf 2.500 € … begrenzt" is a MARGINAL
+    // rate staffel; the model computes pvSockel + kwp × pvPerKwp over the full
+    // size and pvTiers carry flat amounts (same reasoning as Unterföhring and
+    // Dietmannsried). § 5 (5) storage flat 2,500 € but max 30 % — the model has
+    // no storage percentage (same as Bickenbach). No balcony, no heat pump in
+    // § 2. § 3 (2): PV and storage only for owners; § 4 (3) energy
+    // consultation for § 2 Nr. 2-12. The guideline is silent on other public
+    // funding, so BUND stays. Found through the municipality's source queue;
+    // it was not in the catalogue.
+  },
+
+  "unzenberg-energiespar": {
+    id: "unzenberg-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Unzenberg", level: "kommune", region: "Unzenberg",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140154",
+    url: "https://unzenberg.de/wp-content/uploads/2026/01/20260105_36-energiesparrichtlinie-2026-unterschrieben.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2018-01-29",
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 300 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "250 € je kWp, max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "300 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Wärmepumpe nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Unzenberg, gemeldet mit Hauptwohnsitz im Ort", nur: ["pv", "waermepumpe"] },
+      { text: "Das Balkonkraftwerk bekommen Eigentümer und Mieter, die es seit mindestens einem Jahr sind und mit Hauptwohnsitz in Unzenberg gemeldet sind", nur: ["balkon"] },
+      { text: "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €", nur: ["pv", "waermepumpe"] },
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2026; der Gemeinderat kann sie verlängern, will sie aber laut Mitteilungsblatt (Februar 2026) über 2026 hinaus nicht in dieser Form fortführen",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    pvPerKwp: 250, pvCap: 2500,
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 7 pages;
+    // identical text on the VG page kirchberg-hunsrueck.de/de/gemeinden/
+    // ortsgemeinden/unzenberg/foerderprogramme/36-energiesparrichtlinie-2026-
+    // unterschrieben.pdf): council 29.01.2018, last amended 24.11.2025.
+    // § 5 (5) "250 € je kWp … auf 2.500 € je Anlage begrenzt" — computed.
+    // § 5 (6) storage 2,500 € max 30 % — NOT computed (no storage percentage in
+    // the model, same as Bickenbach/Reckershausen). § 5 (3) balcony "300 €,
+    // jedoch mit maximal 30 %" — computed. § 5 (11) heat pumps (§ 2 Nr. 14,
+    // connected to a water-based heating system) "2.500 € … höchstens mit 30 %"
+    // — NOT computed: the calculator measures a municipal heat-pump grant on the
+    // base-path investment, which only works for flat amounts (tripwire in
+    // waermepumpe-kommunalfoerderung.test.ts). Information only. § 3 (1): balcony (Nr. 3) for owners AND
+    // tenants of at least one year, so NO nurWohnform; § 3 (2): PV, storage,
+    // heat pump owners only (conditions). § 4 (3) energy consultation for
+    // Nr. 4-15, not for the balcony. § 7 (6) term until 31.12.2026 → endetIso.
+    // Council intends a different guideline from 2027 (Mitteilungsblatt VG
+    // Kirchberg Nr. 8/2026, 19.02.2026). Silent on other public funding → BUND.
+    // Found 27.09.2026: the VG village pages load their "Förderprogramme" list
+    // by script; earlier sitemap-only checks could not see it.
+  },
+
+  "henau-energiespar": {
+    id: "henau-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Henau", level: "kommune", region: "Henau",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140050",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/henau/foerderprogramme/energiesparrichtlinie-2026-unterschrieben.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-04-12",
+    endetIso: "2028-12-31",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 300 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je kWp von 5 bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter, Module bis 2 kWp", value: "höchstens 300 €, höchstens 30 % der Investitionskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Henau — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2028; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 300,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 7 pages,
+    // listed under "Förderprogramme" on the VG page of Henau): council
+    // 12.04.2021, amended 05.02.2025 and 18.11.2025; § 7 (6) term 01.06.2021 to
+    // 31.12.2028 → endetIso. § 5 (4) PV "200€ je kWp bis zu einer Leistung von
+    // 5 kWp und 300 € je kWp von 5 kWp bis zu einer Leistung von 10 kWp …
+    // auf 2.500 € je Anlage begrenzt" — marginal staffel, NOT computed (same
+    // as Reckershausen). § 5 (5) storage 2,500 € max 30 % — not computed.
+    // § 5 (15) balcony (§ 2 Nr. 16) "maximal 300 Euro …, jedoch maximal 30 %
+    // der Investitionskosten" — computed. § 5 (10) heat pumps (§ 2 Nr. 13)
+    // "2.500 € …, höchstens mit 30 %" — NOT computed (percentage heat-pump grant,
+    // see Unzenberg). § 3 (2): Nr. 3-17, incl.
+    // the balcony, only for owners → nurWohnform. § 4 (3) energy consultation
+    // for Nr. 2-14, 16 and 17. Silent on other public funding → BUND.
+  },
+
+  "metzenhausen-energiespar": {
+    id: "metzenhausen-energiespar", name: "Energiesparrichtlinie",
+    traeger: "Ortsgemeinde Metzenhausen", level: "kommune", region: "Metzenhausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140094",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/metzenhausen/foerderprogramme/energiesparrichtlinie-metzenhausen-2025.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2019-02-07",
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    nurWohnform: "eigentuemer",
+    coveredCosts: "Zuschuss je kWp mit Staffel, Festbeträge mit Prozentgrenze für Speicher, Balkonkraftwerk und Wärmepumpe",
+    maxFoerderung: "max. 2.500 € Dachanlage, 2.500 € Speicher, 100 € Balkonkraftwerk, 2.500 € Wärmepumpe; insgesamt 6.000 € je Haus",
+    rates: [
+      { label: "Photovoltaik (nur auf Dächern)", value: "200 € je kWp bis 5 kWp, 300 € je weiteres kWp bis 10 kWp; max. 2.500 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "100 €, höchstens 30 % der Anschaffungskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "2.500 €, höchstens 30 % der Anschaffungskosten", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für Eigentümer eines Wohngebäudes oder einer Wohnung in Metzenhausen — das gilt auch für das Balkonkraftwerk",
+      "Voraussetzung ist die Teilnahme an einer Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil von 40 € übernimmt die Gemeinde, bei einer ausführlichen BAFA-Beratung die Hälfte bis 162,50 €",
+      { text: "Ein Speicher muss überwiegend dem Eigenverbrauch dienen", nur: ["pv"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      "Mit der Maßnahme darf erst nach Inkrafttreten der Richtlinie begonnen werden; der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2026; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 100,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned PDF with text layer, 8 pages,
+    // listed under "Förderprogramme" on the VG page of Metzenhausen): council
+    // 07.02.2019, amended 10.03.2022, 30.08.2023 and 21.03.2025; § 7 (6) term
+    // until 31.12.2026 → endetIso. § 5 (4) PV 200 €/kWp up to 5 kWp and 300 €
+    // per further kWp up to 10 kWp, max 2,500 € — marginal staffel, NOT
+    // computed; same paragraph: balcony (max 800 W) "einmalig mit 100 €,
+    // höchstens jedoch mit 30 %" — computed. § 5 (5) storage 2,500 € max 30 %
+    // — not computed. § 5 (10) heat pumps (§ 2 Nr. 13) 2,500 € max 30 % —
+    // not computed (percentage heat-pump grant, see Unzenberg). § 3 (2): Nr. 3-15 (PV and balcony are Nr. 5) only for owners →
+    // nurWohnform. § 4 (3) energy consultation for Nr. 2-17. The council
+    // agenda of 18.03.2026 (Mitteilungsblatt VG Kirchberg Nr. 11/2026) lists
+    // "Gewährung von Zuschüssen nach der Energiesparrichtlinie" — it is in use.
+    // Silent on other public funding → BUND.
+  },
+
+  "kappel-energie": {
+    id: "kappel-energie", name: "Richtlinie zur Förderung von energetischen Maßnahmen",
+    traeger: "Ortsgemeinde Kappel", level: "kommune", region: "Kappel",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140062",
+    url: "https://www.kirchberg-hunsrueck.de/de/gemeinden/ortsgemeinden/kappel/foerderprogramme/foerderrichtlinie.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2016-01-11",
+    endetIso: "2028-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil eines Balkonkraftwerks; Festbetrag je Objekt für neue Heizungen einschließlich Wärmepumpe — keine Dachanlage, kein Batteriespeicher",
+    maxFoerderung: "max. 100 € Balkonkraftwerk, 4.600 € Heizung je Objekt; insgesamt 5.000 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter, Module bis 2 kWp", value: "höchstens 100 €, höchstens 30 % der Investitionskosten", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "4.600 € je Objekt; von der Investitionssumme werden 2.500 € Eigenbeitrag abgezogen, der volle Zuschuss fällt ab 7.100 € an", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Das Balkonkraftwerk bekommen Eigentümer und Mieter einer Wohnung oder eines Wohngebäudes in Kappel", nur: ["balkon"] },
+      { text: "Die Wärmepumpe nur für Eigentümer eines Wohngebäudes in Kappel; sie muss an ein wasserführendes Heizungsnetz angeschlossen werden", nur: ["waermepumpe"] },
+      { text: "Voraussetzung ist die Teilnahme an einer anerkannten Energieberatung, z. B. der Verbraucherzentrale; den Eigenanteil übernimmt die Gemeinde", nur: ["waermepumpe"] },
+      { text: "Die 4.600 € gibt es je Objekt nur einmal für alle Heizungsmaßnahmen zusammen — Wärmepumpe, Pellet-, Hackschnitzel- oder Holzvergaserkessel, Solarthermie und Nahwärme-Anschluss werden nicht nebeneinander gefördert", nur: ["waermepumpe"] },
+      "Der Antrag geht mit Angebot oder Rechnung an den Ortsbürgermeister",
+      "Die Richtlinie gilt bis 31.12.2028; der Gemeinderat kann sie verlängern",
+      "Vergabe nach Eingang vollständiger Anträge, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.3, balkonCap: 100,
+    // GUIDELINE READ IN FULL 27.09.2026 (scanned image PDF without text layer,
+    // 5 pages, read page by page; listed under "Förderprogramme" on the VG page
+    // of Kappel): council 11.01.2016, amended 25.05.2021, 20.03.2024 and
+    // 16.12.2024; § 7 (6) term until 31.12.2028 → endetIso. § 2 has NO roof PV
+    // and NO storage. § 5 (7) balcony (§ 2 Nr. 14) "maximal 100 Euro …, jedoch
+    // maximal 30 % der Investitionskosten" — computed; § 3 (1) balcony for
+    // owners AND tenants, so no nurWohnform; no energy consultation for Nr. 14
+    // (§ 4 (3) covers Nr. 2-13). § 5 (6) heating measures Nr. 6-13 (incl. heat
+    // pump Nr. 8) "pro Objekt einmalig ein Zuschuss in Höhe von 4.600 € …
+    // Von der Investitionssumme wird ein Eigenbeitrag in Höhe von 2.500 € in
+    // Abzug gebracht" — information only for now: in practice a flat 4,600 €
+    // for any heat pump, but a new heat-pump deduction of this size needs its
+    // own review before it is computed. § 3 (2) Nr. 3-13 owners only. § 5 (1)
+    // 5,000 € per household in total. Silent on other public funding → BUND.
   },
 
   "schlierbach-energiespeicher": {
@@ -7991,7 +9634,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "schwebheim-batteriespeicher", name: "Förderung eines Batteriespeichersystems",
     traeger: "Gemeinde Schwebheim", level: "kommune", region: "Schwebheim",
     bundesland: "Bayern", agsCode: "09678176",
-    url: "https://www.schwebheim.de/foerderung-eines-batteriespeichersystems",
+    url: "https://schwebheim.de/buergerservice/foerderrichtlinie-der-gemeinde-schwebheim-zur-foerderung-eines-batteriespeichersystems/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     // Nr. 9 der Richtlinie: „Die Richtlinie tritt mit Wirkung zum 26.01.2026 in
     // Kraft." Kein `endetIso`: Der 31.12.2026 ist das Auslaufen der Richtlinie,
@@ -8524,8 +10167,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Dachanlage bei Maximalbelegung", value: "50 € je kWp, max. 1.400 €", nur: ["pv"] },
     ],
     conditions: [
-      "Mindestens 300 Watt Modulleistung",
-      "Eigentümer, Hausverwaltungen und Mieter; Mieter brauchen das Einverständnis von Vermieter oder Eigentümergemeinschaft",
+      { text: "Mindestens 300 Watt Modulleistung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Eigentümer, Hausverwaltungen und Mieter; Mieter brauchen das Einverständnis von Vermieter oder Eigentümergemeinschaft", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Antragsberechtigt sind Eigentümer, Eigentümergemeinschaften und Hausverwaltungen; Mieter sind hier nicht genannt", nur: ["pv"] as FundingTechnik[] },
+      { text: "Gefördert wird nur die Maximalbelegung der Dachfläche laut Solarkataster Baden-Württemberg", nur: ["pv"] as FundingTechnik[] },
       "Der Antrag wird nach der Umsetzung gestellt, spätestens sechs Monate nach der Installation",
       "Antragsschluss ist der 15. Dezember 2026",
       "Eine gleichzeitige Förderung durch Bund oder Land Baden-Württemberg ist ausgeschlossen",
@@ -8554,6 +10199,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: [
       { text: "Module bis 2.000 W, Einspeisung höchstens 800 W", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Gebäude, die unter die Photovoltaik-Pflicht in Baden-Württemberg fallen (Neubau, grundlegende Dachsanierung), werden nicht gefördert", nur: ["pv"] as FundingTechnik[] },
+      { text: "Voraussetzung ist die Maximalbelegung der Dachfläche des Hauptgebäudes laut Solarkataster; nur überwiegend zu Wohnzwecken genutzte Gebäude", nur: ["pv"] as FundingTechnik[] },
       "Der Antrag wird spätestens sechs Monate nach Abschluss der Maßnahme gestellt",
       "Für eine Wohneinheit mit bereits geförderter Anlage gibt es keine weitere Förderung",
       "Für dasselbe Vorhaben darf keine andere öffentliche Förderung bestehen oder beantragt sein",
@@ -8699,7 +10346,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "vg-brohltal-balkonkraftwerke", name: "Förderung von privaten Balkonkraftwerken",
     traeger: "Verbandsgemeinde Brohltal", level: "kommune", region: "Verbandsgemeinde Brohltal",
     bundesland: "Rheinland-Pfalz", agsCode: "07131073",
-    agsCodes: ["07131204", "07131201"],
+    // 07131055 Niederzissen added 27.09.2026: guideline no. 6 admits residents
+    // of the whole Verbandsgemeinde, and the VG's own page for Niederzissen
+    // states it "ist die zweitgrößte Ortsgemeinde der Verbandsgemeinde Brohltal
+    // … Verwaltungssitz" (read 27.09.2026, confirmed by an adversarial reviewer).
+    // All 17 member municipalities since 27.09.2026: guideline no. 6 admits
+    // residents of the whole Verbandsgemeinde ("mit Wohnsitz in der
+    // Verbandsgemeinde Brohltal"), no clause narrows it, and the member list
+    // was read at brohltal-verwaltung.de/ortsgemeinden/ (17 names); keys from
+    // the municipality register. Confirmed by an adversarial reviewer.
+    agsCodes: [
+      "07131201", "07131202", "07131016", "07131204", "07131205", "07131206",
+      "07131502", "07131041", "07131054", "07131055", "07131059", "07131060",
+      "07131208", "07131209", "07131210", "07131211",
+    ],
     url: "https://www.brohltal-verwaltung.de/bauen-wohnen-umwelt/klimaschutz/foerderprogramme/balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beschlossenIso: "2024-10-09", beginntIso: "2024-10-15", endetIso: "2026-12-31",
@@ -8717,9 +10377,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für den erzeugten Strom darf keine Einspeisevergütung in Anspruch genommen werden, fünf Jahre Betrieb in der Verbandsgemeinde",
       "Eine Mehrfachförderung nach dieser oder einer anderen Richtlinie ist ausgeschlossen",
     ],
-    combinableWith: BUND,
+    // Guideline no. 5: "Mehrfachförderungen nach dieser Richtlinie oder anderen
+    // Förderprogrammen sind ausgeschlossen" -- no other grant may be stacked;
+    // only the zero VAT rate (a tax rule) stays alongside (27.09.2026).
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["balkon"],
     balkonPauschale: 125,
+  },
+
+  "niederzissen-photovoltaik": {
+    id: "niederzissen-photovoltaik", name: "Förderung von Photovoltaikanlagen auf privaten Hausdächern",
+    traeger: "Ortsgemeinde Niederzissen", level: "kommune", region: "Niederzissen (VG Brohltal)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131055",
+    url: "https://web.archive.org/web/20250517065348/https://www.brohltal-verwaltung.de/dokumente/bauen-und-wohnen/klimaschutz/richtlinie-der-ortsgemeinde-niederzissen-zur-foerderung-von-photovoltaikanlagen-auf-privaten-hausdaechern-2025.pdf?cid=fu7",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-03-04", beginntIso: "2024-04-01", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je installiertem kWp, gedeckelt",
+    maxFoerderung: "1.000 € je Anlage",
+    rates: [
+      { label: "Dach-Photovoltaik ab 1,0 kWp", value: "100 € je kWp, höchstens 1.000 €" },
+    ],
+    conditions: [
+      "Das Programm lief in zwei Auflagen: vom 01.04.2024 bis zum 31.12.2024 und vom 01.01.2025 bis zum 31.12.2025, jeweils bis zur Verausgabung der Mittel; für 2026 ist keine Neuauflage veröffentlicht",
+      "Gefördert wurden neue Dachanlagen ab 1,0 kWp auf privaten Bestandsdächern; Balkonkraftwerke waren ausgeschlossen",
+      "Der Antrag war vor der Beauftragung eines Fachbetriebs zu stellen; beauftragt werden durfte erst nach der Bewilligung",
+      "Antragsberechtigt waren Grundstückseigentümer, dinglich Nutzungsberechtigte und Mieter mit Erstwohnsitz in Niederzissen und Einverständnis des Eigentümers",
+      "Die Anlage war mindestens zehn Jahre am Standort zu betreiben",
+      "Kumulierung mit anderen Programmen war zulässig, zusammen höchstens 90 Prozent der Gesamtkosten",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // AUFGENOMMEN 27.09.2026 als beendetes Programm. Zwei Richtlinien im
+    // Volltext gelesen, Beträge und Bedingungen gleich: die erste vom 04.03.2024
+    // (live abrufbar, gültig bis spätestens 31.12.2024) und die Neuauflage vom
+    // 27.01.2025 (nur noch im Archiv der Amtsseite, Stand 17.05.2025): Nr. 2
+    // „beginnt zum 01.01.2025 … spätestens am 31.12.2025"; Nr. 5 „Pro
+    // installiertem kWp werden 100 € Zuschuss gewährt. Der Gesamtzuschuss
+    // beträgt maximal 1.000 €." Die Neuauflage hat erst der widerlegende
+    // Gegenprüfer gefunden — die erste Fassung dieses Eintrags hielt 2024 für
+    // das Ende.
+    // BEENDET, NICHT „EINGESTELLT"-VERKÜNDET: Eine Mitteilung gibt es nicht. Belegt
+    // ist, dass die Frist abgelaufen ist, die Programmseite der VG
+    // (…/foerderprogramme/dach-pv-niederzissen/, im Archiv noch am 13.01.2026
+    // als „Förderprogramm Niederzissen 2025", „endet zum 31.12.2025") heute mit
+    // 404 antwortet, die Übersicht der VG die Kachel als toten Link führt und die
+    // Sitemap keine Richtlinie 2026 kennt. Ratsinfo und Mitteilungsblatt sind
+    // nicht durchsucht — ein Ratsbeschluss für 2026 ist damit nicht ausgeschlossen.
+    // Das Budget (20.000 €) nannte nur die Programmseite, nicht die Richtlinie.
+    // KEINE RECHENWERTE: beendet, darf nichts abziehen.
   },
 
   "vg-alzey-land-balkon-speicher": {
@@ -9174,6 +10880,46 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPauschale: 100,
   },
 
+  "bellheim-erneuerbare-energien": {
+    id: "bellheim-erneuerbare-energien", name: "Förderung von Maßnahmen zur Nutzung erneuerbarer Energien",
+    traeger: "Ortsgemeinde Bellheim", level: "kommune", region: "Bellheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07334001",
+    // READ AT THE SOURCE 01.10.2026 (relaunched site; the old address
+    // /vg_bellheim/Wirtschaft/Fördermittel (Angebote)/ answers 404 since then).
+    // Page: "2. ORTSGEMEINDE BELLHEIM – Maßnahmen zur Nutzung erneuerbarer
+    // Energien … Für jede Solarthermie-, Photovoltaik- und Holzpelletanlage wird
+    // ein Zuschuss in Höhe von 500,00 € gewährt." Guideline PDF (linked there),
+    // Nr. 5.2: "Für jede Solarthermie-, Photovoltaik- oder Holzpelletanlage wird
+    // der Zuschuss in Form eines Festbetrages in Höhe von 500 € gewährt."
+    // Owner is the ORTSGEMEINDE, not the Verbandsgemeinde (Council of three incl.
+    // adversarial reviewer and Legal-Judge, 24.09.2026). The guideline PDF is a
+    // council draft ("in der heutigen Sitzung", unsigned) — the amount is
+    // confirmed independently by the page, so NO decision date is entered.
+    // Balcony: Nr. 2 excludes Balkonkraftwerke and points to a time-limited
+    // KIPKI grant of 100 €; that grant no longer appears on the relaunched
+    // page, so it is not recorded (unconfirmed state, nothing to claim).
+    url: "https://www.bellheim.de/bauen-umwelt/foerdermittel-angebote/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Festbetrag je Photovoltaik-, Solarthermie- oder Holzpelletanlage",
+    maxFoerderung: "500 € je Anlage",
+    rates: [
+      { label: "Photovoltaikanlage", value: "500 € Festbetrag", nur: ["pv"] },
+      { label: "Solarthermie- oder Holzpelletanlage", value: "500 € Festbetrag" },
+    ],
+    conditions: [
+      "Das Anwesen muss im Gebiet der Ortsgemeinde Bellheim liegen; die Nachbargemeinden der Verbandsgemeinde fördern nicht",
+      "Antragsberechtigt sind Eigentümer, Pächter und Mieter; Pächter und Mieter brauchen die schriftliche Erlaubnis des Eigentümers",
+      "Gefördert werden nur Vorhaben, die bei Antragstellung noch nicht begonnen sind — schon der Liefer- oder Leistungsvertrag gilt als Beginn",
+      "Die Anlage muss binnen 24 Monaten nach dem Bewilligungsbescheid betriebsbereit sein",
+      "Bewilligt wird im Rahmen der Haushaltsmittel in der Reihenfolge des Eingangs; der Antrag geht an die Verbandsgemeindeverwaltung Bellheim",
+      "Balkonkraftwerke sind von dieser Förderung ausgeschlossen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    pvTiers: [{ upTo: 999999, amount: 500 }],
+  },
+
   "recklinghausen-stecker-solar": {
     "id": "recklinghausen-stecker-solar",
     "name": "Förderung von Stecker-Solargeräten und Batteriespeichern",
@@ -9203,13 +10949,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       },
       {
         "label": "Stationärer Speicher mit neuer PV-Anlage",
-        "value": "300 € pauschal",
+        "value": "300 € pauschal (seit Sept. 2026 nicht mehr auf der Seite der Stadt)",
         "nur": [
           "pv"
         ]
       }
     ],
+    // SPEICHERTEIL VON DER AMTSSEITE VERSCHWUNDEN (29.09.2026, zweimal
+    // unabhängig gelesen, beide Adressvarianten): Unter „Förderprogramme" steht
+    // nur noch „Förderung von Stecker-Solar … Der Zuschuss für die
+    // Stecker-Solargeräte beträgt 100 Euro." Speicher/Batterie kommen im
+    // Dokument nicht mehr vor, verlinkt sind nur Stecker-Richtlinie, FAQ und
+    // Denkmalliste. KEIN „ausgeschöpft"/„beendet" — ob das Programm endete oder
+    // umzog, ist offen. Deshalb bleibt der letzte belegte Stand (16.09.2026)
+    // stehen, mit dem offenen Befund sichtbar daneben; ein Ende ist nicht
+    // belegt, und am Dach-Anteil hängt die Förderseite der Stadt. Geld bewegt
+    // der Teil nicht — er trägt keinen strukturierten Satz.
     "conditions": [
+      {
+        "text": "Seit September 2026 nennt die Stadt die Speicherförderung nicht mehr auf ihrer Förderseite — ob sie noch läuft, bitte vor dem Kauf bei der Stadt erfragen",
+        "nur": [
+          "pv"
+        ]
+      },
       {
         "text": "Die Speicherförderung läuft seit dem 7. Juli 2026",
         "nur": [
@@ -9435,7 +11197,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Müden (Aller)", level: "kommune", region: "Müden (Aller)",
     bundesland: "Niedersachsen", agsCode: "03151018",
     url: "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026",
+    // 05.10.2026: guideline PDF (fid 4019.105.1) blocked in 3 runs (403/"nA"),
+    // programme page read live and unchanged (application window 01.04.–31.12.2026,
+    // subject to funds). Amounts only stand in the guideline -> "unsicher" until read.
+    status: "unsicher", capped: true, verified: true,
     endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Haushalt, gestaffelt nach Anlagenleistung",
@@ -9550,6 +11316,85 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Die Richtlinie ist weiterhin über das Serviceportal abrufbar (HTTP 200,
     // 188 kB PDF) — deshalb zeigt `url` auf sie und nicht auf eine Übersicht,
     // die das Programm nicht mehr nennt.
+  },
+
+  // ─── Aufgenommen am 27.09.2026: Landkreis Ahrweiler, beendetes Programm ───
+  //
+  // "Gab es, ist beendet" is a real answer (operator, 17.08.2026). Programme
+  // read in full on 27.09.2026 at the county's own PDF (Teil B of the county's
+  // climate-protection guideline, adopted by the Kreistag in June 2022):
+  // 3b "Der Kreis übernimmt den Kostenbeitrag in Höhe von 100 € je
+  // Kilowattstunde nutzbarer (kWh) Speicherkapazität, maximal jedoch 500 € pro
+  // Speichersystem", 3c from 1 kWh, 6a applications "bis einschließlich
+  // 31. Oktober", 11 "tritt mit Wirkung vom 11.06.2022 in Kraft".
+  // The county's news item of 2022 ("Neues Förderprogramm für Batteriespeicher
+  // bereits ausgeschöpft") says the 2022 budget was used up and a new round was
+  // planned for 2023. Whether it ran is NOT documented: the county's programme
+  // page lists as past programmes only "2022: Förderung für Batteriespeicher"
+  // and "2023: Förderung von Dach- und Fassadenbegrünung", and says today:
+  // "Es stehen keine Fördermittel mehr zur Verfügung und eine
+  // Mittelbeantragung ist damit nicht mehr möglich." One adversarial reviewer
+  // (27.09.2026) found no relaunch and no current programme. No end date is
+  // set: the source names none, only the exhausted 2022 budget.
+  "ahrweiler-batteriespeicher": {
+    id: "ahrweiler-batteriespeicher", name: "Einbau von Batteriespeichern bei PV-Anlagen",
+    traeger: "Landkreis Ahrweiler", level: "landkreis", region: "Landkreis Ahrweiler",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131",
+    url: "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2022-06-11",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher an einer PV-Anlage — das Programm lief 2022 und ist beendet",
+    maxFoerderung: "max. 500 € je Speichersystem",
+    rates: [{ label: "Batteriespeicher", value: "100 € je kWh nutzbarer Kapazität, höchstens 500 € — Programm beendet" }],
+    conditions: [
+      "Das Programm startete am 11.06.2022; die Mittel für 2022 waren kurz darauf ausgeschöpft",
+      "Eine Neuauflage für 2023 war angekündigt; ob sie stattfand, ist nicht belegt — heute stehen nach Angabe des Kreises keine Fördermittel mehr zur Verfügung",
+      "Gefördert wurden Speicher ab 1 kWh an einer bestehenden oder neuen PV-Anlage im Kreisgebiet, je Standort einer; Beginn erst nach der Förderzusage",
+    ],
+    combinableWith: BUND,
+    // No rate: closed.
+  },
+  "rhein-hunsrueck-einkommensschwache-haushalte": {
+    id: "rhein-hunsrueck-einkommensschwache-haushalte",
+    name: "Förderung zur Energieeinsparung in einkommensschwachen Haushalten",
+    traeger: "Rhein-Hunsrück-Kreis", level: "landkreis", region: "Rhein-Hunsrück-Kreis",
+    bundesland: "Rheinland-Pfalz", agsCode: "07140",
+    url: "https://web.archive.org/web/20260211010133/https://www.kreis-sim.de/index.php?object=tx,3347.2&ModID=10&FID=3347.15.1&kat=448.66",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-03-18", beginntIso: "2024-04-01", endetIso: "2026-06-30",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je Gerät bzw. Anlage, nur für einkommensschwache Haushalte",
+    maxFoerderung: "200 € je Balkonanlage",
+    rates: [
+      { label: "Balkonanlage bis 800 Wattpeak", value: "200 €" },
+    ],
+    conditions: [
+      "Der Förderzeitraum lief vom 01.04.2024 bis zum 30.06.2026; das Programm ist beendet",
+      "Antragsberechtigt waren nur einkommensschwache Haushalte: Bezug von Bürgergeld, Hilfe zum Lebensunterhalt, Kinderzuschlag oder Leistungen nach dem Asylbewerberleistungsgesetz, ein Einkommen unter der Pfändungsfreigrenze oder ein Anspruch auf Lernmittelfreiheit",
+      "Gefördert wurden daneben energiesparende Haushaltsgeräte und hocheffiziente Heizungsumwälzpumpen mit jeweils 200 €",
+      "Finanziert aus Mitteln des Kommunalen Investitionsprogramms Klimaschutz und Innovation (KIPKI) des Landes",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, aus zwei voneinander unabhängigen Gründen: Das Programm
+    // ist seit dem 30.06.2026 beendet, und es war an das Einkommen gebunden —
+    // eine Angabe, die der Rechner nicht kennt (dieselbe Bauform wie Gifhorn).
+    //
+    // BELEG: Die Programmseite des Kreises ist mit dem Umzug der Kreis-Website
+    // (kreis-sim.de → kv-rhk.de) verschwunden; die alten Adressen antworten mit
+    // 404, und die neue Website (Sitemap 1.578 Adressen, 27.09.2026) führt weder
+    // das Programm noch einen Nachfolger. `url` zeigt deshalb auf das Archiv der
+    // Amtsseite vom 11.02.2026 — den Wortlaut des Trägers selbst: „Förderzeitraum:
+    // 01.04.2024 – 30.06.2026" und „Mini-Photovoltaikanlagen (sogenannte
+    // „Balkonanlagen") mit maximal 800 Wattpeak Leistung ebenfalls mit jeweils
+    // 200 Euro bezuschusst". Die Richtlinie selbst (§ 1, § 2) war weder live noch
+    // im Archiv abrufbar.
+    // NICHT ÜBERNOMMEN: Presseberichte nannten „50 Prozent der
+    // Anschaffungskosten, maximal 200 Euro". Die Amtsseite nennt nur den
+    // Festbetrag; ohne Richtlinie bleibt offen, ob ein Prozentdeckel galt. Da das
+    // Programm nichts abzieht, steht nur der belegte Höchstbetrag da.
   },
 
   "meinersen-solar": {
@@ -12299,6 +14144,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Balkonkraftwerk", value: "pauschal 100 €, begrenzt auf 20 % der Anschaffungskosten", nur: ["balkon"] }],
     conditions: [
       "Zuschussfähig sind Balkonkraftwerke bis 800 Wp; Prototypen und Eigenbau sind ausgenommen, ebenso bereits installierte Anlagen",
+      "Ob die 800 Wp die Modulleistung oder die Einspeiseleistung meinen, lässt die Gemeinde offen — bei einem Set mit mehr als 800 Wp Modulleistung vorher nachfragen; wir rechnen deshalb keinen Betrag an",
       "Antragsberechtigt sind natürliche und juristische Personen mit Hauptwohnsitz in Kumhausen — als Eigentümer, Erbbauberechtigte oder Mieter",
       "Die technischen Anschlussbedingungen und die VDE-Richtlinie für Erzeugungsanlagen am Niederspannungsnetz sind einzuhalten",
       "Der erzeugte Strom wird selbst verbraucht; für eingespeisten Strom wird keine Vergütung nach EEG oder KWKG beansprucht",
@@ -12308,7 +14154,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: ["bund-nullsteuer", "bund-kfw270"],
     foerdert: ["balkon"],
-    balkonPercentOfCost: 0.20, balkonCap: 100,
+    // KEIN RECHENWERT MEHR (01.10.2026). Council of three incl. adversarial
+    // reviewer, again on the original criteria and the application form: both
+    // verifiers "nicht entscheidbar", leaning towards module power ("Wp", the
+    // form asks only "Modulleistung gesamt"). Under that reading our standard
+    // 960-Wp set gets nothing, and we deducted 100 €. A disputed amount is not
+    // deducted: the programme informs (rate as text) until the municipality
+    // says which power is meant. Before: balkonPercentOfCost 0.20, balkonCap 100.
+    //
     // DIE 800 Wp SIND NICHT ENTSCHIEDEN — und deshalb steht hier KEINE
     // Rechengrenze (Council 23.09.2026, zwei Prüfer, einer adversarial).
     //
@@ -14158,6 +16011,394 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Added 28.09.2026: VG Römerberg-Dudenhofen, closed programme ─────────
+  //
+  // Found in the source queue (the VG's funding page for Dudenhofen,
+  // Hanhofen and Harthausen). Closed — added anyway, "existed, has ended" is
+  // real information (operator, 17.08.2026). Evidence, both read 28.09.2026:
+  // - live https://www.vgrd.de/klimaschutz/foerderprogramme/: "Hinweis: Die
+  //   Förderung Balkonkraftwerke ist zum 30.11.2025 ausgelaufen."
+  // - programme page in the web archive (copy of 16.07.2025; the live path
+  //   now redirects to the homepage after a relaunch): "Die Förderung beträgt
+  //   je Haushalt einmalig 100 € für ein Balkonkraftwerk", invoice dated from
+  //   01.02.2024, photo of the installed device, landlord consent for
+  //   tenants, and "ACHTUNG: Förderprogramm wird eingestellt - bis zum
+  //   30.11.2025 können noch Anträge gestellt werden".
+  // No separate guideline is published; the page says nothing about
+  // stacking, so combinableWith stays null ("not determined"). Member towns:
+  // the four Ortsgemeinden the VG homepage lists, keys from the register.
+  // url is the live funding page, never the archive copy: the page watcher
+  // would otherwise stamp a frozen copy as a live check.
+  "vg-roemerberg-dudenhofen-balkonkraftwerke": {
+    id: "vg-roemerberg-dudenhofen-balkonkraftwerke", name: "Balkonkraftwerk-Förderung",
+    traeger: "Verbandsgemeinde Römerberg-Dudenhofen", level: "kommune", region: "Verbandsgemeinde Römerberg-Dudenhofen",
+    bundesland: "Rheinland-Pfalz",
+    agsCodes: ["07338007", "07338010", "07338011", "07338023"],
+    url: "https://www.vgrd.de/klimaschutz/foerderprogramme/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-02-01", endetIso: "2025-11-30",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Haushalt für ein Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Haushalt, einmalig — Programm beendet" }],
+    conditions: [
+      "Anträge waren bis zum 30.11.2025 möglich; die Verbandsgemeinde meldet die Förderung als ausgelaufen",
+      "Gefördert wurden neu angeschaffte Balkonkraftwerke an Wohngebäuden in der Verbandsgemeinde, Kaufdatum ab 01.02.2024",
+      "Der Antrag kam nach dem Kauf: mit Originalrechnung und einem Foto der installierten Anlage; Mieter brauchten die schriftliche Zustimmung der Eigentümerseite",
+      "Die Anlage musste die einschlägigen Normen für fest installierte Stromerzeuger erfüllen (insbesondere VDE); gefördert wurden Module, Wechselrichter, Halterung und die Elektroarbeiten eines Fachbetriebs",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+  },
+
+  // ─── Added 28.09.2026: Stadt Hildesheim, PV/solar thermal on listed buildings ─
+  //
+  // Found while closing the Hildesheim source queue. Guideline "Richtlinie zur
+  // Förderung von Photovoltaik- und Solarthermie-Anlagen auf, an oder in der
+  // Nähe von Baudenkmälern", council decision 16.09.2024, Amtsblatt Landkreis
+  // Hildesheim 2024 S. 600, read in full on 28.09.2026 from the city's own
+  // download server (md5 ecd7de044c3fbfc6582b20f854bcf140):
+  // - § 1 (2) "Förderfähig sind Mehrkosten gegenüber einer Standard-Anlage."
+  // - § 8 (3) "Die maximale Fördersumme beträgt bis zu 5.000,- EUR je Maßnahme."
+  // - § 3 (2) listed-building permit required; § 3 (3) no funding once the
+  //   measure has started (no reference point named).
+  // - § 6 owners of listed buildings and neighbouring buildings, not limited
+  //   to private persons -> eligibility privat + gewerblich.
+  // - § 3 (4) no entitlement, "nach Maßgabe der verfügbaren Fördermittel".
+  // - § 10 in force 01.10.2024, expires 31.12.2027.
+  // STATUS UNSICHER, NO CALCULATION FIELD: the extra cost over a standard
+  // system cannot be modelled, and no budget for 2026 is published (the city's
+  // Feb 2025 announcement with the 35,000 EUR pot is gone from the site; only
+  // press copies remain). A clarification enquiry to the city is queued.
+  // Adversarial reviewer (28.09.2026): status, figures and scope confirmed;
+  // widened eligibility (§ 6), aligned the start rule with § 3 (3) and
+  // stopped implying full reimbursement of the extra cost (§ 8 (1)/(2)).
+  "hildesheim-denkmal-solar": {
+    id: "hildesheim-denkmal-solar", name: "Förderung denkmalgerechter Photovoltaik- und Solarthermie-Anlagen",
+    traeger: "Stadt Hildesheim", level: "kommune", region: "Hildesheim",
+    bundesland: "Niedersachsen", agsCode: "03254021",
+    url: "https://www.stadt-hildesheim.de/downloads/datei/Yzg5YzYzMzIxZWE3ZjQyYVd4K04xKzBiaXF0bnUrMTJTTEtKNE1CR0JpbWJqVHlkc0tBbXlRelFOWk9BeGh1b2lUakIyTGUwMkpXNU9Ca0paQkVVNW5zOVVDSmFSNVlFYUc2OGxRbnlMdTBoeHRTMW84dzBkUHBFbmt5SFNWc0U4TG42ZjhxSVFlS2VOVnIwQ055RHdCa0dYZGtZSWNRcHRycXl3aUl5R0Y1dkgvWnRsaER2RnVzMDRWMFNYWGhtckI4NFMzWVVoZ3RTUGtmT2RzZ2ZhWnhVY1JnRVJXeW4vb3hFVW1lTlIrOEk1VWs4T3NXZW1mOTQxLzA0Wm01USsva2xFVllKekViTWJHb2FLSjRiYjhBZENkM2FnMDY5MFhvREdnPT0",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beschlossenIso: "2024-09-16", beginntIso: "2024-10-01",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Mehrkosten einer denkmalgerechten Photovoltaik- oder Solarthermieanlage gegenüber einer Standardanlage",
+    maxFoerderung: "bis 5.000 € je Maßnahme",
+    rates: [
+      { label: "Denkmalgerechte Photovoltaik- oder Solarthermieanlage", value: "Zuschuss nach den Mehrkosten gegenüber einer Standardanlage, bis zu 5.000 € je Maßnahme", nur: ["pv"] },
+    ],
+    conditions: [
+      "MITTEL UNKLAR: Die Richtlinie gilt bis 31.12.2027, gefördert wird aber nur nach Maßgabe der verfügbaren Mittel, und für 2026 nennt die Stadt keinen Betrag — wir rechnen deshalb nichts an",
+      "Nur für Baudenkmäler und Gebäude in der Umgebung eines Baudenkmals im Stadtgebiet Hildesheim; antragsberechtigt sind deren Eigentümerinnen und Eigentümer, ohne Beschränkung auf Privatpersonen",
+      "Gefördert werden nur die Mehrkosten gegenüber einer Standardanlage gleicher Größe und Leistung, belegt durch ein Vergleichsangebot",
+      "Voraussetzung ist die denkmalrechtliche Genehmigung der Denkmalschutzbehörde der Stadt Hildesheim",
+      "Gefördert wird nur, wenn mit der Maßnahme noch nicht begonnen wurde; Antrag schriftlich bei der Denkmalschutzbehörde; Beginn innerhalb eines Jahres nach dem Bescheid (verlängerbar in begründeten Einzelfällen)",
+      "Nutzung mindestens fünf Jahre; Auszahlung nach Abschluss gegen bezahlte Rechnungen",
+      "Kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
+
+  // ─── Added 28.09.2026: Gemeinde Essel (Samtgemeinde Schwarmstedt) ─────────
+  //
+  // Found while closing the Samtgemeinde Schwarmstedt source queue (site search
+  // "Photovoltaik"). The Essel information page still says "Die Gemeinde Essel
+  // fördert den Einbau von Solarkollektor- und Photovoltaikanlagen" and links
+  // guideline and form. Guideline is a 2-page scan (created 15.05.2014, md5
+  // 1dc47156a7b9ed839b8d1c721df60ef7), read as images on 28.09.2026:
+  // - "Einbau einer Photovoltaikanlage mit 35,-- € je volle 0,25 kWp"
+  // - installed by a registered craftsman from the Aller-Leine-Tal: "erhöht
+  //   sich die Förderung um einmalig 100,-- €" (paid by the municipality here,
+  //   unlike Grethem's firm-paid bonus)
+  // - "Die maximale Förderhöhe nach B) ist auf € 350,-- je Gebäude begrenzt"
+  // - "Vor Bewilligung darf kein verbindlicher Auftrag erteilt werden"
+  // Same "Sonne auf's Dach" family as Grethem. Budget: Haushaltsplan 2025 of
+  // Essel (ortsrecht/gemeinde_essel/Haushalt-Essel_2025.pdf), investment
+  // 5610020120001 "Förderung von privaten Investitionen für den Umweltschutz":
+  // result 2023 1,300 EUR, 2024 5,000, 2025 2,500, planned 2026-2028 2,500 each.
+  // The line does not name this programme; no 2026 budget is published.
+  // STATUS UNSICHER, NO CALCULATION FIELD: the link between budget line and
+  // programme is an inference, the guideline carries no date (files of 2014),
+  // and the municipality may cut or postpone applications. Solar
+  // thermal and the passive-house grants are outside the catalogue's
+  // techniques. A clarification enquiry to the Samtgemeinde is queued.
+  // Adversarial reviewer (28.09.2026): rates, bonus under the cap, private
+  // households and technique confirmed; found the 2025 budget line and the
+  // building/residential-building cap conflict.
+  "essel-co2-minderung": {
+    id: "essel-co2-minderung", name: "CO2-Minderungsprogramm",
+    traeger: "Gemeinde Essel", level: "kommune", region: "Essel",
+    bundesland: "Niedersachsen", agsCode: "03358007",
+    url: "https://www.schwarmstedt.de/joomla/index.php/mitgliedsgemeinden/essel/informationen",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss je Leistung für neue Photovoltaikanlagen (daneben Solarkollektoren sowie Passiv- und Energiesparhäuser im Baugebiet „Rottloses Feld“)",
+    maxFoerderung: "350 € je Gebäude für Photovoltaik und Solarkollektoren",
+    rates: [
+      { label: "Photovoltaikanlage", value: "35 € je volle 0,25 kWp, höchstens 350 € je Gebäude", nur: ["pv"] },
+      { label: "Einbau durch einen Handwerksbetrieb aus dem Aller-Leine-Tal", value: "einmalig 100 € zusätzlich, innerhalb des Höchstbetrags", nur: ["pv"] },
+    ],
+    conditions: [
+      "GELTUNG UNKLAR: Die Gemeinde verweist weiterhin auf Richtlinie und Antrag (Richtlinie ohne Datum, Dateien von 2014). Der Haushalt 2025 plant auch für 2026 je 2.500 € für die „Förderung von privaten Investitionen für den Umweltschutz“, ordnet sie aber nicht ausdrücklich diesem Programm zu — wir rechnen deshalb keinen Betrag an",
+      "Vor der Bewilligung darf kein verbindlicher Auftrag erteilt und nicht mit dem Bau begonnen werden; entschieden wird innerhalb von vier Wochen nach Eingang",
+      "Gefördert werden nur fabrikneue Anlagen, auf allen Gebäuden in der Gemeinde Essel; Anlagen auf mehreren Gebäuden eines Grundstücks gelten als eine Anlage",
+      "Der Höchstbetrag von 350 € gilt laut Richtlinie je Gebäude, laut Antragsformular je Wohngebäude — das Formular fragt zugleich nach der Art des Objekts (Wohnhaus, Stall)",
+      "Auszahlung nach Inbetriebnahme gegen Rechnung mit Zahlungsnachweis",
+      "Kein Rechtsanspruch; bei Überzeichnung der Haushaltsmittel kann die Gemeinde Anträge kürzen, auf Folgejahre verschieben oder ablehnen",
+      "Kombinierbar mit Fördermitteln von Bund, Land und anderen Stellen, soweit deren Vorschriften nicht entgegenstehen",
+    ],
+    combinableWith: BUND,
+  },
+
+  // ─── Added 28.09.2026: Gemeinde Buchholz (Aller), ended balcony grant ──────
+  //
+  // Found while closing the Samtgemeinde Schwarmstedt source queue (site search
+  // "Förderung"). Council decision 26.09.2023, in force 16.03.2024 (news item
+  // of the Samtgemeinde). Guideline "Stand: Januar 2024" read in full on
+  // 28.09.2026 (md5 5d85fd63f41e264d324bb6d4b06ebf14):
+  // - § 3 (2) "ein einmaliger Zuschuss in Höhe von 150,00 Euro als
+  //   Festbetrag ..., sofern die Anschaffungskosten 500 Euro übersteigen"
+  // - § 6 (6) "Die Maßnahme ist bis zum 31.12.2024 abzuschließen."
+  // ENDED: the published guideline only covers measures finished in 2024.
+  // Haushaltsplan 2025 of Buchholz (Aller) (Haushalt-Buchholz-Aller_2025.pdf,
+  // Teilfinanzhaushalt 56100, S. 140 f.), account 56100.7818000 "Förderung
+  // Balkonkraftwerke": 2024 6,000 EUR, 2025 0, planned 2026-2028 0 each. The
+  // preliminary report (S. ~16) says the opposite ("... und die Förderung von
+  // Balkonkraftwerken geplant") -- contradicted by its own figures. Added anyway because "gab es,
+  // ist beendet" is a real answer (operator, 17.08.2026). Not the Buchholz in
+  // the Westerwald mentioned at the Asbach entry.
+  "buchholz-aller-balkonkraftwerke": {
+    id: "buchholz-aller-balkonkraftwerke", name: "Förderung von Balkon- und Gartenkraftwerken",
+    traeger: "Gemeinde Buchholz (Aller)", level: "kommune", region: "Buchholz (Aller)",
+    bundesland: "Niedersachsen", agsCode: "03358005",
+    url: "https://www.schwarmstedt.de/ortsrecht/gemeinde_buchholz/Foerderrichtlinie-Balkonkraftwerke-Buchholz-2024.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-09-26", beginntIso: "2024-03-16",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschaler Zuschuss je Balkon- oder Gartenkraftwerk — Programm beendet",
+    rates: [{ label: "Balkon- oder Gartenkraftwerk", value: "150 € je Haushalt bei Anschaffungskosten über 500 € — Programm beendet" }],
+    conditions: [
+      "Die Richtlinie (Stand Januar 2024) verlangt den Abschluss der Maßnahme bis 31.12.2024; der Haushalt 2025 sieht für 2025 und die Planjahre 2026 bis 2028 keine Mittel mehr vor (2024: 6.000 €)",
+      "Antragsberechtigt waren Mieter und Eigentümer selbst genutzten Wohneigentums in Buchholz (Aller), als Gebäudeeigentümer auch juristische Personen des Privatrechts, kirchliche, soziale und kulturelle Einrichtungen und Genossenschaften; eine Förderung je Haushalt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // ─── Added 28.09.2026: Landkreis Hildesheim, ended balcony grant 2023 ──────
+  //
+  // Found while closing the Hildesheim queue (NEXT of run 0801Z). Guideline
+  // "Richtlinie über die Förderung von Balkonkraftwerken im Landkreis
+  // Hildesheim", Kreistag decision 29.06.2023, read in full on 28.09.2026 from
+  // klimaschutzagentur-hildesheim.de (…/2023/07/Richtlinie-zur-Forderung-von-
+  // Balkonkraftwe-rken-im-Landkreis-Hildesheim_2023-07-04.pdf):
+  // - Nr. 7 "Der Zuschuss beträgt pauschal 200 € bei förderfähigen Kosten von
+  //   mindestens 200 €"
+  // - Nr. 10 in force 04.07.2023, "mit Ablauf des 31.12.2023 außer Kraft",
+  //   budget 150.000 €
+  // - Nr. 5 only natural persons; Nr. 6 d) tenants, flat owners without roof
+  //   access, buildings without a possible roof system; Nr. 6 combination
+  //   with other funding excluded; Nr. 3 a) inverter max 600 VA.
+  // The agency page (klimaschutzagentur-hildesheim.de/balkonkraftwerke, read
+  // the same day) says "Eine Antragstellung ist aufgrund der Beendigung des
+  // Förderprogramms zum 31.12.2023 nicht mehr möglich." ENDED. Added because
+  // "gab es, ist beendet" is a real answer (operator, 17.08.2026).
+  "landkreis-hildesheim-balkonkraftwerke": {
+    id: "landkreis-hildesheim-balkonkraftwerke", name: "Förderung von Balkonkraftwerken im Landkreis Hildesheim",
+    traeger: "Landkreis Hildesheim", level: "landkreis", region: "Landkreis Hildesheim",
+    bundesland: "Niedersachsen", agsCode: "03254",
+    // The guideline PDF, not the agency page: the page only restates it and
+    // confirms the end (quoted above).
+    url: "https://www.klimaschutzagentur-hildesheim.de/wp-content/uploads/2023/07/Richtlinie-zur-Forderung-von-Balkonkraftwe-rken-im-Landkreis-Hildesheim_2023-07-04.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-06-29", beginntIso: "2023-07-04",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk bis 600 VA", value: "200 € pauschal je Wohnung (bei Kosten unter 200 € die vollen Kosten) — Programm beendet" }],
+    conditions: [
+      "Die Richtlinie galt vom 04.07.2023 bis 31.12.2023 (Fördertopf 150.000 €); die Klimaschutzagentur nimmt seitdem keine Anträge mehr an",
+      "Antragsberechtigt waren nur natürliche Personen mit Wohnung im Landkreis: Mieter, Eigentümer einer Wohnung ohne Zugriff auf eine Dachfläche oder Eigentümer eines Wohngebäudes ohne Möglichkeit für eine Dachanlage",
+      "Nicht mit anderen Fördermitteln kombinierbar",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
+  },
+
+  // ─── Added 28.09.2026: Oberviechtach, balcony grant since 2024 ─────────────
+  //
+  // Found in the source queue (the old "Kurzmenü" address now redirects to the
+  // start page; the live page is /Rathaus/Aktuelles/Förderung-Stecker-
+  // Solaranlage/). Guideline "Richtlinie zur Förderung von Stecker-
+  // Solaranlagen (Balkonkraftwerke) im Stadtgebiet Oberviechtach", signed
+  // 01.05.2024, read in full on 28.09.2026 (scanned PDF, loadDocument FID
+  // 3638.514.1):
+  // - Nr. 1 plug-in systems up to 800 Wp
+  // - Nr. 2 natural persons and local registered associations with (main)
+  //   residence/seat in Oberviechtach; owners or tenants, not both for the same
+  //   unit; once per unit and user; documents in the year of the invoice
+  // - Nr. 3 first come first served, annual budget, no carry-over; combination
+  //   with county, state and federal programmes allowed; applications from
+  //   01.05.2024, by 31.12. of each year
+  // - Nr. 4 "mit 10% des eingereichten Rechnungsbetrags, jedoch maximal 100 €
+  //   pro Antrag gefördert"
+  // - Nr. 7 in force 01.05.2024, no end date; suspended until year end once
+  //   the funds are used up.
+  "oberviechtach-stecker-solar": {
+    id: "oberviechtach-stecker-solar", name: "Förderung von Stecker-Solaranlagen (Balkonkraftwerke)",
+    traeger: "Stadt Oberviechtach", level: "kommune", region: "Oberviechtach",
+    bundesland: "Bayern", agsCode: "09376151",
+    url: "https://www.oberviechtach.de/Rathaus/Aktuelles/F%C3%B6rderung-Stecker-Solaranlage/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-05-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Rechnungsbetrag des Balkonkraftwerks",
+    maxFoerderung: "100 € je Antrag",
+    rates: [{ label: "Balkonkraftwerk bis 800 Wp", value: "10 % des Rechnungsbetrags, höchstens 100 €" }],
+    conditions: [
+      "Antragsberechtigt sind natürliche Personen und eingetragene Vereine mit Hauptwohnsitz bzw. Sitz in Oberviechtach; Eigentümer oder Mieter, nicht beide für dieselbe Einheit; einmal je Einheit und Nutzer",
+      "Antrag mit Originalrechnung und Foto der installierten Anlage im Jahr der Rechnung, spätestens bis 31. Dezember, bei der Stadt einreichen",
+      "Vergabe nach Eingang, solange die Jahresfördersumme reicht; Anträge werden nicht ins nächste Jahr übertragen, einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.1,
+    balkonCap: 100,
+  },
+
+  // ─── Added 28.09.2026: Maxhütte-Haidhof, balcony grant since 2023 ─────────
+  //
+  // Found in the source queue (Schwandorf district). Page "Förderantrag
+  // Balkonkraftwerke" with the full guideline (Stadtrat 08.02.2024, 1st
+  // amendment), read on 28.09.2026:
+  // - § 2 natural persons and local registered associations with (main)
+  //   residence/seat in Maxhütte-Haidhof; owners or tenants, not both for the
+  //   same unit; documents in the invoice year; once per unit and user;
+  //   combination with non-town programmes allowed
+  // - § 4 "10 % des eingereichten Rechnungsbetrages, jedoch maximal 100,00 €
+  //   pro Antrag"; shipping not subsidised
+  // - § 5/§ 6 first come first served, 10,000 € per budget year, lottery for
+  //   simultaneous applications; applications from 01.04.2023, for 2024–2027
+  //   from 1 January, by 31 December of each year
+  // No power limit in the guideline (the original of 09.02.2023 had 600 Wp;
+  // the 1st amendment removed it). The form reserves a claw-back on moving
+  // away. Adversarial check 28.09.2026 confirmed all points. The district refunds half of municipal
+  // balcony grants to the town (press, not a household payment), so the
+  // household amount stays 100 €.
+  "maxhuette-haidhof-stecker-solar": {
+    id: "maxhuette-haidhof-stecker-solar", name: "Förderung von Stecker-Solaranlagen (Balkonkraftwerke)",
+    traeger: "Stadt Maxhütte-Haidhof", level: "kommune", region: "Maxhütte-Haidhof",
+    bundesland: "Bayern", agsCode: "09376141",
+    url: "https://www.maxhuette-haidhof.de/Planen-Bauen/Planen-Bauen-/Formulare/F%C3%B6rderantrag-Balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-04-01",
+    endetIso: "2027-12-31",
+    beschlossenIso: "2024-02-08",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Rechnungsbetrag des Balkonkraftwerks ohne Versandkosten",
+    maxFoerderung: "100 € je Antrag",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % des Rechnungsbetrags, höchstens 100 €" }],
+    conditions: [
+      "Antragsberechtigt sind natürliche Personen und örtliche eingetragene Vereine mit Hauptwohnsitz bzw. Sitz in Maxhütte-Haidhof; Eigentümer oder Mieter, nicht beide für dieselbe Einheit; einmal je Einheit und Nutzer",
+      "Förderantrag und Rechnung im Jahr der Anschaffung, spätestens bis 31. Dezember, bei der Stadt einreichen",
+      "Jahresbudget 10.000 €, Vergabe nach Eingang; ist es ausgeschöpft, ruht das Programm bis Jahresende, einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.1,
+    balkonCap: 100,
+  },
+
+  // ─── Added 28.09.2026: Markt Bruck i.d.OPf., balcony grant since 2023 ─────
+  //
+  // Found via web search while closing the Schwandorf district (the queue only
+  // held the heat-planning overview). Guideline "Richtlinie zur Förderung von
+  // steckbaren Stromerzeugungsgeräten (Balkonkraftwerke)", signed 30.06.2023,
+  // read in full on 28.09.2026 (page 3 is a scan, read as image):
+  // - Nr. 2/6 plug-in devices up to 800 W inverter output, "mit 20 % der
+  //   Anschaffungskosten, maximal 200,00 €", one system per dwelling unit
+  // - Nr. 3 owners, or tenants with landlord consent, each with main residence
+  //   in the property; local registered associations
+  // - Nr. 5 no devices invoiced before 01.04.2023, no used devices, no purely
+  //   commercial buildings
+  // - Nr. 7/8 order of receipt within the budget, written decision; proof
+  //   includes grid registration, invoice, conformity declaration and photo
+  // - Nr. 11 in force 01.07.2023, no end date.
+  // Adversarial check 28.09.2026: all points confirmed; the application form
+  // asks for the register unit number instead of the grid confirmation.
+  "bruck-opf-balkonkraftwerke": {
+    id: "bruck-opf-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
+    traeger: "Markt Bruck i.d.OPf.", level: "kommune", region: "Bruck i.d.OPf.",
+    bundesland: "Bayern", agsCode: "09376117",
+    url: "https://www.markt-bruck.de/buergerservice-und-politik/service/pv-balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-01",
+    beschlossenIso: "2023-06-30",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil an den Anschaffungskosten des Balkonkraftwerks",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "20 % der Anschaffungskosten, höchstens 200 €" }],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Mieter (mit Zustimmung des Vermieters) mit Hauptwohnsitz im Antragsobjekt in Bruck sowie örtliche eingetragene Vereine; eine Anlage je Wohneinheit",
+      "Nur neue Geräte mit Rechnung ab 1. April 2023; nicht an rein gewerblich genutzten Gebäuden",
+      "Nachweise: Rechnung, Anmeldung der Anlage (Richtlinie: Bestätigung des Netzbetreibers, Antragsformular: Nummer im Marktstammdatenregister), Konformitätserklärung und Foto der montierten Anlage; bei Denkmalen die denkmalrechtliche Genehmigung",
+      "Vergabe nach Eingang, solange die Haushaltsmittel reichen; einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.2,
+    balkonCap: 200,
+  },
+
+  // ─── Added 28.09.2026: Gemeinde Grethem (Samtgemeinde Ahlden) ─────────────
+  //
+  // Found in the source queue (the Grethem funding page, shared by the four
+  // Samtgemeinde Ahlden towns in the queue). The page still offers the
+  // programme with guideline and form; both are 2-page scans dated
+  // 21.10.2006, read as images on 28.09.2026 (guideline md5
+  // 53b217902fd59dbc23d5fb8e0f3819bf):
+  // - "Einbau einer Photovoltaikanlage mit € 35,-- je volle 0,25 kW/p",
+  //   "Einbau einer Wärmepumpe mit € 35,-- je 1 kW Eingangsleistung",
+  //   "Die maximale Förderhöhe ist auf 350,-- Euro je Grundeigentümer auf eine
+  //   Maßnahme begrenzt", "Vor Bewilligung darf kein verbindlicher Auftrag
+  //   erteilt werden", "Es werden nur fabrikneue Anlagen gefördert".
+  // STATUS UNSICHER, NO CALCULATION FIELD: the guideline is twenty years old,
+  // no budget or council decision for 2026 is published, and it reserves the
+  // right to cut or postpone applications when funds run short. Same form as
+  // Kalchreuth: the rates stand as information, nothing is deducted.
+  // Balcony power plants are not named; foerdert stays pv + waermepumpe.
+  // Adversarial reviewer (28.09.2026): status, rates and scope confirmed;
+  // added the building scope ("alle Gebäude", form names "Stall") and the
+  // cap conflict (guideline "je Grundeigentümer auf eine Maßnahme", form
+  // "je Gebäude und Grundeigentümer").
+  // The craftsmen bonus (Teil 2) is paid by cooperating firms, not by the
+  // municipality, and is not a grant of this programme.
+  "grethem-co2-minderung": {
+    id: "grethem-co2-minderung", name: "CO2-Minderungsprogramm",
+    traeger: "Gemeinde Grethem", level: "kommune", region: "Grethem",
+    bundesland: "Niedersachsen", agsCode: "03358011",
+    url: "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beschlossenIso: "2006-10-21",
+    eligibility: ["privat"],
+    foerdert: ["pv", "waermepumpe"],
+    coveredCosts: "Zuschuss je Leistung für neue Photovoltaikanlagen und Wärmepumpen (daneben Solarthermie und Lüftung mit Wärmerückgewinnung)",
+    maxFoerderung: "350 € je Grundeigentümer (Richtlinie: je Maßnahme; Antragsformular: je Gebäude)",
+    rates: [
+      { label: "Photovoltaikanlage", value: "35 € je volle 0,25 kWp, höchstens 350 €", nur: ["pv"] },
+      { label: "Wärmepumpe", value: "35 € je kW Eingangsleistung, höchstens 350 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "GELTUNG UNKLAR: Richtlinie und Antrag tragen den Stand 21.10.2006; die Gemeinde veröffentlicht beide weiterhin, nennt aber kein Budget und keinen Beschluss für das laufende Jahr — wir rechnen deshalb keinen Betrag an",
+      "Antrag vor der Auftragsvergabe: Vor der Bewilligung darf kein verbindlicher Auftrag erteilt und nicht mit dem Bau begonnen werden",
+      "Gefördert werden nur fabrikneue Anlagen; beantragen lässt sich die Förderung für alle Gebäude in der Gemeinde Grethem, das Antragsformular nennt neben dem Wohnhaus auch den Stall",
+      "Der Höchstbetrag von 350 € gilt laut Richtlinie je Grundeigentümer und Maßnahme, laut Antragsformular je Gebäude und Grundeigentümer — die beiden Unterlagen widersprechen sich",
+      "Auszahlung nach Inbetriebnahme gegen Rechnung mit Zahlungsnachweis",
+      "Kein Rechtsanspruch; bei Überzeichnung der Haushaltsmittel kann die Gemeinde Anträge kürzen, auf Folgejahre verschieben oder ablehnen",
+      "Kombinierbar mit Fördermitteln von Bund, Land und anderen Stellen, soweit deren Vorschriften nicht entgegenstehen",
+    ],
+    combinableWith: BUND,
+  },
+
   // ─── Aufgenommen am 24.09.2026: Stadt Bad Kreuznach, Balkonkraftwerke ──────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Suche nach
@@ -14427,6 +16668,18 @@ export type FundingAnlage =
  */
 export function technikenVon(f: Pick<FundingProgram, "foerdert">): FundingTechnik[] {
   return f.foerdert?.length ? f.foerdert : ["pv"];
+}
+
+/**
+ * Ist das Programm ein Kredit/Darlehen statt eines Zuschusses?
+ *
+ * Der Katalog kennt dafür kein eigenes Feld; jedes Finanzierungsprogramm trägt
+ * seinen Charakter im Wortlaut der förderfähigen Kosten („… (kein Zuschuss)").
+ * Gelesen wird deshalb genau dieser Vermerk — kein Raten aus dem Programmnamen.
+ * Anlass: Über der Bremer Darlehenskarte stand „Diese Zuschüsse gelten hier …".
+ */
+export function istFinanzierung(f: Pick<FundingProgram, "coveredCosts">): boolean {
+  return /\bkein Zuschuss\b/i.test(f.coveredCosts ?? "");
 }
 
 /**

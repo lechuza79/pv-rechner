@@ -1,0 +1,49 @@
+.sc-result-choice-header{position:relative;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;gap:var(--space-xl);padding:var(--space-xl);background:var(--color-bg-muted);color:var(--color-text-primary);border-radius:var(--radius-md);font:var(--result-weight-normal) var(--result-type-ui)/1.4 var(--result-font-body)}
+.sc-result-choice-header[data-selected=true]{background:var(--color-awareness-dim);color:var(--color-awareness)}
+.sc-result-choice-header>div{min-width:0}
+.sc-result-choice-header strong,.sc-result-choice-header span{display:block}
+.sc-result-choice-header span{font-size:var(--result-type-caption);margin-top:calc(var(--space-xl)/4)}
+.sc-result-choice-action{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;border:1px solid currentColor;border-radius:var(--radius-pill);padding:0;background:transparent;color:inherit;cursor:pointer}
+.sc-result-choice-action:hover{background:color-mix(in srgb,currentColor 10%,transparent)}
+.sc-result-choice-action:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+
+.sc-result-choice-illustration{width:96px;height:96px;object-fit:contain;flex-shrink:0}
+.sc-result-choice-header:has(.sc-result-choice-illustration)>div{flex:1}
+@media(max-width:600px){.sc-result-choice-illustration{width:72px;height:72px}}
+
+.sc-result-choice-footer{border-top:1px solid var(--color-border);background:var(--color-bg)}
+.sc-result-choice-footer button{display:block;width:100%;padding:12px 16px;border:0;background:transparent;color:var(--color-text-primary);font:inherit;font-weight:600;cursor:pointer}
+.sc-result-choice-footer button:hover{background:var(--color-bg-muted)}
+.sc-result-choice-footer button:focus-visible{outline:2px solid currentColor;outline-offset:-3px}
+
+.sc-result-choice-header[data-neutral=true]{background:var(--color-bg);color:var(--color-text-primary)}
+
+/* The supplied illustration already contains its neon artwork. */
+.sc-result-choice-art{position:relative;display:block;width:160px;height:160px;flex-shrink:0;isolation:isolate}
+.sc-result-choice-art:before{content:"";position:absolute;inset:20px;border-radius:50%;background:#e2e9df;z-index:-1}
+.sc-result-choice-art .sc-result-choice-illustration{width:100%;height:100%;object-fit:contain}
+
+/* A selected consumer can be removed without opening its editor. */
+.sc-result-choice-edit{display:block;margin:0;padding:0;border:0;background:none;color:var(--color-text-secondary);font:inherit;font-size:var(--result-type-caption);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sc-result-choice-action[data-removable=true]>span{margin:0}
+.sc-result-choice-check,.sc-result-choice-remove-icon{display:flex!important;align-items:center;justify-content:center;position:absolute;inset:0;transition:opacity .18s ease,transform .18s ease}
+.sc-result-choice-remove-icon{opacity:0;transform:rotate(-90deg)}
+.sc-result-choice-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.sc-result-choice-controls .sc-result-choice-remove-label{margin:0;font-size:10px;line-height:1.2;opacity:0;transition:opacity .18s ease;pointer-events:none}
+.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible) .sc-result-choice-check{opacity:0;transform:rotate(90deg)}
+.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible) .sc-result-choice-remove-icon{opacity:1;transform:rotate(0)}
+.sc-result-choice-header:has(.sc-result-choice-action[data-removable=true]:is(:hover,:focus-visible)) .sc-result-choice-remove-label{opacity:1}
+@media(hover:none){.sc-result-choice-controls .sc-result-choice-remove-label{opacity:1}}
+@media(prefers-reduced-motion:reduce){.sc-result-choice-check,.sc-result-choice-remove-icon,.sc-result-choice-remove-label{transition:none}}
+
+.sc-result-choice-header[data-surface=white]{background:#fff;color:#1e2b26}
+.sc-result-choice-action .wp-solar-pointer{left:50%;margin:0}
+
+/* Selected choices retain the outer ring around a dark, inset check. */
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action{isolation:isolate;color:var(--color-text-primary)}
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--result-canvas,#071e22);z-index:-1}
+.sc-result-choice-header[data-selected=true] .sc-result-choice-action svg{color:var(--result-accent,var(--color-cta))}
+
+.sc-result-choice-header[data-whole-card=true]{cursor:pointer}
+.sc-result-choice-header[data-whole-card=true]:has(.sc-result-choice-action:focus-visible){outline:2px solid var(--color-text-primary);outline-offset:3px}
+.sc-result-choice-header[data-whole-card=true] .sc-result-choice-action:focus-visible{outline:none}

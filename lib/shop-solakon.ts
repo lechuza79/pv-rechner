@@ -34,16 +34,8 @@ export interface ShopAngebot {
   /**
    * Batteriekapazität in kWh, 0 = ohne Speicher.
    *
-   * VORBEHALT, GEMESSEN AM DATENBLATT (09.09.2026): Das Datenblatt des Solakon
-   * ONE nennt die Zeile „Batteriekapazität [kWh] 2.11" und macht KEINE Angabe
-   * zur nutzbaren Kapazität. 2,11 kWh ist die Nennkapazität der Zellen
-   * (35,2 V × 60 Ah). Unsere eigene Speicher-Config führt dagegen ausdrücklich
-   * die NUTZBARE Kapazität. Wir rechnen hier mit der Nennkapazität, weil eine
-   * Entladetiefe zu erfinden schlechter wäre als die benannte Ungenauigkeit —
-   * die Fehlerrichtung ist bekannt und steht am Ergebnis: Der Speichernutzen
-   * fällt eher am oberen Rand aus.
-   *
-   * OFFEN (bis 11/2026): nutzbare Kapazität beim Hersteller erfragen.
+   * Nominal capacity from the shop. The offer calculation separately applies
+   * the documented 15% minimum charge of Solakon ONE's factory settings.
    */
   speicherKwh: number;
   /** Bruttopreis in Euro, wie im Shop ausgezeichnet. */
@@ -245,4 +237,16 @@ export async function holeSolakonAngebote(signal?: AbortSignal): Promise<ShopAng
   if (angebote.length === 0) throw new Error("Kein bekanntes Set in der Produktliste gefunden");
 
   return { angebote, abgerufenIso: new Date().toISOString() };
+}
+
+/** Panel ratings from the current Solakon package listings; no generic Wp-to-count guess. */
+export function angebotModulAnzahl(offer: Pick<ShopAngebot, "haendler" | "produkt" | "moduleWp">): number | null {
+  if (offer.haendler !== "solakon") return null;
+  const panels: Record<string, { total: number; panel: number }> = {
+    onPower: { total: 2000, panel: 500 },
+    onBasic: { total: 1000, panel: 500 },
+    onLite: { total: 900, panel: 450 },
+  };
+  const known = panels[offer.produkt];
+  return known && offer.moduleWp === known.total ? known.total / known.panel : null;
 }

@@ -4,7 +4,7 @@
   const base = new URL('.', document.currentScript.src);
   const cache = new Map();
   const pending = new Map();
-  const allowed = new Set(['house','house-large','house-semi','house-row-middle','house-row-end','battery','balcony-modern','heatpump-modern','roof-flat','roof-gable','roof-hip','roof-shed','funding-check','offer-check','rank-mystery']);
+  const allowed = new Set(['house','house-large','house-semi','house-row-middle','house-row-end','battery','balcony-modern','heatpump-modern','roof-flat','roof-gable','roof-hip','roof-shed','funding-check','offer-check','rank-mystery','pv-modules-small','pv-modules-medium','pv-modules-large']);
   window.SolarCheckIllustrations = {
     register(id, svg) { cache.set(id, svg); pending.get(id)?.resolve(svg); },
     load(id) {

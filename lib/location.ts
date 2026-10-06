@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { cacheStorage } from "./embed-context";
 
 // The visitor's location (a German postcode), remembered once and used
@@ -82,12 +82,27 @@ export function useLocation(): {
   return { plz, setPlz, ready };
 }
 
+export type LocationLinkChange = { previous: string; next: string; undo: () => void };
+let linkChange: LocationLinkChange | null = null;
+const linkChangeListeners = new Set<() => void>();
+const subscribeLinkChange = (listener: () => void) => {
+  linkChangeListeners.add(listener);
+  return () => { linkChangeListeners.delete(listener); };
+};
+export function dismissLocationLinkChange(): void {
+  linkChange = null;
+  linkChangeListeners.forEach(listener => listener());
+}
+export function useLocationLinkChange(): LocationLinkChange | null {
+  return useSyncExternalStore(subscribeLinkChange, () => linkChange, () => null);
+}
+
 /**
  * Join a screen's own postcode field to the shared location: adopt the
  * remembered one when the field starts empty, and remember whatever the visitor
  * types. Lets every calculator share one postcode without owning the storage.
  *
- * `onAdopt` fires once, only when a remembered postcode is taken over — not
+ * `onAdopt` applies a remembered postcode, initially or after Undo — not
  * while typing. Screens use it to fill the field *and* apply the location
  * (fetch the yield, etc.), so a remembered postcode behaves as if it had just
  * been entered. A postcode already on screen (e.g. from a shared link) wins.
@@ -95,20 +110,48 @@ export function useLocation(): {
  * Adoption happens in an effect (not a state initialiser) so the server and the
  * first client render agree — storage is not readable during SSR.
  */
-export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): void {
+export function useSharedPlz(plz: string, onAdopt: (plz: string) => void): boolean {
+  const [remembered, setRemembered] = useState<string | null>(null);
+  const ownedChange = useRef<LocationLinkChange | null>(null);
+  useEffect(() => () => { if (ownedChange.current && linkChange === ownedChange.current) dismissLocationLinkChange(); }, []);
   const adopted = useRef(false);
+  const pendingChange = useRef<{ previous: string; next: string } | null>(null);
   const cb = useRef(onAdopt);
   cb.current = onAdopt;
 
   useEffect(() => {
     if (adopted.current) return;
     adopted.current = true;
-    if (plz) return;
+    // URL state may be applied by another effect in this same render.
+    // Reading the URL here prevents adopting storage before that state commits.
+    const params = new URLSearchParams(window.location.search);
+    const fromLink = params.get("plz");
     const stored = readLocation();
-    if (stored) cb.current(stored);
+    if (fromLink && isValidPlz(fromLink) && stored && stored !== fromLink) {
+      pendingChange.current = { previous: stored, next: fromLink };
+    }
+    if (plz || params.has("plz")) return;
+    if (stored) { setRemembered(stored); cb.current(stored); }
   }, [plz]);
 
   useEffect(() => {
     if (isValidPlz(plz)) writeLocation(plz);
+    const change = pendingChange.current;
+    if (change && plz === change.next) {
+      pendingChange.current = null;
+      linkChange = { ...change, undo: () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("plz", change.previous);
+        // Discard location-derived values belonging to the incoming link.
+        for (const key of ["ags", "er", "ertrag"]) url.searchParams.delete(key);
+        window.history.replaceState(window.history.state, "", url);
+        dismissLocationLinkChange();
+        writeLocation(change.previous);
+        cb.current(change.previous);
+      } };
+      ownedChange.current = linkChange;
+      linkChangeListeners.forEach(listener => listener());
+    }
   }, [plz]);
+  return remembered !== null && remembered === plz;
 }

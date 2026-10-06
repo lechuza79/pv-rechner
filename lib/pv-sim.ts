@@ -19,6 +19,7 @@ import { simulateSolarYear, type SolarMonth } from "./balkon-sim";
 import { monthlyFromAnnual } from "./balkon-sim";
 import { calcHourlyConsumption, type HouseholdProfile } from "./consumption";
 import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
+import { dispatchSolarHour } from "./solar-storage";
 
 // Roundtrip-Wirkungsgrad Hausspeicher (Laden × Entladen). Konservativ; moderne
 // LFP-Systeme liegen bei ~0,90–0,95.
@@ -65,6 +66,8 @@ export interface PvSimResult {
   // reale Deckung weit unter dem Jahresmittel. Aus der Stundensimulation (pro-rata
   // der WP an der Stundenlast). 0 ohne WP.
   wpAutarky: number;
+  eaAutarky: number;
+  klimaAutarky: number;
 }
 
 /** Autarkie + Jahresverlauf einer Dach-PV-Anlage aus der Stundensimulation. */
@@ -99,6 +102,8 @@ export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp
     gesamtVerbrauch: sim.consumptionKwh,
     monthly: sim.monthly,
     wpAutarky: Math.min(wpAutarky, 100),
+    eaAutarky: sim.eaLoadKwh > 0 ? Math.min(100, sim.eaSelfCoveredKwh / sim.eaLoadKwh * 100) : 0,
+    klimaAutarky: sim.klimaLoadKwh > 0 ? Math.min(100, sim.klimaSelfCoveredKwh / sim.klimaLoadKwh * 100) : 0,
   };
 }
 
@@ -158,19 +163,9 @@ export function simulateExampleDay(
   for (let h = 0; h < 24; h++) {
     const prod = Math.min((dayType.w[h] / 1000) * scale, kwp); // Wechselrichter-Deckel = kWp
     const cons = calcHourlyConsumption(household, h, month) / 1000;
-    const direct = Math.min(prod, cons);
-    let surplus = prod - direct;
-    const deficit = cons - direct;
-    let charge = 0;
-    if (surplus > 0 && speicherKwh > 0) { charge = Math.min(surplus, speicherKwh - soc); soc += charge; surplus -= charge; }
-    const feedIn = surplus;
-    let discharge = 0, grid = deficit;
-    if (deficit > 0 && soc > 0) {
-      const taken = Math.min(deficit / BATTERY_ROUNDTRIP, soc);
-      soc -= taken;
-      discharge = taken * BATTERY_ROUNDTRIP;
-      grid = deficit - discharge;
-    }
+    const flow = dispatchSolarHour(prod, cons, soc, kwp, speicherKwh, BATTERY_ROUNDTRIP);
+    const { direct, charge, discharge, feedIn, grid } = flow;
+    soc = flow.soc;
     hours.push({ h, prod, cons, direct, discharge, grid, charge, feedIn, soc });
     pSum += prod; cSum += cons; gSum += grid; fSum += feedIn;
   }

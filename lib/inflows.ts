@@ -120,7 +120,8 @@ export const INFLOWS: Inflow[] = [
       "Heizsystem; zwischen freistehend und Reihenmittelhaus liegen 20 %.",
     folgeText: "wpGebaeudeUebersprungenFolge() in lib/heatpump-core.ts",
     einbau: [
-      { datei: PV_RECHNER, orte: ["flow", "ergebnis"] },
+      { datei: PV_RECHNER, orte: ["flow"], begruendung: "Die Ergebnisfragen liegen gemeinsam für Bearbeiten und Vorschau in PvConsumerFields." },
+      { datei: "components/PvConsumerFields.tsx", orte: ["ergebnis"], begruendung: "Dieser Baustein wird im PV-Ergebnis für Verbraucher-Vorschau und Einstellungen verwendet." },
       {
         datei: EMPFEHLUNG,
         orte: ["flow"],

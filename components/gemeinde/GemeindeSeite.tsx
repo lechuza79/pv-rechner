@@ -5,6 +5,7 @@ import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
 import { formatStoryDate } from "../../lib/story-format";
 import { IMPORT_TAGE, naechsteAktualisierung } from "../../lib/mastr-import-plan";
 import { DATA_SOURCES } from "../../lib/data-sources";
+import { windgemeinde } from "../../lib/windgemeinden";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../lib/json-ld";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
@@ -171,6 +172,10 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
         data-place-plz={ort.plz ?? undefined}
         data-place-lat={ort.lat ?? undefined}
         data-place-lon={ort.lon ?? undefined}
+        // Wind town: more wind than solar capacity, at least two turbines
+        // (lib/windgemeinden.ts). The scene may draw a wind turbine from it; a
+        // picture only, never the basis for a statement about the town.
+        data-place-wind={windgemeinde(ort.ags) ? "true" : undefined}
       >
         <section className="hero" aria-labelledby="hero-title">
           <div className="scene" aria-hidden="true" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: HERO_SZENE_INNER_HTML }} />
@@ -210,9 +215,14 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
               JavaScript bedienbar, und auf dem Schreibtisch löst „display:
               contents" ihn wieder auf, sodass dort genau die Reihe des
               Entwurfs steht. */}
+{/* REIHENFOLGE = LESEREIHENFOLGE (Betreiber, 24.09.2026). Der Abschnitt
+              für Bürgerinnen und Bürger steht auf der Seite VOR dem
+              Energiemonitor und stand im Menü dahinter; die Marke zeigt
+              außerdem auf den Anfang des Abschnitts, nicht auf den Förderblock
+              in seiner Mitte. */}
           <GemeindeAbschnittNav name={ort.name} naechstesUpdate={naechstesUpdate} links={[
             {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},
-            {href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
+            {href:"#atlas-buerger",label:"Bürger & Förderung"},{href:"#atlas-data",label:"Energiemonitor"},
           ]}/>
 
           <section className="v3-intro atlas-wrap">
@@ -338,6 +348,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                 Verweisen Sie auf die laufende Ortsübersicht oder übernehmen Sie eine kurze Meldung mit Quellenlink. Ohne Anmeldung, frei
                 verwendbar und gern gekürzt.
               </p>
+              <p><a href="/fuer-organisationen/kommunen">Energiemonitor, Energie-Checks und Datenstories für Ihre Kommune</a></p>
             </div>
             <div>
               <button className="atlas-button" data-ranking-share="">

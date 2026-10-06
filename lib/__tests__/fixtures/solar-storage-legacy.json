@@ -1,0 +1,1226 @@
+[
+  {
+    "input": {
+      "moduleKwp": 0.8,
+      "inverterKw": 0.8,
+      "batteryKwh": 0,
+      "roundtrip": 0.825,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 2100,
+        "tagQuote": 0.3,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 819,
+      "rawYield": 819,
+      "clippedKwh": 0,
+      "selfUsedKwh": 399,
+      "directUsedKwh": 399,
+      "feedInKwh": 420,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 2098,
+      "monthly": [
+        {
+          "production": 20,
+          "consumption": 209,
+          "direct": 16,
+          "stored": 0,
+          "feedIn": 3,
+          "selfUsed": 16,
+          "gridDraw": 193
+        },
+        {
+          "production": 47,
+          "consumption": 169,
+          "direct": 24,
+          "stored": 0,
+          "feedIn": 23,
+          "selfUsed": 24,
+          "gridDraw": 145
+        },
+        {
+          "production": 58,
+          "consumption": 192,
+          "direct": 35,
+          "stored": 0,
+          "feedIn": 23,
+          "selfUsed": 35,
+          "gridDraw": 157
+        },
+        {
+          "production": 86,
+          "consumption": 167,
+          "direct": 41,
+          "stored": 0,
+          "feedIn": 46,
+          "selfUsed": 41,
+          "gridDraw": 127
+        },
+        {
+          "production": 116,
+          "consumption": 166,
+          "direct": 49,
+          "stored": 0,
+          "feedIn": 67,
+          "selfUsed": 49,
+          "gridDraw": 117
+        },
+        {
+          "production": 121,
+          "consumption": 145,
+          "direct": 46,
+          "stored": 0,
+          "feedIn": 76,
+          "selfUsed": 46,
+          "gridDraw": 99
+        },
+        {
+          "production": 98,
+          "consumption": 155,
+          "direct": 47,
+          "stored": 0,
+          "feedIn": 51,
+          "selfUsed": 47,
+          "gridDraw": 108
+        },
+        {
+          "production": 94,
+          "consumption": 155,
+          "direct": 42,
+          "stored": 0,
+          "feedIn": 51,
+          "selfUsed": 42,
+          "gridDraw": 113
+        },
+        {
+          "production": 100,
+          "consumption": 157,
+          "direct": 42,
+          "stored": 0,
+          "feedIn": 58,
+          "selfUsed": 42,
+          "gridDraw": 115
+        },
+        {
+          "production": 44,
+          "consumption": 178,
+          "direct": 28,
+          "stored": 0,
+          "feedIn": 17,
+          "selfUsed": 28,
+          "gridDraw": 151
+        },
+        {
+          "production": 20,
+          "consumption": 195,
+          "direct": 18,
+          "stored": 0,
+          "feedIn": 2,
+          "selfUsed": 18,
+          "gridDraw": 177
+        },
+        {
+          "production": 15,
+          "consumption": 209,
+          "direct": 12,
+          "stored": 0,
+          "feedIn": 3,
+          "selfUsed": 12,
+          "gridDraw": 196
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 0.8,
+      "inverterKw": 0.8,
+      "batteryKwh": 1,
+      "roundtrip": 0.825,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 2100,
+        "tagQuote": 0.3,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 819,
+      "rawYield": 819,
+      "clippedKwh": 0,
+      "selfUsedKwh": 567,
+      "directUsedKwh": 399,
+      "feedInKwh": 217,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 2098,
+      "monthly": [
+        {
+          "production": 20,
+          "consumption": 209,
+          "direct": 16,
+          "stored": 3,
+          "feedIn": 0,
+          "selfUsed": 19,
+          "gridDraw": 190
+        },
+        {
+          "production": 47,
+          "consumption": 169,
+          "direct": 24,
+          "stored": 13,
+          "feedIn": 10,
+          "selfUsed": 34,
+          "gridDraw": 135
+        },
+        {
+          "production": 58,
+          "consumption": 192,
+          "direct": 35,
+          "stored": 15,
+          "feedIn": 8,
+          "selfUsed": 47,
+          "gridDraw": 145
+        },
+        {
+          "production": 86,
+          "consumption": 167,
+          "direct": 41,
+          "stored": 19,
+          "feedIn": 27,
+          "selfUsed": 57,
+          "gridDraw": 111
+        },
+        {
+          "production": 116,
+          "consumption": 166,
+          "direct": 49,
+          "stored": 28,
+          "feedIn": 39,
+          "selfUsed": 72,
+          "gridDraw": 94
+        },
+        {
+          "production": 121,
+          "consumption": 145,
+          "direct": 46,
+          "stored": 28,
+          "feedIn": 47,
+          "selfUsed": 69,
+          "gridDraw": 76
+        },
+        {
+          "production": 98,
+          "consumption": 155,
+          "direct": 47,
+          "stored": 26,
+          "feedIn": 25,
+          "selfUsed": 69,
+          "gridDraw": 86
+        },
+        {
+          "production": 94,
+          "consumption": 155,
+          "direct": 42,
+          "stored": 28,
+          "feedIn": 24,
+          "selfUsed": 65,
+          "gridDraw": 90
+        },
+        {
+          "production": 100,
+          "consumption": 157,
+          "direct": 42,
+          "stored": 26,
+          "feedIn": 32,
+          "selfUsed": 63,
+          "gridDraw": 94
+        },
+        {
+          "production": 44,
+          "consumption": 178,
+          "direct": 28,
+          "stored": 12,
+          "feedIn": 4,
+          "selfUsed": 38,
+          "gridDraw": 141
+        },
+        {
+          "production": 20,
+          "consumption": 195,
+          "direct": 18,
+          "stored": 2,
+          "feedIn": 0,
+          "selfUsed": 20,
+          "gridDraw": 175
+        },
+        {
+          "production": 15,
+          "consumption": 209,
+          "direct": 12,
+          "stored": 3,
+          "feedIn": 0,
+          "selfUsed": 15,
+          "gridDraw": 194
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 2,
+      "inverterKw": 0.8,
+      "batteryKwh": 4.22,
+      "roundtrip": 0.825,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 2800,
+        "tagQuote": 0.4,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 1678,
+      "rawYield": 2048,
+      "clippedKwh": 370,
+      "selfUsedKwh": 1459,
+      "directUsedKwh": 788,
+      "feedInKwh": 76,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 2797,
+      "monthly": [
+        {
+          "production": 48,
+          "consumption": 278,
+          "direct": 36,
+          "stored": 12,
+          "feedIn": 0,
+          "selfUsed": 46,
+          "gridDraw": 232
+        },
+        {
+          "production": 94,
+          "consumption": 226,
+          "direct": 47,
+          "stored": 47,
+          "feedIn": 0,
+          "selfUsed": 86,
+          "gridDraw": 140
+        },
+        {
+          "production": 128,
+          "consumption": 257,
+          "direct": 72,
+          "stored": 56,
+          "feedIn": 0,
+          "selfUsed": 119,
+          "gridDraw": 138
+        },
+        {
+          "production": 166,
+          "consumption": 223,
+          "direct": 80,
+          "stored": 80,
+          "feedIn": 7,
+          "selfUsed": 145,
+          "gridDraw": 78
+        },
+        {
+          "production": 223,
+          "consumption": 221,
+          "direct": 93,
+          "stored": 116,
+          "feedIn": 14,
+          "selfUsed": 188,
+          "gridDraw": 33
+        },
+        {
+          "production": 230,
+          "consumption": 193,
+          "direct": 88,
+          "stored": 116,
+          "feedIn": 26,
+          "selfUsed": 183,
+          "gridDraw": 10
+        },
+        {
+          "production": 212,
+          "consumption": 207,
+          "direct": 91,
+          "stored": 108,
+          "feedIn": 13,
+          "selfUsed": 180,
+          "gridDraw": 27
+        },
+        {
+          "production": 197,
+          "consumption": 207,
+          "direct": 81,
+          "stored": 108,
+          "feedIn": 8,
+          "selfUsed": 170,
+          "gridDraw": 37
+        },
+        {
+          "production": 193,
+          "consumption": 209,
+          "direct": 78,
+          "stored": 108,
+          "feedIn": 8,
+          "selfUsed": 167,
+          "gridDraw": 42
+        },
+        {
+          "production": 99,
+          "consumption": 238,
+          "direct": 56,
+          "stored": 43,
+          "feedIn": 0,
+          "selfUsed": 92,
+          "gridDraw": 146
+        },
+        {
+          "production": 51,
+          "consumption": 260,
+          "direct": 40,
+          "stored": 11,
+          "feedIn": 0,
+          "selfUsed": 49,
+          "gridDraw": 211
+        },
+        {
+          "production": 37,
+          "consumption": 278,
+          "direct": 27,
+          "stored": 10,
+          "feedIn": 0,
+          "selfUsed": 35,
+          "gridDraw": 243
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 2,
+      "inverterKw": 0.8,
+      "batteryKwh": 10.55,
+      "roundtrip": 0.825,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 2800,
+        "tagQuote": 0.4,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 1678,
+      "rawYield": 2048,
+      "clippedKwh": 370,
+      "selfUsedKwh": 1504,
+      "directUsedKwh": 788,
+      "feedInKwh": 22,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 2797,
+      "monthly": [
+        {
+          "production": 48,
+          "consumption": 278,
+          "direct": 36,
+          "stored": 12,
+          "feedIn": 0,
+          "selfUsed": 46,
+          "gridDraw": 232
+        },
+        {
+          "production": 94,
+          "consumption": 226,
+          "direct": 47,
+          "stored": 47,
+          "feedIn": 0,
+          "selfUsed": 86,
+          "gridDraw": 140
+        },
+        {
+          "production": 128,
+          "consumption": 257,
+          "direct": 72,
+          "stored": 56,
+          "feedIn": 0,
+          "selfUsed": 119,
+          "gridDraw": 138
+        },
+        {
+          "production": 166,
+          "consumption": 223,
+          "direct": 80,
+          "stored": 86,
+          "feedIn": 0,
+          "selfUsed": 150,
+          "gridDraw": 73
+        },
+        {
+          "production": 223,
+          "consumption": 221,
+          "direct": 93,
+          "stored": 130,
+          "feedIn": 0,
+          "selfUsed": 196,
+          "gridDraw": 25
+        },
+        {
+          "production": 230,
+          "consumption": 193,
+          "direct": 88,
+          "stored": 123,
+          "feedIn": 18,
+          "selfUsed": 189,
+          "gridDraw": 5
+        },
+        {
+          "production": 212,
+          "consumption": 207,
+          "direct": 91,
+          "stored": 117,
+          "feedIn": 4,
+          "selfUsed": 187,
+          "gridDraw": 19
+        },
+        {
+          "production": 197,
+          "consumption": 207,
+          "direct": 81,
+          "stored": 116,
+          "feedIn": 0,
+          "selfUsed": 179,
+          "gridDraw": 28
+        },
+        {
+          "production": 193,
+          "consumption": 209,
+          "direct": 78,
+          "stored": 115,
+          "feedIn": 0,
+          "selfUsed": 175,
+          "gridDraw": 34
+        },
+        {
+          "production": 99,
+          "consumption": 238,
+          "direct": 56,
+          "stored": 43,
+          "feedIn": 0,
+          "selfUsed": 93,
+          "gridDraw": 145
+        },
+        {
+          "production": 51,
+          "consumption": 260,
+          "direct": 40,
+          "stored": 11,
+          "feedIn": 0,
+          "selfUsed": 49,
+          "gridDraw": 211
+        },
+        {
+          "production": 37,
+          "consumption": 278,
+          "direct": 27,
+          "stored": 10,
+          "feedIn": 0,
+          "selfUsed": 35,
+          "gridDraw": 243
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 5,
+      "inverterKw": 5,
+      "batteryKwh": 0,
+      "roundtrip": 0.9,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 3800,
+        "tagQuote": 0.4,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 5120,
+      "rawYield": 5120,
+      "clippedKwh": 0,
+      "selfUsedKwh": 1244,
+      "directUsedKwh": 1244,
+      "feedInKwh": 3876,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 3797,
+      "monthly": [
+        {
+          "production": 122,
+          "consumption": 378,
+          "direct": 68,
+          "stored": 0,
+          "feedIn": 54,
+          "selfUsed": 68,
+          "gridDraw": 310
+        },
+        {
+          "production": 292,
+          "consumption": 306,
+          "direct": 76,
+          "stored": 0,
+          "feedIn": 216,
+          "selfUsed": 76,
+          "gridDraw": 230
+        },
+        {
+          "production": 364,
+          "consumption": 349,
+          "direct": 114,
+          "stored": 0,
+          "feedIn": 250,
+          "selfUsed": 114,
+          "gridDraw": 234
+        },
+        {
+          "production": 540,
+          "consumption": 303,
+          "direct": 123,
+          "stored": 0,
+          "feedIn": 417,
+          "selfUsed": 123,
+          "gridDraw": 180
+        },
+        {
+          "production": 725,
+          "consumption": 300,
+          "direct": 142,
+          "stored": 0,
+          "feedIn": 583,
+          "selfUsed": 142,
+          "gridDraw": 158
+        },
+        {
+          "production": 759,
+          "consumption": 262,
+          "direct": 132,
+          "stored": 0,
+          "feedIn": 626,
+          "selfUsed": 132,
+          "gridDraw": 130
+        },
+        {
+          "production": 611,
+          "consumption": 281,
+          "direct": 138,
+          "stored": 0,
+          "feedIn": 473,
+          "selfUsed": 138,
+          "gridDraw": 143
+        },
+        {
+          "production": 586,
+          "consumption": 281,
+          "direct": 121,
+          "stored": 0,
+          "feedIn": 464,
+          "selfUsed": 121,
+          "gridDraw": 159
+        },
+        {
+          "production": 622,
+          "consumption": 284,
+          "direct": 113,
+          "stored": 0,
+          "feedIn": 509,
+          "selfUsed": 113,
+          "gridDraw": 171
+        },
+        {
+          "production": 276,
+          "consumption": 323,
+          "direct": 93,
+          "stored": 0,
+          "feedIn": 183,
+          "selfUsed": 93,
+          "gridDraw": 230
+        },
+        {
+          "production": 128,
+          "consumption": 353,
+          "direct": 71,
+          "stored": 0,
+          "feedIn": 56,
+          "selfUsed": 71,
+          "gridDraw": 281
+        },
+        {
+          "production": 95,
+          "consumption": 378,
+          "direct": 52,
+          "stored": 0,
+          "feedIn": 44,
+          "selfUsed": 52,
+          "gridDraw": 326
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 5,
+      "inverterKw": 5,
+      "batteryKwh": 5,
+      "roundtrip": 0.9,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 3800,
+        "tagQuote": 0.4,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 5120,
+      "rawYield": 5120,
+      "clippedKwh": 0,
+      "selfUsedKwh": 2422,
+      "directUsedKwh": 1244,
+      "feedInKwh": 2567,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 3797,
+      "monthly": [
+        {
+          "production": 122,
+          "consumption": 378,
+          "direct": 68,
+          "stored": 43,
+          "feedIn": 11,
+          "selfUsed": 106,
+          "gridDraw": 271
+        },
+        {
+          "production": 292,
+          "consumption": 306,
+          "direct": 76,
+          "stored": 81,
+          "feedIn": 135,
+          "selfUsed": 149,
+          "gridDraw": 157
+        },
+        {
+          "production": 364,
+          "consumption": 349,
+          "direct": 114,
+          "stored": 116,
+          "feedIn": 134,
+          "selfUsed": 218,
+          "gridDraw": 130
+        },
+        {
+          "production": 540,
+          "consumption": 303,
+          "direct": 123,
+          "stored": 128,
+          "feedIn": 289,
+          "selfUsed": 238,
+          "gridDraw": 65
+        },
+        {
+          "production": 725,
+          "consumption": 300,
+          "direct": 142,
+          "stored": 155,
+          "feedIn": 428,
+          "selfUsed": 281,
+          "gridDraw": 19
+        },
+        {
+          "production": 759,
+          "consumption": 262,
+          "direct": 132,
+          "stored": 144,
+          "feedIn": 482,
+          "selfUsed": 262,
+          "gridDraw": 1
+        },
+        {
+          "production": 611,
+          "consumption": 281,
+          "direct": 138,
+          "stored": 154,
+          "feedIn": 319,
+          "selfUsed": 277,
+          "gridDraw": 4
+        },
+        {
+          "production": 586,
+          "consumption": 281,
+          "direct": 121,
+          "stored": 155,
+          "feedIn": 309,
+          "selfUsed": 261,
+          "gridDraw": 20
+        },
+        {
+          "production": 622,
+          "consumption": 284,
+          "direct": 113,
+          "stored": 149,
+          "feedIn": 360,
+          "selfUsed": 248,
+          "gridDraw": 37
+        },
+        {
+          "production": 276,
+          "consumption": 323,
+          "direct": 93,
+          "stored": 94,
+          "feedIn": 89,
+          "selfUsed": 178,
+          "gridDraw": 144
+        },
+        {
+          "production": 128,
+          "consumption": 353,
+          "direct": 71,
+          "stored": 51,
+          "feedIn": 6,
+          "selfUsed": 117,
+          "gridDraw": 236
+        },
+        {
+          "production": 95,
+          "consumption": 378,
+          "direct": 52,
+          "stored": 39,
+          "feedIn": 5,
+          "selfUsed": 87,
+          "gridDraw": 291
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 12,
+      "inverterKw": 12,
+      "batteryKwh": 10,
+      "roundtrip": 0.9,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 3800,
+        "tagQuote": 0.4,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 12288,
+      "rawYield": 12288,
+      "clippedKwh": 0,
+      "selfUsedKwh": 3200,
+      "directUsedKwh": 1430,
+      "feedInKwh": 8887,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 3797,
+      "monthly": [
+        {
+          "production": 293,
+          "consumption": 378,
+          "direct": 90,
+          "stored": 140,
+          "feedIn": 63,
+          "selfUsed": 213,
+          "gridDraw": 165
+        },
+        {
+          "production": 701,
+          "consumption": 306,
+          "direct": 93,
+          "stored": 174,
+          "feedIn": 435,
+          "selfUsed": 248,
+          "gridDraw": 58
+        },
+        {
+          "production": 875,
+          "consumption": 349,
+          "direct": 128,
+          "stored": 228,
+          "feedIn": 519,
+          "selfUsed": 333,
+          "gridDraw": 15
+        },
+        {
+          "production": 1296,
+          "consumption": 303,
+          "direct": 140,
+          "stored": 182,
+          "feedIn": 974,
+          "selfUsed": 303,
+          "gridDraw": 0
+        },
+        {
+          "production": 1739,
+          "consumption": 300,
+          "direct": 155,
+          "stored": 161,
+          "feedIn": 1422,
+          "selfUsed": 300,
+          "gridDraw": 0
+        },
+        {
+          "production": 1821,
+          "consumption": 262,
+          "direct": 143,
+          "stored": 133,
+          "feedIn": 1545,
+          "selfUsed": 262,
+          "gridDraw": 0
+        },
+        {
+          "production": 1467,
+          "consumption": 281,
+          "direct": 149,
+          "stored": 146,
+          "feedIn": 1172,
+          "selfUsed": 281,
+          "gridDraw": 0
+        },
+        {
+          "production": 1406,
+          "consumption": 281,
+          "direct": 136,
+          "stored": 161,
+          "feedIn": 1109,
+          "selfUsed": 281,
+          "gridDraw": 0
+        },
+        {
+          "production": 1493,
+          "consumption": 284,
+          "direct": 125,
+          "stored": 177,
+          "feedIn": 1191,
+          "selfUsed": 284,
+          "gridDraw": 0
+        },
+        {
+          "production": 662,
+          "consumption": 323,
+          "direct": 105,
+          "stored": 192,
+          "feedIn": 364,
+          "selfUsed": 279,
+          "gridDraw": 44
+        },
+        {
+          "production": 306,
+          "consumption": 353,
+          "direct": 92,
+          "stored": 164,
+          "feedIn": 50,
+          "selfUsed": 241,
+          "gridDraw": 112
+        },
+        {
+          "production": 229,
+          "consumption": 378,
+          "direct": 74,
+          "stored": 112,
+          "feedIn": 43,
+          "selfUsed": 175,
+          "gridDraw": 202
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  },
+  {
+    "input": {
+      "moduleKwp": 22.5,
+      "inverterKw": 22.5,
+      "batteryKwh": 13,
+      "roundtrip": 0.9,
+      "monthlyYieldPerKwp": [
+        24.383021642372867,
+        58.43011970906651,
+        72.89541197485418,
+        108.02483000917803,
+        144.91971301404337,
+        151.76227930799672,
+        122.26981811722213,
+        117.15835742975852,
+        124.42132064858036,
+        55.141726455407635,
+        25.516880656080687,
+        19.07652103543902
+      ],
+      "orientation": "sued_flach",
+      "household": {
+        "baseKwh": 3800,
+        "tagQuote": 0.38,
+        "wpActive": false,
+        "eaActive": false
+      }
+    },
+    "expected": {
+      "annualYield": 23040,
+      "rawYield": 23040,
+      "clippedKwh": 0,
+      "selfUsedKwh": 3505,
+      "directUsedKwh": 1445,
+      "feedInKwh": 19300,
+      "curtailedKwh": 0,
+      "feedInWeightedKwh": 0,
+      "productionWeightedKwh": 0,
+      "consumptionKwh": 3797,
+      "monthly": [
+        {
+          "production": 549,
+          "consumption": 378,
+          "direct": 93,
+          "stored": 228,
+          "feedIn": 228,
+          "selfUsed": 292,
+          "gridDraw": 86
+        },
+        {
+          "production": 1315,
+          "consumption": 306,
+          "direct": 93,
+          "stored": 222,
+          "feedIn": 999,
+          "selfUsed": 292,
+          "gridDraw": 14
+        },
+        {
+          "production": 1640,
+          "consumption": 349,
+          "direct": 128,
+          "stored": 245,
+          "feedIn": 1267,
+          "selfUsed": 349,
+          "gridDraw": 0
+        },
+        {
+          "production": 2431,
+          "consumption": 303,
+          "direct": 139,
+          "stored": 183,
+          "feedIn": 2109,
+          "selfUsed": 303,
+          "gridDraw": 0
+        },
+        {
+          "production": 3261,
+          "consumption": 300,
+          "direct": 156,
+          "stored": 161,
+          "feedIn": 2944,
+          "selfUsed": 300,
+          "gridDraw": 0
+        },
+        {
+          "production": 3415,
+          "consumption": 262,
+          "direct": 140,
+          "stored": 136,
+          "feedIn": 3138,
+          "selfUsed": 262,
+          "gridDraw": 0
+        },
+        {
+          "production": 2751,
+          "consumption": 281,
+          "direct": 148,
+          "stored": 147,
+          "feedIn": 2456,
+          "selfUsed": 281,
+          "gridDraw": 0
+        },
+        {
+          "production": 2636,
+          "consumption": 281,
+          "direct": 138,
+          "stored": 159,
+          "feedIn": 2339,
+          "selfUsed": 281,
+          "gridDraw": 0
+        },
+        {
+          "production": 2799,
+          "consumption": 284,
+          "direct": 123,
+          "stored": 178,
+          "feedIn": 2498,
+          "selfUsed": 284,
+          "gridDraw": 0
+        },
+        {
+          "production": 1241,
+          "consumption": 323,
+          "direct": 107,
+          "stored": 226,
+          "feedIn": 907,
+          "selfUsed": 312,
+          "gridDraw": 11
+        },
+        {
+          "production": 574,
+          "consumption": 353,
+          "direct": 96,
+          "stored": 228,
+          "feedIn": 250,
+          "selfUsed": 302,
+          "gridDraw": 51
+        },
+        {
+          "production": 429,
+          "consumption": 378,
+          "direct": 83,
+          "stored": 182,
+          "feedIn": 164,
+          "selfUsed": 248,
+          "gridDraw": 130
+        }
+      ],
+      "wpLoadKwh": 0,
+      "wpSelfCoveredKwh": 0
+    }
+  }
+]

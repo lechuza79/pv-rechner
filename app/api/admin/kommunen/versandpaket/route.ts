@@ -7,7 +7,7 @@ import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon
 import { versandfenster } from "../../../../../lib/schulferien";
 import { empfaengerFuerBrief, type EmpfaengerRolle } from "../../../../../lib/kommunen-presse";
 import { fachHerkunft, verwaltungDomainVon } from "../../../../../lib/kommunen-fachkontakt";
-import { postfachBefund } from "../../../../../lib/outreach-mail";
+import { postfachBefund, MAX_JE_LAUF } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
 import { darfInDenVersand } from "../../../../../lib/outreach-wiedervorlage";
@@ -44,7 +44,9 @@ export async function GET(req: NextRequest) {
   const schub = SCHUEBE[schluessel];
   if (!schub) return NextResponse.json({ error: `Unbekannter Schub „${schluessel}"` }, { status: 400 });
   const charge = parseInt(sp.get("charge") ?? "1", 10);
-  const limit = Math.min(50, Math.max(1, parseInt(sp.get("limit") ?? "25", 10)));
+  // Capped at the daily limit, not at a number of its own: at 50 a day of 97
+  // letters came back half-built (05.10.2026).
+  const limit = Math.min(MAX_JE_LAUF, Math.max(1, parseInt(sp.get("limit") ?? "25", 10)));
   // Der Stichtag ist ein DEUTSCHER Kalendertag, kein UTC-Tag. Zwischen 00:00
   // und 02:00 Sommerzeit liegt das UTC-Datum einen Tag zurück — am ersten
   // Ferientag hätte die Sperre in diesem Fenster nicht gegriffen. Dieselbe
@@ -140,7 +142,7 @@ export async function GET(req: NextRequest) {
     // eine, und wir hätten 16 davon an info@ oder stadt@ geschickt.
     // Vor beiden stehen die belegten Fachkontakte der Kontaktsuche: Klimaschutz
     // zuerst, dann Presse (lib/kommunen-fachkontakt.ts).
-    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email });
+    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email, rollenQuelle: z.rollen_email_quelle });
     const verwaltungDomain = (ziel.fach && ziel.email ? verwaltungDomainVon(z.fachkontakte, ziel.email) : null) ?? z.verwaltung_domain;
     const belegUrl = ziel.email === z.klima_email ? z.klima_beleg_url : z.presse_kontakt_beleg_url;
     if (!ziel.email) {
@@ -159,7 +161,7 @@ export async function GET(req: NextRequest) {
     // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
     // Eine Presseadresse ist per Bauart ein Funktionspostfach — die Prüfung
     // auf Personennamen greift dort nicht, die Domain-Prüfung schon.
-    const postfach = postfachBefund(ziel.email, name ?? "", verwaltungDomain, { belegteRolle: ziel.fach });
+    const postfach = postfachBefund(ziel.email, name ?? "", verwaltungDomain, { belegteRolle: ziel.belegt });
     if (!postfach.ok) {
       skip(postfach.grund);
       continue;
