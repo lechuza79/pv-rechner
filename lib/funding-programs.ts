@@ -881,6 +881,53 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Mindestens drei Jahre für die bewilligte Wohnung nutzen."
     ]
   },
+  "bergkamen-solardach": {
+    "level": "kommune",
+    "stand": "Oktober 2026",
+    "status": "eingestellt",
+    "capped": true,
+    "verified": true,
+    "eligibility": [
+      "privat"
+    ],
+    "foerdert": [
+      "pv"
+    ],
+    "coveredCosts": "Errichtung einer Photovoltaikanlage auf einem Wohngebäude, optional mit Speicher",
+    "combinableWith": [
+      "bund-nullsteuer",
+      "bund-kfw270"
+    ],
+    "id": "bergkamen-solardach",
+    "name": "Förderprogramm Solar-Dach Bergkamen",
+    "traeger": "Stadt Bergkamen",
+    "region": "Bergkamen",
+    "agsCode": "05978004",
+    "bundesland": "Nordrhein-Westfalen",
+    "url": "https://www.bergkamen.de/files/bk/pdf/umwelt/klimafoerderung/2024-dach-pv-foerderrichtlinie.pdf",
+    "rates": [
+      {
+        "label": "Photovoltaik auf dem Dach",
+        "value": "750 € ab 5 kWp, 1.250 € ab 7 kWp, 1.750 € ab 10 kWp (pauschal)"
+      },
+      {
+        "label": "Bonus Stromspeicher",
+        "value": "500 € pauschal bei einer neuen Anlage"
+      },
+      {
+        "label": "Bonus Gründach",
+        "value": "250 € pauschal auf einem neu anzulegenden Gründach"
+      }
+    ],
+    "conditions": [
+      "Das Programm wurde beendet; die Fördermittel für 2025 waren ausgeschöpft, neue Anträge sind nicht mehr möglich.",
+      "Antragsfrist war der 30. November 2025, Nachweisfrist der 31. März 2026.",
+      "Für natürliche Personen und Eigentümergemeinschaften als Eigentümer eines Ein- oder Mehrfamilienhauses oder überwiegend bewohnten Gebäudes in Bergkamen, auch auf zugehörigen Garagendächern.",
+      "Neue Anlage ab 5 kWp, Leistung auf ganze kWp abgerundet; kleinere Anlagen wurden nicht gefördert.",
+      "Kein Auftrag vor Antragseingang; Inbetriebnahme durch ein Fachunternehmen, Anmeldung im Marktstammdatenregister.",
+      "Zehn Jahre Zweckbindung."
+    ]
+  },
   "pfaffenhofen-balkon": {
     "level": "kommune",
     "stand": "September 2026",

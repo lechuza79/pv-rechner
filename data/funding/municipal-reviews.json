@@ -16346,7 +16346,7 @@
   {
     "regionId": "07132006",
     "name": "Betzdorf",
-    "checkedAt": "2026-09-19T14:10:00Z",
+    "checkedAt": "2026-10-06T10:28:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -16378,6 +16378,10 @@
       {
         "url": "https://www.vg-bg.de/buergernah/impressum/",
         "finding": "Impressum der Verbandsgemeinde gelesen: Poststelle poststelle@vg-bg.de."
+      },
+      {
+        "url": "https://www.betzdorf.de/suche.html?keywords=Balkonkraftwerk",
+        "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Volltextsuche der Stadt Betzdorf nach „Balkonkraftwerk“ und „Photovoltaik“ ergibt keine Treffer; weiterhin keine Richtlinie für einen Technikzuschuss auffindbar."
       }
     ],
     "sources": [],
@@ -16385,8 +16389,8 @@
     "conclusion": "Die Stadt Betzdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain. Eine Pressemeldung der Siegener Zeitung („Wer ein Balkonkraftwerk installiert, bekommt Geld von der Stadt“, Bezahlschranke) nennt einen Balkonkraftwerk-Zuschuss der Stadt; auf betzdorf.de und vg-bg.de ist keine Richtlinie dazu zu finden (einzige Förderrichtlinie: Vereinsförderung 2023). Ob es ihn gab und ob er läuft, ist nicht belegt — deshalb Rückfrage. Daneben EKM-Ermessensförderung und beendete VG-/Kreisprogramme.",
     "nextAction": {
       "kind": "enquiry",
-      "dueAt": "2026-09-21T07:00:00Z",
-      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+      "dueAt": "2026-10-20T08:00:00Z",
+      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
     },
     "enquiry": {
       "id": "klaerung-07132006",
@@ -19385,7 +19389,7 @@
   {
     "regionId": "07132063",
     "name": "Kirchen (Sieg)",
-    "checkedAt": "2026-09-19T14:10:00Z",
+    "checkedAt": "2026-10-06T10:28:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -19426,6 +19430,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Richtlinie weiterhin abrufbar (HTTP 200); Suche der Verbandsgemeinde nach „steckerfertig“ und „Balkonkraftwerk“ ohne Treffer, keine Antragsseite. Laufender Antragsweg weiter nicht belegt."
       }
     ],
     "sources": [],
@@ -19433,8 +19441,8 @@
     "conclusion": "Die Stadt Kirchen (Sieg) hat eine Richtlinie vom 20.06.2023 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Antragsseite ist nur bis 06/2024 belegt. Ob die Förderung noch läuft, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben ISEK-Modernisierungsrichtlinie (Sanierungsgebiet), EKM-Ermessensförderung und beendete Kreisprogramme.",
     "nextAction": {
       "kind": "enquiry",
-      "dueAt": "2026-09-21T07:00:00Z",
-      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+      "dueAt": "2026-10-20T08:00:00Z",
+      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
     },
     "enquiry": {
       "id": "klaerung-07132063",
@@ -19824,7 +19832,7 @@
   {
     "regionId": "07132072",
     "name": "Mudersbach",
-    "checkedAt": "2026-09-19T14:10:00Z",
+    "checkedAt": "2026-10-06T10:28:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -19865,6 +19873,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Richtlinie weiterhin abrufbar (HTTP 200); Startseite mudersbach.net nennt die Balkonkraftwerk-Förderung nicht mehr; VG-Suche ohne Treffer, keine Antragsseite."
       }
     ],
     "sources": [],
@@ -19872,8 +19884,8 @@
     "conclusion": "Die Ortsgemeinde Mudersbach hat eine Richtlinie vom 08.05.2024 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Richtlinie ist noch abrufbar, die Antragsseite der Verbandsgemeinde existiert seit dem Relaunch nicht mehr. Ob Anträge derzeit möglich sind, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben EKM-Ermessensförderung (Wärmepumpe möglich) und beendete Kreisprogramme.",
     "nextAction": {
       "kind": "enquiry",
-      "dueAt": "2026-09-21T07:00:00Z",
-      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+      "dueAt": "2026-10-20T08:00:00Z",
+      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
     },
     "enquiry": {
       "id": "klaerung-07132072",
