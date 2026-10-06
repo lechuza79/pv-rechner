@@ -26,7 +26,9 @@ import { resolve } from "node:path";
 import type { Rollenwerk, ScopeRegeln } from "../lib/kontakt-suche";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
-import { maildomain } from "../lib/windbetreiber";
+import { kontaktFelder, maildomain } from "../lib/windbetreiber";
+import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
+import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { bewerten, laufen, readJson, recherchieren, writeJson, type Bestand, type Eintrag, type Ergebnis } from "./lib/kontakt-lauf";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
 
@@ -161,21 +163,27 @@ function summary(bestand: Bestand, anzahl: number) {
 
 async function apply() {
   const c = await db();
-  let mit = 0, geschrieben = 0;
-  for (const r of ergebnisse()) {
+  const ddl = spaltenAusDdl(WINDBETREIBER_SQL, "windbetreiber");
+  let mit = 0, ohne = 0, geschrieben = 0;
+  // A result judged under older rules says what the old rules thought. Writing
+  // it would bring back exactly what the rule change was meant to remove.
+  const alle = ergebnisse();
+  const veraltet = alle.filter((r) => r.rules !== rulesVersion());
+  if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
+  for (const r of alle) {
     const k = kontaktAus(r);
-    if (!k) continue;
-    mit++;
+    if (k) mit++; else ohne++;
+    // Written either way: a website whose evaluation finds no contact on the
+    // site any more must not keep the old one (06.10.2026, fault class
+    // "contact outlives its source", docs/lehren/kontakt-engine-fehler.md).
+    const felder = kontaktFelder(k, r.evaluatedAt.slice(0, 10));
+    nurBekannteSpalten("windbetreiber", ddl, [felder]);
     if (!schreiben) continue;
-    const { error, count } = await c.from("windbetreiber").update({
-      kontakt_email: k.email, kontakt_kanal: k.kanal, kontakt_beleg_url: k.url, kontakt_geprueft_am: r.evaluatedAt.slice(0, 10),
-      // A new contact needs a new release.
-      kontakt_freigabe_am: null, kontakt_sperrgrund: null,
-    }, { count: "exact" }).eq("website", r.id).eq("aktiv", true);
+    const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" }).eq("website", r.id).eq("aktiv", true);
     if (error) throw new Error(`${r.id}: ${error.message}`);
     geschrieben += count ?? 0;
   }
-  console.log(JSON.stringify({ schreiben, websitesMitKontakt: mit, betreiberGeschrieben: geschrieben }));
+  console.log(JSON.stringify({ schreiben, websitesMitKontakt: mit, websitesOhneKontakt: ohne, betreiberGeschrieben: geschrieben }));
 }
 
 async function main() {

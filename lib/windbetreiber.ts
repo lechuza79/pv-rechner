@@ -384,3 +384,23 @@ export function zitatName(name: string): string {
   // after the legal form. Then every word that is not legal form.
   return woerter.filter((w) => !/^(?:GmbH|mbH|UG|KG|AG|SE|GbR|eG|oHG|OHG|KGaA|e\.K\.|&|und|Co\.?|\(haftungsbeschränkt\))$/i.test(w)).join(" ").trim();
 }
+
+/** The website columns of an operator row: a proven check, or null to withdraw. */
+export function websiteFelder(p: { kandidat: Kandidat; beleg: Beleg | null; impressum: { impressum_url: string | null } } | null, heute: string) {
+  return {
+    website: p ? p.kandidat.domain : null,
+    website_quelle: p?.kandidat.quelle ?? null,
+    website_beleg: p?.beleg?.wie ?? null,
+    website_beleg_url: p?.impressum.impressum_url ?? null,
+    website_textstelle: p?.beleg?.textstelle.slice(0, 400) ?? null,
+    website_geprueft_am: p ? heute : null,
+  };
+}
+
+/** The contact columns of an operator row. A new contact needs a new release. */
+export function kontaktFelder(k: { email: string; kanal: string; url: string } | null, geprueftAm: string | null) {
+  return {
+    kontakt_email: k?.email ?? null, kontakt_kanal: k?.kanal ?? null, kontakt_beleg_url: k?.url ?? null,
+    kontakt_geprueft_am: k ? geprueftAm : null, kontakt_freigabe_am: null, kontakt_sperrgrund: null,
+  };
+}

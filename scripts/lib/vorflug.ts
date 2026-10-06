@@ -89,7 +89,7 @@ export function paralleleLaeufeCheck(muster: RegExp, eigenePid = process.pid): C
       const eltern = new Map(zeilen.map((m) => [Number(m[1]), Number(m[2])]));
       const eigene = new Set<number>();
       for (let p: number | undefined = eigenePid; p && !eigene.has(p); p = eltern.get(p)) eigene.add(p);
-      const fremd = zeilen.filter((m) => !eigene.has(Number(m[1])) && muster.test(m[3]) && !/\bgrep\b|vorflug/.test(m[3]));
+      const fremd = zeilen.filter((m) => !eigene.has(Number(m[1])) && muster.test(m[3]) && !/^(?:tail|less|cat|grep|ps)\b|\bgrep\b|vorflug/.test(m[3]));
       // npm, tsx and node of one run are three lines; count the node lines.
       const laeufe = fremd.filter((m) => /node .*tsx|tsx\/dist/.test(m[3]) || !/npm exec|\/\.bin\/tsx/.test(m[3]));
       return { ok: !laeufe.length, detail: laeufe.length ? `${laeufe.length} Prozess(e), z. B. PID ${laeufe[0][1]}: ${laeufe[0][3].slice(0, 120)}` : "keiner" };

@@ -89,7 +89,7 @@ const BESTAENDE: Record<string, Bestand> = {
       // mailbox has no page that could be re-read.
       const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url", "mastr_nr",
         q => q.eq("aktiv", true).not("kontakt_email", "is", null).not("website", "is", null));
-      return z.map(r => ({ schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website }));
+      return z.map(r => ({ schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true }));
     },
     async schreiben(c, schluessel, heute, grund) {
       const { error } = await c.from("windbetreiber").update(grund

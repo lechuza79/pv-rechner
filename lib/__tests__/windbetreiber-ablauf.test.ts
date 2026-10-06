@@ -26,10 +26,9 @@ describe("Windbetreiber-Lauf", () => {
     // whose result is "belegt".
     const schreibstellen = quelle.match(/websiteFelder\(([^)]*)\)/g) ?? [];
     expect(schreibstellen.length).toBeGreaterThanOrEqual(3);
-    // websiteFelder(null) withdraws a website; it asserts none.
-    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|p: Pruefung \| null|null)\)/);
+    // websiteFelder(null, …) withdraws a website; it asserts none.
+    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|null), HEUTE\)/);
     expect(rumpf("impressumLauf")).toMatch(/const best = besterBeleg\(/);
-    expect(rumpf("sucheLauf")).toMatch(/const best = besterBeleg\(/);
     expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
     // No other place sets the website column directly.
     expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string)/g) ?? []).toEqual([]);
@@ -81,6 +80,5 @@ describe("Windbetreiber-Lauf", () => {
   it("never lets a report start the 20-minute register read", () => {
     expect(rumpf("stand")).not.toMatch(/registerLesen\(/);
     expect(rumpf("offenListe")).not.toMatch(/registerLesen\(/);
-    expect(rumpf("sucheLauf")).not.toMatch(/registerLesen\(/);
   });
 });

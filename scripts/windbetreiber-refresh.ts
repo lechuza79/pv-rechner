@@ -26,7 +26,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, ortsWoerterAus, registerKandidaten, standVon, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -82,10 +82,13 @@ async function alle<T>(c: Db, tabelle: string, spalten: string, ordnung: string,
   }
 }
 
+/** Every write names only columns the DDL declares (lib/ddl-spalten.ts). */
+const spalten = (tabelle: string, zeilen: Record<string, unknown>[]) => nurBekannteSpalten(tabelle, spaltenAusDdl(WINDBETREIBER_SQL, tabelle), zeilen);
+
 /** Update existing rows one by one. An upsert would have to carry every NOT NULL
  *  column of a row it only wants to amend. */
 async function aktualisieren(c: Db, tabelle: string, schluessel: string, zeilen: Record<string, unknown>[]) {
-  nurBekannteSpalten(tabelle, spaltenAusDdl(WINDBETREIBER_SQL, tabelle), zeilen);
+  spalten(tabelle, zeilen);
   await parallel(zeilen, 8, async (z) => {
     const { [schluessel]: id, ...felder } = z;
     const { error } = await c.from(tabelle).update(felder).eq(schluessel, id);
@@ -97,7 +100,7 @@ async function aktualisieren(c: Db, tabelle: string, schluessel: string, zeilen:
 async function schreiben(c: Db, tabelle: string, zeilen: Record<string, unknown>[], onConflict: string) {
   const formen = new Set(zeilen.map((z) => Object.keys(z).sort().join("|")));
   if (formen.size > 1) throw new Error(`${tabelle}: Zeilen mit verschiedener Spaltenmenge in einem Schreibvorgang`);
-  nurBekannteSpalten(tabelle, spaltenAusDdl(WINDBETREIBER_SQL, tabelle), zeilen);
+  spalten(tabelle, zeilen);
   for (let i = 0; i < zeilen.length; i += 500) {
     const { error } = await c.from(tabelle).upsert(zeilen.slice(i, i + 500), { onConflict });
     if (error) throw new Error(`${tabelle} ab ${i}: ${error.message}`);
@@ -224,6 +227,7 @@ async function register() {
     aktiv: true, register_stand: tag, updated_at: new Date().toISOString(),
   }));
   await schreiben(c, "windbetreiber", zeilen, "mastr_nr");
+  spalten("windbetreiber", [{ aktiv: false }]);
   const { error, count } = await c.from("windbetreiber").update({ aktiv: false }, { count: "exact" }).lt("register_stand", tag).eq("aktiv", true);
   if (error) throw new Error(error.message);
   const mw = (n: number) => `${Math.round(n / 1000).toLocaleString("de-DE")} MW`;
@@ -353,17 +357,6 @@ function kandidatZeile(z: Zeile, p: Pruefung) {
 }
 
 
-function websiteFelder(p: Pruefung | null) {
-  return {
-    website: p ? p.kandidat.domain : null,
-    website_quelle: p?.kandidat.quelle ?? null,
-    website_beleg: p?.beleg?.wie ?? null,
-    website_beleg_url: p?.impressum.impressum_url ?? null,
-    website_textstelle: p?.beleg?.textstelle.slice(0, 400) ?? null,
-    website_geprueft_am: p ? HEUTE : null,
-  };
-}
-
 /** Run `n` workers over `items`; every domain is one host, so hosts are never hit in parallel. */
 async function parallel<T>(items: T[], n: number, schritt: (x: T, i: number) => Promise<void>) {
   let next = 0;
@@ -403,7 +396,7 @@ async function impressumLauf() {
       zahl[p.ergebnis] = (zahl[p.ergebnis] ?? 0) + 1;
     }
     const best = besterBeleg(pr);
-    if (best) betrZeilen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(best), updated_at: new Date().toISOString() });
+    if (best) betrZeilen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(best, HEUTE), updated_at: new Date().toISOString() });
   }
   await schreiben(c, "windbetreiber_kandidaten", kandZeilen, "mastr_nr,domain");
   if (betrZeilen.length) await aktualisieren(c, "windbetreiber", "mastr_nr", betrZeilen);
@@ -443,10 +436,11 @@ async function neuBewerten() {
   for (const [nr, pr] of jeBetreiber) {
     const z = nachNr.get(nr)!;
     const best = besterBeleg(pr);
-    if (best && best.kandidat.domain !== z.website) { neu++; aenderungen.push({ mastr_nr: nr, ...websiteFelder(best), updated_at: new Date().toISOString() }); }
+    if (best && best.kandidat.domain !== z.website) { neu++; // A contact belongs to the website it was found on; the next contact run fills it again.
+      aenderungen.push({ mastr_nr: nr, ...websiteFelder(best, HEUTE), ...kontaktFelder(null, null), updated_at: new Date().toISOString() }); }
     else if (!best && z.website && pr.some((p) => p.kandidat.domain === z.website)) {
       zurueck++;
-      aenderungen.push({ mastr_nr: nr, ...websiteFelder(null), gesucht_am: null, suche_notiz: `nach Regeländerung nicht mehr belegt: ${z.website}`, updated_at: new Date().toISOString() });
+      aenderungen.push({ mastr_nr: nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `nach Regeländerung nicht mehr belegt: ${z.website}`, updated_at: new Date().toISOString() });
     }
   }
   await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
@@ -484,8 +478,7 @@ async function manuell() {
     console.log(`NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
     process.exitCode = 1;
   } else {
-    const { error } = await c.from("windbetreiber").update({ ...websiteFelder(p), gesucht_am: HEUTE, suche_notiz: `von Hand gefunden, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }).eq("mastr_nr", nr);
-    if (error) throw new Error(error.message);
+    await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `von Hand gefunden, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
     console.log(`übernommen: ${z.name} → ${domain} (${p.beleg!.wie}: „${p.beleg!.textstelle.slice(0, 120)}")`);
   }
   await browserSchliessen();
@@ -495,7 +488,9 @@ async function keine() {
   const [nr, notiz] = process.argv.slice(process.argv.indexOf("--keine") + 1);
   if (!nr?.startsWith("ABR") || !notiz || notiz.length < 20) throw new Error('Aufruf: --keine ABR… "<was gesucht wurde, mindestens ein Satz>"');
   const c = await db();
-  const { error, count } = await c.from("windbetreiber").update({ gesucht_am: HEUTE, suche_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() }, { count: "exact" })
+  const felder = { gesucht_am: HEUTE, suche_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() };
+  spalten("windbetreiber", [felder]);
+  const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
     .eq("mastr_nr", nr).is("website", null);
   if (error) throw new Error(error.message);
   if (!count) throw new Error(`${nr} nicht gefunden oder hat schon eine belegte Website`);
@@ -555,7 +550,7 @@ async function stand() {
 }
 
 /**
- * A contact counts only from the operator's OWN proven website: its proof page
+ * A contact counts only from the operator's OWN proven website — its proof page
  * lies on that site. A register mailbox has no page; one from a former website
  * would outlive the website it came from.
  */

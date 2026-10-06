@@ -19,7 +19,17 @@ import { host } from "../../lib/kontakt-suche";
 import { fetchLive } from "./kontakt-lauf";
 import { browserSchliessen, mitFrist, seiteGerendert } from "./kontakt-browser";
 
-export type Pruefling = { schluessel: string; email: string; belegUrl: string | null; domain: string };
+export type Pruefling = {
+  schluessel: string; email: string; belegUrl: string | null; domain: string;
+  /** The proof page must lie on `domain` itself (wind operators: only the operator's own proven website counts). */
+  nurEigeneWebsite?: boolean;
+};
+
+/** Is the page on the site `domain` (the domain itself or one of its hosts)? */
+export function aufEigenerWebsite(url: string, domain: string): boolean {
+  const h = host(url);
+  return h === domain || h.endsWith(`.${domain}`);
+}
 export type Freigabe = { schluessel: string; email: string; grund: string | null };
 
 const mxCache = new Map<string, Promise<boolean>>();
@@ -71,6 +81,7 @@ export async function freigeben(
     if (!t.ok) { const u = { schluessel: p.schluessel, email, grund: t.grund }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     if (!(await nimmtMails(email.split("@")[1]))) { const u = { schluessel: p.schluessel, email, grund: "Domain nimmt keine Mails an" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     if (!p.belegUrl) { const u = { schluessel: p.schluessel, email, grund: "keine Fundstelle" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
+    if (p.nurEigeneWebsite && !aufEigenerWebsite(p.belegUrl, p.domain)) { const u = { schluessel: p.schluessel, email, grund: "Fundstelle nicht auf der eigenen Website" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     offen.push({ ...p, email });
   }
   // One read per proof page; pages of one host one after another, hosts in parallel.
