@@ -8,8 +8,8 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --impressum [--limit=N]   check register-given websites
  *   npx tsx scripts/windbetreiber-refresh.ts --stand                    completeness; exit 1 on a violation
  *   npx tsx scripts/windbetreiber-refresh.ts --offen [--out=datei]      the list for the manual pass
- *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR… <url> [--seite=<url>]
- *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR… "<what was tried>"
+ *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
+ *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *
  * The rules are in lib/windbetreiber.ts (when a website counts) and
  * lib/bestand-abgleich.ts (when a domain belongs to another stock). This script
@@ -26,7 +26,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, identifizierend, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -487,47 +487,58 @@ async function neuBewerten() {
 const VON_HAND = "von Hand geprüft:";
 
 async function manuell() {
-  const [nr, url] = process.argv.slice(process.argv.indexOf("--manuell") + 1);
-  if (!nr?.startsWith("ABR") || !url) throw new Error("Aufruf: --manuell ABR… <url> [--seite=<url>]");
+  // Several operators at once: the project companies of one address are found
+  // together, but each one still runs through its own check.
+  const [nrs, url] = process.argv.slice(process.argv.indexOf("--manuell") + 1);
+  const liste = (nrs ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  if (!liste.length || liste.some((n) => !n.startsWith("ABR")) || !url) throw new Error("Aufruf: --manuell ABR…[,ABR…] <url> [--seite=<url>]");
   const c = await db();
-  const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
-  if (!z) throw new Error(`${nr} steht nicht im Bestand`);
   const domain = organisationsDomain(url);
   if (!domain) throw new Error(`${url} ist keine Adresse`);
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
-  let p = await pruefen(z, { domain, quelle: "manuell" }, belegungen);
-  // The manual pass may name another page of the same site as evidence — an
-  // "About us" page, a project page. The check itself stays the same.
   const seite = arg("seite");
-  if (p.ergebnis !== "belegt" && p.ergebnis !== "konflikt" && seite) {
-    if (organisationsDomain(seite) !== domain) throw new Error("Die Belegseite muss auf derselben Website liegen");
-    const r = await fetchLive(seite);
-    const html = "html" in r ? r.html : await seiteGerendert(seite);
-    const beleg = html ? impressumBelegt(sichtbarerText(html), akteurVon(z), domain) : null;
-    if (beleg) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
-  }
-  await schreiben(c, "windbetreiber_kandidaten", [kandidatZeile(z, p)], "mastr_nr,domain");
-  if (p.ergebnis !== "belegt") {
-    console.log(`NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
-    process.exitCode = 1;
-  } else {
-    await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `von Hand gefunden, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
-    console.log(`übernommen: ${z.name} → ${domain} (${p.beleg!.wie}: „${p.beleg!.textstelle.slice(0, 120)}")`);
+  if (seite && organisationsDomain(seite) !== domain) throw new Error("Die Belegseite muss auf derselben Website liegen");
+  let belegseite: string | null | undefined;
+  for (const nr of liste) {
+    const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
+    if (!z) { console.log(`${nr}: steht nicht im Bestand`); process.exitCode = 1; continue; }
+    let p = await pruefen(z, { domain, quelle: "manuell" }, belegungen);
+    // The manual pass may name another page of the same site as evidence — an
+    // "About us" page, a project page. The check itself stays the same.
+    if (p.ergebnis !== "belegt" && p.ergebnis !== "konflikt" && seite) {
+      if (belegseite === undefined) {
+        const r = await fetchLive(seite);
+        belegseite = "html" in r ? r.html : await seiteGerendert(seite);
+      }
+      const beleg = belegseite ? impressumBelegt(sichtbarerText(belegseite), akteurVon(z), domain, await ortsWoerter()) : null;
+      if (beleg && (beleg.wie !== "name" || identifizierend(z.name, await ortsWoerter()))) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
+    }
+    await schreiben(c, "windbetreiber_kandidaten", [kandidatZeile(z, p)], "mastr_nr,domain");
+    if (p.ergebnis !== "belegt") {
+      console.log(`${nr} NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
+      process.exitCode = 1;
+    } else {
+      await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `von Hand gefunden, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
+      console.log(`${nr} übernommen: ${z.name} → ${domain} (${p.beleg!.wie}: „${p.beleg!.textstelle.slice(0, 120)}")`);
+    }
   }
   await browserSchliessen();
 }
 
 async function keine() {
-  const [nr, notiz] = process.argv.slice(process.argv.indexOf("--keine") + 1);
-  if (!nr?.startsWith("ABR") || !notiz || notiz.length < 20) throw new Error('Aufruf: --keine ABR… "<was gesucht wurde, mindestens ein Satz>"');
+  const [nrs, notiz] = process.argv.slice(process.argv.indexOf("--keine") + 1);
+  const liste = (nrs ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  if (!liste.length || liste.some((n) => !n.startsWith("ABR")) || !notiz || notiz.length < 40) throw new Error('Aufruf: --keine ABR…[,ABR…] "<was gesucht wurde: Anfragen, geprüfte Seiten — mindestens 40 Zeichen>"');
   const c = await db();
   const felder = { gesucht_am: HEUTE, suche_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() };
   spalten("windbetreiber", [felder]);
-  const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
-    .eq("mastr_nr", nr).is("website", null);
-  if (error) throw new Error(error.message);
-  if (!count) throw new Error(`${nr} nicht gefunden oder hat schon eine belegte Website`);
-  console.log(`${nr}: als „keine Website" vermerkt`);
+  for (const nr of liste) {
+    const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
+      .eq("mastr_nr", nr).is("website", null);
+    if (error) throw new Error(error.message);
+    if (!count) { console.log(`${nr}: nicht gefunden oder hat schon eine belegte Website`); process.exitCode = 1; continue; }
+    console.log(`${nr}: als „keine Website" vermerkt`);
+  }
 }
 
 // ─── Completeness ─────────────────────────────────────────────────────────────
@@ -599,18 +610,27 @@ function kontaktVerstoss(z: { website: string | null; kontakt_email: string | nu
 
 async function offenListe() {
   const c = await db();
-  type V = Zeile & { suche_notiz: string | null; register_telefon: string | null };
-  const zeilen = (await alle<V>(c, "windbetreiber", `${SPALTEN},suche_notiz`, "mastr_nr", (q) => q.eq("aktiv", true).is("website", null)))
+  const zeilen = (await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).is("website", null)))
     // What a person already confirmed is done; the list is what is left.
     .filter((z) => !(z.suche_notiz ?? "").startsWith(VON_HAND));
   const st = registerPflicht();
-  const liste = zeilen
-    .map((z) => ({ mastr_nr: z.mastr_nr, name: z.name, anschrift: `${z.strasse ?? ""} ${z.hausnummer ?? ""}, ${z.plz ?? ""} ${z.ort ?? ""}`.trim(), mw: Math.round((st.kwJeBetreiber[z.mastr_nr] ?? 0) / 100) / 10, register_email: z.register_email, register_telefon: z.register_telefon, bisher: z.suche_notiz }))
-    .sort((a, b) => b.mw - a.mw);
+  const kand = await alle<{ mastr_nr: string; domain: string; ergebnis: string; grund: string | null }>(c, "windbetreiber_kandidaten", "mastr_nr,domain,ergebnis,grund", "mastr_nr", (q) => q.neq("ergebnis", "belegt"));
+  const jeNr = new Map<string, string[]>();
+  for (const k of kand) jeNr.set(k.mastr_nr, [...(jeNr.get(k.mastr_nr) ?? []), `${k.domain} (${k.ergebnis})`]);
+  // Grouped by register address: project companies of one parent sit there
+  // together and are searched together (--manuell ABR1,ABR2 <url>).
+  const gruppen = new Map<string, Zeile[]>();
+  for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)) ?? `nr:${z.mastr_nr}`; gruppen.set(k, [...(gruppen.get(k) ?? []), z]); }
+  const mw = (z: Zeile) => Math.round((st.kwJeBetreiber[z.mastr_nr] ?? 0) / 100) / 10;
+  const liste = [...gruppen.values()].map((g) => ({
+    anschrift: `${g[0].strasse ?? ""} ${g[0].hausnummer ?? ""}, ${g[0].plz ?? ""} ${g[0].ort ?? ""}`.trim(),
+    mw: Math.round(g.reduce((s, z) => s + mw(z), 0) * 10) / 10,
+    betreiber: g.sort((a, b) => mw(b) - mw(a)).map((z) => ({ mastr_nr: z.mastr_nr, name: z.name, mw: mw(z), register_webseite: z.register_webseite, register_email: z.register_email, register_telefon: z.register_telefon, gepruefteKandidaten: jeNr.get(z.mastr_nr) ?? [], bisher: z.suche_notiz })),
+  })).sort((a, b) => b.mw - a.mw);
   const out = arg("out") ?? resolve(CACHE, "offen.json");
   mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify({ stand: new Date().toISOString(), anzahl: liste.length, liste }, null, 1));
-  console.log(`${liste.length} Betreiber ohne belegte Website → ${out}`);
+  writeFileSync(out, JSON.stringify({ stand: new Date().toISOString(), betreiber: zeilen.length, anschriften: liste.length, liste }, null, 1));
+  console.log(`${zeilen.length} Betreiber ohne belegte Website an ${liste.length} Anschriften → ${out}`);
 }
 
 // ─── Preflight ────────────────────────────────────────────────────────────────

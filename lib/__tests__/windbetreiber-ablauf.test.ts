@@ -30,6 +30,7 @@ describe("Windbetreiber-Lauf", () => {
     for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|null), HEUTE\)/);
     expect(rumpf("impressumLauf")).toMatch(/const best = besterBeleg\(/);
     expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
+    expect(rumpf("keine")).toMatch(/notiz\.length < 40/);
     // No other place sets the website column directly.
     expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string)/g) ?? []).toEqual([]);
   });
@@ -38,7 +39,9 @@ describe("Windbetreiber-Lauf", () => {
     const m = rumpf("manuell");
     expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
     // A different evidence page is allowed, a different rule is not.
-    expect(m).toMatch(/impressumBelegt\(sichtbarerText\(html\), akteurVon\(z\), domain\)/);
+    expect(m).toMatch(/impressumBelegt\(sichtbarerText\(belegseite\), akteurVon\(z\), domain, await ortsWoerter\(\)\)/);
+    // A name on another page proves only when it identifies someone (reference lists).
+    expect(m).toMatch(/beleg\.wie !== "name" \|\| identifizierend\(z\.name/);
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
   });
 
