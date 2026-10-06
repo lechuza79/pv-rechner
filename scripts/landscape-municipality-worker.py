@@ -402,7 +402,8 @@ def main():
     parser.add_argument('--osm-file',type=Path,required=True)
     # Near a state border the terrain box reaches tiles another state publishes; those
     # samples may stay missing, but only outside the municipality and the object windows.
-    parser.add_argument('--allow-outer-terrain-gaps',action='store_true')
+    # Default on: gaps stay forbidden inside the municipality and every object window.
+    parser.add_argument('--allow-outer-terrain-gaps',action=argparse.BooleanOptionalAction,default=True)
     args = parser.parse_args()
     ags = args.municipality
     adapter = states.adapter_for(ags)
@@ -507,7 +508,9 @@ def main():
                 except (requests.RequestException,OSError) as error:
                     if number==3:raise
                     print('Retry',job[1],error,flush=True)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        # Archive states are read by range from one host that rate-limits bursts: one at a time.
+        workers = 1 if any(url.startswith('zipmember:') for _,url in jobs) else 4
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             manifest = list(executor.map(attempt,jobs))
         # Grid states answer 404 for cells they do not publish (outside the state, no buildings).
         manifest = [e for e in manifest if e is not None]

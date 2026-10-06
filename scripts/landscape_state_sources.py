@@ -596,9 +596,17 @@ class RangeFile(io.RawIOBase):
     def __init__(self, url, offset=0, size=None):
         self.url, self.offset, self.position, self.block = url, offset, 0, (None, b'')
         if size is None:
-            probe = requests.get(url, headers=dict(UA, Range='bytes=0-0'), timeout=(20, 120))
-            if probe.status_code != 206:raise ValueError('Server does not serve ranges: '+url)
-            size = int(probe.headers['Content-Range'].split('/')[-1])-offset
+            # Streamed and closed unread: some servers (Saarland's Nextcloud) answer the
+            # one-byte probe with the whole archive body.
+            import time
+            for attempt in range(6):
+                with requests.get(url, headers=dict(UA, Range='bytes=0-0'), timeout=(20, 120), stream=True) as probe:
+                    status, headers = probe.status_code, dict(probe.headers)
+                if status != 429:break
+                time.sleep(15*(attempt+1))
+            if status != 206 or 'Content-Range' not in headers:
+                raise ValueError('Server does not serve ranges: %s (%d)' % (url, status))
+            size = int(headers['Content-Range'].split('/')[-1])-offset
         self.size = size
     def seekable(self):return True
     def readable(self):return True
@@ -614,15 +622,18 @@ class RangeFile(io.RawIOBase):
         if start is not None and start <= self.position and self.position+count <= start+len(cached):
             data = cached[self.position-start:self.position-start+count]
         else:
-            fetch = max(count, 1 << 20)
+            fetch = max(count, 8 << 20)
             first = self.offset+self.position
             last = min(self.offset+self.size, first+fetch)-1
-            for attempt in range(4):
+            import time
+            for attempt in range(6):
                 try:
                     response = requests.get(self.url, headers=dict(UA, Range='bytes=%d-%d' % (first, last)), timeout=(20, 300))
-                    break
                 except requests.RequestException:
-                    if attempt == 3:raise
+                    if attempt == 5:raise
+                    continue
+                if response.status_code != 429:break
+                time.sleep(15*(attempt+1))  # Hamburg rate-limits bursts of range requests
             if response.status_code != 206:raise ValueError('Range request refused: %d' % response.status_code)
             self.block = (self.position, response.content)
             data = response.content[:count]
@@ -671,10 +682,18 @@ def archive_members(sources):
     return members
 
 
+OPEN_ARCHIVES = {}
+
+
 def read_archive_member(locator):
-    """'zipmember:<archive url>!<member>' -> bytes."""
+    """'zipmember:<archive url>!<member>' -> bytes; each archive's directory is read once."""
+    import threading
     url, name = locator[len('zipmember:'):].rsplit('!', 1)
-    return open_archive(url).read(name)
+    if url not in OPEN_ARCHIVES:
+        OPEN_ARCHIVES[url] = (open_archive(url), threading.Lock())
+    archive, lock = OPEN_ARCHIVES[url]
+    with lock:
+        return archive.read(name)
 
 
 def grid_member(data, kind):
