@@ -18,6 +18,9 @@ const MEDIEN = [
   "Lokalnachrichten aus dem Landkreis Fulda – Redaktion und Anzeigen",
   "Bürgermeister kritisiert Haushalt: Die Stadt muss sparen.",
   "Interview mit dem Landrat über den Ausbau der Kreisstraßen",
+  // Deutschlandradio is a public-law corporation and a newsroom (catalogue run 06.10.2026).
+  "Deutschlandradio, Körperschaft des öffentlichen Rechts, Raderberggürtel 40, Köln",
+  "Würzburger katholisches Sonntagsblatt, Herausgeber: Diözese Würzburg, Körperschaft des öffentlichen Rechts",
 ];
 
 describe("an administration is not a medium", () => {

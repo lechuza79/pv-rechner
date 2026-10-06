@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { publishedCities, fundingForFrom } from "../atlas-cities";
+import { publishedCities, fundingForFrom, fundingListFrom } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 import { BESCHREIBUNG_BUDGET, TITEL_BUDGET, foerderStadtMeta } from "../foerder-stadt-meta";
 
 const programme = allFundingPrograms();
-const alle = publishedCities().map((c) => ({ c, f: fundingForFrom(programme, c), meta: foerderStadtMeta(c.name, fundingForFrom(programme, c), 2026) }));
+const alle = publishedCities().map((c) => ({ c, f: fundingForFrom(programme, c), meta: foerderStadtMeta(c.name, fundingListFrom(programme, c), 2026) }));
 
 describe("Titel und Beschreibung der Förder-Stadtseiten", () => {
   it("bleiben für jede veröffentlichte Stadt im gemessenen Budget", () => {

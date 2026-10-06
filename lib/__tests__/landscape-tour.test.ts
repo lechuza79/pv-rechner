@@ -100,7 +100,6 @@ describe('reusable prepared municipality tours',()=>{
  });
 });
 
- // Parses the 36 MB Würzburg district scene: ~3.6 s alone, so the 5 s default flakes under load.
  it('starts a district centrally without replacing its real town or assigning park capacity to the district',()=>{
   const data=read('landscape-tours/09679/scene.json'),result=preparedLandscapeTour(data);
   expect(result.stops[0]).toMatchObject({id:'district',overview:true,name:'Landkreis Würzburg',kind:'town'});
@@ -108,4 +107,5 @@ describe('reusable prepared municipality tours',()=>{
   expect(result.stops[1].id).toBe(data.stops[0].id);
   expect(result.stops).toHaveLength(data.stops.length+1);
   expect(Number.isFinite(terrainHeight(result.terrain,result.stops[0].x,result.stops[0].z))).toBe(true);
- },20000);
+ // Parses a 37 MB district scene; under parallel sessions this exceeds the 5 s default.
+ },30000);

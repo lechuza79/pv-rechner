@@ -446,20 +446,19 @@ interface Seite {
 }
 
 /**
- * Websites of every municipality and district we know. A press catalogue
- * entry on one of these is an administration, never a newsroom.
+ * Websites of every municipality, district and energy utility we know. A press
+ * catalogue entry on one of these is an administration or a supplier, never a
+ * newsroom (06.10.2026: four Stadtwerke stood in the catalogue as media).
  */
 async function verwaltungsDomains(sb: SupabaseLike): Promise<Set<string>> {
-  // Only the website: `verwaltung_domain` can be a mail provider (one
+  // Only websites: `verwaltung_domain` can be a mail provider (one
   // municipality's office uses t-online.de), and t-online.de is a medium.
-  const zeilen = await alleZeilen<{ website: string | null }>(
-    sb,
-    "kommunen_kontakt",
-    "website",
-    (q) => q.order("region_id"),
+  const kommunen = await alleZeilen<{ website: string | null }>(sb, "kommunen_kontakt", "website", (q) =>
+    q.order("region_id"),
   );
+  const versorger = await alleZeilen<{ website: string | null }>(sb, "utilities", "website", (q) => q.order("id"));
   const out = new Set<string>();
-  for (const z of zeilen) {
+  for (const z of [...kommunen, ...versorger]) {
     const d = z.website?.toLowerCase().replace(/^https?:\/\//, "").split("/")[0].replace(/^www\./, "");
     if (d) out.add(d);
   }

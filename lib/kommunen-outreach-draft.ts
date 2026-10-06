@@ -189,6 +189,14 @@ export type DraftContext = {
   empfaenger?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
+  /** Personal salutation without the comma ("Sehr geehrte Frau Kuhn"); null
+   *  means no named person is known. */
+  anrede?: string | null;
+  /** The place's 3D scene is published; the municipal page then opens on it. */
+  mitSzene?: boolean;
+  /** "Unter den besten X %" when the subject says so; then the message says it
+   *  too, instead of a rank that reads weaker (Kempen: "Platz 29"). */
+  rangProzent?: number | null;
   /**
    * Weitere Spitzenplätze — im BRIEF, nicht in der Meldung.
    *
@@ -517,6 +525,11 @@ export function herkunftsangabe(
 
 const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
 
+function gleicheGruppe(a: string, b: string | null | undefined): boolean {
+  const norm = (x: string) => x.replace(/^unter den\s+/i, "").trim().toLowerCase();
+  return !!b && norm(a) === norm(b);
+}
+
 export function kleinKlasse(gruppe: string): string {
   const [erstes, ...rest] = gruppe.split(" ");
   if (!rest.length || !KLASSEN_ADJEKTIVE.includes(erstes)) return gruppe;
@@ -594,8 +607,13 @@ export function renderMeldung(c: DraftContext): string {
   // zuverlaessig der Teil weg, der die Aussage wahr macht (die Groessenklasse).
   // Deshalb: Ort, Platz, Thema — mehr nicht. Der vollstaendige Satz steht
   // darunter, wo Platz dafuer ist.
+  const prozent = platz != null && platz > 1 ? (c.rangProzent ?? null) : null;
   const ueberschrift =
-    platz != null
+    prozent != null
+      ? // Same wording as the subject on purpose: it is the opener and works as
+        // the headline (operator, 06.10.2026).
+        `${kurz} ${c.phrase} unter den besten ${prozent} %`
+      : platz != null
       ? `${kurz}: Platz ${platz} ${c.phrase}`
       : `Solarausbau in ${kurz}: der aktuelle Stand`;
 
@@ -612,7 +630,9 @@ export function renderMeldung(c: DraftContext): string {
     platz === 1
       ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen}: Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
       : platz != null
-        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
+        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${
+            prozent != null ? ` und damit unter den besten ${prozent} %` : ""
+          }${klammerTeil}.`
         : "";
 
   //
@@ -711,13 +731,21 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
-          c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
-        } Für Kommunen ist das kostenfrei; wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
+      ? // No second "kostenfrei" and no preview link (operator, 06.10.2026):
+        // the place page in the message already shows the graphic.
+        `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
-  const kommunenAbsatz = c.kommunenUrl
-    ? `\n\nWas wir Kommunen darüber hinaus anbieten, vom Energiemonitor über Rechner bis zu fertigen Datengeschichten, steht hier: ${c.kommunenUrl}`
+  // The 3D scene of the place, right under the message (operator,
+  // 06.10.2026) — only once it is published (`mitSzene`). Neutral about what
+  // it shows: not every scene has both wind and solar parks.
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  const szeneAbsatz =
+    c.mitSzene && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurzOrtsname(c.name)} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : "";
+  const kommunenAbsatz = c.kommunenUrl && !szeneAbsatz
+    ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
     : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
@@ -741,7 +769,15 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
         // 53 Gemeinden.
         `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
           .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
-          .join(", ")}.`
+          .join(", ")}${
+          // Only drop the group when it IS the group of the message above.
+          // Kempen: message ranked nationwide among 626 towns, these lines
+          // among the 5 in the district — "Platz 1 von 5" without the district
+          // read as a second nationwide claim.
+          gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
+            ? ""
+            : `, ${weitereListe.length > 1 ? "jeweils " : ""}unter den ${kleinKlasse(weitereListe[0].gruppe)}`
+        }.`
       : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
           .map(
             (w) =>
@@ -773,7 +809,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // gern gekürzt" setzt die Entscheidung, ihn zu veröffentlichen, bereits
   // voraus. Nach zehn Sekunden wusste der Leser, dass jemand Zahlen über seinen
   // Ort hat — nicht, was er damit tun soll. Jetzt steht es als Bitte da.
-  const body = `Sehr geehrte Damen und Herren,${weiterleitung}
+  const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
 
 ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur steckt gerade eine kleine Meldung für ${c.name}. Ich habe sie fertig formuliert, Sie können sie so übernehmen:
 
@@ -781,7 +817,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand.${szeneAbsatz}${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}

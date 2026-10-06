@@ -3064,8 +3064,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // them (balkonProWp caps absolutely, not at a share of the price). 0,40 €/Wp
     // alone would give 320 € on a 400-€ set where the city pays 200 € — so the
     // programme informs and deducts nothing (gate condition 3). Because it
-    // funds no rooftop PV, the city page stays an archive-style page
-    // (isCityLive / foerdertDach), not a live "Photovoltaik-Förderung".
+    // funds no rooftop PV, the city page is a "Balkonkraftwerk-Förderung" page
+    // (stadtseiteFall "balkon", since 06.10.2026), never "Photovoltaik-Förderung".
     url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414151/", stand: "Oktober 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -5665,6 +5665,76 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // the automatic end on federal/state/district funding added afterwards.
     // Bewusst KEIN strukturierter Satz (Haushaltstopf nach Antragseingang,
     // Antrag nach Kauf), dieselbe Behandlung wie hirschberg-steckersolar.
+  },
+
+  "hockenheim-stadtwerke-balkon": {
+    id: "hockenheim-stadtwerke-balkon", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadtwerke Hockenheim", level: "kommune", region: "Hockenheim",
+    bundesland: "Baden-Württemberg", agsCode: "08226032",
+    url: "https://www.stadtwerke-hockenheim.de/Service/Foerderung/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für ein neues Balkonkraftwerk (nur Stromkunden der Stadtwerke)",
+    maxFoerderung: "max. 300 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk (Bestandskunden der Stadtwerke)", value: "150 € pauschal" },
+      { label: "Balkonkraftwerk (Neukunden oder Vertrag „Naturstrom“)", value: "300 € pauschal" },
+    ],
+    conditions: [
+      "Nur Kunden der Stadtwerke Hockenheim: 150 € für Bestandskunden, 300 € für Neukunden oder Bestandskunden, die einen Vertrag für das Produkt „Naturstrom“ abschließen",
+      "Der Antrag muss VOR dem Kauf gestellt werden; eine rückwirkende Antragstellung ist nicht möglich; die Nachweise (Rechnung, Foto der montierten Anlage, Konformitätsnachweis) müssen binnen drei Monaten nach dem Antrag folgen",
+      "Höchstens eine Anlage je Haushalt; Eigentümer mehrerer Wohnungen nur für eine Wohnung je Förderjahr; Mieter nur mit schriftlicher Zustimmung des Vermieters",
+      "Nur neue Geräte mit Konformitätsnachweis (z. B. CE, Netzanschlussnorm 4105) in ausschließlich zu Wohnzwecken genutzten Gebäuden auf Hockenheimer Gemarkung; gewerblich genutzte Orte sind ausgeschlossen, bei Kulturdenkmälern ist eine denkmalschutzrechtliche Genehmigung nötig",
+      "Vergeben wird in der Reihenfolge des Antragseingangs, solange die Mittel im Antragsjahr reichen; ein Rechtsanspruch besteht nicht; ob noch Mittel übrig sind, wissen nur die Stadtwerke",
+      "Die Stadtwerke beschriften Antrag und Richtlinie mit 2026, verlinkt sind aber die Fassungen von 2023/2024 (Richtlinie in Kraft seit 01.07.2023; nennt noch Geräte bis 600 W, verweist aber auf die jeweils aktuelle VDE-Definition) — Beträge und Bedingungen im Zweifel bei den Stadtwerken erfragen",
+      "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Stadtwerke page read 06.10.2026: "Die Stadtwerke Hockenheim legen auch in
+    // diesem Jahr drei neue Förderprogramme … auf" with download "Förderantrag
+    // Balkonkraftwerke 2026"; the linked guideline (Foerderprogramm-und-
+    // richtlinien-2023.pdf) Nr. 6.1/6.2: "pauschal 150 Euro für Bestandskunden
+    // … oder pauschal 300 Euro für Neukunden bzw. Bestandskunden, die einen
+    // Vertrag zur Abnahme des Produktes ‚Naturstrom‘ … abschließen", Nr. 11:
+    // "tritt am 01.07.2023 in Kraft". Council 2/2 incl. adversarial reviewer;
+    // adversarial note: the 2026 labels point to 2023/2024 files, and the page
+    // text names a 2025 guideline that is not linked — kept as a condition.
+    // No structured rate: customer tie-in and remaining budget cannot be
+    // modelled — same treatment as schwerin-pv.
+  },
+
+  "hockenheim-stadtwerke-hauswaerme": {
+    id: "hockenheim-stadtwerke-hauswaerme", name: "Förderprogramm Hauswärmeanlagen",
+    traeger: "Stadtwerke Hockenheim", level: "kommune", region: "Hockenheim",
+    bundesland: "Baden-Württemberg", agsCode: "08226032",
+    url: "https://www.stadtwerke-hockenheim.de/Service/Foerderung/Richtlinien-zur-Foerderung-Hauswaermeanlagen.pdf",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für eine Wärmepumpe in Kombination mit Photovoltaik oder Solarthermie (nur Vollkunden der Stadtwerke)",
+    maxFoerderung: "max. 450 € (Wärmepumpen-Hybrid mit Naturstrom-Vertrag)",
+    rates: [
+      { label: "Wärmepumpe mit Photovoltaik oder Solarthermie", value: "350 € pauschal, +100 € bei Neukunden oder Vertrag „Naturstrom“" },
+    ],
+    conditions: [
+      "Gefördert wird nur die Umstellung auf die Kombination Wärmepumpe mit Photovoltaik oder Wärmepumpe mit Solarthermie, nicht die Wärmepumpe allein; daneben gibt es 200 € für Solarthermie und 250 € für Erdgas-Hybridsysteme, jeweils ebenfalls +100 € bei Neukunden oder Vertrag „Naturstrom“",
+      "Antragsberechtigt sind nur Tarifkunden, die ihre gesamte Energie (Strom und Heizung über Strom oder Erdgas) von den Stadtwerken Hockenheim beziehen; Mieter mit schriftlicher Zustimmung des Vermieters",
+      "Der Antrag muss vor Beginn der Maßnahme gestellt werden; ausgeführt oder abgenommen durch einen Fachbetrieb; höchstens eine Maßnahme je Kunde und Jahr; nur auf Hockenheimer Gemarkung, nicht gewerblich genutzt",
+      "Vergeben wird in der Reihenfolge des Antragseingangs, solange die Mittel im Antragsjahr reichen; ein Rechtsanspruch besteht nicht",
+      "Ausgezahlt wird nach Inbetriebnahme gegen Rechnung; wird die Anlage binnen zwei Jahren stillgelegt oder wesentlich geändert, kann der Zuschuss zurückgefordert werden",
+      "Die verlinkte Richtlinie ist die Fassung vom 01.05.2024; die Stadtwerke bieten das Programm laut ihrer Seite auch 2026 an",
+      "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // Scanned guideline (Richtlinien-zur-Foerderung-Hauswaermeanlagen.pdf, in
+    // force 01.05.2024) read as images 06.10.2026: Nr. 2.2 "Wärmepumpe und
+    // Photovoltaik / Wärmepumpe und Solarthermie", Nr. 6.2 "Hybridheizungs-
+    // systeme mit einer Wärmepumpe 350 Euro", Nr. 6.4 "+100 Euro für Neukunden
+    // bzw. Bestandskunden … Naturstrom", Nr. 3.1 "die ihre gesamte Energie
+    // (Strom und Heizung über Strom oder Erdgas) von den Stadtwerken Hockenheim
+    // beziehen". Council 2/2. No structured rate (customer tie-in, combination
+    // requirement); deducts nothing.
   },
 
   "sandhausen-foerderprogramme": {

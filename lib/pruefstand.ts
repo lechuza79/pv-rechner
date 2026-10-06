@@ -19,6 +19,7 @@
 //     müssen, hat nicht stattgefunden oder hat vergessen zu stempeln. Die
 //     Grenze kommt aus dem Rhythmus des Wächters plus Luft für einen
 //     ausgefallenen Lauf, nicht aus dem Bauch.
+import { marktVon, type Markt } from "./markt";
 import { DEFAULT_AIRCON_CONFIG } from "./aircon-config";
 import { DEFAULT_BALKON_CONFIG, BALKON_RECHT } from "./balkon-config";
 import { CO2_PRICE } from "./co2-config";
@@ -36,6 +37,16 @@ import { KFW_REPORT_STAND } from "./kfw-format";
 import { RUECKBLICK_STAND } from "./solar-rueckblick";
 
 export interface PruefEintrag {
+  /**
+   * Welches Land dieser Wert meint. Ohne Angabe Deutschland (`MARKT_VORGABE`),
+   * damit die Bestandseinträge unverändert gelten.
+   *
+   * Der Wert ist NICHT Zierde: Er ist die zweite Hälfte des Schlüssels. Zwei
+   * Märkte dürfen denselben Feldnamen tragen, und ohne diese Hälfte löst
+   * `pruefEintraege()` auf den ersten Treffer auf — ein Wert verschwände still
+   * aus jeder Übersicht. Siehe `lib/markt.ts`.
+   */
+  markt?: Markt;
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
   was: string;
   /** Wo das Datum steht — die Stelle, die ein Lauf anfassen muss. */
@@ -351,6 +362,8 @@ export function aeltestePruefung(stand: PruefEintrag[] = PRUEFSTAND): string {
 }
 
 export interface Faelligkeit extends PruefEintrag {
+  /** Aufgelöst, damit die Meldung den Markt nennen kann, ohne ihn erneut abzuleiten. */
+  marktAufgeloest: Markt;
   /** Tage seit der letzten Prüfung. */
   alterTage: number;
   /** Tage über `reviewBy` hinaus (0, wenn der Termin noch läuft oder fehlt). */
@@ -381,6 +394,7 @@ export function faelligkeiten(heuteIso: string, stand: PruefEintrag[] = PRUEFSTA
     if (!stillstand && terminUeberzogen === 0) continue;
     offen.push({
       ...e,
+      marktAufgeloest: marktVon(e),
       alterTage,
       terminUeberzogen,
       grund: stillstand && terminUeberzogen > 0 ? "beides" : stillstand ? "stillstand" : "termin",

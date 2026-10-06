@@ -119,8 +119,8 @@ async function hole<T>(d: Db, pfad: string): Promise<T[]> {
  * Beleg, der die Mail eigentlich tragen sollte.
  */
 async function unsereSeiteZu(id: string): Promise<string | undefined> {
-  const { ATLAS_CITIES, cityPath, fundingFor, foerderseiteTraegt } = await import("../lib/atlas-cities");
-  const ort = ATLAS_CITIES.find((c) => fundingFor(c)?.id === id);
+  const { ATLAS_CITIES, cityPath, fundingListFor, foerderseiteTraegt } = await import("../lib/atlas-cities");
+  const ort = ATLAS_CITIES.find((c) => foerderseiteTraegt(c) && fundingListFor(c).some((p) => p.id === id));
   if (ort && foerderseiteTraegt(ort)) return `https://solar-check.io${cityPath(ort)}`;
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
   const foerdert = FUNDING_PROGRAMS[id]?.foerdert ?? ["pv"];

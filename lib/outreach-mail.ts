@@ -23,7 +23,7 @@
 //    bearbeitet hat —, ist das kein Schönheitsfehler, sondern eine
 //    Informationspflicht, die verletzt wird.
 
-import { istPressePostfach } from "./kommunen-presse";
+import { FACHFREMDE_POSTFAECHER, istPressePostfach } from "./kommunen-presse";
 
 /** Anbieter, über die niemals ein Anschreiben hinausgeht. */
 /** Wer laut SPF-Eintrag der Domain überhaupt für uns senden darf. */
@@ -281,6 +281,9 @@ export function postfachBefund(
     // Brief am 03.09.2026 aus dem Versand. Wer die Presse-Wortliste erweitert,
     // muss nicht daran denken, hier nachzuziehen.
     istPressePostfach(`${t}@example.org`) ||
+    // A department mailbox (tourism, building authority) is an office, not a
+    // person; the recipient choice uses it only as the last resort.
+    FACHFREMDE_POSTFAECHER.includes(t) ||
     // The office's own name as mailbox: "vgzell@vg-zell.de", "simmern@simmern.de",
     // "amtschwaan@…" — role prefix plus a word of the domain, or the domain word itself.
     (t.length >= 4 && domainWorte.includes(t)) ||

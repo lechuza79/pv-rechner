@@ -24,12 +24,16 @@ export function verlinktePfade(
   const nach = new Map(regionen.map((r) => [r.region_id, r]));
   const out = new Map<string, VerlinkteSeite>();
   for (const id of [...new Set(gemeindeIds)].sort()) {
-    const g = nach.get(id);
+    // A publication can belong to a district itself (five digits, e.g. a
+    // newspaper linking the district page): then there is no municipality
+    // below it, and treating the district as one built a path that never existed.
+    const istKreis = id.length === 5;
+    const g = istKreis ? undefined : nach.get(id);
     const k = nach.get(id.slice(0, 5));
     const l = nach.get(id.slice(0, 2));
-    if (!g?.slug || !k?.slug || !l?.slug) continue;
+    if ((!istKreis && !g?.slug) || !k?.slug || !l?.slug) continue;
     const kreis = `/solar-atlas/${l.slug}/${k.slug}`;
-    out.set(`${kreis}/${g.slug}`, { pfad: `${kreis}/${g.slug}`, name: g.name });
+    if (g?.slug) out.set(`${kreis}/${g.slug}`, { pfad: `${kreis}/${g.slug}`, name: g.name });
     out.set(kreis, { pfad: kreis, name: k.name });
   }
   return [...out.values()];

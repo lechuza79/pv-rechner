@@ -870,9 +870,20 @@ export function medienurteil(html: string): Medienurteil {
 export const VERWALTUNG_MUSTER =
   /vertreten\s+durch\s*:?\s*(?:den|die)?\s*(?:Landr(?:at|ätin)|(?:Ober|Verbands|Erste[rn]?\s+)?[Bb]ürgermeister(?:in)?|Amtsdirektor(?:in)?|Amtsvorsteher(?:in)?|Kreisdirektor(?:in)?)|Körperschaft\s+des\s+öffentlichen\s+Rechts/i;
 
+/**
+ * Public broadcasters are public-law bodies too — Deutschlandradio names itself
+ * a "Körperschaft des öffentlichen Rechts" — and they are newsrooms. Measured
+ * on the whole catalogue on 06.10.2026: without this, Deutschlandfunk would
+ * have been thrown out as an administration. Church papers likewise.
+ */
+const RUNDFUNK = /\b(?:Rundfunk|Deutschlandradio|Hörfunk|Fernsehanstalt|Landesrundfunkanstalt)\b/i;
+/** Church papers likewise: a diocese is a public-law corporation (sobla.de). */
+const KIRCHE = /\b(?:Bistum|Erzbistum|Diözese|Landeskirche|Kirchenzeitung|Sonntagsblatt)\b/i;
+
 export function istVerwaltung(text: string, domain: string, verwaltungsDomains: ReadonlySet<string>): boolean {
   const d = domain.toLowerCase().replace(/^www\./, "");
-  return verwaltungsDomains.has(d) || VERWALTUNG_MUSTER.test(text);
+  if (verwaltungsDomains.has(d)) return true;
+  return VERWALTUNG_MUSTER.test(text) && !RUNDFUNK.test(text) && !KIRCHE.test(text);
 }
 
 // ─── Priorität ───────────────────────────────────────────────────────────────

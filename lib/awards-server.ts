@@ -12,6 +12,7 @@ import {
   scopeIn,
   computePlacements,
   hookText,
+  bestenProzent,
   selectHook,
   type HookExample,
   type HookKind,
@@ -75,6 +76,10 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return out as any[];
 }
+
+
+/** Smallest comparison group a further placement in the letter may come from. */
+export const WEITERE_MIN_GRUPPE = 10;
 
 export async function loadAwardStatsFresh(): Promise<GemeindeStats[]> {
   if (!supabase) return [];
@@ -423,6 +428,8 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
     for (const p of placements.get(g.regionId) ?? []) {
       if (p.spike || p.duenn || p.schlusslicht) continue;
       if (p.total < settings.minTotal || p.rank > 3) continue;
+      // "weit vorn" with rank 3 of 5 is mid-table (operator, 06.10.2026).
+      if (p.total < WEITERE_MIN_GRUPPE) continue;
       if (familie(p.categoryKey) === familie(hook.categoryKey ?? "")) continue;
       const f = familie(p.categoryKey);
       const bisher = besteJeFamilie.get(f);
@@ -454,6 +461,7 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       weitere,
       rank: hook.rank,
       total: hook.total,
+      bestenProzent: hook.kind === "perzentil" ? bestenProzent(hook.percentile) : null,
       bestleistung: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.bestleistung ?? null) : null,
       themaDativ: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.themaDativ ?? null) : null,
       phrase: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.betreffPhrase ?? null) : null,
