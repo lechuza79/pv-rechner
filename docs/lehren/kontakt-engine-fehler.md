@@ -694,6 +694,16 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   nächste Kontaktlauf sucht ihn auf der neuen Website. Ablauf-Test. Der Altfall
   ist zurückgenommen und neu übernommen.
 
+### 78. Der Handbefehl liest einen alten Fehlschlag statt neu abzurufen
+- **Anlass:** 07.10.2026 — bei der Wiederholung von 137 damals unerreichbaren
+  Websites las der Handbefehl für 403, fehlenden DNS-Eintrag, Zertifikatsfehler
+  oder nach drei Versuchen nur den gespeicherten Fehlschlag vom Vortag; die
+  automatische Wiederholung gilt nur vorübergehenden Fehlern. Gemerkt hat es ein
+  Helfer, der zur Sicherheit mit zusätzlicher Belegseite (frisch) aufrief.
+- **Sicherung (Verwendung):** Fragt eine Person von Hand, wird eine gespeicherte
+  Seite ohne lesbaren Text immer neu abgerufen. Ablauf-Test, Sabotage rot. Die
+  betroffene Hälfte ist mit Neuabruf wiederholt.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
