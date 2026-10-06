@@ -680,7 +680,10 @@ export function geschwisterWebsite(
  */
 export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>): Beleg | null {
   const b = impressumBelegt(text, a, domain, ortsWoerter);
-  return b && (b.wie !== "name" || vollerNameIn(text, name) || identifizierend(name, ortsWoerter)) ? b : null;
+  // On such a page only the FULL company name proves: a planner's reference
+  // page names the park ("Windpark Pamsendorf", "Jörl-Stieglund" on an
+  // investment platform — manual pass 06.10.2026), never the company.
+  return b && (b.wie !== "name" || vollerNameIn(text, name)) ? b : null;
 }
 
 /** Does the operator's name carry a distinguishing word of the domain's label? (the family firm on its own site) */

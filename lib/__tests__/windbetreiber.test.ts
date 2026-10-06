@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { geschwisterWebsite, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
+import { geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -27,6 +27,12 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
   it("accepts a group subsidiary registered elsewhere only by its brand (EnBW)", () => {
     const b = impressumBelegt(IMPRESSUM.enbw, akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567"), "enbw.com");
     expect(b?.wie).toBe("marke");
+  });
+
+  it("lets a park name on a named extra page prove nothing — only the full company name does", () => {
+    const a = akteur("Windpark Pamsendorf GmbH & Co. KG", "Dorfstraße", "1", "92260");
+    expect(belegseiteTraegt("Referenzen Windpark Pamsendorf drei Anlagen WIMO GmbH Planung", a, a.Firmenname!, "wimo-energie.de")).toBeNull();
+    expect(belegseiteTraegt("Betreibergesellschaft Windpark Pamsendorf GmbH & Co. KG mit Sitz in X", a, a.Firmenname!, "wimo-energie.de")?.wie).toBe("name");
   });
 
   it("knows the family firm on its own site (for the hand review of address proofs)", () => {
