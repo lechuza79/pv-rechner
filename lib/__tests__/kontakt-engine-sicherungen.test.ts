@@ -204,7 +204,9 @@ describe("Klasse 28 — kein Lauf überschreibt eine Entscheidung von Hand", () 
   const r = lies("scripts/windbetreiber-refresh.ts");
   const neu = r.slice(r.indexOf("async function neuBewerten()"), r.indexOf("// ─── Manual pass"));
   it("re-judging skips manual candidates and every operator a person decided", () => {
-    expect(neu).toMatch(/if \(k\.quelle === "manuell"\) continue;/);
+    expect(neu).toMatch(/if \(k\.quelle === "manuell" \|\| k\.quelle === "geschwister"\) continue;/);
+    // A sibling's proof is re-verified, never judged from an imprint it never had.
+    expect(neu).toMatch(/Schwesterbeleg entfallen/);
     expect(neu).toMatch(/if \(vonHandEntschieden\(z\)\) \{[^\n]*widerspruch\.push[^\n]*continue; \}/);
     expect(neu).toMatch(/\|\| vonHandEntschieden\(z\)\) continue;/);
   });
@@ -221,7 +223,7 @@ describe("Klasse 28 — kein Lauf überschreibt eine Entscheidung von Hand", () 
     expect(r).toMatch(/suche_notiz: `\$\{VON_HAND_GEFUNDEN\}, /);
   });
   it("the imprint run only takes operators without website and without a person's 'none'", () => {
-    const imp = r.slice(r.indexOf("async function impressumLauf()"), r.indexOf("// ─── Re-judge"));
+    const imp = r.slice(r.indexOf("async function impressumLauf()"), r.indexOf("async function geschwisterLauf()"));
     expect(imp).toMatch(/filter\(\(z\) => !z\.website && !\(z\.suche_notiz \?\? ""\)\.startsWith\(VON_HAND\)\)/);
     // An unreachable or failed check never closes an operator.
     expect(imp).not.toMatch(/gesucht_am/);

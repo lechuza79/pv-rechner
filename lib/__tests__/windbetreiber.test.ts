@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { geschwisterWebsite, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -434,5 +434,17 @@ describe("house numbers and adviser offices (06.10.2026)", () => {
     expect(beurteilen(ewf, "shj-husum.de", "anschrift", { impressum: imp, startseite: null }).ergebnis).not.toBe("belegt");
     const eigen = akteur("Steuerberatung Windkraft Müller GmbH", "Am Markt", "5", "25813");
     expect(beurteilen(eigen, "x.de", "anschrift", { impressum: "Impressum Steuerberatung Windkraft Müller GmbH Am Markt 5 25813 Husum", startseite: null }).ergebnis).toBe("belegt");
+  });
+});
+
+describe("a sibling's proven website (06.10.2026)", () => {
+  const settrup = { register_email: "thebing@energy-farming.de", anschrift: "a|1|49584", website: "energy-farming.de", website_beleg: "name" };
+  it("takes it when mailbox, address and the mailbox's domain all agree", () => {
+    expect(geschwisterWebsite({ register_email: "Thebing@energy-farming.de", anschrift: "a|1|49584" }, [settrup])).toBe("energy-farming.de");
+  });
+  it("refuses an auditor's shared mailbox, another address, or a chain of siblings", () => {
+    expect(geschwisterWebsite({ register_email: "adem.bilir@mazars.de", anschrift: "w||24814" }, [{ register_email: "adem.bilir@mazars.de", anschrift: "w||24814", website: "denkerwulf.de", website_beleg: "anschrift" }])).toBeNull();
+    expect(geschwisterWebsite({ register_email: "thebing@energy-farming.de", anschrift: "b|2|49584" }, [settrup])).toBeNull();
+    expect(geschwisterWebsite({ register_email: "thebing@energy-farming.de", anschrift: "a|1|49584" }, [{ ...settrup, website_beleg: "geschwister" }])).toBeNull();
   });
 });

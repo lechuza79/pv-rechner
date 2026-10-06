@@ -6,6 +6,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --register [--neu-lesen]   operators from the export
  *   npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten             re-judge every stored check under today's rules
  *   npx tsx scripts/windbetreiber-refresh.ts --impressum [--limit=N]   check register-given websites
+ *   npx tsx scripts/windbetreiber-refresh.ts --geschwister [--auch-von-hand]  a proven sibling's website (same mailbox and address)
  *   npx tsx scripts/windbetreiber-refresh.ts --stand                    completeness; exit 1 on a violation
  *   npx tsx scripts/windbetreiber-refresh.ts --offen [--out=datei]      the list for the manual pass
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
@@ -29,7 +30,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, identifizierend, kontaktFelder, vollerNameIn, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, geschwisterWebsite, identifizierend, kontaktFelder, vollerNameIn, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -350,9 +351,9 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
 type Zeile = {
   mastr_nr: string; name: string; strasse: string | null; hausnummer: string | null; plz: string | null; ort: string | null;
   register_webseite: string | null; register_email: string | null; register_telefon: string | null;
-  website: string | null; website_beleg: string | null; gesucht_am: string | null; aktiv: boolean; suche_notiz: string | null;
+  website: string | null; website_beleg: string | null; website_beleg_url?: string | null; gesucht_am: string | null; aktiv: boolean; suche_notiz: string | null;
 };
-const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,register_email,register_telefon,website,website_beleg,gesucht_am,aktiv,suche_notiz";
+const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,register_email,register_telefon,website,website_beleg,website_beleg_url,gesucht_am,aktiv,suche_notiz";
 const akteurVon = (z: Zeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "", Ort: z.ort ?? "" });
 
 
@@ -450,6 +451,41 @@ async function impressumLauf() {
   await browserSchliessen();
 }
 
+/**
+ * Operators whose sibling (same register mailbox AND address) has a proven
+ * website on that mailbox's domain (lib/windbetreiber.ts → geschwisterWebsite).
+ * A person's "no website" is reported, not changed — unless the person running
+ * this says so with --auch-von-hand.
+ */
+async function geschwisterLauf() {
+  const c = await db();
+  type G = Zeile & { website_beleg: string | null };
+  const zeilen = await alle<G>(c, "windbetreiber", `${SPALTEN}`, "mastr_nr", (q) => q.eq("aktiv", true));
+  const mitAnschrift = zeilen.map((z) => ({ ...z, anschrift: anschriftSchluessel(akteurVon(z)) }));
+  const jeAnschrift = new Map<string, typeof mitAnschrift>();
+  for (const z of mitAnschrift) if (z.anschrift) jeAnschrift.set(z.anschrift, [...(jeAnschrift.get(z.anschrift) ?? []), z]);
+  const auchVonHand = flag("auch-von-hand");
+  const neu: Record<string, unknown>[] = [];
+  let vonHandGemeldet = 0;
+  for (const z of mitAnschrift) {
+    if (z.website || !z.anschrift) continue;
+    const d = geschwisterWebsite(z, jeAnschrift.get(z.anschrift) ?? []);
+    if (!d) continue;
+    if (vonHandEntschieden(z) && !auchVonHand) { vonHandGemeldet++; continue; }
+    const s = (jeAnschrift.get(z.anschrift) ?? []).find((g) => g.website === d)!;
+    const p = { kandidat: { domain: d, quelle: "geschwister" as const }, beleg: { wie: "geschwister" as const, textstelle: `gleiches Registerpostfach ${z.register_email} und gleiche Registeranschrift wie ${s.name} (${s.mastr_nr}), dessen Website ${d} belegt ist` }, impressum: { impressum_url: s.website_beleg_url ?? null } };
+    neu.push({
+      mastr_nr: z.mastr_nr,
+      ...websiteFelder(p, HEUTE),
+      gesucht_am: HEUTE, suche_notiz: `Schwesterbetreiber ${s.mastr_nr}`, updated_at: new Date().toISOString(),
+    });
+    // The candidate row carries the proof too, so the report's "proven check" holds.
+    await schreiben(c, "windbetreiber_kandidaten", [{ mastr_nr: z.mastr_nr, domain: d, quelle: "geschwister", ergebnis: "belegt", beleg: "geschwister", textstelle: `Schwesterbetreiber ${s.mastr_nr}`, impressum_url: s.website_beleg_url ?? null, grund: null, geprueft_am: HEUTE }], "mastr_nr,domain");
+  }
+  await aktualisieren(c, "windbetreiber", "mastr_nr", neu);
+  console.log(`${neu.length} Betreiber über einen Schwesterbetreiber belegt · ${vonHandGemeldet} von Hand entschiedene nicht geändert${vonHandGemeldet ? " (mit --auch-von-hand übernehmen, nachdem eine Person sie angesehen hat)" : ""}`);
+}
+
 // ─── Re-judge after a rule change ─────────────────────────────────────────────
 
 /**
@@ -473,7 +509,7 @@ async function neuBewerten() {
   const nachAnschrift = new Map<string, Zeile[]>();
   for (const z of zeilen) { const a = anschriftSchluessel(akteurVon(z)); if (a) nachAnschrift.set(a, [...(nachAnschrift.get(a) ?? []), z]); }
   const heutige = new Map(zeilen.map((z) => [z.mastr_nr, new Set(registerKandidaten(z, nachAnschrift).map((k) => k.domain))]));
-  const veraltet = kand.filter((k) => k.quelle !== "manuell" && k.quelle !== "suche" && nachNr.has(k.mastr_nr) && !heutige.get(k.mastr_nr)!.has(k.domain));
+  const veraltet = kand.filter((k) => k.quelle !== "manuell" && k.quelle !== "suche" && k.quelle !== "geschwister" && nachNr.has(k.mastr_nr) && !heutige.get(k.mastr_nr)!.has(k.domain));
   for (const k of veraltet) {
     const { error } = await c.from("windbetreiber_kandidaten").delete().eq("mastr_nr", k.mastr_nr).eq("domain", k.domain);
     if (error) throw new Error(error.message);
@@ -489,7 +525,7 @@ async function neuBewerten() {
     // again from the imprint cache it would fail and withdraw a person's
     // decision. A run never overwrites what a person decided (installers,
     // 06.10.2026: every crawl reset each demotion).
-    if (k.quelle === "manuell") continue;
+    if (k.quelle === "manuell" || k.quelle === "geschwister") continue;
     if (!existsSync(impressumDatei(k.domain))) { ohneZwischenspeicher++; continue; }
     const p = await pruefen(z, { domain: k.domain, quelle: k.quelle, postfach: k.quelle === "register-mail" ? z.register_email : null }, belegungen);
     kandZeilen.push(kandidatZeile(z, p));
@@ -515,6 +551,16 @@ async function neuBewerten() {
     if (!z.website || jeBetreiber.has(z.mastr_nr) || !weg.has(`${z.mastr_nr}|${z.website}`) || vonHandEntschieden(z)) continue;
     zurueck++;
     aenderungen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `Kandidat unter alter Domain-Regel entfernt: ${z.website}`, updated_at: new Date().toISOString() });
+  }
+  // A sibling's proof holds only while the sibling's does.
+  const mitA = zeilen.map((z) => ({ ...z, anschrift: anschriftSchluessel(akteurVon(z)) }));
+  const jeA = new Map<string, typeof mitA>();
+  for (const z of mitA) if (z.anschrift) jeA.set(z.anschrift, [...(jeA.get(z.anschrift) ?? []), z]);
+  for (const z of mitA) {
+    if (z.website_beleg !== "geschwister" || aenderungen.some((x) => x.mastr_nr === z.mastr_nr)) continue;
+    if (z.anschrift && geschwisterWebsite(z, jeA.get(z.anschrift) ?? []) === z.website) continue;
+    zurueck++;
+    aenderungen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `Schwesterbeleg entfallen: ${z.website}`, updated_at: new Date().toISOString() });
   }
   await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
   console.log(`${veraltet.length} veraltete Kandidaten entfernt`);
@@ -820,6 +866,7 @@ async function main() {
   if (flag("register")) return register();
   if (flag("neu-bewerten")) return neuBewerten();
   if (flag("impressum")) return impressumLauf();
+  if (flag("geschwister")) return geschwisterLauf();
   if (flag("suche")) {
     // The paid bulk search is gone, not switched off (decisions 28.09. and
     // 06.10.2026; it ran twice anyway while it was only switched off). Websites

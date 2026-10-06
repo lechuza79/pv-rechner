@@ -128,7 +128,7 @@ export function marke(name: string): string | null {
   return null;
 }
 
-export type Beleg = { wie: "name" | "anschrift" | "marke" | "register"; textstelle: string };
+export type Beleg = { wie: "name" | "anschrift" | "marke" | "register" | "geschwister"; textstelle: string };
 
 function umgebung(t: string, i: number, laenge: number) {
   return t.slice(Math.max(0, i - 60), i + laenge + 60).trim();
@@ -223,7 +223,7 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
 }
 
 /** Where a website candidate came from — decides only the order of trying. */
-export type Kandidatenquelle = "register-webseite" | "register-mail" | "anschrift" | "suche" | "manuell";
+export type Kandidatenquelle = "register-webseite" | "register-mail" | "anschrift" | "suche" | "manuell" | "geschwister";
 
 /** Order of preference: what the operator told the register comes first. */
 export const KANDIDAT_VORRANG: Record<Kandidatenquelle, number> = {
@@ -232,6 +232,7 @@ export const KANDIDAT_VORRANG: Record<Kandidatenquelle, number> = {
   anschrift: 2,
   manuell: 3,
   suche: 4,
+  geschwister: 5,
 };
 
 /** Search query for an operator: distinctive name and place, no legal form —
@@ -328,7 +329,7 @@ export function registerKandidaten(z: Registerzeile, nachAnschrift: Map<string, 
   return [...out.values()];
 }
 
-const BELEG_RANG: Record<Beleg["wie"], number> = { name: 0, anschrift: 1, marke: 2, register: 3 };
+const BELEG_RANG: Record<Beleg["wie"], number> = { name: 0, anschrift: 1, marke: 2, register: 3, geschwister: 4 };
 
 /** Of several proven websites: what the operator told the register first, then the stronger proof. */
 export function besterBeleg<P extends { ergebnis: string; kandidat: Kandidat; beleg: Beleg | null }>(pruefungen: P[]): P | null {
@@ -463,7 +464,7 @@ export function beurteilen(
  */
 export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: Beleg["wie"] | string | null): "amtlich" | "suche" {
   const vomRegister = quelle === "register-webseite" || quelle === "register-mail" || quelle === "anschrift";
-  return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register") ? "amtlich" : "suche";
+  return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register" || wie === "geschwister") ? "amtlich" : "suche";
 }
 
 /** The name's words without the kind-of-company words at its end. */
@@ -569,4 +570,25 @@ const VORUEBERGEHEND = /TIMEOUT|HTTP 5\d\d|fetch failed|ECONNRESET|leere Seite/i
  */
 export function abrufWiederholen(i: { text: string | null; startText?: string | null; fehler: string | null; abgerufen_am: string; versuche?: number }, jetzt = Date.now()): boolean {
   return !i.text && !i.startText && !!i.fehler && VORUEBERGEHEND.test(i.fehler) && (i.versuche ?? 1) < 3 && jetzt - Date.parse(i.abgerufen_am) > 3_600_000;
+}
+
+/**
+ * A sibling's proven website: the operator shares its register MAILBOX and its
+ * register ADDRESS with an operator whose website is proven, and that mailbox
+ * lies on exactly that website. One office runs both (LKOS-44 and Settrup at
+ * energy-farming.de, thebing@energy-farming.de — 318 open operators shared a
+ * mailbox with a proven sibling, 06.10.2026). All three conditions together:
+ * a shared auditor's mailbox (Mazars, 115 companies) fails the third, because
+ * no sibling's own website is the auditor's domain.
+ */
+export function geschwisterWebsite(
+  z: { register_email: string | null; anschrift: string | null },
+  geschwister: { register_email: string | null; anschrift: string | null; website: string | null; website_beleg: string | null }[],
+): string | null {
+  const mail = z.register_email?.toLowerCase().trim();
+  const d = maildomain(mail ?? null);
+  if (!mail || !d || !z.anschrift) return null;
+  const s = geschwister.find((g) => g.website === d && g.anschrift === z.anschrift && g.register_email?.toLowerCase().trim() === mail
+    && g.website_beleg && g.website_beleg !== "geschwister");
+  return s ? d : null;
 }
