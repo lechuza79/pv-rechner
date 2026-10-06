@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -301,5 +301,21 @@ describe("a brand needs an energy site", () => {
     const a = akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567");
     const imp = "Impressum EnBW Energie Baden-Württemberg AG Durlacher Allee 93 76131 Karlsruhe";
     expect(beurteilen(a, "enbw.com", "suche", { impressum: imp, startseite: null }).beleg?.wie).toBe("marke");
+  });
+});
+
+describe("a failed attempt is no answer about the site (06.10.2026)", () => {
+  const jetzt = Date.parse("2026-10-06T20:00:00Z");
+  const fehl = (fehler: string, versuche = 1, vor = 2 * 3_600_000) => ({ text: null, startText: null, fehler, abgerufen_am: new Date(jetzt - vor).toISOString(), versuche });
+  it("tries a timeout, a server error and an empty answer again", () => {
+    for (const f of ["Abruf fehlgeschlagen (UND_ERR_CONNECT_TIMEOUT)", "Seite antwortet mit HTTP 503", "leere Seite", "Abruf fehlgeschlagen (fetch failed)"]) expect(abrufWiederholen(fehl(f), jetzt), f).toBe(true);
+  });
+  it("keeps an answer about the site", () => {
+    for (const f of ["Abruf fehlgeschlagen (ENOTFOUND)", "Seite antwortet mit HTTP 404", "kein Impressum gefunden"]) expect(abrufWiederholen(fehl(f), jetzt), f).toBe(false);
+  });
+  it("stops after three attempts and waits an hour between them", () => {
+    expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 3), jetzt)).toBe(false);
+    expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 1, 600_000), jetzt)).toBe(false);
+    expect(abrufWiederholen({ ...fehl("Seite antwortet mit HTTP 503"), startText: "Willkommen" }, jetzt)).toBe(false);
   });
 });

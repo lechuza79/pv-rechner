@@ -425,3 +425,16 @@ export function kontaktFelder(k: { email: string; kanal: string; url: string } |
     kontakt_geprueft_am: k ? geprueftAm : null, kontakt_freigabe_am: null, kontakt_sperrgrund: null,
   };
 }
+
+/** Failures of OUR attempt, not of the site. */
+const VORUEBERGEHEND = /TIMEOUT|HTTP 5\d\d|fetch failed|ECONNRESET|leere Seite/i;
+
+/**
+ * Should a cached fetch be tried again? A timeout, a server error or an empty
+ * answer says nothing about the site — cached for good, about 40 operators
+ * stood as "unreachable" because of one busy hour (06.10.2026). At most three
+ * attempts, an hour apart; a missing domain or a 404 is an answer and stays.
+ */
+export function abrufWiederholen(i: { text: string | null; startText?: string | null; fehler: string | null; abgerufen_am: string; versuche?: number }, jetzt = Date.now()): boolean {
+  return !i.text && !i.startText && !!i.fehler && VORUEBERGEHEND.test(i.fehler) && (i.versuche ?? 1) < 3 && jetzt - Date.parse(i.abgerufen_am) > 3_600_000;
+}

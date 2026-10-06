@@ -163,6 +163,15 @@ describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   });
 });
 
+describe("Klasse 7 — ein gescheiterter Abruf ist keine Antwort", () => {
+  it("the imprint cache retries a transient failure instead of returning it", () => {
+    const r = lies("scripts/windbetreiber-refresh.ts");
+    const holen = r.slice(r.indexOf("async function impressumHolen("), r.indexOf("type Zeile = {"));
+    expect(holen).toMatch(/if \(!abrufWiederholen\(alt\)\) return alt;/);
+    expect(holen).not.toMatch(/if \(existsSync\(datei\)\) return /);
+  });
+});
+
 describe("Vorflug — jede bekannte Absturzursache vor dem Start", () => {
   it("runs every check, and the verdict is the conjunction", () => {
     const t = lies("scripts/windbetreiber-refresh.ts");

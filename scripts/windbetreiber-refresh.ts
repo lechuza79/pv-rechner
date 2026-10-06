@@ -26,7 +26,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -240,7 +240,7 @@ async function register() {
 
 // ─── Imprint check ────────────────────────────────────────────────────────────
 
-type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; startText?: string | null; fehler: string | null; via: "abruf" | "browser" | null };
+type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; startText?: string | null; fehler: string | null; via: "abruf" | "browser" | null; versuche?: number };
 
 /** Legal pages of sites without a German "Impressum" — foreign groups name them in English. */
 function rechtsseiteUrl(html: string, basis: string): string | null {
@@ -262,11 +262,22 @@ const IMPRESSUM_MARKER = /impressum|angaben gem(?:ae|ä)ss|anbieterkennzeichnung
 
 const impressumDatei = (domain: string) => resolve(CACHE, "impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
 
-/** Fetch a domain's imprint once; later runs read the cached text. */
+/**
+ * Fetch a domain's imprint once; later runs read the cached text. A failure
+ * that says something about OUR attempt (timeout, server error, empty answer)
+ * is no answer about the site: it was cached for good until 06.10.2026, and
+ * about 40 operators stood as "unreachable" because of a busy hour. It is
+ * tried again, at most three times, an hour apart.
+ */
 async function impressumHolen(domain: string, mitBrowser = true): Promise<Impressum> {
   const datei = impressumDatei(domain);
-  if (existsSync(datei)) return JSON.parse(readFileSync(datei, "utf8"));
-  const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null };
+  let versuche = 0;
+  if (existsSync(datei)) {
+    const alt: Impressum = JSON.parse(readFileSync(datei, "utf8"));
+    if (!abrufWiederholen(alt)) return alt;
+    versuche = alt.versuche ?? 1;
+  }
+  const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null, versuche: versuche + 1 };
   // Plain http last: a site with an expired certificate often still answers
   // there (Greifenwind, 100 operators, measured on the first sample).
   const starts = [`https://www.${domain}/`, `https://${domain}/`, `http://www.${domain}/`, `http://${domain}/`];
