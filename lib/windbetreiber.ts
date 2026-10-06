@@ -81,6 +81,11 @@ const GENERISCH = new Set([
   // Regional adjectives: "Windfeld Thüringer Becken" matched the Thüringer
   // Allgemeine by its "brand". Place NAMES are not listed here; they come from
   // the municipal register (ortsWoerter).
+  // Landscapes: "Mittelholstein" took the site of an investment broker for a
+  // project by that name (manual pass 06.10.2026).
+  "holstein", "mittelholstein", "ostholstein", "friesland", "nordfriesland", "ostfriesland", "emsland", "eifel",
+  "hunsrueck", "westerwald", "uckermark", "prignitz", "altmark", "lausitz", "vogelsberg", "rhoen", "harz", "allgaeu",
+  "schwarzwald", "odenwald", "spessart", "sauerland", "muensterland", "dithmarschen", "wendland", "boerde", "flaeming",
   "deutsche", "norddeutsche", "sueddeutsche", "ostdeutsche", "westdeutsche", "mitteldeutsche",
   "europaeische", "thueringer", "saechsische", "saechsisches", "bayerische", "hessische", "maerkische",
   "brandenburgische", "westfaelische", "niedersaechsische", "ostfriesische", "nordfriesische",
@@ -141,7 +146,7 @@ export function marke(name: string): string | null {
   return null;
 }
 
-export type Beleg = { wie: "name" | "anschrift" | "marke" | "register" | "geschwister"; textstelle: string };
+export type Beleg = { wie: "name" | "anschrift" | "marke" | "register" | "telefon" | "geschwister"; textstelle: string };
 
 function umgebung(t: string, i: number, laenge: number) {
   return t.slice(Math.max(0, i - 60), i + laenge + 60).trim();
@@ -349,13 +354,18 @@ export function registerKandidaten(z: Registerzeile, nachAnschrift: Map<string, 
   return [...out.values()];
 }
 
-const BELEG_RANG: Record<Beleg["wie"], number> = { name: 0, anschrift: 1, marke: 2, register: 3, geschwister: 4 };
+const BELEG_RANG: Record<Beleg["wie"], number> = { name: 0, anschrift: 1, marke: 2, register: 3, telefon: 4, geschwister: 5 };
+
+const schwach = (b: Beleg) => (b.wie === "telefon" || b.wie === "geschwister" ? 1 : 0);
 
 /** Of several proven websites: what the operator told the register first, then the stronger proof. */
 export function besterBeleg<P extends { ergebnis: string; kandidat: Kandidat; beleg: Beleg | null }>(pruefungen: P[]): P | null {
   return pruefungen
     .filter((p) => p.ergebnis === "belegt" && p.beleg)
-    .sort((a, b) => KANDIDAT_VORRANG[a.kandidat.quelle] - KANDIDAT_VORRANG[b.kandidat.quelle] || BELEG_RANG[a.beleg!.wie] - BELEG_RANG[b.beleg!.wie])[0] ?? null;
+    // Proofs by register data alone (telephone, sibling) never displace a site
+    // that names the operator or its address — wherever that site came from
+    // ("Wind für Wasser" lost its name proof to its manager's phone, 06.10.2026).
+    .sort((a, b) => schwach(a.beleg!) - schwach(b.beleg!) || KANDIDAT_VORRANG[a.kandidat.quelle] - KANDIDAT_VORRANG[b.kandidat.quelle] || BELEG_RANG[a.beleg!.wie] - BELEG_RANG[b.beleg!.wie])[0] ?? null;
 }
 
 /** The site is about energy at all — the context a brand needs. */
@@ -478,8 +488,11 @@ export function beurteilen(
   // EFI Wind, terrawatt — five blocks of the manual pass, 06.10.2026). Never on
   // an adviser's site, never on another organisation's imprint.
   const eigenesImpressum = abruf.impressum && herkunft !== "fremd" ? abruf.impressum : null;
-  if (eigenesImpressum && !beraterSeite && postfach && maildomain(postfach) === domain && telefonIn(eigenesImpressum, telefon)) {
-    return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} im Impressum` }, seite: "impressum" };
+  // And only on a site about energy: the owner's haulage firm or IT shop is
+  // where he is reached, not the operator's website (tebbe-spedition.de,
+  // combineit.de, a recruiter — first run of this rule, 06.10.2026).
+  if (eigenesImpressum && energie && !beraterSeite && postfach && maildomain(postfach) === domain && telefonIn(eigenesImpressum, telefon)) {
+    return { ergebnis: "belegt", beleg: { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} im Impressum` }, seite: "impressum" };
   }
   if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };
   if (abruf.startseite) return { ergebnis: "kein-impressum", beleg: null, seite: null };
@@ -510,7 +523,7 @@ export function telefonIn(text: string, telefon: string | null | undefined): boo
  */
 export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: Beleg["wie"] | string | null): "amtlich" | "suche" {
   const vomRegister = quelle === "register-webseite" || quelle === "register-mail" || quelle === "anschrift";
-  return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register" || wie === "geschwister") ? "amtlich" : "suche";
+  return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register" || wie === "telefon" || wie === "geschwister") ? "amtlich" : "suche";
 }
 
 /** The name's words without the kind-of-company words at its end. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { geschwisterWebsite, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { geschwisterWebsite, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -208,13 +208,20 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
 
   it("accepts the register mailbox's domain when the register telephone stands in its own imprint", () => {
     const a = akteur("WPON GmbH & Co. KG", "VOSSKO-Allee", "1", "48346");
-    const imp = "Impressum WI Windinvest GmbH Am Markt 4 48727 Billerbeck Telefon: 0163 / 537 58 03 E-Mail ok@windinvest.de";
-    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "+49 163 5375803").beleg?.wie).toBe("register");
+    const imp = "Impressum WI Windinvest GmbH Windenergie Am Markt 4 48727 Billerbeck Telefon: 0163 / 537 58 03 E-Mail ok@windinvest.de";
+    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "+49 163 5375803").beleg?.wie).toBe("telefon");
     // Another number, a mailbox elsewhere, or an adviser's office: nothing.
     expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "0163 5375804").ergebnis).toBe("abgelehnt");
     expect(beurteilen(a, "windinvest.de", "manuell", { impressum: imp, startseite: "x" }, "ok@andere.de", undefined, "0163 5375803").ergebnis).toBe("abgelehnt");
     const mazars = "Impressum Forvis Mazars GmbH & Co. KG Wirtschaftsprüfungsgesellschaft Steuerberatungsgesellschaft Tel. 040 288010";
     expect(beurteilen(a, "mazars.de", "register-mail", { impressum: mazars, startseite: "x" }, "adem.bilir@mazars.de", undefined, "040 288010").ergebnis).toBe("abgelehnt");
+    // The owner's business outside energy is not the operator's website.
+    const spedition = "Impressum Tebbe Spedition GmbH Transporte Logistik Tel. 05451 94640";
+    expect(beurteilen(a, "tebbe-spedition.de", "register-mail", { impressum: spedition, startseite: "Spedition" }, "m.tebbe@tebbe-spedition.de", undefined, "0545194640").ergebnis).toBe("abgelehnt");
+    // A proof by register data never displaces a site that names the operator.
+    const p = (domain: string, quelle: Kandidatenquelle, wie: Beleg["wie"]) => ({ ergebnis: "belegt", kandidat: { domain, quelle }, beleg: { wie, textstelle: "" } });
+    expect(besterBeleg([p("nttb-gmbh.de", "register-mail", "telefon"), p("dhsv-dithmarschen.de", "anschrift", "name")])?.kandidat.domain).toBe("dhsv-dithmarschen.de");
+    expect(marke("Bürgerwindpark Mittelholstein GmbH & Co. KG")).toBeNull();
     // A number too short to identify anyone proves nothing.
     expect(telefonIn("Tel. 1234 56", "123456")).toBe(false);
     expect(telefonKern("+49 (0) 4841-9813")).toBe("48419813");
