@@ -564,9 +564,9 @@ async function keinKontakt() {
   const felder = { kontakt_hand_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() };
   spalten("windbetreiber", [felder]);
   const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
-    .eq("website", domain).eq("aktiv", true).is("kontakt_email", null);
+    .eq("website", domain).eq("aktiv", true).or("kontakt_email.is.null,kontakt_sperrgrund.not.is.null");
   if (error) throw new Error(error.message);
-  if (!count) throw new Error(`${domain}: kein aktiver Betreiber mit dieser Website und ohne Kontakt`);
+  if (!count) throw new Error(`${domain}: kein aktiver Betreiber mit dieser Website ohne (freigegebenen) Kontakt`);
   console.log(`${domain}: „kein Kontakt" für ${count} Betreiber vermerkt`);
 }
 
@@ -616,8 +616,9 @@ async function stand() {
   console.log(`  ohne Website: ${ohne.length}, davon von Hand bestätigt ${vonHand}, noch für die Handprüfung ${handOffen}`);
   console.log(`  Kontakt von der eigenen Website: ${mitKontakt} (${anteil(kwKontakt, gesamtKw)} der Leistung) · freigegeben ${freigegeben} · gesperrt ${gesperrt}`);
   // Per website, not per operator: one search answers for all its operators.
-  const ohneKontakt = new Set(zeilen.filter((z) => z.website && !z.kontakt_email).map((z) => z.website!));
-  const kontaktVonHand = new Set(zeilen.filter((z) => z.website && !z.kontakt_email && (z.kontakt_hand_notiz ?? "").startsWith(VON_HAND)).map((z) => z.website!));
+  // A blocked contact (no mail server, gone from its page) is no contact.
+  const ohneKontakt = new Set(zeilen.filter((z) => z.website && (!z.kontakt_email || z.kontakt_sperrgrund)).map((z) => z.website!));
+  const kontaktVonHand = new Set(zeilen.filter((z) => z.website && ohneKontakt.has(z.website) && (z.kontakt_hand_notiz ?? "").startsWith(VON_HAND)).map((z) => z.website!));
   const kontaktOffen = [...ohneKontakt].filter((d) => !kontaktVonHand.has(d)).length;
   console.log(`  Websites ohne Kontakt: ${ohneKontakt.size}, davon von Hand bestätigt ${kontaktVonHand.size}, noch für die Handprüfung ${kontaktOffen}`);
   console.log(`Verstöße: ${verstoesse.length}`);

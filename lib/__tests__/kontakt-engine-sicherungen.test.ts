@@ -179,7 +179,7 @@ describe("Lückenlos — Website UND Kontakt, oder ein Vermerk von Hand", () => 
     const k = r.slice(r.indexOf("async function keinKontakt()"), r.indexOf("// ─── Completeness"));
     expect(k).toMatch(/notiz\.length < 40/);
     expect(k).toMatch(/kontakt_hand_notiz: `\$\{VON_HAND\} \$\{notiz\}`/);
-    expect(k).toMatch(/\.is\("kontakt_email", null\)/);
+    expect(k).toMatch(/\.or\("kontakt_email\.is\.null,kontakt_sperrgrund\.not\.is\.null"\)/);
     // No other place writes the note.
     expect(r.match(/kontakt_hand_notiz: `/g)?.length).toBe(1);
     expect(lies("scripts/windbetreiber-kontakte.ts")).not.toMatch(/kontakt_hand_notiz/);
