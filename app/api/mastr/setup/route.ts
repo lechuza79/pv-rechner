@@ -208,7 +208,16 @@ export async function GET(req: NextRequest) {
         UNION
         SELECT DISTINCT left(region_id,2), region_id FROM mastr_aggregates_gem
         UNION
-        SELECT DISTINCT '', region_id FROM mastr_aggregates_gem;
+        SELECT DISTINCT '', region_id FROM mastr_aggregates_gem
+        UNION
+        -- Die Gemeinde ist Mitglied VON SICH SELBST. Ohne diese Zeile gäbe es
+        -- für eine Gemeinde keinen Eintrag, und die Abfragen, die über die
+        -- Zugehörigkeit eingrenzen, lieferten dort nicht „wenig", sondern
+        -- NICHTS — eine leere Gemeindeseite ohne Fehlermeldung. Gemessen am
+        -- 06.10.2026: genau das passierte beim ersten Versuch (0 statt 81
+        -- Zeilen für Nordkirchen). Mit ihr gilt derselbe Verbund auf jeder
+        -- Ebene, ohne Sonderweg für die unterste.
+        SELECT DISTINCT region_id, region_id FROM mastr_aggregates_gem;
 
         -- LAUT SCHEITERN, NICHT STILL: Eine leere Zugehörigkeit ergäbe einen
         -- leeren Rollup, und ein leerer Rollup sieht auf jeder Kreis- und
@@ -242,9 +251,12 @@ export async function GET(req: NextRequest) {
   //     PostgREST's 1000-row cap. Both problems disappear if the database does the
   //     grouping: every call below returns at most a few hundred rows.
   //
-  //     The AGS is nested by design (2 = Bundesland, 5 = Kreis, 8 = Gemeinde), so
-  //     a prefix match is all a rollup needs. Gemeinde is the only stored grain —
-  //     nothing is double counted.
+  //     Welche Gemeinden unter einer Region liegen, steht seit 06.10.2026 in
+  //     mastr_region_mitglied, und welche Kinder eine Region hat, im Verzeichnis
+  //     (parent_region_id) — nicht mehr in der Länge und im gemeinsamen Anfang
+  //     des Schlüssels. Das war eine Eigenschaft des deutschen
+  //     Gemeindeschlüssels, keine der Sache. Gemeinde bleibt das einzige
+  //     gespeicherte Korn, es wird nichts doppelt gezählt.
   //
   //     SECURITY INVOKER (the default) is deliberate: these run with the caller's
   //     rights, so the existing RLS read policy stays the security boundary. EXECUTE
