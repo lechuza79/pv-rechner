@@ -534,7 +534,7 @@ async function neuBewerten() {
   }
   await schreiben(c, "windbetreiber_kandidaten", kandZeilen, "mastr_nr,domain");
   const aenderungen: Record<string, unknown>[] = [];
-  let zurueck = 0, neu = 0;
+  let zurueck = 0, neu = 0, umbenannt = 0;
   const widerspruch: string[] = [];
   for (const [nr, pr] of jeBetreiber) {
     const z = nachNr.get(nr)!;
@@ -543,6 +543,11 @@ async function neuBewerten() {
     if (vonHandEntschieden(z)) { if (best && best.kandidat.domain !== z.website) widerspruch.push(`${z.mastr_nr} ${z.name}: ${best.kandidat.domain}`); continue; }
     if (best && best.kandidat.domain !== z.website) { neu++; // A contact belongs to the website it was found on; the next contact run fills it again.
       aenderungen.push({ mastr_nr: nr, ...websiteFelder(best, HEUTE), ...kontaktFelder(null, null), updated_at: new Date().toISOString() }); }
+    // Same website, another kind of proof: the stored kind follows the rule
+    // (the phone proof was first written as "register", 06.10.2026). The
+    // contact stays — it belongs to the website, which did not change.
+    else if (best && best.beleg!.wie !== z.website_beleg) { umbenannt++;
+      aenderungen.push({ mastr_nr: nr, ...websiteFelder(best, HEUTE), updated_at: new Date().toISOString() }); }
     else if (!best && z.website && (pr.some((p) => p.kandidat.domain === z.website) || weg.has(`${nr}|${z.website}`))) {
       zurueck++;
       aenderungen.push({ mastr_nr: nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `nach Regeländerung nicht mehr belegt: ${z.website}`, updated_at: new Date().toISOString() });
@@ -584,7 +589,7 @@ async function neuBewerten() {
     console.log(`${widerspruch.length} von Hand entschiedene Betreiber, bei denen die Maschine heute anders urteilen würde — NICHT geändert, bitte ansehen:`);
     for (const w of widerspruch) console.log(`  ? ${w}`);
   }
-  console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
+  console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${umbenannt} mit anderer Belegart · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
 
 // ─── Manual pass ──────────────────────────────────────────────────────────────
