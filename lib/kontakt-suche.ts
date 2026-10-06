@@ -54,6 +54,14 @@ export type Rollenwerk = {
    * allgemeine Rathaus-Postfach neben der Webagentur.
    */
   seitenRolle?: (pfad: string) => string | null;
+  /**
+   * Pages whose clean mailboxes are general contacts whatever they are called.
+   * A business must name a mailbox in its imprint (§ 5 DDG); on a wind
+   * operator's imprint that was "socialmedia@" or a Bürgerwindpark's own
+   * free-mail box, and the name list missed both (06.10.2026). Unset for
+   * administrations: their imprint names the web agency next to the town hall.
+   */
+  allgemeinAuf?: (pfad: string) => boolean;
 };
 
 export type Organisation = { id: string; name: string; website: string | null };
@@ -231,7 +239,7 @@ export function consolidate(evidence: Evidence[], w: Rollenwerk): Mailbox[] {
     return {
       email, proof, strong: list.some(e => e.channels.length > 0 && e.strong),
       channels: [...new Set(list.flatMap(e => e.channels))],
-      general: w.allgemein.test(email.split("@")[0]),
+      general: w.allgemein.test(email.split("@")[0]) || (!!w.allgemeinAuf && list.some(e => !e.reasons.length && w.allgemeinAuf!(pathOf(e.url)))),
       confirmedOnSite,
       unsuitable: !proof && list.some(e => e.reasons.some(r => HARD.includes(r) && r !== "source-invalid")),
       scope: (proof ?? list[0]).scope,

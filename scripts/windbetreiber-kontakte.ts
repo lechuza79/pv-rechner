@@ -65,6 +65,8 @@ export const WIND_ROLLENWERK: Rollenwerk = {
   fremdeEinheit: /fl(?:ä|ae)chen(?:akquise|sicherung|management)|grundst(?:ü|ue)cks?eigent(?:ü|ue)mer|landeigent(?:ü|ue)mer|akquise|karriere|bewerb|ausbildung|einkauf|lieferant|st(?:ö|oe)rung|leitwarte|service-?hotline|technische betriebsf(?:ü|ue)hrung|investor relations|anleger/iu,
   allgemein: /^(info|kontakt|mail|office|zentrale|post|hallo|hello|service|windpark|wind|energie|verwaltung|buero|büro|anfrage|marktstammdatenregister)$/i,
   starkesPostfach: /presse|kommunikation|medien|media|newsroom|\bpr\b/i,
+  // The imprint's mailbox is the operator's general contact, whatever its name.
+  allgemeinAuf: (pfad: string) => /impressum|imprint|legal-notice|anbieterkennzeichnung/i.test(pfad),
 };
 
 const WIND_SCOPE: ScopeRegeln = {
@@ -73,6 +75,8 @@ const WIND_SCOPE: ScopeRegeln = {
   // Turbine makers and service firms named on a project page are not the operator.
   eigenbetrieb: /enercon|vestas|nordex|siemens|gamesa|ge-?renewable/,
   namensvarianten: /wind|energie|energy|gruppe|group|projekt|projects?|park|regenerativ/,
+  // A Bürgerwindpark often runs on a free-mail box — published in its own imprint it is its own.
+  gratisPostfachAuf: (pfad: string) => /impressum|imprint/i.test(pfad),
 };
 
 type Zeile = { mastr_nr: string; name: string; website: string; website_beleg_url: string | null; register_email: string | null; kontakt_email: string | null };

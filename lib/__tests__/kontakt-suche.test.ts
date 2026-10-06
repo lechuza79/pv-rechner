@@ -24,6 +24,21 @@ function pruefe(html: string, url: string, website: string, scope: ScopeRegeln =
 }
 
 describe("Kontaktsuche für einen anderen Bestand", () => {
+  it("nimmt jedes saubere Postfach des eigenen Impressums als allgemeines, nur wenn der Bestand es erlaubt (06.10.2026)", () => {
+    const html = `<main><h1>Impressum</h1><p>GERES Group GmbH <a href="mailto:socialmedia@geres-group.de">socialmedia@geres-group.de</a></p></main>`;
+    const url = "https://www.geres-group.de/impressum/";
+    const ohne = pruefe(html, url, "https://www.geres-group.de/");
+    expect(ohne.find(b => b.email === "socialmedia@geres-group.de")?.general).toBe(false);
+    const werk = { ...BETRIEB, allgemeinAuf: (p: string) => /impressum/.test(p) };
+    const org = { id: "b1", name: "GERES", website: "https://www.geres-group.de/" };
+    const context = headingContext(html);
+    const ev = contactCandidates(html, url, "www.geres-group.de").map(c => judgeEvidence(c, context.headings.get(c.email) ?? [], { url, digest: "d", valid: true }, org, asOf, werk));
+    const mit = consolidate(applyScope(ev, new Map([[url, context.title]]), org, null, SCOPE), werk);
+    expect(mit.find(b => b.email === "socialmedia@geres-group.de")?.general).toBe(true);
+    // Not on another page: a staff list is no imprint.
+    const ev2 = contactCandidates(html, "https://www.geres-group.de/team/", "www.geres-group.de").map(c => judgeEvidence(c, [], { url: "https://www.geres-group.de/team/", digest: "d", valid: true }, org, asOf, werk));
+    expect(consolidate(applyScope(ev2, new Map(), org, null, SCOPE), werk).find(b => b.email === "socialmedia@geres-group.de")?.general).toBe(false);
+  });
   it("nimmt eine verwandte Firmendomain nur, wenn der Bestand es erlaubt", () => {
     const html = `<main><h1>Impressum</h1><p>Christian Spatz Bedachungen <a href="mailto:info@christian-spatz-bedachungen.de">info@christian-spatz-bedachungen.de</a></p></main>`;
     const url = "https://www.spatz-bedachungen.com/impressum/";
