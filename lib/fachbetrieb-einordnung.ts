@@ -170,7 +170,7 @@ function versorgerDienste(text: string): RegExpMatchArray | null {
 // A cooperative is not per se no installer ("Solarbau Freiburg eG" builds PV
 // systems, measured) — only a citizens' energy cooperative is.
 const VEREIN_NAME =
-  /\be\.\s?V\.(?!\w)|\beingetragener\s+Verein\b|\bVerband\b|\bStiftung\b|(?:B(?:ü|ue)rger|Energie)[\wäöü-]*genossenschaft|B(?:ü|ue)rger[\wäöü-]*\s+eG(?!\w)|\bB(?:ü|ue)rgerwerke\b/i;
+  /\be\.\s?V\.(?!\w)|\beingetragener\s+Verein\b|\bVerband\b|\bStiftung\b|(?:B(?:ü|ue)rger|Energie|Solar)[\wäöü-]*genossenschaft|B(?:ü|ue)rger[\wäöü-]*\s+eG(?!\w)|\bB(?:ü|ue)rgerwerke\b/i;
 // A volunteer initiative says what it is (heidel-solar.de: "Wir arbeiten
 // ehrenamtlich und semi-professionell"). Only as a statement about "wir": an
 // installer's page may well support a volunteer fire brigade.
@@ -194,24 +194,28 @@ const KOMMUNE_ALS_ANBIETER =
 // "Bayerisches Wirtschaftsministerium" — measured; their pages list the
 // Handwerkskammer and a "Meisterbonus").
 const BEHOERDE_TITEL =
-  /(?:^|[|–-]\s*)(?:Stadt|Gemeinde|Landkreis|Kreis|Markt|Samtgemeinde|Verbandsgemeinde)\s+[A-ZÄÖÜ][\wäöüß.-]+(?:\s+[\wäöüß.()-]+){0,3}\s*(?:[|–-]|$)|\w*[Mm]inisterium\b|\b(?:Landes|Bundes)amt\b/;
+  /(?:^|[|–:-]\s*)(?:Stadt|Gemeinde|Landkreis|Kreis|Markt|Samtgemeinde|Verbandsgemeinde)\s+[A-ZÄÖÜ][\wäöüß.-]+(?:\s+[\wäöüß.()-]+){0,3}\s*(?:[|–:-]|$)|\w*[Mm]inisterium\b|\b(?:Landes|Bundes)amt\b|\bInternetportal\s+de[rs]\s+(?:Stadt|Gemeinde|Landkreis|Kreis)/;
 // Citizens' solar projects build on public roofs; they are not installers
 // (buergerprojekt-solar-dachau.de, stromaufwaerts-boerde.de — measured).
-const BUERGERPROJEKT = /\bB(?:ü|ue)rger(?:projekt|solar|solaranlage|energie|initiative)\w*/i;
+const BUERGERPROJEKT = /\bB(?:ü|ue)rger(?:projekt|solar|solaranlage|energie|initiative)\w*|\b(?:Solar|Energie)lotsen\b/i;
 const AGENTUR =
   /\b(?:Klima(?:schutz)?-?agentur|Energieagentur|Klimaschutzmanagement|Solar(?:potenzial|dach)?kataster|Solaratlas|Energieatlas|Geoportal)\b/i;
 
+// A medium in its provider name: "pv magazine group GmbH & Co. KG" (measured).
+const MEDIUM_NAME = /\bmagazine?\b|\bVerlag\b|\bZeitung\b|\bMedien(?:haus|gruppe)\b/i;
 const MEDIUM = /\b(?:Chefredakt\w*|Redaktionsleitung|Verlagsleitung|Verlagsgesellschaft|Zeitungsverlag|Verlagshaus|Anzeigenleitung)\b/i;
 
-const PORTAL_NAME = /\b(?:Portal|Verzeichnis|Branchenbuch|Vergleichsportal)\b/i;
+const PORTAL_NAME = /\b(?:Portal|Verzeichnis|Branchenbuch|Vergleichsportal|Firmenverzeichnis|Marktplatz)\b|-Adressen\b/i;
 // Not "portal": an electrician runs "e-infoportal.de" (measured).
 const PORTAL_DOMAIN = /(?:finden|vergleich|verzeichnis|branchen)/i;
 // On the page only what a lead seller says about itself. "Angebote
 // vergleichen" is also an installer's article link (adlersolar.de, measured)
 // — that phrase counts only in the self-description.
-const PORTAL_SELBST = /\b(?:Angebote vergleichen|kostenlos vergleichen|Anbieter vergleichen)\b/i;
+const PORTAL_SELBST = /\b(?:Angebote vergleichen|kostenlos vergleichen|Anbieter vergleichen|Vergleichen Sie|Preisvergleich\w*)\b/i;
 const PORTAL_TEXT =
-  /\b(?:bis zu (?:drei|3|f(?:ü|ue)nf|5) (?:kostenlose )?Angebote|Handwerker finden|Fachbetriebe? in Ihrer N(?:ä|ae)he finden|Jetzt Anbieter finden|Leads?[- ]?(?:Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Wir vermitteln Ihnen)\b/i;
+  /\b(?:bis zu (?:drei|3|f(?:ü|ue)nf|5) (?:kostenlose )?Angebote|Handwerker finden|Fachbetriebe? in Ihrer N(?:ä|ae)he finden|Jetzt Anbieter finden|Leads?[- ]?(?:Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Wir vermitteln|vermitteln\s+(?:Ihre\s+)?Anfragen|(?:Fachbetrieb|Handwerker|Installateur|Elektriker|Solarteur)e?n?\s+finden|Als\s+Fachbetrieb\s+(?:anmelden|registrieren))\b/i;
+// "euskirchen-solar.de: Wir vermitteln Anfragen ausschließlich an geprüfte
+// Fachbetriebe", "installateur24.de: Als Fachbetrieb anmelden" (measured).
 
 // Who sells and lets others install says so: "planen in Zusammenarbeit mit
 // Handwerkern … die Installation" (energiering.de, a shop, measured).
@@ -246,6 +250,10 @@ export const KEIN_BETRIEB_REGELN: Regel[] = [
   { klasse: "versorger", wo: "Seitentitel", test: (k) => k.titel.match(VERSORGER_TITEL) },
   { klasse: "versorger", wo: "Startseite (Abrechnung und Zähler)", test: (k) => versorgerDienste(k.start) },
   { klasse: "medium", wo: "Impressum", test: (k) => k.imp.match(MEDIUM) },
+  { klasse: "medium", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(MEDIUM_NAME) },
+  // An Innung is a public-law body of the trade, not a business
+  // (elektroinnung-main-tauber-kreis.de, measured).
+  { klasse: "verband", wo: "Seitentitel", test: (k) => k.titel.match(/\bInnung\b|\bKreishandwerkerschaft\b/) },
   { klasse: "verband", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(VEREIN_NAME) },
   { klasse: "verband", wo: "Registerart im Impressum", test: (k) => k.imp.match(VEREIN_REGISTER) },
   { klasse: "verband", wo: "Startseite", test: (k) => k.start.match(EHRENAMT) },
@@ -280,7 +288,7 @@ export const KEIN_BETRIEB_REGELN: Regel[] = [
 // — all measured on the full run. So "Fachbetrieb"/"Handwerksbetrieb" need a
 // self-reference, the Handwerksrolle an entry.
 const MEISTER =
-  /\bMeister(?:fach)?betrieb\b|\b(?:Elektro(?:techniker|installateur)?|Installateur(?:-\s*und\s*Heizungsbauer)?|Heizungsbauer|Dachdecker|Zimmerer|Klempner|Spengler|Sanit(?:ä|ae)r|K(?:ä|ae)lteanlagenbauer)(?:in)?-?meister(?:in)?\b|\b(?:eingetragen\w*\s+in\s+die|Eintragung\s+in\s+die|in\s+der)\s+Handwerksrolle\b|\beingetragene[rn]?\s+(?:Elektrofach|Handwerks)betrieb|\b(?:Ihr(?:em)?|unser(?:em)?|als|sind\s+(?:ein|Ihr))\s+(?:[\wäöüÄÖÜ-]+\s+){0,2}(?:[\wäöüÄÖÜ]+-)?(?:Fach|Handwerks)betrieb\b|\bInnungs(?:fach)?betrieb\b|\bMitglied\s+der\s+[\w-]*Innung\b/i;
+  /\bMeister(?:fach)?betrieb\b|\b(?:Elektro(?:techniker|installateur)?|Installateur(?:-\s*und\s*Heizungsbauer)?|Heizungsbauer|Dachdecker|Zimmerer|Klempner|Spengler|Sanit(?:ä|ae)r|K(?:ä|ae)lteanlagenbauer)(?:in)?-?meister(?:in)?\b|\b(?:eingetragen\w*\s+in\s+die|Eintragung\s+in\s+die|in\s+der)\s+Handwerksrolle\b|\beingetragene[rn]?\s+(?:Elektrofach|Handwerks)betrieb|\b(?:Ihr|unser(?:em)?|als|sind\s+(?:ein|Ihr))\s+(?:[\wäöüÄÖÜ-]+\s+){0,2}(?:[\wäöüÄÖÜ]+-)?(?:Fach|Handwerks)betrieb\b|\bInnungs(?:fach)?betrieb\b|\bMitglied\s+der\s+[\w-]*Innung\b/i;
 
 const GEWERK_IM_NAMEN =
   /Elektr|Solar|Photovoltaik|\bPV\b|Haustechnik|Geb(?:ä|ae)udetechnik|Heizung|Sanit(?:ä|ae)r|Bedachung|Dachdecker|Dachtechnik|Zimmerei|Holzbau|Energietechnik|Energiesysteme|Installation|Klimatechnik|K(?:ä|ae)ltetechnik/i;
@@ -295,7 +303,8 @@ const PV = String.raw`(?:Photovoltaik\w*|PV-?Anlage\w*|Solaranlage\w*|Solar(?:st
 // not an offer (energiering.de, measured).
 // No participles: "Die PV-Anlage Wittingen II ist vollständig installiert"
 // describes an investment product (sunshineenergy.de, measured).
-const MONTAGE = String.raw`(?:Montage|montieren|Installation|installieren|Inbetriebnahme|Anlagenbau)`;
+// Word-bounded: "Solar Schiene Montagesystem" is a product (ratgeber-solar.com).
+const MONTAGE = String.raw`(?:Montage|montieren|Installation|installieren|Inbetriebnahme|Anlagenbau)\b`;
 const INSTALLIERT_NAH = new RegExp(String.raw`${PV}[^.!?\n]{0,120}${MONTAGE}|${MONTAGE}[^.!?\n]{0,120}${PV}`, "gi");
 // Advice, not an offer: "Es ist möglich, eine Solaranlage zu installieren"
 // (alma-solarshop.de, measured), "was kostet die Montage".
@@ -306,6 +315,13 @@ const RATSCHLAG =
 // Offers that need no PV word next to them — the PV offer itself is checked
 // separately: "über Montage und Inbetriebnahme bis zur Wartung" (mt-pv.de),
 // "Umsetzung und Inbetriebnahme" as a menu item (main-energiekreis.de).
+// Someone else installs: "unsere zertifizierten Partner installieren"
+// (sunshineenergy.de), "mit Fachbetrieben aus der Region" (stawag.de),
+// "Installationspartnern" — measured.
+// Not "Partner" alone: "Ihr regionaler Partner für Photovoltaik-Installation"
+// is an installer speaking about itself.
+const DRITTE =
+  /\bunsere[nm]?\s+(?:[\wäöü-]+\s+)?Partner\b|\bPartnerbetrieb\w*|\bInstallationspartner\w*|\bmit\s+Fachbetrieben\b|\bFachbetrieben\s+aus\b|\bHandwerkern\b|\bz\.\s?B\./i;
 const MONTAGE_ANGEBOT: RegExp[] = [
   /\bwir\b[^.!?\n]{0,60}\b(?:montieren|installieren)\b/i,
   /\b(?:montieren|installieren)\s+wir\b/i,
@@ -319,8 +335,8 @@ const MONTAGE_IM_MENUE = /\b(?:Montage|Installation|Inbetriebnahme)\b/i;
 /** The site offers to mount or install, as an offer — not as advice. */
 function bietetMontage(start: string, nav: string): RegExpMatchArray | null {
   for (const m of start.matchAll(INSTALLIERT_NAH)) {
-    const davor = start.slice(Math.max(0, m.index! - 40), m.index!);
-    if (!RATSCHLAG.test(davor + m[0])) return m;
+    const umfeld = start.slice(Math.max(0, m.index! - 40), m.index! + m[0].length + 40);
+    if (!RATSCHLAG.test(umfeld) && !DRITTE.test(umfeld)) return m;
   }
   for (const r of MONTAGE_ANGEBOT) {
     const m = start.match(r);
@@ -432,4 +448,16 @@ export function artNachStreuung(
     return { art: "unklar", art_grund: `in ${n} Kreis${n === 1 ? "" : "en"} gesehen — Beleg aus dem Impressum steht aus` };
   }
   return { art: bisher.art, art_grund: bisher.art_grund ?? "" };
+}
+
+/**
+ * An old demotion (the whole-page word rules before 06.10.2026) is lifted
+ * only on the one finding a non-business does not carry: the chamber named in
+ * the imprint. Reading back the fourth run, a third of the 77 rows the weaker
+ * evidence would have promoted were city portals, a ministry, directories, a
+ * magazine and citizens' projects. And "unklar" never replaces it — that
+ * would only throw its reason away.
+ */
+export function alteRueckstufungBleibt(neu: Einordnung): boolean {
+  return neu.art === "unklar" || (neu.art === "betrieb" && neu.grund !== "Handwerkskammer im Impressum");
 }

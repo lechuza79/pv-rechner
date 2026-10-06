@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anbieterBlock, artNachStreuung, behaeltEinordnung, einordnen, ZIEL_BESTAND } from "../fachbetrieb-einordnung";
+import { alteRueckstufungBleibt, anbieterBlock, artNachStreuung, behaeltEinordnung, einordnen, ZIEL_BESTAND } from "../fachbetrieb-einordnung";
 
 // Every fixture is a real case from the two hand-read samples of 06.10.2026,
 // shortened to the passages that decide it.
@@ -353,6 +353,51 @@ describe("promotions of old demotions, gegengelesen (06.10.2026)", () => {
   });
 });
 
+describe("promotions of the fourth run, gegengelesen (06.10.2026)", () => {
+  const imp = "Muster GmbH Weg 1 12345 Ort";
+  it("a portal addressing 'Ihrem Fachbetrieb' makes no claim (solartechnik.org)", () => {
+    expect(urteil("solartechnik.org", seite("Firmenpräsentation", "", "Photovoltaik. solartechnik.org bietet Ihrem Fachbetrieb die Möglichkeit, sich zu präsentieren."), imp).art).not.toBe("betrieb");
+  });
+  it("'Ihrem Fachbetrieb' is the reader's, not the site's", () => {
+    expect(urteil("e.de", seite("E", "", "Photovoltaik. Wir bieten Ihrem Fachbetrieb einen Eintrag."), "E GmbH Weg 1 12345 Ort").art).toBe("unklar");
+  });
+  it("a price comparison in the description", () => {
+    expect(urteil("f.de", seite("F", "Preisvergleich für Solaranlagen", "Photovoltaik"), "F GmbH Weg 1 12345 Ort")).toMatchObject({ klasse: "portal" });
+  });
+  it("'Als Fachbetrieb anmelden' is a directory (installateur24.de)", () => {
+    expect(urteil("installateur24.de", seite("installateur24", "", "Photovoltaik Für Fachbetriebe Als Fachbetrieb anmelden Fachbetrieb finden"), imp)).toMatchObject({ klasse: "portal" });
+  });
+  it("'Wir vermitteln Anfragen' is a lead seller (euskirchen-solar.de)", () => {
+    expect(urteil("euskirchen-solar.de", seite("EuskirchenSolar", "Wir vermitteln Anfragen ausschließlich an geprüfte Fachbetriebe", "Photovoltaik Meisterbetrieb"), imp)).toMatchObject({ klasse: "portal" });
+  });
+  it("a price comparison names itself (elektriker24.org)", () => {
+    expect(urteil("elektriker24.org", seite("Elektriker in der Nähe | Elektriker finden", "Vergleichen Sie Preise", "Photovoltaik"), imp)).toMatchObject({ klasse: "portal" });
+  });
+  it("a magazine is a medium (pv-magazine.de)", () => {
+    expect(urteil("pv-magazine.de", seite("Nachrichten zu Photovoltaik", "", "Photovoltaik"), "Angaben gemäß § 5 TMG pv magazine group GmbH & Co. KG Kurfürstendamm 64 10707 Berlin")).toMatchObject({ klasse: "medium" });
+  });
+  it("a citizens' solar cooperative and an Innung are associations", () => {
+    expect(urteil("solar-lausitz.de", seite("Solar Lausitz", "", "Photovoltaik"), "Solargenossenschaft Lausitz eG Winkelstraße 8 03172 Guben")).toMatchObject({ klasse: "verband" });
+    expect(urteil("elektroinnung-x.de", seite("Innung Main-Tauber-Kreis", "", "Photovoltaik Installation von Photovoltaikanlagen"))).toMatchObject({ klasse: "verband" });
+  });
+  it("a city's official portal with ':' in its title (heilbronn.de)", () => {
+    expect(urteil("heilbronn.de", seite("Stadt Heilbronn: Startseite", "", "Photovoltaik"), "Handwerkskammer Heilbronn-Franken")).toMatchObject({ klasse: "behoerde" });
+  });
+  it("someone else installs: partners, Fachbetriebe, an example (sunshineenergy.de, stawag.de)", () => {
+    expect(urteil("a.de", seite("A", "", "Unsere zertifizierten Partner installieren PV-Anlagen nach höchsten Standards."), imp).art).toBe("unklar");
+    expect(urteil("b.de", seite("B", "", "Von der Planung bis zur Photovoltaik mit Fachbetrieben aus der Region."), imp).art).toBe("unklar");
+  });
+  it("…but 'Ihr Partner für Photovoltaik-Installation' is the installer itself", () => {
+    expect(urteil("c.de", seite("C", "", "Ihr regionaler Partner für Photovoltaik-Installation in NRW."), imp).art).toBe("betrieb");
+  });
+  it("'Montagesystem' is a product, not mounting (ratgeber-solar.com)", () => {
+    expect(urteil("ratgeber-solar.com", seite("Ratgeber", "", "Die Vorteile des Solar Schiene Montagesystems für effiziente PV-Anlagen"), imp).art).toBe("unklar");
+  });
+  it("advice continues after the match: 'Vor der Installation einer Solaranlage sollte …'", () => {
+    expect(urteil("d.de", seite("D", "", "Vor der Installation einer Solarstromanlage sollte die Lebensdauer des Daches geprüft werden."), imp).art).toBe("unklar");
+  });
+});
+
 describe("evidence of a trade — 'betrieb' needs one", () => {
   it("the Handwerkskammer in the imprint", () => {
     const u = urteil("haustechnik-markert.de", seite("Heizung", "", "Erneuerbare Energien Photovoltaik"), "Impressum Haustechnik Markert Balbachtalstraße 21a 97922 Lauda Zugehörige Kammer Handwerkskammer Heilbronn-Franken");
@@ -434,5 +479,14 @@ describe("verdicts this rule must not overwrite", () => {
     expect(behaeltEinordnung({ art: "kein-betrieb", art_grund: "von Hand entschieden: Medium" })).toBe(true);
     expect(behaeltEinordnung({ art: "kein-betrieb", art_grund: "steht im Bestand Versorger (X) — amtliche Quelle geht vor" })).toBe(true);
     expect(behaeltEinordnung({ art: "kein-betrieb", art_grund: "Kommune/Behörde (Rathaus)" })).toBe(false);
+  });
+});
+
+describe("an old demotion is lifted only on the chamber in the imprint", () => {
+  it("keeps it on weak evidence or none, lifts it on the chamber, reclassifies on a new class", () => {
+    expect(alteRueckstufungBleibt({ art: "unklar", grund: "x" })).toBe(true);
+    expect(alteRueckstufungBleibt({ art: "betrieb", grund: "Meister/Handwerksrolle", beleg: "" })).toBe(true);
+    expect(alteRueckstufungBleibt({ art: "betrieb", grund: "Handwerkskammer im Impressum", beleg: "" })).toBe(false);
+    expect(alteRueckstufungBleibt({ art: "kein-betrieb", klasse: "versorger", grund: "x", beleg: "" })).toBe(false);
   });
 });

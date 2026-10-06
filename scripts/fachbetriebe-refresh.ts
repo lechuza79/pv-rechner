@@ -87,7 +87,7 @@ import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
 import { abgleichen, organisationsDomain, verdraengtGrund, type Belegungen, type Entscheidungen } from "../lib/bestand-abgleich";
 import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
-import { einordnen as amImpressumEinordnen, artNachStreuung, behaeltEinordnung, KLASSEN_TEXT, ZIEL_BESTAND, type Einordnung } from "../lib/fachbetrieb-einordnung";
+import { einordnen as amImpressumEinordnen, alteRueckstufungBleibt, artNachStreuung, behaeltEinordnung, KLASSEN_TEXT, ZIEL_BESTAND, type Einordnung } from "../lib/fachbetrieb-einordnung";
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import {
   FELDER,
@@ -1027,6 +1027,22 @@ async function belegen(
       quelle = imp?.url ?? start.url;
     }
     const jetzt = new Date().toISOString();
+    // AN OLD DEMOTION IS LIFTED ONLY ON STRONG EVIDENCE. Its word rule was
+    // crude but mostly right: reading back the fourth run, a third of the 77
+    // rows it would have promoted were city portals, a ministry, directories,
+    // a magazine and citizens' projects whose "evidence" was a word. The
+    // chamber named in the imprint is the one finding a non-business does not
+    // carry. Without a new finding the old verdict stays — "unklar" would only
+    // throw its reason away.
+    if (r.art === "kein-betrieb") {
+      if (alteRueckstufungBleibt(e)) {
+        zaehle(`war alt zurückgestuft → bleibt (neu: ${e.art}${e.art === "betrieb" ? `, ${e.grund}` : ""})`);
+        if (protokoll.pfad) protokollZeilen.push(JSON.stringify({ domain: r.domain, war: r.art, firmenname: r.firmenname, e, quelle } satisfies BelegErgebnis));
+        if (!protokoll.nurMessen) zeilen.push({ domain: r.domain, art: r.art, art_grund: r.art_grund, art_beleg_at: jetzt, updated_at: jetzt });
+        await wegschreiben(false);
+        return;
+      }
+    }
     zaehle(`${r.art === "betrieb" ? "war betrieb" : "war alt zurückgestuft"} → ${e.art}${e.art === "kein-betrieb" ? ` (${KLASSEN_TEXT[e.klasse]})` : ""}`);
     if (protokoll.pfad) protokollZeilen.push(JSON.stringify({ domain: r.domain, war: r.art, firmenname: r.firmenname, e, quelle } satisfies BelegErgebnis));
     if (protokoll.nurMessen) return;
