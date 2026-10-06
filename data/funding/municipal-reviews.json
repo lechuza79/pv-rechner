@@ -87245,5 +87245,124 @@
         "evidenceUrl": "https://www.wilhelmsfeld.de/bauen-wohnen/klimaschutz"
       }
     ]
+  },
+  {
+    "regionId": "08226032",
+    "name": "Hockenheim",
+    "checkedAt": "2026-10-06T04:40:00Z",
+    "recheckAt": "2027-01-06T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Hockenheim selbst hat keinen Zuschuss für Haushalte; die Stadtwerke Hockenheim fördern Balkonkraftwerke (150 € Bestandskunden, 300 € Neukunden/Naturstrom, Antrag vor Kauf) und Wärmepumpen nur in Kombination mit PV oder Solarthermie (350 €, +100 € Naturstrom; nur Vollkunden). Beide als hockenheim-stadtwerke-balkon und hockenheim-stadtwerke-hauswaerme aufgenommen, nur Auskunft ohne Abzug (Kundenbindung), Council 2/2 inkl. Gegenprüfer. Keine Förderung für Dach-PV oder Speicher. Verlinkte Richtlinien sind die Fassungen 2023/2024 trotz Beschriftung 2026 — Wiederprüfung zum Jahreswechsel.",
+    "searches": [
+      "stadtwerke-hockenheim.de Service/Förderung samt Balkon-Richtlinie (2023), Antrag und gescannter Hauswärme-Richtlinie (2024) im Original gelesen (06.10.2026)",
+      "hockenheim.de Wirtschaft/Förderprogramme und Klimaschutzseite gelesen; Volltextsuche der Stadt antwortet mit 404",
+      "Websuche nach Antragsstopp/Mittelerschöpfung 2026 (zwei Prüfer, 06.10.2026): kein Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtwerke-hockenheim.de/Service/Foerderung/",
+        "finding": "„Die Stadtwerke Hockenheim legen auch in diesem Jahr drei neue Förderprogramme … auf“; Downloads „Förderantrag Balkonkraftwerke 2026“, „Förderantrag Hauswärmeanlagen 2026“."
+      },
+      {
+        "url": "https://www.stadtwerke-hockenheim.de/Service/Foerderung/Foerderprogramm-und-richtlinien-2023.pdf",
+        "finding": "Nr. 6.1/6.2: pauschal 150 Euro für Bestandskunden oder 300 Euro für Neukunden bzw. Naturstrom-Kunden; Nr. 11: tritt am 01.07.2023 in Kraft."
+      },
+      {
+        "url": "https://www.stadtwerke-hockenheim.de/Service/Foerderung/Richtlinien-zur-Foerderung-Hauswaermeanlagen.pdf",
+        "finding": "Nr. 2.2 WP mit PV oder Solarthermie; Nr. 6.2 350 Euro, 6.4 +100 Euro; Nr. 3.1 nur Kunden mit gesamter Energie von den Stadtwerken; in Kraft 01.05.2024."
+      },
+      {
+        "url": "https://www.hockenheim.de/startseite/wirtschaft/foerderprogramme.html",
+        "finding": "Linkliste zu Programmen von Land, Bund, EU und Banken für KMU — kein städtischer Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.hockenheim.de/startseite/leben/foerderung+lehrschwimmbecken.html",
+        "finding": "Bundesförderung für die Beckenpumpe des städtischen Lehrschwimmbeckens — Vorhaben der Stadt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hockenheim.de/startseite/wirtschaft/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Wirtschaftsförderung für KMU, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.hockenheim.de/startseite/wirtschaft/foerderprogramme.html"
+      },
+      {
+        "url": "hockenheim.de/startseite/leben/foerderung+lehrschwimmbecken.html",
+        "disposition": "reviewed",
+        "reason": "Förderprojekt der Stadt (Lehrschwimmbecken).",
+        "evidenceUrl": "https://www.hockenheim.de/startseite/leben/foerderung+lehrschwimmbecken.html"
+      }
+    ]
+  },
+  {
+    "regionId": "08226102",
+    "name": "Angelbachtal",
+    "checkedAt": "2026-10-06T04:40:00Z",
+    "recheckAt": "2027-01-06T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Angelbachtal hat keinen kommunalen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeinde übernimmt nur den Eigenanteil von 30 € für den KLiBA-Solar-Check (2025) und bietet kostenlose KLiBA-Energieberatung im Rathaus.",
+    "searches": [
+      "angelbachtal.de Rubrik Klimaschutz vollständig gelesen (06.10.2026): KLiBA-Beratung, kommunales Energiemanagement, Kreiskampagne",
+      "Mitteilungsblatt-Info Solar-Checks 2025 (PDF) gelesen",
+      "Websuche „Angelbachtal Zuschuss Balkonkraftwerk Photovoltaik Förderprogramm Gemeinde“ (06.10.2026): kein Treffer zu Angelbachtal"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.angelbachtal.de/fileadmin/user_upload/Info_MB_Solarchecks_2025.pdf",
+        "finding": "„Die Gemeinde Angelbachtal übernimmt für Sie den Eigenanteil von 30 €, so dass der Check für Sie völlig kostenfrei ist.“ — Beratung, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.angelbachtal.de/leben-wohnen/klimaschutz",
+        "finding": "KLiBA berät im Auftrag der Gemeinde kostenfrei; Meldungen zum kommunalen Energiemanagement — kein Förderprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "angelbachtal.de/fileadmin/user_upload/Info_MB_Solarchecks_2025.pdf",
+        "disposition": "reviewed",
+        "reason": "Kostenloser Solar-Check, kein Zuschuss.",
+        "evidenceUrl": "https://www.angelbachtal.de/fileadmin/user_upload/Info_MB_Solarchecks_2025.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "08226096",
+    "name": "Weinheim",
+    "checkedAt": "2026-10-06T04:40:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Weinheim stockt 2026 die BEG-Einzelmaßnahmen (Dämmung, Wärmepumpe) mit bis zu 5.000 € je Gebäude auf, registriert wird nach dem Bundesbescheid, Umsetzung bis 31.12.2026, Mittelvorbehalt — entspricht dem Katalogeintrag weinheim-effizienz. Für PV und Balkonkraftwerke nur kostenlose Beratung, kein Zuschuss für Speicher. Wiederprüfung zum Jahresende (Programm gilt für 2026).",
+    "searches": [
+      "weinheim.de Klimaschutz-Förderprogramme 2026 im Original gelesen (06.10.2026)",
+      "weinheim.de Geförderte Klimaschutzmaßnahmen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weinheim.de/startseite/stadtthemen/foerderung.html",
+        "finding": "„Der Zuschuss für Gebäudehülle und Anlagentechnik beträgt pro Gebäude maximal 5.000 Euro“; „Nachdem Sie den Zuwendungsbescheid für die Bundesförderung erhalten haben, registrieren Sie sich …“; PV: kostenlose Photovoltaik-Beratung."
+      },
+      {
+        "url": "https://www.weinheim.de/startseite/stadtthemen/gefoerderte+klimaschutzmassnahmen.html",
+        "finding": "Liste der von der Nationalen Klimaschutzinitiative geförderten städtischen Projekte (LED, Lüftung, Energiemanagement) — Vorhaben der Stadt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weinheim.de/startseite/stadtthemen/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Programmseite 2026, weinheim-effizienz bestätigt.",
+        "evidenceUrl": "https://www.weinheim.de/startseite/stadtthemen/foerderung.html"
+      },
+      {
+        "url": "weinheim.de/startseite/stadtthemen/gefoerderte+klimaschutzmassnahmen.html",
+        "disposition": "reviewed",
+        "reason": "Bundesgeförderte Projekte der Stadt selbst.",
+        "evidenceUrl": "https://www.weinheim.de/startseite/stadtthemen/gefoerderte+klimaschutzmassnahmen.html"
+      }
+    ]
   }
 ]

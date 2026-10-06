@@ -782,6 +782,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // three-month deadline and the first-come budget have no test form; deducts
   // nothing.
   "schwetzingen-klimaimpuls",
+  // Added 6 Oct 2026: Stadtwerke Hockenheim balcony (2023 guideline) and heat
+  // pump hybrid (2024 guideline), both tied to being a Stadtwerke customer;
+  // deduct nothing.
+  "hockenheim-stadtwerke-balkon",
+  "hockenheim-stadtwerke-hauswaerme",
 ];
 
 /**

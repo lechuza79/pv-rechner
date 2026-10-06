@@ -667,7 +667,10 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // 03.10.2026: Textarchiv des Bundestages zur 1. Lesung (kw39, 1211294) im
   //   Original gelesen: Überweisung an den Ausschuss für Wirtschaft und Energie,
   //   keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
-  geprueftIso: "2026-10-05",
+  // 06.10.2026: Textarchiv des Bundestages (kw41-pa-wirtschaft-stromsektor-1218072,
+  //   Stand 06.10.2026) im Original gelesen: Anhörung zu 21/7867 am 05.10.2026
+  //   fand statt; keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
+  geprueftIso: "2026-10-06",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

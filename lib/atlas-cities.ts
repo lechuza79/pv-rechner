@@ -514,6 +514,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "walldorf", name: "Walldorf", ags: "08226095", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1123 },
   { slug: "hirschberg-bergstrasse", name: "Hirschberg (Bergstraße)", ags: "08226107", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1051 },
   { slug: "schwetzingen", name: "Schwetzingen", ags: "08226084", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "hockenheim", name: "Hockenheim", ags: "08226032", fundingId: "hockenheim-stadtwerke-balkon", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1113 },
   { slug: "laudenbach", name: "Laudenbach", ags: "08226040", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1075 },
   { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
   { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
