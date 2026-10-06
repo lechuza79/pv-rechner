@@ -278,6 +278,11 @@ export function besterBeleg<P extends { ergebnis: string; kandidat: Kandidat; be
     .sort((a, b) => KANDIDAT_VORRANG[a.kandidat.quelle] - KANDIDAT_VORRANG[b.kandidat.quelle] || BELEG_RANG[a.beleg!.wie] - BELEG_RANG[b.beleg!.wie])[0] ?? null;
 }
 
+/** The site is about energy at all — the context a brand needs. */
+export const ENERGIE = /\b(?:wind(?:energie|kraft|park|parks|rad|raeder|räder|strom|anlagen?)?|energie\w*|energy|erneuerbar\w*|renewables?|photovoltaik|solar\w*|kraftwerk\w*|onshore|offshore|einspeis\w*|stromerzeug\w*|ökostrom|oekostrom)\b/i;
+// Whole words only, and no "turbine": the aircraft maker's page matched on
+// "window" (code in the page text) and on its turbine jet.
+
 export type Urteil = { ergebnis: "belegt" | "abgelehnt" | "kein-impressum" | "nicht-erreichbar" | "geparkt"; beleg: Beleg | null; seite: "impressum" | "startseite" | null };
 
 /** A domain that is for sale or parked. A register entry can outlive the
@@ -304,15 +309,20 @@ export function beurteilen(
   postfach?: string | null,
   ortsWoerter?: Set<string>,
 ): Urteil {
+  // A brand is a word, and words are shared: "Cirrus GmbH & Co. KG" runs wind
+  // turbines, cirrusaircraft.com builds aeroplanes (search sample, 06.10.2026).
+  // A brand counts only on a site that is about energy at all.
+  const energie = ENERGIE.test(`${abruf.impressum ?? ""} ${abruf.startseite ?? ""}`);
+  const zaehlt = (b: Beleg | null) => b && (b.wie !== "marke" || energie) ? b : null;
   if (abruf.startseite && GEPARKT.test(abruf.startseite) && abruf.startseite.length < 5000) {
     return { ergebnis: "geparkt", beleg: null, seite: null };
   }
   if (abruf.impressum) {
-    const b = impressumBelegt(abruf.impressum, a, domain, ortsWoerter);
+    const b = zaehlt(impressumBelegt(abruf.impressum, a, domain, ortsWoerter));
     if (b) return { ergebnis: "belegt", beleg: b, seite: "impressum" };
   }
   if (abruf.startseite) {
-    const b = impressumBelegt(abruf.startseite, a, domain, ortsWoerter);
+    const b = zaehlt(impressumBelegt(abruf.startseite, a, domain, ortsWoerter));
     if (b && (b.wie === "name" || b.wie === "marke")) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
   }
   const erreichbar = !!(abruf.impressum || abruf.startseite);

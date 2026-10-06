@@ -3,6 +3,7 @@
  *
  *   npx tsx scripts/windbetreiber-refresh.ts --setup
  *   npx tsx scripts/windbetreiber-refresh.ts --register [--neu-lesen]   operators from the export
+ *   npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten             re-judge every stored check under today's rules
  *   npx tsx scripts/windbetreiber-refresh.ts --impressum [--limit=N]   check register-given websites
  *   npx tsx scripts/windbetreiber-refresh.ts --suche [--limit=N]       search the rest, then check
  *   npx tsx scripts/windbetreiber-refresh.ts --stand                    completeness; exit 1 on a violation
@@ -21,17 +22,17 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { abgleichen, organisationsDomain, type Belegungen } from "../lib/bestand-abgleich";
+import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen } from "../lib/bestand-abgleich";
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
   anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, marke, ortsWoerterAus, registerKandidaten, standVon, suchanfrage, trefferRelevant, websiteHerkunft, zitatName,
-  type Akteur, type Beleg, type Kandidat, type Stand,
+  type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
 import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
 import { heuteInBerlin } from "../lib/zeit";
-import { ladeBelegungen } from "./lib/bestand-belegung";
+import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
 import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
 import { fetchLive } from "./lib/kontakt-lauf";
 import { serp } from "./lib/serp";
@@ -240,9 +241,11 @@ function rechtsseiteUrl(html: string, basis: string): string | null {
 
 const IMPRESSUM_MARKER = /impressum|angaben gem(?:ae|ä)ss|anbieterkennzeichnung|diensteanbieter|verantwortlich (?:im sinne|für den inhalt)|handelsregister|registergericht|imprint|legal notice/i;
 
+const impressumDatei = (domain: string) => resolve(CACHE, "impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
+
 /** Fetch a domain's imprint once; later runs read the cached text. */
 async function impressumHolen(domain: string, mitBrowser = true): Promise<Impressum> {
-  const datei = resolve(CACHE, "impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
+  const datei = impressumDatei(domain);
   if (existsSync(datei)) return JSON.parse(readFileSync(datei, "utf8"));
   const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null };
   // Plain http last: a site with an expired certificate often still answers
@@ -291,6 +294,9 @@ const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,regi
 const akteurVon = (z: Zeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "", Ort: z.ort ?? "" });
 
 
+let entscheidungenCache: Promise<Entscheidungen> | null = null;
+const entscheidungenHolen = () => (entscheidungenCache ??= db().then(ladeEntscheidungen));
+
 let ortsCache: Promise<Set<string>> | null = null;
 /** Words of every municipality, district and state name — never a brand. */
 function ortsWoerter(): Promise<Set<string>> {
@@ -314,7 +320,7 @@ async function pruefen(z: Zeile, k: Kandidat, belegungen: Belegungen): Promise<P
   // depends on how it was proven, not only on where the candidate came from.
   // juwi.de is a developer proven by the register address; that the installer
   // stock holds it too makes the installer entry wrong, not this one.
-  const a = abgleichen(k.domain, "windbetreiber", belegungen, { herkunft: websiteHerkunft(k.quelle, u.beleg!.wie) });
+  const a = abgleichen(k.domain, "windbetreiber", belegungen, { herkunft: websiteHerkunft(k.quelle, u.beleg!.wie), entscheidungen: await entscheidungenHolen() });
   if (a.art === "entscheiden") {
     const wer = a.mit.map((b) => `${b.bestand}${b.name ? ` ${b.name}` : ""}`).join(", ");
     return { kandidat: k, ergebnis: "konflikt", beleg: u.beleg, impressum: imp, grund: `Domain gehört zum Bestand ${wer}` };
@@ -388,6 +394,48 @@ async function impressumLauf() {
   if (betrZeilen.length) await aktualisieren(c, "windbetreiber", "mastr_nr", betrZeilen);
   console.log(`Prüfungen: ${JSON.stringify(zahl)} · Website belegt für ${betrZeilen.length} Betreiber`);
   await browserSchliessen();
+}
+
+// ─── Re-judge after a rule change ─────────────────────────────────────────────
+
+/**
+ * A rule change makes every stored verdict stale until it is judged again —
+ * a wrong proof would otherwise simply stay (Cirrus GmbH, a wind operator,
+ * stood on an aircraft maker's site until the brand needed an energy page).
+ * Only the cached imprints are read; nothing is fetched. A website that no
+ * longer proves itself is withdrawn and its operator comes back as open.
+ */
+async function neuBewerten() {
+  const c = await db();
+  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true));
+  const nachNr = new Map(zeilen.map((z) => [z.mastr_nr, z]));
+  const kand = await alle<{ mastr_nr: string; domain: string; quelle: Kandidatenquelle }>(c, "windbetreiber_kandidaten", "mastr_nr,domain,quelle", "mastr_nr");
+  const { belegungen } = await ladeBelegungen(c, "windbetreiber");
+  const jeBetreiber = new Map<string, Pruefung[]>();
+  const kandZeilen: ReturnType<typeof kandidatZeile>[] = [];
+  let ohneZwischenspeicher = 0;
+  for (const k of kand) {
+    const z = nachNr.get(k.mastr_nr);
+    if (!z) continue;
+    if (!existsSync(impressumDatei(k.domain))) { ohneZwischenspeicher++; continue; }
+    const p = await pruefen(z, { domain: k.domain, quelle: k.quelle, postfach: k.quelle === "register-mail" ? z.register_email : null }, belegungen);
+    kandZeilen.push(kandidatZeile(z, p));
+    jeBetreiber.set(z.mastr_nr, [...(jeBetreiber.get(z.mastr_nr) ?? []), p]);
+  }
+  await schreiben(c, "windbetreiber_kandidaten", kandZeilen, "mastr_nr,domain");
+  const aenderungen: Record<string, unknown>[] = [];
+  let zurueck = 0, neu = 0;
+  for (const [nr, pr] of jeBetreiber) {
+    const z = nachNr.get(nr)!;
+    const best = besterBeleg(pr);
+    if (best && best.kandidat.domain !== z.website) { neu++; aenderungen.push({ mastr_nr: nr, ...websiteFelder(best), updated_at: new Date().toISOString() }); }
+    else if (!best && z.website && pr.some((p) => p.kandidat.domain === z.website)) {
+      zurueck++;
+      aenderungen.push({ mastr_nr: nr, ...websiteFelder(null), gesucht_am: null, suche_notiz: `nach Regeländerung nicht mehr belegt: ${z.website}`, updated_at: new Date().toISOString() });
+    }
+  }
+  await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
+  console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
@@ -584,6 +632,7 @@ async function offenListe() {
 async function main() {
   if (flag("setup")) return setup();
   if (flag("register")) return register();
+  if (flag("neu-bewerten")) return neuBewerten();
   if (flag("impressum")) return impressumLauf();
   if (flag("suche")) return sucheLauf();
   if (flag("stand")) return stand();

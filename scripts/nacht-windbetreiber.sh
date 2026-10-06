@@ -20,7 +20,9 @@ zweifach() {
 echo "=== Start $(date)" >"$LOG"
 # 1. Operators from the latest register export (reads the cache if this export was read before).
 schritt npx tsx scripts/windbetreiber-refresh.ts --register
-# 2. Websites the register itself offers, proven by their imprint.
+# 2. Every stored verdict under today's rules (cache only), then the websites
+#    the register itself offers, proven by their imprint.
+schritt npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten
 schritt npx tsx scripts/windbetreiber-refresh.ts --impressum
 # 3. One search per address for the rest, largest capacity first.
 schritt npx tsx scripts/windbetreiber-refresh.ts --suche

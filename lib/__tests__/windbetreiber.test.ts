@@ -262,3 +262,19 @@ describe("a place is never a brand", () => {
     }
   });
 });
+
+describe("a brand needs an energy site", () => {
+  it("does not give a wind operator to an aircraft maker of the same name", () => {
+    const a = akteur("Cirrus GmbH & Co. KG", "Am Feld", "1", "26831");
+    // Real text from the cached page: code with "window", and a turbine jet.
+    const imp = "privacy@cirrusaircraft.com const mediaquery = window.matchmedia('(max-width: 992px)'); Terms of use Cirrus Aircraft";
+    const start = "the history-making, best-selling turbine jet unlocks your time, productivity and amenities";
+    expect(beurteilen(a, "cirrusaircraft.com", "suche", { impressum: imp, startseite: start }).ergebnis).not.toBe("belegt");
+  });
+
+  it("still lets an energy company's brand through", () => {
+    const a = akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567");
+    const imp = "Impressum EnBW Energie Baden-Württemberg AG Durlacher Allee 93 76131 Karlsruhe";
+    expect(beurteilen(a, "enbw.com", "suche", { impressum: imp, startseite: null }).beleg?.wie).toBe("marke");
+  });
+});

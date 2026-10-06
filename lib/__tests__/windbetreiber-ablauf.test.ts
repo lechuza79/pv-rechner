@@ -26,7 +26,8 @@ describe("Windbetreiber-Lauf", () => {
     // whose result is "belegt".
     const schreibstellen = quelle.match(/websiteFelder\(([^)]*)\)/g) ?? [];
     expect(schreibstellen.length).toBeGreaterThanOrEqual(3);
-    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|p: Pruefung \| null)\)/);
+    // websiteFelder(null) withdraws a website; it asserts none.
+    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|p: Pruefung \| null|null)\)/);
     expect(rumpf("impressumLauf")).toMatch(/const best = besterBeleg\(/);
     expect(rumpf("sucheLauf")).toMatch(/const best = besterBeleg\(/);
     expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
