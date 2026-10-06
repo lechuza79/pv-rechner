@@ -18,6 +18,7 @@ import { atlasPathForRegionId, getRegionById } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
 import { bundeslandByAgs } from "./mastr-regions";
 import { ortPhrase } from "./atlas-orte";
+import { regionDisplayName } from "./atlas-format";
 import { gemeindeVergleich } from "./gemeinde-vergleich";
 import { askVariante, type AskVariante } from "./kommunen-ask";
 
@@ -165,7 +166,7 @@ export async function briefFuerGemeinde(
     const kreis = regionId.length === 8 ? await getRegionById(kreisAgs) : null;
     const vergleichWo =
       kreis && kreis.name !== reg.name
-        ? ortPhrase({ name: kreis.name, level: "kreis" })
+        ? ortPhrase({ name: regionDisplayName(kreis.name) })
         : vergleichBezug || "im Vergleich";
     const draft = renderInfoDraft({
       name: reg.name,
