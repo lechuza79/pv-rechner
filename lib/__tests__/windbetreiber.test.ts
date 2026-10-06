@@ -29,6 +29,12 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(b?.wie).toBe("marke");
   });
 
+  it("matches a foreign four-digit postcode, but only behind street and number", () => {
+    const a = akteur("Hydrovind VI ApS", "Gammel Kirkevej", "16", "9530");
+    expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 16 DK-9530 Støvring Denmark", a, "hydrema.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 18 DK-9530 Støvring Denmark", a, "hydrema.com")).toBeNull();
+  });
+
   it("keeps a trailing direction in the name core (Kattrepel-Nord is not Kattrepel)", () => {
     expect(kernName(nameWoerter("Windpark Kattrepel-Nord GmbH & Co. KG"))).toEqual(["windpark", "kattrepel", "nord"]);
     expect(impressumBelegt("Projekte Windpark Kattrepel Erweiterung II vier Anlagen Denker & Wulf AG Windmühlenberg 24814 Sehestedt", akteur("Windpark Kattrepel-Nord GmbH & Co. KG", "Dorfstraße", "1", "25704"), "denkerwulf.de")).toBeNull();

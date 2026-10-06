@@ -40,10 +40,20 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
     // A different evidence page is allowed, a different rule is not.
     expect(m).toMatch(/const text = belegseite \? sichtbarerText\(belegseite\) : "";/);
-    expect(m).toMatch(/impressumBelegt\(text, akteurVon\(z\), domain, await ortsWoerter\(\)\)/);
+    expect(m).toMatch(/belegseiteTraegt\(text, akteurVon\(z\), z\.name, domain, await ortsWoerter\(\)\)/);
     // A name on another page proves only when it identifies someone (reference lists).
-    expect(m).toMatch(/beleg\.wie !== "name" \|\| vollerNameIn\(text, z\.name\) \|\| identifizierend\(z\.name/);
+    const lib = readFileSync(resolve(__dirname, "../windbetreiber.ts"), "utf8");
+    expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\) \|\| identifizierend\(name/);
+    // The page is kept, so a rule change judges the hand decision again.
+    expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
+  });
+
+  it("judges hand-taken websites again after a rule change — reports, never changes", () => {
+    const n = rumpf("neuBewerten");
+    expect(n).toMatch(/belegseiteTraegt\(readFileSync\(seite, "utf8"\)/);
+    expect(n).toMatch(/widerspruch\.push\(`\$\{z\.mastr_nr\} \$\{z\.name\}: \$\{z\.website\} trägt nach heutiger Regel nicht mehr/);
+    expect(n).toMatch(/nicht nachprüfbar/);
   });
 
   it("does not accept a proven website that another stock holds in conflict", () => {

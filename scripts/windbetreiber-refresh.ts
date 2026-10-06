@@ -30,7 +30,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, geschwisterWebsite, identifizierend, kontaktFelder, vollerNameIn, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -564,10 +564,25 @@ async function neuBewerten() {
     aenderungen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `Schwesterbeleg entfallen: ${z.website}`, updated_at: new Date().toISOString() });
   }
   await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
+  // A hand-taken website is judged too, on the page it was proven on —
+  // reported, never changed. Without that page it cannot be judged, and says so.
+  const ow = await ortsWoerter();
+  let nichtNachpruefbar = 0;
+  for (const z of zeilen) {
+    if (!z.website || !vonHandEntschieden(z) || !["name", "anschrift", "marke"].includes(z.website_beleg ?? "")) continue;
+    const seite = z.website_beleg_url ? belegseiteDatei(z.website_beleg_url) : null;
+    let traegt: boolean;
+    if (seite && existsSync(seite)) traegt = !!belegseiteTraegt(readFileSync(seite, "utf8"), akteurVon(z), z.name, z.website, ow);
+    else if (existsSync(impressumDatei(z.website)) && dieselbeSeite(z.website_beleg_url, (JSON.parse(readFileSync(impressumDatei(z.website), "utf8")) as { impressum_url: string | null }).impressum_url)) {
+      traegt = (await pruefen(z, { domain: z.website, quelle: "manuell" }, belegungen)).ergebnis === "belegt";
+    } else { nichtNachpruefbar++; continue; }
+    if (!traegt) widerspruch.push(`${z.mastr_nr} ${z.name}: ${z.website} trägt nach heutiger Regel nicht mehr (${z.website_beleg}, ${z.website_beleg_url ?? "Impressum"})`);
+  }
+  if (nichtNachpruefbar) console.log(`${nichtNachpruefbar} von Hand übernommene Websites ohne gespeicherte Belegseite — nicht nachprüfbar`);
   console.log(`${veraltet.length} veraltete Kandidaten entfernt`);
   if (widerspruch.length) {
     console.log(`${widerspruch.length} von Hand entschiedene Betreiber, bei denen die Maschine heute anders urteilen würde — NICHT geändert, bitte ansehen:`);
-    for (const w of widerspruch.slice(0, 30)) console.log(`  ? ${w}`);
+    for (const w of widerspruch) console.log(`  ? ${w}`);
   }
   console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
@@ -612,8 +627,10 @@ async function manuell() {
         belegseite = "html" in r && sichtbarerText(r.html).length >= LEERE_HUELLE ? r.html : await seiteGerendert(seite);
       }
       const text = belegseite ? sichtbarerText(belegseite) : "";
-      const beleg = text ? impressumBelegt(text, akteurVon(z), domain, await ortsWoerter()) : null;
-      if (beleg && (beleg.wie !== "name" || vollerNameIn(text, z.name) || identifizierend(z.name, await ortsWoerter()))) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
+      // Kept, so a later rule change can judge this proof again.
+      if (text) { mkdirSync(dirname(belegseiteDatei(seite)), { recursive: true }); writeFileSync(belegseiteDatei(seite), text); }
+      const beleg = text ? belegseiteTraegt(text, akteurVon(z), z.name, domain, await ortsWoerter()) : null;
+      if (beleg) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
     }
     await schreiben(c, "windbetreiber_kandidaten", [kandidatZeile(z, p)], "mastr_nr,domain");
     if (p.ergebnis !== "belegt") {
@@ -625,6 +642,45 @@ async function manuell() {
     }
   }
   await browserSchliessen();
+}
+
+/**
+ * Fetches once, for hand-taken websites proven on another page, the page the
+ * proof stands on — taken before that page was kept (06.10.2026). Without it a
+ * rule change cannot judge them again.
+ */
+async function belegseitenNachholen() {
+  const c = await db();
+  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).not("website", "is", null));
+  const urls = new Set<string>();
+  for (const z of zeilen) {
+    if (!vonHandEntschieden(z) || !z.website_beleg_url || existsSync(belegseiteDatei(z.website_beleg_url))) continue;
+    const imp = existsSync(impressumDatei(z.website!)) ? (JSON.parse(readFileSync(impressumDatei(z.website!), "utf8")) as { impressum_url: string | null }).impressum_url : null;
+    if (!dieselbeSeite(z.website_beleg_url, imp)) urls.add(z.website_beleg_url);
+  }
+  let ok = 0;
+  for (const url of urls) {
+    const r = await fetchLive(url);
+    const html = "html" in r && sichtbarerText(r.html).length >= LEERE_HUELLE ? r.html : await seiteGerendert(url);
+    const text = html ? sichtbarerText(html) : "";
+    if (!text) { console.log(`  nicht lesbar: ${url}`); continue; }
+    mkdirSync(dirname(belegseiteDatei(url)), { recursive: true });
+    writeFileSync(belegseiteDatei(url), text);
+    ok++;
+  }
+  await browserSchliessen();
+  console.log(`${ok} von ${urls.size} Belegseiten gespeichert`);
+}
+
+/** Same page, whatever the scheme, "www.", trailing slash or fragment. */
+function dieselbeSeite(a: string | null | undefined, b: string | null | undefined): boolean {
+  const n = (u: string | null | undefined) => (u ?? "").replace(/^https?:\/\/(www\.)?/, "").replace(/#.*$/, "").replace(/\/+$/, "").toLowerCase();
+  return !a || n(a) === n(b);
+}
+
+/** The text of a page a person named as evidence (--seite), kept for the re-judge. */
+function belegseiteDatei(url: string): string {
+  return resolve(CACHE, "belegseite", `${url.replace(/^https?:\/\//, "").replace(/[^a-z0-9.-]/gi, "_").slice(0, 180)}.txt`);
 }
 
 async function keine() {
@@ -876,6 +932,7 @@ async function main() {
   }
   if (flag("stand")) return stand();
   if (flag("offen")) return offenListe();
+  if (flag("belegseiten-nachholen")) return belegseitenNachholen();
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
   if (flag("kein-kontakt")) return keinKontakt();

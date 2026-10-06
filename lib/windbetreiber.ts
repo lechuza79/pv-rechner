@@ -116,13 +116,16 @@ export function textFalten(text: string): string {
 /** Endings of a street, as opposed to the name of a place (farm, mill, estate). */
 const STRASSENART = /(?:str|weg|platz|allee|ring|damm|gasse|ufer|chaussee|markt|steig|pfad|stieg|wall|graben|hof|berg|feld|kamp|horst|winkel|park|zeile|bogen)$/;
 
+/** Five digits in Germany, four for Danish, Austrian and Swiss operators (Hydrovind VI, Støvring — manual pass 06.10.2026). */
+const POSTLEITZAHL = /^\d{4,5}$/;
+
 const STRASSE = (s: string) => falten(s).replace(/strasse|str\./g, "str").replace(/[^a-z0-9]/g, "");
 
 /** A key for "same register address". Used to group, never as proof. */
 export function anschriftSchluessel(a: Akteur): string | null {
   const s = STRASSE(a.Strasse ?? "");
   const plz = (a.Postleitzahl ?? "").trim();
-  if (!s || !/^\d{5}$/.test(plz)) return null;
+  if (!s || !POSTLEITZAHL.test(plz)) return null;
   return `${s}|${(a.Hausnummer ?? "").toLowerCase().replace(/\s+/g, "")}|${plz}`;
 }
 
@@ -180,7 +183,7 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // read as the start of "12"; letters stay glued ("12 a" → "12a").
   const nr = (a.Hausnummer ?? "").toLowerCase().replace(/(\d)[^a-z0-9]+(?=\d)/g, "$1|").replace(/[^a-z0-9|]/g, "").replace(/^0$/, "");
   const plz = (a.Postleitzahl ?? "").trim();
-  if (strasse.length >= 4 && /^\d{5}$/.test(plz)) {
+  if (strasse.length >= 4 && POSTLEITZAHL.test(plz)) {
     // The SAME spelling rule on both sides. Normalising only the register's
     // "Straße" failed every address on a "…straße" (PNE, enercity, ABO —
     // measured on the first sample, 06.10.2026).
@@ -612,4 +615,15 @@ export function geschwisterWebsite(
   const s = geschwister.find((g) => g.website === d && g.anschrift === z.anschrift && g.register_email?.toLowerCase().trim() === mail
     && g.website_beleg && g.website_beleg !== "geschwister");
   return s ? d : null;
+}
+
+/**
+ * The hand check's acceptance rule, in ONE place: --manuell applies it to the
+ * page a person named, the re-judge applies it again to the same stored page
+ * after a rule change (Green City, Kattrepel-Nord — rules tightened after the
+ * hand pass, 06.10.2026). A name alone must be the full name or identifying.
+ */
+export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>): Beleg | null {
+  const b = impressumBelegt(text, a, domain, ortsWoerter);
+  return b && (b.wie !== "name" || vollerNameIn(text, name) || identifizierend(name, ortsWoerter)) ? b : null;
 }
