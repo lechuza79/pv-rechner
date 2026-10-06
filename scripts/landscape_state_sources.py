@@ -32,6 +32,30 @@ ADAPTERS = {
                buildingLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
                terrainLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
                osmPage='https://download.geofabrik.de/europe/germany/brandenburg.html'),
+    '09': dict(key='bayern', prefix='by', native=25832, grid=True,
+               buildingLicense='Bayerische Vermessungsverwaltung – www.geodaten.bayern.de, CC BY 4.0 [Daten bearbeitet]',
+               terrainLicense='Bayerische Vermessungsverwaltung – www.geodaten.bayern.de, CC BY 4.0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/bayern.html'),
+    '14': dict(key='sachsen', prefix='sn', native=25833, grid=True,
+               buildingLicense='Quelle: GeoSN, dl-de/by-2-0 [Daten bearbeitet]',
+               terrainLicense='Quelle: GeoSN, dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/sachsen.html'),
+    '16': dict(key='thueringen', prefix='th', native=25832, grid=True,
+               buildingLicense='© GDI-Th, CC BY 4.0 [Daten bearbeitet]',
+               terrainLicense='© GDI-Th, dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/thueringen.html'),
+    '07': dict(key='rheinland-pfalz', prefix='rp', native=25832, grid=True,
+               buildingLicense='©GeoBasis-DE / LVermGeoRP2026, dl-de/by-2-0, www.lvermgeo.rlp.de [Daten bearbeitet]',
+               terrainLicense='©GeoBasis-DE / LVermGeoRP2026, dl-de/by-2-0, www.lvermgeo.rlp.de [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/rheinland-pfalz.html'),
+    '08': dict(key='baden-wuerttemberg', prefix='bw', native=25832, grid=True,
+               buildingLicense='Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0 [Daten bearbeitet]',
+               terrainLicense='Datenquelle: LGL, www.lgl-bw.de, dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/baden-wuerttemberg.html'),
+    '13': dict(key='mecklenburg-vorpommern', prefix='mv', native=25833, grid=True,
+               buildingLicense='© GeoBasis-DE/M-V 2026, CC BY 4.0 [Daten bearbeitet]',
+               terrainLicense='© GeoBasis-DE/M-V 2026, CC BY 4.0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/mecklenburg-vorpommern.html'),
     '15': dict(key='sachsen-anhalt', prefix='st', native=25832,
                buildingLicense='© GeoBasis-DE / LVermGeo ST, dl-de/by-2-0',
                terrainLicense='© GeoBasis-DE / LVermGeo ST, dl-de/by-2-0',
@@ -109,6 +133,17 @@ def bb_index(url, fetch=_get):
 BB_WCS = 'https://isk.geobasis-bb.de/ows/dgm_wcs'
 
 
+def wcs_terrain_url(base, coverage, terrain, native=25833, resolution=5):
+    """One WCS 2.0.1 GetCoverage over the terrain box, served resampled to `resolution` metres."""
+    from shapely.ops import transform
+    box_native = transform(Transformer.from_crs(25832, native, always_xy=True).transform, terrain).bounds
+    step = 100
+    minx, miny = math.floor(box_native[0]/step)*step-step, math.floor(box_native[1]/step)*step-step
+    maxx, maxy = math.ceil(box_native[2]/step)*step+step, math.ceil(box_native[3]/step)*step+step
+    return (base+'?SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=%s&FORMAT=image/tiff'
+            '&SUBSET=x(%d,%d)&SUBSET=y(%d,%d)&SCALEFACTOR=%s' % (coverage, minx, maxx, miny, maxy, 1/resolution))
+
+
 def bb_terrain_url(terrain, resolution=5):
     """One WCS 2.0.1 request for the official DGM1 (served resampled to 5 m) over the terrain box.
 
@@ -158,7 +193,7 @@ def convert_gml(text, transformer=None):
                           lambda m: m[1]+triples(m[2])+m[3], text)
     if not count:
         raise ValueError('No coordinates found in GML')
-    return text.replace('ETRS89_UTM33', 'ETRS89_UTM32')
+    return text.replace('ETRS89_UTM33', 'ETRS89_UTM32').replace('EPSG:6.12:25833', 'EPSG:6.12:25832')
 
 
 def convert_dgm_mosaic(native, destination, resolution=5):
@@ -331,7 +366,116 @@ def neighbour_member(data):
     return names[0], archive.read(names[0])
 
 
+# Grid states: tiles have a predictable name per (east km, north km) cell; a cell
+# the state does not publish answers 404 and is skipped. Alternatives (older
+# acquisition epochs) are separated by ' || ' and tried in order.
+SN_LOD = 'https://geocloud.landesvermessung.sachsen.de/public.php/dav/files/AyJqXpJAZJXomCb/'
+GRID = {
+    'bayern': dict(dgm=(1000, lambda e, n: ['https://download1.bayernwolke.de/a/dgm/dgm1/%d_%d.tif' % (e, n)]),
+                   lod=(2000, lambda e, n: ['https://download1.bayernwolke.de/a/lod2/citygml/%d_%d.gml' % (e, n)])),
+    'sachsen': dict(dgm=(2000, lambda e, n: [SN_DGM+'dgm1_33%03d_%d_2_sn_tiff.zip' % (e, n)]),
+                    lod=(2000, lambda e, n: [SN_LOD+'lod2_33%03d_%d_2_sn_citygml.zip' % (e, n)])),
+    'thueringen': dict(dgm=(1000, lambda e, n: [TH_DGM+'dgm_2020-2025/dgm1_32_%d_%d_1_th_2020-2025.zip' % (e, n),
+                                                 TH_DGM+'dgm_2014-2019/dgm1_%d_%d_1_th_2014-2019.zip' % (e, n)]),
+                       lod=(2000, lambda e, n: ['https://geoportal.geoportal-th.de/3dgebaeude/LoD2/LoD2_32_%d_%d_2_TH.zip' % (e, n)])),
+    # RLP: the terrain year differs per tile, so names come from the directory listing.
+    'rheinland-pfalz': dict(dgm=(1000, 'rp-index'),
+                            lod=(2000, lambda e, n: ['https://geobasis-rlp.de/data/geb3dlo/current/gml/LoD2_32_%d_%d_2_RP.gml' % (e, n)])),
+    # BW: 2 km cells with an ODD east and EVEN north km; terrain is zipped XYZ (four 1 km files).
+    'baden-wuerttemberg': dict(dgm=(2000, lambda e, n: ['https://opengeodata.lgl-bw.de/data/dgm/dgm1_32_%d_%d_2_bw.zip' % (e, n)]),
+                               lod=(2000, lambda e, n: ['https://opengeodata.lgl-bw.de/data/lod2/LoD2_32_%d_%d_2_bw.zip' % (e, n)]),
+                               offset=(1000, 0)),
+    # M-V: buildings as 2 km tiles via the ATOM download, terrain as one WCS request (UTM33).
+    'mecklenburg-vorpommern': dict(
+        wcs=('https://www.geodaten-mv.de/dienste/dgm_wcs', 'mv_dgm'),
+        lod=(2000, lambda e, n: ['https://www.geodaten-mv.de/dienste/gebaeude_download?index=0&dataset=8397b554-5cb9-4274-8be8-c20490d9a6e8&file=lod2_33_%03d_%d_2_gml.zip' % (e, n)])),
+}
+
+
+def grid_tiles(adapter, terrain, buildings, fetch=_get):
+    spec = GRID[adapter['key']]
+    jobs = []
+    if 'wcs' in spec:
+        jobs.append(('dgm', wcs_terrain_url(*spec['wcs'], terrain, adapter['native'])))
+    for kind, area in (('dgm', terrain), ('lod', buildings)):
+        if kind not in spec:continue
+        size, names = spec[kind]
+        if names == 'rp-index':
+            index = rp_dgm_index(fetch)
+            for e, n in grid_cells(area, 25832, 25832, size):
+                if (e, n) in index:jobs.append((kind, RP_DGM+index[(e, n)]))
+            continue
+        dx, dy = spec.get('offset', (0, 0))
+        from shapely.affinity import translate
+        for e, n in grid_cells(translate(area, -dx, -dy), 25832, adapter['native'], size):
+            jobs.append((kind, ' || '.join(names((e*size+dx)//1000, (n*size+dy)//1000))))
+    return jobs
+
+
+RP_DGM = 'https://geobasis-rlp.de/data/dgm1/current/tif/'
+
+
+def rp_dgm_index(fetch=_get):
+    """(east km, north km) -> file name; exactly one acquisition year per cell."""
+    found = {}
+    for e, n, year in re.findall(r'dgm1_32_(\d+)_(\d+)_1_rp_(\d{4})\.tif"', fetch(RP_DGM).text):
+        found[(int(e), int(n))] = 'dgm1_32_%s_%s_1_rp_%s.tif' % (e, n, year)
+    if not found:raise ValueError('Rheinland-Pfalz terrain index empty')
+    return found
+
+
+def xyz_archive_to_tif(data):
+    """Zipped ASCII XYZ (UTM32 + DHHN2016, cell centres) to one GeoTIFF, heights unchanged."""
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_origin
+    archive = zipfile.ZipFile(io.BytesIO(data))
+    names = [n for n in archive.namelist() if n.lower().endswith('.xyz')]
+    if not names:raise ValueError('No XYZ terrain in archive')
+    parts = []
+    for name in names:
+        text = archive.read(name).decode('ascii', 'replace')
+        text = text[:text.find('<')] if '<' in text else text  # SH appends an HTML page
+        values = np.array(text.replace(',', ' ').split(), dtype='float64')
+        if values.size % 3:raise ValueError('XYZ file is not three columns: '+name)
+        parts.append(values.reshape(-1, 3))
+    points = np.vstack(parts)
+    xs, ys = np.unique(points[:, 0]), np.unique(points[:, 1])
+    step = float(np.min(np.diff(xs)))
+    if step <= 0 or abs(float(np.min(np.diff(ys))) - step) > 1e-6:raise ValueError('XYZ grid not square')
+    width, height = int(round((xs.max()-xs.min())/step))+1, int(round((ys.max()-ys.min())/step))+1
+    grid = np.full((height, width), -9999.0, dtype='float32')
+    cols = np.rint((points[:, 0]-xs.min())/step).astype(int)
+    rows = np.rint((ys.max()-points[:, 1])/step).astype(int)
+    grid[rows, cols] = points[:, 2]
+    memory = rasterio.MemoryFile()
+    with memory.open(driver='GTiff', width=width, height=height, count=1, dtype='float32', nodata=-9999.0,
+                     crs='EPSG:25832', transform=from_origin(xs.min()-step/2, ys.max()+step/2, step, step),
+                     compress='deflate') as target:
+        target.write(grid, 1)
+    return memory.read()
+
+
+def grid_member(data, kind):
+    """A tile is the file itself or a zip holding exactly one GeoTIFF / CityGML;
+    a terrain zip of XYZ files is converted, a building zip of several GML files is kept whole."""
+    if not zipfile.is_zipfile(io.BytesIO(data)):
+        return None, data
+    archive = zipfile.ZipFile(io.BytesIO(data))
+    if kind == 'dgm' and not any(n.lower().endswith('.tif') for n in archive.namelist()):
+        return 'xyz', xyz_archive_to_tif(data)
+    if kind == 'lod' and sum(n.lower().endswith('.gml') for n in archive.namelist()) > 1:
+        return 'zip', data
+    suffix = '.tif' if kind == 'dgm' else '.gml'
+    names = [n for n in archive.namelist() if n.lower().endswith(suffix)]
+    if len(names) != 1:
+        raise ValueError('Expected one '+suffix+' in tile archive, got '+str(names))
+    return names[0], archive.read(names[0])
+
+
 def tile_jobs(adapter, terrain, buildings, stac=None):
+    if adapter.get('grid'):
+        return grid_tiles(adapter, terrain, buildings)
     if adapter['key'] == 'sachsen-anhalt':
         return st_tiles(terrain, buildings)
     if adapter['key'] == 'nordrhein-westfalen':
