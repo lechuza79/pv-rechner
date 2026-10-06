@@ -29,6 +29,18 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(b?.wie).toBe("marke");
   });
 
+  it("keeps a trailing direction in the name core (Kattrepel-Nord is not Kattrepel)", () => {
+    expect(kernName(nameWoerter("Windpark Kattrepel-Nord GmbH & Co. KG"))).toEqual(["windpark", "kattrepel", "nord"]);
+    expect(impressumBelegt("Projekte Windpark Kattrepel Erweiterung II vier Anlagen Denker & Wulf AG Windmühlenberg 24814 Sehestedt", akteur("Windpark Kattrepel-Nord GmbH & Co. KG", "Dorfstraße", "1", "25704"), "denkerwulf.de")).toBeNull();
+  });
+
+  it("never takes an ordinal or a city word as the brand (Vierte Volkswind, Green City)", () => {
+    expect(marke("Vierte Volkswind GmbH & Co. KG")).toBe("volkswind");
+    expect(marke("Fünfte Volkswind GmbH")).toBe("volkswind");
+    expect(marke("Dreizehnten Windpark Musterhaus GmbH")).toBe("musterhaus");
+    expect(impressumBelegt("Impressum ueber uns ueber Green City e.V. Lindwurmstraße 88 80337 München", akteur("Green City Energy Windpark Sindersdorf GmbH & Co. KG", "Zirkus-Krone-Straße", "10", "80335"), "greencity.de")).toBeNull();
+  });
+
   it("matches a numberless register PLACE to the imprint's numbered one, and a mistyped ű (WEAG, Luymühle)", () => {
     const a = akteur("Eco-Mobilität GmbH", "Luymühle", "", "54347");
     expect(impressumBelegt("Impressum WEAG Future Energies AG Luyműhle 1 54347 Neumagen-Dhron", a, "weag-ag.de")?.wie).toBe("anschrift");

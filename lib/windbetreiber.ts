@@ -59,6 +59,9 @@ const RECHTSFORM = new Set([
 ]);
 
 /** Words too common in this market to identify a group. */
+/** Ordinals number a series, they never name it ("Vierte Volkswind" — manual pass 06.10.2026). */
+const ORDNUNGSZAHL = /^(?:erste|zweite|dritte|vierte|fuenfte|sechste|siebe?nte|achte|neunte|zehnte|elfte|zwoelfte|\w+zehnte|\w*zwanzigste|\w*ssigste)[nrs]?$/;
+
 const GENERISCH = new Set([
   "wind", "windpark", "windparks", "windkraft", "windkraftanlage", "windkraftanlagen", "windenergie",
   "windenergieanlage", "windenergieanlagen", "windfeld", "windrad", "windraeder", "wea", "buergerwind",
@@ -68,6 +71,9 @@ const GENERISCH = new Set([
   "holding", "invest", "portfolio", "deutschland", "germany", "nord", "sued", "ost", "west", "neue", "die",
   "der", "das", "am", "an", "im", "zum", "zur", "bei", "fuer", "von", "renditefonds", "fonds", "repowering",
   "erste", "zweite", "dritte", "service", "management", "kraft", "strom", "power", "green", "gruene",
+  // "Green City Energy" matched "city" in the navigation of the Green City e.V. —
+  // another legal person under the same stem (manual pass 06.10.2026).
+  "city",
   // Found as false "brands" in the stock (06.10.2026): kinds of company, not companies.
   "wka", "energiepark", "energieparks", "windstrom", "stadtwerke", "stadtwerk", "buergerwindenergie",
   "windmuellerei", "buerger", "buergerwindrad", "buergerwindraeder", "onshore", "offshore", "windpool",
@@ -126,7 +132,7 @@ export function marke(name: string): string | null {
     if (/^\d+$/.test(w) || /^[ivx]+$/.test(w)) continue;
     // Three letters are allowed (ABO, PNE, EWE, RWE are this market's brands);
     // impressumBelegt then demands that the domain STARTS with them.
-    if (GENERISCH.has(w) || w.length < 3) continue;
+    if (GENERISCH.has(w) || ORDNUNGSZAHL.test(w) || w.length < 3) continue;
     return w;
   }
   return null;
@@ -479,9 +485,13 @@ export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: B
 }
 
 /** The name's words without the kind-of-company words at its end. */
+const RICHTUNG = new Set(["nord", "sued", "ost", "west"]);
+
 export function kernName(woerter: string[]): string[] {
   let n = woerter.length;
-  while (n > 0 && (GENERISCH.has(woerter[n - 1]) || woerter[n - 1] === "co")) n--;
+  // A trailing direction tells two parks apart ("Kattrepel-Nord" is not "Kattrepel
+  // Erweiterung II" — manual pass 06.10.2026); it is generic only as a brand.
+  while (n > 0 && !RICHTUNG.has(woerter[n - 1]) && (GENERISCH.has(woerter[n - 1]) || woerter[n - 1] === "co")) n--;
   return woerter.slice(0, n);
 }
 
