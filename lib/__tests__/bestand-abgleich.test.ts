@@ -128,3 +128,36 @@ describe("abgleichen", () => {
     expect(abgleichen("stadtwerke-muenster.de", "versorger", belegung)).toEqual({ art: "frei" });
   });
 });
+
+describe("Entscheidungen von Hand", () => {
+  const beide = belegungAufbauen([
+    { bestand: "presse", id: "alzeyer-zeitung.de", website: "alzeyer-zeitung.de" },
+    { bestand: "fachbetrieb", id: "alzeyer-zeitung.de", website: "alzeyer-zeitung.de" },
+  ]);
+  const entscheidungen = new Map([["alzeyer-zeitung.de", { falsch: ["fachbetrieb" as const], notiz: "Tageszeitung, kein Handwerksbetrieb" }]]);
+
+  it("demotes the stock a person declared wrong, on every later run", () => {
+    const u = abgleichen("alzeyer-zeitung.de", "fachbetrieb", beide, { entscheidungen });
+    expect(u.art).toBe("verdraengt");
+    if (u.art === "verdraengt") expect(verdraengtGrund(u)).toBe("von Hand entschieden: Tageszeitung, kein Handwerksbetrieb");
+  });
+
+  it("leaves the stock declared right alone", () => {
+    expect(abgleichen("alzeyer-zeitung.de", "presse", beide, { entscheidungen }).art).not.toBe("verdraengt");
+  });
+
+  it("removes the decided-wrong side for every other stock too", () => {
+    // enercity.de stood as an installer; once that is decided wrong, the wind
+    // operator found there is no longer in a collision.
+    const drei = belegungAufbauen([{ bestand: "fachbetrieb", id: "enercity.de", website: "enercity.de" }]);
+    const e = new Map([["enercity.de", { falsch: ["fachbetrieb" as const], notiz: "Stadtwerk Hannover" }]]);
+    expect(abgleichen("enercity.de", "windbetreiber", drei, { herkunft: "suche" }).art).toBe("entscheiden");
+    expect(abgleichen("enercity.de", "windbetreiber", drei, { herkunft: "suche", entscheidungen: e }).art).toBe("frei");
+  });
+
+  it("can declare both stocks wrong", () => {
+    const e = new Map([["stadtwerke-x.de", { falsch: ["presse" as const, "fachbetrieb" as const], notiz: "Stadtwerk" }]]);
+    expect(abgleichen("stadtwerke-x.de", "presse", beide, { entscheidungen: e }).art).toBe("verdraengt");
+    expect(abgleichen("stadtwerke-x.de", "fachbetrieb", beide, { entscheidungen: e }).art).toBe("verdraengt");
+  });
+});

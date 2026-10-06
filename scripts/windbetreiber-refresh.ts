@@ -25,7 +25,7 @@ import { abgleichen, organisationsDomain, type Belegungen } from "../lib/bestand
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, impressumBelegt, marke, registerKandidaten, standVon, suchanfrage,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, marke, ortsWoerterAus, registerKandidaten, standVon, suchanfrage, trefferRelevant, websiteHerkunft, zitatName,
   type Akteur, type Beleg, type Kandidat, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -220,23 +220,41 @@ async function register() {
 
 // ─── Imprint check ────────────────────────────────────────────────────────────
 
-type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; fehler: string | null; via: "abruf" | "browser" | null };
+type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; startText?: string | null; fehler: string | null; via: "abruf" | "browser" | null };
+
+/** Legal pages of sites without a German "Impressum" — foreign groups name them in English. */
+function rechtsseiteUrl(html: string, basis: string): string | null {
+  const re = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  const treffer: { url: string; p: number }[] = [];
+  while ((m = re.exec(html))) {
+    const t = `${m[1]} ${m[2].replace(/<[^>]+>/g, " ")}`.toLowerCase();
+    if (/^(mailto:|tel:|javascript:|#)/i.test(m[1])) continue;
+    const p = /legal[- ]?notice|legal[- ]?information|corporate[- ]?information|company[- ]?information/.test(t) ? 80
+      : /\blegal\b|disclaimer|terms of use/.test(t) ? 50 : 0;
+    if (!p) continue;
+    try { treffer.push({ url: new URL(m[1], basis).toString(), p }); } catch { /* unusable link */ }
+  }
+  return treffer.sort((a, b) => b.p - a.p)[0]?.url ?? null;
+}
 
 const IMPRESSUM_MARKER = /impressum|angaben gem(?:ae|ä)ss|anbieterkennzeichnung|diensteanbieter|verantwortlich (?:im sinne|für den inhalt)|handelsregister|registergericht|imprint|legal notice/i;
 
 /** Fetch a domain's imprint once; later runs read the cached text. */
-async function impressumHolen(domain: string): Promise<Impressum> {
+async function impressumHolen(domain: string, mitBrowser = true): Promise<Impressum> {
   const datei = resolve(CACHE, "impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
   if (existsSync(datei)) return JSON.parse(readFileSync(datei, "utf8"));
   const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null };
-  const starts = [`https://www.${domain}/`, `https://${domain}/`, `http://www.${domain}/`];
+  // Plain http last: a site with an expired certificate often still answers
+  // there (Greifenwind, 100 operators, measured on the first sample).
+  const starts = [`https://www.${domain}/`, `https://${domain}/`, `http://www.${domain}/`, `http://${domain}/`];
   let html: string | null = null;
   for (const s of starts) {
     const r = await fetchLive(s);
     if ("html" in r && r.html.length > 200) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
     ergebnis.fehler = "error" in r ? r.error : "leere Seite";
   }
-  if (!html) {
+  if (!html && mitBrowser) {
     // Pages built by script, or a bot wall that a real browser passes.
     for (const s of starts.slice(0, 2)) {
       const g = await seiteGerendert(s);
@@ -244,7 +262,8 @@ async function impressumHolen(domain: string): Promise<Impressum> {
     }
   }
   if (html && ergebnis.start) {
-    const url = impressumUrl(html, ergebnis.start);
+    ergebnis.startText = sichtbarerText(html).slice(0, 20000);
+    const url = impressumUrl(html, ergebnis.start) ?? rechtsseiteUrl(html, ergebnis.start);
     const versuche = url ? [url] : ["impressum", "impressum/", "imprint", "impressum.html"].map((p) => new URL(p, ergebnis.start!).toString());
     for (const u of versuche) {
       let seite: string | null = null;
@@ -272,21 +291,36 @@ const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,regi
 const akteurVon = (z: Zeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "", Ort: z.ort ?? "" });
 
 
+let ortsCache: Promise<Set<string>> | null = null;
+/** Words of every municipality, district and state name — never a brand. */
+function ortsWoerter(): Promise<Set<string>> {
+  ortsCache ??= db().then((c) => alle<{ region_id: string; name: string }>(c, "mastr_regions", "region_id,name", "region_id")).then((r) => ortsWoerterAus(r.map((x) => x.name)));
+  return ortsCache;
+}
+
 type Pruefung = { kandidat: Kandidat; ergebnis: string; beleg: Beleg | null; impressum: Impressum; grund: string | null };
 
 async function pruefen(z: Zeile, k: Kandidat, belegungen: Belegungen): Promise<Pruefung> {
-  const imp = await impressumHolen(k.domain);
-  const herkunft = k.quelle === "register-webseite" || k.quelle === "register-mail" ? "amtlich" : "suche";
-  const u = abgleichen(k.domain, "windbetreiber", belegungen, { herkunft });
-  if (u.art === "entscheiden") {
-    const wer = u.mit.map((b) => `${b.bestand}${b.name ? ` ${b.name}` : ""}`).join(", ");
-    return { kandidat: k, ergebnis: "konflikt", beleg: null, impressum: imp, grund: `Domain gehört zum Bestand ${wer}` };
+  // A search hit gets no browser: a directory that blocks plain requests is
+  // not worth rendering, and those are most of the hits.
+  const imp = await impressumHolen(k.domain, k.quelle !== "suche");
+  const u = beurteilen(akteurVon(z), k.domain, k.quelle, { impressum: imp.text, startseite: imp.startText ?? null }, k.postfach, await ortsWoerter());
+  if (u.ergebnis !== "belegt") {
+    const grund = u.ergebnis === "abgelehnt" ? "Impressum nennt weder Name noch Registeranschrift noch Marke"
+      : u.ergebnis === "geparkt" ? "Domain steht zum Verkauf oder ist geparkt" : imp.fehler;
+    return { kandidat: k, ergebnis: u.ergebnis, beleg: null, impressum: imp, grund };
   }
-  if (!imp.text) return { kandidat: k, ergebnis: imp.start ? "kein-impressum" : "nicht-erreichbar", beleg: null, impressum: imp, grund: imp.fehler };
-  const beleg = impressumBelegt(imp.text, akteurVon(z), k.domain);
-  return beleg
-    ? { kandidat: k, ergebnis: "belegt", beleg, impressum: imp, grund: null }
-    : { kandidat: k, ergebnis: "abgelehnt", beleg: null, impressum: imp, grund: "Impressum nennt weder Name noch Registeranschrift noch Marke" };
+  // The other stocks are asked AFTER the proof: how official the link is
+  // depends on how it was proven, not only on where the candidate came from.
+  // juwi.de is a developer proven by the register address; that the installer
+  // stock holds it too makes the installer entry wrong, not this one.
+  const a = abgleichen(k.domain, "windbetreiber", belegungen, { herkunft: websiteHerkunft(k.quelle, u.beleg!.wie) });
+  if (a.art === "entscheiden") {
+    const wer = a.mit.map((b) => `${b.bestand}${b.name ? ` ${b.name}` : ""}`).join(", ");
+    return { kandidat: k, ergebnis: "konflikt", beleg: u.beleg, impressum: imp, grund: `Domain gehört zum Bestand ${wer}` };
+  }
+  const seite = u.seite === "startseite" ? { ...imp, impressum_url: imp.start } : imp;
+  return { kandidat: k, ergebnis: "belegt", beleg: u.beleg, impressum: seite, grund: null };
 }
 
 function kandidatZeile(z: Zeile, p: Pruefung) {
@@ -375,26 +409,53 @@ async function sucheLauf() {
     if (error) throw new Error(error.message);
   }
 
+  // Only operators whose register candidates have ALL been checked: a search
+  // for one the register would have answered is money for nothing.
+  const geprueft = new Set((await alle<{ mastr_nr: string; domain: string }>(c, "windbetreiber_kandidaten", "mastr_nr,domain", "mastr_nr")).map((k) => `${k.mastr_nr}|${k.domain}`));
+  const regAnschrift = new Map<string, Zeile[]>();
+  for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)); if (k) regAnschrift.set(k, [...(regAnschrift.get(k) ?? []), z]); }
+  const bereit = (z: Zeile) => registerKandidaten(z, regAnschrift).every((k) => geprueft.has(`${z.mastr_nr}|${k.domain}`));
+  const nichtBereit = zeilen.filter((z) => !z.website && !z.gesucht_am && !bereit(z)).length;
+  if (nichtBereit) console.log(`${nichtBereit} Betreiber übersprungen: Registerangaben noch nicht geprüft (erst --impressum)`);
+
   // One search per address: project companies of one parent share it.
   const gruppen = [...nachAnschrift.values()]
-    .map((g) => g.filter((z) => !z.website && !z.gesucht_am))
+    .map((g) => g.filter((z) => !z.website && !z.gesucht_am && bereit(z)))
     .filter((g) => g.length)
     .sort((a, b) => b.reduce((s, z) => s + (st.kwJeBetreiber[z.mastr_nr] ?? 0), 0) - a.reduce((s, z) => s + (st.kwJeBetreiber[z.mastr_nr] ?? 0), 0))
     .slice(0, LIMIT);
   console.log(`${gruppen.length} Anschriften zu suchen (${gruppen.reduce((s, g) => s + g.length, 0)} Betreiber), größte Leistung zuerst`);
 
+  // A domain rejected for five different operators and proven for none is a
+  // directory — learned from the checks, not kept as a list.
+  const urteile = await alle<{ domain: string; mastr_nr: string; ergebnis: string }>(c, "windbetreiber_kandidaten", "domain,mastr_nr,ergebnis", "domain");
+  const jeDomain = new Map<string, { ab: Set<string>; belegt: boolean }>();
+  for (const u of urteile) {
+    const x = jeDomain.get(u.domain) ?? { ab: new Set<string>(), belegt: false };
+    if (u.ergebnis === "belegt") x.belegt = true; else if (u.ergebnis === "abgelehnt") x.ab.add(u.mastr_nr);
+    jeDomain.set(u.domain, x);
+  }
+  const verzeichnis = new Set([...jeDomain].filter(([, x]) => !x.belegt && x.ab.size >= 5).map(([d]) => d));
+  console.log(`${verzeichnis.size} Domains als Verzeichnis erkannt (bei mindestens fünf Betreibern abgelehnt, nie bestätigt)`);
+
   let kosten = 0, belegt = 0, n = 0;
-  for (const g of gruppen) {
+  // Four addresses at a time: one at a time took ~30 s per address, which is
+  // 13 hours for the whole stock. Every address fetches different hosts.
+  await parallel(gruppen, 4, async (g) => {
     // The member most likely to have its own page: one with a brand, then the largest.
     const rep = [...g].sort((a, b) => Number(!!marke(b.name)) - Number(!!marke(a.name)) || (st.kwJeBetreiber[b.mastr_nr] ?? 0) - (st.kwJeBetreiber[a.mastr_nr] ?? 0))[0];
-    const anfragen = [suchanfrage(akteurVon(rep)), `"${rep.name.replace(/\s+(?:GmbH|UG|KG|AG|GbR|eG|mbH|&|Co\.?|\(.*?\)).*$/i, "").trim()}"`];
+    const anfragen = [suchanfrage(akteurVon(rep)), `"${zitatName(rep.name)}"`];
     const notiz: string[] = [];
-    let gefunden: Map<string, Pruefung> = new Map();
+    let suchfehler = false;
+    const gefunden = new Map<string, Pruefung>();
     for (const a of anfragen) {
       const r = await serp(a);
       kosten += r.kosten;
-      const domains = [...new Set(r.treffer.map((t) => organisationsDomain(t.url)).filter((d): d is string => !!d))];
-      notiz.push(`„${a}": ${r.fehler ? `Fehler ${r.fehler}` : `${domains.length} Domains`}`);
+      if (r.fehler) suchfehler = true;
+      const relevant = r.treffer.filter((t) => g.some((z) => trefferRelevant(t, z.name)));
+      const domains = [...new Set(relevant.map((t) => organisationsDomain(t.url)).filter((d): d is string => !!d))]
+        .filter((d) => !verzeichnis.has(d)).slice(0, 6);
+      notiz.push(`„${a}": ${r.fehler ? `Fehler ${r.fehler}` : `${r.treffer.length} Treffer, ${domains.length} passende Domains`}`);
       for (const z of g) {
         for (const d of domains) {
           if (gefunden.has(`${z.mastr_nr}|${d}`)) continue;
@@ -409,6 +470,9 @@ async function sucheLauf() {
       const best = besterBeleg([...gefunden.entries()].filter(([k]) => k.startsWith(`${z.mastr_nr}|`)).map(([, p]) => p));
       if (best) belegt++;
       const abgelehnt = [...gefunden.entries()].filter(([k, p]) => k.startsWith(`${z.mastr_nr}|`) && p.ergebnis !== "belegt").map(([, p]) => p.kandidat.domain);
+      // A failed search is "could not look", not "nothing there": the address
+      // comes back next run unless something was proven anyway.
+      if (!best && suchfehler) continue;
       const { error } = await c.from("windbetreiber").update({
         ...websiteFelder(best), gesucht_am: HEUTE,
         suche_notiz: `${notiz.join(" · ")}${abgelehnt.length ? ` · abgelehnt: ${abgelehnt.slice(0, 12).join(", ")}` : ""}`.slice(0, 900),
@@ -416,9 +480,8 @@ async function sucheLauf() {
       }).eq("mastr_nr", z.mastr_nr);
       if (error) throw new Error(error.message);
     }
-    gefunden = new Map();
     if (++n % 25 === 0) console.log(`  ${n}/${gruppen.length} Anschriften · ${belegt} belegt · ${kosten.toFixed(2)} $`);
-  }
+  });
   console.log(`Suche fertig: ${n} Anschriften · ${belegt} Betreiber mit belegter Website · ${kosten.toFixed(2)} $`);
   await browserSchliessen();
 }
@@ -488,7 +551,7 @@ async function stand() {
     if (z.website && !z.website_beleg) verstoesse.push(`${z.mastr_nr} ${z.name}: Website ohne Beleg`);
     if (z.website && !belegtePaare.has(`${z.mastr_nr}|${z.website}`)) verstoesse.push(`${z.mastr_nr} ${z.name}: ${z.website} ohne belegte Prüfung`);
     if (z.website) {
-      const u = abgleichen(z.website, "windbetreiber", belegungen, { herkunft: z.website_quelle?.startsWith("register") ? "amtlich" : "suche" });
+      const u = abgleichen(z.website, "windbetreiber", belegungen, { herkunft: websiteHerkunft(z.website_quelle, z.website_beleg) });
       if (u.art === "entscheiden") verstoesse.push(`${z.mastr_nr} ${z.name}: ${z.website} steht in einem anderen Bestand`);
     }
     if (!z.website && z.gesucht_am && !(z.suche_notiz ?? "").trim()) verstoesse.push(`${z.mastr_nr} ${z.name}: „keine Website" ohne Notiz, was gesucht wurde`);

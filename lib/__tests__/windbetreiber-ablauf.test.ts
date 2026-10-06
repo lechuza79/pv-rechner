@@ -42,10 +42,15 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
   });
 
-  it("checks every candidate against the other stocks before its imprint counts", () => {
+  it("does not accept a proven website that another stock holds in conflict", () => {
     const p = rumpf("pruefen");
-    expect(p.indexOf("abgleichen(")).toBeGreaterThan(-1);
-    expect(p.indexOf("abgleichen(")).toBeLessThan(p.indexOf("impressumBelegt("));
+    const pruef = p.indexOf("abgleichen(");
+    expect(pruef).toBeGreaterThan(-1);
+    // The conflict return comes before the only "belegt" return.
+    expect(p.indexOf('ergebnis: "konflikt"')).toBeGreaterThan(pruef);
+    expect(p.indexOf('ergebnis: "konflikt"')).toBeLessThan(p.lastIndexOf('ergebnis: "belegt"'));
+    // How official the link is follows from the proof, in one shared rule.
+    expect(p).toMatch(/herkunft: websiteHerkunft\(k\.quelle, u\.beleg!\.wie\)/);
   });
 
   it("refuses a register read that loses operators", () => {

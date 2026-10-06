@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anschriftSchluessel, besterBeleg, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, type Registerzeile } from "../windbetreiber";
+import { anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -50,6 +50,7 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(marke("Bürgerwindpark Eider GmbH ＆ Co. KG")).toBe("eider");
     expect(marke("46. WestWind Windpark GmbH ＆ Co. KG")).toBe("westwind");
     expect(marke("WEA III GmbH")).toBeNull();
+    expect(marke("PNE WIND Park Kührstedt-Alfstedt A")).toBe("pne");
   });
 
   it("does not take a postcode alone as the address", () => {
@@ -131,7 +132,7 @@ describe("candidates from the register", () => {
     const z = zeile("ABR9", "Windpark Görike/Söllenthin GmbH ＆ Co. KG", "Stephanitorsbollwerk", "3", "28217", "http://www.windmanager.de/", "tmverwaltung-wm@wpd.de");
     expect(registerKandidaten(z, new Map())).toEqual([
       { domain: "windmanager.de", quelle: "register-webseite" },
-      { domain: "wpd.de", quelle: "register-mail" },
+      { domain: "wpd.de", quelle: "register-mail", postfach: "tmverwaltung-wm@wpd.de" },
     ]);
   });
 
@@ -140,5 +141,124 @@ describe("candidates from the register", () => {
       ({ ergebnis: "belegt", kandidat: { domain, quelle }, beleg: { wie, textstelle: "" } });
     expect(besterBeleg([p("gefunden.de", "suche", "name"), p("eigen.de", "register-mail", "anschrift")])?.kandidat.domain).toBe("eigen.de");
     expect(besterBeleg([{ ergebnis: "abgelehnt", kandidat: { domain: "x.de", quelle: "suche" as const }, beleg: null }])).toBeNull();
+  });
+});
+
+describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
+  it("normalises 'Straße' on the imprint side too — every '…straße' address failed", () => {
+    const imp = "Impressum PNE AG Otto-Hahn-Straße 12 - 16 25813 Husum Vorstand: …";
+    expect(impressumBelegt(imp, akteur("PNE WIND Park Kührstedt-Alfstedt A", "Otto-Hahn-Straße", "12-16", "25813"), "pne-ag.com")?.wie).toBe("anschrift");
+    const kurz = "Impressum enercity Erneuerbare GmbH Nessestr. 24 26789 Leer";
+    expect(impressumBelegt(kurz, akteur("Windpark Sögel III GmbH & Co. KG", "Nessestraße", "24", "26789"), "enercity-erneuerbare.de")?.wie).toBe("anschrift");
+  });
+
+  it("accepts a three-letter brand only where the domain starts with it", () => {
+    const imp = "Impressum PNE AG Peter-Henlein-Str. 2-4 27472 Cuxhaven";
+    const a = akteur("PNE WIND Park Kührstedt-Alfstedt A", "Irgendwo", "1", "99999");
+    expect(impressumBelegt(imp, a, "pne-ag.com")?.wie).toBe("marke");
+    // "pne" inside another word of a domain is not the brand.
+    expect("alpnergie".includes("pne")).toBe(true); // the example must really contain it
+    expect(impressumBelegt("Impressum Alpnergie GmbH, Partner der PNE AG", a, "alpnergie.de")).toBeNull();
+  });
+
+  it("accepts the website the operator itself declared to the register, if it exists", () => {
+    // Bunder Windloopers declared enova.de; ENOVA's imprint names another address.
+    const a = akteur("Bunder Windloopers GmbH & Co. KG", "Charlottenpolder", "8", "26831");
+    const imp = "Impressum ENOVA Energiesysteme GmbH Steinhausstraße 112 26831 Bunderhee";
+    expect(beurteilen(a, "enova.de", "register-webseite", { impressum: imp, startseite: "ENOVA" }).beleg?.wie).toBe("register");
+    // A declared PERSONAL mailbox is not enough: one company declared its auditor's.
+    expect(beurteilen(a, "mazars.de", "register-mail", { impressum: imp, startseite: "x" }, "adem.bilir@mazars.de").ergebnis).toBe("abgelehnt");
+    // A FUNCTION mailbox is the operator's own statement where it is administered.
+    expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }, "tmverwaltung-wm@wpd.de").beleg?.wie).toBe("register");
+    expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }).ergebnis).toBe("abgelehnt");
+  });
+
+  it("tells a function mailbox from a person's", () => {
+    expect(funktionsPostfach("tmverwaltung-wm@wpd.de")).toBe(true);
+    expect(funktionsPostfach("marktstammdatenregister@alterric.com")).toBe(true);
+    expect(funktionsPostfach("info@windpark-x.de")).toBe(true);
+    expect(funktionsPostfach("beteiligung@uka-gruppe.de")).toBe(true);
+    expect(funktionsPostfach("leitwarte@rez-windparks.de")).toBe(true);
+    expect(funktionsPostfach("nttb@nttb-gmbh.de")).toBe(true);
+    expect(funktionsPostfach("adem.bilir@mazars.de")).toBe(false);
+    expect(funktionsPostfach("michael.scholz@enervest.eu")).toBe(false);
+    expect(funktionsPostfach("nohme@nttb-gmbh.de")).toBe(false);
+    expect(funktionsPostfach("j.mueller@steuerbuero.de")).toBe(false);
+    expect(funktionsPostfach(null)).toBe(false);
+  });
+
+  it("does not trust a declared website that is now parked or for sale", () => {
+    const a = akteur("Windpark Beispiel GmbH & Co. KG", "Weg", "1", "12345");
+    expect(beurteilen(a, "pv4ol.de", "register-webseite", { impressum: null, startseite: "Diese Domain kann gekauft werden. Jetzt bei Sedo anfragen." }).ergebnis).toBe("geparkt");
+  });
+
+  it("lets a foreign group without an 'Impressum' prove itself by brand on its start page — never by an address there", () => {
+    const a = akteur("European Energy Windpark Oyten GmbH & Co. KG", "Stahltwiete", "21a", "22761");
+    expect(beurteilen(a, "europeanenergy.com", "anschrift", { impressum: null, startseite: "European Energy is a global pioneer within renewable energy" }).ergebnis).toBe("belegt");
+    // A directory start page listing the same address does not count.
+    const b = akteur("Windkraft Musterhausen GmbH & Co. KG", "Stahltwiete", "21a", "22761");
+    expect(beurteilen(b, "firmen-verzeichnis.de", "suche", { impressum: null, startseite: "Firmen in Stahltwiete 21a 22761 Hamburg" }).ergebnis).toBe("kein-impressum");
+  });
+
+  it("calls a link official only when the register led there AND the text confirms it", () => {
+    expect(websiteHerkunft("anschrift", "anschrift")).toBe("amtlich");
+    expect(websiteHerkunft("register-webseite", "register")).toBe("amtlich");
+    expect(websiteHerkunft("register-mail", "marke")).toBe("suche");
+    expect(websiteHerkunft("suche", "name")).toBe("suche");
+  });
+});
+
+describe("search hits worth fetching", () => {
+  it("fetches only hits that carry a distinguishing word of the operator", () => {
+    // Real hits from the calibration searches.
+    expect(trefferRelevant({ url: "https://www.enbw.com/presse/baustart-windpark-steinheim.html", titel: "Baustart für den Windpark Steinheim" }, "EnBW Windkraftprojekte GmbH")).toBe(true);
+    expect(trefferRelevant({ url: "https://www.bwe-seminare.de/referenten-siegfried-grochow", titel: "Siegfried Grochow G-VEFK bei Alterric Deutschland GmbH" }, "Bürgerwindpark Eider GmbH ＆ Co. KG")).toBe(false);
+    expect(trefferRelevant({ url: "https://www.stepstone.de/jobs/windkraft", titel: "Jobs Windpark Windkraft" }, "Windpark GmbH ＆ Co. Kisselsheide KG")).toBe(false);
+    // A directory passes the filter — the imprint stops it later.
+    expect(trefferRelevant({ url: "https://www.northdata.de/Windpark%20Werder%20Zinndorf", titel: "Windpark Werder Zinndorf GmbH & Co. KG, Sehestedt" }, "Windpark Werder Zinndorf GmbH ＆ Co. KG")).toBe(true);
+  });
+
+  it("finds nothing worth fetching for a name made only of generic words", () => {
+    expect(trefferRelevant({ url: "https://windpark.de", titel: "Windpark" }, "Windpark GmbH & Co. KG")).toBe(false);
+  });
+});
+
+describe("the quoted search name", () => {
+  it("cuts at a word, not at letters", () => {
+    expect(zitatName("Windpark Cottbuser Halde GmbH ＆ Co. KG")).toBe("Windpark Cottbuser Halde");
+    expect(zitatName("BOREAS Energie GmbH")).toBe("BOREAS Energie");
+    expect(zitatName("Windkraft Köpnick & Partner oHG")).toBe("Windkraft Köpnick");
+  });
+
+  it("keeps the distinguishing part when it stands after the legal form", () => {
+    expect(zitatName("Windpark GmbH ＆ Co. Kisselsheide KG")).toBe("Windpark Kisselsheide");
+  });
+});
+
+describe("a place is never a brand", () => {
+  it("does not let a regional adjective prove a newspaper (Thüringer Becken → Thüringer Allgemeine)", () => {
+    const a = akteur("Windfeld Thüringer Becken KH 56.1 GmbH & Co. KG", "Irgendwo", "1", "99999");
+    expect(impressumBelegt("Impressum Thüringer Allgemeine Verlag GmbH Gottstedter Landstraße 6 99092 Erfurt", a, "thueringer-allgemeine.de")).toBeNull();
+  });
+
+  it("does not let a park named after its town prove the town's website", () => {
+    const orte = ortsWoerterAus(["Hamburg", "Bad Dürkheim", "Neuhof"]);
+    const a = akteur("Hamburg Windkraft GmbH & Co. KG", "Irgendwo", "1", "99999");
+    const imp = "Impressum Freie und Hansestadt Hamburg Senatskanzlei Rathausmarkt 1 20095 Hamburg";
+    expect(impressumBelegt(imp, a, "hamburg.de")?.wie).toBe("marke"); // without the register words…
+    expect(impressumBelegt(imp, a, "hamburg.de", orte)).toBeNull(); // …and with them.
+  });
+
+  it("still lets a real brand through", () => {
+    const orte = ortsWoerterAus(["Hamburg", "Stuttgart", "Karlsruhe"]);
+    const imp = "Impressum EnBW Energie Baden-Württemberg AG Durlacher Allee 93 76131 Karlsruhe";
+    expect(impressumBelegt(imp, akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567"), "enbw.com", orte)?.wie).toBe("marke");
+  });
+
+  it("takes no kind of company for a brand", () => {
+    for (const n of ["WKA Musterfeld GmbH", "Stadtwerke Musterstadt GmbH", "Energiepark Nord GmbH", "Bürger Windpark GmbH", "Onshore Wind 2012 GmbH"]) {
+      const m = marke(n);
+      expect(["wka", "stadtwerke", "energiepark", "buerger", "onshore"]).not.toContain(m);
+    }
   });
 });

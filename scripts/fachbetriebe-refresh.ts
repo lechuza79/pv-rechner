@@ -85,8 +85,8 @@ import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 
 import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
-import { abgleichen, organisationsDomain, verdraengtGrund, type Belegungen } from "../lib/bestand-abgleich";
-import { ladeBelegungen } from "./lib/bestand-belegung";
+import { abgleichen, organisationsDomain, verdraengtGrund, type Belegungen, type Entscheidungen } from "../lib/bestand-abgleich";
+import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
 import { readFileSync, existsSync } from "node:fs";
 import {
   FELDER,
@@ -217,12 +217,14 @@ function ohneSteuerzeichen<T>(wert: T): T {
  * dort sind beide Seiten schon falsch gewesen.
  */
 let belegungenCache: Belegungen | null = null;
+let entscheidungenCache: Entscheidungen | null = null;
 async function gegenAndereBestaende(sb: SupabaseLike, zeilen: Record<string, unknown>[]): Promise<void> {
   if (!zeilen.some((z) => z.art === "betrieb")) return;
   if (!belegungenCache) belegungenCache = (await ladeBelegungen(sb, "fachbetrieb")).belegungen;
+  if (!entscheidungenCache) entscheidungenCache = await ladeEntscheidungen(sb);
   for (const z of zeilen) {
     if (z.art !== "betrieb") continue;
-    const u = abgleichen(organisationsDomain(String(z.domain)), "fachbetrieb", belegungenCache);
+    const u = abgleichen(organisationsDomain(String(z.domain)), "fachbetrieb", belegungenCache, { entscheidungen: entscheidungenCache });
     if (u.art === "verdraengt") {
       z.art = "kein-betrieb";
       z.art_grund = verdraengtGrund(u);

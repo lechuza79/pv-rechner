@@ -2652,6 +2652,18 @@ gelten allgemein: Eine schematische Zeichnung taugt nicht zur Bestätigung einer
 automatischen Erkennung (es braucht das Original, nicht die Ableitung) — und das Bild
 allein reicht nicht, wenn niemand die Gegend kennt: Bestätigen kann nur der Nutzer.
 
+## Windparkbetreiber (interner Bereich)
+
+Alle Betreiber von Windrädern in Deutschland, angelegt 06.10.2026 — nichts wird verschickt. Identität aus dem Marktstammdatenregister (jedes Windrad nennt seinen Betreiber), Website und Kontakt danach. `scripts/windbetreiber-refresh.ts` (Regeln in `lib/windbetreiber.ts`), Kontakte über die geteilte Erfassung (`scripts/windbetreiber-kontakte.ts`), Nachtlauf `scripts/nacht-windbetreiber.sh`. Stand 06.10.2026: 32.208 Windräder in Betrieb, 10.662 Betreiber; **8.991 Organisationen** mit 99 % der Leistung im Bestand, **1.671 natürliche Personen nur gezählt** — der öffentliche Export führt sie ohne Namen und Kontakt, und ihre Nummer allein ist ein pseudonymes Personendatum.
+
+- **Die Windräder tragen den Betreiber, der Bestand kopiert keine Zahlen.** Windräder und Leistung je Betreiber liest die Sicht `windbetreiber_uebersicht` aus `mastr_wind_anlagen`.
+- **Eine Website zählt nur, wenn ihr eigenes Impressum sie belegt** — Name, Registeranschrift oder (für Konzerntöchter mit anderem Sitz) Marke in Name, Domain und Impressum zugleich; dazu die vom Betreiber selbst im Register angegebene Website und ein Register-**Funktions**postfach (tmverwaltung-wm@wpd.de), **nie ein Personenpostfach** (adem.bilir@mazars.de: die Wirtschaftsprüferin von 115 Sehestedter Gesellschaften). Jede Regel an einem echten, von Hand gelösten Fall geeicht; Tests in `lib/__tests__/windbetreiber*.test.ts`.
+- **Ein Ort ist nie eine Marke.** „Windfeld Thüringer Becken" bestand die Prüfung bei der Thüringer Allgemeinen. Gattungs- und Regionalwörter stehen in einer festen Liste, Ortsnamen kommen aus dem Gemeindeverzeichnis.
+- **Fehlerklassen der Stichproben, alle als Regel mit Test:** „Straße" nur auf einer Seite vereinheitlicht (jede „…straße"-Anschrift fiel durch), Hausnummern mit Bindestrich, dreibuchstabige Marken (ABO, PNE, EWE), englische Rechtsseiten ausländischer Konzerne, abgelaufene Zertifikate, der Firmen-Kasten der Suche (Boreas stand in keinem normalen Treffer), ein Suchfehler als „gesucht" abgehakt, eine Namenskürzung an Buchstaben statt Wörtern („Cottbuser" ≠ „Co.").
+- **Vollständig heißt: kein Betreiber „nie angesehen".** Jeder Eintrag endet als belegte Website, nur Registerkontakt oder „keine Website" mit Notiz, was gesucht wurde. `--stand` meldet Verstöße mit Fehlercode; was die Maschine nicht findet, wird von Hand über `--manuell ABR… <url>` (dieselbe Prüfung, notfalls mit anderer Belegseite derselben Website) oder `--keine ABR… "<Notiz>"` abgeschlossen — nie direkt in der Datenbank.
+- **Freigegeben werden nur Kontakte von der eigenen Website.** Ein Postfach, das nur im Register steht, hat keine Seite, die man vor einem Versand neu lesen könnte.
+- **Vor jeder Ansprache offen:** die Datenschutzerklärung nennt diese Erhebung nicht (Art. 14 DSGVO), genau wie bei den Fachbetrieben.
+
 ## Archiv & Lehren
 
 | Datei | Inhalt |

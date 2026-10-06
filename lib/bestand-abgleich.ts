@@ -124,20 +124,33 @@ export type Urteil =
  * project companies sharing their parent's website are one group, not twenty
  * conflicts.
  */
+/**
+ * A person's decision on a collision two search-based stocks could not settle:
+ * which stocks hold this domain WRONGLY. Stored, so the next collection run of
+ * either stock cannot undo it (table bestand_entscheidungen).
+ */
+export type Entscheidung = { falsch: Bestand[]; notiz: string };
+export type Entscheidungen = Map<string, Entscheidung>;
+
 export function abgleichen(
   domain: string | null,
   bestand: Bestand,
   belegungen: Belegungen,
   /** Where THIS entry's domain came from, if it differs from the stock's default. */
-  optionen: { herkunft?: Herkunft } = {},
+  optionen: { herkunft?: Herkunft; entscheidungen?: Entscheidungen } = {},
 ): Urteil {
   if (!domain) return { art: "frei" };
+  // A decision by a person beats every rule below — that is what it is for.
+  const e = optionen.entscheidungen?.get(domain);
+  if (e?.falsch.includes(bestand)) {
+    return { art: "verdraengt", durch: [{ bestand, id: "entscheidung", name: `von Hand entschieden: ${e.notiz}`, herkunft: "amtlich" }] };
+  }
   const selbst = optionen.herkunft ?? HERKUNFT[bestand];
   // Only the stock decides what is "the same entry". Identifiers are unique
   // within a stock, not across: press and installers both key by domain, and
   // comparing ids across stocks once hid every collision between them
   // (measured 06.10.2026, 8 instead of 52 on the decision list).
-  const andere = (belegungen.get(domain) ?? []).filter((b) => b.bestand !== bestand);
+  const andere = (belegungen.get(domain) ?? []).filter((b) => b.bestand !== bestand && !e?.falsch.includes(b.bestand));
   if (andere.length === 0) return { art: "frei" };
   const konflikt = andere.filter((b) => !darfTeilen(bestand, b.bestand));
   if (konflikt.length === 0) return { art: "geteilt", mit: andere };
@@ -160,6 +173,7 @@ const BESTANDSNAME: Record<Bestand, string> = {
 /** The reason written next to a demoted entry, so it can be traced later. */
 export function verdraengtGrund(u: Extract<Urteil, { art: "verdraengt" }>): string {
   const erster = u.durch[0];
+  if (erster.id === "entscheidung") return erster.name ?? "von Hand entschieden";
   const wer = erster.name ? ` (${erster.name})` : "";
   return `steht im Bestand ${BESTANDSNAME[erster.bestand]}${wer} — amtliche Quelle geht vor`;
 }

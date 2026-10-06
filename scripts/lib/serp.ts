@@ -31,9 +31,15 @@ export async function serp(frage: string, tiefe = 10): Promise<{ treffer: SerpTr
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const posten: any[] = aufgabe?.result?.[0]?.items ?? [];
-    const treffer = posten
+    // The company box (knowledge graph, local pack) carries the company's own
+    // website — measured on BOREAS Energie, whose site was in no organic hit:
+    // LinkedIn, Instagram and job boards filled all ten. It comes first.
+    const kasten = posten
+      .filter((p) => (p?.type === "knowledge_graph" || p?.type === "local_pack") && typeof p.url === "string")
+      .map((p) => ({ url: String(p.url), rang: 0, titel: String(p.title ?? "").slice(0, 200) }));
+    const treffer = [...kasten, ...posten
       .filter((p) => p?.type === "organic" && typeof p.url === "string")
-      .map((p) => ({ url: String(p.url), rang: Number(p.rank_absolute ?? 0), titel: String(p.title ?? "").slice(0, 200) }));
+      .map((p) => ({ url: String(p.url), rang: Number(p.rank_absolute ?? 0), titel: String(p.title ?? "").slice(0, 200) }))];
     return { treffer, fehler: null, kosten };
   } catch (e) {
     return { treffer: [], fehler: e instanceof Error ? e.message : String(e), kosten: 0 };

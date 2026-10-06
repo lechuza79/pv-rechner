@@ -6,7 +6,8 @@
  * A table that does not exist yet is skipped AND reported, so a missing stock
  * never looks like a stock without collisions.
  */
-import { belegungAufbauen, type Belegung, type Belegungen, type Bestand, type Herkunft } from "../../lib/bestand-abgleich";
+import { belegungAufbauen, type Belegung, type Belegungen, type Bestand, type Entscheidungen, type Herkunft } from "../../lib/bestand-abgleich";
+import { websiteHerkunft } from "../../lib/windbetreiber";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = any;
@@ -30,7 +31,13 @@ export const QUELLEN: Quelle[] = [
   { bestand: "gemeinde", tabelle: "kommunen_kontakt", id: "region_id", website: "website" },
   // Websites from the register's own Webseite field.
   { bestand: "versorger", tabelle: "utilities", id: "id", website: "website", name: "name" },
-  { bestand: "presse", tabelle: "presse_medien", id: "domain", website: "domain", name: "saat_name" },
+  // Only confirmed media. The catalogue keeps every candidate it looked at,
+  // 694 municipal sites among them, already judged "kein-medium" by itself —
+  // counting those made 694 false collisions on the first measurement.
+  {
+    bestand: "presse", tabelle: "presse_medien", id: "domain", website: "domain", name: "saat_name",
+    filter: (q) => q.eq("ist_medium", "medium"),
+  },
   {
     bestand: "fachbetrieb", tabelle: "fachbetriebe", id: "domain", website: "domain", name: "firmenname",
     filter: (q) => q.eq("art", "betrieb"),
@@ -38,7 +45,8 @@ export const QUELLEN: Quelle[] = [
   {
     bestand: "windbetreiber", tabelle: "windbetreiber", id: "mastr_nr", website: "website", name: "name",
     filter: (q) => q.not("website", "is", null),
-    herkunft: (r) => (r.website_quelle === "register" ? "amtlich" : r.website_quelle ? "suche" : undefined),
+    // One rule for how official a proven website is (lib/windbetreiber.ts).
+    herkunft: (r) => websiteHerkunft(r.website_quelle as string | null, r.website_beleg as string | null),
   },
 ];
 
@@ -50,7 +58,7 @@ export async function ladeBelegungen(db: Db, ohne?: Bestand): Promise<{ belegung
   const bericht: Ladebericht = { gelesen: {}, fehlt: [] };
   for (const q of QUELLEN) {
     if (q.bestand === ohne) continue;
-    const spalten = [q.id, q.website, q.name, q.bestand === "windbetreiber" ? "website_quelle" : null].filter(Boolean).join(",");
+    const spalten = [q.id, q.website, q.name, ...(q.bestand === "windbetreiber" ? ["website_quelle", "website_beleg"] : [])].filter(Boolean).join(",");
     let n = 0;
     for (let von = 0; ; von += 1000) {
       let abfrage = db.from(q.tabelle).select(spalten).order(q.id).range(von, von + 999);
@@ -79,4 +87,32 @@ export async function ladeBelegungen(db: Db, ohne?: Bestand): Promise<{ belegung
     if (!bericht.fehlt.includes(q.tabelle)) bericht.gelesen[q.bestand] = n;
   }
   return { belegungen: belegungAufbauen(eintraege), bericht };
+}
+
+/** Decisions by a person on collisions the rules cannot settle. */
+export const ENTSCHEIDUNGEN_SQL = `
+  CREATE TABLE IF NOT EXISTS bestand_entscheidungen (
+    domain text PRIMARY KEY,
+    falsch text[] NOT NULL,
+    notiz text NOT NULL CHECK (length(notiz) >= 10),
+    entschieden_am date NOT NULL,
+    updated_at timestamptz NOT NULL DEFAULT now()
+  );
+  ALTER TABLE bestand_entscheidungen ENABLE ROW LEVEL SECURITY;
+  REVOKE ALL ON bestand_entscheidungen FROM anon, authenticated, PUBLIC;
+  NOTIFY pgrst, 'reload schema';
+`;
+
+/** All decisions; an absent table means none were taken yet, not an error. */
+export async function ladeEntscheidungen(db: Db): Promise<Entscheidungen> {
+  const out: Entscheidungen = new Map();
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await db.from("bestand_entscheidungen").select("domain, falsch, notiz").order("domain").range(von, von + 999);
+    if (error) {
+      if (error.code === "42P01" || /does not exist|schema cache/i.test(error.message)) return out;
+      throw new Error(`bestand_entscheidungen: ${error.message}`);
+    }
+    for (const r of (data ?? []) as { domain: string; falsch: Bestand[]; notiz: string }[]) out.set(r.domain, { falsch: r.falsch, notiz: r.notiz });
+    if (!data || data.length < 1000) return out;
+  }
 }
