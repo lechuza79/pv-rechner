@@ -40,7 +40,7 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
     // A different evidence page is allowed, a different rule is not.
     expect(m).toMatch(/const text = belegseite \? sichtbarerText\(belegseite\) : "";/);
-    expect(m).toMatch(/belegseiteTraegt\(text, akteurVon\(z\), z\.name, domain, await ortsWoerter\(\)\)/);
+    expect(m).toMatch(/belegseiteTraegt\(text, akteurVon\(z\), z\.name, domain, await ortsWoerter\(\), z\.register_email, z\.register_telefon\)/);
     // A name on another page proves only when it identifies someone (reference lists).
     const lib = readFileSync(resolve(__dirname, "../windbetreiber.ts"), "utf8");
     expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\) \|\| \(identifizierend\(name, ortsWoerter\) && !parkListe\(text, name\)\)/);

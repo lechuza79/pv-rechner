@@ -51,6 +51,16 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56728 Anderswo", a, "nesag.de")).toBeNull();
   });
 
+  it("lets the phone proof stand on a contact page of the same site (BB Wind)", () => {
+    const a = akteur("Windpark Iselbek GmbH & Co. KG", "Dorfstraße", "1", "25878");
+    const seite = "Kontakt BB Wind Betriebsführung GmbH Windenergie Tel. 04835 9728773 s.behrends@bb-wind.de";
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")?.wie).toBe("telefon");
+    // Not without the mailbox on the domain, not on a page without energy, not with another number.
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@gmx.de", "04835-9728773")).toBeNull();
+    expect(belegseiteTraegt("Kontakt Spedition Tel. 04835 9728773", a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")).toBeNull();
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728774")).toBeNull();
+  });
+
   it("takes the brand a name declares with 'powered by' (Ebert)", () => {
     expect(marke("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG")).toBe("ebert");
     const a = akteur("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG", "Am Felde", "3", "38315");

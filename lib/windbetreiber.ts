@@ -700,8 +700,14 @@ export function geschwisterWebsite(
  * after a rule change (Green City, Kattrepel-Nord — rules tightened after the
  * hand pass, 06.10.2026). A name alone must be the full name or identifying.
  */
-export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>): Beleg | null {
+export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>, postfach?: string | null, telefon?: string | null): Beleg | null {
   const b = impressumBelegt(text, a, domain, ortsWoerter);
+  // The phone proof on a contact page of the same site: BB Wind keeps its
+  // imprint on /about/ without a number, the register's number stands on
+  // /kontakt/ (manual pass, 06.10.2026). Same conditions as on the imprint.
+  if (!b && postfach && maildomain(postfach) === domain && ENERGIE.test(text) && !istBeraterSeite(text) && telefonIn(text, telefon)) {
+    return { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} auf der Belegseite` };
+  }
   // A park name alone proves on a page about that park (Ørsted's Gode Wind
   // pages, EnBW's Rot am See), never on a list of parks — a planner's
   // references or an investment platform (Pamsendorf, Jörl-Stieglund, manual

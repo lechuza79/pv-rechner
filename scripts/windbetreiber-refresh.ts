@@ -589,7 +589,7 @@ async function neuBewerten() {
     if (!z.website || !vonHandEntschieden(z) || !["name", "anschrift", "marke"].includes(z.website_beleg ?? "")) continue;
     const seite = z.website_beleg_url ? belegseiteDatei(z.website_beleg_url) : null;
     let traegt: boolean;
-    if (seite && existsSync(seite)) traegt = !!belegseiteTraegt(readFileSync(seite, "utf8"), akteurVon(z), z.name, z.website, ow);
+    if (seite && existsSync(seite)) traegt = !!belegseiteTraegt(readFileSync(seite, "utf8"), akteurVon(z), z.name, z.website, ow, z.register_email, z.register_telefon);
     else if (existsSync(impressumDatei(z.website)) && dieselbeSeite(z.website_beleg_url, (JSON.parse(readFileSync(impressumDatei(z.website), "utf8")) as { impressum_url: string | null }).impressum_url)) {
       traegt = (await pruefen(z, { domain: z.website, quelle: "manuell" }, belegungen)).ergebnis === "belegt";
     } else { nichtNachpruefbar++; continue; }
@@ -654,7 +654,7 @@ async function manuell() {
       const text = belegseite ? sichtbarerText(belegseite) : "";
       // Kept, so a later rule change can judge this proof again.
       if (text) { mkdirSync(dirname(belegseiteDatei(seite)), { recursive: true }); writeFileSync(belegseiteDatei(seite), text); }
-      const beleg = text ? belegseiteTraegt(text, akteurVon(z), z.name, domain, await ortsWoerter()) : null;
+      const beleg = text ? belegseiteTraegt(text, akteurVon(z), z.name, domain, await ortsWoerter(), z.register_email, z.register_telefon) : null;
       // A proof on a SUBDOMAIN is no proof for the domain: the Bürgerwindpark
       // on buergerwindpark.suederdeich.de was stored as suederdeich.de, the
       // municipality's site (manual pass 06.10.2026). A person confirms the
