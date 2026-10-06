@@ -548,7 +548,10 @@ export function beurteilen(
 
 /** A telephone number as digits of the national number: "+49 (0) 4841-9813" → "48419813". */
 export function telefonKern(t: string | null | undefined): string {
-  let d = (t ?? "").replace(/\(0\)/g, "").replace(/[^\d+]/g, "");
+  // Only a LEADING "+" is a country code: the register has "0421 6+9 19 82-0"
+  // (Windstream, manual pass 06.10.2026) — a stray one inside is a typo.
+  const roh = (t ?? "").replace(/\(0\)/g, "").trim();
+  let d = (roh.startsWith("+") ? "+" : "") + roh.replace(/[^\d]/g, "");
   d = d.replace(/^(?:\+|00)49/, "").replace(/^\+\d{1,3}/, "").replace(/^0+/, "");
   return d;
 }

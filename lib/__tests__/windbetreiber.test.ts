@@ -319,6 +319,10 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 – 0", "024519144114")).toBe(true);
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 — 0", "024519144114")).toBe(true);
     expect(telefonIn("Tel.: 02451/91441–0", "024519144114")).toBe(true);
+    // A stray "+" inside the register's number is a typo, not a country code (Windstream).
+    expect(telefonKern("0421 6+9 19 82-0")).toBe("4216919820");
+    expect(telefonIn("Tel. 0421- 691 98 2-0", "0421 6+9 19 82-0")).toBe(true);
+    expect(telefonKern("+49 421 6919820")).toBe("4216919820");
     // A digit glued to a word above is not the number's first digit (BB Wind).
     expect(telefonIn("Tel.\nMicrosoftInternetExplorer4\n04835-9728773", "04835-9728773")).toBe(true);
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 42 – 0", "024519144114")).toBe(false);
