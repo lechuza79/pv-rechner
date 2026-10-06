@@ -60,9 +60,11 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
 
   it("shows the postcode that follows the register street (Speyer)", () => {
     const a = akteur("WFS Windkraft für Speyer GmbH", "Georg-Peter-Süß-Straße", "2", "67346");
-    const b = impressumBelegt("Kundenzentrum Industriestr. 23 67346 Speyer · Sitz Georg-Peter-Süß-Str. 2 67346 Speyer", a, "stadtwerke-speyer.de");
+    const fuell = " Öffnungszeiten Montag bis Freitag von acht bis achtzehn Uhr, Samstag nach Vereinbarung, Parkplätze vorhanden. ".repeat(3);
+    const b = impressumBelegt(`Kundenzentrum Industriestr. 23 67346 Speyer${fuell}Sitz Georg-Peter-Süß-Str. 2 67346 Speyer`, a, "stadtwerke-speyer.de");
     expect(b?.wie).toBe("anschrift");
     expect(b?.textstelle).toMatch(/suess/);
+    expect(b?.textstelle).not.toMatch(/industriestr/);
   });
 
   it("lets a short range in the register cover one number of it in the imprint (Koehler)", () => {
