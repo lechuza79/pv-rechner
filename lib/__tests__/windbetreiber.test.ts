@@ -93,6 +93,13 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@web.de", undefined, "04841-8944832").ergebnis).toBe("abgelehnt");
   });
 
+  it("never reads the domain written out as the company's name (Weikmann Immotec)", () => {
+    const a = akteur("Weikmann Immotec GmbH", "Hauptstraße", "1", "12345");
+    expect(impressumBelegt("weikmann-immotec.de Diese Domain wurde soeben registriert", a, "weikmann-immotec.de")).toBeNull();
+    expect(impressumBelegt("www.weikmann-immotec.de", a, "weikmann-immotec.de")).toBeNull();
+    expect(impressumBelegt("Impressum Weikmann Immotec GmbH Geschäftsführer", a, "weikmann-immotec.de")?.wie).toBe("name");
+  });
+
   it("takes the brand a name declares with 'powered by' (Ebert)", () => {
     expect(marke("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG")).toBe("ebert");
     const a = akteur("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG", "Am Felde", "3", "38315");

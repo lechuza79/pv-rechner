@@ -178,13 +178,16 @@ function umgebung(t: string, i: number, laenge: number) {
  */
 export function impressumBelegt(impressumText: string, a: Akteur, domain: string, ortsWoerter?: Set<string>): Beleg | null {
   const t = textFalten(impressumText);
+  // The domain written out is no name: a hoster's placeholder titled
+  // "weikmann-immotec.de" proved "Weikmann Immotec GmbH" (manual pass, 06.10.2026).
+  const tn = t.split(textFalten(domain)).join(" ");
 
   // NAME — the whole name, in order; a single word would match any page.
   const woerter = nameWoerter(a.Firmenname ?? "");
   const name = woerter.join(" ");
   if (woerter.length >= 2 && name.length >= 8) {
-    const i = t.indexOf(` ${name} `);
-    if (i >= 0) return { wie: "name", textstelle: umgebung(t, i, name.length) };
+    const i = tn.indexOf(` ${name} `);
+    if (i >= 0) return { wie: "name", textstelle: umgebung(tn, i, name.length) };
   }
   // The name without its trailing kind-of-company words: Ørsted's project
   // pages say "Borkum Riffgrund 2", the register "Borkum Riffgrund 2 Offshore
@@ -193,8 +196,8 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   const kern = kernName(woerter);
   if (kern.length >= 2 && kern.length < woerter.length && kern.some((w) => !GENERISCH.has(w) && !/^\d+$/.test(w) && !ortsWoerter?.has(w) && w.length >= 4)) {
     const k = kern.join(" ");
-    const i = t.indexOf(` ${k} `);
-    if (i >= 0) return { wie: "name", textstelle: umgebung(t, i, k.length) };
+    const i = tn.indexOf(` ${k} `);
+    if (i >= 0) return { wie: "name", textstelle: umgebung(tn, i, k.length) };
   }
 
   // ANSCHRIFT — street and number together, the postcode close behind. Not one
@@ -282,14 +285,14 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   for (const tok of (a.Firmenname ?? "").split(/\s+/)) {
     if (!tok.includes("-")) continue;
     const zusammen = falten(tok).replace(/[^a-z0-9]/g, "");
-    if (zusammen.length >= 8 && zusammen === label && t.replace(/ /g, "").includes(zusammen)) {
-      const i = t.indexOf(falten(tok).replace(/[^a-z0-9]+/g, " ").trim());
-      return { wie: "marke", textstelle: umgebung(t, Math.max(0, i), zusammen.length) };
+    if (zusammen.length >= 8 && zusammen === label && tn.replace(/ /g, "").includes(zusammen)) {
+      const i = tn.indexOf(falten(tok).replace(/[^a-z0-9]+/g, " ").trim());
+      return { wie: "marke", textstelle: umgebung(tn, Math.max(0, i), zusammen.length) };
     }
   }
   if (m && !ortsWoerter?.has(m) && (m.length >= 4 ? label.includes(m) : label.startsWith(m))) {
-    const i = t.indexOf(` ${m} `);
-    if (i >= 0) return { wie: "marke", textstelle: umgebung(t, i, m.length) };
+    const i = tn.indexOf(` ${m} `);
+    if (i >= 0) return { wie: "marke", textstelle: umgebung(tn, i, m.length) };
   }
   return null;
 }
