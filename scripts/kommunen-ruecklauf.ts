@@ -131,6 +131,10 @@ async function angeschriebene(db: Awaited<ReturnType<typeof makeClient>>) {
       for (const address of new Set(addresses.filter((x): x is string => !!x))) {
         const email = address.toLowerCase();
         if (email.endsWith("@solar-check.io")) continue;
+        // Bounce notes quote the sender of the bounce. Kept as a target, our
+        // own mail server's address matched every later bounce to several
+        // towns at once, so no bounce could be assigned (Herzogenrath, 06.10.2026).
+        if (/^(mailer-daemon|postmaster)@/.test(email)) continue;
         out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
       }
     }
