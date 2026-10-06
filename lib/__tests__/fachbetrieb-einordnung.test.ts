@@ -267,6 +267,92 @@ describe("evidence the full run missed or invented (gegengelesen 06.10.2026)", (
   });
 });
 
+describe("the third full run, gegengelesen (06.10.2026)", () => {
+  it("an imprint disclaimer naming 'eRecht24, dem Portal zum Internetrecht' is no provider (sonnentaler.de)", () => {
+    const u = urteil(
+      "sonnentaler.de",
+      seite("Sonnentaler - Photovoltaik", "Planung, Installation und Wartung", "Photovoltaik"),
+      "Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte vor. Quelle: Disclaimer von eRecht24, dem Portal zum Internetrecht. Kontakt 31134 Hildesheim",
+    );
+    expect(u.art).toBe("betrieb");
+  });
+
+  it("'Angebote vergleichen' as an article link is no portal (adlersolar.de)", () => {
+    const u = urteil("adlersolar.de", seite("ADLER Solar", "Photovoltaik, Wärmepumpen", "Photovoltaik Montage durch unsere Monteure. Ratgeber: Angebote vergleichen"));
+    expect(u.art).toBe("betrieb");
+  });
+
+  it("…but in the self-description it is one", () => {
+    const u = urteil("solar-x.de", seite("Solar-Angebote vergleichen", "", "Photovoltaik"));
+    expect(u).toMatchObject({ art: "kein-betrieb", klasse: "portal" });
+  });
+
+  it("'Grundversorgung' as a word is no supplier (solarharz.de)", () => {
+    const u = urteil("solarharz.de", seite("Solar Harz", "", "Photovoltaik sorgt für Grundversorgung. Funkmasten ohne Ersatzversorgung. Montage im Vollservice."));
+    expect(u.art).not.toBe("kein-betrieb");
+  });
+
+  it("a shop domain whose page offers installation is an installer", () => {
+    const u = urteil("pv-shop-nord.de", seite("PV Nord", "", "Photovoltaik und Speicher. Wir installieren Ihre Anlage im ganzen Landkreis."));
+    expect(u.art).toBe("betrieb");
+  });
+
+  it("a shop domain that installs is an installer (solarshop-amberg.de)", () => {
+    const u = urteil("solarshop-amberg.de", seite("SKS Energietechnik", "Verkauf, Planung und Optimierung von Solaranlagen bis hin zur fachgerechten Montage", "Photovoltaik"));
+    expect(u.art).toBe("betrieb");
+  });
+});
+
+describe("promotions of old demotions, gegengelesen (06.10.2026)", () => {
+  it("'Fachbetrieb finden' on a district map is no trade (solar-wtm-fri.ipsyscon.de)", () => {
+    const u = urteil("solar-wtm-fri.ipsyscon.de", seite("Landkreise Wittmund und Friesland", "", "Photovoltaik Potenzial. 4. Kompetenten Fachbetrieb finden: In der Region finden Interessierte viele Fachfirmen."));
+    expect(u.art).not.toBe("betrieb");
+  });
+
+  it("a review praising 'diesen Fachbetrieb' is no claim of the site", () => {
+    const u = urteil("x-solar.de", seite("X", "", "Photovoltaik. Wir können diesen Fachbetrieb nur weiter empfehlen."), "X GmbH Weg 1 12345 Ort");
+    expect(u.art).toBe("unklar");
+  });
+
+  it("a self-claim counts: 'Ihr Elektro-Fachbetrieb'", () => {
+    const u = urteil("x-elektro.de", seite("X", "", "Photovoltaik. Ihr Elektro-Fachbetrieb aus Schönderling."), "X GmbH Weg 1 12345 Ort");
+    expect(u).toMatchObject({ art: "betrieb", grund: "Meister/Handwerksrolle" });
+  });
+
+  it("'Handwerksrolle' in a city's A–Z list is no entry (ebersberg.de)", () => {
+    const u = urteil("ebersberg.de", seite("Ebersberg", "", "Photovoltaik Handwerksbetrieb Handwerkskammern Handwerkskarte Handwerksrecht Handwerksrolle Hauptschule"));
+    expect(u.art).not.toBe("betrieb");
+  });
+
+  it("a ministry and a city name themselves in the title (stmwi.bayern.de, heilbronn.de)", () => {
+    expect(urteil("stmwi.bayern.de", seite("Bayerisches Wirtschaftsministerium", "Förderprogramme, Meisterbonus und Energiewende", "Photovoltaik"))).toMatchObject({ klasse: "behoerde" });
+    expect(urteil("heilbronn.de", seite("Stadt Heilbronn", "", "Photovoltaik"), "Handwerkskammer Heilbronn-Franken")).toMatchObject({ klasse: "behoerde" });
+  });
+
+  it("'Meisterbonus' in a description is no master craftsman", () => {
+    expect(urteil("foerder-info.de", seite("Förderinfo", "Förderprogramme, Meisterbonus und Energiewende", "Photovoltaik"), "Förderinfo GmbH Weg 1 12345 Ort").art).toBe("unklar");
+  });
+
+  it("a citizens' solar project is no installer (buergerprojekt-solar-dachau.de)", () => {
+    expect(urteil("buergerprojekt-solar-dachau.de", seite("Das Bürgerprojekt Solar", "", "Photovoltaik auf dem Rathausdach"))).toMatchObject({ klasse: "verband" });
+  });
+
+  it("an installed investment product is no installation offer (sunshineenergy.de)", () => {
+    const u = urteil("sunshineenergy.de", seite("SunShine", "", "Photovoltaik Investment kaufen. Die PV-Anlage Wittingen II ist vollständig installiert und am Netz."), "SunShine Sales GmbH Weg 1 12345 Ort");
+    expect(u.art).toBe("unklar");
+  });
+
+  it("the topic form 'Die Installation einer PV-Anlage steigert …' is advice (sysmartec.de)", () => {
+    const u = urteil("sysmartec.de", seite("SYSMARTEC", "", "Kapitalanlage. Die Installation einer PV-Anlage steigert den Wert Ihrer Immobilie."), "SYSMARTEC GmbH Weg 1 12345 Ort");
+    expect(u.art).toBe("unklar");
+  });
+
+  it("a lead seller named in the imprint (photovoltaik-firma.de)", () => {
+    const u = urteil("photovoltaik-firma.de", seite("Photovoltaik Firma", "", "Photovoltaik für Ihr Dach"), "Angaben gemäß § 5 TMG Leads Navigator GmbH Weg 1 10115 Berlin");
+    expect(u).toMatchObject({ art: "kein-betrieb", klasse: "portal" });
+  });
+});
+
 describe("evidence of a trade — 'betrieb' needs one", () => {
   it("the Handwerkskammer in the imprint", () => {
     const u = urteil("haustechnik-markert.de", seite("Heizung", "", "Erneuerbare Energien Photovoltaik"), "Impressum Haustechnik Markert Balbachtalstraße 21a 97922 Lauda Zugehörige Kammer Handwerkskammer Heilbronn-Franken");
