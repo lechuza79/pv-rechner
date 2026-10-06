@@ -636,8 +636,16 @@ async function manuell() {
   // A refusal, not a stack trace: a helper read the trace as a tool failure (block 046).
   // The proof page lies on the domain, or on the site the domain redirects to
   // (windpark.eu → windpark.com: the imprint is only there, block 059).
-  const zielVon = (d: string) => { const f = impressumDatei(d); if (!existsSync(f)) return null; const st = (JSON.parse(readFileSync(f, "utf8")) as { start: string | null }).start; return st ? organisationsDomain(st) : null; };
-  const seiteFremd = () => !!seite && organisationsDomain(seite) !== domain && organisationsDomain(seite) !== zielVon(domain);
+  // Where the domain's site really is: the start after redirects, and — for
+  // fetches stored before the start was kept after redirects — where its
+  // imprint was found (windpark.eu → windpark.com, block 069).
+  const zieleVon = (d: string): (string | null)[] => {
+    const f = impressumDatei(d);
+    if (!existsSync(f)) return [];
+    const imp = JSON.parse(readFileSync(f, "utf8")) as { start: string | null; impressum_url: string | null };
+    return [imp.start, imp.impressum_url].map((u) => (u ? organisationsDomain(u) : null));
+  };
+  const seiteFremd = () => !!seite && organisationsDomain(seite) !== domain && !zieleVon(domain).includes(organisationsDomain(seite));
   let belegseite: string | null | undefined;
   for (const nr of liste) {
     const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));

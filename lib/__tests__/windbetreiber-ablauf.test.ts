@@ -48,7 +48,7 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
     expect(m).toMatch(/Belegseite muss auf derselben Website liegen/);
     // …or on the site the domain redirects to (windpark.eu → windpark.com).
-    expect(m).toMatch(/organisationsDomain\(seite\) !== zielVon\(domain\)/);
+    expect(m).toMatch(/!zieleVon\(domain\)\.includes\(organisationsDomain\(seite\)\)/);
     expect(m.indexOf("if (seiteFremd())")).toBeGreaterThan(m.indexOf("let p = await pruefen("));
     // Never replaces a proven website in passing (Österwurth, 06.10.2026).
     expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
