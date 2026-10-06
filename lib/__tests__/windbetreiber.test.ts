@@ -51,6 +51,15 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56728 Anderswo", a, "nesag.de")).toBeNull();
   });
 
+  it("lets a short range in the register cover one number of it in the imprint (Koehler)", () => {
+    const a = akteur("Windenergiepark Musterberg GmbH", "Hauptstraße", "2-4", "77704");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 2 77704 Oberkirch", a, "koehler.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 4 77704 Oberkirch", a, "koehler.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 5 77704 Oberkirch", a, "koehler.com")).toBeNull();
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 24 77704 Oberkirch", a, "koehler.com")).toBeNull();
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 2 77799 Anderswo", a, "koehler.com")).toBeNull();
+  });
+
   it("matches a foreign four-digit postcode, but only behind street and number", () => {
     const a = akteur("Hydrovind VI ApS", "Gammel Kirkevej", "16", "9530");
     expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 16 DK-9530 Støvring Denmark", a, "hydrema.com")?.wie).toBe("anschrift");

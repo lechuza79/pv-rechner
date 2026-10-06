@@ -223,6 +223,17 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
         if (von < bis && bis - von <= 20 && n >= von && n <= bis && rest.includes(plz)) { treffer = true; break; }
       }
     }
+    // And a range in the REGISTER covers a single number of it in the imprint:
+    // register "Hauptstraße 2-4", Koehler's imprint "Hauptstraße 2" (manual pass,
+    // 06.10.2026). Only a short range; the number must end where it ends.
+    const spanne = nr.match(/^(\d+)\|(\d+)$/);
+    if (!treffer && spanne && Number(spanne[1]) < Number(spanne[2]) && Number(spanne[2]) - Number(spanne[1]) <= 20) {
+      for (const m of kompakt.matchAll(new RegExp(`${strasse}(\\d+)(?!\\d)`, "g"))) {
+        const n = Number(m[1]);
+        const rest = kompakt.slice(m.index! + m[0].length, m.index! + m[0].length + 60);
+        if (n >= Number(spanne[1]) && n <= Number(spanne[2]) && rest.includes(plz)) { treffer = true; break; }
+      }
+    }
     // The other way round: the register names a PLACE without a number ("Luymühle",
     // 54347), the imprint adds one ("Luymühle 1, 54347"). Only for a place name —
     // a "…str"/"…weg" without a number would match every house on it.
