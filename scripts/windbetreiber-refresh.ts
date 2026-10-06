@@ -309,7 +309,9 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
     const r0 = await fetchLive(s, { auchServerfehler: true });
     const r = "html" in r0 ? { html: webKomponentenAusklappen(r0.html) } : r0;
     // A page with markup but no text is an app shell: the browser below reads it.
-    if ("html" in r && r.html.length > 200 && sichtbarerText(r.html).length >= LEERE_HUELLE) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
+    // The start is where the redirect ENDED (uka-gruppe.de → uka-group.com):
+    // resolved against the old address the imprint link pointed nowhere.
+    if ("html" in r && r.html.length > 200 && sichtbarerText(r.html).length >= LEERE_HUELLE) { html = r.html; ergebnis.start = ("url" in r0 && r0.url) || s; ergebnis.via = "abruf"; break; }
     if ("html" in r && r.html.length > 200 && !huelle) huelle = { html: r.html, start: s };
     ergebnis.fehler = "error" in r ? r.error : "leere Seite";
   }

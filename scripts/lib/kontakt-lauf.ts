@@ -320,7 +320,7 @@ export async function nachpruefen(b: Bestand, e: Eintrag, email: string) {
 }
 
 /** Ein einzelner Abruf ohne Ablage — für die Nachprüfung vor einer Verwendung. */
-export async function fetchLive(url: string, opts: { auchServerfehler?: boolean } = {}): Promise<{ html: string } | { error: string }> {
+export async function fetchLive(url: string, opts: { auchServerfehler?: boolean } = {}): Promise<{ html: string; url?: string } | { error: string }> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     const controller = new AbortController();
@@ -339,7 +339,8 @@ export async function fetchLive(url: string, opts: { auchServerfehler?: boolean 
     const bytes = Buffer.from(await res.arrayBuffer());
     const type = res.headers.get("content-type") ?? "";
     if (/vcard/i.test(type) || /\.vcf(?:$|\?)/i.test(url)) return { html: vcardToHtml(bytes.toString("utf8")) ?? "" };
-    return { html: decode(bytes) };
+    // The address after redirects: links on the page resolve against it.
+    return { html: decode(bytes), url: res.url || url };
   } catch (e: any) {
     return { error: e?.name === "TimeoutError" ? "Seite antwortet nicht" : `Abruf fehlgeschlagen (${String(e?.cause?.code ?? e?.message ?? e)})` };
   } finally {
