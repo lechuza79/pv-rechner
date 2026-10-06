@@ -21,6 +21,8 @@
     "destatis:gemeinden": "tsx scripts/destatis-gemeinden.ts",
     "destatis:gebietsaenderungen": "tsx scripts/destatis-gebietsaenderungen.ts",
     "windgemeinden:build": "tsx scripts/windgemeinden-build.ts",
+    "region:zugehoerigkeit": "tsx scripts/region-zugehoerigkeit-messen.ts",
+    "region:rollup-probe": "tsx scripts/region-rollup-probe.ts",
     "mastr:wind": "tsx scripts/mastr-wind-anlagen.ts",
     "bestaende:abgleich": "tsx scripts/bestaende-abgleich.ts",
     "windbetreiber": "tsx scripts/windbetreiber-refresh.ts",

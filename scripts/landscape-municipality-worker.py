@@ -14,6 +14,8 @@ import os
 from pathlib import Path
 import shutil
 import sqlite3
+import io
+import zipfile
 import subprocess
 import sys
 import tempfile
@@ -247,6 +249,41 @@ def download(inputs, prefix, kind, url, reuse):
     return dict(file=name,url=url,sha256=shared.digest(path))
 
 
+def grid_download(inputs, prefix, kind, url, reuse, native=25832):
+    """Grid states: try the alternatives in order; None when the state publishes no tile there."""
+    for candidate in url.split(' || '):
+        if urlparse(candidate).scheme!='https' and not candidate.startswith('zipmember:https://'):raise ValueError('Unsupported tile URL')
+        stem = hashlib.sha256(candidate.encode()).hexdigest()[:24]
+        # UTM33 terrain stays native until the single mosaic warp; buildings are converted now.
+        middle = ('-native-' if kind=='dgm' else '-lod-') if native!=25832 else ('-dgm-' if kind=='dgm' else '-lod-')
+        path = inputs/(prefix+middle+stem+('.tif' if kind=='dgm' else '.gml'))
+        known = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
+        if known:
+            if not path.exists():os.link(inputs/known['file'],path)
+            return dict(known,file=path.name)
+        if candidate.startswith('zipmember:'):
+            class Fetched:pass
+            response = Fetched();response.content = states.read_archive_member(candidate);response.status_code = 200
+            response.raise_for_status = lambda:None
+        else:
+            response = requests.get(candidate,timeout=(20,300),headers=states.UA,verify=states.tls_verify(candidate))
+        if response.status_code==404:continue
+        # SH answers a retired tile with an HTML page and status 200.
+        if response.content[:200].lstrip().lower().startswith((b'<!doctype html',b'<html')):continue
+        response.raise_for_status()
+        if shutil.disk_usage(inputs).free<2*1024**3+len(response.content):raise RuntimeError('Insufficient free storage')
+        member, data = states.grid_member(response.content, kind)
+        if kind=='lod' and native==25832 and zipfile.is_zipfile(io.BytesIO(response.content)):
+            member, data = 'zip', response.content  # the preparer reads building zips; no 200 MB unpacked copy
+        if member=='zip':path = path.with_suffix('.zip')
+        if kind=='lod' and native!=25832:
+            data = states.convert_gml(data.decode('utf-8')).encode('utf-8')
+        temporary = path.with_suffix(path.suffix+'.part');temporary.write_bytes(data);temporary.replace(path)
+        return dict(file=path.name,url=url,sourceUrl=candidate,sha256=shared.digest(path),sourceMember=member,
+                    sourceSha256=hashlib.sha256(response.content).hexdigest())
+    return None
+
+
 def st_download(inputs, prefix, kind, url, reuse):
     """Sachsen-Anhalt: the stable identity is the tile's prepare URL; each call yields a one-off archive."""
     if not states.ST_PREPARE.match(url):raise ValueError('Unsupported tile URL')
@@ -365,7 +402,8 @@ def main():
     parser.add_argument('--osm-file',type=Path,required=True)
     # Near a state border the terrain box reaches tiles another state publishes; those
     # samples may stay missing, but only outside the municipality and the object windows.
-    parser.add_argument('--allow-outer-terrain-gaps',action='store_true')
+    # Default on: gaps stay forbidden inside the municipality and every object window.
+    parser.add_argument('--allow-outer-terrain-gaps',action=argparse.BooleanOptionalAction,default=True)
     args = parser.parse_args()
     ags = args.municipality
     adapter = states.adapter_for(ags)
@@ -455,11 +493,14 @@ def main():
                 if not urls:raise ValueError('Missing official '+collection+' tiles')
                 found.extend((host,url) for url in urls)
             return found
-        jobs = states.tile_jobs(adapter,terrain,buildings,lgln)
+        jobs = states.tile_jobs(dict(adapter,placeName=feature['properties']['name']),terrain,buildings,lgln)
         if not any(kind=='dgm' for kind,_ in jobs):raise ValueError('Missing official terrain tiles')
         if not any(kind=='lod' for kind,_ in jobs):raise ValueError('Missing official building tiles')
         shared.save(inputs/(prefix+'-download-plan.json'),dict(terrainBounds=terrain.bounds,files=jobs))
-        fetch = st_download if adapter['key']=='sachsen-anhalt' else intake if adapter['native']!=25832 else download
+        if adapter.get('grid'):
+            fetch = lambda inputs,prefix,kind,url,reuse:grid_download(inputs,prefix,kind,url,reuse,adapter['native'])
+        else:
+            fetch = st_download if adapter['key']=='sachsen-anhalt' else intake if adapter['native']!=25832 else download
         def attempt(job):
             # State portals stall intermittently; retry a tile, never substitute it.
             for number in range(4):
@@ -467,8 +508,14 @@ def main():
                 except (requests.RequestException,OSError) as error:
                     if number==3:raise
                     print('Retry',job[1],error,flush=True)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        # Archive states are read by range from one host that rate-limits bursts: one at a time.
+        workers = 1 if any(url.startswith('zipmember:') for _,url in jobs) else 4
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             manifest = list(executor.map(attempt,jobs))
+        # Grid states answer 404 for cells they do not publish (outside the state, no buildings).
+        manifest = [e for e in manifest if e is not None]
+        if not any('-dgm-' in e['file'] or '-native-' in e['file'] for e in manifest):raise ValueError('Missing official terrain tiles')
+        if not any('-lod-' in e['file'] for e in manifest):raise ValueError('Missing official building tiles')
         if adapter['native']!=25832:
             native = [e for e in manifest if '-native-' in e['file']]
             mosaic = inputs/(prefix+'-dgm-mosaic-utm32.tif')
@@ -476,7 +523,8 @@ def main():
             try:states.convert_dgm_mosaic([inputs/e['file'] for e in native],partial);partial.replace(mosaic)
             finally:partial.unlink(missing_ok=True)
             manifest = [e for e in manifest if '-native-' not in e['file']]+[dict(file=mosaic.name,
-                url=native[0]['url'] if len(native)==1 else states.BB_DGM,sha256=shared.digest(mosaic),derivation='Official LGB DGM (UTM33, 5 m), reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
+                url=native[0]['url'] if len(native)==1 else (states.SN_DGM if adapter['key']=='sachsen' else states.BB_DGM),sha256=shared.digest(mosaic),
+                derivation='Official %s DGM (UTM33), mosaicked and reprojected once to UTM32 at 5 m (bilinear), heights unchanged' % ('GeoSN' if adapter['key']=='sachsen' else 'LGB'),
                 derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native])]
         filled, credits = neighbour_terrain(root,inputs,prefix,ags,terrain,reuse)
         if filled:

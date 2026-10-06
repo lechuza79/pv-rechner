@@ -18,7 +18,7 @@ class StateSourceTests(unittest.TestCase):
     def test_adapter_by_state_prefix_only_for_municipalities(self):
         self.assertEqual(states.adapter_for('12061244')['key'], 'brandenburg')
         self.assertEqual(states.adapter_for('05166012')['native'], 25832)
-        self.assertIsNone(states.adapter_for('07312000'))
+        self.assertIsNone(states.adapter_for('11000000'))
         self.assertIsNone(states.adapter_for('12061'))
 
     def test_gml_conversion_moves_horizontal_only_and_relabels(self):
@@ -80,6 +80,26 @@ class StateSourceTests(unittest.TestCase):
             states.st_member(archive({'a.gml': '<x srsName="EPSG:25833"/>'}), 'lod')
         with self.assertRaises(ValueError):
             states.st_member(archive({'a.tif': 'x', 'b.tif': 'y'}), 'dgm')
+
+    def test_grid_states_name_tiles_per_cell_with_epoch_fallback(self):
+        area = states.box(660100, 5690100, 660200, 5690200)
+        th = states.grid_tiles(states.ADAPTERS['16'], area, area)
+        self.assertIn(('dgm', states.TH_DGM+'dgm_2020-2025/dgm1_32_660_5690_1_th_2020-2025.zip || '
+                       +states.TH_DGM+'dgm_2014-2019/dgm1_660_5690_1_th_2014-2019.zip'), th)
+        self.assertIn(('lod', 'https://geoportal.geoportal-th.de/3dgebaeude/LoD2/LoD2_32_660_5690_2_TH.zip'), th)
+        by = states.grid_tiles(states.ADAPTERS['09'], states.box(561100, 5513100, 561200, 5513200), states.box(561100, 5513100, 561200, 5513200))
+        self.assertIn(('dgm', 'https://download1.bayernwolke.de/a/dgm/dgm1/561_5513.tif'), by)
+        self.assertIn(('lod', 'https://download1.bayernwolke.de/a/lod2/citygml/560_5512.gml'), by)
+        # Sachsen delivers UTM33: the cell is found in that zone, not in ours.
+        sn = states.grid_tiles(states.ADAPTERS['14'], *(2*[states.Transformer.from_crs(25833, 25832, always_xy=True).transform(381000, 5641000)] and [states.box(*states.Transformer.from_crs(25833, 25832, always_xy=True).transform(381000, 5641000), *[v+50 for v in states.Transformer.from_crs(25833, 25832, always_xy=True).transform(381000, 5641000)])]*2))
+        self.assertIn(('lod', states.SN_LOD+'lod2_33380_5640_2_sn_citygml.zip'), sn)
+
+    def test_grid_member_reads_plain_files_and_single_member_archives(self):
+        self.assertEqual(states.grid_member(b'GML', 'lod'), (None, b'GML'))
+        buffer = states.io.BytesIO()
+        with states.zipfile.ZipFile(buffer, 'w') as z:
+            z.writestr('a.tif', 'x'); z.writestr('a.tfw', 'y')
+        self.assertEqual(states.grid_member(buffer.getvalue(), 'dgm'), ('a.tif', b'x'))
 
 
 if __name__ == '__main__':

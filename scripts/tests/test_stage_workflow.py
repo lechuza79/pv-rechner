@@ -45,7 +45,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(result['adapter'],'niedersachsen-municipality')
 
     def test_unsupported_region_does_not_reuse_pilot(self):
-        self.inputs('07312001');result=w.plan(self.root,'07312001')
+        self.inputs('11000000');result=w.plan(self.root,'11000000')
         self.assertIsNone(result['adapter']);self.assertFalse(result['preparationPossible'])
 
     def test_missing_inventory_is_explicit_and_no_wind_is_a_gap_not_a_block(self):
