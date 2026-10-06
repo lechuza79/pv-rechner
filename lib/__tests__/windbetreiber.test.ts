@@ -422,6 +422,12 @@ describe("house numbers and adviser offices (06.10.2026)", () => {
     const buchstabe = akteur("Windpark Z GmbH", "Hauptstraße", "12 a", "25813");
     expect(impressumBelegt("Impressum Muster GmbH Hauptstraße 12a 25813 Husum", buchstabe, "muster.de")?.wie).toBe("anschrift");
   });
+  it("an adviser's per-park mailbox in the register proves no website", () => {
+    const a = akteur("Windpark Tauberbischofsheim GmbH & Co. KG", "Irgendwo", "1", "99999");
+    const imp = "Impressum Angaben gemäß § 5 TMG PKF WULF GRUPPE Wirtschaftsprüfungsgesellschaft Löwentorstraße 6 70376 Stuttgart";
+    expect(beurteilen(a, "pkf-wulf.de", "register-mail", { impressum: imp, startseite: "PKF Wulf" }, "tauberbischofsheim@pkf-wulf.de").ergebnis).not.toBe("belegt");
+  });
+
   it("an adviser's office proves no address, the operator's own name still does", () => {
     const ewf = akteur("EWF Fünf Vier GmbH & Co. KG", "Am Markt", "5", "25813");
     const imp = "Impressum Angaben gemäß § 5 TMG SHJ Steuerberatungsgesellschaft mbH Am Markt 5 25813 Husum";

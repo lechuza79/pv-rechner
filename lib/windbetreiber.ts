@@ -438,7 +438,10 @@ export function beurteilen(
   if (quelle === "register-webseite" && erreichbar) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: "vom Betreiber selbst im Marktstammdatenregister als Website angegeben" }, seite: abruf.impressum ? "impressum" : "startseite" };
   }
-  if (quelle === "register-mail" && erreichbar && funktionsPostfach(postfach, a.Firmenname)) {
+  // A mailbox an adviser keeps per park (tauberbischofsheim@pkf-wulf.de) is
+  // post at the adviser, not the operator's website.
+  const beraterSeite = !!abruf.impressum && BERATER.test(anbieterBlock(abruf.impressum));
+  if (quelle === "register-mail" && erreichbar && !beraterSeite && funktionsPostfach(postfach, a.Firmenname)) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Funktionspostfach im Marktstammdatenregister: ${postfach}` }, seite: abruf.impressum ? "impressum" : "startseite" };
   }
   if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };
