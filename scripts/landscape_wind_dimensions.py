@@ -116,32 +116,55 @@ def mark_gaps(gaps, filled):
             entry.update(status='estimated-from-comparable-turbines', value=item[field], method=note['method'], peers=note['peers'])
 
 
+def national_pool(path):
+    """Comparable turbines from the national register (all onshore units with both dimensions)."""
+    units = json.loads(Path(path).read_text())['units']
+    return [dict(model=u.get('model'), ratedKw=u.get('capacityKw'), hub=u.get('hubHeightM'), rotorMetres=u.get('rotorDiameterM'))
+            for u in units if u.get('hubHeightM') and u.get('rotorDiameterM')]
+
+
+def repair_place(directory, pool):
+    """Fill missing dimensions and drop LoD2 tower duplicates in one prepared place; returns a summary."""
+    directory = Path(directory)
+    scene = json.loads((directory / 'scene.json').read_text())
+    filled = apply(scene, pool)
+    towers = remove_towers(scene)
+    missing = [t['id'] for t in scene.get('turbines') or [] if not (t.get('hub') and t.get('rotorMetres'))]
+    if filled or towers:
+        (directory / 'scene.json').write_text(json.dumps(scene, ensure_ascii=False, separators=(',', ':'), allow_nan=False))
+        gaps_path = directory / 'data-gaps.json'
+        gaps = json.loads(gaps_path.read_text()) if gaps_path.exists() else {'gaps': []}
+        mark_gaps(gaps, filled)
+        if towers:
+            previous = gaps.get('removedTowerBuildings') or []
+            known = {t['buildingId'] for t in previous}
+            gaps['removedTowerBuildings'] = previous + [t for t in towers if t['buildingId'] not in known]
+        gaps_path.write_text(json.dumps(gaps, ensure_ascii=False, separators=(',', ':')))
+    return dict(filled=len(filled), towersRemoved=len(towers), stillMissing=missing)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True, help='Directory containing one folder per prepared place')
+    parser.add_argument('--national', type=Path, help='National wind register (preferred comparison pool)')
     parser.add_argument('--write', action='store_true')
     args = parser.parse_args()
-    scenes = {p.parent.name: json.loads(p.read_text()) for p in sorted(args.root.glob('*/scene.json'))}
-    pool = [t for s in scenes.values() for t in s.get('turbines') or [] if complete(t)]
+    places = sorted(p.parent for p in args.root.glob('*/scene.json'))
+    if args.national:
+        pool = national_pool(args.national)
+    else:
+        pool = [t for p in places for t in json.loads((p / 'scene.json').read_text()).get('turbines') or [] if complete(t)]
     remaining = 0
-    for place, scene in scenes.items():
-        filled = apply(scene, pool)
-        towers = remove_towers(scene)
-        missing = [t['id'] for t in scene.get('turbines') or [] if not (t.get('hub') and t.get('rotorMetres'))]
-        remaining += len(missing)
-        if not filled and not missing and not towers:
-            continue
-        print(place, 'filled', len(filled), 'still missing', len(missing), 'tower buildings removed', len(towers))
-        if args.write and (filled or towers):
-            (args.root / place / 'scene.json').write_text(json.dumps(scene, ensure_ascii=False, separators=(',', ':'), allow_nan=False))
-            gaps_path = args.root / place / 'data-gaps.json'
-            gaps = json.loads(gaps_path.read_text()) if gaps_path.exists() else {'gaps': []}
-            mark_gaps(gaps, filled)
-            if towers:
-                previous = gaps.get('removedTowerBuildings') or []
-                known = {t['buildingId'] for t in previous}
-                gaps['removedTowerBuildings'] = previous + [t for t in towers if t['buildingId'] not in known]
-            gaps_path.write_text(json.dumps(gaps, ensure_ascii=False, separators=(',', ':')))
+    for place in places:
+        if args.write:
+            summary = repair_place(place, pool)
+        else:
+            scene = json.loads((place / 'scene.json').read_text())
+            summary = dict(filled=len(apply(scene, pool)), towersRemoved=len(remove_towers(scene)),
+                           stillMissing=[t['id'] for t in scene.get('turbines') or [] if not (t.get('hub') and t.get('rotorMetres'))])
+        remaining += len(summary['stillMissing'])
+        if summary['filled'] or summary['towersRemoved'] or summary['stillMissing']:
+            print(place.name, summary)
     print('turbines still without dimensions:', remaining)
 
 

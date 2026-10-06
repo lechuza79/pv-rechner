@@ -368,6 +368,10 @@ def main():
         shared.save(source/(ags+'-osm.json'),document)
         subprocess.run([sys.executable,str(scripts/'landscape-tour-prepare.py'),str(source),ags],check=True)
         subprocess.run([sys.executable,str(scripts/'landscape-showcase-enrich.py'),'--root',str(stage),'--district',ags],check=True)
+        # Register gaps in hub/rotor and LoD2 tower bodies would otherwise show as broken turbines.
+        dims = helper('landscape_wind_dimensions.py')
+        repair = dims.repair_place(out, dims.national_pool(inputs/'national-register/wind.json'))
+        print('Wind repair:', json.dumps(repair), flush=True)
         audit = json.loads((out/'provenance.json').read_text())
         audit.update(cadastralVerification=False,osmSource=osm_source,osmSourceSha256=osm_hash,osmSourceFile=args.osm_file.name,
                      townSourceId='osm-node-'+str(town['id']),townSourceName=town['tags']['name'],boundarySource=feature['properties']['source'])

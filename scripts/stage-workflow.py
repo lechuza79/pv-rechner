@@ -115,7 +115,9 @@ def check(directory, place):
     by_id = {r.get('mastr_nr'): r for r in rows}
     for turbine in turbines:
         for displayed, source in (('hub', 'nabenhoehe_m'), ('rotor', 'rotor_m'), ('ratedKw', 'brutto_kw')):
-            if turbine.get(displayed) != by_id.get(turbine.get('id'), {}).get(source):
+            estimated = displayed in ('hub', 'rotor') and by_id.get(turbine.get('id'), {}).get(source) in (None, 0) \
+                and ('hub' if displayed == 'hub' else 'rotorMetres') in (turbine.get('dimensionEstimates') or {})
+            if not estimated and turbine.get(displayed) != by_id.get(turbine.get('id'), {}).get(source):
                 errors.append('Wind model differs from register: '+str(turbine.get('id'))+' '+displayed)
     stops = scene.get('stops', [])
     if not stops or not any(stop.get('kind') == 'town' for stop in stops):
@@ -146,6 +148,9 @@ def check(directory, place):
                     powers = [by_id[unit].get('brutto_kw') for unit in units]
                     if any(not finite(power) for power in powers) or abs(sum(powers)-capacity) > .001:
                         errors.append('Wind capacity differs from linked units: '+sid)
+    for turbine in turbines:
+        if not finite(turbine.get('hub')) or not finite(turbine.get('rotor')) or turbine['hub'] <= 0 or turbine['rotor'] <= 0:
+            errors.append('Turbine without drawable dimensions: '+str(turbine.get('id')))
     if not scene.get('buildings'):
         errors.append('Real buildings missing; not a complete hero stage')
     for field in ('buildingLicense', 'terrainLicense', 'sources'):
