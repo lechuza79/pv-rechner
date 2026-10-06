@@ -55,9 +55,13 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
     supabase
       .from("kommunen_kontakt")
       .select("region_id")
-      .not("contacted_at", "is", null)
+      // Released when PLANNED (charge assigned), not only when sent: the
+      // preflight opens every page days before the send, and a page rendered
+      // while still closed stayed "noindex" in the cache for a day
+      // (06.10.2026, all 95 pages of that day's send).
+      .or("contacted_at.not.is.null,charge.not.is.null")
       .neq("outreach_status", "gesperrt")
-      .limit(1000),
+      .limit(5000),
     "angeschriebeneGemeinden",
     DB_SOFT_READ_TIMEOUT_MS,
   );

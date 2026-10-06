@@ -15,6 +15,8 @@ import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { windgemeinde } from "../../../../../lib/windgemeinden";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
+import { revalidateTag } from "next/cache";
+import { OUTREACH_VERLINKER_TAG } from "../../../../../lib/atlas-outreach-freigabe";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
 // Läuft in der Next-Umgebung, weil der Aufhänger aus dem Award-Rechenkern kommt
@@ -193,6 +195,9 @@ export async function POST(req: NextRequest) {
         .eq("outreach_status", "offen"); // niemals einen laufenden Vorgang überschreiben
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    // Planned towns are released for search engines right away (see
+    // lib/atlas-outreach-freigabe.ts), before the preflight renders them.
+    revalidateTag(OUTREACH_VERLINKER_TAG);
   }
 
   const namen = new Map(kandidaten.map((k) => [k.regionId, k.name]));
