@@ -87249,7 +87249,7 @@
   {
     "regionId": "08226032",
     "name": "Hockenheim",
-    "checkedAt": "2026-10-06T04:40:00Z",
+    "checkedAt": "2026-10-06T04:20:00Z",
     "recheckAt": "2027-01-06T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -87299,7 +87299,7 @@
   {
     "regionId": "08226102",
     "name": "Angelbachtal",
-    "checkedAt": "2026-10-06T04:40:00Z",
+    "checkedAt": "2026-10-06T04:20:00Z",
     "recheckAt": "2027-01-06T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -87331,7 +87331,7 @@
   {
     "regionId": "08226096",
     "name": "Weinheim",
-    "checkedAt": "2026-10-06T04:40:00Z",
+    "checkedAt": "2026-10-06T04:20:00Z",
     "recheckAt": "2026-12-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
