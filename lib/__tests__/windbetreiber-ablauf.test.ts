@@ -32,7 +32,7 @@ describe("Windbetreiber-Lauf", () => {
     expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
     expect(rumpf("keine")).toMatch(/notiz\.length < 40/);
     // No other place sets the website column directly.
-    expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string)/g) ?? []).toEqual([]);
+    expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string|`https:\/\/\$\{d\}`)/g) ?? []).toEqual([]);
   });
 
   it("checks a hand-found website with the same rule as a machine-found one", () => {

@@ -220,6 +220,17 @@ describe("Klasse 28 — kein Lauf überschreibt eine Entscheidung von Hand", () 
   });
 });
 
+describe("Klasse 29 — falsch eingeordnet heißt übergeben, nicht nur markieren", () => {
+  it("hands utilities over as search candidates, measures without --schreiben, skips citizens' companies", () => {
+    const r = lies("scripts/windbetreiber-refresh.ts");
+    const u = r.slice(r.indexOf("async function uebergeben()"), r.indexOf("// ─── Completeness"));
+    expect(u).toMatch(/if \(!flag\("schreiben"\)\) \{ console\.log\("Nur gemessen/);
+    expect(u).toMatch(/herkunft: "suche"/);
+    expect(u).toMatch(/!\/b\(\?:ü\|ue\)rger\/i\.test\(z\.name\)/);
+    expect(u).toMatch(/!bekannt\.has\(z\.website\)/);
+  });
+});
+
 describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   it("a report without the register read fails instead of counting 0 MW", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");

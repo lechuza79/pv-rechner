@@ -11,6 +11,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
+ *   npx tsx scripts/windbetreiber-refresh.ts --uebergeben [--schreiben]  utilities to the utility stock
  *
  * The rules are in lib/windbetreiber.ts (when a website counts) and
  * lib/bestand-abgleich.ts (when a domain belongs to another stock). This script
@@ -589,6 +590,40 @@ async function keinKontakt() {
   console.log(`${domain}: „kein Kontakt" für ${count} Betreiber vermerkt`);
 }
 
+/**
+ * Operators that are utilities by NAME (Stadtwerke, Gemeindewerke, …) and
+ * whose proven website the utility stock does not know: handed over there as
+ * candidates its own checks judge (herkunft 'suche'), the same way the
+ * installer stock handed over 74 utilities (06.10.2026). The utility stock
+ * holds mostly grid companies; these are the parents and sales companies it
+ * lacks. The wind entry stays — a utility that runs turbines is an operator,
+ * and the two stocks may share a domain.
+ */
+const VERSORGER_NAME = /stadtwerk|gemeindewerk|kreiswerk|elektrizit(?:ä|ae)tswerk|energieversorgung|\be-werk|(?:ü|ue)berlandwerk|versorgungsbetrieb/i;
+
+async function uebergeben() {
+  const c = await db();
+  const u = await alle<{ website: string | null }>(c, "utilities", "website", "id");
+  const bekannt = new Set(u.map((x) => organisationsDomain(x.website)).filter(Boolean));
+  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).not("website", "is", null));
+  const jeDomain = new Map<string, Zeile>();
+  // A citizens' company of a utility ("GSW-Stadtwerke Straubing Bürgerenergie")
+  // runs its own site, which is no utility's: only strong cases are handed over.
+  for (const z of zeilen) if (z.website && VERSORGER_NAME.test(z.name) && !/b(?:ü|ue)rger/i.test(z.name) && !bekannt.has(z.website) && !jeDomain.has(z.website)) jeDomain.set(z.website, z);
+  console.log(`${jeDomain.size} Versorger-Websites aus dem Windbestand fehlen im Versorger-Bestand`);
+  for (const [d, z] of jeDomain) console.log(`  → ${d} (${z.name})`);
+  if (!flag("schreiben")) { console.log("Nur gemessen — mit --schreiben übergeben."); return; }
+  for (const [d, z] of jeDomain) {
+    const { error } = await c.from("utilities").insert({
+      name: z.name, typ: /stadtwerk|gemeindewerk|kreiswerk/i.test(z.name) ? "stadtwerk" : "regionalversorger",
+      website: `https://${d}`, status: "offen", herkunft: "suche",
+      notiz: `aus den Windparkbetreibern übernommen am ${HEUTE}: betreibt Windräder (${z.mastr_nr}), Website am Impressum belegt`,
+    });
+    if (error) throw new Error(`utilities ${d}: ${error.message}`);
+  }
+  console.log(`${jeDomain.size} als Kandidaten übergeben`);
+}
+
 // ─── Completeness ─────────────────────────────────────────────────────────────
 
 async function stand() {
@@ -749,6 +784,7 @@ async function main() {
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
   if (flag("kein-kontakt")) return keinKontakt();
+  if (flag("uebergeben")) return uebergeben();
   console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 15).join("\n"));
 }
 
