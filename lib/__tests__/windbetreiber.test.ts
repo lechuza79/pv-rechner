@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
+import { plzNorm, telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -59,6 +59,19 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@gmx.de", "04835-9728773")).toBeNull();
     expect(belegseiteTraegt("Kontakt Spedition Tel. 04835 9728773", a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")).toBeNull();
     expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9738773")).toBeNull();
+  });
+
+  it("reads a postcode with a country prefix or a British one (Momentum, Roskilde)", () => {
+    expect(plzNorm("DK-4000")).toBe("4000");
+    expect(plzNorm("D-24814")).toBe("24814");
+    expect(plzNorm("EC1R 9HJ")).toBe("ec1r9hj");
+    expect(plzNorm("Musterstadt")).toBe("");
+    const a = akteur("K/S Vindinvest 20", "Kobenhavnsvej", "81", "DK-4000");
+    expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 81 4000 Roskilde", a, "momentum.dk")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 79 4000 Roskilde", a, "momentum.dk")).toBeNull();
+    const uk = akteur("Windpark Example Ltd", "Farringdon Road", "10", "EC1R 9HJ");
+    expect(impressumBelegt("Registered office 10 Farringdon Road London EC1R 9HJ", uk, "example.co.uk")).toBeNull();
+    expect(impressumBelegt("Registered office Farringdon Road 10, London EC1R 9HJ", uk, "example.co.uk")?.wie).toBe("anschrift");
   });
 
   it("knows an extension in the same number block, and nothing looser (BGZ, Windhelfer)", () => {

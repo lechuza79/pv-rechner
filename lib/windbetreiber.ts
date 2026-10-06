@@ -124,13 +124,26 @@ const STRASSENART = /(?:str|weg|platz|allee|ring|damm|gasse|ufer|chaussee|markt|
 /** Five digits in Germany, four for Danish, Austrian and Swiss operators (Hydrovind VI, Støvring — manual pass 06.10.2026). */
 const POSTLEITZAHL = /^\d{4,5}$/;
 
+/**
+ * The register's postcode as it stands in an imprint: without a country prefix
+ * ("DK-4000" — 19 Danish operators never reached the address check, manual
+ * pass 06.10.2026), British ones lower-case without the space ("EC1R 9HJ"),
+ * as the compacted imprint text has them. "" when it is none of these.
+ */
+export function plzNorm(roh: string | null | undefined): string {
+  const p = (roh ?? "").trim().replace(/^[A-Za-z]{1,3}\s*-\s*/, "");
+  if (POSTLEITZAHL.test(p)) return p;
+  if (/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(p)) return p.toLowerCase().replace(/\s+/g, "");
+  return "";
+}
+
 const STRASSE = (s: string) => falten(s).replace(/strasse|str\./g, "str").replace(/[^a-z0-9]/g, "");
 
 /** A key for "same register address". Used to group, never as proof. */
 export function anschriftSchluessel(a: Akteur): string | null {
   const s = STRASSE(a.Strasse ?? "");
-  const plz = (a.Postleitzahl ?? "").trim();
-  if (!s || !POSTLEITZAHL.test(plz)) return null;
+  const plz = plzNorm(a.Postleitzahl);
+  if (!s || !plz) return null;
   return `${s}|${(a.Hausnummer ?? "").toLowerCase().replace(/\s+/g, "")}|${plz}`;
 }
 
@@ -191,8 +204,8 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // Digit groups keep a "|" between them ("12-16" → "12|16"), so "1" can never
   // read as the start of "12"; letters stay glued ("12 a" → "12a").
   const nr = (a.Hausnummer ?? "").toLowerCase().replace(/(\d)[^a-z0-9]+(?=\d)/g, "$1|").replace(/[^a-z0-9|]/g, "").replace(/^0$/, "");
-  const plz = (a.Postleitzahl ?? "").trim();
-  if (strasse.length >= 4 && POSTLEITZAHL.test(plz)) {
+  const plz = plzNorm(a.Postleitzahl);
+  if (strasse.length >= 4 && plz) {
     // The SAME spelling rule on both sides. Normalising only the register's
     // "Straße" failed every address on a "…straße" (PNE, enercity, ABO —
     // measured on the first sample, 06.10.2026).
