@@ -18,12 +18,24 @@ class WorkerTests(unittest.TestCase):
     def test_exact_town_beats_other_place(self):
         self.assertEqual(worker.choose_town([node(1,'Dötlingen'),node(2,'Other')],'Dötlingen')['id'],1)
 
-    def test_ambiguous_exact_name_fails_even_with_admin_centre(self):
-        with self.assertRaises(ValueError):worker.choose_town([node(1,'A'),node(2,'A')],'A',{1})
+    def test_mapped_seat_beats_same_named_abstract_node(self):
+        self.assertEqual(worker.choose_town([node(1,'Steinfurt'),node(2,'Burgsteinfurt')],'Steinfurt',{2})['id'],2)
+
+    def test_ambiguous_exact_name_is_resolved_only_by_a_unique_seat(self):
+        self.assertEqual(worker.choose_town([node(1,'A'),node(2,'A')],'A',{1})['id'],1)
+        with self.assertRaises(ValueError):worker.choose_town([node(1,'A'),node(2,'A')],'A')
 
     def test_only_sourced_admin_centre_can_fallback(self):
         self.assertEqual(worker.choose_town([node(1,'Centre')],'Municipality',{1})['id'],1)
         with self.assertRaises(ValueError):worker.choose_town([node(1,'Centre')],'Municipality')
+
+    def test_village_municipality_uses_unique_most_populous_place_only(self):
+        a,b = node(1,'Tuchen'),node(2,'Klobbicke')
+        a['tags']['population'],b['tags']['population'] = '450','300'
+        self.assertEqual(worker.choose_town([a,b],'Breydin')['id'],1)
+        b['tags']['population'] = '450'
+        with self.assertRaises(ValueError):worker.choose_town([a,b],'Breydin')
+        with self.assertRaises(ValueError):worker.choose_town([node(1,'A'),node(2,'B')],'Breydin')
 
     def test_newest_tile_is_independent_of_page_order(self):
         geometry = dict(type='Polygon',coordinates=[[[8,53],[8.01,53],[8.01,53.01],[8,53.01],[8,53]]])

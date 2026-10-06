@@ -22,3 +22,11 @@
 @media(max-width:440px){.tile[data-layout=separate][data-combined=true]{grid-template-columns:1fr;width:250px}}
 
 .chart>[role=status]{font-size:11px;color:var(--atlas-secondary);line-height:1.35;text-align:center;align-self:center}
+
+/* Loading: colours derive from the tile's own text tokens, so they match any scheme. */
+.skeleton{display:block;height:11px;border-radius:6px;background:color-mix(in srgb,var(--atlas-text) 14%,transparent);animation:skeletonPulse 1.4s ease-in-out infinite}
+.info>.skeleton:nth-child(2){height:20px}
+.spinner{display:block;width:36px;height:36px;align-self:center;border-radius:50%;border:3px solid color-mix(in srgb,var(--atlas-text) 14%,transparent);border-top-color:var(--atlas-secondary);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes skeletonPulse{50%{opacity:.5}}
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}.skeleton{animation:none}}

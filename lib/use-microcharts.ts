@@ -14,7 +14,7 @@ export function microchartWind(data:MicrochartData|null,now=Date.now()):WindCond
 /** One request owner; hidden views never start a periodic weather request. */
 export function useMicrocharts(municipality:string|null,districtId?:string,tour?:string,stop?:string){
  const requestKey=municipality?municipality+':'+(districtId??'')+':'+(tour??'')+':'+(stop??''):null;
- const [state,setState]=useState<{municipality:string|null;data:MicrochartData|null}>({municipality:null,data:null});
+ const [state,setState]=useState<{municipality:string|null;data:MicrochartData|null;settled?:boolean}>({municipality:null,data:null});
  const [now,setNow]=useState(Date.now);
  useEffect(()=>{
   setState({municipality:requestKey,data:null});
@@ -28,8 +28,8 @@ export function useMicrocharts(municipality:string|null,districtId?:string,tour?
     const response=await fetch(`/api/windraeder-vorschau/microcharts?${new URLSearchParams({gemeinde:municipality,...(districtId?{kreis:districtId}:{}),...(tour&&stop?{tour,stop}:{})})}`,{signal:request.signal});
     if(!response.ok)throw new Error('Weather unavailable');
     const result=await response.json();
-    if(!disposed){setState({municipality:requestKey,data:result.data});setNow(Date.now());}
-   }catch{if(!disposed)setState({municipality:requestKey,data:null});}
+    if(!disposed){setState({municipality:requestKey,data:result.data,settled:true});setNow(Date.now());}
+   }catch{if(!disposed)setState({municipality:requestKey,data:null,settled:true});}
    finally{clearTimeout(timeout);}
   };
   void load();const timer=setInterval(load,300000),expiry=setInterval(()=>setNow(Date.now()),30000);
@@ -37,5 +37,7 @@ export function useMicrocharts(municipality:string|null,districtId?:string,tour?
   return()=>{disposed=true;controller?.abort();clearInterval(timer);clearInterval(expiry);document.removeEventListener('visibilitychange',load);};
  },[municipality,districtId,tour,stop,requestKey]);
  const data=state.municipality===requestKey?state.data:null;
- return {data,weather:microchartWind(data,now)};
+ // Loading until the first answer for this exact request; a failure is settled, not loading.
+ const loading=Boolean(requestKey)&&!(state.municipality===requestKey&&state.settled);
+ return {data,weather:microchartWind(data,now),loading};
 }

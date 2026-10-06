@@ -28,7 +28,7 @@ export default function HeroLandscapeTour({data,sceneOnly=false,onReady}:{data:L
  }),[data]);
  const weatherId=data.weatherMunicipality??data.municipality;
  const hasParkWeather=Boolean((windStops as Record<string,Record<string,unknown>>)[data.municipality]?.[data.stops[current].id]);
- const {data:microcharts,weather}=useMicrocharts(weatherId,data.stops[current].overview?data.municipality:undefined,hasParkWeather?data.municipality:undefined,hasParkWeather?data.stops[current].id:undefined);
+ const {data:microcharts,weather,loading:weatherLoading}=useMicrocharts(weatherId,data.stops[current].overview?data.municipality:undefined,hasParkWeather?data.municipality:undefined,hasParkWeather?data.stops[current].id:undefined);
  const stop=data.stops[current],next=stop.overview?Math.max(1,data.stops.findIndex(p=>p.kind!=='town')):(current+1)%data.stops.length;
  const fly=(index:number)=>{
   if(flying||index===current)return;
@@ -39,7 +39,7 @@ export default function HeroLandscapeTour({data,sceneOnly=false,onReady}:{data:L
  };
  const scene=
    <div data-map-hero-stage className={styles.municipalScene} data-flying={flying} data-building-map data-ready={ready}>
-    <RegionScene {...data} locations={locations} locationCard={{id:stop.id,visible:true,content:<LocationMicroCard name={stop.name} municipality={weatherId} placeName={stop.kind==='town'?stop.name:data.name} kind={stop.kind} weather={weather} microcharts={microcharts} capacityKw={stop.capacityKw}/>}}
+    <RegionScene {...data} locations={locations} locationCard={{id:stop.id,visible:true,content:<LocationMicroCard name={stop.name} municipality={weatherId} placeName={stop.kind==='town'?stop.name:data.name} kind={stop.kind} weather={weather} microcharts={microcharts} loading={weatherLoading} capacityKw={stop.capacityKw}/>}}
      values={values} heightEnvelope={envelope} selected="" hovered={null} windScale={1} windConditions={weather}
      onHover={()=>{}} onSelect={id=>{const i=data.stops.findIndex(p=>p.id===id);if(i>=0)fly(i);}}
      onFlight={(moving,arrived)=>{setFlying(moving);if(arrived)setCurrent(pending.current);}}

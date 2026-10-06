@@ -1,3 +1,4 @@
+import {landscapePlaces} from './landscape-places';
 import { insidePolygon, polygons, regionProjection, type Point, type RegionGeometry } from "./region-perspektive";
 
 export const WIND_BUFFER_M = 500;
@@ -7,7 +8,8 @@ export const WIND_TOWNS = [
   { id: "03452011", name: "Hinte" }, { id: "01055046", name: "Fehmarn" },
   { id: "12060250", name: "Sydower Fließ" }, { id: "06632009", name: "Heringen (Werra)" },
 ] as const;
-export const isWindWeatherTown=(id:string)=>["06440016","09679147","07312000","03458009","07335022","03458014","09679170"].includes(id)||WIND_TOWNS.some(t=>t.id===id);
+// Every prepared single-municipality stage is its own weather town; districts name theirs explicitly.
+export const isWindWeatherTown=(id:string)=>["06440016","09679147","07312000","03458009","07335022","03458014","09679170"].includes(id)||WIND_TOWNS.some(t=>t.id===id)||(id.length===8&&id in landscapePlaces);
 export type WindTurbine = {
   mastr_nr: string; region_id: string | null; status: string; lage: string | null;
   lat: number | null; lon: number | null; nabenhoehe_m: number | null; rotor_m: number | null;

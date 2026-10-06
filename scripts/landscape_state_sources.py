@@ -89,9 +89,10 @@ def nrw_tiles(terrain, buildings, fetch=_get):
             lod[(int(match[1]), int(match[2]))] = name
     jobs = []
     for cell in grid_cells(terrain):
-        if cell not in dgm:
-            raise ValueError('NRW terrain tile missing for cell %s' % (cell,))
-        jobs.append(('dgm', NRW_DGM+dgm[cell][1]))
+        # Cells across the state/national border have no tile; the preparer
+        # trims or rejects the resulting edge, it is never filled in.
+        if cell in dgm:
+            jobs.append(('dgm', NRW_DGM+dgm[cell][1]))
     # Cells without buildings are legitimately absent from the LoD2 index.
     jobs += [('lod', NRW_LOD+lod[cell]) for cell in grid_cells(buildings) if cell in lod]
     return jobs
@@ -101,14 +102,28 @@ def bb_index(url, fetch=_get):
     return set(re.findall(r'href="([a-z0-9]+_33\d+-\d+\.zip)"', fetch(url).text))
 
 
+BB_WCS = 'https://isk.geobasis-bb.de/ows/dgm_wcs'
+
+
+def bb_terrain_url(terrain, resolution=5):
+    """One WCS 2.0.1 request for the official DGM1 (served resampled to 5 m) over the terrain box.
+
+    The download portal throttles 1 km tiles to a few per minute; the coverage
+    service returns the same model in one response (spot checks agree within
+    ~0.15 m with the 1 m tiles). The scene grid is 20 m.
+    """
+    from shapely.ops import transform
+    native = transform(Transformer.from_crs(25832, 25833, always_xy=True).transform, terrain).bounds
+    step = 100
+    minx, miny = math.floor(native[0]/step)*step-step, math.floor(native[1]/step)*step-step
+    maxx, maxy = math.ceil(native[2]/step)*step+step, math.ceil(native[3]/step)*step+step
+    return (BB_WCS+'?SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=bb_dgm&FORMAT=image/tiff'
+            '&SUBSET=x(%d,%d)&SUBSET=y(%d,%d)&SCALEFACTOR=%s' % (minx, maxx, miny, maxy, 1/resolution))
+
+
 def bb_tiles(terrain, buildings, fetch=_get):
-    dgm, lod = bb_index(BB_DGM, fetch), bb_index(BB_LOD, fetch)
-    jobs = []
-    for e, n in grid_cells(terrain, 25832, 25833):
-        name = 'dgm_33%d-%d.zip' % (e, n)
-        if name not in dgm:
-            raise ValueError('Brandenburg terrain tile missing: '+name)
-        jobs.append(('dgm', BB_DGM+name))
+    lod = bb_index(BB_LOD, fetch)
+    jobs = [('dgm', bb_terrain_url(terrain))]
     for e, n in grid_cells(buildings, 25832, 25833):
         name = 'lod2_33%d-%d.zip' % (e, n)
         if name in lod:
@@ -200,8 +215,27 @@ def convert_dgm_mosaic(native, destination, resolution=5):
         output.write(result, 1)
 
 
+def bb_wcs_terrain(raw, destination):
+    """Tag the WCS response (requested in EPSG:25833, returned without CRS) with its reference."""
+    import rasterio
+    from rasterio.crs import CRS
+    with rasterio.open(raw) as source:
+        if source.crs is not None and 'UTM zone 33N' not in source.crs.to_wkt():
+            raise ValueError('Unexpected WCS terrain reference')
+        if abs(source.transform.a-5) > 1e-6 or abs(source.transform.e+5) > 1e-6:
+            raise ValueError('Unexpected WCS terrain resolution')
+        data = source.read()
+        if data.size == 0 or (data[0] == -9999).all():
+            raise ValueError('WCS terrain empty')
+        profile = dict(source.profile, driver='GTiff', crs=CRS.from_epsg(25833), nodata=-9999.0)
+    with rasterio.open(destination, 'w', **profile) as output:
+        output.write(data)
+
+
 def bb_intake(raw, kind, destination):
     """Extract the single data member of a Brandenburg zip; buildings are converted here."""
+    if kind == 'dgm' and not zipfile.is_zipfile(raw):
+        return bb_wcs_terrain(raw, destination)
     with zipfile.ZipFile(raw) as archive:
         wanted = '.tif' if kind == 'dgm' else '_geb.gml'
         members = [n for n in archive.namelist() if n.endswith(wanted)]

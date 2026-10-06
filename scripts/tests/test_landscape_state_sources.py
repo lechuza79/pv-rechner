@@ -36,16 +36,18 @@ class StateSourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             states.convert_gml(out)
 
-    def test_brandenburg_terrain_gap_fails_buildings_gap_is_allowed(self):
+    def test_brandenburg_terrain_is_one_wcs_request_covering_the_box(self):
         area = states.box(805000, 5760000, 805500, 5760500)
-        cells = states.grid_cells(area, 25832, 25833)
-        dgm = ''.join('<a href="dgm_33%d-%d.zip">' % c for c in cells)
-        def fetch(url):
-            return Response(dgm if 'dgm' in url else '')
-        jobs = states.bb_tiles(area, area, fetch)
-        self.assertEqual({k for k, _ in jobs}, {'dgm'})
-        with self.assertRaises(ValueError):
-            states.bb_tiles(area, area, lambda url: Response(''))
+        jobs = states.bb_tiles(area, area, lambda url: Response(''))
+        self.assertEqual([k for k, _ in jobs], ['dgm'])
+        url = jobs[0][1]
+        self.assertTrue(url.startswith(states.BB_WCS+'?'))
+        native = states.Transformer.from_crs(25832, 25833, always_xy=True)
+        x0, y0 = native.transform(805000, 5760000)
+        import re
+        xs = [int(v) for v in re.search(r'x\((\d+),(\d+)\)', url).groups()]
+        ys = [int(v) for v in re.search(r'y\((\d+),(\d+)\)', url).groups()]
+        self.assertTrue(xs[0] < x0 < xs[1] and ys[0] < y0 < ys[1])
 
     def test_nrw_takes_newest_terrain_year(self):
         area = states.box(330100, 5700100, 330200, 5700200)

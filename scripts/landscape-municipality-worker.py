@@ -59,10 +59,55 @@ def read_boundary(root, ags):
 def choose_town(elements, name, admin_ids=()):
     nodes = [e for e in elements if e['type']=='node' and e.get('tags', {}).get('place') in ('city','town','village')]
     exact = [e for e in nodes if e['tags'].get('name')==name]
-    choices = exact if exact else [e for e in nodes if e['id'] in admin_ids]
+    seat = [e for e in nodes if e['id'] in admin_ids]
+    # The mapped seat wins: merged municipalities often carry a same-named node
+    # at an abstract centre in open land (Steinfurt: 85 buildings around it).
+    choices = seat if len(seat)==1 else exact if exact else seat
+    if not choices and not exact:
+        # Municipalities made of villages often lack a node of their own name and
+        # an admin centre. Use the uniquely most populous mapped village (sourced
+        # OSM population), never an arbitrary or nearest one.
+        def population(node):
+            try:return int(str(node['tags'].get('population','')).replace('.','').replace(' ',''))
+            except ValueError:return None
+        counted = [(population(e),e) for e in nodes if population(e)]
+        if counted:
+            top = max(value for value,_ in counted)
+            choices = [e for value,e in counted if value==top]
     if len(choices)!=1 or not choices[0]['tags'].get('name'):
         raise ValueError('Start town missing or ambiguous; no arbitrary fallback')
     return choices[0]
+
+
+def densest_village(path, elements, boundary, scratch, radius=550, minimum=20):
+    """Last resort for multi-village municipalities: the mapped village with the
+    most OSM buildings within the town window. Sourced and deterministic; a tie
+    or a near-empty winner still fails."""
+    import osmium
+    nodes = [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place') in ('town','village') and e['tags'].get('name')]
+    # Some municipalities consist only of mapped hamlets (Zeschdorf, Fichtenhöhe).
+    nodes = nodes or [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place')=='hamlet' and e['tags'].get('name')]
+    if not nodes:return None
+    centres = [metric.transform(e['lon'],e['lat']) for e in nodes]
+    counts = [0]*len(nodes)
+    minx,miny,maxx,maxy = boundary.bounds
+    cache = scratch/'building-locations.cache'
+    processor = osmium.FileProcessor(str(path)).with_locations('sparse_file_array,'+str(cache)).with_filter(osmium.filter.KeyFilter('building'))
+    try:
+        for entity in processor:
+            if not isinstance(entity, osmium.osm.Way) or not len(entity.nodes) or not entity.nodes[0].location.valid():continue
+            lon,lat = entity.nodes[0].location.lon,entity.nodes[0].location.lat
+            if not (minx-.02<=lon<=maxx+.02 and miny-.02<=lat<=maxy+.02):continue
+            x,y = metric.transform(lon,lat)
+            for index,(cx,cy) in enumerate(centres):
+                if (x-cx)**2+(y-cy)**2<=radius**2:counts[index]+=1
+    finally:
+        del processor
+        cache.unlink(missing_ok=True)
+    top = max(counts)
+    if top<minimum or counts.count(top)!=1:return None
+    chosen = nodes[counts.index(top)]
+    return dict(chosen,selection=dict(rule='most-osm-buildings-within-550m',buildings=top,candidates=len(nodes)))
 
 
 def extract_osm(path, boundary, ags, scratch):
@@ -82,7 +127,7 @@ def extract_osm(path, boundary, ags, scratch):
             elif isinstance(entity, osmium.osm.Node) and tags.get('place') and entity.location.valid():
                 if boundary.covers(Point(entity.location.lon,entity.location.lat)):
                     context.append(dict(type='node',id=entity.id,lon=entity.location.lon,lat=entity.location.lat,
-                                        tags={k:v for k,v in tags.items() if k in ('name','place')}))
+                                        tags={k:v for k,v in tags.items() if k in ('name','place','population')}))
             elif isinstance(entity, osmium.osm.Way) and (tags.get('waterway') or tags.get('natural')=='water'):
                 if len(entity.nodes)>1 and all(n.location.valid() for n in entity.nodes):
                     points = [dict(lon=n.lon,lat=n.lat) for n in entity.nodes]
@@ -176,7 +221,7 @@ def download(inputs, prefix, kind, url, reuse):
 
 def intake(inputs, prefix, kind, url, reuse):
     """Download a native-reference tile once and derive the UTM32 file the preparer reads."""
-    if urlparse(url).scheme!='https' or Path(urlparse(url).path).suffix!='.zip':raise ValueError('Unsupported tile URL')
+    if urlparse(url).scheme!='https' or (Path(urlparse(url).path).suffix!='.zip' and not url.startswith(states.BB_WCS+'?')):raise ValueError('Unsupported tile URL')
     stem = hashlib.sha256(url.encode()).hexdigest()[:24]
     # Native terrain tiles must not match the preparer's '<prefix>-dgm*.tif' glob.
     derived = inputs/(prefix+('-native-' if kind=='dgm' else '-lod-')+stem+('.tif' if kind=='dgm' else '.gml'))
@@ -239,7 +284,11 @@ def main():
     with tempfile.TemporaryDirectory(prefix=prefix+'-',dir=root/'staging') as temp:
         stage = Path(temp);out = stage/'public/geo/landscape-tours'/ags;out.mkdir(parents=True)
         context,candidates,admin_ids = extract_osm(args.osm_file,geometry,ags,stage)
-        town = choose_town(context,feature['properties']['name'],admin_ids)
+        try:town = choose_town(context,feature['properties']['name'],admin_ids)
+        except ValueError:
+            town = densest_village(args.osm_file,context,geometry,stage)
+            if not town:raise
+            print('Start town by OSM building density:',town['tags']['name'],town['selection'],flush=True)
         solar = json.loads((inputs/'national-register/solar.json').read_text())
         if solar.get('status')!='complete' or solar.get('kind')!='solar':raise ValueError('Complete solar snapshot required')
         features,leads = shared.solar_evidence(candidates,[u for u in units if u['kind']=='solar'],geometry)
@@ -252,6 +301,7 @@ def main():
         gaps += [dict(kind='official-boundary-verification',unitId=u['id'],status='research-required') for u in units if u.get('assignmentStatus')=='boundary-review-required']
         gaps.append(dict(kind='provisional-municipality-boundary',status='official-verification-pending'))
         if not rows:gaps.append(dict(kind='no-active-wind-in-municipality',status='town-and-solar-stage-only'))
+        if town.get('selection'):gaps.append(dict(kind='start-town-by-building-density',town=town['tags']['name'],**town['selection']))
         shared.save(out/'data-gaps.json',dict(municipality=ags,gaps=gaps,stageReady=False,browserAcceptance='pending'))
         shared.save(out/'assignment-audit.json',dict(municipality=ags,cadastralVerification=False,
             nearBoundaryUnits=[u['id'] for u in units if u.get('assignmentStatus')=='boundary-review-required'],
@@ -265,6 +315,14 @@ def main():
         document = dict(elements=context,sourceUrl=osm_source,sourceSha256=osm_hash,sourceFile=args.osm_file.name)
         shared.save(out/'context-source.json',document);shared.save(inputs/(ags+'-osm.json'),document)
         terrain,buildings = coverage(rows,town,features,geometry);bounds = transform(geographic.transform,terrain).bounds
+        if adapter['key']=='brandenburg':
+            # The LGB terrain service also covers Berlin; its data needs its own credit.
+            berlin = transform(metric.transform,shape(read_boundary(root,'11000000')['geometry']))
+            if terrain.intersects(berlin):
+                note = '; © Geoportal Berlin, dl-de/by-2-0'
+                preparation = json.loads((out/'preparation.json').read_text())
+                preparation['terrainLicense'] += note
+                shared.save(out/'preparation.json',preparation)
         reuse = {}
         for manifest in sorted(inputs.glob('*sources.json')):
             for entry in json.loads(manifest.read_text()):
@@ -297,7 +355,7 @@ def main():
             try:states.convert_dgm_mosaic([inputs/e['file'] for e in native],partial);partial.replace(mosaic)
             finally:partial.unlink(missing_ok=True)
             manifest = [e for e in manifest if '-native-' not in e['file']]+[dict(file=mosaic.name,
-                url=states.BB_DGM,sha256=shared.digest(mosaic),derivation='Mosaic of listed UTM33 DGM1 tiles, reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
+                url=native[0]['url'] if len(native)==1 else states.BB_DGM,sha256=shared.digest(mosaic),derivation='Official LGB DGM (UTM33, 5 m), reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
                 derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native])]
         shared.save(inputs/(prefix+'-sources.json'),manifest)
         # __file__-derived roots must point to isolated copies, not script symlinks.
