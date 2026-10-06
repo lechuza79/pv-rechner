@@ -505,6 +505,22 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   schon belegte Website ändert nichts. Nach einer Regeländerung zieht die
   Neubewertung auch eine geänderte Belegart auf derselben Website nach.
 
+### 56. Durchwahl gegen Zentrale
+- **Anlass:** 06.10.2026 — Register „04841 9813321", Impressum „04841 9813-0":
+  dieselbe Firma, die Telefonregel (Klasse 53) verlangte die gleiche Nummer.
+- **Sicherung (Verwendung):** Eine Nummer, die im Impressum ausdrücklich als
+  Zentrale („-0") steht, deckt ihre Durchwahlen; eine bloß ähnliche Nummer nicht.
+
+### 57. Eine Anschrift im Gewerbehof
+- **Anlass:** 06.10.2026 — „Windkraft Rühenfeld" stand über die Anschrift auf der
+  Seite eines Kunststoff-Spritzgießers, eines von sechs Unternehmen unter
+  derselben Adresse.
+- **Sicherung:** keine Maschinenregel — gemessen: Eine Sperre „Anschrift auf
+  Seite ohne Energiebezug" träfe 121 Belege, die meisten echte Verwalter
+  (Fondsgesellschaften, Banken, Ämter, Familienbetriebe). Stattdessen werden
+  genau diese 121 von Hand gegengelesen; die Liste erzeugt eine Messung, die bei
+  jedem Lauf wiederholbar ist (Anleitung, Schritt Gegenlesen).
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
