@@ -591,7 +591,47 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   });
   log();
   log(`${raus} von ${zuSenden.length} versendet · Protokoll: ${pfad}`, "ok");
+  if (raus > 0) {
+    const gesendet = new Set(protokoll.filter((e) => e.gesendet).map((e) => e.region_id));
+    const seiten = zuSenden.filter((b) => gesendet.has(b.region_id)).map((b) => b.seite_url).filter((u): u is string => !!u);
+    if (!(await seitenFreischalten(seiten))) process.exitCode = 1;
+  }
+}
 
+/**
+ * The letter links the town page, so the send releases it for search engines.
+ * The release is a cached list; without invalidating it the pages keep their
+ * "noindex" for up to a day (06.10.2026: all 95 still noindex hours later).
+ * Measured on real pages afterwards — a 200 from the route proves nothing.
+ */
+async function seitenFreischalten(seiten: string[]): Promise<boolean> {
+  const basis = arg("basis") ?? "https://solar-check.io";
+  let offen = [...new Set(seiten.map((u) => u.split("?")[0]))];
+  // EVERY sent page is checked, not a sample — the release is the point of
+  // this step, and a sample of three let 92 others go unseen. A failed check
+  // retries the release; after three rounds the run ends red.
+  for (let runde = 1; runde <= 3 && offen.length; runde++) {
+    const res = await fetch(`${basis}/api/atlas/revalidate?umfang=outreach`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }).catch(() => null);
+    if (!res?.ok) log(`Freischaltung: Aufruf fehlgeschlagen (${res?.status ?? "kein Abruf"}), Runde ${runde}`, "warn");
+    await new Promise((r) => setTimeout(r, 5000 * runde));
+    const nochZu: string[] = [];
+    for (const url of offen) {
+      const r = await fetch(url, { redirect: "manual", headers: { "User-Agent": "solar-check-health-check" } }).catch(() => null);
+      const befund = indexierbarBefund(r?.status ?? 0, r ? await r.text() : "");
+      if (befund) nochZu.push(url);
+    }
+    offen = nochZu;
+  }
+  if (offen.length) {
+    log(`${offen.length} von ${seiten.length} Ortsseiten stehen nach drei Freischalt-Runden noch auf noindex:`, "err");
+    for (const u of offen) log(`  ${u}`, "err");
+    return false;
+  }
+  log(`Alle ${seiten.length} Ortsseiten der verschickten Briefe sind für Google freigegeben (einzeln geprüft).`, "ok");
+  return true;
 }
 
 async function probemail(an: string, p: Paket): Promise<void> {
@@ -728,11 +768,6 @@ async function vorflug(p: Paket, limit: number): Promise<boolean> {
         try {
           const r = await fetch(u, { headers: { "user-agent": "solar-check-health-check" }, redirect: "follow" });
           if (r.status !== 200) kaputt.push(`${r.status} ${u}`);
-          // A town page the letter links must already be open for search
-          // engines (released when the charge was planned).
-          else if (/\/solar-atlas\/[^/]+\/[^/]+\/[^/?]+/.test(u) && indexierbarBefund(200, await r.text())) {
-            kaputt.push(`noindex ${u}`);
-          }
         } catch (e) {
           kaputt.push(`${(e as Error).message} ${u}`);
         }
