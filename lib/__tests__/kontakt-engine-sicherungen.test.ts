@@ -204,6 +204,16 @@ describe("Vorflug — jede bekannte Absturzursache vor dem Start", () => {
     expect(lies("scripts/lib/vorflug.ts")).toMatch(/const bereit = ergebnisse\.every\(\(e\) => e\.ok\)/);
   });
 
+  it("the unattended run starts with the preflight and stops when it is not ready", () => {
+    const n = lies("scripts/nacht-windbetreiber.sh");
+    const vorflug = n.indexOf("--vorflug");
+    expect(vorflug).toBeGreaterThan(-1);
+    for (const schritt of ["--register", "--neu-bewerten", "--impressum", "--mode=research", "--mode=apply"]) expect(n.indexOf(schritt), schritt).toBeGreaterThan(vorflug);
+    expect(n).toMatch(/ABBRUCH: Vorflug nicht bereit[\s\S]*exit 1/);
+    // Both halves of a parallel step report their own failure.
+    expect(n).toMatch(/wait "\$pid" \|\| echo "!!! FEHLGESCHLAGEN/);
+  });
+
   it("a check that throws counts as failed, never as skipped", () => {
     expect(lies("scripts/lib/vorflug.ts")).toMatch(/catch \(e\) \{ ergebnisse\.push\(\{ name: c\.name, ok: false/);
   });

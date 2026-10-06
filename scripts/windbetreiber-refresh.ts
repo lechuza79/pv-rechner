@@ -1,7 +1,7 @@
 /**
  * Wind farm operators in Germany — from the register to a proven website.
  *
- *   npx tsx scripts/windbetreiber-refresh.ts --vorflug                  BEREIT / NICHT BEREIT before any run
+ *   npx tsx scripts/windbetreiber-refresh.ts --vorflug [--vor-register]  BEREIT / NICHT BEREIT before any run
  *   npx tsx scripts/windbetreiber-refresh.ts --setup
  *   npx tsx scripts/windbetreiber-refresh.ts --register [--neu-lesen]   operators from the export
  *   npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten             re-judge every stored check under today's rules
@@ -671,14 +671,16 @@ async function vorflugLauf() {
       const fehlt = await fehlendeSpalten(await db(), t, spaltenAusDdl(WINDBETREIBER_SQL, t));
       return { ok: !fehlt.length, detail: fehlt.length ? `fehlt: ${fehlt.join(", ")} — erst --setup` : "alle da" };
     } })),
-    { name: "Registerstand gelesen und geschrieben", pruefen: async () => {
+    // The night run reads the register right after the preflight; there the
+    // check would block the very step that brings the register up to date.
+    ...(flag("vor-register") ? [] : [{ name: "Registerstand gelesen und geschrieben", pruefen: async () => {
       const st = registerCache();
       if (!st) return { ok: false, detail: "kein Registerstand — erst --register" };
       const { data, error } = await (await db()).from("windbetreiber").select("register_stand").eq("aktiv", true).order("register_stand", { ascending: false }).limit(1);
       if (error) return { ok: false, detail: error.message };
       const tag = registerTag(st.export);
       return { ok: data?.[0]?.register_stand === tag, detail: `gelesen ${st.export}, in der Datenbank ${data?.[0]?.register_stand ?? "nichts"}` };
-    } },
+    } } satisfies Check]),
     { name: "Keine offenen Entscheidungen zwischen Beständen", pruefen: async () => {
       // A candidate in conflict with another stock waits for a person
       // (bestaende-abgleich --entscheiden); until then the operator stays open.
