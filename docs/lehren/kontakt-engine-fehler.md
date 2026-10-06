@@ -475,6 +475,36 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   und MELDET Abweichungen, ändert aber nichts. Fehlt die Seite, sagt sie „nicht
   nachprüfbar" mit Zahl.
 
+### 53. Der Verwalter, den nur die Registerangaben verraten
+- **Anlass:** 06.10.2026, fünf Prüfblöcke nacheinander — Windinvest, EFI Wind,
+  Terrawatt, Brecht & Hanle, Cimbergy: Das Registerpostfach liegt auf der
+  Domain, das Registertelefon steht in deren Impressum, aber das Impressum nennt
+  weder Gesellschaft noch Anschrift.
+- **Sicherung (Verwendung):** Postfach auf der Domain UND Telefon im eigenen
+  Impressum belegen die Website — als eigene, schwächere Belegart, nur auf einer
+  Seite mit Energiebezug, nie auf einer Beraterseite. Der erste Lauf zeigte drei
+  Fehlgriffe, alle jetzt gesperrt: die branchenfremde Firma des Eigentümers
+  (Spedition, IT, Personalberatung), und sechs Betreiber, deren Namens- oder
+  Anschriftsbeleg verdrängt wurde — die neue Art steht deshalb im Rang unter
+  jedem Beleg, der den Betreiber selbst nennt.
+
+### 54. Hausnummernbereiche und Landschaftsnamen
+- **Anlass:** 06.10.2026 — „Gartenstr. 28-30" im Impressum, „Gartenstraße 30"
+  im Register; „Mittelholstein" als Marke belegte die Seite eines Anlagevermittlers.
+- **Sicherung (Verwendung):** Ein Bereich bis 20 Nummern deckt die
+  Einzelnummer, nur mit Postleitzahl dahinter; Landschaftsnamen sind keine Marke.
+
+### 55. Eine Handübernahme überschreibt eine andere
+- **Anlass:** 06.10.2026 — ein Sammellauf über die Domain eines Betriebsführers
+  ersetzte die eigene Website eines Bürgerwindparks, die ein Prüfer Minuten
+  vorher belegt hatte; ein erfolgloser Zweitversuch überschrieb den gespeicherten
+  Beleg einer stehenden Website (Waabs, in der Vollständigkeitsprüfung als
+  Verstoß aufgefallen).
+- **Sicherung (Verwendung):** Eine belegte andere Website wird nur mit
+  ausdrücklichem Ersetzen-Schalter ersetzt; ein erfolgloser Versuch auf die
+  schon belegte Website ändert nichts. Nach einer Regeländerung zieht die
+  Neubewertung auch eine geänderte Belegart auf derselben Website nach.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
