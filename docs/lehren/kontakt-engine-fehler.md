@@ -649,6 +649,12 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   die sie nach dem Abruf weiterleitet; geprüft erst nach dem ersten Abruf, weil
   vorher das Ziel nicht bekannt ist. Ablauf-Test.
 
+### 73. Ein verirrtes „+" in der Registernummer
+- **Anlass:** 06.10.2026 — Register „0421 6+9 19 82-0"; das „+" mitten in der
+  Nummer wurde als Ländervorwahl gelesen und schnitt Ziffern ab.
+- **Sicherung (Verwendung):** Nur ein führendes „+" ist eine Ländervorwahl. Test,
+  Sabotage rot.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
