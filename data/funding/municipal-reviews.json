@@ -87364,5 +87364,309 @@
         "evidenceUrl": "https://www.weinheim.de/startseite/stadtthemen/gefoerderte+klimaschutzmassnahmen.html"
       }
     ]
+  },
+  {
+    "regionId": "08226022",
+    "name": "Gaiberg",
+    "checkedAt": "2026-10-06T06:05:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Gaiberg vergibt 2026 zehn Zuschüsse von je 150 € für Stecker-Solaranlagen (Kauf nach dem 01.01.2026, Budget 1.500 €, Reihenfolge des Antragseingangs, Ausschluss bei KfW-/BAFA-/Landesförderung). Katalogeintrag gaiberg-steckersolar stimmt mit Seite und Richtlinie überein; die am 05.10.2026 gemeldete Seitenbewegung ändert keinen Inhalt. Für Dach-PV, Speicher und Wärmepumpen kein kommunaler Zuschuss.",
+    "searches": [
+      "gaiberg.de: Startseite und Klimaschutz-/Umwelt-Unterseiten nach Technikbegriffen durchsucht (06.10.2026)",
+      "Websuche auf die Domains gaiberg.de, gemeinde-mauer.de, gemeinde-schoenbrunn.de, sinsheim.de beschränkt („Förderung Wärmepumpe Photovoltaik Zuschuss Gemeinde“, 06.10.2026): nur die bekannten Balkonkraftwerk-Programme, keine kommunalen Zuschüsse für Dach-PV, Speicher oder Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gaiberg.de/gemeinde-info/klimaschutz/foerderprogramm-stecker-solaranlagen",
+        "finding": "Am 06.10.2026 gelesen: „Insgesamt vergibt die Gemeinde Gaiberg 10 Zuschüsse in Höhe von je 150 € für neue Anlagen. Das Kaufdatum der Anlage muss nach dem 01.01.2026 liegen.“ Kein Hinweis auf erschöpfte Mittel."
+      },
+      {
+        "url": "https://www.gaiberg.de/fileadmin/Dateien/Website/Bilder/1_Gemeinde_Info/Richtlinie_zur_F%C3%B6rderung_Stecker-Solaranlagen_Gaiberg.pdf",
+        "finding": "Richtlinie im Volltext gelesen: 150 € je Anlage, Budget 1.500 €, endet mit Ausschöpfung (10 Förderungen), eine Anlage je Wohneinheit, Förderung durch KfW/BAFA/Land schließt aus, Unterlagen nach Installation."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gaiberg.de/gemeinde-info/klimaschutz/foerderprogramm-stecker-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "Programmseite am 06.10.2026 gelesen; Inhalt deckt sich mit dem Katalogeintrag gaiberg-steckersolar.",
+        "evidenceUrl": "https://www.gaiberg.de/gemeinde-info/klimaschutz/foerderprogramm-stecker-solaranlagen"
+      }
+    ]
+  },
+  {
+    "regionId": "08226048",
+    "name": "Mauer",
+    "checkedAt": "2026-10-06T06:05:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Mauer fördert Balkonkraftwerke mit 10 % der Anschaffungskosten, höchstens 100 € (Antrag mit Rechnungskopie nach Installation, VDE-konform, kein Rechtsanspruch). Katalogeintrag mauer-balkonkraftwerke unverändert gültig. Für Dach-PV, Speicher und Wärmepumpen kein kommunaler Zuschuss; die Klimaschutzseite verweist nur auf Solarkataster und Beratung.",
+    "searches": [
+      "gemeinde-mauer.de: Startseite und Klimaschutz-/Umwelt-Unterseiten nach Technikbegriffen durchsucht (06.10.2026)",
+      "Websuche auf die Domains gaiberg.de, gemeinde-mauer.de, gemeinde-schoenbrunn.de, sinsheim.de beschränkt („Förderung Wärmepumpe Photovoltaik Zuschuss Gemeinde“, 06.10.2026): nur die bekannten Balkonkraftwerk-Programme, keine kommunalen Zuschüsse für Dach-PV, Speicher oder Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html",
+        "finding": "Am 06.10.2026 gelesen: „Der Gemeinderat hat eine Förderung in Höhe von 10 % der Anschaffungskosten/Anlage (max. 100 €) beschlossen.“ Weitere Abschnitte nur Solarkataster und Hinweise, keine weitere Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-mauer.de/seite/662274/klimaschutz.html",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzseite am 06.10.2026 gelesen; Programm wie im Katalog.",
+        "evidenceUrl": "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html"
+      }
+    ]
+  },
+  {
+    "regionId": "08226081",
+    "name": "Schönbrunn",
+    "checkedAt": "2026-10-06T06:05:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Schönbrunn bezuschusst bei Balkon-PV-Anlagen bis 600 W Zählertausch, Energiesteckdose und Stromkreisprüfung mit höchstens 50 € gegen Rechnung (3.000 € jährlich, Richtlinie bis 31.12.2026). Katalogeintrag schoenbrunn-balkon-pv (ohne Rechenwert) unverändert gültig. Kein kommunaler Zuschuss für Dach-PV, Speicher oder Wärmepumpe gefunden.",
+    "searches": [
+      "gemeinde-schoenbrunn.de: Startseite und Klimaschutz-/Umwelt-Unterseiten nach Technikbegriffen durchsucht (06.10.2026)",
+      "Websuche auf die Domains gaiberg.de, gemeinde-mauer.de, gemeinde-schoenbrunn.de, sinsheim.de beschränkt („Förderung Wärmepumpe Photovoltaik Zuschuss Gemeinde“, 06.10.2026): nur die bekannten Balkonkraftwerk-Programme, keine kommunalen Zuschüsse für Dach-PV, Speicher oder Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-schoenbrunn.de/seite/593686/terminbuchungen.html",
+        "finding": "Am 06.10.2026 gelesen: „fördert eine Anlage pro Wohn- bzw. Nutzungseinheit bis maximal 600 Watt mit 50 EUR. Jährlich stehen hierfür insgesamt 3.000 EUR zur Verfügung.“ Kein Hinweis auf Ende oder Ausschöpfung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-schoenbrunn.de/seite/593686/terminbuchungen.html",
+        "disposition": "reviewed",
+        "reason": "Programmseite am 06.10.2026 gelesen; Inhalt wie im Katalog (Richtlinie unterscheidet die förderfähigen Positionen).",
+        "evidenceUrl": "https://www.gemeinde-schoenbrunn.de/seite/593686/terminbuchungen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "08226085",
+    "name": "Sinsheim",
+    "checkedAt": "2026-10-06T06:05:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Das städtische Balkonkraftwerk-Programm der Stadt Sinsheim (200 €, 15.000 € Topf, seit 01.07.2023) ist ausgeschöpft: 75 Zuschüsse erteilt. Katalogeintrag sinsheim-balkonkraftwerke (ausgeschöpft) gültig. Die Energieberatungsseite nennt für Photovoltaik, Wallbox und Wärme nur Programme von L-Bank, KEA, KfW und BAFA, keinen städtischen Zuschuss.",
+    "searches": [
+      "sinsheim.de: Startseite und Klimaschutz-/Umwelt-Unterseiten nach Technikbegriffen durchsucht (06.10.2026)",
+      "Websuche auf die Domains gaiberg.de, gemeinde-mauer.de, gemeinde-schoenbrunn.de, sinsheim.de beschränkt („Förderung Wärmepumpe Photovoltaik Zuschuss Gemeinde“, 06.10.2026): nur die bekannten Balkonkraftwerk-Programme, keine kommunalen Zuschüsse für Dach-PV, Speicher oder Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sinsheim.de/wirtschaft-bauen-umwelt/umwelt/energieberatung",
+        "finding": "Am 06.10.2026 gelesen: „Die bereitsgestellten Mittel für das Förderprogramm sind vollständig ausgeschöpft. 75 Zuschüsse für Maßnahmen im Stadtgebiet konnten erteilt werden.“ Übrige Förderhinweise nur L-Bank/KEA/Bund."
+      },
+      {
+        "url": "https://www.sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/492/foerderprogramm-fuer-balkonkraftwerke",
+        "finding": "Pressemitteilung 15.06.2023: Beschluss 13.06.2023, 200 € einmalig, 15.000 € Topf, in Kraft 01.07.2023 — historische Grundlage des Programms."
+      },
+      {
+        "url": "https://www.sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/521/foerderprogramm-fuer-balkonkraftwerke",
+        "finding": "Pressemitteilung 12.07.2023: Fragen und Antworten zum Balkon-Programm (Antrag nach Umsetzung, Rechnungsdatum ab 01.07.2023) — keine weitere Förderung."
+      },
+      {
+        "url": "https://www.sinsheim.de/wirtschaft-bauen-umwelt/wirtschaft/wirtschaftsfoerderung/foerderprogramm",
+        "finding": "Am 06.10.2026 gelesen: Wirtschaftsförderungsprogramm „Gründe. Belebe. Sinsheim.“ für Gewerbemieten in der Innenstadt — keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/492/foerderprogramm-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung 2023 gelesen; Programm heute ausgeschöpft.",
+        "evidenceUrl": "https://www.sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/492/foerderprogramm-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/521/foerderprogramm-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "FAQ-Pressemitteilung 2023 gelesen; kein weiteres Programm.",
+        "evidenceUrl": "https://www.sinsheim.de/rathaus-service/aktuelles-presse/pressemitteilungen/521/foerderprogramm-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "sinsheim.de/wirtschaft-bauen-umwelt/wirtschaft/wirtschaftsfoerderung/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Gewerbliche Innenstadtförderung, nicht im Prüfumfang.",
+        "evidenceUrl": "https://www.sinsheim.de/wirtschaft-bauen-umwelt/wirtschaft/wirtschaftsfoerderung/foerderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "08226076",
+    "name": "Sandhausen",
+    "checkedAt": "2026-10-06T06:11:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Sandhausen fördert nach der Richtlinie zur Förderung von Solarenergie (26.06.2023, angepasst 26.02.2024) Dach-PV mit 100 €/kWp (max. 1.000 €), Batteriespeicher mit 100 €/kWh (max. 600 €, höchstens 1 kWh je kWp) und Balkonsolaranlagen mit 50 % der Kosten (max. 200 €). Katalogeintrag sandhausen-foerderprogramme stimmt mit Richtlinie und Antragsformularen überein. Das ältere Programm „Umstellung auf erneuerbare Energien“ (2017, bis 500 €) betrifft nur Solarkollektoren und Biomasseheizungen, nicht Wärmepumpen, ist an das ausgelaufene BAFA-Marktanreizprogramm gekoppelt und steht seit 2024 nicht mehr unter den aktuellen Programmen. Kein kommunaler Wärmepumpenzuschuss.",
+    "searches": [
+      "sandhausen.de: Förderprogramm-Seite, Klimaschutzmanagement, Energieberatung und Neuigkeit „Modernisierungen werden gefördert“ (Sanierungsgebiet Ortskern) gelesen (06.10.2026)",
+      "Websuche auf sandhausen.de beschränkt („Heizungsumstellung Förderung fossile Energieträger Zuschuss“, 06.10.2026)",
+      "Webarchiv-Stand der Förderprogramm-Seite vom 24.09.2023 mit dem früheren Abschnitt „Umstellung auf Erneuerbare Energien“ verglichen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sandhausen.de/de/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme",
+        "finding": "Am 06.10.2026 gelesen: „Aktuelle Förderprogramme“ nennt nur Förderung von Solarenergie und elektrische Hoftorantriebe; Anpassung 26.02.2024: „maximal 50 Prozent des Anschaffungspreises samt Einbaukosten, wobei die höchstmögliche Förderung bei 200 Euro bleibt“."
+      },
+      {
+        "url": "https://www.sandhausen.de/ceasy/resource/?id=1991&download=1",
+        "finding": "Richtlinie Solarenergie im Volltext: PV „einmalig 100 € pro kWp … begrenzt auf 10 kWp Nennleistung bzw. 1.000 €“, Speicher „100 € pro kWh … maximal 600 €“, Bewilligung vor Liefervertrag; Balkon 50 %, max. 200 €, Kauf höchstens sechs Monate zurück, fünf Jahre Betrieb."
+      },
+      {
+        "url": "https://www.sandhausen.de/ceasy/resource/?id=1992&download=1",
+        "finding": "Antragsformular Balkonsolaranlage: „ab 300 W Einspeiseleistung mit einem Fördersatz von 50 % der Anschaffungskosten, höchstens jedoch 200 €. Hierfür wird bis auf Widerruf ein jährliches Budget bereitgestellt.“"
+      },
+      {
+        "url": "https://www.sandhausen.de/ceasy/resource/?id=1993&download=1",
+        "finding": "Antragsformular Photovoltaik/Batteriespeicher: Antragsteller Eigentümer, Gewerbetreibende, WEG; Kostenvoranschlag und Ertragssimulation vor Beginn."
+      },
+      {
+        "url": "https://www.sandhausen.de/ceasy/resource/?id=1197&download=1",
+        "finding": "Förderrichtlinie elektrische Hoftorantriebe (30.01.2017, 25 %, max. 500 €) — nicht im Prüfumfang."
+      },
+      {
+        "url": "https://www.sandhausen.de/ceasy/resource/?id=1200&download=1",
+        "finding": "Richtlinie „Umstellung auf erneuerbare Energien“ (30.01.2017): gefördert nur Solarkollektoren und Biomasseanlagen, 10 %, mind. 150 €, max. 500 €, gekoppelt an BAFA-Marktanreizprogramm; keine Wärmepumpen. Auf der heutigen Seite nicht mehr verlinkt."
+      },
+      {
+        "url": "https://web.archive.org/web/20230924223946/https://www.sandhausen.de/de/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme",
+        "finding": "Archivstand 24.09.2023 listete den Abschnitt „Umstellung auf Erneuerbare Energien … mit bis zu 500 Euro“; im heutigen Stand fehlt er."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sandhausen.de/ceasy/resource/?id=1197&amp;download=1",
+        "disposition": "reviewed",
+        "reason": "Hoftorantriebe, nicht im Prüfumfang.",
+        "evidenceUrl": "https://www.sandhausen.de/ceasy/resource/?id=1197&download=1"
+      },
+      {
+        "url": "sandhausen.de/ceasy/resource/?id=1991&amp;download=1",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarenergie, Grundlage von sandhausen-foerderprogramme.",
+        "evidenceUrl": "https://www.sandhausen.de/ceasy/resource/?id=1991&download=1"
+      },
+      {
+        "url": "sandhausen.de/ceasy/resource/?id=1992&amp;download=1",
+        "disposition": "reviewed",
+        "reason": "Antragsformular Balkon, deckt sich mit Katalog.",
+        "evidenceUrl": "https://www.sandhausen.de/ceasy/resource/?id=1992&download=1"
+      },
+      {
+        "url": "sandhausen.de/ceasy/resource/?id=1993&amp;download=1",
+        "disposition": "reviewed",
+        "reason": "Antragsformular PV/Speicher, deckt sich mit Katalog.",
+        "evidenceUrl": "https://www.sandhausen.de/ceasy/resource/?id=1993&download=1"
+      },
+      {
+        "url": "sandhausen.de/de/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite am 06.10.2026 gelesen; nennt Solarförderung und Hoftorantriebe.",
+        "evidenceUrl": "https://www.sandhausen.de/de/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme"
+      },
+      {
+        "url": "sandhausen.de/ceasy/resource/?download=1&id=1992",
+        "disposition": "reviewed",
+        "reason": "Dasselbe Antragsformular Balkon wie id=1992 in anderer Parameterreihenfolge; am 06.10.2026 gelesen.",
+        "evidenceUrl": "https://www.sandhausen.de/ceasy/resource/?id=1992&download=1"
+      }
+    ]
+  },
+  {
+    "regionId": "08226",
+    "name": "Rhein-Neckar-Kreis",
+    "checkedAt": "2026-10-06T06:17:00Z",
+    "recheckAt": "2027-01-04T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Rhein-Neckar-Kreis selbst zahlt keinen Zuschuss an private Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Er beauftragt die KLiBA mit Beratung und der PV-Kampagne „Sonnenstrom – einfach gut“ (kostenloser Dach-Check, kein Geld). Kommunale Programme im Kreis (z. B. Gaiberg, Mauer, Sandhausen, Laudenbach) werden je Gemeinde geführt. Kein Nachweis, dass es keinen Zuschuss geben kann; geprüft ist der heutige Stand der Kreisseiten.",
+    "searches": [
+      "rhein-neckar-kreis.de: „Energiewende im Kreis“, Klimaschutz, Klimaneutraler Kreis, Kooperation mit Kommunen, Geschäftsstelle Klimaschutz gelesen (06.10.2026, neue Website des Landkreises)",
+      "Websuche auf rhein-neckar-kreis.de beschränkt („Klimaschutz Förderung Bürger Zuschuss Photovoltaik“) und offene Websuche Rhein-Neckar-Kreis Förderprogramm PV/Balkon/Wärmepumpe (06.10.2026): nur Beratung und PV-Kampagne",
+      "Interne Suche der Kreis-Website mit Balkonkraftwerk, Photovoltaik, Wärmepumpe, Förderprogramm, Zuschuss abgefragt; keine Treffer zu einem Förderprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rhein-neckar-kreis.de/start/landkreis/energiewende+im+kreis.html",
+        "finding": "Am 06.10.2026 im Browser gelesen: Kreis als „Koordinator und Initiator“, Bürgerberatung durch die beauftragte KLiBA, PV-Kampagne „Sonnenstrom – einfach gut“, Potenzialanalyse, CO2-Bilanzen, Wärmeplanung — kein Zuschuss."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/landkreis/nachhaltigkeit/klimaschutz",
+        "finding": "Klimaschutzseite am 06.10.2026 gelesen: Klimaschutzkonzept, klimaneutrale Verwaltung, Kooperation mit Kommunen — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/landratsamt/aemter-und-aufgaben/gesundheitsamt/wasser-und-umweltmedizin/hitzeschutz/hitzeschutz-fachinformationen/kommunen_+foerderungen",
+        "finding": "Am 06.10.2026 gelesen: Übersicht für Kommunen zum Hitzeschutz (NKI, KfW, EFRE, KLIMOPAS) — keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000345",
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000372",
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000550",
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5001428",
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+      },
+      {
+        "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5001819",
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rhein-neckar-kreis.de/-/startseite/leb5000345",
+        "disposition": "reviewed",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000345"
+      },
+      {
+        "url": "rhein-neckar-kreis.de/-/startseite/leb5000372",
+        "disposition": "reviewed",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000372"
+      },
+      {
+        "url": "rhein-neckar-kreis.de/-/startseite/leb5000550",
+        "disposition": "reviewed",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000550"
+      },
+      {
+        "url": "rhein-neckar-kreis.de/-/startseite/leb5001428",
+        "disposition": "reviewed",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5001428"
+      },
+      {
+        "url": "rhein-neckar-kreis.de/-/startseite/leb5001819",
+        "disposition": "reviewed",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5001819"
+      },
+      {
+        "url": "rhein-neckar-kreis.de/landratsamt/aemter-und-aufgaben/gesundheitsamt/wasser-und-umweltmedizin/hitzeschutz/hitzeschutz-fachinformationen/kommunen_+foerderungen?QUERYSTRING=f&ouml;rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Hitzeschutz-Fördermittel für Kommunen, nicht für Privathaushalte.",
+        "evidenceUrl": "https://www.rhein-neckar-kreis.de/landratsamt/aemter-und-aufgaben/gesundheitsamt/wasser-und-umweltmedizin/hitzeschutz/hitzeschutz-fachinformationen/kommunen_+foerderungen"
+      }
+    ]
   }
 ]
