@@ -44,7 +44,7 @@ type Aggregat = {
 
 type Region = { region_id: string; parent_region_id: string | null; level: string; name: string };
 
-type Summe = { count: number; kwp: number };
+type Summe = { count: number; kwp: number; kwh: number };
 
 const ausfuehrlich = process.argv.includes("--alle");
 
@@ -54,8 +54,15 @@ function zelle(a: Pick<Aggregat, "energietraeger" | "segment" | "year">): string
 }
 
 function addiere(ziel: Map<string, Summe>, schluessel: string, a: Aggregat): void {
-  const vorher = ziel.get(schluessel) ?? { count: 0, kwp: 0 };
-  ziel.set(schluessel, { count: vorher.count + a.count, kwp: vorher.kwp + a.kwp });
+  const vorher = ziel.get(schluessel) ?? { count: 0, kwp: 0, kwh: 0 };
+  ziel.set(schluessel, {
+    count: vorher.count + a.count,
+    kwp: vorher.kwp + a.kwp,
+    // Die Strommenge wurde in der ersten Fassung gelesen und NICHT verglichen —
+    // eine Lücke im Netz selbst, gefunden auf Nachfrage, nicht von einer
+    // Prüfung. Ein Netz, dessen Maschen man nicht nachzählt, ist eine Zusage.
+    kwh: vorher.kwh + (a.kwh ?? 0),
+  });
 }
 
 async function main() {
@@ -153,10 +160,13 @@ async function main() {
     const ec = e?.count ?? 0;
     const pk = Math.round((p?.kwp ?? 0) * 100) / 100;
     const ek = Math.round((e?.kwp ?? 0) * 100) / 100;
-    if (pc !== ec || Math.abs(pk - ek) > 0.01) {
+    const ph = Math.round((p?.kwh ?? 0) * 100) / 100;
+    const eh = Math.round((e?.kwh ?? 0) * 100) / 100;
+    if (pc !== ec || Math.abs(pk - ek) > 0.01 || Math.abs(ph - eh) > 0.01) {
       const [region, rest] = s.split("#");
       summenAbweichung.push(
-        `${region || "Bund"} ${rest}: Präfix ${pc}/${pk} kWp ≠ Zugehörigkeit ${ec}/${ek} kWp`,
+        `${region || "Bund"} ${rest}: Präfix ${pc}/${pk} kWp/${ph} kWh` +
+          ` ≠ Zugehörigkeit ${ec}/${ek} kWp/${eh} kWh`,
       );
     }
   }
@@ -175,7 +185,7 @@ async function main() {
   };
 
   console.log(`\n${"─".repeat(70)}`);
-  console.log(`Orte mit Aggregaten: ${orte.length} · verglichene Zellen: ${schluessel.length}`);
+  console.log(`Orte mit Aggregaten: ${orte.length} · verglichene Zellen: ${schluessel.length} · je Zelle Anlagen, Leistung und Strommenge`);
   zeige("Zugehörigkeit weicht vom Präfix ab", abweichend);
   zeige("Orte ohne Eintrag im Verzeichnis", ohneVerzeichnis);
   zeige("Verzeichnis-Gemeinden ohne eine einzige Anlage", imVerzeichnisOhneAggregat);
