@@ -3,13 +3,16 @@
 import Script from "next/script";
 import type { ComponentProps, ReactNode } from "react";
 import { WidgetActionsPresentation } from "../../../../components/dashboard/ExportableWidgetFrame";
-import { EnergyMonitor } from "../../../../components/dashboard/EnergyMonitor";
+import { EnergyMonitor as Monitor } from "../../../../components/dashboard/EnergyMonitor";
 import LandkreisMonitor, { useRegionalMonitorWidgets } from "../../../../components/landkreis/LandkreisMonitor";
 import { gemeindeMonitorWidgets } from "../../../../components/gemeinde/GemeindeMonitor";
 import DistrictRaceWidget, { type RaceWording } from "../../../../components/landkreis/DistrictRaceWidget";
 import type { GemeindePaket } from "../../../../lib/gemeinde-paket";
 import type { DistrictPrepared } from "../../../../lib/district-monitor-server";
 import { v } from "../../../../lib/theme";
+import foundation from "../../../../components/social/atlas-foundations.module.css";
+import "../../../../components/gemeinde/municipal-data.css";
+import "../../../../components/dashboard/dashboard.css";
 import type { MonitorSchluessel } from "./werkstatt-bestand";
 
 export type VorschauDaten =
@@ -31,6 +34,13 @@ function Fehlt({ text }: { text: string }) {
   return <p role="status" style={{ margin: "12px 0", padding: "10px 12px", borderRadius: 10, border: `1px solid ${v("--color-border")}`, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{text}</p>;
 }
 
+/** The monitor's own theme wrapper without its sections, for a single widget in a card. */
+function Nackt({ currentPower, growth, stock, energy, energyNotice }: { currentPower?: ReactNode; growth?: ReactNode; stock?: ReactNode; energy?: Partial<Record<string, ReactNode>>; energyNotice?: ReactNode }) {
+  return <div className={`${foundation.foundation} municipal-data sc-dashboard`} data-story-scheme="dark" style={{ display: "grid", gap: 12 }}>
+    {currentPower}{growth}{stock}{energy && Object.values(energy)}{energyNotice}
+  </div>;
+}
+
 type Knoten = {
   currentPower: ReactNode;
   growth: ReactNode;
@@ -44,7 +54,9 @@ type Knoten = {
  * Places the chosen widget in the shared monitor composition (EnergyMonitor),
  * so section, grid and theme are the page's — only the other slots stay empty.
  */
-function ImMonitor({ schluessel, knoten, name }: { schluessel: MonitorSchluessel; knoten: Knoten; name: string }) {
+function ImMonitor({ schluessel, knoten, name, nackt }: { schluessel: MonitorSchluessel; knoten: Knoten; name: string; nackt?: boolean }) {
+  // Gallery cards: the widget alone, full card width, in the monitor's theme wrapper — no section heading.
+  const EnergyMonitor = nackt ? Nackt : Monitor;
   const nicht = (was: string) => <Fehlt text={`${was} liegt für ${name} nicht vor. Die Seite zeigt es dort ebenfalls nicht.`} />;
   if (schluessel === "currentPower") return knoten.currentPower ? <EnergyMonitor currentPower={knoten.currentPower} /> : nicht("„Solarleistung heute“ (keine installierte Solarleistung)");
   if (schluessel === "growth") return knoten.growth ? <EnergyMonitor growth={knoten.growth} /> : nicht("„Zubau pro Jahr“ (keine Inbetriebnahmen im Register)");
@@ -60,22 +72,22 @@ function ImMonitor({ schluessel, knoten, name }: { schluessel: MonitorSchluessel
   return null;
 }
 
-function RegionKnoten({ daten, schluessel }: { daten: Extract<VorschauDaten, { art: "region" }>; schluessel: MonitorSchluessel }) {
+function RegionKnoten({ daten, schluessel, nackt }: { daten: Extract<VorschauDaten, { art: "region" }>; schluessel: MonitorSchluessel; nackt?: boolean }) {
   const w = useRegionalMonitorWidgets(daten.monitor);
-  return <ImMonitor schluessel={schluessel} name={daten.name} knoten={{ ...w, composition: w.composition.length ? w.composition : null }} />;
+  return <ImMonitor nackt={nackt} schluessel={schluessel} name={daten.name} knoten={{ ...w, composition: w.composition.length ? w.composition : null }} />;
 }
 
-function GemeindeKnoten({ daten, schluessel }: { daten: Extract<VorschauDaten, { art: "gemeinde" }>; schluessel: MonitorSchluessel }) {
+function GemeindeKnoten({ daten, schluessel, nackt }: { daten: Extract<VorschauDaten, { art: "gemeinde" }>; schluessel: MonitorSchluessel; nackt?: boolean }) {
   const w = gemeindeMonitorWidgets(daten.paket);
   const nach = (template: string) => {
     const treffer = w.stock.filter((s) => s.template === template);
     return treffer.length ? treffer.map((s) => s.node) : null;
   };
-  return <ImMonitor schluessel={schluessel} name={daten.name} knoten={{ ...w, categories: nach("anteilsdonut"), composition: nach("anlagenraster"), energy: w.energy }} />;
+  return <ImMonitor nackt={nackt} schluessel={schluessel} name={daten.name} knoten={{ ...w, categories: nach("anteilsdonut"), composition: nach("anlagenraster"), energy: w.energy }} />;
 }
 
 /** One real widget, with the chosen action presentation applied to every shared frame below. */
-export default function WerkstattVorschau({ schluessel, daten, aktionen }: { schluessel: MonitorSchluessel; daten: VorschauDaten; aktionen: "menu" | "primary" }) {
+export default function WerkstattVorschau({ schluessel, daten, aktionen, nackt = false }: { schluessel: MonitorSchluessel; daten: VorschauDaten; aktionen: "menu" | "primary"; nackt?: boolean }) {
   let inhalt: ReactNode;
   if (schluessel === "race") {
     inhalt = daten.art === "region" && daten.race ? <>
@@ -83,8 +95,8 @@ export default function WerkstattVorschau({ schluessel, daten, aktionen }: { sch
       <Script src="/gemeinde/landkreis-rennen.js" strategy="afterInteractive" onReady={() => { window.dispatchEvent(new Event("district-race-ready")); }} />
       <DistrictRaceWidget name={daten.name} stand={daten.stand} wording={daten.race.wording} rows={daten.race.rows} history={daten.race.history} />
     </> : <Fehlt text={`Für ${daten.name} gibt es kein Rennen: es braucht mindestens zwei Teilgebiete.`} />;
-  } else inhalt = daten.art === "region" ? <RegionKnoten daten={daten} schluessel={schluessel} /> : <GemeindeKnoten daten={daten} schluessel={schluessel} />;
+  } else inhalt = daten.art === "region" ? <RegionKnoten nackt={nackt} daten={daten} schluessel={schluessel} /> : <GemeindeKnoten nackt={nackt} daten={daten} schluessel={schluessel} />;
   return <WidgetActionsPresentation.Provider value={aktionen}>
-    <div style={{ marginTop: 12, maxWidth: 1100 }}>{inhalt}</div>
+    <div style={{ marginTop: nackt ? 0 : 12, maxWidth: 1100 }}>{inhalt}</div>
   </WidgetActionsPresentation.Provider>;
 }

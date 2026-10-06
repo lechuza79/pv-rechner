@@ -31,7 +31,6 @@ export type Auswahl = {
 export default function WerkstattAuswahl({ auswahl }: { auswahl: Auswahl }) {
   const gehe = (aenderung: Partial<Record<string, string>>) => {
     const params = new URLSearchParams({
-      w: auswahl.w,
       ebene: auswahl.ebene,
       ...(auswahl.land && { land: auswahl.land }),
       ...(auswahl.kreis && { kreis: auswahl.kreis }),
@@ -43,7 +42,7 @@ export default function WerkstattAuswahl({ auswahl }: { auswahl: Auswahl }) {
       if (wert) params.set(k, wert);
       else params.delete(k);
     }
-    window.location.assign(`/admin/charts?${params}#werkstatt-detail`);
+    window.location.assign(`/admin/charts/${auswahl.w}?${params}`);
   };
   const feld = (label: string, inhalt: React.ReactNode) => (
     <label style={{ display: "grid", gap: 4, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>

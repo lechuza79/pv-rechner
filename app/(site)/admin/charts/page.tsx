@@ -1,41 +1,20 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "../../../../lib/supabase-server-component";
-import { v } from "../../../../lib/theme";
-import { WIDGETS, brandLabel, embedPath, type WidgetDef, type WidgetId } from "../../../../lib/widget-registry";
-import { getAncestors, getChildren, getRankingData, getRegionById, type AtlasChild, type AtlasRegion } from "../../../../lib/atlas";
-import { getRegionAtlasData } from "../../../../lib/mastr-data";
-import { loadDistrictContent, loadRegionContent } from "../../../../lib/district-monitor-server";
-import { monitorContentForPreview } from "../../../../lib/monitor-content-preview";
-import { districtSolarCells } from "../../../../lib/district-monitor";
-import { regionMembers, regionRaceInput } from "../../../../lib/region-race";
-import { LEVEL_TEXT } from "../../../../lib/region-level-text";
-import { ladeGemeindePaket } from "../../../../lib/gemeinde-paket-server";
-import { paketFuer } from "../../../../components/gemeinde/paket-teile";
-import { gemeindeGeo } from "../../../../lib/atlas-geo";
-import { wetterSkript } from "../../../../components/gemeinde/GemeindeSzene";
-import { dashboardDate } from "../../../../lib/dashboard/format";
-import InfoTooltip from "../../../../components/InfoTooltip";
-import { BEISPIEL_GEBIET, EBENEN, EINBINDUNG_TEXT, WERKSTATT_BESTAND, type Ebene } from "./werkstatt-bestand";
-import WerkstattAuswahl, { type Auswahl } from "./WerkstattAuswahl";
-import WerkstattVorschau, { type VorschauDaten } from "./WerkstattVorschau";
-import Bedienelemente from "./Bedienelemente";
+import { isAdminSession } from "../../../../lib/admin-guard";
+import { v, space, pad } from "../../../../lib/theme";
+import { WIDGETS, embedExamplePath, type WidgetDef, type WidgetId } from "../../../../lib/widget-registry";
+import { getRegionById } from "../../../../lib/atlas";
+import { EINBINDUNG_TEXT, WERKSTATT_BESTAND, BEISPIEL_GEBIET, type Einbindung } from "./werkstatt-bestand";
+import { eins, regionalDaten, type Such } from "./werkstatt-daten";
+import WidgetGalerie, { type Karte } from "./WidgetGalerie";
+import type { VorschauDaten } from "./WerkstattVorschau";
 
-export const metadata = {
-  title: "Widget-Werkstatt – Admin",
-  robots: { index: false, follow: false },
-};
+export const metadata = { title: "Widget-Galerie – Admin", robots: { index: false, follow: false } };
+export const dynamic = "force-dynamic";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
-  .split(",")
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean);
-
-// The widget workshop: inventory of the registry (lib/widget-registry.ts) plus
-// the workshop's checked observations (werkstatt-bestand.ts), and ONE preview at
-// a time — the real widget, fed by the page's own data readers. Nothing here
-// computes a value; a selection change is a full navigation, so maps, race
-// engine and weather script start fresh and only for the chosen widget.
+// The widget gallery: every registered widget as a card with its REAL rendering
+// (monitor widgets for Landkreis Würzburg, embed widgets through their route with
+// the registry's example place). A card opens the detail page with settings.
 
 const SCHRITTE: { titel: string; text: string }[] = [
   {
@@ -60,229 +39,60 @@ const SCHRITTE: { titel: string; text: string }[] = [
   },
 ];
 
-type Such = Record<string, string | string[] | undefined>;
-const eins = (x: string | string[] | undefined) => (Array.isArray(x) ? x[0] : x) ?? "";
 
-function sortiert(kinder: AtlasChild[]) {
-  return kinder.map((k) => ({ id: k.region_id, name: k.name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
-}
+const KURZ = { gemeinde: "Gemeinde", landkreis: "Landkreis", bundesland: "Bundesland", de: "Deutschland" } as const;
 
-/** Resolve land → kreis → gemeinde from the URL, falling back to the example area of each step. */
-async function gebietsKette(ebene: Ebene, such: Such) {
-  const de = await getRegionById("de");
-  if (!de) throw new Error("Region Deutschland fehlt");
-  if (ebene === "de") return { region: de, laender: [], kreise: [], gemeinden: [], land: "", kreis: "", gemeinde: "" };
-  const laender = sortiert(await getChildren(de));
-  const landWunsch = eins(such.land) || BEISPIEL_GEBIET.bundesland;
-  const land = laender.some((l) => l.id === landWunsch) ? landWunsch : laender[0].id;
-  const landRegion = await getRegionById(land);
-  if (!landRegion) throw new Error(`Bundesland ${land} fehlt`);
-  if (ebene === "bundesland") return { region: landRegion, laender, kreise: [], gemeinden: [], land, kreis: "", gemeinde: "" };
-  const kreise = sortiert(await getChildren(landRegion));
-  const kreisWunsch = eins(such.kreis) || BEISPIEL_GEBIET.landkreis;
-  const kreis = kreise.some((k) => k.id === kreisWunsch) ? kreisWunsch : kreise[0]?.id ?? "";
-  const kreisRegion = kreis ? await getRegionById(kreis) : null;
-  if (!kreisRegion) return { region: null, laender, kreise, gemeinden: [], land, kreis, gemeinde: "" };
-  if (ebene === "landkreis") return { region: kreisRegion, laender, kreise, gemeinden: [], land, kreis, gemeinde: "" };
-  const gemeinden = sortiert(regionMembers(kreisRegion, await getChildren(kreisRegion)));
-  const gemeindeWunsch = eins(such.gemeinde) || BEISPIEL_GEBIET.gemeinde;
-  const gemeinde = gemeinden.some((g) => g.id === gemeindeWunsch) ? gemeindeWunsch : gemeinden[0]?.id ?? "";
-  const gemeindeRegion = gemeinde ? await getRegionById(gemeinde) : null;
-  return { region: gemeindeRegion, laender, kreise, gemeinden, land, kreis, gemeinde };
-}
-
-async function slugPfad(region: AtlasRegion) {
-  const kette = [...(await getAncestors(region)).filter((a) => a.level !== "de"), region].filter((r) => r.level !== "de");
-  return `/solar-atlas${kette.map((r) => `/${r.slug}`).join("")}`;
-}
-
-/** The same data path as the regional page (LandkreisSeite + RegionMonitorSection). */
-async function regionalDaten(region: AtlasRegion, mitRennen: boolean): Promise<VorschauDaten> {
-  const level = region.level === "bundesland" || region.level === "de" ? region.level : "landkreis";
-  const [atlas, children, ranking] = await Promise.all([getRegionAtlasData(region.region_id), getChildren(region), getRankingData(region)]);
-  const stand = atlas.data_as_of;
-  const towns = regionMembers(region, children);
-  const townIds = new Set(towns.map((t) => t.region_id));
-  const content = await monitorContentForPreview(
-    level === "landkreis"
-      ? loadDistrictContent(region.region_id, towns.map((t) => t.region_id), stand)
-      : loadRegionContent(region.region_id, children.map((c) => c.region_id), stand),
-  );
-  return {
-    art: "region",
-    name: region.name,
-    stand,
-    prepared: content.prepared,
-    monitor: {
-      regionId: region.region_id,
-      name: region.name,
-      population: region.population,
-      populationStand: region.population_as_of,
-      cells: districtSolarCells(ranking.cells.filter((c) => townIds.has(c.region_id))),
-      stand,
-      monitor: content.monitor,
-    },
-    race: mitRennen && towns.length > 1
-      ? { wording: LEVEL_TEXT[level].race, ...regionRaceInput({ towns, ranking, stand, basePath: await slugPfad(region) }) }
-      : null,
-  };
-}
-
-export default async function WidgetWerkstattPage(props: { searchParams: Promise<Such> }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user || !ADMIN_EMAILS.includes(user.email?.toLowerCase() || "")) redirect("/");
-
+export default async function WidgetGaleriePage(props: { searchParams: Promise<Such> }) {
+  if (!(await isAdminSession())) redirect("/login?next=/admin/charts");
   const such = await props.searchParams;
-  const ids = Object.keys(WERKSTATT_BESTAND) as WidgetId[];
-  const gewaehlt = ids.find((id) => id === eins(such.w)) ?? null;
+  const filter = eins(such.stand) as Einbindung | "";
+  const ids = (Object.keys(WERKSTATT_BESTAND) as WidgetId[]).filter((id) => !filter || WERKSTATT_BESTAND[id].einbindung === filter);
 
-  let detail: React.ReactNode = null;
-  if (gewaehlt) {
-    const eintrag = WERKSTATT_BESTAND[gewaehlt];
-    const def = WIDGETS[gewaehlt];
-    const ebeneWunsch = eins(such.ebene) as Ebene;
-    const ebene: Ebene = eintrag.ebenen.includes(ebeneWunsch) ? ebeneWunsch : eintrag.ebenen[0];
-    const ebeneAbgelehnt = ebeneWunsch && ebeneWunsch !== ebene ? EBENEN.find((e) => e.id === ebeneWunsch)?.label ?? null : null;
-    const aktionen = eins(such.aktionen) === "primary" ? "primary" : "menu";
-    const extern = eins(such.kontext) === "extern";
-    const vorschau = eintrag.vorschau;
-    const brauchtGebiet = vorschau.art === "monitor" || (vorschau.art === "einbettung" && !!vorschau.param);
-    const kette = brauchtGebiet ? await gebietsKette(ebene, such) : null;
-    const region = kette?.region ?? null;
-
-    let daten: VorschauDaten | null = null;
-    let hinweis: string | null = null;
-    let wetter: string | null = null;
-    if (vorschau.art === "monitor") {
-      if (!region) hinweis = "Für diese Auswahl ist kein Gebiet im Register hinterlegt.";
-      else if (ebene === "gemeinde") {
-        const [paket, geo] = await Promise.all([ladeGemeindePaket(region.region_id), gemeindeGeo(region.region_id)]);
-        if (!paket) hinweis = `Für ${region.name} gibt es kein vorbereitetes Gemeindepaket. Ohne Paket zeigt auch die Gemeindeseite keinen Monitor.`;
-        else {
-          daten = { art: "gemeinde", name: region.name, stand: paket.registerStand, paket: paketFuer("monitor", paket) };
-          // The page's weather source for current power (GemeindeSzene); a full reload runs it per town.
-          wetter = wetterSkript(geo?.plz ?? null);
-          if (!geo?.plz) hinweis = `Für ${region.name} ist keine Postleitzahl hinterlegt; „Solarleistung heute“ kann kein Wetter laden.`;
-        }
-      } else daten = await regionalDaten(region, vorschau.schluessel === "race");
-    }
-
-    const auswahl: Auswahl = {
-      w: gewaehlt,
-      ebene,
-      ebenen: EBENEN.map((e) => ({ ...e, moeglich: eintrag.ebenen.includes(e.id) })),
-      laender: kette?.laender ?? [],
-      kreise: kette?.kreise ?? [],
-      gemeinden: kette?.gemeinden ?? [],
-      land: kette?.land ?? "",
-      kreis: kette?.kreis ?? "",
-      gemeinde: kette?.gemeinde ?? "",
-      aktionen: vorschau.art === "monitor" ? aktionen : null,
-      kontext: vorschau.art === "einbettung" ? (extern ? "extern" : "eigen") : null,
-      zeigtGebiet: brauchtGebiet,
-    };
-
-    let einbettSrc: string | null = null;
-    if (vorschau.art === "einbettung") {
-      const pfad = embedPath(def);
-      const params = new URLSearchParams();
-      if (vorschau.param && region) params.set(vorschau.param, vorschau.param === "bl" ? region.region_id.slice(0, 2) : region.region_id);
-      if (!extern) params.set("onsite", "1");
-      einbettSrc = pfad ? `${pfad}${params.size ? `?${params}` : ""}` : null;
-      if (!pfad) hinweis = "Keine Einbett-Route im Register.";
-    }
-
-    detail = (
-      <section aria-labelledby="werkstatt-detail" style={{ marginTop: 32, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 24 }}>
-        {wetter && <script dangerouslySetInnerHTML={{ __html: wetter }} />}
-        <h2 id="werkstatt-detail" style={{ fontSize: v("--font-size-lead"), color: v("--color-text-primary"), margin: "0 0 4px" }}>{def.title}</h2>
-        <p style={{ margin: "0 0 12px", color: v("--color-text-muted"), fontSize: v("--font-size-small") }}>
-          {eintrag.zweck} · {EINBINDUNG_TEXT[eintrag.einbindung]} · Bildzeile „{brandLabel(def.kind)}“
-        </p>
-        <WerkstattAuswahl auswahl={auswahl} />
-        {ebeneAbgelehnt && <p role="status" style={hinweisStil}>{def.title} unterstützt die Ebene „{ebeneAbgelehnt}“ nicht; gezeigt wird {EBENEN.find((e) => e.id === ebene)?.label}.</p>}
-        {hinweis && <p role="status" style={hinweisStil}>{hinweis}</p>}
-        {daten && <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: "8px 0" }}>
-          Gebiet: {daten.name} · Registerstand {dashboardDate(daten.stand)}
-          {daten.art === "region" && <> · Vorbereitete Auswertung: {preparedText(daten.prepared)}</>}
-          {" "}<InfoTooltip title="Zeitraum und Datenstand">Zeiträume wählt jedes Widget selbst (Monat, Jahr, Zeitraum des Zubaus) — die Bedienelemente im Widget sind dieselben wie auf der Seite. Einen älteren Datenstand gibt es nicht zur Auswahl: gespeichert ist je Gebiet nur die aktuelle Auswertung.</InfoTooltip>
-        </p>}
-        {daten && vorschau.art === "monitor" && <WerkstattVorschau key={`${gewaehlt}-${daten.name}-${aktionen}`} schluessel={vorschau.schluessel} daten={daten} aktionen={aktionen} />}
-        {einbettSrc && <EinbettVorschau src={einbettSrc} titel={def.title} />}
-        {vorschau.art === "keine" && <p role="status" style={hinweisStil}>Keine Vorschau: {vorschau.grund}</p>}
-      </section>
-    );
+  // One regional data set serves every monitor card; it is loaded only when such a card is listed.
+  let daten: VorschauDaten | null = null;
+  if (ids.some((id) => WERKSTATT_BESTAND[id].vorschau.art === "monitor")) {
+    const region = await getRegionById(BEISPIEL_GEBIET.landkreis);
+    if (region) daten = await regionalDaten(region, true);
   }
 
-  const th: React.CSSProperties = { textAlign: "left", fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), padding: "8px 10px", borderBottom: `1px solid ${v("--color-border")}`, whiteSpace: "nowrap" };
-  const td: React.CSSProperties = { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), padding: "10px", borderBottom: `1px solid ${v("--color-border")}`, verticalAlign: "top" };
-  const anzahl = (e: keyof typeof EINBINDUNG_TEXT) => ids.filter((id) => WERKSTATT_BESTAND[id].einbindung === e).length;
+  const karten: Karte[] = ids.map((id) => {
+    const e = WERKSTATT_BESTAND[id];
+    const def = WIDGETS[id] as WidgetDef;
+    const vorschau: Karte["vorschau"] = e.vorschau.art === "monitor"
+      ? { art: "monitor", schluessel: e.vorschau.schluessel }
+      : e.vorschau.art === "einbettung"
+        ? { art: "einbettung", src: `${embedExamplePath(def)}${embedExamplePath(def)?.includes("?") ? "&" : "?"}onsite=1` }
+        : { art: "keine", grund: e.vorschau.grund };
+    return { id, titel: def.title, stand: EINBINDUNG_TEXT[e.einbindung], unter: e.ebenen.map((x) => KURZ[x]).join(", "), vorschau };
+  });
+
+  const alle = Object.keys(WERKSTATT_BESTAND) as WidgetId[];
+  const reiter: { text: string; wert: Einbindung | ""; zahl: number }[] = [
+    { text: "Alle", wert: "", zahl: alle.length },
+    ...(["zentral", "teilweise", "separat"] as const).map((s) => ({ text: EINBINDUNG_TEXT[s], wert: s, zahl: alle.filter((id) => WERKSTATT_BESTAND[id].einbindung === s).length })),
+  ];
 
   return (
-    <div style={{ maxWidth: 1200 }}>
-      <p style={{ margin: "0 0 12px", fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-        {ids.length} Widgets im Register: {anzahl("zentral")} zentral eingebunden, {anzahl("teilweise")} teilweise vereinheitlicht, {anzahl("separat")} separat.{" "}
-        <InfoTooltip title="Was die Stände heißen">
-          Zentral: gemeinsamer Widget-Rahmen mit Optionsmenü oder Aktionsfußleiste. Teilweise: gemeinsame Quellen- und Bildfußzeile, aber die ältere Aktionsleiste. Separat: eigene Umsetzung oder gar kein Widget im Code. Der Stand sagt nichts über eine visuelle Abnahme — die steht nur dort, wo sie belegt ist.
-        </InfoTooltip>
-      </p>
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 1180 }}>
-          <thead>
-            <tr>
-              <th style={th}>Widget</th>
-              <th style={th}>Stand</th>
-              <th style={th}>Register</th>
-              <th style={th}>Komponente</th>
-              <th style={th}>Einsatzorte</th>
-              <th style={th}>Ebenen</th>
-              <th style={th}>Funktionen und Lücken</th>
-              <th style={th}>Abnahme</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ids.map((id) => {
-              const e = WERKSTATT_BESTAND[id];
-              const aktiv = id === gewaehlt;
-              return (
-                <tr key={id} style={aktiv ? { background: v("--color-bg-raised") } : undefined}>
-                  <td style={{ ...td, color: v("--color-text-primary"), fontWeight: 600, minWidth: 180 }}>
-                    <Link href={`/admin/charts?w=${id}#werkstatt-detail`} style={{ color: v("--color-accent"), textDecoration: "none" }}>{WIDGETS[id].title}</Link>
-                    <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, color: v("--color-text-muted"), marginTop: 2 }}>{e.zweck}</div>
-                    <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, color: v("--color-text-faint"), marginTop: 2 }}>
-                      {e.vorschau.art === "keine" ? "keine Vorschau" : e.vorschau.art === "monitor" ? "Vorschau: echtes Monitor-Widget" : "Vorschau: Einbett-Route"}
-                    </div>
-                  </td>
-                  <td style={td}>{EINBINDUNG_TEXT[e.einbindung]}</td>
-                  <td style={{ ...td, minWidth: 200 }}>
-                    <div>{WIDGETS[id].kind === "tool" ? "Werkzeug" : "Chart"} · „{brandLabel(WIDGETS[id].kind)}“</div>
-                    <div>Quelle: {WIDGETS[id].sources.map((q) => q.name).join(" · ")}</div>
-                    <div>Nächster Schritt: {(WIDGETS[id] as WidgetDef).cta?.label ?? "—"}</div>
-                    <div>{(WIDGETS[id] as WidgetDef).exportable === false ? "kein Bild" : "Bild herunterladbar"} · {embedPath(WIDGETS[id]) ?? "keine Einbett-Route"}</div>
-                  </td>
-                  <td style={{ ...td, fontFamily: "monospace", fontSize: v("--font-size-caption") }}>{e.komponente}</td>
-                  <td style={td}>{e.einsatzorte.length ? e.einsatzorte.map((o) => <div key={o.datei + o.wo}>{o.wo}</div>) : <span style={{ color: v("--color-text-faint") }}>keine Verwendung im Code</span>}</td>
-                  <td style={td}>{e.ebenen.map((x) => EBENEN.find((b) => b.id === x)?.label).join(", ")}</td>
-                  <td style={{ ...td, minWidth: 260 }}>
-                    <div>{e.funktionen.join(" · ")}</div>
-                    {e.luecken.length > 0 && <ul style={{ margin: "6px 0 0", paddingLeft: 16, color: v("--color-text-muted") }}>{e.luecken.map((l) => <li key={l}>{l}</li>)}</ul>}
-                  </td>
-                  <td style={td}>{e.abnahme ? <>{e.abnahme.was}<div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{e.abnahme.beleg}</div></> : <span style={{ color: v("--color-text-faint") }}>nicht belegt</span>}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+    <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+      <nav aria-label="Filter" style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", borderBottom: `1px solid ${v("--color-border-muted")}`, paddingBottom: space.lg, marginBottom: space.xl }}>
+        {reiter.map((r) => {
+          const aktiv = r.wert === filter;
+          return (
+            <Link key={r.text} href={r.wert ? `/admin/charts?stand=${r.wert}` : "/admin/charts"} aria-current={aktiv ? "page" : undefined}
+              style={{ padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`, background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"), color: aktiv ? v("--color-accent") : v("--color-text-secondary"), fontSize: v("--font-size-body"), textDecoration: "none" }}>
+              {r.text} <span style={{ opacity: 0.7 }}>{r.zahl}</span>
+            </Link>
+          );
+        })}
+        <Link href="/admin/charts/bedienelemente" style={{ marginLeft: "auto", padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), fontSize: v("--font-size-body"), textDecoration: "none" }}>
+          Gemeinsame Bedienelemente →
+        </Link>
+      </nav>
 
-      {detail ?? <p style={{ marginTop: 24, color: v("--color-text-muted") }}>Wähle ein Widget in der Tabelle, um es mit echten Daten anzusehen. Es lädt immer nur das gewählte.</p>}
+      {daten && <p style={{ margin: `0 0 ${space.md}px`, fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Monitor-Widgets zeigen den {daten.name}, Einbett-Widgets ihren Beispielort. Gebiet, Ebene und Aktionsdarstellung stellst du auf der Detailseite ein.</p>}
+      <WidgetGalerie karten={karten} daten={daten} />
 
-      <Bedienelemente />
-
-      <details style={{ marginTop: 32, maxWidth: 720 }}>
+      <details style={{ marginTop: 40, maxWidth: 720 }}>
         <summary style={{ cursor: "pointer", fontWeight: 700, color: v("--color-text-primary") }}>So entsteht ein neues Chart</summary>
         <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
           {SCHRITTE.map((s) => (
@@ -293,24 +103,6 @@ export default async function WidgetWerkstattPage(props: { searchParams: Promise
           ))}
         </div>
       </details>
-    </div>
-  );
-}
-
-const hinweisStil: React.CSSProperties = { margin: "8px 0", padding: "10px 12px", borderRadius: 10, border: `1px solid ${v("--color-border")}`, fontSize: v("--font-size-small"), color: v("--color-text-secondary") };
-
-function preparedText(p: { state: string; reason?: string; editions?: string[] }) {
-  if (p.state === "current") return "aktuell";
-  if (p.state === "older-edition") return `älterer Registerstand (${p.editions?.length ? dashboardDate(p.editions[p.editions.length - 1]) : "unbekannt"})`;
-  return p.reason === "read-error" ? "konnte nicht geladen werden" : "nicht verfügbar";
-}
-
-/** The real embed route, loaded only for the chosen widget and only when it scrolls into view. */
-function EinbettVorschau({ src, titel }: { src: string; titel: string }) {
-  return (
-    <div style={{ marginTop: 12 }}>
-      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: "0 0 6px", fontFamily: "monospace" }}>{src}</p>
-      <iframe src={src} title={`Vorschau: ${titel}`} loading="lazy" style={{ width: "100%", maxWidth: 900, height: 720, border: `1px solid ${v("--color-border")}`, borderRadius: 12, background: v("--color-bg") }} />
     </div>
   );
 }
