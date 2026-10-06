@@ -316,6 +316,30 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   unerreichbare Kandidaten bleiben offen, werden wiederholt (7) und landen in
   der Handprüfung, die mit Browser nachholt.
 
+### 35. Ein einzelner Lesefehler wirft einen Kontakt aus dem Versand
+- **Anlass:** Outreach 06.10.2026 — Vorflug und Versand kamen am selben Tag für
+  dieselben Gemeinden zu verschiedenen Ergebnissen; die Amtsseite war zeitweise
+  langsam oder zeigte eine Bot-Prüfung.
+- **Sicherung (Verwendung):** `freigabeUrteil` — sofort gesperrt wird nur, wenn
+  die Adresse nicht mehr auf der Seite steht oder die Seite weg ist (404/410);
+  ein Lesefehler wird beim ersten Mal vermerkt („1. Fehlversuch") und sperrt
+  erst beim zweiten in Folge. Gilt für die Windbetreiber-Freigabe; der
+  Gemeinde-Versand prüft über einen eigenen Weg und baut das dort nach.
+
+### 36. Sabotage im geteilten Helfer beweist nichts
+- **Anlass:** Register-Recherche 06.10.2026 — eine absichtlich verbogene
+  Summierfunktion blieb grün, weil BEIDE Seiten des Vergleichs sie benutzten.
+- **Regel (Ablauf):** Eine Sabotage gehört auf EINE Seite des Vergleichs, nie in
+  das, was beide teilen. Dieselbe Klasse wie „der Test vergleicht den Fehler mit
+  sich selbst".
+
+### 37. Ein zu breites Muster sammelt Unbeteiligte ein
+- **Anlass:** Register-Recherche — ein Wächter über „die ersten Zeichen
+  abschneiden" fand dreißig Module ohne Bezug; eine geschätzte Trägerliste lag
+  bei zehn, gemessen waren es sechzehn.
+- **Regel (Ablauf):** Wächter am Bezeichner festmachen, nicht an der
+  Operation; die Liste der Betroffenen messen, nie schätzen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
