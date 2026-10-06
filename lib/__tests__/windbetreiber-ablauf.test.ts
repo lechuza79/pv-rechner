@@ -72,6 +72,12 @@ describe("Windbetreiber-Lauf", () => {
     expect(s).toMatch(/process\.exitCode = 1/);
   });
 
+  it("counts a gap as done only when a person confirmed it", () => {
+    expect(rumpf("keine")).toMatch(/suche_notiz: `\$\{VON_HAND\} \$\{notiz\}`/);
+    expect(rumpf("offenListe")).toMatch(/startsWith\(VON_HAND\)/);
+    expect(rumpf("stand")).toMatch(/von Hand bestätigt/);
+  });
+
   it("never lets a report start the 20-minute register read", () => {
     expect(rumpf("stand")).not.toMatch(/registerLesen\(/);
     expect(rumpf("offenListe")).not.toMatch(/registerLesen\(/);

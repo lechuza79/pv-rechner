@@ -536,6 +536,10 @@ async function sucheLauf() {
 
 // ─── Manual pass ──────────────────────────────────────────────────────────────
 
+/** The mark of a "no website" a person confirmed — the stock is complete when
+ *  every operator without a website carries it. */
+const VON_HAND = "von Hand geprüft:";
+
 async function manuell() {
   const [nr, url] = process.argv.slice(process.argv.indexOf("--manuell") + 1);
   if (!nr?.startsWith("ABR") || !url) throw new Error("Aufruf: --manuell ABR… <url> [--seite=<url>]");
@@ -572,7 +576,7 @@ async function keine() {
   const [nr, notiz] = process.argv.slice(process.argv.indexOf("--keine") + 1);
   if (!nr?.startsWith("ABR") || !notiz || notiz.length < 20) throw new Error('Aufruf: --keine ABR… "<was gesucht wurde, mindestens ein Satz>"');
   const c = await db();
-  const { error, count } = await c.from("windbetreiber").update({ gesucht_am: HEUTE, suche_notiz: `von Hand geprüft: ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() }, { count: "exact" })
+  const { error, count } = await c.from("windbetreiber").update({ gesucht_am: HEUTE, suche_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() }, { count: "exact" })
     .eq("mastr_nr", nr).is("website", null);
   if (error) throw new Error(error.message);
   if (!count) throw new Error(`${nr} nicht gefunden oder hat schon eine belegte Website`);
@@ -609,6 +613,9 @@ async function stand() {
   console.log(`Windparkbetreiber (Organisationen mit Windrad in Betrieb): ${zeilen.length.toLocaleString("de-DE")} · ${mw(gesamtKw)}`);
   for (const [k, v] of Object.entries(zaehl)) console.log(`  ${k.padEnd(15)} ${String(v.n).padStart(6)}  ${mw(v.kw).padStart(10)}  (${gesamtKw ? ((v.kw / gesamtKw) * 100).toFixed(1) : "–"} % der Leistung)`);
   if (st) console.log(`  natürliche Personen (nicht erfassbar): ${st.natuerlich.betreiber} · ${mw(st.natuerlich.kw)}`);
+  const ohne = zeilen.filter((z) => !z.website);
+  const vonHand = ohne.filter((z) => (z.suche_notiz ?? "").startsWith(VON_HAND)).length;
+  console.log(`  ohne Website: ${ohne.length}, davon von Hand bestätigt ${vonHand}, noch für die Handprüfung ${ohne.length - vonHand}`);
   console.log(`Verstöße: ${verstoesse.length}`);
   for (const v of verstoesse.slice(0, 30)) console.log(`  ✗ ${v}`);
   if (verstoesse.length) process.exitCode = 1;
@@ -617,7 +624,9 @@ async function stand() {
 async function offenListe() {
   const c = await db();
   type V = Zeile & { suche_notiz: string | null; register_telefon: string | null };
-  const zeilen = await alle<V>(c, "windbetreiber", `${SPALTEN},suche_notiz`, "mastr_nr", (q) => q.eq("aktiv", true).is("website", null));
+  const zeilen = (await alle<V>(c, "windbetreiber", `${SPALTEN},suche_notiz`, "mastr_nr", (q) => q.eq("aktiv", true).is("website", null)))
+    // What a person already confirmed is done; the list is what is left.
+    .filter((z) => !(z.suche_notiz ?? "").startsWith(VON_HAND));
   const st = registerCache();
   if (!st) throw new Error("Kein Registerstand im Zwischenspeicher — erst --register laufen lassen");
   const liste = zeilen
