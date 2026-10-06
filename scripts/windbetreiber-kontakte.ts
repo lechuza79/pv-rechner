@@ -187,6 +187,9 @@ export function weitereSitesVon(domain: string): string[] {
     // agency's on dr-zirn.de, a bank's — let their mailboxes in as the
     // operator's (contact block 02, 06.10.2026).
     if (impressumHerkunft(i.impressum_url, domain) === "alias") out.add(organisationsDomain(i.impressum_url)!);
+    // Where the start page ended after its redirects (recorded since 06.10.2026).
+    const ziel = i.start ? organisationsDomain(i.start) : null;
+    if (ziel && ziel !== domain) out.add(ziel);
   }
   const quellen = resolve(OUT, "sources", domain);
   if (existsSync(quellen)) {
