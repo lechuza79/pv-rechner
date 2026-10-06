@@ -251,6 +251,71 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
 - **Sicherung (Verwendung):** `allgemeinAuf` / `gratisPostfachAuf` je Bestand;
   bei Verwaltungen bewusst nicht gesetzt.
 
+## F. Aus der Fachbetriebs-Bereinigung und der ersten Handprüfung (06.10.2026)
+
+### 28. Ein späterer Lauf hebt eine Entscheidung von Hand auf
+- **Anlass:** Fachbetriebe — die Kreissuche schrieb bei jedem Lauf wieder
+  „Betrieb" und hob jede Rückstufung am Impressum auf. Bei den Windbetreibern
+  hätte die Neubewertung eine von Hand über eine andere Belegseite gefundene
+  Website zurückgenommen (sie urteilt nur aus dem Impressum-Speicher).
+- **Sicherung (Verwendung):** Die Neubewertung überspringt Kandidaten der
+  Handprüfung und jeden Betreiber mit einem Hand-Vermerk („von Hand geprüft:" /
+  „von Hand gefunden"); urteilt die Maschine heute anders, meldet sie das
+  („bitte ansehen") und ändert nichts. Die Impressum-Prüfung nimmt nur
+  Betreiber ohne Website und ohne Hand-Vermerk. Geändert wird eine
+  Handentscheidung nur durch eine neue Handentscheidung. Am selben Abend
+  meldete die Regel 31 WIND-projekt-Gesellschaften, die eine neue Regel jetzt
+  belegt — sie gingen zurück an die Handprüfung statt still umgeschrieben.
+
+### 29. Falsch eingeordnet heißt übergeben, nicht nur markieren
+- **Anlass:** 74 Versorger und 6 Medien standen als Fachbetriebe. Bei den
+  Windbetreibern 19 Stadtwerke-Websites, die der Versorger-Bestand nicht
+  kannte (dort stehen meist nur die Netzgesellschaften).
+- **Sicherung (Verwendung):** `--uebergeben` misst, mit `--schreiben` übergibt
+  es als Kandidat (`herkunft = 'suche'`) — nur starke Fälle (Versorger im
+  Namen, keine Bürgergesellschaft), wiederholbar ohne Doppel. Der
+  Windbetreiber-Eintrag bleibt: wer Windräder betreibt, ist Betreiber.
+
+### 30. Treffer aus einem fremden Abschnitt des Impressums
+- **Anlass:** Fachbetriebe — „Anbieter: Ergo Versicherung … Versicherungs-
+  ombudsmann e.V., 10006 Berlin". Windbetreiber: von 3.680 Impressum-Belegen
+  lagen 178 außerhalb des Anbieterblocks; Anschriften und Marken dort waren
+  Niederlassungen und Konzerne, Namen dort teils Referenz- und Navigationslisten.
+- **Sicherung (Verwendung):** Ein Name außerhalb des Anbieterblocks
+  (`lib/impressum-anbieter.ts`) belegt nur, wenn er die Organisation
+  identifiziert oder samt Rechtsform wörtlich dasteht und der Text keine
+  Parkliste ist. Ein leerer Block heißt „nicht gelesen", nie „kein Treffer".
+
+### 31. Eine Regel, die nie greift
+- **Anlass:** Fachbetriebe — „e\.V\.\b" trifft vor einem Leerzeichen nie.
+- **Sicherung (Verwendung):** `lib/__tests__/regex-punkt-wortgrenze.test.ts`
+  repo-weit; jede neue Regel dieser Erhebung wurde gesichert ausgebaut und rot
+  gesehen (am 06.10. 24 Regeln, eine blieb grün und wurde geschärft).
+
+### 32. Schwacher Beleg macht einen falschen Treffer
+- **Anlass:** Fachbetriebe — Stadtportale und ein Ministerium als Betriebe.
+- **Sicherung:** Nur Name (vollständig), Registeranschrift, Marke auf einer
+  Energieseite, eigene Registerangabe oder Funktionspostfach belegen; im
+  Zweifel bleibt der Betreiber offen und geht in die Handprüfung.
+
+### 33. Was der erste Handprüfungs-Block an Lücken fand
+- Marke als ein Wort mit Bindestrich aus Gattungswörtern („WIND-projekt" auf
+  wind-projekt.de, 33 Gesellschaften); Hausnummer „0" im Register heißt „keine
+  Nummer"; der volle Firmenname mit Rechtsform auf einer Projektseite
+  („Betreiber des Parks ist die Amrum-Offshore West GmbH") identifiziert auch
+  aus Ortswörtern; Projektname ohne Gattungs-Schluss und ohne ausländische
+  Rechtsform („Borkum Riffgrund 2", „P/S"); eine App-Hülle (200, kein Text)
+  wird im Browser gelesen statt als Seite gezählt.
+- **Sicherung (Verwendung):** je ein Test in `windbetreiber.test.ts`
+  („Befunde der ersten Handprüfung"), alle sechs gesichert ausgebaut und rot.
+
+### 34. „Nicht erreichbar" als Abschluss
+- **Anlass:** Fachbetriebe — 141 Einträge kamen am Ende eines Messlaufs als
+  unerreichbar zurück, 42 zu Unrecht.
+- **Sicherung:** Bei den Windbetreibern schließt nur der Hand-Vermerk ab;
+  unerreichbare Kandidaten bleiben offen, werden wiederholt (7) und landen in
+  der Handprüfung, die mit Browser nachholt.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
