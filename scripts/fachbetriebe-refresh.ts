@@ -111,6 +111,7 @@ import {
   trustSignaleAus,
   ueberUnsUrl,
 } from "../lib/fachbetrieb-extrakt";
+import { bezahlteSucheFreigabe } from "./lib/bezahlte-suche";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
 
@@ -489,6 +490,8 @@ async function serp(
   const login = process.env.DATAFORSEO_LOGIN;
   const passwort = process.env.DATAFORSEO_PASSWORD;
   const auth = Buffer.from(`${login}:${passwort}`).toString("base64");
+  // Outside the try: a refusal must stop the run, not become one more failed query.
+  bezahlteSucheFreigabe();
   try {
     const res = await fetch("https://api.dataforseo.com/v3/serp/google/organic/live/advanced", {
       method: "POST",

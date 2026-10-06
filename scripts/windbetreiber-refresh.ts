@@ -1,11 +1,11 @@
 /**
  * Wind farm operators in Germany — from the register to a proven website.
  *
+ *   npx tsx scripts/windbetreiber-refresh.ts --vorflug                  BEREIT / NICHT BEREIT before any run
  *   npx tsx scripts/windbetreiber-refresh.ts --setup
  *   npx tsx scripts/windbetreiber-refresh.ts --register [--neu-lesen]   operators from the export
  *   npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten             re-judge every stored check under today's rules
  *   npx tsx scripts/windbetreiber-refresh.ts --impressum [--limit=N]   check register-given websites
- *   npx tsx scripts/windbetreiber-refresh.ts --suche [--limit=N]       search the rest, then check
  *   npx tsx scripts/windbetreiber-refresh.ts --stand                    completeness; exit 1 on a violation
  *   npx tsx scripts/windbetreiber-refresh.ts --offen [--out=datei]      the list for the manual pass
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR… <url> [--seite=<url>]
@@ -19,23 +19,25 @@
  *
  * Nothing is sent.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen } from "../lib/bestand-abgleich";
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, marke, ortsWoerterAus, registerKandidaten, standVon, suchanfrage, trefferRelevant, websiteHerkunft, zitatName,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, ortsWoerterAus, registerKandidaten, standVon, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
 import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
+import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { heuteInBerlin } from "../lib/zeit";
 import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
 import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
+import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeufeCheck, vorflug, zugangCheck, type Check } from "./lib/vorflug";
+import { fehlendeSpalten } from "../lib/ddl-spalten";
 import { fetchLive } from "./lib/kontakt-lauf";
-import { serp } from "./lib/serp";
 import { findCachedZip, listZipEntries, streamXmlRecords } from "./mastr-bnetza-refresh";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -83,6 +85,7 @@ async function alle<T>(c: Db, tabelle: string, spalten: string, ordnung: string,
 /** Update existing rows one by one. An upsert would have to carry every NOT NULL
  *  column of a row it only wants to amend. */
 async function aktualisieren(c: Db, tabelle: string, schluessel: string, zeilen: Record<string, unknown>[]) {
+  nurBekannteSpalten(tabelle, spaltenAusDdl(WINDBETREIBER_SQL, tabelle), zeilen);
   await parallel(zeilen, 8, async (z) => {
     const { [schluessel]: id, ...felder } = z;
     const { error } = await c.from(tabelle).update(felder).eq(schluessel, id);
@@ -94,6 +97,7 @@ async function aktualisieren(c: Db, tabelle: string, schluessel: string, zeilen:
 async function schreiben(c: Db, tabelle: string, zeilen: Record<string, unknown>[], onConflict: string) {
   const formen = new Set(zeilen.map((z) => Object.keys(z).sort().join("|")));
   if (formen.size > 1) throw new Error(`${tabelle}: Zeilen mit verschiedener Spaltenmenge in einem Schreibvorgang`);
+  nurBekannteSpalten(tabelle, spaltenAusDdl(WINDBETREIBER_SQL, tabelle), zeilen);
   for (let i = 0; i < zeilen.length; i += 500) {
     const { error } = await c.from(tabelle).upsert(zeilen.slice(i, i + 500), { onConflict });
     if (error) throw new Error(`${tabelle} ab ${i}: ${error.message}`);
@@ -182,12 +186,23 @@ async function registerLesen(neu: boolean): Promise<Registerstand> {
   return stand;
 }
 
+/**
+ * The latest register read, without needing the 3-GB export next to it. A
+ * worktree has no export, and looking for it there made every report count
+ * 0 MW without a word (06.10.2026). The read is named after its export, and
+ * export names sort by date.
+ */
 function registerCache(): Registerstand | null {
-  try {
-    const name = findCachedZip().split("/").pop()!.replace(/\.zip$/, "");
-    const datei = resolve(CACHE, `register-${name}.json`);
-    return existsSync(datei) ? JSON.parse(readFileSync(datei, "utf8")) : null;
-  } catch { return null; }
+  if (!existsSync(CACHE)) return null;
+  const neueste = readdirSync(CACHE).filter((n) => /^register-Gesamtdatenexport_\d{8}_.*\.json$/.test(n)).sort().pop();
+  return neueste ? JSON.parse(readFileSync(resolve(CACHE, neueste), "utf8")) : null;
+}
+
+/** For a report: without the register read the capacity column would be 0 MW, which reads as a fact. */
+function registerPflicht(): Registerstand {
+  const st = registerCache();
+  if (!st) throw new Error(`Kein Registerstand in ${CACHE} — erst --register laufen lassen`);
+  return st;
 }
 
 const text = (s: string | undefined) => (s && s.trim() ? s.trim() : null);
@@ -438,102 +453,6 @@ async function neuBewerten() {
   console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
 
-// ─── Search ───────────────────────────────────────────────────────────────────
-
-async function sucheLauf() {
-  const c = await db();
-  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true));
-  const st = registerCache();
-  if (!st) throw new Error("Kein Registerstand im Zwischenspeicher — erst --register laufen lassen");
-  const { belegungen } = await ladeBelegungen(c, "windbetreiber");
-  const nachAnschrift = new Map<string, Zeile[]>();
-  for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)) ?? `nr:${z.mastr_nr}`; nachAnschrift.set(k, [...(nachAnschrift.get(k) ?? []), z]); }
-
-  // Operators with a proven website are done; mark them so the stock is complete.
-  const belegtOhneDatum = zeilen.filter((z) => z.website && !z.gesucht_am);
-  for (let i = 0; i < belegtOhneDatum.length; i += 500) {
-    const { error } = await c.from("windbetreiber").update({ gesucht_am: HEUTE, suche_notiz: "Website aus dem Register belegt" })
-      .in("mastr_nr", belegtOhneDatum.slice(i, i + 500).map((z) => z.mastr_nr)).is("gesucht_am", null);
-    if (error) throw new Error(error.message);
-  }
-
-  // Only operators whose register candidates have ALL been checked: a search
-  // for one the register would have answered is money for nothing.
-  const geprueft = new Set((await alle<{ mastr_nr: string; domain: string }>(c, "windbetreiber_kandidaten", "mastr_nr,domain", "mastr_nr")).map((k) => `${k.mastr_nr}|${k.domain}`));
-  const regAnschrift = new Map<string, Zeile[]>();
-  for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)); if (k) regAnschrift.set(k, [...(regAnschrift.get(k) ?? []), z]); }
-  const bereit = (z: Zeile) => registerKandidaten(z, regAnschrift).every((k) => geprueft.has(`${z.mastr_nr}|${k.domain}`));
-  const nichtBereit = zeilen.filter((z) => !z.website && !z.gesucht_am && !bereit(z)).length;
-  if (nichtBereit) console.log(`${nichtBereit} Betreiber übersprungen: Registerangaben noch nicht geprüft (erst --impressum)`);
-
-  // One search per address: project companies of one parent share it.
-  const gruppen = [...nachAnschrift.values()]
-    .map((g) => g.filter((z) => !z.website && !z.gesucht_am && bereit(z)))
-    .filter((g) => g.length)
-    .sort((a, b) => b.reduce((s, z) => s + (st.kwJeBetreiber[z.mastr_nr] ?? 0), 0) - a.reduce((s, z) => s + (st.kwJeBetreiber[z.mastr_nr] ?? 0), 0))
-    .slice(0, LIMIT);
-  console.log(`${gruppen.length} Anschriften zu suchen (${gruppen.reduce((s, g) => s + g.length, 0)} Betreiber), größte Leistung zuerst`);
-
-  // A domain rejected for five different operators and proven for none is a
-  // directory — learned from the checks, not kept as a list.
-  const urteile = await alle<{ domain: string; mastr_nr: string; ergebnis: string }>(c, "windbetreiber_kandidaten", "domain,mastr_nr,ergebnis", "domain");
-  const jeDomain = new Map<string, { ab: Set<string>; belegt: boolean }>();
-  for (const u of urteile) {
-    const x = jeDomain.get(u.domain) ?? { ab: new Set<string>(), belegt: false };
-    if (u.ergebnis === "belegt") x.belegt = true; else if (u.ergebnis === "abgelehnt") x.ab.add(u.mastr_nr);
-    jeDomain.set(u.domain, x);
-  }
-  const verzeichnis = new Set([...jeDomain].filter(([, x]) => !x.belegt && x.ab.size >= 5).map(([d]) => d));
-  console.log(`${verzeichnis.size} Domains als Verzeichnis erkannt (bei mindestens fünf Betreibern abgelehnt, nie bestätigt)`);
-
-  let kosten = 0, belegt = 0, n = 0;
-  // Four addresses at a time: one at a time took ~30 s per address, which is
-  // 13 hours for the whole stock. Every address fetches different hosts.
-  await parallel(gruppen, 4, async (g) => {
-    // The member most likely to have its own page: one with a brand, then the largest.
-    const rep = [...g].sort((a, b) => Number(!!marke(b.name)) - Number(!!marke(a.name)) || (st.kwJeBetreiber[b.mastr_nr] ?? 0) - (st.kwJeBetreiber[a.mastr_nr] ?? 0))[0];
-    const anfragen = [suchanfrage(akteurVon(rep)), `"${zitatName(rep.name)}"`];
-    const notiz: string[] = [];
-    let suchfehler = false;
-    const gefunden = new Map<string, Pruefung>();
-    for (const a of anfragen) {
-      const r = await serp(a);
-      kosten += r.kosten;
-      if (r.fehler) suchfehler = true;
-      const relevant = r.treffer.filter((t) => g.some((z) => trefferRelevant(t, z.name)));
-      const domains = [...new Set(relevant.map((t) => organisationsDomain(t.url)).filter((d): d is string => !!d))]
-        .filter((d) => !verzeichnis.has(d)).slice(0, 6);
-      notiz.push(`„${a}": ${r.fehler ? `Fehler ${r.fehler}` : `${r.treffer.length} Treffer, ${domains.length} passende Domains`}`);
-      for (const z of g) {
-        for (const d of domains) {
-          if (gefunden.has(`${z.mastr_nr}|${d}`)) continue;
-          gefunden.set(`${z.mastr_nr}|${d}`, await pruefen(z, { domain: d, quelle: "suche" }, belegungen));
-        }
-      }
-      if ([...gefunden.values()].some((p) => p.ergebnis === "belegt")) break;
-    }
-    const kandZeilen = g.flatMap((z) => [...gefunden.entries()].filter(([k]) => k.startsWith(`${z.mastr_nr}|`)).map(([, p]) => kandidatZeile(z, p)));
-    if (kandZeilen.length) await schreiben(c, "windbetreiber_kandidaten", kandZeilen, "mastr_nr,domain");
-    for (const z of g) {
-      const best = besterBeleg([...gefunden.entries()].filter(([k]) => k.startsWith(`${z.mastr_nr}|`)).map(([, p]) => p));
-      if (best) belegt++;
-      const abgelehnt = [...gefunden.entries()].filter(([k, p]) => k.startsWith(`${z.mastr_nr}|`) && p.ergebnis !== "belegt").map(([, p]) => p.kandidat.domain);
-      // A failed search is "could not look", not "nothing there": the address
-      // comes back next run unless something was proven anyway.
-      if (!best && suchfehler) continue;
-      const { error } = await c.from("windbetreiber").update({
-        ...websiteFelder(best), gesucht_am: HEUTE,
-        suche_notiz: `${notiz.join(" · ")}${abgelehnt.length ? ` · abgelehnt: ${abgelehnt.slice(0, 12).join(", ")}` : ""}`.slice(0, 900),
-        updated_at: new Date().toISOString(),
-      }).eq("mastr_nr", z.mastr_nr);
-      if (error) throw new Error(error.message);
-    }
-    if (++n % 25 === 0) console.log(`  ${n}/${gruppen.length} Anschriften · ${belegt} belegt · ${kosten.toFixed(2)} $`);
-  });
-  console.log(`Suche fertig: ${n} Anschriften · ${belegt} Betreiber mit belegter Website · ${kosten.toFixed(2)} $`);
-  await browserSchliessen();
-}
-
 // ─── Manual pass ──────────────────────────────────────────────────────────────
 
 /** The mark of a "no website" a person confirmed — the stock is complete when
@@ -587,19 +506,22 @@ async function keine() {
 
 async function stand() {
   const c = await db();
-  type V = Zeile & { website_quelle: string | null; website_beleg_url: string | null; suche_notiz: string | null };
-  const zeilen = await alle<V>(c, "windbetreiber", `${SPALTEN},website_quelle,website_beleg_url,suche_notiz`, "mastr_nr", (q) => q.eq("aktiv", true));
+  type V = Zeile & { website_quelle: string | null; website_beleg_url: string | null; suche_notiz: string | null;
+    kontakt_email: string | null; kontakt_beleg_url: string | null; kontakt_freigabe_am: string | null; kontakt_sperrgrund: string | null };
+  const zeilen = await alle<V>(c, "windbetreiber", `${SPALTEN},website_quelle,website_beleg_url,suche_notiz,kontakt_email,kontakt_beleg_url,kontakt_freigabe_am,kontakt_sperrgrund`, "mastr_nr", (q) => q.eq("aktiv", true));
   const kand = await alle<{ mastr_nr: string; domain: string; ergebnis: string }>(c, "windbetreiber_kandidaten", "mastr_nr,domain,ergebnis", "mastr_nr");
   const belegtePaare = new Set(kand.filter((k) => k.ergebnis === "belegt").map((k) => `${k.mastr_nr}|${k.domain}`));
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
-  // Only the cached read: a report must never start a 20-minute register run.
-  const st = registerCache();
+  // Only the cached read: a report must never start a 20-minute register read.
+  const st = registerPflicht();
 
   const zaehl: Record<Stand, { n: number; kw: number }> = { "website-belegt": { n: 0, kw: 0 }, "nur-register": { n: 0, kw: 0 }, "keine-website": { n: 0, kw: 0 }, offen: { n: 0, kw: 0 } };
   const verstoesse: string[] = [];
+  let mitKontakt = 0, freigegeben = 0, gesperrt = 0, kwKontakt = 0;
   for (const z of zeilen) {
     const s = standVon({ website_beleg: z.website_beleg, register_email: z.register_email, register_telefon: z.register_telefon, gesucht_am: z.gesucht_am });
-    zaehl[s].n++; zaehl[s].kw += st?.kwJeBetreiber[z.mastr_nr] ?? 0;
+    const kw = st.kwJeBetreiber[z.mastr_nr] ?? 0;
+    zaehl[s].n++; zaehl[s].kw += kw;
     if (z.website && !z.website_beleg) verstoesse.push(`${z.mastr_nr} ${z.name}: Website ohne Beleg`);
     if (z.website && !belegtePaare.has(`${z.mastr_nr}|${z.website}`)) verstoesse.push(`${z.mastr_nr} ${z.name}: ${z.website} ohne belegte Prüfung`);
     if (z.website) {
@@ -607,18 +529,44 @@ async function stand() {
       if (u.art === "entscheiden") verstoesse.push(`${z.mastr_nr} ${z.name}: ${z.website} steht in einem anderen Bestand`);
     }
     if (!z.website && z.gesucht_am && !(z.suche_notiz ?? "").trim()) verstoesse.push(`${z.mastr_nr} ${z.name}: „keine Website" ohne Notiz, was gesucht wurde`);
+    const kv = kontaktVerstoss(z);
+    if (kv) verstoesse.push(`${z.mastr_nr} ${z.name}: ${kv}`);
+    if (z.kontakt_email) { mitKontakt++; kwKontakt += kw; }
+    if (z.kontakt_freigabe_am) freigegeben++;
+    if (z.kontakt_sperrgrund) gesperrt++;
   }
   const mw = (kw: number) => `${Math.round(kw / 1000).toLocaleString("de-DE")} MW`;
+  const anteil = (kw: number, g: number) => (g ? `${((kw / g) * 100).toFixed(1)} %` : "–");
   const gesamtKw = Object.values(zaehl).reduce((s, x) => s + x.kw, 0);
+  console.log(`Registerstand ${st.export}`);
   console.log(`Windparkbetreiber (Organisationen mit Windrad in Betrieb): ${zeilen.length.toLocaleString("de-DE")} · ${mw(gesamtKw)}`);
-  for (const [k, v] of Object.entries(zaehl)) console.log(`  ${k.padEnd(15)} ${String(v.n).padStart(6)}  ${mw(v.kw).padStart(10)}  (${gesamtKw ? ((v.kw / gesamtKw) * 100).toFixed(1) : "–"} % der Leistung)`);
-  if (st) console.log(`  natürliche Personen (nicht erfassbar): ${st.natuerlich.betreiber} · ${mw(st.natuerlich.kw)}`);
+  for (const [k, v] of Object.entries(zaehl)) console.log(`  ${k.padEnd(15)} ${String(v.n).padStart(6)}  ${mw(v.kw).padStart(10)}  (${anteil(v.kw, gesamtKw)} der Leistung)`);
+  console.log(`  natürliche Personen (nicht erfassbar, nur gezählt): ${st.natuerlich.betreiber} · ${mw(st.natuerlich.kw)}`);
   const ohne = zeilen.filter((z) => !z.website);
   const vonHand = ohne.filter((z) => (z.suche_notiz ?? "").startsWith(VON_HAND)).length;
-  console.log(`  ohne Website: ${ohne.length}, davon von Hand bestätigt ${vonHand}, noch für die Handprüfung ${ohne.length - vonHand}`);
+  const handOffen = ohne.length - vonHand;
+  console.log(`  ohne Website: ${ohne.length}, davon von Hand bestätigt ${vonHand}, noch für die Handprüfung ${handOffen}`);
+  console.log(`  Kontakt von der eigenen Website: ${mitKontakt} (${anteil(kwKontakt, gesamtKw)} der Leistung) · freigegeben ${freigegeben} · gesperrt ${gesperrt}`);
   console.log(`Verstöße: ${verstoesse.length}`);
   for (const v of verstoesse.slice(0, 30)) console.log(`  ✗ ${v}`);
+  // The one line that answers "done?": nothing open AND nothing wrong.
+  console.log(handOffen === 0 && verstoesse.length === 0 ? "VOLLSTÄNDIG" : `NICHT VOLLSTÄNDIG — ${handOffen} offen, ${verstoesse.length} Verstöße`);
   if (verstoesse.length) process.exitCode = 1;
+}
+
+/**
+ * A contact counts only from the operator's OWN proven website: its proof page
+ * lies on that site. A register mailbox has no page; one from a former website
+ * would outlive the website it came from.
+ */
+function kontaktVerstoss(z: { website: string | null; kontakt_email: string | null; kontakt_beleg_url: string | null; kontakt_freigabe_am: string | null }): string | null {
+  if (!z.kontakt_email && !z.kontakt_freigabe_am) return null;
+  if (z.kontakt_freigabe_am && !z.kontakt_email) return "Freigabe ohne Kontakt";
+  if (!z.website) return "Kontakt ohne belegte Website";
+  if (!z.kontakt_beleg_url) return "Kontakt ohne Fundstelle";
+  const h = organisationsDomain(z.kontakt_beleg_url);
+  if (h !== z.website) return `Kontakt-Fundstelle ${h ?? z.kontakt_beleg_url} liegt nicht auf ${z.website}`;
+  return null;
 }
 
 async function offenListe() {
@@ -627,8 +575,7 @@ async function offenListe() {
   const zeilen = (await alle<V>(c, "windbetreiber", `${SPALTEN},suche_notiz`, "mastr_nr", (q) => q.eq("aktiv", true).is("website", null)))
     // What a person already confirmed is done; the list is what is left.
     .filter((z) => !(z.suche_notiz ?? "").startsWith(VON_HAND));
-  const st = registerCache();
-  if (!st) throw new Error("Kein Registerstand im Zwischenspeicher — erst --register laufen lassen");
+  const st = registerPflicht();
   const liste = zeilen
     .map((z) => ({ mastr_nr: z.mastr_nr, name: z.name, anschrift: `${z.strasse ?? ""} ${z.hausnummer ?? ""}, ${z.plz ?? ""} ${z.ort ?? ""}`.trim(), mw: Math.round((st.kwJeBetreiber[z.mastr_nr] ?? 0) / 100) / 10, register_email: z.register_email, register_telefon: z.register_telefon, bisher: z.suche_notiz }))
     .sort((a, b) => b.mw - a.mw);
@@ -638,24 +585,66 @@ async function offenListe() {
   console.log(`${liste.length} Betreiber ohne belegte Website → ${out}`);
 }
 
+// ─── Preflight ────────────────────────────────────────────────────────────────
+
+/** Every step of an unattended run, for the paid-search check. */
+const ABLAUF_DATEIEN = ["scripts/nacht-windbetreiber.sh", "scripts/windbetreiber-refresh.ts", "scripts/windbetreiber-kontakte.ts", "scripts/kontakte-freigabe.ts", "scripts/bestaende-abgleich.ts", "scripts/lib/kontakt-lauf.ts"];
+
+/** Everything a run of this stock has failed on before, asked before it starts. */
+async function vorflugLauf() {
+  env();
+  const wurzel = resolve(SCRIPT_DIR, "..");
+  console.log(`Vorflug Windparkbetreiber · ${HEUTE} · Checkout ${wurzel === MAIN ? "Haupt-Checkout" : wurzel.split("/").pop()}`);
+  const checks: Check[] = [
+    lastCheck(),
+    zugangCheck([["SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL"], ["SUPABASE_SERVICE_KEY"]]),
+    abhaengigkeitenCheck(wurzel),
+    paralleleLaeufeCheck(/windbetreiber-(?:refresh|kontakte)\.ts|kontakte-freigabe\.ts --bestand=windbetreiber|nacht-windbetreiber/),
+    keineBezahlteSucheCheck(ABLAUF_DATEIEN.map((d) => resolve(wurzel, d))),
+    { name: "Datenbank erreichbar", pruefen: async () => {
+      const r = await (await db()).from("windbetreiber").select("mastr_nr", { count: "exact", head: true });
+      return { ok: !r.error, detail: r.error ? r.error.message : `${r.count} Zeilen` };
+    } },
+    ...["windbetreiber", "windbetreiber_kandidaten"].map((t): Check => ({ name: `Spalten von ${t} angelegt`, pruefen: async () => {
+      const fehlt = await fehlendeSpalten(await db(), t, spaltenAusDdl(WINDBETREIBER_SQL, t));
+      return { ok: !fehlt.length, detail: fehlt.length ? `fehlt: ${fehlt.join(", ")} — erst --setup` : "alle da" };
+    } })),
+    { name: "Registerstand gelesen und geschrieben", pruefen: async () => {
+      const st = registerCache();
+      if (!st) return { ok: false, detail: "kein Registerstand — erst --register" };
+      const { data, error } = await (await db()).from("windbetreiber").select("register_stand").eq("aktiv", true).order("register_stand", { ascending: false }).limit(1);
+      if (error) return { ok: false, detail: error.message };
+      const tag = registerTag(st.export);
+      return { ok: data?.[0]?.register_stand === tag, detail: `gelesen ${st.export}, in der Datenbank ${data?.[0]?.register_stand ?? "nichts"}` };
+    } },
+    { name: "Keine offenen Entscheidungen zwischen Beständen", pruefen: async () => {
+      // A candidate in conflict with another stock waits for a person
+      // (bestaende-abgleich --entscheiden); until then the operator stays open.
+      const k = await alle<{ mastr_nr: string; domain: string }>(await db(), "windbetreiber_kandidaten", "mastr_nr,domain", "mastr_nr", (q) => q.eq("ergebnis", "konflikt"));
+      const domains = [...new Set(k.map((x) => x.domain))];
+      return { ok: !domains.length, detail: domains.length ? `${domains.length} Domains (${domains.slice(0, 4).join(", ")}) — npm run bestaende:abgleich` : "keine" };
+    } },
+  ];
+  if (!(await vorflug(checks))) process.exitCode = 1;
+}
+
 async function main() {
+  if (flag("vorflug")) return vorflugLauf();
   if (flag("setup")) return setup();
   if (flag("register")) return register();
   if (flag("neu-bewerten")) return neuBewerten();
   if (flag("impressum")) return impressumLauf();
   if (flag("suche")) {
-    // Paid search is off (operator, 06.10.2026, same decision as for the
-    // municipalities on 28.09.2026): the search service is for backlink
-    // evaluation, not for a bulk run. Websites the register does not name are
-    // searched by the manual pass with its own web search.
-    if (!flag("bezahlt")) throw new Error("Bezahlte Suche abgeschaltet (Betreiber, 06.10.2026) — Websites ohne Registerangabe sucht die Handprüfung selbst. Nicht erneut starten.");
-    return sucheLauf();
+    // The paid bulk search is gone, not switched off (decisions 28.09. and
+    // 06.10.2026; it ran twice anyway while it was only switched off). Websites
+    // the register does not name are searched in the manual pass by Claude.
+    throw new Error("Es gibt keine Maschinen-Suche mehr — offene Betreiber sucht die Handprüfung (--offen, dann --manuell/--keine).");
   }
   if (flag("stand")) return stand();
   if (flag("offen")) return offenListe();
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
-  console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 14).join("\n"));
+  console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 15).join("\n"));
 }
 
 main().catch(async (e) => { console.error(e); await browserSchliessen().catch(() => {}); process.exit(1); });

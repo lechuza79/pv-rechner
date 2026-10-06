@@ -87,6 +87,7 @@ import {
   type KontaktZeile,
   type MediumZeile,
 } from "../lib/presse-katalog";
+import { bezahlteSucheFreigabe } from "./lib/bezahlte-suche";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
 
@@ -1077,6 +1078,8 @@ async function serp(frage: string): Promise<{ treffer: SerpTreffer[]; fehler: st
   const passwort = process.env.DATAFORSEO_PASSWORD;
   if (!login || !passwort) return { treffer: [], fehler: "DATAFORSEO-Zugang fehlt" };
   const auth = Buffer.from(`${login}:${passwort}`).toString("base64");
+  // Outside the try: a refusal must stop the run, not become one more failed query.
+  bezahlteSucheFreigabe();
   try {
     const res = await fetch("https://api.dataforseo.com/v3/serp/google/organic/live/advanced", {
       method: "POST",

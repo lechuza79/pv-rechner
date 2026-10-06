@@ -38,6 +38,7 @@ envLaden();
 import { createClient } from "@supabase/supabase-js";
 import { hinweisBericht, neueHinweise, type Hinweis } from "../lib/kommunen-hinweise";
 import { berichtAblegen } from "../lib/alert-senden";
+import { bezahlteSucheFreigabe } from "./lib/bezahlte-suche";
 
 const trocken = process.argv.includes("--trocken");
 const LOGIN = process.env.DATAFORSEO_LOGIN;
@@ -68,6 +69,8 @@ async function serp(frage: string, art: "organic" | "news" = "organic", tiefe = 
 async function serpEinmal(frage: string, art: "organic" | "news", tiefe: number): Promise<{ adressen: Fund[]; fehler: string | null }> {
   const auth = Buffer.from(`${LOGIN}:${PASSWORT}`).toString("base64");
   ausgegeben += PREIS_JE_ABRUF;
+  // Outside the try: a refusal must stop the run, not become one more failed query.
+  bezahlteSucheFreigabe();
   try {
     const res = await fetch(`https://api.dataforseo.com/v3/serp/google/${art}/live/advanced`, {
       method: "POST",
