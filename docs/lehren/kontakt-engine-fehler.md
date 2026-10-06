@@ -665,6 +665,18 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Registerkandidat nach den Telefonregeln 66/67/73 trägt — alle gelesen und
   übernommen.
 
+### 75. Ein kurzer Name auf der Seite eines Namensvetters oder in einer Referenzliste
+- **Anlass:** 06.10.2026 — „Böhm Energie GbR" (Bayern) auf der Seite eines
+  Installateurs Böhm (NRW), „Flugplatz Barssel GmbH" auf der Seite eines
+  Einzelunternehmens; aus der früheren automatischen Suche „Nordseecluster A"
+  und „Baltic Eagle" in Referenzlisten eines Zulieferers und eines Beraters,
+  „Bürgerwindpark Schönberg" auf einer Crowdinvest-Plattform. Ein Name aus zwei
+  Wörtern ist schnell auch der Name eines anderen.
+- **Sicherung:** keine Maschinenregel (die meisten kurzen Namen stehen auf der
+  eigenen Domain). Der Gegenlese-Befehl listet auch kurze Namensbelege ohne
+  Rückhalt in Postfach oder Postleitzahl (20 von 279); gelesen, 3 zurückgenommen,
+  dazu die 2 von Hand. Ablauf-Test.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,

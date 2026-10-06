@@ -105,7 +105,8 @@ entscheidet ein Mensch (`--zuruecknehmen`). Fehlen alte Belegseiten:
 `--belegseiten-nachholen`. Nach der Handprüfung: `--geschwister` (gleiches
 Postfach, gleiche Anschrift) und `--anschrift-gegenlesen` (Anschriftsbelege auf
 Seiten ohne Energiebezug, alle von Hand lesen, 57) und `--marke-gegenlesen` (Marken ohne
-Rückhalt in Postfach oder Postleitzahl, 59). Für Tempo bis
+Rückhalt in Postfach oder Postleitzahl, 59) und `--marke-gegenlesen --namen` (kurze
+Namen ebenso, 75). Für Tempo bis
 zu vier Helfer parallel, jeder mit eigenem Block und dem Auftragstext
 (Vorlage unten). Jeder Helfer berichtet Ablehnungen, die er für falsch hält —
 daraus werden Regeln.

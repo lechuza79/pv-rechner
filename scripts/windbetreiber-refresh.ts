@@ -12,7 +12,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>] [--ersetzen] [--subdomain-ok]
  *   npx tsx scripts/windbetreiber-refresh.ts --belegseiten-nachholen   fetch missing proof pages of hand decisions once
  *   npx tsx scripts/windbetreiber-refresh.ts --anschrift-gegenlesen    address proofs on non-energy sites, for reading
- *   npx tsx scripts/windbetreiber-refresh.ts --marke-gegenlesen        brand proofs without mailbox or postcode backing, for reading
+ *   npx tsx scripts/windbetreiber-refresh.ts --marke-gegenlesen [--namen]  brand (or short-name) proofs without mailbox or postcode backing, for reading
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
  *   npx tsx scripts/windbetreiber-refresh.ts --zuruecknehmen ABR…[,ABR…] "<why it is not the operator's>"
@@ -33,7 +33,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, ENERGIE, traegtDomainwort, maildomain, marke, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, ENERGIE, traegtDomainwort, maildomain, marke, nameWoerter, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -755,7 +755,11 @@ async function anschriftGegenlesen() {
  *  dictionary, and 28 of 29 such brands were real groups. */
 async function markeGegenlesen() {
   const c = await db();
-  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).eq("website_beleg", "marke"));
+  // Short names too: "Böhm Energie" and "Flugplatz Barssel" proved a namesake's
+  // site by the full name (block 073, 06.10.2026). Two words or fewer.
+  const art = flag("namen") ? "name" : "marke";
+  const zeilen = (await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).eq("website_beleg", art)))
+    .filter((z) => art === "marke" || nameWoerter(z.name).length <= 2);
   const gruppen = new Map<string, Zeile[]>();
   for (const z of zeilen) {
     if (!z.website) continue;
@@ -766,10 +770,10 @@ async function markeGegenlesen() {
     gruppen.set(k, [...(gruppen.get(k) ?? []), z]);
   }
   const liste = [...gruppen].map(([k, zs]) => ({ marke: k, anzahl: zs.length, beispiel: `${zs[0].name} (${zs[0].ort ?? ""})`, mastr_nr: zs.map((z) => z.mastr_nr) }));
-  const out = arg("out") ?? resolve(CACHE, "marke-gegenlesen.json");
+  const out = arg("out") ?? resolve(CACHE, `${art}-gegenlesen.json`);
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, JSON.stringify(liste, null, 1));
-  console.log(`${liste.length} Marken ohne Rückhalt in Postfach oder Postleitzahl zum Gegenlesen (${zeilen.length} Markenbelege) → ${out}`);
+  console.log(`${liste.length} ${art === "marke" ? "Marken" : "kurze Namen"} ohne Rückhalt in Postfach oder Postleitzahl zum Gegenlesen (${zeilen.length} Belege) → ${out}`);
 }
 
 /** Same page, whatever the scheme, "www.", trailing slash or fragment. */
