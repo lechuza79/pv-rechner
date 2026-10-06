@@ -15368,7 +15368,7 @@
   {
     "regionId": "05166016",
     "name": "Nettetal",
-    "checkedAt": "2026-09-21T20:56:00Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -15398,6 +15398,10 @@
       {
         "url": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen",
         "finding": "Veranstaltungen „Fördermittel unterwegs“ (WFG Kreis Viersen) richten sich an Unternehmen; Vortrag der Verbraucherzentrale zu Bundesfördermitteln — keine städtische Förderung."
+      },
+      {
+        "url": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-bei-baum-bonheur",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks beide Nettetaler Veranstaltungsseiten live neu gelesen: „Fördermittel unterwegs“ (19.11.2025, WFG-Beratung für Unternehmen) und Vortrag der Verbraucherzentrale NRW (19.10.2023) — reine Veranstaltungshinweise, kein kommunales Programm. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -16144,7 +16148,7 @@
   {
     "regionId": "06635001",
     "name": "Allendorf (Eder)",
-    "checkedAt": "2026-09-18T00:51:13Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2027-03-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -16165,6 +16169,10 @@
       {
         "url": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger",
         "finding": "Uebersicht der kommunalen Buergerprogramme: genau zwei, das Foerderprogramm Erneuerbare Energien und Waermedaemmung und das Foerderprogramm Regenwasserzisternen."
+      },
+      {
+        "url": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: listet unverändert „Förderprogramm Erneuerbare Energien und Wärmedämmung in Wohngebäuden“ und „Förderprogramm Regenwasserzisternen“; die Änderung betrifft die eingebettete Öffnungszeiten-Anzeige."
       }
     ],
     "sources": [
@@ -39882,7 +39890,7 @@
   {
     "regionId": "09184119",
     "name": "Garching b.München",
-    "checkedAt": "2026-09-23T04:36:32.424963+00:00",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich der Programme des Trägers der Verwaltung; Beratung und Landes-/Bundesprogramme getrennt eingeordnet. Kein Audit sämtlicher Haushalts- und Ratsunterlagen.",
     "outcome": "programme-geprueft",
@@ -39898,6 +39906,10 @@
       {
         "url": "https://www.garching.de/Energiesparf%C3%B6rderprogramm/_/Richtlinie_2026_Unterschrieben.pdf",
         "finding": "Unterzeichnete Richtlinie vom 15.12.2025, gültig 01.01. bis 31.12.2026, mit allen Sätzen und Bedingungen."
+      },
+      {
+        "url": "https://www.garching.de/ortsrecht",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: Ortsrecht-Liste führt weiterhin das Energiesparförderprogramm (Katalog garching-energiespar); neu sind nur die Schülerfahrten-Richtlinie vom 21.05.2026 und die Vereinsheimförderrichtlinie vom 26.04.2026 — ohne Energiebezug."
       }
     ],
     "sources": [
@@ -79926,7 +79938,7 @@
   {
     "regionId": "01054168",
     "name": "Sylt",
-    "checkedAt": "2026-09-30T16:04:38Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2026-12-29T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -79948,6 +79960,10 @@
       {
         "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
         "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung-jetzt-beantragen",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks beide Henner-Krogh-Meldungen live neu gelesen (14.01.2019 und 09.02.2021): Zuschüsse der Stiftung zur Förderung Sylter Musiker — keine Energieförderung. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -83466,7 +83482,7 @@
   {
     "regionId": "13074087",
     "name": "Wismar",
-    "checkedAt": "2026-10-01T08:20:00Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -83528,6 +83544,10 @@
       {
         "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderung-Zuschuss-f%C3%BCr-eine-Begegnung-im-Rahmen-einer-bilateralen-Schulpartnerschaft-Sch%C3%BCleraustausch-beantragen.php",
         "finding": "Dienstleistung „Förderung: Zuschuss für eine Begegnung im Rahmen einer bilateralen Schulpartnerschaft (Schüleraustausch)“ — keine Förderung für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wismar.de/B%C3%BCrgerservice/Dienstleistungen-nach-Kategorien/F%C3%B6rderrichtlinie-der-Hansestadt-Wismar.php",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: liefert weiterhin das Kategorien-Verzeichnis des Bürgerservice, keine Richtlinie für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -84024,7 +84044,7 @@
   {
     "regionId": "14625240",
     "name": "Hoyerswerda",
-    "checkedAt": "2026-10-01T14:05:00Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -84069,6 +84089,10 @@
       {
         "url": "https://hoyerswerda.de/wirtschaft/strukturwandel/foerderprogramme",
         "finding": "Im Original gelesen (01.10.2026): „Förderprogramme › Hoyerswerda“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.hoyerswerda.de/stadtleben/stadtentwicklung/efre-foerderung",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: EFRE-Projekte der Stadt im Programm NiSE 2021–2027 (Stadtentwicklung), kein Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -84428,7 +84452,7 @@
   {
     "regionId": "14625480",
     "name": "Radeberg",
-    "checkedAt": "2026-10-01T14:05:00Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -84461,6 +84485,10 @@
       {
         "url": "https://radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/ortsrecht/sanierung/sanierung?searchterm=f%C3%B6rderprogramm",
         "finding": "Im Original gelesen (01.10.2026): „Stadt Radeberg“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.radeberg.de/inhalte/radeberg/_inhalt/politik_ortsrecht/bekanntmachungen/bekanntmachungen/2026_06_26",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks drei Radeberger Seiten live neu gelesen: Ratsbekanntmachung 26.06.2026 (Machbarkeitsstudie Autonomes Fahren, Stadt-Umland-Konzept), INSEK-Fortschreibung und Sanierungsrecht (Sanierungs-/Fördergebiete der Städtebauförderung) — keine Erwähnung von Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -85858,7 +85886,7 @@
   {
     "regionId": "08226095",
     "name": "Walldorf",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2027-01-04T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -85911,6 +85939,10 @@
       {
         "url": "https://walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/photovoltaik-fuer-wohngebaeude",
         "finding": "Am 05.10.2026 gelesen: PV-Wohngebäude-Programm Walldorf katalogisiert."
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/stecker-solaranlage",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks (vier Walldorfer Förderseiten) live neu gelesen: Stecker-Solar-Seite verlinkt unverändert die Richtlinie 17._RL_Balkonkraftwerk_2026 („50 % der anrechenbaren Kosten, höchstens jedoch 300 EUR je Wohneinheit“, in Kraft 01.01.2026 bis 31.12.2027); Parkplatzüberdachungen, Solarthermie und Gewerbe-Seite unverändert ohne Bezug zu privater PV/Speicher/Balkon/Wärmepumpe. Katalog walldorf-klimaschutz bleibt."
       }
     ],
     "sources": [
@@ -87161,7 +87193,7 @@
   {
     "regionId": "08226098",
     "name": "Wiesloch",
-    "checkedAt": "2026-10-05T16:05:00Z",
+    "checkedAt": "2026-10-06T14:15:38Z",
     "recheckAt": "2027-01-03T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -87187,6 +87219,10 @@
       {
         "url": "https://www.wiesloch.de/-/dienstleistungen/vbid1475",
         "finding": "service-bw-Text zur Bundesförderung effiziente Gebäude, nicht kommunal."
+      },
+      {
+        "url": "https://www.wiesloch.de/-/dienstleistungen/vbid1475",
+        "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: Landes-Leistungsbeschreibung zur Bundesförderung für effiziente Gebäude (BEG WG/NWG/EM) — Bundesprogramm, kein Zuschuss der Stadt. Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -87864,5 +87900,49 @@
         "evidenceUrl": "https://www.rhein-neckar-kreis.de/landratsamt/aemter-und-aufgaben/gesundheitsamt/wasser-und-umweltmedizin/hitzeschutz/hitzeschutz-fachinformationen/kommunen_+foerderungen"
       }
     ]
+  },
+  {
+    "regionId": "07138044",
+    "name": "Neustadt (Wied)",
+    "checkedAt": "2026-10-06T14:15:38Z",
+    "recheckAt": "2026-11-03T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "06.10.2026 Programmseite der Verbandsgemeinde Asbach zum PV-Förderprogramm der Ortsgemeinde Neustadt (Wied) live gelesen (Seitenwächter meldete eine Änderung seit 24.09.2026)",
+      "Websuche „Neustadt (Wied) PV-Förderprogramm 2026 Fördermittel ausgeschöpft Haushaltsmittel“ — kein Hinweis auf neue Mittel oder eine erneute Öffnung",
+      "Impressum vg-asbach.de gelesen: Funktionspostfach rathaus@vg-asbach.de"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
+        "finding": "06.10.2026: Die Seite führt das Programm unverändert („Das Förderprogramm wird auch 2026 fortgesetzt und startet ab Freitag, den 09. Januar 2026, in die 6. Förderperiode“, Antrag erst nach Inbetriebnahme, Dachanlage nur mit Speicher, Balkonkraftwerk selbst nicht gefördert). Der am 24.09.2026 gelesene Hinweis „Stand 23.09.2026 - Die Fördermittel sind ausgeschöpft – es können keine weiteren Förderanträge mehr gestellt werden“ steht nicht mehr auf der Seite. Ein entfernter Hinweis belegt keine neuen Mittel; Status bleibt ausgeschöpft bis zur Antwort."
+      },
+      {
+        "url": "https://www.vg-asbach.de/impressum/",
+        "finding": "Impressum der Verbandsgemeinde Asbach nennt rathaus@vg-asbach.de."
+      }
+    ],
+    "outcome": "klaerung",
+    "conclusion": "Die Ortsgemeinde Neustadt (Wied) fördert PV-Anlagen mit Speicher (100 €/kWp, max. 1.500 €) und Speicher (130 €/kWh, max. 1.950 €), Katalog neustadt-wied-pv-speicher, Status ausgeschöpft seit dem Hinweis vom 23.09.2026. Der Hinweis ist am 06.10.2026 von der Amtsseite verschwunden; ob wieder Anträge möglich sind, ist offen. Rückfrage an die Verbandsgemeinde Asbach vorgemerkt.",
+    "sources": [
+      {
+        "url": "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
+        "disposition": "reviewed",
+        "reason": "Am 06.10.2026 live gelesen; offen ist allein, ob die Mittel wieder verfügbar sind.",
+        "evidenceUrl": "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-07T06:00:00Z",
+      "detail": "Bei der Verbandsgemeinde Asbach erfragen, ob für das PV-Förderprogramm der Ortsgemeinde Neustadt (Wied) wieder Anträge gestellt werden können, nachdem der Hinweis auf ausgeschöpfte Mittel von der Seite entfernt wurde."
+    },
+    "enquiry": {
+      "id": "klaerung-07138044",
+      "recipient": "rathaus@vg-asbach.de",
+      "recipientSource": "https://www.vg-asbach.de/impressum/",
+      "website": "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
+      "question": "Auf Ihrer Seite zum PV-Förderprogramm der Ortsgemeinde Neustadt (Wied) stand am 23.09.2026 der Hinweis, die Fördermittel seien ausgeschöpft und es könnten keine weiteren Förderanträge gestellt werden. Dieser Hinweis ist inzwischen nicht mehr auf der Seite zu finden. Können derzeit wieder Anträge für die 6. Förderperiode 2026 gestellt werden, oder sind die Mittel weiterhin ausgeschöpft?"
+    }
   }
 ]
