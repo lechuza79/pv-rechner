@@ -53,6 +53,8 @@ export function falten(s: string): string {
 const RECHTSFORM = new Set([
   "gmbh", "mbh", "co", "kg", "ag", "se", "eg", "ug", "haftungsbeschraenkt", "ohg", "gbr", "kgaa",
   "ek", "ev", "und", "&", "gesellschaft", "mit", "beschraenkter", "haftung", "kommanditgesellschaft",
+  // Foreign forms of Danish, Dutch and British groups (Ørsted's "Gode Wind 2 P/S").
+  "ps", "as", "aps", "bv", "nv", "ltd", "llc", "sa", "sarl", "srl", "spa", "ab", "oy",
 ]);
 
 /** Words too common in this market to identify a group. */
@@ -68,7 +70,7 @@ const GENERISCH = new Set([
   // Found as false "brands" in the stock (06.10.2026): kinds of company, not companies.
   "wka", "energiepark", "energieparks", "windstrom", "stadtwerke", "stadtwerk", "buergerwindenergie",
   "windmuellerei", "buerger", "buergerwindrad", "buergerwindraeder", "onshore", "offshore", "windpool",
-  "luv", "windfarm", "windfarms", "windenergiepark", "solarpark", "kraftwerk", "windkraftwerk", "becken",
+  "luv", "windfarm", "windfarms", "farm", "windenergiepark", "solarpark", "kraftwerk", "windkraftwerk", "becken",
   // Regional adjectives: "Windfeld Thüringer Becken" matched the Thüringer
   // Allgemeine by its "brand". Place NAMES are not listed here; they come from
   // the municipal register (ortsWoerter).
@@ -92,6 +94,8 @@ export function ortsWoerterAus(namen: Iterable<string>): Set<string> {
 /** The name as comparable words, legal form removed. */
 export function nameWoerter(name: string): string[] {
   return falten(name)
+    // "P/S", "A/S": one legal form, not two letters.
+    .replace(/\b([a-z])\/([a-z])\b/g, "$1$2")
     .replace(/[^a-z0-9&]+/g, " ")
     .split(" ")
     .filter((w) => w && !RECHTSFORM.has(w));
@@ -144,6 +148,16 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
     const i = t.indexOf(` ${name} `);
     if (i >= 0) return { wie: "name", textstelle: umgebung(t, i, name.length) };
   }
+  // The name without its trailing kind-of-company words: Ørsted's project
+  // pages say "Borkum Riffgrund 2", the register "Borkum Riffgrund 2 Offshore
+  // Wind Farm GmbH & Co. oHG" (manual pass, 06.10.2026). Only when what is
+  // left identifies someone — never "Windpark Reher".
+  const kern = kernName(woerter);
+  if (kern.length >= 2 && kern.length < woerter.length && kern.some((w) => !GENERISCH.has(w) && !/^\d+$/.test(w) && !ortsWoerter?.has(w) && w.length >= 4)) {
+    const k = kern.join(" ");
+    const i = t.indexOf(` ${k} `);
+    if (i >= 0) return { wie: "name", textstelle: umgebung(t, i, k.length) };
+  }
 
   // ANSCHRIFT — street and number together, the postcode close behind. Not one
   // contiguous string: windmanager writes "Stephanitorsbollwerk 3 (Haus LUV)
@@ -151,7 +165,8 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   const strasse = STRASSE(a.Strasse ?? "");
   // Hyphens and spaces out of the number: the register writes "12-16", an
   // imprint "12 - 16".
-  const nr = (a.Hausnummer ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  // "0" is the register's "no number" (Denker & Wulf, "Windmühlenberg 0").
+  const nr = (a.Hausnummer ?? "").toLowerCase().replace(/[^a-z0-9]/g, "").replace(/^0$/, "");
   const plz = (a.Postleitzahl ?? "").trim();
   if (strasse.length >= 4 && /^\d{5}$/.test(plz)) {
     // The SAME spelling rule on both sides. Normalising only the register's
@@ -159,7 +174,11 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
     // measured on the first sample, 06.10.2026).
     const kompakt = t.replace(/strasse/g, "str").replace(/ /g, "");
     const kopf = kompakt.indexOf(strasse + nr);
-    if (kopf >= 0 && kompakt.slice(kopf, kopf + strasse.length + nr.length + 60).includes(plz)) {
+    const danach = kopf >= 0 ? kompakt.slice(kopf + strasse.length + nr.length, kopf + strasse.length + nr.length + 60) : "";
+    const p = danach.indexOf(plz);
+    // Without a register number, no other number may stand between street and
+    // postcode: "Windmühlenberg 12, 24814" is another house.
+    if (kopf >= 0 && p >= 0 && (nr || !/\d/.test(danach.slice(0, p)))) {
       const roh = t.indexOf(plz);
       return { wie: "anschrift", textstelle: umgebung(t, Math.max(0, roh - 40), plz.length + 40) };
     }
@@ -168,6 +187,17 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // MARKE — name, domain and imprint must all carry it.
   const m = marke(a.Firmenname ?? "");
   const label = falten(domain.split(".")[0] ?? "").replace(/[^a-z0-9]/g, "");
+  // A brand written as ONE hyphenated word of kind-of-company words:
+  // "WIND-projekt …" on wind-projekt.de (33 companies, 06.10.2026). It counts
+  // only as that hyphenated word of the name, equal to the domain's label.
+  for (const tok of (a.Firmenname ?? "").split(/\s+/)) {
+    if (!tok.includes("-")) continue;
+    const zusammen = falten(tok).replace(/[^a-z0-9]/g, "");
+    if (zusammen.length >= 8 && zusammen === label && t.replace(/ /g, "").includes(zusammen)) {
+      const i = t.indexOf(falten(tok).replace(/[^a-z0-9]+/g, " ").trim());
+      return { wie: "marke", textstelle: umgebung(t, Math.max(0, i), zusammen.length) };
+    }
+  }
   if (m && !ortsWoerter?.has(m) && (m.length >= 4 ? label.includes(m) : label.startsWith(m))) {
     const i = t.indexOf(` ${m} `);
     if (i >= 0) return { wie: "marke", textstelle: umgebung(t, i, m.length) };
@@ -359,7 +389,7 @@ export function beurteilen(
     if (b?.wie === "name") {
       const block = anbieterBlock(abruf.impressum);
       const imBlock = !!block && !!impressumBelegt(block, a, domain, ortsWoerter);
-      if (!imBlock && !(identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.impressum, a.Firmenname ?? ""))) b = null;
+      if (!imBlock && !vollerNameIn(abruf.impressum, a.Firmenname ?? "") && !(identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.impressum, a.Firmenname ?? ""))) b = null;
     }
     // Another organisation's imprint proves only by the operator's own name or
     // address — never by a brand word, and never the mere existence of the site.
@@ -371,7 +401,7 @@ export function beurteilen(
     // references ("Windpark Reher" stood on baubuero-kaatz.de, 06.10.2026).
     // There a name proves only when it identifies someone — a word that is
     // neither the kind of company nor a place — and the page is no park list.
-    const nameTraegt = b?.wie !== "name" || (identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.startseite, a.Firmenname ?? ""));
+    const nameTraegt = b?.wie !== "name" || vollerNameIn(abruf.startseite, a.Firmenname ?? "") || (identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.startseite, a.Firmenname ?? ""));
     if (b && (b.wie === "name" || b.wie === "marke") && nameTraegt) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
   }
   const erreichbar = !!(abruf.startseite || (abruf.impressum && herkunft !== "fremd"));
@@ -396,6 +426,19 @@ export function beurteilen(
 export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: Beleg["wie"] | string | null): "amtlich" | "suche" {
   const vomRegister = quelle === "register-webseite" || quelle === "register-mail" || quelle === "anschrift";
   return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register") ? "amtlich" : "suche";
+}
+
+/** The name's words without the kind-of-company words at its end. */
+export function kernName(woerter: string[]): string[] {
+  let n = woerter.length;
+  while (n > 0 && (GENERISCH.has(woerter[n - 1]) || woerter[n - 1] === "co")) n--;
+  return woerter.slice(0, n);
+}
+
+/** The full name WITH its legal form, verbatim: "Betreiber des Parks ist die Amrum-Offshore West GmbH" (rwe.com). */
+export function vollerNameIn(text: string, name: string): boolean {
+  const v = textFalten(name).trim();
+  return v.split(" ").length >= 3 && textFalten(text).includes(` ${v} `);
 }
 
 /** Does the name carry a word that is neither a kind of company nor a place? */

@@ -28,7 +28,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, identifizierend, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, impressumBelegt, abrufWiederholen, identifizierend, kontaktFelder, vollerNameIn, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -271,6 +271,9 @@ const impressumDatei = (domain: string) => resolve(CACHE, "impressum", `${domain
  * about 40 operators stood as "unreachable" because of a busy hour. It is
  * tried again, at most three times, an hour apart.
  */
+/** Visible text below this is an app shell, not a page (sab-windteam.de: 2.5 KB of markup, no text). */
+const LEERE_HUELLE = 150;
+
 /** How a check may read: only the cache (re-judging), fetch what is missing, or also fetch again what a browser might read (manual pass). */
 type Lesart = "zwischenspeicher" | "abrufen" | "nachholen";
 let LESART: Lesart = "abrufen";
@@ -296,9 +299,12 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
   // there (Greifenwind, 100 operators, measured on the first sample).
   const starts = [`https://www.${domain}/`, `https://${domain}/`, `http://www.${domain}/`, `http://${domain}/`];
   let html: string | null = null;
+  let huelle: { html: string; start: string } | null = null;
   for (const s of starts) {
     const r = await fetchLive(s);
-    if ("html" in r && r.html.length > 200) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
+    // A page with markup but no text is an app shell: the browser below reads it.
+    if ("html" in r && r.html.length > 200 && sichtbarerText(r.html).length >= LEERE_HUELLE) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
+    if ("html" in r && r.html.length > 200 && !huelle) huelle = { html: r.html, start: s };
     ergebnis.fehler = "error" in r ? r.error : "leere Seite";
   }
   if (!html && mitBrowser) {
@@ -308,6 +314,8 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
       if (g && g.length > 200) { html = g; ergebnis.start = s; ergebnis.via = "browser"; ergebnis.fehler = null; break; }
     }
   }
+  // Nothing better than the short page: a small site is still a site.
+  if (!html && huelle) { html = huelle.html; ergebnis.start = huelle.start; ergebnis.via = "abruf"; ergebnis.fehler = null; }
   if (html && ergebnis.start) {
     ergebnis.startText = sichtbarerText(html).slice(0, 20000);
     const url = impressumUrl(html, ergebnis.start) ?? rechtsseiteUrl(html, ergebnis.start);
@@ -315,7 +323,8 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
     for (const u of versuche) {
       let seite: string | null = null;
       const r = await fetchLive(u);
-      if ("html" in r) seite = r.html;
+      if ("html" in r && (sichtbarerText(r.html).length >= LEERE_HUELLE || !mitBrowser)) seite = r.html;
+      else if ("html" in r && mitBrowser) seite = await seiteGerendert(u);
       else if (ergebnis.via === "browser") seite = await seiteGerendert(u);
       if (!seite) continue;
       const t = sichtbarerText(seite);
@@ -543,10 +552,12 @@ async function manuell() {
     if (p.ergebnis !== "belegt" && p.ergebnis !== "konflikt" && seite) {
       if (belegseite === undefined) {
         const r = await fetchLive(seite);
-        belegseite = "html" in r ? r.html : await seiteGerendert(seite);
+        // An app shell answers 200 with no text (sab-windteam.de, 2.5 KB): render it.
+        belegseite = "html" in r && sichtbarerText(r.html).length >= LEERE_HUELLE ? r.html : await seiteGerendert(seite);
       }
-      const beleg = belegseite ? impressumBelegt(sichtbarerText(belegseite), akteurVon(z), domain, await ortsWoerter()) : null;
-      if (beleg && (beleg.wie !== "name" || identifizierend(z.name, await ortsWoerter()))) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
+      const text = belegseite ? sichtbarerText(belegseite) : "";
+      const beleg = text ? impressumBelegt(text, akteurVon(z), domain, await ortsWoerter()) : null;
+      if (beleg && (beleg.wie !== "name" || vollerNameIn(text, z.name) || identifizierend(z.name, await ortsWoerter()))) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
     }
     await schreiben(c, "windbetreiber_kandidaten", [kandidatZeile(z, p)], "mastr_nr,domain");
     if (p.ergebnis !== "belegt") {

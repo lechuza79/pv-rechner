@@ -39,9 +39,10 @@ describe("Windbetreiber-Lauf", () => {
     const m = rumpf("manuell");
     expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
     // A different evidence page is allowed, a different rule is not.
-    expect(m).toMatch(/impressumBelegt\(sichtbarerText\(belegseite\), akteurVon\(z\), domain, await ortsWoerter\(\)\)/);
+    expect(m).toMatch(/const text = belegseite \? sichtbarerText\(belegseite\) : "";/);
+    expect(m).toMatch(/impressumBelegt\(text, akteurVon\(z\), domain, await ortsWoerter\(\)\)/);
     // A name on another page proves only when it identifies someone (reference lists).
-    expect(m).toMatch(/beleg\.wie !== "name" \|\| identifizierend\(z\.name/);
+    expect(m).toMatch(/beleg\.wie !== "name" \|\| vollerNameIn\(text, z\.name\) \|\| identifizierend\(z\.name/);
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
   });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -359,5 +359,36 @@ describe("a name outside the provider block (06.10.2026)", () => {
     const a = akteur("Bürgerwindpark Kisselsheide GmbH & Co. KG", "Irgendwo", "1", "25593");
     const imp = "Impressum Angaben gemäß § 5 TMG Bürgerwindpark Kisselsheide GmbH & Co. KG Hauptstraße 1 25593 Reher";
     expect(beurteilen(a, "kisselsheide.de", "suche", { impressum: imp, startseite: null }, null, orte).ergebnis).toBe("belegt");
+  });
+});
+
+describe("Befunde der ersten Handprüfung (06.10.2026)", () => {
+  it("a hyphenated brand of kind-of-company words counts when it is the domain (WIND-projekt)", () => {
+    const a = akteur("WIND-projekt Windpark Börgerende 3 GmbH & Co. KG", "Seestraße", "71", "18211");
+    const imp = "Impressum WIND-projekt Ingenieur- und Projektentwicklungsgesellschaft mbH Seestraße 71 18211 Börgerende-Rethwisch";
+    expect(impressumBelegt(imp.replace("Seestraße 71 18211", "Hauptstraße 1 18055"), a, "wind-projekt.de")?.wie).toBe("marke");
+    // Not on a portal whose label happens to be two generic words but no hyphenated word of the name.
+    const b = akteur("Windenergie Musterdorf GmbH", "Irgendwo", "1", "99999");
+    expect(impressumBelegt("Impressum Windenergie Portal GmbH Berlin", b, "wind-energie.de")).toBeNull();
+  });
+  it("a register number 0 means no number, and then nothing may stand between street and postcode", () => {
+    const a = akteur("Windpark Dahme GmbH & Co. KG", "Windmühlenberg", "0", "24814");
+    expect(impressumBelegt("Impressum Denker & Wulf AG Windmühlenberg 24814 Sehestedt", a, "denkerwulf.de")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Andere GmbH Windmühlenberg 12 24814 Sehestedt", a, "andere.de")).toBeNull();
+  });
+  it("the full name with its legal form identifies, even when its words are places", () => {
+    expect(vollerNameIn("Betreiber des Parks ist die Amrum-Offshore West GmbH mit Sitz in Essen", "Amrum-Offshore West GmbH")).toBe(true);
+    expect(vollerNameIn("Offshore-Windpark Amrumbank West", "Amrum-Offshore West GmbH")).toBe(false);
+  });
+  it("finds a project name without its trailing kind-of-company words and foreign legal form", () => {
+    expect(kernName(["borkum", "riffgrund", "2", "offshore", "wind", "farm"])).toEqual(["borkum", "riffgrund", "2"]);
+    const a = akteur("Gode Wind 2 P/S", "Am Osthafen", "2", "26506");
+    expect(nameWoerter("Gode Wind 2 P/S")).toEqual(["gode", "wind", "2"]);
+    const b = akteur("Borkum Riffgrund 2 Offshore Wind Farm GmbH & Co. oHG", "Am Osthafen", "2", "26506");
+    expect(impressumBelegt("Unser Offshore-Windpark Borkum Riffgrund 2 liegt 54 km vor der Küste", b, "orsted.de", ortsWoerterAus(["Borkum"]))?.wie).toBe("name");
+    // A park name of place and kind only stays unproven.
+    const c = akteur("Windpark Reher Wind GmbH", "Irgendwo", "1", "25593");
+    expect(impressumBelegt("Referenzen Windpark Reher", c, "kaatz.de", ortsWoerterAus(["Reher"]))).toBeNull();
+    void a;
   });
 });
