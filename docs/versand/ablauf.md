@@ -28,52 +28,26 @@ mit `BEREIT` oder `NICHT BEREIT`:
 Was der Vorflug NICHT sieht und deshalb vor dem Go einzeln geklärt wird:
 - **Inhalt der Szenen** (Windräder ohne Rotor, Startpunkt außerhalb des Ortskerns).
   Das bestätigt die Szenen-Sitzung, nicht der Vorflug.
-- **Ob die Charge die richtige Auswahl ist** (z. B. nur Orte mit Platzierung).
+- **Ob die Briefarten des Schubs stimmen** — die legt der Schub fest, der Vorflug zählt sie.
 
-## Vorbereitung (Tage vorher)
+## Entscheidungen stehen im Code, nicht hier
 
-Was heute einen halben Tag gekostet hat, gehört hier hin — nicht in den Versandtag.
+Was entschieden ist, steht als Prüfung im Code und meldet sich im Vorflug — nicht
+als Liste in diesem Dokument und nicht im Gesprächsverlauf (dort ging der Kurzbrief
+für Orte ohne Platzierung am 05./06.10.2026 beim Zusammenfassen verloren).
 
-**T−3 oder früher: Auswahl festschreiben**
-- Schub in `lib/kommunen-testballon.ts` anlegen (Länder, Kreise, Grund, `abIso`).
-- Ferien prüfen, auch den **Ferienbeginn in den nächsten zehn Tagen**
-  (`npm run kommunen:luecken -- --tag=<versandtag>`). Wer kurz vor den Ferien
-  ankommt, wird nicht mehr gelesen.
-- Chargen festlegen und `npm run kommunen:versand -- --liste --schub=… --charge=…`
-  ansehen. **Nur Orte mit Platzierung** gehen mit dem Pressebrief; Orte ohne
-  Platzierung bekommen einen eigenen, kürzeren Brief (Daten liegen bereit, alles
-  auf der Ortsseite, dazu das Kommunen-Angebot). Der ist eine eigene Entscheidung,
-  nicht ein Nebenprodukt.
-
-**T−2: Empfänger klären**
-- Kontaktsuche für die Charge laufen lassen; Reihenfolge Klimaschutz → Pressekontakt
-  → Pressepostfach → allgemeines Postfach. Fachpostfächer (Tourismus, Bauamt, …)
-  nur, wenn es gar kein anderes gibt; Sekretariat nur als Rückfall.
-- **Anreden mit Namen** nur, wo die Belegseite den Namen nennt; in
-  `kommunen_anrede` ablegen (Name gehört gespeichert, nicht im Brief erfunden).
-- `--pruefen` einmal laufen lassen: Wer hier schon an der Kontaktprüfung scheitert,
-  wird jetzt nachgesucht, nicht am Versandtag.
-
-**T−1: Szenen und Text**
-- Gemeindeschlüssel der Charge an die Szenen-Sitzung (`--liste`). Sie meldet
-  zurück: live UND im Bild angesehen (Windräder vollständig, Start im Ortskern).
-  Orte mit fehlerhafter Szene gehen in die Warte-Charge, nicht mit.
-- Brieftext-Änderungen **vor** der Vorschau deployen; die Briefe entstehen in der
-  Produktion. Vorschau immer mit ausdrücklichem `--schub`.
-- Zwei Beispielbriefe im Chat zeigen (mit und ohne Szene). Dabei selbst lesen: steht
-  etwas doppelt, widerspricht der Aufhänger dem Satz darunter, steht ein Loch drin?
-  Abgenommene Textregeln (nicht neu aufmachen):
-  „kostenfrei" genau einmal · „Datenstories" · kein Widget-Link · „monatlich" nur
-  einmal · Überschrift der Meldung darf dem Betreff gleichen · zweisprachige Namen
-  im Betreff nur deutsch · kein Kreisname im Betreff (Zeichenbudget) · weitere
-  Platzierungen erst ab Gruppen mit zehn Orten · Prozentrang statt schwachem Platz
-  („unter den besten 5 %") · 3D-Satz nur bei veröffentlichter Szene.
-
-**T−0: Versandtag** — nur noch Vorflug, Probemails, Go, Senden (unten).
+- **Welcher Brief:** mit Platzierung der Pressebrief, ohne Platzierung der
+  Kurzbrief (Ortsseite, drei Angebote, Kommunen-Seite, keine Zahl). Welche
+  Briefarten ein Schub verschickt, steht am Schub (`briefarten`). Orte, für die
+  der Schub keine Briefart festlegt, machen den Vorflug NICHT BEREIT.
+- **Textregeln** („kostenfrei" einmal, 3D-Satz nur mit Szene, kein Widget-Link …)
+  sind Tests an den Briefvorlagen. Neue Regel = neuer Test, kein neuer Spiegelstrich.
+- **Vor einer Rückfrage an den Betreiber:** Code, Schub-Definition und frühere
+  Sitzungen durchsuchen. Das ist die Notbremse, nicht das System.
 
 ## Reihenfolge am Versandtag
 
-1. Szenen-Sitzung hat bestätigt (siehe T−1); Brieftext ist live.
+1. Szenen-Sitzung hat die Szenen der Charge bestätigt; Brieftext ist live.
 2. Vorflug. Bei `NICHT BEREIT`: beheben, Vorflug wiederholen.
 3. Je eine Probemail pro Briefvariante an den Betreiber (`--test=<adresse> --ags=<schlüssel>`):
    mit und ohne Szene. In Gmail `dkim=pass`, `spf=pass`, `dmarc=pass` nachsehen.

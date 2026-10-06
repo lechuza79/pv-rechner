@@ -99,6 +99,8 @@ type Brief = {
   /** Dieselbe Nachricht als HTML, mechanisch aus dem Text erzeugt. */
   body_html: string;
   variante: string;
+  /** Press letter (with placement) or short info letter (without). */
+  briefart?: "platzierung" | "info";
   /** Belegte Domain der gemeinsamen Verwaltung, für die Empfängerprüfung. */
   verwaltung_domain: string | null;
   seite_url: string | null;
@@ -683,6 +685,26 @@ async function vorflug(p: Paket, limit: number): Promise<boolean> {
     }
   }
   log(`${briefe.length - gehalten} von ${briefe.length} Briefen bestehen alle Bremsen.`, gehalten ? "warn" : "ok");
+
+  // Which letter goes out, counted — and towns dropped because the batch
+  // declares no letter for them are an OPEN DECISION, not a silent skip. The
+  // short letter for towns without a placement was decided once in a chat and
+  // lost; this is where such a gap now shows up before the go.
+  const proArt = new Map<string, number>();
+  for (const b of briefe) proArt.set(b.briefart ?? "platzierung", (proArt.get(b.briefart ?? "platzierung") ?? 0) + 1);
+  log(
+    `Briefarten: ${[...proArt].map(([a, n]) => `${n} ${a === "info" ? "Kurzbrief ohne Platzierung" : "Pressebrief mit Platzierung"}`).join(", ")}`,
+    "ok",
+  );
+  const ohneBrief = p.uebersprungen.filter((u) => /nicht vorgesehen/.test(u.grund));
+  if (ohneBrief.length) {
+    maengel.push(`${ohneBrief.length} Orte ohne festgelegte Briefart`);
+    log(
+      `${ohneBrief.length} Orte der Charge bekämen keinen Brief, weil der Schub ihre Briefart nicht festlegt: ` +
+        ohneBrief.map((u) => u.name ?? u.region_id).join(", "),
+      "err",
+    );
+  }
 
   // Scenes are a separate session's work. The letter mentions the 3D view only
   // where a scene is published, so this is information, not a brake — but the

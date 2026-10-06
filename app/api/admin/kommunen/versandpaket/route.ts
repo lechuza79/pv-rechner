@@ -94,6 +94,7 @@ export async function GET(req: NextRequest) {
     body: string;
     body_html: string;
     variante: string;
+    briefart: "platzierung" | "info";
     verwaltung_domain: string | null;
     seite_url: string | null;
     rangliste_url: string | null;
@@ -185,8 +186,12 @@ export async function GET(req: NextRequest) {
     // Bestand, Schlusslicht auf der eigenen Seite, Datenfehler-Verdacht), baut
     // die Vorlage eine reine Bestandsmeldung. Die ist für diesen Schub kein
     // Angebot, sondern nur eine Mail.
-    if (!gebaut.draft.meldung.includes("Platz ")) {
-      skip("kein Aufhänger mehr — die Gemeinde trägt keine Platzierung");
+    if (!(schub.briefarten ?? ["platzierung"]).includes(gebaut.briefart)) {
+      skip(
+        gebaut.briefart === "info"
+          ? "keine Platzierung, und der Kurzbrief ist für diesen Schub nicht vorgesehen"
+          : `Briefart ${gebaut.briefart} ist für diesen Schub nicht vorgesehen`,
+      );
       continue;
     }
     paket.push({
@@ -199,6 +204,7 @@ export async function GET(req: NextRequest) {
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,
       variante: gebaut.variante,
+      briefart: gebaut.briefart,
       verwaltung_domain: verwaltungDomain,
       seite_url: gebaut.seiteUrl,
       rangliste_url: gebaut.ranglisteUrl,

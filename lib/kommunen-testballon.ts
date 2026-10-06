@@ -1,3 +1,4 @@
+import type { Briefart } from "./kommunen-outreach-draft";
 // Auswahl der Versandliste („Testballon") — reine Funktionen, damit die Regeln
 // testbar sind und nicht in einer API-Route verschwinden.
 //
@@ -111,6 +112,13 @@ export type Schub = {
    * across days; days are packed up to `regeln.chargeGroesse`.
    */
   kreise?: string[];
+  /**
+   * Which letters this batch sends. Default: only the press letter, i.e. only
+   * towns with a placement. With "info", towns without one get the short info
+   * letter instead of being dropped — a decision per batch, written here and
+   * not kept in a conversation (it was lost that way once, 05./06.10.2026).
+   */
+  briefarten?: Briefart[];
   /**
    * Ab wann dieser Schub versendet werden soll (ISO-Tag).
    *
