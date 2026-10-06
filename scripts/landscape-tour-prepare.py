@@ -65,7 +65,7 @@ def main(id):
  out=root/'public/geo/landscape-tours'/id;register=json.loads((out/'register.json').read_text());name=register['feature']['properties']['name'];boundary=transform(tr.transform,shape(register['feature']['geometry']));elements=osm_data(id)
  configuration=json.loads((out/'preparation.json').read_text()) if (out/'preparation.json').exists() else {}
  town_name=configuration.get('townName','Kirchhatten' if id=='03458009' else name)
- towns=[e for e in elements if e['type']=='node' and e.get('tags',{}).get('name')==town_name and e['tags'].get('place') in ['town','city','village']]
+ towns=[e for e in elements if e['type']=='node' and e.get('tags',{}).get('name')==town_name and e['tags'].get('place') in ['town','city','village','hamlet']]
  if not towns:raise ValueError('No sourced town point: '+name)
  town=towns[0];east,north=tr.transform(town['lon'],town['lat']);stops=[dict(id='town',name=configuration.get('townLabel',name),kind='town',x=0,z=0,zoom=12,cta='Nach '+configuration.get('townLabel',name))]
  rows=register['turbines'];remaining=set(range(len(rows)));groups=[]
