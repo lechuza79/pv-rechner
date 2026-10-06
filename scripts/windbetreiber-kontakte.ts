@@ -26,7 +26,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { organisationsDomain } from "../lib/bestand-abgleich";
-import { fold, siteOf, type Evidence, type Rollenwerk, type ScopeRegeln } from "../lib/kontakt-suche";
+import { GRATIS_POSTFACH, fold, siteOf, type Evidence, type Rollenwerk, type ScopeRegeln } from "../lib/kontakt-suche";
 import { ohneAdressVerschleierung } from "../lib/presse-extrakt";
 import { webKomponentenAusklappen } from "../lib/web-komponenten";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
@@ -69,7 +69,9 @@ export const WIND_ROLLENWERK: Rollenwerk = {
   ausgeschlossen: /datenschutzbeauftrag|technische umsetzung|webdesign|agentur für|rechtsanwalt|streitschlichtung|verbraucherschlichtung|beschwerde|hinweisgeber|whistleblow/iu,
   fremdeEinheit: /fl(?:ä|ae)chen(?:akquise|sicherung|management)|grundst(?:ü|ue)cks?eigent(?:ü|ue)mer|landeigent(?:ü|ue)mer|akquise|karriere|bewerb|ausbildung|einkauf|lieferant|st(?:ö|oe)rung|leitwarte|service-?hotline|technische betriebsf(?:ü|ue)hrung|investor relations|anleger/iu,
   // English and French names of foreign groups (contact@, communication@ — manual pass, 06.10.2026).
-  allgemein: /^(info|kontakt|contact|contacts|mail|office|zentrale|post|hallo|hello|service|windpark|wind|energie|verwaltung|buero|büro|anfrage|marktstammdatenregister|communication|communications|dialog|team)$/i,
+  // Customer service and a city office's info box are general too (cs@, kundenservice@,
+  // info.berlin@ — manual pass 06.10.2026); a person's name never is.
+  allgemein: /^(info|kontakt|contact|contacts|mail|office|zentrale|post|hallo|hello|service|windpark|wind|energie|verwaltung|buero|büro|anfrage|marktstammdatenregister|communication|communications|dialog|team|cs|kundenservice|kundenbetreuung|customer-?service|customercare|info[._-][a-z]+)$/i,
   starkesPostfach: /presse|kommunikation|medien|media|newsroom|\bpr\b/i,
 };
 
@@ -87,7 +89,10 @@ export const IMPRESSUM_SEITE = /impressum|imprint|legal|mentions-legales|anbiete
 
 export function impressumPostfach(basis: Ergebnis, evidence: Evidence[]): Record<string, unknown> {
   if (basis.general.length || (basis.kanaele.presse?.length ?? 0) > 0) return {};
-  const sauber = evidence.filter((e) => !e.reasons.length && IMPRESSUM_SEITE.test(e.url) && postfachTauglich(e.email).ok);
+  // A free-mail box in the operator's own imprint is its own (matthes.kg@t-online.de,
+  // manual pass 06.10.2026): the engine's raw verdict still calls it foreign.
+  const gratis = (e: Evidence) => GRATIS_POSTFACH.test(e.email.split("@")[1] ?? "");
+  const sauber = evidence.filter((e) => !e.reasons.some((r) => !(r === "mailbox-foreign-domain" && gratis(e))) && IMPRESSUM_SEITE.test(e.url) && postfachTauglich(e.email).ok);
   if (!sauber.length) return {};
   const rang = (m: string) => (WIND_ROLLENWERK.allgemein.test(m.split("@")[0]) ? 0 : 1);
   const best = [...sauber].sort((a, b) => rang(a.email) - rang(b.email) || a.email.localeCompare(b.email))[0];

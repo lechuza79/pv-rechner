@@ -289,8 +289,17 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     expect(r).toMatchObject({ general: ["socialmedia@geres-group.de"], outcome: "general-only" });
     // A conflict on ANOTHER page does not matter; one on the imprint itself does.
     expect(impressumPostfach(basis, [ev("info@x.de", "https://x.de/impressum", ["published-address-conflict"])])).toEqual({});
+    // A free-mail box in the imprint counts; on another page it stays foreign.
+    expect(impressumPostfach(basis, [ev("matthes.kg@t-online.de", "https://matthes-kg.de/impressum/", ["mailbox-foreign-domain"])])).toMatchObject({ general: ["matthes.kg@t-online.de"] });
+    expect(impressumPostfach(basis, [ev("info@agentur.de", "https://x.de/impressum", ["mailbox-foreign-domain"])])).toEqual({});
+    expect(impressumPostfach(basis, [ev("a@t-online.de", "https://x.de/impressum", ["mailbox-foreign-domain", "excluded-purpose"])])).toEqual({});
     // Nothing is overridden when the engine already chose.
     expect(impressumPostfach({ general: ["info@x.de"], kanaele: {} } as never, [ev("a@x.de", "https://x.de/impressum")])).toEqual({});
+  });
+  it("treats customer-service and city-office boxes as general, never a person", async () => {
+    const { WIND_ROLLENWERK } = await import("../../scripts/windbetreiber-kontakte");
+    for (const m of ["cs", "kundenservice", "info.berlin", "customer-service"]) expect(WIND_ROLLENWERK.allgemein.test(m), m).toBe(true);
+    for (const m of ["michael.monjean", "koenig", "kappler", "information"]) expect(WIND_ROLLENWERK.allgemein.test(m), m).toBe(false);
   });
   it("lets a redirect target or the imprint's domain count as the same website, in release and report", () => {
     expect(lies("scripts/kontakte-freigabe.ts")).toMatch(/weitereSites: weitere\.get\(r\.website\)/);
