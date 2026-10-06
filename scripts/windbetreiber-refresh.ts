@@ -639,6 +639,15 @@ async function manuell() {
       // Kept, so a later rule change can judge this proof again.
       if (text) { mkdirSync(dirname(belegseiteDatei(seite)), { recursive: true }); writeFileSync(belegseiteDatei(seite), text); }
       const beleg = text ? belegseiteTraegt(text, akteurVon(z), z.name, domain, await ortsWoerter()) : null;
+      // A proof on a SUBDOMAIN is no proof for the domain: the Bürgerwindpark
+      // on buergerwindpark.suederdeich.de was stored as suederdeich.de, the
+      // municipality's site (manual pass 06.10.2026). A person confirms the
+      // two are one organisation with --subdomain-ok.
+      const seitenHost = new URL(seite).hostname.replace(/^www\./, "");
+      if (beleg && seitenHost !== domain && !flag("subdomain-ok")) {
+        console.log(`${nr}: Beleg steht auf ${seitenHost}, gespeichert würde ${domain} — NICHT übernommen (mit --subdomain-ok, wenn beide dieselbe Organisation sind)`);
+        process.exitCode = 1; continue;
+      }
       if (beleg) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
     }
     // A failed second try on the website already proven keeps the proof: it
