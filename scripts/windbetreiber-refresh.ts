@@ -373,7 +373,7 @@ async function pruefen(z: Zeile, k: Kandidat, belegungen: Belegungen): Promise<P
   // A search hit gets no browser: a directory that blocks plain requests is
   // not worth rendering, and those are most of the hits.
   const imp = await impressumHolen(k.domain, k.quelle !== "suche");
-  const u = beurteilen(akteurVon(z), k.domain, k.quelle, { impressum: imp.text, startseite: imp.startText ?? null, impressumUrl: imp.impressum_url }, k.postfach, await ortsWoerter());
+  const u = beurteilen(akteurVon(z), k.domain, k.quelle, { impressum: imp.text, startseite: imp.startText ?? null, impressumUrl: imp.impressum_url }, k.postfach ?? z.register_email, await ortsWoerter(), z.register_telefon);
   if (u.ergebnis !== "belegt") {
     const grund = u.ergebnis === "abgelehnt" ? "Impressum nennt weder Name noch Registeranschrift noch Marke"
       : u.ergebnis === "geparkt" ? "Domain steht zum Verkauf oder ist geparkt" : imp.fehler;

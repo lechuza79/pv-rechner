@@ -416,6 +416,7 @@ export function beurteilen(
   abruf: { impressum: string | null; startseite: string | null; impressumUrl?: string | null },
   postfach?: string | null,
   ortsWoerter?: Set<string>,
+  telefon?: string | null,
 ): Urteil {
   // A hosting provider's imprint behind the site: there is no site of the operator.
   const herkunft = impressumHerkunft(abruf.impressumUrl, domain);
@@ -470,9 +471,34 @@ export function beurteilen(
   if (quelle === "register-mail" && erreichbar && !beraterSeite && funktionsPostfach(postfach, a.Firmenname)) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Funktionspostfach im Marktstammdatenregister: ${postfach}` }, seite: abruf.impressum ? "impressum" : "startseite" };
   }
+  // Two statements the operator itself made to the register, both pointing at
+  // this organisation: its mailbox lies on this domain AND its telephone number
+  // stands in this site's own imprint. That is where it is administered, even
+  // when the imprint names neither the company nor its address (Windinvest,
+  // EFI Wind, terrawatt — five blocks of the manual pass, 06.10.2026). Never on
+  // an adviser's site, never on another organisation's imprint.
+  const eigenesImpressum = abruf.impressum && herkunft !== "fremd" ? abruf.impressum : null;
+  if (eigenesImpressum && !beraterSeite && postfach && maildomain(postfach) === domain && telefonIn(eigenesImpressum, telefon)) {
+    return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} im Impressum` }, seite: "impressum" };
+  }
   if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };
   if (abruf.startseite) return { ergebnis: "kein-impressum", beleg: null, seite: null };
   return { ergebnis: "nicht-erreichbar", beleg: null, seite: null };
+}
+
+/** A telephone number as digits of the national number: "+49 (0) 4841-9813" → "48419813". */
+export function telefonKern(t: string | null | undefined): string {
+  let d = (t ?? "").replace(/\(0\)/g, "").replace(/[^\d+]/g, "");
+  d = d.replace(/^(?:\+|00)49/, "").replace(/^\+\d{1,3}/, "").replace(/^0+/, "");
+  return d;
+}
+
+/** Does the text carry this telephone number, whatever its spacing? At least seven digits. */
+export function telefonIn(text: string, telefon: string | null | undefined): boolean {
+  const ziel = telefonKern(telefon);
+  if (ziel.length < 7) return false;
+  for (const m of text.matchAll(/(?:\+|00)?\(?\d[\d\s\/().\-]{5,}\d/g)) if (telefonKern(m[0]) === ziel) return true;
+  return false;
 }
 
 /**

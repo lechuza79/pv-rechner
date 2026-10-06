@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { geschwisterWebsite, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { geschwisterWebsite, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -204,6 +204,20 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
     // A FUNCTION mailbox is the operator's own statement where it is administered.
     expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }, "tmverwaltung-wm@wpd.de").beleg?.wie).toBe("register");
     expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }).ergebnis).toBe("abgelehnt");
+  });
+
+  it("accepts the register mailbox's domain when the register telephone stands in its own imprint", () => {
+    const a = akteur("WPON GmbH & Co. KG", "VOSSKO-Allee", "1", "48346");
+    const imp = "Impressum WI Windinvest GmbH Am Markt 4 48727 Billerbeck Telefon: 0163 / 537 58 03 E-Mail ok@windinvest.de";
+    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "+49 163 5375803").beleg?.wie).toBe("register");
+    // Another number, a mailbox elsewhere, or an adviser's office: nothing.
+    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "0163 5375804").ergebnis).toBe("abgelehnt");
+    expect(beurteilen(a, "windinvest.de", "manuell", { impressum: imp, startseite: "x" }, "ok@andere.de", undefined, "0163 5375803").ergebnis).toBe("abgelehnt");
+    const mazars = "Impressum Forvis Mazars GmbH & Co. KG Wirtschaftsprüfungsgesellschaft Steuerberatungsgesellschaft Tel. 040 288010";
+    expect(beurteilen(a, "mazars.de", "register-mail", { impressum: mazars, startseite: "x" }, "adem.bilir@mazars.de", undefined, "040 288010").ergebnis).toBe("abgelehnt");
+    // A number too short to identify anyone proves nothing.
+    expect(telefonIn("Tel. 1234 56", "123456")).toBe(false);
+    expect(telefonKern("+49 (0) 4841-9813")).toBe("48419813");
   });
 
   it("tells a function mailbox from a person's", () => {
