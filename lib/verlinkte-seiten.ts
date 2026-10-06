@@ -64,8 +64,8 @@ export function verlinkteSeiteBefund(status: number, html: string, name: string)
  * out" existed since 01.09.2026 — and was never measured. On 06.10.2026 all 95
  * pages of that day's batch still said "noindex" hours after the send, because
  * the list of written-to towns sat in a 24-hour cache. Nobody noticed until
- * the operator asked. The send now releases the pages itself; this check is
- * the proof that it worked, on every health-check run.
+ * the operator asked. The send now releases the pages itself and checks
+ * every page it linked with this function; it ends red if one stays closed.
  *
  * Returns null when the page may be indexed, otherwise the reason.
  */

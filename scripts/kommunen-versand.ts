@@ -55,6 +55,7 @@ import { execFileSync } from "node:child_process";
 import { v2Urteil, type V2Urteil } from "../lib/contact-v2-gate";
 import { RECHECK_MAX_AGE_DAYS, REPO_ROOT, outDir, rulesVersion } from "./lib/contact-v2-config";
 import { handbelegLesen, handbelegNachpruefen } from "./lib/handbelege";
+import { indexierbarBefund } from "../lib/verlinkte-seiten";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -590,7 +591,11 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   });
   log();
   log(`${raus} von ${zuSenden.length} versendet · Protokoll: ${pfad}`, "ok");
-  if (raus > 0) await seitenFreischalten(zuSenden.slice(0, 3).map((b) => b.seite_url).filter((u): u is string => !!u));
+  if (raus > 0) {
+    const gesendet = new Set(protokoll.filter((e) => e.gesendet).map((e) => e.region_id));
+    const seiten = zuSenden.filter((b) => gesendet.has(b.region_id)).map((b) => b.seite_url).filter((u): u is string => !!u);
+    if (!(await seitenFreischalten(seiten))) process.exitCode = 1;
+  }
 }
 
 /**
@@ -599,21 +604,34 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
  * "noindex" for up to a day (06.10.2026: all 95 still noindex hours later).
  * Measured on real pages afterwards — a 200 from the route proves nothing.
  */
-async function seitenFreischalten(stichprobe: string[]): Promise<void> {
+async function seitenFreischalten(seiten: string[]): Promise<boolean> {
   const basis = arg("basis") ?? "https://solar-check.io";
-  const res = await fetch(`${basis}/api/atlas/revalidate?umfang=outreach`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
-  }).catch(() => null);
-  if (!res?.ok) {
-    log(`Freischaltung der Ortsseiten fehlgeschlagen (${res?.status ?? "kein Abruf"}) — Seiten bleiben bis zu einen Tag auf noindex.`, "err");
-    return;
+  let offen = [...new Set(seiten.map((u) => u.split("?")[0]))];
+  // EVERY sent page is checked, not a sample — the release is the point of
+  // this step, and a sample of three let 92 others go unseen. A failed check
+  // retries the release; after three rounds the run ends red.
+  for (let runde = 1; runde <= 3 && offen.length; runde++) {
+    const res = await fetch(`${basis}/api/atlas/revalidate?umfang=outreach`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }).catch(() => null);
+    if (!res?.ok) log(`Freischaltung: Aufruf fehlgeschlagen (${res?.status ?? "kein Abruf"}), Runde ${runde}`, "warn");
+    await new Promise((r) => setTimeout(r, 5000 * runde));
+    const nochZu: string[] = [];
+    for (const url of offen) {
+      const r = await fetch(url, { redirect: "manual", headers: { "User-Agent": "solar-check-health-check" } }).catch(() => null);
+      const befund = indexierbarBefund(r?.status ?? 0, r ? await r.text() : "");
+      if (befund) nochZu.push(url);
+    }
+    offen = nochZu;
   }
-  for (const url of stichprobe) {
-    const html = await fetch(url, { headers: { "User-Agent": "solar-check-health-check" } }).then((r) => r.text()).catch(() => "");
-    const robots = html.match(/<meta name="robots" content="([^"]+)"/)?.[1] ?? "?";
-    log(`Ortsseite ${url.split("?")[0]}: ${robots}`, /noindex/.test(robots) || robots === "?" ? "warn" : "ok");
+  if (offen.length) {
+    log(`${offen.length} von ${seiten.length} Ortsseiten stehen nach drei Freischalt-Runden noch auf noindex:`, "err");
+    for (const u of offen) log(`  ${u}`, "err");
+    return false;
   }
+  log(`Alle ${seiten.length} Ortsseiten der verschickten Briefe sind für Google freigegeben (einzeln geprüft).`, "ok");
+  return true;
 }
 
 async function probemail(an: string, p: Paket): Promise<void> {
