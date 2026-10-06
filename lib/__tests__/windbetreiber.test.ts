@@ -94,11 +94,14 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
   });
 
   it("does not let a weak name hide the address on the same page (Stadtwerke Reinfeld)", () => {
-    const a = akteur("Stadtwerke Reinfeld (Holstein)", "Paul-von-Schoenaich-Straße", "3", "23858");
-    const seite = "Kontakt Stadtwerke Reinfeld Verwaltung Paul-von-Schoenaich-Straße 3 23858 Reinfeld";
-    expect(belegseiteTraegt(seite, a, "Stadtwerke Reinfeld (Holstein)", "reinfeld.de", new Set(["reinfeld", "holstein"]))?.wie).toBe("anschrift");
-    // Without the address the weak name still proves nothing.
-    expect(belegseiteTraegt("Kontakt Stadtwerke Reinfeld Verwaltung", a, "Stadtwerke Reinfeld (Holstein)", "reinfeld.de", new Set(["reinfeld", "holstein"]))).toBeNull();
+    const a = akteur("Windpark Reinfeld GmbH & Co. KG", "Paul-von-Schoenaich-Straße", "3", "23858");
+    const orte = new Set(["reinfeld"]);
+    // "Windpark Reinfeld" is found first and is too weak on its own …
+    const seite = "Projekte: Windpark Reinfeld · Verwaltung Paul-von-Schoenaich-Straße 3 23858 Reinfeld";
+    expect(impressumBelegt(seite, a, "reinfeld.de", orte)?.wie).toBe("name");
+    // … but the address on the same page still proves.
+    expect(belegseiteTraegt(seite, a, "Windpark Reinfeld GmbH & Co. KG", "reinfeld.de", orte)?.wie).toBe("anschrift");
+    expect(belegseiteTraegt("Projekte: Windpark Reinfeld", a, "Windpark Reinfeld GmbH & Co. KG", "reinfeld.de", orte)).toBeNull();
   });
 
   it("never reads the domain written out as the company's name (Weikmann Immotec)", () => {
