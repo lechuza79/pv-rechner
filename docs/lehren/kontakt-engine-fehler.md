@@ -580,6 +580,20 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Registerstraße. Test mit Abstand zwischen beiden Anschriften, Sabotage rot
   gesehen (die erste Fassung des Tests war es nicht).
 
+### 65. Das Registertelefon auf der Kontaktseite statt im Impressum
+- **Anlass:** 06.10.2026 — BB Wind führt das Impressum ohne Telefon, die
+  Registernummer steht auf der Kontaktseite; der Handbefehl prüfte dort nur
+  Name, Anschrift und Marke.
+- **Sicherung (Verwendung):** Auf einer genannten Belegseite derselben Website gilt
+  die Telefonregel mit denselben Bedingungen (Registerpostfach auf der Domain,
+  Energiebezug, keine Beraterseite). Test mit drei Gegenfällen, Sabotage rot.
+
+### 66. Eine Ziffer aus dem Wort davor
+- **Anlass:** 06.10.2026 — Auf derselben Seite stand „…Explorer4" eine Zeile über
+  der Nummer; die 4 wurde als erste Ziffer gelesen und die Nummer verfehlt.
+- **Sicherung (Verwendung):** Eine Telefonnummer beginnt nie direkt hinter einem
+  Buchstaben oder einer Ziffer. Test, Sabotage rot.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
