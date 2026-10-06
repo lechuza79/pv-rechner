@@ -123,9 +123,10 @@ export default function InfoTooltip({
   useRegisterExportNote(title, nodeToText(children), exportNote);
 
   // Position the tooltip relative to the trigger, clamped to the viewport on all
-  // four edges. Runs as a layout effect so the position is set before paint.
-  useLayoutEffect(() => {
-    if (!open || !triggerRef.current) return;
+  // four edges. Runs as a layout effect so the position is set before paint, and
+  // again on scroll/resize so the fixed box follows its trigger.
+  const place = () => {
+    if (!triggerRef.current) return;
     const t = triggerRef.current.getBoundingClientRect();
     // Fall back if the viewport reports 0 — happens for an embed page loaded
     // outside its iframe; inside a real iframe innerWidth is the iframe size.
@@ -153,14 +154,24 @@ export default function InfoTooltip({
     left = Math.max(EDGE, Math.min(left, vw - width - EDGE));
 
     setPos({ top, left, width, maxHeight });
+  };
+  useLayoutEffect(() => {
+    if (open) place();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, portalTheme]);
 
-  // Close on outside click, scroll, resize, or Escape.
+  // Close on outside click or Escape. Scrolling and resizing only close it once
+  // the trigger has left the viewport; otherwise the box follows the trigger.
+  // Closing on every scroll event lost the tooltip during a smooth scroll that
+  // was still running when it opened (html has scroll-behavior: smooth).
   useEffect(() => {
     if (!open) return;
     const closeOnViewportChange = (event: Event) => {
       if (event.target instanceof Node && tooltipRef.current?.contains(event.target)) return;
-      close();
+      const t = triggerRef.current?.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (!t || t.bottom <= 0 || t.top >= vh) close();
+      else place();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();

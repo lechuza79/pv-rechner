@@ -780,7 +780,7 @@ export const globalStyles = `
  .sc-feature-action:hover svg{transform:none}
 }
 
-  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
   *{box-sizing:border-box;margin:0;padding:0}
   /* Überschriften tragen die Display-Schrift — EINE Regel statt einer
      font-family an jeder Überschrift. Die enge Laufweite ist am Original
