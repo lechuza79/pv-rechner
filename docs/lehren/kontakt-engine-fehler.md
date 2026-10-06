@@ -565,6 +565,21 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Gegenentscheidung (fremde Firma an derselben Anschrift, Planer-Referenz,
   Namensgleichheit) — diese stehen in jedem Lauf wieder in der Meldung.
 
+### 63. Die Marke steht hinter „powered by“
+- **Anlass:** 06.10.2026 — „Bürgerwind Beuchte WEA 01 powered by Ebert"; die
+  Markenregel nahm das erste Wort, also den Ort, und lehnte ebert-energie.de ab.
+- **Sicherung (Verwendung):** Eine im Namen ausdrücklich genannte Marke („powered
+  by X") geht vor; dieselbe Prüfung danach (Domain und Impressum tragen sie).
+  Test, Sabotage rot gesehen.
+
+### 64. Die angezeigte Fundstelle ist nicht die passende
+- **Anlass:** 06.10.2026 — Speyer war richtig über die Sitzanschrift belegt, der
+  Textausschnitt zeigte aber das Kundenzentrum (erste Postleitzahl der Seite).
+  Wer gegenliest, prüft dann die falsche Stelle.
+- **Sicherung (Verwendung):** Der Ausschnitt nimmt die Postleitzahl hinter der
+  Registerstraße. Test mit Abstand zwischen beiden Anschriften, Sabotage rot
+  gesehen (die erste Fassung des Tests war es nicht).
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
