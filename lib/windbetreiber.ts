@@ -213,6 +213,16 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
       const ohneNr = kompakt.indexOf(strasse + plz);
       if (ohneNr >= 0) treffer = true;
     }
+    // A range in the imprint covers the register's single number: "Gartenstr.
+    // 28-30" for "Gartenstraße 30", "Paradiesstr. 23–25" for 25 (manual pass,
+    // 06.10.2026). Only a short range, and only a plain register number.
+    if (!treffer && /^\d+$/.test(nr)) {
+      for (const m of kompakt.matchAll(new RegExp(`${strasse}(\\d+)\\|(\\d+)`, "g"))) {
+        const [von, bis, n] = [Number(m[1]), Number(m[2]), Number(nr)];
+        const rest = kompakt.slice(m.index! + m[0].length, m.index! + m[0].length + 60);
+        if (von < bis && bis - von <= 20 && n >= von && n <= bis && rest.includes(plz)) { treffer = true; break; }
+      }
+    }
     // The other way round: the register names a PLACE without a number ("Luymühle",
     // 54347), the imprint adds one ("Luymühle 1, 54347"). Only for a place name —
     // a "…str"/"…weg" without a number would match every house on it.

@@ -622,6 +622,10 @@ async function manuell() {
   for (const nr of liste) {
     const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
     if (!z) { console.log(`${nr}: steht nicht im Bestand`); process.exitCode = 1; continue; }
+    // A proven website is not replaced in passing: a batch over a manager's
+    // domain overwrote an operator's own site found minutes before
+    // (Österwurth, 06.10.2026). Replacing takes the explicit --ersetzen.
+    if (z.website && z.website !== domain && !flag("ersetzen")) { console.log(`${nr}: hat schon ${z.website} — NICHT ersetzt (mit --ersetzen, wenn ${domain} die bessere ist)`); process.exitCode = 1; continue; }
     let p = await pruefen(z, { domain, quelle: "manuell" }, belegungen);
     // The manual pass may name another page of the same site as evidence — an
     // "About us" page, a project page. The check itself stays the same.

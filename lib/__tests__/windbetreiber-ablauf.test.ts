@@ -47,6 +47,8 @@ describe("Windbetreiber-Lauf", () => {
     // The page is kept, so a rule change judges the hand decision again.
     expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
+    // Never replaces a proven website in passing (Österwurth, 06.10.2026).
+    expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
   });
 
   it("judges hand-taken websites again after a rule change — reports, never changes", () => {

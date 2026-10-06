@@ -29,6 +29,13 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(b?.wie).toBe("marke");
   });
 
+  it("lets a short house-number range in the imprint cover the register's number", () => {
+    const a = akteur("Windpark Cond 2 WPC GmbH & Co. KG", "Gartenstraße", "30", "56727");
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56727 Mayen", a, "nesag.de")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 31-35 56727 Mayen", a, "nesag.de")).toBeNull();
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56728 Anderswo", a, "nesag.de")).toBeNull();
+  });
+
   it("matches a foreign four-digit postcode, but only behind street and number", () => {
     const a = akteur("Hydrovind VI ApS", "Gammel Kirkevej", "16", "9530");
     expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 16 DK-9530 Støvring Denmark", a, "hydrema.com")?.wie).toBe("anschrift");
