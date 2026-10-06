@@ -471,7 +471,8 @@ async function geschwisterLauf() {
     if (z.website || !z.anschrift) continue;
     const d = geschwisterWebsite(z, jeAnschrift.get(z.anschrift) ?? []);
     if (!d) continue;
-    if (vonHandEntschieden(z) && !auchVonHand) { vonHandGemeldet++; continue; }
+    // Shown, not just counted: a count asks the reader to go and find them.
+    if (vonHandEntschieden(z) && !auchVonHand) { vonHandGemeldet++; console.log(`  ? ${z.mastr_nr} ${z.name}: ${d} — Notiz: ${(z.suche_notiz ?? "").slice(0, 160)}`); continue; }
     const s = (jeAnschrift.get(z.anschrift) ?? []).find((g) => g.website === d)!;
     const p = { kandidat: { domain: d, quelle: "geschwister" as const }, beleg: { wie: "geschwister" as const, textstelle: `gleiches Registerpostfach ${z.register_email} und gleiche Registeranschrift wie ${s.name} (${s.mastr_nr}), dessen Website ${d} belegt ist` }, impressum: { impressum_url: s.website_beleg_url ?? null } };
     neu.push({
