@@ -1,0 +1,261 @@
+# Fehlerkatalog der Kontakt-Erfassung
+
+Jede Fehlerklasse, die bei Gemeinden, Kreisen, Versorgern, Presse, Fachbetrieben
+und Windparkbetreibern aufgetreten ist — mit Anlass, Erscheinung und der
+**maschinellen** Sicherung, die sie heute verhindert. Stand 06.10.2026.
+
+Gelesen wird dieser Katalog vor jedem neuen Bestand und vor jedem Umbau an der
+Erfassung. Der Ablauf, in dem die Sicherungen greifen, steht in
+`docs/erhebung/kontakte-neuer-bestand.md`.
+
+**Art der Sicherung:**
+- **Verwendung** — ein Test prüft den Schreib- oder Aufrufweg selbst und wurde
+  absichtlich kaputtgemacht (rot gesehen, Rückweg grün).
+- **Vorflug** — `--vorflug` prüft es vor jedem Lauf (BEREIT / NICHT BEREIT).
+- **Laufzeit** — eine Prüfung im Code ohne eigenen Test.
+- **Ablauf** — eine Pflicht im Ablauf, die kein Test erzwingen kann (lesen,
+  gegenlesen). Steht dort mit dem, was sie auslöst.
+
+Die Tests der Klassen 1–17 stehen gesammelt in
+`lib/__tests__/kontakt-engine-sicherungen.test.ts`; Regeln eines Bestands in
+seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
+
+---
+
+## A. Betrieb und Ablauf
+
+### 1. Bezahlte Suche für eine Massensuche benutzt
+- **Anlass:** 28.09.2026 für Gemeinden entschieden („der Suchdienst ist für die
+  Backlink-Bewertung da, nicht für einen Dauerlauf"), am 06.10.2026 bei den
+  Windbetreibern trotzdem gelaufen: zwei Eichläufe, dann 150 von 2.307
+  Anschriften für 0,57 $, bis der Betreiber es bemerkte. Die Entscheidung stand
+  nur als Kommentar und als Schalter, den niemand tippen musste.
+- **Sicherung (Verwendung):** Jeder Abruf eines Such-Endpunkts in einem
+  Erhebungsskript ruft unmittelbar davor — außerhalb jedes `try` —
+  `bezahlteSucheFreigabe()` (`scripts/lib/bezahlte-suche.ts`). Die wirft ohne
+  `--bezahlte-suche-freigegeben` im selben Befehl. Kein Nachtskript darf den
+  Schalter tragen. Bei den Windbetreibern gibt es die Maschinen-Suche gar nicht
+  mehr (`--suche` bricht ab). Neun Sabotagen, alle rot.
+- **Regel:** Recherche macht Claude selbst — WebSearch, eingebauter Browser,
+  parallele Helfer.
+
+### 2. Spalte im Code, aber nicht in der Datenbank
+- **Anlass:** 06.10.2026 — die Kontaktspalten der Windbetreiber standen im Code
+  und in der DDL, das Setup lief nicht neu; der Kontaktschritt brach nachts nach
+  der langen Recherche mit „column does not exist" ab (15 Mal im Protokoll).
+  Früher: Spalten, die es nur in der Live-Datenbank gab (Presse, 06.09.), und die
+  Schema-Zwischenspeicherung der Schnittstelle (Versorger, 21.09.).
+- **Sicherung (Verwendung + Vorflug):** `lib/ddl-spalten.ts`. Code → DDL: jeder
+  Schreibweg der Wind-Tabellen läuft durch `nurBekannteSpalten`, ein Test prüft
+  jede Schreibstelle und jeden Zeilenbauer. DDL → Datenbank: der Vorflug fragt
+  jede DDL-Spalte live ab.
+
+### 3. Schwere Läufe unter Last, gerissene Zeitlimits
+- **Anlass:** 22.09.2026 Last 1.000 bei überlappenden Nachtläufen; 06.10.2026
+  Last 170–440 aus fremden Builds, Synchronisation und Codex — Pre-commit und
+  Lauf scheiterten; der „ruhige" Nachtlauf traf Last 440.
+- **Sicherung (Vorflug):** `lastCheck` (Grenze 40, Ein- UND Fünf-Minuten-Mittel).
+  Der Nachtlauf beginnt mit dem Vorflug, wartet nur die Last ab (höchstens
+  3 × 20 min) und bricht bei jedem anderen offenen Punkt ab.
+- **Grenze:** Offline-Schritte (Neubewertung, Auswertung, Bericht) brauchen
+  keine Lastprüfung.
+
+### 4. Routinen statt einer Sitzung; ein Stopp, der nicht hielt
+- **Anlass:** 06.10.2026 — statt einer Sitzung zwei geplante Aufträge angelegt
+  (laufen nur bei offener App, nicht ansprechbar). Nach „beide aus" lief ein
+  Rest-Skript einer gestoppten Sitzung weiter und startete die Kontaktsuche
+  neu; zwei Sitzungen steuerten einen Lauf.
+- **Sicherung (Vorflug):** `paralleleLaeufeCheck` — kein zweiter Prozess
+  desselben Bestands darf leben. Hat am selben Abend den verwaisten Lauf
+  gemeldet.
+- **Regel (Ablauf):** Eine Erhebung führt EINE Sitzung bis zum Ende. Keine
+  Routinen. Ein Stopp gilt erst, wenn `ps` keinen Prozess mehr zeigt.
+
+### 5. Veraltete oder fehlende Abhängigkeiten in einer Arbeitskopie
+- **Anlass:** 06.10.2026 — Pre-commit scheiterte zweimal an älteren Paketen;
+  am Abend fehlte `bluebird` (unter `unzipper`), der Bericht brach ab.
+- **Sicherung (Vorflug):** `abhaengigkeitenCheck` vergleicht jede Version mit
+  der Sperrdatei und lehnt einen verlinkten `node_modules` ab. Abhilfe immer
+  `npm ci`, nie den Ordner des Haupt-Checkouts verlinken.
+
+### 6. Ein Bericht, der mit 0 MW antwortet
+- **Anlass:** 06.10.2026 — der Bericht suchte den Registerstand neben dem
+  3-GB-Export, den es nur im Haupt-Checkout gibt, und zählte in der Arbeitskopie
+  stumm 0 MW.
+- **Sicherung (Verwendung):** Der Registerstand wird ohne den Export gefunden;
+  ein Bericht ohne Registerstand bricht ab statt 0 MW zu schreiben.
+
+### 7. Ein gescheiterter Abruf wird als Antwort gespeichert
+- **Anlass:** 06.10.2026 — Zeitüberschreitung, Serverfehler und leere Antworten
+  standen im Impressum-Speicher für immer als „nicht erreichbar" (rund 40
+  Domains aus einer Stunde unter Last). Ein 403 auf einen Abruf ohne Browser
+  machte die Domain auch für die Handprüfung unlesbar (orsted.de). Früher
+  dieselbe Klasse: „Fundstelle nicht lesbar" als „Adresse steht nicht mehr da"
+  (Freigabe, 23.09.), ein Suchfehler als „gesucht" abgehakt (Wind, 06.10.).
+- **Sicherung (Verwendung):** `abrufWiederholen` — vorübergehende Fehler werden
+  bis zu dreimal, eine Stunde auseinander, neu versucht; die Handprüfung holt
+  einen Abruf ohne Browser mit Browser nach. Die Neubewertung liest dabei NUR
+  den Speicher (sie lief zehn Minuten gegen das Netz, als die Regel sie erreichte).
+
+### 8. Ein teurer Lauf schreibt erst am Ende
+- **Anlass:** Versorger 28.07. (22-GB-Registerlesung), Profil-Lauf 27.08.,
+  Presse 05.09., Freigabe 23.09. (45 Minuten Lesen verloren).
+- **Sicherung (Verwendung):** Registerlesung wird vor dem Schreiben gespeichert;
+  die Freigabe schreibt jedes Urteil sofort (`kontakt-freigabe.test.ts`); die
+  Kontaktsuche hält Ergebnisse je Website in Dateien.
+
+### 9. Ein hängender Abruf beendet den Lauf „erfolgreich"
+- **Anlass:** 19.09. — ein nicht referenzierter Zeitgeber leerte die
+  Ereignisschleife, Node endete mit 0 mitten im Lauf; 23.09. — eine Seite blieb
+  ewig offen.
+- **Sicherung:** Lebenszeichen im Lauf (`laufen()` hält ihn am Leben, Laufzeit);
+  harte Frist je Seite (`mitFrist`, Verwendung in `kontakt-freigabe.test.ts`).
+  Im Nachtlauf meldet jede Hälfte eines parallelen Schritts ihren Fehler
+  (Verwendung).
+
+## B. Datenbank
+
+### 10. Stapelschreiben mit ungleichen Feldern überschreibt mit NULL
+- **Anlass:** 29.08.2026 Fachbetriebe — Meisterbetrieb 676 → 167, Photovoltaik
+  2.913 → 135, beim zweiten Auftreten.
+- **Sicherung (Verwendung):** gruppiertes Schreiben (`upsert-spaltenmenge.test.ts`);
+  im Wind-Lauf wirft der Stapelweg bei ungleicher Spaltenmenge.
+
+### 11. Seitenweises Lesen ohne Sortierung, stumme 1.000-Zeilen-Grenze
+- **Anlass:** Versorger 28.07. („1.000 Zuordnungen" von 11.407), Story-Bucket
+  06.09. (derselbe Ort mit 35, 64, 39 Anlagen), KfW 597 von 1.597 Zeilen.
+- **Sicherung (Verwendung):** Jeder `.range(` eines Erhebungsskripts trägt eine
+  Sortierung; Presse liest über einen Sortierschlüssel je Tabelle. Beim Bau
+  fünf Stellen ohne Sortierung gefunden und behoben.
+
+### 12. Dieselbe Organisation in zwei Beständen
+- **Anlass:** 06.10.2026 — 110 von 3.115 „Fachbetrieben" waren Stadtwerke,
+  Zeitungen, Kreisportale.
+- **Sicherung (Verwendung + Vorflug):** `lib/bestand-abgleich.ts` in jedem
+  Schreibweg; offene Konflikte blockieren den Vorflug.
+
+### 13. Eine Verbund-Domain trägt mehrere Organisationen
+- **Anlass:** 06.10.2026 — drei Fraunhofer-Institute betreiben Windräder, ihre
+  Websites liegen unter fraunhofer.de; zusammengezogen kollidierten sie mit der
+  Pressequelle Fraunhofer ISE. Gleiche Klasse: geteiltes Hosting (jimdo, wix),
+  Landesdomains (bayern.de).
+- **Sicherung (Verwendung):** Verbund-Domains behalten den Host
+  (`organisationsDomain`, nur gemessene Fälle); Kandidaten unter einer alten
+  Domain-Regel entfernt die Neubewertung.
+
+## C. Messen und Berichten
+
+### 14. Treffer gezählt, nicht gelesen — überhöhte Zahlen
+- **Anlass:** 06.10.2026 — „3.044 Betriebe nur über die Streuung" gemeldet,
+  gemessen waren 110; Versorger „6 mit eigenem Rechner", es waren 0; eigene
+  34 % später 12 %.
+- **Sicherung (Ablauf, Werkzeug):** `--mode=stichprobe` (Kontakte) und die
+  Gegenlese-Pflicht: 20 Treffer, 10 Ablehnungen, 10 ohne Ergebnis von Hand,
+  bevor eine Zahl gemeldet wird. Zahlen kommen nur aus `--stand` bzw.
+  `--mode=summary`, und die zählen nur noch belegte Websites.
+
+### 15. Abdeckung gemeldet, ohne die Lücken zu lesen
+- **Anlass:** Kreise 30.09. — 169, 178, 182 gemeldet, nach Lesen der Lücken 214.
+  Wind 06.10. — die Lückenprobe fand drei Regeln (Impressum der Website-Prüfung
+  ungenutzt, Postfach im eigenen Impressum nicht anerkannt, neue Spur ohne
+  zweiten Anlauf): 388 → 275 Websites ohne Kontakt.
+- **Sicherung (Ablauf):** Die Stichprobe zeigt immer auch zehn Lücken; jede
+  gefundene Ursache wird eine Regel mit Test.
+
+### 16. „Nichts gefunden" gleich „nie angesehen"
+- **Anlass:** Fachbetriebe (758 doppelt geprüft), Gemeinden (`luecke_at`),
+  Wind: die bezahlte Suche setzte „gesucht" für 779 Betreiber, deren
+  Registerangaben nie alle geprüft waren.
+- **Sicherung (Verwendung):** Bei den Windbetreibern zählt nur der Vermerk der
+  Handprüfung („von Hand geprüft:", Notiz ≥ 40 Zeichen) als abgeschlossen; jede
+  Maschinenprüfung nimmt alle anderen wieder auf. `--stand` meldet erst
+  VOLLSTÄNDIG, wenn kein Betreiber ohne Website ohne diesen Vermerk ist.
+
+### 17. Wächter, die nichts sehen
+- **Anlass:** 06.10.2026 — ein Testbeispiel ohne den gesuchten Fall blieb grün,
+  ein Test hielt eine Typangabe für eine Schreibstelle, ein erfundener
+  Profilname ging still durch; Fachbetriebe: das „e.V."-Muster traf nie.
+- **Sicherung (Ablauf):** Jede neue Sicherung wird absichtlich kaputtgemacht —
+  **nachdem der Stand gesichert ist** (am 06.10. verwarf der Rückweg per
+  `git checkout` eine ungesicherte Regel). Am selben Tag blieb eine von neun
+  Sabotagen grün und wurde nachgeschärft.
+
+## D. Identität: gehört die Website dem Betreiber?
+
+### 18. Register- oder Personenpostfach als Website-Beleg
+- **Anlass:** 115 Sehestedter Gesellschaften mit dem Postfach einer
+  Wirtschaftsprüferin (Mazars).
+- **Sicherung (Verwendung):** Nur ein Funktionspostfach im Register belegt
+  (`funktionsPostfach`); Personenpostfächer schlagen nur einen Kandidaten vor.
+
+### 19. Ort oder Gattungswort als Marke
+- **Anlass:** „Windfeld Thüringer Becken" → Thüringer Allgemeine; Cirrus GmbH →
+  Flugzeugbauer; ein Park mit Ortsnamen → Stadtportal.
+- **Sicherung (Verwendung):** Gattungsliste, Ortswörter aus dem
+  Gemeindeverzeichnis, Marke nur auf einer Energieseite.
+
+### 20. Referenzliste eines Dienstleisters belegt einen Namen
+- **Anlass:** 06.10.2026 — „Windpark Reher" auf der Startseite eines
+  Planungsbüros (Referenzliste); sechs weitere auf Entwickler- und
+  Finanzierungsseiten.
+- **Sicherung (Verwendung):** Ein Name auf einer Startseite oder Belegseite
+  belegt nur, wenn er ein Wort trägt, das weder Gattung noch Ort ist, und die
+  Seite keine Parkliste ist (`identifizierend`, `parkListe`).
+
+### 21. Fremdes Impressum gelesen
+- **Anlass:** 06.10.2026 — 81 von 1.766 gespeicherten Impressen lagen auf
+  anderer Domain: Aliase (windpunx.com → .de), aber auch eine Cisco-Datenschutz-
+  seite (orsted.com) und Hoster-Platzhalter (inwx, ionos, goneo), die als
+  „Website existiert" gezählt wurden.
+- **Sicherung (Verwendung):** `impressumHerkunft` — Hoster-Platzhalter gelten
+  als geparkt, ein fremdes Impressum belegt nur über Name oder Anschrift.
+
+### 22. Normalisierung nur auf einer Seite, Schreibvarianten
+- **Anlass:** „Straße" nur im Register vereinheitlicht; Hausnummern mit
+  Bindestrich; dreibuchstabige Marken; englische Rechtsseiten; Namen an
+  Buchstaben statt Wörtern gekürzt; abgelaufene Zertifikate.
+- **Sicherung (Verwendung):** `windbetreiber.test.ts` („Fehlerklassen der ersten
+  Stichprobe").
+
+### 23. Eine Regeländerung lässt alte Urteile stehen
+- **Sicherung (Verwendung):** `--neu-bewerten` als erster Schritt; die
+  Kontaktübernahme weist Ergebnisse unter alten Regeln ab („erst
+  --mode=evaluate").
+
+## E. Kontakte
+
+### 24. Kontakt überlebt seine Website
+- **Anlass:** 06.10.2026 bei der Durchsicht — eine gewechselte oder
+  zurückgenommene Website ließ den alten Kontakt stehen; eine Website ohne
+  Kontakt behielt den vorigen.
+- **Sicherung (Verwendung):** Website-Wechsel und -Rücknahme leeren den Kontakt;
+  die Übernahme schreibt für jede bewertete Website, auch „kein Kontakt".
+
+### 25. Kontakt nicht von der eigenen belegten Website
+- **Sicherung (Verwendung):** Die Freigabe der Windbetreiber verlangt eine
+  Fundstelle auf der belegten Website, bevor sie die Seite liest; `--stand`
+  meldet jeden Kontakt, dessen Fundstelle woanders liegt. Registerpostfächer
+  bleiben Daten und werden nie freigegeben.
+
+### 26. Das Impressum der Website-Prüfung bleibt ungenutzt
+- **Anlass:** 06.10.2026 — bei per Skript gebauten Websites las die
+  Kontaktsuche nur die Startseite, obwohl die Website-Prüfung das Impressum
+  (teils mit Browser) schon hatte; ein Eintrag mit einer gelesenen Seite blieb
+  für immer „final".
+- **Sicherung (Laufzeit):** Das gespeicherte Impressum geht als Seite und als
+  Spur in die Kontaktsuche; eine neue Spur öffnet einen abgeschlossenen Eintrag.
+
+### 27. Das Pflichtpostfach des Impressums nicht erkannt
+- **Anlass:** 06.10.2026 — „socialmedia@…" im Impressum, das Gmail-Postfach eines
+  Bürgerwindparks im eigenen Impressum.
+- **Sicherung (Verwendung):** `allgemeinAuf` / `gratisPostfachAuf` je Bestand;
+  bei Verwaltungen bewusst nicht gesetzt.
+
+### Weitere, in ihren Beständen gesichert
+Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
+verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
+untaugliche Postfächer, Verwaltungen als Medien, ein Wert aus einem älteren
+Lauf neben einem geprüften, kaputte Bytes in einem Stapel,
+`decodeURIComponent` ohne Schutz — jeweils mit Tests in den Beständen
+(`contact-municipal-judge`, `kreise-kontakte`, `kontakt-tauglichkeit`,
+`presse-*`, `fachbetrieb-extrakt`, `adress-dekodierung-waechter`).
