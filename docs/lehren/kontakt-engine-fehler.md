@@ -521,6 +521,18 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   genau diese 121 von Hand gegengelesen; die Liste erzeugt eine Messung, die bei
   jedem Lauf wiederholbar ist (Anleitung, Schritt Gegenlesen).
 
+### 58. Ein Beleg auf einer Unterdomain speichert die Hauptdomain
+- **Anlass:** 06.10.2026 — Fahrengreth war über das Impressum von
+  `buergerwindpark.suederdeich.de` belegt; gespeichert wurde `suederdeich.de`,
+  und die leitet auf das Amt weiter. Die Kontaktsuche hätte die Gemeinde
+  angeschrieben.
+- **Sicherung (Verwendung):** Der Handbefehl übernimmt nicht, wenn die Belegseite
+  auf einem anderen Host liegt als die gespeicherte Domain; nur mit einer
+  ausdrücklichen Bestätigung, dass beide dieselbe Organisation sind (Konzern-
+  Unterdomains wie `ee.thuega.de`). Test im Ablauf-Test, absichtlich
+  ausgebaut und rot gesehen. Bestand gemessen: 43 Belege auf Unterdomains,
+  zwei falsch (Fahrengreth), zurückgenommen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
