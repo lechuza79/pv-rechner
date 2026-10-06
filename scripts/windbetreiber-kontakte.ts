@@ -17,6 +17,7 @@
  *   --mode=summary    numbers over the results of websites still proven
  *   --mode=stichprobe 20 contacts and 10 gaps, random, to read by hand before reporting
  *   --mode=apply      write the contacts to the operators (--schreiben)
+ *   --mode=spur       --ids=<domain> --url=<page>: a page a person found, researched at once
  *
  * Common: --ids=domain,domain | --part=i --parts=n
  *
@@ -117,6 +118,16 @@ function impressumAlsSeite(domain: string): Seite[] {
   return [{ url: imp.impressum_url, digest, path: pfad, kind: "html", valid: true, origin: "stored" }];
 }
 
+/**
+ * Pages a person found that carry the contact (manual pass, `--mode=spur`).
+ * They are leads, not results: the engine reads and judges them like any page.
+ */
+const SPUREN = () => resolve(OUT, "hand-spuren.json");
+let spurenCache: Record<string, string[]> | null = null;
+function handSpuren(): Record<string, string[]> {
+  return (spurenCache ??= existsSync(SPUREN()) ? readJson(SPUREN()) : {});
+}
+
 function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string, Eintrag> } {
   const jeWebsite = new Map<string, Zeile[]>();
   for (const z of zeilen) jeWebsite.set(z.website, [...(jeWebsite.get(z.website) ?? []), z]);
@@ -135,8 +146,8 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
       // The shortest name is usually the parent itself ("Alterric GmbH"), not a project company.
       name: [...gruppe].sort((a, b) => a.name.length - b.name.length)[0].name,
       website: `https://${domain}/`,
-      baseline, verbund: null, gespeicherteSeiten: impressumAlsSeite(domain), eingabe: [...baseline, ...belegUrls],
-      offeneLinks: belegUrls.map((url) => ({ url, priority: 950 })),
+      baseline, verbund: null, gespeicherteSeiten: impressumAlsSeite(domain), eingabe: [...baseline, ...belegUrls, ...(handSpuren()[domain] ?? [])],
+      offeneLinks: [...belegUrls.map((url) => ({ url, priority: 950 })), ...(handSpuren()[domain] ?? []).map((url) => ({ url, priority: 990 }))],
       zusatz: { betreiber: gruppe.length },
     });
   }
@@ -234,6 +245,22 @@ async function apply() {
 
 async function main() {
   if (mode === "apply") return apply();
+  if (mode === "spur") {
+    // A page a person found: recorded as a lead, then researched at once with the same engine.
+    const [domain] = arg("ids")?.split(",") ?? [];
+    const url = arg("url");
+    if (!domain || !url || organisationsDomain(url) !== domain) throw new Error("Aufruf: --mode=spur --ids=<domain> --url=<Seite derselben Website>");
+    const spuren = handSpuren();
+    spuren[domain] = [...new Set([...(spuren[domain] ?? []), url])];
+    writeJson(SPUREN(), spuren);
+    const { bestand, eintraege } = bestandAus(await betreiber());
+    const e = eintraege.get(domain);
+    if (!e) throw new Error(`${domain} ist keine belegte Website eines aktiven Betreibers`);
+    const r = await recherchieren(bestand, e, BUDGET, { vonHand: true });
+    const k = kontaktAus(bewerten(bestand, e));
+    console.log(JSON.stringify(r), k ? `→ Kontakt: ${k.email} (${k.kanal}) auf ${k.url}` : "→ kein Kontakt belegt");
+    return;
+  }
   const { bestand, eintraege } = bestandAus(await betreiber());
   if (mode === "summary") return summary(bestand, eintraege.size, new Set(eintraege.keys()));
   if (mode === "stichprobe") return stichprobe(new Set(eintraege.keys()));

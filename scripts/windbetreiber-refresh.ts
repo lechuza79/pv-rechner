@@ -10,6 +10,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --offen [--out=datei]      the list for the manual pass
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
+ *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
  *
  * The rules are in lib/windbetreiber.ts (when a website counts) and
  * lib/bestand-abgleich.ts (when a domain belongs to another stock). This script
@@ -555,13 +556,27 @@ async function keine() {
   }
 }
 
+/** A proven website on which a person found no contact. Applies to every operator of that website. */
+async function keinKontakt() {
+  const [domain, notiz] = process.argv.slice(process.argv.indexOf("--kein-kontakt") + 1);
+  if (!domain || domain.startsWith("--") || !notiz || notiz.length < 40) throw new Error('Aufruf: --kein-kontakt <domain> "<welche Seiten gelesen, was dort stand — mindestens 40 Zeichen>"');
+  const c = await db();
+  const felder = { kontakt_hand_notiz: `${VON_HAND} ${notiz}`.slice(0, 900), updated_at: new Date().toISOString() };
+  spalten("windbetreiber", [felder]);
+  const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
+    .eq("website", domain).eq("aktiv", true).is("kontakt_email", null);
+  if (error) throw new Error(error.message);
+  if (!count) throw new Error(`${domain}: kein aktiver Betreiber mit dieser Website und ohne Kontakt`);
+  console.log(`${domain}: „kein Kontakt" für ${count} Betreiber vermerkt`);
+}
+
 // ─── Completeness ─────────────────────────────────────────────────────────────
 
 async function stand() {
   const c = await db();
   type V = Zeile & { website_quelle: string | null; website_beleg_url: string | null; suche_notiz: string | null;
-    kontakt_email: string | null; kontakt_beleg_url: string | null; kontakt_freigabe_am: string | null; kontakt_sperrgrund: string | null };
-  const zeilen = await alle<V>(c, "windbetreiber", `${SPALTEN},website_quelle,website_beleg_url,suche_notiz,kontakt_email,kontakt_beleg_url,kontakt_freigabe_am,kontakt_sperrgrund`, "mastr_nr", (q) => q.eq("aktiv", true));
+    kontakt_email: string | null; kontakt_beleg_url: string | null; kontakt_freigabe_am: string | null; kontakt_sperrgrund: string | null; kontakt_hand_notiz: string | null };
+  const zeilen = await alle<V>(c, "windbetreiber", `${SPALTEN},website_quelle,website_beleg_url,kontakt_email,kontakt_beleg_url,kontakt_freigabe_am,kontakt_sperrgrund,kontakt_hand_notiz`, "mastr_nr", (q) => q.eq("aktiv", true));
   const kand = await alle<{ mastr_nr: string; domain: string; ergebnis: string }>(c, "windbetreiber_kandidaten", "mastr_nr,domain,ergebnis", "mastr_nr");
   const belegtePaare = new Set(kand.filter((k) => k.ergebnis === "belegt").map((k) => `${k.mastr_nr}|${k.domain}`));
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
@@ -600,10 +615,15 @@ async function stand() {
   const handOffen = ohne.length - vonHand;
   console.log(`  ohne Website: ${ohne.length}, davon von Hand bestätigt ${vonHand}, noch für die Handprüfung ${handOffen}`);
   console.log(`  Kontakt von der eigenen Website: ${mitKontakt} (${anteil(kwKontakt, gesamtKw)} der Leistung) · freigegeben ${freigegeben} · gesperrt ${gesperrt}`);
+  // Per website, not per operator: one search answers for all its operators.
+  const ohneKontakt = new Set(zeilen.filter((z) => z.website && !z.kontakt_email).map((z) => z.website!));
+  const kontaktVonHand = new Set(zeilen.filter((z) => z.website && !z.kontakt_email && (z.kontakt_hand_notiz ?? "").startsWith(VON_HAND)).map((z) => z.website!));
+  const kontaktOffen = [...ohneKontakt].filter((d) => !kontaktVonHand.has(d)).length;
+  console.log(`  Websites ohne Kontakt: ${ohneKontakt.size}, davon von Hand bestätigt ${kontaktVonHand.size}, noch für die Handprüfung ${kontaktOffen}`);
   console.log(`Verstöße: ${verstoesse.length}`);
   for (const v of verstoesse.slice(0, 30)) console.log(`  ✗ ${v}`);
   // The one line that answers "done?": nothing open AND nothing wrong.
-  console.log(handOffen === 0 && verstoesse.length === 0 ? "VOLLSTÄNDIG" : `NICHT VOLLSTÄNDIG — ${handOffen} offen, ${verstoesse.length} Verstöße`);
+  console.log(handOffen === 0 && kontaktOffen === 0 && verstoesse.length === 0 ? "VOLLSTÄNDIG" : `NICHT VOLLSTÄNDIG — ${handOffen} Betreiber ohne Website offen, ${kontaktOffen} Websites ohne Kontakt offen, ${verstoesse.length} Verstöße`);
   if (verstoesse.length) process.exitCode = 1;
 }
 
@@ -708,6 +728,7 @@ async function main() {
   if (flag("offen")) return offenListe();
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
+  if (flag("kein-kontakt")) return keinKontakt();
   console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 15).join("\n"));
 }
 

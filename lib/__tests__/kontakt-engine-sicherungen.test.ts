@@ -168,6 +168,28 @@ describe("Klasse 13 — Kontakt nur von der eigenen belegten Website", () => {
   });
 });
 
+describe("Lückenlos — Website UND Kontakt, oder ein Vermerk von Hand", () => {
+  it("VOLLSTÄNDIG needs no open operator, no open website without contact and no violation", () => {
+    const r = lies("scripts/windbetreiber-refresh.ts");
+    expect(r).toMatch(/handOffen === 0 && kontaktOffen === 0 && verstoesse\.length === 0 \? "VOLLSTÄNDIG"/);
+  });
+  it("'no contact' is a person's note on a website without contact, never a machine's", () => {
+    const r = lies("scripts/windbetreiber-refresh.ts");
+    const k = r.slice(r.indexOf("async function keinKontakt()"), r.indexOf("// ─── Completeness"));
+    expect(k).toMatch(/notiz\.length < 40/);
+    expect(k).toMatch(/kontakt_hand_notiz: `\$\{VON_HAND\} \$\{notiz\}`/);
+    expect(k).toMatch(/\.is\("kontakt_email", null\)/);
+    // No other place writes the note.
+    expect(r.match(/kontakt_hand_notiz: `/g)?.length).toBe(1);
+    expect(lies("scripts/windbetreiber-kontakte.ts")).not.toMatch(/kontakt_hand_notiz/);
+  });
+  it("a page a person found is a lead for the engine, on the same website only", () => {
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    expect(k).toMatch(/organisationsDomain\(url\) !== domain\) throw/);
+    expect(k).toMatch(/recherchieren\(bestand, e, BUDGET, \{ vonHand: true \}\)/);
+  });
+});
+
 describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   it("a report without the register read fails instead of counting 0 MW", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");

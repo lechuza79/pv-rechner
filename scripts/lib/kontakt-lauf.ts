@@ -235,7 +235,7 @@ export async function fetchPage(b: Bestand, url: string, id: string) {
 }
 
 /** Holt gezielt weitere Seiten, solange das Budget reicht und noch etwas fehlt. */
-export async function recherchieren(b: Bestand, e: Eintrag, budget: number) {
+export async function recherchieren(b: Bestand, e: Eintrag, budget: number, opts: { vonHand?: boolean } = {}) {
   const logPath = resolve(b.out, "research", `${e.id}.json`);
   const log = existsSync(logPath) ? readJson(logPath) : { id: e.id, attempts: [] as any[] };
   const fertig = b.fertigWenn ?? ((r: Ergebnis) => r.outcome === "all-channels");
@@ -255,7 +255,9 @@ export async function recherchieren(b: Bestand, e: Eintrag, budget: number) {
     // "final" (wind operators, 06.10.2026).
     const unreachable = last.fetched.length > 0 && last.fetched.every((f: any) => f.error);
     const neueSpur = result.openLinks.some(l => !done.has(l.url) && allowed.has(siteOf(host(l.url))));
-    if (log.attempts.length >= MAX_ATTEMPTS || (!unreachable && !neueSpur) || !e.website) return { id: e.id, skipped: "final" };
+    // A page a person pointed to is always read: the attempt limit guards the
+    // machine against itself, not the manual pass.
+    if ((log.attempts.length >= MAX_ATTEMPTS && !(opts.vonHand && neueSpur)) || (!unreachable && !neueSpur) || !e.website) return { id: e.id, skipped: "final" };
     if (unreachable && !neueSpur && Date.now() - Date.parse(last.at) < RETRY_AFTER_MS) return { id: e.id, skipped: "retry-later" };
   }
   const queue = new Map<string, number>(result.openLinks.map(l => [l.url, l.priority]));
