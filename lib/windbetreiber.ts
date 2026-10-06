@@ -437,8 +437,15 @@ export function kernName(woerter: string[]): string[] {
 
 /** The full name WITH its legal form, verbatim: "Betreiber des Parks ist die Amrum-Offshore West GmbH" (rwe.com). */
 export function vollerNameIn(text: string, name: string): boolean {
+  const t = textFalten(text);
   const v = textFalten(name).trim();
-  return v.split(" ").length >= 3 && textFalten(text).includes(` ${v} `);
+  if (v.split(" ").length >= 3 && t.includes(` ${v} `)) return true;
+  // The name directly followed by A legal form, not necessarily the register's:
+  // ENERTRAG's project page writes "Bürgerwind Schönfeld UG & Co KG", the
+  // register "GmbH & Co. KG" (manual pass, 06.10.2026). A company name in
+  // front of a legal form is a company, not a reference to a place.
+  const kern = nameWoerter(name).join(" ");
+  return kern.split(" ").length >= 2 && new RegExp(` ${kern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} (?:gmbh|ug|ag|kg|se|eg|gbr|ohg|mbh)(?= )`).test(t);
 }
 
 /** Does the name carry a word that is neither a kind of company nor a place? */

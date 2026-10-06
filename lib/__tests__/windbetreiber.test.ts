@@ -379,6 +379,9 @@ describe("Befunde der ersten Handprüfung (06.10.2026)", () => {
   it("the full name with its legal form identifies, even when its words are places", () => {
     expect(vollerNameIn("Betreiber des Parks ist die Amrum-Offshore West GmbH mit Sitz in Essen", "Amrum-Offshore West GmbH")).toBe(true);
     expect(vollerNameIn("Offshore-Windpark Amrumbank West", "Amrum-Offshore West GmbH")).toBe(false);
+    // Another legal form right after the name still names a company (ENERTRAG, UG vs GmbH).
+    expect(vollerNameIn("Gesellschafterin ist die Bürgerwind Schönfeld UG & Co KG", "Bürgerwind Schönfeld GmbH & Co. KG")).toBe(true);
+    expect(vollerNameIn("Referenzen: Bürgerwind Schönfeld, Windpark Reher", "Bürgerwind Schönfeld GmbH & Co. KG")).toBe(false);
   });
   it("finds a project name without its trailing kind-of-company words and foreign legal form", () => {
     expect(kernName(["borkum", "riffgrund", "2", "offshore", "wind", "farm"])).toEqual(["borkum", "riffgrund", "2"]);
