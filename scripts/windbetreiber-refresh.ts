@@ -12,6 +12,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>] [--ersetzen] [--subdomain-ok]
  *   npx tsx scripts/windbetreiber-refresh.ts --belegseiten-nachholen   fetch missing proof pages of hand decisions once
  *   npx tsx scripts/windbetreiber-refresh.ts --anschrift-gegenlesen    address proofs on non-energy sites, for reading
+ *   npx tsx scripts/windbetreiber-refresh.ts --marke-gegenlesen        brand proofs without mailbox or postcode backing, for reading
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
  *   npx tsx scripts/windbetreiber-refresh.ts --zuruecknehmen ABR…[,ABR…] "<why it is not the operator's>"
@@ -32,7 +33,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, ENERGIE, traegtDomainwort, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, ENERGIE, traegtDomainwort, maildomain, marke, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -717,6 +718,30 @@ async function anschriftGegenlesen() {
   console.log(`${liste.length} Anschriftsbelege auf Seiten ohne Energiebezug zum Gegenlesen → ${out}`);
 }
 
+/** Brand proofs a person reads: one line per brand and domain, only where
+ *  neither the register mailbox nor the register postcode backs the brand.
+ *  "Elements" (an ordinary word) proved a Frankfurt group for a Bassum company
+ *  (manual pass, 06.10.2026); a rule against ordinary words would need a
+ *  dictionary, and 28 of 29 such brands were real groups. */
+async function markeGegenlesen() {
+  const c = await db();
+  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).eq("website_beleg", "marke"));
+  const gruppen = new Map<string, Zeile[]>();
+  for (const z of zeilen) {
+    if (!z.website) continue;
+    const text = existsSync(impressumDatei(z.website)) ? (JSON.parse(readFileSync(impressumDatei(z.website), "utf8")) as { text: string | null }).text ?? "" : "";
+    const postfach = maildomain(z.register_email ?? "");
+    if ((postfach && (postfach === z.website || postfach.endsWith(`.${z.website}`))) || (z.plz && text.includes(z.plz))) continue;
+    const k = `${marke(z.name) ?? "?"} → ${z.website}`;
+    gruppen.set(k, [...(gruppen.get(k) ?? []), z]);
+  }
+  const liste = [...gruppen].map(([k, zs]) => ({ marke: k, anzahl: zs.length, beispiel: `${zs[0].name} (${zs[0].ort ?? ""})`, mastr_nr: zs.map((z) => z.mastr_nr) }));
+  const out = arg("out") ?? resolve(CACHE, "marke-gegenlesen.json");
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, JSON.stringify(liste, null, 1));
+  console.log(`${liste.length} Marken ohne Rückhalt in Postfach oder Postleitzahl zum Gegenlesen (${zeilen.length} Markenbelege) → ${out}`);
+}
+
 /** Same page, whatever the scheme, "www.", trailing slash or fragment. */
 function dieselbeSeite(a: string | null | undefined, b: string | null | undefined): boolean {
   const n = (u: string | null | undefined) => (u ?? "").replace(/^https?:\/\/(www\.)?/, "").replace(/#.*$/, "").replace(/\/+$/, "").toLowerCase();
@@ -979,6 +1004,7 @@ async function main() {
   if (flag("offen")) return offenListe();
   if (flag("belegseiten-nachholen")) return belegseitenNachholen();
   if (flag("anschrift-gegenlesen")) return anschriftGegenlesen();
+  if (flag("marke-gegenlesen")) return markeGegenlesen();
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
   if (flag("kein-kontakt")) return keinKontakt();

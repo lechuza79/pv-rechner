@@ -63,6 +63,13 @@ describe("Windbetreiber-Lauf", () => {
     expect(n).toMatch(/nicht nachprüfbar/);
   });
 
+  it("lists unbacked brand proofs for a person to read (Elements, 06.10.2026)", () => {
+    const g = rumpf("markeGegenlesen");
+    expect(g).toMatch(/eq\("website_beleg", "marke"\)/);
+    expect(g).toMatch(/text\.includes\(z\.plz\)/);
+    expect(quelle).toMatch(/if \(flag\("marke-gegenlesen"\)\) return markeGegenlesen\(\);/);
+  });
+
   it("does not accept a proven website that another stock holds in conflict", () => {
     const p = rumpf("pruefen");
     const pruef = p.indexOf("abgleichen(");

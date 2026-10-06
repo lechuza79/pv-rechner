@@ -533,6 +533,15 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   ausgebaut und rot gesehen. Bestand gemessen: 43 Belege auf Unterdomains,
   zwei falsch (Fahrengreth), zurückgenommen.
 
+### 59. Ein gewöhnliches Wort als Marke
+- **Anlass:** 06.10.2026 — „Elements Betriebsgesellschaft" (Bassum) war über die
+  Marke auf `elements.green` belegt, einer Frankfurter Gruppe ohne Bezug.
+- **Sicherung:** keine Maschinenregel — eine Sperre gegen gewöhnliche Wörter
+  bräuchte ein Wörterbuch, und gemessen sind von 42 Marken ohne Rückhalt über
+  Registerpostfach oder Postleitzahl alle echte Firmengruppen. Stattdessen
+  listet ein eigener Befehl genau diese Marken zum Gegenlesen (Anleitung,
+  Schritt Gegenlesen); Elements ist zurückgenommen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
