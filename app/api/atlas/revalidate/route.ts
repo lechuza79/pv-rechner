@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { baueAuszeichnungen } from "../../../../lib/awards-server";
 import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG, KREIS_PAKET_TAG } from "../../../../lib/atlas-revalidate-routen";
+import { OUTREACH_VERLINKER_TAG } from "../../../../lib/atlas-outreach-freigabe";
 
 /**
  * ATLAS-SEITEN NACH DEM DATENLAUF FÜR UNGÜLTIG ERKLÄREN.
@@ -105,6 +106,19 @@ export async function POST(req: NextRequest) {
       erledigt.push(`tag:${KREIS_PAKET_TAG}`);
     } catch (e) {
       fehler.push({ schritt: `tag:${KREIS_PAKET_TAG}`, grund: e instanceof Error ? e.message : String(e) });
+    }
+    const ok = fehler.length === 0;
+    return NextResponse.json({ ok, erledigt, fehler }, { status: ok ? 200 : 500 });
+  }
+
+  // After a letter send: only the list of written-to towns and the pages that
+  // read it (their index rule). No new data, so nothing else.
+  if (req.nextUrl.searchParams.get("umfang") === "outreach") {
+    try {
+      revalidateTag(OUTREACH_VERLINKER_TAG);
+      erledigt.push(`tag:${OUTREACH_VERLINKER_TAG}`);
+    } catch (e) {
+      fehler.push({ schritt: `tag:${OUTREACH_VERLINKER_TAG}`, grund: e instanceof Error ? e.message : String(e) });
     }
     const ok = fehler.length === 0;
     return NextResponse.json({ ok, erledigt, fehler }, { status: ok ? 200 : 500 });

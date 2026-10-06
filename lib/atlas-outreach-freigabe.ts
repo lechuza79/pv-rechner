@@ -87,9 +87,18 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
  * angeschriebenen Orte nach einer Datenbankstörung einen ganzen Tag lang
  * gesperrt.
  */
+/**
+ * Marker on the list AND on every town page that read it. A send must
+ * invalidate it (POST /api/atlas/revalidate?umfang=outreach), otherwise the
+ * pages keep their cached "noindex" for up to a day — measured 06.10.2026: all
+ * 95 towns of that morning's send still said noindex in the afternoon, because
+ * the preflight had warmed them while they were not yet released.
+ */
+export const OUTREACH_VERLINKER_TAG = "atlas-outreach-verlinker";
+
 const verlinkendeGemeindenGecacht = unstable_cache(verlinkendeGemeindenUncached, ["atlas-outreach-verlinker-v1"], {
   revalidate: 86400,
-  tags: ["atlas-outreach-verlinker"],
+  tags: [OUTREACH_VERLINKER_TAG],
 });
 
 export async function verlinkendeGemeinden(): Promise<string[]> {
