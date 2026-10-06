@@ -398,7 +398,7 @@ async function impressumLauf() {
   for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)); if (k) nachAnschrift.set(k, [...(nachAnschrift.get(k) ?? []), z]); }
 
   // Everything without a website that no person has closed: a "none" written
-  // by an earlier machine run is no answer (the paid search set gesucht_am
+  // by an earlier machine run is no answer (the paid search set its search date
   // for 779 operators whose register candidates were never all checked).
   const offen = zeilen.filter((z) => !z.website && !(z.suche_notiz ?? "").startsWith(VON_HAND)).map((z) => ({ z, kandidaten: registerKandidaten(z, nachAnschrift) })).filter((x) => x.kandidaten.length);
   const domains = [...new Set(offen.flatMap((x) => x.kandidaten.map((k) => k.domain)))].slice(0, LIMIT);
@@ -466,6 +466,11 @@ async function neuBewerten() {
   for (const k of kand) {
     const z = nachNr.get(k.mastr_nr);
     if (!z || weg.has(`${k.mastr_nr}|${k.domain}`)) continue;
+    // A manual proof may rest on another page of the site (--seite); judged
+    // again from the imprint cache it would fail and withdraw a person's
+    // decision. A run never overwrites what a person decided (installers,
+    // 06.10.2026: every crawl reset each demotion).
+    if (k.quelle === "manuell") continue;
     if (!existsSync(impressumDatei(k.domain))) { ohneZwischenspeicher++; continue; }
     const p = await pruefen(z, { domain: k.domain, quelle: k.quelle, postfach: k.quelle === "register-mail" ? z.register_email : null }, belegungen);
     kandZeilen.push(kandidatZeile(z, p));
@@ -474,9 +479,12 @@ async function neuBewerten() {
   await schreiben(c, "windbetreiber_kandidaten", kandZeilen, "mastr_nr,domain");
   const aenderungen: Record<string, unknown>[] = [];
   let zurueck = 0, neu = 0;
+  const widerspruch: string[] = [];
   for (const [nr, pr] of jeBetreiber) {
     const z = nachNr.get(nr)!;
     const best = besterBeleg(pr);
+    // Decided by hand ("keine Website" or found by hand): reported, never changed.
+    if (vonHandEntschieden(z)) { if (best && best.kandidat.domain !== z.website) widerspruch.push(`${z.mastr_nr} ${z.name}: ${best.kandidat.domain}`); continue; }
     if (best && best.kandidat.domain !== z.website) { neu++; // A contact belongs to the website it was found on; the next contact run fills it again.
       aenderungen.push({ mastr_nr: nr, ...websiteFelder(best, HEUTE), ...kontaktFelder(null, null), updated_at: new Date().toISOString() }); }
     else if (!best && z.website && (pr.some((p) => p.kandidat.domain === z.website) || weg.has(`${nr}|${z.website}`))) {
@@ -485,20 +493,31 @@ async function neuBewerten() {
     }
   }
   for (const z of zeilen) {
-    if (!z.website || jeBetreiber.has(z.mastr_nr) || !weg.has(`${z.mastr_nr}|${z.website}`)) continue;
+    if (!z.website || jeBetreiber.has(z.mastr_nr) || !weg.has(`${z.mastr_nr}|${z.website}`) || vonHandEntschieden(z)) continue;
     zurueck++;
     aenderungen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `Kandidat unter alter Domain-Regel entfernt: ${z.website}`, updated_at: new Date().toISOString() });
   }
   await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
   console.log(`${veraltet.length} veraltete Kandidaten entfernt`);
+  if (widerspruch.length) {
+    console.log(`${widerspruch.length} von Hand entschiedene Betreiber, bei denen die Maschine heute anders urteilen würde — NICHT geändert, bitte ansehen:`);
+    for (const w of widerspruch.slice(0, 30)) console.log(`  ? ${w}`);
+  }
   console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
 
 // ─── Manual pass ──────────────────────────────────────────────────────────────
 
+/** A person decided this operator: "keine Website" or a website found by hand. No machine run changes it. */
+function vonHandEntschieden(z: { suche_notiz: string | null }): boolean {
+  const n = z.suche_notiz ?? "";
+  return n.startsWith(VON_HAND) || n.startsWith(VON_HAND_GEFUNDEN);
+}
+
 /** The mark of a "no website" a person confirmed — the stock is complete when
  *  every operator without a website carries it. */
 const VON_HAND = "von Hand geprüft:";
+const VON_HAND_GEFUNDEN = "von Hand gefunden";
 
 async function manuell() {
   LESART = "nachholen";
@@ -533,7 +552,7 @@ async function manuell() {
       console.log(`${nr} NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
       process.exitCode = 1;
     } else {
-      await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `von Hand gefunden, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
+      await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `${VON_HAND_GEFUNDEN}, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
       console.log(`${nr} übernommen: ${z.name} → ${domain} (${p.beleg!.wie}: „${p.beleg!.textstelle.slice(0, 120)}")`);
     }
   }

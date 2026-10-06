@@ -30,6 +30,7 @@
 
 import { organisationsDomain } from "./bestand-abgleich";
 import { GRATIS_POSTFACH } from "./kontakt-suche";
+import { anbieterBlock } from "./impressum-anbieter";
 
 export type Akteur = Record<string, string>;
 
@@ -347,7 +348,19 @@ export function beurteilen(
     return { ergebnis: "geparkt", beleg: null, seite: null };
   }
   if (abruf.impressum) {
-    const b = zaehlt(impressumBelegt(abruf.impressum, a, domain, ortsWoerter));
+    let b = zaehlt(impressumBelegt(abruf.impressum, a, domain, ortsWoerter));
+    // The imprint text holds more than the provider: navigation, a list of
+    // projects, the insurer. A NAME found outside the provider block
+    // (lib/impressum-anbieter.ts) proves only when it identifies someone and
+    // the text is no list of parks — "Windpark Reher" stood in the imprint
+    // text of a planning office as one of its references (178 of 3,680 proofs
+    // lay outside the block, 06.10.2026; addresses and brands there are mostly
+    // branch offices and groups and keep counting).
+    if (b?.wie === "name") {
+      const block = anbieterBlock(abruf.impressum);
+      const imBlock = !!block && !!impressumBelegt(block, a, domain, ortsWoerter);
+      if (!imBlock && !(identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.impressum, a.Firmenname ?? ""))) b = null;
+    }
     // Another organisation's imprint proves only by the operator's own name or
     // address — never by a brand word, and never the mere existence of the site.
     if (b && (herkunft !== "fremd" || b.wie === "name" || b.wie === "anschrift")) return { ergebnis: "belegt", beleg: b, seite: "impressum" };

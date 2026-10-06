@@ -200,6 +200,26 @@ describe("Klasse 26 — das gespeicherte Impressum ergänzt die Seite, ersetzt s
   });
 });
 
+describe("Klasse 28 — kein Lauf überschreibt eine Entscheidung von Hand", () => {
+  const r = lies("scripts/windbetreiber-refresh.ts");
+  const neu = r.slice(r.indexOf("async function neuBewerten()"), r.indexOf("// ─── Manual pass"));
+  it("re-judging skips manual candidates and every operator a person decided", () => {
+    expect(neu).toMatch(/if \(k\.quelle === "manuell"\) continue;/);
+    expect(neu).toMatch(/if \(vonHandEntschieden\(z\)\) \{[^\n]*widerspruch\.push[^\n]*continue; \}/);
+    expect(neu).toMatch(/\|\| vonHandEntschieden\(z\)\) continue;/);
+  });
+  it("both hand marks count as a decision", () => {
+    expect(r).toMatch(/return n\.startsWith\(VON_HAND\) \|\| n\.startsWith\(VON_HAND_GEFUNDEN\);/);
+    expect(r).toMatch(/suche_notiz: `\$\{VON_HAND_GEFUNDEN\}, /);
+  });
+  it("the imprint run only takes operators without website and without a person's 'none'", () => {
+    const imp = r.slice(r.indexOf("async function impressumLauf()"), r.indexOf("// ─── Re-judge"));
+    expect(imp).toMatch(/filter\(\(z\) => !z\.website && !\(z\.suche_notiz \?\? ""\)\.startsWith\(VON_HAND\)\)/);
+    // An unreachable or failed check never closes an operator.
+    expect(imp).not.toMatch(/gesucht_am/);
+  });
+});
+
 describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   it("a report without the register read fails instead of counting 0 MW", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");

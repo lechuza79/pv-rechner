@@ -347,3 +347,17 @@ describe("whose imprint was read (06.10.2026)", () => {
     expect(beurteilen(enbw, "enbw.com", "suche", { ...fremd, impressumUrl: "https://www.enbw.com/impressum" }).ergebnis).toBe("belegt");
   });
 });
+
+describe("a name outside the provider block (06.10.2026)", () => {
+  const orte = ortsWoerterAus(["Reher", "Jevenstedt", "Karlum", "Klixbüll"]);
+  it("does not let a reference list in the imprint text prove a park", () => {
+    const reher = akteur("Windpark Reher GmbH & Co. KG", "Irgendwo", "1", "25593");
+    const imp = "Projekte Windpark Reher Windpark Jevenstedt Bürgerwindpark Karlum Windpark Klixbüll Impressum Angaben gemäß § 5 TMG Baubüro Kaatz GmbH Dorfstraße 3 24797 Breiholz";
+    expect(beurteilen(reher, "baubuero-kaatz.de", "suche", { impressum: imp, startseite: null }, null, orte).ergebnis).not.toBe("belegt");
+  });
+  it("still lets the provider block itself prove the name", () => {
+    const a = akteur("Bürgerwindpark Kisselsheide GmbH & Co. KG", "Irgendwo", "1", "25593");
+    const imp = "Impressum Angaben gemäß § 5 TMG Bürgerwindpark Kisselsheide GmbH & Co. KG Hauptstraße 1 25593 Reher";
+    expect(beurteilen(a, "kisselsheide.de", "suche", { impressum: imp, startseite: null }, null, orte).ergebnis).toBe("belegt");
+  });
+});
