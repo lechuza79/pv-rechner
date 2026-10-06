@@ -155,9 +155,10 @@ describe("Klasse 13 — Kontakt nur von der eigenen belegten Website", () => {
     // A website whose evaluation finds nothing writes "no contact", and old-rule results are refused.
     const schleife = k.slice(k.indexOf("for (const r of alle)"), k.indexOf("const felder = kontaktFelder(k, "));
     expect(schleife.length, "Schleife oder Kontaktfelder nicht gefunden").toBeGreaterThan(20);
-    // Nothing may leave the loop before the fields are built: every evaluated
-    // website writes, with or without a contact.
-    expect(schleife).not.toMatch(/\bcontinue\b|\breturn\b/);
+    // Nothing may leave the loop before the fields are built — except a website
+    // whose written contact already equals the result (with or without one).
+    const ohneGleich = schleife.replace(/if \(z && \(z\.kontakt_email \?\? null\) === \(k\?\.email \?\? null\) && \(z\.kontakt_beleg_url \?\? null\) === \(k\?\.url \?\? null\)\) \{ unveraendert\+\+; continue; \}/, "");
+    expect(ohneGleich).not.toMatch(/\bcontinue\b|\breturn\b/);
     expect(k).toMatch(/unter alten Regeln[\s\S]*erst --mode=evaluate/);
   });
 

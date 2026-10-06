@@ -80,7 +80,7 @@ const WIND_SCOPE: ScopeRegeln = {
   gratisPostfachAuf: (pfad: string) => /impressum|imprint/i.test(pfad),
 };
 
-type Zeile = { mastr_nr: string; name: string; website: string; website_beleg_url: string | null; register_email: string | null; kontakt_email: string | null };
+type Zeile = { mastr_nr: string; name: string; website: string; website_beleg_url: string | null; register_email: string | null; kontakt_email: string | null; kontakt_beleg_url: string | null };
 
 async function db() {
   const url = env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
@@ -94,7 +94,7 @@ async function betreiber(): Promise<Zeile[]> {
   const c = await db();
   const out: Zeile[] = [];
   for (let von = 0; ; von += 1000) {
-    const { data, error } = await c.from("windbetreiber").select("mastr_nr, name, website, website_beleg_url, register_email, kontakt_email")
+    const { data, error } = await c.from("windbetreiber").select("mastr_nr, name, website, website_beleg_url, register_email, kontakt_email, kontakt_beleg_url")
       .eq("aktiv", true).not("website", "is", null).order("mastr_nr").range(von, von + 999);
     if (error) throw new Error(error.message);
     out.push(...(data as Zeile[]));
@@ -227,9 +227,15 @@ async function apply() {
   const alle = ergebnisse();
   const veraltet = alle.filter((r) => r.rules !== rulesVersion());
   if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
+  // What is already written: an unchanged contact keeps its release, and the
+  // release (a fresh re-read of every proof page) is not run again for nothing.
+  const jetzt = new Map((await betreiber()).map((z) => [z.website, z]));
+  let unveraendert = 0;
   for (const r of alle) {
     const k = kontaktAus(r);
     if (k) mit++; else ohne++;
+    const z = jetzt.get(r.id);
+    if (z && (z.kontakt_email ?? null) === (k?.email ?? null) && (z.kontakt_beleg_url ?? null) === (k?.url ?? null)) { unveraendert++; continue; }
     // Written either way: a website whose evaluation finds no contact on the
     // site any more must not keep the old one (06.10.2026, fault class
     // "contact outlives its source", docs/lehren/kontakt-engine-fehler.md).
@@ -240,7 +246,7 @@ async function apply() {
     if (error) throw new Error(`${r.id}: ${error.message}`);
     geschrieben += count ?? 0;
   }
-  console.log(JSON.stringify({ schreiben, websitesMitKontakt: mit, websitesOhneKontakt: ohne, betreiberGeschrieben: geschrieben }));
+  console.log(JSON.stringify({ schreiben, websitesMitKontakt: mit, websitesOhneKontakt: ohne, unveraendert, betreiberGeschrieben: geschrieben }));
 }
 
 async function main() {
