@@ -94,6 +94,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // An unknown scope must not fall through to the full 11,000-page run — an
+  // older deployment did exactly that with "umfang=outreach" (06.10.2026).
+  const umfang = req.nextUrl.searchParams.get("umfang");
+  if (umfang !== null && umfang !== "kreise" && umfang !== "outreach") {
+    return NextResponse.json({ ok: false, fehler: [{ schritt: "umfang", grund: `unbekannt: ${umfang}` }] }, { status: 400 });
+  }
+
   const erledigt: string[] = [];
   const fehler: { schritt: string; grund: string }[] = [];
 
