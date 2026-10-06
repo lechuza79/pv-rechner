@@ -141,11 +141,11 @@ describe("Zwei Ask-Varianten", () => {
   //
   // Die Frage entsteht beim Einbau, also muss die Antwort im Widget-Absatz
   // stehen — nicht drei Absätze darüber bei einer anderen Sache.
-  it("sagt im Widget-Absatz selbst, dass es für Kommunen nichts kostet", () => {
+  // The cost is said once, in the paragraph after the message (operator,
+  // 06.10.2026): a second "kostenfrei" two paragraphs later read as filler.
+  it("sagt genau einmal, dass es für Kommunen nichts kostet", () => {
     const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" });
-    const widgetAbsatz = d.body.split("\n\n").find((a) => a.includes("Grafik für Ihre Website"));
-    expect(widgetAbsatz).toBeDefined();
-    expect(widgetAbsatz).toMatch(/kostenfrei|kostenlos|keine Kosten/);
+    expect(d.body.match(/kostenfrei|kostenlos|keine Kosten/g)).toHaveLength(1);
   });
 
   it("die Meldung ist in beiden Fassungen dieselbe", () => {
@@ -484,6 +484,22 @@ describe("Kurz oben, genau unten", () => {
       expect(m, `Platz ${platz}`).toContain("von 52");
       expect(m, `Platz ${platz}`).toContain("36 Hausspeicher");
     }
+  });
+});
+
+describe("Rang und Prozent sprechen dieselbe Sprache", () => {
+  // Kempen (10/2026): Betreff "unter den besten 5 % bundesweit", Überschrift
+  // "Platz 29" — derselbe Rang, in der Meldung klang er plötzlich schwächer.
+  it("trägt die Prozentangabe des Betreffs in Überschrift und Satz", () => {
+    const d = renderOutreachDraft({ ...BASIS, rang: { platz: 29, von: 626 }, rangProzent: 5 });
+    expect(d.meldung.split("\n")[0]).toMatch(/unter den besten 5 %$/);
+    expect(d.meldung).toContain("auf Platz 29 von 626");
+    expect(d.meldung).toMatch(/und damit unter den besten 5 %/);
+    expect(d.meldung).not.toMatch(/Platz 29 bei/);
+  });
+  it("bleibt beim Platz, wenn der Betreff keinen Prozentwert nennt", () => {
+    const d = renderOutreachDraft({ ...BASIS, rang: { platz: 2, von: 5 }, rangProzent: null });
+    expect(d.meldung.split("\n")[0]).toMatch(/Platz 2/);
   });
 });
 

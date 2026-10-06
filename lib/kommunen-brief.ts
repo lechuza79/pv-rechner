@@ -164,6 +164,7 @@ export async function briefFuerGemeinde(
     anPresse: !!opt?.anPresse,
     adressherkunft: opt?.herkunft,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
+    rangProzent: hook?.bestenProzent ?? null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,
     // Die fertige Grafik für genau diesen Ort — live geprüft, kein Anhang.

@@ -183,6 +183,10 @@ export type HookExample = {
    *  „von 5", und ohne diese Größe sortiert die Liste faktisch nach Einwohnern. */
   rank: number | null;
   total: number | null;
+  /** „unter den besten X %" of a percentile hook, the same number as in the
+   *  subject; null otherwise. Message headline and letter must not frame the
+   *  same rank differently (Kempen: subject "best 5 %", headline "rank 29"). */
+  bestenProzent: number | null;
   /** Messgröße im Klartext („die meiste private Speicherkapazität") und der
    *  Bezug („im Landkreis Würzburg"). Fertig gebaut, damit Anschreiben und
    *  Meldung nicht dieselbe Formulierung ein zweites Mal zusammensetzen. */
@@ -533,7 +537,7 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
       // Gedeckelt: "unter den besten 118 %" ist keine Auszeichnung, sondern ein
       // Rechenfehler auf dem Papier. Kann bei sauberen Daten nicht auftreten —
       // die Klammer kostet nichts und faengt es trotzdem ab.
-      const pct = Math.min(99, Math.max(1, Math.round((hook.percentile ?? 0.1) * 100)));
+      const pct = bestenProzent(hook.percentile);
       return {
         betreff: `${kurz} ${phrase} unter den besten ${pct} % ${woKurz}`,
         // "gehoert … zu den besten", nicht "liegt … unter den besten": Die
@@ -548,4 +552,10 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
         einstieg: `Wir haben den Solarausbau in ${n.gemeinde} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
       };
   }
+}
+
+/** Percent shown for a percentile hook. Capped: "unter den besten 118 %" would
+ *  be an arithmetic error on paper. One function for subject and message. */
+export function bestenProzent(percentile: number | null | undefined): number {
+  return Math.min(99, Math.max(1, Math.round((percentile ?? 0.1) * 100)));
 }

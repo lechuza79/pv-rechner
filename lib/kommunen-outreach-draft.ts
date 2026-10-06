@@ -189,6 +189,9 @@ export type DraftContext = {
   empfaenger?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
+  /** "Unter den besten X %" when the subject says so; then the message says it
+   *  too, instead of a rank that reads weaker (Kempen: "Platz 29"). */
+  rangProzent?: number | null;
   /**
    * Weitere Spitzenplätze — im BRIEF, nicht in der Meldung.
    *
@@ -599,8 +602,11 @@ export function renderMeldung(c: DraftContext): string {
   // zuverlaessig der Teil weg, der die Aussage wahr macht (die Groessenklasse).
   // Deshalb: Ort, Platz, Thema — mehr nicht. Der vollstaendige Satz steht
   // darunter, wo Platz dafuer ist.
+  const prozent = platz != null && platz > 1 ? (c.rangProzent ?? null) : null;
   const ueberschrift =
-    platz != null
+    prozent != null
+      ? `${kurz} ${c.phrase} unter den besten ${prozent} %`
+      : platz != null
       ? `${kurz}: Platz ${platz} ${c.phrase}`
       : `Solarausbau in ${kurz}: der aktuelle Stand`;
 
@@ -617,7 +623,9 @@ export function renderMeldung(c: DraftContext): string {
     platz === 1
       ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen}: Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
       : platz != null
-        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
+        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${
+            prozent != null ? ` und damit unter den besten ${prozent} %` : ""
+          }${klammerTeil}.`
         : "";
 
   //
@@ -716,13 +724,15 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
+      ? // No second "kostenfrei": the paragraph above already says it
+        // (operator, 06.10.2026).
+        `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
           c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
-        } Für Kommunen ist das kostenfrei; wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
+        } Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
   const kommunenAbsatz = c.kommunenUrl
-    ? `\n\nWas wir Kommunen darüber hinaus anbieten, vom Energiemonitor über Rechner bis zu fertigen Datengeschichten, steht hier: ${c.kommunenUrl}`
+    ? `\n\nWas wir Kommunen darüber hinaus anbieten, vom Energiemonitor über Rechner bis zu fertigen Datenstories, steht hier: ${c.kommunenUrl}`
     : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
