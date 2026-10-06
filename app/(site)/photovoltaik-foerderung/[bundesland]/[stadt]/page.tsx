@@ -22,7 +22,7 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
-import { foerderStadtMeta, nurAndereTechnikSatz, stadtseiteFall } from "../../../../../lib/foerder-stadt-meta";
+import { foerderStadtMeta, nurAndereTechnikSatz, nurBalkon, stadtseiteFall } from "../../../../../lib/foerder-stadt-meta";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -316,7 +316,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             <h1 style={S.h1}>
           {f ? (
             <>
-              Photovoltaik-Förderung in{" "}
+              {nurBalkon(f) ? "Balkonkraftwerk-Förderung" : "Photovoltaik-Förderung"} in{" "}
               {atlasPfad ? (
                 <Link
                   href={atlasPfad}
@@ -347,6 +347,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
+            : stadtseiteFall(f) === "balkon"
+            /* Balcony-only programme (München, and since 06.10.2026 every
+               balcony-only place): a Balkonkraftwerk-Förderung page. The VAT
+               half-sentence follows BALKON_RECHT ("auf das Set"). */
+            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> Balkonkraftwerke — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit fällt auf das Set zusätzlich keine Mehrwertsteuer an.</>
             : stadtseiteFall(f) === "ohneDach"
             /* Laufendes Programm ohne Dach-PV (München: nur Balkonkraftwerke) —
                die Seite darf es nicht als Zuschuss für neue Solaranlagen
@@ -362,7 +367,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
                fördert, steht ohnehin als Träger in der Karte darunter. */
             ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+            : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm{nurBalkon(f) ? " für Balkonkraftwerke" : ""} — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
         </div>
 

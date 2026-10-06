@@ -3064,8 +3064,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // them (balkonProWp caps absolutely, not at a share of the price). 0,40 €/Wp
     // alone would give 320 € on a 400-€ set where the city pays 200 € — so the
     // programme informs and deducts nothing (gate condition 3). Because it
-    // funds no rooftop PV, the city page stays an archive-style page
-    // (isCityLive / foerdertDach), not a live "Photovoltaik-Förderung".
+    // funds no rooftop PV, the city page is a "Balkonkraftwerk-Förderung" page
+    // (stadtseiteFall "balkon", since 06.10.2026), never "Photovoltaik-Förderung".
     url: "https://stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-gebaude/10414151/", stand: "Oktober 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],

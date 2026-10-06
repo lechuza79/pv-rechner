@@ -157,20 +157,27 @@ describe("Realitäts-Anker am echten Katalog", () => {
     expect(programmeFuerTechnik(allFundingPrograms(), "balkon").map((p) => p.id)).toContain("muenchen-fkg");
   });
 
-  it("ein laufendes Balkon-Programm macht die Photovoltaik-Stadtseite nicht zur laufenden PV-Förderung", () => {
+  it("ein laufendes Balkon-Programm trägt eine Balkonkraftwerk-Förderseite, nie eine PV-Förderseite", () => {
     // München läuft seit 01.10.2026 wieder (Balkon-Baustein), fördert aber
-    // keine Dachanlagen. Die Seite heißt „Photovoltaik-Förderung" — sie bleibt
-    // deshalb Archiv-Seite und sagt in Titel, Beschreibung und FAQ, was gilt.
+    // keine Dachanlagen. Seit 06.10.2026 (Betreiber-Entscheidung) ist das eine
+    // laufende Seite — formuliert als „Balkonkraftwerk-Förderung" in Titel,
+    // Beschreibung und FAQ; Dachgeld verspricht sie nirgends.
     const muenchen = cityBySlug("muenchen")!;
     const m = getFundingProgram("muenchen-fkg")!;
     expect(m.status).toBe("aktiv");
-    expect(isCityLive(muenchen)).toBe(false);
-    expect(isCityArchived(muenchen)).toBe(true);
-    expect(foerderseiteTraegt(muenchen)).toBe(false);
+    expect(isCityLive(muenchen)).toBe(true);
+    expect(isCityArchived(muenchen)).toBe(false);
+    expect(foerderseiteTraegt(muenchen)).toBe(true);
     const meta = foerderStadtMeta("München", m, 2026);
-    expect(meta.title).toContain("nur Balkonkraftwerke");
-    expect(meta.description).toContain("keine Dachanlagen");
-    expect(buildFundingFaq("München", m)[0].a).not.toMatch(/fördert .* Photovoltaik über/);
+    expect(meta.title).toBe("Balkonkraftwerk-Förderung München 2026");
+    expect(meta.description).toContain("Balkonkraftwerke");
+    expect(meta.description).not.toMatch(/Photovoltaik|PV-Anlage/);
+    const faq = buildFundingFaq("München", m);
+    expect(faq[0].q).toBe("Welche Balkonkraftwerk-Förderung gibt es in München?");
+    expect(faq[0].a).toContain("keine Dachanlagen");
+    expect(faq[0].a).not.toMatch(/fördert .* Photovoltaik über/);
+    // Die Rechnung bleibt unberührt: kein Abzug für eine Dachanlage.
+    expect(fundingAmount(m, PV).computable).toBe(false);
     // Gegenprobe: dasselbe Programm mit Dach-PV wäre eine laufende Seite.
     expect(foerderStadtMeta("München", { ...m, foerdert: ["pv", "balkon"] }, 2026).title).toBe("Photovoltaik-Förderung München 2026");
   });

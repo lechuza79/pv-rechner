@@ -1,5 +1,6 @@
 import type { FundingProgram } from "./funding-programs";
-import { nurAndereTechnikSatz, stadtseiteFall } from "./foerder-stadt-meta";
+import { nurAndereTechnikSatz, nurBalkon, stadtseiteFall } from "./foerder-stadt-meta";
+import { BALKON_RECHT } from "./balkon-config";
 
 // FAQ wird aus den Förderdaten generiert (nicht separat gespeichert) — so
 // spiegelt sie immer den Live-Stand der Programme aus der DB. Wird auf den
@@ -25,7 +26,32 @@ export function buildFundingFaq(
   const faq: FaqItem[] = [];
   const year = new Date().getFullYear();
 
-  if (program) {
+  if (program && nurBalkon(program)) {
+    // Balcony-only programme (since 06.10.2026 every such place has a page):
+    // the FAQ speaks about Balkonkraftwerke throughout. The VAT sentence is the
+    // shared legal statement of the balcony cluster (BALKON_RECHT), never a
+    // second wording; whether the application must precede the purchase
+    // differs between balcony programmes, so it is not asserted.
+    const active = program.status === "aktiv";
+    faq.push({
+      q: `Welche Balkonkraftwerk-Förderung gibt es in ${cityName}?`,
+      a: `In ${cityName} fördert ${program.traeger} über das Programm „${program.name}" Balkonkraftwerke, keine Dachanlagen. ${program.coveredCosts}.`
+        + (active ? "" : ` Das Programm nimmt derzeit allerdings keine neuen Anträge an (${statusText(program.status)}).`),
+    });
+    faq.push({
+      q: `Wie hoch ist die Balkonkraftwerk-Förderung in ${cityName}?`,
+      a: `Die Fördersätze sind: ${program.rates.map((r) => `${r.label} — ${r.value}`).join("; ")}.`
+        + (program.maxFoerderung ? ` Es gilt ${program.maxFoerderung}.` : ""),
+    });
+    faq.push({
+      q: `Was gilt für Balkonkraftwerke in ${cityName} zusätzlich bundesweit?`,
+      a: BALKON_RECHT.nullsteuer,
+    });
+    faq.push({
+      q: `Muss der Förderantrag vor dem Kauf gestellt werden?`,
+      a: `Das legt jedes Programm in seiner Förderrichtlinie selbst fest. Für „${program.name}" steht es in der Richtlinie des Trägers — am besten vor dem Kauf nachsehen, ob der Antrag schon vorher gestellt werden muss.`,
+    });
+  } else if (program) {
     const active = program.status === "aktiv";
     faq.push({
       q: `Welche Photovoltaik-Förderung gibt es in ${cityName}?`,

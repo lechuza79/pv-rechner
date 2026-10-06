@@ -21,7 +21,9 @@ describe("live cities (only active programs)", () => {
     expect(slugs).toContain("wuerzburg"); // aktiv
     expect(slugs).toContain("regensburg"); // aktiv
     expect(slugs).not.toContain("schweinfurt"); // eingestellt (Council Juli 2026)
-    expect(slugs).not.toContain("muenchen"); // eingestellt
+    // München fördert seit 01.10.2026 wieder, aber nur Balkonkraftwerke —
+    // seit 06.10.2026 eine laufende Seite als „Balkonkraftwerk-Förderung".
+    expect(slugs).toContain("muenchen"); // aktiv, nur Balkon
     expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
     // Dresden hatte lange gar kein Programm. Seit dem 02.09.2026 gilt für die
     // Stadt das sächsische LANDESprogramm — und ein Landesprogramm eines
@@ -39,21 +41,24 @@ describe("live cities (only active programs)", () => {
 // pausiert/eingestellt) bekommen eine Archiv-Seite; "unsicher" und "kein
 // Programm" bleiben auf 404.
 describe("archived cities (inactive but published programs)", () => {
-  it("a city is archived iff its program is exhausted/paused/discontinued — or active without rooftop PV", () => {
-    // Seit 01.10.2026: Ein laufendes Programm OHNE Dach-PV (München, nur
-    // Balkonkraftwerke) ist auf der Photovoltaik-Stadtseite keine laufende
-    // PV-Förderung und wird wie ein Archiv gezeigt (foerdertDach).
+  it("a city is archived iff its program is exhausted/paused/discontinued — or active without rooftop PV AND without balcony systems", () => {
+    // 01.10.2026: Ein laufendes Programm OHNE Dach-PV wurde wie ein Archiv
+    // gezeigt. Seit 06.10.2026 ist ein reines Balkon-Programm eine laufende
+    // Seite („Balkonkraftwerk-Förderung"); Archiv bleibt nur, was weder Dach-PV
+    // noch Balkon fördert (z. B. nur Wärmepumpen).
     const inactive = ["ausgeschoepft", "pausiert", "eingestellt"];
     for (const c of archivedCities()) {
       const f = fundingFor(c);
       expect(f, c.slug).toBeTruthy();
-      if (f!.status === "aktiv") expect(foerdertDach(f!), c.slug).toBe(false);
-      else expect(inactive).toContain(f!.status);
+      if (f!.status === "aktiv") {
+        expect(foerdertDach(f!), c.slug).toBe(false);
+        expect(f!.foerdert ?? [], c.slug).not.toContain("balkon");
+      } else expect(inactive).toContain(f!.status);
     }
   });
   it("includes inactive-program cities and excludes active/unsicher/no-program", () => {
     const slugs = archivedCities().map((c) => c.slug);
-    expect(slugs).toContain("muenchen"); // eingestellt
+    expect(slugs).not.toContain("muenchen"); // aktiv, nur Balkon → live
     expect(slugs).toContain("karlsruhe"); // ausgeschoepft
     expect(slugs).toContain("duesseldorf"); // pausiert
     expect(slugs).not.toContain("wuerzburg"); // aktiv
