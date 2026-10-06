@@ -85,6 +85,8 @@ import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 
 import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
+import { abgleichen, organisationsDomain, verdraengtGrund, type Belegungen } from "../lib/bestand-abgleich";
+import { ladeBelegungen } from "./lib/bestand-belegung";
 import { readFileSync, existsSync } from "node:fs";
 import {
   FELDER,
@@ -200,6 +202,35 @@ function ohneSteuerzeichen<T>(wert: T): T {
 }
 
 /**
+ * KEIN BETRIEB AUF EINER DOMAIN, DIE EIN AMTLICHER BESTAND HÄLT — BLOCKER.
+ *
+ * Gemessen am 06.10.2026: 110 der 3.115 „Betriebe" standen zugleich im
+ * Presse-Katalog oder in der Versorger-Liste, darunter 46 Stadtwerke und die
+ * Aachener Zeitung. Die Einordnung kam aus der Streuung über die Kreise, und
+ * wo die Startseite nicht lesbar war, hat nie etwas widersprochen.
+ *
+ * Geprüft wird HIER, weil alle Schreibwege dieses Skripts hier durchgehen: Ein
+ * Lauf, der die Zeile später neu einstuft, kann die Korrektur nicht
+ * zurückdrehen. Verdrängt wird nur gegen einen AMTLICHEN Bestand
+ * (lib/bestand-abgleich.ts); ein Konflikt mit dem Presse-Katalog bleibt stehen
+ * und kommt auf die Entscheidungsliste von `npm run bestaende:abgleich` —
+ * dort sind beide Seiten schon falsch gewesen.
+ */
+let belegungenCache: Belegungen | null = null;
+async function gegenAndereBestaende(sb: SupabaseLike, zeilen: Record<string, unknown>[]): Promise<void> {
+  if (!zeilen.some((z) => z.art === "betrieb")) return;
+  if (!belegungenCache) belegungenCache = (await ladeBelegungen(sb, "fachbetrieb")).belegungen;
+  for (const z of zeilen) {
+    if (z.art !== "betrieb") continue;
+    const u = abgleichen(organisationsDomain(String(z.domain)), "fachbetrieb", belegungenCache);
+    if (u.art === "verdraengt") {
+      z.art = "kein-betrieb";
+      z.art_grund = verdraengtGrund(u);
+    }
+  }
+}
+
+/**
  * EIN BATCH-UPSERT VEREINHEITLICHT DIE SPALTENMENGE — BLOCKER.
  *
  * PostgREST baut aus einem Batch EIN INSERT mit einer Spaltenliste. Trägt eine
@@ -224,6 +255,7 @@ async function upsertGestueckelt(
   zeilen: Record<string, unknown>[],
   onConflict: string,
 ): Promise<void> {
+  if (tabelle === "fachbetriebe") await gegenAndereBestaende(sb, zeilen);
   const gruppen = new Map<string, Record<string, unknown>[]>();
   for (const z of zeilen) {
     const form = Object.keys(z).sort().join("|");
