@@ -184,7 +184,9 @@ describe("Klasse 7 — ein gescheiterter Abruf ist keine Antwort", () => {
   it("the imprint cache retries a transient failure instead of returning it", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");
     const holen = r.slice(r.indexOf("async function impressumHolen("), r.indexOf("type Zeile = {"));
-    expect(holen).toMatch(/if \(!abrufWiederholen\(alt\)\) return alt;/);
+    expect(holen).toMatch(/if \(!abrufWiederholen\(alt\) && !ohneBrowser\) return alt;/);
+    // A plain-fetch failure is no answer for a check that may use the browser.
+    expect(holen).toMatch(/const ohneBrowser = mitBrowser && !alt\.text && !alt\.startText && !alt\.browser_versucht/);
     expect(holen).not.toMatch(/if \(existsSync\(datei\)\) return /);
   });
 });

@@ -309,12 +309,35 @@ export const GEPARKT = /(?:diese |the )?domain (?:ist |is )?(?:zu verkaufen|steh
  *     function (funktionsPostfach): one Sehestedt company declared a personal
  *     mailbox at its auditor, 88 wpd parks an administration mailbox at wpd.
  */
+/** Imprints of hosting providers: their default page stands where a customer has no site yet. */
+const HOSTER = /(?:^|\.)(?:ionos\.(?:de|com)|goneo\.de|checkdomain\.de|united-domains\.de|inwx\.(?:com|de)|strato\.de|hosteurope\.de|all-inkl\.com|1und1\.de|domainfactory\.de|df\.eu|hetzner\.(?:de|com)|netcup\.de|godaddy\.com|sedo\.com|dan\.com)$/i;
+
+/**
+ * Whose imprint was read? The link found on a site can lead elsewhere: on
+ * orsted.com it led to a Cisco privacy page, on wk-nandlstadt.de to the
+ * hosting provider's imprint behind a default page (81 of 1,766 stored
+ * imprints lie on another domain, 06.10.2026). The same name under another
+ * ending (windpunx.com → windpunx.de) is the same organisation.
+ */
+export function impressumHerkunft(impressumUrl: string | null | undefined, domain: string): "eigen" | "alias" | "hoster" | "fremd" | null {
+  if (!impressumUrl) return null;
+  let h: string;
+  try { h = new URL(impressumUrl).hostname.toLowerCase().replace(/^www\./, ""); } catch { return null; }
+  if (h === domain || h.endsWith(`.${domain}`)) return "eigen";
+  if (HOSTER.test(h)) return "hoster";
+  const label = (d: string) => (organisationsDomain(d) ?? d).split(".")[0];
+  return label(h) === label(domain) ? "alias" : "fremd";
+}
+
 export function beurteilen(
   a: Akteur, domain: string, quelle: Kandidatenquelle,
-  abruf: { impressum: string | null; startseite: string | null },
+  abruf: { impressum: string | null; startseite: string | null; impressumUrl?: string | null },
   postfach?: string | null,
   ortsWoerter?: Set<string>,
 ): Urteil {
+  // A hosting provider's imprint behind the site: there is no site of the operator.
+  const herkunft = impressumHerkunft(abruf.impressumUrl, domain);
+  if (herkunft === "hoster") return { ergebnis: "geparkt", beleg: null, seite: null };
   // A brand is a word, and words are shared: "Cirrus GmbH & Co. KG" runs wind
   // turbines, cirrusaircraft.com builds aeroplanes (search sample, 06.10.2026).
   // A brand counts only on a site that is about energy at all.
@@ -325,7 +348,9 @@ export function beurteilen(
   }
   if (abruf.impressum) {
     const b = zaehlt(impressumBelegt(abruf.impressum, a, domain, ortsWoerter));
-    if (b) return { ergebnis: "belegt", beleg: b, seite: "impressum" };
+    // Another organisation's imprint proves only by the operator's own name or
+    // address — never by a brand word, and never the mere existence of the site.
+    if (b && (herkunft !== "fremd" || b.wie === "name" || b.wie === "anschrift")) return { ergebnis: "belegt", beleg: b, seite: "impressum" };
   }
   if (abruf.startseite) {
     const b = zaehlt(impressumBelegt(abruf.startseite, a, domain, ortsWoerter));
@@ -336,7 +361,7 @@ export function beurteilen(
     const nameTraegt = b?.wie !== "name" || (identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.startseite, a.Firmenname ?? ""));
     if (b && (b.wie === "name" || b.wie === "marke") && nameTraegt) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
   }
-  const erreichbar = !!(abruf.impressum || abruf.startseite);
+  const erreichbar = !!(abruf.startseite || (abruf.impressum && herkunft !== "fremd"));
   if (quelle === "register-webseite" && erreichbar) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: "vom Betreiber selbst im Marktstammdatenregister als Website angegeben" }, seite: abruf.impressum ? "impressum" : "startseite" };
   }

@@ -240,7 +240,7 @@ async function register() {
 
 // ─── Imprint check ────────────────────────────────────────────────────────────
 
-type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; startText?: string | null; fehler: string | null; via: "abruf" | "browser" | null; versuche?: number };
+type Impressum = { domain: string; abgerufen_am: string; start: string | null; impressum_url: string | null; text: string | null; startText?: string | null; fehler: string | null; via: "abruf" | "browser" | null; versuche?: number; browser_versucht?: boolean };
 
 /** Legal pages of sites without a German "Impressum" — foreign groups name them in English. */
 function rechtsseiteUrl(html: string, basis: string): string | null {
@@ -274,10 +274,15 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
   let versuche = 0;
   if (existsSync(datei)) {
     const alt: Impressum = JSON.parse(readFileSync(datei, "utf8"));
-    if (!abrufWiederholen(alt)) return alt;
+    // Fetched for a search hit, without a browser, and nothing came back: a
+    // check that may use the browser (register candidate, manual pass) must
+    // not inherit that answer — orsted.de answered 403 to the plain fetch and
+    // could never be read by hand afterwards (06.10.2026).
+    const ohneBrowser = mitBrowser && !alt.text && !alt.startText && !alt.browser_versucht && alt.via !== "browser";
+    if (!abrufWiederholen(alt) && !ohneBrowser) return alt;
     versuche = alt.versuche ?? 1;
   }
-  const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null, versuche: versuche + 1 };
+  const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null, versuche: versuche + 1, browser_versucht: mitBrowser };
   // Plain http last: a site with an expired certificate often still answers
   // there (Greifenwind, 100 operators, measured on the first sample).
   const starts = [`https://www.${domain}/`, `https://${domain}/`, `http://www.${domain}/`, `http://${domain}/`];
@@ -340,7 +345,7 @@ async function pruefen(z: Zeile, k: Kandidat, belegungen: Belegungen): Promise<P
   // A search hit gets no browser: a directory that blocks plain requests is
   // not worth rendering, and those are most of the hits.
   const imp = await impressumHolen(k.domain, k.quelle !== "suche");
-  const u = beurteilen(akteurVon(z), k.domain, k.quelle, { impressum: imp.text, startseite: imp.startText ?? null }, k.postfach, await ortsWoerter());
+  const u = beurteilen(akteurVon(z), k.domain, k.quelle, { impressum: imp.text, startseite: imp.startText ?? null, impressumUrl: imp.impressum_url }, k.postfach, await ortsWoerter());
   if (u.ergebnis !== "belegt") {
     const grund = u.ergebnis === "abgelehnt" ? "Impressum nennt weder Name noch Registeranschrift noch Marke"
       : u.ergebnis === "geparkt" ? "Domain steht zum Verkauf oder ist geparkt" : imp.fehler;

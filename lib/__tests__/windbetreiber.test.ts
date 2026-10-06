@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -324,5 +324,26 @@ describe("a failed attempt is no answer about the site (06.10.2026)", () => {
     expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 3), jetzt)).toBe(false);
     expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 1, 600_000), jetzt)).toBe(false);
     expect(abrufWiederholen({ ...fehl("Seite antwortet mit HTTP 503"), startText: "Willkommen" }, jetzt)).toBe(false);
+  });
+});
+
+describe("whose imprint was read (06.10.2026)", () => {
+  it("tells the site's own imprint from an alias, a hoster and another organisation", () => {
+    expect(impressumHerkunft("https://www.alterric.com/impressum", "alterric.com")).toBe("eigen");
+    expect(impressumHerkunft("http://wpx.windpunx.de/impressum/", "windpunx.com")).toBe("alias");
+    expect(impressumHerkunft("https://www.inwx.com/en/aboutus/imprint", "wk-nandlstadt.de")).toBe("hoster");
+    expect(impressumHerkunft("https://www.cisco.com/c/en/us/about/legal/privacy-full.html", "orsted.com")).toBe("fremd");
+  });
+
+  it("a hoster's default page is no website, not even a declared one", () => {
+    const a = akteur("Windkraft Nandlstadt GmbH & Co. KG", "Irgendwo", "1", "85405");
+    expect(beurteilen(a, "wk-nandlstadt.de", "register-webseite", { impressum: "Impressum InterNetworX Ltd. & Co. KG", startseite: "Hier entsteht eine neue Website", impressumUrl: "https://www.inwx.com/en/aboutus/imprint" }).ergebnis).toBe("geparkt");
+  });
+
+  it("another organisation's imprint proves by name or address only, never by a brand", () => {
+    const enbw = akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567");
+    const fremd = { impressum: IMPRESSUM.enbw, startseite: null, impressumUrl: "https://www.cisco.com/legal" };
+    expect(beurteilen(enbw, "enbw.com", "suche", fremd).ergebnis).not.toBe("belegt");
+    expect(beurteilen(enbw, "enbw.com", "suche", { ...fremd, impressumUrl: "https://www.enbw.com/impressum" }).ergebnis).toBe("belegt");
   });
 });
