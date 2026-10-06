@@ -46,7 +46,7 @@ describe("Windbetreiber-Lauf", () => {
     expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\) \|\| \(identifizierend\(name, ortsWoerter\) && !parkListe\(text, name\)\)/);
     // The page is kept, so a rule change judges the hand decision again.
     expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
-    expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
+    expect(m).toMatch(/Belegseite muss auf derselben Website liegen/);
     // Never replaces a proven website in passing (Österwurth, 06.10.2026).
     expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
     // A proof on a subdomain never stores the parent domain in passing (Süderdeich).

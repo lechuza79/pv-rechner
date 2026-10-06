@@ -633,7 +633,8 @@ async function manuell() {
   if (!domain) throw new Error(`${url} ist keine Adresse`);
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
   const seite = arg("seite");
-  if (seite && organisationsDomain(seite) !== domain) throw new Error("Die Belegseite muss auf derselben Website liegen");
+  // A refusal, not a stack trace: a helper read the trace as a tool failure (block 046).
+  if (seite && organisationsDomain(seite) !== domain) { console.log(`NICHT übernommen: Die Belegseite ${seite} liegt nicht auf ${domain} — Belegseite muss auf derselben Website liegen`); process.exitCode = 1; return; }
   let belegseite: string | null | undefined;
   for (const nr of liste) {
     const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
