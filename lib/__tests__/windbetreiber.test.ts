@@ -127,6 +127,13 @@ describe("candidates from the register", () => {
     expect(registerKandidaten(eigen, nachAnschrift).some((c) => c.domain === "anderer.de")).toBe(false);
   });
 
+  it("offers an address mate's PROVEN website, found by hand or machine (06.10.2026)", () => {
+    const offen = zeile("ABR5", "WP10 GmbH & Co. KG", "Talmühle", "1", "74722", null, null);
+    const belegt = { ...zeile("ABR6", "Windpark Altheimer Höhe GmbH & Co. KG", "Talmühle", "1", "74722", null, null), website: "windpark-altheim.de" };
+    const key = anschriftSchluessel({ Strasse: "Talmühle", Hausnummer: "1", Postleitzahl: "74722" })!;
+    expect(registerKandidaten(offen, new Map([[key, [offen, belegt]]]))).toEqual([{ domain: "windpark-altheim.de", quelle: "anschrift" }]);
+  });
+
   it("offers both domains of a project company that names its parent and its manager", () => {
     // windmanager.de as website, wpd.de as mailbox — measured on 13 Görike turbines.
     const z = zeile("ABR9", "Windpark Görike/Söllenthin GmbH ＆ Co. KG", "Stephanitorsbollwerk", "3", "28217", "http://www.windmanager.de/", "tmverwaltung-wm@wpd.de");

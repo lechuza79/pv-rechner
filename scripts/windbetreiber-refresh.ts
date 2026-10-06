@@ -318,9 +318,9 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
 type Zeile = {
   mastr_nr: string; name: string; strasse: string | null; hausnummer: string | null; plz: string | null; ort: string | null;
   register_webseite: string | null; register_email: string | null; register_telefon: string | null;
-  website: string | null; website_beleg: string | null; gesucht_am: string | null; aktiv: boolean;
+  website: string | null; website_beleg: string | null; gesucht_am: string | null; aktiv: boolean; suche_notiz: string | null;
 };
-const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,register_email,register_telefon,website,website_beleg,gesucht_am,aktiv";
+const SPALTEN = "mastr_nr,name,strasse,hausnummer,plz,ort,register_webseite,register_email,register_telefon,website,website_beleg,gesucht_am,aktiv,suche_notiz";
 const akteurVon = (z: Zeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "", Ort: z.ort ?? "" });
 
 
@@ -384,7 +384,10 @@ async function impressumLauf() {
   const nachAnschrift = new Map<string, Zeile[]>();
   for (const z of zeilen) { const k = anschriftSchluessel(akteurVon(z)); if (k) nachAnschrift.set(k, [...(nachAnschrift.get(k) ?? []), z]); }
 
-  const offen = zeilen.filter((z) => !z.website && !z.gesucht_am).map((z) => ({ z, kandidaten: registerKandidaten(z, nachAnschrift) })).filter((x) => x.kandidaten.length);
+  // Everything without a website that no person has closed: a "none" written
+  // by an earlier machine run is no answer (the paid search set gesucht_am
+  // for 779 operators whose register candidates were never all checked).
+  const offen = zeilen.filter((z) => !z.website && !(z.suche_notiz ?? "").startsWith(VON_HAND)).map((z) => ({ z, kandidaten: registerKandidaten(z, nachAnschrift) })).filter((x) => x.kandidaten.length);
   const domains = [...new Set(offen.flatMap((x) => x.kandidaten.map((k) => k.domain)))].slice(0, LIMIT);
   console.log(`${offen.length} Betreiber mit Kandidaten aus dem Register · ${domains.length} Domains zu prüfen`);
   let fertig = 0;

@@ -215,6 +215,8 @@ export function standVon(z: { website_beleg: string | null; register_email: stri
 export type Registerzeile = {
   mastr_nr: string; name: string; strasse: string | null; hausnummer: string | null; plz: string | null;
   register_webseite: string | null; register_email: string | null;
+  /** The PROVEN website, if any — an address mate's proven site is a candidate too. */
+  website?: string | null;
 };
 
 const alsAkteur = (z: Registerzeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "" });
@@ -265,6 +267,10 @@ export function registerKandidaten(z: Registerzeile, nachAnschrift: Map<string, 
     if (m.mastr_nr === z.mastr_nr) continue;
     dazu(organisationsDomain(m.register_webseite), "anschrift");
     dazu(maildomain(m.register_email), "anschrift");
+    // A mate's PROVEN website — found by hand or by the machine. Only a
+    // suggestion, like every address candidate: the imprint must still name
+    // this operator or its address (638 open operators had such a mate, 06.10.2026).
+    dazu(m.website ? organisationsDomain(m.website) : null, "anschrift");
   }
   return [...out.values()];
 }
