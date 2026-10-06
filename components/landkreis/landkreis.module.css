@@ -180,6 +180,8 @@
 /* The canvas starts at the hero's top, behind the header and breadcrumb. */
 .heroBand{position:relative;isolation:isolate}
 .heroHeader,.breadcrumbBand{position:relative;z-index:5}
+/* The header carries the nav flyouts and search panel; it must sit above everything else in the hero. */
+.heroHeader{z-index:10}
 .heroStage .sceneLayer{top:calc(-1 * var(--map-headroom,0px))}
 .heroStage .mapTools{top:0;left:auto;right:0;justify-content:flex-end;font-size:var(--font-size-base);line-height:normal}
 .heroHeading{padding-top:0;max-width:calc(100% - 250px)}

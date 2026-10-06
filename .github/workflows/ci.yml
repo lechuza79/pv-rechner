@@ -394,9 +394,9 @@ jobs:
   # breiter ist als das Fenster (e2e/kein-ueberlauf.spec.ts) — der Mechanismus,
   # der die Abnahme von Layout-Details durch den Betreiber ersetzt.
   telefon:
-    name: Telefonbreite (keine Seite läuft seitlich über)
+    name: Telefonbreite (keine Seite läuft seitlich über) + Menü unverdeckt
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - uses: actions/checkout@v4
@@ -443,10 +443,12 @@ jobs:
       # 12 Minuten: Bau ~4 min plus 33 Seitenaufrufe mit 30-s-Grenze je Test.
       # Eigener Job, weil der Smoke-Schritt am 05.09.2026 bei 14,5–15,5 seiner
       # 16 Minuten stand — mit diesen Aufrufen darin riss er das Limit und
-      # fällte kein Urteil. Summe der Schritt-Limits (12 + 10 + 5) unter dem
-      # Job-Limit von 30.
-      - name: Telefonbreite (production build)
-        timeout-minutes: 12
+      # fällte kein Urteil. Summe der Schritt-Limits (22 + 10 + 5) unter dem
+      # Job-Limit von 40. Seit 06.10.2026 läuft hier zusätzlich die Prüfung,
+      # dass kein Seitenelement über einem offenen Menü liegt (14 Seiten ×
+      # Desktop/Telefon) — daher 22 statt 12 Minuten.
+      - name: Telefonbreite + Menü (production build)
+        timeout-minutes: 22
         run: npm run test:telefon
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
