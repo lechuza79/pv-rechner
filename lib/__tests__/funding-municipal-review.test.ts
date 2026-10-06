@@ -54,6 +54,14 @@ describe("Municipal completion and follow-through", () => {
     expect(() => validateMunicipalReviews([{...review, outcome: "klaerung"}])).toThrow();
     expect(() => validateMunicipalReviews([{...review, outcome: "klaerung", nextAction: {kind: "enquiry", dueAt: now, detail: "ask"}}])).toThrow();
   });
+  it("rejects an enquiry whose review expires before it is due (the sender could never send it)", () => {
+    const base: MunicipalReview = { ...review, outcome: "klaerung",
+      nextAction: {kind:"enquiry",dueAt:"2026-10-12T08:00:00Z",detail:"ask"},
+      enquiry: {id:"klaerung-01001000",recipient:"climate@town.de",recipientSource:"https://town.de/contact",website:"https://town.de",question:"Is there a grant?"},
+    };
+    expect(() => validateMunicipalReviews([{...base, recheckAt: "2026-10-12T08:00:00Z"}])).toThrow(/expires before it is due/);
+    expect(() => validateMunicipalReviews([{...base, recheckAt: "2026-10-26T08:00:00Z"}])).not.toThrow();
+  });
   it("distinguishes queued, uncertain delivery, awaiting reply and unreviewed reply", () => {
     const r: MunicipalReview = { ...review, outcome: "klaerung",
       nextAction: {kind:"enquiry",dueAt:review.checkedAt,detail:"Read the response"},

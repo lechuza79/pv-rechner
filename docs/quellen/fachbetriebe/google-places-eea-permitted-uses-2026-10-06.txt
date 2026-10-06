@@ -1,0 +1,20 @@
+Abgerufen am 06.10.2026 im Volltext. Quelle:
+https://cloud.google.com/terms/maps-platform/eea-places-api-permitted-uses
+----
+Google Maps Platform Places API Permitted Uses | Google Cloud 
+
+ Places API Permitted Uses for Customers with a Billing Address in the European Economic Area (EEA)
+
+ In this Places API Permitted Uses document, “Places API” means both the Places API Legacy and Places API New services.
+ Subject to the EEA Places API Service Specific Terms , Customers with a billing address in the EEA may only use the Google Maps Content from the Places API within Customer Applications to (collectively, the “Permitted Uses”):
+ (1) facilitate address lookup and autocompletion functionalities;
+ (2) display information about Customer’s physical stores, offices, or official service points;
+ (3) enable Customers to visualize and manage Places content related to a sales team’s customers or opportunities;
+ (4) enable users to associate tasks, notes, or reminders with specific named places within a productivity, chat, personal organization, or note-taking functionality;
+ (5) show information about nearby points of interest (e.g., schools, parks, grocery stores) to provide context for a real estate listing or rental property being viewed by the user;
+ (6) show information about a Place related to a financial transaction;
+ (7) integrate Places as points of interest or objectives within a game;
+ (8) allow users to tag or share a specific Place in their posts, event creations, or shared experiences within a social platform; and
+ (9) allow users to set and monitor location context for their personal smart home routines or IoT device actions.
+
+ Last modified June 4, 2025

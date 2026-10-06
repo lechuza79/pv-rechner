@@ -106,9 +106,11 @@ export async function POST(req: NextRequest) {
     const hook = hookByRegion.get(z.region_id) ?? null;
     // Whole districts take every town with a hook — win, podium or top tenth,
     // the largest level first (DE > BL > district); the older batches only took
-    // first places. Towns without any hook get no letter.
-    if (!hook || hook.kind === "neutral") continue;
-    if (!schub.kreise && hook.kind !== "sieger") continue;
+    // first places. Towns without any hook get the short info letter, but only
+    // in a batch that declares it (`briefarten`).
+    const ohnePlatzierung = !hook || hook.kind === "neutral";
+    if (ohnePlatzierung && !(schub.briefarten ?? ["platzierung"]).includes("info")) continue;
+    if (!schub.kreise && hook?.kind !== "sieger") continue;
     const reg = Array.isArray(z.mastr_regions) ? z.mastr_regions[0] : z.mastr_regions;
     kandidaten.push({
       regionId: z.region_id,

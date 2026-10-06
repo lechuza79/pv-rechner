@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus, postfachBefund } from "../outreach-mail";
+import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus, postfachBefund, platzhalterLoecher } from "../outreach-mail";
 import { ART_LABEL, liesNotiz, notizZeile, ordneEin, STATUS_ZU_ART } from "../outreach-ruecklauf";
 import { istUnbeantwortet } from "../outreach-status";
 import { renderOutreachDraft } from "../kommunen-outreach-draft";
@@ -314,5 +314,21 @@ describe("Verlauf in der Notiz", () => {
     for (const art of Object.keys(STATUS_ZU_ART) as (keyof typeof STATUS_ZU_ART)[]) {
       expect(ART_LABEL[art]).toBeTruthy();
     }
+  });
+});
+
+
+describe("platzhalterLoecher", () => {
+  it("finds the hole that went into 31 letters on 06.10.2026", () => {
+    expect(platzhalterLoecher("Ihre Kontaktdaten (undefined von amt-lebus.de) nutze ich")).toEqual(["undefined"]);
+  });
+  it("finds the other ways a missing value renders", () => {
+    expect(platzhalterLoecher("Platz NaN von 12", "x [object Object] y", "Hallo ${name}", "Wert: null")).toEqual(
+      expect.arrayContaining(["NaN", "[object Object]", "Vorlagen-Klammer", "null"]),
+    );
+  });
+  it("leaves a real letter alone", () => {
+    const brief = "In Kempen sind 3.559 Solaranlagen in Betrieb. Annullierung, Nullemission und Null-Einspeisung sind Wörter.";
+    expect(platzhalterLoecher(brief, "Kempen bei Balkonkraftwerken unter den besten 5 % bundesweit")).toEqual([]);
   });
 });

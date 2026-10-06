@@ -1,3 +1,5 @@
+import type { Entscheidungen } from "../lib/bestand-abgleich";
+import { ladeEntscheidungen } from "./lib/bestand-belegung";
 import { observedFields } from "../lib/contact-evidence";
 import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 /**
@@ -951,6 +953,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
    */
   const STAPEL = 50;
   let pendingWrite = Promise.resolve();
+  let entscheidungen: Entscheidungen | null = null;
   function ablegen(): Promise<void> {
     // Detach synchronously before yielding: concurrent workers cannot flush the same batch twice.
     const media = medienZeilen.splice(0);
@@ -958,6 +961,13 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
     const evidence = belegZeilen.splice(0);
     pendingWrite = pendingWrite.then(async () => {
       if (!media.length) return;
+      // A domain a person has declared NOT a press outlet stays one, whatever
+      // this run reads on the page (lib/bestand-abgleich.ts, Entscheidungen).
+      entscheidungen ??= await ladeEntscheidungen(sb);
+      for (const z of media) {
+        const e = entscheidungen.get(String(z.domain));
+        if (e?.falsch.includes("presse") && "ist_medium" in z) { z.ist_medium = "kein-medium"; z.medium_grund = `von Hand entschieden: ${e.notiz}`; }
+      }
       await upsert(sb, "presse_medien", media, "domain");
       // No delete/reinsert window. Omitted workflow columns survive an upsert.
       await upsert(sb, "presse_kontakte", contacts, "domain,schluessel");

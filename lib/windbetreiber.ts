@@ -1,0 +1,386 @@
+/**
+ * Wind farm operators — the rules, without I/O.
+ *
+ * Who operates a turbine comes from the market master data register, never
+ * from a search: every turbine names its operator by register number, and the
+ * operator's own entry carries name, legal form and address. What the register
+ * often lacks is a website (22 % of the operating organisations have one) — and
+ * that is where everything that went wrong in the other stocks can go wrong
+ * here too. A website therefore counts for an operator only when the site's OWN
+ * IMPRINT proves it, in one of three ways, each calibrated on a real case
+ * (06.10.2026):
+ *
+ *  - NAME: the operator's name stands in the imprint. A Bürgerwindpark with its
+ *    own site.
+ *  - ANSCHRIFT: the operator's register address stands in the imprint. The
+ *    project companies of a developer sit at the developer's address — all 208
+ *    Alterric companies at Holzweg 87, Aurich, which alterric.com's imprint
+ *    names. The address, not mere proximity: 115 companies share an address in
+ *    Sehestedt, and the only domain there belongs to an auditing firm whose
+ *    imprint names Hamburg.
+ *  - MARKE: a group subsidiary registered somewhere else. EnBW Windkraftprojekte
+ *    GmbH sits in Stuttgart, enbw.com's imprint names Karlsruhe. The brand counts
+ *    only when it stands in the operator's name, in the domain AND in the
+ *    imprint — two of those three alone would let any directory page through.
+ *
+ * Search results are mostly directories (northdata, Creditreform, copies of the
+ * commercial register). They fail all three tests because their imprint names
+ * the directory, which is exactly the point.
+ */
+
+import { organisationsDomain } from "./bestand-abgleich";
+import { GRATIS_POSTFACH } from "./kontakt-suche";
+
+export type Akteur = Record<string, string>;
+
+/** Register codes that matter here (Katalogwerte of the export). */
+export const PERSONENART_ORGANISATION = "517";
+export const PERSONENART_NATUERLICH = "518";
+export const STATUS_IN_BETRIEB = "35";
+export const STATUS_IN_PLANUNG = "31";
+
+/** Lowercase, umlauts folded, the register's fullwidth ampersand made plain. */
+export function falten(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/＆/g, "&")
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/é|è/g, "e");
+}
+
+/** Words that say what kind of company it is, never which one. */
+const RECHTSFORM = new Set([
+  "gmbh", "mbh", "co", "kg", "ag", "se", "eg", "ug", "haftungsbeschraenkt", "ohg", "gbr", "kgaa",
+  "ek", "ev", "und", "&", "gesellschaft", "mit", "beschraenkter", "haftung", "kommanditgesellschaft",
+]);
+
+/** Words too common in this market to identify a group. */
+const GENERISCH = new Set([
+  "wind", "windpark", "windparks", "windkraft", "windkraftanlage", "windkraftanlagen", "windenergie",
+  "windenergieanlage", "windenergieanlagen", "windfeld", "windrad", "windraeder", "wea", "buergerwind",
+  "buergerwindpark", "buergerwindparks", "buergerenergie", "energie", "energien", "energy", "erneuerbare",
+  "regenerative", "solar", "park", "parks", "projekt", "projekte", "projektgesellschaft", "betriebs",
+  "betreiber", "betreibergesellschaft", "beteiligungs", "beteiligung", "verwaltungs", "verwaltung",
+  "holding", "invest", "portfolio", "deutschland", "germany", "nord", "sued", "ost", "west", "neue", "die",
+  "der", "das", "am", "an", "im", "zum", "zur", "bei", "fuer", "von", "renditefonds", "fonds", "repowering",
+  "erste", "zweite", "dritte", "service", "management", "kraft", "strom", "power", "green", "gruene",
+  // Found as false "brands" in the stock (06.10.2026): kinds of company, not companies.
+  "wka", "energiepark", "energieparks", "windstrom", "stadtwerke", "stadtwerk", "buergerwindenergie",
+  "windmuellerei", "buerger", "buergerwindrad", "buergerwindraeder", "onshore", "offshore", "windpool",
+  "luv", "windfarm", "windfarms", "windenergiepark", "solarpark", "kraftwerk", "windkraftwerk", "becken",
+  // Regional adjectives: "Windfeld Thüringer Becken" matched the Thüringer
+  // Allgemeine by its "brand". Place NAMES are not listed here; they come from
+  // the municipal register (ortsWoerter).
+  "deutsche", "norddeutsche", "sueddeutsche", "ostdeutsche", "westdeutsche", "mitteldeutsche",
+  "europaeische", "thueringer", "saechsische", "saechsisches", "bayerische", "hessische", "maerkische",
+  "brandenburgische", "westfaelische", "niedersaechsische", "ostfriesische", "nordfriesische",
+  "friesische", "mecklenburgische", "pfaelzische", "schwaebische", "fraenkische", "rheinische",
+  "badische", "allgaeuer", "lausitzer", "uckermaerkische", "altmaerkische", "emslaender",
+  "oldenburger", "holsteiner", "ostsee", "nordsee", "regional", "lokal",
+]);
+
+/** Every word of a place name that could pass for a brand. Read from the
+ *  municipal register, so a park named after its town never "proves" the
+ *  town's website: Windpark Hamburg is not hamburg.de. */
+export function ortsWoerterAus(namen: Iterable<string>): Set<string> {
+  const out = new Set<string>();
+  for (const n of namen) for (const w of falten(n).split(/[^a-z0-9]+/)) if (w.length >= 4) out.add(w);
+  return out;
+}
+
+/** The name as comparable words, legal form removed. */
+export function nameWoerter(name: string): string[] {
+  return falten(name)
+    .replace(/[^a-z0-9&]+/g, " ")
+    .split(" ")
+    .filter((w) => w && !RECHTSFORM.has(w));
+}
+
+/** Imprint text as one comparable string. */
+export function textFalten(text: string): string {
+  return ` ${falten(text).replace(/[^a-z0-9&]+/g, " ").replace(/\s+/g, " ").trim()} `;
+}
+
+const STRASSE = (s: string) => falten(s).replace(/strasse|str\./g, "str").replace(/[^a-z0-9]/g, "");
+
+/** A key for "same register address". Used to group, never as proof. */
+export function anschriftSchluessel(a: Akteur): string | null {
+  const s = STRASSE(a.Strasse ?? "");
+  const plz = (a.Postleitzahl ?? "").trim();
+  if (!s || !/^\d{5}$/.test(plz)) return null;
+  return `${s}|${(a.Hausnummer ?? "").toLowerCase().replace(/\s+/g, "")}|${plz}`;
+}
+
+/** The first word of the name that could identify a group: EnBW, Alterric, enercity. */
+export function marke(name: string): string | null {
+  for (const w of nameWoerter(name)) {
+    if (/^\d+$/.test(w) || /^[ivx]+$/.test(w)) continue;
+    // Three letters are allowed (ABO, PNE, EWE, RWE are this market's brands);
+    // impressumBelegt then demands that the domain STARTS with them.
+    if (GENERISCH.has(w) || w.length < 3) continue;
+    return w;
+  }
+  return null;
+}
+
+export type Beleg = { wie: "name" | "anschrift" | "marke" | "register"; textstelle: string };
+
+function umgebung(t: string, i: number, laenge: number) {
+  return t.slice(Math.max(0, i - 60), i + laenge + 60).trim();
+}
+
+/**
+ * Does this imprint prove that `domain` is reachable for the operator?
+ * Returns the proof with the text it rests on, or null.
+ */
+export function impressumBelegt(impressumText: string, a: Akteur, domain: string, ortsWoerter?: Set<string>): Beleg | null {
+  const t = textFalten(impressumText);
+
+  // NAME — the whole name, in order; a single word would match any page.
+  const woerter = nameWoerter(a.Firmenname ?? "");
+  const name = woerter.join(" ");
+  if (woerter.length >= 2 && name.length >= 8) {
+    const i = t.indexOf(` ${name} `);
+    if (i >= 0) return { wie: "name", textstelle: umgebung(t, i, name.length) };
+  }
+
+  // ANSCHRIFT — street and number together, the postcode close behind. Not one
+  // contiguous string: windmanager writes "Stephanitorsbollwerk 3 (Haus LUV)
+  // 28217 Bremen".
+  const strasse = STRASSE(a.Strasse ?? "");
+  // Hyphens and spaces out of the number: the register writes "12-16", an
+  // imprint "12 - 16".
+  const nr = (a.Hausnummer ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const plz = (a.Postleitzahl ?? "").trim();
+  if (strasse.length >= 4 && /^\d{5}$/.test(plz)) {
+    // The SAME spelling rule on both sides. Normalising only the register's
+    // "Straße" failed every address on a "…straße" (PNE, enercity, ABO —
+    // measured on the first sample, 06.10.2026).
+    const kompakt = t.replace(/strasse/g, "str").replace(/ /g, "");
+    const kopf = kompakt.indexOf(strasse + nr);
+    if (kopf >= 0 && kompakt.slice(kopf, kopf + strasse.length + nr.length + 60).includes(plz)) {
+      const roh = t.indexOf(plz);
+      return { wie: "anschrift", textstelle: umgebung(t, Math.max(0, roh - 40), plz.length + 40) };
+    }
+  }
+
+  // MARKE — name, domain and imprint must all carry it.
+  const m = marke(a.Firmenname ?? "");
+  const label = falten(domain.split(".")[0] ?? "").replace(/[^a-z0-9]/g, "");
+  if (m && !ortsWoerter?.has(m) && (m.length >= 4 ? label.includes(m) : label.startsWith(m))) {
+    const i = t.indexOf(` ${m} `);
+    if (i >= 0) return { wie: "marke", textstelle: umgebung(t, i, m.length) };
+  }
+  return null;
+}
+
+/** Where a website candidate came from — decides only the order of trying. */
+export type Kandidatenquelle = "register-webseite" | "register-mail" | "anschrift" | "suche" | "manuell";
+
+/** Order of preference: what the operator told the register comes first. */
+export const KANDIDAT_VORRANG: Record<Kandidatenquelle, number> = {
+  "register-webseite": 0,
+  "register-mail": 1,
+  anschrift: 2,
+  manuell: 3,
+  suche: 4,
+};
+
+/** Search query for an operator: distinctive name and place, no legal form —
+ *  with "GmbH & Co. KG" in it the search returned nothing (calibrated). */
+export function suchanfrage(a: Akteur): string {
+  const woerter = nameWoerter(a.Firmenname ?? "").filter((w) => !/^\d+$/.test(w));
+  const ort = (a.Ort ?? "").trim();
+  return [...woerter.slice(0, 6), ort].filter(Boolean).join(" ");
+}
+
+/**
+ * The final state of every operator. "Nothing found" and "not yet looked"
+ * must never look the same — the stock is complete when no entry is `offen`.
+ */
+export type Stand =
+  | "website-belegt" //   a website whose imprint proves it
+  | "nur-register" //     no proven website, but the register's own e-mail or phone
+  | "keine-website" //    searched and checked, nothing that proves itself
+  | "offen"; //           not yet looked at
+
+export function standVon(z: { website_beleg: string | null; register_email: string | null; register_telefon: string | null; gesucht_am: string | null }): Stand {
+  if (z.website_beleg) return "website-belegt";
+  if (!z.gesucht_am) return "offen";
+  if (z.register_email || z.register_telefon) return "nur-register";
+  return "keine-website";
+}
+
+/** An operator row as the candidate rules need it. */
+export type Registerzeile = {
+  mastr_nr: string; name: string; strasse: string | null; hausnummer: string | null; plz: string | null;
+  register_webseite: string | null; register_email: string | null;
+};
+
+const alsAkteur = (z: Registerzeile): Akteur => ({ Firmenname: z.name, Strasse: z.strasse ?? "", Hausnummer: z.hausnummer ?? "", Postleitzahl: z.plz ?? "" });
+
+/** The domain of a mailbox, unless it is a free-mail provider — gmx.de is nobody's website. */
+export function maildomain(mail: string | null): string | null {
+  const host = mail?.split("@")[1];
+  if (!host) return null;
+  const d = organisationsDomain(host);
+  return d && !GRATIS_POSTFACH.test(d) ? d : null;
+}
+
+export type Kandidat = { domain: string; quelle: Kandidatenquelle; postfach?: string | null };
+
+/** Words that make a mailbox a function, not a person. */
+const FUNKTION = /info|kontakt|contact|verwalt|mastr|marktstamm|register|windpark|wind|energie|energy|betrieb|technik|service|office|post|mail|zentrale|buchhaltung|vertrieb|projekt|admin|team|hallo|hello|anfrage|eeg|netz|einspeis|abrechnung|ops|asset|portfolio|operations|kaufm|beteilig|leitwarte|investor/i;
+
+/**
+ * A register mailbox that names a FUNCTION — tmverwaltung-wm@wpd.de,
+ * marktstammdatenregister@alterric.com — is the operator's own statement where
+ * it is administered. One that names a PERSON — adem.bilir@mazars.de — is a
+ * person at a service firm and says nothing about whose website that is.
+ */
+export function funktionsPostfach(mail: string | null | undefined): boolean {
+  const [lokal = "", host = ""] = (mail ?? "").toLowerCase().split("@");
+  if (!lokal) return false;
+  if (FUNKTION.test(lokal)) return true;
+  // A mailbox named after the company itself: nttb@nttb-gmbh.de.
+  const label = host.split(".").slice(-2, -1)[0]?.replace(/[^a-z0-9]/g, "") ?? "";
+  const kern = lokal.replace(/[^a-z0-9]/g, "");
+  return kern.length >= 3 && label.includes(kern);
+}
+
+/**
+ * What the register itself offers for an operator: its own website, the
+ * domain of its own mailbox, and those of the other operators at the same
+ * address. Address mates only SUGGEST — the auditing firm at Sehestedt is an
+ * address mate too; the imprint decides.
+ */
+export function registerKandidaten(z: Registerzeile, nachAnschrift: Map<string, Registerzeile[]>): Kandidat[] {
+  const out = new Map<string, Kandidat>();
+  const dazu = (d: string | null, quelle: Kandidatenquelle) => { if (d && !out.has(d)) out.set(d, { domain: d, quelle }); };
+  dazu(organisationsDomain(z.register_webseite), "register-webseite");
+  const eigeneMail = maildomain(z.register_email);
+  if (eigeneMail && !out.has(eigeneMail)) out.set(eigeneMail, { domain: eigeneMail, quelle: "register-mail", postfach: z.register_email });
+  const k = anschriftSchluessel(alsAkteur(z));
+  for (const m of k ? nachAnschrift.get(k) ?? [] : []) {
+    if (m.mastr_nr === z.mastr_nr) continue;
+    dazu(organisationsDomain(m.register_webseite), "anschrift");
+    dazu(maildomain(m.register_email), "anschrift");
+  }
+  return [...out.values()];
+}
+
+const BELEG_RANG: Record<Beleg["wie"], number> = { name: 0, anschrift: 1, marke: 2, register: 3 };
+
+/** Of several proven websites: what the operator told the register first, then the stronger proof. */
+export function besterBeleg<P extends { ergebnis: string; kandidat: Kandidat; beleg: Beleg | null }>(pruefungen: P[]): P | null {
+  return pruefungen
+    .filter((p) => p.ergebnis === "belegt" && p.beleg)
+    .sort((a, b) => KANDIDAT_VORRANG[a.kandidat.quelle] - KANDIDAT_VORRANG[b.kandidat.quelle] || BELEG_RANG[a.beleg!.wie] - BELEG_RANG[b.beleg!.wie])[0] ?? null;
+}
+
+/** The site is about energy at all — the context a brand needs. */
+export const ENERGIE = /\b(?:wind(?:energie|kraft|park|parks|rad|raeder|räder|strom|anlagen?)?|energie\w*|energy|erneuerbar\w*|renewables?|photovoltaik|solar\w*|kraftwerk\w*|onshore|offshore|einspeis\w*|stromerzeug\w*|ökostrom|oekostrom)\b/i;
+// Whole words only, and no "turbine": the aircraft maker's page matched on
+// "window" (code in the page text) and on its turbine jet.
+
+export type Urteil = { ergebnis: "belegt" | "abgelehnt" | "kein-impressum" | "nicht-erreichbar" | "geparkt"; beleg: Beleg | null; seite: "impressum" | "startseite" | null };
+
+/** A domain that is for sale or parked. A register entry can outlive the
+ *  website it names; two such cases were measured in the installer stock. */
+export const GEPARKT = /(?:diese |the )?domain (?:ist |is )?(?:zu verkaufen|steht zum verkauf|kann gekauft werden|kaufen|for sale|is parked|parked free)|sedo(?:parking)?\b|expireddomains|dan\.com|parkingcrew|bodis\.com|hugedomains|undeveloped\.com/i;
+
+/**
+ * The whole decision for one operator and one domain, from what was fetched.
+ *
+ *  1. The imprint proves it (name, address or brand).
+ *  2. No imprint was found — foreign groups publish a "legal notice" or
+ *     nothing (European Energy, the Danish EWE companies, Luxembourg funds:
+ *     about 800 operators on the first sample): the start page may prove it
+ *     by NAME or BRAND, never by an address, which a directory page could carry.
+ *  3. The operator itself declared this website to the register, and the site
+ *     exists: that is its own statement, proof enough to be reached there —
+ *     kept apart as "register". A declared MAILBOX counts only when it names a
+ *     function (funktionsPostfach): one Sehestedt company declared a personal
+ *     mailbox at its auditor, 88 wpd parks an administration mailbox at wpd.
+ */
+export function beurteilen(
+  a: Akteur, domain: string, quelle: Kandidatenquelle,
+  abruf: { impressum: string | null; startseite: string | null },
+  postfach?: string | null,
+  ortsWoerter?: Set<string>,
+): Urteil {
+  // A brand is a word, and words are shared: "Cirrus GmbH & Co. KG" runs wind
+  // turbines, cirrusaircraft.com builds aeroplanes (search sample, 06.10.2026).
+  // A brand counts only on a site that is about energy at all.
+  const energie = ENERGIE.test(`${abruf.impressum ?? ""} ${abruf.startseite ?? ""}`);
+  const zaehlt = (b: Beleg | null) => b && (b.wie !== "marke" || energie) ? b : null;
+  if (abruf.startseite && GEPARKT.test(abruf.startseite) && abruf.startseite.length < 5000) {
+    return { ergebnis: "geparkt", beleg: null, seite: null };
+  }
+  if (abruf.impressum) {
+    const b = zaehlt(impressumBelegt(abruf.impressum, a, domain, ortsWoerter));
+    if (b) return { ergebnis: "belegt", beleg: b, seite: "impressum" };
+  }
+  if (abruf.startseite) {
+    const b = zaehlt(impressumBelegt(abruf.startseite, a, domain, ortsWoerter));
+    if (b && (b.wie === "name" || b.wie === "marke")) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
+  }
+  const erreichbar = !!(abruf.impressum || abruf.startseite);
+  if (quelle === "register-webseite" && erreichbar) {
+    return { ergebnis: "belegt", beleg: { wie: "register", textstelle: "vom Betreiber selbst im Marktstammdatenregister als Website angegeben" }, seite: abruf.impressum ? "impressum" : "startseite" };
+  }
+  if (quelle === "register-mail" && erreichbar && funktionsPostfach(postfach)) {
+    return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Funktionspostfach im Marktstammdatenregister: ${postfach}` }, seite: abruf.impressum ? "impressum" : "startseite" };
+  }
+  if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };
+  if (abruf.startseite) return { ergebnis: "kein-impressum", beleg: null, seite: null };
+  return { ergebnis: "nicht-erreichbar", beleg: null, seite: null };
+}
+
+/**
+ * How official a proven website is, for the collision rule with other stocks.
+ * Official means: the register led us there (the operator's own entry or an
+ * address mate's) AND the site's text confirms it by name or address, or the
+ * operator declared the site itself. A brand match, or anything we found by
+ * searching, is our own judgement.
+ */
+export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: Beleg["wie"] | string | null): "amtlich" | "suche" {
+  const vomRegister = quelle === "register-webseite" || quelle === "register-mail" || quelle === "anschrift";
+  return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register") ? "amtlich" : "suche";
+}
+
+/** The words of a name that could tell this operator apart: brand and place
+ *  names, never "Windpark", numbers or the legal form. */
+export function unterscheidendeWoerter(name: string): string[] {
+  return nameWoerter(name).filter((w) => !GENERISCH.has(w) && !/^\d+$/.test(w) && !/^[ivx]+$/.test(w) && w.length >= 3);
+}
+
+/**
+ * Is a search hit about this operator at all, before anything is fetched?
+ * A relevance filter, not a proof — the imprint still decides. Measured on the
+ * first search sample (06.10.2026): without it every hit was fetched, job
+ * boards, encyclopaedias and a book publisher included, each one with a
+ * browser after the first refusal.
+ */
+export function trefferRelevant(treffer: { url: string; titel: string }, name: string): boolean {
+  const woerter = unterscheidendeWoerter(name);
+  if (!woerter.length) return false;
+  const text = falten(`${treffer.url} ${treffer.titel}`).replace(/[^a-z0-9]+/g, " ");
+  const kompakt = text.replace(/ /g, "");
+  return woerter.some((w) => text.includes(` ${w}`) || kompakt.includes(w));
+}
+
+/**
+ * The name for a quoted search: everything before the legal form, cut at a
+ * WORD. Cutting at letters made "Windpark Cottbuser Halde" into "Windpark",
+ * because "Cottbuser" starts like "Co. KG" (first search sample, 06.10.2026).
+ */
+export function zitatName(name: string): string {
+  const woerter = name.replace(/＆/g, "&").split(/\s+/);
+  const ende = woerter.findIndex((w, i) => i > 0 && /^(?:GmbH|mbH|UG|KG|AG|SE|GbR|eG|oHG|OHG|KGaA|e\.K\.|&|und|Co\.?|\(haftungsbeschränkt\))$/i.test(w));
+  const vorne = (ende > 0 ? woerter.slice(0, ende) : woerter).join(" ").trim();
+  if (unterscheidendeWoerter(vorne).length) return vorne;
+  // "Windpark GmbH & Co. Kisselsheide KG": the distinguishing part comes
+  // after the legal form. Then every word that is not legal form.
+  return woerter.filter((w) => !/^(?:GmbH|mbH|UG|KG|AG|SE|GbR|eG|oHG|OHG|KGaA|e\.K\.|&|und|Co\.?|\(haftungsbeschränkt\))$/i.test(w)).join(" ").trim();
+}

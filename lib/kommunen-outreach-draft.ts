@@ -834,3 +834,82 @@ ${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
 
   return { subject: c.betreff, body, bodyHtml: briefAlsHtml(body), meldung };
 }
+
+/**
+ * Which letter a town gets. Decided by the operator (draft 05.10.2026, confirmed
+ * 06.10.2026: "ich dachte wir schicken an alle auch ohne"): a town WITH a
+ * placement gets the press letter with the ready-made message; a town WITHOUT
+ * one gets the short info letter — data prepared, everything on its own page,
+ * plus the municipal offer. No number, no comparison.
+ *
+ * This lives in code because it was decided once in a chat, lost when the
+ * conversation was summarised, and asked again the next morning.
+ */
+export type Briefart = "platzierung" | "info";
+
+export type InfoDraftContext = {
+  name: string;
+  /** Canonical town page. */
+  pageUrl: string;
+  /** "im Kreis Viersen" / "in Brandenburg" — where the page compares the town. */
+  vergleichWo: string;
+  einwohner?: number | null;
+  funktion?: string | null;
+  anPresse?: boolean;
+  anrede?: string | null;
+  empfaenger?: string | null;
+  adressherkunft?: Adressherkunft;
+  kommunenUrl: string | null;
+  mitSzene: boolean;
+};
+
+export function renderInfoDraft(c: InfoDraftContext): OutreachDraft {
+  const kurz = kurzOrtsname(c.name);
+  const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
+  // Same forwarding rule as the press letter: none when we already write to
+  // the named role or the press mailbox.
+  const weiterleitung = c.funktion || c.anPresse
+    ? ""
+    : grosseVerwaltung
+      ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
+      : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
+  const einstiegGross = !c.funktion && !c.anPresse;
+
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  // "kostenfrei" exactly once, as in the press letter; the 3D sentence only for
+  // a published scene (both rules settled 06.10.2026).
+  const angebotAbsatz =
+    c.mitSzene && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurz} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : c.kommunenUrl
+        ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
+        : "";
+
+  const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
+
+${einstiegGross ? "Für" : "für"} ${c.name} gibt es auf solar-check.io eine eigene Seite. Sie zeigt aus dem Marktstammdatenregister der Bundesnetzagentur, wie viele Solaranlagen, Balkonkraftwerke und Speicher im Ort in Betrieb sind, was jedes Jahr hinzukommt und wie ${kurz} ${c.vergleichWo} dasteht. Die Seite aktualisiert sich jeden Monat von selbst:
+${c.pageUrl}
+
+Drei Dinge können Sie damit ohne Aufwand machen:
+– auf die Seite verlinken, etwa unter Klimaschutz oder Energie,
+– die Zahlen als Grafik auf Ihrer Website einbauen; Farben und Schrift lassen sich anpassen, den Code schicke ich Ihnen gern,
+– sich Bescheid geben lassen, sobald sich im Ort etwas Nennenswertes tut.
+
+Für Kommunen ist das kostenfrei, und anmelden muss sich niemand.${angebotAbsatz}
+
+Mit freundlichen Grüßen
+${SIGNATURE}
+
+${FUSS_TRENNER}
+Impressum: https://solar-check.io/impressum
+Datenschutz: https://solar-check.io/datenschutz
+
+${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
+
+  return {
+    subject: `Solarstrom in ${kurz}: eine Übersicht für Ihre Website`,
+    body,
+    bodyHtml: briefAlsHtml(body),
+    meldung: "",
+  };
+}

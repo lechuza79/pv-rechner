@@ -21,7 +21,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { contactCandidates, type ContactCandidate } from "../../lib/contact-evidence";
-import { contactLinks } from "../../lib/contact-discovery";
+import { contactLinks, type ContactDataset } from "../../lib/contact-discovery";
 import { contactRoleContext } from "../../lib/contact-role-context";
 import { vcardToHtml } from "../../lib/mail-deobfuscation";
 import {
@@ -67,8 +67,8 @@ export type Bestand = {
   extraction: string;
   rollenwerk: Rollenwerk;
   scope: ScopeRegeln;
-  /** Linkprofil für die Seitensuche ("kommunen" oder "betriebe"). */
-  linkProfil: string;
+  /** Linkprofil für die Seitensuche. Typed, so a profile that does not exist fails to compile. */
+  linkProfil: ContactDataset;
   /** Alle Einträge des Bestands. */
   eintraege(): Eintrag[];
   /** Ergebnis-Felder, die dieser Bestand zusätzlich führt (z. B. eigene Kanalnamen). */
@@ -114,7 +114,7 @@ export function parsePage(b: Bestand, page: Seite, domain: string): Parsed {
   const html = decode(readFileSync(page.path!));
   const candidates = contactRoleContext(html, contactCandidates(html, page.url, domain)).candidates;
   const context = headingContext(html);
-  const parsed: Parsed = { candidates, headings: Object.fromEntries(context.headings), title: context.title, links: contactLinks(html, page.url, domain, b.linkProfil as "kommunen") };
+  const parsed: Parsed = { candidates, headings: Object.fromEntries(context.headings), title: context.title, links: contactLinks(html, page.url, domain, b.linkProfil) };
   writeJson(cachePath, parsed);
   return parsed;
 }

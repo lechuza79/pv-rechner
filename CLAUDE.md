@@ -1887,6 +1887,8 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 **Der Versand hat Bremsen, keine Merksätze** (`scripts/kommunen-versand.ts` + `lib/outreach-mail.ts` + `lib/schulferien.ts`). „Nie in den Schulferien senden" stand als Notiz — jetzt verweigert der Lauf: Ferien und Feiertage des Ziel-Bundeslands (KMK-Kalender, alle 16 Länder; **läuft die Tabelle aus, sagt sie „ich weiß es nicht" statt „keine Ferien"**), Di–Do, Tagespensum aus der Datenbank statt Laufpensum, Pflichtangaben je Text, Erlaubnisliste statt Sperrliste beim Anbieter, Absender = angemeldetes Konto, **kein Versand ohne veröffentlichten DKIM-Schlüssel** (SPF bricht bei jeder Weiterleitung, DKIM nicht — und diese Empfänger leiten weiter). Schlägt das Statusschreiben fehl, hält der Lauf an: Die Mail ist draußen, und ein zweiter Lauf schickte sie erneut.
 
+**„Bereit" sagt nur der Vorflug — BLOCKER (06.10.2026).** `npm run kommunen:versand -- --pruefen --schub=… --charge=…` läuft jede Bremse des Versands ohne zu senden (Versandtag/Ferien, DKIM, Kontaktprüfung, Pflichtangaben, leere Platzhalter wie „undefined", jeder Link) und endet mit BEREIT / NICHT BEREIT. Anlass: Der Betreiber fragte zehnmal „ist alles bereit?", geprüft waren nur Links und Texte; der Versand stoppte dann am von All-Inkl rotierten DKIM-Selektor, nachdem 31 Briefe mit „undefined" aufgefallen waren. Ablauf samt Fallen: `docs/versand/ablauf.md`.
+
 **Ein Brief bleibt prüfbar, NACHDEM er draußen ist (01.09.2026).** Die Vorabprüfung hält jeden Brief gegen die Seite, die er verlinkt — sie zog ihre Briefe aber aus dem Versandpaket, und das überspringt jede schon angeschriebene Gemeinde. Ein Brief war damit exakt bis zu dem Moment prüfbar, in dem er hinausging. Das ist keine Formalie: Unsere Seitenzahlen werden mit jedem Datenlauf neu gerechnet, der Brief steht fest — eine Aussage, die beim Versand stimmte, kann später von unserer EIGENEN verlinkten Seite widerlegt werden, und der Empfänger klickt womöglich Wochen später darauf. Ändern lässt sich das dann nicht mehr; man kann nur davon wissen, sich melden und die Regel nachziehen. `--verschickt` prüft deshalb den **gespeicherten** Text (nicht einen heute neu gebauten, der gegen die heutige Seite natürlich passt) gegen die heutigen Adressen. **Die Route liefert bewusst keine Empfängeradresse** — ohne sie kann aus ihr kein zweiter Versandweg werden, auch nicht versehentlich. Erster Lauf: 107 von 127 geprüft, kein Mangel; die restlichen 20 sind der erste Schub vom 20.08., für den der Text noch nicht gespeichert wurde (seit 24.08. schon). **„Nicht mehr nachprüfbar" wird je Gemeinde genannt, nie stillschweigend übersprungen** — sonst wäre die Lücke ein zweites Mal gebaut.
 
 **Ein Brief, der nie ankam, ist kein angeschriebener Ort — BLOCKER (10.09.2026).** Die Empfängerauswahl hängt am KONTAKTDATUM, nicht am Zustand, und das trägt jeder Ort, der einmal im Versandlauf war. Der Rücklauf-Lauf ersetzt nach einer Unzustellbarkeit die Adresse und übergibt den Ort auf `bounce-behoben` zurück — der Versand konnte ihn nicht wieder aufnehmen. Die Fehlerklasse ist die teure: Der Zustand sähe richtig aus, die Übergabe liefe ins Leere, und der Lauf meldete grün. Die Entscheidung steht deshalb als reine Funktion daneben (`lib/outreach-wiedervorlage.ts` → `darfInDenVersand`), nicht als Bedingung in der Route: Eingebaut wäre sie nur über die Reihenfolge der Zeilen im Quelltext prüfbar, also gar nicht.
@@ -2332,15 +2334,22 @@ Vervielfältigung (§ 87b Abs. 1 UrhG) — „wird ja nicht angezeigt" ist keine
 urheberrechtliche Kategorie. Herleitung, Gegenargumente und der DMA-Weg über den Betrieb
 selbst: `docs/fachbetriebe-quellen.md`, Abschnitt 1b.
 
-**Google scheidet als DIREKTE Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
-3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
-das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
-listings or directory service" — wortwörtlich dieser Fall, **solange man die Schnittstelle
-selbst nutzt**. Die Klauseln binden den Kunden der Maps Platform; gegen einen Nichtkunden
-sind sie kein Beleg, und sie so zu zitieren belegt eine Aussage, die sie nicht trägt.
-Volltext:
-`docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
-eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
+**Google scheidet als QUELLE aus — als Anzeige nicht (geprüft 06.10.2026, Volltexte in
+`docs/quellen/fachbetriebe/`, Gegenprüfung durch einen zweiten Legal-Judge).** Für ein Konto
+mit deutscher Rechnungsadresse gilt seit 08.07.2025 die **EWR-Fassung** der Maps Platform
+Terms, nicht die globale; die frühere Begründung zitierte die falsche. Das Speicherverbot
+steht dort unverändert (Ziff. 3.3.2(a)(iii) „copy and save business names, addresses, or
+user reviews", (b) kein Zwischenspeichern außer der `place_id`) — ein Bewertungswert kommt
+also nie in unsere Datenbank, auch nicht intern. **Die Verzeichnis-Klausel der globalen
+Fassung (3.2.3(d)(iii)) fehlt in der EWR-Fassung**; an ihre Stelle tritt eine
+**abschließende** Liste erlaubter Verwendungen der Places-Daten (Service Terms Ziff. 15.2),
+von der **Googles fertiges Anzeige-Bauteil ausgenommen ist** (Ziff. 15.3). Zwei Fallen, die
+der Gegenprüfer gefunden hat: Die Acceptable Use Policy verbietet, Google-Daten mit eigenen
+personenbezogenen Daten zu einem neuen Merkmal zu verbinden — das trifft gerade die
+*interne* Sichtung („geeignet / ungeeignet"), nicht die Anzeige; und eine Seite, die nur
+aus Google-Inhalt besteht, ist keine „Customer Application". Eine Bewertung wird deshalb
+weiterhin **nur** als Selbstauskunft der eigenen Website erfasst (`bewertung_quelle`), nie
+als „Google-Bewertung" beschriftet; gezeigt werden darf sie nur live über das Bauteil.
 
 **Ein Batch-Upsert vereinheitlicht die Spaltenmenge — BLOCKER, und der teuerste Unfall
 dieses Bereichs.** PostgREST baut aus einem Batch EIN Insert mit EINER Spaltenliste;
@@ -2396,6 +2405,35 @@ ein „gilt nicht für X" eine eigene Fundstelle braucht.
 Vergleichsportal in jedem. Eine Sperrliste wäre dasselbe Wettrennen wie beim Förder-Crawl.
 Die Schwelle wächst mit der Zahl der abgefragten Kreise — sonst wäre in einem Teillauf
 jedes Portal ein „Betrieb", und nach der Vollabfrage prüft das niemand mehr nach.
+
+**„betrieb" braucht einen Beleg aus dem Impressum — BLOCKER (06.10.2026).** Die Streuung
+trennt nur Portal von regional; ob ein regionaler Eintrag ein Handwerksbetrieb ist, sagt
+sie nicht. Bis zu diesem Tag schrieb die Streuungs-Phase trotzdem `betrieb` und
+überschrieb dabei bei jedem Suchlauf jede Rückstufung; das Photovoltaik-Wort genügte als
+Beleg, und das erfüllen Stadtwerke, Verbände und Händler genauso. Gemessen an 50
+zufälligen „Betrieben": 10 waren keine. Jetzt entscheidet `lib/fachbetrieb-einordnung.ts`
+an zwei Hälften: **wer der Anbieter ist** (Anbieterblock des Impressums, Seitentitel —
+nie ein Satz irgendwo auf der Seite: „Mitglied im … e.V." und „Handwerkskammer,
+Körperschaft des öffentlichen Rechts" stehen bei echten Betrieben) und **ob es einen
+Gewerksbeleg gibt** (Kammer, Meister/Handwerksrolle, Gewerk im Anbieternamen oder in der
+Selbstbeschreibung, Montage-Angebot). Ohne Beleg heißt es `unklar`, nie `betrieb`; die
+Streuung darf nur noch `ueberregional` schreiben (`artNachStreuung`). Die alten Muster
+liefen über den ganzen Seitentext, stuften dadurch echte Betriebe zurück (eine
+Energiegenossenschaft als Kunde im Impressum genügte) und ihr „e.V." traf nie (ein `\b`
+nach einem Punkt verlangt ein Wortzeichen dahinter). Neu belegen: `npm run fachbetriebe --
+--belegen --nur-messen --protokoll <datei>`, gegenlesen, dann `--aus <datei>`.
+**Versorger und Medien werden nicht nur zurückgestuft, sondern an ihre Liste übergeben**,
+wenn sie dort fehlen (Betreiber: „dorthin verschieben anstatt zu löschen") — als
+Kandidat mit `herkunft='suche'` bzw. ohne `ist_medium`, damit die eigenen Prüfungen
+dieser Bestände urteilen und die Kollisionsregel sie nicht für amtlich hält.
+**Ergebnis am 06.10.2026:** von 3.009 „Betrieben" 2.548 belegt, 176 keine (64 Versorger,
+37 Verbände, 35 Kommunen/Agenturen, 24 Portale, 14 Händler, 2 Medien), 285 ohne Beleg
+(Stichprobe: rund ein Drittel davon doch Betriebe ohne lesbaren Nachweis). 74 Versorger
+und 6 Medien-Kandidaten übergeben. **Alte Rückstufungen hebt die Regel nur mit Kammer im
+Impressum auf** — die schwächeren Belege hätten Stadtportale, ein Ministerium und
+Bürgerprojekte zu Betrieben gemacht (Gegenlesen von 77 Hochstufungen). Sechs Messläufe,
+jeder gegengelesen; die Fehlgriffe stehen als Tests in
+`lib/__tests__/fachbetrieb-einordnung.test.ts`.
 
 **Kein Merkmal ohne Beleg.** Jeder Fund landet mit Fundstelle, Textstelle und Datum in
 `fachbetrieb_belege`; die Spalte in `fachbetriebe` ist nur die Auswertung. Eine spätere
@@ -2642,6 +2680,19 @@ Google keine Zuordnung von Adresse zu einzelner Dachfläche liefert. Zwei Lehren
 gelten allgemein: Eine schematische Zeichnung taugt nicht zur Bestätigung einer
 automatischen Erkennung (es braucht das Original, nicht die Ableitung) — und das Bild
 allein reicht nicht, wenn niemand die Gegend kennt: Bestätigen kann nur der Nutzer.
+
+## Windparkbetreiber (interner Bereich)
+
+Alle Betreiber von Windrädern in Deutschland, angelegt 06.10.2026 — nichts wird verschickt. Identität aus dem Marktstammdatenregister (jedes Windrad nennt seinen Betreiber), Website und Kontakt danach. `scripts/windbetreiber-refresh.ts` (Regeln in `lib/windbetreiber.ts`), Kontakte über die geteilte Erfassung (`scripts/windbetreiber-kontakte.ts`), Nachtlauf `scripts/nacht-windbetreiber.sh`. Stand 06.10.2026: 32.208 Windräder in Betrieb, 10.662 Betreiber; **8.991 Organisationen** mit 99 % der Leistung im Bestand, **1.671 natürliche Personen nur gezählt** — der öffentliche Export führt sie ohne Namen und Kontakt, und ihre Nummer allein ist ein pseudonymes Personendatum.
+
+- **Die Windräder tragen den Betreiber, der Bestand kopiert keine Zahlen.** Windräder und Leistung je Betreiber liest die Sicht `windbetreiber_uebersicht` aus `mastr_wind_anlagen`.
+- **Eine Website zählt nur, wenn ihr eigenes Impressum sie belegt** — Name, Registeranschrift oder (für Konzerntöchter mit anderem Sitz) Marke in Name, Domain und Impressum zugleich; dazu die vom Betreiber selbst im Register angegebene Website und ein Register-**Funktions**postfach (tmverwaltung-wm@wpd.de), **nie ein Personenpostfach** (adem.bilir@mazars.de: die Wirtschaftsprüferin von 115 Sehestedter Gesellschaften). Jede Regel an einem echten, von Hand gelösten Fall geeicht; Tests in `lib/__tests__/windbetreiber*.test.ts`.
+- **Ein Ort ist nie eine Marke.** „Windfeld Thüringer Becken" bestand die Prüfung bei der Thüringer Allgemeinen. Gattungs- und Regionalwörter stehen in einer festen Liste, Ortsnamen kommen aus dem Gemeindeverzeichnis.
+- **Fehlerklassen der Stichproben, alle als Regel mit Test:** „Straße" nur auf einer Seite vereinheitlicht (jede „…straße"-Anschrift fiel durch), Hausnummern mit Bindestrich, dreibuchstabige Marken (ABO, PNE, EWE), englische Rechtsseiten ausländischer Konzerne, abgelaufene Zertifikate, der Firmen-Kasten der Suche (Boreas stand in keinem normalen Treffer), ein Suchfehler als „gesucht" abgehakt, eine Namenskürzung an Buchstaben statt Wörtern („Cottbuser" ≠ „Co.").
+- **Keine bezahlte Suche (Betreiber, 06.10.2026)** — dieselbe Entscheidung wie bei den Gemeinden am 28.09.: Der Suchdienst ist für die Backlink-Bewertung da, nicht für einen Massenlauf. Was das Register nicht nennt, sucht die Handprüfung mit der eigenen Websuche; die Maschinen-Suche verweigert ohne ausdrückliche Freigabe den Start.
+- **Vollständig heißt: kein Betreiber „nie angesehen".** Jeder Eintrag endet als belegte Website, nur Registerkontakt oder „keine Website" mit Notiz, was gesucht wurde. `--stand` meldet Verstöße mit Fehlercode; was die Maschine nicht findet, wird von Hand über `--manuell ABR… <url>` (dieselbe Prüfung, notfalls mit anderer Belegseite derselben Website) oder `--keine ABR… "<Notiz>"` abgeschlossen — nie direkt in der Datenbank.
+- **Freigegeben werden nur Kontakte von der eigenen Website.** Ein Postfach, das nur im Register steht, hat keine Seite, die man vor einem Versand neu lesen könnte.
+- **Vor jeder Ansprache offen:** die Datenschutzerklärung nennt diese Erhebung nicht (Art. 14 DSGVO), genau wie bei den Fachbetrieben.
 
 ## Archiv & Lehren
 

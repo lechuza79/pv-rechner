@@ -1,7 +1,13 @@
 import "server-only";
 import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
-import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
+import {
+  renderInfoDraft,
+  renderOutreachDraft,
+  type Adressherkunft,
+  type Briefart,
+  type OutreachDraft,
+} from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
 import { hatSzene, kommunenSeiteUrl } from "./kommunen-seite";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
@@ -12,6 +18,7 @@ import { atlasPathForRegionId, getRegionById } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
 import { bundeslandByAgs } from "./mastr-regions";
 import { ortPhrase } from "./atlas-orte";
+import { regionDisplayName } from "./atlas-format";
 import { gemeindeVergleich } from "./gemeinde-vergleich";
 import { askVariante, type AskVariante } from "./kommunen-ask";
 
@@ -33,6 +40,8 @@ export type BriefErgebnis = {
   name: string;
   population: number | null;
   variante: AskVariante;
+  /** Press letter (town has a placement) or short info letter (it has none). */
+  briefart: Briefart;
   seiteUrl: string | null;
   ranglisteUrl: string | null;
   /** Datenstand des Marktstammdatenregisters (ISO) — steht in der Meldung. */
@@ -146,6 +155,45 @@ export async function briefFuerGemeinde(
     return pfad ? mitHerkunft(`${SITE_URL}${pfad}`) : null;
   })();
 
+  // NO PLACEMENT → THE SHORT INFO LETTER, never a press release without a hook.
+  // Until 06.10.2026 the fallback here was a press letter "So steht X beim
+  // Solar-Ausbau da" that the dispatch then silently dropped; the agreed short
+  // letter existed only in a chat.
+  const ohnePlatzierung = !hook || hook.kind === "neutral" || !hook.rank;
+  if (ohnePlatzierung) {
+    if (!seiteUrl) return { grund: "unbekannt" };
+    const kreisAgs = regionId.slice(0, 5);
+    const kreis = regionId.length === 8 ? await getRegionById(kreisAgs) : null;
+    const vergleichWo =
+      kreis && kreis.name !== reg.name
+        ? ortPhrase({ name: regionDisplayName(kreis.name) })
+        : vergleichBezug || "im Vergleich";
+    const draft = renderInfoDraft({
+      name: reg.name,
+      pageUrl: seiteUrl,
+      vergleichWo,
+      einwohner: reg.population ?? null,
+      funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+      anPresse: !!opt?.anPresse,
+      anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
+      empfaenger: empfaenger ?? null,
+      adressherkunft: opt?.herkunft,
+      kommunenUrl: kommunenSeiteUrl(SITE_URL, regionId),
+      mitSzene: hatSzene(regionId),
+    });
+    return {
+      regionId,
+      name: reg.name,
+      population: reg.population ?? null,
+      variante,
+      briefart: "info",
+      seiteUrl,
+      ranglisteUrl: null,
+      stand: atlas.data_as_of,
+      draft,
+    };
+  }
+
   const draft = renderOutreachDraft({
     name: reg.name,
     pageUrl: seiteUrl,
@@ -200,6 +248,7 @@ export async function briefFuerGemeinde(
     name: reg.name,
     population: reg.population ?? null,
     variante,
+    briefart: "platzierung",
     seiteUrl,
     ranglisteUrl: liste,
     stand: atlas.data_as_of,

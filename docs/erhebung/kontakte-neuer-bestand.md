@@ -81,6 +81,7 @@ Dazu ein Ziel: in welche Spalten die Funde geschrieben werden.
 | Versorger | `scripts/versorger-kontakte.ts` | nur Presse, Kundenservice ist fremde Einheit |
 | Presse | `scripts/presse-kontakte.ts` | Impressum zuerst, Pflichtangabe nach § 18 MStV |
 | Landkreise | `scripts/kreise-kontakte.ts` | siehe unten |
+| Windparkbetreiber | `scripts/windbetreiber-kontakte.ts` | ein Eintrag je belegter Website, nicht je Betreiber; Identität und Website kommen vorher aus `scripts/windbetreiber-refresh.ts` |
 
 ### Landkreise (30.09.2026)
 
@@ -107,6 +108,34 @@ Unterschiede, jeder aus einer Messung:
 
 Seitenbudget 30 statt 15: Kreisportale sind groß, mit 15 Seiten blieben
 Klimaschutzseiten ungelesen, die in der Linkliste schon standen.
+
+### Vor jedem neuen Bestand: gegen die anderen Bestände (06.10.2026)
+
+Jede Erhebung lief für sich, keine fragte die anderen. Ergebnis: 110 von 3.115
+„Fachbetrieben" standen zugleich im Presse-Katalog oder in der Versorger-Liste
+(Stadtwerke, Tageszeitungen, Kreisportale). Seitdem entscheidet
+`lib/bestand-abgleich.ts`: amtliche Herkunft (Register, Gemeindeverzeichnis)
+schlägt eigene Suche; Gemeinde/Versorger/Windbetreiber dürfen sich eine Domain
+teilen; zwei Suchbestände gegeneinander entscheidet ein Mensch
+(`npm run bestaende:abgleich -- --entscheiden <domain> --falsch=… --notiz=…`),
+und die Entscheidung gilt danach in jedem Lauf beider Bestände. **Ein neuer
+Bestand trägt sich in `scripts/lib/bestand-belegung.ts` ein und prüft in
+seinem einzigen Schreibweg** — Vorbild ist die Schranke in
+`scripts/fachbetriebe-refresh.ts`. Gezählt werden nur bestätigte Einträge
+(Presse: `ist_medium = 'medium'`), sonst erzeugen abgelehnte Kandidaten
+falsche Kollisionen (694 beim ersten Messen).
+
+### Ein Suchbestand braucht einen Identitätsbeleg (06.10.2026)
+
+Der Abgleich gegen andere Bestände fängt nur, wer dort schon steht. Bei den
+Fachbetrieben blieben danach noch Verbände, Händler, Kreisportale und
+Stadtwerke ohne Registereintrag übrig: 10 von 50 zufälligen „Betrieben". Wer
+einen Bestand aus einer Suche aufbaut, ordnet deshalb am **Impressum** ein —
+wer ist der Anbieter, und gibt es einen Beleg für die gesuchte Art (bei
+Betrieben: Kammer, Meister, Gewerk, Montage-Angebot)? Ohne Beleg „unklar",
+nicht „gehört dazu". Vorbild: `lib/fachbetrieb-einordnung.ts`. Was in einen
+anderen Bestand gehört und dort fehlt, wird als Kandidat dorthin übergeben,
+nicht nur zurückgestuft.
 
 ## Auf andere Länder übertragen
 

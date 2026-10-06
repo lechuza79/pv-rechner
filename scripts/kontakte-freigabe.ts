@@ -2,7 +2,7 @@
  * Release every stored contact of a population for a letter, and write the
  * result next to the contact: a release date or the reason for refusal.
  *
- *   npm run kontakte:freigabe -- --bestand=fachbetriebe|versorger|presse [--schreiben]
+ *   npm run kontakte:freigabe -- --bestand=fachbetriebe|versorger|presse|windbetreiber [--schreiben]
  *                                [--ids=A,B] [--part=i --parts=n]
  *
  * The check itself is one shared function (scripts/lib/kontakt-freigabe.ts);
@@ -77,6 +77,24 @@ const BESTAENDE: Record<string, Bestand> = {
       const { error } = await c.from("utilities").update(grund
         ? { presse_freigabe_am: null, presse_sperrgrund: grund }
         : { presse_freigabe_am: heute, presse_sperrgrund: null }).eq("id", schluessel);
+      if (error) throw new Error(`${schluessel}: ${error.message}`);
+    },
+  },
+  windbetreiber: {
+    // Columns are created by the stock's own setup (lib/windbetreiber-sql.ts).
+    ddl: `ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_freigabe_am date;
+          ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_sperrgrund text;`,
+    async laden(c) {
+      // Only contacts found on the operator's own proven website; a register
+      // mailbox has no page that could be re-read.
+      const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url", "mastr_nr",
+        q => q.eq("aktiv", true).not("kontakt_email", "is", null).not("website", "is", null));
+      return z.map(r => ({ schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website }));
+    },
+    async schreiben(c, schluessel, heute, grund) {
+      const { error } = await c.from("windbetreiber").update(grund
+        ? { kontakt_freigabe_am: null, kontakt_sperrgrund: grund }
+        : { kontakt_freigabe_am: heute, kontakt_sperrgrund: null }).eq("mastr_nr", schluessel);
       if (error) throw new Error(`${schluessel}: ${error.message}`);
     },
   },
