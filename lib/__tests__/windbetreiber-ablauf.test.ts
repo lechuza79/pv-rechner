@@ -61,6 +61,12 @@ describe("Windbetreiber-Lauf", () => {
     expect(m.indexOf('p.ergebnis !== "belegt" && z.website === domain')).toBeLessThan(m.indexOf("kandidatZeile(z, p)"));
   });
 
+  it("fetches a failed page afresh when a person asks by hand (retry of 137 unreachable sites)", () => {
+    const h = rumpf("impressumHolen");
+    expect(h).toMatch(/const vonHandNeu = LESART === "nachholen" && !alt\.text && !alt\.startText;/);
+    expect(h).toMatch(/if \(!abrufWiederholen\(alt\) && !ohneBrowser && !vonHandNeu\) return alt;/);
+  });
+
   it("judges hand-taken websites again after a rule change — reports, never changes", () => {
     const n = rumpf("neuBewerten");
     expect(n).toMatch(/belegseiteTraegt\(readFileSync\(seite, "utf8"\)/);

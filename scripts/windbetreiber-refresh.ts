@@ -300,7 +300,11 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
     // not inherit that answer — orsted.de answered 403 to the plain fetch and
     // could never be read by hand afterwards (06.10.2026).
     const ohneBrowser = LESART === "nachholen" && mitBrowser && !alt.text && !alt.startText && !alt.browser_versucht && alt.via !== "browser";
-    if (!abrufWiederholen(alt) && !ohneBrowser) return alt;
+    // A person asking by hand always gets a fresh fetch of a page that failed:
+    // the retry of 137 unreachable sites re-read the day-old failure for half
+    // of them (403, DNS, certificate — no automatic retry; 07.10.2026).
+    const vonHandNeu = LESART === "nachholen" && !alt.text && !alt.startText;
+    if (!abrufWiederholen(alt) && !ohneBrowser && !vonHandNeu) return alt;
     versuche = alt.versuche ?? 1;
   }
   const ergebnis: Impressum = { domain, abgerufen_am: new Date().toISOString(), start: null, impressum_url: null, text: null, fehler: null, via: null, versuche: versuche + 1, browser_versucht: mitBrowser };
