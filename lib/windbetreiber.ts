@@ -542,7 +542,9 @@ export function telefonIn(text: string, telefon: string | null | undefined): boo
   const ziel = telefonKern(telefon);
   if (ziel.length < 7) return false;
   // En and em dashes count as hyphens: BMR writes "914 41 – 0" (manual pass, 06.10.2026).
-  for (const m of text.matchAll(/(?:\+|00)?\(?\d[\d\s\/().\-\u2013\u2014]{5,}\d/g)) {
+  // Never starting inside a word: BB Wind's page had "…Explorer4" right above
+  // the number, and the 4 was read as its first digit (06.10.2026).
+  for (const m of text.matchAll(/(?<![\p{L}\d])(?:\+|00)?\(?\d[\d\s\/().\-\u2013\u2014]{5,}\d/gu)) {
     const k = telefonKern(m[0]);
     if (k === ziel) return true;
     // A switchboard written "-0" covers its extensions: register 04841 9813321,
