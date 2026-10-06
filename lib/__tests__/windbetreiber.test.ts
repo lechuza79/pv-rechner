@@ -260,6 +260,7 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
     // A dash is a hyphen (BMR: "+49 (0) 24 51 / 914 41 – 0", register 024519144114).
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 – 0", "024519144114")).toBe(true);
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 — 0", "024519144114")).toBe(true);
+    expect(telefonIn("Tel.: 02451/91441–0", "024519144114")).toBe(true);
     expect(telefonIn("Tel.: +49 (0) 24 51 / 914 42 – 0", "024519144114")).toBe(false);
     // A number too short to identify anyone proves nothing.
     expect(telefonIn("Tel. 1234 56", "123456")).toBe(false);
