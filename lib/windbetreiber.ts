@@ -136,6 +136,10 @@ export function anschriftSchluessel(a: Akteur): string | null {
 
 /** The first word of the name that could identify a group: EnBW, Alterric, enercity. */
 export function marke(name: string): string | null {
+  // "Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG" names its brand
+  // itself; the first word would be the place (manual pass, 06.10.2026).
+  const powered = falten(name).match(/\bpowered by ([a-z0-9]{3,})/);
+  if (powered && !GENERISCH.has(powered[1])) return powered[1];
   for (const w of nameWoerter(name)) {
     if (/^\d+$/.test(w) || /^[ivx]+$/.test(w)) continue;
     // Three letters are allowed (ABO, PNE, EWE, RWE are this market's brands);
@@ -242,7 +246,13 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
       if (new RegExp(`${strasse}\\d+[a-z]?\\|?${plz}`).test(kompakt)) treffer = true;
     }
     if (treffer) {
-      const roh = t.indexOf(plz);
+      // Show the postcode that follows the street, not the first one on the
+      // page (Speyer: the snippet showed the customer centre, 06.10.2026).
+      const kurz = strasse.slice(0, 6);
+      let roh = t.indexOf(plz);
+      for (let i = roh; i >= 0; i = t.indexOf(plz, i + 1)) {
+        if (t.slice(Math.max(0, i - 80), i).replace(/strasse/g, "str").replace(/ /g, "").includes(kurz)) { roh = i; break; }
+      }
       return { wie: "anschrift", textstelle: umgebung(t, Math.max(0, roh - 40), plz.length + 40) };
     }
   }

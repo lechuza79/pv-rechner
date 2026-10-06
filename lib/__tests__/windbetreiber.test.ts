@@ -51,6 +51,20 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56728 Anderswo", a, "nesag.de")).toBeNull();
   });
 
+  it("takes the brand a name declares with 'powered by' (Ebert)", () => {
+    expect(marke("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG")).toBe("ebert");
+    const a = akteur("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG", "Am Felde", "3", "38315");
+    expect(impressumBelegt("Impressum Ebert Erneuerbare Energien GmbH Goslar", a, "ebert-energie.de")?.wie).toBe("marke");
+    expect(impressumBelegt("Impressum Ebert Erneuerbare Energien GmbH Goslar", a, "anders.de")).toBeNull();
+  });
+
+  it("shows the postcode that follows the register street (Speyer)", () => {
+    const a = akteur("WFS Windkraft für Speyer GmbH", "Georg-Peter-Süß-Straße", "2", "67346");
+    const b = impressumBelegt("Kundenzentrum Industriestr. 23 67346 Speyer · Sitz Georg-Peter-Süß-Str. 2 67346 Speyer", a, "stadtwerke-speyer.de");
+    expect(b?.wie).toBe("anschrift");
+    expect(b?.textstelle).toMatch(/suess/);
+  });
+
   it("lets a short range in the register cover one number of it in the imprint (Koehler)", () => {
     const a = akteur("Windenergiepark Musterberg GmbH", "Hauptstraße", "2-4", "77704");
     expect(impressumBelegt("Impressum Koehler SE Hauptstraße 2 77704 Oberkirch", a, "koehler.com")?.wie).toBe("anschrift");
