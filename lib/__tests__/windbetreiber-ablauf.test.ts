@@ -61,6 +61,9 @@ describe("Windbetreiber-Lauf", () => {
     expect(n).toMatch(/belegseiteTraegt\(readFileSync\(seite, "utf8"\)/);
     expect(n).toMatch(/widerspruch\.push\(`\$\{z\.mastr_nr\} \$\{z\.name\}: \$\{z\.website\} trägt nach heutiger Regel nicht mehr/);
     expect(n).toMatch(/nicht nachprüfbar/);
+    // A hand "none" whose rejected hand candidate now passes is reported too (BMR, 06.10.2026).
+    expect(n).toMatch(/k\.quelle === "manuell" && !z\.website && vonHandEntschieden\(z\)/);
+    expect(n).toMatch(/wiederAuf\.push\(/);
   });
 
   it("lists unbacked brand proofs for a person to read (Elements, 06.10.2026)", () => {

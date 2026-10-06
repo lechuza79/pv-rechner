@@ -99,7 +99,8 @@ ersetzt nie still eine schon belegte andere Website (`--ersetzen`, 55) und
 übernimmt keinen Beleg, der nur auf einer Unterdomain steht (`--subdomain-ok`
 nur, wenn Haupt- und Unterdomain dieselbe Firma sind, 58). Die Belegseite wird
 gespeichert; `--neu-bewerten` prüft jede Handübernahme daran erneut und
-MELDET, was die heutige Regel nicht mehr trägt — geändert wird nichts, das
+MELDET, was die heutige Regel nicht mehr trägt — und umgekehrt jedes von Hand
+vermerkte „keine“, dessen abgelehnter Kandidat heute trägt (62) — geändert wird nichts, das
 entscheidet ein Mensch (`--zuruecknehmen`). Fehlen alte Belegseiten:
 `--belegseiten-nachholen`. Nach der Handprüfung: `--geschwister` (gleiches
 Postfach, gleiche Anschrift) und `--anschrift-gegenlesen` (Anschriftsbelege auf

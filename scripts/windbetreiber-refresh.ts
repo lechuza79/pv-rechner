@@ -520,6 +520,7 @@ async function neuBewerten() {
   }
   const weg = new Set(veraltet.map((k) => `${k.mastr_nr}|${k.domain}`));
   const jeBetreiber = new Map<string, Pruefung[]>();
+  const wiederAuf: string[] = [];
   const kandZeilen: ReturnType<typeof kandidatZeile>[] = [];
   let ohneZwischenspeicher = 0;
   for (const k of kand) {
@@ -529,6 +530,14 @@ async function neuBewerten() {
     // again from the imprint cache it would fail and withdraw a person's
     // decision. A run never overwrites what a person decided (installers,
     // 06.10.2026: every crawl reset each demotion).
+    // A "no website" a person confirmed may rest on a rejection the rule now
+    // reverses (BMR's "914 41 – 0" with an en dash, 06.10.2026): the hand
+    // candidate is judged again from the imprint and REPORTED, never taken.
+    if (k.quelle === "manuell" && !z.website && vonHandEntschieden(z) && existsSync(impressumDatei(k.domain))) {
+      const p = await pruefen(z, { domain: k.domain, quelle: k.quelle }, belegungen);
+      if (p.ergebnis === "belegt") wiederAuf.push(`${z.mastr_nr} ${z.name}: als „keine" vermerkt, ${k.domain} trägt heute (${p.beleg!.wie}) — prüfen, dann --manuell`);
+      continue;
+    }
     if (k.quelle === "manuell" || k.quelle === "geschwister") continue;
     if (!existsSync(impressumDatei(k.domain))) { ohneZwischenspeicher++; continue; }
     const p = await pruefen(z, { domain: k.domain, quelle: k.quelle, postfach: k.quelle === "register-mail" ? z.register_email : null }, belegungen);
@@ -591,6 +600,10 @@ async function neuBewerten() {
   if (widerspruch.length) {
     console.log(`${widerspruch.length} von Hand entschiedene Betreiber, bei denen die Maschine heute anders urteilen würde — NICHT geändert, bitte ansehen:`);
     for (const w of widerspruch) console.log(`  ? ${w}`);
+  }
+  if (wiederAuf.length) {
+    console.log(`${wiederAuf.length} von Hand als „keine Website" vermerkte Betreiber, deren Handkandidat heute trägt — NICHT geändert:`);
+    for (const w of wiederAuf) console.log(`  + ${w}`);
   }
   console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${umbenannt} mit anderer Belegart · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }

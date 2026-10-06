@@ -542,6 +542,29 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   listet ein eigener Befehl genau diese Marken zum Gegenlesen (Anleitung,
   Schritt Gegenlesen); Elements ist zurückgenommen.
 
+### 60. Ein Hausnummernbereich im Register
+- **Anlass:** 06.10.2026 — Register „Hauptstraße 2-4", Impressum „Hauptstraße 2"
+  (Koehler); die Gegenrichtung zu Klasse 53 fehlte.
+- **Sicherung (Verwendung):** Ein kurzer Bereich im Register deckt eine Einzelnummer
+  daraus im Impressum; die Nummer muss enden, wo sie endet (24 ist nicht 2).
+  Test, Sabotage rot gesehen.
+
+### 61. Ein Gedankenstrich vor der Zentrale
+- **Anlass:** 06.10.2026 — BMR schreibt „914 41 – 0" mit Gedankenstrich; die
+  Telefonerkennung kannte nur den Bindestrich, die Nummer wurde zerschnitten.
+- **Sicherung (Verwendung):** Halbgeviert- und Geviertstrich zählen als Bindestrich,
+  mit und ohne Leerzeichen. Test, beide Stellen einzeln sabotiert und rot gesehen.
+
+### 62. Ein „keine Website" überlebt die Regel, die es widerlegt
+- **Anlass:** 06.10.2026 — Helfer vermerkten „keine", weil eine damals fehlende
+  Regel ablehnte; nach der Regeländerung sah niemand diese Fälle wieder an. Die
+  Neubewertung prüfte nur Handübernahmen nach, nicht Handablehnungen.
+- **Sicherung (Verwendung):** Die Neubewertung prüft den abgelehnten Handkandidaten
+  eines „keine"-Vermerks erneut und MELDET ihn; übernommen wird nur von Hand.
+  Erster Lauf: 24 Meldungen, 18 übernommen, 6 bleiben mit ausdrücklicher
+  Gegenentscheidung (fremde Firma an derselben Anschrift, Planer-Referenz,
+  Namensgleichheit) — diese stehen in jedem Lauf wieder in der Meldung.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
