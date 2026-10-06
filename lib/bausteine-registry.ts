@@ -508,7 +508,12 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/PvConsumerComparison.tsx", name: "PvConsumerComparison",
     zweck: "Separate heating and driving energy comparisons for existing and staged PV consumers.",
-    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "InlineEdit", "HeatPumpRunningComparison", "PvConsumerFields"],
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "InlineEdit", "HeatPumpRunningComparison", "HeatPumpMetering", "PvConsumerFields"],
+  },
+  {
+    datei: "components/HeatPumpMetering.tsx", name: "HeatPumpMetering",
+    zweck: "Compares shared meter, separate meter and cascade for a heat pump next to PV and recommends the cheapest.",
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["InfoTooltip", "InlineEdit"],
   },
   {
     datei: "components/PvConsumerFields.tsx", name: "PvConsumerFields",

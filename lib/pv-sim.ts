@@ -68,6 +68,11 @@ export interface PvSimResult {
   wpAutarky: number;
   eaAutarky: number;
   klimaAutarky: number;
+  /** Annual energy totals (kWh) for comparisons that price them separately. */
+  gridKwh: number;
+  feedInKwh: number;
+  wpLoadKwh: number;
+  wpSelfCoveredKwh: number;
 }
 
 /** Autarkie + Jahresverlauf einer Dach-PV-Anlage aus der Stundensimulation. */
@@ -104,6 +109,10 @@ export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp
     wpAutarky: Math.min(wpAutarky, 100),
     eaAutarky: sim.eaLoadKwh > 0 ? Math.min(100, sim.eaSelfCoveredKwh / sim.eaLoadKwh * 100) : 0,
     klimaAutarky: sim.klimaLoadKwh > 0 ? Math.min(100, sim.klimaSelfCoveredKwh / sim.klimaLoadKwh * 100) : 0,
+    gridKwh: Math.max(0, sim.consumptionKwh - sim.selfUsedKwh),
+    feedInKwh: sim.feedInKwh,
+    wpLoadKwh: sim.wpLoadKwh,
+    wpSelfCoveredKwh: sim.wpSelfCoveredKwh,
   };
 }
 

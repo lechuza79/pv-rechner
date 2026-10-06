@@ -76,11 +76,17 @@ export function consumerEnergy(basis: PvConsumerBasis, draft: PvConsumerValues) 
 }
 
 /** Same energy and cash-flow models as PVRechner; no UI or network dependencies. */
-export function calculatePvConsumerResult(basis: PvConsumerBasis, draft: PvConsumerValues) {
-  const { heat, cooling, consumption, selfConsumption: ev } = consumerEnergy(basis, draft);
+/** Feed-in mode and rate (ct/kWh) the result uses for these consumers. */
+export function consumerFeedIn(basis: PvConsumerBasis, draft: PvConsumerValues) {
   const mode = vollEinspeisungGesperrt({ wp: draft.wp, ea: draft.ea, speicherKwh: basis.storageKwh }) && basis.feedInMode === 'voll' ? 'teil' : basis.feedInMode;
   const rates = basis.feedInRates;
   const rate = basis.feedInRate ?? (mode === 'voll' ? calcWeightedFeedIn(basis.kwp, rates.vollUnder10, rates.vollOver10, rates.thresholdKwp) : calcWeightedFeedIn(basis.kwp, rates.teilUnder10, rates.teilOver10, rates.thresholdKwp));
+  return { mode, rate };
+}
+
+export function calculatePvConsumerResult(basis: PvConsumerBasis, draft: PvConsumerValues) {
+  const { heat, cooling, consumption, selfConsumption: ev } = consumerEnergy(basis, draft);
+  const { mode, rate } = consumerFeedIn(basis, draft);
   const profile: HouseholdProfile = { baseKwh: basis.baseKwh, tagQuote: NUTZUNG[draft.nutzung].tagQuote, wpActive: draft.wp !== 'nein', eaActive: draft.ea !== 'nein', klimaActive: draft.klima !== 'nein', klimaM2: KLIMA_DEFAULT_M2, wpAnnualKwh: heat ?? undefined, eaAnnualKwh: draft.ea !== 'nein' ? calcEaAnnual(draft.eaKm) : undefined, klimaAnnualKwh: cooling ?? undefined };
   const market = basis.regime === 'heute' || mode === 'aus' ? null : calculatePvMarketProfile(basis, mode, profile);
   const years = market ? einspeiseVerlauf({ regime: basis.regime, kwp: basis.kwp, inbetriebnahmeJahr: Math.max(2027, YEAR), heuteSatzCt: rate, marktErloes: basis.marketRevenue, profilFaktor: market.profilFaktor, niveauCt: basis.marketValue }) : null;

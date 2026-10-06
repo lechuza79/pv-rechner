@@ -4,6 +4,7 @@ import OptionalDisclosure from "./OptionalDisclosure";
 import InlineEdit from "./InlineEdit";
 import {CategoryBarChart} from "./charts/CategoryBarChart";
 import HeatPumpRunningComparison from "./HeatPumpRunningComparison";
+import HeatPumpMetering from "./HeatPumpMetering";
 import type {PvConsumerValues,PvConsumerKind} from "./PvConsumerFields";
 import {calcWpAnnualElectricity,calcJAZ,flowTempForSystem,heatPumpScenarioAdj} from "../lib/heatpump";
 import {HAUSTYP_WP,PERSONEN,NUTZUNG} from "../lib/constants";
@@ -15,11 +16,12 @@ function ComparisonFrame({standalone,label,children}:{standalone:boolean;label:s
 }
 
 /** Consumer comparisons stay separate from the PV investment benefit. */
-export default function PvConsumerComparison({standalone=false,fuelType,setFuelType,kind,values:v,personen,baseKwh,kwp,speicherKwh,ertragKwp,monthly,klimaKwh,strompreis,scenario,fullFeedIn}:{standalone?:boolean;fuelType:"gas"|"oil";setFuelType:(value:"gas"|"oil")=>void;kind:PvConsumerKind;values:PvConsumerValues;personen:number;baseKwh:number;kwp:number;speicherKwh:number;ertragKwp:number;monthly:number[]|null;klimaKwh:number;strompreis:number;scenario:string;fullFeedIn:boolean}) {
+export default function PvConsumerComparison({standalone=false,fuelType,setFuelType,kind,values:v,personen,baseKwh,kwp,speicherKwh,ertragKwp,monthly,klimaKwh,strompreis,scenario,fullFeedIn,einspeiseSatzCt=0}:{einspeiseSatzCt?:number;standalone?:boolean;fuelType:"gas"|"oil";setFuelType:(value:"gas"|"oil")=>void;kind:PvConsumerKind;values:PvConsumerValues;personen:number;baseKwh:number;kwp:number;speicherKwh:number;ertragKwp:number;monthly:number[]|null;klimaKwh:number;strompreis:number;scenario:string;fullFeedIn:boolean}) {
   const [litres,setLitres]=useState(7);
   const [fuelPrice,setFuelPrice]=useState(1.8);
   const heat=calcWpAnnualElectricity({situation:"bestand",wohnflaeche:v.wpWohnflaeche,insulationIdx:v.wpInsulation,personen:PERSONEN[personen].count,heizsystem:v.wpHeizsystem,wpType:"lwwp",haustypFaktor:HAUSTYP_WP[v.wpHaustyp].faktor});
-  const sim=simulatePvYear({kwp,speicherKwh,ertragKwp,monthlyYieldPerKwp:monthly,household:{baseKwh,tagQuote:NUTZUNG[v.nutzung].tagQuote,wpActive:v.wp!=="nein",eaActive:v.ea!=="nein",klimaActive:v.klima!=="nein",wpAnnualKwh:heat,eaAnnualKwh:calcEaAnnual(v.eaKm),klimaM2:KLIMA_DEFAULT_M2,klimaAnnualKwh:klimaKwh}});
+  const household={baseKwh,tagQuote:NUTZUNG[v.nutzung].tagQuote,wpActive:v.wp!=="nein",eaActive:v.ea!=="nein",klimaActive:v.klima!=="nein",wpAnnualKwh:heat,eaAnnualKwh:calcEaAnnual(v.eaKm),klimaM2:KLIMA_DEFAULT_M2,klimaAnnualKwh:klimaKwh};
+  const sim=simulatePvYear({kwp,speicherKwh,ertragKwp,monthlyYieldPerKwp:monthly,household});
   if(kind === "klima") return <ComparisonFrame standalone={standalone} label="Klimaanlage">
 
     <OptionalDisclosure descriptionAsHelp label="Details" heading="Kühlkosten im Vergleich" description="Stromkosten pro Jahr"><p>Geschätzter Strombedarf für {v.klimaRooms} gekühlte Räume. Verglichen wird derselbe Kühlbedarf mit und ohne Solarstrom. Gegenüber einem Haushalt ohne Klimaanlage entstehen zusätzliche Kühlkosten.</p></OptionalDisclosure>    <CategoryBarChart orientation="horizontal" paired unit="€" label="Kühlstromkosten pro Jahr" rows={[{id:"cooling",label:"Klimaanlage ohne PV",value:klimaKwh*strompreis},{id:"solar-cooling",label:"Klimaanlage mit PV",value:klimaKwh*strompreis*(1-(fullFeedIn?0:sim.klimaAutarky)/100)}]}/>
@@ -41,5 +43,6 @@ export default function PvConsumerComparison({standalone=false,fuelType,setFuelT
   const inflation=heatPumpScenarioAdj(scenario);
   return <ComparisonFrame standalone={standalone} label="Mit Gasheizung vergleichen">
     <HeatPumpRunningComparison strompreis={strompreis} fuelType={fuelType} setFuelType={setFuelType} wpKwh={heat} jaz={calcJAZ("lwwp",flowTempForSystem(v.wpHeizsystem))} wpAutarky={fullFeedIn?0:sim.wpAutarky} stromSteigerung={inflation.stromInflation} gasSteigerung={inflation.gasInflation}/>
+    {!fullFeedIn && <HeatPumpMetering kwp={kwp} speicherKwh={speicherKwh} ertragKwp={ertragKwp} monthly={monthly} household={household} strompreis={strompreis} einspeiseSatzCt={einspeiseSatzCt}/>}
   </ComparisonFrame>;
 }

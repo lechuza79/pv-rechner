@@ -14,7 +14,7 @@ import FlowNav from './FlowNav';
 import KlebenderKnopf from './KlebenderKnopf';
 import { YEARS } from '../lib/constants';
 import { vollEinspeisungGesperrt } from '../lib/calc';
-import { calculatePvConsumerBenefit, consumerChangeLabel, consumerCoolingKwh, consumerPatch, PV_CONSUMERS, type PvConsumerBasis, type PvConsumerChanges } from '../lib/pv-consumer-model';
+import { calculatePvConsumerBenefit, consumerChangeLabel, consumerCoolingKwh, consumerFeedIn, consumerPatch, PV_CONSUMERS, type PvConsumerBasis, type PvConsumerChanges } from '../lib/pv-consumer-model';
 import './calculator/result-design.css';
 import './pv-consumer-section.css';
 
@@ -137,7 +137,7 @@ export default function PvConsumerSection({ presentation, onSelectConsumer, id: 
     <Collapse open={!presentation?.hideComparisons && shownConsumers.some(item => pending[item.kind] !== 'nein')}>
       <div id={`${id}-comparison`} className="pv-consumer-comparison">
         {shownConsumers.map(item => <div key={item.kind} hidden={pending[item.kind] === 'nein'}>
-          <PvConsumerComparison standalone fuelType={fuelType} setFuelType={setFuelType} kind={item.kind} values={pending} personen={basis.personen} baseKwh={basis.baseKwh} kwp={basis.kwp} speicherKwh={basis.storageKwh} ertragKwp={basis.yieldPerKwp} monthly={basis.monthly} klimaKwh={consumerCoolingKwh(basis, pending)} strompreis={basis.electricityPrice} scenario={basis.scenario} fullFeedIn={basis.feedInMode === 'voll' && !vollEinspeisungGesperrt({ wp: pending.wp, ea: pending.ea, speicherKwh: basis.storageKwh })} />
+          <PvConsumerComparison standalone fuelType={fuelType} setFuelType={setFuelType} kind={item.kind} values={pending} personen={basis.personen} baseKwh={basis.baseKwh} kwp={basis.kwp} speicherKwh={basis.storageKwh} ertragKwp={basis.yieldPerKwp} monthly={basis.monthly} klimaKwh={consumerCoolingKwh(basis, pending)} strompreis={basis.electricityPrice} scenario={basis.scenario} einspeiseSatzCt={(() => { const f = consumerFeedIn(basis, pending); return f.mode === 'aus' ? 0 : f.rate; })()} fullFeedIn={basis.feedInMode === 'voll' && !vollEinspeisungGesperrt({ wp: pending.wp, ea: pending.ea, speicherKwh: basis.storageKwh })} />
         </div>)}
       </div>
     </Collapse>
