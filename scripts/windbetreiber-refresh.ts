@@ -764,7 +764,13 @@ async function keine() {
     const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" })
       .eq("mastr_nr", nr).is("website", null);
     if (error) throw new Error(error.message);
-    if (!count) { console.log(`${nr}: nicht gefunden oder hat schon eine belegte Website`); process.exitCode = 1; continue; }
+    if (!count) {
+      // Say which of the two it is: a helper read "not found" for an operator
+      // that was already proven and did nothing (block 025, 06.10.2026).
+      const { data } = await c.from("windbetreiber").select("website").eq("mastr_nr", nr).maybeSingle();
+      console.log(data ? `${nr}: hat schon die belegte Website ${data.website} — nichts geändert` : `${nr}: steht nicht im Bestand`);
+      process.exitCode = 1; continue;
+    }
     console.log(`${nr}: als „keine Website" vermerkt`);
   }
 }
