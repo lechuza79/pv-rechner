@@ -66,6 +66,9 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(plzNorm("D-24814")).toBe("24814");
     expect(plzNorm("EC1R 9HJ")).toBe("ec1r9hj");
     expect(plzNorm("Musterstadt")).toBe("");
+    // Danish letters spelt as the register spells them.
+    const dk = akteur("Ecopart Wind K/S", "Egaa Havvej", "21", "DK-8250");
+    expect(impressumBelegt("Kontakt Green Wind A/S Egå Havvej 21, DK-8250 Egå", dk, "greenwind.dk")?.wie).toBe("anschrift");
     const a = akteur("K/S Vindinvest 20", "Kobenhavnsvej", "81", "DK-4000");
     expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 81 4000 Roskilde", a, "momentum.dk")?.wie).toBe("anschrift");
     expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 79 4000 Roskilde", a, "momentum.dk")).toBeNull();

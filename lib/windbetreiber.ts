@@ -47,7 +47,10 @@ export function falten(s: string): string {
     .replace(/＆/g, "&")
     // "ű"/"ő" are a common mistype of "ü"/"ö" ("Luyműhle" in WEAG's imprint, 06.10.2026).
     .replace(/ä/g, "ae").replace(/ö|ő/g, "oe").replace(/ü|ű/g, "ue").replace(/ß/g, "ss")
-    .replace(/é|è/g, "e");
+    .replace(/é|è/g, "e")
+    // Danish letters as the register spells them: "Egaa Havvej" for "Egå Havvej"
+    // (Green Wind, manual pass 06.10.2026).
+    .replace(/å/g, "aa").replace(/ø/g, "oe").replace(/æ/g, "ae");
 }
 
 /** Words that say what kind of company it is, never which one. */
