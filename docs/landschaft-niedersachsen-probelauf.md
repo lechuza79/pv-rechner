@@ -4,8 +4,8 @@ Status: isolated geometry preparation verified; not published or release-ready.
 
 ## Reproduction
 
-Worker: `scripts/landscape-niedersachsen-worker.py`; tests:
-`scripts/tests/test_landscape_niedersachsen_worker.py`.
+Worker: `scripts/landscape-municipality-worker.py`; tests:
+`scripts/tests/test_landscape_municipality_worker.py`.
 
 Executor: existing Hetzner server, isolated root
 `/opt/solar-check-landscape/candidate-tests/ni-v1`.
@@ -16,7 +16,7 @@ LGLN terrain/building tiles. No model calls or new paid services in preparation.
 Run with the existing server Python environment:
 
 ```sh
-python scripts/landscape-niedersachsen-worker.py --root "$candidate_root" \
+python scripts/landscape-municipality-worker.py --root "$candidate_root" \
   --municipality "$municipality" --osm-file "$niedersachsen_extract"
 ```
 

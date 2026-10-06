@@ -48,9 +48,14 @@ class WorkflowTests(unittest.TestCase):
         self.inputs('07312001');result=w.plan(self.root,'07312001')
         self.assertIsNone(result['adapter']);self.assertFalse(result['preparationPossible'])
 
-    def test_no_wind_and_missing_inventory_are_explicit(self):
+    def test_missing_inventory_is_explicit_and_no_wind_is_a_gap_not_a_block(self):
         self.assertFalse(w.plan(self.root,self.place)['preparationPossible'])
-        self.inputs(kinds=('solar',));self.assertFalse(w.plan(self.root,self.place)['preparationPossible'])
+        self.inputs(kinds=('solar',));self.assertTrue(w.plan(self.root,self.place)['preparationPossible'])
+
+    def test_brandenburg_and_nrw_have_adapters_districts_do_not(self):
+        for place,adapter in (('12061244','brandenburg-municipality'),('05166012','nordrhein-westfalen-municipality')):
+            self.inputs(place);self.assertEqual(w.plan(self.root,place)['adapter'],adapter)
+        self.inputs('12061');self.assertIsNone(w.plan(self.root,'12061')['adapter'])
 
     def test_wrong_inventory_is_not_silently_used(self):
         self.inputs();path=self.root/'prepared-inventory'/self.place/'inventory.json'

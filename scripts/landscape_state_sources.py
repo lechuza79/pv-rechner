@@ -1,0 +1,230 @@
+"""Official building/terrain tile adapters per federal state for new municipal stages.
+
+Every adapter returns tiles in the shared scene reference ETRS89/UTM32 with
+DHHN2016 heights. Brandenburg publishes UTM33; its tiles are converted at intake
+(exact datum-identical ETRS89 transformation, heights unchanged) so the shared
+preparer, checks and front end keep one reference. Original URLs and hashes of
+both the delivered and the derived file are retained.
+"""
+import hashlib
+import io
+import math
+import re
+import zipfile
+from pathlib import Path
+from urllib.parse import urljoin, urlparse
+import xml.etree.ElementTree as E
+
+import requests
+from pyproj import Transformer
+from shapely.geometry import box
+
+UA = {'User-Agent': 'solar-check-landscape (https://solar-check.io)'}
+
+ADAPTERS = {
+    '03': dict(key='niedersachsen', prefix='ni', native=25832,
+               buildingLicense='CC BY 4.0 · LGLN', terrainLicense='CC BY 4.0 · LGLN',
+               osmPage='https://download.geofabrik.de/europe/germany/niedersachsen.html'),
+    '05': dict(key='nordrhein-westfalen', prefix='nw', native=25832,
+               buildingLicense='dl-de/zero-2-0 · Geobasis NRW', terrainLicense='dl-de/zero-2-0 · Geobasis NRW',
+               osmPage='https://download.geofabrik.de/europe/germany/nordrhein-westfalen.html'),
+    '12': dict(key='brandenburg', prefix='bb', native=25833,
+               buildingLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
+               terrainLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/brandenburg.html'),
+}
+
+NRW_DGM = 'https://www.opengeodata.nrw.de/produkte/geobasis/hm/dgm1_tiff/dgm1_tiff/'
+NRW_LOD = 'https://www.opengeodata.nrw.de/produkte/geobasis/3dg/lod2_gml/lod2_gml/'
+BB_DGM = 'https://data.geobasis-bb.de/geobasis/daten/dgm/tif/'
+BB_LOD = 'https://data.geobasis-bb.de/geobasis/daten/3d_gebaeude/lod2_gml/'
+
+
+def adapter_for(ags):
+    if len(ags) != 8 or not ags.isdigit():
+        return None
+    return ADAPTERS.get(ags[:2])
+
+
+def grid_cells(area, crs_from=25832, crs_to=25832, size=1000):
+    """1 km cells (south-west corner, km) in the delivery reference touching area."""
+    if crs_from != crs_to:
+        convert = Transformer.from_crs(crs_from, crs_to, always_xy=True).transform
+        from shapely.ops import transform
+        area_native = transform(convert, area)
+    else:
+        area_native = area
+    minx, miny, maxx, maxy = area_native.bounds
+    cells = []
+    for e in range(math.floor(minx/size), math.ceil(maxx/size)):
+        for n in range(math.floor(miny/size), math.ceil(maxy/size)):
+            if area_native.intersects(box(e*size, n*size, (e+1)*size, (n+1)*size)):
+                cells.append((e, n))
+    return cells
+
+
+def _get(url, **kwargs):
+    response = requests.get(url, headers=UA, timeout=(20, 120), **kwargs)
+    response.raise_for_status()
+    return response
+
+
+def nrw_index(url, fetch=_get):
+    root = E.fromstring(fetch(url).content)
+    return [(f.get('name'), f.get('timestamp')) for f in root.iter('file')]
+
+
+def nrw_tiles(terrain, buildings, fetch=_get):
+    dgm, lod = {}, {}
+    for name, stamp in nrw_index(NRW_DGM, fetch):
+        match = re.fullmatch(r'dgm1_32_(\d+)_(\d+)_1_nw_(\d{4})\.tif', name or '')
+        if match:
+            cell = (int(match[1]), int(match[2]))
+            # Newest acquisition year per cell, never the first listed.
+            if cell not in dgm or (match[3], name) > dgm[cell][0]:
+                dgm[cell] = ((match[3], name), name)
+    for name, stamp in nrw_index(NRW_LOD, fetch):
+        match = re.fullmatch(r'LoD2_32_(\d+)_(\d+)_1_NW\.gml', name or '')
+        if match:
+            lod[(int(match[1]), int(match[2]))] = name
+    jobs = []
+    for cell in grid_cells(terrain):
+        if cell not in dgm:
+            raise ValueError('NRW terrain tile missing for cell %s' % (cell,))
+        jobs.append(('dgm', NRW_DGM+dgm[cell][1]))
+    # Cells without buildings are legitimately absent from the LoD2 index.
+    jobs += [('lod', NRW_LOD+lod[cell]) for cell in grid_cells(buildings) if cell in lod]
+    return jobs
+
+
+def bb_index(url, fetch=_get):
+    return set(re.findall(r'href="([a-z0-9]+_33\d+-\d+\.zip)"', fetch(url).text))
+
+
+def bb_tiles(terrain, buildings, fetch=_get):
+    dgm, lod = bb_index(BB_DGM, fetch), bb_index(BB_LOD, fetch)
+    jobs = []
+    for e, n in grid_cells(terrain, 25832, 25833):
+        name = 'dgm_33%d-%d.zip' % (e, n)
+        if name not in dgm:
+            raise ValueError('Brandenburg terrain tile missing: '+name)
+        jobs.append(('dgm', BB_DGM+name))
+    for e, n in grid_cells(buildings, 25832, 25833):
+        name = 'lod2_33%d-%d.zip' % (e, n)
+        if name in lod:
+            jobs.append(('lod', BB_LOD+name))
+    return jobs
+
+
+def utm33_to_32():
+    return Transformer.from_crs(25833, 25832, always_xy=True)
+
+
+def convert_gml(text, transformer=None):
+    """Rewrite every 3D coordinate list from UTM33 to UTM32; heights untouched."""
+    transformer = transformer or utm33_to_32()
+    if 'UTM32' in text and 'UTM33' not in text:
+        raise ValueError('GML already in UTM32; refusing double conversion')
+
+    def triples(values):
+        numbers = [float(v) for v in values.split()]
+        if len(numbers) % 3:
+            raise ValueError('Coordinate list is not three-dimensional')
+        xs, ys = transformer.transform(numbers[0::3], numbers[1::3])
+        if any(not math.isfinite(v) for v in list(xs)+list(ys)):
+            raise ValueError('Non-finite converted coordinate')
+        return ' '.join('%.3f %.3f %s' % (x, y, z) for x, y, z in zip(xs, ys, values.split()[2::3]))
+
+    text, count = re.subn(r'(<gml:(?:posList|pos|lowerCorner|upperCorner)\b[^>]*>)([^<]+)(<)',
+                          lambda m: m[1]+triples(m[2])+m[3], text)
+    if not count:
+        raise ValueError('No coordinates found in GML')
+    return text.replace('ETRS89_UTM33', 'ETRS89_UTM32')
+
+
+def convert_dgm_mosaic(native, destination, resolution=5):
+    """Mosaic UTM33 DGM1 tiles natively, then reproject once to UTM32.
+
+    Warping tile by tile leaves nodata seams along every rotated tile edge; one
+    warp of the mosaic does not. 5 m output is still finer than the 20 m scene grid.
+    """
+    import numpy as np
+    import rasterio
+    from rasterio.crs import CRS
+    from rasterio.merge import merge
+    from rasterio.warp import Resampling, calculate_default_transform, reproject
+    sources = [rasterio.open(path) for path in native]
+    try:
+        for source in sources:
+            # Delivered as UTM33 (+ DHHN2016, the product's only height system; a few
+            # tiles omit the vertical tag). Any other declared vertical datum is refused.
+            wkt = source.crs.to_wkt() if source.crs else ''
+            if 'UTM zone 33N' not in wkt:
+                raise ValueError('Brandenburg terrain not in UTM zone 33N: '+Path(source.name).name)
+            if 'VERT_CS' in wkt and 'DHHN2016' not in wkt:
+                raise ValueError('Brandenburg terrain declares an unexpected height system')
+        horizontal = CRS.from_epsg(25833)
+        nodata = sources[0].nodata if sources[0].nodata is not None else -9999.0
+        # Tiles differ only in whether they tag the vertical datum; mosaic on the
+        # common horizontal reference instead of letting merge reject the mix.
+        memories = []
+        for source in sources:
+            memory = rasterio.MemoryFile()
+            profile = dict(source.profile, crs=horizontal, driver='GTiff')
+            with memory.open(**profile) as copy:
+                copy.write(source.read())
+            memories.append(memory)
+        opened = [memory.open() for memory in memories]
+        try:
+            data, affine = merge(opened, nodata=nodata)
+        finally:
+            for dataset in opened:
+                dataset.close()
+            for memory in memories:
+                memory.close()
+    finally:
+        for source in sources:
+            source.close()
+    target = CRS.from_epsg(25832)
+    height, width = data.shape[1:]
+    left, top = affine.c, affine.f
+    right, bottom = left+width*affine.a, top+height*affine.e
+    transform, out_width, out_height = calculate_default_transform(horizontal, target, width, height, left, bottom, right, top,
+                                                                   resolution=resolution)
+    result = np.full((out_height, out_width), nodata, dtype='float32')
+    reproject(data[0], result, src_transform=affine, src_crs=horizontal, src_nodata=nodata,
+              dst_transform=transform, dst_crs=target, dst_nodata=nodata, resampling=Resampling.bilinear)
+    profile = dict(driver='GTiff', width=out_width, height=out_height, count=1, dtype='float32', crs=target,
+                   transform=transform, nodata=nodata, compress='deflate', tiled=True)
+    with rasterio.open(destination, 'w', **profile) as output:
+        output.write(result, 1)
+
+
+def bb_intake(raw, kind, destination):
+    """Extract the single data member of a Brandenburg zip; buildings are converted here."""
+    with zipfile.ZipFile(raw) as archive:
+        wanted = '.tif' if kind == 'dgm' else '_geb.gml'
+        members = [n for n in archive.namelist() if n.endswith(wanted)]
+        if len(members) != 1:
+            raise ValueError('Expected exactly one %s member in %s' % (wanted, raw.name))
+        data = archive.read(members[0])
+    if kind == 'dgm':
+        destination.write_bytes(data)  # native UTM33; mosaicked and reprojected once later
+    else:
+        destination.write_text(convert_gml(data.decode('utf-8')), encoding='utf-8')
+
+
+def tile_jobs(adapter, terrain, buildings, stac=None):
+    if adapter['key'] == 'nordrhein-westfalen':
+        return nrw_tiles(terrain, buildings)
+    if adapter['key'] == 'brandenburg':
+        return bb_tiles(terrain, buildings)
+    return stac(terrain, buildings)
+
+
+def osm_page(adapter, osm_file):
+    # Regional sub-extracts (e.g. Regierungsbezirke) keep their real page.
+    stem = re.sub(r'-\d{6}\.osm\.pbf$', '', Path(osm_file).name)
+    if adapter['key'] == 'nordrhein-westfalen' and stem.endswith('-regbez'):
+        return 'https://download.geofabrik.de/europe/germany/nordrhein-westfalen/'+stem+'.html'
+    return adapter['osmPage']

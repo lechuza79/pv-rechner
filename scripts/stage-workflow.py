@@ -61,15 +61,15 @@ def plan(root, place):
     inventory = read(inventory_path) if inventory_path.exists() else None
     if inventory and inventory.get('municipality') != place:
         raise ValueError('Inventory belongs to another municipality')
-    adapter = 'niedersachsen-municipality' if len(place) == 8 and place.startswith('03') else None
+    # Mirrors landscape_state_sources.ADAPTERS; kept standard-library only here.
+    adapter = {'03': 'niedersachsen-municipality', '05': 'nordrhein-westfalen-municipality',
+               '12': 'brandenburg-municipality'}.get(place[:2]) if len(place) == 8 else None
     counts = dict(Counter(unit['kind'] for unit in inventory.get('units', []))) if inventory else {}
     blockers = []
     if not adapter:
         blockers.append('No generic geometry adapter for this location yet; use the source-adapter step in the runbook, not an unrelated pilot recipe')
     if not inventory:
         blockers.append('Municipality inventory missing; districts require a verified member/boundary preparation')
-    if adapter and inventory and not counts.get('wind'):
-        blockers.append('Current Niedersachsen worker requires active onshore wind; solar-only/town-only support must be added explicitly')
     for relative in ('inputs/national-register/wind.json', 'inputs/national-register/solar.json', 'inputs/DE_VG250.gpkg'):
         if not (root/relative).is_file():
             blockers.append('Missing cached input: '+relative)
@@ -199,7 +199,7 @@ def run(root, place, osm_file):
         if preparation['blockers']:
             raise ValueError('; '.join(preparation['blockers']))
         if not osm_file or not osm_file.is_file():
-            raise ValueError('Provide the cached, dated Niedersachsen OSM extract with --osm-file')
+            raise ValueError('Provide the cached, dated OSM extract of the state/region with --osm-file')
         if shutil.disk_usage(root).free < 2*1024**3:
             raise ValueError('Less than 2 GiB free; no automatic storage expansion')
         # Hold the same lock as the national collector, preventing mixed input generations.
@@ -220,7 +220,7 @@ def run(root, place, osm_file):
             status_path = root/'jobs/stages'/(place+'.json')
             state = dict(preparation, status='running', pid=os.getpid(), processBirth=process_birth(os.getpid()), startedAt=timestamp(), log=str(root/'logs'/('stage-'+place+'.log')))
             write(status_path, state)
-            command = [sys.executable, str(SCRIPTS/'landscape-niedersachsen-worker.py'), '--root', str(candidate),
+            command = [sys.executable, str(SCRIPTS/'landscape-municipality-worker.py'), '--root', str(candidate),
                        '--municipality', place, '--osm-file', str(osm_file.resolve())]
             try:
                 with Path(state['log']).open('a') as log:

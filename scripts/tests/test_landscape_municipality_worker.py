@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-spec = importlib.util.spec_from_file_location('ni_worker', Path(__file__).resolve().parents[1]/'landscape-niedersachsen-worker.py')
+spec = importlib.util.spec_from_file_location('ni_worker', Path(__file__).resolve().parents[1]/'landscape-municipality-worker.py')
 worker = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(worker)
 

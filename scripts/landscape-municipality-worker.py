@@ -1,9 +1,10 @@
-"""Serial Niedersachsen tour preparation on the existing preparation host.
+"""Serial municipal tour preparation (Niedersachsen, NRW, Brandenburg) on the existing preparation host.
 
 Uses cached provisional coordinate inventories and official source tiles. Never
 publishes, buys storage, calls model services, or replaces an existing tour.
 """
 import argparse
+import concurrent.futures
 import hashlib
 import fcntl
 import importlib.util
@@ -32,6 +33,7 @@ def helper(name):
 
 
 shared = helper('landscape-district-worker.py')
+states = helper('landscape_state_sources.py')
 queue = helper('landscape-background-queue.py')
 metric = Transformer.from_crs(4326, 25832, always_xy=True)
 geographic = Transformer.from_crs(25832, 4326, always_xy=True)
@@ -73,7 +75,9 @@ def extract_osm(path, boundary, ags, scratch):
     try:
         for entity in processor:
             tags = dict(entity.tags)
-            if isinstance(entity, osmium.osm.Relation) and tags.get('boundary')=='administrative' and tags.get('de:amtlicher_gemeindeschluessel')==ags:
+            regional = tags.get('de:regionalschluessel','')
+            # Some states tag only the 12-digit regional key (LLRKK + Verband + GGG).
+            if isinstance(entity, osmium.osm.Relation) and tags.get('boundary')=='administrative' and (tags.get('de:amtlicher_gemeindeschluessel')==ags or (len(regional)==12 and regional[:5]+regional[9:]==ags)):
                 admin_ids.update(m.ref for m in entity.members if m.role=='admin_centre' and m.type=='n')
             elif isinstance(entity, osmium.osm.Node) and tags.get('place') and entity.location.valid():
                 if boundary.covers(Point(entity.location.lon,entity.location.lat)):
@@ -170,6 +174,36 @@ def download(inputs, prefix, kind, url, reuse):
     return dict(file=name,url=url,sha256=shared.digest(path))
 
 
+def intake(inputs, prefix, kind, url, reuse):
+    """Download a native-reference tile once and derive the UTM32 file the preparer reads."""
+    if urlparse(url).scheme!='https' or Path(urlparse(url).path).suffix!='.zip':raise ValueError('Unsupported tile URL')
+    stem = hashlib.sha256(url.encode()).hexdigest()[:24]
+    # Native terrain tiles must not match the preparer's '<prefix>-dgm*.tif' glob.
+    derived = inputs/(prefix+('-native-' if kind=='dgm' else '-lod-')+stem+('.tif' if kind=='dgm' else '.gml'))
+    verified = next((e for e in reuse.get(url,[]) if e.get('sourceSha256') and (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
+    if verified:
+        if not derived.exists():os.link(inputs/verified['file'],derived)
+        return dict(verified,file=derived.name)
+    raw = inputs/('raw-'+stem+'.zip')
+    if not raw.exists():
+        temporary = raw.with_suffix('.zip.part')
+        try:
+            with requests.get(url,stream=True,timeout=(20,120),headers=states.UA) as response:
+                response.raise_for_status()
+                with temporary.open('wb') as stream:
+                    for chunk in response.iter_content(1024*1024):
+                        if shutil.disk_usage(inputs).free<2*1024**3:raise RuntimeError('Free storage guard reached')
+                        stream.write(chunk)
+            temporary.replace(raw)
+        finally:temporary.unlink(missing_ok=True)
+    partial = derived.with_suffix(derived.suffix+'.part')
+    try:
+        states.bb_intake(raw,kind,partial);partial.replace(derived)
+    finally:partial.unlink(missing_ok=True)
+    return dict(file=derived.name,url=url,sha256=shared.digest(derived),sourceSha256=shared.digest(raw),
+                derivation='ETRS89 UTM33 -> UTM32 (pyproj), heights unchanged')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,required=True)
@@ -177,12 +211,13 @@ def main():
     parser.add_argument('--osm-file',type=Path,required=True)
     args = parser.parse_args()
     ags = args.municipality
-    if len(ags)!=8 or not ags.isdigit() or not ags.startswith('03'):raise ValueError('Niedersachsen municipality required')
+    adapter = states.adapter_for(ags)
+    if not adapter:raise ValueError('No state source adapter for this municipality')
     root = args.root.resolve();inputs = root/'inputs';destination = root/'public/geo/landscape-tours'/ags
     lock_directory = root/'queue';lock_directory.mkdir(exist_ok=True)
     preparation_lock = (lock_directory/'niedersachsen-worker.lock').open('a')
     try:fcntl.flock(preparation_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    except BlockingIOError:raise RuntimeError('Another Niedersachsen preparation worker is active')
+    except BlockingIOError:raise RuntimeError('Another municipal preparation worker is active')
     if shutil.disk_usage(root).free<2*1024**3:raise RuntimeError('Insufficient free storage before preparation')
     if destination.exists():raise ValueError('Existing tour protected; use separate preparation root')
     inventory = json.loads((root/'prepared-inventory'/ags/'inventory.json').read_text())
@@ -196,9 +231,10 @@ def main():
         if unit.get('coordinateMunicipality')!=ags or unit.get('status')!='active' or not geometry.covers(Point(unit['lon'],unit['lat'])):
             raise ValueError('Inventory coordinate/status mismatch')
     winds = [u for u in units if u['kind']=='wind']
-    if not winds or any(u.get('locationType') not in ('Windenergie an Land',) for u in winds):raise ValueError('Active onshore wind inventory required')
-    rows = shared.district_units(dict(kind='wind',status='complete',units=winds),geometry,[feature])
-    prefix = 'ni-'+ags
+    if any(u.get('locationType') not in ('Windenergie an Land',) for u in winds):raise ValueError('Only active onshore wind is supported')
+    # Places without wind get a town/solar stage; the gap is recorded, never hidden.
+    rows = shared.district_units(dict(kind='wind',status='complete',units=winds),geometry,[feature]) if winds else []
+    prefix = adapter['prefix']+'-'+ags
     root.joinpath('staging').mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=prefix+'-',dir=root/'staging') as temp:
         stage = Path(temp);out = stage/'public/geo/landscape-tours'/ags;out.mkdir(parents=True)
@@ -215,15 +251,17 @@ def main():
         gaps += [dict(kind='solar-outline-or-link',unitId=u['id'],status='research-required') for u in units if u['kind']=='solar']
         gaps += [dict(kind='official-boundary-verification',unitId=u['id'],status='research-required') for u in units if u.get('assignmentStatus')=='boundary-review-required']
         gaps.append(dict(kind='provisional-municipality-boundary',status='official-verification-pending'))
+        if not rows:gaps.append(dict(kind='no-active-wind-in-municipality',status='town-and-solar-stage-only'))
         shared.save(out/'data-gaps.json',dict(municipality=ags,gaps=gaps,stageReady=False,browserAcceptance='pending'))
         shared.save(out/'assignment-audit.json',dict(municipality=ags,cadastralVerification=False,
             nearBoundaryUnits=[u['id'] for u in units if u.get('assignmentStatus')=='boundary-review-required'],
             units=[{k:u.get(k) for k in ('id','municipalityCode','coordinateMunicipality','assignmentStatus','boundaryDistanceMetres')} for u in units],sources=inventory['sources']))
-        osm_source = 'https://download.geofabrik.de/europe/germany/niedersachsen.html'
+        osm_source = states.osm_page(adapter,args.osm_file)
         osm_hash = shared.digest(args.osm_file)
         shared.save(out/'solar-enrichment.geo.json',dict(type='FeatureCollection',features=features,researchLeads=leads,checkedAt=solar['checkedAt'],sourceUrl=osm_source,sourceSha256=osm_hash))
         shared.save(out/'preparation.json',dict(prefix=prefix,townName=town['tags']['name'],townLabel=town['tags']['name'],weatherMunicipality=ags,
-            solarFootprints={},solarRegisterCache='inputs/national-register/solar.json',buildingLicense='CC BY 4.0 · LGLN',terrainLicense='CC BY 4.0 · LGLN'))
+            solarFootprints={},solarRegisterCache='inputs/national-register/solar.json',buildingLicense=adapter['buildingLicense'],terrainLicense=adapter['terrainLicense'],
+            stateAdapter=adapter['key'],sourceReference='EPSG:%d'%adapter['native']))
         document = dict(elements=context,sourceUrl=osm_source,sourceSha256=osm_hash,sourceFile=args.osm_file.name)
         shared.save(out/'context-source.json',document);shared.save(inputs/(ags+'-osm.json'),document)
         terrain,buildings = coverage(rows,town,features,geometry);bounds = transform(geographic.transform,terrain).bounds
@@ -231,16 +269,37 @@ def main():
         for manifest in sorted(inputs.glob('*sources.json')):
             for entry in json.loads(manifest.read_text()):
                 if entry.get('url') and entry.get('sha256') and Path(entry['file']).name==entry['file']:reuse.setdefault(entry['url'],[]).append(entry)
-        jobs = []
-        for host,collection,asset,area in [('dgm','dgm1','dgm1-tif',terrain),('lod','lod2','lod2-gml',buildings)]:
-            urls = selected_tiles(stac_pages(host,collection,bounds),area,asset)
-            if not urls:raise ValueError('Missing official '+collection+' tiles')
-            jobs.extend((host,url) for url in urls)
+        def lgln(terrain_area,building_area):
+            found = []
+            for host,collection,asset,area in [('dgm','dgm1','dgm1-tif',terrain_area),('lod','lod2','lod2-gml',building_area)]:
+                urls = selected_tiles(stac_pages(host,collection,bounds),area,asset)
+                if not urls:raise ValueError('Missing official '+collection+' tiles')
+                found.extend((host,url) for url in urls)
+            return found
+        jobs = states.tile_jobs(adapter,terrain,buildings,lgln)
+        if not any(kind=='dgm' for kind,_ in jobs):raise ValueError('Missing official terrain tiles')
+        if not any(kind=='lod' for kind,_ in jobs):raise ValueError('Missing official building tiles')
         shared.save(inputs/(prefix+'-download-plan.json'),dict(terrainBounds=terrain.bounds,files=jobs))
-        manifest = []
-        for kind,url in jobs:
-            entry = download(inputs,prefix,kind,url,reuse);manifest.append(entry);reuse.setdefault(url,[]).append(entry)
-            shared.save(inputs/(prefix+'-sources.json'),manifest)
+        fetch = intake if adapter['native']!=25832 else download
+        def attempt(job):
+            # State portals stall intermittently; retry a tile, never substitute it.
+            for number in range(4):
+                try:return fetch(inputs,prefix,job[0],job[1],reuse)
+                except (requests.RequestException,OSError) as error:
+                    if number==3:raise
+                    print('Retry',job[1],error,flush=True)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            manifest = list(executor.map(attempt,jobs))
+        if adapter['native']!=25832:
+            native = [e for e in manifest if '-native-' in e['file']]
+            mosaic = inputs/(prefix+'-dgm-mosaic-utm32.tif')
+            partial = mosaic.with_suffix('.tif.part')
+            try:states.convert_dgm_mosaic([inputs/e['file'] for e in native],partial);partial.replace(mosaic)
+            finally:partial.unlink(missing_ok=True)
+            manifest = [e for e in manifest if '-native-' not in e['file']]+[dict(file=mosaic.name,
+                url=states.BB_DGM,sha256=shared.digest(mosaic),derivation='Mosaic of listed UTM33 DGM1 tiles, reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
+                derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native])]
+        shared.save(inputs/(prefix+'-sources.json'),manifest)
         # __file__-derived roots must point to isolated copies, not script symlinks.
         scripts = stage/'scripts';scripts.mkdir()
         for path in Path(__file__).resolve().parent.glob('landscape*.py'):shutil.copy2(path,scripts/path.name)
