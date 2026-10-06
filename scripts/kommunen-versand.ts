@@ -10,6 +10,8 @@
  * Nutzung:
  *   npm run kommunen:versand -- --liste                      Schub-Liste ansehen
  *   npm run kommunen:versand -- --vorschau --n=5             fünf echte Briefe lesen
+ *   npm run kommunen:versand -- --pruefen                    VORFLUG: alle Bremsen ohne Senden,
+ *                                                        endet mit BEREIT / NICHT BEREIT
  *   npm run kommunen:versand -- --test=adresse@example.org   EINE Probemail an sich selbst
  *   npm run kommunen:versand -- --senden --limit=20
  *                                                        Geprüften Schub senden
@@ -37,6 +39,7 @@ import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from "node
 import {
   leseSmtpKonfig,
   fehlendePflichtangaben,
+  platzhalterLoecher,
   postfachBefund,
   mailKopfzeilen,
   adresseAus,
@@ -134,6 +137,8 @@ function bremsen(b: Brief, heute: string, kontakt?: V2Urteil): string[] {
   if (!fenster.frei) gruende.push(fenster.grund);
   const fehlt = fehlendePflichtangaben(b.body);
   if (fehlt.length) gruende.push(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
+  const loecher = platzhalterLoecher(b.subject, b.body, b.body_html);
+  if (loecher.length) gruende.push(`leerer Platzhalter im Brief: ${loecher.join(", ")}`);
   // Auch hier, obwohl das Paket es schon geprüft hat: Es ist die einzige
   // Bremse, die entscheidet, ob eine natürliche Person angeschrieben wird, und
   // die einzige, die bis eben nur an einer Stelle stand.
@@ -250,11 +255,22 @@ function protokolliere(name: string, inhalt: unknown): string {
  * Zu finden im KAS unter Tools → DNS-Einstellungen: der TXT-Eintrag, dessen
  * Name auf `._domainkey` endet und dessen Wert mit `v=DKIM1` beginnt.
  */
+/**
+ * Selectors All-Inkl has used for solar-check.io, newest first. A selector is
+ * public DNS, not a secret, so it may live in code. All-Inkl ROTATES the key
+ * under a new dated name and drops the old record: on 20.09.2026
+ * kas202603240809 became kas202609200150, and the first run after that (06.10.)
+ * stopped here because only the old name was configured. When the check fails
+ * again, look up the new name (KAS → Tools → DNS-Einstellungen → solar-check.io,
+ * TXT record ending in ._domainkey) and add it at the top.
+ */
+const BEKANNTE_DKIM_SELEKTOREN = ["kas202609200150", "kas202603240809"];
+
 async function dkimAktiv(domain: string): Promise<{ ok: boolean; hinweis: string }> {
-  const selektoren = (process.env.OUTREACH_DKIM_SELECTOR ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const selektoren = [
+    ...(process.env.OUTREACH_DKIM_SELECTOR ?? "").split(",").map((s) => s.trim()),
+    ...BEKANNTE_DKIM_SELEKTOREN,
+  ].filter((s, i, a) => s && a.indexOf(s) === i);
   if (!selektoren.length) {
     return {
       ok: false,
@@ -575,8 +591,11 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
 }
 
 async function probemail(an: string, p: Paket): Promise<void> {
-  const b = p.paket[0];
-  if (!b) throw new Error("Kein Brief im Paket — erst die Charge festschreiben.");
+  // `--ags=` picks a specific letter, so both variants (with and without 3D
+  // scene) can be proofed before a run.
+  const wahl = arg("ags");
+  const b = wahl ? p.paket.find((x) => x.region_id === wahl) : p.paket[0];
+  if (!b) throw new Error(wahl ? `Kein Brief für ${wahl} im Paket.` : "Kein Brief im Paket — erst die Charge festschreiben.");
   // NIE AN EINE GEMEINDE. Der Probemail-Zweig läuft vor allen Bremsen — ein
   // Tippfehler im Parameter schickte den Brief mit „[PROBE]" im Betreff an ein
   // echtes Rathaus, und das wäre verbrannt.
@@ -637,6 +656,74 @@ function zahl(name: string, standard: number): number {
   return n;
 }
 
+/** Preflight; true when the charge may go out today as it stands. */
+async function vorflug(p: Paket, limit: number): Promise<boolean> {
+  const maengel: string[] = [];
+  const briefe = p.paket.slice(0, limit);
+  log(`Vorflug ${p.schub}, Charge ${p.charge}: ${briefe.length} Briefe im Paket`);
+
+  const tag = kommunenVersandtag(new Date());
+  if (!tag.ok) maengel.push(`Versandtag: ${tag.grund}`);
+  log(tag.ok ? "Versandtag in Ordnung" : `Versandtag: ${tag.grund}`, tag.ok ? "ok" : "err");
+
+  const { transport, konfig } = await baueTransport();
+  transport.close();
+  const dkim = await dkimAktiv(adresseAus(konfig.from).split("@")[1]);
+  log(dkim.hinweis, dkim.ok ? "ok" : "err");
+  if (!dkim.ok) maengel.push("DKIM");
+
+  // Same evidence check and per-letter brakes as the real run.
+  const kontakt = await kontaktPruefung(briefe);
+  let gehalten = 0;
+  for (const b of briefe) {
+    const halt = bremsen(b, p.heute, kontakt.get(b.region_id));
+    if (halt.length) {
+      gehalten++;
+      log(`${b.name} (${b.region_id}) ${b.empfaenger} — ${halt.join(" · ")}`, "err");
+    }
+  }
+  log(`${briefe.length - gehalten} von ${briefe.length} Briefen bestehen alle Bremsen.`, gehalten ? "warn" : "ok");
+
+  // Scenes are a separate session's work. The letter mentions the 3D view only
+  // where a scene is published, so this is information, not a brake — but the
+  // number has to be read BEFORE the go, not discovered after it.
+  const ohneSzene = briefe.filter((b) => !b.body.includes("3D-Ansicht"));
+  log(
+    `${briefe.length - ohneSzene.length} von ${briefe.length} Briefen zeigen eine 3D-Szene` +
+      (ohneSzene.length ? ` — ohne: ${ohneSzene.map((b) => b.name).join(", ")}` : ""),
+    ohneSzene.length ? "warn" : "ok",
+  );
+
+  // Every link a recipient can click, called once as a recipient would. This
+  // also warms the cold pages before the first real click.
+  const links = [...new Set(briefe.flatMap((b) => (b.body.match(/https:\/\/solar-check\.io[^\s)"<>]*/g) ?? []).map((u) => u.replace(/[.,]$/, ""))))];
+  const kaputt: string[] = [];
+  for (let i = 0; i < links.length; i += 6) {
+    await Promise.all(
+      links.slice(i, i + 6).map(async (u) => {
+        try {
+          const r = await fetch(u, { headers: { "user-agent": "solar-check-health-check" }, redirect: "follow" });
+          if (r.status !== 200) kaputt.push(`${r.status} ${u}`);
+        } catch (e) {
+          kaputt.push(`${(e as Error).message} ${u}`);
+        }
+      }),
+    );
+  }
+  for (const k of kaputt) log(k, "err");
+  log(`${links.length - kaputt.length} von ${links.length} Links antworten.`, kaputt.length ? "err" : "ok");
+  if (kaputt.length) maengel.push(`${kaputt.length} Links`);
+
+  log();
+  if (maengel.length) {
+    log(`NICHT BEREIT: ${maengel.join(" · ")}${gehalten ? ` · ${gehalten} Briefe würden zurückgehalten` : ""}`, "err");
+    return false;
+  }
+  if (gehalten) log(`BEREIT für ${briefe.length - gehalten} Briefe; ${gehalten} würden zurückgehalten (siehe oben).`, "warn");
+  else log(`BEREIT: alle ${briefe.length} Briefe.`, "ok");
+  return true;
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
 
@@ -661,15 +748,13 @@ async function main(): Promise<void> {
     return zeigeVorschau(paket, zahl("n", 5));
   }
 
-  // Dry run of the last check before sending: who would the evidence gate turn away?
+  // PREFLIGHT: every brake of the send run, without sending. One command, one
+  // verdict. Before 06.10.2026 "ready" meant "links and texts look fine"; the
+  // send then stopped at a rotated DKIM selector, after 31 letters had been
+  // found carrying "undefined". A check that only runs inside --senden is found
+  // out at the worst possible moment.
   if (hat("pruefen")) {
-    const urteile = await kontaktPruefung(paket.paket.slice(0, limit));
-    const abgelehnt = [...urteile.entries()].filter(([, u]) => !u.ok);
-    for (const [id, u] of abgelehnt) {
-      const b = paket.paket.find((x) => x.region_id === id)!;
-      log(`${b.name} (${id}) ${b.empfaenger} — ${(u as { grund: string }).grund}`, "err");
-    }
-    log(`${urteile.size - abgelehnt.length} von ${urteile.size} bestehen die Prüfung vor dem Versand.`, abgelehnt.length ? "warn" : "ok");
+    process.exitCode = (await vorflug(paket, limit)) ? 0 : 1;
     return;
   }
 

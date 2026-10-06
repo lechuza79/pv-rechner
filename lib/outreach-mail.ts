@@ -344,6 +344,29 @@ export function fehlendePflichtangaben(body: string): string[] {
 }
 
 /**
+ * Template holes that leaked into a letter: a missing value rendered as text.
+ *
+ * Measured 06.10.2026: 31 of 95 letters of a charge said "Kontaktdaten
+ * (undefined von …)" — a lookup table did not know a stored value. Nothing
+ * failed, the text just carried the hole. Each finding holds the letter back.
+ * "null" counts only as a standalone lowercase word; the letters write numbers
+ * as digits, so the German word does not occur there.
+ */
+const PLATZHALTER_LOECHER: { was: string; muster: RegExp }[] = [
+  { was: "undefined", muster: /\bundefined\b/ },
+  { was: "null", muster: /(^|[^\p{L}\d-])null([^\p{L}\d-]|$)/u },
+  { was: "NaN", muster: /\bNaN\b/ },
+  { was: "Infinity", muster: /\bInfinity\b/ },
+  { was: "[object Object]", muster: /\[object Object\]/ },
+  { was: "Vorlagen-Klammer", muster: /\$\{|\{\{/ },
+];
+
+export function platzhalterLoecher(...texte: string[]): string[] {
+  const gesamt = texte.join("\n");
+  return PLATZHALTER_LOECHER.filter((p) => p.muster.test(gesamt)).map((p) => p.was);
+}
+
+/**
  * Kopfzeilen einer Anschreiben-Mail.
  *
  * `List-Unsubscribe` ist bewusst dabei, obwohl es für eine einzelne
