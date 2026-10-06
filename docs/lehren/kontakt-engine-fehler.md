@@ -540,7 +540,10 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   bräuchte ein Wörterbuch, und gemessen sind von 42 Marken ohne Rückhalt über
   Registerpostfach oder Postleitzahl alle echte Firmengruppen. Stattdessen
   listet ein eigener Befehl genau diese Marken zum Gegenlesen (Anleitung,
-  Schritt Gegenlesen); Elements ist zurückgenommen.
+  Schritt Gegenlesen); Elements ist zurückgenommen. Zweiter Fall am selben Tag:
+  „Eifelwind" (privater Betreiber in Simmerath) auf eifelwind.de einer Bonner
+  Firma — eine Regel „Landschaft + wind ist keine Marke" hätte die echten
+  Odenwaldwind und BadenWind mit abgelehnt; deshalb weiter Gegenlesen.
 
 ### 60. Ein Hausnummernbereich im Register
 - **Anlass:** 06.10.2026 — Register „Hauptstraße 2-4", Impressum „Hauptstraße 2"
