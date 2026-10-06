@@ -115,6 +115,23 @@ describe("Klasse 2 — Spalten: Code ⊂ DDL ⊂ Datenbank", () => {
   });
 });
 
+describe("Klasse 5 — seitenweises Lesen nur sortiert", () => {
+  const ERHEBUNG = /kontakt|contact|fachbetrieb|presse|windbetreiber|solarpark|versorger|bestand|kommunen/;
+  it("every paginated read of a collection script carries a sort order", () => {
+    let gesehen = 0;
+    for (const d of dateien("scripts").filter((x) => ERHEBUNG.test(x) && x.endsWith(".ts"))) {
+      const zeilen = lies(d).split("\n");
+      zeilen.forEach((z, i) => {
+        if (!/\.range\(/.test(z)) return;
+        gesehen++;
+        const davor = zeilen.slice(Math.max(0, i - 8), i + 1).join("\n");
+        expect(davor, `${d}:${i + 1} liest seitenweise ohne Sortierung`).toMatch(/\.order\(|q\.order\(k\)/);
+      });
+    }
+    expect(gesehen).toBeGreaterThan(15);
+  });
+});
+
 describe("Klasse 13 — Kontakt nur von der eigenen belegten Website", () => {
   it("knows a page of the site from a page elsewhere", () => {
     expect(aufEigenerWebsite("https://www.wpd.de/impressum", "wpd.de")).toBe(true);

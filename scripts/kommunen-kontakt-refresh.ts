@@ -361,6 +361,7 @@ async function validGemeindeIds(
       .from("mastr_regions")
       .select("region_id")
       .eq("level", "gemeinde")
+      .order("region_id")
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`read region ids failed: ${error.message}`);
     if (!data || data.length === 0) break;
@@ -787,6 +788,7 @@ async function uploadRang(dry: boolean): Promise<void> {
     const { data, error } = await supabase
       .from("mastr_gemeinde_solar")
       .select("region_id, population, kwp_dach")
+      .order("region_id")
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`read gemeinde_solar failed: ${error.message}`);
     if (!data || data.length === 0) break;

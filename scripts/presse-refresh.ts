@@ -135,6 +135,17 @@ async function makeClient(): Promise<SupabaseLike> {
 }
 
 /** PostgREST liefert stumm höchstens 1.000 Zeilen — deshalb immer blättern. */
+/** The primary key of every table read page by page — the total order a paginated read needs. */
+const SORTIERSCHLUESSEL: Record<string, string[]> = {
+  presse_medien: ["domain"],
+  presse_kontakte: ["domain", "schluessel"],
+  presse_belege: ["domain", "merkmal", "quelle_url"],
+  presse_kreissuche: ["kreis_id", "frage"],
+  kommunen_kontakt: ["region_id"],
+  utilities: ["id"],
+  fachbetriebe: ["domain"],
+};
+
 async function alleZeilen<T>(
   sb: SupabaseLike,
   tabelle: string,
@@ -144,8 +155,15 @@ async function alleZeilen<T>(
 ): Promise<T[]> {
   const out: T[] = [];
   const schritt = 1000;
+  // Pages without a sort order return rows twice and skip others (the same
+  // place showed 35, 64 and 39 installations in three reads, 06.09.2026). The
+  // key comes from the table, not from each caller, so no caller can forget it.
+  const schluessel = SORTIERSCHLUESSEL[tabelle];
+  if (!schluessel) throw new Error(`${tabelle}: kein Sortierschlüssel bekannt — in SORTIERSCHLUESSEL eintragen`);
   for (let von = 0; ; von += schritt) {
-    let q = sb.from(tabelle).select(spalten).range(von, von + schritt - 1);
+    let q = sb.from(tabelle).select(spalten);
+    for (const k of schluessel) q = q.order(k);
+    q = q.range(von, von + schritt - 1);
     if (filter) q = filter(q);
     const { data, error } = await q;
     if (error) throw new Error(`${tabelle}: ${error.message}`);
