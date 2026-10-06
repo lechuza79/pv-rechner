@@ -17,6 +17,12 @@ describe("Seiten, auf die jemand verlinkt", () => {
     ]);
   });
 
+  it("eine Veröffentlichung über einen Kreis prüft nur die Kreisseite (Fehlalarm 05.10.2026)", () => {
+    expect(verlinktePfade(["06440"], regionen).map((s) => s.pfad)).toEqual([
+      "/solar-atlas/hessen/landkreis-wetteraukreis",
+    ]);
+  });
+
   it("die richtige Seite besteht", () => {
     expect(verlinkteSeiteBefund(200, "<title>Photovoltaik in Nidda: Bestand</title>", "Nidda")).toBeNull();
     expect(verlinkteSeiteBefund(200, "<title>Photovoltaik im Wetteraukreis</title>", "Landkreis Wetteraukreis")).toBeNull();
