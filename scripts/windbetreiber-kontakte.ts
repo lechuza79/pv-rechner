@@ -224,12 +224,15 @@ async function apply() {
   let mit = 0, ohne = 0, geschrieben = 0;
   // A result judged under older rules says what the old rules thought. Writing
   // it would bring back exactly what the rule change was meant to remove.
-  const alle = ergebnisse();
-  const veraltet = alle.filter((r) => r.rules !== rulesVersion());
-  if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
   // What is already written: an unchanged contact keeps its release, and the
   // release (a fresh re-read of every proof page) is not run again for nothing.
+  // Only websites still proven: a withdrawn website's result is history.
   const jetzt = new Map((await betreiber()).map((z) => [z.website, z]));
+  const alle = ergebnisse().filter((r) => jetzt.has(r.id));
+  const veraltet = alle.filter((r) => r.rules !== rulesVersion());
+  if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
+  const unbewertet = [...jetzt.keys()].filter((d) => !alle.some((r) => r.id === d));
+  if (unbewertet.length) console.log(`Hinweis: ${unbewertet.length} belegte Websites ohne Ergebnis (z. B. ${unbewertet[0]}) — erst --mode=research/evaluate`);
   let unveraendert = 0;
   for (const r of alle) {
     const k = kontaktAus(r);
