@@ -26,7 +26,7 @@ Das Werkzeug `scripts/stage-workflow.py` hat fünf Aktionen:
 ### Tatsächlich unterstützter Umfang
 
 - **Bundesweite Vorarbeit:** technische Registerinventare mit vorläufiger Zuordnung anhand generalisierter Gemeindegrenzen. Das ist noch keine Szene.
-- **Allgemeiner neuer-Geometrie-Lauf:** derzeit Niedersachsen, Gemeinden mit aktiven Onshore-Windanlagen. Quellenadapter und erfolgreicher Zwei-Orte-Test sind zentral im Repo enthalten.
+- **Allgemeiner neuer-Geometrie-Lauf:** Niedersachsen, Nordrhein-Westfalen, Brandenburg und Sachsen-Anhalt (Länderadapter in `scripts/landscape_state_sources.py`), Gemeinden mit oder ohne Windanlagen. Brandenburg liefert UTM33 und wird beim Einlesen auf UTM32 umgerechnet; Sachsen-Anhalt liefert 2-km-Kacheln (Gebäude CityGML, Gelände DGM5) über den Kartendownloader des LVermGeo, dessen Kachelverzeichnis aus der Downloadseite gelesen wird. OSM-Auszug je Land bzw. Regierungsbezirk in `inputs/`.
 - **Pilotrezepte, nicht allgemeine Länderabdeckung:** RLP-Kreisvorbereitung sowie Landkreis Oldenburg/Würzburg und die bisherigen Einzelorte. Ihre Skripte sind zur Wiederverwendung zentral verfügbar, aber teilweise auf Pilotquellen/Orte begrenzt. `plan` gibt einen anderen Ort deshalb nicht still an ein solches Skript weiter.
 - **Andere Länder, neue Landkreise oder Orte ohne Wind:** vorhandene Bausteine und Quellen prüfen, fehlenden Adapter ergänzen. Vor größerer Recherche/Entwicklung Aufwand und Modellverbrauch mit dem Betreiber abstimmen. Ein nicht unterstützter Ort bleibt ein konkreter offener Auftrag; niemals einen vorhandenen Ort als Ersatz ausliefern.
 

@@ -38,6 +38,7 @@ import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 
 import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
+import { selbstbeschreibung } from "../lib/impressum-anbieter";
 import { readFileSync, existsSync } from "node:fs";
 import { sichtbarerText, entities, hostVon } from "../lib/fachbetrieb-extrakt";
 import {
@@ -52,6 +53,7 @@ import {
   postfaecherAus,
   hatKontaktformular,
   medientypAus,
+  verbandAus,
   themenAus,
   geschichtenZu,
   gattungAus,
@@ -580,7 +582,11 @@ function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlyS
   // Medientyp aus allen Seiten: Der Newsletter-Hinweis steht oft nur im Fuß der
   // Kontaktseite, das Podcast-Format nur unter „Über uns".
   const gesamtText = seiten.map((s) => sichtbarerText(s.html)).join("\n");
-  const medientyp = medientypAus(gesamtText);
+  // Whether an association runs the site is read at the imprint and the title,
+  // never at a word anywhere on the page (see verbandAus).
+  const impSeite = seiten.find((s) => s.art === "impressum");
+  const verband = verbandAus(impSeite ? sichtbarerText(impSeite.html) : "", selbstbeschreibung(grund.html));
+  const medientyp = medientypAus(gesamtText, verband);
 
   // An administration's homepage looks like a newsroom; its legal notice does not.
   const urteil = istVerwaltung(gesamtText, domain, verwaltungsDomains)
@@ -755,12 +761,13 @@ function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlyS
     });
   }
   for (const m of medientyp) {
+    const ausImpressum = m === "Verband" && verband && verband.wo !== "Selbstbeschreibung";
     belege.push({
       domain,
       merkmal: `medientyp:${m}`,
       wert: m,
-      quelle_url: grund.url,
-      fundstelle: "Merkmal im Seitentext",
+      quelle_url: ausImpressum ? impSeite!.url : grund.url,
+      fundstelle: m === "Verband" && verband ? `${verband.wo}: „${verband.treffer}"` : "Merkmal im Seitentext",
       gefunden_am: tag,
     });
   }
