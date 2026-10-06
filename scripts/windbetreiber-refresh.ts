@@ -269,16 +269,23 @@ const impressumDatei = (domain: string) => resolve(CACHE, "impressum", `${domain
  * about 40 operators stood as "unreachable" because of a busy hour. It is
  * tried again, at most three times, an hour apart.
  */
+/** How a check may read: only the cache (re-judging), fetch what is missing, or also fetch again what a browser might read (manual pass). */
+type Lesart = "zwischenspeicher" | "abrufen" | "nachholen";
+let LESART: Lesart = "abrufen";
+
 async function impressumHolen(domain: string, mitBrowser = true): Promise<Impressum> {
   const datei = impressumDatei(domain);
   let versuche = 0;
   if (existsSync(datei)) {
     const alt: Impressum = JSON.parse(readFileSync(datei, "utf8"));
+    // Re-judging reads the cache and nothing else: it ran for ten minutes
+    // against the network once the retry rules below reached it (06.10.2026).
+    if (LESART === "zwischenspeicher") return alt;
     // Fetched for a search hit, without a browser, and nothing came back: a
     // check that may use the browser (register candidate, manual pass) must
     // not inherit that answer — orsted.de answered 403 to the plain fetch and
     // could never be read by hand afterwards (06.10.2026).
-    const ohneBrowser = mitBrowser && !alt.text && !alt.startText && !alt.browser_versucht && alt.via !== "browser";
+    const ohneBrowser = LESART === "nachholen" && mitBrowser && !alt.text && !alt.startText && !alt.browser_versucht && alt.via !== "browser";
     if (!abrufWiederholen(alt) && !ohneBrowser) return alt;
     versuche = alt.versuche ?? 1;
   }
@@ -433,6 +440,7 @@ async function impressumLauf() {
  * longer proves itself is withdrawn and its operator comes back as open.
  */
 async function neuBewerten() {
+  LESART = "zwischenspeicher";
   const c = await db();
   const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true));
   const nachNr = new Map(zeilen.map((z) => [z.mastr_nr, z]));
@@ -492,6 +500,7 @@ async function neuBewerten() {
 const VON_HAND = "von Hand geprüft:";
 
 async function manuell() {
+  LESART = "nachholen";
   // Several operators at once: the project companies of one address are found
   // together, but each one still runs through its own check.
   const [nrs, url] = process.argv.slice(process.argv.indexOf("--manuell") + 1);

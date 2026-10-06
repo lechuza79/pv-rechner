@@ -186,7 +186,10 @@ describe("Klasse 7 — ein gescheiterter Abruf ist keine Antwort", () => {
     const holen = r.slice(r.indexOf("async function impressumHolen("), r.indexOf("type Zeile = {"));
     expect(holen).toMatch(/if \(!abrufWiederholen\(alt\) && !ohneBrowser\) return alt;/);
     // A plain-fetch failure is no answer for a check that may use the browser.
-    expect(holen).toMatch(/const ohneBrowser = mitBrowser && !alt\.text && !alt\.startText && !alt\.browser_versucht/);
+    expect(holen).toMatch(/const ohneBrowser = LESART === "nachholen" && mitBrowser && !alt\.text && !alt\.startText && !alt\.browser_versucht/);
+    // Re-judging never touches the network.
+    expect(holen.indexOf('if (LESART === "zwischenspeicher") return alt;')).toBeLessThan(holen.indexOf("abrufWiederholen(alt)"));
+    expect(r.slice(r.indexOf("async function neuBewerten()"), r.indexOf("async function neuBewerten()") + 80)).toMatch(/LESART = "zwischenspeicher"/);
     expect(holen).not.toMatch(/if \(existsSync\(datei\)\) return /);
   });
 });
