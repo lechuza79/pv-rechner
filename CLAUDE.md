@@ -2334,15 +2334,22 @@ Vervielfältigung (§ 87b Abs. 1 UrhG) — „wird ja nicht angezeigt" ist keine
 urheberrechtliche Kategorie. Herleitung, Gegenargumente und der DMA-Weg über den Betrieb
 selbst: `docs/fachbetriebe-quellen.md`, Abschnitt 1b.
 
-**Google scheidet als DIREKTE Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
-3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
-das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
-listings or directory service" — wortwörtlich dieser Fall, **solange man die Schnittstelle
-selbst nutzt**. Die Klauseln binden den Kunden der Maps Platform; gegen einen Nichtkunden
-sind sie kein Beleg, und sie so zu zitieren belegt eine Aussage, die sie nicht trägt.
-Volltext:
-`docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
-eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
+**Google scheidet als QUELLE aus — als Anzeige nicht (geprüft 06.10.2026, Volltexte in
+`docs/quellen/fachbetriebe/`, Gegenprüfung durch einen zweiten Legal-Judge).** Für ein Konto
+mit deutscher Rechnungsadresse gilt seit 08.07.2025 die **EWR-Fassung** der Maps Platform
+Terms, nicht die globale; die frühere Begründung zitierte die falsche. Das Speicherverbot
+steht dort unverändert (Ziff. 3.3.2(a)(iii) „copy and save business names, addresses, or
+user reviews", (b) kein Zwischenspeichern außer der `place_id`) — ein Bewertungswert kommt
+also nie in unsere Datenbank, auch nicht intern. **Die Verzeichnis-Klausel der globalen
+Fassung (3.2.3(d)(iii)) fehlt in der EWR-Fassung**; an ihre Stelle tritt eine
+**abschließende** Liste erlaubter Verwendungen der Places-Daten (Service Terms Ziff. 15.2),
+von der **Googles fertiges Anzeige-Bauteil ausgenommen ist** (Ziff. 15.3). Zwei Fallen, die
+der Gegenprüfer gefunden hat: Die Acceptable Use Policy verbietet, Google-Daten mit eigenen
+personenbezogenen Daten zu einem neuen Merkmal zu verbinden — das trifft gerade die
+*interne* Sichtung („geeignet / ungeeignet"), nicht die Anzeige; und eine Seite, die nur
+aus Google-Inhalt besteht, ist keine „Customer Application". Eine Bewertung wird deshalb
+weiterhin **nur** als Selbstauskunft der eigenen Website erfasst (`bewertung_quelle`), nie
+als „Google-Bewertung" beschriftet; gezeigt werden darf sie nur live über das Bauteil.
 
 **Ein Batch-Upsert vereinheitlicht die Spaltenmenge — BLOCKER, und der teuerste Unfall
 dieses Bereichs.** PostgREST baut aus einem Batch EIN Insert mit EINER Spaltenliste;

@@ -33,11 +33,15 @@ import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
  * je Quelle in docs/fachbetriebe-quellen.md, damit die nächste Sitzung den Weg
  * nicht noch einmal geht:
  *
- *  - GOOGLE PLACES / MAPS: rechtlich gesperrt, dreifach. Maps Platform Terms
- *    3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user
- *    reviews", (b) das Zwischenspeichern über Kennnummern hinaus, und (d)(iii)
- *    ausdrücklich die Nutzung „in a listings or directory service" — also genau
- *    diesen Fall. Volltext-Auszug: docs/quellen/fachbetriebe/.
+ *  - GOOGLE PLACES / MAPS: als QUELLE gesperrt. Für ein Konto mit deutscher
+ *    Rechnungsadresse gilt seit 08.07.2025 die EWR-Fassung (nicht die globale,
+ *    aus der die frühere Begründung stammte). Ziff. 3.3.2(a)(iii) verbietet dort
+ *    weiterhin „copy and save business names, addresses, or user reviews", (b)
+ *    das Zwischenspeichern außer der place_id. Die Verzeichnis-Klausel der
+ *    globalen Fassung (3.2.3(d)(iii)) steht in der EWR-Fassung NICHT — dafür
+ *    eine abschließende Liste erlaubter Places-Verwendungen, von der Googles
+ *    fertiges Anzeige-Bauteil (Places UI Kit) ausgenommen ist (Service Terms
+ *    Ziff. 15.3). Volltexte vom 06.10.2026: docs/quellen/fachbetriebe/.
  *  - HANDWERKSKAMMER-VERZEICHNISSE: fachlich stark (amtliche Gewerke, Landkreis,
  *    58 % mit Website), aber der bequeme Freibrief trägt NICHT. § 2 Abs. 5 DNG
  *    („öffentliche Stellen berufen sich nicht auf § 87b UrhG") gilt nur im
@@ -293,8 +297,8 @@ async function setup(): Promise<void> {
       installateurverzeichnis boolean,
       zertifikate text[],
       -- Bewertung NUR als Selbstauskunft der eigenen Website. Nie aus Google:
-      -- Maps Platform Terms 3.2.3(a)(iii) untersagt das Speichern von Reviews,
-      -- (d)(iii) die Nutzung in einem Verzeichnisdienst.
+      -- die EWR-Fassung der Maps Platform Terms (Ziff. 3.3.2(a)(iii)) untersagt
+      -- das Speichern von Reviews; zeigen geht nur live über Googles Bauteil.
       bewertung_wert numeric,
       bewertung_anzahl integer,
       bewertung_quelle text,

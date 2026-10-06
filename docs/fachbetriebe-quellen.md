@@ -1151,6 +1151,65 @@ Themenfelds — und die einzige, in der wir mehr behaupten dürfen als „ungepr
 
 ---
 
+## 8. Nachtrag 06.10.2026: Google-EWR-Fassung, Erreichbarkeit, Doppel-Einträge
+
+### Für ein deutsches Konto gilt eine andere Fassung — und sie kippt die halbe Begründung
+
+Die globalen Maps Platform Terms sagen selbst: Bei einer Rechnungsadresse im EWR gilt
+seit 08.07.2025 die EWR-Fassung (Bestandsschutz nur für unveränderte Integrationen von
+davor). Alle bisherigen Zitate in diesem Dokument und in CLAUDE.md stammten aus der
+globalen. Volltexte, abgerufen 06.10.2026, im Ordner `docs/quellen/fachbetriebe/`.
+
+- **Hält:** Speicherverbot, EWR-Ziff. 3.3.2(a)(iii)/(b), wortgleich. Die `place_id` darf
+  dauerhaft gespeichert werden (Service Terms „Google ID Caching"), Koordinaten aus
+  Places nur 30 Tage (Ziff. 15.4).
+- **Fällt:** Die Verzeichnis-Klausel (global 3.2.3(d)(iii)) steht in der EWR-Fassung nicht
+  — null Treffer im Volltext, vom Gegenprüfer bestätigt.
+- **Neu und strenger:** Service Terms Ziff. 15.2 — Places-Inhalte außer Koordinaten und
+  `place_id` nur für die neun „Permitted Uses". Anzeige fremder Betriebe an Endnutzer ist
+  keine davon.
+- **Und die Ausnahme, die ich zuerst übersehen hatte:** Ziff. 15.3 nimmt das **Places UI
+  Kit** von 15.1 und 15.2 aus. Für Googles fertiges Anzeige-Bauteil gilt die Positivliste
+  also nicht. Damit ist „Bewertungen nach der Berechnung zeigen" vertraglich NICHT
+  verschlossen; ungeprüft ist, was die Produktdokumentation des UI Kit zusätzlich verlangt.
+- **Die interne Sichtung ist NICHT der sichere Teil.** Die Acceptable Use Policy (für die
+  Maps-Dienste einbezogen) verbietet „to combine any Google data with any personal
+  information held by You to derive additional personal information without user
+  consent". Ein „geeignet / ungeeignet" aus Google-Bewertung plus unseren Daten zu einem
+  Einzelunternehmer ist wortnah genau das. „user consent" ist mehrdeutig, die Klausel also
+  ernsthaft einschlägig, nicht sicher verletzt.
+
+**Die Lehre:** Ich hatte die Positivliste für die Anzeige als Sperre gelesen und die
+interne Nutzung über Nr. 3 („sales team's customers or opportunities") für gedeckt — der
+Gegenprüfer hat beides umgedreht. Wer eine Positivliste findet, sucht als Nächstes, wovon
+sie ausgenommen ist.
+
+**Der Zugang steht bereits** (Projekt, Rechnungskonto und ein auf die Dachflächen-
+Schnittstelle beschränkter Schlüssel aus der Dach-Prüfung). Für das Bauteil fehlen nur zwei
+freigeschaltete Dienste im selben Projekt.
+
+### Website-Erreichbarkeit taugt nicht als Warnsignal — gemessen
+
+Die 121 Betriebe, deren Startseite beim Erfassen nicht antwortete, am 06.10.2026 erneut
+abgerufen: 22 erreichbar, 54 weisen nur ab (403, Bot-Schutz — die Seite lebt), 12 liefern
+404, 3 einen Serverfehler, 30 antworten gar nicht. Eindeutig weg sind **zwei**: Ihre Domain
+steht bei einem Domain-Händler zum Verkauf. Zwei Funde auf 3.115 tragen keinen Nachtlauf.
+
+### Derselbe Eintrag in zwei Beständen — der eigentliche Befund
+
+Unter den 121 standen Tageszeitungen, Landkreise, Firmenverzeichnisse und Energiekonzerne
+als „Betrieb". Gegen die eigenen anderen Bestände gehalten: **110 der 3.115 Betriebe stehen
+zugleich im Presse-Katalog (64) oder in der Versorger-Liste (46).** Fast alle ohne
+Firmennamen (588 Betriebe insgesamt ohne Namen). Ursache: Die Einordnung „Betrieb" ist bei
+3.044 Einträgen allein der Streuungs-Test (wenige Landkreise = kein Portal) — er schließt
+Portale aus, belegt aber keinen Betrieb, und kein Lauf fragt die anderen Bestände.
+**Nicht verwechseln:** Die 3.044 sind kein Fehlerumfang — bei 2.981 steht ein von der
+eigenen Website gemessenes Geschäftsfeld daneben. Belegt mit Name, Gewerk, Ort und
+Fundstelle: 2.211.
+
+Abhilfe gehört in die geteilte Erfassung, nicht in diesen Bestand: keine Domain in zwei
+Beständen, kein Betrieb ohne Firmennamen.
+
 ## Was diese Erhebung ausdrücklich NICHT ist
 
 Sie baut keinen Vermittlungsweg, kein Anschreiben, kein Cockpit und verschickt nichts.
