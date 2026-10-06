@@ -29,6 +29,14 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(b?.wie).toBe("marke");
   });
 
+  it("matches a numberless register PLACE to the imprint's numbered one, and a mistyped ű (WEAG, Luymühle)", () => {
+    const a = akteur("Eco-Mobilität GmbH", "Luymühle", "", "54347");
+    expect(impressumBelegt("Impressum WEAG Future Energies AG Luyműhle 1 54347 Neumagen-Dhron", a, "weag-ag.de")?.wie).toBe("anschrift");
+    // A street without a number would match every house on it.
+    expect(impressumBelegt("Impressum Muster GmbH Hauptstraße 5 54347 Neumagen-Dhron", akteur("Eco-Mobilität GmbH", "Hauptstraße", "", "54347"), "x.de")).toBeNull();
+    expect(impressumBelegt("Impressum Muster GmbH Luymühle 1 54348 Anderswo", a, "x.de")).toBeNull();
+  });
+
   it("rejects the auditing firm whose mailbox one of 115 Sehestedt companies used (Mazars)", () => {
     expect(impressumBelegt(IMPRESSUM.mazars, akteur("Windpark Freyenstein-Halenbeck GmbH ＆ Co. KG", "Windmühlenberg", "", "24814"), "forvismazars.com")).toBeNull();
   });

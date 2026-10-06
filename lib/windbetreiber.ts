@@ -45,7 +45,8 @@ export function falten(s: string): string {
   return s
     .toLowerCase()
     .replace(/＆/g, "&")
-    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    // "ű"/"ő" are a common mistype of "ü"/"ö" ("Luyműhle" in WEAG's imprint, 06.10.2026).
+    .replace(/ä/g, "ae").replace(/ö|ő/g, "oe").replace(/ü|ű/g, "ue").replace(/ß/g, "ss")
     .replace(/é|è/g, "e");
 }
 
@@ -105,6 +106,9 @@ export function nameWoerter(name: string): string[] {
 export function textFalten(text: string): string {
   return ` ${falten(text).replace(/[^a-z0-9&]+/g, " ").replace(/\s+/g, " ").trim()} `;
 }
+
+/** Endings of a street, as opposed to the name of a place (farm, mill, estate). */
+const STRASSENART = /(?:str|weg|platz|allee|ring|damm|gasse|ufer|chaussee|markt|steig|pfad|stieg|wall|graben|hof|berg|feld|kamp|horst|winkel|park|zeile|bogen)$/;
 
 const STRASSE = (s: string) => falten(s).replace(/strasse|str\./g, "str").replace(/[^a-z0-9]/g, "");
 
@@ -194,6 +198,13 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
     if (!treffer && nr) {
       const ohneNr = kompakt.indexOf(strasse + plz);
       if (ohneNr >= 0) treffer = true;
+    }
+    // The other way round: the register names a PLACE without a number ("Luymühle",
+    // 54347), the imprint adds one ("Luymühle 1, 54347"). Only for a place name —
+    // a "…str"/"…weg" without a number would match every house on it.
+    if (!treffer && !nr && !STRASSENART.test(strasse)) {
+      // Digit groups carry a "|" between them ("1 54347" → "1|54347").
+      if (new RegExp(`${strasse}\\d+[a-z]?\\|?${plz}`).test(kompakt)) treffer = true;
     }
     if (treffer) {
       const roh = t.indexOf(plz);
