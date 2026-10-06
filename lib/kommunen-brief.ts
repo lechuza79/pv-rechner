@@ -62,7 +62,7 @@ export async function briefFuerGemeinde(
 ): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
-  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
+  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap, { data: anredeRow }] = await Promise.all([
     serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", regionId).single(),
     serviceDb
       .from("kommunen_kontakt")
@@ -72,6 +72,11 @@ export async function briefFuerGemeinde(
     atlasPathForRegionId(regionId),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
     loadElternSlugs(),
+    // Personal salutation, read by hand from the page that publishes the
+    // address. Keyed by the mailbox, so preview and dispatch read the same.
+    empfaenger
+      ? serviceDb.from("kommunen_anrede").select("anrede").eq("email", empfaenger.trim().toLowerCase()).maybeSingle()
+      : Promise.resolve({ data: null }),
   ]);
   if (!reg) return { grund: "unbekannt" };
   // Kein Brief an einen Landkreis. Die Kontakttabelle führt sie seit dem
@@ -161,6 +166,7 @@ export async function briefFuerGemeinde(
     vergleich,
     vergleichBezug,
     empfaenger: empfaenger ?? null,
+    anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
     anPresse: !!opt?.anPresse,
     adressherkunft: opt?.herkunft,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,

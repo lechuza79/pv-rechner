@@ -104,14 +104,16 @@ describe("Zwei Ask-Varianten", () => {
   // Domain ohne Sendehistorie ist ein Spam-Muster. Der Vorschau-Link war einen
   // Tag lang mit draußen, weil die Grafik schmal nicht vorzeigbar war; das ist
   // behoben (Quellen-Kante mit eigener Spur, Zahl und Einheit gestaffelt).
-  it("zeigt die Grafik, sobald eine Adresse bekannt ist", () => {
+  // No preview link (operator, 06.10.2026): the place page in the message
+  // already shows the graphic; a second link read as clutter.
+  it("verlinkt die Grafik nicht gesondert", () => {
     const d = renderOutreachDraft({
       ...BASIS,
       variante: "meldung_plus_widget",
       widgetUrl: "https://solar-check.io/embed/gemeinde-solar?ags=09679138",
     });
-    expect(d.body).toContain("https://solar-check.io/embed/gemeinde-solar?ags=09679138");
-    expect(d.body).toContain("So sieht sie");
+    expect(d.body).not.toContain("/embed/gemeinde-solar");
+    expect(d.body).toContain("Grafik für Ihre Website");
   });
 
   // Ohne Adresse KEIN halber Satz: Der Brief darf nicht „So sieht sie aus:" ohne
@@ -840,5 +842,16 @@ describe("HTML-Fassung", () => {
     const d = renderOutreachDraft({ ...BASIS, name: "Musterdorf <script>" });
     expect(d.bodyHtml).not.toContain("<script>");
     expect(d.bodyHtml).toContain("&lt;script&gt;");
+  });
+});
+
+describe("Anrede", () => {
+  it("spricht eine benannte Person mit Namen an", () => {
+    const d = renderOutreachDraft({ ...BASIS, anrede: "Sehr geehrte Frau Kuhn" });
+    expect(d.body.startsWith("Sehr geehrte Frau Kuhn,")).toBe(true);
+    expect(d.bodyHtml).toContain("Sehr geehrte Frau Kuhn,");
+  });
+  it("bleibt ohne Namen bei der allgemeinen Anrede", () => {
+    expect(renderOutreachDraft({ ...BASIS, anrede: null }).body.startsWith("Sehr geehrte Damen und Herren,")).toBe(true);
   });
 });

@@ -510,7 +510,10 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
   // Im BETREFF der Kurzname (siehe kurzOrtsname): Der Unterscheidungszusatz
   // kostet bis zu 24 Zeichen und ist genau die Stelle, an der abgeschnitten
   // wird. Im Fließtext des Anschreibens steht der volle Name weiter.
-  const kurz = kurzOrtsname(n.gemeinde);
+  // Bilingual official names ("Märkische Heide/Markojska Góla") keep only the
+  // German part in the subject; the letter body keeps both.
+  const ohneZweitform = n.gemeinde.split("/")[0].trim();
+  const kurz = kurzOrtsname(ohneZweitform.length >= 3 ? ohneZweitform : n.gemeinde);
 
   switch (hook.kind) {
     case "sieger":

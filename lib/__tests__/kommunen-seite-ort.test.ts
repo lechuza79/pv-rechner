@@ -19,3 +19,17 @@ describe("municipal page link in the letter", () => {
     expect(src).not.toMatch(/KOMMUNEN_PATH/);
   });
 });
+
+import { empfaengerFuerBrief } from "../kommunen-presse";
+describe("recipient of the letter", () => {
+  it("skips department mailboxes outside the topic and falls back", () => {
+    const r = empfaengerFuerBrief({ rollenEmail: "info@x.de", presseKontaktEmail: "tourismus@x.de" });
+    expect(r.email).toBe("info@x.de");
+  });
+  it("sends nothing rather than to the building authority", () => {
+    expect(empfaengerFuerBrief({ rollenEmail: "bauleitplanung@x.de" }).email).toBeNull();
+  });
+  it("keeps a secretariat as the last resort", () => {
+    expect(empfaengerFuerBrief({ rollenEmail: "sekretariat@x.de" }).email).toBe("sekretariat@x.de");
+  });
+});

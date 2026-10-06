@@ -189,6 +189,9 @@ export type DraftContext = {
   empfaenger?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
+  /** Personal salutation without the comma ("Sehr geehrte Frau Kuhn"); null
+   *  means no named person is known. */
+  anrede?: string | null;
   /** "Unter den besten X %" when the subject says so; then the message says it
    *  too, instead of a rank that reads weaker (Kempen: "Platz 29"). */
   rangProzent?: number | null;
@@ -724,11 +727,9 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? // No second "kostenfrei": the paragraph above already says it
-        // (operator, 06.10.2026).
-        `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
-          c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
-        } Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
+      ? // No second "kostenfrei" and no preview link (operator, 06.10.2026):
+        // the place page in the message already shows the graphic.
+        `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
   const kommunenAbsatz = c.kommunenUrl
@@ -796,7 +797,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // gern gekürzt" setzt die Entscheidung, ihn zu veröffentlichen, bereits
   // voraus. Nach zehn Sekunden wusste der Leser, dass jemand Zahlen über seinen
   // Ort hat — nicht, was er damit tun soll. Jetzt steht es als Bitte da.
-  const body = `Sehr geehrte Damen und Herren,${weiterleitung}
+  const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
 
 ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur steckt gerade eine kleine Meldung für ${c.name}. Ich habe sie fertig formuliert, Sie können sie so übernehmen:
 
