@@ -18,7 +18,7 @@ class StateSourceTests(unittest.TestCase):
     def test_adapter_by_state_prefix_only_for_municipalities(self):
         self.assertEqual(states.adapter_for('12061244')['key'], 'brandenburg')
         self.assertEqual(states.adapter_for('05166012')['native'], 25832)
-        self.assertIsNone(states.adapter_for('10041100'))
+        self.assertIsNone(states.adapter_for('11000000'))
         self.assertIsNone(states.adapter_for('12061'))
 
     def test_gml_conversion_moves_horizontal_only_and_relabels(self):

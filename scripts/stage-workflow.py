@@ -62,7 +62,7 @@ def plan(root, place):
     if inventory and inventory.get('municipality') != place:
         raise ValueError('Inventory belongs to another municipality')
     # Mirrors landscape_state_sources.ADAPTERS; kept standard-library only here.
-    adapter = {'03': 'niedersachsen-municipality', '05': 'nordrhein-westfalen-municipality',
+    adapter = {'01': 'schleswig-holstein-municipality', '02': 'hamburg-municipality', '04': 'bremen-municipality', '10': 'saarland-municipality', '06': 'hessen-municipality', '03': 'niedersachsen-municipality', '05': 'nordrhein-westfalen-municipality',
                '07': 'rheinland-pfalz-municipality', '08': 'baden-wuerttemberg-municipality', '09': 'bayern-municipality', '13': 'mecklenburg-vorpommern-municipality', '12': 'brandenburg-municipality', '14': 'sachsen-municipality',
                '15': 'sachsen-anhalt-municipality', '16': 'thueringen-municipality'}.get(place[:2]) if len(place) == 8 else None
     counts = dict(Counter(unit['kind'] for unit in inventory.get('units', []))) if inventory else {}

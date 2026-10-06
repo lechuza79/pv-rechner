@@ -14,6 +14,8 @@ import os
 from pathlib import Path
 import shutil
 import sqlite3
+import io
+import zipfile
 import subprocess
 import sys
 import tempfile
@@ -250,7 +252,7 @@ def download(inputs, prefix, kind, url, reuse):
 def grid_download(inputs, prefix, kind, url, reuse, native=25832):
     """Grid states: try the alternatives in order; None when the state publishes no tile there."""
     for candidate in url.split(' || '):
-        if urlparse(candidate).scheme!='https':raise ValueError('Unsupported tile URL')
+        if urlparse(candidate).scheme!='https' and not candidate.startswith('zipmember:https://'):raise ValueError('Unsupported tile URL')
         stem = hashlib.sha256(candidate.encode()).hexdigest()[:24]
         # UTM33 terrain stays native until the single mosaic warp; buildings are converted now.
         middle = ('-native-' if kind=='dgm' else '-lod-') if native!=25832 else ('-dgm-' if kind=='dgm' else '-lod-')
@@ -259,12 +261,21 @@ def grid_download(inputs, prefix, kind, url, reuse, native=25832):
         if known:
             if not path.exists():os.link(inputs/known['file'],path)
             return dict(known,file=path.name)
-        response = requests.get(candidate,timeout=(20,300),headers=states.UA)
+        if candidate.startswith('zipmember:'):
+            class Fetched:pass
+            response = Fetched();response.content = states.read_archive_member(candidate);response.status_code = 200
+            response.raise_for_status = lambda:None
+        else:
+            response = requests.get(candidate,timeout=(20,300),headers=states.UA,verify=states.tls_verify(candidate))
         if response.status_code==404:continue
+        # SH answers a retired tile with an HTML page and status 200.
+        if response.content[:200].lstrip().lower().startswith((b'<!doctype html',b'<html')):continue
         response.raise_for_status()
         if shutil.disk_usage(inputs).free<2*1024**3+len(response.content):raise RuntimeError('Insufficient free storage')
         member, data = states.grid_member(response.content, kind)
-        if member=='zip':path = path.with_suffix('.zip')  # several GML members; the preparer reads zips
+        if kind=='lod' and native==25832 and zipfile.is_zipfile(io.BytesIO(response.content)):
+            member, data = 'zip', response.content  # the preparer reads building zips; no 200 MB unpacked copy
+        if member=='zip':path = path.with_suffix('.zip')
         if kind=='lod' and native!=25832:
             data = states.convert_gml(data.decode('utf-8')).encode('utf-8')
         temporary = path.with_suffix(path.suffix+'.part');temporary.write_bytes(data);temporary.replace(path)
@@ -481,7 +492,7 @@ def main():
                 if not urls:raise ValueError('Missing official '+collection+' tiles')
                 found.extend((host,url) for url in urls)
             return found
-        jobs = states.tile_jobs(adapter,terrain,buildings,lgln)
+        jobs = states.tile_jobs(dict(adapter,placeName=feature['properties']['name']),terrain,buildings,lgln)
         if not any(kind=='dgm' for kind,_ in jobs):raise ValueError('Missing official terrain tiles')
         if not any(kind=='lod' for kind,_ in jobs):raise ValueError('Missing official building tiles')
         shared.save(inputs/(prefix+'-download-plan.json'),dict(terrainBounds=terrain.bounds,files=jobs))

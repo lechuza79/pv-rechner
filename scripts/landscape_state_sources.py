@@ -22,6 +22,18 @@ from shapely.geometry import box
 UA = {'User-Agent': 'solar-check-landscape (https://solar-check.io)'}
 
 ADAPTERS = {
+    '02': dict(key='hamburg', prefix='hh', native=25832, grid=True,
+               buildingLicense='Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung (LGV), dl-de/by-2-0 [Daten bearbeitet]',
+               terrainLicense='Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung (LGV), dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/hamburg.html'),
+    '04': dict(key='bremen', prefix='hb', native=25832, grid=True,
+               buildingLicense='Landesamt GeoInformation Bremen, CC BY 4.0 [Daten bearbeitet]',
+               terrainLicense='Landesamt GeoInformation Bremen, CC BY 4.0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/bremen.html'),
+    '10': dict(key='saarland', prefix='sl', native=25832, grid=True,
+               buildingLicense='© GeoBasis DE/LVGL-SL (2026), dl-de/by-2-0 [Daten bearbeitet]',
+               terrainLicense='© GeoBasis DE/LVGL-SL (2025), dl-de/by-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/saarland.html'),
     '03': dict(key='niedersachsen', prefix='ni', native=25832,
                buildingLicense='CC BY 4.0 · LGLN', terrainLicense='CC BY 4.0 · LGLN',
                osmPage='https://download.geofabrik.de/europe/germany/niedersachsen.html'),
@@ -44,6 +56,14 @@ ADAPTERS = {
                buildingLicense='© GDI-Th, CC BY 4.0 [Daten bearbeitet]',
                terrainLicense='© GDI-Th, dl-de/by-2-0 [Daten bearbeitet]',
                osmPage='https://download.geofabrik.de/europe/germany/thueringen.html'),
+    '01': dict(key='schleswig-holstein', prefix='sh', native=25832, grid=True,
+               buildingLicense='©GeoBasis-DE/LVermGeo SH/CC BY 4.0 (Quelle verändert)',
+               terrainLicense='©GeoBasis-DE/LVermGeo SH/CC BY 4.0 (Quelle verändert)',
+               osmPage='https://download.geofabrik.de/europe/germany/schleswig-holstein.html'),
+    '06': dict(key='hessen', prefix='he', native=25832, grid=True,
+               buildingLicense='HVBG Hessen, Datenlizenz Deutschland – Zero (§ 18 HVGG) [Daten bearbeitet]',
+               terrainLicense='HVBG Hessen, dl-de/zero-2-0 [Daten bearbeitet]',
+               osmPage='https://download.geofabrik.de/europe/germany/hessen.html'),
     '07': dict(key='rheinland-pfalz', prefix='rp', native=25832, grid=True,
                buildingLicense='©GeoBasis-DE / LVermGeoRP2026, dl-de/by-2-0, www.lvermgeo.rlp.de [Daten bearbeitet]',
                terrainLicense='©GeoBasis-DE / LVermGeoRP2026, dl-de/by-2-0, www.lvermgeo.rlp.de [Daten bearbeitet]',
@@ -133,15 +153,15 @@ def bb_index(url, fetch=_get):
 BB_WCS = 'https://isk.geobasis-bb.de/ows/dgm_wcs'
 
 
-def wcs_terrain_url(base, coverage, terrain, native=25833, resolution=5):
+def wcs_terrain_url(base, coverage, terrain, native=25833, resolution=5, x='x', y='y', fmt='image/tiff'):
     """One WCS 2.0.1 GetCoverage over the terrain box, served resampled to `resolution` metres."""
     from shapely.ops import transform
     box_native = transform(Transformer.from_crs(25832, native, always_xy=True).transform, terrain).bounds
     step = 100
     minx, miny = math.floor(box_native[0]/step)*step-step, math.floor(box_native[1]/step)*step-step
     maxx, maxy = math.ceil(box_native[2]/step)*step+step, math.ceil(box_native[3]/step)*step+step
-    return (base+'?SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=%s&FORMAT=image/tiff'
-            '&SUBSET=x(%d,%d)&SUBSET=y(%d,%d)&SCALEFACTOR=%s' % (coverage, minx, maxx, miny, maxy, 1/resolution))
+    return (base+'?SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=%s&FORMAT=%s'
+            '&SUBSET=%s(%d,%d)&SUBSET=%s(%d,%d)&SCALEFACTOR=%s' % (coverage, fmt, x, minx, maxx, y, miny, maxy, 1/resolution))
 
 
 def bb_terrain_url(terrain, resolution=5):
@@ -370,6 +390,7 @@ def neighbour_member(data):
 # the state does not publish answers 404 and is skipped. Alternatives (older
 # acquisition epochs) are separated by ' || ' and tried in order.
 SN_LOD = 'https://geocloud.landesvermessung.sachsen.de/public.php/dav/files/AyJqXpJAZJXomCb/'
+SL_SHARE = 'https://www.shop.lvgl.saarland.de/cloud/public.php/dav/files/NK8ndP55qAqGEZD/'
 GRID = {
     'bayern': dict(dgm=(1000, lambda e, n: ['https://download1.bayernwolke.de/a/dgm/dgm1/%d_%d.tif' % (e, n)]),
                    lod=(2000, lambda e, n: ['https://download1.bayernwolke.de/a/lod2/citygml/%d_%d.gml' % (e, n)])),
@@ -378,6 +399,25 @@ GRID = {
     'thueringen': dict(dgm=(1000, lambda e, n: [TH_DGM+'dgm_2020-2025/dgm1_32_%d_%d_1_th_2020-2025.zip' % (e, n),
                                                  TH_DGM+'dgm_2014-2019/dgm1_%d_%d_1_th_2014-2019.zip' % (e, n)]),
                        lod=(2000, lambda e, n: ['https://geoportal.geoportal-th.de/3dgebaeude/LoD2/LoD2_32_%d_%d_2_TH.zip' % (e, n)])),
+    # Archive states publish whole-state/district ZIPs; single 1-2 km members are read by
+    # HTTP range (see RangeFile). Member names are matched per cell in the archive listing.
+    'hamburg': dict(archives=dict(
+        dgm=(['https://www.daten-hamburg.de/opendata/fernerkundung_hoehenmodelle/dgm/dgm1_hh_2022-04-30.zip'], 1000, r'(?i)dgm1_32_%d_%d_1_hh_\d{4}\.tif$'),
+        lod=(['https://www.daten-hamburg.de/opendata/3d_stadtmodell_lod2/LoD2-DE_HH_2023-04-01.zip'], 1000, r'LoD2_32_%d_%d_1_HH\.xml$'))),
+    'bremen': dict(archives=dict(
+        dgm=(['https://gdi2.geo.bremen.de/inspire/download/DGM/data/Gitternetz_DGM1_2017_HB_ASCII_XYZ.zip',
+              'https://gdi2.geo.bremen.de/inspire/download/DGM/data/Gitternetz_DGM1_2015_BHV_ASCII_XYZ.zip'], 1000, r'dgm1_32_?%d_+%d_1_hb\.xyz$'),
+        lod=(['https://gdi2.geo.bremen.de/inspire/download/LoD/data/LOD2_CITYGML_HB.zip',
+              'https://gdi2.geo.bremen.de/inspire/download/LoD/data/LOD2_CITYGML_BHV.zip'], 2000, r'LoD2_32_%d_%d_2_HB\.gml$'))),
+    'saarland': dict(archives=dict(
+        dgm=('webdav:'+SL_SHARE+'OD_DGM1_2025_tif_LK/', 1000, r'dgm1_32_%d_%d_1_SL_\d{4}\.tif$'),
+        lod=('webdav:'+SL_SHARE+'OD_Geb%c3%a4udemodelle_LoD2_gml_LK/', 1000, r'LoD2_32_%d_%d_1_SL\.gml$'))),
+    # Hessen: terrain from the HVBG WCS (axes e/n); buildings as one archive per municipality,
+    # found by name in the download centre (no AGS there, folder names differ per product).
+    'hessen': dict(wcs=('https://inspire-hessen.de/raster/dgm1/ows', 'he_dgm1', 'e', 'n', 'GTIFF'), lod='he-name'),
+    # SH: per-tile links (year and block vary) come from one GeoJSON index per product.
+    'schleswig-holstein': dict(dgm=(1000, 'sh-index:DGM1_SH__Massendownload.geojson:link_data'),
+                               lod=(1000, 'sh-index:LOD2_SH_Massendownload.geojson:data_link')),
     # RLP: the terrain year differs per tile, so names come from the directory listing.
     'rheinland-pfalz': dict(dgm=(1000, 'rp-index'),
                             lod=(2000, lambda e, n: ['https://geobasis-rlp.de/data/geb3dlo/current/gml/LoD2_32_%d_%d_2_RP.gml' % (e, n)])),
@@ -396,10 +436,32 @@ def grid_tiles(adapter, terrain, buildings, fetch=_get):
     spec = GRID[adapter['key']]
     jobs = []
     if 'wcs' in spec:
-        jobs.append(('dgm', wcs_terrain_url(*spec['wcs'], terrain, adapter['native'])))
+        base, coverage, *axes = spec['wcs']
+        x, y, fmt = (axes+['x', 'y', 'image/tiff'][len(axes):]) if axes else ('x', 'y', 'image/tiff')
+        jobs.append(('dgm', wcs_terrain_url(base, coverage, terrain, adapter['native'], x=x, y=y, fmt=fmt)))
+    if 'archives' in spec:
+        for kind, area in (('dgm', terrain), ('lod', buildings)):
+            sources, size, pattern = spec['archives'][kind]
+            members = archive_members(sources)
+            for e, n in grid_cells(area, 25832, 25832, size):
+                wanted = re.compile(pattern % (e*size//1000, n*size//1000))
+                seen = set()
+                for archive, name in members:
+                    # A border tile can sit in two district archives (Saarland); take it once.
+                    if wanted.search(name) and name.rsplit('/', 1)[-1] not in seen:
+                        seen.add(name.rsplit('/', 1)[-1]);jobs.append((kind, 'zipmember:'+archive+'!'+name))
+        return jobs
+    if spec.get('lod') == 'he-name':
+        jobs.append(('lod', he_lod_url(adapter['placeName'])))
     for kind, area in (('dgm', terrain), ('lod', buildings)):
-        if kind not in spec:continue
+        if kind not in spec or isinstance(spec[kind], str) and spec[kind] == 'he-name':continue
         size, names = spec[kind]
+        if isinstance(names, str) and names.startswith('sh-index:'):
+            _, file, field = names.split(':')
+            index = sh_index(file, field, fetch)
+            for e, n in grid_cells(area, 25832, 25832, size):
+                if (e, n) in index:jobs.append((kind, index[(e, n)]))
+            continue
         if names == 'rp-index':
             index = rp_dgm_index(fetch)
             for e, n in grid_cells(area, 25832, 25832, size):
@@ -413,6 +475,69 @@ def grid_tiles(adapter, terrain, buildings, fetch=_get):
 
 
 RP_DGM = 'https://geobasis-rlp.de/data/dgm1/current/tif/'
+HE_API = 'https://gds.hessen.de/INTERSHOP/rest/WFS/HLBG-Geodaten-Site/-/downloadcenter'
+HE_LOD = '3D-Daten/3D-Gebäudemodelle/3D-Gebäudemodelle LoD2'
+
+
+def he_key(name):
+    name = re.sub(r'-LoD2(\.zip)?$', '', name).replace('_', ' ').lower()
+    for a, b in (('ä', 'ae'), ('ö', 'oe'), ('ü', 'ue'), ('ß', 'ss')):name = name.replace(a, b)
+    return re.sub(r'[^a-z0-9]', '', name)
+
+
+def he_lod_url(place, fetch=_get):
+    """The municipality's LoD2 archive from the HVBG download centre, matched by name;
+    the URI carries a date segment, so it is always read fresh, never stored."""
+    from urllib.parse import quote, urljoin
+    def listing(path, page=1):
+        return fetch(HE_API+'?path='+quote(path, safe='')+('&page=%d' % page if page > 1 else '')).json()
+    found = []
+    for district in listing(HE_LOD).get('navigation', []):
+        path, page = HE_LOD+'/'+district['name'], 1
+        while True:
+            result = listing(path, page).get('searchresult', {})
+            for entry in result.get('downloads', []):
+                if he_key(entry['name']) == he_key(place):
+                    found.append(urljoin('https://gds.hessen.de', quote(entry['downloadLink']['uri'])))
+            paging = result.get('paging', {})
+            if page*paging.get('pageSize', 20) >= paging.get('total', 0):break
+            page += 1
+    if len(found) != 1:
+        raise ValueError('Hessen LoD2 archive not uniquely found for %s: %d matches' % (place, len(found)))
+    return found[0]
+
+
+SH_HOST = 'https://geodaten.schleswig-holstein.de/'
+SH_INDEX = SH_HOST+'gaialight-sh/_apps/dladownload/single.php?file=%s&id=4'
+
+
+def tls_verify(url):
+    """SH serves no intermediate certificate; verify against the public CA store plus that
+    intermediate (shipped in scripts/certs), never by disabling verification."""
+    if not url.startswith(SH_HOST):
+        return True
+    import certifi
+    bundle = Path('/tmp')/'landscape-sh-ca-bundle.pem'
+    if not bundle.exists():
+        intermediate = (Path(__file__).resolve().parent/'certs/d-trust-br-ca-1-20-1-2020.pem').read_text()
+        bundle.write_text(Path(certifi.where()).read_text()+'\n'+intermediate)
+    return str(bundle)
+
+
+def sh_index(file, field, fetch=None):
+    """(east km, north km) -> download link from the SH mass-download GeoJSON."""
+    import json
+    response = requests.get(SH_INDEX % file, headers=UA, timeout=(20, 180), verify=tls_verify(SH_HOST))
+    response.raise_for_status()
+    found = {}
+    for feature in json.loads(response.content)['features']:
+        link = feature['properties'].get(field)
+        ring = feature['geometry']['coordinates'][0]
+        while isinstance(ring[0][0], list):ring = ring[0]
+        e, n = min(p[0] for p in ring), min(p[1] for p in ring)
+        if link:found[(int(round(e))//1000, int(round(n))//1000)] = link
+    if not found:raise ValueError('Schleswig-Holstein index empty: '+file)
+    return found
 
 
 def rp_dgm_index(fetch=_get):
@@ -425,20 +550,28 @@ def rp_dgm_index(fetch=_get):
 
 
 def xyz_archive_to_tif(data):
-    """Zipped ASCII XYZ (UTM32 + DHHN2016, cell centres) to one GeoTIFF, heights unchanged."""
+    """ASCII XYZ (zipped or plain; UTM32 + DHHN2016, cell centres) to one GeoTIFF, heights unchanged."""
     import numpy as np
     import rasterio
     from rasterio.transform import from_origin
-    archive = zipfile.ZipFile(io.BytesIO(data))
-    names = [n for n in archive.namelist() if n.lower().endswith('.xyz')]
-    if not names:raise ValueError('No XYZ terrain in archive')
+    if zipfile.is_zipfile(io.BytesIO(data)):
+        archive = zipfile.ZipFile(io.BytesIO(data))
+        names = [n for n in archive.namelist() if n.lower().endswith('.xyz')]
+        texts = [(n, archive.read(n)) for n in names]
+    else:
+        texts = [('plain', data)]
+    if not texts:raise ValueError('No XYZ terrain in archive')
     parts = []
-    for name in names:
-        text = archive.read(name).decode('ascii', 'replace')
+    for name, raw in texts:
+        text = raw.decode('ascii', 'replace')
         text = text[:text.find('<')] if '<' in text else text  # SH appends an HTML page
-        values = np.array(text.replace(',', ' ').split(), dtype='float64')
+        lines = text.strip().splitlines()
+        if lines and not lines[0].strip()[:1].lstrip('-').isdigit():lines = lines[1:]  # 'x y z' header (Bremen)
+        values = np.array(' '.join(lines).replace(',', ' ').split(), dtype='float64')
         if values.size % 3:raise ValueError('XYZ file is not three columns: '+name)
-        parts.append(values.reshape(-1, 3))
+        values = values.reshape(-1, 3)
+        if values[:, 0].min() > 1e7:values[:, 0] -= 32000000  # zone-prefixed easting (Bremen)
+        parts.append(values)
     points = np.vstack(parts)
     xs, ys = np.unique(points[:, 0]), np.unique(points[:, 1])
     step = float(np.min(np.diff(xs)))
@@ -456,10 +589,103 @@ def xyz_archive_to_tif(data):
     return memory.read()
 
 
+class RangeFile(io.RawIOBase):
+    """A remote file read by HTTP Range; enough for zipfile to read one member of a
+    multi-GB archive without downloading it. `offset` addresses an archive stored
+    uncompressed inside another one (Bremen)."""
+    def __init__(self, url, offset=0, size=None):
+        self.url, self.offset, self.position, self.block = url, offset, 0, (None, b'')
+        if size is None:
+            probe = requests.get(url, headers=dict(UA, Range='bytes=0-0'), timeout=(20, 120))
+            if probe.status_code != 206:raise ValueError('Server does not serve ranges: '+url)
+            size = int(probe.headers['Content-Range'].split('/')[-1])-offset
+        self.size = size
+    def seekable(self):return True
+    def readable(self):return True
+    def tell(self):return self.position
+    def seek(self, position, whence=0):
+        self.position = position if whence == 0 else self.position+position if whence == 1 else self.size+position
+        return self.position
+    def read(self, count=-1):
+        if count is None or count < 0:count = self.size-self.position
+        count = max(0, min(count, self.size-self.position))
+        if not count:return b''
+        start, cached = self.block
+        if start is not None and start <= self.position and self.position+count <= start+len(cached):
+            data = cached[self.position-start:self.position-start+count]
+        else:
+            fetch = max(count, 1 << 20)
+            first = self.offset+self.position
+            last = min(self.offset+self.size, first+fetch)-1
+            for attempt in range(4):
+                try:
+                    response = requests.get(self.url, headers=dict(UA, Range='bytes=%d-%d' % (first, last)), timeout=(20, 300))
+                    break
+                except requests.RequestException:
+                    if attempt == 3:raise
+            if response.status_code != 206:raise ValueError('Range request refused: %d' % response.status_code)
+            self.block = (self.position, response.content)
+            data = response.content[:count]
+        self.position += len(data)
+        return data
+    def readinto(self, buffer):
+        data = self.read(len(buffer));buffer[:len(data)] = data;return len(data)
+
+
+def open_archive(url):
+    """zipfile over HTTP ranges; an archive holding a single stored ZIP is opened through it."""
+    try:
+        import zipfile_deflate64  # noqa: F401  (Hamburg LoD2 uses Deflate64)
+    except ImportError:
+        pass
+    archive = zipfile.ZipFile(RangeFile(url))
+    inner = [i for i in archive.infolist() if i.filename.lower().endswith('.zip')]
+    if len(inner) == 1 and inner[0].compress_type == zipfile.ZIP_STORED and len(archive.infolist()) <= 3:
+        info = inner[0]
+        header = RangeFile(url, info.header_offset, 30).read(30)
+        start = info.header_offset+30+int.from_bytes(header[26:28], 'little')+int.from_bytes(header[28:30], 'little')
+        archive = zipfile.ZipFile(RangeFile(url, start, info.file_size))
+    return archive
+
+
+def webdav_files(folder):
+    """File URLs in a public Nextcloud share folder (WebDAV PROPFIND, depth 1)."""
+    from urllib.parse import urljoin
+    response = requests.request('PROPFIND', folder, headers=dict(UA, Depth='1'), timeout=(20, 120))
+    response.raise_for_status()
+    hrefs = re.findall(r'<d:href>([^<]+)</d:href>', response.text)
+    return [urljoin(folder, h) for h in hrefs if h.lower().endswith('.zip')]
+
+
+ARCHIVE_CACHE = {}
+
+
+def archive_members(sources):
+    if isinstance(sources, str) and sources.startswith('webdav:'):
+        sources = webdav_files(sources[len('webdav:'):])
+    members = []
+    for url in sources:
+        if url not in ARCHIVE_CACHE:
+            ARCHIVE_CACHE[url] = [i.filename for i in open_archive(url).infolist()]
+        members += [(url, name) for name in ARCHIVE_CACHE[url]]
+    return members
+
+
+def read_archive_member(locator):
+    """'zipmember:<archive url>!<member>' -> bytes."""
+    url, name = locator[len('zipmember:'):].rsplit('!', 1)
+    return open_archive(url).read(name)
+
+
 def grid_member(data, kind):
     """A tile is the file itself or a zip holding exactly one GeoTIFF / CityGML;
     a terrain zip of XYZ files is converted, a building zip of several GML files is kept whole."""
     if not zipfile.is_zipfile(io.BytesIO(data)):
+        if kind == 'dgm' and data[:4] not in (b'II*\x00', b'MM\x00*'):  # not a GeoTIFF: ASCII XYZ
+            return 'xyz', xyz_archive_to_tif(data)
+        if kind == 'lod' and b'</core:CityModel>' in data:
+            # SH appends an HTML page after the model.
+            return None, data[:data.rindex(b'</core:CityModel>')+len(b'</core:CityModel>')]
         return None, data
     archive = zipfile.ZipFile(io.BytesIO(data))
     if kind == 'dgm' and not any(n.lower().endswith('.tif') for n in archive.namelist()):
