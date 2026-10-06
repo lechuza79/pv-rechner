@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom, cityIndexFreigegeben } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingListFrom, cityIndexFreigegeben, type AtlasCity } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
@@ -49,11 +49,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
   // wir ihm per noindex gerade verweigern.
+  // A city page shows every programme of its place (06.10.2026): it changed
+  // when the most recently verified of them was checked.
+  const geprueftAm = (c: AtlasCity): Date | undefined =>
+    fundingListFrom(programs, c)
+      .map((p) => toDate(p.lastVerified))
+      .filter((d): d is Date => !!d)
+      .sort((a, b) => b.getTime() - a.getTime())[0];
   const cityPages: MetadataRoute.Sitemap = liveCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c) ?? maxFundingDate,
       changeFrequency: "weekly",
       priority: 0.7,
     };
@@ -61,10 +67,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c) ?? maxFundingDate,
       changeFrequency: "monthly",
       priority: 0.5,
     };

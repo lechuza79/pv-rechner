@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, deckt, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
 import { nurBalkon } from "./foerder-stadt-meta";
 import { heuteInBerlin } from "./zeit";
@@ -59,75 +59,90 @@ export interface AtlasCity {
    * keinen Punkt, an dem man messen könnte.
    */
   yieldKwhKwp: number;
-  /** Id into FUNDING_PROGRAMS. Nur nötig, wenn die Zuordnung über den
-   *  Gemeindeschlüssel nicht eindeutig ist — sonst leitet fundingFor() sie ab. */
+  /** Id into FUNDING_PROGRAMS. Bestimmt bei gleich engem Fördergebiet, welches
+   *  Programm die Seite anführt — gezeigt werden alle (fundingListFrom). */
   fundingId?: string;
 }
 
 /**
- * Das Förderprogramm dieser Stadt — abgeleitet, nicht von Hand gepflegt.
+ * Das Förderprogramm dieser Stadt, das die Seite anführt — abgeleitet, nicht
+ * von Hand gepflegt. Es ist der erste Eintrag von {@link fundingListFrom}.
  *
- * WARUM (18.08.2026): Katalog und Städte-Verzeichnis waren zwei Listen, die
- * auseinanderliefen. Herne und Ludwigshafen standen längst im Verzeichnis, ihre
- * neu aufgenommenen Programme aber blieben unsichtbar, weil niemand das Feld
- * `fundingId` nachgetragen hatte — die Seite existierte, sagte aber nichts vom
- * Programm. Ein zweites Verzeichnis, das man synchron halten MUSS, wird
- * irgendwann nicht synchron gehalten.
+ * WARUM ABGELEITET (18.08.2026): Katalog und Städte-Verzeichnis waren zwei
+ * Listen, die auseinanderliefen. Herne und Ludwigshafen standen längst im
+ * Verzeichnis, ihre neu aufgenommenen Programme aber blieben unsichtbar, weil
+ * niemand das Feld `fundingId` nachgetragen hatte. Ein zweites Verzeichnis, das
+ * man synchron halten MUSS, wird irgendwann nicht synchron gehalten.
  *
- * Deshalb: Steht kein `fundingId` da, wird das Programm über den
- * Gemeindeschlüssel gesucht — dieselbe Zuordnung, die auch der Rechner benutzt.
- * Ein gesetztes `fundingId` gewinnt weiterhin, für die Fälle, in denen mehrere
- * Programme auf denselben Schlüssel passen.
+ * Für Fragen, die EIN Programm brauchen (Sitemap-Datum, Kartenzeile der
+ * Landesübersicht). Wer wissen will, was an einem Ort gilt, fragt die Liste.
  */
 export function fundingFor(c: AtlasCity): FundingProgram | undefined {
   return fundingForFrom(allFundingPrograms(), c);
 }
 
-/**
- * Dieselbe Zuordnung über einer FREMDEN Programmliste — für die Seiten, die
- * ihre Daten aus der Datenbank lesen statt aus dem Code-Seed.
- *
- * Ohne diese Variante lösten Stadtseiten, Bundesland-Übersicht und Sitemap
- * weiterhin über das handgepflegte `fundingId` auf: Die drei neu verknüpften
- * Städte hätten eine Seite bekommen, auf der kein Programm steht. Die Ableitung
- * muss überall dieselbe sein, sonst verschiebt sich die Drift nur eine Ebene
- * tiefer.
- */
+/** Dieselbe Zuordnung über einer FREMDEN Programmliste (Datenbank statt Code-Seed). */
 export function fundingForFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram | undefined {
-  if (c.fundingId) return programs.find((p) => p.id === c.fundingId);
+  return fundingListFrom(programs, c)[0];
+}
 
-  // Ein Programm gilt für diese Stadt, wenn ihr Gemeindeschlüssel INNERHALB des
-  // Fördergebiets liegt: Land (2 Stellen) ⊃ Kreis/kreisfreie Stadt (5) ⊃
-  // Gemeinde (8). Die Stadt trägt hier fünf Stellen.
-  //
-  // Zwei Fehler der ersten Fassung, gefunden in der Prüfrunde am 18.08.2026:
-  //
-  //  1. Sie kürzte den Programm-Schlüssel auf fünf Stellen. Damit hätte
-  //     Höhr-Grenzhausens Zuschuss (07143032) dem GANZEN Westerwaldkreis
-  //     gegolten, sobald jemand dafür einen Eintrag anlegt — ein Dorfprogramm,
-  //     das für jede Postleitzahl des Kreises Geld abzieht. Ein achtstelliger
-  //     Schlüssel ist ENGER als die Stadtzeile und darf sie deshalb nie treffen.
-  //  2. Bei mehreren Treffern gab sie `undefined` zurück. Landesprogramme
-  //     (Berlin 11, Bremen 04) passen aber auf jede Stadt ihres Landes: Bekäme
-  //     Bremerhaven ein eigenes Programm, hätten sich Land und Kommune
-  //     gegenseitig aufgehoben und die Seite wäre still auf 404 gefallen.
-  //     Richtig ist der SPEZIFISCHERE Schlüssel — die Kommune schlägt das Land.
-  // Ein Programm kann MEHRERE Fördergebiete haben (Verbandsgemeinden, deren
-  // Ortsgemeinden sich keinen eigenen Schlüssel teilen). Verglichen wird
-  // deshalb über `deckt`, und die Spezifität ist die Länge des Gebiets, das
-  // wirklich getroffen hat — nicht die des ersten Feldes.
-  const treffer = (p: FundingProgram): string | undefined =>
-    foerdergebiete(p)
-      .filter((g) => g.length <= c.ags.length && c.ags.startsWith(g))
-      .sort((x, y) => y.length - x.length)[0];
-  const passend = programs
-    .filter((p) => p.level !== "bund" && !!treffer(p))
-    .sort((a, b) => (treffer(b)!.length - treffer(a)!.length));
+/** Alle Programme, die die Förderseite dieses Orts zeigt (Code-Seed). */
+export function fundingListFor(c: AtlasCity): FundingProgram[] {
+  // Der Code-Seed ändert sich zur Laufzeit nicht; die Liste wird je Ort einmal
+  // gerechnet. Ohne das kostet jede Freigabe-Frage einen Durchlauf über den
+  // ganzen Katalog, und Sitemap, Landesübersicht und Routen fragen sie für
+  // jeden Ort mehrfach.
+  let liste = listenCache.get(c);
+  if (!liste) {
+    liste = fundingListFrom(allFundingPrograms(), c);
+    listenCache.set(c, liste);
+  }
+  return liste;
+}
+const listenCache = new WeakMap<AtlasCity, FundingProgram[]>();
 
-  // Gleich spezifisch und trotzdem mehrere: echte Mehrdeutigkeit, dann gehört
-  // `fundingId` gesetzt. Raten wäre hier schlimmer als nichts zu zeigen.
-  if (passend.length > 1 && treffer(passend[0])!.length === treffer(passend[1])!.length) return undefined;
-  return passend[0];
+/**
+ * ALLE Programme, die die Förderseite dieses Orts zeigt — eigene Gemeinde,
+ * Verbandsgemeinde/Amt, Landkreis, bei Stadtstaaten das Land.
+ *
+ * WARUM EINE LISTE (06.10.2026, Betreiber-Auftrag): Bis dahin zeigte jede
+ * Stadtseite genau EIN Programm, das spezifischste. Orte mit mehreren gingen
+ * leer aus — Tübingen fördert Dachanlagen, Balkonkraftwerke und Wärmepumpen
+ * in drei Programmen, die Seite zeigte nur das Dach; Hockenheim hat ein
+ * Balkon- und ein Heizungsprogramm, Hillscheid das eigene und das der
+ * Verbandsgemeinde, Würselen das eigene und das der StädteRegion. Die Seite
+ * soll beantworten, was hier gilt — nicht, was am engsten gilt.
+ *
+ * Wer dazugehört: jedes Programm, dessen Fördergebiet den Ort ENTHÄLT
+ * ({@link deckt} — nie umgekehrt: ein Dorfzuschuss gilt nie für den Kreis).
+ * Draußen bleiben:
+ *  - Bundesprogramme (gelten überall, sagen über den Ort nichts);
+ *  - Landesprogramme der Flächenländer (sonst stünde dieselbe Auskunft unter
+ *    jedem Ortsnamen des Landes, siehe programmTraegtStadtseite);
+ *  - Programme mit Status „unsicher": Was wir nicht belegen können, zeigen wir
+ *    auf keiner Seite.
+ *
+ * Reihenfolge: laufende Programme zuerst, dann das engste Fördergebiet (die
+ * Gemeinde vor der Verbandsgemeinde vor dem Kreis), dann ein gesetztes
+ * `fundingId`, dann die Technik (Dach vor Balkon vor Wärmepumpe).
+ */
+export function fundingListFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram[] {
+  const gesetzt = c.fundingId;
+  // Die Spezifität ist die Länge des Gebiets, das wirklich getroffen hat —
+  // ein Verbandsgemeinde-Programm trägt mehrere Gebiete (foerdergebiete).
+  const enge = (p: FundingProgram): number =>
+    Math.max(0, ...foerdergebiete(p).filter((g) => g.length <= c.ags.length && c.ags.startsWith(g)).map((g) => g.length));
+  const rang = (p: FundingProgram): number => (foerdertDach(p) ? 0 : nurBalkon(p) ? 1 : 2);
+  return programs
+    .filter((p) => p.level !== "bund" && p.status !== "unsicher" && programmTraegtStadtseite(p))
+    .filter((p) => p.id === gesetzt || deckt(p, c.ags))
+    .sort(
+      (a, b) =>
+        Number(b.status === "aktiv") - Number(a.status === "aktiv") ||
+        enge(b) - enge(a) ||
+        Number(b.id === gesetzt) - Number(a.id === gesetzt) ||
+        rang(a) - rang(b),
+    );
 }
 
 export const ATLAS_CITIES: AtlasCity[] = [
@@ -747,14 +762,15 @@ export function foerdertStadtseitenTechnik(p: FundingProgram): boolean {
 }
 
 /**
- * True if the city has its own program, it is currently active AND it funds
- * rooftop PV or balcony systems. An active balcony-only programme is a live
- * page since 06.10.2026, worded as "Balkonkraftwerk-Förderung" (München was an
- * archive page from 01.10.2026 until then).
+ * True if at least ONE programme the page shows (fundingListFor) is currently
+ * active AND funds rooftop PV or balcony systems. An active balcony-only
+ * programme is a live page since 06.10.2026, worded as
+ * "Balkonkraftwerk-Förderung". Since the page shows every programme of the
+ * place (06.10.2026), the rule is evaluated over the set: an ended programme
+ * may stand on a page that exists, but never creates one on its own.
  */
 export function isCityLive(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  return p?.status === "aktiv" && foerdertStadtseitenTechnik(p);
+  return fundingListFor(c).some((p) => p.status === "aktiv" && foerdertStadtseitenTechnik(p));
 }
 
 /** Cities with a live (active) program — drives page generation, sitemap, listings. */
@@ -808,9 +824,10 @@ function programmTraegtStadtseite(p: FundingProgram | undefined): boolean {
 
 /** True if the city's own program is inactive but published as an archive page. */
 export function isCityArchived(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  if (!programmTraegtStadtseite(p)) return false;
-  return ARCHIVE_STATUSES.includes(p!.status) || (p!.status === "aktiv" && !foerdertStadtseitenTechnik(p!));
+  if (isCityLive(c)) return false;
+  return fundingListFor(c).some(
+    (p) => ARCHIVE_STATUSES.includes(p.status) || (p.status === "aktiv" && !foerdertStadtseitenTechnik(p)),
+  );
 }
 
 /** Cities with an inactive (archived) program. */
@@ -933,10 +950,10 @@ export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): bo
  * lib/seo-grundregeln.ts, Regel „kein-ertrag-ist-kein-schaden“).
  */
 export function foerderseiteTraegt(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  if (!programmTraegtStadtseite(p)) return false;
-  if (p!.status !== "aktiv") return false;
-  return foerdertStadtseitenTechnik(p!);
+  // Über die MENGE (06.10.2026): Es genügt ein gezeigtes Programm, das die
+  // Schwelle besteht. Landesprogramme der Flächenländer stehen gar nicht erst
+  // in der Liste (programmTraegtStadtseite).
+  return isCityLive(c);
 }
 
 /**

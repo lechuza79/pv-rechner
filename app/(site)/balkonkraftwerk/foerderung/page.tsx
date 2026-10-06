@@ -15,7 +15,7 @@ import {
 } from "../../../../lib/funding-programs";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../../../../lib/balkon-config";
 import { gemeindeGeo } from "../../../../lib/atlas-geo";
-import { ATLAS_CITIES, cityPath, fundingForFrom, isCityPublished, type AtlasCity } from "../../../../lib/atlas-cities";
+import { ATLAS_CITIES, cityPath, fundingListFrom, isCityPublished, type AtlasCity } from "../../../../lib/atlas-cities";
 import { nurBalkon } from "../../../../lib/foerder-stadt-meta";
 import { pageMetadata } from "../../../../lib/seo";
 import { v, space, pad, sectionGap, iconSizes } from "../../../../lib/theme";
@@ -139,17 +139,21 @@ export default async function BalkonFoerderungPage() {
   // eine Postleitzahl zu setzen hieße, einen Standort zu erfinden.
   // Die Förderseiten der Orte (seit 06.10.2026 trägt jedes reine
   // Balkon-Programm eine, formuliert als „Balkonkraftwerk-Förderung"). Dieselbe
-  // Zuordnung wie Stadtseite und Sitemap (fundingForFrom), nur veröffentlichte
+  // Zuordnung wie Stadtseite und Sitemap (fundingListFrom), nur veröffentlichte
   // Seiten — ein Link auf eine Umleitung wäre ein Umweg. Programme, die auch
   // Dachanlagen fördern, verlinken hier nicht: Deren Seite spricht von
   // Photovoltaik-Förderung, nicht von dem, was diese Liste sucht.
   const alleProgramme = await getFundingPrograms();
   const seitenFuer = new Map<string, AtlasCity[]>();
   for (const c of ATLAS_CITIES) {
-    const f = fundingForFrom(alleProgramme, c);
-    if (!f || !nurBalkon(f) || !isCityPublished(c)) continue;
-    if (!seitenFuer.has(f.id)) seitenFuer.set(f.id, []);
-    seitenFuer.get(f.id)!.push(c);
+    if (!isCityPublished(c)) continue;
+    // Every balcony-only programme shown on the place's page (06.10.2026: a
+    // page shows all programmes of its place, not only the leading one).
+    for (const f of fundingListFrom(alleProgramme, c)) {
+      if (!nurBalkon(f)) continue;
+      if (!seitenFuer.has(f.id)) seitenFuer.set(f.id, []);
+      seitenFuer.get(f.id)!.push(c);
+    }
   }
 
   const plzFuer = new Map<string, string>();

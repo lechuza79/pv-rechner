@@ -1,5 +1,5 @@
-import type { FundingProgram } from "./funding-programs";
-import { nurAndereTechnikSatz, nurBalkon, stadtseiteFall } from "./foerder-stadt-meta";
+import { FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
+import { alsListe, leitProgramm, nurAndereTechnikSatz, stadtseiteFall, stadtseiteThema, technikenSatz, type StadtProgramme } from "./foerder-stadt-meta";
 import { BALKON_RECHT } from "./balkon-config";
 
 // FAQ wird aus den Förderdaten generiert (nicht separat gespeichert) — so
@@ -20,13 +20,19 @@ function statusText(s: FundingProgram["status"]): string {
 
 export function buildFundingFaq(
   cityName: string,
-  program: FundingProgram | undefined,
+  programme: StadtProgramme,
   opts: { amortYears?: number | null } = {},
 ): FaqItem[] {
   const faq: FaqItem[] = [];
   const year = new Date().getFullYear();
+  // A page shows every programme of its place (06.10.2026). The FAQ speaks
+  // about the one the page leads with and then names the others — never a
+  // roof answer when no running programme pays for roofs.
+  const liste = alsListe(programme);
+  const program = leitProgramm(liste);
+  const weitere = liste.filter((p) => p !== program);
 
-  if (program && nurBalkon(program)) {
+  if (program && stadtseiteThema(liste) === "balkon") {
     // Balcony-only programme (since 06.10.2026 every such place has a page):
     // the FAQ speaks about Balkonkraftwerke throughout. The VAT sentence is the
     // shared legal statement of the balcony cluster (BALKON_RECHT), never a
@@ -81,6 +87,17 @@ export function buildFundingFaq(
     faq.push({
       q: `Welche Photovoltaik-Förderung gibt es in ${cityName}?`,
       a: `Für ${cityName} ist uns derzeit kein eigenes kommunales Förderprogramm für Photovoltaik bekannt. Bundesweit gilt jedoch die 0 % Mehrwertsteuer auf Kauf und Installation, und über die KfW ist ein zinsgünstiger Kredit möglich.`,
+    });
+  }
+
+  if (program && weitere.length > 0) {
+    faq.push({
+      q: `Welche weiteren Förderprogramme gibt es in ${cityName}?`,
+      a: `Neben „${program.name}" gelten in ${cityName}: `
+        + weitere
+          .map((p) => `„${p.name}" (${p.traeger}) für ${technikenSatz([p])}${p.status === "aktiv" ? "" : `, derzeit ${FUNDING_STATUS_LABEL[p.status]}`}`)
+          .join("; ")
+        + ". Bedingungen und Beträge stehen je Programm auf dieser Seite.",
     });
   }
 

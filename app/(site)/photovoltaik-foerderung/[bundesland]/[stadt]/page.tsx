@@ -9,8 +9,8 @@ import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { atlasRobots } from "../../../../../lib/atlas-index";
-import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, fundingForFrom, cityIndexFreigegeben, foerderStadtUmleitung } from "../../../../../lib/atlas-cities";
-import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
+import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, cityIndexFreigegeben, foerderStadtUmleitung, fundingListFrom } from "../../../../../lib/atlas-cities";
+import { foerdertDach, foerdertTechnik, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
@@ -22,7 +22,8 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
-import { foerderStadtMeta, nurAndereTechnikSatz, nurBalkon, stadtseiteFall } from "../../../../../lib/foerder-stadt-meta";
+import { foerderStadtMeta, leitProgramm, nurAndereTechnikSatz, nurBalkon, stadtseiteFall, stadtseiteThema, STADTSEITE_UEBERSCHRIFT, technikenSatz } from "../../../../../lib/foerder-stadt-meta";
+import { FUNDING_STATUS_LABEL } from "../../../../../lib/funding-programs";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -52,15 +53,17 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
   // Auch der Seitentitel muss über die abgeleitete Zuordnung gehen — sonst
   // verspricht die Überschrift „Zuschüsse", während die Seite darunter ein
   // eingestelltes Programm zeigt.
-  const f = fundingForFrom(await getFundingPrograms(), city);
-  const meta = foerderStadtMeta(city.name, f, heuteInBerlin(new Date()).slice(0, 4));
+  // Every programme of the place (06.10.2026), not only the most specific one.
+  const liste = fundingListFrom(await getFundingPrograms(), city);
+  const f = leitProgramm(liste);
+  const meta = foerderStadtMeta(city.name, liste, heuteInBerlin(new Date()).slice(0, 4));
   return {
     ...pageMetadata({
       path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
       title: meta.title,
       description: meta.description,
       ogImageTitle: `Photovoltaik in ${city.name}`,
-      ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
+      ogImageSubtitle: liste.length > 1 ? `Bestand & ${liste.length} Förderprogramme` : f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
     }),
     // Gebaut, aber noch nicht freigegeben → noindex. Dieselbe eine Frage wie in
     // der Sitemap (cityIndexFreigegeben), damit robots-Angabe und Sitemap nicht
@@ -70,6 +73,7 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
 }
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+const ZAHLWORT: Record<number, string> = { 2: "zwei", 3: "drei", 4: "vier", 5: "fünf" };
 
 // Capacity: show kWp below 1 MWp (so small segments don't collapse to "0 MWp"),
 // MWp with one decimal up to 10, no decimals above.
@@ -202,7 +206,15 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
 
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
-  const f = fundingForFrom(programs, city);
+  // ALLE Programme dieses Orts (06.10.2026) — eigene Gemeinde,
+  // Verbandsgemeinde/Amt, Landkreis. Die Seite führt mit dem Programm, dessen
+  // Fall die Weiche meldet (leitProgramm), die übrigen folgen als eigene
+  // Karten. Jede Karte trägt ihre Bedingungen und ihren Höchstbetrag selbst —
+  // nichts wird über Programme hinweg zusammengezählt oder gemischt.
+  const liste = fundingListFrom(programs, city);
+  const f = leitProgramm(liste);
+  const weitere = liste.filter((p) => p !== f);
+  const fall = stadtseiteFall(liste);
   const examples = buildFundingExamples(city.yieldKwhKwp, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
   // berechnen lässt UND sie überhaupt noch zählt (Anträge offen + Quellenbeleg
@@ -210,9 +222,20 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   // Knopf anbieten, der eine Förderung vorbelegt, die der Rechner daneben nicht
   // mehr abzieht.
   const ctaFoe = fundingZaehlt(f) && examples[0]?.foerderComputable ? `&foe=${f!.id}` : "";
-  const combinable = (f?.combinableWith ?? [])
-    .map((id) => byId.get(id))
-    .filter((p): p is FundingProgram => Boolean(p));
+  const kombinierbarMit = (p: FundingProgram): FundingProgram[] =>
+    (p.combinableWith ?? [])
+      .map((id) => byId.get(id))
+      .filter((k): k is FundingProgram => Boolean(k));
+  // Der Förder-Check fragt nach Dachanlage, Speicher oder Balkonkraftwerk —
+  // ein reines Wärmepumpen-Programm gehört nicht hinein.
+  const checkProgramme = [
+    ...new Map(
+      liste
+        .filter((p) => foerdertDach(p) || foerdertTechnik(p, "balkon"))
+        .flatMap((p) => [p, ...kombinierbarMit(p)])
+        .map((p) => [p.id, p] as const),
+    ).values(),
+  ];
   // Der mittlere Fall (10 kWp) steht für die übliche Dachanlage am
   // Einfamilienhaus — dieselbe Rechnung wie in den Beispielkarten weiter unten,
   // damit die Kachel oben und die Karten darunter nicht zwei verschiedene
@@ -239,13 +262,167 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   // festgestellt haben. Ohne Programm gibt es nichts zu verfolgen; ohne
   // Datenbank oder vor dem ersten Setup kommt eine leere Liste zurück und der
   // Abschnitt blendet sich aus.
-  const historie = f ? await getFundingHistoryFor(f.id) : [];
+  const historien = await Promise.all(liste.map(async (p) => ({ p, eintraege: await getFundingHistoryFor(p.id) })));
   // FAQ aus den Förderdaten generiert (kein separater Datensatz).
-  const faq = buildFundingFaq(city.name, f, { amortYears: examples[1]?.amort ?? examples[0]?.amort ?? null });
+  const faq = buildFundingFaq(city.name, liste, { amortYears: examples[1]?.amort ?? examples[0]?.amort ?? null });
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faq.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
+  };
+
+  // Eine Karte je Programm (06.10.2026). Die führende Karte trägt die beiden
+  // Wege der Seite (durchrechnen, Förder-Check) und den Andrang-Hinweis; die
+  // übrigen nur, was das Programm selbst sagt. Bedingungen, Sätze und
+  // Höchstbetrag bleiben an IHREM Programm (FundingTechnikTabs je Karte) —
+  // ein Höchstbetrag des einen darf nie neben den Bedingungen des anderen
+  // stehen.
+  const programmKarte = (p: FundingProgram, fuehrend: boolean) => {
+    const combinable = kombinierbarMit(p);
+    return (
+            <div data-foerderprogramm={p.id} style={{ ...S.card, background: v("--color-bg-muted"), padding: 0, overflow: "hidden" }}>
+              {/* Kopf: Programm + Träger + Status, darunter die Herkunftszeile.
+                  Der Rahmen bleibt neutral — eine grüne Umrandung um die ganze
+                  Karte las sich wie eine Bewertung des Programms, obwohl sie nur
+                  den Status wiederholte, der als Abzeichen daneben steht. */}
+              <div style={{ padding: pad("lg", "xl"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
+                  <div>
+                    <h2 style={{ ...S.h2, fontSize: "var(--font-size-lead)" }}>{p.name}</h2>
+                    {/* Träger und Stand in EINER Zeile, gleiche Größe: Es ist
+                        eine Angabe — wer es vergibt und mit welchem Datenstand.
+                        Der zweite Link zum Programm ist raus, er stand hier und
+                        am Fuß der Karte identisch. */}
+                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.6 }}>
+                      {p.traeger} — {fundingStandLabel(p)}
+                      {/* Der Text bleibt Text — er beschreibt das Programm wie
+                          Träger und Stand daneben. Hinaus führt allein das
+                          Symbol, wie bei „Kombinierbar mit". */}
+                      {p.capped && (
+                        <>
+                          {" · "}
+                          Mittel begrenzt – vor Antrag prüfen{" "}
+                          <a
+                            href={p.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${p.name} — Programmseite öffnen`}
+                            style={{ display: "inline-flex", verticalAlign: "middle", color: v("--color-accent") }}
+                          >
+                            <IconExternal size={iconSizes.sm} />
+                          </a>
+                        </>
+                      )}
+                    </div>
+                    {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
+                        schon bei mindestens drei Vierteln des Vorjahres, ist
+                        der Hinweis eine Information — darunter wäre er Lärm,
+                        und ein Warnton, der immer angeht, wird weggefiltert. */}
+                    {fuehrend && tempo && tempo.jetzt >= tempo.vorjahr * 0.75 && (
+                      <div style={{ display: "flex", gap: space.sm, alignItems: "flex-start", marginTop: space.lg, padding: pad("md", "md"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") }}>
+                        <span aria-hidden="true" style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, color: v("--color-accent"), lineHeight: 1.2 }}>!</span>
+                        <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+                          In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
+                          ans Netz gegangen — {tempo.vorjahr === 1 ? "im gesamten Vorjahr war es 1" : `im gesamten Jahr ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
+                          Wer {fall === "darlehen" ? "das Darlehen" : "den Zuschuss"} noch will, sollte den Antrag nicht aufschieben.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <FundingStatusBadge status={p.status} />
+                </div>
+              </div>
+
+              <div style={{ padding: pad("lg", "xl") }}>
+                {/* Bedingungen und Konditionen nebeneinander, getrennt durch
+                    eine senkrechte Linie. Beide beantworten zusammen die eine
+                    Frage „komme ich in Frage, und wie viel ist es dann?".
+                    Wer wo hineingehört: die Zielgruppen-Kennzeichen zu den
+                    Bedingungen (sie sagen, WER darf), der Höchstbetrag zu den
+                    Konditionen (er sagt, WIE VIEL). Die frühere Sammelzeile
+                    „Förderfähig: … · max. …" hat beides vermischt und stand
+                    über allem, wo es zu nichts gehörte.
+                    Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
+                    verschwindet dann, weil sie danebenläge. */}
+                {/* Fördert das Programm mehrere Techniken und ist wirklich etwas
+                    technikgebunden, trennt die Komponente nach Reitern — sonst
+                    rendert sie dieselben zwei Spalten wie zuvor. */}
+                <FundingTechnikTabs program={p} datenBoxStyle={S.datenBox} knopfStil={S.sekundaerKnopf} />
+
+                {combinable.length > 0 && (
+                  <div style={{ marginTop: 44, textAlign: "center" }}>
+                    {/* Geschwungene Klammer statt Trennlinie: Eine Linie
+                        trennt, hier gehört aber beides zusammen — was
+                        darüber steht, lässt sich mit dem kombinieren, was
+                        darunter steht. Die Klammer führt die beiden Spalten
+                        sichtbar auf einen Punkt. */}
+                    <svg viewBox="0 0 400 18" preserveAspectRatio="none" style={{ width: "100%", height: 18, display: "block" }} aria-hidden="true">
+                      <path d="M2 1 C2 9, 10 9, 190 9 C198 9, 200 17, 200 17 C200 17, 202 9, 210 9 C390 9, 398 9, 398 1"
+                        fill="none" stroke={v("--color-border")} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), margin: `${space.sm}px 0` }}>
+                      Kombinierbar mit
+                    </div>
+                    {/* Nur das Symbol führt hinaus: Der Name ist hier die
+                        Information, nicht der Weg — als Link gesetzt sah die
+                        Zeile aus wie eine Navigation zu vier Zielen. */}
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: space.lg, rowGap: space.xs }}>
+                      {combinable.map((k) => (
+                        <span key={k.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "var(--font-size-small)", color: v("--color-text-secondary") }}>
+                          {k.name}
+                          <a
+                            href={k.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${k.name} — Programmseite öffnen`}
+                            style={{ display: "inline-flex", color: v("--color-accent") }}
+                          >
+                            <IconExternal size={iconSizes.sm} />
+                          </a>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {fuehrend && (
+                <>
+                {/* Die beiden Wege von hier aus — durchrechnen oder die eigene
+                    Berechtigung klären. Beide mit echter Schaltfläche: Als
+                    Textlink gesetzt sahen sie aus wie Fußnoten, obwohl sie das
+                    sind, was die Seite von jemandem will. */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: 44 }}>
+                  <div style={S.aktionsBox}>
+                    <div style={S.aktionsTitel}>Solarförderung in {city.name}</div>
+                    <p style={S.aktionsText}>
+                      Für eine übliche Dachanlage mit {uebliche.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>
+                      {uebliche.spKwh > 0 ? <> und {uebliche.spKwh} <GlossaryTerm id="speicherkapazitaet">kWh Speicher</GlossaryTerm></> : null}{" "}
+                      {uebliche.foerderung > 0 ? (
+                        <>gibt es hier rund <span style={S.strong}>{nf(uebliche.foerderung)} €</span> Zuschuss.</>
+                      ) : (
+                        <>liegt die Investition bei rund <span style={S.strong}>{nf(uebliche.brutto)} €</span>.</>
+                      )}
+                    </p>
+                    <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={S.aktionsKnopf}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        Eigene Anlage rechnen <IconArrowRight size={iconSizes.sm} />
+                      </span>
+                    </Link>
+                  </div>
+                  <div style={S.aktionsBox}>
+                    <div style={S.aktionsTitel}>Bekommst du die PV-Förderung?</div>
+                    <p style={S.aktionsText}>
+                      Vier Fragen zu Gebäude und Anlage — danach steht da, welche Zuschüsse für dich
+                      gelten und wann der Antrag raus muss.
+                    </p>
+                    <FoerderCheckStarter programme={checkProgramme} ortName={city.name} />
+                  </div>
+                </div>
+                </>
+                )}
+              </div>
+            </div>
+    );
   };
 
   return (
@@ -312,11 +489,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             {/* Der Stand gehört MIT in die linke Spalte, nicht über die ganze
                 Zeile: Sonst beginnt der Abo-Block auf Höhe der Statuszeile und
                 die Kopfzeile hat zwei verschiedene Oberkanten. */}
-            {f && <div style={S.stand}>{fundingStandLabel(f)}</div>}
+            {f && liste.length === 1 && <div style={S.stand}>{fundingStandLabel(f)}</div>}
             <h1 style={S.h1}>
           {f ? (
             <>
-              {nurBalkon(f) ? "Balkonkraftwerk-Förderung" : "Photovoltaik-Förderung"} in{" "}
+              {STADTSEITE_UEBERSCHRIFT[stadtseiteThema(liste)]} in{" "}
               {atlasPfad ? (
                 <Link
                   href={atlasPfad}
@@ -347,17 +524,17 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
-            : stadtseiteFall(f) === "balkon"
+            : fall === "balkon"
             /* Balcony-only programme (München, and since 06.10.2026 every
                balcony-only place): a Balkonkraftwerk-Förderung page. The VAT
                half-sentence follows BALKON_RECHT ("auf das Set"). */
-            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> Balkonkraftwerke — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit fällt auf das Set zusätzlich keine Mehrwertsteuer an.</>
-            : stadtseiteFall(f) === "ohneDach"
+            ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> Balkonkraftwerke — für Dachanlagen gibt es dort derzeit keinen kommunalen Zuschuss. Bundesweit fällt auf das Set zusätzlich keine Mehrwertsteuer an.</>
+            : fall === "ohneDach"
             /* Laufendes Programm ohne Dach-PV (München: nur Balkonkraftwerke) —
                die Seite darf es nicht als Zuschuss für neue Solaranlagen
                ausgeben (siehe foerdertDach). */
             ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> derzeit {nurAndereTechnikSatz(f)} — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit gilt die 0 % Mehrwertsteuer auf Kauf und Installation.</>
-            : stadtseiteFall(f) === "darlehen"
+            : fall === "darlehen"
             /* Ein Darlehen ist kein Zuschuss — das Wort fällt hier nicht
                (Kaufungen, Betreiber-Entscheidung 01.10.2026). */
             ? <>In {city.name} gibt es für neue Solaranlagen ein <span style={S.strong}>zinsloses Darlehen</span> über das Programm <span style={S.strong}>„{f.name}“</span> — der Betrag wird in Raten zurückgezahlt. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
@@ -366,152 +543,36 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
                für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
                fördert, steht ohnehin als Träger in der Karte darunter. */
-            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das Programm <span style={S.strong}>„{f.name}“</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer.{weitere.length > 0 ? "" : " Was sich damit rechnet:"}</>
             : <>In {city.name} gibt es mit dem Programm <span style={S.strong}>„{f.name}“</span> ein kommunales Förderprogramm{nurBalkon(f) ? " für Balkonkraftwerke" : ""} — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+          {/* Mehrere Programme: Der Satz oben nennt das führende, dieser die
+              übrigen — mit dem, was sie fördern, und ihrem Status. Sonst läse
+              sich die Einleitung, als gäbe es hier nur das eine. */}
+          {f && weitere.length > 0 && (
+            <>
+              {" "}Außerdem {weitere.length === 1 ? "gilt hier ein weiteres Programm" : `gelten hier ${ZAHLWORT[weitere.length] ?? weitere.length} weitere Programme`}:{" "}
+              {weitere.map((p, i) => (
+                <span key={p.id}>
+                  {i > 0 ? (i === weitere.length - 1 ? " und " : ", ") : null}
+                  <span style={S.strong}>„{p.name}“</span> für {technikenSatz([p])}
+                  {p.status !== "aktiv" ? ` (${FUNDING_STATUS_LABEL[p.status]})` : ""}
+                </span>
+              ))}
+              .
+            </>
+          )}
         </p>
         </div>
 
         {/* ── Förderung (oben) ── */}
         {f && (
           <div style={S.section}>
-            <div style={{ ...S.card, background: v("--color-bg-muted"), padding: 0, overflow: "hidden" }}>
-              {/* Kopf: Programm + Träger + Status, darunter die Herkunftszeile.
-                  Der Rahmen bleibt neutral — eine grüne Umrandung um die ganze
-                  Karte las sich wie eine Bewertung des Programms, obwohl sie nur
-                  den Status wiederholte, der als Abzeichen daneben steht. */}
-              <div style={{ padding: pad("lg", "xl"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
-                  <div>
-                    <h2 style={{ ...S.h2, fontSize: "var(--font-size-lead)" }}>{f.name}</h2>
-                    {/* Träger und Stand in EINER Zeile, gleiche Größe: Es ist
-                        eine Angabe — wer es vergibt und mit welchem Datenstand.
-                        Der zweite Link zum Programm ist raus, er stand hier und
-                        am Fuß der Karte identisch. */}
-                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.6 }}>
-                      {f.traeger} — {fundingStandLabel(f)}
-                      {/* Der Text bleibt Text — er beschreibt das Programm wie
-                          Träger und Stand daneben. Hinaus führt allein das
-                          Symbol, wie bei „Kombinierbar mit". */}
-                      {f.capped && (
-                        <>
-                          {" · "}
-                          Mittel begrenzt – vor Antrag prüfen{" "}
-                          <a
-                            href={f.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${f.name} — Programmseite öffnen`}
-                            style={{ display: "inline-flex", verticalAlign: "middle", color: v("--color-accent") }}
-                          >
-                            <IconExternal size={iconSizes.sm} />
-                          </a>
-                        </>
-                      )}
-                    </div>
-                    {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
-                        schon bei mindestens drei Vierteln des Vorjahres, ist
-                        der Hinweis eine Information — darunter wäre er Lärm,
-                        und ein Warnton, der immer angeht, wird weggefiltert. */}
-                    {tempo && tempo.jetzt >= tempo.vorjahr * 0.75 && (
-                      <div style={{ display: "flex", gap: space.sm, alignItems: "flex-start", marginTop: space.lg, padding: pad("md", "md"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") }}>
-                        <span aria-hidden="true" style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, color: v("--color-accent"), lineHeight: 1.2 }}>!</span>
-                        <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
-                          In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
-                          ans Netz gegangen — {tempo.vorjahr === 1 ? "im gesamten Vorjahr war es 1" : `im gesamten Jahr ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
-                          Wer {stadtseiteFall(f) === "darlehen" ? "das Darlehen" : "den Zuschuss"} noch will, sollte den Antrag nicht aufschieben.
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <FundingStatusBadge status={f.status} />
-                </div>
+            {programmKarte(f, true)}
+            {weitere.map((p) => (
+              <div key={p.id} style={{ marginTop: space.lg }}>
+                {programmKarte(p, false)}
               </div>
-
-              <div style={{ padding: pad("lg", "xl") }}>
-                {/* Bedingungen und Konditionen nebeneinander, getrennt durch
-                    eine senkrechte Linie. Beide beantworten zusammen die eine
-                    Frage „komme ich in Frage, und wie viel ist es dann?".
-                    Wer wo hineingehört: die Zielgruppen-Kennzeichen zu den
-                    Bedingungen (sie sagen, WER darf), der Höchstbetrag zu den
-                    Konditionen (er sagt, WIE VIEL). Die frühere Sammelzeile
-                    „Förderfähig: … · max. …" hat beides vermischt und stand
-                    über allem, wo es zu nichts gehörte.
-                    Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
-                    verschwindet dann, weil sie danebenläge. */}
-                {/* Fördert das Programm mehrere Techniken und ist wirklich etwas
-                    technikgebunden, trennt die Komponente nach Reitern — sonst
-                    rendert sie dieselben zwei Spalten wie zuvor. */}
-                <FundingTechnikTabs program={f} datenBoxStyle={S.datenBox} knopfStil={S.sekundaerKnopf} />
-
-                {combinable.length > 0 && (
-                  <div style={{ marginTop: 44, textAlign: "center" }}>
-                    {/* Geschwungene Klammer statt Trennlinie: Eine Linie
-                        trennt, hier gehört aber beides zusammen — was
-                        darüber steht, lässt sich mit dem kombinieren, was
-                        darunter steht. Die Klammer führt die beiden Spalten
-                        sichtbar auf einen Punkt. */}
-                    <svg viewBox="0 0 400 18" preserveAspectRatio="none" style={{ width: "100%", height: 18, display: "block" }} aria-hidden="true">
-                      <path d="M2 1 C2 9, 10 9, 190 9 C198 9, 200 17, 200 17 C200 17, 202 9, 210 9 C390 9, 398 9, 398 1"
-                        fill="none" stroke={v("--color-border")} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-                    </svg>
-                    <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), margin: `${space.sm}px 0` }}>
-                      Kombinierbar mit
-                    </div>
-                    {/* Nur das Symbol führt hinaus: Der Name ist hier die
-                        Information, nicht der Weg — als Link gesetzt sah die
-                        Zeile aus wie eine Navigation zu vier Zielen. */}
-                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: space.lg, rowGap: space.xs }}>
-                      {combinable.map((p) => (
-                        <span key={p.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "var(--font-size-small)", color: v("--color-text-secondary") }}>
-                          {p.name}
-                          <a
-                            href={p.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${p.name} — Programmseite öffnen`}
-                            style={{ display: "inline-flex", color: v("--color-accent") }}
-                          >
-                            <IconExternal size={iconSizes.sm} />
-                          </a>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Die beiden Wege von hier aus — durchrechnen oder die eigene
-                    Berechtigung klären. Beide mit echter Schaltfläche: Als
-                    Textlink gesetzt sahen sie aus wie Fußnoten, obwohl sie das
-                    sind, was die Seite von jemandem will. */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: 44 }}>
-                  <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Solarförderung in {city.name}</div>
-                    <p style={S.aktionsText}>
-                      Für eine übliche Dachanlage mit {uebliche.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>
-                      {uebliche.spKwh > 0 ? <> und {uebliche.spKwh} <GlossaryTerm id="speicherkapazitaet">kWh Speicher</GlossaryTerm></> : null}{" "}
-                      {uebliche.foerderung > 0 ? (
-                        <>gibt es hier rund <span style={S.strong}>{nf(uebliche.foerderung)} €</span> Zuschuss.</>
-                      ) : (
-                        <>liegt die Investition bei rund <span style={S.strong}>{nf(uebliche.brutto)} €</span>.</>
-                      )}
-                    </p>
-                    <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={S.aktionsKnopf}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        Eigene Anlage rechnen <IconArrowRight size={iconSizes.sm} />
-                      </span>
-                    </Link>
-                  </div>
-                  <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Bekommst du die PV-Förderung?</div>
-                    <p style={S.aktionsText}>
-                      Vier Fragen zu Gebäude und Anlage — danach steht da, welche Zuschüsse für dich
-                      gelten und wann der Antrag raus muss.
-                    </p>
-                    <FoerderCheckStarter programme={[f, ...combinable]} ortName={city.name} />
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
             <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: "var(--font-size-small)", color: v("--color-accent"), textDecoration: "none" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} /></span>
             </Link>
@@ -525,12 +586,15 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         {/* ── Verlauf: was sich seit Aufzeichnungsbeginn geändert hat ──
             Steht VOR den Beispielrechnungen: Wer gerade gelesen hat, dass der
             Topf ausgeschöpft ist, soll das wissen, bevor er eine Beispielzahl
-            sieht. Blendet sich ohne festgestellten Wechsel komplett aus. */}
-        {f && historie.length > 0 && (
-          <div style={S.section}>
-            <FundingHistory eintraege={historie} programmName={f.name} programmUrl={f.url} />
-          </div>
-        )}
+            sieht. Je Programm ein eigener Verlauf; ohne festgestellten Wechsel
+            blendet er sich aus. */}
+        {historien
+          .filter(({ eintraege }) => eintraege.length > 0)
+          .map(({ p, eintraege }) => (
+            <div key={p.id} style={S.section}>
+              <FundingHistory eintraege={eintraege} programmName={p.name} programmUrl={p.url} />
+            </div>
+          ))}
 
         {/* ── Beispielrechnungen ── */}
         <div style={S.section}>
@@ -647,7 +711,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             dl-de/by-2-0
           </a>{" "}
           (Daten aggregiert).
-          {f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
+          {liste.length > 1 ? " Förderdaten redaktionell gepflegt, Stand je Programm in seiner Karte." : f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
           {" "}Der angegebene Standort-Ertrag (kWh/kWp) stammt von{" "}
           <a href={DATA_SOURCES.pvgis.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
             PVGIS

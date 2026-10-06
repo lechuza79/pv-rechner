@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities, foerderseiteTraegt } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, fundingListFor, fundingListFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities, foerderseiteTraegt } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 import { ALTBESTAND, ortSchluessel } from "../release-plan";
-import { foerderStadtMeta } from "../foerder-stadt-meta";
+import { foerderStadtMeta, stadtseiteThema } from "../foerder-stadt-meta";
 
 /** Seit Juni live — wird von einer neuen Regel nicht rückwirkend eingezogen. */
 const ALT = new Set(ALTBESTAND["foerder-stadt"].map(ortSchluessel));
@@ -34,27 +34,20 @@ const istAlt = (ags: string) => ALT.has(ortSchluessel(ags));
  * achtstellige Schlüssel, und die Regel ist weg.
  */
 const OHNE_SEITE: Record<string, string> = {
-  "tuebingen-sanierungspraemie-wp": "OFFEN (bis 03/2027). Heat-pump-only municipal grant of a town that ALREADY has a funding page -- and that page is headed \"Photovoltaik-F\u00f6rderung in T\u00fcbingen\" and resolves to tuebingen-pv-speicher, the roof array grant. A second page for the same town is not possible, and a heat-pump grant behind a photovoltaic headline would promise roof money this programme does not pay. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing -- the mandatory renovation roadmap is a priced precondition the calculator does not ask for. Revisit in MARCH 2027: the town's roof PV programme expires on 31 December 2026 by its own wording, so the shared municipality key may be free, and if the town relaunches neither, the question changes entirely.",
-  "bremen-heizungstausch": "OFFEN (bis 06/2027). Discontinued state programme of a city state: applications stopped on 31 August 2025 and a discontinued programme carries no funding page. Both Bremen city entries point at bremen-rundumshaus through fundingId, because two state programmes on the same two-digit key are equally specific and would otherwise resolve to nothing at all. Reachable through the postcode lookup, where both programmes appear. Revisit when the Wärmewende loan announced in the climate action plan is actually launched -- resolved to be developed, not resolved to be offered.",
+  "sachsen-balkon-eeus": "OFFEN (bis 09/2027). State programme of a territorial state: a state programme never stands on a city page there (CLAUDE.md, 02.09.2026 — otherwise every Saxon place would carry the same entry under its own name). Since 06.10.2026 city pages list programmes, and fundingListFrom leaves territorial-state programmes out by rule. Reachable through the postcode lookup, the balcony funding overview and the Land page. Revisit if the state restarts it.",
+  "mv-mini-solaranlagen": "OFFEN (bis 09/2027). State programme of a territorial state (Mecklenburg-Vorpommern, balcony systems): never on a city page there (CLAUDE.md, 02.09.2026); fundingListFrom leaves territorial-state programmes out by rule. Reachable through the postcode lookup, the balcony funding overview and the Land page. Revisit only if city pages ever get a separate state section.",
+  "moormerland-balkonkraftwerke": "OFFEN (bis 03/2027). Status unsicher: a programme we cannot currently confirm stands on no page (fundingListFrom leaves status unsicher out). Reachable through the postcode lookup, where it informs and deducts nothing. Revisit once the municipality confirms the current round.",
+  "mueden-aller-balkonsolar": "OFFEN (bis 03/2027). Status unsicher: a programme we cannot currently confirm stands on no page (fundingListFrom leaves status unsicher out). Reachable through the postcode lookup, where it informs and deducts nothing. Revisit once the municipality confirms the current round.",
   "wertingen-photovoltaik": "OFFEN (bis 03/2027). Exhausted municipal programme: the town has reported since 27 September 2024 that the funds are used up and that no grant will be approved or paid until the next budget deliberation. An exhausted programme carries no funding page, and no guideline is published, so the page would have no rate to show. Reachable through the postcode lookup and the balcony funding overview. Revisit once the town reports new funds -- the notice is two budget years old and the town has not updated it.",
   "petershausen-photovoltaik": "OFFEN (bis 09/2027). Closed municipal programme: the municipality states on its own page that the photovoltaic grant was not renewed after 31 January 2024, and neither the bylaws, the forms page nor the climate page carry a guideline or a successor. A closed programme carries no funding page. Reachable through the postcode lookup. Revisit if Petershausen opens a new round.",
   "florstadt-photovoltaik": "OFFEN (bis 12/2026). Closed town programme: the guideline of 12 December 2024 expired on 30 June 2025 by its own section 8, and the town's document index lists no successor. A closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the town publishes a new guideline.",
   "bad-marienberg-erneuerbare-energien": "OFFEN (bis 03/2027). Mixed-technology programme of the Verbandsgemeinde, budget for 2026 exhausted (official notice 16 September 2026); an exhausted programme carries no funding page. All 18 member municipalities are individually audited in data/funding/municipal-reviews.json (17 September 2026). Reachable through the postcode lookup and the balcony overview. Revisit when the Verbandsgemeinde announces whether the programme continues in 2027.",
-  "mainz-bingen-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme (payments ended 30 April 2026); county-level pages are not released and a closed programme carries no funding page. Reachable through the postcode lookup.",
   "vg-hachenburg-erneuerbare-energien": "OFFEN (bis 03/2027). Balcony and heat-pump programme of the Verbandsgemeinde (no roof photovoltaics); the KIPKI budget of 237,000 EUR is exhausted (programme page read 18 September 2026). An exhausted programme without roof PV carries no funding page. All 33 member municipalities are listed individually in the funding area. Reachable through the postcode lookup. Revisit when the Verbandsgemeinde reports new funds.",
   "vg-wallmerod-lange-leben-im-dorf": "OFFEN (bis 03/2027). Building-renovation grant of the Verbandsgemeinde that covers a heating replacement among other measures and expressly excludes photovoltaics; a page titled \"Photovoltaik-Förderung\" would promise funding the programme refuses. All 21 member municipalities are listed individually in the funding area. Reachable through the postcode lookup. Revisit if the Verbandsgemeinde adds an energy-generation grant.",
   "stuhr-klimaschutz-speicher": "OFFEN (bis 03/2027). Exhausted storage-only municipal programme: Stuhr pays 500 EUR flat for the FIRST installation of a battery to an existing photovoltaic system and has never funded a roof array at all -- a page headed \"Photovoltaik-F\u00f6rderung in Stuhr\" would promise roof money the municipality expressly declined to pay (stated reason in 2022: higher sums would be needed to move owners). The 2026 pot was raised from 30,000 to 50,000 EUR and was paid out by the end of July; 102 applications were approved, 45 of them storage units. Reachable through the postcode lookup, where it informs and deducts nothing. Revisit in JANUARY 2027, not later: the council has relaunched this programme every year since 2020 and it runs dry by midsummer, so \"exhausted\" turns into a false answer as soon as the new round opens -- and the page watcher cannot see it, because the municipality empties its programme pages after exhaustion and recycles the addresses.",
-  "gifhorn-kreis-balkonkraftwerke": "OFFEN (bis 03/2027). Exhausted balcony-only county programme (200 EUR flat, income-capped at twice the Buergergeld rate); county-level pages are not released, and a page titled \"Photovoltaik-Foerderung\" would promise roof funding the county never paid. The county budget carries 1,600 EUR for 2024 and 0.00 for 2025 through 2029, and the county's own service portal no longer lists the service (measured 23 September 2026). Reachable through the postcode lookup and the balcony overview. Revisit if the county budgets new funds.",
-  "ahrweiler-batteriespeicher": "OFFEN (bis 03/2027). Closed county storage programme (100 EUR per kWh, at most 500 EUR, started 11 June 2022, budget used up in 2022); county-level pages are not released and a closed programme carries no funding page. Reachable through the postcode lookup.",
-  "rhein-hunsrueck-einkommensschwache-haushalte": "OFFEN (bis 03/2027). Closed balcony-only county programme for low-income households (200 EUR per balcony system up to 800 Wp, funding period 1 April 2024 to 30 June 2026, KIPKI money); county-level pages are not released and a closed programme carries no funding page. Reachable through the postcode lookup.",
   "niederzissen-photovoltaik": "OFFEN (bis 03/2027). Closed village roof-PV programme (100 EUR per kWp up to 1,000 EUR); its second edition expired on 31 December 2025 by its own section 9, the programme page returns 404 and no 2026 edition is published. A closed programme carries no funding page. Reachable through the postcode lookup.",
-  "altenkirchen-balkonkraftwerke":"OFFEN (bis 12/2026). Closed historical county programme without a rate; county-level pages are not released. Reachable through the postcode lookup.",
-  "altenkirchen-solarspeicher": "OFFEN (bis 12/2026). Exhausted historical county programme without a rate; county-level pages are not released. Reachable through the postcode lookup.",
-  "erlangen-hoechstadt-waermepumpe": "OFFEN (bis 03/2027). Heat-pump-only county grant (250/500 EUR, no roof photovoltaics and no storage); a page titled \"Photovoltaik-Förderung\" would promise roof funding the county does not pay, and county-level pages are not released. Reachable through the postcode lookup. Revisit in January 2027: the time limit rolls forward with the county budget each year, and the page carried an expired one for six weeks in early 2025.",
-  "ekm-altenkirchen": "OFFEN (bis 03/2027). Heat-pump-only discretionary grant of the EKM gGmbH for the whole county, no rate; a page titled \"Photovoltaik-Förderung\" would promise roof funding the committee expressly excludes, and county-level pages are not released. Reachable through the postcode lookup.",
   "weichering-solarberatung": "OFFEN (bis 03/2027). The village pays 400 EUR once for CONSULTING AND PLANNING a solar system, nothing towards buying or mounting one: a page titled \"Photovoltaik-Förderung in Weichering\" would promise an installation grant the municipality does not pay. It informs through the postcode lookup and deducts nothing. Revisit once someone has asked the town hall whether the grant still runs — the programme page is live and in the present tense, but it was published on 25 October 2022 and the guideline it links to is no longer on the forms page or anywhere in the 33 documents of the municipal bylaws.",
   "cochem-zell-solarstromspeicher": "OFFEN (bis 12/2026). Closed historical county programme (ended 31.03.2026); county-level pages are not released. Reachable through the postcode lookup.",
-  "mayen-koblenz-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme; the county entry already carries the storage programme as its page programme, and county-level pages are not released. Reachable through the postcode lookup.",
   "kaarst-stecker-pv": "OFFEN (bis 09/2027). Closed historical balcony-only programme (200 EUR flat, 200 applications, exhausted July 2023): a page titled \"Photovoltaik-Förderung\" would promise funding that ended three years ago and never covered roofs. Reachable through the postcode lookup and the balcony funding overview. Revisit if Kaarst opens a new round.",
   "nettetal-steckermodule": "OFFEN (bis 09/2027). Closed historical balcony-only programme (2023 fixed amounts, 2024 round for rented property); the city funding page no longer offers it: a page titled \"Photovoltaik-Förderung\" would promise funding that ended and never covered roofs. Reachable through the postcode lookup and the balcony funding overview. Revisit if Nettetal opens a new round.",
   "grossheide-balkonmodule": "OFFEN (bis 09/2027). Exhausted balcony-only programme (200 EUR flat, no funds since 18 February 2025): a page titled \"Photovoltaik-Förderung in Großheide\" would promise funding the municipality does not currently pay and never paid for roofs. Reachable through the postcode lookup and the balcony funding overview. Revisit if Großheide releases new funds.",
@@ -78,7 +71,6 @@ const OHNE_SEITE: Record<string, string> = {
   "sh-balkon-klimaschutz-bub": "OFFEN (bis 09/2027). Closed state programme of a territorial state (applications ended 16 November 2023, state decided not to continue); a state programme never creates a city page there (CLAUDE.md, 02.09.2026), and with three Schleswig-Holstein state programmes on key 01 fundingFor resolves Flensburg and Neumünster to none of them. Reachable through the postcode lookup and the balcony funding overview. Revisit if the state restarts the programme.",
   "sh-waermepumpe-klimaschutz-bub": "OFFEN (bis 09/2027). Closed state heat-pump grant of Schleswig-Holstein (applications ended 16 November 2023, not to be continued); a territorial state's programme never creates a city page, and a heat-pump-only grant under a page titled Photovoltaik-Förderung would promise roof funding. Reachable through the postcode lookup in the heat-pump calculator. Revisit if the state restarts it.",
   "sh-speicher-klimaschutz-bub": "OFFEN (bis 09/2027). Closed state battery grant of Schleswig-Holstein (applications 22 August to 16 November 2023, not to be continued); a territorial state's programme never creates a city page. Reachable through the postcode lookup. Revisit if the state restarts it.",
-  "tuebingen-balkon-pv": "OFFEN (bis 06/2027). Tübingen trägt seit dem 24.09.2026 ZWEI Programme auf demselben Gemeindeschlüssel. Die Stadtseite zeigt das Dach-Programm (tuebingen-pv-speicher), weil nur dieses eine Dachanlage fördert und die Seite genau das im Titel verspricht; das Balkon-Programm gilt ohnehin nur für Inhaber der KreisBonusCard und bleibt über die Postleitzahl im Rechner und über die Balkon-Förderübersicht erreichbar. Wieder aufmachen, sobald es eine eigene Seitenfamilie für Balkon-Förderung gibt — dann gehört es dorthin statt in eine Ausnahme.",
   "vg-langenlonsheim-stromberg-balkonkraftwerke": "OFFEN (bis 03/2027). Exhausted AND balcony-only Verbandsgemeinde programme for its 16 Ortsgemeinden and the town of Stromberg: the 125 applications budgeted for 2026 are taken and the page carries a waiting-list notice, and a page titled \"Photovoltaik-Förderung\" would promise roof funding the Verbandsgemeinde does not pay -- either reason alone would rule the page out. None of the 17 keys is in ATLAS_CITIES (the only Bad Kreuznach municipality there is Lauschied, 07133057, which is not a member), so fundingFor never reaches this entry and nothing falls to 404. Reachable through the postcode lookup, the balcony calculator and the balcony funding overview, for all 17. Revisit in March 2027: the contingent has been renewed every year since 2024, so a new round is expected rather than merely possible, and the programme page is the one the page watcher already follows.",
   "essel-co2-minderung": "OFFEN (bis 03/2027). Status unsicher: the Essel CO2 programme (guideline scan of 2014) is still linked from the municipality's page (read 28 September 2026), and the 2025 budget plans 2,500 EUR a year for private environmental investments without naming the programme, so it deducts nothing and a page titled Photovoltaik-Förderung would promise money nobody has confirmed. Village of about 1,200 inhabitants. Reachable through the postcode lookup.",
   "buchholz-aller-balkonkraftwerke": "OFFEN (bis 03/2027). Ended balcony-only programme of Buchholz (Aller): the guideline requires measures to be finished by 31 December 2024 and the 2025 budget plans no funds for 2025 to 2028 (read 28 September 2026); a page titled Photovoltaik-Förderung would promise funding that has ended and never covered roofs. Reachable through the postcode lookup and the balcony funding overview. Revisit if the municipality opens a new round.",
@@ -95,13 +87,9 @@ const OHNE_SEITE: Record<string, string> = {
   "michelbach-hunsrueck-energie-klima": "OFFEN (bis 09/2027). Closed balcony-only programme of Michelbach (Hunsrück): 100 EUR per household, term ended 31 December 2025 by section 7 (6) of its guideline (read 27 September 2026). No roof photovoltaics and closed, so a page titled Photovoltaik-Förderung would promise money that does not exist. Michelbach is not in ATLAS_CITIES, so fundingFor never reaches it. Reachable through the postcode lookup in the balcony calculator, where it informs and deducts nothing. Revisit if the village adopts a new programme.",
   "geesthacht-solar": "OFFEN (bis 09/2027). Closed city programme of Geesthacht for roof PV and solar thermal (150 EUR per kWp, max 1,000 EUR; applications until 30 April 2025, guideline expired 30 April 2026, city notice of January 2026: discontinued; read 30 September 2026). A page titled Photovoltaik-Förderung would promise money that cannot be applied for. Geesthacht is not in ATLAS_CITIES, so fundingFor never reaches it. Reachable through the postcode lookup, where it informs and deducts nothing. Revisit if the city adopts a new solar guideline.",
   "kuelz-hunsrueck-heizung-ee": "OFFEN (bis 09/2027). Closed heating-only village programme of Külz (Hunsrück): up to 4,000 EUR per object for heat pumps, biomass and solar thermal, funding period ended 31 December 2022 by section 6 (4) of its guideline (read 27 September 2026). No roof photovoltaics and closed, so a page titled Photovoltaik-Förderung would promise money that does not exist. Külz is not in ATLAS_CITIES, so fundingFor never reaches it. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit if the village adopts a new guideline.",
-  "neuerkirch-heizung-ee": "OFFEN (bis 09/2027). Heating-only guideline of Neuerkirch (Hunsrück) from 2014 without an end date, still referenced on the town website: up to 4,000 EUR per object for heat pumps, biomass and solar thermal (read 27 September 2026). Neuerkirch carries TWO programmes on the same key; the city page shows the energy-saving guideline (neuerkirch-energiespar) because only that one funds roof photovoltaics, which is what a page titled Photovoltaik-Förderung promises. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit if the town ends or replaces the guideline.",
   "vg-weilerbach-meilenstein-preisgeld": "OFFEN (bis 12/2026). Verbandsgemeinde Weilerbach pays a yearly prize per point (roof PV from 5 kWp, battery, heat pump), but the euro amount per point is set in each budget and stands in no source we could read (27 September 2026), so a page titled Photovoltaik-Förderung could not name any amount. The postcode lookup for 67685 also answers with the national fallback yield, so no member town has a measured yield for ATLAS_CITIES yet. Reachable through the postcode lookup, where it informs and deducts nothing. Revisit once a euro amount per point is published or the postcode gap is closed.",
   "weilerbach-energieeinsparmassnahmen": "OFFEN (bis 12/2026). Heating-only village grant of Weilerbach (10 % up to 1,500 EUR for heat pumps with underfloor heating, read 27 September 2026). No roof photovoltaics, so it cannot carry a page titled Photovoltaik-Förderung; the town's roof-PV prize is the Verbandsgemeinde programme, which has no page yet either. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing.",
-  "vg-kastellaun-dorfzentren-klimaschutz": "OFFEN (bis 07/2027). Heating-only Verbandsgemeinde guideline of Kastellaun (2,000 EUR flat per object for switching the heating to renewables, buildings of at least 40 years, costs of at least 10,000 EUR; valid 1 August 2025 to 31 July 2027, read 27 September 2026). No roof photovoltaics, so a page titled Photovoltaik-Förderung would promise roof funding the Verbandsgemeinde does not pay; the member villages with a city page (Beltheim, Dommershausen, Roth) show their own energy programmes. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit when the guideline expires or is renewed.",
-  "beltheim-dorferneuerung-klimaschutz": "OFFEN (bis 09/2027). Village-renewal guideline of Beltheim (in force 1 January 2026, read 27 September 2026) whose only item in our scope is heating renewal (10 % of the costs after federal funding, max. 8,000 EUR, buildings of at least 50 years, costs of at least 20,000 EUR). Beltheim carries TWO programmes on the same key; the city page shows the energy-saving guideline (beltheim-energiespar) because only that one funds roof photovoltaics, which is what a page titled Photovoltaik-Förderung promises. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit when the guideline is replaced.",
   "alterkuelz-dorfentwicklung": "OFFEN (bis 09/2027). Village-development guideline of Alterkülz (in force 1 January 2022, no end date, read 27 September 2026) whose only item in our scope is heating renewal (10 % of the costs, max. 5,000 EUR, buildings of at least 50 years, costs of at least 20,000 EUR). No roof photovoltaics, so a page titled Photovoltaik-Förderung would promise roof funding the village does not pay. Alterkülz is not in ATLAS_CITIES, so fundingFor never reaches it. Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit when the guideline is replaced.",
-  "hockenheim-stadtwerke-hauswaerme": "OFFEN (bis 01/2027). Stadtwerke Hockenheim pay 350 EUR (+100 EUR with a Naturstrom contract) only for switching to a heat pump combined with PV or solar thermal, and only to customers who buy all their energy from the Stadtwerke (guideline in force 1 May 2024, read 6 October 2026). Hockenheim carries TWO programmes on the same key; the city entry points to the balcony programme (fundingId). Reachable through the postcode lookup in the heat-pump calculator, where it informs and deducts nothing. Revisit when the Stadtwerke publish a 2026/2027 guideline.",
   "havelland-stecker-solar": "OFFEN (bis 06/2027). Three reasons, any one of which would do: the county states on its own page that no applications are possible for 2026 (read 20 September 2026), the programme funds balcony systems only, and ATLAS_CITIES holds no municipality of this county at all, so fundingFor never reaches it. NOT because county pages are withheld - that release switch governs atlas place pages, not funding pages. Reachable through the postcode lookup and the balcony funding overview. Revisit when the county opens the 2027 round.",
 };
 
@@ -121,12 +109,20 @@ const OHNE_SEITE: Record<string, string> = {
  */
 const REPO_WEIT_MS = 30_000;
 
+/**
+ * Steht das Programm auf der Seite dieses Orts? Seit 06.10.2026 zeigt eine
+ * Seite ALLE Programme ihres Orts (fundingListFrom), nicht nur das führende —
+ * Tübingens Balkon- und Wärmepumpen-Programm brauchen deshalb keine Ausnahme
+ * mehr.
+ */
+const zeigt = (c: (typeof ATLAS_CITIES)[number], id: string) => fundingListFor(c).some((p) => p.id === id);
+
 describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
   const regional = allFundingPrograms().filter((p) => p.level !== "bund");
 
   it("jedes regionale Programm hat eine Stadtseite — oder einen ausgeschriebenen Grund", () => {
     const ohne = regional
-      .filter((p) => !ATLAS_CITIES.some((c) => fundingFor(c)?.id === p.id))
+      .filter((p) => !ATLAS_CITIES.some((c) => zeigt(c, p.id)))
       .map((p) => p.id);
     const unerklaert = ohne.filter((id) => !OHNE_SEITE[id]);
     expect(unerklaert, `ohne Seite und ohne Begründung: ${unerklaert.join(", ")}`).toEqual([]);
@@ -134,9 +130,7 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
 
   it("die Ausnahmeliste enthält nichts, was längst eine Seite hat", () => {
     // Sonst bleibt eine Begründung stehen, die niemand mehr prüft.
-    const veraltet = Object.keys(OHNE_SEITE).filter((id) =>
-      ATLAS_CITIES.some((c) => fundingFor(c)?.id === id),
-    );
+    const veraltet = Object.keys(OHNE_SEITE).filter((id) => ATLAS_CITIES.some((c) => zeigt(c, id)));
     expect(veraltet, `Ausnahme überflüssig: ${veraltet.join(", ")}`).toEqual([]);
   });
 
@@ -153,7 +147,7 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
   it("ein Gemeinde-Programm hängt an einem Eintrag mit Gemeindeschlüssel", () => {
     const falsch = regional
       .filter((p) => p.agsCode && p.agsCode.length === 8)
-      .map((p) => ({ p, c: ATLAS_CITIES.find((c) => fundingFor(c)?.id === p.id) }))
+      .map((p) => ({ p, c: ATLAS_CITIES.find((c) => zeigt(c, p.id)) }))
       .filter(({ c }) => c && c.ags.length !== 8)
       .map(({ p, c }) => `${p.id} → ${c!.slug} (ags ${c!.ags})`);
     expect(falsch, `Kreisschlüssel unter Ortsnamen: ${falsch.join(", ")}`).toEqual([]);
@@ -199,10 +193,26 @@ describe("Zuordnung über den Gemeindeschlüssel", () => {
     expect(fundingForFrom([land, kommune], stadt("04012"))?.id).toBe("land");
   });
 
-  it("echte Mehrdeutigkeit bleibt ungelöst, statt geraten zu werden", () => {
+  it("zwei Programme auf demselben Schlüssel stehen BEIDE auf der Seite", () => {
+    // Bis 06.10.2026 hob sich gleich spezifische Mehrdeutigkeit auf (undefined,
+    // die Seite fiel auf 404) und musste über `fundingId` aufgelöst werden.
+    // Seitdem zeigt die Seite jedes Programm des Orts; `fundingId` bestimmt
+    // nur noch, welches vorne steht.
     const a = { id: "a", level: "kommune", agsCode: "06412", status: "aktiv" } as any;
     const b = { id: "b", level: "kommune", agsCode: "06412", status: "aktiv" } as any;
-    expect(fundingForFrom([a, b], stadt("06412"))).toBeUndefined();
+    expect(fundingListFrom([a, b], stadt("06412")).map((p) => p.id).sort()).toEqual(["a", "b"]);
+    expect(fundingListFrom([a, b], { ...stadt("06412"), fundingId: "b" })[0].id).toBe("b");
+  });
+
+  it("die Liste: laufend vor beendet, Gemeinde vor Kreis, Bund und Flächenland draußen", () => {
+    const kreis = { id: "kreis", level: "landkreis", agsCode: "07140", status: "aktiv" } as any;
+    const vg = { id: "vg", level: "kommune", agsCodes: ["07140001", "07140002"], status: "aktiv" } as any;
+    const eigen = { id: "eigen", level: "kommune", agsCode: "07140001", status: "eingestellt" } as any;
+    const land = { id: "land", level: "land", agsCode: "07", status: "aktiv" } as any;
+    const bund = { id: "bund", level: "bund", status: "aktiv" } as any;
+    const unsicher = { id: "unsicher", level: "kommune", agsCode: "07140001", status: "unsicher" } as any;
+    const ids = fundingListFrom([kreis, vg, eigen, land, bund, unsicher], stadt("07140001")).map((p) => p.id);
+    expect(ids).toEqual(["vg", "kreis", "eigen"]);
   });
 });
 
@@ -258,13 +268,17 @@ describe("Index-Freigabe", () => {
     // Seit 06.10.2026 (Betreiber-Entscheidung) gehören reine Balkon-Programme
     // dazu — formuliert als „Balkonkraftwerk-Förderung". Ein Landesprogramm
     // eines Flächenlands trägt weiterhin keine Stadtseite.
-    const sollte = ATLAS_CITIES.filter((c) => {
-      const p = fundingFor(c);
-      if (!p || p.status !== "aktiv") return false;
-      if (p.level === "land" && !["02", "04", "11"].includes(p.agsCode ?? "")) return false;
-      const t = p.foerdert ?? ["pv"];
-      return t.includes("pv") || t.includes("balkon");
-    });
+    // Seit 06.10.2026 über die MENGE der gezeigten Programme: Ein laufendes
+    // Programm mit Dach-PV oder Balkon genügt; ein beendetes steht auf einer
+    // Seite, die es gibt, schafft aber keine.
+    const sollte = ATLAS_CITIES.filter((c) =>
+      fundingListFor(c).some((p) => {
+        if (p.status !== "aktiv") return false;
+        if (p.level === "land" && !["02", "04", "11"].includes(p.agsCode ?? "")) return false;
+        const t = p.foerdert ?? ["pv"];
+        return t.includes("pv") || t.includes("balkon");
+      }),
+    );
     const ist = ATLAS_CITIES.filter((c) => cityIndexFreigegeben(c));
 
     // Der Altbestand aus dem Releaseplan darf zusätzlich freigegeben sein — er
@@ -272,10 +286,7 @@ describe("Index-Freigabe", () => {
     const zuviel = ist
       .filter((c) => !sollte.includes(c))
       .filter((c) => !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags))
-      .filter((c) => {
-        const p = fundingFor(c);
-        return !p || p.status === "aktiv";
-      })
+      .filter((c) => !fundingListFor(c).some((p) => p.status !== "aktiv"))
       .map((c) => c.slug);
     const zuwenig = sollte.filter((c) => !ist.includes(c)).map((c) => c.slug);
 
@@ -286,9 +297,12 @@ describe("Index-Freigabe", () => {
   it("gibt keine Seite frei, deren Topf leer ist", () => {
     // Eine Förderseite ohne abrufbares Geld beantwortet die Frage nicht, für die
     // jemand kommt. Betrifft Göttingen, Weyhe und Feucht.
+    // Leer heißt: KEIN gezeigtes Programm nimmt Anträge an, mindestens eines
+    // ist ausgeschöpft.
     const leer = ATLAS_CITIES.filter((c) => {
-      const p = fundingFor(c);
-      return !!p && p.status === "ausgeschoepft" && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
+      const liste = fundingListFor(c);
+      return liste.some((p) => p.status === "ausgeschoepft") && !liste.some((p) => p.status === "aktiv")
+        && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
     }).filter((c) => cityIndexFreigegeben(c));
     expect(leer.map((c) => c.slug), "ausgeschöpftes Programm, trotzdem freigegeben").toEqual([]);
   });
@@ -301,17 +315,28 @@ describe("Index-Freigabe", () => {
     // Seitdem dieselbe Adresse, über die eine Weiche als
     // „Balkonkraftwerk-Förderung" formuliert.
     const programme = allFundingPrograms();
-    const balkon = ATLAS_CITIES.filter((c) => {
-      const p = fundingFor(c);
-      const f = p?.foerdert ?? ["pv"];
-      return !!p && p.status === "aktiv" && p.level !== "land" && !f.includes("pv") && f.includes("balkon");
-    });
+    const laufendBalkon = (c: (typeof ATLAS_CITIES)[number]) =>
+      fundingListFor(c).some((p) => {
+        const f = p.foerdert ?? ["pv"];
+        return p.status === "aktiv" && p.level !== "land" && !f.includes("pv") && f.includes("balkon");
+      });
+    const laufendDach = (c: (typeof ATLAS_CITIES)[number]) =>
+      fundingListFor(c).some((p) => p.status === "aktiv" && (p.foerdert ?? ["pv"]).includes("pv"));
+    const balkon = ATLAS_CITIES.filter(laufendBalkon);
     expect(balkon.length, "kein laufendes Balkon-Programm im Verzeichnis — der Test sähe nichts").toBeGreaterThan(30);
     for (const c of balkon) {
       expect(cityIndexFreigegeben(c), `${c.slug}: laufende Balkon-Förderung ohne Seite`).toBe(true);
-      const meta = foerderStadtMeta(c.name, fundingForFrom(programme, c), 2026);
-      expect(meta.title, c.slug).toMatch(/^Balkon(kraftwerk)?-Förderung /);
-      expect(meta.title, c.slug).not.toMatch(/Photovoltaik|PV-/);
+      const liste = fundingListFrom(programme, c);
+      const meta = foerderStadtMeta(c.name, liste, 2026);
+      if (laufendDach(c)) {
+        // Dach UND eigenes Balkon-Programm: beide im Titel, soweit das Budget reicht.
+        expect(stadtseiteThema(liste), c.slug).toBe("pvUndBalkon");
+        expect(meta.title, c.slug).toMatch(/^(Photovoltaik|PV)(- und Balkon(kraftwerk)?)?-Förderung /);
+      } else {
+        // Ohne laufendes Dachprogramm verspricht die Seite kein Dachgeld.
+        expect(meta.title, c.slug).toMatch(/^Balkon(kraftwerk)?-Förderung /);
+        expect(meta.title, c.slug).not.toMatch(/Photovoltaik|PV-/);
+      }
     }
   });
 
@@ -320,9 +345,10 @@ describe("Index-Freigabe", () => {
     // Balkonkraftwerk verspräche unter „Photovoltaik-Förderung" Geld, das es
     // nicht zahlt.
     const ohne = ATLAS_CITIES.filter((c) => {
-      const p = fundingFor(c);
-      const f = p?.foerdert ?? ["pv"];
-      return !!p && !f.includes("pv") && !f.includes("balkon") && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
+      const liste = fundingListFor(c);
+      return liste.length > 0
+        && !liste.some((p) => (p.foerdert ?? ["pv"]).some((t) => t === "pv" || t === "balkon"))
+        && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
     }).filter((c) => cityIndexFreigegeben(c));
     expect(ohne.map((c) => c.slug), "weder Dach-PV noch Balkon, trotzdem freigegeben").toEqual([]);
     const wp = { slug: "t", name: "T", ags: "09999999", bundesland: "Bayern", yieldKwhKwp: 1000 };

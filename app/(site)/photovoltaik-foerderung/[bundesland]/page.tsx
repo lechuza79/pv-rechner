@@ -10,7 +10,8 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
+import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingListFrom } from "../../../../lib/atlas-cities";
+import { leitProgramm } from "../../../../lib/foerder-stadt-meta";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
@@ -198,13 +199,14 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
   // Active municipal programs that currently pay out a computable grant — named
   // in the intro so the page leads with the concrete benefit.
-  const activeCityNames = cities
-    .map((c) => fundingForFrom(programs, c))
+  const activeCityNames = [...new Set(cities
+    // Every programme of the place, not only the leading one (06.10.2026).
+    .flatMap((c) => fundingListFrom(programs, c))
     // fundingZaehlt statt des rohen Status: Diese Liste nennt Städte, für die
     // wir eine konkrete Förderung vorrechnen — was nicht mehr belegt ist, darf
     // dort nicht als Beispiel auftauchen.
-    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
-    .map((p) => p.region);
+    .filter((p) => fundingZaehlt(p) && fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
+    .map((p) => p.region))];
 
   return (
     <div style={S.page}>
@@ -248,7 +250,8 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
         )}
 
         {cities.map((c) => {
-          const f: FundingProgram | undefined = fundingForFrom(programs, c);
+          const liste = fundingListFrom(programs, c);
+          const f: FundingProgram | undefined = leitProgramm(liste);
           return (
             <Link key={c.slug} href={cityPath(c)} style={S.card}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
@@ -258,6 +261,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
                   {f ? f.name : "Anlagenbestand und Beispielrechnungen"}
+                  {liste.length > 1 ? ` und ${liste.length - 1} ${liste.length === 2 ? "weiteres Programm" : "weitere Programme"}` : ""}
                 </span>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-accent"), whiteSpace: "nowrap" }}>
                   Ansehen <IconArrowRight size={iconSizes.sm} />
