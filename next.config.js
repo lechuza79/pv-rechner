@@ -492,6 +492,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/steffenberg", destination: "/photovoltaik-foerderung/hessen/steffenberg", permanent: true },
       { source: "/photovoltaik-foerderung/tegernheim", destination: "/photovoltaik-foerderung/bayern/tegernheim", permanent: true },
       { source: "/photovoltaik-foerderung/lohfelden", destination: "/photovoltaik-foerderung/hessen/lohfelden", permanent: true },
+      { source: "/photovoltaik-foerderung/kaufungen", destination: "/photovoltaik-foerderung/hessen/kaufungen", permanent: true },
       { source: "/photovoltaik-foerderung/schwebheim", destination: "/photovoltaik-foerderung/bayern/schwebheim", permanent: true },
       { source: "/photovoltaik-foerderung/asbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/asbach", permanent: true },
       { source: "/photovoltaik-foerderung/parkstein", destination: "/photovoltaik-foerderung/bayern/parkstein", permanent: true },

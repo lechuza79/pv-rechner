@@ -1,4 +1,4 @@
-import { saetzeFuer, foerdertDach, FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
+import { saetzeFuer, foerdertDach, istFinanzierung, FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
 import { ortPraeposition } from "./atlas-orte";
 
 // ─── Title and description of a city funding page ─────────────────────────────
@@ -19,18 +19,39 @@ export const TITEL_BUDGET = 60;
 /** Google cuts descriptions around 155–160 characters. */
 export const BESCHREIBUNG_BUDGET = 158;
 
+/**
+ * How a city funding page speaks about its programme — the ONE switch that
+ * title, description, intro and FAQ all read (01.10.2026):
+ *  - "ohneDach": active, but no rooftop PV (München: balcony only)
+ *  - "darlehen": active rooftop-PV programme that lends instead of paying
+ *    (Kaufungen; recognised by istFinanzierung). Never called "Zuschuss".
+ *  - "zuschuss": active rooftop-PV grant
+ *  - "inaktiv" / "keins": programme not running / no programme
+ */
+export type StadtseiteFall = "keins" | "inaktiv" | "ohneDach" | "darlehen" | "zuschuss";
+
+export function stadtseiteFall(f: FundingProgram | undefined): StadtseiteFall {
+  if (!f) return "keins";
+  if (f.status !== "aktiv") return "inaktiv";
+  if (!foerdertDach(f)) return "ohneDach";
+  return istFinanzierung(f) ? "darlehen" : "zuschuss";
+}
+
 export function foerderStadtMeta(
   stadt: string,
   f: FundingProgram | undefined,
   jahr: number | string,
 ): { title: string; description: string } {
   const aktiv = f?.status === "aktiv";
+  const fall = stadtseiteFall(f);
   // An active programme that funds no rooftop PV (München: balcony only) is not
   // "Photovoltaik-Förderung" in the sense of this page — see foerdertDach.
-  const ohneDach = !!f && aktiv && !foerdertDach(f);
+  const ohneDach = fall === "ohneDach";
   const titelVoll = `Photovoltaik-Förderung ${stadt} ${jahr}`;
   const title = ohneDach
     ? `PV-Förderung ${stadt} ${jahr}: ${nurAndereTechnik(f!)}`
+    : fall === "darlehen"
+    ? `PV-Förderung ${stadt} ${jahr}: zinsloses Darlehen`
     : !f || aktiv
     ? titelVoll.length <= TITEL_BUDGET ? titelVoll : `PV-Förderung ${stadt} ${jahr}`
     : `PV-Förderung ${stadt} ${jahr}: ${FUNDING_STATUS_LABEL[f.status]}`;
@@ -42,6 +63,15 @@ export function foerderStadtMeta(
       description: kappe(
         `Das Programm „${f!.name}“ ${ort} fördert derzeit ${nurAndereTechnikSatz(f!)}, keine Dachanlagen. Was bundesweit gilt und Beispielrechnungen für deine PV-Anlage.`,
         `Das Förderprogramm ${ort} fördert derzeit ${nurAndereTechnikSatz(f!)}, keine Dachanlagen. Was bundesweit gilt und Beispielrechnungen für deine PV-Anlage.`,
+      ),
+    };
+  }
+  if (fall === "darlehen") {
+    return {
+      title,
+      description: kappe(
+        `${ort[0].toUpperCase()}${ort.slice(1)} gibt es für Photovoltaik ein zinsloses Darlehen über das Programm „${f!.name}“, zurückzuzahlen in Raten. Bedingungen und Beispielrechnungen.`,
+        `${ort[0].toUpperCase()}${ort.slice(1)} gibt es für Photovoltaik ein zinsloses Darlehen der Gemeinde, zurückzuzahlen in Raten. Bedingungen und Beispielrechnungen für deine PV-Anlage.`,
       ),
     };
   }

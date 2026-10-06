@@ -1,5 +1,5 @@
-import { foerdertDach, type FundingProgram } from "./funding-programs";
-import { nurAndereTechnikSatz } from "./foerder-stadt-meta";
+import type { FundingProgram } from "./funding-programs";
+import { nurAndereTechnikSatz, stadtseiteFall } from "./foerder-stadt-meta";
 
 // FAQ wird aus den Förderdaten generiert (nicht separat gespeichert) — so
 // spiegelt sie immer den Live-Stand der Programme aus der DB. Wird auf den
@@ -31,14 +31,16 @@ export function buildFundingFaq(
       q: `Welche Photovoltaik-Förderung gibt es in ${cityName}?`,
       // A programme without rooftop PV (München: balcony only) must not be
       // described as funding "Photovoltaik" (see foerdertDach).
-      a: (foerdertDach(program)
-        ? `In ${cityName} fördert ${program.traeger} Photovoltaik über das Programm „${program.name}". Förderfähig sind ${program.coveredCosts}.`
-        : `In ${cityName} fördert ${program.traeger} über das Programm „${program.name}" ${nurAndereTechnikSatz(program)}, keine Dachanlagen. ${program.coveredCosts}.`)
+      a: (stadtseiteFall(program) === "ohneDach"
+        ? `In ${cityName} fördert ${program.traeger} über das Programm „${program.name}" ${nurAndereTechnikSatz(program)}, keine Dachanlagen. ${program.coveredCosts}.`
+        : stadtseiteFall(program) === "darlehen"
+        ? `In ${cityName} vergibt ${program.traeger} für Photovoltaik ein zinsloses Darlehen über das Programm „${program.name}". Der Betrag wird in Raten zurückgezahlt.`
+        : `In ${cityName} fördert ${program.traeger} Photovoltaik über das Programm „${program.name}". Förderfähig sind ${program.coveredCosts}.`)
         + (active ? "" : ` Das Programm nimmt derzeit allerdings keine neuen Anträge an (${statusText(program.status)}).`),
     });
     faq.push({
       q: `Wie hoch ist die PV-Förderung in ${cityName}?`,
-      a: `Die Fördersätze sind: ${program.rates.map((r) => `${r.label} — ${r.value}`).join("; ")}.`
+      a: `${stadtseiteFall(program) === "darlehen" ? "Die Konditionen sind" : "Die Fördersätze sind"}: ${program.rates.map((r) => `${r.label} — ${r.value}`).join("; ")}.`
         + (program.maxFoerderung ? ` Es gilt ${program.maxFoerderung}.` : ""),
     });
     faq.push({
