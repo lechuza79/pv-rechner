@@ -2426,6 +2426,14 @@ nach einem Punkt verlangt ein Wortzeichen dahinter). Neu belegen: `npm run fachb
 wenn sie dort fehlen (Betreiber: „dorthin verschieben anstatt zu löschen") — als
 Kandidat mit `herkunft='suche'` bzw. ohne `ist_medium`, damit die eigenen Prüfungen
 dieser Bestände urteilen und die Kollisionsregel sie nicht für amtlich hält.
+**Ergebnis am 06.10.2026:** von 3.009 „Betrieben" 2.548 belegt, 176 keine (64 Versorger,
+37 Verbände, 35 Kommunen/Agenturen, 24 Portale, 14 Händler, 2 Medien), 285 ohne Beleg
+(Stichprobe: rund ein Drittel davon doch Betriebe ohne lesbaren Nachweis). 74 Versorger
+und 6 Medien-Kandidaten übergeben. **Alte Rückstufungen hebt die Regel nur mit Kammer im
+Impressum auf** — die schwächeren Belege hätten Stadtportale, ein Ministerium und
+Bürgerprojekte zu Betrieben gemacht (Gegenlesen von 77 Hochstufungen). Sechs Messläufe,
+jeder gegengelesen; die Fehlgriffe stehen als Tests in
+`lib/__tests__/fachbetrieb-einordnung.test.ts`.
 
 **Kein Merkmal ohne Beleg.** Jeder Fund landet mit Fundstelle, Textstelle und Datum in
 `fachbetrieb_belege`; die Spalte in `fachbetriebe` ist nur die Auswertung. Eine spätere
