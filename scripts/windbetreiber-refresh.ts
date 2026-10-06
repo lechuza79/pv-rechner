@@ -634,7 +634,10 @@ async function manuell() {
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
   const seite = arg("seite");
   // A refusal, not a stack trace: a helper read the trace as a tool failure (block 046).
-  if (seite && organisationsDomain(seite) !== domain) { console.log(`NICHT übernommen: Die Belegseite ${seite} liegt nicht auf ${domain} — Belegseite muss auf derselben Website liegen`); process.exitCode = 1; return; }
+  // The proof page lies on the domain, or on the site the domain redirects to
+  // (windpark.eu → windpark.com: the imprint is only there, block 059).
+  const zielVon = (d: string) => { const f = impressumDatei(d); if (!existsSync(f)) return null; const st = (JSON.parse(readFileSync(f, "utf8")) as { start: string | null }).start; return st ? organisationsDomain(st) : null; };
+  const seiteFremd = () => !!seite && organisationsDomain(seite) !== domain && organisationsDomain(seite) !== zielVon(domain);
   let belegseite: string | null | undefined;
   for (const nr of liste) {
     const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
@@ -644,6 +647,8 @@ async function manuell() {
     // (Österwurth, 06.10.2026). Replacing takes the explicit --ersetzen.
     if (z.website && z.website !== domain && !flag("ersetzen")) { console.log(`${nr}: hat schon ${z.website} — NICHT ersetzt (mit --ersetzen, wenn ${domain} die bessere ist)`); process.exitCode = 1; continue; }
     let p = await pruefen(z, { domain, quelle: "manuell" }, belegungen);
+    // Judged after the first fetch: only then is the redirect target known.
+    if (seiteFremd()) { console.log(`NICHT übernommen: Die Belegseite ${seite} liegt weder auf ${domain} noch auf der Website, auf die ${domain} weiterleitet — Belegseite muss auf derselben Website liegen`); process.exitCode = 1; return; }
     // The manual pass may name another page of the same site as evidence — an
     // "About us" page, a project page. The check itself stays the same.
     if (p.ergebnis !== "belegt" && p.ergebnis !== "konflikt" && seite) {
