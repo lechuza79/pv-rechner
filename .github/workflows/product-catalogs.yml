@@ -1,8 +1,7 @@
 name: Product catalogues
 on:
   schedule:
-    - cron: "43 6 * * *"
-    - cron: "43 0,12,18 * * *"
+    - cron: "43 0,6,12,18 * * *"
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,7 +15,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        catalog: ${{ fromJSON((github.event_name == 'workflow_dispatch' || github.event.schedule == '43 6 * * *') && '["wp","bkw"]' || '["bkw"]') }}
+        # Both catalogues on every run. The heat-pump import used to run only on
+        # the 06:43 schedule; GitHub starts that run six to nine hours late, so a
+        # merchant feed that resumed in the morning (after the 03.10 holiday
+        # weekend) reached the page only the next afternoon, while the page hides
+        # device cards once the merchant timestamp is older than three days.
+        # The import takes ~15 s, so four runs a day cost nothing worth saving.
+        catalog: ["wp", "bkw"]
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -29,7 +34,6 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Import and verify, retry once on failure
-        if: matrix.catalog == 'bkw' || github.event_name == 'workflow_dispatch' || github.event.schedule == '43 6 * * *'
         env:
           CATALOG: ${{ matrix.catalog }}
         run: |

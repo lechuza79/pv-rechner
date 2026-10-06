@@ -484,7 +484,11 @@ export function herkunftsangabe(
   // hude.de. Fünf Zeichen sind die Grenze, ab der ein Ortsname kein Zufall mehr
   // ist; „Berg" (vier) bliebe damit außen vor, und das ist die vorsichtige
   // Richtung — dort steht dann die Domain statt des Ortsnamens.
-  const wort = HERKUNFT_WORT[herkunft];
+  // The stored source column also carries PROCESS names ("handpruefung",
+  // "kontaktsuche-v2") instead of a page type. Measured 06.10.2026: 31 of 95
+  // letters said "Kontaktdaten (undefined von …)". An unknown source names the
+  // website, which is true for every address we collect.
+  const wort = HERKUNFT_WORT[herkunft] ?? "Website";
   // DIE HERKUNFT SCHLAEGT DEN NAMENSVERGLEICH. „verwaltung" heisst, dass die
   // Adresse der mitverwaltenden Gemeinde gehoert — dann MUSS deren Domain
   // dastehen, auch wenn der Ortsname zufaellig darin vorkommt. Gemessen:
