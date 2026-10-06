@@ -186,7 +186,7 @@ describe("Lückenlos — Website UND Kontakt, oder ein Vermerk von Hand", () => 
   });
   it("a page a person found is a lead for the engine, on the same website only", () => {
     const k = lies("scripts/windbetreiber-kontakte.ts");
-    expect(k).toMatch(/organisationsDomain\(url\) !== domain\) throw/);
+    expect(k).toMatch(/\(ziel !== domain && !weitereSitesVon\(domain\)\.includes\(siteOf\(ziel\)\)\)\) throw/);
     expect(k).toMatch(/recherchieren\(bestand, e, BUDGET, \{ vonHand: true \}\)/);
   });
 });
@@ -247,6 +247,51 @@ describe("Klasse 35 — ein einzelner Lesefehler sperrt keinen Kontakt (Outreach
     expect(k).toMatch(/const u = freigabeUrteil\(grund, vorherWind\.get\(schluessel\)\);/);
     expect(k).toMatch(/: \{ kontakt_sperrgrund: u\.grund \};/);
     expect(lies("scripts/lib/kontakt-freigabe.ts")).toMatch(/HTTP 40\[4\]\|HTTP 410\/\.test\(da\.fehler/);
+  });
+});
+
+describe("Klasse 38 — Bestandsregeln nie in der geteilten Maschine", () => {
+  it("the wind contact rules live in the stock's script, outside the files hashed into the municipal rule version", async () => {
+    const { JUDGE_FILES } = await import("../../scripts/lib/contact-v2-config");
+    expect(JUDGE_FILES.some((f: string) => /windbetreiber|kontakt-lauf/.test(f))).toBe(false);
+    for (const f of JUDGE_FILES) expect(lies(f), f).not.toMatch(/windbetreiber|allgemeinAuf|impressumPostfach/i);
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    expect(k).toMatch(/ergebnisForm: \(basis, _m, evidence\) => impressumPostfach\(basis, evidence\)/);
+    expect(k).toMatch(/htmlVorbereiten: \{ kennung: "wind-1"/);
+    // A change to the wind rules re-judges the wind results.
+    expect(k).toMatch(/rules: windRegeln\(\)/);
+  });
+});
+
+describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
+  it("decodes bracket-written addresses, and only those", async () => {
+    const { klammerAdressen } = await import("../../scripts/windbetreiber-kontakte");
+    expect(klammerAdressen("windmanager(at)wpd.de")).toBe("windmanager@wpd.de");
+    expect(klammerAdressen("info(a)naturenergie-heidenrod.de")).toBe("info@naturenergie-heidenrod.de");
+    expect(klammerAdressen("h.selzer(@)beg-hochwald.de")).toBe("h.selzer@beg-hochwald.de");
+    expect(klammerAdressen("Windpark (at) Musterdorf")).toBe("Windpark (at) Musterdorf");
+  });
+  it("takes a clean imprint mailbox when nothing else was selected, whatever its name", async () => {
+    const { impressumPostfach } = await import("../../scripts/windbetreiber-kontakte");
+    const basis = { general: [], kanaele: {}, fundstellen: {} } as never;
+    const ev = (email: string, url: string, reasons: string[] = []) => ({ email, url, reasons }) as never;
+    const r = impressumPostfach(basis, [ev("socialmedia@geres-group.de", "https://geres-group.de/impressum/"), ev("jobs@geres-group.de", "https://geres-group.de/karriere/")]);
+    expect(r).toMatchObject({ general: ["socialmedia@geres-group.de"], outcome: "general-only" });
+    // A conflict on ANOTHER page does not matter; one on the imprint itself does.
+    expect(impressumPostfach(basis, [ev("info@x.de", "https://x.de/impressum", ["published-address-conflict"])])).toEqual({});
+    // Nothing is overridden when the engine already chose.
+    expect(impressumPostfach({ general: ["info@x.de"], kanaele: {} } as never, [ev("a@x.de", "https://x.de/impressum")])).toEqual({});
+  });
+  it("lets a redirect target or the imprint's domain count as the same website, in release and report", () => {
+    expect(lies("scripts/kontakte-freigabe.ts")).toMatch(/weitereSites: weitere\.get\(r\.website\)/);
+    expect(lies("scripts/lib/kontakt-freigabe.ts")).toMatch(/\(p\.weitereSites \?\? \[\]\)\.some\(\(d\) => aufEigenerWebsite\(p\.belegUrl!, d\)\)/);
+    expect(lies("scripts/windbetreiber-refresh.ts")).toMatch(/!weitereSitesVon\(z\.website\)\.includes\(siteOf\(h \?\? ""\)\)/);
+  });
+  it("renders the page a person points to before judging it", () => {
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    const spur = k.slice(k.indexOf('if (mode === "spur")'), k.indexOf("const r = await recherchieren(bestand, e, BUDGET, { vonHand: true });"));
+    expect(spur).toMatch(/const gerendert = await seiteGerendert\(url\);/);
+    expect(spur).toMatch(/via: "browser-handspur"/);
   });
 });
 

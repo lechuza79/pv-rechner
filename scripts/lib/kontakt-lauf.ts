@@ -49,6 +49,12 @@ export type Eintrag = {
   verbund: Verbund | null;
   /** Bereits vorhandene Seiten (aus früheren Erhebungen), ohne die selbst geholten. */
   gespeicherteSeiten: Seite[];
+  /**
+   * Further sites that ARE this organisation's website: the domain its start
+   * page redirects to, the domain its imprint lives on (ewe.dk → eurowindenergy.com,
+   * ulmer-schokoladen.de → ulmer-schokolade.de). Research may fetch there.
+   */
+  erlaubteSites?: string[];
   /** Weitere bekannte, aber ungelesene Adressen mit Priorität. */
   offeneLinks?: { url: string; priority: number }[];
   /** Fließt in den Eingabe-Fingerabdruck ein: ändert sich das, wird neu bewertet. */
@@ -72,7 +78,14 @@ export type Bestand = {
   /** Alle Einträge des Bestands. */
   eintraege(): Eintrag[];
   /** Ergebnis-Felder, die dieser Bestand zusätzlich führt (z. B. eigene Kanalnamen). */
-  ergebnisForm?(basis: Ergebnis, mailboxes: Mailbox[]): Record<string, unknown>;
+  ergebnisForm?(basis: Ergebnis, mailboxes: Mailbox[], evidence: Evidence[]): Record<string, unknown>;
+  /**
+   * Prepare a page's HTML before extraction (decoding a stock needs and the
+   * shared extraction does not do). Its `kennung` goes into the page cache key:
+   * the shared extraction files are hashed into the municipal rule version, and
+   * changing them would hold every municipal letter until re-judged.
+   */
+  htmlVorbereiten?: { kennung: string; f(html: string): string };
   /** Wie viele Kanäle ein Eintrag haben kann — erreicht er sie alle, wird nicht weiter gesucht. */
   fertigWenn?(ergebnis: Ergebnis): boolean;
   /**
@@ -109,9 +122,11 @@ type Parsed = { candidates: ContactCandidate[]; headings: Record<string, string[
 
 /** Die Extraktion je Seite ist der teure Teil; sie hängt am Fingerabdruck der Seite. */
 export function parsePage(b: Bestand, page: Seite, domain: string): Parsed {
-  const cachePath = resolve(b.out, "page-cache", b.extraction, page.digest.slice(0, 2), `${sha(page.digest + page.url + domain)}.json`);
+  const version = b.htmlVorbereiten ? `${b.extraction}-${b.htmlVorbereiten.kennung}` : b.extraction;
+  const cachePath = resolve(b.out, "page-cache", version, page.digest.slice(0, 2), `${sha(page.digest + page.url + domain)}.json`);
   if (existsSync(cachePath)) return readJson(cachePath);
-  const html = decode(readFileSync(page.path!));
+  const roh = decode(readFileSync(page.path!));
+  const html = b.htmlVorbereiten ? b.htmlVorbereiten.f(roh) : roh;
   const candidates = contactRoleContext(html, contactCandidates(html, page.url, domain)).candidates;
   const context = headingContext(html);
   const parsed: Parsed = { candidates, headings: Object.fromEntries(context.headings), title: context.title, links: contactLinks(html, page.url, domain, b.linkProfil) };
@@ -174,7 +189,7 @@ export function bewerten(b: Bestand, e: Eintrag): Ergebnis {
     openLinks: [...links].sort((a, b2) => b2[1] - a[1]).slice(0, 60).map(([url, priority]) => ({ url, priority })),
     ...(e.zusatz ?? {}),
   };
-  const result = { ...basis, ...(b.ergebnisForm?.(basis, mailboxes) ?? {}) } as Ergebnis;
+  const result = { ...basis, ...(b.ergebnisForm?.(basis, mailboxes, evidence) ?? {}) } as Ergebnis;
   writeJson(resultPath, result);
   return result;
 }
@@ -242,7 +257,7 @@ export async function recherchieren(b: Bestand, e: Eintrag, budget: number, opts
   let result = bewerten(b, e);
   if (fertig(result)) return { id: e.id, skipped: "complete" };
   const own = siteOf(host(e.website ?? ""));
-  const allowed = new Set([own, ...(result.verbund?.sites ?? [])].filter(Boolean));
+  const allowed = new Set([own, ...(result.verbund?.sites ?? []), ...(e.erlaubteSites ?? [])].filter(Boolean));
   const done = new Set<string>(eigeneSeiten(b, e.id).map(p => p.url));
   for (const a of log.attempts) for (const f of a.fetched) done.add(f.url);
   const last = log.attempts.at(-1);

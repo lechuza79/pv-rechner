@@ -23,6 +23,8 @@ export type Pruefling = {
   schluessel: string; email: string; belegUrl: string | null; domain: string;
   /** The proof page must lie on `domain` itself (wind operators: only the operator's own proven website counts). */
   nurEigeneWebsite?: boolean;
+  /** Sites that are the same website: its redirect target, the domain of its imprint. */
+  weitereSites?: string[];
 };
 
 /** Is the page on the site `domain` (the domain itself or one of its hosts)? */
@@ -100,7 +102,7 @@ export async function freigeben(
     if (!t.ok) { const u = { schluessel: p.schluessel, email, grund: t.grund }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     if (!(await nimmtMails(email.split("@")[1]))) { const u = { schluessel: p.schluessel, email, grund: "Domain nimmt keine Mails an" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     if (!p.belegUrl) { const u = { schluessel: p.schluessel, email, grund: "keine Fundstelle" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
-    if (p.nurEigeneWebsite && !aufEigenerWebsite(p.belegUrl, p.domain)) { const u = { schluessel: p.schluessel, email, grund: "Fundstelle nicht auf der eigenen Website" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
+    if (p.nurEigeneWebsite && !aufEigenerWebsite(p.belegUrl, p.domain) && !(p.weitereSites ?? []).some((d) => aufEigenerWebsite(p.belegUrl!, d))) { const u = { schluessel: p.schluessel, email, grund: "Fundstelle nicht auf der eigenen Website" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     offen.push({ ...p, email });
   }
   // One read per proof page; pages of one host one after another, hosts in parallel.

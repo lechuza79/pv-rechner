@@ -26,7 +26,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { organisationsDomain } from "../lib/bestand-abgleich";
-import type { Rollenwerk, ScopeRegeln } from "../lib/kontakt-suche";
+import { fold, siteOf, type Evidence, type Rollenwerk, type ScopeRegeln } from "../lib/kontakt-suche";
+import { ohneAdressVerschleierung } from "../lib/presse-extrakt";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
 import { kontaktFelder, maildomain } from "../lib/windbetreiber";
@@ -34,6 +35,8 @@ import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
 import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { bewerten, laufen, readJson, recherchieren, sha, writeJson, type Bestand, type Eintrag, type Ergebnis, type Seite } from "./lib/kontakt-lauf";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
+import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
+import { fileURLToPath } from "node:url";
 
 const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const OUT = resolve(arg("out") ?? resolve(MAIN_CHECKOUT, "scripts/.cache/windbetreiber-kontakte"));
@@ -64,11 +67,36 @@ export const WIND_ROLLENWERK: Rollenwerk = {
   eigenerTitel: /pressesprecher\w*|leit(?:ung|er\w*) (?:der )?(?:unternehmens)?kommunikation|kommunikationsleit\w*|referent\w* (?:für )?(?:presse|kommunikation)|head of communications?/iu,
   ausgeschlossen: /datenschutzbeauftrag|technische umsetzung|webdesign|agentur für|rechtsanwalt|streitschlichtung|verbraucherschlichtung|beschwerde|hinweisgeber|whistleblow/iu,
   fremdeEinheit: /fl(?:ä|ae)chen(?:akquise|sicherung|management)|grundst(?:ü|ue)cks?eigent(?:ü|ue)mer|landeigent(?:ü|ue)mer|akquise|karriere|bewerb|ausbildung|einkauf|lieferant|st(?:ö|oe)rung|leitwarte|service-?hotline|technische betriebsf(?:ü|ue)hrung|investor relations|anleger/iu,
-  allgemein: /^(info|kontakt|mail|office|zentrale|post|hallo|hello|service|windpark|wind|energie|verwaltung|buero|büro|anfrage|marktstammdatenregister)$/i,
+  // English and French names of foreign groups (contact@, communication@ — manual pass, 06.10.2026).
+  allgemein: /^(info|kontakt|contact|contacts|mail|office|zentrale|post|hallo|hello|service|windpark|wind|energie|verwaltung|buero|büro|anfrage|marktstammdatenregister|communication|communications|dialog|team)$/i,
   starkesPostfach: /presse|kommunikation|medien|media|newsroom|\bpr\b/i,
-  // The imprint's mailbox is the operator's general contact, whatever its name.
-  allgemeinAuf: (pfad: string) => /impressum|imprint|legal-notice|anbieterkennzeichnung/i.test(pfad),
 };
+
+/**
+ * The imprint's mailbox is the operator's general contact, whatever its name
+ * (§ 5 DDG): "socialmedia@", a Bürgerwindpark's free-mail box, "contact@" on
+ * "mentions légales". And a conflict on ANOTHER page (a Wix placeholder on the
+ * contact page, a typo variant, a label linking elsewhere) must not cancel the
+ * clean entry in the imprint — one hard reason anywhere used to block the
+ * mailbox on every page (14 + 8 websites in the manual pass, 06.10.2026).
+ * Kept here, not in the shared engine: its files are hashed into the
+ * municipal rule version (docs/lehren/kontakt-engine-fehler.md, class 38).
+ */
+export const IMPRESSUM_SEITE = /impressum|imprint|legal|mentions-legales|anbieterkennzeichnung|datenschutz|privacy|#text-der-website-pruefung/i;
+
+export function impressumPostfach(basis: Ergebnis, evidence: Evidence[]): Record<string, unknown> {
+  if (basis.general.length || (basis.kanaele.presse?.length ?? 0) > 0) return {};
+  const sauber = evidence.filter((e) => !e.reasons.length && IMPRESSUM_SEITE.test(e.url) && postfachTauglich(e.email).ok);
+  if (!sauber.length) return {};
+  const rang = (m: string) => (WIND_ROLLENWERK.allgemein.test(m.split("@")[0]) ? 0 : 1);
+  const best = [...sauber].sort((a, b) => rang(a.email) - rang(b.email) || a.email.localeCompare(b.email))[0];
+  return { general: [best.email], selected: [best.email], fundstellen: { ...(basis.fundstellen ?? {}), [best.email]: best.url }, outcome: "general-only", reason: "imprint mailbox (§ 5 DDG)" };
+}
+
+/** Addresses written "name (at) domain.de", "name[@]domain.de", "name(a)domain.de". */
+export function klammerAdressen(html: string): string {
+  return html.replace(/\b([a-z0-9][a-z0-9._%+-]*)\s*(?:\(at\)|\[at\]|\{at\}|\(@\)|\[@\]|\(a\))\s*([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})\b/gi, "$1@$2");
+}
 
 const WIND_SCOPE: ScopeRegeln = {
   // A developer's site lists partner municipalities and their mailboxes.
@@ -106,11 +134,12 @@ async function betreiber(): Promise<Zeile[]> {
  * The imprint text the website check stored, as a page the engine can read.
  * Only text: what a reader saw, re-read before any release (kontakte-freigabe).
  */
-function impressumAlsSeite(domain: string): Seite[] {
+function impressumAlsSeite(domain: string, weitere: string[] = []): Seite[] {
   const datei = resolve(MAIN_CHECKOUT, "scripts/.cache/windbetreiber/impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
   if (!existsSync(datei)) return [];
   const imp = readJson(datei) as { impressum_url: string | null; text: string | null };
-  if (!imp.text || !imp.impressum_url || organisationsDomain(imp.impressum_url) !== domain) return [];
+  const d = imp.impressum_url ? organisationsDomain(imp.impressum_url) : null;
+  if (!imp.text || !imp.impressum_url || !d || (d !== domain && !weitere.includes(siteOf(d)))) return [];
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>Impressum</title></head><body><main>${imp.text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</main></body></html>`;
   const digest = sha(html);
   const pfad = resolve(OUT, "gespeichert", domain, `${digest}.html`);
@@ -132,6 +161,44 @@ function handSpuren(): Record<string, string[]> {
   return (spurenCache ??= existsSync(SPUREN()) ? readJson(SPUREN()) : {});
 }
 
+/** The shared rule version plus this file: a change to the wind rules here re-judges every result. */
+function windRegeln(): string {
+  return sha(rulesVersion() + readFileSync(fileURLToPath(import.meta.url), "utf8")).slice(0, 16);
+}
+
+/**
+ * Sites that ARE the operator's website besides its own domain: where its
+ * start page redirects to (research sources record the final address) and
+ * where the imprint the website check read lives. 29 websites of the manual
+ * pass redirect elsewhere — windmanager.de's 165 operators and ewe.dk's 160
+ * among them — and stood as "no contact" (06.10.2026).
+ */
+const weitereCache = new Map<string, string[]>();
+export function weitereSitesVon(domain: string): string[] {
+  const vorher = weitereCache.get(domain);
+  if (vorher) return vorher;
+  const out = new Set<string>();
+  const imp = resolve(MAIN_CHECKOUT, "scripts/.cache/windbetreiber/impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
+  if (existsSync(imp)) {
+    const i = readJson(imp) as { impressum_url: string | null; start: string | null };
+    for (const u of [i.impressum_url, i.start]) { const d = u ? organisationsDomain(u) : null; if (d && d !== domain) out.add(d); }
+  }
+  const quellen = resolve(OUT, "sources", domain);
+  if (existsSync(quellen)) {
+    for (const f of readdirSync(quellen).filter((n) => n.endsWith(".json"))) {
+      const m = readJson(resolve(quellen, f)) as { url?: string; finalUrl?: string };
+      // Only a redirect FROM this domain's own start or imprint page — not any link it followed.
+      if (!m.url || !m.finalUrl || organisationsDomain(m.url) !== domain) continue;
+      const d = organisationsDomain(m.finalUrl);
+      if (d && d !== domain) out.add(d);
+    }
+  }
+  // Hosting platforms and other stocks' portals are no alias of anyone.
+  const liste = [...out].filter((d) => !/(?:^|\.)(?:ionos|strato|goneo|wix|jimdo|squarespace|wordpress|google|facebook|linkedin|instagram|youtube|xing)\./i.test(d)).map((d) => siteOf(d));
+  weitereCache.set(domain, liste);
+  return liste;
+}
+
 function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string, Eintrag> } {
   const jeWebsite = new Map<string, Zeile[]>();
   for (const z of zeilen) jeWebsite.set(z.website, [...(jeWebsite.get(z.website) ?? []), z]);
@@ -144,20 +211,28 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
     // every commercial site must carry with a mailbox. It is a lead for the
     // research, and its text as the website check read it (in a real browser
     // where the site is built by script) is a stored page.
-    const belegUrls = [...new Set(gruppe.map((z) => z.website_beleg_url).filter((u): u is string => !!u && organisationsDomain(u) === domain))];
+    const weitere = weitereSitesVon(domain);
+    const belegUrls = [...new Set(gruppe.map((z) => z.website_beleg_url).filter((u): u is string => !!u && (organisationsDomain(u) === domain || weitere.includes(siteOf(organisationsDomain(u) ?? "")))))];
     eintraege.set(domain, {
       id: domain,
       // The shortest name is usually the parent itself ("Alterric GmbH"), not a project company.
       name: [...gruppe].sort((a, b) => a.name.length - b.name.length)[0].name,
       website: `https://${domain}/`,
-      baseline, verbund: null, gespeicherteSeiten: impressumAlsSeite(domain), eingabe: [...baseline, ...belegUrls, ...(handSpuren()[domain] ?? [])],
+      // The further sites act as a shared administration: pages and mailboxes there count.
+      baseline, verbund: weitere.length ? { name: `Website ${domain}`, tokens: weitere.map((d) => fold(d.split(".")[0])).filter((t) => t.length >= 4) } : null,
+      gespeicherteSeiten: impressumAlsSeite(domain, weitere), eingabe: [...baseline, ...belegUrls, ...(handSpuren()[domain] ?? [])],
       offeneLinks: [...belegUrls.map((url) => ({ url, priority: 950 })), ...(handSpuren()[domain] ?? []).map((url) => ({ url, priority: 990 }))],
+      erlaubteSites: weitere,
       zusatz: { betreiber: gruppe.length },
     });
   }
   const bestand: Bestand = {
-    name: "windbetreiber-kontakte", out: OUT, rules: rulesVersion(), extraction: extractionVersion(),
+    name: "windbetreiber-kontakte", out: OUT, rules: windRegeln(), extraction: extractionVersion(),
     rollenwerk: WIND_ROLLENWERK, scope: WIND_SCOPE, linkProfil: "versorger",
+    ergebnisForm: (basis, _m, evidence) => impressumPostfach(basis, evidence),
+    // Cloudflare-protected and bracket-written addresses (rwe.com, altus-re.de,
+    // windmanager(at)wpd.de) — decoded for this stock only, see impressumPostfach.
+    htmlVorbereiten: { kennung: "wind-1", f: (html) => klammerAdressen(ohneAdressVerschleierung(html)) },
     eintraege: () => [...eintraege.values()],
     // Done when there is a press contact — the general imprint mailbox comes for free on the way.
     fertigWenn: (r: Ergebnis) => (r.kanaele.presse?.length ?? 0) > 0,
@@ -233,7 +308,7 @@ async function apply() {
   // Only websites still proven: a withdrawn website's result is history.
   const jetzt = new Map((await betreiber()).map((z) => [z.website, z]));
   const alle = ergebnisse().filter((r) => jetzt.has(r.id));
-  const veraltet = alle.filter((r) => r.rules !== rulesVersion());
+  const veraltet = alle.filter((r) => r.rules !== windRegeln());
   if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
   const unbewertet = [...jetzt.keys()].filter((d) => !alle.some((r) => r.id === d));
   if (unbewertet.length) console.log(`Hinweis: ${unbewertet.length} belegte Websites ohne Ergebnis (z. B. ${unbewertet[0]}) — erst --mode=research/evaluate`);
@@ -262,10 +337,24 @@ async function main() {
     // A page a person found: recorded as a lead, then researched at once with the same engine.
     const [domain] = arg("ids")?.split(",") ?? [];
     const url = arg("url");
-    if (!domain || !url || organisationsDomain(url) !== domain) throw new Error("Aufruf: --mode=spur --ids=<domain> --url=<Seite derselben Website>");
+    const ziel = url ? organisationsDomain(url) : null;
+    if (!domain || !url || !ziel || (ziel !== domain && !weitereSitesVon(domain).includes(siteOf(ziel)))) throw new Error("Aufruf: --mode=spur --ids=<domain> --url=<Seite derselben Website oder ihrer Weiterleitung/ihres Impressums>");
     const spuren = handSpuren();
     spuren[domain] = [...new Set([...(spuren[domain] ?? []), url])];
     writeJson(SPUREN(), spuren);
+    // The page a person saw, as a browser renders it: script-built imprints,
+    // Joomla cloaking, Cloudflare — the plain fetch of the research saw none of
+    // them (8 websites in the manual pass, 06.10.2026). Stored as a source page
+    // of this entry; the engine judges it like any other.
+    const gerendert = await seiteGerendert(url);
+    await browserSchliessen();
+    if (gerendert) {
+      const digest = sha(gerendert);
+      const dir = resolve(OUT, "sources", domain);
+      mkdirSync(dir, { recursive: true, mode: 0o700 });
+      writeFileSync(resolve(dir, `${digest}.html`), gerendert, { mode: 0o600 });
+      writeJson(resolve(dir, `${digest}.json`), { url, finalUrl: url, status: 200, observedAt: new Date().toISOString(), digest, originalDigest: null, via: "browser-handspur" });
+    }
     const { bestand, eintraege } = bestandAus(await betreiber());
     const e = eintraege.get(domain);
     if (!e) throw new Error(`${domain} ist keine belegte Website eines aktiven Betreibers`);

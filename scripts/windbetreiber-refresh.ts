@@ -41,6 +41,8 @@ import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeu
 import { fehlendeSpalten } from "../lib/ddl-spalten";
 import { fetchLive } from "./lib/kontakt-lauf";
 import { ERSTER_FEHLVERSUCH } from "./lib/kontakt-freigabe";
+import { weitereSitesVon } from "./windbetreiber-kontakte";
+import { siteOf } from "../lib/kontakt-suche";
 import { findCachedZip, listZipEntries, streamXmlRecords } from "./mastr-bnetza-refresh";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -706,7 +708,8 @@ function kontaktVerstoss(z: { website: string | null; kontakt_email: string | nu
   if (!z.website) return "Kontakt ohne belegte Website";
   if (!z.kontakt_beleg_url) return "Kontakt ohne Fundstelle";
   const h = organisationsDomain(z.kontakt_beleg_url);
-  if (h !== z.website) return `Kontakt-Fundstelle ${h ?? z.kontakt_beleg_url} liegt nicht auf ${z.website}`;
+  // The same website under another address (redirect target, imprint domain) counts.
+  if (h !== z.website && !weitereSitesVon(z.website).includes(siteOf(h ?? ""))) return `Kontakt-Fundstelle ${h ?? z.kontakt_beleg_url} liegt nicht auf ${z.website}`;
   return null;
 }
 

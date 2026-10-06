@@ -16,6 +16,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
 import { freigabeUrteil, freigeben, type Pruefling } from "./lib/kontakt-freigabe";
+import { weitereSitesVon } from "./windbetreiber-kontakte";
 
 /** The block reasons the wind stock carried before this run (two-strike rule). */
 let vorherWind = new Map<string, string | null>();
@@ -93,7 +94,11 @@ const BESTAENDE: Record<string, Bestand> = {
       const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url, kontakt_sperrgrund", "mastr_nr",
         q => q.eq("aktiv", true).not("kontakt_email", "is", null).not("website", "is", null));
       vorherWind = new Map(z.map(r => [r.mastr_nr, r.kontakt_sperrgrund]));
-      return z.map(r => ({ schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true }));
+      const weitere = new Map<string, string[]>();
+      return z.map(r => {
+        if (!weitere.has(r.website)) weitere.set(r.website, weitereSitesVon(r.website));
+        return { schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true, weitereSites: weitere.get(r.website) };
+      });
     },
     async schreiben(c, schluessel, heute, grund) {
       // One unreadable read is no finding; the second in a row blocks.
