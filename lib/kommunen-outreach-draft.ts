@@ -192,6 +192,8 @@ export type DraftContext = {
   /** Personal salutation without the comma ("Sehr geehrte Frau Kuhn"); null
    *  means no named person is known. */
   anrede?: string | null;
+  /** The place's 3D scene is published; the municipal page then opens on it. */
+  mitSzene?: boolean;
   /** "Unter den besten X %" when the subject says so; then the message says it
    *  too, instead of a rank that reads weaker (Kempen: "Platz 29"). */
   rangProzent?: number | null;
@@ -608,7 +610,9 @@ export function renderMeldung(c: DraftContext): string {
   const prozent = platz != null && platz > 1 ? (c.rangProzent ?? null) : null;
   const ueberschrift =
     prozent != null
-      ? `${kurz} ${c.phrase} unter den besten ${prozent} %`
+      ? // Same wording as the subject on purpose: it is the opener and works as
+        // the headline (operator, 06.10.2026).
+        `${kurz} ${c.phrase} unter den besten ${prozent} %`
       : platz != null
       ? `${kurz}: Platz ${platz} ${c.phrase}`
       : `Solarausbau in ${kurz}: der aktuelle Stand`;
@@ -732,8 +736,16 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
         `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
-  const kommunenAbsatz = c.kommunenUrl
-    ? `\n\nWas wir Kommunen darüber hinaus anbieten, vom Energiemonitor über Rechner bis zu fertigen Datenstories, steht hier: ${c.kommunenUrl}`
+  // The 3D scene of the place, right under the message (operator,
+  // 06.10.2026) — only once it is published (`mitSzene`). Neutral about what
+  // it shows: not every scene has both wind and solar parks.
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  const szeneAbsatz =
+    c.mitSzene && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurzOrtsname(c.name)} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : "";
+  const kommunenAbsatz = c.kommunenUrl && !szeneAbsatz
+    ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
     : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
@@ -805,7 +817,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand.${szeneAbsatz}${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}

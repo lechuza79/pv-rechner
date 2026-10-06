@@ -24,3 +24,8 @@ export function kommunenSeiteUrl(siteUrl: string, ags: string): string {
   const base = `${siteUrl}${KOMMUNEN_PATH}`;
   return Object.hasOwn(landscapePlaces, ags) ? `${base}?gemeinde=${ags}` : base;
 }
+
+/** Is the 3D scene of this place published? */
+export function hatSzene(ags: string): boolean {
+  return Object.hasOwn(landscapePlaces, ags);
+}

@@ -855,3 +855,19 @@ describe("Anrede", () => {
     expect(renderOutreachDraft({ ...BASIS, anrede: null }).body.startsWith("Sehr geehrte Damen und Herren,")).toBe(true);
   });
 });
+
+describe("Kein Satz doppelt, Szene unter der Meldung", () => {
+  it("sagt das monatliche Aktualisieren nicht zusätzlich", () => {
+    const b = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" }).body;
+    expect(b).not.toContain("aktualisiere ich monatlich");
+  });
+  it("verweist nur bei veröffentlichter Szene auf die 3D-Ansicht, mit einem Link", () => {
+    const url = "https://solar-check.io/fuer-organisationen/kommunen?gemeinde=09679147";
+    const mit = renderOutreachDraft({ ...BASIS, kommunenUrl: url, mitSzene: true }).body;
+    expect(mit).toContain("interaktive 3D-Ansicht");
+    expect(mit.split(url).length - 1).toBe(1);
+    const ohne = renderOutreachDraft({ ...BASIS, kommunenUrl: url, mitSzene: false }).body;
+    expect(ohne).not.toContain("3D-Ansicht");
+    expect(ohne).toContain(url);
+  });
+});

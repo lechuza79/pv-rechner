@@ -3,7 +3,7 @@ import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
 import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
-import { kommunenSeiteUrl } from "./kommunen-seite";
+import { hatSzene, kommunenSeiteUrl } from "./kommunen-seite";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
@@ -185,6 +185,7 @@ export async function briefFuerGemeinde(
     // tag reader, so the tag would measure nothing there. With the place, once
     // its scene is published.
     kommunenUrl: kommunenSeiteUrl(SITE_URL, regionId),
+    mitSzene: hatSzene(regionId),
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,
