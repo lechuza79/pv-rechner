@@ -615,6 +615,18 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Hoster-Platzhalter; sie werden nicht pauschal neu abgerufen, die Handprüfung
   nennt dort die eigene Seite.
 
+### 69. Rathaus als Registeranschrift — einmal belegt, einmal „keine“
+- **Anlass:** 06.10.2026 — die Maschine belegte Gemeindeseiten über die
+  Registeranschrift (Schleiden, Fuchstal), Helfer setzten in gleichen Fällen
+  „keine“, weil Gemeindeseiten als Verzeichnis galten. Nachgearbeitet: 7 von 9
+  Anschriften übernommen; die 11 Projektgesellschaften eines Projektierers unter
+  der Adresse der Gemeindeverwaltung Groß Pankow wieder zurückgenommen — dort ist
+  die Gemeinde Zustelladresse, nicht Verwalterin.
+- **Sicherung:** keine Maschinenregel (Zustelladresse und Verwalterin sind am Text
+  nicht zu unterscheiden). Der Helferauftrag regelt es: Gemeindeseite prüfen bei
+  kommunalen und Bürgergesellschaften mit Gemeindebeteiligung, nie bei
+  Projektgesellschaften eines Konzerns. Im Abschlussbericht benannt.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
