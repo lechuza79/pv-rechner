@@ -43,7 +43,7 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/belegseiteTraegt\(text, akteurVon\(z\), z\.name, domain, await ortsWoerter\(\)\)/);
     // A name on another page proves only when it identifies someone (reference lists).
     const lib = readFileSync(resolve(__dirname, "../windbetreiber.ts"), "utf8");
-    expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\)\) \? b : null/);
+    expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\) \|\| \(identifizierend\(name, ortsWoerter\) && !parkListe\(text, name\)\)/);
     // The page is kept, so a rule change judges the hand decision again.
     expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);

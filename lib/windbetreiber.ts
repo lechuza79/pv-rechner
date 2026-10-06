@@ -680,10 +680,12 @@ export function geschwisterWebsite(
  */
 export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>): Beleg | null {
   const b = impressumBelegt(text, a, domain, ortsWoerter);
-  // On such a page only the FULL company name proves: a planner's reference
-  // page names the park ("Windpark Pamsendorf", "Jörl-Stieglund" on an
-  // investment platform — manual pass 06.10.2026), never the company.
-  return b && (b.wie !== "name" || vollerNameIn(text, name)) ? b : null;
+  // A park name alone proves on a page about that park (Ørsted's Gode Wind
+  // pages, EnBW's Rot am See), never on a list of parks — a planner's
+  // references or an investment platform (Pamsendorf, Jörl-Stieglund, manual
+  // pass 06.10.2026). Requiring the FULL name was tried: it failed the
+  // operators' own project pages. Same test as on start pages.
+  return b && (b.wie !== "name" || vollerNameIn(text, name) || (identifizierend(name, ortsWoerter) && !parkListe(text, name))) ? b : null;
 }
 
 /** Does the operator's name carry a distinguishing word of the domain's label? (the family firm on its own site) */

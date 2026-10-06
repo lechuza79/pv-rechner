@@ -29,9 +29,13 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(b?.wie).toBe("marke");
   });
 
-  it("lets a park name on a named extra page prove nothing — only the full company name does", () => {
+  it("lets a park name on an extra page prove only on a page about that park, never on a list of parks", () => {
     const a = akteur("Windpark Pamsendorf GmbH & Co. KG", "Dorfstraße", "1", "92260");
-    expect(belegseiteTraegt("Referenzen Windpark Pamsendorf drei Anlagen WIMO GmbH Planung", a, a.Firmenname!, "wimo-energie.de")).toBeNull();
+    const referenzen = "Referenzen Windpark Pamsendorf drei Anlagen · Windpark Musterberg zwei Anlagen · Windpark Hohenfeld vier Anlagen · Windpark Seeweide · Windpark Grünau";
+    expect(belegseiteTraegt(referenzen, a, a.Firmenname!, "wimo-energie.de")).toBeNull();
+    // The operator's own page about its park proves (Ørsted, Gode Wind).
+    const gw = akteur("Gode Wind 1 Offshore Wind Farm GmbH & Co. oHG", "Ballindamm", "1", "20095");
+    expect(belegseiteTraegt("Offshore-Windpark Gode Wind 1 vor Norderney 55 Turbinen seit 2017 in Betrieb", gw, gw.Firmenname!, "orsted.de")?.wie).toBe("name");
     expect(belegseiteTraegt("Betreibergesellschaft Windpark Pamsendorf GmbH & Co. KG mit Sitz in X", a, a.Firmenname!, "wimo-energie.de")?.wie).toBe("name");
   });
 
