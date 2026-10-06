@@ -56,3 +56,23 @@ export function verlinkteSeiteBefund(status: number, html: string, name: string)
   if (!titel.includes(kern)) return `Seitentitel nennt „${kern}" nicht (${titel.slice(0, 60) || "kein Titel"})`;
   return null;
 }
+
+/**
+ * A page named in a letter must be indexable once the letter is out.
+ *
+ * WHY (06.10.2026): The rule "a town's page goes live when its letter goes
+ * out" existed since 01.09.2026 — and was never measured. On 06.10.2026 all 95
+ * pages of that day's batch still said "noindex" hours after the send, because
+ * the list of written-to towns sat in a 24-hour cache. Nobody noticed until
+ * the operator asked. The send now releases the pages itself; this check is
+ * the proof that it worked, on every health-check run.
+ *
+ * Returns null when the page may be indexed, otherwise the reason.
+ */
+export function indexierbarBefund(status: number, html: string): string | null {
+  if (status === 301 || status === 308) return null;
+  if (status !== 200) return `HTTP ${status || "keine Antwort"}`;
+  const robots = [...html.matchAll(/<meta[^>]+name=["']robots["'][^>]*>/gi)].map((m) => m[0]);
+  if (robots.some((tag) => /noindex/i.test(tag))) return "steht noch auf „nicht indexieren“";
+  return null;
+}

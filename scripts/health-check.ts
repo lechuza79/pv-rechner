@@ -53,7 +53,7 @@ import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
-import { verlinktePfade, verlinkteSeiteBefund } from "../lib/verlinkte-seiten";
+import { indexierbarBefund, verlinktePfade, verlinkteSeiteBefund } from "../lib/verlinkte-seiten";
 import {
   BASIS_TAGE,
   FEHLBETRAG_MELDEN_AB_ANTEIL,
@@ -566,6 +566,58 @@ async function messeVerlinkteSeiten(): Promise<{ pfad: string; befund: string | 
         status = 0;
       }
       out.push({ pfad: s.pfad, befund: verlinkteSeiteBefund(status, html, s.name) });
+    }
+    return out;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Opens the pages of the most recently written-to towns and checks they may be
+ * indexed (lib/verlinkte-seiten.ts → indexierbarBefund). A letter older than an
+ * hour must have released its page; younger ones are skipped so a send in
+ * progress is not reported. null = list not readable.
+ */
+async function messeAngeschriebeneSeiten(): Promise<{ pfad: string; befund: string | null }[] | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  const headers = { apikey: key, Authorization: `Bearer ${key}` };
+  try {
+    const q = async (path: string) => {
+      const res = await fetch(`${url}/rest/v1/${path}`, { headers, signal: AbortSignal.timeout(15000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    };
+    const vorEinerStunde = new Date(Date.now() - 3600_000).toISOString();
+    const neu = (await q(
+      `kommunen_kontakt?select=region_id&contacted_at=lt.${vorEinerStunde}&outreach_status=neq.gesperrt` +
+        `&order=contacted_at.desc&limit=8`,
+    )) as { region_id: string }[];
+    const ids = [...new Set(neu.map((r) => String(r.region_id)).filter((id) => id.length === 8))];
+    if (!ids.length) return [];
+    const alle = [...new Set(ids.flatMap((id) => [id, id.slice(0, 5), id.slice(0, 2)]))];
+    const regionen = (await q(`mastr_regions?select=region_id,slug,name&region_id=in.(${alle.join(",")})`)) as {
+      region_id: string; slug: string | null; name: string;
+    }[];
+    const seiten = verlinktePfade(ids, regionen).filter((s) => s.pfad.split("/").length === 5);
+    const out: { pfad: string; befund: string | null }[] = [];
+    for (const s of seiten) {
+      let status = 0;
+      let html = "";
+      try {
+        const res = await fetch(`${BASE_URL}${s.pfad}`, {
+          redirect: "manual",
+          headers: { "user-agent": "solar-check-health-check" },
+          signal: AbortSignal.timeout(30000),
+        });
+        status = res.status;
+        html = await res.text();
+      } catch {
+        status = 0;
+      }
+      out.push({ pfad: s.pfad, befund: indexierbarBefund(status, html) });
     }
     return out;
   } catch {
@@ -2214,6 +2266,27 @@ async function main() {
         `${kaputt.length} Seite(n), auf die Medien oder Gemeinden verlinken, liefern nicht die richtige Seite: ` +
           kaputt.map((v) => `${v.pfad} (${v.befund})`).join("; ") +
           `. Zuerst die letzte Auslieferung prüfen und im Zweifel zurücknehmen.`,
+      );
+    }
+  }
+
+  // ── Angeschriebene Seiten müssen indexierbar sein ───────────────────────
+  // Die Freigabe hängt am Versand (lib/atlas-outreach-freigabe.ts). Am
+  // 06.10.2026 standen alle 95 Seiten des Tages Stunden nach dem Versand noch
+  // auf „nicht indexieren", und keine Prüfung hat es gesehen.
+  const angeschrieben = await messeAngeschriebeneSeiten();
+  if (angeschrieben === null) {
+    lines.push("Angeschriebene Seiten: Liste nicht lesbar — nicht geprüft");
+  } else {
+    const gesperrt = angeschrieben.filter((v) => v.befund);
+    lines.push(`Angeschriebene Seiten indexierbar: ${angeschrieben.length - gesperrt.length} von ${angeschrieben.length}`);
+    for (const v of gesperrt) lines.push(`  ✗ ${v.pfad}: ${v.befund}`);
+    if (gesperrt.length) {
+      technical("angeschriebene-indexierbar", false,
+        `${gesperrt.length} Seite(n) angeschriebener Gemeinden sind nicht indexierbar: ` +
+          gesperrt.map((v) => `${v.pfad} (${v.befund})`).join("; ") +
+          `. Zuerst die Freigabeliste neu laden (POST /api/atlas/revalidate?umfang=outreach), ` +
+          `dann prüfen, ob die Gemeinde dort steht.`,
       );
     }
   }
