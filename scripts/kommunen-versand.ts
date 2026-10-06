@@ -749,14 +749,16 @@ async function vorflug(p: Paket, limit: number): Promise<boolean> {
   }
 
   // Scenes are a separate session's work. The letter mentions the 3D view only
-  // where a scene is published, so this is information, not a brake — but the
-  // number has to be read BEFORE the go, not discovered after it.
+  // where a scene is published; a letter without one blocks the send.
   const ohneSzene = briefe.filter((b) => !b.body.includes("3D-Ansicht"));
   log(
     `${briefe.length - ohneSzene.length} von ${briefe.length} Briefen zeigen eine 3D-Szene` +
       (ohneSzene.length ? ` — ohne: ${ohneSzene.map((b) => b.name).join(", ")}` : ""),
-    ohneSzene.length ? "warn" : "ok",
+    ohneSzene.length ? "err" : "ok",
   );
+  // Every letter is meant to show its 3D scene (operator, 06.10.2026): a
+  // missing scene is not information but a gap to close before the send.
+  if (ohneSzene.length) maengel.push(`${ohneSzene.length} Briefe ohne 3D-Szene — Szenen nachziehen`);
 
   // Every link a recipient can click, called once as a recipient would. This
   // also warms the cold pages before the first real click.
