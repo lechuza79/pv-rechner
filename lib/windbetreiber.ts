@@ -522,7 +522,7 @@ export function beurteilen(
   // And only on a site about energy: the owner's haulage firm or IT shop is
   // where he is reached, not the operator's website (tebbe-spedition.de,
   // combineit.de, a recruiter — first run of this rule, 06.10.2026).
-  if (eigenesImpressum && energie && !beraterSeite && postfach && maildomain(postfach) === domain && telefonIn(eigenesImpressum, telefon)) {
+  if (eigenesImpressum && energie && !beraterSeite && postfach && maildomain(postfach) === domain && (telefonIn(eigenesImpressum, telefon) || telefonImBlock(eigenesImpressum, telefon))) {
     return { ergebnis: "belegt", beleg: { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} im Impressum` }, seite: "impressum" };
   }
   if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };
@@ -550,6 +550,28 @@ export function telefonIn(text: string, telefon: string | null | undefined): boo
     // A switchboard written "-0" covers its extensions: register 04841 9813321,
     // imprint "04841 9813-0" (Cimbergy, manual pass 06.10.2026).
     if (/[-\u2013\u2014\s]0$/.test(m[0].trim()) && k.length - 1 >= 7 && ziel.startsWith(k.slice(0, -1)) && ziel.length > k.length - 1) return true;
+  }
+  return false;
+}
+
+/**
+ * The register's number is an extension in the same block as a number in the
+ * text: register 04841 8944832, imprint 04841 8944825 (BGZ), register 07974
+ * 9118291, contact page 07974 9118290 (Windhelfer) — five firms in the manual
+ * pass, 06.10.2026. Only as a second statement beside the register mailbox on
+ * the domain; on its own a number block proves nothing.
+ */
+export function telefonImBlock(text: string, telefon: string | null | undefined): boolean {
+  const ziel = telefonKern(telefon);
+  // A mobile number is one person's, not a block (Windinvest: 0163 5375804 is
+  // not 5375803).
+  if (ziel.length < 9 || /^1[5-7]/.test(ziel)) return false;
+  for (const m of text.matchAll(/(?<![\p{L}\d])(?:\+|00)?\(?\d[\d\s\/().\-\u2013\u2014]{5,}\d/gu)) {
+    const k = telefonKern(m[0]);
+    if (k.length < 9 || Math.abs(k.length - ziel.length) > 2) continue;
+    let gleich = 0;
+    while (gleich < k.length && k[gleich] === ziel[gleich]) gleich++;
+    if (gleich >= Math.max(k.length, ziel.length) - 2) return true;
   }
   return false;
 }
@@ -707,7 +729,7 @@ export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: 
   // The phone proof on a contact page of the same site: BB Wind keeps its
   // imprint on /about/ without a number, the register's number stands on
   // /kontakt/ (manual pass, 06.10.2026). Same conditions as on the imprint.
-  if (!b && postfach && maildomain(postfach) === domain && ENERGIE.test(text) && !istBeraterSeite(text) && telefonIn(text, telefon)) {
+  if (!b && postfach && maildomain(postfach) === domain && ENERGIE.test(text) && !istBeraterSeite(text) && (telefonIn(text, telefon) || telefonImBlock(text, telefon))) {
     return { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} auf der Belegseite` };
   }
   // A park name alone proves on a page about that park (Ørsted's Gode Wind

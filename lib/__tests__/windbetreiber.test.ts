@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
+import { telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -58,7 +58,23 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     // Not without the mailbox on the domain, not on a page without energy, not with another number.
     expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@gmx.de", "04835-9728773")).toBeNull();
     expect(belegseiteTraegt("Kontakt Spedition Tel. 04835 9728773", a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")).toBeNull();
-    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728774")).toBeNull();
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9738773")).toBeNull();
+  });
+
+  it("knows an extension in the same number block, and nothing looser (BGZ, Windhelfer)", () => {
+    expect(telefonImBlock("Tel. 04841 8944825", "04841-8944832")).toBe(true);
+    expect(telefonImBlock("Tel. 07974/9 11 82 90", "07974-9118291")).toBe(true);
+    // Mobile numbers are no block.
+    expect(telefonImBlock("Mobil 0163 5375803", "0163 5375804")).toBe(false);
+    // Another block, another town, too short.
+    expect(telefonImBlock("Tel. 05472 949944", "05472 9597680")).toBe(false);
+    expect(telefonImBlock("Tel. 04841 8954825", "04841-8944832")).toBe(false);
+    expect(telefonImBlock("Tel. 1234 5678", "1234 5679")).toBe(false);
+    // Only beside the mailbox on the domain.
+    const a = akteur("Burmester Wind GmbH & Co. KG", "Dorfstraße", "1", "25813");
+    const imp = "Impressum BGZ Fondsverwaltung GmbH Windenergie Husum Tel. 04841 8944825";
+    expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@bgz-gmbh.de", undefined, "04841-8944832").ergebnis).toBe("belegt");
+    expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@web.de", undefined, "04841-8944832").ergebnis).toBe("abgelehnt");
   });
 
   it("takes the brand a name declares with 'powered by' (Ebert)", () => {
