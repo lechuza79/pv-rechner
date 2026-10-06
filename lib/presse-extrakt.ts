@@ -745,11 +745,39 @@ export function verbandAus(impText: string, selbst: string): VerbandFund | null 
   return null;
 }
 
+/** How evidence of the old whole-page rule reads. It proves nothing. */
+export const FUNDSTELLE_SEITENTEXT = "Merkmal im Seitentext";
+
+export interface VerbandUrteil {
+  verband: boolean;
+  fund: VerbandFund | null;
+  /** false: neither imprint nor title could be judged, the prior flag stands */
+  gelesen: boolean;
+}
+
+/**
+ * The decision a run writes. An imprint without a readable provider block is
+ * "not read", never "no association": then the prior flag stands — but only
+ * if its own evidence came from the imprint or the title. A flag of the old
+ * whole-page rule (FUNDSTELLE_SEITENTEXT) is refuted and does not carry over.
+ */
+export function verbandUrteil(impText: string, selbst: string, vorherBelegt: boolean): VerbandUrteil {
+  const fund = verbandAus(impText, selbst);
+  if (fund) return { verband: true, fund, gelesen: true };
+  const gelesen = !!anbieterBlock(impText) || LOKALFUNK.test(impText);
+  return gelesen ? { verband: false, fund: null, gelesen } : { verband: vorherBelegt, fund: null, gelesen };
+}
+
+/** Is a stored "Verband" evidence one of the imprint rule (not the old one)? */
+export function verbandBelegTraegt(fundstelle: string | null): boolean {
+  return !!fundstelle && fundstelle !== FUNDSTELLE_SEITENTEXT;
+}
+
 /**
  * Medium types: formats from the whole page, "Verband" from the imprint and
- * the title (see verbandAus).
+ * the title (see verbandUrteil).
  */
-export function medientypAus(text: string, verband: VerbandFund | null = null): string[] {
+export function medientypAus(text: string, verband = false): string[] {
   const typen = MEDIENTYP.filter((t) => t.muster.test(text)).map((t) => t.name);
   return verband ? [...typen, "Verband"] : typen;
 }
