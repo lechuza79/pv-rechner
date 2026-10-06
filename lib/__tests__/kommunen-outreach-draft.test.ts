@@ -516,6 +516,22 @@ describe("Weitere Platzierungen im Brief", () => {
     );
   });
 
+  // Kempen (Schub 10/2026): Meldung bundesweit unter 626 Städten, die weiteren
+  // Plätze unter den 5 im Kreis. Ohne Gruppe las sich „Platz 1 von 5" als
+  // zweiter bundesweiter Rang.
+  it("nennt die gemeinsame Gruppe, wenn sie nicht die der Meldung ist", () => {
+    const b = renderOutreachDraft({
+      ...BASIS,
+      gruppe: "Mittelgroßen Städten bundesweit",
+      weitere: [
+        { phrase: "bei der privaten Speicherkapazität", gruppe: "Mittelgroßen Städten im Kreis Viersen", platz: 1, von: 5 },
+        { phrase: "bei privater Solarleistung", gruppe: "Mittelgroßen Städten im Kreis Viersen", platz: 2, von: 5 },
+      ],
+    }).body;
+    const zeile = b.split("\n\n").find((a) => a.startsWith("Auch sonst")) ?? "";
+    expect(zeile).toMatch(/, jeweils unter den mittelgroßen Städten im Kreis Viersen\.$/);
+  });
+
   it("nennt jede weitere Platzierung mit Platz, Gruppengrösse und Vergleichsgruppe", () => {
     const b = renderOutreachDraft(MIT).body;
     // Verschiedene Vergleichsgruppen — dann bleibt die Gruppe an der Zeile,

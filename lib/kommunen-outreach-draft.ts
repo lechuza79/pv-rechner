@@ -517,6 +517,11 @@ export function herkunftsangabe(
 
 const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
 
+function gleicheGruppe(a: string, b: string | null | undefined): boolean {
+  const norm = (x: string) => x.replace(/^unter den\s+/i, "").trim().toLowerCase();
+  return !!b && norm(a) === norm(b);
+}
+
 export function kleinKlasse(gruppe: string): string {
   const [erstes, ...rest] = gruppe.split(" ");
   if (!rest.length || !KLASSEN_ADJEKTIVE.includes(erstes)) return gruppe;
@@ -741,7 +746,15 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
         // 53 Gemeinden.
         `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
           .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
-          .join(", ")}.`
+          .join(", ")}${
+          // Only drop the group when it IS the group of the message above.
+          // Kempen: message ranked nationwide among 626 towns, these lines
+          // among the 5 in the district — "Platz 1 von 5" without the district
+          // read as a second nationwide claim.
+          gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
+            ? ""
+            : `, jeweils unter den ${kleinKlasse(weitereListe[0].gruppe)}`
+        }.`
       : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
           .map(
             (w) =>
