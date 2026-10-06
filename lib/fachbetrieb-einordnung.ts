@@ -202,10 +202,14 @@ const AGENTUR =
   /\b(?:Klima(?:schutz)?-?agentur|Energieagentur|Klimaschutzmanagement|Solar(?:potenzial|dach)?kataster|Solaratlas|Energieatlas|Geoportal)\b/i;
 
 // A medium in its provider name: "pv magazine group GmbH & Co. KG" (measured).
-const MEDIUM_NAME = /\bmagazine?\b|\bVerlag\b|\bZeitung\b|\bMedien(?:haus|gruppe)\b/i;
+// Not "Magazin" alone: installers carry a "PV-Magazin" in their menu
+// (hellgruen.solar, loose-anlagentechnik.de — measured).
+const MEDIUM_NAME = /\bmagazine\s+group\b|\bMagazin\s+(?:GmbH|Verlag)\b|\bVerlag\b|\bZeitung\b|\bMedien(?:haus|gruppe)\b/i;
 const MEDIUM = /\b(?:Chefredakt\w*|Redaktionsleitung|Verlagsleitung|Verlagsgesellschaft|Zeitungsverlag|Verlagshaus|Anzeigenleitung)\b/i;
 
-const PORTAL_NAME = /\b(?:Portal|Verzeichnis|Branchenbuch|Vergleichsportal|Firmenverzeichnis|Marktplatz)\b|-Adressen\b/i;
+// Not a street ("Marktplatz 8", folz-elektrotechnik.de) and not the
+// disclaimer's "E-Mail-Adressen" (ahrens-solar-dach.de) — both measured.
+const PORTAL_NAME = /\b(?:Portal|Verzeichnis|Branchenbuch|Vergleichsportal|Firmenverzeichnis)\b|\bMarktplatz\b(?!\s*\d)|(?<!E-Mail)-Adressen\b/i;
 // Not "portal": an electrician runs "e-infoportal.de" (measured).
 const PORTAL_DOMAIN = /(?:finden|vergleich|verzeichnis|branchen)/i;
 // On the page only what a lead seller says about itself. "Angebote
@@ -213,7 +217,7 @@ const PORTAL_DOMAIN = /(?:finden|vergleich|verzeichnis|branchen)/i;
 // — that phrase counts only in the self-description.
 const PORTAL_SELBST = /\b(?:Angebote vergleichen|kostenlos vergleichen|Anbieter vergleichen|Vergleichen Sie|Preisvergleich\w*)\b/i;
 const PORTAL_TEXT =
-  /\b(?:bis zu (?:drei|3|f(?:ü|ue)nf|5) (?:kostenlose )?Angebote|Handwerker finden|Fachbetriebe? in Ihrer N(?:ä|ae)he finden|Jetzt Anbieter finden|Leads?[- ]?(?:Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Wir vermitteln|vermitteln\s+(?:Ihre\s+)?Anfragen|(?:Fachbetrieb|Handwerker|Installateur|Elektriker|Solarteur)e?n?\s+finden|Als\s+Fachbetrieb\s+(?:anmelden|registrieren))\b/i;
+  /\b(?:bis zu (?:drei|3|f(?:ü|ue)nf|5) (?:kostenlose )?Angebote|Handwerker finden|Fachbetriebe? in Ihrer N(?:ä|ae)he finden|Jetzt Anbieter finden|Leads?[- ]?(?:Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Wir vermitteln(?![^.!?]{0,40}\bnicht\b)|vermitteln\s+(?:Ihre\s+)?Anfragen|(?:Fachbetrieb|Handwerker|Installateur|Elektriker|Solarteur)e?n?\s+finden|Als\s+Fachbetrieb\s+(?:anmelden|registrieren))\b/i;
 // "euskirchen-solar.de: Wir vermitteln Anfragen ausschließlich an geprüfte
 // Fachbetriebe", "installateur24.de: Als Fachbetrieb anmelden" (measured).
 

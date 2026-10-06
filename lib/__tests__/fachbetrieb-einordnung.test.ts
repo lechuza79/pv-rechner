@@ -398,6 +398,22 @@ describe("promotions of the fourth run, gegengelesen (06.10.2026)", () => {
   });
 });
 
+describe("the fifth run, gegengelesen (06.10.2026)", () => {
+  const meister = (txt: string, imp: string) => urteil("x.de", seite("X", "", `Photovoltaik vom Meisterbetrieb. ${txt}`), imp);
+  it("'Marktplatz 8' is a street", () => {
+    expect(meister("", "Folz Elektrotechnik e.K. Viktor Folz Marktplatz 8, 61169 Friedberg").art).toBe("betrieb");
+  });
+  it("'wir vermitteln Sie nicht weiter' is the opposite of a lead seller", () => {
+    expect(meister("Wir kommen selbst vorbei, wir vermitteln Sie nicht weiter.", "X GmbH Weg 1 12345 Ort").art).toBe("betrieb");
+  });
+  it("'E-Mail-Adressen' in a disclaimer is no address directory", () => {
+    expect(meister("", "Angaben gemäß § 5 TMG Ahrens GmbH. Der Nutzung von E-Mail-Adressen wird widersprochen. Weg 1 12345 Ort").art).toBe("betrieb");
+  });
+  it("a 'PV-Magazin' menu item is no medium", () => {
+    expect(meister("", "Impressum hellgrün PV-Magazin Über uns Presse hellgrün GmbH Weg 1 12345 Ort").art).toBe("betrieb");
+  });
+});
+
 describe("evidence of a trade — 'betrieb' needs one", () => {
   it("the Handwerkskammer in the imprint", () => {
     const u = urteil("haustechnik-markert.de", seite("Heizung", "", "Erneuerbare Energien Photovoltaik"), "Impressum Haustechnik Markert Balbachtalstraße 21a 97922 Lauda Zugehörige Kammer Handwerkskammer Heilbronn-Franken");
