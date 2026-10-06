@@ -306,7 +306,7 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
   let html: string | null = null;
   let huelle: { html: string; start: string } | null = null;
   for (const s of starts) {
-    const r0 = await fetchLive(s);
+    const r0 = await fetchLive(s, { auchServerfehler: true });
     const r = "html" in r0 ? { html: webKomponentenAusklappen(r0.html) } : r0;
     // A page with markup but no text is an app shell: the browser below reads it.
     if ("html" in r && r.html.length > 200 && sichtbarerText(r.html).length >= LEERE_HUELLE) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
@@ -328,7 +328,7 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
     const versuche = url ? [url] : ["impressum", "impressum/", "imprint", "impressum.html"].map((p) => new URL(p, ergebnis.start!).toString());
     for (const u of versuche) {
       let seite: string | null = null;
-      const r0 = await fetchLive(u);
+      const r0 = await fetchLive(u, { auchServerfehler: true });
       const r = "html" in r0 ? { html: webKomponentenAusklappen(r0.html) } : r0;
       if ("html" in r && (sichtbarerText(r.html).length >= LEERE_HUELLE || !mitBrowser)) seite = r.html;
       else if ("html" in r && mitBrowser) seite = await seiteGerendert(u);

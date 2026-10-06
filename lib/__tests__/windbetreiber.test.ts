@@ -376,6 +376,12 @@ describe("Befunde der ersten Handprüfung (06.10.2026)", () => {
     expect(impressumBelegt("Impressum Denker & Wulf AG Windmühlenberg 24814 Sehestedt", a, "denkerwulf.de")?.wie).toBe("anschrift");
     expect(impressumBelegt("Impressum Andere GmbH Windmühlenberg 12 24814 Sehestedt", a, "andere.de")).toBeNull();
   });
+  it("an imprint without any house number matches a register number when street and postcode stand together", () => {
+    const a = akteur("Windpark Calau GmbH & Co. KG", "Windmühlenberg", "1", "24814");
+    expect(impressumBelegt("Impressum Denker & Wulf AG, Windmühlenberg, 24814 Sehestedt", a, "denkerwulf.de")?.wie).toBe("anschrift");
+    // Another house number in the imprint is another house.
+    expect(impressumBelegt("Impressum Andere GmbH Windmühlenberg 12, 24814 Sehestedt", a, "andere.de")).toBeNull();
+  });
   it("the full name with its legal form identifies, even when its words are places", () => {
     expect(vollerNameIn("Betreiber des Parks ist die Amrum-Offshore West GmbH mit Sitz in Essen", "Amrum-Offshore West GmbH")).toBe(true);
     expect(vollerNameIn("Offshore-Windpark Amrumbank West", "Amrum-Offshore West GmbH")).toBe(false);

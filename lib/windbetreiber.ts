@@ -173,12 +173,28 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
     // "Straße" failed every address on a "…straße" (PNE, enercity, ABO —
     // measured on the first sample, 06.10.2026).
     const kompakt = t.replace(/strasse/g, "str").replace(/ /g, "");
-    const kopf = kompakt.indexOf(strasse + nr);
+    // The number must END where the register's ends: "1" is not "12" (found
+    // with the Denker & Wulf rule, 06.10.2026 — it matched since day one).
+    let kopf = -1;
+    for (let i = kompakt.indexOf(strasse + nr); i >= 0; i = kompakt.indexOf(strasse + nr, i + 1)) {
+      const rest = kompakt.slice(i + strasse.length + nr.length);
+      // Spaces are gone here: "holzweg 87 26605" reads "holzweg8726605", and
+      // the digits that follow may be the postcode itself.
+      if (!nr || !/^\d/.test(rest) || rest.startsWith(plz)) { kopf = i; break; }
+    }
     const danach = kopf >= 0 ? kompakt.slice(kopf + strasse.length + nr.length, kopf + strasse.length + nr.length + 60) : "";
     const p = danach.indexOf(plz);
     // Without a register number, no other number may stand between street and
     // postcode: "Windmühlenberg 12, 24814" is another house.
-    if (kopf >= 0 && p >= 0 && (nr || !/\d/.test(danach.slice(0, p)))) {
+    let treffer = kopf >= 0 && p >= 0 && (nr || !/\d/.test(danach.slice(0, p)));
+    // An imprint that writes the street with NO number at all, directly before
+    // the postcode ("Windmühlenberg, 24814 Sehestedt" — Denker & Wulf, register
+    // "Windmühlenberg 1"): the address of a place, not one house among many.
+    if (!treffer && nr) {
+      const ohneNr = kompakt.indexOf(strasse + plz);
+      if (ohneNr >= 0) treffer = true;
+    }
+    if (treffer) {
       const roh = t.indexOf(plz);
       return { wie: "anschrift", textstelle: umgebung(t, Math.max(0, roh - 40), plz.length + 40) };
     }

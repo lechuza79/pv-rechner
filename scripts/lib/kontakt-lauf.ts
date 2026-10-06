@@ -320,13 +320,22 @@ export async function nachpruefen(b: Bestand, e: Eintrag, email: string) {
 }
 
 /** Ein einzelner Abruf ohne Ablage — für die Nachprüfung vor einer Verwendung. */
-export async function fetchLive(url: string): Promise<{ html: string } | { error: string }> {
+export async function fetchLive(url: string, opts: { auchServerfehler?: boolean } = {}): Promise<{ html: string } | { error: string }> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     const controller = new AbortController();
     timer = setTimeout(() => controller.abort(new DOMException("timeout", "TimeoutError")), 20000);
     const res = await fetch(url, { redirect: "follow", signal: controller.signal, headers: { "user-agent": UA, accept: "text/html,text/vcard;q=0.9" } });
-    if (!res.ok) return { error: `Seite antwortet mit HTTP ${res.status}` };
+    // Some sites answer EVERY page with 500 and still deliver the full page
+    // (solarparc.de, manual pass 06.10.2026). Who asks for it gets the body
+    // when it is a real page; an error page is short.
+    if (!res.ok && !(opts.auchServerfehler && res.status >= 500)) return { error: `Seite antwortet mit HTTP ${res.status}` };
+    if (!res.ok) {
+      const body = Buffer.from(await res.arrayBuffer());
+      const html = decode(body);
+      if (html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").length < 2000) return { error: `Seite antwortet mit HTTP ${res.status}` };
+      return { html };
+    }
     const bytes = Buffer.from(await res.arrayBuffer());
     const type = res.headers.get("content-type") ?? "";
     if (/vcard/i.test(type) || /\.vcf(?:$|\?)/i.test(url)) return { html: vcardToHtml(bytes.toString("utf8")) ?? "" };

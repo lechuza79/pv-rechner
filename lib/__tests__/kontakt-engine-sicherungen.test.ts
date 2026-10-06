@@ -326,6 +326,15 @@ describe("Klasse 42 — Inhalt in Attributen von Web-Komponenten", () => {
   });
 });
 
+describe("Klasse 43 — Serverfehler mit vollständiger Seite", () => {
+  it("the website check reads a 5xx page when it carries a real page, and only there", () => {
+    expect(lies("scripts/windbetreiber-refresh.ts").match(/fetchLive\([su], \{ auchServerfehler: true \}\)/g)?.length).toBe(2);
+    const l = lies("scripts/lib/kontakt-lauf.ts");
+    expect(l).toMatch(/opts\.auchServerfehler && res\.status >= 500/);
+    expect(l).toMatch(/\.length < 2000\) return \{ error:/);
+  });
+});
+
 describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   it("a report without the register read fails instead of counting 0 MW", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");
