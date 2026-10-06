@@ -30,7 +30,7 @@ import { fold, siteOf, type Evidence, type Rollenwerk, type ScopeRegeln } from "
 import { ohneAdressVerschleierung } from "../lib/presse-extrakt";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
-import { kontaktFelder, maildomain } from "../lib/windbetreiber";
+import { impressumHerkunft, kontaktFelder, maildomain } from "../lib/windbetreiber";
 import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
 import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { bewerten, laufen, readJson, recherchieren, sha, writeJson, type Bestand, type Eintrag, type Ergebnis, type Seite } from "./lib/kontakt-lauf";
@@ -181,14 +181,22 @@ export function weitereSitesVon(domain: string): string[] {
   const imp = resolve(MAIN_CHECKOUT, "scripts/.cache/windbetreiber/impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
   if (existsSync(imp)) {
     const i = readJson(imp) as { impressum_url: string | null; start: string | null };
-    for (const u of [i.impressum_url, i.start]) { const d = u ? organisationsDomain(u) : null; if (d && d !== domain) out.add(d); }
+    // The imprint's domain only when it is the SAME name under another ending
+    // (windpunx.com → windpunx.de). A link to someone else's imprint — the web
+    // agency's on dr-zirn.de, a bank's — let their mailboxes in as the
+    // operator's (contact block 02, 06.10.2026).
+    if (impressumHerkunft(i.impressum_url, domain) === "alias") out.add(organisationsDomain(i.impressum_url)!);
   }
   const quellen = resolve(OUT, "sources", domain);
   if (existsSync(quellen)) {
     for (const f of readdirSync(quellen).filter((n) => n.endsWith(".json"))) {
       const m = readJson(resolve(quellen, f)) as { url?: string; finalUrl?: string };
-      // Only a redirect FROM this domain's own start or imprint page — not any link it followed.
+      // Only a redirect of this domain's START page: a followed link or an
+      // imprint page that forwards to an agency is no move of the website.
       if (!m.url || !m.finalUrl || organisationsDomain(m.url) !== domain) continue;
+      let pfad = "/";
+      try { pfad = new URL(m.url).pathname; } catch { continue; }
+      if (pfad !== "/" && pfad !== "") continue;
       const d = organisationsDomain(m.finalUrl);
       if (d && d !== domain) out.add(d);
     }

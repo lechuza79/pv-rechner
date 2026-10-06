@@ -295,6 +295,14 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     expect(lies("scripts/lib/kontakt-freigabe.ts")).toMatch(/\(p\.weitereSites \?\? \[\]\)\.some\(\(d\) => aufEigenerWebsite\(p\.belegUrl!, d\)\)/);
     expect(lies("scripts/windbetreiber-refresh.ts")).toMatch(/!weitereSitesVon\(z\.website\)\.includes\(siteOf\(h \?\? ""\)\)/);
   });
+  it("counts as the same website only a start-page redirect or the same name under another ending", () => {
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    const w = k.slice(k.indexOf("export function weitereSitesVon("), k.indexOf("function bestandAus("));
+    expect(w).toMatch(/if \(impressumHerkunft\(i\.impressum_url, domain\) === "alias"\) out\.add/);
+    expect(w).toMatch(/if \(pfad !== "\/" && pfad !== ""\) continue;/);
+    expect(w).not.toMatch(/for \(const u of \[i\.impressum_url, i\.start\]\)/);
+  });
+
   it("renders the page a person points to before judging it", () => {
     const k = lies("scripts/windbetreiber-kontakte.ts");
     const spur = k.slice(k.indexOf('if (mode === "spur")'), k.indexOf("const r = await recherchieren(bestand, e, BUDGET, { vonHand: true });"));
