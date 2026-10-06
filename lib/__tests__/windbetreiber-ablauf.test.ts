@@ -49,6 +49,9 @@ describe("Windbetreiber-Lauf", () => {
     expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
     // Never replaces a proven website in passing (Österwurth, 06.10.2026).
     expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
+    // A failed retry never overwrites the stored proof of the current website (Waabs).
+    expect(m.indexOf('p.ergebnis !== "belegt" && z.website === domain')).toBeGreaterThan(-1);
+    expect(m.indexOf('p.ergebnis !== "belegt" && z.website === domain')).toBeLessThan(m.indexOf("kandidatZeile(z, p)"));
   });
 
   it("judges hand-taken websites again after a rule change — reports, never changes", () => {

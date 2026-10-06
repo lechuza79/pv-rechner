@@ -641,6 +641,9 @@ async function manuell() {
       const beleg = text ? belegseiteTraegt(text, akteurVon(z), z.name, domain, await ortsWoerter()) : null;
       if (beleg) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
     }
+    // A failed second try on the website already proven keeps the proof: it
+    // overwrote it, and the website stood there without one (Waabs, 06.10.2026).
+    if (p.ergebnis !== "belegt" && z.website === domain) { console.log(`${nr}: ${domain} ist schon belegt — dieser Versuch (${p.ergebnis}) ändert nichts`); continue; }
     await schreiben(c, "windbetreiber_kandidaten", [kandidatZeile(z, p)], "mastr_nr,domain");
     if (p.ergebnis !== "belegt") {
       console.log(`${nr} NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
