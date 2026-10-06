@@ -655,6 +655,16 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
 - **Sicherung (Verwendung):** Nur ein führendes „+" ist eine Ländervorwahl. Test,
   Sabotage rot.
 
+### 74. Der Domainname im Seitentitel als Firmenname
+- **Anlass:** 06.10.2026 — eine leere Hoster-Platzhalterseite mit dem Titel
+  „weikmann-immotec.de" belegte „Weikmann Immotec GmbH" über den Namen.
+- **Sicherung (Verwendung):** Die ausgeschriebene Domain wird vor der Namens- und
+  Markenprüfung aus dem Text genommen. Test, Sabotage rot. Neubewertung danach:
+  eine weitere geparkte Seite (te-boekhorst.com) zurückgenommen, sonst keine
+  Rücknahme; dieselbe Neubewertung meldete 12 von Hand vermerkte „keine", deren
+  Registerkandidat nach den Telefonregeln 66/67/73 trägt — alle gelesen und
+  übernommen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
