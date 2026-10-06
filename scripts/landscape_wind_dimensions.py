@@ -6,7 +6,13 @@ from the median of comparable turbines in all prepared scenes: same model first,
 otherwise the same rated capacity (+/-10 %). Register values are never
 overwritten, and every filled value names its method and peer count, both in
 the scene and in data-gaps.json.
+
+LoD2 building data also models turbine towers as buildings. Drawn next to our
+own turbine they appear as a bare cylinder beside it, often with a different
+height. Slim, tall building bodies standing on a turbine position are removed
+and listed in data-gaps.json.
 """
+import math
 import argparse
 import json
 import re
@@ -16,6 +22,10 @@ from pathlib import Path
 # Same model: two installations already bound the variant; capacity alone needs more.
 MIN_PEERS = {'same-model-median': 2, 'same-capacity-median': 3}
 CAPACITY_TOLERANCE = .10
+TOWER_RADIUS = 15        # metres between building centre and turbine position
+TOWER_MAX_FOOTPRINT = 16 # widest tower base or foundation ring seen in LoD2
+TOWER_MIN_HEIGHT = 20    # transformer stations and sheds stay
+
 FIELDS = (('hub', 'hubMetres'), ('rotorMetres', 'rotorMetres'))
 
 
@@ -43,6 +53,30 @@ def estimate(turbine, pool):
                 found[field] = (round(float(statistics.median(values)), 1), method, len(values))
                 break
     return found
+
+
+def tower_duplicates(scene):
+    turbines = scene.get('turbines') or []
+    if not turbines:
+        return []
+    found = []
+    for building in scene.get('buildings') or []:
+        points = [p for surface in building['surfaces'] for p in surface['points']]
+        xs, ys, zs = [p[0] for p in points], [p[1] for p in points], [p[2] for p in points]
+        x, z = (max(xs) + min(xs)) / 2, (max(zs) + min(zs)) / 2
+        footprint = max(max(xs) - min(xs), max(zs) - min(zs))
+        nearest = min(turbines, key=lambda t: math.hypot(x - t['x'], z - t['z']))
+        if (math.hypot(x - nearest['x'], z - nearest['z']) <= TOWER_RADIUS and footprint <= TOWER_MAX_FOOTPRINT
+                and max(ys) - min(ys) >= TOWER_MIN_HEIGHT):
+            found.append(dict(buildingId=building['id'], unitId=nearest['id'], heightMetres=round(max(ys) - min(ys), 1)))
+    return found
+
+
+def remove_towers(scene):
+    towers = tower_duplicates(scene)
+    ids = {t['buildingId'] for t in towers}
+    scene['buildings'] = [b for b in scene['buildings'] if b['id'] not in ids]
+    return towers
 
 
 def apply(scene, pool):
@@ -92,16 +126,21 @@ def main():
     remaining = 0
     for place, scene in scenes.items():
         filled = apply(scene, pool)
+        towers = remove_towers(scene)
         missing = [t['id'] for t in scene.get('turbines') or [] if not (t.get('hub') and t.get('rotorMetres'))]
         remaining += len(missing)
-        if not filled and not missing:
+        if not filled and not missing and not towers:
             continue
-        print(place, 'filled', len(filled), 'still missing', len(missing))
-        if args.write and filled:
+        print(place, 'filled', len(filled), 'still missing', len(missing), 'tower buildings removed', len(towers))
+        if args.write and (filled or towers):
             (args.root / place / 'scene.json').write_text(json.dumps(scene, ensure_ascii=False, separators=(',', ':'), allow_nan=False))
             gaps_path = args.root / place / 'data-gaps.json'
             gaps = json.loads(gaps_path.read_text()) if gaps_path.exists() else {'gaps': []}
             mark_gaps(gaps, filled)
+            if towers:
+                previous = gaps.get('removedTowerBuildings') or []
+                known = {t['buildingId'] for t in previous}
+                gaps['removedTowerBuildings'] = previous + [t for t in towers if t['buildingId'] not in known]
             gaps_path.write_text(json.dumps(gaps, ensure_ascii=False, separators=(',', ':')))
     print('turbines still without dimensions:', remaining)
 

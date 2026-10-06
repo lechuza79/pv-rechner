@@ -38,5 +38,18 @@ class WindDimensions(unittest.TestCase):
         self.assertEqual(len(gaps['gaps']), 1)
 
 
+    def test_lod2_tower_beside_turbine_is_removed_but_sheds_stay(self):
+        def box(id, x, z, size, height):
+            h = size / 2
+            ring = [[x-h, 0, z-h], [x+h, 0, z-h], [x+h, height, z+h], [x-h, height, z+h]]
+            return dict(id=id, surfaces=[dict(points=ring)])
+        scene = dict(turbines=[turbine('t', hub=70, rotor=60) | dict(x=0, z=0)],
+                     buildings=[box('tower', 1, 0, 4, 68), box('station', 6, 0, 3, 2.5),
+                                box('far-tower', 200, 0, 4, 68), box('barn', 5, 0, 30, 12)])
+        removed = dims.remove_towers(scene)
+        self.assertEqual([r['buildingId'] for r in removed], ['tower'])
+        self.assertEqual([b['id'] for b in scene['buildings']], ['station', 'far-tower', 'barn'])
+
+
 if __name__ == '__main__':
     unittest.main()
