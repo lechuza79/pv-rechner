@@ -176,7 +176,7 @@ function umgebung(t: string, i: number, laenge: number) {
  * Does this imprint prove that `domain` is reachable for the operator?
  * Returns the proof with the text it rests on, or null.
  */
-export function impressumBelegt(impressumText: string, a: Akteur, domain: string, ortsWoerter?: Set<string>): Beleg | null {
+export function impressumBelegt(impressumText: string, a: Akteur, domain: string, ortsWoerter?: Set<string>, opts: { ohneName?: boolean } = {}): Beleg | null {
   const t = textFalten(impressumText);
   // The domain written out is no name: a hoster's placeholder titled
   // "weikmann-immotec.de" proved "Weikmann Immotec GmbH" (manual pass, 06.10.2026).
@@ -185,7 +185,7 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // NAME — the whole name, in order; a single word would match any page.
   const woerter = nameWoerter(a.Firmenname ?? "");
   const name = woerter.join(" ");
-  if (woerter.length >= 2 && name.length >= 8) {
+  if (!opts.ohneName && woerter.length >= 2 && name.length >= 8) {
     const i = tn.indexOf(` ${name} `);
     if (i >= 0) return { wie: "name", textstelle: umgebung(tn, i, name.length) };
   }
@@ -194,7 +194,7 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // Wind Farm GmbH & Co. oHG" (manual pass, 06.10.2026). Only when what is
   // left identifies someone — never "Windpark Reher".
   const kern = kernName(woerter);
-  if (kern.length >= 2 && kern.length < woerter.length && kern.some((w) => !GENERISCH.has(w) && !/^\d+$/.test(w) && !ortsWoerter?.has(w) && w.length >= 4)) {
+  if (!opts.ohneName && kern.length >= 2 && kern.length < woerter.length && kern.some((w) => !GENERISCH.has(w) && !/^\d+$/.test(w) && !ortsWoerter?.has(w) && w.length >= 4)) {
     const k = kern.join(" ");
     const i = tn.indexOf(` ${k} `);
     if (i >= 0) return { wie: "name", textstelle: umgebung(tn, i, k.length) };
@@ -748,18 +748,22 @@ export function geschwisterWebsite(
  */
 export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: string, ortsWoerter?: Set<string>, postfach?: string | null, telefon?: string | null): Beleg | null {
   const b = impressumBelegt(text, a, domain, ortsWoerter);
-  // The phone proof on a contact page of the same site: BB Wind keeps its
-  // imprint on /about/ without a number, the register's number stands on
-  // /kontakt/ (manual pass, 06.10.2026). Same conditions as on the imprint.
-  if (!b && postfach && maildomain(postfach) === domain && ENERGIE.test(text) && !istBeraterSeite(text) && (telefonIn(text, telefon) || telefonImBlock(text, telefon))) {
-    return { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} auf der Belegseite` };
-  }
   // A park name alone proves on a page about that park (Ørsted's Gode Wind
   // pages, EnBW's Rot am See), never on a list of parks — a planner's
   // references or an investment platform (Pamsendorf, Jörl-Stieglund, manual
   // pass 06.10.2026). Requiring the FULL name was tried: it failed the
   // operators' own project pages. Same test as on start pages.
-  return b && (b.wie !== "name" || vollerNameIn(text, name) || (identifizierend(name, ortsWoerter) && !parkListe(text, name))) ? b : null;
+  if (b && (b.wie !== "name" || vollerNameIn(text, name) || (identifizierend(name, ortsWoerter) && !parkListe(text, name)))) return b;
+  // A weak name found first must not hide the address on the same page:
+  // Stadtwerke Reinfeld's contact page carries both (block 077, 06.10.2026).
+  if (b?.wie === "name") { const ohne = impressumBelegt(text, a, domain, ortsWoerter, { ohneName: true }); if (ohne) return ohne; }
+  // The phone proof on a contact page of the same site: BB Wind keeps its
+  // imprint on /about/ without a number, the register's number stands on
+  // /kontakt/ (manual pass, 06.10.2026). Same conditions as on the imprint.
+  if (postfach && maildomain(postfach) === domain && ENERGIE.test(text) && !istBeraterSeite(text) && (telefonIn(text, telefon) || telefonImBlock(text, telefon))) {
+    return { wie: "telefon", textstelle: `Registerpostfach ${postfach} auf dieser Website, Registertelefon ${telefon} auf der Belegseite` };
+  }
+  return null;
 }
 
 /** Does the operator's name carry a distinguishing word of the domain's label? (the family firm on its own site) */

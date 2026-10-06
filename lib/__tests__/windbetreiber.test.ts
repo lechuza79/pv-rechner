@@ -93,6 +93,14 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@web.de", undefined, "04841-8944832").ergebnis).toBe("abgelehnt");
   });
 
+  it("does not let a weak name hide the address on the same page (Stadtwerke Reinfeld)", () => {
+    const a = akteur("Stadtwerke Reinfeld (Holstein)", "Paul-von-Schoenaich-Straße", "3", "23858");
+    const seite = "Kontakt Stadtwerke Reinfeld Verwaltung Paul-von-Schoenaich-Straße 3 23858 Reinfeld";
+    expect(belegseiteTraegt(seite, a, "Stadtwerke Reinfeld (Holstein)", "reinfeld.de", new Set(["reinfeld", "holstein"]))?.wie).toBe("anschrift");
+    // Without the address the weak name still proves nothing.
+    expect(belegseiteTraegt("Kontakt Stadtwerke Reinfeld Verwaltung", a, "Stadtwerke Reinfeld (Holstein)", "reinfeld.de", new Set(["reinfeld", "holstein"]))).toBeNull();
+  });
+
   it("never reads the domain written out as the company's name (Weikmann Immotec)", () => {
     const a = akteur("Weikmann Immotec GmbH", "Hauptstraße", "1", "12345");
     expect(impressumBelegt("weikmann-immotec.de Diese Domain wurde soeben registriert", a, "weikmann-immotec.de")).toBeNull();
