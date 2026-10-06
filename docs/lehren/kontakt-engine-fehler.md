@@ -677,6 +677,15 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Rückhalt in Postfach oder Postleitzahl (20 von 279); gelesen, 3 zurückgenommen,
   dazu die 2 von Hand. Ablauf-Test.
 
+### 76. Ein verworfener schwacher Name verdeckt die Anschrift
+- **Anlass:** 06.10.2026 — auf der Kontaktseite der Stadtwerke Reinfeld standen
+  Name und Registeranschrift; die Prüfung nahm zuerst den Namen, verwarf ihn auf
+  der zusätzlichen Belegseite als zu schwach und sah die Anschrift nie an.
+- **Sicherung (Verwendung):** Nach einem verworfenen Namen prüft die Belegseite
+  die übrigen Belegarten (Anschrift, Marke, Telefon) weiter. Test, der wirklich
+  über einen verworfenen Namen läuft — die erste Fassung tat es nicht und blieb
+  bei der Sabotage grün.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
