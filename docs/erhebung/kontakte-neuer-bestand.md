@@ -137,6 +137,46 @@ nicht „gehört dazu". Vorbild: `lib/fachbetrieb-einordnung.ts`. Was in einen
 anderen Bestand gehört und dort fehlt, wird als Kandidat dorthin übergeben,
 nicht nur zurückgestuft.
 
+### Was beim Erkennen am Impressum schiefgeht (06.10.2026, sechs Messläufe)
+
+Gemessen an den Fachbetrieben; jede Zeile ist ein Fehlgriff, der in einem
+Messlauf auftrat und jetzt einen Test hat. Gilt für jeden Bestand, der eine
+Organisation an ihrer Website erkennt.
+
+- **Der Anbieter steht im Anbieterblock, nicht irgendwo im Impressum.**
+  Versicherer samt Ombudsmann („Anbieter: Ergo Versicherung"), Kammer,
+  Webdesigner, eRecht24-Haftungstext — alle mit Namen und Anschrift. Das Bauteil
+  dafür ist `lib/impressum-anbieter.ts`; ein leerer Block heißt „nicht gelesen",
+  nie „kein Treffer".
+- **Erwähnung ist nicht Selbstauskunft.** „Kompetenten Fachbetrieb finden"
+  (Kreiskarte), „wir können diesen Fachbetrieb empfehlen" (Bewertung),
+  „Handwerksrolle" in der A–Z-Liste einer Stadt, „Meisterbonus" eines
+  Ministeriums, „bietet Ihrem Fachbetrieb die Möglichkeit" (Portal) — ein Status
+  zählt nur mit Selbstbezug („Ihr Fachbetrieb", „Eintragung in die
+  Handwerksrolle").
+- **Verneinung, Ratschlag, Dritte:** „wir vermitteln Sie nicht weiter",
+  „vor der Installation sollte …", „die Installation einer PV-Anlage steigert
+  den Wert", „unsere Partner installieren" sind kein Angebot. Das Umfeld vor UND
+  nach dem Treffer prüfen.
+- **Wörter mit zweiter Bedeutung:** „Marktplatz 8" ist eine Straße,
+  „E-Mail-Adressen" ein Haftungssatz, „PV-Magazin" ein Menüpunkt,
+  „Montagesystem" ein Produkt, „Großhandel" als Menüpunkt neben „Privatkunden"
+  ein Nebengeschäft, eine URL im Text ist kein Satz.
+- **Eine Beschreibung ist keine Identität.** „Energieversorgung" im Titel einer
+  Ingenieurgesellschaft beschreibt eine Leistung; „Energieversorger" sagt, wer es
+  ist. Versorger erkennt man an Abrechnung und Zähler (Zählerstand, Abschlag),
+  nicht an einer Störungsnummer — die haben PV-Wartungsfirmen auch.
+- **Kein `\b` nach einem Punkt** („e\.V\.\b" trifft nie vor einem Leerzeichen);
+  `(?!\w)` statt dessen. Erzwungen von `lib/__tests__/regex-punkt-wortgrenze.test.ts`.
+- **Eine grobe Phase überschreibt nie ein belegtes Urteil.** Die Streuung über
+  die Kreissuche schrieb „betrieb" und hob damit bei jedem Lauf jede Rückstufung
+  am Impressum auf.
+- **Erst messen, dann schreiben.** Messlauf mit Protokoll, Stichproben je
+  Ergebnisgruppe gegenlesen (auch die Hochstufungen), dann aus dem Protokoll
+  schreiben. Vor dem Schreiben die „nicht erreichbar"-Fälle nachmessen: Am Ende
+  eines Laufs brach einmal die Verbindung, und 141 Einträge kamen auf einmal
+  als unerreichbar zurück, 42 davon zu Unrecht.
+
 ## Auf andere Länder übertragen
 
 Übertragbar ohne Änderung: Ablauf, Belegpflicht, Zwischenspeicher, Nachprüfung
