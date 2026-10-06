@@ -24,8 +24,8 @@ schritt npx tsx scripts/windbetreiber-refresh.ts --register
 #    the register itself offers, proven by their imprint.
 schritt npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten
 schritt npx tsx scripts/windbetreiber-refresh.ts --impressum
-# 3. One search per address for the rest, largest capacity first.
-schritt npx tsx scripts/windbetreiber-refresh.ts --suche
+# 3. No paid search (operator, 06.10.2026): websites the register does not name
+#    are searched by the manual pass with its own web search.
 # 4. Contacts on every proven website, then written and released.
 zweifach npx tsx scripts/windbetreiber-kontakte.ts --mode=research
 schritt npx tsx scripts/windbetreiber-kontakte.ts --mode=evaluate

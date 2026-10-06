@@ -643,7 +643,14 @@ async function main() {
   if (flag("register")) return register();
   if (flag("neu-bewerten")) return neuBewerten();
   if (flag("impressum")) return impressumLauf();
-  if (flag("suche")) return sucheLauf();
+  if (flag("suche")) {
+    // Paid search is off (operator, 06.10.2026, same decision as for the
+    // municipalities on 28.09.2026): the search service is for backlink
+    // evaluation, not for a bulk run. Websites the register does not name are
+    // searched by the manual pass with its own web search.
+    if (!flag("bezahlt")) throw new Error("Bezahlte Suche abgeschaltet (Betreiber, 06.10.2026) — Websites ohne Registerangabe sucht die Handprüfung selbst. Nicht erneut starten.");
+    return sucheLauf();
+  }
   if (flag("stand")) return stand();
   if (flag("offen")) return offenListe();
   if (flag("manuell")) return manuell();
