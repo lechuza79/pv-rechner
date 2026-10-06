@@ -9,7 +9,9 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --geschwister [--auch-von-hand]  a proven sibling's website (same mailbox and address)
  *   npx tsx scripts/windbetreiber-refresh.ts --stand                    completeness; exit 1 on a violation
  *   npx tsx scripts/windbetreiber-refresh.ts --offen [--out=datei]      the list for the manual pass
- *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
+ *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>] [--ersetzen] [--subdomain-ok]
+ *   npx tsx scripts/windbetreiber-refresh.ts --belegseiten-nachholen   fetch missing proof pages of hand decisions once
+ *   npx tsx scripts/windbetreiber-refresh.ts --anschrift-gegenlesen    address proofs on non-energy sites, for reading
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
  *   npx tsx scripts/windbetreiber-refresh.ts --zuruecknehmen ABR…[,ABR…] "<why it is not the operator's>"

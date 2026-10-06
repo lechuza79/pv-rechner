@@ -94,7 +94,16 @@ Registerpostfachs. Eintragen NUR über die Befehle des Bestands:
 `--manuell ABR1,ABR2 <url> [--seite=<url>]` (dieselbe Prüfung wie die Maschine;
 die Belegseite darf eine andere Seite derselben Website sein, ein Name dort
 belegt nur, wenn er die Organisation identifiziert, 20) oder
-`--keine ABR1,ABR2 "<was gesucht wurde>"` (Notiz ≥ 40 Zeichen). Für Tempo bis
+`--keine ABR1,ABR2 "<was gesucht wurde>"` (Notiz ≥ 40 Zeichen). Der Handbefehl
+ersetzt nie still eine schon belegte andere Website (`--ersetzen`, 55) und
+übernimmt keinen Beleg, der nur auf einer Unterdomain steht (`--subdomain-ok`
+nur, wenn Haupt- und Unterdomain dieselbe Firma sind, 58). Die Belegseite wird
+gespeichert; `--neu-bewerten` prüft jede Handübernahme daran erneut und
+MELDET, was die heutige Regel nicht mehr trägt — geändert wird nichts, das
+entscheidet ein Mensch (`--zuruecknehmen`). Fehlen alte Belegseiten:
+`--belegseiten-nachholen`. Nach der Handprüfung: `--geschwister` (gleiches
+Postfach, gleiche Anschrift) und `--anschrift-gegenlesen` (Anschriftsbelege auf
+Seiten ohne Energiebezug, alle von Hand lesen, 57). Für Tempo bis
 zu vier Helfer parallel, jeder mit eigenem Block und dem Auftragstext
 (Vorlage unten). Jeder Helfer berichtet Ablehnungen, die er für falsch hält —
 daraus werden Regeln.
@@ -266,6 +275,20 @@ Organisation an ihrer Website erkennt.
   schreiben. Vor dem Schreiben die „nicht erreichbar"-Fälle nachmessen: Am Ende
   eines Laufs brach einmal die Verbindung, und 141 Einträge kamen auf einmal
   als unerreichbar zurück, 42 davon zu Unrecht.
+
+### Belegarten eines Registerbestands, stärkste zuerst (Windbetreiber, 06.10.2026)
+
+Name im Impressum · Registeranschrift · Marke (in Name, Domain und Impressum
+zugleich) · Register (selbst angegebene Website oder Funktionspostfach) ·
+Telefon (Registerpostfach auf der Domain UND Registertelefon im Impressum, nur
+auf einer Seite mit Energiebezug, nie auf Berater- oder Prüferseiten; eine
+Zentrale „-0" deckt ihre Durchwahlen, 53/56) · Schwester (gleiches Postfach und
+gleiche Anschrift wie ein schon belegter Betreiber, Postfach auf dessen
+Website). Die zwei schwachen Arten verlieren immer gegen eine starke, auch wenn
+deren Kandidat schlechter platziert ist — die erste Telefonregel hatte sechs
+Namensbelege verdrängt und acht branchenfremde Eigentümer (Spedition,
+IT-Firma) belegt. Eine Anschrift, die nur ein Rathaus ist, bleibt bewusst
+stehen (Gemeinde als Verwalterin) und wird im Bericht genannt.
 
 ## Auf andere Länder übertragen
 
