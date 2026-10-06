@@ -604,6 +604,17 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Person). Test mit Gegenfällen, beide Teile einzeln sabotiert. Nach der
   Neubewertung kamen 9 Handfälle als „trägt heute" zurück, alle übernommen.
 
+### 68. Der erste Impressum-Link führt auf eine fremde Domain
+- **Anlass:** 06.10.2026 — E-Werk Mittelbaden verlinkt das Impressum seiner
+  Cloud-Tochter vor dem eigenen; gelesen wurde nur das fremde, die Telefonregel
+  griff erst von Hand.
+- **Sicherung (Verwendung):** Im geteilten Baustein der Impressumsuche (für alle
+  Bestände) gewinnt ein Link auf die eigene Website; ohne eigenen Link zählt der
+  fremde wie bisher. Test, Sabotage rot. Gemessen: 84 von 1.428 gespeicherten
+  Impressen liegen auf fremden Domains, überwiegend gewollte Weiterleitungen und
+  Hoster-Platzhalter; sie werden nicht pauschal neu abgerufen, die Handprüfung
+  nennt dort die eigene Seite.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
