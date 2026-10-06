@@ -271,10 +271,15 @@ const FUNKTION = /info|kontakt|contact|verwalt|mastr|marktstamm|register|windpar
  * it is administered. One that names a PERSON — adem.bilir@mazars.de — is a
  * person at a service firm and says nothing about whose website that is.
  */
-export function funktionsPostfach(mail: string | null | undefined): boolean {
+export function funktionsPostfach(mail: string | null | undefined, name?: string): boolean {
   const [lokal = "", host = ""] = (mail ?? "").toLowerCase().split("@");
   if (!lokal) return false;
   if (FUNKTION.test(lokal)) return true;
+  // A mailbox named after the operator itself: krampfer@vossenergy.com for
+  // "Windpark Krampfer-Reckenthin" (manual pass, 06.10.2026). A person's
+  // mailbox carries a person's name, not the park's.
+  const ohne = falten(lokal).replace(/[^a-z0-9]/g, "");
+  if (name && ohne.length >= 5 && unterscheidendeWoerter(name).some((w) => w.length >= 5 && (ohne === w || ohne.startsWith(w) || w.startsWith(ohne)))) return true;
   // A mailbox named after the company itself: nttb@nttb-gmbh.de.
   const label = host.split(".").slice(-2, -1)[0]?.replace(/[^a-z0-9]/g, "") ?? "";
   const kern = lokal.replace(/[^a-z0-9]/g, "");
@@ -408,7 +413,7 @@ export function beurteilen(
   if (quelle === "register-webseite" && erreichbar) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: "vom Betreiber selbst im Marktstammdatenregister als Website angegeben" }, seite: abruf.impressum ? "impressum" : "startseite" };
   }
-  if (quelle === "register-mail" && erreichbar && funktionsPostfach(postfach)) {
+  if (quelle === "register-mail" && erreichbar && funktionsPostfach(postfach, a.Firmenname)) {
     return { ergebnis: "belegt", beleg: { wie: "register", textstelle: `Funktionspostfach im Marktstammdatenregister: ${postfach}` }, seite: abruf.impressum ? "impressum" : "startseite" };
   }
   if (abruf.impressum) return { ergebnis: "abgelehnt", beleg: null, seite: null };

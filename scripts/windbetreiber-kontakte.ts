@@ -28,6 +28,7 @@ import { dirname, resolve } from "node:path";
 import { organisationsDomain } from "../lib/bestand-abgleich";
 import { fold, siteOf, type Evidence, type Rollenwerk, type ScopeRegeln } from "../lib/kontakt-suche";
 import { ohneAdressVerschleierung } from "../lib/presse-extrakt";
+import { webKomponentenAusklappen } from "../lib/web-komponenten";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
 import { impressumHerkunft, kontaktFelder, maildomain } from "../lib/windbetreiber";
@@ -240,7 +241,7 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
     ergebnisForm: (basis, _m, evidence) => impressumPostfach(basis, evidence),
     // Cloudflare-protected and bracket-written addresses (rwe.com, altus-re.de,
     // windmanager(at)wpd.de) — decoded for this stock only, see impressumPostfach.
-    htmlVorbereiten: { kennung: "wind-1", f: (html) => klammerAdressen(ohneAdressVerschleierung(html)) },
+    htmlVorbereiten: { kennung: "wind-2", f: (html) => klammerAdressen(ohneAdressVerschleierung(webKomponentenAusklappen(html))) },
     eintraege: () => [...eintraege.values()],
     // Done when there is a press contact — the general imprint mailbox comes for free on the way.
     fertigWenn: (r: Ergebnis) => (r.kanaele.presse?.length ?? 0) > 0,

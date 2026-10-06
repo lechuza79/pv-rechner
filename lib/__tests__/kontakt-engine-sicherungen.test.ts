@@ -265,7 +265,7 @@ describe("Klasse 38 — Bestandsregeln nie in der geteilten Maschine", () => {
     for (const f of JUDGE_FILES) expect(lies(f), f).not.toMatch(/windbetreiber|allgemeinAuf|impressumPostfach/i);
     const k = lies("scripts/windbetreiber-kontakte.ts");
     expect(k).toMatch(/ergebnisForm: \(basis, _m, evidence\) => impressumPostfach\(basis, evidence\)/);
-    expect(k).toMatch(/htmlVorbereiten: \{ kennung: "wind-1"/);
+    expect(k).toMatch(/htmlVorbereiten: \{ kennung: "wind-\d+"/);
     // A change to the wind rules re-judges the wind results.
     expect(k).toMatch(/rules: windRegeln\(\)/);
   });
@@ -308,6 +308,21 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     const spur = k.slice(k.indexOf('if (mode === "spur")'), k.indexOf("const r = await recherchieren(bestand, e, BUDGET, { vonHand: true });"));
     expect(spur).toMatch(/const gerendert = await seiteGerendert\(url\);/);
     expect(spur).toMatch(/via: "browser-handspur"/);
+  });
+});
+
+describe("Klasse 42 — Inhalt in Attributen von Web-Komponenten", () => {
+  it("expands escaped HTML of a custom element, and nothing else", async () => {
+    const { webKomponentenAusklappen } = await import("../web-komponenten");
+    const roh = `<eon-ui-rte-renderer content="&lt;h5&gt;E.DIS Netz GmbH&lt;/h5&gt;&lt;p&gt;Langewahler Straße 60&lt;/p&gt;"></eon-ui-rte-renderer>`;
+    expect(webKomponentenAusklappen(roh)).toMatch(/<h5>E\.DIS Netz GmbH<\/h5><p>Langewahler Straße 60<\/p>/);
+    const normal = `<div content="&lt;b&gt;x&lt;/b&gt;"></div><my-el text="Hallo"></my-el>`;
+    expect(webKomponentenAusklappen(normal)).toBe(normal);
+  });
+  it("is used by the browser read, the website check and the wind contact search", () => {
+    expect(lies("scripts/lib/kontakt-browser.ts")).toMatch(/return webKomponentenAusklappen\(html\)/);
+    expect(lies("scripts/windbetreiber-refresh.ts").match(/webKomponentenAusklappen\(r0\.html\)/g)?.length).toBe(2);
+    expect(lies("scripts/windbetreiber-kontakte.ts")).toMatch(/webKomponentenAusklappen\(html\)/);
   });
 });
 

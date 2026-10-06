@@ -395,3 +395,12 @@ describe("Befunde der ersten Handprüfung (06.10.2026)", () => {
     void a;
   });
 });
+
+describe("a register mailbox named after the operator (06.10.2026)", () => {
+  it("counts like a function mailbox", () => {
+    expect(funktionsPostfach("krampfer@vossenergy.com", "Windpark Krampfer-Reckenthin die Zweite GmbH & Co. KG")).toBe(true);
+    // A person stays a person, even at the same firm.
+    expect(funktionsPostfach("adem.bilir@mazars.de", "Windpark Krampfer-Reckenthin GmbH")).toBe(false);
+    expect(funktionsPostfach("jahah@orsted.com", "Borkum Riffgrund 3 GmbH & Co. oHG")).toBe(false);
+  });
+});

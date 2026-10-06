@@ -41,6 +41,7 @@ import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
 import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeufeCheck, platzCheck, vorflug, zugangCheck, type Check } from "./lib/vorflug";
 import { fehlendeSpalten } from "../lib/ddl-spalten";
 import { fetchLive } from "./lib/kontakt-lauf";
+import { webKomponentenAusklappen } from "../lib/web-komponenten";
 import { ERSTER_FEHLVERSUCH } from "./lib/kontakt-freigabe";
 import { weitereSitesVon } from "./windbetreiber-kontakte";
 import { siteOf } from "../lib/kontakt-suche";
@@ -305,7 +306,8 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
   let html: string | null = null;
   let huelle: { html: string; start: string } | null = null;
   for (const s of starts) {
-    const r = await fetchLive(s);
+    const r0 = await fetchLive(s);
+    const r = "html" in r0 ? { html: webKomponentenAusklappen(r0.html) } : r0;
     // A page with markup but no text is an app shell: the browser below reads it.
     if ("html" in r && r.html.length > 200 && sichtbarerText(r.html).length >= LEERE_HUELLE) { html = r.html; ergebnis.start = s; ergebnis.via = "abruf"; break; }
     if ("html" in r && r.html.length > 200 && !huelle) huelle = { html: r.html, start: s };
@@ -326,7 +328,8 @@ async function impressumHolen(domain: string, mitBrowser = true): Promise<Impres
     const versuche = url ? [url] : ["impressum", "impressum/", "imprint", "impressum.html"].map((p) => new URL(p, ergebnis.start!).toString());
     for (const u of versuche) {
       let seite: string | null = null;
-      const r = await fetchLive(u);
+      const r0 = await fetchLive(u);
+      const r = "html" in r0 ? { html: webKomponentenAusklappen(r0.html) } : r0;
       if ("html" in r && (sichtbarerText(r.html).length >= LEERE_HUELLE || !mitBrowser)) seite = r.html;
       else if ("html" in r && mitBrowser) seite = await seiteGerendert(u);
       else if (ergebnis.via === "browser") seite = await seiteGerendert(u);
