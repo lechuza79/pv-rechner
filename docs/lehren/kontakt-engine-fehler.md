@@ -686,6 +686,14 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   über einen verworfenen Namen läuft — die erste Fassung tat es nicht und blieb
   bei der Sabotage grün.
 
+### 77. Eine von Hand ersetzte Website behält den alten Kontakt
+- **Anlass:** 06.10.2026 — Borkum: borkum.de durch stadtwerke-borkum.de ersetzt,
+  der Kontakt von borkum.de blieb stehen. Die Vollständigkeitsprüfung meldete es
+  als Verstoß („Kontakt-Fundstelle liegt nicht auf der Website").
+- **Sicherung (Verwendung):** Beim Ersetzen löscht der Handbefehl den Kontakt; der
+  nächste Kontaktlauf sucht ihn auf der neuen Website. Ablauf-Test. Der Altfall
+  ist zurückgenommen und neu übernommen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
