@@ -340,6 +340,50 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
 - **Regel (Ablauf):** Wächter am Bezeichner festmachen, nicht an der
   Operation; die Liste der Betroffenen messen, nie schätzen.
 
+### 38. Eine Bestandsregel in der geteilten Maschine hält den Versand eines anderen Bestands an
+- **Anlass:** 06.10.2026 — eine Wind-Regel (Impressum-Postfach) stand zuerst in
+  der gemeinsamen Kontaktmaschine. Deren Dateien gehen in die Regelversion der
+  Gemeinden ein; beim Zusammenführen hätte jedes Gemeinde-Ergebnis als „unter
+  alten Regeln" gegolten und der Versand (am nächsten Morgen) jeden Brief
+  angehalten, bis alles neu ausgewertet ist. Bemerkt vor dem Zusammenführen.
+- **Sicherung (Verwendung):** Wind-Regeln wirken über die Haken des Laufs
+  (`ergebnisForm`, `htmlVorbereiten` mit eigener Kennung im Seiten-Speicher)
+  im Bestandsskript; ein Test verbietet Wind-Begriffe in den versionierten
+  Dateien der Gemeinden und verlangt eine eigene Regelversion für Wind.
+- **Regel (Ablauf):** Wer eine Datei aus der Liste der Gemeinde-Regeldateien
+  ändert, fragt vorher die Versand-Sitzung und lässt danach die
+  Gemeinde-Auswertung neu laufen.
+
+### 39. Lücken der Kontakt-Handprüfung — und eine zu weite Reparatur
+- **Anlass:** 06.10.2026, drei Kontakt-Blöcke: ein Konflikt auf einer
+  Nebenseite (Wix-Platzhalter, Tippfehler-Variante) sperrte das saubere
+  Impressum-Postfach; „contact@", „mentions légales"; Adressen als
+  „name(at)domain", Cloudflare-verschlüsselt, nur im Browser sichtbar;
+  29 Websites leiten auf eine andere Domain derselben Firma weiter
+  (windmanager.de, ewe.dk mit 165/160 Betreibern) und standen als „kein
+  Kontakt". Die erste Reparatur nahm JEDE verlinkte Impressum-Domain als
+  dieselbe Website — und übernahm so Postfächer einer Webagentur und einer Bank.
+- **Sicherung (Verwendung):** Impressum-Postfach als allgemeiner Kontakt, wenn
+  es dort sauber steht; Klammer- und Cloudflare-Adressen werden entschlüsselt;
+  die Handspur rendert die Seite im Browser; als dieselbe Website gelten nur
+  die Weiterleitung der STARTSEITE und derselbe Name unter anderer Endung.
+  Jede Regel gesichert ausgebaut und rot gesehen.
+
+### 40. Der volle Datenträger
+- **Anlass:** 06.10.2026 abends — 124 MB frei, jeder Befehl jeder Sitzung
+  scheiterte; ein Helfer ließ 21 Betreiber offen.
+- **Sicherung (Vorflug):** `platzCheck` — unter 5 GB frei ist der Lauf NICHT
+  BEREIT. Platz schaffen nur mit Freigabe, nie in fremden Dateien.
+
+### 41. Dieselbe Frage, verschieden beantwortet
+- **Anlass:** 06.10.2026 — eine Bank-Website wurde in einem Block
+  zurückgenommen, während acht andere Bank-verwaltete Bürgerwindparks über
+  dieselbe Anschriftsregel belegt waren.
+- **Regel (Ablauf):** Die Grenze steht im Auftrag der Helfer: Ein Verwalter
+  (Bank, Betriebsführer, Projektierer), unter dessen Anschrift der Betreiber im
+  Register sitzt, ist der richtige Weg; zurückgenommen wird nur, was mit dem
+  Betreiber nachweislich nichts zu tun hat.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,

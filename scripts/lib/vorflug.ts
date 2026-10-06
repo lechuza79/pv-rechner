@@ -13,7 +13,7 @@
  * Nothing here prints a secret: access is checked for being SET, never shown.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, lstatSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, statfsSync } from "node:fs";
 import { loadavg } from "node:os";
 import { resolve } from "node:path";
 import { BEZAHLTE_SUCHE_FLAG } from "./bezahlte-suche";
@@ -32,6 +32,20 @@ export function lastCheck(grenze = LAST_GRENZE): Check {
       // The 5-minute mean too: a short dip between two foreign builds is no green light.
       const l = Math.max(eins, fuenf);
       return { ok: l <= grenze, detail: `${eins.toFixed(0)} / ${fuenf.toFixed(0)} (Grenze ${grenze})${l > grenze ? " — warten, meist sind es fremde Builds" : ""}` };
+    },
+  };
+}
+
+/** Free space below which runs fail mid-way (06.10.2026: 124 MB left, every session stopped on ENOSPC). */
+export const PLATZ_GRENZE_GB = 5;
+
+export function platzCheck(pfad: string, grenzeGb = PLATZ_GRENZE_GB): Check {
+  return {
+    name: "Freier Speicherplatz",
+    pruefen: () => {
+      const s = statfsSync(pfad);
+      const frei = (Number(s.bavail) * Number(s.bsize)) / 1e9;
+      return { ok: frei >= grenzeGb, detail: `${frei.toFixed(1)} GB frei (Grenze ${grenzeGb} GB)${frei < grenzeGb ? " — erst Platz schaffen, nie fremde Dateien löschen" : ""}` };
     },
   };
 }

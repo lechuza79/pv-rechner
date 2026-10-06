@@ -38,7 +38,7 @@ import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { heuteInBerlin } from "../lib/zeit";
 import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
 import { browserSchliessen, seiteGerendert } from "./lib/kontakt-browser";
-import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeufeCheck, vorflug, zugangCheck, type Check } from "./lib/vorflug";
+import { abhaengigkeitenCheck, keineBezahlteSucheCheck, lastCheck, paralleleLaeufeCheck, platzCheck, vorflug, zugangCheck, type Check } from "./lib/vorflug";
 import { fehlendeSpalten } from "../lib/ddl-spalten";
 import { fetchLive } from "./lib/kontakt-lauf";
 import { ERSTER_FEHLVERSUCH } from "./lib/kontakt-freigabe";
@@ -775,6 +775,7 @@ async function vorflugLauf() {
   console.log(`Vorflug Windparkbetreiber · ${HEUTE} · Checkout ${wurzel === MAIN ? "Haupt-Checkout" : wurzel.split("/").pop()}`);
   const checks: Check[] = [
     lastCheck(),
+    platzCheck(MAIN),
     zugangCheck([["SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL"], ["SUPABASE_SERVICE_KEY"]]),
     abhaengigkeitenCheck(wurzel),
     paralleleLaeufeCheck(/windbetreiber-(?:refresh|kontakte)\.ts|kontakte-freigabe\.ts --bestand=windbetreiber|nacht-windbetreiber/),

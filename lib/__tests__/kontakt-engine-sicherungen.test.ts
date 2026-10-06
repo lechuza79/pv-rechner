@@ -341,7 +341,7 @@ describe("Vorflug — jede bekannte Absturzursache vor dem Start", () => {
   it("runs every check, and the verdict is the conjunction", () => {
     const t = lies("scripts/windbetreiber-refresh.ts");
     const v = t.slice(t.indexOf("async function vorflugLauf()"), t.indexOf("async function main()"));
-    for (const c of ["lastCheck()", "zugangCheck(", "abhaengigkeitenCheck(", "paralleleLaeufeCheck(", "keineBezahlteSucheCheck(", "fehlendeSpalten(", "Registerstand gelesen", "Keine offenen Entscheidungen"]) {
+    for (const c of ["lastCheck()", "platzCheck(MAIN)", "zugangCheck(", "abhaengigkeitenCheck(", "paralleleLaeufeCheck(", "keineBezahlteSucheCheck(", "fehlendeSpalten(", "Registerstand gelesen", "Keine offenen Entscheidungen"]) {
       expect(v, c).toContain(c);
     }
     expect(lies("scripts/lib/vorflug.ts")).toMatch(/const bereit = ergebnisse\.every\(\(e\) => e\.ok\)/);
@@ -355,6 +355,12 @@ describe("Vorflug — jede bekannte Absturzursache vor dem Start", () => {
     expect(n).toMatch(/ABBRUCH: Vorflug nicht bereit[\s\S]*exit 1/);
     // Both halves of a parallel step report their own failure.
     expect(n).toMatch(/wait "\$pid" \|\| echo "!!! FEHLGESCHLAGEN/);
+  });
+
+  it("measures free space and fails below the limit", async () => {
+    const { platzCheck } = await import("../../scripts/lib/vorflug");
+    expect((await platzCheck("/", 0).pruefen()).ok).toBe(true);
+    expect((await platzCheck("/", 1e9).pruefen()).ok).toBe(false);
   });
 
   it("a check that throws counts as failed, never as skipped", () => {
