@@ -52,6 +52,8 @@ describe("Windbetreiber-Lauf", () => {
     expect(m.indexOf("if (seiteFremd())")).toBeGreaterThan(m.indexOf("let p = await pruefen("));
     // Never replaces a proven website in passing (Österwurth, 06.10.2026).
     expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
+    // Replacing drops the old site's contact (Borkum).
+    expect(m).toMatch(/\.\.\.\(neueSeite \? kontaktFelder\(null, null\) : \{\}\)/);
     // A proof on a subdomain never stores the parent domain in passing (Süderdeich).
     expect(m).toMatch(/if \(beleg && seitenHost !== domain && !flag\("subdomain-ok"\)\)/);
     // A failed retry never overwrites the stored proof of the current website (Waabs).

@@ -691,7 +691,11 @@ async function manuell() {
       console.log(`${nr} NICHT übernommen: ${p.ergebnis} — ${p.grund ?? ""}`);
       process.exitCode = 1;
     } else {
-      await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), gesucht_am: HEUTE, suche_notiz: `${VON_HAND_GEFUNDEN}, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
+      // A contact belongs to the website it was found on: replacing the website
+      // (--ersetzen) drops it, the next contact run finds the new one (Borkum,
+      // 06.10.2026 — the stand check caught the old contact on the new site).
+      const neueSeite = !!z.website && z.website !== domain;
+      await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(p, HEUTE), ...(neueSeite ? kontaktFelder(null, null) : {}), gesucht_am: HEUTE, suche_notiz: `${VON_HAND_GEFUNDEN}, ${p.beleg!.wie} belegt`, updated_at: new Date().toISOString() }]);
       console.log(`${nr} übernommen: ${z.name} → ${domain} (${p.beleg!.wie}: „${p.beleg!.textstelle.slice(0, 120)}")`);
     }
   }
