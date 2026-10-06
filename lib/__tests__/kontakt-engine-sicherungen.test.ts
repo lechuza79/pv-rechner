@@ -133,11 +133,14 @@ describe("Klasse 13 — Kontakt nur von der eigenen belegten Website", () => {
   it("a contact never outlives its website or its evaluation", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");
     // A changed or withdrawn website clears the contact.
-    expect(r.match(/websiteFelder\((?:best|null), HEUTE\), \.\.\.kontaktFelder\(null, null\)/g)?.length).toBe(2);
+    expect(r.match(/websiteFelder\((?:best|null), HEUTE\), \.\.\.kontaktFelder\(null, null\)/g)?.length).toBeGreaterThanOrEqual(2);
     const k = lies("scripts/windbetreiber-kontakte.ts");
     // A website whose evaluation finds nothing writes "no contact", and old-rule results are refused.
-    expect(k).toMatch(/const felder = kontaktFelder\(k, /);
-    expect(k).not.toMatch(/if \(!k\) continue;/);
+    const schleife = k.slice(k.indexOf("for (const r of alle)"), k.indexOf("const felder = kontaktFelder(k, "));
+    expect(schleife.length, "Schleife oder Kontaktfelder nicht gefunden").toBeGreaterThan(20);
+    // Nothing may leave the loop before the fields are built: every evaluated
+    // website writes, with or without a contact.
+    expect(schleife).not.toMatch(/\bcontinue\b|\breturn\b/);
     expect(k).toMatch(/unter alten Regeln[\s\S]*erst --mode=evaluate/);
   });
 

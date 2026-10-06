@@ -419,12 +419,25 @@ async function neuBewerten() {
   const nachNr = new Map(zeilen.map((z) => [z.mastr_nr, z]));
   const kand = await alle<{ mastr_nr: string; domain: string; quelle: Kandidatenquelle }>(c, "windbetreiber_kandidaten", "mastr_nr,domain,quelle", "mastr_nr");
   const { belegungen } = await ladeBelegungen(c, "windbetreiber");
+  // A candidate the register no longer yields under today's domain rule is an
+  // artefact of the old rule (three Fraunhofer institutes stood under
+  // fraunhofer.de until institutes kept their own host, 06.10.2026). It is
+  // removed, not judged again: judged, it would win as the old domain.
+  const nachAnschrift = new Map<string, Zeile[]>();
+  for (const z of zeilen) { const a = anschriftSchluessel(akteurVon(z)); if (a) nachAnschrift.set(a, [...(nachAnschrift.get(a) ?? []), z]); }
+  const heutige = new Map(zeilen.map((z) => [z.mastr_nr, new Set(registerKandidaten(z, nachAnschrift).map((k) => k.domain))]));
+  const veraltet = kand.filter((k) => k.quelle !== "manuell" && k.quelle !== "suche" && nachNr.has(k.mastr_nr) && !heutige.get(k.mastr_nr)!.has(k.domain));
+  for (const k of veraltet) {
+    const { error } = await c.from("windbetreiber_kandidaten").delete().eq("mastr_nr", k.mastr_nr).eq("domain", k.domain);
+    if (error) throw new Error(error.message);
+  }
+  const weg = new Set(veraltet.map((k) => `${k.mastr_nr}|${k.domain}`));
   const jeBetreiber = new Map<string, Pruefung[]>();
   const kandZeilen: ReturnType<typeof kandidatZeile>[] = [];
   let ohneZwischenspeicher = 0;
   for (const k of kand) {
     const z = nachNr.get(k.mastr_nr);
-    if (!z) continue;
+    if (!z || weg.has(`${k.mastr_nr}|${k.domain}`)) continue;
     if (!existsSync(impressumDatei(k.domain))) { ohneZwischenspeicher++; continue; }
     const p = await pruefen(z, { domain: k.domain, quelle: k.quelle, postfach: k.quelle === "register-mail" ? z.register_email : null }, belegungen);
     kandZeilen.push(kandidatZeile(z, p));
@@ -438,12 +451,18 @@ async function neuBewerten() {
     const best = besterBeleg(pr);
     if (best && best.kandidat.domain !== z.website) { neu++; // A contact belongs to the website it was found on; the next contact run fills it again.
       aenderungen.push({ mastr_nr: nr, ...websiteFelder(best, HEUTE), ...kontaktFelder(null, null), updated_at: new Date().toISOString() }); }
-    else if (!best && z.website && pr.some((p) => p.kandidat.domain === z.website)) {
+    else if (!best && z.website && (pr.some((p) => p.kandidat.domain === z.website) || weg.has(`${nr}|${z.website}`))) {
       zurueck++;
       aenderungen.push({ mastr_nr: nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `nach Regeländerung nicht mehr belegt: ${z.website}`, updated_at: new Date().toISOString() });
     }
   }
+  for (const z of zeilen) {
+    if (!z.website || jeBetreiber.has(z.mastr_nr) || !weg.has(`${z.mastr_nr}|${z.website}`)) continue;
+    zurueck++;
+    aenderungen.push({ mastr_nr: z.mastr_nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: null, suche_notiz: `Kandidat unter alter Domain-Regel entfernt: ${z.website}`, updated_at: new Date().toISOString() });
+  }
   await aktualisieren(c, "windbetreiber", "mastr_nr", aenderungen);
+  console.log(`${veraltet.length} veraltete Kandidaten entfernt`);
   console.log(`${kandZeilen.length} Prüfungen neu bewertet · ${neu} Websites neu oder gewechselt · ${zurueck} zurückgenommen · ${ohneZwischenspeicher} ohne Zwischenspeicher übersprungen`);
 }
 

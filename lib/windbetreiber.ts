@@ -323,7 +323,12 @@ export function beurteilen(
   }
   if (abruf.startseite) {
     const b = zaehlt(impressumBelegt(abruf.startseite, a, domain, ortsWoerter));
-    if (b && (b.wie === "name" || b.wie === "marke")) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
+    // A start page NAMES parks it does not run: a planning office lists its
+    // references ("Windpark Reher" stood on baubuero-kaatz.de, 06.10.2026).
+    // There a name proves only when it identifies someone — a word that is
+    // neither the kind of company nor a place — and the page is no park list.
+    const nameTraegt = b?.wie !== "name" || (identifizierend(a.Firmenname ?? "", ortsWoerter) && !parkListe(abruf.startseite, a.Firmenname ?? ""));
+    if (b && (b.wie === "name" || b.wie === "marke") && nameTraegt) return { ergebnis: "belegt", beleg: b, seite: "startseite" };
   }
   const erreichbar = !!(abruf.impressum || abruf.startseite);
   if (quelle === "register-webseite" && erreichbar) {
@@ -347,6 +352,22 @@ export function beurteilen(
 export function websiteHerkunft(quelle: Kandidatenquelle | string | null, wie: Beleg["wie"] | string | null): "amtlich" | "suche" {
   const vomRegister = quelle === "register-webseite" || quelle === "register-mail" || quelle === "anschrift";
   return vomRegister && (wie === "name" || wie === "anschrift" || wie === "register") ? "amtlich" : "suche";
+}
+
+/** Does the name carry a word that is neither a kind of company nor a place? */
+export function identifizierend(name: string, ortsWoerter?: Set<string>): boolean {
+  return unterscheidendeWoerter(name).some((w) => !ortsWoerter?.has(w));
+}
+
+/**
+ * Is the text a list of parks — a reference or project page? Counted are
+ * distinct "Windpark/Bürgerwindpark <word>" names other than the operator's own.
+ */
+export function parkListe(text: string, eigenerName: string): boolean {
+  const eigen = new Set(nameWoerter(eigenerName));
+  const namen = new Set<string>();
+  for (const m of textFalten(text).matchAll(/ (?:buerger)?wind(?:park|feld|kraft) ([a-z0-9]{3,})(?= )/g)) if (!eigen.has(m[1])) namen.add(m[1]);
+  return namen.size >= 3;
 }
 
 /** The words of a name that could tell this operator apart: brand and place

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -260,6 +260,31 @@ describe("a place is never a brand", () => {
       const m = marke(n);
       expect(["wka", "stadtwerke", "energiepark", "buerger", "onshore"]).not.toContain(m);
     }
+  });
+});
+
+describe("a start page names parks it does not run (06.10.2026)", () => {
+  const orte = ortsWoerterAus(["Reher", "Jevenstedt", "Karlum", "Klixbüll"]);
+  const reher = akteur("Windpark Reher GmbH & Co. KG", "Irgendwo", "1", "25593");
+  const kaatz = "Baubüro Kaatz Leistungsspektrum Über uns Team Aktuelle Projekte Referenzen Windpark Reher Windpark Jevenstedt Bürgerwindpark Karlum Windpark Klixbüll";
+
+  it("does not give a park to the planning office that lists it as a reference", () => {
+    expect(beurteilen(reher, "baubuero-kaatz.de", "suche", { impressum: null, startseite: kaatz }, null, orte).ergebnis).not.toBe("belegt");
+  });
+
+  it("needs a word that is neither a kind of company nor a place", () => {
+    expect(identifizierend("Windpark Reher GmbH & Co. KG", orte)).toBe(false);
+    expect(identifizierend("Windpark Kisselsheide GmbH & Co. KG", orte)).toBe(true);
+  });
+
+  it("knows a list of parks from a page about one", () => {
+    expect(parkListe(kaatz, "Windpark Reher")).toBe(true);
+    expect(parkListe("Willkommen beim Bürgerwindpark Kisselsheide. Unser Windpark Kisselsheide liefert Strom.", "Bürgerwindpark Kisselsheide")).toBe(false);
+  });
+
+  it("still lets a park's own start page prove it by an identifying name", () => {
+    const a = akteur("Bürgerwindpark Kisselsheide GmbH & Co. KG", "Irgendwo", "1", "25593");
+    expect(beurteilen(a, "kisselsheide.de", "suche", { impressum: null, startseite: "Willkommen beim Bürgerwindpark Kisselsheide — unser Windpark liefert Strom" }, null, orte).ergebnis).toBe("belegt");
   });
 });
 

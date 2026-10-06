@@ -22,6 +22,14 @@ describe("organisationsDomain", () => {
     expect(organisationsDomain("https://elektro-meier.jimdosite.com")).not.toBe(organisationsDomain("https://solar-huber.jimdosite.com"));
   });
 
+  it("keeps the institute on a research society's domain (Fraunhofer, 06.10.2026)", () => {
+    expect(organisationsDomain("www.iee.fraunhofer.de")).toBe("iee.fraunhofer.de");
+    expect(organisationsDomain("https://www.ise.fraunhofer.de/de/presse.html")).toBe("ise.fraunhofer.de");
+    // The society's own site stays itself, and the rule does not spread to look-alikes.
+    expect(organisationsDomain("https://www.fraunhofer.de/")).toBe("fraunhofer.de");
+    expect(organisationsDomain("https://shop.notfraunhofer.de/")).toBe("notfraunhofer.de");
+  });
+
   it("returns nothing for what is not a host", () => {
     expect(organisationsDomain("")).toBeNull();
     expect(organisationsDomain(null)).toBeNull();

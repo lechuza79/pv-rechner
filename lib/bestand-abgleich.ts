@@ -68,6 +68,16 @@ export const DARF_TEILEN: ReadonlyArray<readonly [Bestand, Bestand]> = [
  */
 const GETEILTES_HOSTING = /(?:^|\.)(?:jimdo(?:site)?\.(?:de|com)|wixsite\.com|business\.site|webnode\.(?:de|com|page)|wordpress\.com|blogspot\.(?:de|com)|site123\.me|beepworld\.de|npage\.de|homepage\.t-online\.de|weebly\.com|strikingly\.com|godaddysites\.com|ionos\.space|my\.canva\.site|webador\.de)$/i;
 
+/**
+ * Research societies whose institutes are separate operators under one
+ * registrable domain: iee.fraunhofer.de and ict.fraunhofer.de run their own
+ * test turbines, ise.fraunhofer.de is a press source. Collapsed to
+ * fraunhofer.de, three wind operators collided with the press catalogue
+ * (06.10.2026). Same treatment as shared hosting: the host is the organisation.
+ * Measured cases only — a guessed list would split organisations that are one.
+ */
+const VERBUNDDOMAIN = /\.(?:fraunhofer\.de)$/i;
+
 /** The part of a host that identifies the organisation. */
 export function organisationsDomain(urlOderHost: string | null | undefined): string | null {
   if (!urlOderHost) return null;
@@ -80,7 +90,7 @@ export function organisationsDomain(urlOderHost: string | null | undefined): str
   }
   h = h.replace(/^www\./, "").replace(/\.$/, "");
   if (!h.includes(".")) return null;
-  return GETEILTES_HOSTING.test(h) ? h : siteOf(h);
+  return GETEILTES_HOSTING.test(h) || VERBUNDDOMAIN.test(h) ? h : siteOf(h);
 }
 
 export type Belegung = { bestand: Bestand; id: string; name?: string | null; herkunft?: Herkunft };
