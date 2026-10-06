@@ -594,6 +594,16 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
 - **Sicherung (Verwendung):** Eine Telefonnummer beginnt nie direkt hinter einem
   Buchstaben oder einer Ziffer. Test, Sabotage rot.
 
+### 67. Eine Durchwahl ohne „-0“ an der Zentrale
+- **Anlass:** 06.10.2026 — fünf Betriebsführer (BGZ, Windhelfer, terrawatt,
+  Rübsamen, Düser): Registerpostfach auf ihrer Domain, Registertelefon eine
+  Durchwahl, im Impressum die Zentrale ohne Kennzeichnung als „-0".
+- **Sicherung (Verwendung):** Neben dem Registerpostfach auf der Domain bestätigt
+  auch eine Nummer aus demselben Festnetzblock (bis auf die letzten zwei Ziffern
+  gleich). Nie allein, nie bei Mobilnummern (eine Mobilnummer gehört einer
+  Person). Test mit Gegenfällen, beide Teile einzeln sabotiert. Nach der
+  Neubewertung kamen 9 Handfälle als „trägt heute" zurück, alle übernommen.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
