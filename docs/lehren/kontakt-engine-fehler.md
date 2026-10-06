@@ -630,6 +630,25 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   kommunalen und Bürgergesellschaften mit Gemeindebeteiligung, nie bei
   Projektgesellschaften eines Konzerns. Im Abschlussbericht benannt.
 
+### 70. Ein Länderkürzel vor der Postleitzahl
+- **Anlass:** 06.10.2026 — das Register schreibt dänische Postleitzahlen als
+  „DK-4000", britische als „EC1R 9HJ"; die Anschriftsprüfung lief für 25
+  Betreiber gar nicht erst an.
+- **Sicherung (Verwendung):** Die Postleitzahl wird an einer Stelle normiert
+  (Länderkürzel ab, britische klein und ohne Leerzeichen). Test, Sabotage rot.
+
+### 71. Dänische Buchstaben in der Registerschreibweise
+- **Anlass:** 06.10.2026 — Register „Egaa Havvej", Kontaktseite „Egå Havvej".
+- **Sicherung (Verwendung):** å, ø, æ werden wie im Register gefaltet. Test,
+  Sabotage rot.
+
+### 72. Die Belegseite liegt auf dem Weiterleitungsziel
+- **Anlass:** 06.10.2026 — windpark.eu leitet auf windpark.com, das Impressum
+  steht nur dort; die zusätzliche Belegseite wurde als „andere Website" abgewiesen.
+- **Sicherung (Verwendung):** Erlaubt ist die Domain selbst oder die Website, auf
+  die sie nach dem Abruf weiterleitet; geprüft erst nach dem ersten Abruf, weil
+  vorher das Ziel nicht bekannt ist. Ablauf-Test.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
