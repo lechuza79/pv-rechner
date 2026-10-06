@@ -271,6 +271,63 @@ def st_download(inputs, prefix, kind, url, reuse):
                 sourceSha256=hashlib.sha256(response.content).hexdigest())
 
 
+def read_state(root, code):
+    path = root/'inputs/DE_VG250.gpkg'
+    with sqlite3.connect('file:'+str(path)+'?mode=ro', uri=True) as db:
+        if db.execute("SELECT srs_id FROM gpkg_geometry_columns WHERE table_name='vg250_lan'").fetchone() != (25832,):
+            raise ValueError('Unexpected state boundary reference')
+        rows = db.execute('SELECT geom FROM vg250_lan WHERE AGS=? AND GF=4', (code,)).fetchall()
+    if not rows:raise ValueError('State boundary missing: '+code)
+    return unary_union([queue.decode_gpkg(blob) for (blob,) in rows])
+
+
+def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
+    """Fill terrain across the state border from the neighbouring state's open DGM.
+    Returns (manifest entries, credits). A cell the neighbour does not publish stays a gap."""
+    entries, credits = [], []
+    for code, spec in states.NEIGHBOUR_TERRAIN.items():
+        if code==ags[:2]:continue
+        part = terrain.intersection(read_state(root, code))
+        if part.is_empty or part.area<1:continue
+        native, before = [], len(entries)
+        for candidates in states.neighbour_terrain_urls(code, part):
+            for url in candidates:
+                stem = hashlib.sha256(url.encode()).hexdigest()[:24]
+                kept = inputs/(prefix+('-nbsn-' if spec['native']!=25832 else '-dgm-nbth-')+stem+'.tif')
+                known = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
+                if known:
+                    if not kept.exists():os.link(inputs/known['file'],kept)
+                    entry = dict(known,file=kept.name)
+                else:
+                    response = None
+                    for number in range(4):
+                        try:
+                            response = requests.get(url,timeout=(20,300),headers=states.UA)
+                            break
+                        except requests.RequestException as error:
+                            if number==3:raise
+                            print('Retry',url,error,flush=True)
+                    if response.status_code==404:continue
+                    response.raise_for_status()
+                    member, data = states.neighbour_member(response.content)
+                    temporary = kept.with_suffix('.tif.part');temporary.write_bytes(data);temporary.replace(kept)
+                    entry = dict(file=kept.name,url=url,sha256=shared.digest(kept),sourceMember=member,
+                                 sourceSha256=hashlib.sha256(response.content).hexdigest())
+                (native if spec['native']!=25832 else entries).append(entry)
+                break
+        if native:
+            mosaic = inputs/(prefix+'-dgm-nbsn-mosaic-utm32.tif')
+            partial = mosaic.with_suffix('.tif.part')
+            try:states.convert_dgm_mosaic([inputs/e['file'] for e in native],partial);partial.replace(mosaic)
+            finally:partial.unlink(missing_ok=True)
+            entries.append(dict(file=mosaic.name,url=states.SN_DGM,sha256=shared.digest(mosaic),
+                derivation='Official GeoSN DGM1 (UTM33), mosaicked and reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
+                derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native]))
+        if len(entries)>before:
+            credits.append(spec['credit'])
+    return entries, credits
+
+
 def intake(inputs, prefix, kind, url, reuse):
     """Download a native-reference tile once and derive the UTM32 file the preparer reads."""
     if urlparse(url).scheme!='https' or (Path(urlparse(url).path).suffix!='.zip' and not url.startswith(states.BB_WCS+'?')):raise ValueError('Unsupported tile URL')
@@ -421,6 +478,14 @@ def main():
             manifest = [e for e in manifest if '-native-' not in e['file']]+[dict(file=mosaic.name,
                 url=native[0]['url'] if len(native)==1 else states.BB_DGM,sha256=shared.digest(mosaic),derivation='Official LGB DGM (UTM33, 5 m), reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
                 derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native])]
+        filled, credits = neighbour_terrain(root,inputs,prefix,ags,terrain,reuse)
+        if filled:
+            manifest += filled
+            preparation = json.loads((out/'preparation.json').read_text())
+            preparation['terrainLicense'] += ''.join('; '+credit for credit in credits)
+            preparation['neighbourTerrain'] = [e['file'] for e in filled]
+            shared.save(out/'preparation.json',preparation)
+            print('Neighbour terrain:',len(filled),'files;',', '.join(credits),flush=True)
         shared.save(inputs/(prefix+'-sources.json'),manifest)
         # __file__-derived roots must point to isolated copies, not script symlinks.
         scripts = stage/'scripts';scripts.mkdir()

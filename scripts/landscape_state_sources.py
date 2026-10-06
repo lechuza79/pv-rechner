@@ -301,6 +301,36 @@ def st_member(data, kind):
     return names[0], member
 
 
+# Terrain of a NEIGHBOURING state fills the part of a border scene's terrain box that
+# the place's own state does not publish. Buildings are not filled: the town window
+# lies inside the municipality, and the border scene masks nothing it claims to show.
+SN_DGM = 'https://geocloud.landesvermessung.sachsen.de/public.php/dav/files/JCcXyifaNdLDnxZ/'
+TH_DGM = 'https://geoportal.geoportal-th.de/hoehendaten/DGM/'
+NEIGHBOUR_TERRAIN = {
+    '14': dict(key='sachsen', native=25833, size=2000, credit='© GeoBasis-DE / GeoSN, dl-de/by-2-0'),
+    '16': dict(key='thueringen', native=25832, size=1000, credit='© GDI-Th, dl-de/by-2-0'),
+}
+
+
+def neighbour_terrain_urls(code, area):
+    """Candidate tile URLs (newest epoch first per cell) for the part of area (UTM32) in that state."""
+    spec = NEIGHBOUR_TERRAIN[code]
+    cells = grid_cells(area, 25832, spec['native'], spec['size'])
+    if code == '14':
+        return [[SN_DGM+'dgm1_33%03d_%d_2_sn_tiff.zip' % (e*2, n*2)] for e, n in cells]
+    return [[TH_DGM+'dgm_2020-2025/dgm1_32_%d_%d_1_th_2020-2025.zip' % (e, n),
+             TH_DGM+'dgm_2014-2019/dgm1_%d_%d_1_th_2014-2019.zip' % (e, n)] for e, n in cells]
+
+
+def neighbour_member(data):
+    """The single GeoTIFF of a neighbour terrain archive."""
+    archive = zipfile.ZipFile(io.BytesIO(data))
+    names = [n for n in archive.namelist() if n.lower().endswith('.tif')]
+    if len(names) != 1:
+        raise ValueError('Expected one GeoTIFF in neighbour terrain archive, got '+str(names))
+    return names[0], archive.read(names[0])
+
+
 def tile_jobs(adapter, terrain, buildings, stac=None):
     if adapter['key'] == 'sachsen-anhalt':
         return st_tiles(terrain, buildings)

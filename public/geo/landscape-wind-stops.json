@@ -1270,6 +1270,13 @@
       "longitude": 14.3837
     }
   },
+  "12071408": {
+    "wind-1": {
+      "name": "Windanlagen bei Welzow",
+      "latitude": 51.54141,
+      "longitude": 14.17195
+    }
+  },
   "15081030": {
     "wind-1": {
       "name": "Windanlagen bei Arendsee (Altmark)",
@@ -1524,6 +1531,28 @@
       "longitude": 11.13492
     }
   },
+  "15087015": {
+    "wind-1": {
+      "name": "Windanlagen bei Allstedt",
+      "latitude": 51.45364,
+      "longitude": 11.46683
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Allstedt",
+      "latitude": 51.44151,
+      "longitude": 11.37633
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Allstedt",
+      "latitude": 51.34279,
+      "longitude": 11.42163
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Allstedt",
+      "latitude": 51.4143,
+      "longitude": 11.3503
+    }
+  },
   "15087031": {
     "wind-1": {
       "name": "Windanlagen bei Arnstein",
@@ -1551,6 +1580,13 @@
       "longitude": 11.403
     }
   },
+  "15087125": {
+    "wind-1": {
+      "name": "Windanlagen bei Edersleben",
+      "latitude": 51.40607,
+      "longitude": 11.26245
+    }
+  },
   "15087205": {
     "wind-1": {
       "name": "Windanlagen bei Helbra",
@@ -1575,6 +1611,23 @@
       "longitude": 11.57827
     }
   },
+  "15088195": {
+    "wind-1": {
+      "name": "Windanlagen bei Landsberg",
+      "latitude": 51.49125,
+      "longitude": 12.14441
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Landsberg",
+      "latitude": 51.57793,
+      "longitude": 12.10525
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Landsberg",
+      "latitude": 51.5654,
+      "longitude": 12.16064
+    }
+  },
   "15088216": {
     "wind-1": {
       "name": "Windanlagen bei Wettin-Löbejün",
@@ -1590,6 +1643,13 @@
       "name": "Windanlagen bei Wettin-Löbejün",
       "latitude": 51.63406,
       "longitude": 11.825
+    }
+  },
+  "15088330": {
+    "wind-1": {
+      "name": "Windanlagen bei Schkopau",
+      "latitude": 51.41389,
+      "longitude": 12.09973
     }
   },
   "15089026": {
