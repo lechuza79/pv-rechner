@@ -11198,10 +11198,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     bundesland: "Niedersachsen", agsCode: "03151018",
     url: "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
     stand: "September 2026",
-    // 05.10.2026: guideline PDF (fid 4019.105.1) blocked in 3 runs (403/"nA"),
-    // programme page read live and unchanged (application window 01.04.–31.12.2026,
-    // subject to funds). Amounts only stand in the guideline -> "unsicher" until read.
-    status: "unsicher", capped: true, verified: true,
+    // 05.10.2026 a watcher set "unsicher" because the guideline PDF (fid 4019.105.1)
+    // failed three times. Reverted 06.10.2026: the link answers "nA" in a real browser
+    // too, so the document is broken at the source, not blocked for us. The programme
+    // page was read live and unchanged (application window 01.04.–31.12.2026, subject
+    // to funds), so the content read from the guideline on 23.09.2026 stays valid.
+    // No deduction either way (see below), so this only restores the correct status.
+    status: "aktiv", capped: true, verified: true,
     endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Haushalt, gestaffelt nach Anlagenleistung",
