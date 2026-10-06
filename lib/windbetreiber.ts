@@ -520,7 +520,13 @@ export function telefonKern(t: string | null | undefined): string {
 export function telefonIn(text: string, telefon: string | null | undefined): boolean {
   const ziel = telefonKern(telefon);
   if (ziel.length < 7) return false;
-  for (const m of text.matchAll(/(?:\+|00)?\(?\d[\d\s\/().\-]{5,}\d/g)) if (telefonKern(m[0]) === ziel) return true;
+  for (const m of text.matchAll(/(?:\+|00)?\(?\d[\d\s\/().\-]{5,}\d/g)) {
+    const k = telefonKern(m[0]);
+    if (k === ziel) return true;
+    // A switchboard written "-0" covers its extensions: register 04841 9813321,
+    // imprint "04841 9813-0" (Cimbergy, manual pass 06.10.2026).
+    if (/[-\s]0$/.test(m[0].trim()) && k.length - 1 >= 7 && ziel.startsWith(k.slice(0, -1)) && ziel.length > k.length - 1) return true;
+  }
   return false;
 }
 

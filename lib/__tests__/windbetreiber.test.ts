@@ -229,6 +229,10 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
     const p = (domain: string, quelle: Kandidatenquelle, wie: Beleg["wie"]) => ({ ergebnis: "belegt", kandidat: { domain, quelle }, beleg: { wie, textstelle: "" } });
     expect(besterBeleg([p("nttb-gmbh.de", "register-mail", "telefon"), p("dhsv-dithmarschen.de", "anschrift", "name")])?.kandidat.domain).toBe("dhsv-dithmarschen.de");
     expect(marke("Bürgerwindpark Mittelholstein GmbH & Co. KG")).toBeNull();
+    // A switchboard "-0" covers its extensions; a plain different number does not.
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 9813-0", "04841/9813321")).toBe(true);
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 98130", "04841/9813321")).toBe(false);
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 9813-0", "04841/9814321")).toBe(false);
     // A number too short to identify anyone proves nothing.
     expect(telefonIn("Tel. 1234 56", "123456")).toBe(false);
     expect(telefonKern("+49 (0) 4841-9813")).toBe("48419813");
