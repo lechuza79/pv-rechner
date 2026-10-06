@@ -384,6 +384,37 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Register sitzt, ist der richtige Weg; zurückgenommen wird nur, was mit dem
   Betreiber nachweislich nichts zu tun hat.
 
+### 42. Inhalt in Attributen von Web-Komponenten
+- **Anlass:** 06.10.2026 — E.DIS schreibt Impressum und Kontakt als
+  verschlüsseltes HTML in ein Attribut einer Web-Komponente; gelesen wurden
+  313 Zeichen Hülle.
+- **Sicherung (Verwendung):** `lib/web-komponenten.ts` packt solche Attribute
+  aus — im Browser-Lesen, in der Website-Prüfung und in der Wind-Kontaktsuche.
+
+### 43. Eine Seite antwortet mit Serverfehler und liefert trotzdem alles
+- **Anlass:** solarparc.de — jede Seite mit Status 500, voller Inhalt.
+- **Sicherung (Verwendung):** Die Website-Prüfung nimmt den Inhalt eines
+  5xx, wenn er eine echte Seite ist (mehr als 2.000 Zeichen Text).
+
+### 44. Hausnummer nur als Anfang verglichen
+- **Anlass:** 06.10.2026, gefunden beim Bau einer anderen Regel — Hausnummer
+  „1" im Register passte auf „12" im Impressum, seit dem ersten Tag. Die erste
+  Korrektur war zu streng und warf Spannen wie „12–16" hinaus (20 Zuordnungen,
+  sofort an der Neubewertung sichtbar).
+- **Sicherung (Verwendung):** Zifferngruppen tragen eine Grenze („12|16"); eine
+  Nummer muss dort enden, wo die des Registers endet. Ein Impressum ganz ohne
+  Hausnummer direkt vor der Postleitzahl belegt die Anschrift
+  („Windmühlenberg, 24814 Sehestedt").
+
+### 45. Eine Kanzlei als Postanschrift
+- **Anlass:** 06.10.2026 — 42 Gesellschaften standen auf der Website einer
+  Husumer Steuerberatung, weitere auf Wirtschaftsprüfern; eine Kanzlei führte je
+  Windpark ein eigenes Postfach im Register.
+- **Sicherung (Verwendung):** Auf der Seite eines Beraters (Steuerberater,
+  Wirtschaftsprüfer, Anwalt, Notar, Treuhand — im Anbieterblock oder im
+  Seitentitel) belegen weder Anschrift noch Registerpostfach; nur der eigene
+  Name des Betreibers. 55 Zuordnungen zurückgenommen, in die Handprüfung.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
