@@ -14,22 +14,24 @@
  *
  *   --mode=evaluate   offline over pages already fetched
  *   --mode=research   bounded fetches per website (default budget 10)
- *   --mode=summary    numbers over all results
+ *   --mode=summary    numbers over the results of websites still proven
+ *   --mode=stichprobe 20 contacts and 10 gaps, random, to read by hand before reporting
  *   --mode=apply      write the contacts to the operators (--schreiben)
  *
  * Common: --ids=domain,domain | --part=i --parts=n
  *
  * Nothing is sent.
  */
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { organisationsDomain } from "../lib/bestand-abgleich";
 import type { Rollenwerk, ScopeRegeln } from "../lib/kontakt-suche";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
 import { kontaktFelder, maildomain } from "../lib/windbetreiber";
 import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
 import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
-import { bewerten, laufen, readJson, recherchieren, writeJson, type Bestand, type Eintrag, type Ergebnis } from "./lib/kontakt-lauf";
+import { bewerten, laufen, readJson, recherchieren, sha, writeJson, type Bestand, type Eintrag, type Ergebnis, type Seite } from "./lib/kontakt-lauf";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
 
 const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -73,7 +75,7 @@ const WIND_SCOPE: ScopeRegeln = {
   namensvarianten: /wind|energie|energy|gruppe|group|projekt|projects?|park|regenerativ/,
 };
 
-type Zeile = { mastr_nr: string; name: string; website: string; register_email: string | null; kontakt_email: string | null };
+type Zeile = { mastr_nr: string; name: string; website: string; website_beleg_url: string | null; register_email: string | null; kontakt_email: string | null };
 
 async function db() {
   const url = env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
@@ -87,12 +89,28 @@ async function betreiber(): Promise<Zeile[]> {
   const c = await db();
   const out: Zeile[] = [];
   for (let von = 0; ; von += 1000) {
-    const { data, error } = await c.from("windbetreiber").select("mastr_nr, name, website, register_email, kontakt_email")
+    const { data, error } = await c.from("windbetreiber").select("mastr_nr, name, website, website_beleg_url, register_email, kontakt_email")
       .eq("aktiv", true).not("website", "is", null).order("mastr_nr").range(von, von + 999);
     if (error) throw new Error(error.message);
     out.push(...(data as Zeile[]));
     if (!data || data.length < 1000) return out;
   }
+}
+
+/**
+ * The imprint text the website check stored, as a page the engine can read.
+ * Only text: what a reader saw, re-read before any release (kontakte-freigabe).
+ */
+function impressumAlsSeite(domain: string): Seite[] {
+  const datei = resolve(MAIN_CHECKOUT, "scripts/.cache/windbetreiber/impressum", `${domain.replace(/[^a-z0-9.-]/g, "_")}.json`);
+  if (!existsSync(datei)) return [];
+  const imp = readJson(datei) as { impressum_url: string | null; text: string | null };
+  if (!imp.text || !imp.impressum_url || organisationsDomain(imp.impressum_url) !== domain) return [];
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Impressum</title></head><body><main>${imp.text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</main></body></html>`;
+  const digest = sha(html);
+  const pfad = resolve(OUT, "gespeichert", domain, `${digest}.html`);
+  if (!existsSync(pfad)) { mkdirSync(dirname(pfad), { recursive: true }); writeFileSync(pfad, html); }
+  return [{ url: imp.impressum_url, digest, path: pfad, kind: "html", valid: true, origin: "stored" }];
 }
 
 function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string, Eintrag> } {
@@ -103,12 +121,18 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
     // Only register mailboxes on this very domain: a project company's mailbox
     // at its manager says nothing about the developer's site.
     const baseline = [...new Set(gruppe.flatMap((z) => [z.register_email, z.kontakt_email]).filter((m): m is string => !!m && maildomain(m) === domain))];
+    // The page that proved the website — usually the imprint, the one page
+    // every commercial site must carry with a mailbox. It is a lead for the
+    // research, and its text as the website check read it (in a real browser
+    // where the site is built by script) is a stored page.
+    const belegUrls = [...new Set(gruppe.map((z) => z.website_beleg_url).filter((u): u is string => !!u && organisationsDomain(u) === domain))];
     eintraege.set(domain, {
       id: domain,
       // The shortest name is usually the parent itself ("Alterric GmbH"), not a project company.
       name: [...gruppe].sort((a, b) => a.name.length - b.name.length)[0].name,
       website: `https://${domain}/`,
-      baseline, verbund: null, gespeicherteSeiten: [], eingabe: baseline,
+      baseline, verbund: null, gespeicherteSeiten: impressumAlsSeite(domain), eingabe: [...baseline, ...belegUrls],
+      offeneLinks: belegUrls.map((url) => ({ url, priority: 950 })),
       zusatz: { betreiber: gruppe.length },
     });
   }
@@ -147,8 +171,10 @@ export function kontaktAus(r: Ergebnis): { email: string; kanal: "presse" | "all
   return null;
 }
 
-function summary(bestand: Bestand, anzahl: number) {
-  const rows = ergebnisse();
+function summary(bestand: Bestand, anzahl: number, aktuell: Set<string>) {
+  // Only websites that are still proven: a result of a withdrawn website would
+  // count a contact nobody can use (975 results for 971 websites, 06.10.2026).
+  const rows = ergebnisse().filter((r) => aktuell.has(r.id));
   const kontakte = rows.map(kontaktAus);
   const out = {
     observedAt: new Date().toISOString(), rules: bestand.rules, websites: anzahl, bewertet: rows.length,
@@ -159,6 +185,22 @@ function summary(bestand: Bestand, anzahl: number) {
   };
   writeJson(resolve(OUT, "summary.json"), out);
   console.log(JSON.stringify(out, null, 1));
+}
+
+/**
+ * The sample to READ before any number is reported: 20 contacts, 10 websites
+ * without one, each with the page to open. Random, not the first rows: the
+ * first rows are the big developers, where the engine works best.
+ */
+function stichprobe(aktuell: Set<string>) {
+  const rows = ergebnisse().filter((r) => aktuell.has(r.id));
+  const misch = <T,>(a: T[]) => a.map((x) => [Math.random(), x] as const).sort((p, q) => p[0] - q[0]).map(([, x]) => x);
+  const mit = misch(rows.filter((r) => kontaktAus(r))).slice(0, 20);
+  const ohne = misch(rows.filter((r) => !kontaktAus(r))).slice(0, 10);
+  console.log("── 20 Kontakte: steht die Adresse auf der Seite, und gehört sie dem Betreiber?");
+  for (const r of mit) { const k = kontaktAus(r)!; console.log(`${r.id} · ${k.kanal} · ${k.email} · ${k.url}`); }
+  console.log("── 10 ohne Kontakt: wo steht die Adresse wirklich?");
+  for (const r of ohne) console.log(`${r.id} · ${r.outcome} · ${r.pages.read} Seiten gelesen · allgemein: ${r.general.join(", ") || "–"} · offen: ${r.openLinks.slice(0, 3).map((l) => l.url).join(" ")}`);
 }
 
 async function apply() {
@@ -189,7 +231,8 @@ async function apply() {
 async function main() {
   if (mode === "apply") return apply();
   const { bestand, eintraege } = bestandAus(await betreiber());
-  if (mode === "summary") return summary(bestand, eintraege.size);
+  if (mode === "summary") return summary(bestand, eintraege.size, new Set(eintraege.keys()));
+  if (mode === "stichprobe") return stichprobe(new Set(eintraege.keys()));
   let rows = [...eintraege.values()];
   const ids = arg("ids")?.split(",");
   if (ids) { const wanted = new Set(ids); rows = rows.filter((r) => wanted.has(r.id)); }

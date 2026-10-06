@@ -241,18 +241,23 @@ export async function recherchieren(b: Bestand, e: Eintrag, budget: number) {
   const fertig = b.fertigWenn ?? ((r: Ergebnis) => r.outcome === "all-channels");
   let result = bewerten(b, e);
   if (fertig(result)) return { id: e.id, skipped: "complete" };
-  const last = log.attempts.at(-1);
-  if (last) {
-    // Nur eine gescheiterte Verbindung rechtfertigt einen zweiten Anlauf; eine
-    // übersprungene Datei nicht.
-    const unreachable = last.fetched.length > 0 && last.fetched.every((f: any) => f.error);
-    if (log.attempts.length >= MAX_ATTEMPTS || !unreachable || !e.website) return { id: e.id, skipped: "final" };
-    if (Date.now() - Date.parse(last.at) < RETRY_AFTER_MS) return { id: e.id, skipped: "retry-later" };
-  }
   const own = siteOf(host(e.website ?? ""));
   const allowed = new Set([own, ...(result.verbund?.sites ?? [])].filter(Boolean));
   const done = new Set<string>(eigeneSeiten(b, e.id).map(p => p.url));
   for (const a of log.attempts) for (const f of a.fetched) done.add(f.url);
+  const last = log.attempts.at(-1);
+  if (last) {
+    // Nur eine gescheiterte Verbindung rechtfertigt einen zweiten Anlauf; eine
+    // übersprungene Datei nicht. Oder eine NEUE Spur: eine Seite, die beim
+    // letzten Anlauf nicht bekannt war (z. B. das Impressum, das die
+    // Website-Prüfung inzwischen gefunden hat). Ohne sie blieben Websites, deren
+    // Startseite per Skript entsteht, nach einer gelesenen Seite für immer
+    // "final" (wind operators, 06.10.2026).
+    const unreachable = last.fetched.length > 0 && last.fetched.every((f: any) => f.error);
+    const neueSpur = result.openLinks.some(l => !done.has(l.url) && allowed.has(siteOf(host(l.url))));
+    if (log.attempts.length >= MAX_ATTEMPTS || (!unreachable && !neueSpur) || !e.website) return { id: e.id, skipped: "final" };
+    if (unreachable && !neueSpur && Date.now() - Date.parse(last.at) < RETRY_AFTER_MS) return { id: e.id, skipped: "retry-later" };
+  }
   const queue = new Map<string, number>(result.openLinks.map(l => [l.url, l.priority]));
   if (result.pages.read === 0 && e.website) queue.set(e.website, 999);
   const fetched: any[] = [];
