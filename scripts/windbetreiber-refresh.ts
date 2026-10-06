@@ -652,6 +652,9 @@ async function manuell() {
         process.exitCode = 1; continue;
       }
       if (beleg) p = { ...p, ergebnis: "belegt", beleg, impressum: { ...p.impressum, impressum_url: seite }, grund: null };
+      // Say what happened to the named page too; the imprint's reason alone left
+      // open whether it was read at all (block 027, 06.10.2026).
+      else p = { ...p, grund: `${p.grund ?? ""}; Belegseite ${text ? "gelesen, nennt weder vollen Namen, kennzeichnenden Namen ohne Parkliste, Anschrift noch Marke" : "nicht lesbar"}` };
     }
     // A failed second try on the website already proven keeps the proof: it
     // overwrote it, and the website stood there without one (Waabs, 06.10.2026).
