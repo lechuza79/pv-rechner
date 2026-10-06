@@ -26,8 +26,9 @@ describe("recipient of the letter", () => {
     const r = empfaengerFuerBrief({ rollenEmail: "info@x.de", presseKontaktEmail: "tourismus@x.de" });
     expect(r.email).toBe("info@x.de");
   });
-  it("sends nothing rather than to the building authority", () => {
-    expect(empfaengerFuerBrief({ rollenEmail: "bauleitplanung@x.de" }).email).toBeNull();
+  it("takes a department mailbox only when there is no other", () => {
+    expect(empfaengerFuerBrief({ rollenEmail: "bauleitplanung@x.de" }).email).toBe("bauleitplanung@x.de");
+    expect(empfaengerFuerBrief({ rollenEmail: "info@x.de", klimaEmail: "bauamt@x.de" }).email).toBe("info@x.de");
   });
   it("keeps a secretariat as the last resort", () => {
     expect(empfaengerFuerBrief({ rollenEmail: "sekretariat@x.de" }).email).toBe("sekretariat@x.de");

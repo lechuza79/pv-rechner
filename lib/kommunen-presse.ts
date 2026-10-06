@@ -222,7 +222,12 @@ export function empfaengerFuerBrief(o: {
   // A mailbox a person verified on the administration's own page is proven the
   // way a contact-search find is: its name no longer decides (05.10.2026 —
   // "organisation@rhinow.de" is the Amt's office, the name check called it a surname).
-  return { email: tauglich(o.rollenEmail) || null, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
+  const allgemein = tauglich(o.rollenEmail);
+  if (allgemein) return { email: allgemein, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
+  // Nothing better at all: then a department mailbox after all (operator,
+  // 06.10.2026: "wenn gar kein Postfach sonst, kann es auch an die Bauleitplanung").
+  const notfall = [o.rollenEmail, o.klimaEmail, o.presseKontaktEmail, o.presseEmail].map((e) => (e ?? "").trim()).find(Boolean);
+  return { email: notfall || null, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
 }
 
 /**
