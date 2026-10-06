@@ -764,7 +764,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
           // read as a second nationwide claim.
           gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
             ? ""
-            : `, jeweils unter den ${kleinKlasse(weitereListe[0].gruppe)}`
+            : `, ${weitereListe.length > 1 ? "jeweils " : ""}unter den ${kleinKlasse(weitereListe[0].gruppe)}`
         }.`
       : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
           .map(
