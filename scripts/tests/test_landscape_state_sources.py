@@ -57,6 +57,30 @@ class StateSourceTests(unittest.TestCase):
         self.assertIn(('dgm', states.NRW_DGM+'dgm1_32_330_5700_1_nw_2023.tif'), jobs)
         self.assertIn(('lod', states.NRW_LOD+'LoD2_32_330_5700_1_NW.gml'), jobs)
 
+    def test_sachsen_anhalt_tiles_come_from_the_page_index_by_2km_label(self):
+        page = ("x new gc.mod.MapDownloadSelector(\n 'mapdownloader_content',\n "
+                "'{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {\"id\": \"689732\",\"label\": \"327245648\"}}]}',\n"
+                " 'EPSG:4647', 'https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1965,501/ajax/1/prepare/?'")
+        area = states.box(724100, 5648100, 724200, 5648200)
+        jobs = states.st_tiles(area, area, lambda url: Response(page))
+        self.assertEqual(jobs, [(kind, 'https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1965,501/ajax/1/prepare/?items=689732&format=zip')
+                                for kind in ('dgm', 'lod')])
+        outside = states.box(800100, 5648100, 800200, 5648200)
+        self.assertEqual(states.st_tiles(outside, outside, lambda url: Response(page)), [])
+
+    def test_sachsen_anhalt_archive_must_hold_one_utm32_citygml(self):
+        def archive(files):
+            buffer = states.io.BytesIO()
+            with states.zipfile.ZipFile(buffer, 'w') as z:
+                for name, data in files.items(): z.writestr(name, data)
+            return buffer.getvalue()
+        good = archive({'LoD2_32_724_5648_2_ST.gml': '<x srsName="urn:adv:crs:ETRS89_UTM32*DE_DHHN2016_NH"/>', 'terms.pdf': 'x'})
+        self.assertEqual(states.st_member(good, 'lod')[0], 'LoD2_32_724_5648_2_ST.gml')
+        with self.assertRaises(ValueError):
+            states.st_member(archive({'a.gml': '<x srsName="EPSG:25833"/>'}), 'lod')
+        with self.assertRaises(ValueError):
+            states.st_member(archive({'a.tif': 'x', 'b.tif': 'y'}), 'dgm')
+
 
 if __name__ == '__main__':
     unittest.main()

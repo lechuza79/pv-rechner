@@ -32,6 +32,10 @@ ADAPTERS = {
                buildingLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
                terrainLicense='© GeoBasis-DE/LGB, dl-de/by-2-0 [Daten bearbeitet]',
                osmPage='https://download.geofabrik.de/europe/germany/brandenburg.html'),
+    '15': dict(key='sachsen-anhalt', prefix='st', native=25832,
+               buildingLicense='© GeoBasis-DE / LVermGeo ST, dl-de/by-2-0',
+               terrainLicense='© GeoBasis-DE / LVermGeo ST, dl-de/by-2-0',
+               osmPage='https://download.geofabrik.de/europe/germany/sachsen-anhalt.html'),
 }
 
 NRW_DGM = 'https://www.opengeodata.nrw.de/produkte/geobasis/hm/dgm1_tiff/dgm1_tiff/'
@@ -248,7 +252,58 @@ def bb_intake(raw, kind, destination):
         destination.write_text(convert_gml(data.decode('utf-8')), encoding='utf-8')
 
 
+# Sachsen-Anhalt: the open-data map downloader lists 2 km tiles (label = 32 + east km + north km)
+# with an item id; 'prepare' returns a one-off archive link holding the GeoTIFF or CityGML.
+ST_PAGES = {'dgm': 'https://www.lvermgeo.sachsen-anhalt.de/de/gdp-dgm5.html',
+            'lod': 'https://www.lvermgeo.sachsen-anhalt.de/de/gdp-download-lod2.html'}
+ST_PREPARE = re.compile(r"https://www\.lvermgeo\.sachsen-anhalt\.de/de/mod/[0-9,]+/ajax/1/prepare/\?")
+
+
+def st_index(page, fetch=_get):
+    """(east km, north km) -> item id, plus the prepare endpoint, read from the download page."""
+    import json
+    html = fetch(page).text
+    found = re.search(r"MapDownloadSelector\(\s*'mapdownloader_content',\s*'(\{.*?\})',\s*'EPSG:4647'", html, re.S)
+    prepare = ST_PREPARE.search(html)
+    if not found or not prepare:
+        raise ValueError('Sachsen-Anhalt tile index not readable: '+page)
+    tiles = {}
+    for feature in json.loads(found.group(1))['features']:
+        label = feature['properties']['label']
+        if not re.fullmatch(r'32\d{7}', label):
+            raise ValueError('Unexpected Sachsen-Anhalt tile label '+label)
+        tiles[(int(label[2:5]), int(label[5:9]))] = feature['properties']['id']
+    return tiles, prepare.group(0)
+
+
+def st_tiles(terrain, buildings, fetch=_get):
+    jobs = []
+    for kind, area in (('dgm', terrain), ('lod', buildings)):
+        tiles, prepare = st_index(ST_PAGES[kind], fetch)
+        for e, n in grid_cells(area, size=2000):
+            # Cells outside the state have no tile; the preparer trims, never fills.
+            item = tiles.get((e*2, n*2))
+            if item:
+                jobs.append((kind, prepare+'items='+item+'&format=zip'))
+    return jobs
+
+
+def st_member(data, kind):
+    """The single GeoTIFF or CityGML inside a Sachsen-Anhalt archive."""
+    archive = zipfile.ZipFile(io.BytesIO(data))
+    suffix = '.tif' if kind == 'dgm' else '.gml'
+    names = [n for n in archive.namelist() if n.lower().endswith(suffix)]
+    if len(names) != 1:
+        raise ValueError('Expected one '+suffix+' in Sachsen-Anhalt archive, got '+str(names))
+    member = archive.read(names[0])
+    if kind == 'lod' and b'ETRS89_UTM32*DE_DHHN2016_NH' not in member[:4000]:
+        raise ValueError('Sachsen-Anhalt LoD2 not in ETRS89/UTM32 + DHHN2016')
+    return names[0], member
+
+
 def tile_jobs(adapter, terrain, buildings, stac=None):
+    if adapter['key'] == 'sachsen-anhalt':
+        return st_tiles(terrain, buildings)
     if adapter['key'] == 'nordrhein-westfalen':
         return nrw_tiles(terrain, buildings)
     if adapter['key'] == 'brandenburg':

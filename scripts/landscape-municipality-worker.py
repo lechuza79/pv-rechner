@@ -219,6 +219,30 @@ def download(inputs, prefix, kind, url, reuse):
     return dict(file=name,url=url,sha256=shared.digest(path))
 
 
+def st_download(inputs, prefix, kind, url, reuse):
+    """Sachsen-Anhalt: the stable identity is the tile's prepare URL; each call yields a one-off archive."""
+    if not states.ST_PREPARE.match(url):raise ValueError('Unsupported tile URL')
+    stem = hashlib.sha256(url.encode()).hexdigest()[:24]
+    path = inputs/(prefix+'-'+kind+'-'+stem+('.tif' if kind=='dgm' else '.gml'))
+    verified = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
+    if verified:
+        if not path.exists():os.link(inputs/verified['file'],path)
+        return dict(verified,file=path.name)
+    link = requests.get(url,timeout=(20,120),headers=states.UA)
+    link.raise_for_status()
+    archive_url = link.text.strip()
+    if not archive_url.startswith('https://www.lvermgeo.sachsen-anhalt.de/') or '/download/?file=' not in archive_url:
+        raise ValueError('Unexpected Sachsen-Anhalt download link')
+    response = requests.get(archive_url,timeout=(20,300),headers=states.UA)
+    response.raise_for_status()
+    if shutil.disk_usage(inputs).free<2*1024**3+len(response.content):raise RuntimeError('Insufficient free storage')
+    member, data = states.st_member(response.content, kind)
+    temporary = path.with_suffix(path.suffix+'.part')
+    temporary.write_bytes(data);temporary.replace(path)
+    return dict(file=path.name,url=url,sha256=shared.digest(path),sourceMember=member,
+                sourceSha256=hashlib.sha256(response.content).hexdigest())
+
+
 def intake(inputs, prefix, kind, url, reuse):
     """Download a native-reference tile once and derive the UTM32 file the preparer reads."""
     if urlparse(url).scheme!='https' or (Path(urlparse(url).path).suffix!='.zip' and not url.startswith(states.BB_WCS+'?')):raise ValueError('Unsupported tile URL')
@@ -338,7 +362,7 @@ def main():
         if not any(kind=='dgm' for kind,_ in jobs):raise ValueError('Missing official terrain tiles')
         if not any(kind=='lod' for kind,_ in jobs):raise ValueError('Missing official building tiles')
         shared.save(inputs/(prefix+'-download-plan.json'),dict(terrainBounds=terrain.bounds,files=jobs))
-        fetch = intake if adapter['native']!=25832 else download
+        fetch = st_download if adapter['key']=='sachsen-anhalt' else intake if adapter['native']!=25832 else download
         def attempt(job):
             # State portals stall intermittently; retry a tile, never substitute it.
             for number in range(4):
