@@ -24,13 +24,21 @@ type Quelle = {
   filter?: (q: Db) => Db;
   /** Where the domain came from, when it differs from the stock's default. */
   herkunft?: (row: Record<string, unknown>) => Herkunft | undefined;
+  /** Further columns the herkunft rule reads. */
+  extra?: string[];
 };
 
 export const QUELLEN: Quelle[] = [
   // Official websites from Wikidata (P856), Gemeinden and Kreise alike.
   { bestand: "gemeinde", tabelle: "kommunen_kontakt", id: "region_id", website: "website" },
   // Websites from the register's own Webseite field.
-  { bestand: "versorger", tabelle: "utilities", id: "id", website: "website", name: "name" },
+  // Most come from the register; a few were handed over from the installer
+  // stock (herkunft='suche', since 06.10.2026) and must not count as official.
+  {
+    bestand: "versorger", tabelle: "utilities", id: "id", website: "website", name: "name",
+    extra: ["herkunft"],
+    herkunft: (r) => (r.herkunft === "suche" ? "suche" : undefined),
+  },
   // Only confirmed media. The catalogue keeps every candidate it looked at,
   // 694 municipal sites among them, already judged "kein-medium" by itself —
   // counting those made 694 false collisions on the first measurement.
@@ -45,6 +53,7 @@ export const QUELLEN: Quelle[] = [
   {
     bestand: "windbetreiber", tabelle: "windbetreiber", id: "mastr_nr", website: "website", name: "name",
     filter: (q) => q.not("website", "is", null),
+    extra: ["website_quelle", "website_beleg"],
     // One rule for how official a proven website is (lib/windbetreiber.ts).
     herkunft: (r) => websiteHerkunft(r.website_quelle as string | null, r.website_beleg as string | null),
   },
@@ -58,7 +67,7 @@ export async function ladeBelegungen(db: Db, ohne?: Bestand): Promise<{ belegung
   const bericht: Ladebericht = { gelesen: {}, fehlt: [] };
   for (const q of QUELLEN) {
     if (q.bestand === ohne) continue;
-    const spalten = [q.id, q.website, q.name, ...(q.bestand === "windbetreiber" ? ["website_quelle", "website_beleg"] : [])].filter(Boolean).join(",");
+    const spalten = [q.id, q.website, q.name, ...(q.extra ?? [])].filter(Boolean).join(",");
     let n = 0;
     for (let von = 0; ; von += 1000) {
       let abfrage = db.from(q.tabelle).select(spalten).order(q.id).range(von, von + 999);

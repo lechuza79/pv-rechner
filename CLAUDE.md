@@ -2406,6 +2406,27 @@ Vergleichsportal in jedem. Eine Sperrliste wäre dasselbe Wettrennen wie beim F�
 Die Schwelle wächst mit der Zahl der abgefragten Kreise — sonst wäre in einem Teillauf
 jedes Portal ein „Betrieb", und nach der Vollabfrage prüft das niemand mehr nach.
 
+**„betrieb" braucht einen Beleg aus dem Impressum — BLOCKER (06.10.2026).** Die Streuung
+trennt nur Portal von regional; ob ein regionaler Eintrag ein Handwerksbetrieb ist, sagt
+sie nicht. Bis zu diesem Tag schrieb die Streuungs-Phase trotzdem `betrieb` und
+überschrieb dabei bei jedem Suchlauf jede Rückstufung; das Photovoltaik-Wort genügte als
+Beleg, und das erfüllen Stadtwerke, Verbände und Händler genauso. Gemessen an 50
+zufälligen „Betrieben": 10 waren keine. Jetzt entscheidet `lib/fachbetrieb-einordnung.ts`
+an zwei Hälften: **wer der Anbieter ist** (Anbieterblock des Impressums, Seitentitel —
+nie ein Satz irgendwo auf der Seite: „Mitglied im … e.V." und „Handwerkskammer,
+Körperschaft des öffentlichen Rechts" stehen bei echten Betrieben) und **ob es einen
+Gewerksbeleg gibt** (Kammer, Meister/Handwerksrolle, Gewerk im Anbieternamen oder in der
+Selbstbeschreibung, Montage-Angebot). Ohne Beleg heißt es `unklar`, nie `betrieb`; die
+Streuung darf nur noch `ueberregional` schreiben (`artNachStreuung`). Die alten Muster
+liefen über den ganzen Seitentext, stuften dadurch echte Betriebe zurück (eine
+Energiegenossenschaft als Kunde im Impressum genügte) und ihr „e.V." traf nie (ein `\b`
+nach einem Punkt verlangt ein Wortzeichen dahinter). Neu belegen: `npm run fachbetriebe --
+--belegen --nur-messen --protokoll <datei>`, gegenlesen, dann `--aus <datei>`.
+**Versorger und Medien werden nicht nur zurückgestuft, sondern an ihre Liste übergeben**,
+wenn sie dort fehlen (Betreiber: „dorthin verschieben anstatt zu löschen") — als
+Kandidat mit `herkunft='suche'` bzw. ohne `ist_medium`, damit die eigenen Prüfungen
+dieser Bestände urteilen und die Kollisionsregel sie nicht für amtlich hält.
+
 **Kein Merkmal ohne Beleg.** Jeder Fund landet mit Fundstelle, Textstelle und Datum in
 `fachbetrieb_belege`; die Spalte in `fachbetriebe` ist nur die Auswertung. Eine spätere
 Neubewertung kostet damit keinen zweiten Crawl. „Vermutlich Meisterbetrieb" gibt es nicht.

@@ -87,13 +87,13 @@ import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
 import { abgleichen, organisationsDomain, verdraengtGrund, type Belegungen, type Entscheidungen } from "../lib/bestand-abgleich";
 import { ladeBelegungen, ladeEntscheidungen } from "./lib/bestand-belegung";
-import { readFileSync, existsSync } from "node:fs";
+import { einordnen as amImpressumEinordnen, artNachStreuung, behaeltEinordnung, KLASSEN_TEXT, ZIEL_BESTAND, type Einordnung } from "../lib/fachbetrieb-einordnung";
+import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import {
   FELDER,
   adresseLesbar,
   angebotsSeiten,
   FRAGEN,
-  KEIN_BETRIEB,
   type Kreis,
   besteMail,
   firmennameSaeubern,
@@ -158,7 +158,9 @@ async function alleZeilen<T>(
   const out: T[] = [];
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
-    let q = sb.from(tabelle).select(spalten).range(von, von + schritt - 1);
+    // Sorted, or the pages do not read the same set: Postgres may change the
+    // row order between two queries, and rows then come twice or not at all.
+    let q = sb.from(tabelle).select(spalten).order(spalten.split(",")[0].trim()).range(von, von + schritt - 1);
     if (filter) q = filter(q);
     const { data, error } = await q;
     if (error) throw new Error(`${tabelle}: ${error.message}`);
@@ -422,6 +424,9 @@ async function setup(): Promise<void> {
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand_at timestamptz;
+    -- When the imprint rule (lib/fachbetrieb-einordnung.ts) last judged this
+    -- row. "Not judged" and "judged unklar" must stay distinguishable.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS art_beleg_at timestamptz;
     CREATE INDEX IF NOT EXISTS idx_fb_stand ON fachbetriebe (stand);
 
     ALTER TABLE fachbetriebe ENABLE ROW LEVEL SECURITY;
@@ -660,6 +665,7 @@ async function suche(opts: SucheOpts): Promise<void> {
 
 // ─── Phase: Betrieb oder Portal ──────────────────────────────────────────────
 
+
 async function einordnen(dry: boolean): Promise<void> {
   const sb = await makeClient();
 
@@ -683,6 +689,17 @@ async function einordnen(dry: boolean): Promise<void> {
   }
 
   const schwelle = portalSchwelle(kreiseGelaufen);
+  // THE SPREAD DECIDES PORTAL VS. REGIONAL — NOT WHETHER SOMETHING IS AN
+  // INSTALLER. Until 06.10.2026 this phase wrote art='betrieb' for every
+  // regional domain, overwriting whatever the imprint had established — and a
+  // later profile run only re-read rows that had never been profiled. A
+  // Stadtwerk demoted at its imprint came back as "betrieb" on the next search.
+  // Now: existing rows keep their verdict (only the spread and "überregional"
+  // are written); new ones start as 'unklar' until the imprint gives evidence.
+  const bisher = new Map(
+    (await alleZeilen<{ domain: string; art: string; art_grund: string | null }>(sb, "fachbetriebe", "domain, art, art_grund"))
+      .map((r) => [r.domain, r]),
+  );
   const zeilen: Record<string, unknown>[] = [];
   let portale = 0;
   let betriebe = 0;
@@ -703,13 +720,7 @@ async function einordnen(dry: boolean): Promise<void> {
       // „Portal" zu nennen wäre eine Beschriftung, die etwas anderes behauptet
       // als die Messung darunter (CLAUDE.md, „Sagt die Beschriftung dasselbe,
       // was die Zahl misst?").
-      art: weitVerbreitet ? "ueberregional" : "betrieb",
-      // „betrieb" heißt hier nur: nach der Streuung regional. Ob wirklich ein
-      // PV-Fachbetrieb dahintersteht, entscheidet erst die Profil-Phase am
-      // Impressum — die kann auf 'kein-betrieb' zurückstufen.
-      art_grund: weitVerbreitet
-        ? `in ${n} von ${kreiseGelaufen} abgefragten Kreisen (Schwelle ${schwelle})`
-        : `in ${n} Kreis${n === 1 ? "" : "en"} gesehen`,
+      ...artNachStreuung(bisher.get(domain), weitVerbreitet, n, kreiseGelaufen, schwelle),
       kreise_gesehen: n,
       updated_at: new Date().toISOString(),
     });
@@ -861,9 +872,10 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
       // Ein erkanntes Nicht-Betrieb-Muster ist ein BEFUND und gilt immer; die
       // bloße Rückstufung auf „unklar" („kein PV-Wort gefunden") gilt nur, wenn
       // die gründlichere Prüfung noch gar nicht gelaufen ist.
-      art: p.art === "kein-betrieb" || !r.kontakt_at ? (p.art ?? r.art) : r.art,
-      art_grund:
-        p.art === "kein-betrieb" || (!r.kontakt_at && p.art) ? p.art_grund : r.art_grund,
+      // Since 06.10.2026 the profile's verdict IS the evidence check
+      // (lib/fachbetrieb-einordnung.ts) and applies — except over a decision
+      // by a person or another stock, which this run cannot see.
+      ...(behaeltEinordnung(r) ? { art: r.art, art_grund: r.art_grund } : { art: p.art ?? r.art, art_grund: p.art_grund ?? r.art_grund }),
     });
     for (const b of bl) {
       belege.push({
@@ -891,6 +903,202 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
       `  Quoten je Merkmal: npm run fachbetriebe -- --stats`,
     "ok",
   );
+}
+
+// ─── Phase: Beleg für „betrieb" (am Impressum) ───────────────────────────────
+
+/** Verdicts set by the old whole-page patterns (KEIN_BETRIEB, until 06.10.2026). */
+const ALTE_WORTREGEL = /^(?:Kommune\/Behörde|Genossenschaft\/Verein\/Initiative|Solarkataster\/Geoportal|Presse\/Verlag|Vergleichs-\/Vermittlungsportal|Lead-Vermittlung)\b/;
+
+/**
+ * Re-judge every row called "betrieb" — and every row the old whole-page
+ * patterns demoted — at the imprint. Measured on 06.10.2026 before writing
+ * this: 10 of 50 random "betriebe" were utilities, associations, a directory,
+ * a wholesaler and a municipal agency; 3 of 40 old demotions were installers
+ * (an imprint naming a cooperative as a customer was enough).
+ *
+ * Nothing is deleted. A row that is not an installer becomes 'kein-betrieb'
+ * with its reason and the passage it rests on (as a beleg). A utility or a
+ * medium that its own stock does not hold yet is HANDED OVER there as a
+ * candidate (Betreiber, 06.10.2026: "dorthin verschieben anstatt zu löschen")
+ * — marked as found by our search, so the stock's own checks judge it.
+ */
+type BelegErgebnis = { domain: string; war: string; firmenname: string | null; e: Einordnung; quelle: string };
+
+async function belegen(
+  limit: number,
+  dry: boolean,
+  erneut: boolean,
+  // MEASURE FIRST, WRITE AFTER READING. --nur-messen writes every verdict to
+  // a protocol file and nothing to the database; --aus applies a protocol
+  // without fetching the pages a second time.
+  protokoll: { nurMessen: boolean; pfad?: string; aus?: string },
+): Promise<void> {
+  const sb = await makeClient();
+  const ddl = `
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS art_beleg_at timestamptz;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS herkunft text;
+    NOTIFY pgrst, 'reload schema';`;
+  if (!dry && !protokoll.nurMessen) {
+    const { error } = await sb.rpc("exec_sql", { sql: ddl });
+    if (error) throw new Error(`setup: ${error.message}`);
+  }
+  const alle = await alleZeilen<{
+    domain: string; art: string; art_grund: string | null; firmenname: string | null;
+    impressum_url: string | null; art_beleg_at: string | null;
+  }>(sb, "fachbetriebe", "domain, art, art_grund, firmenname, impressum_url, art_beleg_at");
+  const ausProtokoll = protokoll.aus
+    ? new Map(readFileSync(protokoll.aus, "utf8").split("\n").filter(Boolean).map((l) => {
+        const x = JSON.parse(l) as BelegErgebnis;
+        return [x.domain, x] as const;
+      }))
+    : null;
+  const offen = alle
+    .filter((r) => r.art === "betrieb" || (r.art === "kein-betrieb" && ALTE_WORTREGEL.test(r.art_grund ?? "")))
+    .filter((r) => erneut || !r.art_beleg_at)
+    // Applying a protocol: only rows still in the state they were measured in.
+    .filter((r) => !ausProtokoll || ausProtokoll.get(r.domain)?.war === r.art)
+    .slice(0, limit);
+  log(`${offen.length} Einträge in diesem Lauf (${offen.filter((r) => r.art === "betrieb").length} „betrieb", ` +
+    `${offen.filter((r) => r.art !== "betrieb").length} nach alter Wortregel zurückgestuft)`);
+  if (dry) {
+    for (const o of offen.slice(0, 15)) log(`  ${o.domain} (${o.art})`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  // The other stocks, for the handover: who already holds which domain.
+  const { belegungen } = await ladeBelegungen(sb, "fachbetrieb");
+  const presseAlle = new Set(
+    (await alleZeilen<{ domain: string }>(sb, "presse_medien", "domain")).map((r) => organisationsDomain(r.domain)),
+  );
+  const versorgerAlle = new Set(
+    (await alleZeilen<{ website: string | null }>(sb, "utilities", "website")).map((r) => organisationsDomain(r.website)),
+  );
+
+  // A page that does not answer today may have answered before: a chamber or
+  // master-craftsman finding stored then is still evidence of a trade.
+  const fruehereBelege = new Map<string, { merkmal: string; wert: string; textstelle: string | null }>();
+  for (const b of await alleZeilen<{ domain: string; merkmal: string; wert: string; textstelle: string | null }>(
+    sb, "fachbetrieb_belege", "domain, merkmal, wert, textstelle",
+    (q) => q.in("merkmal", ["handwerkskammer", "meisterbetrieb", "innung"]),
+  )) if (!fruehereBelege.has(b.domain)) fruehereBelege.set(b.domain, b);
+
+  const zeilen: Record<string, unknown>[] = [];
+  const belege: Record<string, unknown>[] = [];
+  const zaehler: Record<string, number> = {};
+  const zaehle = (k: string) => (zaehler[k] = (zaehler[k] ?? 0) + 1);
+  const uebergabe: { ziel: "versorger" | "presse"; domain: string; name: string; grund: string }[] = [];
+  let fertig = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 200) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length) await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+  };
+
+  const protokollZeilen: string[] = [];
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 100 === 0) log(`  ${fertig}/${offen.length}`);
+    let e: Einordnung;
+    let quelle: string;
+    const gemessen = ausProtokoll?.get(r.domain);
+    const start = gemessen ? null : (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (gemessen) {
+      e = gemessen.e;
+      quelle = gemessen.quelle;
+    } else if (!start) {
+      // Not measurable now. A 'betrieb' without a page has no evidence we can
+      // show — it becomes 'unklar' (reversible on the next run). An old
+      // demotion stays: we cannot show it was wrong either.
+      if (r.art !== "betrieb") { zaehle("unerreichbar, alte Rückstufung bleibt"); return; }
+      const frueher = fruehereBelege.get(r.domain);
+      e = frueher
+        ? { art: "betrieb", grund: `Startseite nicht erreichbar — Beleg aus früherem Abruf (${frueher.merkmal})`, beleg: (frueher.textstelle ?? frueher.wert).slice(0, 300) }
+        : { art: "unklar", grund: "Startseite nicht erreichbar — kein Beleg für einen ausführenden Betrieb prüfbar" };
+      quelle = `https://${r.domain}/`;
+    } else {
+      const impUrl = r.impressum_url ?? impressumUrl(start.html, start.url);
+      const imp = impUrl ? await holeText(impUrl) : null;
+      e = amImpressumEinordnen({ domain: r.domain, startHtml: start.html, impText: imp ? sichtbarerText(imp.html) : "", firmenname: r.firmenname });
+      quelle = imp?.url ?? start.url;
+    }
+    const jetzt = new Date().toISOString();
+    zaehle(`${r.art === "betrieb" ? "war betrieb" : "war alt zurückgestuft"} → ${e.art}${e.art === "kein-betrieb" ? ` (${KLASSEN_TEXT[e.klasse]})` : ""}`);
+    if (protokoll.pfad) protokollZeilen.push(JSON.stringify({ domain: r.domain, war: r.art, firmenname: r.firmenname, e, quelle } satisfies BelegErgebnis));
+    if (protokoll.nurMessen) return;
+    zeilen.push({ domain: r.domain, art: e.art, art_grund: e.grund, art_beleg_at: jetzt, updated_at: jetzt });
+    if (e.art !== "unklar") {
+      belege.push({
+        domain: r.domain,
+        merkmal: "einordnung",
+        wert: e.art === "kein-betrieb" ? `kein-betrieb: ${e.klasse}` : `betrieb: ${e.grund}`,
+        fundstelle: quelle.slice(0, 500),
+        textstelle: e.beleg.slice(0, 400),
+        gefunden_am: heute(),
+      });
+    }
+    if (e.art === "kein-betrieb") {
+      const ziel = ZIEL_BESTAND[e.klasse];
+      const d = organisationsDomain(r.domain);
+      const schonDa = ziel === "presse" ? presseAlle.has(d) : ziel === "versorger" ? versorgerAlle.has(d) || (belegungen.get(d ?? "") ?? []).some((b) => b.bestand === "versorger") : true;
+      if (ziel && !schonDa) uebergabe.push({ ziel, domain: r.domain, name: r.firmenname ?? r.domain, grund: e.grund });
+    }
+    await wegschreiben(false);
+  });
+  await wegschreiben(true);
+  if (protokoll.pfad) writeFileSync(protokoll.pfad, protokollZeilen.join("\n") + "\n");
+
+  for (const [k, n] of Object.entries(zaehler).sort((a, b) => b[1] - a[1])) log(`  ${n.toString().padStart(5)}  ${k}`);
+  if (protokoll.nurMessen) {
+    log(`nur gemessen — nichts geschrieben${protokoll.pfad ? `, Protokoll: ${protokoll.pfad}` : ""}`, "ok");
+    return;
+  }
+  await uebergeben(sb, uebergabe);
+}
+
+/**
+ * Hand non-installers over to the stock they belong to — as candidates its own
+ * checks judge, never as confirmed entries. A press candidate gets no
+ * ist_medium (the press run measures it); a utility gets herkunft='suche', so
+ * the collision rule does not treat it as coming from the register.
+ */
+async function uebergeben(sb: SupabaseLike, liste: { ziel: "versorger" | "presse"; domain: string; name: string; grund: string }[]): Promise<void> {
+  const tag = heute();
+  // One organisation, one candidate — two domains of one firm come once.
+  const gesehen = new Set<string>();
+  liste = liste.filter((u) => {
+    const d = organisationsDomain(u.domain) ?? u.domain;
+    if (gesehen.has(d)) return false;
+    gesehen.add(d);
+    return true;
+  });
+  const notiz = (g: string) => `aus den Fachbetrieben übernommen am ${tag}: ${g}`;
+  const presse = liste.filter((u) => u.ziel === "presse");
+  const versorger = liste.filter((u) => u.ziel === "versorger");
+  if (presse.length) {
+    const { error } = await sb.from("presse_medien").upsert(
+      presse.map((u) => ({ domain: u.domain, saat_name: u.name, saat_typ: "aus Fachbetrieben", notiz: notiz(u.grund) })),
+      { onConflict: "domain", ignoreDuplicates: true },
+    );
+    if (error) throw new Error(`presse_medien: ${error.message}`);
+  }
+  for (const u of versorger) {
+    const { error } = await sb.from("utilities").insert({
+      name: u.name,
+      typ: /Stadtwerk|Gemeindewerk|Kreiswerk/i.test(u.name) ? "stadtwerk" : "regionalversorger",
+      website: `https://${u.domain}`,
+      status: "offen",
+      herkunft: "suche",
+      notiz: notiz(u.grund),
+    });
+    if (error) throw new Error(`utilities: ${error.message}`);
+  }
+  log(`Übergeben: ${presse.length} an den Presse-Katalog, ${versorger.length} an die Versorger-Liste`, "ok");
+  for (const u of liste) log(`  → ${u.ziel}: ${u.domain} (${u.name})`);
 }
 
 // ─── Phase: Kontaktweg schließen ─────────────────────────────────────────────
@@ -925,11 +1133,12 @@ async function kontakt(limit: number, dry: boolean, refetch: boolean): Promise<v
     telefon: string | null;
     kontakt_url: string | null;
     profil_fehler: string | null;
+    firmenname: string | null;
     geschaeftsfelder: string[] | null;
   }>(
     sb,
     "fachbetriebe",
-    "domain, art, art_grund, email, telefon, kontakt_url, profil_fehler, geschaeftsfelder",
+    "domain, art, art_grund, firmenname, email, telefon, kontakt_url, profil_fehler, geschaeftsfelder",
   );
 
   // Wen dieser Lauf anfasst: Betriebe ohne Kontaktweg, plus die ganze
@@ -1053,22 +1262,21 @@ async function kontakt(limit: number, dry: boolean, refetch: boolean): Promise<v
     // Angebot naturgemäß nicht, und offensichtliche Elektrobetriebe blieben
     // deshalb auf „unklar".
     if (r.art === "unklar") {
-      const nav = navigationsText(start.html);
-      const gesamt = sichtbarerText(start.html) + "\n" + nav + "\n" + text;
-      const treffer = KEIN_BETRIEB.find((k) => k.muster.test(gesamt));
-      const pv = FELDER.find((f) => f.name === "photovoltaik");
-      if (treffer) {
+      // The same rule as the profile, with the contact page standing in for
+      // the imprint. A PV word alone no longer makes a 'betrieb' (until
+      // 06.10.2026 it did, 67 times) — it needs the evidence of a trade.
+      const e = amImpressumEinordnen({ domain: r.domain, startHtml: start.html, impText: text, firmenname: r.firmenname });
+      if (e.art === "kein-betrieb") {
         zeile.art = "kein-betrieb";
-        zeile.art_grund = `${treffer.grund} (beim zweiten Blick erkannt)`;
+        zeile.art_grund = `${e.grund} (beim zweiten Blick erkannt)`;
         alsKeinBetrieb++;
-      } else if (pv && pv.muster.test(gesamt)) {
+      } else if (e.art === "betrieb") {
         zeile.art = "betrieb";
-        // Woran es lag, gehört an den Befund: Die Navigation ist der häufigere
-        // Fall und sagt etwas anderes aus als ein Fund im Fließtext.
-        zeile.art_grund = pv.muster.test(nav)
-          ? "Photovoltaik in der Navigation gefunden (Startseite lädt per Skript)"
-          : "Photovoltaik erst beim zweiten Blick gefunden";
+        zeile.art_grund = `${e.grund} (beim zweiten Blick erkannt)`;
         alsBetrieb++;
+      } else if (FELDER.some((f) => f.name === "photovoltaik" && f.muster.test(sichtbarerText(start.html) + "\n" + navigationsText(start.html) + "\n" + text))) {
+        zeile.art_grund = `${e.grund} (beim zweiten Blick)`;
+        geprueftOhnePv++;
       } else {
         // GEPRÜFT und trotzdem kein Photovoltaik — das ist etwas anderes als
         // „noch nicht angesehen", und die nächste Sitzung muss den Unterschied
@@ -1760,6 +1968,7 @@ async function main(): Promise<void> {
     suche: argv.includes("--suche"),
     art: argv.includes("--art"),
     profil: argv.includes("--profil"),
+    belegen: argv.includes("--belegen"),
     kontakt: argv.includes("--kontakt"),
     ueberUns: argv.includes("--ueber-uns"),
     felder: argv.includes("--felder"),
@@ -1778,6 +1987,9 @@ async function main(): Promise<void> {
         "  --art [--dry]                    regional oder überregional — gemessen an der Streuung\n" +
         "  --profil [--limit N] [--refetch] [--dry]\n" +
         "                                   Startseite + Impressum lesen\n" +
+        "  --belegen [--limit N] [--refetch] [--dry] [--nur-messen] [--protokoll P] [--aus P]\n" +
+        "                                   jeden „betrieb\" am Impressum neu belegen;\n" +
+        "                                   Versorger und Medien an ihre Liste übergeben\n" +
         "  --kontakt [--limit N] [--refetch] [--dry]\n" +
         "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
         "                                   Restklasse einordnen\n" +
@@ -1807,6 +2019,13 @@ async function main(): Promise<void> {
     });
   }
   if (phasen.art) await einordnen(dry);
+  if (phasen.belegen) {
+    await belegen(zahlArg("limit", 100000), dry, argv.includes("--refetch"), {
+      nurMessen: argv.includes("--nur-messen"),
+      pfad: textArg("protokoll"),
+      aus: textArg("aus"),
+    });
+  }
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
   if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.ueberUns) await ueberUns(zahlArg("limit", 200), dry, argv.includes("--refetch"));

@@ -125,6 +125,18 @@ seinem einzigen Schreibweg** — Vorbild ist die Schranke in
 (Presse: `ist_medium = 'medium'`), sonst erzeugen abgelehnte Kandidaten
 falsche Kollisionen (694 beim ersten Messen).
 
+### Ein Suchbestand braucht einen Identitätsbeleg (06.10.2026)
+
+Der Abgleich gegen andere Bestände fängt nur, wer dort schon steht. Bei den
+Fachbetrieben blieben danach noch Verbände, Händler, Kreisportale und
+Stadtwerke ohne Registereintrag übrig: 10 von 50 zufälligen „Betrieben". Wer
+einen Bestand aus einer Suche aufbaut, ordnet deshalb am **Impressum** ein —
+wer ist der Anbieter, und gibt es einen Beleg für die gesuchte Art (bei
+Betrieben: Kammer, Meister, Gewerk, Montage-Angebot)? Ohne Beleg „unklar",
+nicht „gehört dazu". Vorbild: `lib/fachbetrieb-einordnung.ts`. Was in einen
+anderen Bestand gehört und dort fehlt, wird als Kandidat dorthin übergeben,
+nicht nur zurückgestuft.
+
 ## Auf andere Länder übertragen
 
 Übertragbar ohne Änderung: Ablauf, Belegpflicht, Zwischenspeicher, Nachprüfung

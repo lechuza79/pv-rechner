@@ -1,3 +1,4 @@
+import { einordnen } from "./fachbetrieb-einordnung";
 import { chooseOwnedMailbox } from "./contact-evidence";
 /**
  * Was aus einer Betriebs-Website herauszulesen ist — die reine Logik.
@@ -1005,55 +1006,13 @@ export const FELDER: { name: string; muster: RegExp }[] = [
   },
 ];
 
-/**
- * Wer erkennbar KEIN Fachbetrieb ist.
- *
- * Der Eichlauf hat gezeigt, warum das nötig ist: `heidel-solar.de` trägt „solar"
- * im Namen, steht in der Wettbewerbsmessung unter „Solarteure" — und ist eine
- * ehrenamtliche Balkonstrom-Initiative einer Energiegenossenschaft, die
- * ausdrücklich keine Beratung anbietet. Eine Namensheuristik hätte sie
- * durchgelassen. Ebenso landeten Ämter, eine Tageszeitung und ein
- * Vermittlungsportal in der Trefferliste.
- */
-export const KEIN_BETRIEB: { grund: string; muster: RegExp }[] = [
-  {
-    grund: "Kommune/Behörde",
-    muster:
-      /\b(Stadtverwaltung|Landratsamt|Gemeindeverwaltung|Amtsverwaltung|Rathaus|Der B[üu]rgermeister|K[öo]rperschaft des [öo]ffentlichen Rechts|Amtsdirektor)\b/,
-  },
-  {
-    grund: "Genossenschaft/Verein/Initiative",
-    muster: /\b(e\.\s?V\.|Genossenschaft|B[üu]rgerenergie|ehrenamtlich)\b/,
-  },
-  {
-    grund: "Vergleichs-/Vermittlungsportal",
-    muster:
-      /\b(Angebote vergleichen|kostenlos vergleichen|bis zu (drei|3|f[üu]nf|5) (kostenlose )?Angebote|Anbieter vergleichen|Handwerker finden|Fachbetriebe? in Ihrer N[äa]he finden|Jetzt Anbieter finden)\b/i,
-  },
-  {
-    grund: "Presse/Verlag",
-    muster:
-      /\b(Zeitungsverlag|Chefredakt|Nachrichten aus|Redaktionsleitung|Anzeigenblatt|Verlagsleitung|Verantwortlich im Sinne des Presserechts)\b/,
-  },
-  {
-    // Nachgetragen, nachdem die Streuungsmessung sie durchgelassen hatte: Ein
-    // Lead-Vermittler wirbt regional wie ein Betrieb und erscheint deshalb in
-    // wenigen Kreisen. Erkennbar ist er nicht an der Streuung, sondern daran,
-    // dass er das Vermitteln selbst benennt („Leads Navigator GmbH").
-    grund: "Lead-Vermittlung",
-    muster: /\b(Leads?[- ]?(Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Anfragen vermitteln|Wir vermitteln Ihnen)\b/i,
-  },
-  {
-    // Der größte Einzelposten der Restklasse: kommunale Solarkataster. Sie laden
-    // ihre Karte per Skript, liefern deshalb kein Photovoltaik-Wort im HTML und
-    // landeten alle auf „unklar". Es sind Auskunftsangebote von Landkreisen und
-    // Städten — nie ein Fachbetrieb, aber auch kein Fehler der Suche: Auf
-    // „Photovoltaik <Landkreis>" gehören sie zu Recht nach oben.
-    grund: "Solarkataster/Geoportal",
-    muster:
-      /\b(Solarkataster|Solarpotenzialkataster|Solardachkataster|Energieatlas|Geoportal|Solarpotenzial(analyse|karte))\b/i,
-  },
-];
+// The non-installer patterns that used to live here (KEIN_BETRIEB) matched
+// the WHOLE page text. They demoted installers whose page mentions a "Rathaus"
+// reference or whose imprint calls the Handwerkskammer a "Körperschaft des
+// öffentlichen Rechts", and their "e.V." pattern never matched at all (a \b
+// after a period needs a word character next). The decision now lives in
+// lib/fachbetrieb-einordnung.ts and reads the imprint's provider block.
+
 
 /**
  * Erkennt eine Kartenanwendung auch dann, wenn sie es nur im Namen sagt.
@@ -1524,24 +1483,22 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
     if (m) add("gewerk", g.name, start.url, gewerkQuelle, m.index ?? 0);
   }
 
-  // ── Rückstufung: zwei Stufen, und der Unterschied ist der Punkt ──────────
+  // ── Einordnung: am Impressum, nicht am Wort ─────────────────────────────
   //
-  // „Wir haben nichts gefunden" ist nicht dasselbe wie „es ist keiner". Eine
-  // Startseite, die ihren Inhalt erst per Skript nachlädt, liefert uns gar
-  // nichts — sie deshalb als Nicht-Betrieb abzustempeln wäre ein Urteil ohne
-  // Messung (im Eichlauf traf es einen Hersteller von Solardachziegeln). Ein
-  // erkanntes Kommunal-, Verlags- oder Portalmuster ist dagegen ein Befund.
-  for (const k of KEIN_BETRIEB) {
-    const m = (startText + "\n" + impText).match(k.muster);
-    if (m) {
-      p.art = "kein-betrieb";
-      p.art_grund = `${k.grund} („${m[0].slice(0, 60)}")`;
-      return p;
-    }
-  }
-  if (!felder.includes("photovoltaik") && !felder.includes("balkonkraftwerk")) {
-    p.art = "unklar";
-    p.art_grund = "kein Photovoltaik-Wort im ausgelieferten HTML — von Hand ansehen";
+  // „betrieb" braucht einen Beleg (Kammer, Meister, Gewerk, Montage), ein
+  // Nicht-Betrieb wird am ANBIETER erkannt, nicht an einem Satz irgendwo auf
+  // der Seite. Ohne beides bleibt es „unklar" — eine Startseite, die ihren
+  // Inhalt per Skript nachlädt, liefert uns nichts, und das ist kein Urteil.
+  const e = einordnen({ domain, startHtml: start.html, impText, firmenname: p.firmenname });
+  p.art = e.art;
+  p.art_grund = e.grund;
+  if (e.art !== "unklar") {
+    belege.push({
+      merkmal: "einordnung",
+      wert: e.art === "kein-betrieb" ? `kein-betrieb: ${e.klasse}` : `betrieb: ${e.grund}`,
+      fundstelle: q,
+      textstelle: e.beleg.slice(0, 400),
+    });
   }
 
   return p;
