@@ -410,3 +410,23 @@ describe("a register mailbox named after the operator (06.10.2026)", () => {
     expect(funktionsPostfach("jahah@orsted.com", "Borkum Riffgrund 3 GmbH & Co. oHG")).toBe(false);
   });
 });
+
+describe("house numbers and adviser offices (06.10.2026)", () => {
+  it("keeps number ranges and refuses a number that is only the start of another", () => {
+    const wkn = akteur("WKN Windkraft Nord GmbH & Co. Windpark Looft KG", "Otto-Hahn-Straße", "12-16", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12 - 16 25813 Husum", wkn, "bgz-gmbh.de")?.wie).toBe("anschrift");
+    const zwoelf = akteur("Windpark X GmbH", "Otto-Hahn-Straße", "12", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12-16 25813 Husum", zwoelf, "bgz-gmbh.de")?.wie).toBe("anschrift");
+    const eins = akteur("Windpark Y GmbH", "Otto-Hahn-Straße", "1", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12-16 25813 Husum", eins, "bgz-gmbh.de")).toBeNull();
+    const buchstabe = akteur("Windpark Z GmbH", "Hauptstraße", "12 a", "25813");
+    expect(impressumBelegt("Impressum Muster GmbH Hauptstraße 12a 25813 Husum", buchstabe, "muster.de")?.wie).toBe("anschrift");
+  });
+  it("an adviser's office proves no address, the operator's own name still does", () => {
+    const ewf = akteur("EWF Fünf Vier GmbH & Co. KG", "Am Markt", "5", "25813");
+    const imp = "Impressum Angaben gemäß § 5 TMG SHJ Steuerberatungsgesellschaft mbH Am Markt 5 25813 Husum";
+    expect(beurteilen(ewf, "shj-husum.de", "anschrift", { impressum: imp, startseite: null }).ergebnis).not.toBe("belegt");
+    const eigen = akteur("Steuerberatung Windkraft Müller GmbH", "Am Markt", "5", "25813");
+    expect(beurteilen(eigen, "x.de", "anschrift", { impressum: "Impressum Steuerberatung Windkraft Müller GmbH Am Markt 5 25813 Husum", startseite: null }).ergebnis).toBe("belegt");
+  });
+});

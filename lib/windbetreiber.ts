@@ -166,21 +166,22 @@ export function impressumBelegt(impressumText: string, a: Akteur, domain: string
   // Hyphens and spaces out of the number: the register writes "12-16", an
   // imprint "12 - 16".
   // "0" is the register's "no number" (Denker & Wulf, "Windmühlenberg 0").
-  const nr = (a.Hausnummer ?? "").toLowerCase().replace(/[^a-z0-9]/g, "").replace(/^0$/, "");
+  // Digit groups keep a "|" between them ("12-16" → "12|16"), so "1" can never
+  // read as the start of "12"; letters stay glued ("12 a" → "12a").
+  const nr = (a.Hausnummer ?? "").toLowerCase().replace(/(\d)[^a-z0-9]+(?=\d)/g, "$1|").replace(/[^a-z0-9|]/g, "").replace(/^0$/, "");
   const plz = (a.Postleitzahl ?? "").trim();
   if (strasse.length >= 4 && /^\d{5}$/.test(plz)) {
     // The SAME spelling rule on both sides. Normalising only the register's
     // "Straße" failed every address on a "…straße" (PNE, enercity, ABO —
     // measured on the first sample, 06.10.2026).
-    const kompakt = t.replace(/strasse/g, "str").replace(/ /g, "");
+    const kompakt = t.replace(/strasse/g, "str").replace(/(\d) (?=\d)/g, "$1|").replace(/ /g, "");
     // The number must END where the register's ends: "1" is not "12" (found
     // with the Denker & Wulf rule, 06.10.2026 — it matched since day one).
     let kopf = -1;
     for (let i = kompakt.indexOf(strasse + nr); i >= 0; i = kompakt.indexOf(strasse + nr, i + 1)) {
       const rest = kompakt.slice(i + strasse.length + nr.length);
-      // Spaces are gone here: "holzweg 87 26605" reads "holzweg8726605", and
-      // the digits that follow may be the postcode itself.
-      if (!nr || !/^\d/.test(rest) || rest.startsWith(plz)) { kopf = i; break; }
+      // Only a number ending in a digit can run on into another number.
+      if (!nr || !/\d$/.test(nr) || !/^\d/.test(rest)) { kopf = i; break; }
     }
     const danach = kopf >= 0 ? kompakt.slice(kopf + strasse.length + nr.length, kopf + strasse.length + nr.length + 60) : "";
     const p = danach.indexOf(plz);
@@ -361,6 +362,9 @@ export const GEPARKT = /(?:diese |the )?domain (?:ist |is )?(?:zu verkaufen|steh
  *     function (funktionsPostfach): one Sehestedt company declared a personal
  *     mailbox at its auditor, 88 wpd parks an administration mailbox at wpd.
  */
+/** Offices that act as c/o address without running anything. */
+export const BERATER = /wirtschaftspr(?:ü|ue)f|steuerberat|rechtsanw(?:a|ä)lt|kanzlei|notar(?:iat)?\b|treuhand/i;
+
 /** Imprints of hosting providers: their default page stands where a customer has no site yet. */
 const HOSTER = /(?:^|\.)(?:ionos\.(?:de|com)|goneo\.de|checkdomain\.de|united-domains\.de|inwx\.(?:com|de)|strato\.de|hosteurope\.de|all-inkl\.com|1und1\.de|domainfactory\.de|df\.eu|hetzner\.(?:de|com)|netcup\.de|godaddy\.com|sedo\.com|dan\.com)$/i;
 
@@ -407,6 +411,11 @@ export function beurteilen(
     // text of a planning office as one of its references (178 of 3,680 proofs
     // lay outside the block, 06.10.2026; addresses and brands there are mostly
     // branch offices and groups and keep counting).
+    // An adviser's office as c/o address (tax advisor, auditor, lawyer, trust):
+    // the letters arrive there, the operator does not live there — 42 EWF
+    // companies stood on a Husum tax firm's site (06.10.2026). The ADDRESS
+    // proves nothing on such a site; the operator's own name still would.
+    if (b?.wie === "anschrift" && BERATER.test(anbieterBlock(abruf.impressum))) b = null;
     if (b?.wie === "name") {
       const block = anbieterBlock(abruf.impressum);
       const imBlock = !!block && !!impressumBelegt(block, a, domain, ortsWoerter);
