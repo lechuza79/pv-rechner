@@ -11,6 +11,7 @@
  *   npx tsx scripts/windbetreiber-refresh.ts --manuell ABR…[,ABR…] <url> [--seite=<url>]
  *   npx tsx scripts/windbetreiber-refresh.ts --keine ABR…[,ABR…] "<what was tried>"
  *   npx tsx scripts/windbetreiber-refresh.ts --kein-kontakt <domain> "<which pages were read>"
+ *   npx tsx scripts/windbetreiber-refresh.ts --zuruecknehmen ABR…[,ABR…] "<why it is not the operator's>"
  *   npx tsx scripts/windbetreiber-refresh.ts --uebergeben [--schreiben]  utilities to the utility stock
  *
  * The rules are in lib/windbetreiber.ts (when a website counts) and
@@ -590,6 +591,30 @@ async function keine() {
   }
 }
 
+/**
+ * A person withdraws a website the check accepted but that is not the
+ * operator's (a bank that holds the majority, a planning office): website and
+ * contact go, the operator stands as a person's "no website" with the reason.
+ * The candidate stays as evidence, marked rejected by hand, so no later run
+ * proves it again.
+ */
+async function zuruecknehmen() {
+  const [nrs, grund] = process.argv.slice(process.argv.indexOf("--zuruecknehmen") + 1);
+  const liste = (nrs ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  if (!liste.length || liste.some((n) => !n.startsWith("ABR")) || !grund || grund.length < 40) throw new Error('Aufruf: --zuruecknehmen ABR…[,ABR…] "<warum die Website nicht die des Betreibers ist — mindestens 40 Zeichen>"');
+  const c = await db();
+  for (const nr of liste) {
+    const [z] = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("mastr_nr", nr));
+    if (!z?.website) { console.log(`${nr}: hat keine Website`); process.exitCode = 1; continue; }
+    const ablehnung = { ergebnis: "abgelehnt", grund: `von Hand zurückgenommen: ${grund}`.slice(0, 300), geprueft_am: HEUTE };
+    spalten("windbetreiber_kandidaten", [ablehnung]);
+    const { error } = await c.from("windbetreiber_kandidaten").update(ablehnung).eq("mastr_nr", nr).eq("domain", z.website);
+    if (error) throw new Error(error.message);
+    await aktualisieren(c, "windbetreiber", "mastr_nr", [{ mastr_nr: nr, ...websiteFelder(null, HEUTE), ...kontaktFelder(null, null), gesucht_am: HEUTE, suche_notiz: `${VON_HAND} ${z.website} zurückgenommen: ${grund}`.slice(0, 900), updated_at: new Date().toISOString() }]);
+    console.log(`${nr}: ${z.website} zurückgenommen`);
+  }
+}
+
 /** A proven website on which a person found no contact. Applies to every operator of that website. */
 async function keinKontakt() {
   const [domain, notiz] = process.argv.slice(process.argv.indexOf("--kein-kontakt") + 1);
@@ -800,6 +825,7 @@ async function main() {
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
   if (flag("kein-kontakt")) return keinKontakt();
+  if (flag("zuruecknehmen")) return zuruecknehmen();
   if (flag("uebergeben")) return uebergeben();
   console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 15).join("\n"));
 }

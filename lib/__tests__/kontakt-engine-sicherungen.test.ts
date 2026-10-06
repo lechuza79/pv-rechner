@@ -208,6 +208,14 @@ describe("Klasse 28 — kein Lauf überschreibt eine Entscheidung von Hand", () 
     expect(neu).toMatch(/if \(vonHandEntschieden\(z\)\) \{[^\n]*widerspruch\.push[^\n]*continue; \}/);
     expect(neu).toMatch(/\|\| vonHandEntschieden\(z\)\) continue;/);
   });
+  it("a person can withdraw a wrong website, and the withdrawal is itself a hand decision", () => {
+    const z = r.slice(r.indexOf("async function zuruecknehmen()"), r.indexOf("/** A proven website on which a person found no contact."));
+    expect(z).toMatch(/grund\.length < 40/);
+    expect(z).toMatch(/const ablehnung = \{ ergebnis: "abgelehnt", grund: `von Hand zurückgenommen: /);
+    expect(z).toMatch(/suche_notiz: `\$\{VON_HAND\} \$\{z\.website\} zurückgenommen: /);
+    expect(z).toMatch(/\.\.\.kontaktFelder\(null, null\)/);
+  });
+
   it("both hand marks count as a decision", () => {
     expect(r).toMatch(/return n\.startsWith\(VON_HAND\) \|\| n\.startsWith\(VON_HAND_GEFUNDEN\);/);
     expect(r).toMatch(/suche_notiz: `\$\{VON_HAND_GEFUNDEN\}, /);
