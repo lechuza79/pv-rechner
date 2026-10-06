@@ -79,15 +79,9 @@ def choose_town(elements, name, admin_ids=()):
     return choices[0]
 
 
-def densest_village(path, elements, boundary, scratch, radius=550, minimum=20):
-    """Last resort for multi-village municipalities: the mapped village with the
-    most OSM buildings within the town window. Sourced and deterministic; a tie
-    or a near-empty winner still fails."""
+def building_counts(path, nodes, boundary, scratch, radius=550):
+    """OSM buildings within the town window around each node."""
     import osmium
-    nodes = [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place') in ('town','village') and e['tags'].get('name')]
-    # Some municipalities consist only of mapped hamlets (Zeschdorf, Fichtenhöhe).
-    nodes = nodes or [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place')=='hamlet' and e['tags'].get('name')]
-    if not nodes:return None
     centres = [metric.transform(e['lon'],e['lat']) for e in nodes]
     counts = [0]*len(nodes)
     minx,miny,maxx,maxy = boundary.bounds
@@ -104,10 +98,44 @@ def densest_village(path, elements, boundary, scratch, radius=550, minimum=20):
     finally:
         del processor
         cache.unlink(missing_ok=True)
+    return counts
+
+
+def village_nodes(elements):
+    nodes = [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place') in ('town','village') and e['tags'].get('name')]
+    # Some municipalities consist only of mapped hamlets (Zeschdorf, Fichtenhöhe).
+    return nodes or [e for e in elements if e['type']=='node' and e.get('tags',{}).get('place')=='hamlet' and e['tags'].get('name')]
+
+
+def densest_village(path, elements, boundary, scratch, radius=550, minimum=20, counts=None):
+    """Last resort for multi-village municipalities: the mapped village with the
+    most OSM buildings within the town window. Sourced and deterministic; a tie
+    or a near-empty winner still fails."""
+    nodes = village_nodes(elements)
+    if not nodes:return None
+    counts = counts or building_counts(path, nodes, boundary, scratch, radius)
     top = max(counts)
     if top<minimum or counts.count(top)!=1:return None
     chosen = nodes[counts.index(top)]
     return dict(chosen,selection=dict(rule='most-osm-buildings-within-550m',buildings=top,candidates=len(nodes)))
+
+
+SPARSE_START = 150   # buildings in the town window below which a named node is an abstract centre
+
+
+def settled_start(path, elements, boundary, scratch, town):
+    """A named node in open land (merged municipality centre) shows almost no
+    buildings. Then the uniquely densest village replaces it, if clearly denser."""
+    nodes = village_nodes(elements)
+    if town not in nodes:nodes = nodes+[town]
+    counts = building_counts(path, nodes, boundary, scratch)
+    own = counts[nodes.index(town)]
+    if own>=SPARSE_START:return town
+    best = densest_village(path, elements, boundary, scratch, counts=[c for n,c in zip(nodes,counts) if n in village_nodes(elements)] or None)
+    if best and best['id']!=town['id'] and best['selection']['buildings']>=max(3*own,SPARSE_START):
+        best['selection'].update(rule='named-centre-sparse-densest-village',replacedTown=town['tags']['name'],replacedBuildings=own)
+        return best
+    return town
 
 
 def extract_osm(path, boundary, ags, scratch):
@@ -278,6 +306,9 @@ def main():
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--municipality',required=True)
     parser.add_argument('--osm-file',type=Path,required=True)
+    # Near a state border the terrain box reaches tiles another state publishes; those
+    # samples may stay missing, but only outside the municipality and the object windows.
+    parser.add_argument('--allow-outer-terrain-gaps',action='store_true')
     args = parser.parse_args()
     ags = args.municipality
     adapter = states.adapter_for(ags)
@@ -308,7 +339,9 @@ def main():
     with tempfile.TemporaryDirectory(prefix=prefix+'-',dir=root/'staging') as temp:
         stage = Path(temp);out = stage/'public/geo/landscape-tours'/ags;out.mkdir(parents=True)
         context,candidates,admin_ids = extract_osm(args.osm_file,geometry,ags,stage)
-        try:town = choose_town(context,feature['properties']['name'],admin_ids)
+        try:
+            town = settled_start(args.osm_file,context,geometry,stage,choose_town(context,feature['properties']['name'],admin_ids))
+            if town.get('selection'):print('Start town by OSM building density:',town['tags']['name'],town['selection'],flush=True)
         except ValueError:
             town = densest_village(args.osm_file,context,geometry,stage)
             if not town:raise
@@ -339,6 +372,13 @@ def main():
         document = dict(elements=context,sourceUrl=osm_source,sourceSha256=osm_hash,sourceFile=args.osm_file.name)
         shared.save(out/'context-source.json',document);shared.save(inputs/(ags+'-osm.json'),document)
         terrain,buildings = coverage(rows,town,features,geometry);bounds = transform(geographic.transform,terrain).bounds
+        if args.allow_outer_terrain_gaps:
+            preparation = json.loads((out/'preparation.json').read_text())
+            preparation['allowOuterTerrainGaps'] = True
+            shared.save(out/'preparation.json',preparation)
+            protection = unary_union([transform(metric.transform,geometry),buildings.buffer(40)])
+            shared.save(out/'terrain-protection.geo.json',dict(type='Feature',crs='ETRS89_UTM32',geometry=mapping(protection),
+                properties=dict(rule='Entire municipality plus object/building windows; missing heights (beyond the state border) are allowed only outside this union')))
         if adapter['key']=='brandenburg':
             # The LGB terrain service also covers Berlin; its data needs its own credit.
             berlin = transform(metric.transform,shape(read_boundary(root,'11000000')['geometry']))
