@@ -1,3 +1,4 @@
+import {sampleWind} from './wind-motion.js';
 import {bindStageButtons} from '../contrast-sampler.js';
 import {createFramePacer} from './frame-pacer.js';
 import {solarLight} from './solar-light.js';
@@ -48,12 +49,14 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
   if(root.dataset.moving!==String(active))root.dataset.moving=String(active);if(active)clock+=dt;
   let settling=false;
   for(const key of ['cloud','rain','wind','sunX','sunY','daylight']){const delta=target[key]-current[key];if(!media.matches&&Math.abs(delta)>.002){current[key]+=delta*(1-Math.exp(-dt*1.4));settling=true;}else current[key]=target[key];}
-  current.fog=target.fog;current.cloudLow=target.cloudLow;current.cloudMid=target.cloudMid;current.cloudHigh=target.cloudHigh;current.solarElevation=target.solarElevation;current.phase=target.phase;current.season=target.season;current.direction=target.direction;
+  current.fog=target.fog;current.cloudLow=target.cloudLow;current.cloudMid=target.cloudMid;current.cloudHigh=target.cloudHigh;current.solarElevation=target.solarElevation;current.phase=target.phase;current.season=target.season;current.foliage=target.foliage;current.direction=target.direction;
   if(pace.shouldDraw(now,dirty)){
    const w=width,h=height,light=solarLight(current);
    for(const [key,value] of Object.entries({'--sun-offset-x':w*current.sunX/100+'px','--sun-offset-y':h*current.sunY/100+'px','--sun-x':current.sunX+'%','--sun-y':current.sunY+'%','--sun-alpha':light.sun*(1-current.cloud)**2,'--sky-brightness':light.sky,'--sky-twilight':light.twilight,'--sky-night':light.night,'--sky-overcast':current.cloud*.85,'--scene-fog':current.fog||0,'--cloud-low':current.cloudLow??current.cloud,'--cloud-mid':current.cloudMid??current.cloud*.5,'--cloud-high':current.cloudHigh??current.cloud*.25,'--night-visibility':1-current.cloud*.92})){const text=String(value);if(styleValues.get(key)!==text){root.style.setProperty(key,text);styleValues.set(key,text);}}
    sun.update(current,sunStyle);
-   const wind=(current.wind*(1+Math.sin(clock*.27)*.25)+(clock<gustEnd?Math.sin((gustEnd-clock)/5*Math.PI)*1.2:0))*current.direction;
+   const {wind,pulse}=sampleWind(clock,current.wind,current.direction,clock<gustEnd?Math.sin((gustEnd-clock)/5*Math.PI):0);
+   current.windPulse=pulse;
+   current.windMotion=wind;
    if(quality!=='static'&&!failed){const stats=renderer?.render(clock,current,wind);if(stats){frames++;cpu+=stats.cpu;scene.dataset.drawCalls=String(stats.calls);}}
    dust.render(clock,Math.abs(wind),quality!=='static'&&!failed,current.phase!=='night'&&current.rain<.01&&current.cloud<.6);
    life.render(clock,active&&current.phase!=='night'&&current.rain<.01&&current.cloud<.6);

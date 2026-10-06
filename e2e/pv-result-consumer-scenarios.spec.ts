@@ -169,7 +169,11 @@ test('consumer section keeps its layout and chart geometry across viewport sizes
     const header=cards.locator('.sc-result-choice-header').first();
     const art=await header.locator('.sc-result-choice-art').boundingBox();
     const title=await header.locator(':scope > div > strong').boundingBox();
-    expect(art!.x+art!.width).toBeLessThanOrEqual(title!.x);
+    // Beside the title on wide cards, above it on narrow ones (container query
+    // in pv-consumer-section.css since 03.10.2026) — never on top of it.
+    const beside=art!.x+art!.width<=title!.x;
+    const above=art!.y+art!.height<=title!.y+1;
+    expect(beside||above,`art ${JSON.stringify(art)} overlaps title ${JSON.stringify(title)} at ${width}px`).toBe(true);
     const pair=page.locator('.sc-category-pair').first();
     const tracks=pair.locator('.sc-category-horizontal-track');
     const gap=await tracks.evaluateAll(elements=>{const upper=elements[0].getBoundingClientRect();const lower=elements[1].getBoundingClientRect();return lower.top-upper.bottom;});

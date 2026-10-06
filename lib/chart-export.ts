@@ -596,6 +596,11 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
       wrapper.style.left = '0';
       wrapper.style.zIndex = '2147483647';
       clone.setAttribute('data-sc-server-frame', '');
+      // Video has no transparent corners. Fill the entire captured rectangle.
+      clone.style.setProperty('border-radius', '0', 'important');
+      wrapper.style.backgroundColor = getComputedStyle(clone).backgroundColor;
+      wrapper.style.width = `${Math.ceil(clone.getBoundingClientRect().width)}px`;
+      wrapper.style.height = `${Math.ceil(clone.getBoundingClientRect().height)}px`;
     }
     return {node:clone,dispose:()=>wrapper.remove()};
   } catch(error) {wrapper.remove();throw error;}

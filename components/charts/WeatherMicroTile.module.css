@@ -1,0 +1,24 @@
+.tile{box-sizing:border-box;width:250px;max-width:100%;min-width:0;align-self:flex-start;display:grid;gap:12px;padding:12px;background:var(--atlas-card);color:var(--atlas-text);border-radius:12px;font-family:var(--font-text,sans-serif)}
+.tile[data-combined=true]{width:520px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.tile[data-layout=stacked]{width:250px;grid-template-columns:1fr}
+.panel{min-width:0}
+.panel+.panel{border-left:1px solid var(--atlas-border);padding-left:12px}
+.tile[data-layout=stacked] .panel+.panel{border-left:0;border-top:1px solid var(--atlas-border);padding-left:0;padding-top:12px}
+.header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.label{margin:0;font-size:13px;font-weight:700;line-height:1.3}
+.header time{font-size:11px;white-space:nowrap}
+.row{display:grid;grid-template-columns:80px minmax(0,1fr);gap:10px;align-items:center}
+.chart{width:80px;height:92px;display:flex;align-items:flex-end;justify-content:center}
+.chart svg{display:block;flex-shrink:0}
+.info{display:flex;flex-direction:column;gap:3px;min-width:0;line-height:1.3}
+.value{font-size:22px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+.value small{font-size:12px;font-weight:400;color:var(--atlas-secondary)}
+.detail{font-size:11px;color:var(--atlas-secondary)}
+@media(max-width:440px){.tile[data-combined=true]{gap:8px;padding:10px}.panel+.panel{padding-left:8px}.row{gap:4px}.value{font-size:18px}.header{gap:2px}}
+
+/* Separate cards retain the same compact content and shared layout variants. */
+.tile[data-layout=separate][data-combined=true]{padding:0;background:none;gap:12px;width:512px}
+.tile[data-layout=separate][data-combined=true] .panel{padding:12px;border:0;border-radius:12px;background:var(--atlas-card)}
+@media(max-width:440px){.tile[data-layout=separate][data-combined=true]{grid-template-columns:1fr;width:250px}}
+
+.chart>[role=status]{font-size:11px;color:var(--atlas-secondary);line-height:1.35;text-align:center;align-self:center}

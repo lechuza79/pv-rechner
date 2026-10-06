@@ -227,7 +227,7 @@ export async function baueAuszeichnungen(): Promise<{ orte: number }> {
   const stats = await loadAwardStatsFresh();
   const placements = computePlacements(stats);
   await writePlacementSnapshot(generation, stats, placements);
-  const orte = stats.filter((g) => selectHook(placements.get(g.regionId), DEFAULT_HOOK_SETTINGS).kind !== "neutral")
+  const orte = stats.filter((g) => istAuszeichnung(selectHook(placements.get(g.regionId), DEFAULT_HOOK_SETTINGS).kind))
     .map((g) => g.regionId);
   const jetzt = new Date().toISOString();
   // Alle Zeilen tragen dieselbe Feldmenge — sonst setzt ein Batch die fehlenden
@@ -477,4 +477,9 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
   if (hookIndexMemo.size > 16) hookIndexMemo.clear();
   hookIndexMemo.set(key, { at: Date.now(), val: result });
   return result;
+}
+
+/** An award on the town page: a real top place, never a mere better-half place. */
+function istAuszeichnung(kind: string): boolean {
+  return kind === "sieger" || kind === "podium" || kind === "perzentil";
 }

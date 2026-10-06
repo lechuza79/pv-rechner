@@ -369,9 +369,9 @@ const NEUTRAL: Hook = {
 
 const levelRank = (l: HookLevel): number => (l === "bund" ? 3 : l === "land" ? 2 : 1);
 
-/** Den besten Aufhänger aus den Platzierungen wählen. Ein echter Sieg schlägt ein
- *  Podium schlägt ein Perzentil; darüber sticht die Ebene (oder — abgeschaltet —
- *  die Lokalität) und die Träger-Präferenz. Nichts Glaubwürdiges → neutral. */
+/** Den besten Aufhänger aus den Platzierungen wählen. Zuerst zählt die Ebene
+ *  (Bund > Land > Kreis, oder — abgeschaltet — die Lokalität), innerhalb einer
+ *  Ebene schlägt ein Sieg ein Podium schlägt ein Perzentil, danach die Träger-Präferenz. Nichts Glaubwürdiges → neutral. */
 export function selectHook(placements: Placement[] | undefined, settings: HookSettings = DEFAULT_HOOK_SETTINGS): Hook {
   let best: Hook = NEUTRAL;
   let bestScore = -Infinity;
@@ -390,9 +390,12 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
     else if (p.total >= settings.minTotal && ratio <= settings.percentileCut) kind = "perzentil";
     if (!kind) continue;
 
-    let score = kind === "sieger" ? 300 : kind === "podium" ? 200 : 100;
+    // THE LARGEST GROUND COMES FIRST (operator, 30.09. and 05.10.2026: "Rang ist
+    // DE > BL > Landkreis"): a top-ten-percent place in Germany beats first place
+    // in the district. The kind of place only decides within one level.
     const lvl = levelRank(p.level);
-    score += (settings.preferHigherLevel ? lvl : 4 - lvl) * 10;
+    let score = (settings.preferHigherLevel ? lvl : 4 - lvl) * 1000;
+    score += kind === "sieger" ? 300 : kind === "podium" ? 200 : 100;
     if (settings.preferBuerger && cat.traeger === "buerger") score += 5;
     score += Math.min(p.total, 1000) / 200; // größere Grundgesamtheit = beeindruckender
     score += (1 - ratio) * 3; // Feinschliff nach Platz

@@ -1,3 +1,5 @@
+import {kaiserslauternRaceSettings} from "../../lib/race-settings";
+import {loadRegionalRace} from "../../lib/regional-race-server";
 import {regionalRaceData} from "../../lib/regional-race";
 import RegionNavigation from "./RegionNavigation";
 import { packeRankingZellen } from "../../lib/ranking-zellen";
@@ -68,9 +70,10 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   // had arrived, one wait after the other. Guarded by
   // lib/__tests__/atlas-seite-parallel.test.ts.
   const content=monitorContentForPreview(isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand));
-  const [shapes, allPrograms] = await Promise.all([
+  const [shapes, allPrograms, featuredRace] = await Promise.all([
     isDistrict ? districtGeometry(region.region_id) : childGeometry(level as "bundesland" | "de", region.region_id),
     level === "de" ? Promise.resolve([] as Awaited<ReturnType<typeof getFundingPrograms>>) : getFundingPrograms(),
+    region.region_id === "07335" ? loadRegionalRace("07",kaiserslauternRaceSettings) : Promise.resolve(null),
   ]);
   const sums = new Map(foldSiblings(ranking.regions, ranking.cells).map(r => [r.region_id, r.sums.alle]));
   const places: MapValue[] = towns.map(town => {
@@ -142,7 +145,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     </div>
     {missingGeometry.length > 0 && <p>Für {missingGeometry.map(p => p.name).join(", ")} fehlt der Kartenumriss. Die Werte stehen in der Übersicht.</p>}
     {comparable&&<><section id="atlas-ranking" data-widget-ranking className={`${styles.section} ${styles.raceSection}`} aria-label="Ranking">
-      <DistrictRaceWidget regionId={region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>
+      {region.region_id === "07335" ? featuredRace ? <DistrictRaceWidget regionId="07" name={featuredRace.region.name} stand={featuredRace.stand} rows={featuredRace.rows} history={featuredRace.history} settings={kaiserslauternRaceSettings} wording={{title:"Solarleistung auf privaten Dächern je Einwohner",members:"Alle Landkreise",leaders:"Die zehn führenden Landkreise",unit:"Landkreise"}}/> : <p role="status">Der Landkreisvergleich ist gerade nicht verfügbar.</p> : <DistrictRaceWidget regionId={region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
     </section>
     </>}
     <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>

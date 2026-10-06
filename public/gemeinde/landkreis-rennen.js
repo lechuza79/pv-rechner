@@ -69,14 +69,18 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     const item = document.createElement('div');
     item.className = 'district-race-row';
     item.dataset.raceTown = row.id;
+    if(stage.dataset.highlight===row.id)item.dataset.highlighted='true';
     const name = document.createElement(row.href ? 'a' : 'span');
     name.className = 'district-race-name'; name.textContent = row.name;
     if (row.href) name.href = row.href;
     const value = document.createElement('strong'); value.className = 'district-race-value';
+    const number = document.createElement('span'); value.append(number);
+    const unitLabel=document.createElement('small');unitLabel.className='district-race-unit';
+    if(unit||stage.dataset.valueUnit){unitLabel.textContent=stage.dataset.valueUnit||'';value.append(unitLabel);}
     const track = document.createElement('div'); track.className = 'district-race-track'; track.setAttribute('aria-hidden','true');
     const bar = document.createElement('div'); bar.className = 'district-race-bar'; track.append(bar);
     item.append(name,value,track); race.append(item);
-    return [row.id,{row,item,value,bar}];
+    return [row.id,{row,item,value:number,bar,unitLabel}];
   }));
   let frames = history.filter(frame => frame.rows.some(row => row.value > 0));
   if (!frames.length) frames = [{year:'Heute',rows}];
@@ -98,9 +102,11 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     const fraction=position%1;
     clock.textContent=String(fraction<.5?from.year:to.year);
     const order=rows.map(row=>({...row,value:(from.values.get(row.id)??0)*(1-fraction)+(to.values.get(row.id)??0)*fraction})).sort((a,b)=>b.value-a.value||a.name.localeCompare(b.name,'de'));
-    const max=order[0]?.value||1;
+    const frameMaximum=order[0]?.value??0;
+    const frameUnit=typeof unit==='function'?unit(frameMaximum):stage.dataset.valueUnit||'';
+    const max=frameMaximum||1;
     order.forEach((row,index)=>{
-      const {item,value,bar}=items.get(row.id);
+      const {item,value,bar,unitLabel}=items.get(row.id);
       const shown=index<10 && row.value>0;
       const motion=window.solarRaceRowPosition(motionStates.get(row.id),Math.min(index,11)*44,time);
       motionStates.set(row.id,motion);
@@ -111,7 +117,8 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
       const place=1+order.filter(other=>other.value>row.value).length;
       item.dataset.rank=place;
       item.setAttribute('aria-label', `Platz ${place}: ${row.name}`);
-      value.textContent=format(row.value);
+      value.textContent=format(row.value,frameMaximum);
+      unitLabel.textContent=frameUnit;
       // Clip a stable box with fixed-radius caps; scaling would flatten the caps.
       const width=Math.max(0,Math.min(1,row.value/max))*entrance;
       bar.style.clipPath=`inset(0 ${(1-width)*100}% 0 0 round 0 4px 4px 0)`;

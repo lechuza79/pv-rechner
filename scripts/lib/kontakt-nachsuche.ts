@@ -21,6 +21,8 @@ import { resolve } from "node:path";
 import { entschluesseltOderRoh } from "../../lib/uri-sicher";
 import { suchAdresse, suchFormular, suchseitenLink } from "../../lib/funding-url-suche";
 import { readJson } from "./kontakt-lauf";
+import { deobfuscatePublishedMail } from "../../lib/mail-deobfuscation";
+import { decodeEntities, entschleiere } from "../../lib/kommunen-profil";
 
 export type Vormerkung = { url: string; priority: number };
 
@@ -75,8 +77,11 @@ export async function vormerken(website: string, ziel: RegExp, suchbegriffe: str
 export const PRESSE_POSTFACH = /^(?:presse|pressestelle|pressebuero|medien|oeffentlichkeitsarbeit|kommunikation)[@.-]/;
 export const KLIMA_POSTFACH = /^(?:klimaschutz|klima|klimaschutzmanagement|energie|energieberatung|klimaschutzagentur)[@.-]/;
 
+/** Freemail hosts: a club or a resident, never the administration — unless the
+ * mailbox carries the place name ("gemeinde-gries@t-online.de", hand check 01.10.2026). */
+const FREIMAIL = /^(?:gmx\.(?:de|net|at)|web\.de|t-online\.de|gmail\.com|googlemail\.com|outlook\.(?:de|com)|hotmail\.(?:de|com)|yahoo\.(?:de|com)|freenet\.de|arcor\.de|posteo\.de|mail\.de|online\.de|icloud\.com|aol\.(?:de|com))$/;
 /** Hosts that publish on every portal and are never the administration itself. */
-const FREMD = /news|zeitung|anzeiger|kurier|rundschau|verbraucher|vhs|volkshochschule|musikschule|jobcenter|klinik|sparkasse|touris|advantic|ionos|kommune365|komm\.one|bund\.de$|\.bwl\.de$|niedersachsen\.de$|nrw\.de$|rlp\.de$|hessen\.de$/;
+const FREMD = /kirche|pfarr|kath|evang|bistum|erzbistum|dekanat|diakonie|caritas|kita|schule|gymnasium|feuerwehr|verein|sportverein|news|zeitung|anzeiger|kurier|rundschau|verbraucher|vhs|volkshochschule|musikschule|jobcenter|klinik|sparkasse|touris|advantic|ionos|kommune365|komm\.one|bund\.de$|\.bwl\.de$|niedersachsen\.de$|nrw\.de$|rlp\.de$|hessen\.de$/;
 
 export type Verwaltungsart = {
   /** Prefixes of the website name that are not the place ("landkreis-", "gemeinde-"). */
@@ -95,8 +100,8 @@ export const KREIS: Verwaltungsart = {
 
 export const GEMEINDE: Verwaltungsart = {
   namensvorsatz: /^(?:gemeinde|stadt|markt|vg|verbandsgemeinde|samtgemeinde|amt)-?/,
-  amtsmarke: /^(?:gemeinde|stadt|markt|vg|verbandsgemeinde|samtgemeinde|amt|rathaus)/,
-  amtshost: /^(?:gemeinde|stadt|markt|vg|verbandsgemeinde|samtgemeinde|amt)[-.][a-z-]+\.de$/,
+  amtsmarke: /^(?:gemeinde|stadt|markt|vgem|vg|verbandsgemeinde|verwaltungsgemeinschaft|samtgemeinde|amt|rathaus)/,
+  amtshost: /^(?:gemeinde|stadt|markt|vgem|vg|verbandsgemeinde|verwaltungsgemeinschaft|samtgemeinde|amt)[-.][a-z-]+\.(?:de|info)$/,
 };
 
 /**
@@ -114,7 +119,10 @@ export function eigenePostfaecher(quellen: string, website: string, art: Verwalt
     const metaPfad = resolve(quellen, f.replace(/\.html$/, ".json"));
     const meta = existsSync(metaPfad) ? readJson(metaPfad) : {};
     const url = meta.finalUrl ?? meta.url ?? website;
-    for (const m of readFileSync(resolve(quellen, f), "utf8").match(/[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}\b/gi) ?? []) {
+    // Imprints encode their address against spam (TYPO3 shift, "info[at]…");
+    // the same decoders the main search uses (hand check, 01.10.2026).
+    const html = entschleiere(decodeEntities(deobfuscatePublishedMail(readFileSync(resolve(quellen, f), "utf8"))));
+    for (const m of html.match(/[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,6}\b/gi) ?? []) {
       const email = m.toLowerCase(), domain = email.split("@")[1];
       if (/de-mail\.de$|\.(png|jpe?g|gif|svg|webp)$/.test(email) || FREMD.test(domain)) continue;
       funde.push({ email, url });
@@ -130,13 +138,24 @@ export function eigenePostfaecher(quellen: string, website: string, art: Verwalt
   // where the office marker says otherwise.
   const einzelwort = !/-/.test(ohneVorsatz);
   const ohneTld = (h: string) => h.split(".").slice(0, -1).join(".").replace(/[^a-z0-9]/g, "");
+  // An office site lists every member's mayor; a freemail mayor box counts only
+  // when it is the only one on the pages (else it may be a neighbour's).
+  const einzigerBgm = new Set(funde.filter(x => FREIMAIL.test(x.email.split("@")[1]) && /^(?:buergermeister|bgm)/.test(x.email)).map(x => x.email)).size === 1;
   const eigen = (email: string) => {
     const domain = email.split("@")[1], d = site(domain), label = d.split(".")[0].replace(/[^a-z0-9]/g, "");
     // A mailbox named after the place itself, also on the shared administration's
     // domain ("riesweiler@sim-rhb.de", "og.dill@kirchberg-hunsrueck.de") — the
     // usual form for a Rhineland-Palatinate Ortsgemeinde (hand check, 30.09.2026).
     const lokal = email.split("@")[0].replace(/[^a-z0-9]/g, "");
+    if (FREIMAIL.test(domain)) return art === GEMEINDE && token.length >= 4 && (lokal === token || (/^(?:buergermeister|bgm)/.test(lokal) && einzigerBgm) || (/^(?:gemeinde|ortsgemeinde|og|stadt|markt|rathaus)/.test(lokal) && lokal.includes(token)));
     if (art === GEMEINDE && token.length >= 4 && (lokal === token || lokal === `og${token}` || lokal === `ortsgemeinde${token}`)) return true;
+    // A municipality hosted under a state domain ("gemeinde-malente.landsh.de"):
+    // the place name sits in the first label, not in the registrable domain.
+    const erstes = domain.split(".")[0].replace(art.namensvorsatz, "").replace(/[^a-z0-9]/g, "");
+    if (art === GEMEINDE && token.length >= 4 && domain.split(".").length >= 3 && erstes === token) return true;
+    // "amtplau.de" for Plau am See: office marker plus the start of the place name.
+    const rest = label.replace(art.amtsmarke, "");
+    if (art === GEMEINDE && rest.length >= 4 && rest !== label && token.startsWith(rest)) return true;
     return d === own || flach(domain) === flach(own) || ohneTld(d) === ohneTld(own)
       || art.amtshost.test(domain)
       // The name inside a domain counts only with an office marker

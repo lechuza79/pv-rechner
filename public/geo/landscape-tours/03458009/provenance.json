@@ -1,0 +1,405 @@
+{
+  "checkedAt": "2026-10-02T10:16:09.640496+00:00",
+  "name": "Hatten",
+  "buildings": 1215,
+  "wind": 14,
+  "solarFootprints": 0,
+  "terrainResolutionMetres": 20,
+  "crs": "ETRS89_UTM32",
+  "heightReference": "DHHN2016_NH",
+  "osmAttribution": "© OpenStreetMap contributors · ODbL-1.0",
+  "buildingLicense": "CC BY 4.0 · LGLN (2026)",
+  "terrainLicense": "CC BY 4.0 · LGLN (2026)",
+  "sourceHashes": {
+    "hatten-lod-LoD2_32_455_5876_1_ni.gml": "7fa257aaf3bfbc5073d0121b000eee09f164a5a0425f5def3e6d0ff021e83dfc",
+    "hatten-lod-LoD2_32_455_5877_1_ni.gml": "6f3f5becbd40def98250968fc9200829ddfabfca2170a62af937a9a33f2b64e3",
+    "hatten-lod-LoD2_32_456_5876_1_ni.gml": "77ce776a320b3e9d7109f15fa840d826fd6c8278881132cd8782c23fcc73013f",
+    "hatten-lod-LoD2_32_456_5877_1_ni.gml": "0a0c88cd142f2da88f724b74e38438a2d6eb1bfea5917452bfa6ee8f9ee35425",
+    "hatten-lod-LoD2_32_460_5879_1_ni.gml": "5cad4a43027c56d1c6bc506ea32a16c44a30952ebb68ae7556257a930f0842bf",
+    "hatten-lod-LoD2_32_460_5878_1_ni.gml": "5a2e268cf39910ad6f2801af1d7b3b232be04382073bde1526dbc567530f0f8e",
+    "hatten-lod-LoD2_32_459_5879_1_ni.gml": "a1fe53ce1f5a1933a49f5b8b3d5f4172f12147dc00423964e8b143a5ef6bd66a",
+    "hatten-lod-LoD2_32_459_5878_1_ni.gml": "4c8801cc43872cd10a4e3db8058d4988cb3a99771bb238a3e7511a06c3bc0b81",
+    "hatten-lod-LoD2_32_456_5875_1_ni.gml": "b866e072980e90f5afb1bd30dbd8eab97d1a244cee70b02940b8ef2ce6212177",
+    "hatten-lod-LoD2_32_456_5874_1_ni.gml": "5c2cfc83625889894894a480ac6dadf132aa1b4aa783aeab5f3d936b59492864",
+    "hatten-lod-LoD2_32_455_5875_1_ni.gml": "96cc9c2ec59cb59a305bbb453d0900f749c2767ae4a34fec08b135d9307fd3e6",
+    "hatten-lod-LoD2_32_455_5874_1_ni.gml": "905d61c01e3b4f253731c7da32c27900b15a07802106b29fd28fde7cd987ac65",
+    "hatten-lod-LoD2_32_454_5876_1_ni.gml": "2078bd4ad053bd37a100c20e5b208abd383435b6a4cb0ffc6600529562ba14c6",
+    "hatten-lod-LoD2_32_454_5877_1_ni.gml": "1ae89c6929071105711252434958c30d68d79254264333b732defcce21988175",
+    "hatten-dgm-dgm1_32_459_5879_1_ni_2021.tif": "0f05076ef9f7e1c8d2fa80aa96aefb4d6e9c95ed6de4c16bf65f2567c800564d",
+    "hatten-dgm-dgm1_32_454_5879_1_ni_2021.tif": "67be7da7489afe5f8d7abb45ce2185dd4098ec0948f49f0ced11ad39f5b16a17",
+    "hatten-dgm-dgm1_32_455_5878_1_ni_2021.tif": "2f71d08d4f20a4d26ec5519befbacde57584db7c5d2e4cbde5fa0bd41f7904a5",
+    "hatten-dgm-dgm1_32_458_5878_1_ni_2021.tif": "8f94f4cace8b6ef4205fb07752f00736bebba750c171aa2d5b6939e06f5b1e5f",
+    "hatten-dgm-dgm1_32_461_5877_1_ni_2021.tif": "edbbe91a6d5ad25e788d59377c69d1e6eee1791b66065ea1fafe0059a31ee0c3",
+    "hatten-dgm-dgm1_32_460_5876_1_ni_2021.tif": "85b5e0e5de2f04d788df173fb30d20dca6ebf49880efe46838d529d9aecc13b0",
+    "hatten-dgm-dgm1_32_460_5874_1_ni_2017.tif": "3e6c11f0809958ee20db54959b86c13fb4b8afe1de1009369a2dc6f512693659",
+    "hatten-dgm-dgm1_32_461_5875_1_ni_2017.tif": "c952c91fed7874e3623d60a3c63cf51fec6bef756d256bf2b3c23e9f26edab33",
+    "hatten-dgm-dgm1_32_457_5879_1_ni_2021.tif": "e42a9482d52702ee5cd1c1e23b5b9a23e0a6a2db99c2a8e426bf928ab5052637",
+    "hatten-dgm-dgm1_32_456_5878_1_ni_2021.tif": "90bf4e3ec041f63d79489fe29d575f5a685fe96877d374ee9b9aee2c28498e15",
+    "hatten-dgm-dgm1_32_456_5874_1_ni_2017.tif": "71435bb44f070c157824d6f0c707d934bfa7289c6bb568985cc0d0aacb8ffe3c",
+    "hatten-dgm-dgm1_32_457_5875_1_ni_2017.tif": "00ef244d918823534f4bfe436f1919b68b219a7ca35342c09f2b7c0172cf6ffd",
+    "hatten-dgm-dgm1_32_457_5877_1_ni_2021.tif": "2fec1e21944ee461242d7607c7dec5ff18b9b683c6017145d48c971ffefaed02",
+    "hatten-dgm-dgm1_32_456_5876_1_ni_2021.tif": "a2d9efbf5c2fc09fb8b1ec991b3035e7948739633770924a42400913546662d4",
+    "hatten-dgm-dgm1_32_461_5879_1_ni_2021.tif": "8cdaab55af2293594af6f6dcb4590e81589069a558b352bc509116241fb9ae96",
+    "hatten-dgm-dgm1_32_460_5878_1_ni_2021.tif": "881137c41324f83734162670b7a480347be9a42183122b764b77a6c3c4627e0f",
+    "hatten-dgm-dgm1_32_459_5877_1_ni_2021.tif": "784577a568647cc5f88c15564c8b8e58e7449d9861299c43e0f0535eba5b82ed",
+    "hatten-dgm-dgm1_32_454_5877_1_ni_2021.tif": "d6ad192fb454ee32ad5525c7093892ff372f77b16a8e5135f7bb18121a1bdc2a",
+    "hatten-dgm-dgm1_32_455_5876_1_ni_2021.tif": "5c51d2462c8385b8f8e3bd49efd2287c580308559c7f51bf1eae50309aa7508a",
+    "hatten-dgm-dgm1_32_458_5876_1_ni_2021.tif": "0a26d45dde634d92e07ca4b2e2bc27bacc02ba97a00deedb5115aaae0b6d5da3",
+    "hatten-dgm-dgm1_32_455_5874_1_ni_2017.tif": "34de4eb4e2b3f1e6312907f8e5943511b4756ed345f7cc27f804c67034a7421a",
+    "hatten-dgm-dgm1_32_458_5874_1_ni_2017.tif": "6e35286f8037c1b58eefa23eadc6c8319b66d8079cb0d8ecce86a9fd716dda29",
+    "hatten-dgm-dgm1_32_459_5875_1_ni_2017.tif": "9c1e0aa623d8ae4acd858029ee83caac8ad3722affe8595075709d44d2b4a264",
+    "hatten-dgm-dgm1_32_454_5875_1_ni_2017.tif": "fe74095942b47b45d7e6ef54349ae77d5a10dc59cee4d353df2d51116e7a99fc",
+    "hatten-dgm-dgm1_32_454_5874_1_ni_2017.tif": "ee067532ca3428e36556837997d6430155c2a836ec2481c3cfeb2a25f61dc964",
+    "hatten-dgm-dgm1_32_459_5874_1_ni_2017.tif": "01609e80514381f485498446ac0528d71d9a20ccb75ee6440ecf37f63d4099ef",
+    "hatten-dgm-dgm1_32_458_5875_1_ni_2017.tif": "ec0c86ae9e3ffc87173db30692b79cc1117cb085aa0fd8a80742eb7dbb64eaf8",
+    "hatten-dgm-dgm1_32_455_5875_1_ni_2017.tif": "8f30e6fc1cc9a3d0de47faeca42f0f10c2852192c9f36004207dfaf3a34795d2",
+    "hatten-dgm-dgm1_32_458_5877_1_ni_2021.tif": "c325c4e47844773293c30105bc5545376e0561f14a733284afe588886e4f3eb0",
+    "hatten-dgm-dgm1_32_455_5877_1_ni_2021.tif": "fea23168ed5ba5ebd71477bc678645d50f74696e4d6ec02077bdaaf5225a03f8",
+    "hatten-dgm-dgm1_32_454_5876_1_ni_2021.tif": "6f1536a30d74aa3a192606e23a28ff9dbdf106414d5e7e9dae86a028b731ce88",
+    "hatten-dgm-dgm1_32_459_5876_1_ni_2021.tif": "4ea98641119cd53b8642b2a40d4f36b53375453312ee16ae059024a65ab874ab",
+    "hatten-dgm-dgm1_32_456_5877_1_ni_2021.tif": "3f92e5bfeda18bc80a0b97e15fa96edd1510d668c7e481e32cc96fac4af043ed",
+    "hatten-dgm-dgm1_32_457_5876_1_ni_2021.tif": "9a66ed4e7f6a8dfb3a159ee6f9fdae2774412b54496f6434200270c3dbb6d5c3",
+    "hatten-dgm-dgm1_32_457_5874_1_ni_2017.tif": "515800478d9c5fe7790409539c46262c77e314a7db5d2b8f44cfc4415e6063c9",
+    "hatten-dgm-dgm1_32_456_5875_1_ni_2017.tif": "f56a2b1470fd3b4b1d610d310157a686bb8fca162fc097fb239d00a73dd354f5",
+    "hatten-dgm-dgm1_32_460_5879_1_ni_2021.tif": "c6d379d2f283fddf73820c48526f1332c5ab225e39d7c584a96d0f0e22f9d9db",
+    "hatten-dgm-dgm1_32_461_5878_1_ni_2021.tif": "21aca17d149536bfa57900e9374073097a31056413d4a722a73c24a8c79c14bc",
+    "hatten-dgm-dgm1_32_461_5874_1_ni_2017.tif": "47dd5a46333fce2e78929d52aaa3839acbbaa360b17ab111fa10cb3370728731",
+    "hatten-dgm-dgm1_32_460_5875_1_ni_2017.tif": "e85b1ef699f4df917e63a6b8bfac9fc3d4870891e33dfdc282b05a291abf1618",
+    "hatten-dgm-dgm1_32_460_5877_1_ni_2021.tif": "064f5d895b9559593ad0750f1b2fe0ace5edb61b079f1e0611521d9983538ab6",
+    "hatten-dgm-dgm1_32_461_5876_1_ni_2021.tif": "ac3fd33babc2f1ac8b4fd9fe1447aa483e5670a281d4dff5c9755fef63dd2864",
+    "hatten-dgm-dgm1_32_456_5879_1_ni_2021.tif": "811900e548c2be6416d4d747e293142deacaa0c0911b8beb529af571569b4c94",
+    "hatten-dgm-dgm1_32_457_5878_1_ni_2021.tif": "118cb13fd5a8985d3482ceeb77574a484898556168114744800510dfae4447e9",
+    "hatten-dgm-dgm1_32_458_5879_1_ni_2021.tif": "9674185c274bf3c3a1f38facdda2582134aa14176e5532d8c9cd724059ee15d0",
+    "hatten-dgm-dgm1_32_455_5879_1_ni_2021.tif": "3a97d08c2aab676de838903a2cff519e9a54c6a8e727008ac60d10fa767434e1",
+    "hatten-dgm-dgm1_32_454_5878_1_ni_2021.tif": "1b105b66beeb63da8c0e1ccad347f9532b0e219f72fe8ac798c0f32760b00449",
+    "hatten-dgm-dgm1_32_459_5878_1_ni_2021.tif": "045c756944fc6e42f9e2702c99178b7b05d921ae3bf55414fbb06ebc45abd2b7"
+  },
+  "limitations": [
+    "Bounded building windows around destinations, not full municipality building coverage.",
+    "PV modules reconstructed within mapped footprint, inclination and rows are schematic.",
+    "Park register linkage unknown; no park power estimated from municipality aggregate.",
+    "Weather-driven animation is illustrative, not measured operation or RPM.",
+    "Water context covers the sourced Kirchhatten window only; municipality-wide OSM queries were unavailable.",
+    "Solar footprints are the verified mapped subset, not a complete register inventory of all ground-mounted solar plants."
+  ],
+  "boundarySource": "LGLN ALKIS administrative municipality boundary",
+  "boundaryUrl": "https://alkis-verwaltungseinheiten.s3.eu-de.cloud-object-storage.appdomain.cloud/verwaltungseinheiten.zip",
+  "boundarySourceSha256": "046bb9b2e9e7f1858a2383d54ac8cc19ee9dcc320f2d72ada4018cee9f4ce10b",
+  "minimumBoundaryDistanceMetres": 66.3,
+  "sources": [
+    {
+      "file": "hatten-lod-LoD2_32_455_5876_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_455_5876_1_ni.gml",
+      "sha256": "7fa257aaf3bfbc5073d0121b000eee09f164a5a0425f5def3e6d0ff021e83dfc"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_455_5877_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_455_5877_1_ni.gml",
+      "sha256": "6f3f5becbd40def98250968fc9200829ddfabfca2170a62af937a9a33f2b64e3"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_456_5876_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_456_5876_1_ni.gml",
+      "sha256": "77ce776a320b3e9d7109f15fa840d826fd6c8278881132cd8782c23fcc73013f"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_456_5877_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_456_5877_1_ni.gml",
+      "sha256": "0a0c88cd142f2da88f724b74e38438a2d6eb1bfea5917452bfa6ee8f9ee35425"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_460_5879_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_460_5879_1_ni.gml",
+      "sha256": "5cad4a43027c56d1c6bc506ea32a16c44a30952ebb68ae7556257a930f0842bf"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_460_5878_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_460_5878_1_ni.gml",
+      "sha256": "5a2e268cf39910ad6f2801af1d7b3b232be04382073bde1526dbc567530f0f8e"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_459_5879_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_459_5879_1_ni.gml",
+      "sha256": "a1fe53ce1f5a1933a49f5b8b3d5f4172f12147dc00423964e8b143a5ef6bd66a"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_459_5878_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_459_5878_1_ni.gml",
+      "sha256": "4c8801cc43872cd10a4e3db8058d4988cb3a99771bb238a3e7511a06c3bc0b81"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_456_5875_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_456_5875_1_ni.gml",
+      "sha256": "b866e072980e90f5afb1bd30dbd8eab97d1a244cee70b02940b8ef2ce6212177"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_456_5874_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_456_5874_1_ni.gml",
+      "sha256": "5c2cfc83625889894894a480ac6dadf132aa1b4aa783aeab5f3d936b59492864"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_455_5875_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_455_5875_1_ni.gml",
+      "sha256": "96cc9c2ec59cb59a305bbb453d0900f749c2767ae4a34fec08b135d9307fd3e6"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_455_5874_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_455_5874_1_ni.gml",
+      "sha256": "905d61c01e3b4f253731c7da32c27900b15a07802106b29fd28fde7cd987ac65"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_454_5876_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_454_5876_1_ni.gml",
+      "sha256": "2078bd4ad053bd37a100c20e5b208abd383435b6a4cb0ffc6600529562ba14c6"
+    },
+    {
+      "file": "hatten-lod-LoD2_32_454_5877_1_ni.gml",
+      "url": "https://lod2.s3.eu-de.cloud-object-storage.appdomain.cloud/LoD2_32_454_5877_1_ni.gml",
+      "sha256": "1ae89c6929071105711252434958c30d68d79254264333b732defcce21988175"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_459_5879_1_ni_2021.tif",
+      "sha256": "0f05076ef9f7e1c8d2fa80aa96aefb4d6e9c95ed6de4c16bf65f2567c800564d"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_454_5879_1_ni_2021.tif",
+      "sha256": "67be7da7489afe5f8d7abb45ce2185dd4098ec0948f49f0ced11ad39f5b16a17"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_455_5878_1_ni_2021.tif",
+      "sha256": "2f71d08d4f20a4d26ec5519befbacde57584db7c5d2e4cbde5fa0bd41f7904a5"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_458_5878_1_ni_2021.tif",
+      "sha256": "8f94f4cace8b6ef4205fb07752f00736bebba750c171aa2d5b6939e06f5b1e5f"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_461_5877_1_ni_2021.tif",
+      "sha256": "edbbe91a6d5ad25e788d59377c69d1e6eee1791b66065ea1fafe0059a31ee0c3"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_460_5876_1_ni_2021.tif",
+      "sha256": "85b5e0e5de2f04d788df173fb30d20dca6ebf49880efe46838d529d9aecc13b0"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_460_5874_1_ni_2017.tif",
+      "sha256": "3e6c11f0809958ee20db54959b86c13fb4b8afe1de1009369a2dc6f512693659"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_461_5875_1_ni_2017.tif",
+      "sha256": "c952c91fed7874e3623d60a3c63cf51fec6bef756d256bf2b3c23e9f26edab33"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_457_5879_1_ni_2021.tif",
+      "sha256": "e42a9482d52702ee5cd1c1e23b5b9a23e0a6a2db99c2a8e426bf928ab5052637"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_456_5878_1_ni_2021.tif",
+      "sha256": "90bf4e3ec041f63d79489fe29d575f5a685fe96877d374ee9b9aee2c28498e15"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_456_5874_1_ni_2017.tif",
+      "sha256": "71435bb44f070c157824d6f0c707d934bfa7289c6bb568985cc0d0aacb8ffe3c"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_457_5875_1_ni_2017.tif",
+      "sha256": "00ef244d918823534f4bfe436f1919b68b219a7ca35342c09f2b7c0172cf6ffd"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_457_5877_1_ni_2021.tif",
+      "sha256": "2fec1e21944ee461242d7607c7dec5ff18b9b683c6017145d48c971ffefaed02"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_456_5876_1_ni_2021.tif",
+      "sha256": "a2d9efbf5c2fc09fb8b1ec991b3035e7948739633770924a42400913546662d4"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_461_5879_1_ni_2021.tif",
+      "sha256": "8cdaab55af2293594af6f6dcb4590e81589069a558b352bc509116241fb9ae96"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_460_5878_1_ni_2021.tif",
+      "sha256": "881137c41324f83734162670b7a480347be9a42183122b764b77a6c3c4627e0f"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_459_5877_1_ni_2021.tif",
+      "sha256": "784577a568647cc5f88c15564c8b8e58e7449d9861299c43e0f0535eba5b82ed"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_454_5877_1_ni_2021.tif",
+      "sha256": "d6ad192fb454ee32ad5525c7093892ff372f77b16a8e5135f7bb18121a1bdc2a"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_455_5876_1_ni_2021.tif",
+      "sha256": "5c51d2462c8385b8f8e3bd49efd2287c580308559c7f51bf1eae50309aa7508a"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_458_5876_1_ni_2021.tif",
+      "sha256": "0a26d45dde634d92e07ca4b2e2bc27bacc02ba97a00deedb5115aaae0b6d5da3"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_455_5874_1_ni_2017.tif",
+      "sha256": "34de4eb4e2b3f1e6312907f8e5943511b4756ed345f7cc27f804c67034a7421a"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_458_5874_1_ni_2017.tif",
+      "sha256": "6e35286f8037c1b58eefa23eadc6c8319b66d8079cb0d8ecce86a9fd716dda29"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_459_5875_1_ni_2017.tif",
+      "sha256": "9c1e0aa623d8ae4acd858029ee83caac8ad3722affe8595075709d44d2b4a264"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_454_5875_1_ni_2017.tif",
+      "sha256": "fe74095942b47b45d7e6ef54349ae77d5a10dc59cee4d353df2d51116e7a99fc"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_454_5874_1_ni_2017.tif",
+      "sha256": "ee067532ca3428e36556837997d6430155c2a836ec2481c3cfeb2a25f61dc964"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_459_5874_1_ni_2017.tif",
+      "sha256": "01609e80514381f485498446ac0528d71d9a20ccb75ee6440ecf37f63d4099ef"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_458_5875_1_ni_2017.tif",
+      "sha256": "ec0c86ae9e3ffc87173db30692b79cc1117cb085aa0fd8a80742eb7dbb64eaf8"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_455_5875_1_ni_2017.tif",
+      "sha256": "8f30e6fc1cc9a3d0de47faeca42f0f10c2852192c9f36004207dfaf3a34795d2"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_458_5877_1_ni_2021.tif",
+      "sha256": "c325c4e47844773293c30105bc5545376e0561f14a733284afe588886e4f3eb0"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_455_5877_1_ni_2021.tif",
+      "sha256": "fea23168ed5ba5ebd71477bc678645d50f74696e4d6ec02077bdaaf5225a03f8"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_454_5876_1_ni_2021.tif",
+      "sha256": "6f1536a30d74aa3a192606e23a28ff9dbdf106414d5e7e9dae86a028b731ce88"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_459_5876_1_ni_2021.tif",
+      "sha256": "4ea98641119cd53b8642b2a40d4f36b53375453312ee16ae059024a65ab874ab"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_456_5877_1_ni_2021.tif",
+      "sha256": "3f92e5bfeda18bc80a0b97e15fa96edd1510d668c7e481e32cc96fac4af043ed"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_457_5876_1_ni_2021.tif",
+      "sha256": "9a66ed4e7f6a8dfb3a159ee6f9fdae2774412b54496f6434200270c3dbb6d5c3"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_457_5874_1_ni_2017.tif",
+      "sha256": "515800478d9c5fe7790409539c46262c77e314a7db5d2b8f44cfc4415e6063c9"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_456_5875_1_ni_2017.tif",
+      "sha256": "f56a2b1470fd3b4b1d610d310157a686bb8fca162fc097fb239d00a73dd354f5"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_460_5879_1_ni_2021.tif",
+      "sha256": "c6d379d2f283fddf73820c48526f1332c5ab225e39d7c584a96d0f0e22f9d9db"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_461_5878_1_ni_2021.tif",
+      "sha256": "21aca17d149536bfa57900e9374073097a31056413d4a722a73c24a8c79c14bc"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5874_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_461_5874_1_ni_2017.tif",
+      "sha256": "47dd5a46333fce2e78929d52aaa3839acbbaa360b17ab111fa10cb3370728731"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5875_1_ni_2017.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L1702/Vollkacheln/dgm1_32_460_5875_1_ni_2017.tif",
+      "sha256": "e85b1ef699f4df917e63a6b8bfac9fc3d4870891e33dfdc282b05a291abf1618"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_460_5877_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_460_5877_1_ni_2021.tif",
+      "sha256": "064f5d895b9559593ad0750f1b2fe0ace5edb61b079f1e0611521d9983538ab6"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_461_5876_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_461_5876_1_ni_2021.tif",
+      "sha256": "ac3fd33babc2f1ac8b4fd9fe1447aa483e5670a281d4dff5c9755fef63dd2864"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_456_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_456_5879_1_ni_2021.tif",
+      "sha256": "811900e548c2be6416d4d747e293142deacaa0c0911b8beb529af571569b4c94"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_457_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_457_5878_1_ni_2021.tif",
+      "sha256": "118cb13fd5a8985d3482ceeb77574a484898556168114744800510dfae4447e9"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_458_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_458_5879_1_ni_2021.tif",
+      "sha256": "9674185c274bf3c3a1f38facdda2582134aa14176e5532d8c9cd724059ee15d0"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_455_5879_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_455_5879_1_ni_2021.tif",
+      "sha256": "3a97d08c2aab676de838903a2cff519e9a54c6a8e727008ac60d10fa767434e1"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_454_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_454_5878_1_ni_2021.tif",
+      "sha256": "1b105b66beeb63da8c0e1ccad347f9532b0e219f72fe8ac798c0f32760b00449"
+    },
+    {
+      "file": "hatten-dgm-dgm1_32_459_5878_1_ni_2021.tif",
+      "url": "https://dgm1.s3.eu-de.cloud-object-storage.appdomain.cloud/L2102/Vollkacheln/dgm1_32_459_5878_1_ni_2021.tif",
+      "sha256": "045c756944fc6e42f9e2702c99178b7b05d921ae3bf55414fbb06ebc45abd2b7"
+    }
+  ],
+  "osmSource": "https://api.openstreetmap.org/api/0.6/map?bbox=8.34,53.009,8.361,53.023",
+  "townSourceName": "Kirchhatten",
+  "townSourceId": "osm-node-583228663",
+  "solarEvidence": []
+}

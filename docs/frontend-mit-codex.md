@@ -228,12 +228,25 @@ The consumer area reuses the calculator result view as described below.
 
 Use CalculatorContent for the question/result column and its supporting sections.
 The shared CSS owns input width (760 px), result width (820 px) and page gutters.
+Results with offers reserve a separate 320 px rail and 48 px gap when their
+actual container has 1188 px available. With more room, the rail grows to
+360 px and the gap to 96 px at a complete width of 1276 px; the main result
+remains 820 px. A wide browser must not activate that
+rail inside a narrow dialog. State and offer capacity belong to the individual
+calculator shell, rather than another calculator mounted elsewhere on the page.
 Do not override direct-child div widths or give FAQ/source sections a separate
 width. CalculatorTheme must be mounted throughout the flow, not only after a
 result appears; all five calculator routes use its fixed palette. The shared
-layout browser test checks alignment, overflow, theme independence and the
-balcony storage switch updating the actual product and merchant link.
+layout browser tests check input steps, result and offer geometry, painted text
+inside its own card, page and dialog action bounds, theme independence and the
+balcony storage switch updating the actual product and merchant link. Geometry
+counterprobes must reject the original constrained result and narrow action bar.
 
+FlowFooter owns page question actions and measures their height to reserve space.
+Its navigation row is centered and capped at 640 px; page action surfaces are
+centered on the complete shell and capped at 820 px.
+The offer rail does not increase the maximum action-surface width.
+Dialog context keeps actions inside the dialog through ModalSticky.
 Consumer previews apply together through one fixed page footer; individual cards
 open their existing editors. Hide unrelated temporary notices while that footer
 is active. Use MetricValue for the benefit amount and OptionalDisclosure with
@@ -277,3 +290,45 @@ with `variant="compact"`; place `ArticleMeta` before the headline. Do not copy
 page, heading or paragraph styles into a local style object. Page-specific
 comparison tables and interactive widgets keep their existing implementations.
 Styling changes do not advance the editorial update date.
+
+## Data sources — one shared section
+
+Every page-level sources block imports `components/DataSourcesSection.tsx` and
+its `data-sources-section.css`. Place it between the trust section and footer:
+`SiteFuss zwischen` in React, or pass `renderToStaticMarkup(DataSourcesSection)`
+to `siteFussHtml(zwischen)` in document hosts. Do not duplicate section markup,
+headings, typography or spacing. Keep the shared “Daten & Quellen” label.
+Supply an optional `id` for links from charts and maps; the component owns anchor
+spacing. Domain adapters such as `LandscapeSources` supply source content only.
+Keep mandatory inline chart/map attribution in place; the shared section does
+not replace it. Preserve source names, links, licenses and model limitations.
+
+For a new integration: reuse the registered component, supply its content,
+check its position and anchor at desktop and phone widths, and extend
+`data-sources-section.test.tsx` when a new rendering path is introduced.
+The test guards both the React component and document footer placement.
+
+## Action buttons
+
+ActionButton and ActionLink own primary, secondary and icon actions: 44 px
+minimum height, 14 px text, 18 px icons, pill radius and 24 px horizontal
+padding. Primary actions carry a subtle shadow. Result action groups are
+centered at their natural width, capped at 640 px; the sticky transition changes
+only the surface, never button size or group geometry.
+ResultActions, AffiliateActions, FlowNav and SecondaryButton reuse them directly.
+Rows own placement and wrapping only; sticky states must not shrink buttons.
+Product actions stay on one row. Below 350 px of actual row width, optional
+share labels collapse to the central 44 px icon variant while keeping their
+accessible label and title; the shop action retains its full text and padding.
+Native disabled and aria-disabled semantics remain with the caller.
+The component gallery demonstrates every variant. Browser checks compare actual
+computed styles in result rows, product cards and the question flow.
+
+### Accepted initial chart limitation (5 October 2026)
+
+The operator approved releasing the calculator layout and button fixes while
+RaceChart labels can still clip at the first timeline position. This is a
+separate, unchanged chart issue, not a calculation or button regression.
+Layout checks retain strict bounds and measure chart text at the final timeline
+position; the initial-position defect remains explicitly recorded in the browser
+suite. Do not broaden this acceptance to hero values, controls, or later positions.

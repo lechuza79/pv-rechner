@@ -44,6 +44,7 @@ export default function GemeindeEmbedBox({ name, ags, pfad }: { name: string; ag
             Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
+        <a href="/fuer-organisationen/kommunen">Angebot für Kommunen entdecken <IconArrowRight size={16} /></a>
       </div>
 
       {/* Sekundärer Weg, deutlich abgesetzt vom Haupt-Knopf: Wer es nicht

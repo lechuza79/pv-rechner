@@ -461,7 +461,7 @@ export function WidgetSourceEdge({
         fontSize: SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
-        color: v("--color-text-faint"),
+        color: "var(--widget-muted, var(--color-text-faint))",
         pointerEvents: "none",
         opacity: visible ? 1 : 0,
         transition: "opacity .18s ease-out",

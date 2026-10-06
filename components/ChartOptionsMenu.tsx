@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useId, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useId, useRef, useState, type ReactNode } from "react";
 import { v } from "../lib/theme";
-import { IconCheck, IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconMail, IconArrowRight, IconShare, IconRefresh } from "./Icons";
+import { IconCheck, IconCode, IconDownload, IconMore, IconCopy, IconVideo, IconMail, IconArrowRight, IconShare, IconRefresh, IconHelpCircle } from "./Icons";
 import Modal from "./Modal";
 import ContactForm from "./ContactForm";
 import { isContactTopic, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
@@ -10,6 +10,24 @@ import styles from "./WidgetActionMenu.module.css";
 import type { VideoRequestParams } from "../lib/video-export-client";
 import WidgetVideoDialog, { type VideoMailOptions } from "./WidgetVideoDialog";
 import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
+
+type MenuRect = {top:number;bottom:number;left:number;right:number};
+
+/** Fit either menu presentation within the visible part of its widget. */
+export function widgetMenuPosition({host,trigger,widget,viewportWidth,viewportHeight,contentHeight,footer}:{host:MenuRect;trigger:MenuRect;widget?:MenuRect;viewportWidth:number;viewportHeight:number;contentHeight:number;footer:boolean}) {
+  const gutter=12;
+  const topBound=Math.max(gutter,(widget?.top??0)+gutter);
+  const bottomBound=Math.min(viewportHeight-gutter,(widget?.bottom??viewportHeight)-gutter);
+  const leftBound=Math.max(gutter,(widget?.left??0)+gutter);
+  const rightBound=Math.min(viewportWidth-gutter,(widget?.right??viewportWidth)-gutter);
+  const maxHeight=Math.max(0,bottomBound-topBound);
+  const height=Math.min(contentHeight,maxHeight);
+  const width=Math.min(280,Math.max(0,rightBound-leftBound));
+  const preferredTop=footer?trigger.top-8-height:trigger.bottom+6;
+  const top=Math.max(topBound,Math.min(preferredTop,bottomBound-height));
+  const left=Math.max(leftBound,Math.min(trigger.right-width,rightBound-width));
+  return {left:left-host.left,top:top-host.top,width,maxHeight:Math.max(0,bottomBound-top),scrollable:contentHeight>maxHeight};
+}
 
 /**
  * Compact options menu for a chart (top right of its card): Teilen, Download,
@@ -23,9 +41,11 @@ import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
  * Home/End move; Escape closes and returns focus to the button; Tab closes.
  * Pointer: a tap or click outside closes it.
  */
-export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, onVideoRequest, videoParams, videoPeriod, videoPlace, loadVideoThumbnail, presentation = "menu", busy = false }: {
+export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, onVideoRequest, videoParams, videoPeriod, videoPlace, loadVideoThumbnail, presentation = "menu", showDownload = true, help, busy = false }: {
   /** Chart name, for the accessible button label. */
   label: string;
+  showDownload?: boolean;
+  help?: ReactNode;
   /** Prefilled contact link supplied by the shared widget frame. */
   contactHref: string;
   designContactHref?: string;
@@ -62,12 +82,12 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     close();
     setContact({ topic: isContactTopic(topic) ? topic : DEFAULT_CONTACT_TOPIC, message: params.get("message") ?? "" });
   };
-  const [anchor,setAnchor] = useState({left:12,bottom:60,width:280});
-  const [menuMaxHeight,setMenuMaxHeight]=useState<number>();
-  const [menuTop,setMenuTop]=useState<number>();
+  const [menuPosition,setMenuPosition] = useState<ReturnType<typeof widgetMenuPosition>>();
   const [copied, setCopied] = useState(false);
   const [copying, setCopying] = useState(false);
   const [status, setStatus] = useState("");
+  const [helpOpen,setHelpOpen]=useState(false);
+  const keyboardOpen=useRef(false);
   const wrap = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const menuId = useId();
@@ -77,7 +97,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     if (!open) return;
     const outside = (e: PointerEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("pointerdown", outside);
-    const frame = requestAnimationFrame(() => items()[0]?.focus({ preventScroll: true }));
+    const frame = keyboardOpen.current ? requestAnimationFrame(() => items()[0]?.focus({ preventScroll: true })) : 0;
     return () => { cancelAnimationFrame(frame); document.removeEventListener("pointerdown", outside); };
   }, [open,group]);
 
@@ -85,21 +105,17 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     if(!open||!wrap.current||!button.current)return;
     const host=wrap.current,trigger=button.current;
     const update=()=>{
-      const box=host.getBoundingClientRect(),target=trigger.getBoundingClientRect();
-      setMenuMaxHeight(Math.max(120,window.innerHeight-24));
-      if(presentation!=="footer"){
-        const height=document.getElementById(menuId)?.scrollHeight ?? 0;
-        const top=Math.max(12,Math.min(target.bottom+6,window.innerHeight-height-14));
-        setMenuTop(top-box.top);
-        return;
-      }
-      const width=Math.min(280,Math.max(0,box.width-24));
-      const left=Math.max(12,Math.min(target.right-box.left-width,box.width-width-12));
-      setAnchor({left,bottom:box.bottom-target.top+8,width});
+      const menu=document.getElementById(menuId);
+      const widget=host.closest<HTMLElement>('.sc-widget');
+      setMenuPosition(widgetMenuPosition({host:host.getBoundingClientRect(),trigger:trigger.getBoundingClientRect(),widget:widget?.getBoundingClientRect(),viewportWidth:window.innerWidth,viewportHeight:window.innerHeight,contentHeight:(menu?.scrollHeight??0)+2,footer:presentation==='footer'}));
     };
     update();
     const observer=new ResizeObserver(update);
     observer.observe(host);observer.observe(trigger);
+    const widget=host.closest<HTMLElement>('.sc-widget');
+    if(widget)observer.observe(widget);
+    const menu=document.getElementById(menuId);
+    if(menu)observer.observe(menu);
     window.addEventListener('resize',update);
     window.addEventListener('scroll',update,true);
     return()=>{observer.disconnect();window.removeEventListener('resize',update);window.removeEventListener('scroll',update,true);};
@@ -123,7 +139,11 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     catch (error) { setStatus(error instanceof Error ? error.message : "Link konnte nicht kopiert werden."); }
     finally { setCopying(false); }
   };
-  useEffect(() => { if (!open) setCopied(false); }, [open]);
+  useEffect(() => {
+    if(!copied)return;
+    const timer=window.setTimeout(()=>setCopied(false),2500);
+    return()=>window.clearTimeout(timer);
+  }, [copied]);
   const onMenuKey = (e: React.KeyboardEvent) => {
     const list = items(), index = list.indexOf(document.activeElement as HTMLElement);
     if (e.key === "Escape") { e.preventDefault(); close(); }
@@ -133,7 +153,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     else if (e.key === "Home") { e.preventDefault(); list[0]?.focus(); }
     else if (e.key === "End") { e.preventDefault(); list[list.length - 1]?.focus(); }
   };
-  const onButtonKey = (e: React.KeyboardEvent) => { if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); } };
+  const onButtonKey = (e: React.KeyboardEvent) => { if (e.key === "ArrowDown") { e.preventDefault(); keyboardOpen.current=true; setOpen(true); } };
 
   const footer = presentation === "footer";
   const leadingIcon: React.CSSProperties = {gridColumn:1,gridRow:1,order:-1,justifySelf:"start",flexShrink:0};
@@ -144,16 +164,14 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
 
   return (
     <div ref={wrap} className="sc-chart-options" data-presentation={presentation} style={{ position: "relative", display: footer ? "block" : "inline-flex", width: footer ? "100%" : undefined }} {...{ [EXPORT_IGNORE_ATTR]: "" }}>
-      {footer&&<div role="group" aria-label={`Aktionen für ${label}`} style={{display:"flex",flexWrap:"wrap",gap:8,padding:12,borderRadius:16,background:"color-mix(in srgb, var(--widget-ink) 5%, transparent)"}}>
-        {onRestart&&<button type="button" aria-label="Animation neu starten" title="Neu starten" data-widget-action="restart" disabled={busy} onClick={run(onRestart)} style={{display:"grid",placeItems:"center",width:44,height:44,flexShrink:0,color:"var(--widget-ink)",background:"var(--widget-surface)",border:"1px solid color-mix(in srgb,var(--widget-ink) 25%,transparent)",borderRadius:12,boxShadow:"0 2px 4px rgb(0 0 0 / .08)",cursor:"pointer"}}><IconRefresh size={16}/></button>}
-        <div style={{display:"flex",flexWrap:"wrap",justifyContent:"flex-end",gap:8,marginLeft:"auto",flex:1}}>
-        {([{id:"embed",text:"Einbetten",Icon:IconCode},{id:"download",text:"Herunterladen",Icon:IconDownload},{id:"share",text:"Teilen",Icon:IconShare}] as const).map(({id,text,Icon})=><button key={id} type="button" data-widget-action="options" aria-haspopup="menu" aria-expanded={open&&group===id} aria-controls={open&&group===id?menuId:undefined} disabled={busy}
-          onClick={event=>{button.current=event.currentTarget;setGroup(id);setOpen(!open||group!==id);}}
-          style={{display:"inline-flex",alignItems:"center",justifyContent:"center",gap:8,minHeight:44,padding:"10px 12px",font:"inherit",fontSize:v("--font-size-body"),color:"var(--widget-ink)",background:"var(--widget-surface)",border:"1px solid color-mix(in srgb,var(--widget-ink) 25%,transparent)",borderRadius:12,boxShadow:"0 2px 4px rgb(0 0 0 / .08)",cursor:"pointer"}}><Icon size={16} style={{opacity:.6,flexShrink:0}}/>{text}</button>)}
-        </div>
+      {footer&&<div role="group" aria-label={`Aktionen für ${label}`} className={styles.actions}>
+        {onRestart&&<button type="button" className={`${styles.action} ${styles.restart}`} aria-label="Animation neu starten" title="Neu starten" data-widget-action="restart" disabled={busy} onClick={run(onRestart)}><IconRefresh size={16}/></button>}
+        <button type="button" className={styles.action} aria-label={copied?"Link kopiert":"Link kopieren"} title="Link kopieren" data-widget-action="copy_link" disabled={busy||copying} onClick={copyLink}>{copied?<IconCheck size={16}/>:<IconCopy size={16}/>}</button>
+        {([{id:"embed",text:"Einbetten",Icon:IconCode},{id:"download",text:"Herunterladen",Icon:IconDownload},{id:"share",text:"Teilen",Icon:IconShare}] as const).filter(action=>action.id!=="download"||showDownload).map(({id,text,Icon})=><button key={id} type="button" className={`${styles.action} ${id==="share"?styles.shareAction:""}`} data-widget-action="options" aria-label={text} title={text} aria-haspopup="menu" aria-expanded={open&&group===id} aria-controls={open&&group===id?menuId:undefined} disabled={busy}
+          onClick={event=>{keyboardOpen.current=event.detail===0;button.current=event.currentTarget;setGroup(id);setOpen(!open||group!==id);}}><Icon size={16}/><span className={id==="share"?styles.shareLabel:styles.actionLabel}>{text}</span></button>)}
       </div>}
       {!footer&&<button ref={button} data-widget-action="options" type="button" aria-haspopup="menu" aria-expanded={open} aria-controls={open ? menuId : undefined}
-        aria-label={`Optionen für ${label}`} title="Optionen" onClick={() => setOpen(o => !o)} onKeyDown={onButtonKey} disabled={busy}
+        aria-label={`Optionen für ${label}`} title="Optionen" onClick={event => {keyboardOpen.current=event.detail===0;setOpen(o => !o);}} onKeyDown={onButtonKey} disabled={busy}
         style={{ width: 32, height: 32, border: 0, background: "transparent", color: "inherit", display: "grid", placeItems: "center", padding: 0, cursor: "pointer" }}>
         <IconMore size={16} style={{ transform: "rotate(90deg)" }} />
       </button>}
@@ -167,13 +185,15 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
             event.preventDefault();
             item.focus({ preventScroll: true });
           }}
-          style={{ position: "absolute", ...(footer ? {left:anchor.left,bottom:anchor.bottom} : {top:menuTop??"calc(100% + 6px)",right:0}), zIndex:20,width:footer?anchor.width:280,maxWidth:"calc(100vw - 48px)",maxHeight:menuMaxHeight,overflowY:"auto" }}>
+          style={{ position: "absolute", left:menuPosition?.left,top:menuPosition?.top??"calc(100% + 6px)",right:menuPosition?undefined:0,zIndex:20,width:menuPosition?.width??280,maxWidth:"calc(100vw - 24px)",maxHeight:menuPosition?.maxHeight,overflowY:"auto" }}>
+          {menuPosition?.scrollable&&<div className={styles.scrollHint}>Weitere Optionen durch Scrollen ↕</div>}
+          {help&&<><button type="button" role="menuitem" tabIndex={-1} className={styles.item} onClick={()=>{close();setHelpOpen(true);}}><IconHelpCircle size={16} style={leadingIcon}/><span>Informationen zum Diagramm</span></button>{separator}</>}
           {(!footer||group==="share")&&<>
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="copy_link" disabled={busy || copying} className={styles.item} onClick={copyLink}>{copied ? <IconCheck size={16} style={leadingIcon}/> : <IconCopy size={16} style={leadingIcon}/>}<span aria-live="polite">{copied ? "Link kopiert" : copying ? "Link wird kopiert …" : "Link kopieren"}</span></button>
           {onForward&&<button type="button" role="menuitem" tabIndex={-1} data-widget-action="forward" disabled={busy} className={styles.item} onClick={run(onForward,typeof navigator!=="undefined"&&typeof navigator.share==="function"?undefined:"Link kopiert.", true)}><IconShare size={16} style={leadingIcon}/><span>Weiterleiten</span></button>}
           </>}
-          {!footer&&separator}
-          {(!footer||group==="download")&&<>
+          {!footer&&showDownload&&separator}
+          {showDownload&&(!footer||group==="download")&&<>
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} className={styles.item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
           {animation&&<>
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} className={styles.item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
@@ -191,6 +211,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           </>}
         </div>
       )}
+      <Modal open={helpOpen} onClose={()=>setHelpOpen(false)} title={label}>{help}</Modal>
       <Modal open={contact !== null} onClose={() => { setContact(null); button.current?.focus({preventScroll:true}); }} title="Kontakt aufnehmen">
         {contact && <ContactForm initialTopic={contact.topic} initialMessage={contact.message} />}
       </Modal>

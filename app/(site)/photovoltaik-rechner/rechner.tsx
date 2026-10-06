@@ -31,7 +31,7 @@ import { estimateCost, calcEigenverbrauch, calcEigenverbrauchExakt, calcWeighted
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import PvConsumerFields, {consumersComplete, type PvConsumerValues} from "../../../components/PvConsumerFields";
-import OptionCard from "../../../components/OptionCard";
+import PvHouseholdQuestion from "../../../components/PvHouseholdQuestion";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
 import StandortPrompt from "../../../components/StandortPrompt";
@@ -52,17 +52,15 @@ import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconChevronDown, IconSun } from "../../../components/Icons";
-import FlowNav from "../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { trackEvent, trackFunnelStep, type Funnel } from "../../../lib/analytics";
-import ResultOverview from "../../../components/calculator/ResultOverview";
+import PvResultOverview from "./_components/PvResultOverview";
 import ResultSettings from "../../../components/ResultSettings";
-import StatCard from "../../../components/calculator/ResultStatCard";
 import { useResultIntro } from "../../../components/calculator/useResultIntro";
 import PvCoolingEditor from "../../../components/PvCoolingEditor";
-import PvResultRace from "./_components/PvResultRace";
 import StandortField from "../../../components/StandortField";
 // ResultSection steht schon oben; ResultVerbrauch ist entfallen (die
 // Verbraucher haben je einen eigenen Abschnitt).
@@ -882,7 +880,7 @@ export default function PVRechner({
           onApply={kwh => { setKlimaKwh(kwh); setOEv(null); }}
         />
 
-      <CalculatorContent>
+      <CalculatorContent state={isResult ? "result" : "input"}>
 
         {!isResult && <div style={{textAlign:"center", marginBottom:24}}><h1>PV-Rechner</h1><p>Berechne deine Anlage mit deinen eigenen Angaben.</p></div>}
 
@@ -961,29 +959,7 @@ export default function PVRechner({
 
                 {!verbrauchMode ? (
                   <>
-                    <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
-                      {PERSONEN.map((p, i) => {
-                        // Gewählt erst, wenn wirklich jemand gewählt hat — der
-                        // Startwert allein markiert nichts (Flow-Konvention).
-                        const aktiv = beantwortet.has("personen") && personen === i;
-                        return (
-                        // data-flow-option/-group von Hand statt OptionCard: Die
-                        // Zahlenreihe ist bewusst schmal (vier Spalten), eine
-                        // Auswahlkarte mit Unterzeile würde den Schritt doppelt
-                        // so hoch machen. Die Kennzeichnung ist dieselbe, damit
-                        // der Flow-Läufer die Frage trotzdem bedienen kann; die
-                        // Gruppe trennt sie vom Nutzungsprofil daneben.
-                        <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
-                          onClick={() => { setPersonen(i); setOEv(null); markBeantwortet("personen"); }} style={{
-                          padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700, cursor: "pointer", textAlign: "center",
-                          background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                          color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
-                        }}>{p.label}</button>
-                        );
-                      })}
-                    </div>
+                    <PvHouseholdQuestion field="personen" selected={beantwortet.has("personen") ? personen : null} onSelect={i => { setPersonen(i); setOEv(null); markBeantwortet("personen"); }} />
                   </>
                 ) : (
                   <div style={{ marginBottom: 20 }}>
@@ -1001,12 +977,7 @@ export default function PVRechner({
                     </div>
                   </div>
                 )}
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  {NUTZUNG.map((n, i) => (
-                    <OptionCard key={i} group="nutzung" selected={beantwortet.has("nutzung") && nutzung === i} onClick={() => { setNutzung(i); setOEv(null); markBeantwortet("nutzung"); }} label={n.label} sub={n.sub} />
-                  ))}
-                </div>
+                <PvHouseholdQuestion field="nutzung" selected={beantwortet.has("nutzung") ? nutzung : null} onSelect={i => { setNutzung(i); setOEv(null); markBeantwortet("nutzung"); }} />
               </div>
             )}
 
@@ -1121,7 +1092,7 @@ export default function PVRechner({
               </div>
             )}
 
-            <div className="wp-flow-footer">
+            <FlowFooter>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Berechnen" : "Weiter"}
@@ -1130,7 +1101,7 @@ export default function PVRechner({
                 zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </div>
         )}
 
@@ -1175,19 +1146,9 @@ export default function PVRechner({
                 </div>
               </div>
             </section>
-            <ResultOverview id="pv-ueberblick" saving={Math.round(sel.data.total)} years={YEARS}
-              scenarioLabel={sel.resultLabel} progress={intro.progress} anchor={intro.anchor} heroRef={resultCardRef}
-
-              onScenario={() => document.getElementById("pv-prices-trigger")?.click()}
-              onDetails={() => setResultDetailsOpen(true)} onSettings={() => document.getElementById("pv-settings-trigger")?.click()}
-              chart={<PvResultRace key={resultRevision} result={sel.data} consumption={gesamtVerbrauch} price={oStrom} rate={sel.strom} monthlyConsumption={monthlyConsumption} autoplay={intro.stage === "race"} />}
-              stats={<>
-                <StatCard label="Amortisation" value={be ? String(be.i) : `>${YEARS}`} unit="Jahre" help="Zeit, bis Stromersparnis und Einspeiseerlöse die Anschaffung nach Förderung ausgeglichen haben." />
-                <StatCard label="Vorteil im 1. Jahr" value={Math.round(sel.data.years[1].j).toLocaleString("de-DE")} unit="€" help="Vermiedene Stromkosten plus Einspeiseerlöse im ersten Jahr." />
-                <StatCard label="Autarkie" value={String(autarkie)} unit="%" help="Anteil deines Stromverbrauchs, den deine Anlage selbst deckt." />
-              </>}>
-              <p className="wp-result-summary">Deine PV-Anlage amortisiert sich {be ? <>in <strong>{be.i} Jahren</strong></> : <>nicht innerhalb von {YEARS} Jahren</>}. Über {YEARS} Jahre zahlst du insgesamt <strong>{Math.round(Math.abs(sel.data.total)).toLocaleString("de-DE")} € {sel.data.total >= 0 ? "weniger" : "mehr"}</strong> als nur mit Netzstrom. Anschaffung nach Förderung, Reststrom, Einspeiseerlöse und gegebenenfalls Speichertausch sind eingerechnet.</p>
-            </ResultOverview>
+            <PvResultOverview result={sel.data} scenarioLabel={sel.resultLabel} progress={intro.progress} anchor={intro.anchor} heroRef={resultCardRef}
+              onScenario={() => document.getElementById("pv-prices-trigger")?.click()} onDetails={() => setResultDetailsOpen(true)} onSettings={() => document.getElementById("pv-settings-trigger")?.click()}
+              resultRevision={resultRevision} consumption={gesamtVerbrauch} price={oStrom} rate={sel.strom} monthlyConsumption={monthlyConsumption} autoplay={intro.stage === "race"} autarkie={autarkie} />
             <ResultActions copied={copied} onCopy={handleCopy} onForward={handleNativeShare} onWhatsApp={handleWhatsApp} onReset={restart}
               onSave={authState.status === "anon" ? oeffneAnmeldung : handleSave} saveLabel={saved ? "Gespeichert" : saving ? "Speichert …" : "Speichern"} saveDisabled={authState.status === "loading" || saving || saved} />
             {authState.status === "authed" && savedCalcId && <p><Link href="/dashboard">Meine Berechnungen</Link></p>}

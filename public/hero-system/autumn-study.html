@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Herbst bis Winter · Solar Check</title>
+  <style>
+    body{margin:0;background:#f6f5f1;color:#26332b;font-family:system-ui,sans-serif}
+    .study-controls{position:relative;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;padding:20px 28px;background:#f6f5f1;color:#26332b}
+    .study-controls h1{font-size:18px;letter-spacing:normal;line-height:1.2;margin:0}.study-controls label{display:grid;gap:6px;font-size:13px}.study-controls input{width:200px;accent-color:#835728}
+    .study-controls button,.study-controls select{font:inherit;padding:8px 12px;border:1px solid #c6c7bf;border-radius:7px;background:white;color:#26332b}
+    .study-note{margin:0;padding:12px 28px;font-size:13px;line-height:1.5;color:#62675d}
+    #study .hero{height:min(75vh,740px)!important;min-height:470px!important}#study .scene{inset:0}
+    @media(max-width:600px){.study-controls{padding:16px;gap:14px}.study-controls h1{width:100%}.study-controls input{width:150px}#study .hero{height:62vh!important;min-height:420px!important}.study-note{padding:12px 16px}}
+  </style>
+</head>
+<body>
+  <header class="study-controls">
+    <h1>Herbst → Winter</h1>
+    <label>Datum · <output id="date-label"></output><input id="date" aria-label="Datum" type="range" min="0" max="91" step="1" value="0"></label>
+    <label>Wind · <output id="wind-label"></output><input id="wind" aria-label="Windstärke" type="range" min="0" max="90" value="12"></label>
+    <label>Windrichtung<select id="direction"><option value="270">Nach rechts</option><option value="90">Nach links</option></select></label>
+    <button id="gust" type="button">Windböe</button>
+    <button id="today" type="button">Heute</button>
+    <button id="pause" type="button" aria-pressed="false">Bewegung pausieren</button>
+  </header>
+  <main id="study" class="solar-page"><section class="hero" aria-label="Jahreszeitenvorschau"><div id="scene-slot"></div></section></main>
+  <p class="study-note">Lokale Vorschau mit stilisierter Linde und Ahorn. Der Regler zeigt Mitte September bis Mitte Dezember. Färbung und Laubverlust folgen einem gestalterischen Jahresverlauf; das Wetter lässt sich hier zum Vergleichen einstellen.</p>
+  <script type="module">
+    import {mountHeroStage} from './dist/hero-stage.js';
+    import {sceneState} from './dist/scene-state.js';
+    const page = new DOMParser().parseFromString(await fetch('/atlas-design-preview/index.html').then(r => r.text()), 'text/html');
+    for (const style of page.querySelectorAll('style,link[rel=stylesheet]')) {
+      if (!style.getAttribute('href')?.startsWith('/api/')) document.head.prepend(style.cloneNode(true));
+    }
+    const scene = page.querySelector('.scene').cloneNode(true);
+    document.querySelector('#scene-slot').replaceWith(scene);
+    const root = document.querySelector('#study'), stage = root.querySelector('.hero');
+    const dateInput = document.querySelector('#date'), windInput = document.querySelector('#wind'), direction = document.querySelector('#direction');
+    const year = new Date().getFullYear(), start = Date.UTC(year, 8, 15, 11);
+    dateInput.value=String(Math.max(0,Math.min(91,(Date.now()-start)/86400000)));
+    const formatter = new Intl.DateTimeFormat('de-DE', {timeZone:'Europe/Berlin',day:'numeric',month:'long'});
+    function state() {
+      const selected = new Date(start + Number(dateInput.value) * 86400000);
+      // Keep the hour fixed while the calendar advances.
+      const date = new Date(Date.UTC(year, selected.getUTCMonth(), selected.getUTCDate(), 11));
+      document.querySelector('#date-label').textContent = formatter.format(date);
+      document.querySelector('#wind-label').textContent = windInput.value + ' km/h';
+      return sceneState(date,{lat:49.78,lon:9.88},{cloud:28,code:2,rain:0,wind:Number(windInput.value),direction:Number(direction.value)});
+    }
+    const api = mountHeroStage({root,stage,scene,state:state(),layout:{panels:'3d',foreground:'branch'},assets:{moonTextureUrl:'/hero-system/moon-lroc-1k.jpg'}});
+    for(const input of [dateInput,windInput,direction]) input.addEventListener('input',()=>api.update({state:state()}));
+    document.querySelector('#gust').addEventListener('click',()=>api.triggerGust());
+    document.querySelector('#today').addEventListener('click',()=>{dateInput.value=String(Math.max(0,Math.min(91,(Date.now()-start)/86400000)));api.update({state:state()});});
+    document.querySelector('#pause').addEventListener('click',event=>{const button=event.currentTarget,paused=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(paused));button.textContent=paused?'Bewegung fortsetzen':'Bewegung pausieren';api.update({motion:!paused});});
+    window.addEventListener('pagehide',()=>api.dispose(),{once:true});
+  </script>
+</body>
+</html>

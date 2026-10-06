@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
+import { createPortal } from "react-dom";
+import { usePageActionLayout } from "./calculator/usePageActionLayout";
+import { ModalSticky, useInModal } from "./Modal";
 
 /**
  * Klebende Aktionsleiste am unteren Rand — die ein bis zwei Wege, die eine lange
@@ -69,6 +72,8 @@ export default function StickyCta({
   const [hidden, setHidden] = useState(false);
   const [gescrollt, setGescrollt] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const layout = usePageActionLayout(ref);
+  const inModal = useInModal();
 
   useEffect(() => {
     // ZWEI Halte-Marken, und die zweite ist die verlässliche.
@@ -139,10 +144,11 @@ export default function StickyCta({
     hyphens: "auto",
   };
 
-  return (
+  const bar = (
     <div
-      ref={ref}
+      className={layout?.className}
       aria-hidden={!sichtbar}
+      inert={!sichtbar}
       style={{
         position: "fixed",
         left: 0,
@@ -160,12 +166,15 @@ export default function StickyCta({
         // ausblendet. Der Verlauf allein reicht, wenn er lang genug ist:
         // 64 px Auslauf über den Knöpfen statt 24.
         padding: "64px 12px calc(12px + env(safe-area-inset-bottom))",
+        ...layout?.style,
+        ...(layout?.style.width ? { paddingInline: 0 } : {}),
         transform: sichtbar ? "none" : "translateY(130%)",
         transition: "transform 0.28s ease",
         pointerEvents: sichtbar ? "auto" : "none",
+        ...(inModal ? { position: "static", left: "auto", right: "auto", transform: "none", padding: 0 } : {}),
       }}
     >
-      <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", gap: 8 }}>
+      <div style={{ maxWidth: layout?.style.width ? "none" : 640, margin: "0 auto", display: "flex", gap: 8 }}>
         <a
           href={primaer.href}
           style={{
@@ -240,4 +249,5 @@ export default function StickyCta({
       </div>
     </div>
   );
+  return <><div ref={ref} hidden />{inModal ? (sichtbar ? <ModalSticky>{bar}</ModalSticky> : null) : layout && createPortal(bar, document.body)}</>;
 }

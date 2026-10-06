@@ -9,3 +9,5 @@
 .sc-category-flag{background:#fff;color:#173b42;}
 .sc-category-flag:after{border-top-color:#fff;}
 .sc-category-flag[data-placement=below]{top:calc(100% + 10px);bottom:auto}.sc-category-flag[data-placement=below]:after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#fff}
+
+.sc-category-flag[data-placement=left]:after{top:calc(50% - 8px);bottom:auto;left:100%;right:auto;border:8px solid transparent;border-left-color:#fff}

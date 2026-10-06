@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh prepared park wind every hour
+
+[Timer]
+OnCalendar=*-*-* *:12:00
+RandomizedDelaySec=90
+Persistent=true
+Unit=solar-check-park-weather.service
+
+[Install]
+WantedBy=timers.target

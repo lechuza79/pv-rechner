@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createCache, clampAbsoluteRange } from "../../../../lib/energy-api";
 import { rateLimit } from "../../../../lib/rate-limit";
 import {
@@ -6,6 +6,7 @@ import {
   NuclearImportDataError,
   type NuclearImportResponse,
 } from "../../../../lib/nuclear-import";
+import { ladeLetztenStand, speichereLetztenStand } from "../../../../lib/energy-letzter-stand";
 
 // ─── Cache ──────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,8 @@ export async function GET(req: NextRequest) {
   try {
     const response = await computeNuclearImport(startStr, endStr, rangeHours);
     store.set(cacheKey, response);
+    // After the response: the copy is for the next outage (see energy-letzter-stand).
+    if (response.data.length > 0) after(() => speichereLetztenStand("nuclear-import", cacheKey, response));
 
     const maxAge = isPast ? 2592000 : 600; // 30 days for past periods
     return NextResponse.json(response, {
@@ -68,10 +71,12 @@ export async function GET(req: NextRequest) {
     if (!(e instanceof NuclearImportDataError)) {
       console.error("Nuclear import fetch error:", e);
     }
-    // Return stale cached data if available
-    const stale = store.getStale(cacheKey);
-    if (stale) {
-      return NextResponse.json(stale, {
+    // Newest copy we have: this instance's memory first, then the durable copy
+    // that survives cold starts. Marked stale so the page can say why it is old.
+    const stale =
+      store.getStale(cacheKey) ?? (await ladeLetztenStand<NuclearImportResponse>("nuclear-import", cacheKey));
+    if (stale && stale.data.length > 0) {
+      return NextResponse.json({ ...stale, stale: true }, {
         headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
       });
     }

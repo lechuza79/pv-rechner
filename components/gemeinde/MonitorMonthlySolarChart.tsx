@@ -1,11 +1,13 @@
 'use client';
 import {useEffect,useState,useRef} from 'react';
-import {IconChevronLeft,IconChevronRight,IconPause,IconPlay,IconRefresh} from '../Icons';
+import {IconPause,IconPlay,IconRefresh} from '../Icons';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
 import {MonthlySolarRadial} from '../charts/MonthlySolarRadial';
 import {EXPORT_IGNORE_ATTR,EXPORT_ONLY_ATTR} from '../../lib/export-markers';
 import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
+import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
+import {WidgetStepper,WidgetIconButton,WidgetToolbar,widgetDayLabel} from '../dashboard/WidgetControls';
 import {SOLAR_DAY_MS, solarAnimationFrame} from '../../lib/monthly-solar-animation';
 import styles from './MonitorMonthlySolarChart.module.css';
 
@@ -55,16 +57,16 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  const selectedIndex=data.days.findIndex(day=>day.date===selected);
  const shiftDay=(direction:number)=>{const index=selectedIndex>=0?selectedIndex:data.days.findIndex(day=>day.date===data.peakDay);const next=Math.max(0,Math.min(data.days.length-1,index+direction));if(data.days[next])chooseDay(data.days[next].date)};
  const controls=<div className={styles.settings} {...{[EXPORT_IGNORE_ATTR]:''}}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={onMonthChange} stepper options={months.map(item=>({value:item.month,label:formatStoryDate(item.month)}))}/></div>;
- const footer=<div className={styles.footer} {...{[EXPORT_IGNORE_ATTR]:''}}><div className={styles.dayControls}><button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)} disabled={selectedIndex<=0}><IconChevronLeft size={16}/></button><button type="button" className={styles.bestDay} data-selected={focused||undefined} onClick={()=>chooseDay(data.peakDay)}>{playing&&active?<span>{formatStoryDate(active.date)}</span>:focused&&active?<><span>Bester Tag</span><small>{formatStoryDate(active.date)}</small></>:<span>Bester Tag</span>}</button><button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)} disabled={selectedIndex<0||selectedIndex>=data.days.length-1}><IconChevronRight size={16}/></button></div><div className={styles.transport}><button type="button" aria-label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}</button><button type="button" aria-label="Zurücksetzen" onClick={clearDay}><IconRefresh size={14}/></button></div></div>;
- return <div ref={exportHost} data-chart-animation="month" data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<>{controls}<p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:'block'}} style={{display:'none'}}>{formatStoryDate(data.month)}{focused&&gezeigterTag?` · ${formatStoryDate(gezeigterTag.date)}`:''} · modelliert</p></>}
-  <MonthlySolarRadial animationSample={exportTime!==null?(frame!==null?solarAnimationFrame(data.days.map(day=>day.mwh),exportTime):{index:data.days.length-1,progress:1,value:data.totalMwh}):undefined} data={data} layout="monitor" compact={compact} displayDate={displayDate} frame={frame} playing={playing} focused={focused} onHover={setHovered} onChoose={chooseDay} classes={styles}/>
-  {!compact&&footer}
+ const footer=<div className={styles.footer} {...{[EXPORT_IGNORE_ATTR]:''}}><WidgetStepper label="Tag" previousLabel="Vorheriger Tag" nextLabel="Nächster Tag" onPrevious={()=>shiftDay(-1)} onNext={()=>shiftDay(1)} previousDisabled={selectedIndex<=0} nextDisabled={selectedIndex<0||selectedIndex>=data.days.length-1}><button type="button" aria-label="Besten Tag anzeigen" onClick={()=>chooseDay(data.peakDay)}>{widgetDayLabel(focused?active.date:data.peakDay,data.peakDay,focused,formatStoryDate)}</button></WidgetStepper><div className={styles.transport}><WidgetIconButton label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={16}/>:<IconPlay size={16}/>}</WidgetIconButton><WidgetIconButton label="Zurücksetzen" onClick={clearDay}><IconRefresh size={16}/></WidgetIconButton></div></div>;
+ return <div ref={exportHost} data-chart-animation="month" data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<><WidgetToolbar>{controls}{footer}</WidgetToolbar><p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:'block'}} style={{display:'none'}}>{formatStoryDate(data.month)}{focused&&gezeigterTag?` · ${formatStoryDate(gezeigterTag.date)}`:''} · modelliert</p></>}
+  <MonthlySolarRadial artwork={compact} animationSample={exportTime!==null?(frame!==null?solarAnimationFrame(data.days.map(day=>day.mwh),exportTime):{index:data.days.length-1,progress:1,value:data.totalMwh}):undefined} data={data} layout="monitor" compact={compact} displayDate={displayDate} frame={frame} playing={playing} focused={focused} onHover={setHovered} onChoose={chooseDay} classes={styles}/>
  </div>;
 }
 
 export function MonitorMonthlySolarChart({data,datasets=[data],onPeriodChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;datasets?:SolarMonth[];onPeriodChange?:(month:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}){
+ const presentation=useWidgetPresentation();
  const [month,setMonth]=useState(data.month);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={presentation.autoplay??autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
 }
 export default MonitorMonthlySolarChart;

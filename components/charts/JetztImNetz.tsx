@@ -28,10 +28,16 @@ import { v, space, pad } from "../../lib/theme";
 import { LoadingDots } from "../LoadingDots";
 import JetztDonut, { jetztAusReihe } from "./JetztDonut";
 import ErzeugungWidget from "../ErzeugungWidget";
+import { quellenHinweis } from "../../lib/energy-ersatzstand";
 
 export default function JetztImNetz() {
-  const { data, loading } = useGenerationMix("de", 24);
+  const { data, loading, error } = useGenerationMix("de", 24);
+  // Energy-Charts down: the route serves our last stored copy. Every sentence
+  // below then speaks in the past tense — "gerade" about a moment hours ago
+  // would be exactly the claim this block must not make.
+  const ersatz = data.stale === true;
   const werte = jetztAusReihe(data.data);
+  const hinweis = quellenHinweis(data, werte?.ts);
   const stats = useMemo(() => calcPeriodStats(data.data, data.resolution), [data.data, data.resolution]);
 
   const zeit = werte
@@ -82,14 +88,21 @@ export default function JetztImNetz() {
         Der Strommix gerade jetzt
       </h2>
 
+      {/* Energy-Charts down: either SMARD's live numbers or our stored copy. */}
+      {hinweis && (
+        <p role="status" style={{ ...satz, margin: `0 0 ${space.sm}px`, color: v("--color-text-muted") }}>
+          {hinweis}
+        </p>
+      )}
+
       {/* Einordnung ÜBER den Karten */}
       {werte && groesster && (
         <p style={{ ...satz, margin: `0 0 ${space.md}px` }}>
-          Gerade decken erneuerbare Energien{" "}
+          {ersatz ? "Zu diesem Zeitpunkt deckten" : "Gerade decken"} erneuerbare Energien{" "}
           <strong style={{ color: v("--color-text-primary"), fontFamily: v("--font-mono") }}>
             {anteilZahl(werte.eeSharePct)} %
           </strong>{" "}
-          der deutschen Stromerzeugung. Größter Einzelträger ist{" "}
+          der deutschen Stromerzeugung. Größter Einzelträger {ersatz ? "war" : "ist"}{" "}
           <strong style={{ color: v("--color-text-primary") }}>{groesster.label}</strong> mit{" "}
           <span style={{ fontFamily: v("--font-mono") }}>
             {anteilZahl((groesster.value / werte.totalMw) * 100)} %
@@ -131,7 +144,17 @@ export default function JetztImNetz() {
             {/* 144 statt 160: Das Radial daneben zeichnet bei Größe 160 nur bis
                 Radius 72, sein sichtbarer Kreis misst also 144. Gleiche
                 Leinwandgröße hieße hier ungleich große Ringe. */}
-            {loading && !werte ? <LoadingDots /> : <JetztDonut data={data.data} size={144} />}
+            {loading && !werte ? (
+              <LoadingDots />
+            ) : !werte && error ? (
+              // Nothing to show at all (no live data, no stored copy): say so
+              // instead of leaving an empty frame that looks broken.
+              <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), textAlign: "center" }}>
+                Die Erzeugungsdaten sind gerade nicht erreichbar.
+              </span>
+            ) : (
+              <JetztDonut data={data.data} size={144} />
+            )}
           </div>
         </div>
 
@@ -147,13 +170,13 @@ export default function JetztImNetz() {
       {/* Einordnung UNTER den Karten: der Moment gegen den Tag */}
       {abweichung != null && mittel != null && (
         <p style={{ ...satz, margin: `${space.md}px 0 0` }}>
-          Über die letzten 24 Stunden gemittelt waren es{" "}
+          {ersatz ? "Über die 24 Stunden davor" : "Über die letzten 24 Stunden"} gemittelt waren es{" "}
           <span style={{ fontFamily: v("--font-mono") }}>{anteilZahl(mittel)} %</span> —{" "}
           {Math.abs(abweichung) < 3
             ? "der Moment entspricht also ungefähr dem Tagesschnitt."
             : abweichung > 0
-              ? "gerade liegt der Anteil also höher als im Tagesschnitt, typisch für die Mittagsstunden mit voller Solarleistung."
-              : "gerade liegt der Anteil also niedriger als im Tagesschnitt — nachts und bei Flaute übernehmen steuerbare Kraftwerke."}
+              ? `${ersatz ? "zu diesem Zeitpunkt lag" : "gerade liegt"} der Anteil also höher als im Tagesschnitt, typisch für die Mittagsstunden mit voller Solarleistung.`
+              : `${ersatz ? "zu diesem Zeitpunkt lag" : "gerade liegt"} der Anteil also niedriger als im Tagesschnitt — nachts und bei Flaute übernehmen steuerbare Kraftwerke.`}
         </p>
       )}
     </div>

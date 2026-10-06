@@ -76,7 +76,7 @@ export function consumerEnergy(basis: PvConsumerBasis, draft: PvConsumerValues) 
 }
 
 /** Same energy and cash-flow models as PVRechner; no UI or network dependencies. */
-export function calculatePvConsumerBenefit(basis: PvConsumerBasis, draft: PvConsumerValues): number {
+export function calculatePvConsumerResult(basis: PvConsumerBasis, draft: PvConsumerValues) {
   const { heat, cooling, consumption, selfConsumption: ev } = consumerEnergy(basis, draft);
   const mode = vollEinspeisungGesperrt({ wp: draft.wp, ea: draft.ea, speicherKwh: basis.storageKwh }) && basis.feedInMode === 'voll' ? 'teil' : basis.feedInMode;
   const rates = basis.feedInRates;
@@ -85,7 +85,12 @@ export function calculatePvConsumerBenefit(basis: PvConsumerBasis, draft: PvCons
   const market = basis.regime === 'heute' || mode === 'aus' ? null : calculatePvMarketProfile(basis, mode, profile);
   const years = market ? einspeiseVerlauf({ regime: basis.regime, kwp: basis.kwp, inbetriebnahmeJahr: Math.max(2027, YEAR), heuteSatzCt: rate, marktErloes: basis.marketRevenue, profilFaktor: market.profilFaktor, niveauCt: basis.marketValue }) : null;
   const scenario = SCENARIOS.find(item => item.id === basis.scenario) ?? SCENARIOS.find(item => item.id === 'realistic')!;
-  return calc({ kwp: basis.kwp, kosten: basis.cost, strompreis: basis.electricityPrice, eigenverbrauch: mode === 'voll' ? 0 : Math.min(ev + scenario.evDelta, 95, consumption / (basis.kwp * basis.yieldPerKwp) * 100), einspeisung: mode === 'aus' ? 0 : rate, stromSteigerung: scenario.strom, ertragKwp: basis.yieldPerKwp, monthly: basis.monthly, batteryReplace: basis.replacementCost, einspeiseModell: market && years ? { satzCtImJahr: (i: number) => years[i - 1]?.satzCt ?? 0, fixkostenImJahr: (i: number) => years[i - 1]?.fixkosten ?? 0, einspeiseAnteil: market.einspeiseAnteil } : undefined }).total;
+  return calc({ kwp: basis.kwp, kosten: basis.cost, strompreis: basis.electricityPrice, eigenverbrauch: mode === 'voll' ? 0 : Math.min(ev + scenario.evDelta, 95, consumption / (basis.kwp * basis.yieldPerKwp) * 100), einspeisung: mode === 'aus' ? 0 : rate, stromSteigerung: scenario.strom, ertragKwp: basis.yieldPerKwp, monthly: basis.monthly, batteryReplace: basis.replacementCost, einspeiseModell: market && years ? { satzCtImJahr: (i: number) => years[i - 1]?.satzCt ?? 0, fixkostenImJahr: (i: number) => years[i - 1]?.fixkosten ?? 0, einspeiseAnteil: market.einspeiseAnteil } : undefined });
+}
+
+/** Preserve the benefit-only API for consumer comparisons. */
+export function calculatePvConsumerBenefit(basis: PvConsumerBasis, draft: PvConsumerValues): number {
+  return calculatePvConsumerResult(basis, draft).total;
 }
 
 export function consumerPatch(kind: PvConsumerKind, draft: PvConsumerValues): Partial<PvConsumerValues> {

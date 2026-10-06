@@ -10,7 +10,7 @@ import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { atlasRobots } from "../../../../../lib/atlas-index";
 import { cityBySlug, slugify, isCityPublished, ATLAS_CITIES, fundingForFrom, cityIndexFreigegeben, foerderStadtUmleitung } from "../../../../../lib/atlas-cities";
-import { foerdertDach, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
+import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
@@ -22,7 +22,7 @@ import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
-import { foerderStadtMeta, nurAndereTechnikSatz } from "../../../../../lib/foerder-stadt-meta";
+import { foerderStadtMeta, nurAndereTechnikSatz, stadtseiteFall } from "../../../../../lib/foerder-stadt-meta";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -250,7 +250,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
 
   return (
     <div style={S.page}>
-      <div style={S.wrap}>
+      <div style={S.wrap} data-page-content>
         {/* Kein zusätzlicher Zurück-Pfeil über der Spur: Das Bundesland stand
             damit zweimal übereinander — einmal als Pfeil, einmal als Station.
             Wie im Atlas trägt allein die Spur die Navigation nach oben. */}
@@ -347,11 +347,15 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
-            : f.status === "aktiv" && !foerdertDach(f)
+            : stadtseiteFall(f) === "ohneDach"
             /* Laufendes Programm ohne Dach-PV (München: nur Balkonkraftwerke) —
                die Seite darf es nicht als Zuschuss für neue Solaranlagen
                ausgeben (siehe foerdertDach). */
             ? <>In {city.name} fördert das Programm <span style={S.strong}>„{f.name}“</span> derzeit {nurAndereTechnikSatz(f)} — für Dachanlagen gibt es dort keinen kommunalen Zuschuss. Bundesweit gilt die 0 % Mehrwertsteuer auf Kauf und Installation.</>
+            : stadtseiteFall(f) === "darlehen"
+            /* Ein Darlehen ist kein Zuschuss — das Wort fällt hier nicht
+               (Kaufungen, Betreiber-Entscheidung 01.10.2026). */
+            ? <>In {city.name} gibt es für neue Solaranlagen ein <span style={S.strong}>zinsloses Darlehen</span> über das Programm <span style={S.strong}>„{f.name}“</span> — der Betrag wird in Raten zurückgezahlt. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
             : f.status === "aktiv"
             /* Kein „die Stadt": Von den geförderten Orten sind die meisten
                Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
@@ -409,7 +413,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
                           In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
                           ans Netz gegangen — {tempo.vorjahr === 1 ? "im gesamten Vorjahr war es 1" : `im gesamten Jahr ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
-                          Wer den Zuschuss noch will, sollte den Antrag nicht aufschieben.
+                          Wer {stadtseiteFall(f) === "darlehen" ? "das Darlehen" : "den Zuschuss"} noch will, sollte den Antrag nicht aufschieben.
                         </span>
                       </div>
                     )}

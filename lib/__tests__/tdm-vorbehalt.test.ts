@@ -30,10 +30,10 @@ const ZITIERENDE = [
   // Die drei standen bis zum Audit am 17.08.2026 in der Sperrliste, weil sie
   // Training bedienen. Sie bedienen aber nicht NUR das: Google-Extended steuert
   // auch das Grounding in Gemini — also das Nachschlagen zur Antwortzeit, den
-  // Zitierfall selbst. Meta nennt neben dem Training ausdrücklich das
-  // Indexieren für Produkte, Diffbot baut einen Wissensgraphen mit Quellen.
+  // Zitierfall selbst. Diffbot baut einen Wissensgraphen mit Quellen.
+  // Meta-ExternalAgent stand hier bis 05.10.2026 und ist seitdem gesperrt
+  // (Betreiber-Entscheidung: 84 % des Verkehrs, ignorierte robots-Sperren).
   "Google-Extended",
-  "Meta-ExternalAgent",
   "Diffbot",
 ];
 

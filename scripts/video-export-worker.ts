@@ -51,7 +51,9 @@ function probe(file: string): Promise<{ duration: number; width: number; height:
 async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, unknown> }> {
   const def = VIDEO_WIDGETS[job.widget];
   if (!def || !checkVideoParams(job).ok) throw new Error("not_allowlisted");
-  const url = `${origin()}${def.embedPath(job)}?scVideoRender=1`;
+  const renderUrl = new URL(def.embedPath(job), origin());
+  renderUrl.searchParams.set("scVideoRender", "1");
+  const url = renderUrl.toString();
   const dir = await mkdtemp(path.join(tmpdir(), "sc-video-"));
   const browser = await chromium.launch({ headless: true });
   // Closing the browser cancels both rendering and download on timeout.
@@ -91,7 +93,7 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     const meta=await page.evaluate(widgetId=>window.__scVideoFrame!({widgetId,timeMs:0}),job.widget);
     const frames=Math.ceil(meta.durationMs/1000*fps);
     const file=path.join(dir,"out.mp4");
-    const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
+    const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","scale=trunc(iw/2)*2:trunc(ih/2)*2","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
     let encoderError="";
     encoder.stderr.on("data",chunk=>{encoderError+=chunk.toString();});
     const encoded=new Promise<void>((resolve,reject)=>{

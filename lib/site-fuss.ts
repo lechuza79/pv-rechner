@@ -73,6 +73,7 @@ export const FUSS_GRUPPEN: FussGruppe[] = [
       { href: "/methodik", label: "So rechnen wir" },
       { href: "/kontakt", label: "Kontakt" },
       { href: "/presse", label: "Medien & Creator" },
+      { href: "/fuer-organisationen/kommunen", label: "Für Kommunen" },
       { href: "/energie-widgets", label: "Widgets für deine Website" },
       { href: "/lizenz", label: "Nutzung & Lizenz" },
     ],
@@ -134,10 +135,11 @@ export const FUSS_SKRIPTE =
  * cloned from the page header by a tiny script (the design package's own way);
  * without script the brand shows as text.
  */
-export function siteFussHtml(): string {
+export function siteFussHtml(zwischen = ""): string {
   return (
     `<div data-sc-fuss>` +
     `<section class="sc-trust" data-sc-server aria-label="Unsere Grundlagen">${vertrauenInnenHtml()}</section>` +
+    zwischen +
     `<footer class="sc-footer" data-sc-server><div class="sc-footer-wrap"><a class="sc-footer-brand" href="/" aria-label="Solar Check – Startseite">solar-check.io</a>${fussInnenHtml()}</div></footer>` +
     `</div>` +
     `<script>(function(){var b=document.querySelector("footer[data-sc-server] .sc-footer-brand");function los(){var s=document.querySelector(".site-header .brand svg");if(!s||!b)return false;var k=s.cloneNode(true);k.setAttribute("width","220");k.querySelectorAll("[id]").forEach(function(e){var a=e.id,n="footer-"+a;e.id=n;k.querySelectorAll("*").forEach(function(x){[].slice.call(x.attributes).forEach(function(t){if(t.value.indexOf("#"+a+")")>=0)x.setAttribute(t.name,t.value.split("#"+a+")").join("#"+n+")"))})})});b.textContent="";b.append(k);return true}if(!los()){var o=new MutationObserver(function(){if(los())o.disconnect()});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){o.disconnect()},15000)}})();</script>` +

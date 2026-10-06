@@ -348,6 +348,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                 Verweisen Sie auf die laufende Ortsübersicht oder übernehmen Sie eine kurze Meldung mit Quellenlink. Ohne Anmeldung, frei
                 verwendbar und gern gekürzt.
               </p>
+              <p><a href="/fuer-organisationen/kommunen">Energiemonitor, Energie-Checks und Datenstories für Ihre Kommune</a></p>
             </div>
             <div>
               <button className="atlas-button" data-ranking-share="">

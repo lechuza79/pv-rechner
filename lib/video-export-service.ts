@@ -1,4 +1,5 @@
 import "server-only";
+import {raceSettingsFromPeriod} from "./race-settings";
 
 import { VIDEO_DESIGN_VERSION, VIDEO_LIMITS, VIDEO_TTL, type VideoExportParams } from "./video-export-config";
 import { callVideoFn, videoBackend } from "./video-export-db";
@@ -35,7 +36,7 @@ export async function resolveVideo(params: VideoExportParams): Promise<Resolved 
   if (params.widget === "regional-race") {
     const {loadRegionalRace} = await import("./regional-race-server");
     const {createHash} = await import("node:crypto");
-    const race=await loadRegionalRace(params.ags);
+    const race=await loadRegionalRace(params.ags,raceSettingsFromPeriod(params.period));
     if(!race) return null;
     const dataVersion=createHash("sha256").update(JSON.stringify({stand:race.stand,rows:race.rows,history:race.history})).digest("hex");
     return {params,place:race.region.name,dataVersion,cacheKey:renderCacheKey({...params,dataVersion,designVersion:VIDEO_DESIGN_VERSION}),label:`Solaranlagen im regionalen Vergleich · ${race.region.name}`};

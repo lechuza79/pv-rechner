@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "homepage:race": "node scripts/homepage-race-build.mjs",
-    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\"",
+    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\" && npm run kommunen:build",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
@@ -114,11 +114,14 @@
     "stories:refresh": "node scripts/story-refresh.mjs --fetch",
     "stories:prepare": "node --import tsx scripts/story-prepare.ts",
     "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts",
+    "bkw:katalog": "tsx scripts/bkw-katalog-sync.ts",
     "wp:katalog": "tsx scripts/wp-katalog-sync.ts",
     "kreise:pakete": "tsx --conditions=react-server scripts/kreis-paket.ts",
     "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts",
     "video:db": "tsx scripts/video-export-db.ts",
-    "video:worker": "tsx --conditions react-server scripts/video-export-worker.ts"
+    "video:worker": "tsx --conditions react-server scripts/video-export-worker.ts",
+    "kommunen:luecken": "tsx --conditions=react-server scripts/kommunen-luecken.ts",
+    "kommunen:build": "tsx scripts/kommunen-build.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
@@ -141,6 +144,7 @@
     "d3-array": "^3.2.4",
     "d3-shape": "^3.2.0",
     "embla-carousel-auto-scroll": "^8.6.0",
+    "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "mailparser": "^3.9.25",
     "mediabunny": "^1.60.0",

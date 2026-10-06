@@ -5,7 +5,7 @@
 .sc-waitlist-preview .intro>p:not(.eyebrow){font-size:18px;line-height:1.6;margin-bottom:24px}
 .sc-waitlist-preview .eyebrow{margin:0 0 18px}
 /* Match the approved homepage teaser badge. */
-.sc-waitlist-preview .hs-coming{display:inline-block;font-size:10px;line-height:1.5;padding:4px 8px;border:1px solid transparent;border-radius:20px;letter-spacing:0;background:#e8d5ff;color:#562581;font-weight:600}
+:is(.sc-waitlist-preview,.homepage-tool-teaser-heading) .hs-coming{display:inline-block;font-size:10px;line-height:1.5;padding:4px 8px;border:1px solid transparent;border-radius:20px;letter-spacing:0;background:#e8d5ff;color:#562581;font-weight:600}
 .sc-waitlist-jump{display:inline-flex;align-items:center;gap:20px;font-size:14px;font-weight:600;padding:10px 0;border-bottom:1px solid #173b4240}
 .sc-waitlist-jump:hover{border-color:currentColor}
 .sc-waitlist-art{position:relative;display:grid;place-items:center;isolation:isolate}
