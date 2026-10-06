@@ -30,7 +30,7 @@ import { abgleichen, organisationsDomain, type Belegungen, type Entscheidungen }
 import { impressumUrl, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 import {
   PERSONENART_NATUERLICH, PERSONENART_ORGANISATION, STATUS_IN_BETRIEB,
-  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
+  anschriftSchluessel, besterBeleg, beurteilen, abrufWiederholen, geschwisterWebsite, belegseiteTraegt, ENERGIE, traegtDomainwort, kontaktFelder, ortsWoerterAus, registerKandidaten, standVon, websiteFelder, websiteHerkunft,
   type Akteur, type Beleg, type Kandidat, type Kandidatenquelle, type Stand,
 } from "../lib/windbetreiber";
 import { MASTR_WIND_SQL } from "../lib/mastr-wind-sql";
@@ -684,6 +684,28 @@ async function belegseitenNachholen() {
   console.log(`${ok} von ${urls.size} Belegseiten gespeichert`);
 }
 
+/**
+ * Address proofs on a site with no energy at all, for reading by hand: a
+ * manager there is right (fund, bank, office, family farm), a neighbour in a
+ * business park is not — and no rule tells the two apart (121 cases measured,
+ * most of them managers; docs/lehren/kontakt-engine-fehler.md, class 57).
+ */
+async function anschriftGegenlesen() {
+  const c = await db();
+  const zeilen = await alle<Zeile>(c, "windbetreiber", SPALTEN, "mastr_nr", (q) => q.eq("aktiv", true).eq("website_beleg", "anschrift"));
+  const liste: unknown[] = [];
+  for (const z of zeilen) {
+    if (!z.website || !existsSync(impressumDatei(z.website))) continue;
+    const imp = JSON.parse(readFileSync(impressumDatei(z.website), "utf8")) as { text: string | null; startText?: string | null; impressum_url: string | null };
+    if (ENERGIE.test(`${imp.text ?? ""} ${imp.startText ?? ""}`) || traegtDomainwort(z.name, z.website)) continue;
+    liste.push({ mastr_nr: z.mastr_nr, name: z.name, website: z.website, anschrift: `${z.strasse ?? ""} ${z.hausnummer ?? ""}, ${z.plz ?? ""} ${z.ort ?? ""}`, impressum_url: imp.impressum_url, von_hand: vonHandEntschieden(z) });
+  }
+  const out = arg("out") ?? resolve(CACHE, "anschrift-gegenlesen.json");
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, JSON.stringify(liste, null, 1));
+  console.log(`${liste.length} Anschriftsbelege auf Seiten ohne Energiebezug zum Gegenlesen → ${out}`);
+}
+
 /** Same page, whatever the scheme, "www.", trailing slash or fragment. */
 function dieselbeSeite(a: string | null | undefined, b: string | null | undefined): boolean {
   const n = (u: string | null | undefined) => (u ?? "").replace(/^https?:\/\/(www\.)?/, "").replace(/#.*$/, "").replace(/\/+$/, "").toLowerCase();
@@ -945,6 +967,7 @@ async function main() {
   if (flag("stand")) return stand();
   if (flag("offen")) return offenListe();
   if (flag("belegseiten-nachholen")) return belegseitenNachholen();
+  if (flag("anschrift-gegenlesen")) return anschriftGegenlesen();
   if (flag("manuell")) return manuell();
   if (flag("keine")) return keine();
   if (flag("kein-kontakt")) return keinKontakt();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { geschwisterWebsite, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
+import { geschwisterWebsite, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -27,6 +27,11 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
   it("accepts a group subsidiary registered elsewhere only by its brand (EnBW)", () => {
     const b = impressumBelegt(IMPRESSUM.enbw, akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567"), "enbw.com");
     expect(b?.wie).toBe("marke");
+  });
+
+  it("knows the family firm on its own site (for the hand review of address proofs)", () => {
+    expect(traegtDomainwort("Brummernhenrich Regenerative Energie GmbH & Co. KG", "brummernhenrich.com")).toBe(true);
+    expect(traegtDomainwort("Windkraft Rühenfeld GmbH & Co. KG", "brummernhenrich.com")).toBe(false);
   });
 
   it("lets a short house-number range in the imprint cover the register's number", () => {

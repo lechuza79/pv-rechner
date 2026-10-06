@@ -682,3 +682,9 @@ export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: 
   const b = impressumBelegt(text, a, domain, ortsWoerter);
   return b && (b.wie !== "name" || vollerNameIn(text, name) || identifizierend(name, ortsWoerter)) ? b : null;
 }
+
+/** Does the operator's name carry a distinguishing word of the domain's label? (the family firm on its own site) */
+export function traegtDomainwort(name: string, domain: string): boolean {
+  const label = falten(domain.split(".")[0] ?? "").replace(/[^a-z0-9]/g, "");
+  return unterscheidendeWoerter(name).some((w) => w.length >= 4 && label.includes(w));
+}
