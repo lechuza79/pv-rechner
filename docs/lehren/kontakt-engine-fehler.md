@@ -415,6 +415,33 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Seitentitel) belegen weder Anschrift noch Registerpostfach; nur der eigene
   Name des Betreibers. 55 Zuordnungen zurückgenommen, in die Handprüfung.
 
+### 46. Projektgesellschaften ohne eigene Spur
+- **Anlass:** 06.10.2026 — Gesellschaften derselben Gruppe teilen Registeranschrift
+  und Registerpostfach; eine davon ist belegt, die anderen nennt kein Impressum
+  einzeln (ERG, ENERTRAG, EB-SIM, RWE). Die Handprüfung lehnte sie deshalb ab.
+- **Sicherung (Verwendung):** Ein Schwesterbetreiber trägt die Website mit, wenn
+  Registerpostfach UND Registeranschrift gleich sind und das Postfach auf genau
+  der belegten Website liegt — nie über eine Schwester, die selbst nur über eine
+  Schwester belegt ist. Entfällt der Beleg der Schwester, nimmt die Neubewertung
+  zurück. Von Hand entschiedene Fälle werden einzeln ausgegeben, nicht gezählt.
+
+### 47. Ein Postfach, das niemand als allgemein erkennt
+- **Anlass:** 06.10.2026, Kontakt-Restliste — 14 Websites mit sichtbarem
+  Postfach blieben ohne Kontakt: cs@, kundenservice@, info.berlin@, und ein
+  Gratispostfach im eigenen Impressum (die Rohbewertung nennt es „fremd").
+- **Sicherung (Verwendung):** Kundenservice- und Orts-Infopostfächer zählen als
+  allgemein (nie ein Personenname); ein Gratispostfach im eigenen Impressum zählt
+  als eigenes. Beides nur im Bestand, nicht in der geteilten Kontaktsuche
+  (Klasse 38).
+
+### 48. Ein Ort ohne Hausnummer, ein vertippter Umlaut
+- **Anlass:** 06.10.2026 — das Register schreibt „Luymühle" ohne Nummer, das
+  Impressum „Luyműhle 1"; fünf Gesellschaften blieben ohne Website.
+- **Sicherung (Verwendung):** „ű/ő" falten wie „ü/ö"; eine Registeranschrift ohne
+  Nummer passt auf die nummerierte im Impressum nur, wenn sie ein ORT ist (keine
+  Straßen-Endung wie -straße, -weg, -platz) — eine Straße ohne Nummer passte auf
+  jedes Haus darin.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
