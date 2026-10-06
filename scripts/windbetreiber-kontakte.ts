@@ -115,7 +115,11 @@ function impressumAlsSeite(domain: string): Seite[] {
   const digest = sha(html);
   const pfad = resolve(OUT, "gespeichert", domain, `${digest}.html`);
   if (!existsSync(pfad)) { mkdirSync(dirname(pfad), { recursive: true }); writeFileSync(pfad, html); }
-  return [{ url: imp.impressum_url, digest, path: pfad, kind: "html", valid: true, origin: "stored" }];
+  // Its own address (a fragment of the imprint's): stored under the imprint's
+  // URL it stood in for the live page, which was then never fetched — and the
+  // text has lost what only the HTML carries ("E-Mail schreiben" links,
+  // encoded addresses; mlk-wind.de, wbg-energie.de, 06.10.2026).
+  return [{ url: `${imp.impressum_url.replace(/#.*$/, "")}#text-der-website-pruefung`, digest, path: pfad, kind: "html", valid: true, origin: "stored" }];
 }
 
 /**

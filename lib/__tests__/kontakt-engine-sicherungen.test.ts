@@ -191,6 +191,15 @@ describe("Lückenlos — Website UND Kontakt, oder ein Vermerk von Hand", () => 
   });
 });
 
+describe("Klasse 26 — das gespeicherte Impressum ergänzt die Seite, ersetzt sie nicht", () => {
+  it("stores the imprint text under its own address, so the live page is still fetched", () => {
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    const f = k.slice(k.indexOf("function impressumAlsSeite("), k.indexOf("function bestandAus("));
+    expect(f).toMatch(/#text-der-website-pruefung/);
+    expect(f).not.toMatch(/\{ url: imp\.impressum_url, /);
+  });
+});
+
 describe("Klasse 5/14 — Berichte lügen nicht mit 0 MW", () => {
   it("a report without the register read fails instead of counting 0 MW", () => {
     const r = lies("scripts/windbetreiber-refresh.ts");
