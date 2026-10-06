@@ -130,9 +130,15 @@ type Kontext = { anbieter: string; selbst: string; titel: string; nav: string; s
 // A utility names itself as one. "Energie" alone is not enough — installers
 // call themselves "Sonnen-Energie GmbH".
 const VERSORGER_NAME =
-  /\b(?:Stadtwerke?|Gemeindewerke|Kreiswerke|Energieversorgung|Energieversorger|Elektrizit(?:ä|ae)tswerke?|(?:Ü|Ue)berlandwerk|Versorgungsbetriebe?|Energie-?\s*und\s*Wasserversorgung|Netzgesellschaft|Energienetze|Stromnetze?)\b/;
+  /\b(?:Stadtwerke?|Gemeindewerke|Kreiswerke|Energieversorgung|Energieversorger|Elektrizit(?:ä|ae)tswerke?|(?:Ü|Ue)berlandwerk|Versorgungsbetriebe?|Energie-?\s*und\s*Wasserversorgung|Netzgesellschaft)\b/;
 const VERSORGER_TITEL =
-  /\b(?:Stadtwerke?|Gemeindewerke|Kreiswerke|Energieversorger|Elektrizit(?:ä|ae)tswerke?|(?:Ü|Ue)berlandwerk|Versorgungsbetriebe?|Netzgesellschaft|Energienetze|Stromnetze?)\b/;
+  /\b(?:Stadtwerke?|Gemeindewerke|Kreiswerke|Energieversorger|Elektrizit(?:ä|ae)tswerke?|(?:Ü|Ue)berlandwerk|Versorgungsbetriebe?|Netzgesellschaft)\b/;
+// A grid operator says so: "Ihr Verteilnetzbetreiber", "plant, baut und
+// betreibt … die Vernetzung in Sachen Strom, Erdgas" (energienetze-offenbach.de).
+// Not "Energienetze" in a name: "Energienetze Deutschland GmbH" sells PV
+// systems (measured).
+const NETZBETREIBER_SELBST =
+  /\b(?:Ihr\s+)?(?:Verteil)?[Nn]etzbetreiber\s+f(?:ü|ue)r\b|\bist\s+(?:Ihr\s+|der\s+)?(?:Verteil)?[Nn]etzbetreiber\b|\bbetreibt\b[^.]{0,80}\b(?:Netze?|Vernetzung)\b|\bNetze\s+f(?:ü|ue)r\s+Strom/i;
 
 // Large regional utilities do not call themselves Stadtwerke. What only a
 // supplier or grid operator offers is BILLING AND METERING: meter readings,
@@ -199,7 +205,7 @@ const BEHOERDE_TITEL =
 // (buergerprojekt-solar-dachau.de, stromaufwaerts-boerde.de — measured).
 const BUERGERPROJEKT = /\bB(?:ü|ue)rger(?:projekt|solar|solaranlage|energie|initiative)\w*|\b(?:Solar|Energie)lotsen\b/i;
 const AGENTUR =
-  /\b(?:Klima(?:schutz)?-?agentur|Energieagentur|Klimaschutzmanagement|Solar(?:potenzial|dach)?kataster|Solaratlas|Energieatlas|Geoportal)\b/i;
+  /\b(?:Klima(?:schutz)?-?agentur|Energieagentur|Klimaschutzmanagement|Klima-?[Zz]entrum|Zentrum\s+f(?:ü|ue)r\s+[^.\n]{0,40}Klimaschutz|Eigenbetrieb\s+Klima|Solar(?:potenzial|dach)?kataster|Solaratlas|Energieatlas|Geoportal)\b/i;
 
 // A medium in its provider name: "pv magazine group GmbH & Co. KG" (measured).
 // Not "Magazin" alone: installers carry a "PV-Magazin" in their menu
@@ -244,6 +250,12 @@ const HERSTELLER = /\b(?:wir\s+sind|als)\s+(?:ein(?:er)?\s+)?(?:[\w-]+\s+)?Herst
  * the imprint and not from a sentence somewhere on the page.
  */
 export const KEIN_BETRIEB_REGELN: Regel[] = [
+  // Public bodies first: a district's "Kreiswerke … Eigenbetrieb Klima &
+  // Energie" and a "Zentrum für nachhaltige Energieversorgung" name supplier
+  // words but are agencies (measured) — and an agency is no candidate for the
+  // utility list.
+  { klasse: "behoerde", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(BEHOERDE) ?? k.anbieter.match(KOMMUNE_ALS_ANBIETER) },
+  { klasse: "behoerde", wo: "Anbieter/Selbstbeschreibung", test: (k) => (k.anbieter + "\n" + k.selbst).match(AGENTUR) },
   { klasse: "versorger", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(VERSORGER_NAME) },
   // The TITLE only: a description says what a firm does ("besonders effiziente
   // Energieversorgung" — an engineering office, measured), the title says who
@@ -253,6 +265,7 @@ export const KEIN_BETRIEB_REGELN: Regel[] = [
   // auf Basis 100 % Erneuerbare" — measured); "Energieversorger" says who it is.
   { klasse: "versorger", wo: "Seitentitel", test: (k) => k.titel.match(VERSORGER_TITEL) },
   { klasse: "versorger", wo: "Startseite (Abrechnung und Zähler)", test: (k) => versorgerDienste(k.start) },
+  { klasse: "versorger", wo: "Selbstbeschreibung", test: (k) => k.selbst.match(NETZBETREIBER_SELBST) },
   { klasse: "medium", wo: "Impressum", test: (k) => k.imp.match(MEDIUM) },
   { klasse: "medium", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(MEDIUM_NAME) },
   // An Innung is a public-law body of the trade, not a business
@@ -262,8 +275,6 @@ export const KEIN_BETRIEB_REGELN: Regel[] = [
   { klasse: "verband", wo: "Registerart im Impressum", test: (k) => k.imp.match(VEREIN_REGISTER) },
   { klasse: "verband", wo: "Startseite", test: (k) => k.start.match(EHRENAMT) },
   { klasse: "verband", wo: "Anbieter/Selbstbeschreibung", test: (k) => (k.anbieter + "\n" + k.selbst).match(BUERGERPROJEKT) },
-  { klasse: "behoerde", wo: "Anbieter im Impressum", test: (k) => k.anbieter.match(BEHOERDE) ?? k.anbieter.match(KOMMUNE_ALS_ANBIETER) },
-  { klasse: "behoerde", wo: "Anbieter/Selbstbeschreibung", test: (k) => (k.anbieter + "\n" + k.selbst).match(AGENTUR) },
   { klasse: "behoerde", wo: "Seitentitel", test: (k) => k.titel.match(BEHOERDE_TITEL) },
   { klasse: "portal", wo: "Anbieter/Selbstbeschreibung", test: (k) => (k.anbieter + "\n" + k.selbst).match(PORTAL_NAME) },
   { klasse: "portal", wo: "Domain", test: (k) => k.domain.match(PORTAL_DOMAIN) },

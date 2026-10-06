@@ -137,9 +137,24 @@ describe("cases the old whole-page patterns got wrong (third sample, 06.10.2026)
     expect(u).toMatchObject({ art: "kein-betrieb", klasse: "versorger" });
   });
 
-  it("a grid company named in its imprint", () => {
-    const u = urteil("netz-x.de", seite("Startseite", "", "Photovoltaik Einspeisung Installation Ihrer PV-Anlage"), "Impressum Energienetze Mittelrhein GmbH & Co. KG Schützenstraße 80 56068 Koblenz");
+  it("a grid operator in its self-description (energienetze-offenbach.de)", () => {
+    const u = urteil("netz-x.de", seite("ENO", "Die Energienetze Offenbach GmbH plant, baut und betreibt in der Region die Vernetzung in Sachen Strom, Erdgas, Wasser.", "Photovoltaik Einspeisung Installation Ihrer PV-Anlage"));
     expect(u).toMatchObject({ art: "kein-betrieb", klasse: "versorger" });
+  });
+
+  it("'Energienetze' in a name is no grid operator (energienetzedeutschland.de)", () => {
+    const u = urteil("energienetzedeutschland.de", seite("Solaranlage mit Speicher | Bayern | Energienetze Deutschland", "", "Photovoltaik Montage und Inbetriebnahme"), "Angaben gemäß § 5 TMG Energienetze Deutschland GmbH Fürholzener Str. 12-14 85386 Eching");
+    expect(u.art).toBe("betrieb");
+  });
+
+  it("a district's 'Kreiswerke … Eigenbetrieb Klima & Energie' is an agency, not a utility", () => {
+    const u = urteil("unser-klima-cochem-zell.de", seite("Eigenbetrieb Klima & Energie", "", "Photovoltaik"), "Angaben gemäß § 5 TMG: Kreiswerke Cochem-Zell Eigenbetrieb Klima & Energie Enderplatz 2 56812 Cochem Vertreten durch Landrätin");
+    expect(u).toMatchObject({ klasse: "behoerde" });
+  });
+
+  it("a 'Zentrum für … Energieversorgung, Klimaschutz' is an agency (zekk-ow.de)", () => {
+    const u = urteil("zekk-ow.de", seite("ZEKK", "", "Photovoltaik"), "Angaben gemäß den gesetzlichen Vorschriften Zentrum für nachhaltige Energieversorgung, Klimaschutz und Klimafolgenanpassung (ZEKK) gGmbH Alte Ulmer Str. 2 89522 Heidenheim");
+    expect(u).toMatchObject({ klasse: "behoerde" });
   });
 
   it("a solar map named in its title", () => {

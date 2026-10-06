@@ -932,7 +932,7 @@ async function belegen(
   // MEASURE FIRST, WRITE AFTER READING. --nur-messen writes every verdict to
   // a protocol file and nothing to the database; --aus applies a protocol
   // without fetching the pages a second time.
-  protokoll: { nurMessen: boolean; pfad?: string; aus?: string },
+  protokoll: { nurMessen: boolean; pfad?: string; aus?: string; nur?: Set<string> },
 ): Promise<void> {
   const sb = await makeClient();
   const ddl = `
@@ -956,6 +956,8 @@ async function belegen(
   const offen = alle
     .filter((r) => r.art === "betrieb" || (r.art === "kein-betrieb" && ALTE_WORTREGEL.test(r.art_grund ?? "")))
     .filter((r) => erneut || !r.art_beleg_at)
+    // A re-measurement of selected rows after a rule change (one domain per line).
+    .filter((r) => !protokoll.nur || protokoll.nur.has(r.domain))
     // Applying a protocol: only rows still in the state they were measured in.
     .filter((r) => !ausProtokoll || ausProtokoll.get(r.domain)?.war === r.art)
     .slice(0, limit);
@@ -2003,7 +2005,7 @@ async function main(): Promise<void> {
         "  --art [--dry]                    regional oder überregional — gemessen an der Streuung\n" +
         "  --profil [--limit N] [--refetch] [--dry]\n" +
         "                                   Startseite + Impressum lesen\n" +
-        "  --belegen [--limit N] [--refetch] [--dry] [--nur-messen] [--protokoll P] [--aus P]\n" +
+        "  --belegen [--limit N] [--refetch] [--dry] [--nur-messen] [--protokoll P] [--aus P] [--nur DATEI]\n" +
         "                                   jeden „betrieb\" am Impressum neu belegen;\n" +
         "                                   Versorger und Medien an ihre Liste übergeben\n" +
         "  --kontakt [--limit N] [--refetch] [--dry]\n" +
@@ -2040,6 +2042,7 @@ async function main(): Promise<void> {
       nurMessen: argv.includes("--nur-messen"),
       pfad: textArg("protokoll"),
       aus: textArg("aus"),
+      nur: textArg("nur") ? new Set(readFileSync(textArg("nur")!, "utf8").split("\n").map((z) => z.trim()).filter(Boolean)) : undefined,
     });
   }
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
