@@ -442,6 +442,39 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Straßen-Endung wie -straße, -weg, -platz) — eine Straße ohne Nummer passte auf
   jedes Haus darin.
 
+### 49. Ein Wort, das zählt oder nennt, als Marke
+- **Anlass:** 06.10.2026, Handprüfung — „Vierte Volkswind" fand die eigene
+  Website nicht, weil „vierte" als Marke galt (nur erste bis dritte waren
+  Gattungswörter); „Green City Energy" belegte die Seite des Green City e.V.,
+  einer anderen Rechtsperson, über das Wort „city" in der Navigation.
+- **Sicherung (Verwendung):** Ordnungszahlen jeder Form sind nie Marke; „city"
+  ist ein Gattungswort. Vier Zuordnungen zurückgenommen, eine neu belegt.
+
+### 50. Eine Himmelsrichtung als bloße Gattung abgeschnitten
+- **Anlass:** 06.10.2026 — „Windpark Kattrepel-Nord" wurde über eine Seite zu
+  „Kattrepel Erweiterung II" belegt, einem anderen Park: Beim Kürzen des Namens
+  fiel das „Nord" als Gattungswort weg.
+- **Sicherung (Verwendung):** Eine Himmelsrichtung am Namensende bleibt im
+  Namenskern; als Marke bleibt sie Gattung.
+
+### 51. Ausländische Postleitzahlen
+- **Anlass:** 06.10.2026 — dänische, österreichische und Schweizer Betreiber
+  haben vierstellige Postleitzahlen; die Anschriftsprüfung verlangte fünf und
+  prüfte sie nie.
+- **Sicherung (Verwendung):** Vier oder fünf Stellen, weiterhin nur direkt hinter
+  Straße und Hausnummer.
+
+### 52. Eine Handentscheidung, die nach einer Regeländerung niemand mehr ansieht
+- **Anlass:** 06.10.2026 — die Neubewertung ließ von Hand übernommene Websites
+  aus, um keine Entscheidung zu überschreiben. Damit blieben Fehlübernahmen
+  (Klassen 49, 50) stehen, und niemand erfuhr davon. Ein erster Versuch über die
+  gespeicherte Belegstelle meldete 70 Fehlalarme: Die Stelle ist ein Ausschnitt,
+  bei Anschriften oft der falsche.
+- **Sicherung (Verwendung):** Die Seite, auf der ein Mensch den Beleg fand, wird
+  gespeichert; die Neubewertung hält die Handfälle mit derselben Regel dagegen
+  und MELDET Abweichungen, ändert aber nichts. Fehlt die Seite, sagt sie „nicht
+  nachprüfbar" mit Zahl.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
