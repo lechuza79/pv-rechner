@@ -216,7 +216,14 @@ export function impressumUrl(html: string, basis: string): string | null {
     else if (/anbieterkennzeichnung|rechtliche/.test(h + " " + text)) p = 50;
     if (!p) continue;
     try {
-      treffer.push({ url: new URL(href, basis).toString(), punkte: p });
+      const ziel = new URL(href, basis);
+      // The site's own imprint before a link to another domain: E-Werk
+      // Mittelbaden links its cloud subsidiary's imprint first, and the own
+      // one was never read (wind operators, 06.10.2026).
+      const host = (u: URL) => u.hostname.replace(/^www\./, "");
+      const eigen = host(new URL(basis)), fremd = host(ziel);
+      if (fremd === eigen || fremd.endsWith(`.${eigen}`) || eigen.endsWith(`.${fremd}`)) p += 20;
+      treffer.push({ url: ziel.toString(), punkte: p });
     } catch {
       /* unbrauchbarer Link */
     }

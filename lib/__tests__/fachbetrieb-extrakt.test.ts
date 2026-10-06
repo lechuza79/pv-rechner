@@ -629,6 +629,11 @@ describe("Impressum-Adresse: nicht ratbar, sondern aus den Links gelesen", () =>
   });
 
   it("ignoriert mailto und Anker", () => {
+    // The site's own imprint before another domain's, even when that one is listed first (E-Werk Mittelbaden).
+    const zwei = '<a href="https://www.badencloud.de/rechtliche-hinweise/impressum/">Impressum Baden Cloud</a><a href="/impressum">Impressum</a>';
+    expect(impressumUrl(zwei, "https://www.e-werk-mittelbaden.de/")).toBe("https://www.e-werk-mittelbaden.de/impressum");
+    // Without an own link the other domain's still counts.
+    expect(impressumUrl('<a href="https://konzern.de/impressum">Impressum</a>', "https://marke.de/")).toBe("https://konzern.de/impressum");
     expect(impressumUrl('<a href="mailto:a@b.de">Impressum</a>', "https://b.de/")).toBeNull();
     expect(impressumUrl('<a href="#impressum">Impressum</a>', "https://b.de/")).toBeNull();
   });
