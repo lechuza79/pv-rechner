@@ -18,15 +18,10 @@ import { describe, expect, it } from "vitest";
 
 const WURZEL = resolve(__dirname, "../..");
 
-// Each exception names why it stays. Fixing these widens what another stock
-// classifies, which its own measurement has to decide — not this guard.
-const AUSNAHMEN: Record<string, string> = {
-  "lib/presse-extrakt.ts:672":
-    "OFFEN (bis 11/2026): medium type 'Verband' on the whole page — fixing e.V. widens it to every page mentioning a club; the press stock decides with a measurement",
-  "lib/presse-extrakt.ts:308": "country list: 'U.S.' before a space never matches; harmless, the other spellings carry it",
-  "lib/presse-katalog.ts:238": "country list: 'U.S.' before a space never matches; harmless, the other spellings carry it",
-  "lib/presse-eignung.ts:460": "shop words: 'art.-nr.' and 'zzgl. versand' — 'zzgl. versand' ends in a letter; 'art.-nr.' is one of ten alternatives",
-};
+// Each exception names why it stays, with a deadline if it is meant to go.
+// Empty since 06.10.2026: the press catalogue's "Verband" moved to the imprint
+// (verbandAus), the country and shop lists switched to (?!\w).
+const AUSNAHMEN: Record<string, string> = {};
 
 function dateien(dir: string): string[] {
   const out: string[] = [];

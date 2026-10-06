@@ -168,6 +168,15 @@ Organisation an ihrer Website erkennt.
   nicht an einer Störungsnummer — die haben PV-Wartungsfirmen auch.
 - **Kein `\b` nach einem Punkt** („e\.V\.\b" trifft nie vor einem Leerzeichen);
   `(?!\w)` statt dessen. Erzwungen von `lib/__tests__/regex-punkt-wortgrenze.test.ts`.
+- **Presse (06.10.2026), dieselbe Lehre in einem zweiten Bestand:** Der
+  Medientyp „Verband" lief über den ganzen Seitentext. Repariert, aber weiter
+  auf dem ganzen Text, hätte er 924 von 3.047 neu gelesenen Medien markiert;
+  am Anbieterblock und Seitentitel sind es 216, Stichprobe 19 von 20 richtig
+  (der Fehlgriff: „Mitglied Deutscher Fachjournalisten-Verband"). Drei
+  Fallen, die es bei den Fachbetrieben nicht gab: Initialen („E. v. Wagner"),
+  eine Mitgliedschaft im Anbieterblock, und NRW-Lokalradios, deren
+  Veranstaltergemeinschaft ein e.V. ist, ohne dass das Radio ein Verbandsmedium
+  wäre (37 Sender). Tests: `lib/__tests__/presse-verband.test.ts`.
 - **Eine grobe Phase überschreibt nie ein belegtes Urteil.** Die Streuung über
   die Kreissuche schrieb „betrieb" und hob damit bei jedem Lauf jede Rückstufung
   am Impressum auf.
