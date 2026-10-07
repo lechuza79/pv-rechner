@@ -118,6 +118,8 @@ const GRUPPEN_ARCHIV: Record<string, readonly string[]> = {
     "amberg-sulzbach-kleinanzeigen.de", "bbw.de", "digitalzentrum-fokus-mensch.de", "langenhain.com",
     "regional-prignitz-ruppin.de", "swa-leipzig.de",
   ],
+  // Operator, 07.10.2026: a site about racism, no link to our topics.
+  "Kein Themenbezug": ["hessenschauthin.de"],
 };
 
 /**
