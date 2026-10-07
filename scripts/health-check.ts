@@ -31,6 +31,7 @@ import { collectColdProbes } from "../lib/health-cold-probe";
 import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { LIEGT_NACH_STUNDEN, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
@@ -2042,6 +2043,20 @@ export function laufStumm(
   return { stumm: true, wie: haeufigste };
 }
 
+/**
+ * The repair ledger restored by scripts/health-history.ts. Absent means no
+ * repair run has ever stored one (or all expired) — not an error. Present but
+ * unreadable IS an error: then nobody can tell whether a run went silent.
+ */
+export function reparaturLedgerLesen(pfad = ".health/autofix-ledger.json"): { ledger?: Ledger; fehler?: string } {
+  if (!existsSync(pfad)) return {};
+  try {
+    return { ledger: readLedger(JSON.parse(readFileSync(pfad, "utf8"))) };
+  } catch (e) {
+    return { fehler: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 async function main() {
   if (process.env.HEALTH_INCIDENTS === "1") {
     for (const name of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "CRON_SECRET", "GITHUB_TOKEN", "GITHUB_REPOSITORY", "VERCEL_TOKEN"]) {
@@ -2783,9 +2798,24 @@ async function main() {
 
   const managed = process.env.HEALTH_INCIDENTS === "1";
   const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  // The repair lane is watched like everything else: a model run that ended
+  // without a checkable verdict is a finding of its own (lib/autofix-ledger.ts).
+  const reparatur = managed ? reparaturLedgerLesen() : null;
+  if (reparatur?.ledger) {
+    const offeneKeys = [...new Set(findings.map(f => f.key))];
+    for (const f of stummeLaeufe(reparatur.ledger, offeneKeys, new Date())) technical(f.key, false, f.text);
+  } else if (reparatur?.fehler) {
+    // Unreadable is not "nothing silent": keep earlier silent-run incidents open.
+    unknown.push("autofix-stumm:");
+    warnings.push(`Reparatur-Protokoll nicht lesbar (${reparatur.fehler}) — ob ein Reparaturlauf stumm endete, ist in dieser Messung unbekannt.`);
+  }
   const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
   lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
-  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}${reparatur?.ledger && !i.operator ? ` — Reparatur: ${reparaturStand(i.key, reparatur.ledger, new Date())}` : ""}`));
+  if (reparatur?.ledger) {
+    const liegen = liegenUnbearbeitet(Object.values(incidents.state.incidents), reparatur.ledger, new Date());
+    if (liegen.length) warnings.push(`${liegen.length} offene Befunde seit über ${LIEGT_NACH_STUNDEN} Stunden ohne Reparaturlauf: ${liegen.map(i => i.key).join(", ")}.`);
+  }
   lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
 
   // ── Bericht ───────────────────────────────────────────────────────────────
