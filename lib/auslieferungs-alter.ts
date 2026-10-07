@@ -1,3 +1,4 @@
+import { ATLAS_AUFBAU_MARKE } from "./aufbau-uhr";
 // ─── Wie alt ist die Auslieferung, gegen die gerade gemessen wurde? ──────────
 //
 // WARUM ES DAS GIBT (10.09.2026): Der Gesundheitscheck läuft nach JEDEM
@@ -84,7 +85,9 @@ export function kaltaufbauHerkunft(alterMinuten: number | null): string {
     `${auslieferungsAlterText(alterMinuten)} Eine frische Auslieferung hat keine warme Function und ` +
     `keinen gefüllten Cache; der ERSTE Aufbau danach ist strukturell teurer als jeder spätere. ` +
     `Zuerst nachsehen, ob der Ausreißer die erste Stichprobe war — nur seine Lage im Lauf ` +
-    `unterscheidet einen Kaltstart von einer langsam gewordenen Seite.`
+    `unterscheidet einen Kaltstart von einer langsam gewordenen Seite. ` +
+    `Wohin die Zeit ging, schreibt die Atlas-Seite selbst ins Laufzeitprotokoll: dort nach ` +
+    `${ATLAS_AUFBAU_MARKE} suchen (Dauer je Lesevorgang, langsamster zuerst).`
   );
 }
 

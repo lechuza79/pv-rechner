@@ -42,6 +42,8 @@ import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { preloadPublishedPackage } from "../../../../lib/district-monitor-server";
+import { after } from "next/server";
+import { aufbauBericht, messe, neueUhr, type AufbauUhr } from "../../../../lib/aufbau-uhr";
 import { getRankingDataForPage } from "../../../../lib/atlas-ranking-server";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 // One membership rule for the district intro, hero, map and district package.
@@ -163,13 +165,23 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
  * a row instead of one.
  */
 export default async function AtlasPage(props: { params: Promise<Params> }) {
+  // Stopwatch per read; a slow build writes its breakdown to the runtime log
+  // once the response is finished (lib/aufbau-uhr.ts).
+  const uhr = neueUhr(Date.now());
   const params = await props.params;
-  const region = await resolve(params.pfad);
+  const aufgeloest = resolve(params.pfad);
+  messe(uhr, "adresse", aufgeloest);
+  const region = await aufgeloest;
   if (!region) notFound();
 
   const childLevel = childLevelOf(region);
   // Started, not awaited: see startAtlasReads. Only regions that have a body.
-  const reads = childLevel ? startAtlasReads(region) : null;
+  const reads = childLevel ? startAtlasReads(region, uhr) : null;
+  const seite = `/solar-atlas/${(params.pfad ?? []).join("/")}`;
+  after(() => {
+    const bericht = aufbauBericht(uhr, seite, Date.now());
+    if (bericht) console.warn(bericht);
+  });
 
   // A kreisfreie Stadt sits at Kreis level but has exactly one Gemeinde beneath
   // it — itself. A ranking of one row is nonsense, so send it to the leaf page
@@ -204,7 +216,7 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
  *
  * Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
  */
-function startAtlasReads(region: AtlasRegion) {
+function startAtlasReads(region: AtlasRegion, uhr: AufbauUhr) {
   const refChain =
     region.level === "bundesland" ? [{ key: "de", ags: "de" }] : [];
   const kinder = getChildren(region);
@@ -234,8 +246,9 @@ function startAtlasReads(region: AtlasRegion) {
         : Promise.resolve([] as Awaited<ReturnType<typeof getChildren>>),
   };
   for (const p of Object.values(reads)) void p.catch(() => {});
-  if (region.level !== "de") void getFundingPrograms().catch(() => {});
-  preloadPublishedPackage(region.level === "landkreis" ? "district" : "region", region.region_id);
+  for (const [name, p] of Object.entries(reads)) messe(uhr, name, p);
+  if (region.level !== "de") messe(uhr, "foerderkatalog", getFundingPrograms());
+  messe(uhr, "monitorpaket", preloadPublishedPackage(region.level === "landkreis" ? "district" : "region", region.region_id));
   return reads;
 }
 type AtlasReads = ReturnType<typeof startAtlasReads>;
