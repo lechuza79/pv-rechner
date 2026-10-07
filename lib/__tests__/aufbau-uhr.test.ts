@@ -37,6 +37,11 @@ describe("stopwatch per read", () => {
     expect(seite).toMatch(/messe\(uhr, "monitorpaket", preloadPublishedPackage\(/);
     expect(seite).toMatch(/messe\(uhr, "foerderkatalog", getFundingPrograms\(\)\)/);
     expect(seite).toMatch(/after\(\(\) => \{\s*const bericht = aufbauBericht\(uhr, seite, Date\.now\(\)\);\s*if \(bericht\) console\.warn\(bericht\);/);
+    const ort = readFileSync("app/(gemeinde)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx", "utf8");
+    expect(ort).toMatch(/for \(const \[name, p\] of Object\.entries\(reads\)\) messe\(uhr, name, p\);/);
+    expect(ort).toMatch(/messe\(uhr, "adresse", adresse\)/);
+    expect(ort).toMatch(/messe\(uhr, "foerderkatalog", foerderung\)/);
+    expect(ort).toMatch(/after\(\(\) => \{\s*const bericht = aufbauBericht\(uhr, seite, Date\.now\(\)\);\s*if \(bericht\) console\.warn\(bericht\);/);
     expect(readFileSync("lib/district-monitor-server.ts", "utf8")).toMatch(/export function preloadPublishedPackage\([^)]*\):Promise<unknown>\{\s*const p=readPublished/);
   });
 });
