@@ -108,8 +108,13 @@ export function waehleBefund(args: { offen: Incident[] | Finding[]; ledger: Ledg
   const tag = tagInBerlin(jetzt);
   const frei = MAX_MODELLLAEUFE_JE_TAG - modelllaeufeHeute;
   const heute = new Set(ledger.versuche.filter((v) => v.tag === tag).map((v) => v.key));
+  const offeneKeys = new Set(offen.map((f) => f.key));
   const kandidaten = (offen as (Finding & Partial<Incident>)[])
     .filter((f) => !f.operator)
+    // A silent run on a still-open cause is repaired by that cause's next run,
+    // not by a run of its own: otherwise every silence costs a second budget
+    // unit and the cause itself keeps its silent state (measured 07.10.2026).
+    .filter((f) => !(f.key.startsWith("autofix-stumm:") && offeneKeys.has(f.key.slice("autofix-stumm:".length))))
     .filter((f) => manuell || !heute.has(f.key))
     .sort((a, b) =>
       Number(!!b.urgent) - Number(!!a.urgent) ||

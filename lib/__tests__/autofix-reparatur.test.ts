@@ -62,6 +62,14 @@ describe("budget per cause, not per day", () => {
     expect(plan.befund?.key).toBe("outage");
     expect(plan.befund?.urgent).toBe(true);
   });
+  it("a silent-run finding does not get its own run while its cause is open", () => {
+    const stumm = inc(`autofix-stumm:${weather.key}`, { firstSeen: "2026-10-01T00:00:00Z" });
+    const l = versucht(weather.key, new Date("2026-10-06T12:00:00Z"));
+    expect(waehleBefund({ offen: [stumm, weather], ledger: l, jetzt, modelllaeufeHeute: 0 }).befund?.key).toBe(weather.key);
+    expect(waehleBefund({ offen: [stumm, weather], ledger: versucht(weather.key, jetzt), jetzt, modelllaeufeHeute: 1 }).befund).toBeUndefined();
+    // Cause gone, silence stays: then the lane itself is the subject.
+    expect(waehleBefund({ offen: [stumm], ledger: l, jetzt, modelllaeufeHeute: 0 }).befund?.key).toBe(stumm.key);
+  });
   it("model runs are counted from GitHub's job history per Berlin day", () => {
     const s = (started_at: string | null, conclusion: string | null = "success", status = "completed") => ({ name: MODELLSCHRITT, conclusion, status, started_at });
     const jobs = [{ steps: [s("2026-10-07T00:57:00Z"), s("2026-10-06T23:30:00Z"), s("2026-10-06T12:00:00Z"), s(null, null, "queued"), s("2026-10-07T05:00:00Z", "skipped")] }, { steps: [s("2026-10-07T09:00:00Z", "failure")] }];
