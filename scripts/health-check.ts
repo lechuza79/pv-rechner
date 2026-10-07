@@ -28,7 +28,7 @@
 
 import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
-import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
+import { atlasStichprobenPfade, istKreisfreieStadt, UNTER_ATLAS_WURZEL } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
 import { LIEGT_NACH_STUNDEN, leeresLedger, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
@@ -606,7 +606,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   for (let i = 0; i < count; i++) {
     const offset = Math.floor(Math.random() * 10000);
     const [row] = await q(
-      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+      `mastr_regions?select=slug,parent_region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}&limit=1&offset=${offset}`,
     );
     if (row) gem.push(row);
   }
@@ -616,7 +616,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const kreisIds = Array.from(new Set(gem.map((g) => g.parent_region_id).filter(Boolean)));
   const kreise = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${kreisIds.join(",")})`);
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
-  const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
+  const laender = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${landIds.join(",")})`);
 
   // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
   // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
@@ -2416,7 +2416,10 @@ async function main() {
     // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
     // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
     // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
-    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    // Nur Orte unter der Atlas-Wurzel haben eine Seite. Seit dem Schweizer
+    // Import (07.10.2026) stehen 2.110 Schweizer Gemeinden in derselben Tabelle;
+    // ungefiltert meldete diese Zeile 2.113 Seiten ohne Platzierung statt 3.
+    const seiten = count(await read(`mastr_regions?select=region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}`, true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
     warnings.push(...luecke);

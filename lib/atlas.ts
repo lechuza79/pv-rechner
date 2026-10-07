@@ -15,6 +15,7 @@ import { withDbTimeout } from "./db-timeout";
 import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
 import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
+import { ATLAS_WURZEL } from "./atlas-wurzel";
 
 export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
@@ -245,7 +246,7 @@ export async function searchRegions(
  * Pure, so the rule is testable without a database.
  */
 export function walkSlugPath(rows: AtlasRegion[], slugs: string[]): AtlasRegion | null {
-  let parent = "de";
+  let parent = ATLAS_WURZEL;
   let region: AtlasRegion | null = null;
   for (const slug of slugs) {
     const hits = rows.filter((r) => r.parent_region_id === parent && r.slug === slug);
