@@ -1,5 +1,5 @@
 /* Independent export palette: tune light-surface contrast here, not per chart. */
-:root{--chart-export-contrast:#163338;--chart-export-background:#fafbf8;--chart-export-surface:#edf0ec;--chart-export-secondary:#52676b;--chart-export-source:#666666;--chart-export-source-opacity:.5}
+:root{--chart-export-contrast:#163338;--chart-export-background:#fafbf8;--chart-export-surface:#edf0ec;--chart-export-secondary:#52676b;--chart-export-source:#666666;--chart-export-source-opacity:.85}
 [data-sc-export-capture] [data-sc-export-brightest],
 [data-sc-export-capture] [data-sc-export-brightest] *{
  --atlas-action:var(--chart-export-contrast)!important;

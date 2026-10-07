@@ -22,6 +22,11 @@ export interface FlowUnterTest {
   /** Beschriftung des Knopfes, der den Flow erst öffnet (Flows im Fenster).
    *  Ohne Angabe steht der Flow direkt auf der Seite. */
   startKnopf?: string;
+  /** In how many separate nightly jobs the all-combinations run of this flow
+   *  is split. The split happens at the first step with a choice: part k of n
+   *  walks the options whose position modulo n is k−1, so the parts together
+   *  walk every combination exactly once. See `nachtTeil` below. */
+  nachtTeile?: number;
 }
 
 export const FLOWS: FlowUnterTest[] = [
@@ -40,6 +45,14 @@ export const FLOWS: FlowUnterTest[] = [
     // darunter); die Direkteingabe erreicht man über ?direkt=1.
     pfad: "/photovoltaik-rechner?direkt=1",
     ergebnisEnthaelt: "amortisiert sich in",
+    // Zwei Nachtjobs (07.10.2026): Seit dem 21.09.2026 lief der Test jede
+    // Nacht in seine 195-Minuten-Grenze — 13 Nächte rot, jedes Mal exakt
+    // 3 h 15 m nach dem Teststart. Vorher brauchte er 174–179 Minuten. Die
+    // Aufteilung lässt keinen Weg weg. Gemessen im ersten geteilten Lauf
+    // (07.10.2026, Lauf 37586736790): unverändert 1.728 Wege (2 × 864), aber
+    // 7,3–7,5 s je Weg statt rund 6 s — gewachsen ist die Zeit je Weg, nicht
+    // die Zahl der Wege. Je Hälfte 105–108 Minuten.
+    nachtTeile: 2,
   },
   {
     name: "PV-Bedarf / Empfehlung",
@@ -201,6 +214,27 @@ export const MAX_WEGE_JE_FLOW = ALLE_KOMBINATIONEN ? 2500 : 150;
  * „cancelled" und fällt erst nach drei stummen Nächten auf. Festgenagelt von
  * lib/__tests__/workflow-schritt-zeitlimits.test.ts.
  */
+/**
+ * Which part of a split nightly flow this process walks — from `FLOW_TEIL`
+ * ("k/n", 1-based). Without the variable the whole flow is walked.
+ *
+ * A malformed value THROWS instead of falling back to "everything": a job that
+ * silently walks the whole tree would run into the time limit again, and one
+ * that silently walks nothing would be green without having looked.
+ */
+export function nachtTeil(roh = process.env.FLOW_TEIL): { k: number; n: number } | null {
+  if (!roh) return null;
+  const m = /^(\d+)\/(\d+)$/.exec(roh);
+  const k = m ? Number(m[1]) : NaN, n = m ? Number(m[2]) : NaN;
+  if (!m || n < 2 || k < 1 || k > n) throw new Error(`FLOW_TEIL "${roh}" ist kein gültiger Teil (erwartet k/n mit 1 ≤ k ≤ n, n ≥ 2)`);
+  return { k, n };
+}
+
+/** Does option number `index` (0-based) of the first choice step belong to this part? */
+export function gehoertZumTeil(index: number, teil: { k: number; n: number } | null): boolean {
+  return !teil || index % teil.n === teil.k - 1;
+}
+
 export const FLOW_TEST_ZEITLIMIT_MIN = { alleKombinationen: 195, jedeOption: 10 } as const;
 
 /** Dasselbe in Millisekunden für `test.setTimeout` — je nach Betriebsart. */

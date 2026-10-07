@@ -435,6 +435,7 @@ export function WidgetSourceEdge({
     <div
       ref={wrapRef}
       data-sc-source-edge=""
+      data-sc-source-export-size={fsPx("--font-size-caption")}
       // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
       // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
       // den Vermerk gerade dort, wo das Bild ohne die Seite weiterwandert.

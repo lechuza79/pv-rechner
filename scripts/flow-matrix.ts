@@ -62,6 +62,9 @@ export interface FlowJob {
    * dieses Problem gar nicht erst.
    */
   muster: string;
+  /** `FLOW_TEIL` for a flow split over several jobs ("k/n"), "" otherwise. An
+   *  empty string, not a missing field: the workflow reads it unconditionally. */
+  teil: string;
 }
 
 /**
@@ -72,14 +75,19 @@ export interface FlowJob {
  * automatisch mit, statt still liegenzubleiben.
  */
 export function flowJobs(): FlowJob[] {
-  const jeFlow: FlowJob[] = FLOWS.map((f) => ({
-    name: f.name,
-    flag: "--grep" as const,
-    muster: flowGrep(f.name),
-  }));
+  const jeFlow: FlowJob[] = FLOWS.flatMap((f) => {
+    const n = f.nachtTeile ?? 1;
+    if (n < 2) return [{ name: f.name, flag: "--grep" as const, muster: flowGrep(f.name), teil: "" }];
+    return Array.from({ length: n }, (_, i) => ({
+      name: `${f.name} (Teil ${i + 1}/${n})`,
+      flag: "--grep" as const,
+      muster: flowGrep(f.name),
+      teil: `${i + 1}/${n}`,
+    }));
+  });
   return [
     ...jeFlow,
-    { name: "Übrige Prüfungen", flag: "--grep-invert" as const, muster: FLOW_TITEL_MARKE },
+    { name: "Übrige Prüfungen", flag: "--grep-invert" as const, muster: FLOW_TITEL_MARKE, teil: "" },
   ];
 }
 
@@ -104,9 +112,14 @@ function pruefe(): void {
   const gesamt = trefferZahl("--grep-invert", "DIESEN-TITEL-GIBT-ES-NICHT");
   let summe = 0;
   const zeilen: string[] = [];
+  // A split flow runs the SAME test in several jobs, each on a different part
+  // of its tree (FLOW_TEIL). Its test counts once; every part must still hit it.
+  const gezaehlt = new Set<string>();
   for (const job of jobs) {
     const n = trefferZahl(job.flag, job.muster);
-    summe += n;
+    const schluessel = `${job.flag} ${job.muster}`;
+    if (!gezaehlt.has(schluessel)) summe += n;
+    gezaehlt.add(schluessel);
     zeilen.push(`  ${n} Test(s)  ${job.name}`);
     if (n === 0) {
       console.error(zeilen.join("\n"));

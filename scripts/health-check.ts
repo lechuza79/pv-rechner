@@ -28,9 +28,10 @@
 
 import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
-import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
+import { atlasStichprobenPfade, istKreisfreieStadt, UNTER_ATLAS_WURZEL } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { LIEGT_NACH_STUNDEN, leeresLedger, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
@@ -56,18 +57,15 @@ import { paramsToRow } from "../lib/types";
 import { verlinktePfade, verlinkteSeiteBefund } from "../lib/verlinkte-seiten";
 import {
   BASIS_TAGE,
-  FEHLBETRAG_MELDEN_AB_ANTEIL,
   KOSTEN_PROJEKTE,
   KOSTEN_TEAM_ID,
-  KOSTENWACHE_ZUGANG,
-  PROTOKOLL_AUFBEWAHRUNG_TAGE,
   SPRUNG_FAKTOR,
+  abrechnungVerspaetet,
+  abrufZeitraum,
   beurteileKostenTag,
-  fehlbetragObergrenze,
   groesstesVielfaches,
-  leseGruppen,
   menge,
-  zuBeurteilenderTag,
+  tagesmengenAusAbrechnung,
 } from "../lib/kostenwache";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
@@ -605,7 +603,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   for (let i = 0; i < count; i++) {
     const offset = Math.floor(Math.random() * 10000);
     const [row] = await q(
-      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+      `mastr_regions?select=slug,parent_region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}&limit=1&offset=${offset}`,
     );
     if (row) gem.push(row);
   }
@@ -615,7 +613,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const kreisIds = Array.from(new Set(gem.map((g) => g.parent_region_id).filter(Boolean)));
   const kreise = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${kreisIds.join(",")})`);
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
-  const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
+  const laender = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${landIds.join(",")})`);
 
   // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
   // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
@@ -1437,119 +1435,37 @@ async function auslieferungsAlterMinuten(): Promise<number | null> {
 }
 
 /**
- * Fragt die Laufzeitprotokolle nach Gruppen ab.
+ * Holt die Abrechnungsdaten des Teams als JSONL (siehe KOSTENWACHE_ZUGANG).
  *
- * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen. Drei Fälle sehen
- * an der Aufrufstelle sonst gleich aus und verlangen völlig Verschiedenes:
- * ein abgewiesener Zugang (der Betreiber muss ein Geheimnis anlegen oder
- * erneuern), ein leerer Tag (zu spät gefragt, die Protokolle halten einen Tag)
- * und ein Netzfehler. „Kennzahl ist nicht Zustand" — dieselbe Trennung wie beim
- * Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
+ * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen: Ein abgewiesener
+ * Zugang (das Geheimnis hat keine Abrechnungsrechte oder ist abgelaufen) und ein
+ * Netzfehler verlangen Verschiedenes.
  */
-type ProtokollAusgang =
+type AbrechnungsAusgang =
   | { art: "ok"; text: string }
   | { art: "kein-zugang"; status: number }
-  | { art: "nicht-abrufbar" };
+  | { art: "nicht-abrufbar"; grund: string };
 
-async function protokollGruppen(
-  token: string,
-  projectId: string,
-  tag: string,
-  gruppe: "statusCode" | "requestPath",
-): Promise<ProtokollAusgang> {
+async function abrechnungAbrufen(token: string, jetzt: Date): Promise<AbrechnungsAusgang> {
+  const { von, bis } = abrufZeitraum(jetzt);
   try {
-    const res = await fetch("https://mcp.vercel.com", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "content-type": "application/json",
-        accept: "application/json, text/event-stream",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: 1,
-        method: "tools/call",
-        params: {
-          name: "get_runtime_logs",
-          arguments: {
-            projectId,
-            teamId: KOSTEN_TEAM_ID,
-            environment: "production",
-            since: `${tag}T00:00:00.000Z`,
-            until: `${tag}T23:59:59.999Z`,
-            group_by: gruppe,
-          },
-        },
-      }),
-      signal: AbortSignal.timeout(60000),
-    });
+    const res = await fetch(
+      `https://api.vercel.com/v1/billing/charges?from=${encodeURIComponent(von)}&to=${encodeURIComponent(bis)}` +
+        `&teamId=${KOSTEN_TEAM_ID}`,
+      { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(60000) },
+    );
     if (res.status === 401 || res.status === 403) return { art: "kein-zugang", status: res.status };
-    if (!res.ok) return { art: "nicht-abrufbar" };
-    const roh = await res.text();
-    // Die Antwort kommt als Ereignisstrom; die Nutzlast steht in der data-Zeile.
-    const zeile = roh.match(/^data: (.*)$/m);
-    if (!zeile) return { art: "nicht-abrufbar" };
-    const nutzlast = JSON.parse(zeile[1]) as {
-      result?: { content?: { text?: string }[]; isError?: boolean };
-      error?: unknown;
-    };
-    if (nutzlast.error || nutzlast.result?.isError) return { art: "nicht-abrufbar" };
-    const text = (nutzlast.result?.content ?? []).map((c) => c.text ?? "").join("\n");
-    return text ? { art: "ok", text } : { art: "nicht-abrufbar" };
-  } catch {
-    return { art: "nicht-abrufbar" };
+    if (!res.ok) return { art: "nicht-abrufbar", grund: `HTTP ${res.status}` };
+    return { art: "ok", text: await res.text() };
+  } catch (error) {
+    return { art: "nicht-abrufbar", grund: String(error) };
   }
 }
-
-type KostenZeile = {
-  projekt: string;
-  tag: string;
-  aufbauten: number;
-  adressen: number;
-  gemeldet_am: string | null;
-};
 
 function supabaseZugang(): { url: string; key: string } | null {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   return url && key ? { url, key } : null;
-}
-
-async function kostenZeilen(projekt: string, bisTag: string): Promise<KostenZeile[] | null> {
-  const z = supabaseZugang();
-  if (!z) return null;
-  try {
-    const r = await fetch(
-      `${z.url}/rest/v1/kosten_tageswerte?select=projekt,tag,aufbauten,adressen,gemeldet_am` +
-        `&projekt=eq.${encodeURIComponent(projekt)}&tag=lte.${bisTag}&order=tag.desc&limit=${BASIS_TAGE + 1}`,
-      { headers: { apikey: z.key, Authorization: `Bearer ${z.key}` }, signal: AbortSignal.timeout(20000) },
-    );
-    if (!r.ok) return null;
-    return (await r.json()) as KostenZeile[];
-  } catch {
-    return null;
-  }
-}
-
-async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean> {
-  const z = supabaseZugang();
-  if (!z) return false;
-  try {
-    const r = await fetch(`${z.url}/rest/v1/kosten_tageswerte`, {
-      method: "POST",
-      headers: {
-        apikey: z.key,
-        Authorization: `Bearer ${z.key}`,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates,return=minimal",
-      },
-      body: JSON.stringify(zeile),
-      signal: AbortSignal.timeout(20000),
-    });
-    return r.ok;
-  } catch {
-    return false;
-  }
 }
 
 export type KostenBefund = {
@@ -1566,123 +1482,61 @@ export type KostenBefund = {
 export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
   const b: KostenBefund = { zeilen: [], fuerClaude: [], incidents: [], warnungen: [] };
   const token = vercelToken();
-  const tag = zuBeurteilenderTag(jetzt);
 
   if (!token) {
     b.warnungen.push(
-      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die Tagesmengen wurden weder erfasst " +
-        "noch beurteilt. Kein Urteil heißt hier nicht „in Ordnung“: Die Protokolle werden nur einen Tag " +
-        "aufbewahrt, ein verpasster Tag ist für immer verpasst.",
+      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die abgerechneten Mengen wurden nicht beurteilt.",
     );
     return b;
   }
-  if (!supabaseZugang()) {
+
+  const abruf = await abrechnungAbrufen(token, jetzt);
+  if (abruf.art === "kein-zugang") {
     b.warnungen.push(
-      "Kostenwache: keine Datenbank erreichbar — ohne Ablage gibt es kein Vergleichsniveau und damit kein Urteil.",
+      `Kostenwache: Die Abrechnungsdaten wurden abgewiesen (HTTP ${abruf.status}). Das Geheimnis VERCEL_TOKEN braucht ` +
+        `eine Rolle mit Abrechnungsrechten (Owner, Member, Developer oder Billing) — solange das steht, beurteilt die ` +
+        `Wache nichts. Die Daten selbst gehen dabei nicht verloren, sie bleiben bei der Plattform abrufbar.`,
     );
+    return b;
+  }
+  if (abruf.art === "nicht-abrufbar") {
+    b.warnungen.push(`Kostenwache: Abrechnungsdaten nicht abrufbar (${abruf.grund}) — kein Urteil in diesem Lauf.`);
     return b;
   }
 
   for (const p of KOSTEN_PROJEKTE) {
-    const bestand = await kostenZeilen(p.schluessel, tag);
-    if (bestand === null) {
-      b.warnungen.push(`Kostenwache ${p.name}: Ablage nicht lesbar — kein Urteil über diesen Tag.`);
+    const bestand = tagesmengenAusAbrechnung(abruf.text, p.projectId);
+    const heute = bestand[bestand.length - 1];
+    if (!heute) {
+      b.warnungen.push(`Kostenwache ${p.name}: keine Abrechnungstage in den Daten — kein Urteil.`);
       continue;
     }
-
-    let heute = bestand.find((z) => z.tag === tag) ?? null;
-
-    // Erst messen, wenn der Tag noch fehlt. Zweimal am Tag dieselbe Abfrage
-    // liefert dasselbe und belastet die Plattform ohne Erkenntnis.
-    if (!heute) {
-      const [statusAusgang, pfadAusgang] = await Promise.all([
-        protokollGruppen(token, p.projectId, tag, "statusCode"),
-        protokollGruppen(token, p.projectId, tag, "requestPath"),
-      ]);
-
-      const abgewiesen = [statusAusgang, pfadAusgang].find((a) => a.art === "kein-zugang");
-      if (abgewiesen && abgewiesen.art === "kein-zugang") {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Der Zugang zur Plattform wurde abgewiesen (HTTP ${abgewiesen.status}). ` +
-            `Das ist kein leerer Tag, sondern ein ungültiges oder abgelaufenes Geheimnis — VERCEL_TOKEN in den ` +
-            `Repo-Geheimnissen prüfen. Solange das steht, sammelt die Wache nichts, und jeder Tag ist danach ` +
-            `unwiederbringlich weg (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag aufbewahrt).`,
-        );
-        continue;
-      }
-
-      const last = statusAusgang.art === "ok" ? leseGruppen(statusAusgang.text) : null;
-      const flaeche = pfadAusgang.art === "ok" ? leseGruppen(pfadAusgang.text) : null;
-
-      if (!last || !flaeche) {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Der ${tag} war nicht abrufbar — kein Wert abgelegt. ` +
-            `Eine Null wäre hier eine Falschaussage (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag ` +
-            `aufbewahrt; „nichts gefunden“ heißt fast immer „zu spät gefragt“, nicht „kein Verkehr“).`,
-        );
-        continue;
-      }
-
-      // Die Antwort listet nur die größten Gruppen auf. Fehlt etwas, ist es
-      // höchstens so groß wie die kleinste gezeigte Gruppe — das wird
-      // AUSGERECHNET statt behauptet. Bei der Gruppierung nach Statuscode sind
-      // es eine Handvoll Gruppen und die Lücke rechnerisch belanglos; wächst sie
-      // eines Tages, soll das auffallen und nicht in die Vergleichszahl wandern.
-      const luecke = fehlbetragObergrenze(last);
-      if (luecke > last.summe * FEHLBETRAG_MELDEN_AB_ANTEIL) {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Die Antwort für den ${tag} hat nur ${last.gezeigt} von ${last.verschiedene} ` +
-            `Gruppen aufgelistet; die Zahl der Aufbauten kann um bis zu ${menge(luecke)} zu niedrig sein. ` +
-            `Der Wert wird trotzdem abgelegt — er ist dann eine Untergrenze, keine Summe.`,
-        );
-      }
-
-      const geschrieben = await kostenSchreiben({
-        projekt: p.schluessel,
-        tag,
-        aufbauten: last.summe,
-        adressen: flaeche.verschiedene,
-        quelle: KOSTENWACHE_ZUGANG.quelle,
-        gruppen_gezeigt: last.gezeigt,
-        gruppen_gesamt: last.verschiedene,
-      });
-      if (!geschrieben) {
-        b.warnungen.push(`Kostenwache ${p.name}: Tageswert für ${tag} konnte nicht abgelegt werden.`);
-        continue;
-      }
-      heute = { projekt: p.schluessel, tag, aufbauten: last.summe, adressen: flaeche.verschiedene, gemeldet_am: null };
-      bestand.unshift(heute);
+    if (abrechnungVerspaetet(heute.tag, jetzt)) {
+      b.warnungen.push(
+        `Kostenwache ${p.name}: Der jüngste Abrechnungstag ist der ${heute.tag} — die Plattform liefert verspätet. ` +
+          `Beurteilt wird dieser Tag; neuere fehlen noch.`,
+      );
     }
+    const tag = heute.tag;
 
-    // Number() auch hier: Große Ganzzahlen können aus der Datenbank als
-    // Zeichenkette ankommen, und dann verglichen sich zwei Strings — der Sprung
-    // fiele stumm aus, ohne Fehler und ohne dass es jemandem auffiele.
-    const urteil = beurteileKostenTag(
-      { tag: heute.tag, aufbauten: Number(heute.aufbauten), adressen: Number(heute.adressen) },
-      bestand.map((z) => ({ tag: z.tag, aufbauten: Number(z.aufbauten), adressen: Number(z.adressen) })),
-    );
+    const urteil = beurteileKostenTag(heute, bestand);
 
     if (urteil.art === "kein-urteil") {
       // Ausdrücklich als offener Zustand ausgewiesen, nicht als grün.
-      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(Number(heute.aufbauten))} Aufbauten, ` +
-        `${menge(Number(heute.adressen))} verschiedene Adressen — noch kein Urteil möglich (${urteil.grund})`);
+      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(heute.aufbauten)} Funktionsaufrufe, ` +
+        `${menge(heute.schreibvorgaenge)} Cache-Schreibvorgänge — noch kein Urteil möglich (${urteil.grund})`);
       continue;
     }
 
-    const reihe = bestand.map((z) => ({
-      tag: z.tag,
-      aufbauten: Number(z.aufbauten),
-      adressen: Number(z.adressen),
-    }));
-    const maxLast = groesstesVielfaches(reihe, "aufbauten");
-    const maxFlaeche = groesstesVielfaches(reihe, "adressen");
+    const maxLast = groesstesVielfaches(bestand, "aufbauten");
+    const maxSchreiben = groesstesVielfaches(bestand, "schreibvorgaenge");
     const teil = urteil.groessen
-      .map((g) => `${g.groesse === "aufbauten" ? "Aufbauten" : "Adressen"} ${menge(g.wert)} ` +
+      .map((g) => `${g.groesse === "aufbauten" ? "Funktionsaufrufe" : "Cache-Schreibvorgänge"} ${menge(g.wert)} ` +
         `(Niveau ${menge(Math.round(g.basis))}, ${g.vielfaches === null ? "—" : `${g.vielfaches.toFixed(2)}×`})`)
       .join(" · ");
     b.zeilen.push(
       `Kostenwache ${p.name} (${tag}): ${teil}; Schwelle ${SPRUNG_FAKTOR}× — ` +
-        `größtes bisher abgelegtes Vielfaches: Last ${maxLast ?? "—"}×, Fläche ${maxFlaeche ?? "—"}×`,
+        `größtes Vielfaches im Abruffenster: Last ${maxLast ?? "—"}×, Schreiben ${maxSchreiben ?? "—"}×`,
     );
 
     if (urteil.art === "sprung") {
@@ -1694,10 +1548,10 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
         .join("; ");
       b.fuerClaude.push(
         `Kostensprung bei ${p.name} am ${tag}: ${details}. ${urteil.satz} ` +
-          `Gemessen sind Mengen, nicht Euro — aber genau diese Mengen treiben den größten Rechnungsposten. ` +
+          `Gemessen sind die abgerechneten Mengen aus der Abrechnung der Plattform, nicht der Betrag. ` +
           `Die Schwelle liegt beim ${SPRUNG_FAKTOR}-fachen des Medians der bis zu ${BASIS_TAGE} Vortage. ` +
-          `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
-          `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
+          `Nachsehen: wer die Seiten aufruft (Anfrageprotokolle der Plattform halten 24 Stunden: Kennung, ` +
+          `Netzbetreiber, Cache-Status). Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
       );
       b.incidents.push({key: `cost:${p.schluessel}`, text: b.fuerClaude[b.fuerClaude.length - 1]});
     }
@@ -2040,6 +1894,20 @@ export function laufStumm(
   for (const c of jung) zaehler.set(c ?? "ohne Ergebnis", (zaehler.get(c ?? "ohne Ergebnis") ?? 0) + 1);
   const haeufigste = [...zaehler.entries()].sort((a, b) => b[1] - a[1])[0][0];
   return { stumm: true, wie: haeufigste };
+}
+
+/**
+ * The repair ledger restored by scripts/health-history.ts. Absent means no
+ * repair run has ever stored one (or all expired) — an empty ledger. Present but
+ * unreadable IS an error: then nobody can tell whether a run went silent.
+ */
+export function reparaturLedgerLesen(pfad = ".health/autofix-ledger.json"): { ledger?: Ledger; fehler?: string } {
+  if (!existsSync(pfad)) return { ledger: leeresLedger() };
+  try {
+    return { ledger: readLedger(JSON.parse(readFileSync(pfad, "utf8"))) };
+  } catch (e) {
+    return { fehler: e instanceof Error ? e.message : String(e) };
+  }
 }
 
 async function main() {
@@ -2401,7 +2269,10 @@ async function main() {
     // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
     // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
     // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
-    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    // Nur Orte unter der Atlas-Wurzel haben eine Seite. Seit dem Schweizer
+    // Import (07.10.2026) stehen 2.110 Schweizer Gemeinden in derselben Tabelle;
+    // ungefiltert meldete diese Zeile 2.113 Seiten ohne Platzierung statt 3.
+    const seiten = count(await read(`mastr_regions?select=region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}`, true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
     warnings.push(...luecke);
@@ -2783,9 +2654,24 @@ async function main() {
 
   const managed = process.env.HEALTH_INCIDENTS === "1";
   const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  // The repair lane is watched like everything else: a model run that ended
+  // without a checkable verdict is a finding of its own (lib/autofix-ledger.ts).
+  const reparatur = managed ? reparaturLedgerLesen() : null;
+  if (reparatur?.ledger) {
+    const offeneKeys = [...new Set(findings.map(f => f.key))];
+    for (const f of stummeLaeufe(reparatur.ledger, offeneKeys, new Date())) technical(f.key, false, f.text);
+  } else if (reparatur?.fehler) {
+    // Unreadable is not "nothing silent": keep earlier silent-run incidents open.
+    unknown.push("autofix-stumm:");
+    warnings.push(`Reparatur-Protokoll nicht lesbar (${reparatur.fehler}) — ob ein Reparaturlauf stumm endete, ist in dieser Messung unbekannt.`);
+  }
   const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
   lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
-  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}${reparatur?.ledger && !i.operator ? ` — Reparatur: ${reparaturStand(i.key, reparatur.ledger, new Date())}` : ""}`));
+  if (reparatur?.ledger) {
+    const liegen = liegenUnbearbeitet(Object.values(incidents.state.incidents), reparatur.ledger, new Date());
+    if (liegen.length) warnings.push(`${liegen.length} offene Befunde seit über ${LIEGT_NACH_STUNDEN} Stunden ohne Reparaturlauf: ${liegen.map(i => i.key).join(", ")}.`);
+  }
   lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
 
   // ── Bericht ───────────────────────────────────────────────────────────────

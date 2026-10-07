@@ -24,6 +24,7 @@ const embeddable = (w: WidgetDef) => embedPath(w) !== null;
 import {EXPORT_BRIGHTEST_ATTR, EXPORT_CSS_ATTR} from '../../lib/export-markers';
 import foundation from '../social/atlas-foundations.module.css';
 import './dashboard.css';
+import {chartQuantityLabel, chartDataDate} from '../../lib/chart-labels';
 
 /**
  * A monitor widget that can be shared and downloaded through the shared export
@@ -43,7 +44,7 @@ import './dashboard.css';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
   sourceVisible?: boolean;
   /** Registry entry: identity, sources, share text. */
@@ -64,6 +65,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   place: string;
   /** Data date for the source edge. */
   stand: string;
+  /** Explicit export context; existing consumers retain their subtitles. */
+  exportScope?: string;
+  exportUnit?: string;
   /** What the selector currently shows, printed in the image instead of the control. */
   stateLabel?: string;
   filename: string;
@@ -245,6 +249,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, exportN
   const content = <ExportNotesProvider>
     <WidgetFrame
       {...frame}
+      exportSubtitle={exportScope !== undefined || exportUnit !== undefined
+        ? [exportScope ?? place, `Stand ${chartDataDate(stand)}`, exportUnit ? chartQuantityLabel(exportUnit) : undefined].filter(Boolean).join(' · ')
+        : frame.exportSubtitle}
       data-widget-id={widget.id}
       onClickCapture={event=>{
         const target=event.target instanceof Element?event.target.closest('button,a,[role="button"],[role="menuitem"]'):null;

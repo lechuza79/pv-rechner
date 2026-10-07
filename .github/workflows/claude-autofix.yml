@@ -1,9 +1,13 @@
 name: Claude Autofix
 
-# Reads the health report independently of the escalation exit code.
-# A new or repeated technical finding requests repair, subject to the daily budget.
-# Lässt Claude den Befund
-# analysieren und — wo möglich — selbst beheben.
+# Works through the open health findings ONE CAUSE PER RUN. Each cause gets at
+# most one model run per German calendar day, all causes together at most
+# MAX_MODELLLAEUFE_JE_TAG (lib/autofix-ledger.ts). Every run must end with a
+# checkable verdict; a run without one is recorded as SILENT, fails this
+# workflow and comes back as a health finding. The state of every open finding
+# is shown in the health report and in `npm run sessions` — never as a mail
+# (07.10.2026: one silent run used the only daily budget, four findings waited
+# a day with nobody on them).
 #
 # WARUM ES DAS GIBT: Der Ausfall vom 24.–26.07.2026 lief zwei Tage unbemerkt.
 # Die erste Fassung des Monitorings meldete Befunde an den Betreiber — der aber
@@ -22,12 +26,17 @@ on:
   workflow_run:
     workflows: ["Health Check"]
     types: [completed]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      folge:
+        description: "Follow-up run dispatched by the previous repair (obeys the per-cause budget)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
-  issues: write
-  actions: read
+  # Artifacts (ledger, health state) and dispatching the follow-up run.
+  actions: write
   # Die Action tauscht ein OIDC-Token gegen ihre GitHub-Berechtigung ein. Ohne
   # id-token bricht sie beim Token-Setup ab, bevor das Modell überhaupt läuft
   # ("Could not fetch an OIDC token") — der Fehler sieht nach Schlüsselproblem
@@ -39,40 +48,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  incident:
+  autofix:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
-    outputs:
-      repair: ${{ steps.result.outputs.repair }}
-    steps:
-      - name: Read health result
-        id: result
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          EVENT: ${{ github.event_name }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-        run: |
-          if [ "$EVENT" = "workflow_dispatch" ]; then
-            echo "repair=true" >> "$GITHUB_OUTPUT"
-          elif gh run download "$RUN_ID" -n health-incidents -D /tmp/health; then
-            value=$(jq -er 'if .version == 1 and (.autofix | type) == "boolean" then .autofix | tostring else error("invalid health result") end' /tmp/health/result.json)
-            echo "repair=$value" >> "$GITHUB_OUTPUT"
-          elif [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "timed_out" ]; then
-            # Broken checker still invokes repair, even without a report.
-            echo "repair=true" >> "$GITHUB_OUTPUT"
-          elif [ "$CONCLUSION" = "cancelled" ]; then
-            echo "repair=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "::error::Health result missing; cannot determine repair request"
-            exit 1
-          fi
-  autofix:
-    needs: incident
-    if: needs.incident.outputs.repair == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Model (up to ~30 min) plus the gate check on the fix branch (up to 35 min).
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,28 +66,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Count actual model steps, not successful gate/braked workflow runs.
-      - name: Tagesbremse
-        id: budget
+      # Picks one cause and writes the "attempt started" marker BEFORE the model
+      # runs: a crash then shows as a silent run, never as "not tried yet".
+      - name: Befund waehlen
+        id: plan
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: node --import tsx scripts/autofix-budget.ts
+          EVENT: ${{ github.event_name }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          MANUELL: ${{ github.event_name == 'workflow_dispatch' && !inputs.folge }}
+        run: node --import tsx scripts/autofix-plan.ts
+
+      - name: Versuch vormerken
+        if: steps.plan.outputs.key != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: autofix-ledger
+          overwrite: true
+          path: .autofix/ledger.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 90
 
       # Der auslösende Befund kommt aus dem Lauf, der rot wurde — NICHT aus einer
       # frischen Messung. Die Kaltrender-Zeiten streuen stark (1,6–5,4 s je nach
       # Gemeindegröße), also misst eine neue Messung eine andere Stichprobe als
-      # die, die den Alarm ausgelöst hat: der Autofix startet wegen 5,4 s, misst
-      # 2,9 s, findet nichts zu tun und hat die Tagesbremse trotzdem verbraucht.
-      # Genau das ist im ersten scharfen Test passiert.
+      # die, die den Alarm ausgelöst hat.
       - name: Auslösenden Befund holen
-        if: steps.budget.outputs.weiter == 'true' && github.event_name == 'workflow_run'
-        id: ausloeser
+        if: steps.plan.outputs.key != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          HEALTH_RUN: ${{ steps.plan.outputs.health_run }}
         run: |
-          # Preserve setup/history/artifact failures as well as measurements.
-          gh run view ${{ github.event.workflow_run.id }} --log > /tmp/ausloeser.txt 2>&1 || true
+          if [ -n "$HEALTH_RUN" ]; then gh run view "$HEALTH_RUN" --log > /tmp/ausloeser.txt 2>&1 || true; fi
           if [ ! -s /tmp/ausloeser.txt ]; then
             echo "(Log des auslösenden Laufs nicht lesbar)" > /tmp/ausloeser.txt
           fi
@@ -116,7 +109,7 @@ jobs:
       # Zusätzlich frisch messen — der Vergleich zeigt, ob der Befund noch
       # besteht oder ob es ein Ausreißer war.
       - name: Gegenmessung
-        if: steps.budget.outputs.weiter == 'true'
+        if: steps.plan.outputs.key != ''
         id: befund
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -133,29 +126,47 @@ jobs:
           {
             echo 'text<<BEFUND_ENDE'
             echo "── Auslösender Befund (der Lauf, der rot wurde) ──"
-            cat /tmp/ausloeser.txt 2>/dev/null || echo "(manuell ausgelöst, kein Auslöser-Befund)"
+            cat /tmp/ausloeser.txt
             echo ""
             echo "── Gegenmessung (jetzt, andere Stichprobe) ──"
             cat /tmp/jetzt.txt
             echo 'BEFUND_ENDE'
           } >> "$GITHUB_OUTPUT"
 
+      # claude_args are CLI FLAGS, parsed like a shell command line. Until
+      # 07.10.2026 a JSON object stood here: it contains no "--" token, so the
+      # action passed nothing on — no tool permission, no model. Every model run
+      # ended after ~20 seconds with two permission denials and no result.
       - name: Claude analysiert und behebt
-        if: steps.budget.outputs.weiter == 'true'
+        if: steps.plan.outputs.key != ''
+        id: claude
+        continue-on-error: true
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: |
-            {
-              "model": "claude-sonnet-5",
-              "allowedTools": ["Bash", "Read", "Edit", "Write", "Grep", "Glob"]
-            }
+          # Follow-up runs are dispatched by this workflow's own token, so their
+          # actor is the github-actions bot. Without this the action refuses them
+          # ("non-human actor") — found by the silent-run check on its first day.
+          # Only our own workflow token, never '*': other apps could inject prompts.
+          allowed_bots: github-actions
+          claude_args: >-
+            --model claude-sonnet-5-5
+            --allowedTools "Bash,Read,Edit,Write,Grep,Glob"
+            --json-schema '{"type":"object","properties":{"ergebnis":{"type":"string","enum":["behoben","kein_handlungsbedarf","blockiert"]},"commit":{"type":"string"},"begruendung":{"type":"string"},"benoetigt":{"type":"string"}},"required":["ergebnis","begruendung"],"additionalProperties":false}'
           prompt: |
             Du bist der technische Verantwortliche für die Production-Website solar-check.io.
-            Der automatische Gesundheitscheck ist rot. Analysiere den Befund, behebe ihn wo
-            möglich, verifiziere die Behebung und liefere sie aus. Antworte auf Deutsch.
+            Der automatische Gesundheitscheck hat offene Befunde. Du bearbeitest in diesem
+            Lauf GENAU EINEN davon — die anderen bekommen eigene Läufe. Analysiere ihn,
+            behebe ihn wo möglich, verifiziere die Behebung und liefere sie aus.
+            Antworte auf Deutsch.
 
-            BEFUND:
+            DEIN BEFUND (Kennung ${{ steps.plan.outputs.key }}):
+            ${{ steps.plan.outputs.text }}
+
+            FRÜHERE REPARATURLÄUFE FÜR DIESEN BEFUND:
+            ${{ steps.plan.outputs.vorher }}
+
+            MESSBERICHTE (darin stehen auch die anderen Befunde — die sind nicht deine Aufgabe):
             ${{ steps.befund.outputs.text }}
 
             ZUM LESEN DES BEFUNDS: Der auslösende Befund ist der, der den Alarm ausgelöst hat.
@@ -182,7 +193,10 @@ jobs:
             SO GEHST DU VOR:
             1. Lies CLAUDE.md (Abschnitte "Deployment & Workflow" und "Monitoring") und
                scripts/health-check.ts, damit du die Schwellen und die Architektur kennst.
-            2. Grenze die Ursache ein, bevor du etwas änderst. Miss, statt zu raten — bei
+            2. Sieh zuerst nach, ob schon jemand daran arbeitet: `git log --since="2 days ago"`
+               auf die betroffenen Dateien. Ist die Ursache dort schon behoben, ist dein
+               Ergebnis "kein_handlungsbedarf" mit dem Commit in der Begründung.
+               Grenze die Ursache ein, bevor du etwas änderst. Miss, statt zu raten — bei
                Renderzeiten heißt das: welche Datenabfragen dauern, und warum gerade jetzt.
                Schau in die Git-Historie der letzten Tage, ob eine Änderung die Zeit erklärt.
             3. Behebe, was du sicher beheben kannst. Danach `npx tsc --noEmit` und
@@ -190,8 +204,13 @@ jobs:
             4. Verifiziere am lebenden System: `npm run health-check` erneut laufen lassen
                und zeigen, dass der Wert wirklich besser ist. Ein Fix ohne Nachmessung ist
                kein Fix, sondern eine Behauptung.
-            5. Committe auf main (englische Commit-Message, die den Befund und die Ursache
-               erklärt) und pushe. Der Deploy läuft automatisch.
+            5. Committe (englische Commit-Message, die den Befund und die Ursache erklärt)
+               und pushe AUSSCHLIESSLICH auf den Zweig autofix/${{ github.run_id }}:
+               `git push origin HEAD:refs/heads/autofix/${{ github.run_id }}`. NIE auf main —
+               main nimmt nur Commits an, deren Pflichtprüfung grün ist; die lässt der
+               Workflow nach dir auf diesem Zweig laufen und liefert bei Grün selbst aus.
+               Nenne die Commit-Kennung (die Spitze des Zweigs) im Ergebnis. Änderungen an
+               Workflow-Dateien kann dieser Weg nicht ausliefern — dann "blockiert".
 
             WAS DU NICHT OHNE RÜCKFRAGE ÄNDERST:
             - Berechnungslogik, Zahlen, Einheiten oder Annahmen der Rechner. Laut CLAUDE.md
@@ -206,8 +225,64 @@ jobs:
             Atlas-Seiten. Ein ungedrosselter Lauf hat die Datenbank im Juli 2026 schon einmal
             lahmgelegt.
 
-            WENN DU NICHT WEITERKOMMST oder die Behebung eine Produktentscheidung berührt:
-            Lege ein GitHub-Issue an (`gh issue create`) mit dem Titel "Gesundheitscheck:
-            <kurzer Befund>". Beschreibe darin in Klartext ohne Fachbegriffe, was klemmt, was
-            du versucht hast, und welche Entscheidung du vom Betreiber brauchst — formuliert
-            als Frage mit einer klaren Empfehlung, nicht als technische Aufgabe.
+            WIE DIESER LAUF ENDET — PFLICHT: Du gibst am Ende genau ein Urteil im
+            vorgegebenen Format ab. Ein Lauf ohne Urteil wird als stummer Lauf gewertet,
+            und ein stummer Lauf ist selbst ein Befund.
+            - "behoben": du hast einen Fix auf den Zweig autofix/${{ github.run_id }}
+              gepusht. `commit` = die Kennung dieses Commits, `begruendung` = Ursache und
+              Fix in zwei Sätzen. Fällt er in der Pflichtprüfung durch, wird das vermerkt.
+            - "kein_handlungsbedarf": beide Messungen sind klar unauffällig, oder der Befund
+              ist schon von anderer Seite behoben. `begruendung` = woran du das festmachst
+              (Messwerte, Commit), mindestens zwei Sätze.
+            - "blockiert": du kommst nicht weiter, oder die Behebung bräuchte eine der oben
+              verbotenen Änderungen bzw. eine Produktentscheidung. `begruendung` = was klemmt
+              und was du versucht hast; `benoetigt` = was es zur Behebung braucht, als Frage
+              mit klarer Empfehlung. Lege KEIN GitHub-Issue an und schicke keine Mail — das
+              Urteil wird gespeichert und jeder Sitzung beim Start angezeigt.
+
+      # main only accepts a commit whose required gate check passed on that very
+      # commit. The model pushes its fix to its own branch; this runs the gate
+      # there and fast-forwards main when it is green.
+      - name: Fix ausliefern
+        if: steps.plan.outputs.key != '' && contains(steps.claude.outputs.structured_output, '"ergebnis":"behoben"')
+        id: liefern
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          STRUCTURED: ${{ steps.claude.outputs.structured_output }}
+        run: node --import tsx scripts/autofix-deliver.ts
+
+      - name: Urteil pruefen
+        if: always() && steps.plan.outputs.key != ''
+        id: urteil
+        env:
+          KEY: ${{ steps.plan.outputs.key }}
+          STRUCTURED: ${{ steps.claude.outputs.structured_output }}
+          GELIEFERT: ${{ steps.liefern.outputs.geliefert }}
+          ABGELEHNT: ${{ steps.liefern.outputs.abgelehnt }}
+        run: node --import tsx scripts/autofix-outcome.ts
+
+      - name: Urteil sichern
+        if: always() && steps.plan.outputs.key != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: autofix-ledger
+          overwrite: true
+          path: .autofix/ledger.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 90
+
+      # The next due cause does not wait for the next health check. A dispatch
+      # through GITHUB_TOKEN is one of the two events that may start a new run.
+      - name: Naechsten Befund anstossen
+        if: always() && steps.plan.outputs.uebrig != '0' && steps.plan.outputs.uebrig != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run claude-autofix.yml --ref main -f folge=true
+
+      - name: Stummer Lauf
+        if: always() && steps.plan.outputs.key != '' && steps.urteil.outputs.ergebnis != 'behoben' && steps.urteil.outputs.ergebnis != 'kein_handlungsbedarf' && steps.urteil.outputs.ergebnis != 'blockiert'
+        run: |
+          echo "::error::Reparaturlauf ohne nachprüfbares Urteil. Der nächste Gesundheitscheck führt das als Befund."
+          exit 1

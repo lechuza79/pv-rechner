@@ -138,12 +138,11 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
   };
   const max = Math.max(0, ...rows.map(row => row.value));
   return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={data.shareParams}
-    stand={data.stand} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
+    stand={data.stand} exportScope={data.scope} exportUnit={data.unit} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
     imageFormats={[{label:"Querformat · 16:9",width:960,height:540},{label:"Quadrat · 1:1",width:720,height:720},{label:"Hochformat · 4:5",width:720,height:900}]}
     title={heading} eyebrow="Die Top 3" subtitle={subtitle} help={/speicherquote/i.test(data.category) ? 'Angemeldete private Batteriespeicher je 100 private Dachanlagen. Die Bestände werden getrennt gezählt; dies ist nicht der Anteil der Dächer mit Speicher. Werte über 100 sind möglich.' : /je Einwohner/i.test(data.title) ? 'Installierter Bestand geteilt durch die Einwohnerzahl der angezeigten Vergleichsgruppe. Leistung und Speicherkapazität sind keine Messung der Stromerzeugung.' : 'In Betrieb gemeldete Anlagen laut Marktstammdatenregister. Verglichen wird die angezeigte Kategorie innerhalb der gewählten Vergleichsgruppe.'} helpExportNote={false} exportNote={null} className={styles.widget} data-story-scheme="light">
     <div data-podium-visual ref={visualRef} className={styles.visual} data-animate={animate || undefined} key={`${data.category}-${data.scope}`}>
       <div data-widget-artwork className={styles.artwork} aria-hidden="true"><div className={styles.splash}/><img className={styles.backdrop} src={motif} alt=""/></div>
-      <ExportOnly><p className={styles.scope}>{data.scope}</p></ExportOnly>
       {data.missing || !rows.length ? <p data-export-ready="false">{data.missing ?? 'Für diese Auswahl liegt keine Rangliste vor.'}</p> :
         <div className={styles.podium} key={`${data.category}-${data.scope}`}>
           {podium.map(row => <div key={row.id} className={styles.contender} data-own={row.own} style={{"--bar-fraction":max > 0 ? row.value / max : 0,"--grow-delay":`${growthOrder.indexOf(row)*850}ms`,"--reveal-delay":`${rows.length*850+400+growthOrder.indexOf(row)*930}ms`} as CSSProperties}>

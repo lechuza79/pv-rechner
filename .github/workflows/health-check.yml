@@ -30,7 +30,8 @@ on:
       - "vercel.json"
       - "next.config.js"
       - "scripts/health-*.ts"
-      - "scripts/autofix-budget.ts"
+      - "scripts/autofix-*.ts"
+      - "scripts/lib/actions-artifact.ts"
       - ".github/workflows/health-check.yml"
       - ".github/workflows/claude-autofix.yml"
   workflow_dispatch:
