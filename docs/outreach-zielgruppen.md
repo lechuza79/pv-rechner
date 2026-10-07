@@ -10,7 +10,7 @@ die Regeln der Nachbarn. Stand 29.09.2026.
 | Einheit | ein Brief je Gemeinde | eine Mitteilung je Landkreis, mehrere Gemeinden |
 | Aufhänger | eigener Platz 1 in der Größenklasse, Gruppengröße im Betreff | stärkster Rang zuerst: bundesweit Platz 1 > Land Platz 1 > bundesweit Top 10 > Kreis |
 | Empfänger | Klimaschutz > Pressekontakt > Pressepostfach > allgemeines Postfach | Redaktionsadresse aus dem Impressum des Mediums, Medien des Kreises |
-| Versand | im Code erzwungen: keine Ferien/Feiertage des Landes, Di–Do, Tagespensum | Chargen je Kreisgruppe, ungleichmäßige Abstände, Go je Charge |
+| Versand | im Code erzwungen: keine Ferien/Feiertage des Landes, Di–Do, Tagespensum | Chargen je Kreisgruppe, ungleichmäßige Abstände, Go je Charge; `npm run presse:versand`, Protokoll in `aussendungen` |
 | Signatur | gemeinsame Signatur („Dipl. Des.“) | „Dipl. Des., Gründer von solar-check.io“ |
 | Fuß | Impressum, Datenschutz, Herkunft der Adresse (Art. 14) | knapp nach „--“: Herkunft, Abmeldung per Antwort, Impressum · Datenschutz |
 | Zusätze | — | „Gemeinden informiert, Statement dort“, Rückfrage nach Informationsgrafik |

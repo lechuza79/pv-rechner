@@ -69,10 +69,13 @@ async function angeschriebene(bestand: Bestand, client: Client): Promise<Angesch
         "kommunen_kontakt", "region_id, website, contacted_at, responded_at", q => q.not("contacted_at", "is", null));
       return rows.map(r => ({ domain: domainAus(r.website), id: r.region_id, versandTag: r.contacted_at.slice(0, 10), geantwortet: !!r.responded_at }));
     }
-    // No send path exists for these yet. `fachbetriebe.kontakt_at` is the day the
-    // contact page was CRAWLED, not a send: reading it as one reported 1,260
-    // "contacted" trades that nobody ever wrote to. Whoever builds a send path
-    // writes a send timestamp and wires it in here.
+    // `fachbetriebe.kontakt_at` is the day the contact page was CRAWLED, not a
+    // send: reading it as one reported 1,260 "contacted" trades that nobody ever
+    // wrote to. Fachbetriebe and Versorger have no send path yet.
+    // The press HAS one since 07.10.2026 (table `aussendungen`, 145 mails), but
+    // replies are not yet matched to it — measuring now would write "0
+    // answered", a made-up zero. Wire replies first, then read `aussendungen`
+    // here (zielgruppe = bestand).
     case "fachbetriebe":
     case "presse":
     case "versorger":
