@@ -344,8 +344,10 @@ export function WidgetSourceEdge({
   visible = true,
   stand,
   spalten = 1,
+  ownCredit = false,
 }: {
   widget: WidgetDef;
+  ownCredit?: boolean;
   visible?: boolean;
   /** Zahl der senkrechten Textspalten. Ein Chart mit ZWEI Quellen bekommt an
    *  einer Kante von Chart-Höhe den Vermerk sonst nur in 6 px unter — zwei
@@ -381,7 +383,7 @@ export function WidgetSourceEdge({
   const label =
     widget.sources
       .map((s) => sourceLabel(s, { kurz: true }))
-      .join(" · ") + (datum ? ` · Stand: ${datum}` : "");
+      .join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + (datum ? ` · Stand: ${datum}` : "");
 
   // Der Vermerk passt sich der Kartenhöhe an, statt abgeschnitten zu werden.
   //

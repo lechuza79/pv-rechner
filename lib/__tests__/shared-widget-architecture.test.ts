@@ -27,6 +27,7 @@ const consumers: Record<string,string[]> = {
   'components/BalkonAngebot.tsx':['./AffiliateTrust','./AffiliateActions','./AffiliateCarousel','./AffiliateDetails'],
   'components/dashboard/ExportableWidgetFrame.tsx':['./WidgetFrame','../ChartOptionsMenu','../Modal','../WidgetExport','../../lib/useChartExport','../../lib/chart-animation-export'],
   'components/dashboard/WidgetFrame.tsx':['../InfoTooltip'],
+  'app/(embed)/embed/partner/[partner]/[...widget]/page.tsx':['../../../../../../components/gemeinde/GemeindeAnsicht','../../../../../../components/dashboard/WidgetPresentation','../../../../../../lib/municipal-widget-views'],
   'components/GlossaryTerm.tsx':['./InfoTooltip'],
   'components/InfoTooltipBindings.tsx':['./InfoTooltip'],
   'components/gemeinde/GemeindeMonitor.tsx':['../dashboard/EnergyMonitor','../dashboard/KpiOverview','../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],

@@ -14,7 +14,7 @@ export default function WidgetPresentation({appearance,children}:{appearance:Wid
     const receive=(event:MessageEvent)=>{
       if(event.source!==window.parent||event.origin!==window.location.origin||event.data?.type!=="widget:appearance")return;
       const value=parseWidgetAppearanceObject(event.data.appearance);
-      if(value)setLive(value);
+      if(value)setLive({...value, partner: appearance.partner});
     };
     window.addEventListener('message',receive);
     window.parent.postMessage({type:'widget:appearance-request'},window.location.origin);

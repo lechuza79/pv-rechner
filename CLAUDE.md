@@ -478,6 +478,9 @@ Diese Entscheidungen sind bewusst so gefallen und dürfen nicht „aufgeräumt" 
 
 ## Embed-Widgets (Energie-Widgets)
 
+Partner embeds: `/embed/partner/[partner]/[widget]/[full|title|none]` reuse the municipal widget adapter and shared export frame. Trusted presets live in `lib/widget-brand.ts`; header mode never suppresses chart titles or attribution. Generate responsive customer HTML through `partnerEmbedCode`. See `docs/partner-widgets.md`.
+
+
 Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**, Stromkosten-Rennen). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
 
 **Geteilte Bausteine (nicht neu erfinden, keine Inline-Kopien):**

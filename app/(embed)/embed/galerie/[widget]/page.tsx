@@ -17,16 +17,7 @@ import {loadDistrictContent} from '../../../../../lib/district-monitor-server';
 import {isDistrictMember} from '../../../../../lib/district-package';
 import {RegionalMonthlySolarWidget} from '../../../../../components/landkreis/DistrictEnergyWidgets';
 
-const views = {
-  "regional-current-power": "currentPower",
-  "regional-annual-growth": "growth",
-  "regional-composition": "anteilsdonut",
-  "gemeinde-anlagenraster": "anlagenraster",
-  "regional-electricity-value": "electricity-value",
-  "regional-feed-in-value": "feed-in-value",
-  "gemeinde-energie-jahr": "energy-year",
-  "gemeinde-solar-monat": "radial",
-} as const;
+import {MUNICIPAL_WIDGET_VIEWS as views} from '../../../../../lib/municipal-widget-views';
 export default async function Page({params, searchParams}: {params: Promise<{widget: string}>; searchParams: Promise<{ags?: string;theme?:string;background?:string;layout?:string;sharing?:string;autoplay?:string}>}) {
   const {widget} = await params;
   if (widget === "solar-trend-monat") {
