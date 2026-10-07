@@ -18,9 +18,17 @@ export const NIDDA_WIDGET_BRAND: WidgetBrand = {
   fonts: {body: 'NiddaLato, Arial, sans-serif', display: 'NiddaOswald, Arial, sans-serif'},
 };
 
-export function widgetBrandStyle(brand: WidgetBrand): CSSProperties {
+export const PARTNER_WIDGET_HEIGHTS = [600, 720, 840] as const;
+export type PartnerWidgetHeight = typeof PARTNER_WIDGET_HEIGHTS[number];
+export function parsePartnerWidgetHeight(value: string | undefined): PartnerWidgetHeight | undefined {
+  if (value === undefined) return 720;
+  return PARTNER_WIDGET_HEIGHTS.find(height => String(height) === value);
+}
+
+export function widgetBrandStyle(brand: WidgetBrand, widgetHeight: PartnerWidgetHeight = 720): CSSProperties {
   const {colors: c, fonts: f} = brand;
   return {
+    '--partner-widget-height': String(widgetHeight) + 'px',
     '--atlas-action': c.accent, '--atlas-action-ink': c.paper,
     '--atlas-text': c.ink, '--atlas-secondary': c.muted,
     '--atlas-card': c.paper, '--atlas-surface': c.surface,

@@ -27,6 +27,7 @@ export default function AutoHeightIframe({
   fallbackHeight,
   framed = true,
   onReady,
+  onHeightChange,
   loading = "lazy",
   appearance,
 }: {
@@ -35,11 +36,13 @@ export default function AutoHeightIframe({
   fallbackHeight: number;
   framed?: boolean;
   onReady?: () => void;
+  onHeightChange?: (height: number) => void;
   loading?: "lazy" | "eager";
   appearance?: import("../lib/widget-appearance").WidgetAppearance;
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
+  useEffect(() => { if (bereit) onHeightChange?.(height); }, [bereit, height, onHeightChange]);
   useEffect(() => { if (bereit) onReady?.(); }, [bereit, onReady]);
 
   // Der Pfad hängt an der Adresse, nicht an einer Nachricht: so ist er schon

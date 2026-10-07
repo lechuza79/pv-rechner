@@ -61,7 +61,7 @@ für Orte ohne Platzierung am 05./06.10.2026 beim Zusammenfassen verloren).
   `kas202609200150`). Der alte Eintrag verschwindet, ein Wildcard-Eintrag antwortet
   trotzdem auf jeden Namen. Neuer Name: KAS → Tools → DNS-Einstellungen →
   solar-check.io, TXT-Eintrag auf `._domainkey`. Oben in `BEKANNTE_DKIM_SELEKTOREN`
-  (Versandskript) eintragen.
+  (`lib/outreach-dkim.ts`, gilt für jeden Versandlauf) eintragen.
 - **Herkunftswerte, die die Briefvorlage nicht kennt**, wurden als „undefined"
   gerendert (Prozessnamen statt Seitentyp in der Herkunftsspalte). Seitdem fällt der
   Brief auf „Website von …" zurück, und die Platzhalter-Bremse hält jeden Brief mit

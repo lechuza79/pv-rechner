@@ -56,8 +56,10 @@ describe("Klasse 1 — bezahlte Suche nur mit ausdrücklicher Freigabe", () => {
         expect(tryVorGate, `${d}:${i + 1}: die Freigabe steht in einem try und würde verschluckt`).toBe(-1);
       });
     }
-    // The four known clients; if this drops, a client moved and the test must follow it.
-    expect(gefunden).toBeGreaterThanOrEqual(4);
+    // The known clients; if this drops, a client moved and the test must follow it.
+    // Was four until 07.10.2026: the fourth sat in the first-generation source
+    // search (scripts/lib/contact-source-search.ts), removed with that chain.
+    expect(gefunden).toBeGreaterThanOrEqual(3);
   });
 
   it("no unattended script carries the flag or a search step", () => {

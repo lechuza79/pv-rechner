@@ -254,6 +254,12 @@ describe("workflow contract", () => {
     expect(wf).toContain("${{ steps.plan.outputs.key }}");
     expect(wf).not.toMatch(/Tagesbremse|autofix-budget/);
   });
+  it("the daily budget counts ALL runs of the window, paging past 100 (07.10.2026: exactly 100 runs stopped every repair)", () => {
+    const plan = readFileSync("scripts/autofix-plan.ts", "utf8");
+    expect(plan).toMatch(/runs\?per_page=100&page=\$\{page\}/);
+    expect(plan).toMatch(/if \(seite\.length < 100\) break;/);
+    expect(plan).not.toMatch(/runs\.length >= 100\) throw/);
+  });
 });
 
 import { PFLICHTPRUEFUNG, lieferSchritt, zweigFuer } from "../../scripts/autofix-deliver";

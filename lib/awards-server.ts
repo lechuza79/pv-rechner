@@ -44,11 +44,16 @@ const TTL_MS = 60 * 60 * 1000;
 
 /** Ein Wert, prozess-lokal gecacht mit Ablauf. */
 function memoize<T>(fn: () => Promise<T>): () => Promise<T> {
-  let cache: { at: number; val: T } | null = null;
-  return async () => {
+  let cache: { at: number; val: Promise<T> } | null = null;
+  return () => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.val;
-    const val = await fn();
-    cache = { at: Date.now(), val };
+    // The PROMISE is kept, not the value: a fresh instance hit by several
+    // visitors at once (an outreach batch) otherwise ran the full load once per
+    // request. A failed run is dropped, so the next call tries again.
+    const val = fn();
+    const eintrag = { at: Date.now(), val };
+    cache = eintrag;
+    val.catch(() => { if (cache === eintrag) cache = null; });
     return val;
   };
 }
@@ -57,24 +62,33 @@ function memoize<T>(fn: () => Promise<T>): () => Promise<T> {
 async function pageAll(table: string, select: string, refine?: (q: any) => any): Promise<any[]> {
   if (!supabase) return [];
   const size = 1000;
-  const out: unknown[] = [];
-  for (let from = 0; ; from += size) {
-    let q = supabase.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
+  // Blocks are fetched in waves of WELLE, not one after another: eleven blocks
+  // per table in sequence cost a fresh instance ~3.6 s (measured 07.10.2026 on
+  // the municipality page's ranking list), a wave costs one round trip. The
+  // order is fixed by region_id, so the blocks never overlap or skip.
+  const WELLE = 4;
+  const block = async (from: number) => {
+    let q = supabase!.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
     if (refine) q = refine(q);
-    // Zeitbudget je Seite: Diese Schleife holt über 20.000 Zeilen in Blöcken.
-    // Ohne Notbremse hängt ein einziger kränkelnder Block die ganze Seite bis
-    // zum Function-Limit — mit ihr wirft er, und der Aufrufer merkt es.
+    // Zeitbudget je Seite: Ohne Notbremse hängt ein einziger kränkelnder Block
+    // die ganze Seite bis zum Function-Limit — mit ihr wirft er, und der
+    // Aufrufer merkt es.
     const { data, error } = await withDbTimeout(q, `awards: ${table} ab ${from}`);
     // Fehler werfen statt still abbrechen: ein Teil-Ergebnis (z. B. nur die ersten
     // 3.000 Gemeinden) würde sonst eine Stunde lang falsche Ranglisten cachen. Der
     // Aufrufer memoisiert nur erfolgreiche, vollständige Läufe.
     if (error) throw new Error(`Award-Daten laden (${table}): ${error.message}`);
-    if (!data || data.length === 0) break;
-    out.push(...data);
-    if (data.length < size) break;
+    return (data ?? []) as unknown[];
+  };
+  const out: unknown[] = [];
+  for (let from = 0; ; from += size * WELLE) {
+    const bloecke = await Promise.all(Array.from({ length: WELLE }, (_, i) => block(from + i * size)));
+    for (const b of bloecke) {
+      out.push(...b);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (b.length < size) return out as any[];
+    }
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return out as any[];
 }
 
 
@@ -83,8 +97,31 @@ export const WEITERE_MIN_GRUPPE = 10;
 
 export async function loadAwardStatsFresh(): Promise<GemeindeStats[]> {
   if (!supabase) return [];
-  const stats = await pageAll("mastr_gemeinde_award", "*");
-  const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde"));
+  const [stats, regions] = await Promise.all([
+    pageAll("mastr_gemeinde_award", "*"),
+    pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde")),
+  ]);
+  return zuStats(stats, regions);
+}
+
+/**
+ * Only the towns of one Land (2 digits) or Kreis (5 digits). A ranking within
+ * that area compares exactly these towns (rankingRows filters by the same
+ * prefix), so the result is identical to filtering the full load — at ~50
+ * rows instead of ~11,000, and without depending on a warm instance.
+ */
+export async function loadAwardStatsImGebiet(gebiet: string): Promise<GemeindeStats[]> {
+  if (!/^(\d{2}|\d{5})$/.test(gebiet)) throw new Error(`Award-Daten: unbekanntes Gebiet ${gebiet}`);
+  if (!supabase) return [];
+  const [stats, regions] = await Promise.all([
+    pageAll("mastr_gemeinde_award", "*", (q) => q.like("region_id", `${gebiet}%`)),
+    pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde").like("region_id", `${gebiet}%`)),
+  ]);
+  return zuStats(stats, regions);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function zuStats(stats: any[], regions: any[]): GemeindeStats[] {
   const meta = new Map(regions.map((r) => [r.region_id as string, r]));
   return stats.map((r) => {
     const m = meta.get(r.region_id as string);

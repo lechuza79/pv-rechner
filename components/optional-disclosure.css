@@ -7,3 +7,9 @@
 .sc-optional-disclosure--heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:0 16px}.sc-optional-disclosure--heading>.sc-optional-disclosure-trigger{margin:0;padding:0!important;font-size:var(--font-size-small);white-space:nowrap}.sc-optional-disclosure--heading>.sc-collapse{grid-column:1/-1}.sc-disclosure-heading h3{margin:0!important}.sc-disclosure-heading p{margin:4px 0 0!important;font-size:var(--font-size-small)!important;line-height:1.5}
 
 .sc-disclosure-title{display:flex;align-items:center;gap:8px}
+
+.sc-optional-disclosure--action{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 8px}
+.sc-optional-disclosure--action>.sc-collapse{grid-column:1/-1;min-width:0}
+.sc-optional-disclosure--action>button[aria-expanded]>svg{transition:transform var(--disclosure-duration) var(--disclosure-easing)}
+.sc-optional-disclosure--action>button[aria-expanded=true]>svg{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){.sc-optional-disclosure--action>button[aria-expanded]>svg{transition:none}}

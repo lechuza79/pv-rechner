@@ -197,15 +197,24 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     const body = frameNode?.querySelector<HTMLElement>('.sc-widget-body');
     const plot = body?.querySelector<HTMLElement>('.sc-category-plot');
     if (!body || !plot) return;
+    const omittedHeader = frameNode?.querySelector<HTMLElement>('[data-partner-header-measure]');
     const measure = () => {
+      if (partner?.widgetHeight && frameNode) {
+        const current = plot.getBoundingClientRect().height;
+        const fixed = frameNode.getBoundingClientRect().height - current;
+        const available = Math.max(140, partner.widgetHeight - (omittedHeader?.getBoundingClientRect().height ?? 0) - fixed);
+        if (Math.abs(current - available) > 0.5) frameNode.style.setProperty('--chart-plot-height', available + 'px');
+      }
       const a = body.getBoundingClientRect(), b = plot.getBoundingClientRect();
-      setPlotRail({top: b.top-a.top, height: Math.max(0,b.height-10)});
+      const controls = partner ? frameNode?.querySelector<HTMLElement>('.sc-widget-tools') : undefined;
+      const top = controls ? controls.getBoundingClientRect().bottom + 8 : b.top;
+      setPlotRail({top: top-a.top, height: Math.max(0,b.bottom-10-top)});
     };
     measure();
     const observer = new ResizeObserver(measure);
-    observer.observe(body); observer.observe(plot);
+    observer.observe(body); observer.observe(plot); if (frameNode) observer.observe(frameNode); if (omittedHeader) observer.observe(omittedHeader);
     return () => observer.disconnect();
-  }, [sourcePlacement, chartExport.chartRef]);
+  }, [sourcePlacement, chartExport.chartRef, partner?.widgetHeight, partner?.header]);
   const measure = useCallback((action:WidgetAction) => {
     let path=window.location.pathname;
     try {path=window.top?.location.pathname??path;} catch {/* External embeds retain their own scope. */}
@@ -282,10 +291,12 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
       {...frame}
       data-widget-brand={partner?.brand.id}
       data-source-placement={sourcePlacement}
-      style={partner ? {...frame.style, ...widgetBrandStyle(partner.brand)} : frame.style}
-      masthead={partner ? <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
+      style={partner ? {...frame.style, ...widgetBrandStyle(partner.brand, partner.widgetHeight)} : frame.style}
+      masthead={partner ? partner.header === 'none'
+        ? <div data-partner-header-measure="" data-sc-export-ignore="" aria-hidden="true" inert style={{position:"absolute",insetInline:0,top:0,visibility:"hidden",opacity:0,pointerEvents:"none"}}><WidgetBrandHeader brand={partner.brand} mode="full"/></div>
+        : <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
       context={frame.context ?? (partner ? `Stand: ${stand}` : undefined)}
-      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner}/></div> : frame.bodyAside}
+      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner} minFontSize={partner ? 10 : undefined}/></div> : frame.bodyAside}
       exportSubtitle={exportScope !== undefined || exportUnit !== undefined
         ? [exportScope ?? place, `Stand ${chartDataDate(stand)}`, exportUnit ? chartQuantityLabel(exportUnit) : undefined].filter(Boolean).join(' · ')
         : frame.exportSubtitle}

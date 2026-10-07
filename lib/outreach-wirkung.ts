@@ -88,3 +88,25 @@ export function kostenHinweis(messpunkte: number): string {
 /** Der Satz zur Lücke — er gehört an jede Auswertung, nicht in eine Fußnote. */
 export const WIRKUNG_UNSICHTBAR =
   "Nicht sichtbar: Veröffentlichungen ohne Verweis auf uns (Print, App-Plattformen, soziale Netze).";
+
+/**
+ * Zählt eine Antwort für diesen Messpunkt? Nur, wenn sie bis zum Messtag da war.
+ *
+ * Ohne diese Grenze stand in einem NACHGEHOLTEN Messpunkt („Tag 3", gemessen an
+ * Tag 8) der Stand von Tag 8 — die Zeile hieße Tag 3 und zeigte etwas anderes.
+ * Für Antworten kennen wir das Datum; für Verweise nicht, dort bleibt der
+ * Hinweis „nachgemessen am …" die ehrliche Auskunft. Ohne Antwortdatum zählt
+ * eine Antwort wie bisher (Altbestand).
+ */
+export function antwortBisMesstag(
+  geantwortet: boolean,
+  antwortTag: string | null | undefined,
+  versandTag: string,
+  tage: number,
+): boolean {
+  if (!geantwortet) return false;
+  if (!antwortTag) return true;
+  const grenze = new Date(`${versandTag}T12:00:00Z`);
+  grenze.setUTCDate(grenze.getUTCDate() + tage);
+  return antwortTag <= grenze.toISOString().slice(0, 10);
+}

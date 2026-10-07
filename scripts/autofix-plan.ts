@@ -61,8 +61,17 @@ function main() {
   const tag = tagInBerlin(jetzt);
   // Two days back covers the Berlin day in any time zone offset.
   const seit = tagInBerlin(new Date(jetzt.getTime() - 2 * 86_400_000));
-  const runs = JSON.parse(gh(["api", `repos/${repo}/actions/workflows/claude-autofix.yml/runs?per_page=100&created=>=${seit}`])).workflow_runs;
-  if (runs.length >= 100) throw new Error("Autofix run history truncated");
+  // Paged, not capped: the workflow fires after every health check and CI run,
+  // so two days held more than 100 runs (07.10.2026). The first version threw
+  // there and stopped every repair; the count must cover all of them, because
+  // it is the daily budget.
+  const runs: { id: number }[] = [];
+  for (let page = 1; ; page++) {
+    const seite = JSON.parse(gh(["api", `repos/${repo}/actions/workflows/claude-autofix.yml/runs?per_page=100&page=${page}&created=>=${seit}`])).workflow_runs as { id: number }[];
+    runs.push(...seite);
+    if (seite.length < 100) break;
+    if (page >= 20) throw new Error("Autofix run history beyond 2,000 runs in two days");
+  }
   let laeufe = 0;
   for (const run of runs) {
     const r = JSON.parse(gh(["api", `repos/${repo}/actions/runs/${run.id}/jobs?filter=all&per_page=100`]));

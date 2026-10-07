@@ -50,6 +50,7 @@ import { berichtAblegen } from "../lib/alert-senden";
 import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
 import { heuteInBerlin } from "../lib/zeit";
 import { istAntwortAufSachfrage } from "../lib/outreach-sachfrage";
+import { aussendungZuordnen, ersetztBisherige, antwortNotiz, type GesendeteAussendung } from "../lib/aussendung-ruecklauf";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -238,6 +239,62 @@ export async function foerderAnfragenZuordnen(
   if (failures.length) throw new Error(`Förderantworten nicht vollständig gespeichert: ${failures.join("; ")}`);
 }
 
+/** Alle verschickten Aussendungen an andere Zielgruppen (Tabelle `aussendungen`). */
+async function gesendeteAussendungen(db: Awaited<ReturnType<typeof makeClient>>): Promise<GesendeteAussendung[]> {
+  const raus: GesendeteAussendung[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await db
+      .from("aussendungen")
+      .select("id, zielgruppe, empfaenger, domain, betreff, message_id, gesendet_am, antwort_art")
+      .not("gesendet_am", "is", null)
+      .order("id")
+      .range(von, von + 999);
+    // A missing table is not "no sends" — say so instead of matching nothing.
+    if (error) throw new Error(`Aussendungen nicht lesbar: ${error.message}`);
+    raus.push(...((data ?? []) as GesendeteAussendung[]));
+    if ((data ?? []).length < 1000) return raus;
+  }
+}
+
+/**
+ * Die Rückmeldung an ihre Aussendung schreiben — die stärkste gewinnt
+ * (`ersetztBisherige`), und der Stand wird beim Schreiben verglichen, damit ein
+ * gleichzeitiger Lauf nichts überschreibt. Ältere Mails zuerst: Eine Urlaubsnotiz
+ * vom Montag darf die Antwort vom Dienstag nicht verdrängen.
+ */
+async function aussendungsAntwortenNachtragen(
+  db: Awaited<ReturnType<typeof makeClient>>,
+  treffer: { zeile: GesendeteAussendung; b: Befund; receivedAt: string }[],
+  schreiben: boolean,
+): Promise<Befund[]> {
+  if (!treffer.length) return [];
+  log();
+  log(`${treffer.length} Rückmeldungen auf Aussendungen an andere Zielgruppen:`);
+  const stand = new Map(treffer.map((t) => [t.zeile.id, t.zeile.antwort_art]));
+  const neu: Befund[] = [];
+  for (const t of [...treffer].sort((a, b) => a.receivedAt.localeCompare(b.receivedAt))) {
+    const bisher = stand.get(t.zeile.id) ?? null;
+    const wird = ersetztBisherige(t.b.art, bisher);
+    log(`${t.b.art.padEnd(13)} ${t.b.name} — „${t.b.betreff}"${wird ? "" : " (schon vermerkt)"}`);
+    if (!wird || !schreiben) continue;
+    let update = db
+      .from("aussendungen")
+      .update({ antwort_am: t.receivedAt, antwort_art: t.b.art, antwort_notiz: antwortNotiz(t.b.text) })
+      .eq("id", t.zeile.id);
+    update = bisher ? update.eq("antwort_art", bisher) : update.is("antwort_art", null);
+    const { data, error } = await update.select("id");
+    if (error || !data?.length) {
+      log(`${t.b.name}: Rückmeldung nicht geschrieben (${error?.message ?? "Stand hat sich geändert"})`, "err");
+      process.exitCode = 1;
+      continue;
+    }
+    stand.set(t.zeile.id, t.b.art);
+    neu.push(t.b);
+  }
+  if (schreiben) log(`${neu.length} ${neu.length === 1 ? "Rückmeldung" : "Rückmeldungen"} an Aussendungen nachgetragen`, "ok");
+  return neu;
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
   const host = process.env.OUTREACH_IMAP_HOST;
@@ -262,6 +319,8 @@ async function main(): Promise<void> {
     else perDomain.set(z.domain, [{ region_id: z.region_id, name: z.name }]);
   }
   log(`${new Set(ziele.map(z => z.region_id)).size} angeschriebene Gemeinden als Zuordnungsbasis`);
+  const aussendungen = await gesendeteAussendungen(db);
+  log(`${aussendungen.length} Aussendungen an andere Zielgruppen als Zuordnungsbasis`);
 
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
@@ -283,6 +342,8 @@ async function main(): Promise<void> {
   const sachfragen: Befund[] = [];
   /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
   const alleMails: FundingReplyMail[] = [];
+  /** Antworten auf eine Aussendung an eine andere Zielgruppe (Presse …). */
+  const aufAussendungen: { zeile: GesendeteAussendung; b: Befund; receivedAt: string }[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -322,6 +383,24 @@ async function main(): Promise<void> {
       // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
       // aufgehoben, nicht nur die zuordenbaren.
       alleMails.push({ ...mail, roh, receivedAt: msg.envelope?.date?.toISOString() ?? "" });
+
+      // ANTWORTEN AUF EINE AUSSENDUNG AN ANDERE ZIELGRUPPEN ZUERST. Eine
+      // Redaktion mit Ortsnamen im Absender fiele sonst der Regel „Ortsname im
+      // Absender" zu und würde als Antwort einer Gemeinde verbucht. Zugeordnet
+      // wird über die Kennung unserer Mail im Kopf; die Absender-Domain zählt
+      // nur, wo keine Gemeinde dieselbe Domain hat (lib/aussendung-ruecklauf.ts).
+      const receivedAt = msg.envelope?.date?.toISOString() ?? "";
+      const aus = receivedAt
+        ? aussendungZuordnen({ von, betreff, roh, art, receivedAt }, aussendungen, new Set(perDomain.keys()))
+        : null;
+      if (aus) {
+        aufAussendungen.push({
+          zeile: aus,
+          receivedAt,
+          b: { art, von, betreff, datum: heuteInBerlin(msg.envelope?.date ?? new Date()), region_id: null, name: `${aus.zielgruppe}: ${aus.domain}`, text },
+        });
+        continue;
+      }
 
       const b: Befund = {
         art,
@@ -400,6 +479,8 @@ async function main(): Promise<void> {
     );
     for (const b of sachfragen) log(`    ${b.name ?? b.von} — „${b.betreff}"`);
   }
+
+  const neueAussendungsBefunde = await aussendungsAntwortenNachtragen(db, aufAussendungen, hat("schreiben"));
 
   try {
     await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
@@ -520,7 +601,7 @@ async function main(): Promise<void> {
   // Geheimnisses hängt und sich beim Fehlen stillschweigend abschaltet.
   if (!hat("melden")) return;
   const bericht = ruecklaufBericht({
-    neu: neueBefunde.map((b) => ({
+    neu: [...neueBefunde, ...neueAussendungsBefunde].map((b) => ({
       art: b.art,
       name: b.name,
       betreff: b.betreff,

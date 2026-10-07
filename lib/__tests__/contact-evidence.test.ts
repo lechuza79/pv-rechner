@@ -6,6 +6,17 @@ import { readMail } from "../../scripts/lib/read-mail";
 import { ordneEin } from "../outreach-ruecklauf";
 
 describe("contact evidence counterexamples", () => {
+  it("never turns adjacency into a role (Dellstedt imprint)", () => {
+    // Kept from the retired first-generation chain (07.10.2026): the only
+    // assertion there that guarded the live extractor. Role in h1, mailbox in
+    // the next h2 — being next to each other is no evidence of the role.
+    const role = "Die Homepage wird ehrenamtlich erstellt und bearbeitet von: Egbert Böge";
+    const html = `<div><h1>Impressum:<br>${role}, E-Mail:</h1><h2>Egbert.Boege@T-Online.de</h2><h2>${"Legal notice. ".repeat(70)}</h2></div>`;
+    const funde = contactCandidates(html, "https://www.gemeinde-dellstedt.de/Impressum/", "gemeinde-dellstedt.de");
+    expect(funde[0].email).toBe("egbert.boege@t-online.de");
+    expect(funde[0].roleEvidence).toBeUndefined();
+  });
+
   it("reads character-code mail links and never the shuffled link text", () => {
     // Real markup from a craft business imprint (21.09.2026).
     const html = '<p>E-Mail: <a title="E-Mail" data-q-trigger="ieQ.system.helper.uncrypt" data-q-uncrypt="105:110:102:111:64:101:108:101:107:116:114:111:45:105:108:103:46:100:101">e-eeiol@dnkor.ifgtl</a></p>';

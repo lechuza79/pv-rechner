@@ -55,9 +55,11 @@ export const ERLAUBTE_SENDER: Record<string, ErlaubterSender> = {
     tabelle: "funding_anfragen",
     protokoll: "Je Anfrage ein Eintrag VOR dem Senden, danach die Kennung des Mailservers.",
   },
-  "scripts/presse-versand.ts": {
-    tabelle: "presse_versand",
-    protokoll: "Je Mail an eine Redaktion ein Eintrag VOR dem Senden, danach die Kennung des Mailservers.",
+  "scripts/aussendung.ts": {
+    tabelle: "aussendungen",
+    protokoll:
+      "Der Versandlauf für jede Zielgruppe außer Gemeinden und Förderstellen: je Mail ein Eintrag VOR dem " +
+      "Senden (mit Zielgruppe), danach die Kennung des Mailservers.",
   },
   "lib/abo-versand.ts": {
     tabelle: "gemeinde_abos",

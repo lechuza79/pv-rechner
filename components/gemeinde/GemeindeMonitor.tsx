@@ -289,7 +289,7 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
   for (const row of (register?.series ?? []) as Any[]) {
     if (row.energietraeger === "solar") perYear[row.year] = (perYear[row.year] ?? 0) + row.count;
   }
-  const years = Object.entries(perYear)
+  const years = paket.solarAnnualGrowth?.years ?? Object.entries(perYear)
     .map(([year, count]) => ({ year: Number(year), count }))
     .sort((a, b) => a.year - b.year);
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
@@ -316,7 +316,7 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
         />
       )}
     currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
-    growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />}
+    growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.solarAnnualGrowth?.stand ?? paket.registerStand} name={paket.name} regionId={paket.ags} />}
     stock={widgets("Anlagenbestand")}
     energy={Object.keys(energy).length ? energy : undefined}
     energyNotice={missing && <p className="municipal-data-missing">

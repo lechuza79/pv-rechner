@@ -1,7 +1,7 @@
 /**
  * Pressemitteilungen je Landkreis ENTWERFEN — verschickt wird ausschließlich über
- * scripts/presse-versand.ts, das jede Mail vor dem Senden in der Datenbank
- * vermerkt.
+ * scripts/aussendung.ts (`npm run presse:versand`), das jede Mail vor dem
+ * Senden in der Datenbank vermerkt.
  *
  *   npx tsx scripts/presse-kreise.ts [--beispiel <Kreisname>] [--nur-kreis <Schlüssel>]
  *
@@ -13,7 +13,7 @@
  *
  * Ergebnis: presse-kreise-mails.json im selben Verzeichnis wie die Eingaben,
  * je Mail { an, titel, kreise, charge, anlass, betreff, text }. Diese Datei ist
- * die Eingabe von presse-versand.ts.
+ * die Eingabe von `npm run presse:versand`.
  */
 import fs from "node:fs";
 import { resolve } from "node:path";
@@ -264,7 +264,7 @@ async function main() {
     if (cs.length) console.log(`  Charge ${c}: ${cs.length} Mails, Länder ${[...new Set(cs.flatMap((m) => m.kreise.map((k) => laender[k.slice(0, 2)])))].join(", ")}`);
   }
   fs.writeFileSync(`${S}/presse-kreise-mails.json`, JSON.stringify(
-    mitCharge.map((x) => ({ an: x.an, titel: x.titel, kreise: x.kreise, charge: x.charge, anlass: "pressemitteilung", betreff: x.m!.betreff, text: x.m!.text })),
+    mitCharge.map((x) => ({ an: x.an, titel: x.titel, kreise: x.kreise, charge: x.charge, anlass: "pressemitteilung", bezug: x.kreise, betreff: x.m!.betreff, text: x.m!.text })),
     null, 1,
   ));
 }

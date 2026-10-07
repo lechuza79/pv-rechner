@@ -5,7 +5,7 @@ import SolarTrendCard from "../../../../../components/SolarTrendCard";
 import { getSolarMonthlySeries } from "../../../../../lib/solar-trend-data";
 import { RankingPodiumWidget } from "../../../../../components/gemeinde/GemeindeRankingWidget";
 import { notFound } from "next/navigation";
-import { ladeGemeindePaket } from "../../../../../lib/gemeinde-paket-server";
+import { ladeGemeindeAnzeigePaket } from "../../../../../lib/gemeinde-paket-server";
 import { paketFuer } from "../../../../../components/gemeinde/paket-teile";
 import GemeindeAnsicht from "../../../../../components/gemeinde/GemeindeAnsicht";
 
@@ -54,7 +54,7 @@ export default async function Page({params, searchParams}: {params: Promise<{wid
     </WidgetPresentation>;
   }
   if (!/^\d{8}$/.test(ags)) notFound();
-  const paket = await ladeGemeindePaket(ags);
+  const paket = await ladeGemeindeAnzeigePaket(ags);
   if (!paket) return <p>Für diesen Ort liegt dieses Widget noch nicht vor.</p>;
   if (widget === "gemeinde-ranking") {
     const rows = widgetRankingRows(paket.district.peers,paket.ags);

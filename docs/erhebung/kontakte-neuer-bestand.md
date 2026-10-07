@@ -1,4 +1,29 @@
-# Kontakte eines neuen Bestands erfassen
+# Neue Zielgruppe: von der Erhebung bis zum Versand
+
+**Das ist DIE Anleitung für jede neue Zielgruppe und jeden neuen Markt** —
+„jetzt brauchen wir die Solarparks in Deutschland" ebenso wie „die Gemeinden in
+der Schweiz". Alles, was dafür gelernt wurde, steht hier oder im Fehlerkatalog
+`docs/lehren/kontakt-engine-fehler.md`; eine zweite Anleitung daneben gibt es
+nicht mehr (die erste Prüfkette und ihre Dokumente wurden am 07.10.2026
+ausgebaut, ihre tragenden Erkenntnisse stehen unten).
+
+**Drei Fälle, ein Ablauf:**
+
+| Auftrag | Was wiederverwendet wird | Was neu ist |
+|---|---|---|
+| Neue Zielgruppe aus einem Register (Solarparks, Speicherbetreiber) | alles — Vorlage ist der Windbetreiber-Lauf | Registerabfrage, Gattungswörter, Rollenwerk-Vokabular |
+| Neue Zielgruppe ohne Register (Verbände, Agenturen) | Kontaktsuche, Freigabe, Versand | woher die Grundgesamtheit kommt (Schritt 2), Identitätsbeleg |
+| Neuer Markt (Gemeinden in der Schweiz) | Kontaktsuche, Freigabe, Versandlauf, Protokoll | Prüfliste „Neues Land" unten — Recht, Quelle, Sprache, Kalender |
+
+**Eine Zielgruppe ist erst fertig eingerichtet, wenn sie in der Zielgruppen-Liste
+steht** (`lib/zielgruppen.ts`). Ein Test hält diese Liste gegen alle Stellen, an
+denen eine Zielgruppe sonst eingetragen sein muss — Kontaktsuche, Belegung der
+Domains, Bestände-Abgleich, Freigabe, Versandweg — und wird rot, sobald eine
+fehlt. Vorher war es eine Merkliste mit fünf Punkten, und vergessen wurde immer
+einer.
+
+
+## Die Kontaktsuche
 
 Die Maschine steht (19.09.2026 aus der Gemeinde-Erfassung herausgezogen). Ein
 neuer Bestand — Fachbetriebe, Versorger, Verbände, Presseverteiler — braucht
@@ -136,6 +161,47 @@ ohne Website ohne Hand-Vermerk ist, keine belegte Website ohne Kontakt ohne
 Hand-Vermerk und kein Verstoß. Gemeldet werden nur Zahlen aus `--stand`, nach
 der Gegenlese.
 
+**13. Eintrag in der Zielgruppen-Liste** (`lib/zielgruppen.ts`). Der Test
+`lib/__tests__/zielgruppen.test.ts` nennt jede Stelle, die noch fehlt.
+
+**14. Brief entwerfen — eigene Strategie je Zielgruppe.** Nie den Brief einer
+anderen Zielgruppe kopieren: Gemeinde, Redaktion und Betreiber wollen
+Verschiedenes, und jede bisherige Zielgruppe hat ihren eigenen Aufhänger, Ton
+und Fuß bekommen. Die Gegenüberstellung mit Beispielen steht in
+`docs/outreach-zielgruppen.md`; **eine neue Zielgruppe bekommt dort eine eigene
+Spalte, bevor ihr Entwurf geschrieben wird.** Der Entwurf ist
+ein eingechecktes Skript, das eine Mail-Datei schreibt und **selbst nicht
+sendet** (Vorlage: `scripts/presse-kreise.ts`). Seine Eingaben liegen im
+Zwischenspeicher des Haupt-Checkouts, **nie im temporären Ordner der Sitzung**
+— dort sind im September Eingaben und Protokoll der Presse verloren gegangen.
+Abgenommen wird am echten Beispiel einer echten Organisation, nicht am Muster.
+
+**15. Versand** über den einen Versandlauf:
+`npm run aussendung -- --zielgruppe <name> --senden <mails.json> --schub <name>`.
+Er prüft vor der ersten Mail jede Mail auf Pflichtangaben (Klarname, Impressum,
+Datenschutz, Herkunft der Adresse) und Lücken der Vorlage und hält sonst den
+ganzen Schub an, verweigert den Versand ohne veröffentlichten DKIM-Schlüssel,
+schreibt jede Mail **vor** dem Senden in die Tabelle `aussendungen` und schickt
+dieselbe Mail nie zweimal an dieselbe Adresse. Gemeinden und Förderstellen haben
+ältere eigene Läufe mit eigenem Protokoll und bleiben dort. Was je Zielgruppe
+dazukommt und nicht im Lauf steckt: Versandtage und Feiertage des Ziellands,
+Schubgröße, und dass eine Gruppe (ein Kreis, ein Verbund) nie auf zwei Schübe
+verteilt wird. **Ein Skript, das an diesem Lauf vorbei sendet, gibt es nicht** —
+`npm run sessions` meldet nie eingecheckte Sender in jedem Arbeitsstand.
+
+**16. Rücklauf und Wirkung.** Antworten werden der Aussendung zugeordnet, die
+Wirkung an Tag 3, 7, 14 und 28 gemessen (`npm run wirkung`). Antwort,
+Veröffentlichung, Verweis, Abo und Besuch sind **getrennte** Ergebnisse — ein Abo
+oder Besuch beweist keine Veröffentlichung. Der tägliche Rücklauf ordnet
+Antworten auf `aussendungen` zu — zuerst über die Kennung unserer Mail im Kopf
+der Antwort, dann über die Absender-Domain, aber nur, wo keine Gemeinde dieselbe
+Domain hat (`lib/aussendung-ruecklauf.ts`); ein Widerspruch sperrt die Domain für
+die Zielgruppe. Eine neue Zielgruppe wird in der Wirkungsmessung als eigener Fall
+eingetragen (`scripts/outreach-wirkung.ts`), **bevor** ihr erster Schub
+hinausgeht — sonst ist „hat nichts gebracht" nicht von „nicht gemessen" zu
+unterscheiden. Eine Antwort zählt in einem Messpunkt erst ab ihrem Tag; ein
+nachgeholter Messpunkt zeigt deshalb nicht den Stand von heute.
+
 ### Auftragstext für Helfer der Handprüfung (Vorlage)
 
 Ein Helfer bekommt: das Arbeitsverzeichnis, einen Block (JSON mit Anschriften
@@ -158,6 +224,33 @@ Eintrag in `scripts/lib/bestand-belegung.ts` und in `kontakte-freigabe.ts`.
 Für Solarparks ändern sich: die Registertabelle (Einheiten Solar statt Wind,
 nur Freiflächen), die Gattungswörter (Solarpark, PV, Photovoltaik) und das
 Rollenwerk-Vokabular; der Ablauf bleibt.
+
+## Aus der ersten Prüfkette übernommen (bis 17.09.2026)
+
+Die erste Kette (lokale Prüfakten, Aufseher-Prozess, Vergleichsberichte als
+Versandsperre) wurde am 17.09.2026 durch die heutige Kontaktsuche ersetzt und am
+07.10.2026 ausgebaut. Vier Erkenntnisse tragen weiter:
+
+- **Die Grundgesamtheit wird gegen eine unabhängige Quelle abgeglichen.** Die
+  eigene Liste beweist nicht, dass alle vorkommen. Abgleich gegen das amtliche
+  Verzeichnis (Gemeinden: Melderegister, Fusionen; Register-Bestände: der
+  Registerstand), fehlende oder überzählige Kennungen werden geklärt, nicht still
+  entfernt. Ohne diesen Abgleich keine Meldung „vollständig".
+- **Drei Ergebnisse, nicht zwei:** passender Fachkontakt, allgemeines Postfach,
+  oder konkret ungeklärt — und „ungeklärt" nennt den offenen Prüfschritt. Ein
+  ungeklärter Fall ist ein Urteil, keine Kontaktbestätigung.
+- **Eine gemeinsame Verwaltung ist Ansprechpartner, aber ihre Zuständigkeit wird
+  nicht ohne eigenen Beleg auf jedes Mitglied übertragen.**
+- **Ein Kontakt aus einem PDF zählt nur mit Seite und Zeile** — ein Textfund
+  irgendwo im Dokument nicht; ein nicht lesbarer Scan bleibt offen.
+
+## Altlast, keine Vorlage
+
+**Die allgemeinen Postfächer der Gemeinden** sucht noch die erste eigene Suche
+(`npm run kommunen:kontakt`, Profil- und Lückenlauf) mit eigener Auswertung;
+daneben findet die gemeinsame Kontaktsuche dieselben Postfächer. Bewusst nicht
+umgestellt: Sie betrifft keine künftige Zielgruppe, aber laufende Briefe. Für
+eine neue Zielgruppe ist sie **keine Vorlage** — dort gilt allein der Ablauf oben.
 
 ## Was dabei nie aufgeweicht wird
 
@@ -296,11 +389,31 @@ Namensbelege verdrängt und acht branchenfremde Eigentümer (Spedition,
 IT-Firma) belegt. Eine Anschrift, die nur ein Rathaus ist, bleibt bewusst
 stehen (Gemeinde als Verwalterin) und wird im Bericht genannt.
 
-## Auf andere Länder übertragen
+## Neues Land (Prüfliste)
 
 Übertragbar ohne Änderung: Ablauf, Belegpflicht, Zwischenspeicher, Nachprüfung
-der Belegseite, Tauglichkeit der Postfächer. Je Land neu: das Rollenwerk (es
-trägt deutsche Wörter — „Klimaschutzmanager", „Pressestelle"), die
-Namensvarianten der Domains und, wo es eine gibt, die Einengung einer
-gemeinsamen Verwaltungsdomain. Das Rollenwerk ist die Stelle, an der ein
-neues Land Arbeit kostet; alles andere ist Konfiguration.
+der Belegseite, Tauglichkeit der Postfächer, Versandlauf und Protokoll.
+
+Je Land **vor dem ersten Abruf** zu klären — und keine dieser Antworten aus dem
+deutschen Recht übernehmen:
+
+1. **Darf man dort so anschreiben?** Die Kalibrierung zu unverlangten Mails gilt
+   für Deutschland. Für jedes neue Land eigene Prüfung durch zwei Rechtsprüfer,
+   der zweite mit dem Auftrag, den ersten zu widerlegen. Ohne Ergebnis kein Versand.
+2. **Gibt es dort eine Impressumspflicht?** Der Website-Beleg (Schritt 4) und die
+   Kontaktsuche leben davon, dass Organisationen ihre Anschrift und ein Postfach
+   veröffentlichen müssen. Wo das nicht gilt, ist die Abdeckung eine andere und
+   die Belegart muss neu geeicht werden (Schritt 3).
+3. **Woher kommt die Grundgesamtheit?** Amtliches Verzeichnis mit stabilen
+   Kennungen und Gebietsänderungen (für Deutschland das Melderegister und die
+   Destatis-Liste der Gebietsänderungen).
+4. **Sprache(n).** Das Rollenwerk trägt deutsche Wörter („Klimaschutzmanager",
+   „Pressestelle"); ein mehrsprachiges Land braucht es je Sprache. Ebenso der
+   Brief und die Pflichtangaben.
+5. **Kalender.** Feiertage und Ferien des Ziellands bzw. der Region für die
+   Versandtage.
+6. **Domains.** Namensvarianten der Organisationen und, wo es sie gibt,
+   gemeinsame Verwaltungsdomains.
+
+Das Rollenwerk ist die Stelle, an der ein neues Land Arbeit kostet; Recht und
+Grundgesamtheit sind die Stellen, an denen es scheitern kann.

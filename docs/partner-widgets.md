@@ -55,3 +55,20 @@ baseline, including in the ordinary parent chart. The embed code explicitly
 allows clipboard-write and web-share. A localhost widget in a 127.0.0.1 host
 confirmed the “Link kopiert” state; the browser automation's virtual clipboard
 cannot read the OS clipboard, so a separate paste verification was unavailable.
+
+## Partner configurator
+
+The public, noindex page at /widgets/partner/nidda previews the existing renderer.
+Width presets (320, 480, 720, 960 px) are responsive maximum widths, not fixed
+canvas sizes. Each copied snippet carries its own width and header choice;
+changing the preview never changes previously installed embeds.
+The preview uses the current origin; copied code always uses solar-check.io.
+
+Widget-height presets (600, 720 and 840 px) set the complete frame including header,
+chart and actions. The default is 720 px. The renderer measures the fixed
+sections and allocates remaining height to the plot. Partner source rails
+keep 10 px text, use the vertical space below the dropdown down to 10 px above
+the plot baseline, wrap into additional columns and reserve matching plot space.
+The partner header uses a compact 6 px name/headline gap.
+
+Without a partner header, its measured responsive height is subtracted from the preset. The plot retains the same height as the full-header variant at the same width. The hidden measurement reuses WidgetBrandHeader and is excluded from exports and accessibility.

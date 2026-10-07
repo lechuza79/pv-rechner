@@ -28,3 +28,7 @@
 .presentation:has(:global(.sc-widget[data-widget-kind="radial"])),
 .presentation:has(:global(.sc-widget[data-widget-kind="donut"])),
 .presentation:has(:global(.sc-widget[data-widget-kind="bar-comparison"])) {width:100%;max-width:var(--widget-compact-max-width,720px);margin-inline:auto;}
+
+/* A standalone partner frame owns its surface and its complete outer bounds. */
+.presentation[data-widget-partner]{background:transparent}
+.presentation[data-widget-partner] :global(.municipal-data){padding-bottom:0}

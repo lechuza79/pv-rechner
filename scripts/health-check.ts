@@ -28,6 +28,7 @@
 
 import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
+import { folgeabrufBefund, ranglistenAdressen, type FolgeabrufMessung } from "../lib/health-folgeabruf";
 import { atlasStichprobenPfade, istKreisfreieStadt, UNTER_ATLAS_WURZEL } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
@@ -1560,6 +1561,23 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
   return b;
 }
 
+/** Reads each fresh town page's HTML (now cached) and times its first Kreis ranking list. */
+async function messeFolgeabrufe(seiten: Probe[]): Promise<FolgeabrufMessung[]> {
+  const out: FolgeabrufMessung[] = [];
+  for (const seite of seiten) {
+    try {
+      const html = await (await fetch(seite.url, { headers: { "user-agent": "solar-check-health-check" }, signal: AbortSignal.timeout(30000) })).text();
+      const [adresse] = ranglistenAdressen(html);
+      if (!adresse) continue;
+      const m = await probe("Gemeinde-Rangliste", adresse);
+      out.push({ url: m.url, status: m.status, seconds: m.seconds, cache: m.cache });
+    } catch {
+      // A failed read is "not measured", never "fast".
+    }
+  }
+  return out;
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -2155,6 +2173,13 @@ async function main() {
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
     }
+    // What the fresh town pages load next (lib/health-folgeabruf.ts): the
+    // page can be quick while its ranking podium waits seconds for its list.
+    const folge = await messeFolgeabrufe(coldResult.all.filter((p) => p.label.includes("Gemeinde") && p.status === 200));
+    if (folge.length) lines.push(`Ranglisten der frischen Gemeindeseiten: ${folge.map((m) => `${m.seconds.toFixed(2)} s (${m.cache || "?"})`).join(" / ")}`);
+    const folgeBefund = folgeabrufBefund(folge);
+    if (folgeBefund?.stufe === "rot") technical("gemeinde-folgeabruf-latency", false, folgeBefund.text);
+    else if (folgeBefund) warnings.push(folgeBefund.text);
   } else {
     unknown.push("atlas-cold-latency");
     technical("atlas-cold-measurement", false, "Kein frischer Atlas-Aufbau messbar; keine Entwarnung möglich.");
