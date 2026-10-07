@@ -50,7 +50,7 @@ async function main(): Promise<void> {
   console.log(
     "\nSeite aufgerufen = Besuch der Ortsseite eines zugestellten Empfängers, ohne Suchmaschinen, Mail-Prüfdienste und" +
       "\neigene Aufrufe — kein Beleg, dass der Empfänger selbst geklickt hat. Presse: nicht je Mail messbar (–)." +
-      "\nLinks = belegte Veröffentlichungen mit Link, der frühesten Aussendung zugeordnet, die den Ort vorher erreicht hat.",
+      "\nLinks = belegte Veröffentlichungen mit Link, der frühesten Aussendung zugeordnet, die den Ort vorher erreicht hat;\nArtikel einer Redaktion, die selbst die Pressemail bekam, gehören zur Pressemail.",
   );
   const ohneSeite = k.zeilen.filter((z) => z.ohneSeite > 0);
   if (ohneSeite.length) console.log(`! Ohne Atlas-Seite (nie als geöffnet zählbar): ${ohneSeite.map((z) => `${z.label} ${z.ohneSeite}`).join(", ")}`);

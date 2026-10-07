@@ -227,7 +227,7 @@ function JeAussendung({ daten }: { daten: Kennzahlen }) {
           besucht. Das belegt nicht, dass der Empfänger selbst geklickt hat; Suchmaschinen, Mail-Prüfdienste und eigene
           Aufrufe zählen nicht. Bei der Presse ist das nicht je Mail messbar, weil sie dieselben Ortsseiten verlinkt.
           Links sind belegte Veröffentlichungen mit Link auf uns, zugeordnet der frühesten Aussendung, die den Ort vorher
-          erreicht hat. Ein Fenster, das noch nicht vorbei ist, steht als „noch offen".
+          erreicht hat; der Artikel einer Redaktion, die selbst die Pressemail bekam, gehört zur Pressemail. Ein Fenster, das noch nicht vorbei ist, steht als „noch offen".
         </InfoTooltip>
       </h2>
       <table style={{ ...adminTabelle, maxWidth: 900 }}>
