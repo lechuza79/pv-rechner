@@ -1,7 +1,7 @@
 import {notFound} from 'next/navigation';
 import {widgetPartner, parseWidgetHeader, parsePartnerWidgetHeight} from '../../../../../../lib/widget-brand';
 import {MUNICIPAL_WIDGET_VIEWS} from '../../../../../../lib/municipal-widget-views';
-import {ladeGemeindePaket} from '../../../../../../lib/gemeinde-paket-server';
+import {ladeGemeindeAnzeigePaket} from '../../../../../../lib/gemeinde-paket-server';
 import {paketFuer} from '../../../../../../components/gemeinde/paket-teile';
 import GemeindeAnsicht from '../../../../../../components/gemeinde/GemeindeAnsicht';
 import WidgetPresentation from '../../../../../../components/dashboard/WidgetPresentation';
@@ -16,7 +16,7 @@ export default async function Page({params}: {params: Promise<{partner: string; 
   const header = parseWidgetHeader(mode);
   const single = Object.hasOwn(MUNICIPAL_WIDGET_VIEWS, widget) ? MUNICIPAL_WIDGET_VIEWS[widget as keyof typeof MUNICIPAL_WIDGET_VIEWS] : undefined;
   if (!partner || !single || !header || !widgetHeight || segments.length > 3 || (height !== undefined && widget !== 'regional-annual-growth')) notFound();
-  const paket = await ladeGemeindePaket(partner.ags);
+  const paket = await ladeGemeindeAnzeigePaket(partner.ags);
   if (!paket) return <p role="status">Für diesen Ort liegen noch keine Daten vor.</p>;
   return <WidgetPresentation appearance={{theme: 'light', sharing: 'primary', partner: {brand: partner.brand, header, widgetHeight}}}>
     <GemeindeAnsicht ansicht="monitor" paket={paketFuer('monitor', paket)} single={single}/>
