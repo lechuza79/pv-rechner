@@ -45,7 +45,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 ## Neue Orte für die Kommunen-Stage
 
-**Neue Orte vor einem Gemeinde-Aussand:** Einstieg ist [`docs/landschaft-neuer-ort-workflow.md`](docs/landschaft-neuer-ort-workflow.md), ausführbarer Plan/Serverlauf/Prüfung `scripts/stage-workflow.py`. Bestehenden Hetzner-Bestand und zentrale Stage verwenden. Bundesweit vorbereitete Registerinventare sind keine fertigen Szenen; unterstützte Länderadapter und offene Fälle stehen im Runbook. Wetterfreischaltung, Park-Metadaten, Quellenprüfung, Browserabnahme und öffentliche Linkprüfung gehören zum Abschluss. Keine individuellen Szenenkopien, keine stillen Datenersatzwerte, keine Veröffentlichung allein wegen eines abgeschlossenen Datenlaufs.
+**Neue Orte vor einem Gemeinde-Aussand:** Einstieg ist [`docs/landschaft-neuer-ort-workflow.md`](docs/landschaft-neuer-ort-workflow.md), ausführbarer Plan/Serverlauf/Prüfung `scripts/stage-workflow.py`. Bestehenden Hetzner-Bestand und zentrale Stage verwenden. Bundesweit vorbereitete Registerinventare sind keine fertigen Szenen; unterstützte Länderadapter und offene Fälle stehen im Runbook. Wetterfreischaltung, Park-Metadaten, Quellenprüfung, Browserabnahme und öffentliche Linkprüfung gehören zum Abschluss. Keine individuellen Szenenkopien, keine stillen Datenersatzwerte, keine Veröffentlichung allein wegen eines abgeschlossenen Datenlaufs. **Die Szenen liegen im Hetzner-Szenenspeicher, nicht im Repo** (seit 07.10.2026; bis auf fünf Testorte von git ausgenommen): Die Website liest sie über eine Umleitung auf der eigenen Adresse, veröffentlicht wird mit `npm run szenen:hochladen`, das unvollständige Windräder abweist.
 
 ## Projektüberblick
 

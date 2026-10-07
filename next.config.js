@@ -131,6 +131,12 @@ const nextConfig = {
         // but valid forms ("09-679-147") are rewritten by the middleware.
         // Kept in step with lib/embed-pfad-weiche.ts by its test.
         ...EMBED_PFAD_REWRITES,
+        // Prepared landscape scenes live in the Hetzner bucket, not in the
+        // deployment (all of Germany would be tens of GB). Proxied, not linked:
+        // the browser keeps talking only to solar-check.io, so no visitor IP
+        // reaches a third party and no CORS is involved. Must equal
+        // SZENEN_BASIS_URL in lib/szenen-speicher.ts (held by its test).
+        { source: "/geo/landscape-tours/:place/:file", destination: "https://solar-check-szenen.fsn1.your-objectstorage.com/landscape-tours/:place/:file" },
       ],
     };
   },

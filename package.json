@@ -129,7 +129,8 @@
     "video:db": "tsx scripts/video-export-db.ts",
     "video:worker": "tsx --conditions react-server scripts/video-export-worker.ts",
     "kommunen:luecken": "tsx --conditions=react-server scripts/kommunen-luecken.ts",
-    "kommunen:build": "tsx scripts/kommunen-build.ts"
+    "kommunen:build": "tsx scripts/kommunen-build.ts",
+    "szenen:hochladen": "tsx scripts/landscape-szenen-hochladen.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
