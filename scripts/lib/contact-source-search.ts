@@ -1,4 +1,5 @@
 import { contactUrl, type ContactDataset } from "../../lib/contact-discovery";
+import { bezahlteSucheFreigabe } from "./bezahlte-suche";
 export type SourceTarget = { dataset: ContactDataset; organization_id: string; name: string; website?: string | null; question?: string };
 export type SourceSearchResult = { target: SourceTarget; query: string; observedAt: string; status: "found-unverified" | "no-results" | "failed"; error: string | null; cost: number | null; sources: { url: string; title: string; snippet: string }[] };
 
@@ -6,6 +7,9 @@ export type SourceSearchResult = { target: SourceTarget; query: string; observed
 export async function searchContactSources(target: SourceTarget, options: { login: string; password: string; fetcher?: typeof fetch }): Promise<SourceSearchResult> {
   const roles = { kommunen: "Klimaschutz Verwaltung Kontakt", fachbetriebe: "Unternehmen Kontakt Impressum", presse: "Redaktion Kontakt Verlag", versorger: "Kontakt Impressum Unternehmen" };
   const query = target.question ?? `"${target.name.replace(/"/g, "")}" ${roles[target.dataset]}`;
+  // A mocked fetcher is no paid search; the real one needs the person's go.
+  // Outside the try: a refusal must stop the run, not become a "failed" result.
+  if (!options.fetcher) bezahlteSucheFreigabe();
   const result: SourceSearchResult = { target, query, observedAt: new Date().toISOString(), status: "failed", error: null, cost: null, sources: [] };
   try {
     if (!target.name.trim() || !roles[target.dataset]) throw Error("Named organization and supported dataset required");

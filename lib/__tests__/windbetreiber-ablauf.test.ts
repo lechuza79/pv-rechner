@@ -26,21 +26,65 @@ describe("Windbetreiber-Lauf", () => {
     // whose result is "belegt".
     const schreibstellen = quelle.match(/websiteFelder\(([^)]*)\)/g) ?? [];
     expect(schreibstellen.length).toBeGreaterThanOrEqual(3);
-    // websiteFelder(null) withdraws a website; it asserts none.
-    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|p: Pruefung \| null|null)\)/);
+    // websiteFelder(null, …) withdraws a website; it asserts none.
+    for (const s of schreibstellen) expect(s, s).toMatch(/websiteFelder\((?:best|p|null), HEUTE\)/);
     expect(rumpf("impressumLauf")).toMatch(/const best = besterBeleg\(/);
-    expect(rumpf("sucheLauf")).toMatch(/const best = besterBeleg\(/);
     expect(rumpf("manuell")).toMatch(/if \(p\.ergebnis !== "belegt"\) \{[\s\S]*?NICHT übernommen/);
+    expect(rumpf("keine")).toMatch(/notiz\.length < 40/);
     // No other place sets the website column directly.
-    expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string)/g) ?? []).toEqual([]);
+    expect(quelle.match(/\bwebsite: (?!p \?|z\.website|string|`https:\/\/\$\{d\}`)/g) ?? []).toEqual([]);
   });
 
   it("checks a hand-found website with the same rule as a machine-found one", () => {
     const m = rumpf("manuell");
     expect(m).toMatch(/await pruefen\(z, \{ domain, quelle: "manuell" \}, belegungen\)/);
     // A different evidence page is allowed, a different rule is not.
-    expect(m).toMatch(/impressumBelegt\(sichtbarerText\(html\), akteurVon\(z\), domain\)/);
-    expect(m).toMatch(/Die Belegseite muss auf derselben Website liegen/);
+    expect(m).toMatch(/const text = belegseite \? sichtbarerText\(belegseite\) : "";/);
+    expect(m).toMatch(/belegseiteTraegt\(text, akteurVon\(z\), z\.name, domain, await ortsWoerter\(\), z\.register_email, z\.register_telefon\)/);
+    // A name on another page proves only when it identifies someone (reference lists).
+    const lib = readFileSync(resolve(__dirname, "../windbetreiber.ts"), "utf8");
+    expect(lib.slice(lib.indexOf("export function belegseiteTraegt"))).toMatch(/b\.wie !== "name" \|\| vollerNameIn\(text, name\) \|\| \(identifizierend\(name, ortsWoerter\) && !parkListe\(text, name\)\)/);
+    // The page is kept, so a rule change judges the hand decision again.
+    expect(m).toMatch(/writeFileSync\(belegseiteDatei\(seite\), text\)/);
+    expect(m).toMatch(/Belegseite muss auf derselben Website liegen/);
+    // …or on the site the domain redirects to (windpark.eu → windpark.com).
+    expect(m).toMatch(/!zieleVon\(domain\)\.includes\(organisationsDomain\(seite\)\)/);
+    expect(m.indexOf("if (seiteFremd())")).toBeGreaterThan(m.indexOf("let p = await pruefen("));
+    // Never replaces a proven website in passing (Österwurth, 06.10.2026).
+    expect(m).toMatch(/if \(z\.website && z\.website !== domain && !flag\("ersetzen"\)\)/);
+    // Replacing drops the old site's contact (Borkum).
+    expect(m).toMatch(/\.\.\.\(neueSeite \? kontaktFelder\(null, null\) : \{\}\)/);
+    // A proof on a subdomain never stores the parent domain in passing (Süderdeich).
+    expect(m).toMatch(/if \(beleg && seitenHost !== domain && !flag\("subdomain-ok"\)\)/);
+    // A failed retry never overwrites the stored proof of the current website (Waabs).
+    expect(m.indexOf('p.ergebnis !== "belegt" && z.website === domain')).toBeGreaterThan(-1);
+    expect(m.indexOf('p.ergebnis !== "belegt" && z.website === domain')).toBeLessThan(m.indexOf("kandidatZeile(z, p)"));
+  });
+
+  it("fetches a failed page afresh when a person asks by hand (retry of 137 unreachable sites)", () => {
+    const h = rumpf("impressumHolen");
+    expect(h).toMatch(/const vonHandNeu = LESART === "nachholen" && !alt\.text && !alt\.startText;/);
+    expect(h).toMatch(/if \(!abrufWiederholen\(alt\) && !ohneBrowser && !vonHandNeu\) return alt;/);
+  });
+
+  it("judges hand-taken websites again after a rule change — reports, never changes", () => {
+    const n = rumpf("neuBewerten");
+    expect(n).toMatch(/belegseiteTraegt\(readFileSync\(seite, "utf8"\)/);
+    expect(n).toMatch(/widerspruch\.push\(`\$\{z\.mastr_nr\} \$\{z\.name\}: \$\{z\.website\} trägt nach heutiger Regel nicht mehr/);
+    expect(n).toMatch(/nicht nachprüfbar/);
+    // A hand "none" whose rejected hand candidate now passes is reported too (BMR, 06.10.2026).
+    expect(n).toMatch(/k\.quelle === "manuell" && !z\.website && vonHandEntschieden\(z\)/);
+    expect(n).toMatch(/wiederAuf\.push\(/);
+  });
+
+  it("lists unbacked brand proofs for a person to read (Elements, 06.10.2026)", () => {
+    const g = rumpf("markeGegenlesen");
+    expect(g).toMatch(/const art = flag\("namen"\) \? "name" : "marke"/);
+    expect(g).toMatch(/eq\("website_beleg", art\)/);
+    expect(g).toMatch(/text\.includes\(z\.plz\)/);
+    expect(quelle).toMatch(/if \(flag\("marke-gegenlesen"\)\) return markeGegenlesen\(\);/);
+    // Short names too (Böhm Energie, Flugplatz Barssel, block 073).
+    expect(g).toMatch(/nameWoerter\(z\.name\)\.length <= 2/);
   });
 
   it("does not accept a proven website that another stock holds in conflict", () => {
@@ -81,6 +125,5 @@ describe("Windbetreiber-Lauf", () => {
   it("never lets a report start the 20-minute register read", () => {
     expect(rumpf("stand")).not.toMatch(/registerLesen\(/);
     expect(rumpf("offenListe")).not.toMatch(/registerLesen\(/);
-    expect(rumpf("sucheLauf")).not.toMatch(/registerLesen\(/);
   });
 });

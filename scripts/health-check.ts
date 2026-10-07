@@ -28,9 +28,10 @@
 
 import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
-import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
+import { atlasStichprobenPfade, istKreisfreieStadt, UNTER_ATLAS_WURZEL } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { LIEGT_NACH_STUNDEN, leeresLedger, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
@@ -605,7 +606,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   for (let i = 0; i < count; i++) {
     const offset = Math.floor(Math.random() * 10000);
     const [row] = await q(
-      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+      `mastr_regions?select=slug,parent_region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}&limit=1&offset=${offset}`,
     );
     if (row) gem.push(row);
   }
@@ -615,7 +616,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const kreisIds = Array.from(new Set(gem.map((g) => g.parent_region_id).filter(Boolean)));
   const kreise = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${kreisIds.join(",")})`);
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
-  const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
+  const laender = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${landIds.join(",")})`);
 
   // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
   // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
@@ -2042,6 +2043,20 @@ export function laufStumm(
   return { stumm: true, wie: haeufigste };
 }
 
+/**
+ * The repair ledger restored by scripts/health-history.ts. Absent means no
+ * repair run has ever stored one (or all expired) — an empty ledger. Present but
+ * unreadable IS an error: then nobody can tell whether a run went silent.
+ */
+export function reparaturLedgerLesen(pfad = ".health/autofix-ledger.json"): { ledger?: Ledger; fehler?: string } {
+  if (!existsSync(pfad)) return { ledger: leeresLedger() };
+  try {
+    return { ledger: readLedger(JSON.parse(readFileSync(pfad, "utf8"))) };
+  } catch (e) {
+    return { fehler: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 async function main() {
   if (process.env.HEALTH_INCIDENTS === "1") {
     for (const name of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "CRON_SECRET", "GITHUB_TOKEN", "GITHUB_REPOSITORY", "VERCEL_TOKEN"]) {
@@ -2401,7 +2416,10 @@ async function main() {
     // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
     // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
     // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
-    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    // Nur Orte unter der Atlas-Wurzel haben eine Seite. Seit dem Schweizer
+    // Import (07.10.2026) stehen 2.110 Schweizer Gemeinden in derselben Tabelle;
+    // ungefiltert meldete diese Zeile 2.113 Seiten ohne Platzierung statt 3.
+    const seiten = count(await read(`mastr_regions?select=region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}`, true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
     warnings.push(...luecke);
@@ -2783,9 +2801,24 @@ async function main() {
 
   const managed = process.env.HEALTH_INCIDENTS === "1";
   const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  // The repair lane is watched like everything else: a model run that ended
+  // without a checkable verdict is a finding of its own (lib/autofix-ledger.ts).
+  const reparatur = managed ? reparaturLedgerLesen() : null;
+  if (reparatur?.ledger) {
+    const offeneKeys = [...new Set(findings.map(f => f.key))];
+    for (const f of stummeLaeufe(reparatur.ledger, offeneKeys, new Date())) technical(f.key, false, f.text);
+  } else if (reparatur?.fehler) {
+    // Unreadable is not "nothing silent": keep earlier silent-run incidents open.
+    unknown.push("autofix-stumm:");
+    warnings.push(`Reparatur-Protokoll nicht lesbar (${reparatur.fehler}) — ob ein Reparaturlauf stumm endete, ist in dieser Messung unbekannt.`);
+  }
   const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
   lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
-  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}${reparatur?.ledger && !i.operator ? ` — Reparatur: ${reparaturStand(i.key, reparatur.ledger, new Date())}` : ""}`));
+  if (reparatur?.ledger) {
+    const liegen = liegenUnbearbeitet(Object.values(incidents.state.incidents), reparatur.ledger, new Date());
+    if (liegen.length) warnings.push(`${liegen.length} offene Befunde seit über ${LIEGT_NACH_STUNDEN} Stunden ohne Reparaturlauf: ${liegen.map(i => i.key).join(", ")}.`);
+  }
   lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
 
   // ── Bericht ───────────────────────────────────────────────────────────────

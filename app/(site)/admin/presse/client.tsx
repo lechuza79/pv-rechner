@@ -10,6 +10,7 @@ import { IconExternal } from "../../../../components/Icons";
 import { werkzeugVon, werkzeugPasst } from "../../../../lib/presse-werkzeuge";
 import { anschreibenEntwurf } from "../../../../lib/presse-anschreiben";
 import SelectField from "../../../../components/SelectField";
+import { LISTEN_TEXT, PRESSE_LISTEN } from "../../../../lib/presse-listen";
 import { STAENDE, KONTAKTARTEN, GESCHICHTEN, PAKETE, RUBRIK_TEXT } from "../../../../lib/presse-stand";
 import {
   adressenNachDomain,
@@ -67,6 +68,7 @@ export default function PresseAnsicht() {
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
 
+  const [liste, setListe] = useState("presse");
   const [rubrik, setRubrik] = useState("");
   const [aufhaenger, setAufhaenger] = useState("");
   const [gattung, setGattung] = useState("fach");
@@ -92,6 +94,7 @@ export default function PresseAnsicht() {
 
   const parameter = useCallback(() => {
     const p = new URLSearchParams();
+    p.set("liste", liste);
     if (rubrik) p.set("rubrik", rubrik);
     if (aufhaenger) p.set("aufhaenger", aufhaenger);
     p.set("gattung", gattung);
@@ -104,7 +107,7 @@ export default function PresseAnsicht() {
     if (suche) p.set("q", suche);
     if (nurPerson) p.set("person", "1");
     return p;
-  }, [rubrik, aufhaenger, gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
+  }, [liste, rubrik, aufhaenger, gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
 
   const laden = useCallback(async () => {
     setLaedt(true);
@@ -374,6 +377,27 @@ export default function PresseAnsicht() {
           aria-label="Suche"
           style={{ ...eingabeStil, flex: "1 1 220px", minWidth: 200 }}
         />
+        <Filter
+          label="Liste"
+          wert={liste}
+          setzen={(w) => {
+            setListe(w);
+            // Associations and archive are neither trade press nor one package:
+            // the press presets would show an empty list.
+            if (w !== "presse") {
+              setGattung("");
+              setPaket("");
+              setMediumArt("");
+            }
+          }}
+        >
+          {PRESSE_LISTEN.map((l) => (
+            <option key={l} value={l}>
+              {LISTEN_TEXT[l]}
+            </option>
+          ))}
+          <option value="">alle Listen</option>
+        </Filter>
         <Filter label="Rubrik" wert={rubrik} setzen={setRubrik} breit>
           <option value="">jede Rubrik</option>
           {Object.entries(RUBRIK_TEXT).map(([k, t]) => (

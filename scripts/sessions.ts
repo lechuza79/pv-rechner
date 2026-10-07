@@ -25,6 +25,7 @@
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { basename, resolve } from "node:path";
+import { ueberwachungStand } from "./lib/ueberwachung-stand";
 
 const WURZEL = resolve(__dirname, "..");
 
@@ -294,6 +295,10 @@ for (const s of alle) {
   for (const z of zeile(s)) console.log(z);
   console.log("");
 }
+
+// Open monitoring findings come first: nobody gets a mail about them.
+for (const z of ueberwachungStand()) console.log(z);
+console.log("");
 
 const b = befunde(alle);
 if (b.length) {

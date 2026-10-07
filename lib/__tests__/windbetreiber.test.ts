@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile } from "../windbetreiber";
+import { verwandteDomain, plzNorm, telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -27,6 +27,151 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
   it("accepts a group subsidiary registered elsewhere only by its brand (EnBW)", () => {
     const b = impressumBelegt(IMPRESSUM.enbw, akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567"), "enbw.com");
     expect(b?.wie).toBe("marke");
+  });
+
+  it("lets a park name on an extra page prove only on a page about that park, never on a list of parks", () => {
+    const a = akteur("Windpark Pamsendorf GmbH & Co. KG", "Dorfstraße", "1", "92260");
+    const referenzen = "Referenzen Windpark Pamsendorf drei Anlagen · Windpark Musterberg zwei Anlagen · Windpark Hohenfeld vier Anlagen · Windpark Seeweide · Windpark Grünau";
+    expect(belegseiteTraegt(referenzen, a, a.Firmenname!, "wimo-energie.de")).toBeNull();
+    // The operator's own page about its park proves (Ørsted, Gode Wind).
+    const gw = akteur("Gode Wind 1 Offshore Wind Farm GmbH & Co. oHG", "Ballindamm", "1", "20095");
+    expect(belegseiteTraegt("Offshore-Windpark Gode Wind 1 vor Norderney 55 Turbinen seit 2017 in Betrieb", gw, gw.Firmenname!, "orsted.de")?.wie).toBe("name");
+    expect(belegseiteTraegt("Betreibergesellschaft Windpark Pamsendorf GmbH & Co. KG mit Sitz in X", a, a.Firmenname!, "wimo-energie.de")?.wie).toBe("name");
+  });
+
+  it("knows the family firm on its own site (for the hand review of address proofs)", () => {
+    expect(traegtDomainwort("Brummernhenrich Regenerative Energie GmbH & Co. KG", "brummernhenrich.com")).toBe(true);
+    expect(traegtDomainwort("Windkraft Rühenfeld GmbH & Co. KG", "brummernhenrich.com")).toBe(false);
+  });
+
+  it("lets a short house-number range in the imprint cover the register's number", () => {
+    const a = akteur("Windpark Cond 2 WPC GmbH & Co. KG", "Gartenstraße", "30", "56727");
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56727 Mayen", a, "nesag.de")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 31-35 56727 Mayen", a, "nesag.de")).toBeNull();
+    expect(impressumBelegt("Impressum NESAG Gartenstr. 28-30 56728 Anderswo", a, "nesag.de")).toBeNull();
+  });
+
+  it("lets the phone proof stand on a contact page of the same site (BB Wind)", () => {
+    const a = akteur("Windpark Iselbek GmbH & Co. KG", "Dorfstraße", "1", "25878");
+    const seite = "Kontakt BB Wind Betriebsführung GmbH Windenergie Tel. 04835 9728773 s.behrends@bb-wind.de";
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")?.wie).toBe("telefon");
+    // Not without the mailbox on the domain, not on a page without energy, not with another number.
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@gmx.de", "04835-9728773")).toBeNull();
+    expect(belegseiteTraegt("Kontakt Spedition Tel. 04835 9728773", a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")).toBeNull();
+    expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9738773")).toBeNull();
+  });
+
+  it("knows sister domains of one organisation, and nothing looser", () => {
+    expect(verwandteDomain("xn--brgerwindpark-barlt-ost-cpc.de", "buergerwindpark-barlt-ost.de")).toBe(true);
+    expect(verwandteDomain("www.unfallreparatur-menge.de", "lackiererei-menge.de")).toBe(true);
+    expect(verwandteDomain("getec-greenenergy.de", "getec-green.de")).toBe(true);
+    expect(verwandteDomain("wisag-energy.de", "wisag.de")).toBe(true);
+    // Kind-of-company words and a hoster are no link.
+    expect(verwandteDomain("stadtwerke-voerde.de", "stadtwerke-dinslaken.de")).toBe(false);
+    expect(verwandteDomain("windpark-a.de", "windpark-b.de")).toBe(false);
+    expect(verwandteDomain("vermoegenundbau-bw.de", "vbv.bwl.de")).toBe(false);
+    expect(verwandteDomain("musterwind.de", "webdesign-schulz.de")).toBe(false);
+  });
+
+  it("reads a postcode with a country prefix or a British one (Momentum, Roskilde)", () => {
+    expect(plzNorm("DK-4000")).toBe("4000");
+    expect(plzNorm("D-24814")).toBe("24814");
+    expect(plzNorm("EC1R 9HJ")).toBe("ec1r9hj");
+    expect(plzNorm("Musterstadt")).toBe("");
+    // Danish letters spelt as the register spells them.
+    const dk = akteur("Ecopart Wind K/S", "Egaa Havvej", "21", "DK-8250");
+    expect(impressumBelegt("Kontakt Green Wind A/S Egå Havvej 21, DK-8250 Egå", dk, "greenwind.dk")?.wie).toBe("anschrift");
+    const a = akteur("K/S Vindinvest 20", "Kobenhavnsvej", "81", "DK-4000");
+    expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 81 4000 Roskilde", a, "momentum.dk")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Kontakt Momentum Gruppen A/S Kobenhavnsvej 79 4000 Roskilde", a, "momentum.dk")).toBeNull();
+    const uk = akteur("Windpark Example Ltd", "Farringdon Road", "10", "EC1R 9HJ");
+    expect(impressumBelegt("Registered office 10 Farringdon Road London EC1R 9HJ", uk, "example.co.uk")).toBeNull();
+    expect(impressumBelegt("Registered office Farringdon Road 10, London EC1R 9HJ", uk, "example.co.uk")?.wie).toBe("anschrift");
+  });
+
+  it("knows an extension in the same number block, and nothing looser (BGZ, Windhelfer)", () => {
+    expect(telefonImBlock("Tel. 04841 8944825", "04841-8944832")).toBe(true);
+    expect(telefonImBlock("Tel. 07974/9 11 82 90", "07974-9118291")).toBe(true);
+    // Mobile numbers are no block.
+    expect(telefonImBlock("Mobil 0163 5375803", "0163 5375804")).toBe(false);
+    // Another block, another town, too short.
+    expect(telefonImBlock("Tel. 05472 949944", "05472 9597680")).toBe(false);
+    expect(telefonImBlock("Tel. 04841 8954825", "04841-8944832")).toBe(false);
+    expect(telefonImBlock("Tel. 1234 5678", "1234 5679")).toBe(false);
+    // Only beside the mailbox on the domain.
+    const a = akteur("Burmester Wind GmbH & Co. KG", "Dorfstraße", "1", "25813");
+    const imp = "Impressum BGZ Fondsverwaltung GmbH Windenergie Husum Tel. 04841 8944825";
+    expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@bgz-gmbh.de", undefined, "04841-8944832").ergebnis).toBe("belegt");
+    expect(beurteilen(a, "bgz-gmbh.de", "register-mail", { impressum: imp, startseite: imp, impressumUrl: null }, "x.y@web.de", undefined, "04841-8944832").ergebnis).toBe("abgelehnt");
+  });
+
+  it("does not let a weak name hide the address on the same page (Stadtwerke Reinfeld)", () => {
+    const a = akteur("Windpark Reinfeld GmbH & Co. KG", "Paul-von-Schoenaich-Straße", "3", "23858");
+    const orte = new Set(["reinfeld"]);
+    // "Windpark Reinfeld" is found first and is too weak on its own …
+    const seite = "Projekte: Windpark Reinfeld · Verwaltung Paul-von-Schoenaich-Straße 3 23858 Reinfeld";
+    expect(impressumBelegt(seite, a, "reinfeld.de", orte)?.wie).toBe("name");
+    // … but the address on the same page still proves.
+    expect(belegseiteTraegt(seite, a, "Windpark Reinfeld GmbH & Co. KG", "reinfeld.de", orte)?.wie).toBe("anschrift");
+    expect(belegseiteTraegt("Projekte: Windpark Reinfeld", a, "Windpark Reinfeld GmbH & Co. KG", "reinfeld.de", orte)).toBeNull();
+  });
+
+  it("never reads the domain written out as the company's name (Weikmann Immotec)", () => {
+    const a = akteur("Weikmann Immotec GmbH", "Hauptstraße", "1", "12345");
+    expect(impressumBelegt("weikmann-immotec.de Diese Domain wurde soeben registriert", a, "weikmann-immotec.de")).toBeNull();
+    expect(impressumBelegt("www.weikmann-immotec.de", a, "weikmann-immotec.de")).toBeNull();
+    expect(impressumBelegt("Impressum Weikmann Immotec GmbH Geschäftsführer", a, "weikmann-immotec.de")?.wie).toBe("name");
+  });
+
+  it("takes the brand a name declares with 'powered by' (Ebert)", () => {
+    expect(marke("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG")).toBe("ebert");
+    const a = akteur("Bürgerwind Beuchte WEA 01 powered by Ebert GmbH & Co. KG", "Am Felde", "3", "38315");
+    expect(impressumBelegt("Impressum Ebert Erneuerbare Energien GmbH Goslar", a, "ebert-energie.de")?.wie).toBe("marke");
+    expect(impressumBelegt("Impressum Ebert Erneuerbare Energien GmbH Goslar", a, "anders.de")).toBeNull();
+  });
+
+  it("shows the postcode that follows the register street (Speyer)", () => {
+    const a = akteur("WFS Windkraft für Speyer GmbH", "Georg-Peter-Süß-Straße", "2", "67346");
+    const fuell = " Öffnungszeiten Montag bis Freitag von acht bis achtzehn Uhr, Samstag nach Vereinbarung, Parkplätze vorhanden. ".repeat(3);
+    const b = impressumBelegt(`Kundenzentrum Industriestr. 23 67346 Speyer${fuell}Sitz Georg-Peter-Süß-Str. 2 67346 Speyer`, a, "stadtwerke-speyer.de");
+    expect(b?.wie).toBe("anschrift");
+    expect(b?.textstelle).toMatch(/suess/);
+    expect(b?.textstelle).not.toMatch(/industriestr/);
+  });
+
+  it("lets a short range in the register cover one number of it in the imprint (Koehler)", () => {
+    const a = akteur("Windenergiepark Musterberg GmbH", "Hauptstraße", "2-4", "77704");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 2 77704 Oberkirch", a, "koehler.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 4 77704 Oberkirch", a, "koehler.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 5 77704 Oberkirch", a, "koehler.com")).toBeNull();
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 24 77704 Oberkirch", a, "koehler.com")).toBeNull();
+    expect(impressumBelegt("Impressum Koehler SE Hauptstraße 2 77799 Anderswo", a, "koehler.com")).toBeNull();
+  });
+
+  it("matches a foreign four-digit postcode, but only behind street and number", () => {
+    const a = akteur("Hydrovind VI ApS", "Gammel Kirkevej", "16", "9530");
+    expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 16 DK-9530 Støvring Denmark", a, "hydrema.com")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Contact Hydrema Gammel Kirkevej 18 DK-9530 Støvring Denmark", a, "hydrema.com")).toBeNull();
+  });
+
+  it("keeps a trailing direction in the name core (Kattrepel-Nord is not Kattrepel)", () => {
+    expect(kernName(nameWoerter("Windpark Kattrepel-Nord GmbH & Co. KG"))).toEqual(["windpark", "kattrepel", "nord"]);
+    expect(impressumBelegt("Projekte Windpark Kattrepel Erweiterung II vier Anlagen Denker & Wulf AG Windmühlenberg 24814 Sehestedt", akteur("Windpark Kattrepel-Nord GmbH & Co. KG", "Dorfstraße", "1", "25704"), "denkerwulf.de")).toBeNull();
+  });
+
+  it("never takes an ordinal or a city word as the brand (Vierte Volkswind, Green City)", () => {
+    expect(marke("Vierte Volkswind GmbH & Co. KG")).toBe("volkswind");
+    expect(marke("Fünfte Volkswind GmbH")).toBe("volkswind");
+    expect(marke("Dreizehnten Windpark Musterhaus GmbH")).toBe("musterhaus");
+    expect(impressumBelegt("Impressum ueber uns ueber Green City e.V. Lindwurmstraße 88 80337 München", akteur("Green City Energy Windpark Sindersdorf GmbH & Co. KG", "Zirkus-Krone-Straße", "10", "80335"), "greencity.de")).toBeNull();
+  });
+
+  it("matches a numberless register PLACE to the imprint's numbered one, and a mistyped ű (WEAG, Luymühle)", () => {
+    const a = akteur("Eco-Mobilität GmbH", "Luymühle", "", "54347");
+    expect(impressumBelegt("Impressum WEAG Future Energies AG Luyműhle 1 54347 Neumagen-Dhron", a, "weag-ag.de")?.wie).toBe("anschrift");
+    // A street without a number would match every house on it.
+    expect(impressumBelegt("Impressum Muster GmbH Hauptstraße 5 54347 Neumagen-Dhron", akteur("Eco-Mobilität GmbH", "Hauptstraße", "", "54347"), "x.de")).toBeNull();
+    expect(impressumBelegt("Impressum Muster GmbH Luymühle 1 54348 Anderswo", a, "x.de")).toBeNull();
   });
 
   it("rejects the auditing firm whose mailbox one of 115 Sehestedt companies used (Mazars)", () => {
@@ -127,6 +272,13 @@ describe("candidates from the register", () => {
     expect(registerKandidaten(eigen, nachAnschrift).some((c) => c.domain === "anderer.de")).toBe(false);
   });
 
+  it("offers an address mate's PROVEN website, found by hand or machine (06.10.2026)", () => {
+    const offen = zeile("ABR5", "WP10 GmbH & Co. KG", "Talmühle", "1", "74722", null, null);
+    const belegt = { ...zeile("ABR6", "Windpark Altheimer Höhe GmbH & Co. KG", "Talmühle", "1", "74722", null, null), website: "windpark-altheim.de" };
+    const key = anschriftSchluessel({ Strasse: "Talmühle", Hausnummer: "1", Postleitzahl: "74722" })!;
+    expect(registerKandidaten(offen, new Map([[key, [offen, belegt]]]))).toEqual([{ domain: "windpark-altheim.de", quelle: "anschrift" }]);
+  });
+
   it("offers both domains of a project company that names its parent and its manager", () => {
     // windmanager.de as website, wpd.de as mailbox — measured on 13 Görike turbines.
     const z = zeile("ABR9", "Windpark Görike/Söllenthin GmbH ＆ Co. KG", "Stephanitorsbollwerk", "3", "28217", "http://www.windmanager.de/", "tmverwaltung-wm@wpd.de");
@@ -171,6 +323,42 @@ describe("Fehlerklassen der ersten Stichprobe (06.10.2026)", () => {
     // A FUNCTION mailbox is the operator's own statement where it is administered.
     expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }, "tmverwaltung-wm@wpd.de").beleg?.wie).toBe("register");
     expect(beurteilen(a, "wpd.de", "register-mail", { impressum: imp, startseite: "x" }).ergebnis).toBe("abgelehnt");
+  });
+
+  it("accepts the register mailbox's domain when the register telephone stands in its own imprint", () => {
+    const a = akteur("WPON GmbH & Co. KG", "VOSSKO-Allee", "1", "48346");
+    const imp = "Impressum WI Windinvest GmbH Windenergie Am Markt 4 48727 Billerbeck Telefon: 0163 / 537 58 03 E-Mail ok@windinvest.de";
+    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "+49 163 5375803").beleg?.wie).toBe("telefon");
+    // Another number, a mailbox elsewhere, or an adviser's office: nothing.
+    expect(beurteilen(a, "windinvest.de", "register-mail", { impressum: imp, startseite: "x" }, "ok@windinvest.de", undefined, "0163 5375804").ergebnis).toBe("abgelehnt");
+    expect(beurteilen(a, "windinvest.de", "manuell", { impressum: imp, startseite: "x" }, "ok@andere.de", undefined, "0163 5375803").ergebnis).toBe("abgelehnt");
+    const mazars = "Impressum Forvis Mazars GmbH & Co. KG Wirtschaftsprüfungsgesellschaft Steuerberatungsgesellschaft Tel. 040 288010";
+    expect(beurteilen(a, "mazars.de", "register-mail", { impressum: mazars, startseite: "x" }, "adem.bilir@mazars.de", undefined, "040 288010").ergebnis).toBe("abgelehnt");
+    // The owner's business outside energy is not the operator's website.
+    const spedition = "Impressum Tebbe Spedition GmbH Transporte Logistik Tel. 05451 94640";
+    expect(beurteilen(a, "tebbe-spedition.de", "register-mail", { impressum: spedition, startseite: "Spedition" }, "m.tebbe@tebbe-spedition.de", undefined, "0545194640").ergebnis).toBe("abgelehnt");
+    // A proof by register data never displaces a site that names the operator.
+    const p = (domain: string, quelle: Kandidatenquelle, wie: Beleg["wie"]) => ({ ergebnis: "belegt", kandidat: { domain, quelle }, beleg: { wie, textstelle: "" } });
+    expect(besterBeleg([p("nttb-gmbh.de", "register-mail", "telefon"), p("dhsv-dithmarschen.de", "anschrift", "name")])?.kandidat.domain).toBe("dhsv-dithmarschen.de");
+    expect(marke("Bürgerwindpark Mittelholstein GmbH & Co. KG")).toBeNull();
+    // A switchboard "-0" covers its extensions; a plain different number does not.
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 9813-0", "04841/9813321")).toBe(true);
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 98130", "04841/9813321")).toBe(false);
+    expect(telefonIn("Cimbergy GmbH Tel. 04841 9813-0", "04841/9814321")).toBe(false);
+    // A dash is a hyphen (BMR: "+49 (0) 24 51 / 914 41 – 0", register 024519144114).
+    expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 – 0", "024519144114")).toBe(true);
+    expect(telefonIn("Tel.: +49 (0) 24 51 / 914 41 — 0", "024519144114")).toBe(true);
+    expect(telefonIn("Tel.: 02451/91441–0", "024519144114")).toBe(true);
+    // A stray "+" inside the register's number is a typo, not a country code (Windstream).
+    expect(telefonKern("0421 6+9 19 82-0")).toBe("4216919820");
+    expect(telefonIn("Tel. 0421- 691 98 2-0", "0421 6+9 19 82-0")).toBe(true);
+    expect(telefonKern("+49 421 6919820")).toBe("4216919820");
+    // A digit glued to a word above is not the number's first digit (BB Wind).
+    expect(telefonIn("Tel.\nMicrosoftInternetExplorer4\n04835-9728773", "04835-9728773")).toBe(true);
+    expect(telefonIn("Tel.: +49 (0) 24 51 / 914 42 – 0", "024519144114")).toBe(false);
+    // A number too short to identify anyone proves nothing.
+    expect(telefonIn("Tel. 1234 56", "123456")).toBe(false);
+    expect(telefonKern("+49 (0) 4841-9813")).toBe("48419813");
   });
 
   it("tells a function mailbox from a person's", () => {
@@ -263,6 +451,31 @@ describe("a place is never a brand", () => {
   });
 });
 
+describe("a start page names parks it does not run (06.10.2026)", () => {
+  const orte = ortsWoerterAus(["Reher", "Jevenstedt", "Karlum", "Klixbüll"]);
+  const reher = akteur("Windpark Reher GmbH & Co. KG", "Irgendwo", "1", "25593");
+  const kaatz = "Baubüro Kaatz Leistungsspektrum Über uns Team Aktuelle Projekte Referenzen Windpark Reher Windpark Jevenstedt Bürgerwindpark Karlum Windpark Klixbüll";
+
+  it("does not give a park to the planning office that lists it as a reference", () => {
+    expect(beurteilen(reher, "baubuero-kaatz.de", "suche", { impressum: null, startseite: kaatz }, null, orte).ergebnis).not.toBe("belegt");
+  });
+
+  it("needs a word that is neither a kind of company nor a place", () => {
+    expect(identifizierend("Windpark Reher GmbH & Co. KG", orte)).toBe(false);
+    expect(identifizierend("Windpark Kisselsheide GmbH & Co. KG", orte)).toBe(true);
+  });
+
+  it("knows a list of parks from a page about one", () => {
+    expect(parkListe(kaatz, "Windpark Reher")).toBe(true);
+    expect(parkListe("Willkommen beim Bürgerwindpark Kisselsheide. Unser Windpark Kisselsheide liefert Strom.", "Bürgerwindpark Kisselsheide")).toBe(false);
+  });
+
+  it("still lets a park's own start page prove it by an identifying name", () => {
+    const a = akteur("Bürgerwindpark Kisselsheide GmbH & Co. KG", "Irgendwo", "1", "25593");
+    expect(beurteilen(a, "kisselsheide.de", "suche", { impressum: null, startseite: "Willkommen beim Bürgerwindpark Kisselsheide — unser Windpark liefert Strom" }, null, orte).ergebnis).toBe("belegt");
+  });
+});
+
 describe("a brand needs an energy site", () => {
   it("does not give a wind operator to an aircraft maker of the same name", () => {
     const a = akteur("Cirrus GmbH & Co. KG", "Am Feld", "1", "26831");
@@ -276,5 +489,143 @@ describe("a brand needs an energy site", () => {
     const a = akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567");
     const imp = "Impressum EnBW Energie Baden-Württemberg AG Durlacher Allee 93 76131 Karlsruhe";
     expect(beurteilen(a, "enbw.com", "suche", { impressum: imp, startseite: null }).beleg?.wie).toBe("marke");
+  });
+});
+
+describe("a failed attempt is no answer about the site (06.10.2026)", () => {
+  const jetzt = Date.parse("2026-10-06T20:00:00Z");
+  const fehl = (fehler: string, versuche = 1, vor = 2 * 3_600_000) => ({ text: null, startText: null, fehler, abgerufen_am: new Date(jetzt - vor).toISOString(), versuche });
+  it("tries a timeout, a server error and an empty answer again", () => {
+    for (const f of ["Abruf fehlgeschlagen (UND_ERR_CONNECT_TIMEOUT)", "Seite antwortet mit HTTP 503", "leere Seite", "Abruf fehlgeschlagen (fetch failed)"]) expect(abrufWiederholen(fehl(f), jetzt), f).toBe(true);
+  });
+  it("keeps an answer about the site", () => {
+    for (const f of ["Abruf fehlgeschlagen (ENOTFOUND)", "Seite antwortet mit HTTP 404", "kein Impressum gefunden"]) expect(abrufWiederholen(fehl(f), jetzt), f).toBe(false);
+  });
+  it("stops after three attempts and waits an hour between them", () => {
+    expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 3), jetzt)).toBe(false);
+    expect(abrufWiederholen(fehl("Seite antwortet mit HTTP 503", 1, 600_000), jetzt)).toBe(false);
+    expect(abrufWiederholen({ ...fehl("Seite antwortet mit HTTP 503"), startText: "Willkommen" }, jetzt)).toBe(false);
+  });
+});
+
+describe("whose imprint was read (06.10.2026)", () => {
+  it("tells the site's own imprint from an alias, a hoster and another organisation", () => {
+    expect(impressumHerkunft("https://www.alterric.com/impressum", "alterric.com")).toBe("eigen");
+    expect(impressumHerkunft("http://wpx.windpunx.de/impressum/", "windpunx.com")).toBe("alias");
+    expect(impressumHerkunft("https://www.inwx.com/en/aboutus/imprint", "wk-nandlstadt.de")).toBe("hoster");
+    expect(impressumHerkunft("https://www.cisco.com/c/en/us/about/legal/privacy-full.html", "orsted.com")).toBe("fremd");
+  });
+
+  it("a hoster's default page is no website, not even a declared one", () => {
+    const a = akteur("Windkraft Nandlstadt GmbH & Co. KG", "Irgendwo", "1", "85405");
+    expect(beurteilen(a, "wk-nandlstadt.de", "register-webseite", { impressum: "Impressum InterNetworX Ltd. & Co. KG", startseite: "Hier entsteht eine neue Website", impressumUrl: "https://www.inwx.com/en/aboutus/imprint" }).ergebnis).toBe("geparkt");
+  });
+
+  it("another organisation's imprint proves by name or address only, never by a brand", () => {
+    const enbw = akteur("EnBW Windkraftprojekte GmbH", "Schelmenwasenstraße", "15", "70567");
+    const fremd = { impressum: IMPRESSUM.enbw, startseite: null, impressumUrl: "https://www.cisco.com/legal" };
+    expect(beurteilen(enbw, "enbw.com", "suche", fremd).ergebnis).not.toBe("belegt");
+    expect(beurteilen(enbw, "enbw.com", "suche", { ...fremd, impressumUrl: "https://www.enbw.com/impressum" }).ergebnis).toBe("belegt");
+  });
+});
+
+describe("a name outside the provider block (06.10.2026)", () => {
+  const orte = ortsWoerterAus(["Reher", "Jevenstedt", "Karlum", "Klixbüll"]);
+  it("does not let a reference list in the imprint text prove a park", () => {
+    const reher = akteur("Windpark Reher GmbH & Co. KG", "Irgendwo", "1", "25593");
+    const imp = "Projekte Windpark Reher Windpark Jevenstedt Bürgerwindpark Karlum Windpark Klixbüll Impressum Angaben gemäß § 5 TMG Baubüro Kaatz GmbH Dorfstraße 3 24797 Breiholz";
+    expect(beurteilen(reher, "baubuero-kaatz.de", "suche", { impressum: imp, startseite: null }, null, orte).ergebnis).not.toBe("belegt");
+  });
+  it("still lets the provider block itself prove the name", () => {
+    const a = akteur("Bürgerwindpark Kisselsheide GmbH & Co. KG", "Irgendwo", "1", "25593");
+    const imp = "Impressum Angaben gemäß § 5 TMG Bürgerwindpark Kisselsheide GmbH & Co. KG Hauptstraße 1 25593 Reher";
+    expect(beurteilen(a, "kisselsheide.de", "suche", { impressum: imp, startseite: null }, null, orte).ergebnis).toBe("belegt");
+  });
+});
+
+describe("Befunde der ersten Handprüfung (06.10.2026)", () => {
+  it("a hyphenated brand of kind-of-company words counts when it is the domain (WIND-projekt)", () => {
+    const a = akteur("WIND-projekt Windpark Börgerende 3 GmbH & Co. KG", "Seestraße", "71", "18211");
+    const imp = "Impressum WIND-projekt Ingenieur- und Projektentwicklungsgesellschaft mbH Seestraße 71 18211 Börgerende-Rethwisch";
+    expect(impressumBelegt(imp.replace("Seestraße 71 18211", "Hauptstraße 1 18055"), a, "wind-projekt.de")?.wie).toBe("marke");
+    // Not on a portal whose label happens to be two generic words but no hyphenated word of the name.
+    const b = akteur("Windenergie Musterdorf GmbH", "Irgendwo", "1", "99999");
+    expect(impressumBelegt("Impressum Windenergie Portal GmbH Berlin", b, "wind-energie.de")).toBeNull();
+  });
+  it("a register number 0 means no number, and then nothing may stand between street and postcode", () => {
+    const a = akteur("Windpark Dahme GmbH & Co. KG", "Windmühlenberg", "0", "24814");
+    expect(impressumBelegt("Impressum Denker & Wulf AG Windmühlenberg 24814 Sehestedt", a, "denkerwulf.de")?.wie).toBe("anschrift");
+    expect(impressumBelegt("Impressum Andere GmbH Windmühlenberg 12 24814 Sehestedt", a, "andere.de")).toBeNull();
+  });
+  it("an imprint without any house number matches a register number when street and postcode stand together", () => {
+    const a = akteur("Windpark Calau GmbH & Co. KG", "Windmühlenberg", "1", "24814");
+    expect(impressumBelegt("Impressum Denker & Wulf AG, Windmühlenberg, 24814 Sehestedt", a, "denkerwulf.de")?.wie).toBe("anschrift");
+    // Another house number in the imprint is another house.
+    expect(impressumBelegt("Impressum Andere GmbH Windmühlenberg 12, 24814 Sehestedt", a, "andere.de")).toBeNull();
+  });
+  it("the full name with its legal form identifies, even when its words are places", () => {
+    expect(vollerNameIn("Betreiber des Parks ist die Amrum-Offshore West GmbH mit Sitz in Essen", "Amrum-Offshore West GmbH")).toBe(true);
+    expect(vollerNameIn("Offshore-Windpark Amrumbank West", "Amrum-Offshore West GmbH")).toBe(false);
+    // Another legal form right after the name still names a company (ENERTRAG, UG vs GmbH).
+    expect(vollerNameIn("Gesellschafterin ist die Bürgerwind Schönfeld UG & Co KG", "Bürgerwind Schönfeld GmbH & Co. KG")).toBe(true);
+    expect(vollerNameIn("Referenzen: Bürgerwind Schönfeld, Windpark Reher", "Bürgerwind Schönfeld GmbH & Co. KG")).toBe(false);
+  });
+  it("finds a project name without its trailing kind-of-company words and foreign legal form", () => {
+    expect(kernName(["borkum", "riffgrund", "2", "offshore", "wind", "farm"])).toEqual(["borkum", "riffgrund", "2"]);
+    const a = akteur("Gode Wind 2 P/S", "Am Osthafen", "2", "26506");
+    expect(nameWoerter("Gode Wind 2 P/S")).toEqual(["gode", "wind", "2"]);
+    const b = akteur("Borkum Riffgrund 2 Offshore Wind Farm GmbH & Co. oHG", "Am Osthafen", "2", "26506");
+    expect(impressumBelegt("Unser Offshore-Windpark Borkum Riffgrund 2 liegt 54 km vor der Küste", b, "orsted.de", ortsWoerterAus(["Borkum"]))?.wie).toBe("name");
+    // A park name of place and kind only stays unproven.
+    const c = akteur("Windpark Reher Wind GmbH", "Irgendwo", "1", "25593");
+    expect(impressumBelegt("Referenzen Windpark Reher", c, "kaatz.de", ortsWoerterAus(["Reher"]))).toBeNull();
+    void a;
+  });
+});
+
+describe("a register mailbox named after the operator (06.10.2026)", () => {
+  it("counts like a function mailbox", () => {
+    expect(funktionsPostfach("krampfer@vossenergy.com", "Windpark Krampfer-Reckenthin die Zweite GmbH & Co. KG")).toBe(true);
+    // A person stays a person, even at the same firm.
+    expect(funktionsPostfach("adem.bilir@mazars.de", "Windpark Krampfer-Reckenthin GmbH")).toBe(false);
+    expect(funktionsPostfach("jahah@orsted.com", "Borkum Riffgrund 3 GmbH & Co. oHG")).toBe(false);
+  });
+});
+
+describe("house numbers and adviser offices (06.10.2026)", () => {
+  it("keeps number ranges and refuses a number that is only the start of another", () => {
+    const wkn = akteur("WKN Windkraft Nord GmbH & Co. Windpark Looft KG", "Otto-Hahn-Straße", "12-16", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12 - 16 25813 Husum", wkn, "bgz-gmbh.de")?.wie).toBe("anschrift");
+    const zwoelf = akteur("Windpark X GmbH", "Otto-Hahn-Straße", "12", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12-16 25813 Husum", zwoelf, "bgz-gmbh.de")?.wie).toBe("anschrift");
+    const eins = akteur("Windpark Y GmbH", "Otto-Hahn-Straße", "1", "25813");
+    expect(impressumBelegt("Impressum BGZ Fondsverwaltung GmbH Otto-Hahn-Straße 12-16 25813 Husum", eins, "bgz-gmbh.de")).toBeNull();
+    const buchstabe = akteur("Windpark Z GmbH", "Hauptstraße", "12 a", "25813");
+    expect(impressumBelegt("Impressum Muster GmbH Hauptstraße 12a 25813 Husum", buchstabe, "muster.de")?.wie).toBe("anschrift");
+  });
+  it("an adviser's per-park mailbox in the register proves no website", () => {
+    const a = akteur("Windpark Tauberbischofsheim GmbH & Co. KG", "Irgendwo", "1", "99999");
+    const imp = "PKF Wulf Gruppe – Wirtschaftsprüfer & Steuerberater springe zum Hauptinhalt Menü Impressum PKF WULF GRUPPE GmbH Löwentorstraße 6 70376 Stuttgart";
+    expect(beurteilen(a, "pkf-wulf.de", "register-mail", { impressum: imp, startseite: "PKF Wulf" }, "tauberbischofsheim@pkf-wulf.de").ergebnis).not.toBe("belegt");
+  });
+
+  it("an adviser's office proves no address, the operator's own name still does", () => {
+    const ewf = akteur("EWF Fünf Vier GmbH & Co. KG", "Am Markt", "5", "25813");
+    const imp = "Impressum Angaben gemäß § 5 TMG SHJ Steuerberatungsgesellschaft mbH Am Markt 5 25813 Husum";
+    expect(beurteilen(ewf, "shj-husum.de", "anschrift", { impressum: imp, startseite: null }).ergebnis).not.toBe("belegt");
+    const eigen = akteur("Steuerberatung Windkraft Müller GmbH", "Am Markt", "5", "25813");
+    expect(beurteilen(eigen, "x.de", "anschrift", { impressum: "Impressum Steuerberatung Windkraft Müller GmbH Am Markt 5 25813 Husum", startseite: null }).ergebnis).toBe("belegt");
+  });
+});
+
+describe("a sibling's proven website (06.10.2026)", () => {
+  const settrup = { register_email: "thebing@energy-farming.de", anschrift: "a|1|49584", website: "energy-farming.de", website_beleg: "name" };
+  it("takes it when mailbox, address and the mailbox's domain all agree", () => {
+    expect(geschwisterWebsite({ register_email: "Thebing@energy-farming.de", anschrift: "a|1|49584" }, [settrup])).toBe("energy-farming.de");
+  });
+  it("refuses an auditor's shared mailbox, another address, or a chain of siblings", () => {
+    expect(geschwisterWebsite({ register_email: "adem.bilir@mazars.de", anschrift: "w||24814" }, [{ register_email: "adem.bilir@mazars.de", anschrift: "w||24814", website: "denkerwulf.de", website_beleg: "anschrift" }])).toBeNull();
+    expect(geschwisterWebsite({ register_email: "thebing@energy-farming.de", anschrift: "b|2|49584" }, [settrup])).toBeNull();
+    expect(geschwisterWebsite({ register_email: "thebing@energy-farming.de", anschrift: "a|1|49584" }, [{ ...settrup, website_beleg: "geschwister" }])).toBeNull();
   });
 });

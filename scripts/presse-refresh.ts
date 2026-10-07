@@ -38,7 +38,8 @@ import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 
 import { resolve } from "node:path";
 import { heuteInBerlin } from "../lib/zeit";
-import { readFileSync, existsSync } from "node:fs";
+import { anbieterBlock, selbstbeschreibung } from "../lib/impressum-anbieter";
+import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { sichtbarerText, entities, hostVon } from "../lib/fachbetrieb-extrakt";
 import {
   redaktionsSeiten,
@@ -52,6 +53,10 @@ import {
   postfaecherAus,
   hatKontaktformular,
   medientypAus,
+  verbandUrteil,
+  verbandBelegTraegt,
+  FUNDSTELLE_SEITENTEXT,
+  type VerbandUrteil,
   themenAus,
   geschichtenZu,
   gattungAus,
@@ -82,11 +87,13 @@ import {
   type Befund,
 } from "../lib/presse-eignung";
 import { SAAT, doppelteInDerSaat, type Paket } from "../lib/presse-saat";
+import { benannteDomains, bewusstPresse, doppeltBenannt, listeFuer } from "../lib/presse-listen";
 import {
   alsCsv,
   type KontaktZeile,
   type MediumZeile,
 } from "../lib/presse-katalog";
+import { bezahlteSucheFreigabe } from "./lib/bezahlte-suche";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
 
@@ -134,6 +141,17 @@ async function makeClient(): Promise<SupabaseLike> {
 }
 
 /** PostgREST liefert stumm höchstens 1.000 Zeilen — deshalb immer blättern. */
+/** The primary key of every table read page by page — the total order a paginated read needs. */
+const SORTIERSCHLUESSEL: Record<string, string[]> = {
+  presse_medien: ["domain"],
+  presse_kontakte: ["domain", "schluessel"],
+  presse_belege: ["domain", "merkmal", "quelle_url"],
+  presse_kreissuche: ["kreis_id", "frage"],
+  kommunen_kontakt: ["region_id"],
+  utilities: ["id"],
+  fachbetriebe: ["domain"],
+};
+
 async function alleZeilen<T>(
   sb: SupabaseLike,
   tabelle: string,
@@ -143,8 +161,15 @@ async function alleZeilen<T>(
 ): Promise<T[]> {
   const out: T[] = [];
   const schritt = 1000;
+  // Pages without a sort order return rows twice and skip others (the same
+  // place showed 35, 64 and 39 installations in three reads, 06.09.2026). The
+  // key comes from the table, not from each caller, so no caller can forget it.
+  const schluessel = SORTIERSCHLUESSEL[tabelle];
+  if (!schluessel) throw new Error(`${tabelle}: kein Sortierschlüssel bekannt — in SORTIERSCHLUESSEL eintragen`);
   for (let von = 0; ; von += schritt) {
-    let q = sb.from(tabelle).select(spalten).range(von, von + schritt - 1);
+    let q = sb.from(tabelle).select(spalten);
+    for (const k of schluessel) q = q.order(k);
+    q = q.range(von, von + schritt - 1);
     if (filter) q = filter(q);
     const { data, error } = await q;
     if (error) throw new Error(`${tabelle}: ${error.message}`);
@@ -404,6 +429,12 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;
+    -- Which list an entry belongs to: press (NULL), topic associations or the
+    -- archive of unrelated clubs. Decided in lib/presse-listen.ts, written by
+    -- --listen only; the profile run never touches these columns.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste_grund text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste_at timestamptz;
 
     CREATE INDEX IF NOT EXISTS presse_kontakte_domain_idx ON presse_kontakte(domain);
     CREATE INDEX IF NOT EXISTS presse_medien_paket_idx ON presse_medien(paket);
@@ -514,6 +545,56 @@ function titelAus(html: string): string | null {
   return roh || null;
 }
 
+// ─── Medium run by an association: evidence and its replacement ──────────────
+
+function verbandBelegAus(
+  domain: string,
+  u: VerbandUrteil,
+  impUrl: string | null,
+  startUrl: string,
+  tag: string,
+): Record<string, unknown> | null {
+  if (!u.fund) return null;
+  return {
+    domain,
+    merkmal: "medientyp:Verband",
+    wert: "Verband",
+    quelle_url: u.fund.wo === "Selbstbeschreibung" || !impUrl ? startUrl : impUrl,
+    fundstelle: `${u.fund.wo}: „${u.fund.treffer}"`,
+    gefunden_am: tag,
+  };
+}
+
+/** Domains whose "Verband" evidence counts (read at the imprint or title). */
+async function verbandBelegt(sb: SupabaseLike): Promise<Set<string>> {
+  const z = await alleZeilen<{ domain: string; fundstelle: string | null }>(
+    sb,
+    "presse_belege",
+    "domain, fundstelle",
+    (q) => q.eq("merkmal", "medientyp:Verband").order("domain").order("quelle_url"),
+  );
+  return new Set(z.filter((r) => verbandBelegTraegt(r.fundstelle)).map((r) => r.domain));
+}
+
+/**
+ * After a decision, the "Verband" evidence of a domain is exactly the new one.
+ * Upserting alone left the old rule's rows standing (other source URL, other
+ * key) — a catalogue whose type and evidence disagree. Kept-from-prior flags
+ * (imprint unread) keep their evidence.
+ */
+async function verbandBelegeErsetzen(
+  sb: SupabaseLike,
+  urteile: { domain: string; urteil: VerbandUrteil; behalten: string | null }[],
+): Promise<void> {
+  for (const { domain, urteil, behalten } of urteile) {
+    if (!urteil.gelesen && urteil.verband) continue;
+    let q = sb.from("presse_belege").delete().eq("domain", domain).eq("merkmal", "medientyp:Verband");
+    if (behalten) q = q.neq("quelle_url", behalten);
+    const { error } = await q;
+    if (error) throw new Error(`presse_belege aufräumen (${domain}): ${error.message}`);
+  }
+}
+
 // ─── Auswertung eines Mediums ────────────────────────────────────────────────
 
 interface Auswertung {
@@ -538,9 +619,15 @@ interface Auswertung {
   hinweis: string | null;
   kontakte: Record<string, unknown>[];
   belege: Record<string, unknown>[];
+  verband: VerbandUrteil;
 }
 
-function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlySet<string>): Auswertung {
+function werteAus(
+  domain: string,
+  seiten: Seite[],
+  verwaltungsDomains: ReadonlySet<string>,
+  verbandVorher = false,
+): Auswertung {
   // Ohne Startseite trägt die erste erreichbare Seite die Grundangaben. Themen
   // lassen sich dann NICHT messen — und das steht dann auch so im Katalog,
   // statt einer Null, die wie „kein Thema" aussieht.
@@ -561,7 +648,15 @@ function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlyS
   // Medientyp aus allen Seiten: Der Newsletter-Hinweis steht oft nur im Fuß der
   // Kontaktseite, das Podcast-Format nur unter „Über uns".
   const gesamtText = seiten.map((s) => sichtbarerText(s.html)).join("\n");
-  const medientyp = medientypAus(gesamtText);
+  // Whether an association runs the site is read at the imprint and the title,
+  // never at a word anywhere on the page (see verbandAus).
+  const impSeite = seiten.find((s) => s.art === "impressum");
+  const verband = verbandUrteil(
+    impSeite ? sichtbarerText(impSeite.html) : "",
+    selbstbeschreibung(grund.html),
+    verbandVorher,
+  );
+  const medientyp = medientypAus(gesamtText, verband.verband);
 
   // An administration's homepage looks like a newsroom; its legal notice does not.
   const urteil = istVerwaltung(gesamtText, domain, verwaltungsDomains)
@@ -736,15 +831,20 @@ function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlyS
     });
   }
   for (const m of medientyp) {
+    // "Verband" kept from a prior read has its evidence already; a new one
+    // names where it was read.
+    if (m === "Verband") continue;
     belege.push({
       domain,
       merkmal: `medientyp:${m}`,
       wert: m,
       quelle_url: grund.url,
-      fundstelle: "Merkmal im Seitentext",
+      fundstelle: FUNDSTELLE_SEITENTEXT,
       gefunden_am: tag,
     });
   }
+  const verbandBeleg = verbandBelegAus(domain, verband, impSeite?.url ?? null, grund.url, tag);
+  if (verbandBeleg) belege.push(verbandBeleg);
   if (reichweite && reichweiteQuelle) {
     belege.push({
       domain,
@@ -801,6 +901,7 @@ function werteAus(domain: string, seiten: Seite[], verwaltungsDomains: ReadonlyS
     ist_medium: urteil.ist,
     medium_grund: urteil.grund,
     medium_merkmale: urteil.merkmale,
+    verband,
     seiten: seitenKarte,
     formular_url: formularUrl,
     impressum_url: seitenKarte["impressum"] ?? null,
@@ -920,12 +1021,16 @@ async function holeMedium(domain: string): Promise<ReadPages | { fehler: string 
 
 async function profil(paket: Paket | null, limit: number, refetch: boolean): Promise<void> {
   const sb = await makeClient();
-  const alle = await alleZeilen<{ domain: string; paket: number; profil_at: string | null; fehler: string | null }>(
-    sb,
-    "presse_medien",
-    "domain, paket, profil_at, fehler",
-  );
+  const alle = await alleZeilen<{
+    domain: string;
+    paket: number;
+    profil_at: string | null;
+    fehler: string | null;
+    liste: string | null;
+  }>(sb, "presse_medien", "domain, paket, profil_at, fehler, liste");
   const offen = alle
+    // The archive is kept to block rediscovery, not to be read again.
+    .filter((m) => m.liste !== "archiv")
     .filter((m) => (paket === null || m.paket === paket) && (refetch || !m.profil_at || !!m.fehler))
     .slice(0, limit);
   if (!offen.length) {
@@ -934,10 +1039,12 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   }
   log(`${offen.length} Medien werden gelesen`);
   const verwaltung = await verwaltungsDomains(sb);
+  const verbandVorher = await verbandBelegt(sb);
 
   let medienZeilen: Record<string, unknown>[] = [];
   let kontaktZeilen: Record<string, unknown>[] = [];
   let belegZeilen: Record<string, unknown>[] = [];
+  let verbandZeilen: { domain: string; urteil: VerbandUrteil; behalten: string | null }[] = [];
   let ok = 0;
   let leer = 0;
   let kontakteGesamt = 0;
@@ -959,6 +1066,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
     const media = medienZeilen.splice(0);
     const contacts = kontaktZeilen.splice(0);
     const evidence = belegZeilen.splice(0);
+    const verbandNeu = verbandZeilen.splice(0);
     pendingWrite = pendingWrite.then(async () => {
       if (!media.length) return;
       // A domain a person has declared NOT a press outlet stays one, whatever
@@ -972,6 +1080,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       // No delete/reinsert window. Omitted workflow columns survive an upsert.
       await upsert(sb, "presse_kontakte", contacts, "domain,schluessel");
       await upsert(sb, "presse_belege", evidence, "domain,merkmal,quelle_url");
+      await verbandBelegeErsetzen(sb, verbandNeu);
       kontakteGesamt += contacts.length;
     });
     return pendingWrite;
@@ -996,7 +1105,7 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       log(`${m.domain}: ${res.fehler}`, "err");
       return;
     }
-    const a = werteAus(m.domain, res, verwaltung);
+    const a = werteAus(m.domain, res, verwaltung, verbandVorher.has(m.domain));
     const partial = !!res.incomplete;
     medienZeilen.push({
       ...observedFields({
@@ -1026,6 +1135,11 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
     });
     kontaktZeilen.push(...a.kontakte.map(k => observedFields(k)));
     belegZeilen.push(...a.belege);
+    verbandZeilen.push({
+      domain: a.domain,
+      urteil: a.verband,
+      behalten: (a.belege.find((b) => b.merkmal === "medientyp:Verband")?.quelle_url as string | undefined) ?? null,
+    });
     ok++;
     const personen = a.kontakte.filter((k) => k.name).length;
     log(
@@ -1037,6 +1151,156 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   await ablegen();
 
   log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontakteGesamt} Kontakte`, "ok");
+}
+
+// ─── Phase: Listen (Presse · Fachverbände · Archiv) ──────────────────────────
+
+/**
+ * Applies lib/presse-listen.ts to the table. The file is the source: a named
+ * domain gets its list, a domain no longer named goes back to press. Without
+ * --schreiben it only shows what would change.
+ */
+async function listenAnwenden(schreiben: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    liste: string | null;
+    liste_grund: string | null;
+    medientyp: string[] | null;
+    ist_medium: string | null;
+  }>(sb, "presse_medien", "domain, liste, liste_grund, medientyp, ist_medium", (q) => q.order("domain"));
+  const vorhanden = new Set(alle.map((m) => m.domain));
+  const doppelt = doppeltBenannt();
+  if (doppelt.length) throw new Error(`in zwei Listen benannt: ${doppelt.join(", ")}`);
+  const fehlt = benannteDomains().filter((d) => !vorhanden.has(d));
+  if (fehlt.length) log(`benannt, aber nicht im Katalog: ${fehlt.join(", ")}`, "err");
+
+  const aenderungen = alle
+    .map((m) => ({ m, e: listeFuer(m.domain) }))
+    .map(({ m, e }) => ({ m, liste: e.liste === "presse" ? null : e.liste, grund: e.grund }))
+    .filter(({ m, liste, grund }) => (m.liste ?? null) !== liste || (m.liste_grund ?? null) !== grund);
+  const zaehlung = (l: string | null) => alle.filter((m) => (listeFuer(m.domain).liste === "presse" ? null : listeFuer(m.domain).liste) === l).length;
+  log(`Presse ${zaehlung(null)} · Fachverbände ${zaehlung("verbaende")} · Archiv ${zaehlung("archiv")} — ${aenderungen.length} Änderungen`);
+
+  // What still waits for a decision: marked as run by an association, judged
+  // no medium, and named in no list.
+  const offen = alle.filter(
+    (m) =>
+      m.medientyp?.includes("Verband") &&
+      m.ist_medium === "kein-medium" &&
+      listeFuer(m.domain).liste === "presse" &&
+      !bewusstPresse(m.domain),
+  );
+  if (offen.length) log(`Verein, kein Medium, keiner Liste zugeordnet: ${offen.map((m) => m.domain).join(", ")}`);
+
+  if (!schreiben) {
+    for (const a of aenderungen.slice(0, 40)) log(`${a.m.domain}: ${a.m.liste ?? "presse"} → ${a.liste ?? "presse"}`);
+    log("nichts geschrieben — mit --schreiben übernehmen");
+    return;
+  }
+  const jetzt = new Date().toISOString();
+  await pool(aenderungen, 8, async ({ m, liste, grund }) => {
+    const { error } = await sb
+      .from("presse_medien")
+      .update({ liste, liste_grund: grund, liste_at: jetzt })
+      .eq("domain", m.domain);
+    if (error) throw new Error(`presse_medien (${m.domain}): ${error.message}`);
+  });
+  log(`${aenderungen.length} Einträge umsortiert`, "ok");
+}
+
+// ─── Phase: Verband neu bewerten ─────────────────────────────────────────────
+
+interface VerbandProtokoll {
+  domain: string;
+  vorher: boolean;
+  urteil: VerbandUrteil;
+  beleg: Record<string, unknown> | null;
+  anbieter: string;
+}
+
+/**
+ * Re-judge "Verband" for the whole catalogue without a full profile run (which
+ * would rewrite every contact). Reads the start page and the imprint at the
+ * addresses the last run stored. Measure first, read the protocol, then write
+ * from it — the same order as the installer classification.
+ */
+async function verbandNeuBewerten(protokoll: string | undefined, aus: string | undefined): Promise<void> {
+  const sb = await makeClient();
+  if (aus) return verbandSchreiben(sb, JSON.parse(readFileSync(aus, "utf8")) as VerbandProtokoll[]);
+  if (!protokoll) throw new Error("--verband braucht --protokoll <datei> (messen) oder --aus <datei> (schreiben)");
+
+  const alle = await alleZeilen<{ domain: string; seiten: Record<string, string> | null }>(
+    sb,
+    "presse_medien",
+    "domain, seiten",
+    (q) => q.order("domain"),
+  );
+  const vorher = await verbandBelegt(sb);
+  const alt = new Set(
+    (
+      await alleZeilen<{ domain: string }>(sb, "presse_medien", "domain", (q) =>
+        q.contains("medientyp", ["Verband"]).order("domain"),
+      )
+    ).map((r) => r.domain),
+  );
+  const tag = heute();
+  const out: VerbandProtokoll[] = [];
+  let n = 0;
+  await pool(alle, 24, async (m) => {
+    const start = m.seiten?.start ? await holeText(m.seiten.start) : null;
+    const imp = m.seiten?.impressum ? await holeText(m.seiten.impressum) : null;
+    const impText = imp ? sichtbarerText(imp.html) : "";
+    const urteil = verbandUrteil(impText, start ? selbstbeschreibung(start.html) : "", vorher.has(m.domain));
+    out.push({
+      domain: m.domain,
+      vorher: alt.has(m.domain),
+      urteil,
+      beleg: verbandBelegAus(m.domain, urteil, imp?.url ?? null, start?.url ?? m.seiten?.start ?? `https://${m.domain}/`, tag),
+      anbieter: anbieterBlock(impText).replace(/\s+/g, " ").slice(0, 200),
+    });
+    if (++n % 250 === 0) log(`${n} / ${alle.length}`);
+  });
+  out.sort((a, b) => a.domain.localeCompare(b.domain));
+  writeFileSync(protokoll, JSON.stringify(out, null, 1));
+  const z = (f: (p: VerbandProtokoll) => boolean) => out.filter(f).length;
+  log(
+    `${out.length} Medien: vorher ${z((p) => p.vorher)} „Verband", jetzt ${z((p) => p.urteil.verband)} ` +
+      `(neu ${z((p) => p.urteil.verband && !p.vorher)}, weg ${z((p) => !p.urteil.verband && p.vorher)}), ` +
+      `Impressum nicht lesbar ${z((p) => !p.urteil.gelesen)} — Protokoll: ${protokoll}`,
+    "ok",
+  );
+}
+
+async function verbandSchreiben(sb: SupabaseLike, eintraege: VerbandProtokoll[]): Promise<void> {
+  const typen = new Map(
+    (await alleZeilen<{ domain: string; medientyp: string[] | null }>(sb, "presse_medien", "domain, medientyp", (q) =>
+      q.order("domain"),
+    )).map((r) => [r.domain, r.medientyp]),
+  );
+  let geaendert = 0;
+  await pool(eintraege, 8, async (p) => {
+    const bisher = typen.get(p.domain);
+    if (bisher === undefined) return;
+    const ohne = (bisher ?? []).filter((t) => t !== "Verband");
+    const neu = p.urteil.verband ? [...ohne, "Verband"] : ohne;
+    if (!bisher && !neu.length) return;
+    if (bisher && neu.length === bisher.length && neu.every((t) => bisher.includes(t))) return;
+    // One column, one row: a batched upsert would need every NOT NULL column.
+    const { error } = await sb
+      .from("presse_medien")
+      .update({ medientyp: neu })
+      .eq("domain", p.domain);
+    if (error) throw new Error(`presse_medien (${p.domain}): ${error.message}`);
+    geaendert++;
+  });
+  const belege = eintraege.flatMap((p) => (p.beleg ? [p.beleg] : []));
+  await upsert(sb, "presse_belege", belege, "domain,merkmal,quelle_url");
+  await verbandBelegeErsetzen(
+    sb,
+    eintraege.map((p) => ({ domain: p.domain, urteil: p.urteil, behalten: (p.beleg?.quelle_url as string) ?? null })),
+  );
+  log(`${geaendert} Medientypen geändert, ${belege.length} Belege geschrieben`, "ok");
 }
 
 // ─── Phase: Suche ────────────────────────────────────────────────────────────
@@ -1077,6 +1341,8 @@ async function serp(frage: string): Promise<{ treffer: SerpTreffer[]; fehler: st
   const passwort = process.env.DATAFORSEO_PASSWORD;
   if (!login || !passwort) return { treffer: [], fehler: "DATAFORSEO-Zugang fehlt" };
   const auth = Buffer.from(`${login}:${passwort}`).toString("base64");
+  // Outside the try: a refusal must stop the run, not become one more failed query.
+  bezahlteSucheFreigabe();
   try {
     const res = await fetch("https://api.dataforseo.com/v3/serp/google/organic/live/advanced", {
       method: "POST",
@@ -1471,9 +1737,12 @@ async function eignung(
     ist_medium: string | null;
     eignung: string | null;
     eignung_at: string | null;
-  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
+    liste: string | null;
+  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at, liste");
   const offen = alle
     .filter((m) => (paket === null || m.paket === paket))
+    // Press suitability is a question for the press list only.
+    .filter((m) => !m.liste || m.liste === "presse")
     .filter((m) => (nurBelegte ? m.ist_medium === "medium" : m.ist_medium !== "kein-medium"))
     .filter((m) => neu || !m.eignung_at)
     .slice(0, limit);
@@ -1789,6 +2058,8 @@ async function main(): Promise<void> {
     return csv(paket, args.includes("--nur-medien"), zahlArg("--top", 0));
   }
   if (args.includes("--stats")) return stats();
+  if (args.includes("--listen")) return listenAnwenden(args.includes("--schreiben"));
+  if (args.includes("--verband")) return verbandNeuBewerten(textArg("--protokoll"), textArg("--aus"));
 
   // eslint-disable-next-line no-console
   console.log(
@@ -1807,6 +2078,9 @@ async function main(): Promise<void> {
       "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
       "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",
+      "npm run presse -- --listen [--schreiben]   Presse/Fachverbände/Archiv aus lib/presse-listen.ts",
+      "npm run presse -- --verband --protokoll <datei>  „Verband\" neu bewerten, nur messen",
+      "npm run presse -- --verband --aus <datei>        … aus dem Protokoll schreiben",
     ].join("\n"),
   );
 }

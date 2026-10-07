@@ -18,15 +18,26 @@ zweifach() {
 }
 
 echo "=== Start $(date)" >"$LOG"
+# 0. Preflight: everything a run has failed on before (docs/lehren/kontakt-engine-fehler.md).
+#    Only the load may be waited out; anything else stops the run before it starts.
+for i in 1 2 3; do
+  npx tsx scripts/windbetreiber-refresh.ts --vorflug --vor-register >>"$LOG" 2>&1 && break
+  if ! tail -15 "$LOG" | grep -q "✗ Last der Maschine" || tail -15 "$LOG" | grep "✗" | grep -vq "Last der Maschine"; then
+    echo "!!! ABBRUCH: Vorflug nicht bereit (nicht nur die Last)" >>"$LOG"; exit 1
+  fi
+  [ "$i" = 3 ] && { echo "!!! ABBRUCH: Last nach einer Stunde noch zu hoch" >>"$LOG"; exit 1; }
+  echo "=== $(date +%T) Last zu hoch, warte 20 min" >>"$LOG"; sleep 1200
+done
 # 1. Operators from the latest register export (reads the cache if this export was read before).
 schritt npx tsx scripts/windbetreiber-refresh.ts --register
 # 2. Every stored verdict under today's rules (cache only), then the websites
 #    the register itself offers, proven by their imprint.
 schritt npx tsx scripts/windbetreiber-refresh.ts --neu-bewerten
 schritt npx tsx scripts/windbetreiber-refresh.ts --impressum
-# 3. One search per address for the rest, largest capacity first.
-schritt npx tsx scripts/windbetreiber-refresh.ts --suche
-# 4. Contacts on every proven website, then written and released.
+# 3. No paid search (operator, 06.10.2026): websites the register does not name
+#    are searched by the manual pass with its own web search.
+# 4. Contacts on every proven website, then written and released. Gaps go to
+#    the manual pass (--offen), never to a paid search.
 zweifach npx tsx scripts/windbetreiber-kontakte.ts --mode=research
 schritt npx tsx scripts/windbetreiber-kontakte.ts --mode=evaluate
 schritt npx tsx scripts/windbetreiber-kontakte.ts --mode=apply --schreiben

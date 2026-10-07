@@ -569,10 +569,16 @@ describe("Weitere Platzierungen im Brief", () => {
     expect(renderOutreachDraft(MIT).body).not.toContain(MIT.ranglisteUrl as string);
   });
 
-  it("lässt die weiteren Platzierungen aus der Meldung heraus", () => {
+  // Operator, 07.10.2026: after the box the further placements read as a stray
+  // afterthought, and a press office copying the box lost them. They belong to
+  // the message, before its link line — and only there, not twice.
+  it("führt die weiteren Platzierungen IN der Meldung, vor der Link-Zeile", () => {
     const m = renderMeldung(MIT);
-    expect(m).not.toContain("Balkonkraftwerken");
-    expect(m).not.toContain("weiteren Messgrößen");
+    expect(m).toContain("Auch sonst steht Höchberg weit vorn");
+    expect(m.indexOf("Auch sonst")).toBeLessThan(m.indexOf("Laufend aktualisierte"));
+    const body = renderOutreachDraft(MIT).body;
+    expect(body.split("Auch sonst").length - 1).toBe(1);
+    expect(body.indexOf("Auch sonst")).toBeLessThan(body.lastIndexOf("----------------------------------------"));
   });
 
   it("schweigt, wenn es keine weiteren gibt", () => {

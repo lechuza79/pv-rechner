@@ -12,6 +12,9 @@ name: Live-Wetter-Schnappschuss (DWD ICON-D2)
 # Stunden; nach Mitternacht fehlt der neue Tag — dann zeigt die Seite kein
 # Modellwetter mehr, sie erfindet keins.
 
+# GitHub starts the hourly schedule only every four to eight hours; the
+# reliable hourly start comes from a Vercel cron (/api/wetter/anstossen, minute
+# 5). The schedule below stays as the fallback if that route ever fails.
 on:
   schedule:
     - cron: "20 * * * *"
@@ -38,13 +41,17 @@ jobs:
 
       - run: npm ci
 
+      # One retry after five minutes: the open archive is occasionally mid-write
+      # when a new model run lands (07.10.2026 01:35 UTC: every postcode had a
+      # gap, the same read at 06:40 was complete). The script still refuses to
+      # write a snapshot with holes; the retry only gives the archive time.
       - name: Schnappschuss schreiben
-        timeout-minutes: 10
+        timeout-minutes: 15
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run wetter:schnappschuss -- --auch-lokal
+        run: npm run wetter:schnappschuss -- --auch-lokal || (sleep 300 && npm run wetter:schnappschuss -- --auch-lokal)
 
       # Tageskurve "Solarleistung heute" für die 16 Länder und Deutschland
       # (lib/region-solar-day.ts): liest die eben geschriebenen Wetterdateien

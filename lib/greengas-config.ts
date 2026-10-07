@@ -628,7 +628,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 06.10.2026: § 43 GModG im Volltext (gesetze-im-internet.de) gelesen —
   //   Stufen 10/15/30/60 % ab 2029/2030/2035/2040 unverändert; kein
   //   Quotengesetz nach § 42a. Bioheizöl-Suche: keine Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-10-06",
+  // 07.10.2026: §§ 42a und 43 GModG auf gesetze-im-internet.de im Wortlaut
+  //   gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43 Stufen
+  //   10/15/30/60 % unverändert; Bundestag 7.–9.10. ohne Heizungsgesetz.
+  //   Bioheizöl-Suche: nur HVO-Marktnotierungen, keine Endkunden-Preisreihe.
+  geprueftRechtIso: "2026-10-07",
   reviewBy: "2027-07-25",
 };
 

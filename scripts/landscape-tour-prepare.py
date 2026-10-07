@@ -160,6 +160,11 @@ def main(id):
  windows=[(east+stop['x'],north-stop['z'],550 if stop['kind']=='town' else 350) for stop in stops]+enrichment_destinations
  files=list(source.glob(prefix+'-lod*.gml'))+list(source.glob(prefix+'-lod*.zip'))
  architecture=buildings(files,boundary,windows,origin)
+ # A very large building (industrial hall, chemical park) chosen by its centre inside a
+ # window can reach beyond the terrain box. It is left out whole, never cut, and counted.
+ inside=lambda b:all(w<=east+p[0]<=e and s<=north-p[2]<=n for surface in b['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring)
+ beyond=[b['id'] for b in architecture if not inside(b)]
+ architecture=[b for b in architecture if inside(b)]
  if not architecture:raise ValueError('No real buildings')
  assert_measured_points(data,affine,coords+[(east+p['x'],north-p['z']) for p in stops]+[(east+p[0],north-p[2]) for building in architecture for surface in building['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring])
  if any(not (w<=east+p[0]<=e and s<=north-p[2]<=n) for building in architecture for surface in building['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring):raise ValueError('Real building surface outside measured terrain')
@@ -223,6 +228,7 @@ def main(id):
  audit['solarEvidence']=['https://www.openstreetmap.org/way/'+str(way) for way in selected_solar]
  if id=='07312000':audit['solarEvidence'].append('https://www.kaiserslautern.de/sozial_leben_wohnen/planen_bauen_wohnen/bebauungsplan/rechtskraeftige_bebauungsplaene/innenstadt/039728/index.html.de')
  audit['limitations'].append('Solar footprints are the verified mapped subset, not a complete register inventory of all ground-mounted solar plants.')
+ audit['buildingsBeyondTerrainOmitted']=beyond
  (out/'provenance.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2));print(audit['name'],len(architecture),len(rows),len(solar),width,height,flush=True)
 if __name__=='__main__':
  for id in sys.argv[2:] or ['09679147','07312000','06632009']:main(id)

@@ -68,11 +68,10 @@ describe('workflow delivery contract', () => {
     expect(health).not.toContain('continue-on-error');
     expect(health).not.toContain('set +e');
   });
-  it('autofix uses the measured report even when the workflow is successful', () => {
+  it('autofix reads the measured report of every completed run, including failed ones', () => {
     expect(repair).toContain('types: [completed]');
-    expect(repair).toContain('.autofix | tostring');
-    expect(repair).toContain("if: needs.incident.outputs.repair == 'true'");
-    expect(repair).toContain('[ "$CONCLUSION" = "failure" ]');
+    expect(repair).toContain('CONCLUSION: ${{ github.event.workflow_run.conclusion }}');
+    expect(repair).toContain('scripts/autofix-plan.ts');
   });
 });
 

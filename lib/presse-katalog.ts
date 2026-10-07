@@ -21,6 +21,9 @@ import type { Themenfund } from "./presse-extrakt";
 // ─── Was aus der Datenbank kommt ─────────────────────────────────────────────
 
 export interface MediumZeile {
+  /** Press (null), topic associations or archive — lib/presse-listen.ts. */
+  liste?: string | null;
+  liste_grund?: string | null;
   /** Fremdschätzung zur Größe der Seite (lib/seitenwert.ts); fehlt bis zur Erhebung. */
   seitenwert?: { rang: number | null; besucher: number | null; groesse: string } | null;
   /** In welche Ansprache das Medium fällt — bestimmt den AUFHÄNGER, nicht die
@@ -235,7 +238,7 @@ export function kontaktArt(k: KontaktZeile | null, mediumHatFormular: boolean): 
 }
 
 export const AUSLAND =
-  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)\b/i;
+  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)(?!\w)/i;
 
 /**
  * Die Priorität der ZEILE, nicht des Mediums.

@@ -10,6 +10,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  # The autofix delivers through a branch: main requires this workflow's gate
+  # check on the exact commit, and a push made with the workflow token starts
+  # no workflow by itself. Dispatch is the one way it can run the gate first
+  # (scripts/autofix-deliver.ts).
+  workflow_dispatch: {}
 
 jobs:
   # AUFGETEILT AM 06.10.2026 — und das ist die dritte Runde derselben Frage,

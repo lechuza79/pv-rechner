@@ -19,6 +19,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
+import { rollupSchrittweise } from "../lib/mastr-rollup-sql";
 
 type AggZeile = { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number };
 type MonatZeile = { region_id: string; segment: string; monat: string; count: number; kwp: number };
@@ -118,8 +119,20 @@ async function main() {
     return;
   }
 
+  // Der Rollup zuerst, und SCHRITTWEISE — die Funktion hebt ihr
+  // Statement-Timeout nicht selbst auf (siehe lib/mastr-rollup-sql.ts).
+  const { data: trZeilen, error: trErr } = await db
+    .from("mastr_aggregates_gem")
+    .select("energietraeger")
+    .limit(100_000);
+  if (trErr) throw new Error(`energietraeger lesen: ${trErr.message}`);
+  await rollupSchrittweise(
+    (fn, args) => db.rpc(fn, args ?? {}),
+    [...new Set((trZeilen ?? []).map((r) => (r as { energietraeger: string }).energietraeger))].sort(),
+  );
+
   // Same derived tables as the import, same order.
-  for (const fn of ["mastr_refresh_region_rollup", "mastr_refresh_gemeinde_solar", "mastr_refresh_gemeinde_award"]) {
+  for (const fn of ["mastr_refresh_gemeinde_solar", "mastr_refresh_gemeinde_award"]) {
     console.log(`Neuberechnung ${fn} …`);
     const { error } = await db.rpc(fn);
     if (error) throw new Error(`${fn}: ${error.message}`);

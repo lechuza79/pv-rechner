@@ -119,10 +119,10 @@ type Paket = {
   uebersprungen: { region_id: string; name: string | null; grund: string }[];
 };
 
-async function holePaket(basis: string, schub: string, charge: number, limit: number): Promise<Paket> {
+async function holePaket(basis: string, schub: string, charge: number, limit: number, probe?: string): Promise<Paket> {
   const secret = process.env.CRON_SECRET;
   if (!secret) throw new Error("CRON_SECRET fehlt — ohne ihn gibt der Endpunkt nichts heraus.");
-  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}`;
+  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}${probe ? `&probe=${encodeURIComponent(probe)}` : ""}`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${secret}` } });
   if (!res.ok) throw new Error(`Versandpaket ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return (await res.json()) as Paket;
@@ -749,14 +749,16 @@ async function vorflug(p: Paket, limit: number): Promise<boolean> {
   }
 
   // Scenes are a separate session's work. The letter mentions the 3D view only
-  // where a scene is published, so this is information, not a brake — but the
-  // number has to be read BEFORE the go, not discovered after it.
+  // where a scene is published; a letter without one blocks the send.
   const ohneSzene = briefe.filter((b) => !b.body.includes("3D-Ansicht"));
   log(
     `${briefe.length - ohneSzene.length} von ${briefe.length} Briefen zeigen eine 3D-Szene` +
       (ohneSzene.length ? ` — ohne: ${ohneSzene.map((b) => b.name).join(", ")}` : ""),
-    ohneSzene.length ? "warn" : "ok",
+    ohneSzene.length ? "err" : "ok",
   );
+  // Every letter is meant to show its 3D scene (operator, 06.10.2026): a
+  // missing scene is not information but a gap to close before the send.
+  if (ohneSzene.length) maengel.push(`${ohneSzene.length} Briefe ohne 3D-Szene — Szenen nachziehen`);
 
   // Every link a recipient can click, called once as a recipient would. This
   // also warms the cold pages before the first real click.
@@ -804,7 +806,8 @@ async function main(): Promise<void> {
   }
   const pauseMs = arg("pause") ? zahl("pause", PAUSE_MS / 1000) * 1000 : PAUSE_MS;
 
-  const paket = await holePaket(basis, schub, charge, limit);
+  // A proof with --ags builds exactly that town's letter, in or out of a charge.
+  const paket = await holePaket(basis, schub, charge, limit, arg("test") ? arg("ags") : undefined);
 
   if (hat("liste")) return zeigeListe(paket);
   if (hat("vorschau")) {

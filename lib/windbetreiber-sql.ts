@@ -64,6 +64,9 @@ export const WINDBETREIBER_SQL = `
   ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_geprueft_am date;
   ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_freigabe_am date;
   ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_sperrgrund text;
+  -- "von Hand geprüft: …" — a person searched the proven website and found no
+  -- contact. Without it "no contact" and "not looked at" look the same.
+  ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_hand_notiz text;
   CREATE INDEX IF NOT EXISTS windbetreiber_plz_idx ON windbetreiber (plz);
   CREATE INDEX IF NOT EXISTS windbetreiber_website_idx ON windbetreiber (website);
 

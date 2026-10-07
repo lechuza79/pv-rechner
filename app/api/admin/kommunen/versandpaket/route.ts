@@ -52,14 +52,19 @@ export async function GET(req: NextRequest) {
   // Ferientag hätte die Sperre in diesem Fenster nicht gegriffen. Dieselbe
   // Falle wie bei der Balkon-Monatsfrist.
   const heute = (sp.get("heute") ?? heuteInBerlin()).slice(0, 10);
+  // Proof of ONE town's letter, whatever its batch (operator, 07.10.2026: the
+  // short letter could not be proofed because no town without a placement
+  // sits in a charge). Only the dispatch script's --test path uses it, and
+  // that path refuses any town mailbox as recipient.
+  const probe = sp.get("probe");
+  if (probe && !/^\d{8}$/.test(probe)) return NextResponse.json({ error: "probe braucht einen Gemeindeschlüssel" }, { status: 400 });
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
       "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, notes, charge, ask_variante, verwaltung_domain, klima_email, klima_beleg_url, presse_kontakt_email, presse_kontakt_beleg_url, fachkontakte, mastr_regions!inner(name)",
     )
-    .eq("kampagne", schub.kampagne)
-    .eq("charge", charge)
+    .match(probe ? { region_id: probe } : { kampagne: schub.kampagne, charge })
     .order("region_id");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -186,7 +191,7 @@ export async function GET(req: NextRequest) {
     // Bestand, Schlusslicht auf der eigenen Seite, Datenfehler-Verdacht), baut
     // die Vorlage eine reine Bestandsmeldung. Die ist für diesen Schub kein
     // Angebot, sondern nur eine Mail.
-    if (!(schub.briefarten ?? ["platzierung"]).includes(gebaut.briefart)) {
+    if (!probe && !(schub.briefarten ?? ["platzierung"]).includes(gebaut.briefart)) {
       skip(
         gebaut.briefart === "info"
           ? "keine Platzierung, und der Kurzbrief ist für diesen Schub nicht vorgesehen"
