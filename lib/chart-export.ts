@@ -586,7 +586,8 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
     // Export-only notes and removed controls change the card's dimensions.
     // Refit source labels on the actual capture clone, which has no observers.
     clone.querySelectorAll<HTMLElement>('[data-sc-source-edge]').forEach(edge => {
-      let size = parseFloat(getComputedStyle(edge).fontSize);
+      let size = Number(edge.dataset.scSourceExportSize) || parseFloat(getComputedStyle(edge).fontSize);
+      edge.style.fontSize = `${size}px`;
       while ((edge.scrollHeight > edge.clientHeight + 1 || edge.scrollWidth > edge.clientWidth + 1) && size > 5) {
         size = Math.round((size - .2) * 10) / 10;
         edge.style.fontSize = `${size}px`;
