@@ -48,8 +48,10 @@ export const FLOWS: FlowUnterTest[] = [
     // Zwei Nachtjobs (07.10.2026): Seit dem 21.09.2026 lief der Test jede
     // Nacht in seine 195-Minuten-Grenze — 13 Nächte rot, jedes Mal exakt
     // 3 h 15 m nach dem Teststart. Vorher brauchte er 174–179 Minuten. Die
-    // Aufteilung lässt keinen Weg weg; der Fortschritts-Zähler im Läufer misst
-    // ab jetzt, wie viele Wege es sind und wie lange einer braucht.
+    // Aufteilung lässt keinen Weg weg. Gemessen im ersten geteilten Lauf
+    // (07.10.2026, Lauf 37586736790): unverändert 1.728 Wege (2 × 864), aber
+    // 7,3–7,5 s je Weg statt rund 6 s — gewachsen ist die Zeit je Weg, nicht
+    // die Zahl der Wege. Je Hälfte 105–108 Minuten.
     nachtTeile: 2,
   },
   {
