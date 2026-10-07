@@ -22,6 +22,12 @@ describe("ranking list of the municipality page", () => {
     expect(route.match(/loadAwardStats\(\)/g)?.length).toBe(1);
   });
 
+  it("the public ranking pages read only their area as well", () => {
+    const seite = readFileSync("app/(site)/solar-atlas/ranking/[[...pfad]]/page.tsx", "utf8");
+    expect(seite).toMatch(/scopeId \? loadAwardStatsImGebiet\(scopeId\) : loadAwardStats\(\)/);
+    expect(seite.match(/loadAwardStats\(\)/g)?.length).toBe(1);
+  });
+
   it("the area load filters BOTH tables by the area prefix", () => {
     const fn = awards.slice(awards.indexOf("export async function loadAwardStatsImGebiet"), awards.indexOf("function zuStats"));
     expect(fn.match(/\.like\("region_id", `\$\{gebiet\}%`\)/g)?.length).toBe(2);
