@@ -736,6 +736,19 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   geschrieben nur die abweichenden (eine erteilte Freigabe bleibt). Test,
   Sabotage rot.
 
+### 83. Die Freigabe liest die Seite anders als die Kontaktsuche
+- **Anlass:** 07.10.2026 — die Kontaktsuche entschlüsselt Schreibweisen wie
+  „( - at - )", Cloudflare und Web-Komponenten; die Freigabe las dieselbe Seite
+  ohne diese Vorbereitung und sperrte neun gefundene Adressen als „steht nicht
+  mehr auf der Fundstelle".
+- **Sicherung (Verwendung):** Die Freigabe bekommt die Seitenvorbereitung des
+  Bestands mitgegeben (eine Funktion für Suche und Freigabe). Test, Sabotage rot;
+  danach alle neun freigegeben.
+- **Bekannte Grenze, benannt statt geraten:** Versteckte Täuschungsadressen im
+  Impressum (eichsfeldwerke.de) und reine Joomla-Verschlüsselung (oeko-aktiv.de)
+  liest die Maschine falsch; die Freigabe sperrt sie über den Mailserver-Check,
+  die Website steht mit Notiz (echtes Postfach genannt) auf „kein Kontakt".
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,

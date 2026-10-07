@@ -124,7 +124,10 @@ sonst `--kein-kontakt <website> "<welche Seiten gelesen>"`. Danach Schritt 8
 
 **10. Freigabe** (`kontakte-freigabe.ts --bestand=… --schreiben`): taugliches
 Postfach, Domain nimmt Mails an, Fundstelle auf der eigenen belegten Website
-(25), Adresse steht dort jetzt noch — frisch gelesen.
+(25), Adresse steht dort jetzt noch — frisch gelesen, mit derselben
+Seitenvorbereitung wie die Kontaktsuche (83). Die Übernahme (Schritt 8) schreibt
+den Kontakt jedem Betreiber der Website, nur die abweichenden (82); nach jeder
+Handübernahme also apply und Freigabe erneut.
 
 **11. Bestände-Abgleich** (`bestaende-abgleich.ts`, 12).
 
