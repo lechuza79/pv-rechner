@@ -113,6 +113,30 @@
       "longitude": 8.40282
     }
   },
+  "05166004": {
+    "wind-1": {
+      "name": "Windanlagen bei Brüggen",
+      "latitude": 51.26822,
+      "longitude": 6.22066
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Brüggen",
+      "latitude": 51.24425,
+      "longitude": 6.18186
+    }
+  },
+  "05166008": {
+    "wind-1": {
+      "name": "Windanlagen bei Grefrath",
+      "latitude": 51.35079,
+      "longitude": 6.31565
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Grefrath",
+      "latitude": 51.33666,
+      "longitude": 6.31535
+    }
+  },
   "05166012": {
     "wind-1": {
       "name": "Windanlagen bei Kempen",
@@ -137,6 +161,40 @@
       "longitude": 6.244
     }
   },
+  "05166020": {
+    "wind-1": {
+      "name": "Windanlagen bei Niederkrüchten",
+      "latitude": 51.20194,
+      "longitude": 6.18356
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Niederkrüchten",
+      "latitude": 51.18265,
+      "longitude": 6.20235
+    }
+  },
+  "05166024": {
+    "wind-1": {
+      "name": "Windanlagen bei Schwalmtal",
+      "latitude": 51.19368,
+      "longitude": 6.28213
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schwalmtal",
+      "latitude": 51.22487,
+      "longitude": 6.30652
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Schwalmtal",
+      "latitude": 51.25286,
+      "longitude": 6.24752
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Schwalmtal",
+      "latitude": 51.24932,
+      "longitude": 6.28727
+    }
+  },
   "05166028": {
     "wind-1": {
       "name": "Windanlagen bei Tönisvorst",
@@ -147,6 +205,18 @@
       "name": "Windanlagen bei Tönisvorst",
       "latitude": 51.29931,
       "longitude": 6.40476
+    }
+  },
+  "05334002": {
+    "wind-1": {
+      "name": "Windanlagen bei Aachen",
+      "latitude": 50.82143,
+      "longitude": 6.02434
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Aachen",
+      "latitude": 50.66867,
+      "longitude": 6.18084
     }
   },
   "05334004": {
@@ -180,6 +250,25 @@
       "longitude": 6.14032
     }
   },
+  "05334020": {
+    "wind-1": {
+      "name": "Windanlagen bei Monschau",
+      "latitude": 50.52692,
+      "longitude": 6.29849
+    }
+  },
+  "05334028": {
+    "wind-1": {
+      "name": "Windanlagen bei Simmerath",
+      "latitude": 50.65272,
+      "longitude": 6.28779
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Simmerath",
+      "latitude": 50.64245,
+      "longitude": 6.34429
+    }
+  },
   "05334032": {
     "wind-1": {
       "name": "Windanlagen bei Stolberg (Rhld.)",
@@ -211,6 +300,74 @@
       "longitude": 6.59877
     }
   },
+  "05366012": {
+    "wind-1": {
+      "name": "Windanlagen bei Dahlem",
+      "latitude": 50.39876,
+      "longitude": 6.46216
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dahlem",
+      "latitude": 50.42715,
+      "longitude": 6.50591
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dahlem",
+      "latitude": 50.402,
+      "longitude": 6.5468
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Dahlem",
+      "latitude": 50.38011,
+      "longitude": 6.44608
+    }
+  },
+  "05366016": {
+    "wind-1": {
+      "name": "Windanlagen bei Euskirchen",
+      "latitude": 50.69079,
+      "longitude": 6.85234
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Euskirchen",
+      "latitude": 50.67301,
+      "longitude": 6.83943
+    }
+  },
+  "05366020": {
+    "wind-1": {
+      "name": "Windanlagen bei Hellenthal",
+      "latitude": 50.44825,
+      "longitude": 6.4395
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hellenthal",
+      "latitude": 50.34943,
+      "longitude": 6.39987
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Hellenthal",
+      "latitude": 50.32496,
+      "longitude": 6.41583
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hellenthal",
+      "latitude": 50.46462,
+      "longitude": 6.41198
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Hellenthal",
+      "latitude": 50.42166,
+      "longitude": 6.4335
+    }
+  },
+  "05366024": {
+    "wind-1": {
+      "name": "Windanlagen bei Kall",
+      "latitude": 50.51165,
+      "longitude": 6.50896
+    }
+  },
   "05366028": {
     "wind-1": {
       "name": "Windanlagen bei Mechernich",
@@ -226,6 +383,25 @@
       "name": "Windanlagen bei Mechernich",
       "latitude": 50.56215,
       "longitude": 6.62518
+    }
+  },
+  "05366032": {
+    "wind-1": {
+      "name": "Windanlagen bei Nettersheim",
+      "latitude": 50.49816,
+      "longitude": 6.69222
+    }
+  },
+  "05366036": {
+    "wind-1": {
+      "name": "Windanlagen bei Schleiden",
+      "latitude": 50.51316,
+      "longitude": 6.37006
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schleiden",
+      "latitude": 50.54527,
+      "longitude": 6.44319
     }
   },
   "05366040": {
@@ -383,6 +559,89 @@
       "longitude": 7.03997
     }
   },
+  "05554028": {
+    "wind-1": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.78613,
+      "longitude": 6.92924
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.8076,
+      "longitude": 6.9625
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.83179,
+      "longitude": 6.99776
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.78797,
+      "longitude": 6.96574
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.86604,
+      "longitude": 6.99248
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.85623,
+      "longitude": 6.97131
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Heiden",
+      "latitude": 51.82223,
+      "longitude": 6.9107
+    }
+  },
+  "05554032": {
+    "wind-1": {
+      "name": "Windanlagen bei Isselburg",
+      "latitude": 51.8122,
+      "longitude": 6.42936
+    }
+  },
+  "05554036": {
+    "wind-1": {
+      "name": "Windanlagen bei Legden",
+      "latitude": 52.0694,
+      "longitude": 7.12501
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Legden",
+      "latitude": 52.00895,
+      "longitude": 7.08856
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Legden",
+      "latitude": 52.03863,
+      "longitude": 7.15542
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Legden",
+      "latitude": 52.06961,
+      "longitude": 7.08345
+    }
+  },
+  "05554040": {
+    "wind-1": {
+      "name": "Windanlagen bei Raesfeld",
+      "latitude": 51.76681,
+      "longitude": 6.87599
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Raesfeld",
+      "latitude": 51.78161,
+      "longitude": 6.82114
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Raesfeld",
+      "latitude": 51.78826,
+      "longitude": 6.85158
+    }
+  },
   "05554044": {
     "wind-1": {
       "name": "Windanlagen bei Reken",
@@ -415,6 +674,33 @@
       "name": "Windanlagen bei Rhede",
       "latitude": 51.79789,
       "longitude": 6.69636
+    }
+  },
+  "05554052": {
+    "wind-1": {
+      "name": "Windanlagen bei Schöppingen",
+      "latitude": 52.09641,
+      "longitude": 7.25854
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schöppingen",
+      "latitude": 52.07576,
+      "longitude": 7.14514
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Schöppingen",
+      "latitude": 52.07147,
+      "longitude": 7.19871
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Schöppingen",
+      "latitude": 52.10779,
+      "longitude": 7.16716
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Schöppingen",
+      "latitude": 52.06415,
+      "longitude": 7.17591
     }
   },
   "05554056": {
@@ -473,6 +759,18 @@
       "longitude": 7.4233
     }
   },
+  "05566012": {
+    "wind-1": {
+      "name": "Windanlagen bei Greven",
+      "latitude": 52.06964,
+      "longitude": 7.5721
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Greven",
+      "latitude": 52.10838,
+      "longitude": 7.6186
+    }
+  },
   "05566020": {
     "wind-1": {
       "name": "Windanlagen bei Hopsten",
@@ -483,6 +781,33 @@
       "name": "Windanlagen bei Hopsten",
       "latitude": 52.43603,
       "longitude": 7.58662
+    }
+  },
+  "05566024": {
+    "wind-1": {
+      "name": "Windanlagen bei Horstmar",
+      "latitude": 52.09462,
+      "longitude": 7.2782
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Horstmar",
+      "latitude": 52.12955,
+      "longitude": 7.27569
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Horstmar",
+      "latitude": 52.10912,
+      "longitude": 7.25532
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Horstmar",
+      "latitude": 52.07417,
+      "longitude": 7.29901
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Horstmar",
+      "latitude": 52.12679,
+      "longitude": 7.24957
     }
   },
   "05566028": {
@@ -499,11 +824,59 @@
       "longitude": 7.79399
     }
   },
+  "05566036": {
+    "wind-1": {
+      "name": "Windanlagen bei Laer",
+      "latitude": 52.07251,
+      "longitude": 7.40984
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Laer",
+      "latitude": 52.04509,
+      "longitude": 7.39343
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Laer",
+      "latitude": 52.08676,
+      "longitude": 7.36818
+    }
+  },
   "05566040": {
     "wind-1": {
       "name": "Windanlagen bei Lengerich",
       "latitude": 52.18785,
       "longitude": 7.79326
+    }
+  },
+  "05566044": {
+    "wind-1": {
+      "name": "Windanlagen bei Lienen",
+      "latitude": 52.11845,
+      "longitude": 7.97343
+    }
+  },
+  "05566048": {
+    "wind-1": {
+      "name": "Windanlagen bei Lotte",
+      "latitude": 52.33192,
+      "longitude": 7.93362
+    }
+  },
+  "05566052": {
+    "wind-1": {
+      "name": "Windanlagen bei Metelen",
+      "latitude": 52.16845,
+      "longitude": 7.2036
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Metelen",
+      "latitude": 52.12731,
+      "longitude": 7.23462
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Metelen",
+      "latitude": 52.14691,
+      "longitude": 7.20151
     }
   },
   "05566060": {
@@ -526,6 +899,23 @@
       "name": "Windanlagen bei Neuenkirchen",
       "latitude": 52.25284,
       "longitude": 7.40333
+    }
+  },
+  "05566064": {
+    "wind-1": {
+      "name": "Windanlagen bei Nordwalde",
+      "latitude": 52.11704,
+      "longitude": 7.46588
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Nordwalde",
+      "latitude": 52.07538,
+      "longitude": 7.4348
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Nordwalde",
+      "latitude": 52.07782,
+      "longitude": 7.51702
     }
   },
   "05566068": {
@@ -656,6 +1046,13 @@
       "longitude": 7.36476
     }
   },
+  "05566088": {
+    "wind-1": {
+      "name": "Windanlagen bei Tecklenburg",
+      "latitude": 52.258,
+      "longitude": 7.84253
+    }
+  },
   "05566092": {
     "wind-1": {
       "name": "Windanlagen bei Westerkappeln",
@@ -695,6 +1092,23 @@
       "longitude": 7.32559
     }
   },
+  "05754004": {
+    "wind-1": {
+      "name": "Windanlagen bei Borgholzhausen",
+      "latitude": 52.1152,
+      "longitude": 8.2819
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Borgholzhausen",
+      "latitude": 52.05168,
+      "longitude": 8.2574
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Borgholzhausen",
+      "latitude": 52.10994,
+      "longitude": 8.2435
+    }
+  },
   "05754012": {
     "wind-1": {
       "name": "Windanlagen bei Halle (Westf.)",
@@ -717,6 +1131,20 @@
       "name": "Windanlagen bei Harsewinkel",
       "latitude": 51.98246,
       "longitude": 8.27897
+    }
+  },
+  "05754020": {
+    "wind-1": {
+      "name": "Windanlagen bei Herzebrock-Clarholz",
+      "latitude": 51.84906,
+      "longitude": 8.22401
+    }
+  },
+  "05754024": {
+    "wind-1": {
+      "name": "Windanlagen bei Langenberg",
+      "latitude": 51.77004,
+      "longitude": 8.34619
     }
   },
   "05754028": {
@@ -743,6 +1171,18 @@
       "name": "Windanlagen bei Versmold",
       "latitude": 52.04679,
       "longitude": 8.19593
+    }
+  },
+  "05754052": {
+    "wind-1": {
+      "name": "Windanlagen bei Werther (Westf.)",
+      "latitude": 52.08928,
+      "longitude": 8.44796
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Werther (Westf.)",
+      "latitude": 52.10025,
+      "longitude": 8.43133
     }
   },
   "06632009": {
@@ -908,6 +1348,23 @@
       "longitude": 13.59888
     }
   },
+  "12060020": {
+    "wind-1": {
+      "name": "Windanlagen bei Bernau bei Berlin",
+      "latitude": 52.68597,
+      "longitude": 13.64897
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bernau bei Berlin",
+      "latitude": 52.62272,
+      "longitude": 13.59133
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bernau bei Berlin",
+      "latitude": 52.71631,
+      "longitude": 13.60052
+    }
+  },
   "12060024": {
     "wind-1": {
       "name": "Windanlagen bei Biesenthal",
@@ -920,6 +1377,25 @@
       "name": "Windanlagen bei Breydin",
       "latitude": 52.75683,
       "longitude": 13.8312
+    }
+  },
+  "12060185": {
+    "wind-1": {
+      "name": "Windanlagen bei Parsteinsee",
+      "latitude": 52.94765,
+      "longitude": 14.05408
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Parsteinsee",
+      "latitude": 52.93,
+      "longitude": 14.02
+    }
+  },
+  "12060198": {
+    "wind-1": {
+      "name": "Windanlagen bei Schorfheide",
+      "latitude": 52.87455,
+      "longitude": 13.77108
     }
   },
   "12060269": {
@@ -939,6 +1415,45 @@
       "longitude": 13.43699
     }
   },
+  "12060280": {
+    "wind-1": {
+      "name": "Windanlagen bei Werneuchen",
+      "latitude": 52.68347,
+      "longitude": 13.68072
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Werneuchen",
+      "latitude": 52.61071,
+      "longitude": 13.70537
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Werneuchen",
+      "latitude": 52.59601,
+      "longitude": 13.66423
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Werneuchen",
+      "latitude": 52.6567,
+      "longitude": 13.70833
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Werneuchen",
+      "latitude": 52.63712,
+      "longitude": 13.68019
+    }
+  },
+  "12061017": {
+    "wind-1": {
+      "name": "Windanlagen bei Bersteland",
+      "latitude": 51.91035,
+      "longitude": 13.76084
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bersteland",
+      "latitude": 51.98202,
+      "longitude": 13.73343
+    }
+  },
   "12061020": {
     "wind-1": {
       "name": "Windanlagen bei Bestensee",
@@ -951,6 +1466,37 @@
       "longitude": 13.62235
     }
   },
+  "12061097": {
+    "wind-1": {
+      "name": "Windanlagen bei Drahnsdorf",
+      "latitude": 51.92922,
+      "longitude": 13.53262
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Drahnsdorf",
+      "latitude": 51.91057,
+      "longitude": 13.56324
+    }
+  },
+  "12061219": {
+    "wind-1": {
+      "name": "Windanlagen bei Heideblick",
+      "latitude": 51.86673,
+      "longitude": 13.55643
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Heideblick",
+      "latitude": 51.84159,
+      "longitude": 13.66258
+    }
+  },
+  "12061224": {
+    "wind-1": {
+      "name": "Windanlagen bei Jamlitz",
+      "latitude": 52.05801,
+      "longitude": 14.37281
+    }
+  },
   "12061244": {
     "wind-1": {
       "name": "Windanlagen bei Kasel-Golzig",
@@ -961,6 +1507,59 @@
       "name": "Windanlagen bei Kasel-Golzig",
       "latitude": 51.93056,
       "longitude": 13.66808
+    }
+  },
+  "12061260": {
+    "wind-1": {
+      "name": "Windanlagen bei Königs Wusterhausen",
+      "latitude": 52.3495,
+      "longitude": 13.74338
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Königs Wusterhausen",
+      "latitude": 52.33825,
+      "longitude": 13.71466
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Königs Wusterhausen",
+      "latitude": 52.324,
+      "longitude": 13.6805
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Königs Wusterhausen",
+      "latitude": 52.31,
+      "longitude": 13.73
+    }
+  },
+  "12061308": {
+    "wind-1": {
+      "name": "Windanlagen bei Lieberose",
+      "latitude": 52.054,
+      "longitude": 14.32485
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lieberose",
+      "latitude": 51.99219,
+      "longitude": 14.25808
+    }
+  },
+  "12061316": {
+    "wind-1": {
+      "name": "Windanlagen bei Lübben (Spreewald)",
+      "latitude": 51.9611,
+      "longitude": 13.79888
+    }
+  },
+  "12061320": {
+    "wind-1": {
+      "name": "Windanlagen bei Luckau",
+      "latitude": 51.89427,
+      "longitude": 13.76114
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Luckau",
+      "latitude": 51.86933,
+      "longitude": 13.73623
     }
   },
   "12061329": {
@@ -1021,6 +1620,18 @@
       "name": "Windanlagen bei Schwielochsee",
       "latitude": 52.0409,
       "longitude": 14.1413
+    }
+  },
+  "12061471": {
+    "wind-1": {
+      "name": "Windanlagen bei Steinreich",
+      "latitude": 51.96445,
+      "longitude": 13.46712
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Steinreich",
+      "latitude": 51.97229,
+      "longitude": 13.41959
     }
   },
   "12063148": {
@@ -1084,6 +1695,18 @@
       "name": "Windanlagen bei Altlandsberg",
       "latitude": 52.60619,
       "longitude": 13.78227
+    }
+  },
+  "12064053": {
+    "wind-1": {
+      "name": "Windanlagen bei Beiersdorf-Freudenberg",
+      "latitude": 52.6929,
+      "longitude": 13.82125
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Beiersdorf-Freudenberg",
+      "latitude": 52.70388,
+      "longitude": 13.80383
     }
   },
   "12064130": {
@@ -1316,6 +1939,13 @@
       "longitude": 11.03858
     }
   },
+  "15081225": {
+    "wind-1": {
+      "name": "Windanlagen bei Jübar",
+      "latitude": 52.71527,
+      "longitude": 10.89057
+    }
+  },
   "15081240": {
     "wind-1": {
       "name": "Windanlagen bei Kalbe (Milde)",
@@ -1360,6 +1990,25 @@
       "longitude": 10.96222
     }
   },
+  "15083020": {
+    "wind-1": {
+      "name": "Windanlagen bei Altenhausen",
+      "latitude": 52.22967,
+      "longitude": 11.26497
+    }
+  },
+  "15083025": {
+    "wind-1": {
+      "name": "Windanlagen bei Am Großen Bruch",
+      "latitude": 52.00933,
+      "longitude": 11.10121
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Am Großen Bruch",
+      "latitude": 52.00042,
+      "longitude": 11.13763
+    }
+  },
   "15083030": {
     "wind-1": {
       "name": "Windanlagen bei Angern",
@@ -1370,6 +2019,37 @@
       "name": "Windanlagen bei Angern",
       "latitude": 52.37529,
       "longitude": 11.72844
+    }
+  },
+  "15083035": {
+    "wind-1": {
+      "name": "Windanlagen bei Ausleben",
+      "latitude": 52.11293,
+      "longitude": 11.1627
+    }
+  },
+  "15083120": {
+    "wind-1": {
+      "name": "Windanlagen bei Burgstall",
+      "latitude": 52.38278,
+      "longitude": 11.72077
+    }
+  },
+  "15083190": {
+    "wind-1": {
+      "name": "Windanlagen bei Eilsleben",
+      "latitude": 52.15437,
+      "longitude": 11.24835
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Eilsleben",
+      "latitude": 52.12156,
+      "longitude": 11.16905
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Eilsleben",
+      "latitude": 52.1273,
+      "longitude": 11.28081
     }
   },
   "15083205": {
@@ -1387,6 +2067,32 @@
       "name": "Windanlagen bei Erxleben",
       "latitude": 52.20236,
       "longitude": 11.29172
+    }
+  },
+  "15083230": {
+    "wind-1": {
+      "name": "Windanlagen bei Flechtingen",
+      "latitude": 52.32482,
+      "longitude": 11.13595
+    }
+  },
+  "15083245": {
+    "wind-1": {
+      "name": "Windanlagen bei Gröningen",
+      "latitude": 51.91142,
+      "longitude": 11.23819
+    }
+  },
+  "15083270": {
+    "wind-1": {
+      "name": "Windanlagen bei Haldensleben",
+      "latitude": 52.24576,
+      "longitude": 11.46951
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Haldensleben",
+      "latitude": 52.29865,
+      "longitude": 11.43728
     }
   },
   "15083275": {
@@ -1455,6 +2161,13 @@
       "longitude": 11.20355
     }
   },
+  "15083355": {
+    "wind-1": {
+      "name": "Windanlagen bei Kroppenstedt",
+      "latitude": 51.9585,
+      "longitude": 11.34269
+    }
+  },
   "15083390": {
     "wind-1": {
       "name": "Windanlagen bei Niedere Börde",
@@ -1472,11 +2185,64 @@
       "longitude": 11.49389
     }
   },
+  "15083411": {
+    "wind-1": {
+      "name": "Windanlagen bei Oebisfelde-Weferlingen",
+      "latitude": 52.33051,
+      "longitude": 11.12727
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Oebisfelde-Weferlingen",
+      "latitude": 52.39008,
+      "longitude": 11.09275
+    }
+  },
+  "15083415": {
+    "wind-1": {
+      "name": "Windanlagen bei Oschersleben (Bode)",
+      "latitude": 52.02747,
+      "longitude": 11.37017
+    }
+  },
   "15083490": {
     "wind-1": {
       "name": "Windanlagen bei Sülzetal",
       "latitude": 52.0497,
       "longitude": 11.50083
+    }
+  },
+  "15083515": {
+    "wind-1": {
+      "name": "Windanlagen bei Völpke",
+      "latitude": 52.13031,
+      "longitude": 11.14705
+    }
+  },
+  "15083531": {
+    "wind-1": {
+      "name": "Windanlagen bei Wanzleben-Börde",
+      "latitude": 52.12133,
+      "longitude": 11.42088
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Wanzleben-Börde",
+      "latitude": 52.1135,
+      "longitude": 11.28056
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Wanzleben-Börde",
+      "latitude": 52.09875,
+      "longitude": 11.48162
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Wanzleben-Börde",
+      "latitude": 52.1157,
+      "longitude": 11.23959
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Wanzleben-Börde",
+      "latitude": 52.15,
+      "longitude": 11.3
     }
   },
   "15083557": {
@@ -1505,6 +2271,18 @@
       "longitude": 11.3825
     }
   },
+  "15085185": {
+    "wind-1": {
+      "name": "Windanlagen bei Huy",
+      "latitude": 51.98529,
+      "longitude": 10.85759
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Huy",
+      "latitude": 52.01813,
+      "longitude": 11.01625
+    }
+  },
   "15085227": {
     "wind-1": {
       "name": "Windanlagen bei Nordharz",
@@ -1529,6 +2307,13 @@
       "name": "Windanlagen bei Schwanebeck",
       "latitude": 51.9968,
       "longitude": 11.13492
+    }
+  },
+  "15085365": {
+    "wind-1": {
+      "name": "Windanlagen bei Wegeleben",
+      "latitude": 51.89639,
+      "longitude": 11.24375
     }
   },
   "15087015": {
@@ -1580,6 +2365,27 @@
       "longitude": 11.403
     }
   },
+  "15087045": {
+    "wind-1": {
+      "name": "Windanlagen bei Benndorf",
+      "latitude": 51.56759,
+      "longitude": 11.45934
+    }
+  },
+  "15087070": {
+    "wind-1": {
+      "name": "Windanlagen bei Blankenheim",
+      "latitude": 51.51604,
+      "longitude": 11.41441
+    }
+  },
+  "15087075": {
+    "wind-1": {
+      "name": "Windanlagen bei Bornstedt",
+      "latitude": 51.46184,
+      "longitude": 11.47381
+    }
+  },
   "15087125": {
     "wind-1": {
       "name": "Windanlagen bei Edersleben",
@@ -1587,11 +2393,57 @@
       "longitude": 11.26245
     }
   },
+  "15087130": {
+    "wind-1": {
+      "name": "Windanlagen bei Eisleben",
+      "latitude": 51.55515,
+      "longitude": 11.53404
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Eisleben",
+      "latitude": 51.5763,
+      "longitude": 11.61995
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Eisleben",
+      "latitude": 51.45783,
+      "longitude": 11.48613
+    }
+  },
+  "15087165": {
+    "wind-1": {
+      "name": "Windanlagen bei Gerbstedt",
+      "latitude": 51.64371,
+      "longitude": 11.66011
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gerbstedt",
+      "latitude": 51.57765,
+      "longitude": 11.69355
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Gerbstedt",
+      "latitude": 51.61291,
+      "longitude": 11.52354
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Gerbstedt",
+      "latitude": 51.58674,
+      "longitude": 11.55108
+    }
+  },
   "15087205": {
     "wind-1": {
       "name": "Windanlagen bei Helbra",
       "latitude": 51.55791,
       "longitude": 11.5112
+    }
+  },
+  "15087370": {
+    "wind-1": {
+      "name": "Windanlagen bei Sangerhausen",
+      "latitude": 51.51247,
+      "longitude": 11.27468
     }
   },
   "15087386": {
@@ -1609,6 +2461,46 @@
       "name": "Windanlagen bei Seegebiet Mansfelder Land",
       "latitude": 51.45547,
       "longitude": 11.57827
+    }
+  },
+  "15087412": {
+    "wind-1": {
+      "name": "Windanlagen bei Südharz",
+      "latitude": 51.62872,
+      "longitude": 10.94661
+    }
+  },
+  "15087440": {
+    "wind-1": {
+      "name": "Windanlagen bei Wallhausen",
+      "latitude": 51.4072,
+      "longitude": 11.25109
+    }
+  },
+  "15087470": {
+    "wind-1": {
+      "name": "Windanlagen bei Wimmelburg",
+      "latitude": 51.511,
+      "longitude": 11.45965
+    }
+  },
+  "15088025": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Lauchstädt",
+      "latitude": 51.41362,
+      "longitude": 11.85592
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bad Lauchstädt",
+      "latitude": 51.36822,
+      "longitude": 11.77535
+    }
+  },
+  "15088100": {
+    "wind-1": {
+      "name": "Windanlagen bei Farnstädt",
+      "latitude": 51.41343,
+      "longitude": 11.58021
     }
   },
   "15088195": {
@@ -1645,11 +2537,102 @@
       "longitude": 11.825
     }
   },
+  "15088220": {
+    "wind-1": {
+      "name": "Windanlagen bei Merseburg",
+      "latitude": 51.32715,
+      "longitude": 11.94203
+    }
+  },
+  "15088250": {
+    "wind-1": {
+      "name": "Windanlagen bei Nemsdorf-Göhrendorf",
+      "latitude": 51.37069,
+      "longitude": 11.71323
+    }
+  },
+  "15088265": {
+    "wind-1": {
+      "name": "Windanlagen bei Obhausen",
+      "latitude": 51.3978,
+      "longitude": 11.70672
+    }
+  },
+  "15088305": {
+    "wind-1": {
+      "name": "Windanlagen bei Querfurt",
+      "latitude": 51.38479,
+      "longitude": 11.57103
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Querfurt",
+      "latitude": 51.41121,
+      "longitude": 11.55431
+    }
+  },
+  "15088319": {
+    "wind-1": {
+      "name": "Windanlagen bei Salzatal",
+      "latitude": 51.57691,
+      "longitude": 11.70909
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Salzatal",
+      "latitude": 51.54909,
+      "longitude": 11.74717
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Salzatal",
+      "latitude": 51.51071,
+      "longitude": 11.71092
+    }
+  },
   "15088330": {
     "wind-1": {
       "name": "Windanlagen bei Schkopau",
       "latitude": 51.41389,
       "longitude": 12.09973
+    }
+  },
+  "15088355": {
+    "wind-1": {
+      "name": "Windanlagen bei Steigra",
+      "latitude": 51.30268,
+      "longitude": 11.70792
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Steigra",
+      "latitude": 51.31102,
+      "longitude": 11.63941
+    }
+  },
+  "15089005": {
+    "wind-1": {
+      "name": "Windanlagen bei Alsleben (Saale)",
+      "latitude": 51.72188,
+      "longitude": 11.64422
+    }
+  },
+  "15089015": {
+    "wind-1": {
+      "name": "Windanlagen bei Aschersleben",
+      "latitude": 51.7182,
+      "longitude": 11.56319
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Aschersleben",
+      "latitude": 51.79883,
+      "longitude": 11.48343
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Aschersleben",
+      "latitude": 51.72843,
+      "longitude": 11.61407
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Aschersleben",
+      "latitude": 51.72386,
+      "longitude": 11.46505
     }
   },
   "15089026": {
@@ -1681,6 +2664,18 @@
       "longitude": 11.84321
     }
   },
+  "15089041": {
+    "wind-1": {
+      "name": "Windanlagen bei Bördeaue",
+      "latitude": 51.92643,
+      "longitude": 11.55568
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bördeaue",
+      "latitude": 51.91404,
+      "longitude": 11.53746
+    }
+  },
   "15089042": {
     "wind-1": {
       "name": "Windanlagen bei Bördeland",
@@ -1698,6 +2693,13 @@
       "name": "Windanlagen bei Börde-Hakel",
       "latitude": 51.95572,
       "longitude": 11.35839
+    }
+  },
+  "15089045": {
+    "wind-1": {
+      "name": "Windanlagen bei Borne",
+      "latitude": 51.9601,
+      "longitude": 11.58667
     }
   },
   "15089055": {
