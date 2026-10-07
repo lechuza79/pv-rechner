@@ -220,6 +220,9 @@ describe("workflow contract", () => {
     expect(JSON.parse(w[w.indexOf("--json-schema") + 1])).toEqual(AUTOFIX_SCHEMA);
     expect(block).toContain("id: claude");
     expect(block).toContain("continue-on-error: true");
+    // Follow-ups come from our own token; only that bot, never all bots.
+    expect(block).toMatch(/\n {10}allowed_bots: github-actions\n/);
+    expect(block).not.toMatch(/allowed_bots: ['"]?\*/);
   });
   it("marker before the model, verdict check always, silent run fails the workflow", () => {
     const order = ["Befund waehlen", "Versuch vormerken", "Claude analysiert und behebt", "Urteil pruefen", "Urteil sichern", "Naechsten Befund anstossen", "Stummer Lauf"]
