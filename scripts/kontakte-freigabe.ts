@@ -114,8 +114,9 @@ const BESTAENDE: Record<string, Bestand> = {
     ddl: `ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS freigabe_am date;
           ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS sperrgrund text;`,
     async laden(c) {
-      // Only real media; advertising mailboxes never take an editorial letter.
-      const medien = new Set((await alle(c, "presse_medien", "domain", "domain", q => q.eq("ist_medium", "medium"))).map(m => m.domain));
+      // Real media and the topic associations (never the archive); advertising
+      // mailboxes never take an editorial letter.
+      const medien = new Set((await alle(c, "presse_medien", "domain", "domain", q => q.or("ist_medium.eq.medium,liste.eq.verbaende").or("liste.is.null,liste.neq.archiv"))).map(m => m.domain));
       const z = await alle(c, "presse_kontakte", "domain, schluessel, mail, mail_art, quelle_url", "domain",
         q => q.not("mail", "is", null).neq("mail_art", "werblich"));
       return z.filter(r => medien.has(r.domain))

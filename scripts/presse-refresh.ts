@@ -87,6 +87,7 @@ import {
   type Befund,
 } from "../lib/presse-eignung";
 import { SAAT, doppelteInDerSaat, type Paket } from "../lib/presse-saat";
+import { benannteDomains, bewusstPresse, doppeltBenannt, listeFuer } from "../lib/presse-listen";
 import {
   alsCsv,
   type KontaktZeile,
@@ -428,6 +429,12 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;
+    -- Which list an entry belongs to: press (NULL), topic associations or the
+    -- archive of unrelated clubs. Decided in lib/presse-listen.ts, written by
+    -- --listen only; the profile run never touches these columns.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste_grund text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS liste_at timestamptz;
 
     CREATE INDEX IF NOT EXISTS presse_kontakte_domain_idx ON presse_kontakte(domain);
     CREATE INDEX IF NOT EXISTS presse_medien_paket_idx ON presse_medien(paket);
@@ -1014,12 +1021,16 @@ async function holeMedium(domain: string): Promise<ReadPages | { fehler: string 
 
 async function profil(paket: Paket | null, limit: number, refetch: boolean): Promise<void> {
   const sb = await makeClient();
-  const alle = await alleZeilen<{ domain: string; paket: number; profil_at: string | null; fehler: string | null }>(
-    sb,
-    "presse_medien",
-    "domain, paket, profil_at, fehler",
-  );
+  const alle = await alleZeilen<{
+    domain: string;
+    paket: number;
+    profil_at: string | null;
+    fehler: string | null;
+    liste: string | null;
+  }>(sb, "presse_medien", "domain, paket, profil_at, fehler, liste");
   const offen = alle
+    // The archive is kept to block rediscovery, not to be read again.
+    .filter((m) => m.liste !== "archiv")
     .filter((m) => (paket === null || m.paket === paket) && (refetch || !m.profil_at || !!m.fehler))
     .slice(0, limit);
   if (!offen.length) {
@@ -1140,6 +1151,62 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   await ablegen();
 
   log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontakteGesamt} Kontakte`, "ok");
+}
+
+// ─── Phase: Listen (Presse · Fachverbände · Archiv) ──────────────────────────
+
+/**
+ * Applies lib/presse-listen.ts to the table. The file is the source: a named
+ * domain gets its list, a domain no longer named goes back to press. Without
+ * --schreiben it only shows what would change.
+ */
+async function listenAnwenden(schreiben: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    liste: string | null;
+    liste_grund: string | null;
+    medientyp: string[] | null;
+    ist_medium: string | null;
+  }>(sb, "presse_medien", "domain, liste, liste_grund, medientyp, ist_medium", (q) => q.order("domain"));
+  const vorhanden = new Set(alle.map((m) => m.domain));
+  const doppelt = doppeltBenannt();
+  if (doppelt.length) throw new Error(`in zwei Listen benannt: ${doppelt.join(", ")}`);
+  const fehlt = benannteDomains().filter((d) => !vorhanden.has(d));
+  if (fehlt.length) log(`benannt, aber nicht im Katalog: ${fehlt.join(", ")}`, "err");
+
+  const aenderungen = alle
+    .map((m) => ({ m, e: listeFuer(m.domain) }))
+    .map(({ m, e }) => ({ m, liste: e.liste === "presse" ? null : e.liste, grund: e.grund }))
+    .filter(({ m, liste, grund }) => (m.liste ?? null) !== liste || (m.liste_grund ?? null) !== grund);
+  const zaehlung = (l: string | null) => alle.filter((m) => (listeFuer(m.domain).liste === "presse" ? null : listeFuer(m.domain).liste) === l).length;
+  log(`Presse ${zaehlung(null)} · Fachverbände ${zaehlung("verbaende")} · Archiv ${zaehlung("archiv")} — ${aenderungen.length} Änderungen`);
+
+  // What still waits for a decision: marked as run by an association, judged
+  // no medium, and named in no list.
+  const offen = alle.filter(
+    (m) =>
+      m.medientyp?.includes("Verband") &&
+      m.ist_medium === "kein-medium" &&
+      listeFuer(m.domain).liste === "presse" &&
+      !bewusstPresse(m.domain),
+  );
+  if (offen.length) log(`Verein, kein Medium, keiner Liste zugeordnet: ${offen.map((m) => m.domain).join(", ")}`);
+
+  if (!schreiben) {
+    for (const a of aenderungen.slice(0, 40)) log(`${a.m.domain}: ${a.m.liste ?? "presse"} → ${a.liste ?? "presse"}`);
+    log("nichts geschrieben — mit --schreiben übernehmen");
+    return;
+  }
+  const jetzt = new Date().toISOString();
+  await pool(aenderungen, 8, async ({ m, liste, grund }) => {
+    const { error } = await sb
+      .from("presse_medien")
+      .update({ liste, liste_grund: grund, liste_at: jetzt })
+      .eq("domain", m.domain);
+    if (error) throw new Error(`presse_medien (${m.domain}): ${error.message}`);
+  });
+  log(`${aenderungen.length} Einträge umsortiert`, "ok");
 }
 
 // ─── Phase: Verband neu bewerten ─────────────────────────────────────────────
@@ -1670,9 +1737,12 @@ async function eignung(
     ist_medium: string | null;
     eignung: string | null;
     eignung_at: string | null;
-  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
+    liste: string | null;
+  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at, liste");
   const offen = alle
     .filter((m) => (paket === null || m.paket === paket))
+    // Press suitability is a question for the press list only.
+    .filter((m) => !m.liste || m.liste === "presse")
     .filter((m) => (nurBelegte ? m.ist_medium === "medium" : m.ist_medium !== "kein-medium"))
     .filter((m) => neu || !m.eignung_at)
     .slice(0, limit);
@@ -1988,6 +2058,7 @@ async function main(): Promise<void> {
     return csv(paket, args.includes("--nur-medien"), zahlArg("--top", 0));
   }
   if (args.includes("--stats")) return stats();
+  if (args.includes("--listen")) return listenAnwenden(args.includes("--schreiben"));
   if (args.includes("--verband")) return verbandNeuBewerten(textArg("--protokoll"), textArg("--aus"));
 
   // eslint-disable-next-line no-console
@@ -2007,6 +2078,7 @@ async function main(): Promise<void> {
       "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
       "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",
+      "npm run presse -- --listen [--schreiben]   Presse/Fachverbände/Archiv aus lib/presse-listen.ts",
       "npm run presse -- --verband --protokoll <datei>  „Verband\" neu bewerten, nur messen",
       "npm run presse -- --verband --aus <datei>        … aus dem Protokoll schreiben",
     ].join("\n"),
