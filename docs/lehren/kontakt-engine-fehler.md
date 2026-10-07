@@ -704,6 +704,38 @@ seinen eigenen Tests (`windbetreiber.test.ts`, `fachbetrieb-*.test.ts` …).
   Seite ohne lesbaren Text immer neu abgerufen. Ablauf-Test, Sabotage rot. Die
   betroffene Hälfte ist mit Neuabruf wiederholt.
 
+### 79. Eine technische Kennung aus dem Seitencode als Postfach
+- **Anlass:** 07.10.2026 — bei einer Wix-Seite wurde
+  „605a7bae…@sentry-next.wixpress.com" (Fehlerberichte des Baukastens) als
+  allgemeines Postfach einer Werkstatt genommen.
+- **Sicherung (Verwendung):** Die geteilte Tauglichkeitsprüfung (alle Bestände)
+  weist Adressen bei Fehlerberichts- und Baukastendiensten und lange
+  Hex-Kennungen ab. Test, Sabotage rot.
+
+### 80. Weitere Schreibweisen für „at"
+- **Anlass:** 07.10.2026 — „[*at*]", „)at(" und „( - at - )" auf drei Websites
+  wurden nicht gelesen.
+- **Sicherung (Verwendung):** Die Entschlüsselung kennt sie; die Kennung der
+  Seitenvorbereitung ist erhöht, damit schon gelesene Seiten neu ausgewertet
+  werden. Test, Sabotage rot.
+
+### 81. Das Postfach liegt auf der Schwesterdomain derselben Firma
+- **Anlass:** 07.10.2026 — Impressen nennen ihr Postfach auf einer verwandten
+  Domain: Umlaut-Schreibweise (Barlt-Ost), Kurzform (getec-green.de),
+  Mutter mit gleichem Namen (wisag.de), Schwesterfirma (lackiererei-menge.de).
+- **Sicherung (Verwendung):** Ein Postfach im eigenen Impressum zählt, wenn beide
+  Domains dieselbe Schreibweise mit/ohne Umlaut sind oder ein kennzeichnendes
+  Wort teilen (Gattungswörter wie „stadtwerke" zählen nicht). Test mit
+  Gegenfällen, Sabotage rot.
+
+### 82. Der Kontakt einer Website erreicht nur einen ihrer Betreiber
+- **Anlass:** 07.10.2026 — die Übernahme verglich je Website nur mit einem
+  Betreiber; trug der den Kontakt schon, wurden alle anderen übersprungen. 152
+  von Hand später übernommene Betreiber standen so ohne den vorhandenen Kontakt da.
+- **Sicherung (Verwendung):** Verglichen werden alle Betreiber der Website,
+  geschrieben nur die abweichenden (eine erteilte Freigabe bleibt). Test,
+  Sabotage rot.
+
 ### Weitere, in ihren Beständen gesichert
 Falsche Rollen (Ratsmitglieder, Hausmeister, Gebäudeverwaltung als Klimaschutz),
 verschleierte Adressen, Adressen der Schlichtungsstelle oder Webagentur,
