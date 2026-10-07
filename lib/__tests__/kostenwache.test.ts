@@ -1,16 +1,18 @@
 import { describe, it, expect } from "vitest";
 import {
+  ABRECHNUNGS_POSTEN,
+  ABRUF_TAGE,
   BASIS_TAGE,
-  MIN_ADRESSEN,
   MIN_AUFBAUTEN,
+  MIN_SCHREIBVORGAENGE,
   MIN_VERGLEICHSTAGE,
   SPRUNG_FAKTOR,
+  abrechnungVerspaetet,
+  abrufZeitraum,
   beurteileKostenTag,
-  fehlbetragObergrenze,
   groesstesVielfaches,
-  leseGruppen,
   median,
-  zuBeurteilenderTag,
+  tagesmengenAusAbrechnung,
   type Tagesmenge,
 } from "../kostenwache";
 
@@ -27,67 +29,80 @@ import {
 const tag = (n: number) => new Date(Date.UTC(2026, 7, n)).toISOString().slice(0, 10);
 
 /** Vierzehn Tage Normalbetrieb um ein Niveau herum, mit Wochenend-Schwankung. */
-function normalReihe(basisLast: number, basisFlaeche: number): Tagesmenge[] {
+function normalReihe(basisLast: number, basisSchreiben: number): Tagesmenge[] {
   const schwankung = [1, 0.82, 1.14, 0.93, 1.21, 0.7, 1.06, 0.88, 1.17, 0.95, 1.28, 0.76, 1.09, 1.02];
   return schwankung.map((f, i) => ({
     tag: tag(i + 1),
     aufbauten: Math.round(basisLast * f),
-    adressen: Math.round(basisFlaeche * f),
+    schreibvorgaenge: Math.round(basisSchreiben * f),
   }));
 }
 
-describe("Antwort der Plattform lesen", () => {
-  // Echte Antwort vom 29.08.2026, gekürzt auf die Struktur.
-  const echt = `## Runtime Log Counts
+/** Abrechnungsdaten im Format der Plattform (FOCUS-JSONL), eine Zeile je Posten. */
+function abrechnung(projectId: string, tage: [string, number, number][]): string {
+  const zeilen: string[] = [];
+  for (const [tag, aufrufe, schreiben] of tage) {
+    const basis = { ChargePeriodStart: `${tag}T07:00:00.000Z`, ChargeCategory: "Usage", BilledCost: 0, Tags: { ProjectId: projectId } };
+    zeilen.push(JSON.stringify({ ...basis, ServiceName: ABRECHNUNGS_POSTEN.aufbauten, ConsumedQuantity: aufrufe, ConsumedUnit: "Invocations" }));
+    zeilen.push(JSON.stringify({ ...basis, ServiceName: ABRECHNUNGS_POSTEN.schreibvorgaenge, ConsumedQuantity: schreiben, ConsumedUnit: "Writes" }));
+    zeilen.push(JSON.stringify({ ...basis, ServiceName: "CDN Requests", ConsumedQuantity: 999_999, ConsumedUnit: "Requests" }));
+  }
+  return zeilen.join("\n");
+}
 
-**Project:** prj_x
-**Grouped by:** statusCode
+// ECHTE Abrechnung von solar-check.io, 19.09.–05.10.2026 (abgerufen 07.10.2026):
+// Funktionsaufrufe und Cache-Schreibvorgänge je Abrechnungstag. Ab 02.10. der
+// Crawler-Sturm, den die Wache melden muss — davor Normalbetrieb, den sie nicht
+// melden darf.
+const SOLAR_CHECK_ECHT: [string, number, number][] = [
+  ["2026-09-19", 15111, 102331], ["2026-09-20", 9806, 67286], ["2026-09-21", 6530, 62589],
+  ["2026-09-22", 11121, 122014], ["2026-09-23", 13767, 161838], ["2026-09-24", 12708, 105852],
+  ["2026-09-25", 11322, 82406], ["2026-09-26", 11266, 139326], ["2026-09-27", 6306, 51878],
+  ["2026-09-28", 10113, 93087], ["2026-09-29", 19217, 214546], ["2026-09-30", 10888, 109276],
+  ["2026-10-01", 17237, 257675], ["2026-10-02", 79115, 466841], ["2026-10-03", 40531, 272789],
+  ["2026-10-04", 67757, 399818], ["2026-10-05", 33402, 294969],
+];
 
-| statusCode | count |
-|---|---|
-| 200 | 5656 |
-| 304 | 41 |
-| 307 | 34 |
-| 404 | 7 |
-| 405 | 1 |
-
-*6 distinct values total; showing top 5.*`;
-
-  it("liest Summe, gezeigte Gruppen und Gesamtzahl", () => {
-    const b = leseGruppen(echt);
-    expect(b).not.toBeNull();
-    expect(b!.summe).toBe(5739);
-    expect(b!.gezeigt).toBe(5);
-    expect(b!.verschiedene).toBe(6);
-    expect(b!.kleinste).toBe(1);
+describe("Abrechnungsdaten lesen", () => {
+  it("summiert genau die zwei Posten je Tag und nur für das gefragte Projekt", () => {
+    const text = abrechnung("prj_a", [["2026-10-01", 100, 2000]]) + "\n" + abrechnung("prj_b", [["2026-10-01", 7, 7]]);
+    expect(tagesmengenAusAbrechnung(text, "prj_a")).toEqual([
+      { tag: "2026-10-01", aufbauten: 100, schreibvorgaenge: 2000 },
+    ]);
   });
 
-  it("zählt Kopf- und Trennzeile nicht mit", () => {
-    // Die Kopfzeile trägt „count" statt einer Zahl, die Trennzeile Striche —
-    // beides darf nicht als Gruppe durchgehen, sonst wäre die Summe erfunden.
-    expect(leseGruppen(echt)!.gezeigt).toBe(5);
+  it("sortiert die Tage aufsteigend und übergeht kaputte Zeilen", () => {
+    const text = abrechnung("prj_a", [["2026-10-02", 1, 1], ["2026-10-01", 2, 2]]) + "\nkein json\n";
+    expect(tagesmengenAusAbrechnung(text, "prj_a").map((t) => t.tag)).toEqual(["2026-10-01", "2026-10-02"]);
   });
 
-  it("liest die Gesamtzahl auch mit Tausenderpunkt", () => {
-    expect(leseGruppen("| a | 1 |\n\n*53.947 distinct values total; showing top 25.*")!.verschiedene).toBe(53947);
+  // Ein Tag ohne Daten FEHLT — er wird nicht als null Verkehr abgelegt. Eine
+  // Null behauptete am Folgetag einen Sprung ins Unendliche.
+  it("erfindet für einen fehlenden Tag keine Null", () => {
+    const text = abrechnung("prj_a", [["2026-10-01", 5, 5], ["2026-10-03", 5, 5]]);
+    expect(tagesmengenAusAbrechnung(text, "prj_a").map((t) => t.tag)).toEqual(["2026-10-01", "2026-10-03"]);
+    expect(tagesmengenAusAbrechnung("", "prj_a")).toEqual([]);
+  });
+});
+
+describe("Die echte Abrechnung: Normalbetrieb schweigt, der Sturm schlägt an", () => {
+  const reihe = tagesmengenAusAbrechnung(abrechnung("prj_sc", SOLAR_CHECK_ECHT), "prj_sc");
+  const urteil = (tag: string) => {
+    const i = reihe.findIndex((t) => t.tag === tag);
+    return beurteileKostenTag(reihe[i], reihe.slice(0, i));
+  };
+
+  it("meldet keinen Tag vor dem Sturm", () => {
+    for (const t of reihe.filter((t) => t.tag < "2026-10-02").slice(MIN_VERGLEICHSTAGE)) {
+      expect(urteil(t.tag).art, t.tag).toBe("ruhig");
+    }
   });
 
-  // DIE WICHTIGSTE ZEILE DIESER DATEI. Die Protokolle werden einen Tag
-  // aufbewahrt; ein zu spät gefragter Tag antwortet leer. Käme daraus eine Null
-  // als Messwert, behauptete die Wache am Folgetag einen Sprung ins Unendliche
-  // und verdürbe danach zwei Wochen lang das Vergleichsniveau.
-  it("gibt bei einer leeren Antwort NICHTS zurück, nicht null Verkehr", () => {
-    expect(leseGruppen("No runtime logs found for the given filters.")).toBeNull();
-    expect(leseGruppen("")).toBeNull();
-  });
-
-  it("rechnet aus, wie weit die Summe höchstens danebenliegt", () => {
-    // Eine Gruppe fehlt, die kleinste gezeigte hatte den Wert 1 → höchstens 1.
-    expect(fehlbetragObergrenze(leseGruppen(echt)!)).toBe(1);
-    // Und ohne fehlende Gruppen ist die Lücke null, egal wie groß die kleinste ist.
-    expect(fehlbetragObergrenze({ summe: 10, gezeigt: 3, verschiedene: 3, kleinste: 99 })).toBe(0);
-    // Zehn fehlende Gruppen, kleinste gezeigte 50 → höchstens 500 zu wenig.
-    expect(fehlbetragObergrenze({ summe: 9000, gezeigt: 25, verschiedene: 35, kleinste: 50 })).toBe(500);
+  it("meldet den ersten Sturmtag, und zwar in beiden Größen", () => {
+    const u = urteil("2026-10-02");
+    expect(u.art).toBe("sprung");
+    if (u.art !== "sprung") return;
+    expect(u.groessen.every((g) => g.gesprungen)).toBe(true);
   });
 });
 
@@ -109,7 +124,7 @@ describe("Median als Vergleichsniveau", () => {
 describe("Anlaufzeit: kein Urteil ist nicht „in Ordnung“", () => {
   it("urteilt nicht, solange weniger als sieben Vortage abgelegt sind", () => {
     const reihe = normalReihe(60000, 50000).slice(0, 6);
-    const u = beurteileKostenTag({ tag: tag(7), aufbauten: 200000, adressen: 180000 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(7), aufbauten: 200000, schreibvorgaenge: 180000 }, reihe);
     // Ein dreifacher Wert — und trotzdem KEIN Alarm, weil es nichts gibt,
     // wogegen man ihn halten könnte. Das ist Absicht und muss so aussehen.
     expect(u.art).toBe("kein-urteil");
@@ -121,26 +136,26 @@ describe("Anlaufzeit: kein Urteil ist nicht „in Ordnung“", () => {
 
   it("urteilt ab dem siebten Vortag", () => {
     const reihe = normalReihe(60000, 50000).slice(0, MIN_VERGLEICHSTAGE);
-    const u = beurteileKostenTag({ tag: tag(8), aufbauten: 61000, adressen: 50500 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(8), aufbauten: 61000, schreibvorgaenge: 50500 }, reihe);
     expect(u.art).toBe("ruhig");
   });
 
   it("zählt nur Tage VOR dem beurteilten mit", () => {
     // Sieben Zeilen, aber eine davon ist der Tag selbst → sechs Vortage.
     const reihe = normalReihe(60000, 50000).slice(0, MIN_VERGLEICHSTAGE);
-    const u = beurteileKostenTag({ tag: tag(5), aufbauten: 61000, adressen: 50500 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(5), aufbauten: 61000, schreibvorgaenge: 50500 }, reihe);
     expect(u.art).toBe("kein-urteil");
   });
 });
 
 describe("Normalbetrieb löst nicht aus", () => {
-  // Gemessener Normalbetrieb beider Projekte am 28.08.2026:
-  // solar-check.io 5.738 Aufbauten / 1.177 Adressen, Filmprojekt 65.586 / 53.924.
+  // Normalbetrieb laut Abrechnung 19.09.–01.10.2026 (Median):
+  // solar-check.io ~11.300 Aufrufe / ~105.000 Schreibvorgänge, Filmprojekt ~100.000 / ~200.000.
   it("schweigt bei gewöhnlicher Tagesschwankung (großes Projekt)", () => {
-    const reihe = normalReihe(65586, 53924);
+    const reihe = normalReihe(100000, 200000);
     for (const f of [0.7, 0.9, 1.0, 1.3, 1.6, 2.0, 2.3]) {
       const u = beurteileKostenTag(
-        { tag: tag(20), aufbauten: Math.round(65586 * f), adressen: Math.round(53924 * f) },
+        { tag: tag(20), aufbauten: Math.round(100000 * f), schreibvorgaenge: Math.round(200000 * f) },
         reihe,
       );
       expect(u.art, `Faktor ${f} hätte nicht anschlagen dürfen`).toBe("ruhig");
@@ -148,8 +163,8 @@ describe("Normalbetrieb löst nicht aus", () => {
   });
 
   it("schweigt bei gewöhnlicher Tagesschwankung (kleines Projekt)", () => {
-    const reihe = normalReihe(5738, 1177);
-    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 12000, adressen: 2600 }, reihe);
+    const reihe = normalReihe(11300, 105000);
+    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 22000, schreibvorgaenge: 230000 }, reihe);
     expect(u.art).toBe("ruhig");
   });
 
@@ -160,15 +175,15 @@ describe("Normalbetrieb löst nicht aus", () => {
     const klein: Tagesmenge[] = Array.from({ length: 10 }, (_, i) => ({
       tag: tag(i + 1),
       aufbauten: 3,
-      adressen: 2,
+      schreibvorgaenge: 2,
     }));
-    const u = beurteileKostenTag({ tag: tag(12), aufbauten: 30, adressen: 20 }, klein);
+    const u = beurteileKostenTag({ tag: tag(12), aufbauten: 30, schreibvorgaenge: 20 }, klein);
     expect(u.art).toBe("ruhig");
   });
 
   it("kennt die Mindestmengen als benannte Grenze, nicht als Zufall", () => {
     expect(MIN_AUFBAUTEN).toBeGreaterThan(0);
-    expect(MIN_ADRESSEN).toBeGreaterThan(0);
+    expect(MIN_SCHREIBVORGAENGE).toBeGreaterThan(0);
   });
 });
 
@@ -177,18 +192,18 @@ describe("Gegenprobe: ein erfundener Sprung MUSS anschlagen", () => {
   const VORFALL = 3.49;
 
   it("schlägt beim Ausmaß des bekannten Vorfalls an", () => {
-    const reihe = normalReihe(65586, 53924);
+    const reihe = normalReihe(100000, 200000);
     const u = beurteileKostenTag(
-      { tag: tag(20), aufbauten: Math.round(65586 * VORFALL), adressen: Math.round(53924 * VORFALL) },
+      { tag: tag(20), aufbauten: Math.round(100000 * VORFALL), schreibvorgaenge: Math.round(200000 * VORFALL) },
       reihe,
     );
     expect(u.art).toBe("sprung");
   });
 
   it("schlägt auch beim kleinen Projekt an", () => {
-    const reihe = normalReihe(5738, 1177);
+    const reihe = normalReihe(11300, 105000);
     const u = beurteileKostenTag(
-      { tag: tag(20), aufbauten: Math.round(5738 * VORFALL), adressen: Math.round(1177 * VORFALL) },
+      { tag: tag(20), aufbauten: Math.round(11300 * VORFALL), schreibvorgaenge: Math.round(105000 * VORFALL) },
       reihe,
     );
     expect(u.art).toBe("sprung");
@@ -203,29 +218,29 @@ describe("Gegenprobe: ein erfundener Sprung MUSS anschlagen", () => {
 });
 
 describe("Die zwei Größen werden unterschieden", () => {
-  const reihe = normalReihe(65586, 53924);
+  const reihe = normalReihe(100000, 200000);
 
-  it("nennt es „Fläche“, wenn nur die verschiedenen Adressen springen", () => {
-    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 70000, adressen: 200000 }, reihe);
+  it("nennt es „Schreiben“, wenn nur die Cache-Schreibvorgänge springen", () => {
+    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 105000, schreibvorgaenge: 700000 }, reihe);
     expect(u.art).toBe("sprung");
     if (u.art !== "sprung") return;
-    expect(u.satz).toMatch(/Nur die Fläche/);
-    expect(u.groessen.find((g) => g.groesse === "adressen")!.gesprungen).toBe(true);
+    expect(u.satz).toMatch(/Nur das Schreiben/);
+    expect(u.groessen.find((g) => g.groesse === "schreibvorgaenge")!.gesprungen).toBe(true);
     expect(u.groessen.find((g) => g.groesse === "aufbauten")!.gesprungen).toBe(false);
   });
 
   it("nennt es „Last“, wenn nur die Zahl der Aufbauten springt", () => {
-    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 400000, adressen: 55000 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 400000, schreibvorgaenge: 210000 }, reihe);
     expect(u.art).toBe("sprung");
     if (u.art !== "sprung") return;
     expect(u.satz).toMatch(/Nur die Last/);
   });
 
   it("nennt beides, wenn beides springt — und sagt etwas anderes", () => {
-    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 400000, adressen: 200000 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(20), aufbauten: 400000, schreibvorgaenge: 700000 }, reihe);
     expect(u.art).toBe("sprung");
     if (u.art !== "sprung") return;
-    expect(u.satz).toMatch(/Last UND Fläche/);
+    expect(u.satz).toMatch(/Last UND Schreiben/);
     expect(u.satz).not.toMatch(/Nur die/);
   });
 });
@@ -235,9 +250,9 @@ describe("Kein Niveau, kein Vielfaches", () => {
     const reihe: Tagesmenge[] = Array.from({ length: 10 }, (_, i) => ({
       tag: tag(i + 1),
       aufbauten: 0,
-      adressen: 0,
+      schreibvorgaenge: 0,
     }));
-    const u = beurteileKostenTag({ tag: tag(12), aufbauten: 5000, adressen: 3000 }, reihe);
+    const u = beurteileKostenTag({ tag: tag(12), aufbauten: 5000, schreibvorgaenge: 30000 }, reihe);
     // Division durch null ergäbe „unendlich" — das wäre eine Zahl, die niemand
     // gemessen hat. Stattdessen: kein Vielfaches, kein Sprung.
     if (u.art === "kein-urteil") throw new Error("hier sollte ein Urteil möglich sein");
@@ -249,7 +264,7 @@ describe("Kein Niveau, kein Vielfaches", () => {
 describe("Nachjustierung fußt auf gemessenen Werten", () => {
   it("nennt das größte bisher abgelegte Vielfache", () => {
     const reihe = normalReihe(1000, 1000);
-    reihe.push({ tag: tag(20), aufbauten: 5000, adressen: 1000 });
+    reihe.push({ tag: tag(20), aufbauten: 5000, schreibvorgaenge: 1000 });
     const max = groesstesVielfaches(reihe, "aufbauten");
     expect(max).not.toBeNull();
     expect(max!).toBeGreaterThan(4);
@@ -264,11 +279,17 @@ describe("Nachjustierung fußt auf gemessenen Werten", () => {
   });
 });
 
-describe("Beurteilt wird der letzte VOLLSTÄNDIGE Tag", () => {
-  it("nimmt den Vortag, nicht den laufenden", () => {
-    expect(zuBeurteilenderTag(new Date("2026-08-29T07:00:00Z"))).toBe("2026-08-28");
-    // Auch kurz nach Mitternacht — sonst würde ein Lauf um 00:30 einen Tag
-    // beurteilen, von dem eine halbe Stunde vorliegt, und ihn als Einbruch lesen.
-    expect(zuBeurteilenderTag(new Date("2026-08-29T00:30:00Z"))).toBe("2026-08-28");
+describe("Abrufzeitraum und Verzug", () => {
+  it("holt das Vergleichsfenster samt beurteiltem Tag, in ganzen UTC-Tagen", () => {
+    const { von, bis } = abrufZeitraum(new Date("2026-10-07T00:30:00Z"));
+    expect(bis).toBe("2026-10-08T00:00:00.000Z");
+    expect((Date.parse(bis) - Date.parse(von)) / 86_400_000).toBe(ABRUF_TAGE);
+    expect(ABRUF_TAGE).toBeGreaterThan(BASIS_TAGE + 1);
+  });
+
+  it("nennt einen Abrechnungstag erst verspätet, wenn er lange überfällig ist", () => {
+    // Der Tag 05.10. endet am 06.10. um 07:00 UTC.
+    expect(abrechnungVerspaetet("2026-10-05", new Date("2026-10-07T07:00:00Z"))).toBe(false);
+    expect(abrechnungVerspaetet("2026-10-05", new Date("2026-10-08T14:00:00Z"))).toBe(true);
   });
 });
