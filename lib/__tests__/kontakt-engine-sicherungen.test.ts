@@ -157,7 +157,8 @@ describe("Klasse 13 — Kontakt nur von der eigenen belegten Website", () => {
     expect(schleife.length, "Schleife oder Kontaktfelder nicht gefunden").toBeGreaterThan(20);
     // Nothing may leave the loop before the fields are built — except a website
     // whose written contact already equals the result (with or without one).
-    const ohneGleich = schleife.replace(/if \(z && \(z\.kontakt_email \?\? null\) === \(k\?\.email \?\? null\) && \(z\.kontakt_beleg_url \?\? null\) === \(k\?\.url \?\? null\)\) \{ unveraendert\+\+; continue; \}/, "");
+    // (every operator of the website compared, only the differing ones written).
+    const ohneGleich = schleife.replace(/if \(!abweichend\.length\) \{ unveraendert\+\+; continue; \}/, "");
     expect(ohneGleich).not.toMatch(/\bcontinue\b|\breturn\b/);
     expect(k).toMatch(/unter alten Regeln[\s\S]*erst --mode=evaluate/);
   });
@@ -300,6 +301,14 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     expect(impressumPostfach(basis, [ev("a@t-online.de", "https://x.de/impressum", ["mailbox-foreign-domain", "excluded-purpose"])])).toEqual({});
     // Nothing is overridden when the engine already chose.
     expect(impressumPostfach({ general: ["info@x.de"], kanaele: {} } as never, [ev("a@x.de", "https://x.de/impressum")])).toEqual({});
+  });
+  it("gives a website's contact to EVERY operator of it, and only rewrites the differing ones", () => {
+    const k = lies("scripts/windbetreiber-kontakte.ts");
+    const a = k.slice(k.indexOf("async function apply()"), k.indexOf("async function main()"));
+    // All operators per website — one of them checked for all lost 97 contacts (07.10.2026).
+    expect(a).toMatch(/jetzt\.set\(z\.website, \[\.\.\.\(jetzt\.get\(z\.website\) \?\? \[\]\), z\]\)/);
+    expect(a).toMatch(/const abweichend = zs\.filter\(/);
+    expect(a).toMatch(/\.in\("mastr_nr", abweichend\.map\(\(z\) => z\.mastr_nr\)\)/);
   });
   it("treats customer-service and city-office boxes as general, never a person", async () => {
     const { WIND_ROLLENWERK } = await import("../../scripts/windbetreiber-kontakte");

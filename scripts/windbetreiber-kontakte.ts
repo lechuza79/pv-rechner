@@ -329,7 +329,11 @@ async function apply() {
   // What is already written: an unchanged contact keeps its release, and the
   // release (a fresh re-read of every proof page) is not run again for nothing.
   // Only websites still proven: a withdrawn website's result is history.
-  const jetzt = new Map((await betreiber()).map((z) => [z.website, z]));
+  // Every operator of a website, not one of them: the unchanged check looked at
+  // whichever operator came last, and operators taken by hand later never got
+  // the website's contact (97 operators, contact pass 07.10.2026).
+  const jetzt = new Map<string, Awaited<ReturnType<typeof betreiber>>>();
+  for (const z of await betreiber()) if (z.website) jetzt.set(z.website, [...(jetzt.get(z.website) ?? []), z]);
   const alle = ergebnisse().filter((r) => jetzt.has(r.id));
   const veraltet = alle.filter((r) => r.rules !== windRegeln());
   if (veraltet.length) throw new Error(`${veraltet.length} Ergebnisse unter alten Regeln (z. B. ${veraltet[0].id}) — erst --mode=evaluate`);
@@ -339,15 +343,17 @@ async function apply() {
   for (const r of alle) {
     const k = kontaktAus(r);
     if (k) mit++; else ohne++;
-    const z = jetzt.get(r.id);
-    if (z && (z.kontakt_email ?? null) === (k?.email ?? null) && (z.kontakt_beleg_url ?? null) === (k?.url ?? null)) { unveraendert++; continue; }
+    const zs = jetzt.get(r.id) ?? [];
+    // Only the operators whose contact differs: an unchanged one keeps its release.
+    const abweichend = zs.filter((z) => (z.kontakt_email ?? null) !== (k?.email ?? null) || (z.kontakt_beleg_url ?? null) !== (k?.url ?? null));
+    if (!abweichend.length) { unveraendert++; continue; }
     // Written either way: a website whose evaluation finds no contact on the
     // site any more must not keep the old one (06.10.2026, fault class
     // "contact outlives its source", docs/lehren/kontakt-engine-fehler.md).
     const felder = kontaktFelder(k, r.evaluatedAt.slice(0, 10));
     nurBekannteSpalten("windbetreiber", ddl, [felder]);
     if (!schreiben) continue;
-    const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" }).eq("website", r.id).eq("aktiv", true);
+    const { error, count } = await c.from("windbetreiber").update(felder, { count: "exact" }).eq("website", r.id).eq("aktiv", true).in("mastr_nr", abweichend.map((z) => z.mastr_nr));
     if (error) throw new Error(`${r.id}: ${error.message}`);
     geschrieben += count ?? 0;
   }
