@@ -31,7 +31,7 @@ import { collectColdProbes } from "../lib/health-cold-probe";
 import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
-import { LIEGT_NACH_STUNDEN, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
+import { LIEGT_NACH_STUNDEN, leeresLedger, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
@@ -2045,11 +2045,11 @@ export function laufStumm(
 
 /**
  * The repair ledger restored by scripts/health-history.ts. Absent means no
- * repair run has ever stored one (or all expired) — not an error. Present but
+ * repair run has ever stored one (or all expired) — an empty ledger. Present but
  * unreadable IS an error: then nobody can tell whether a run went silent.
  */
 export function reparaturLedgerLesen(pfad = ".health/autofix-ledger.json"): { ledger?: Ledger; fehler?: string } {
-  if (!existsSync(pfad)) return {};
+  if (!existsSync(pfad)) return { ledger: leeresLedger() };
   try {
     return { ledger: readLedger(JSON.parse(readFileSync(pfad, "utf8"))) };
   } catch (e) {

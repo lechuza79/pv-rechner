@@ -138,8 +138,8 @@ describe("a silent run is itself a health finding", () => {
     expect(readFileSync("scripts/health-history.ts", "utf8")).toContain("'autofix-ledger', 'ledger.json'");
     expect(readFileSync(".github/workflows/health-check.yml", "utf8")).toContain("scripts/health-history.ts");
   });
-  it("absent ledger is fine, an unreadable one is reported as unreadable", () => {
-    expect(reparaturLedgerLesen("/nonexistent/ledger.json")).toEqual({});
+  it("absent ledger is an empty one, an unreadable one is reported as unreadable", () => {
+    expect(reparaturLedgerLesen("/nonexistent/ledger.json")).toEqual({ ledger: leeresLedger() });
     const pfad = "lib/__tests__/__fixtures__/autofix-ledger-defekt.json";
     expect(reparaturLedgerLesen(pfad).fehler).toBeTruthy();
   });
@@ -242,5 +242,45 @@ describe("workflow contract", () => {
     expect(wf).toContain("Lege KEIN GitHub-Issue an");
     expect(wf).toContain("${{ steps.plan.outputs.key }}");
     expect(wf).not.toMatch(/Tagesbremse|autofix-budget/);
+  });
+});
+
+import { PFLICHTPRUEFUNG, lieferSchritt, zweigFuer } from "../../scripts/autofix-deliver";
+
+describe("delivery through the gate (main is branch-protected)", () => {
+  it("ships only a commit whose gate check passed and that contains main", () => {
+    expect(lieferSchritt(undefined, true)).toBe("warten");
+    expect(lieferSchritt({ status: "in_progress", conclusion: null }, true)).toBe("warten");
+    expect(lieferSchritt({ status: "completed", conclusion: "failure" }, true)).toBe("abgelehnt");
+    expect(lieferSchritt({ status: "completed", conclusion: "cancelled" }, true)).toBe("abgelehnt");
+    expect(lieferSchritt({ status: "completed", conclusion: "success" }, false)).toBe("neu_aufsetzen");
+    expect(lieferSchritt({ status: "completed", conclusion: "success" }, true)).toBe("uebernehmen");
+  });
+  it("the gate name is the one main requires, and CI can be dispatched on the fix branch", () => {
+    const ci = readFileSync(".github/workflows/ci.yml", "utf8");
+    expect(ci).toContain(`name: ${PFLICHTPRUEFUNG}\n`);
+    expect(ci).toMatch(/\n  workflow_dispatch:/);
+    const deliver = readFileSync("scripts/autofix-deliver.ts", "utf8");
+    expect(deliver).toContain('gh("workflow", "run", "ci.yml", "--ref", zweig)');
+    expect(deliver).toContain("`${sha}:refs/heads/main`");
+    expect(zweigFuer(42)).toBe("autofix/42");
+  });
+  it("a fix that failed the gate is recorded as blocked, a rebased one counts with its shipped commit", () => {
+    const roh = '{"ergebnis":"behoben","begruendung":"Stichprobe nahm Schweizer Orte.","commit":"abc1234"}';
+    const abgelehnt = bewerteErgebnis(roh, () => false, { abgelehnt: "fiel in der Pflichtprüfung durch" });
+    expect(abgelehnt.ergebnis).toBe("blockiert");
+    expect(abgelehnt.begruendung).toContain("nicht ausgeliefert");
+    const rebased = bewerteErgebnis(roh, (sha) => sha === "def5678", { geliefert: "def5678" });
+    expect(rebased).toMatchObject({ ergebnis: "behoben", commit: "def5678" });
+    expect(bewerteErgebnis(roh, () => false, {}).ergebnis).toBe("stumm");
+  });
+  it("the model pushes to its own branch, never to main; delivery runs before the verdict check", () => {
+    const wf = readFileSync(".github/workflows/claude-autofix.yml", "utf8");
+    expect(wf).toContain("git push origin HEAD:refs/heads/autofix/${{ github.run_id }}");
+    expect(wf).toContain("NIE auf main");
+    expect(wf.indexOf("      - name: Fix ausliefern\n")).toBeGreaterThan(wf.indexOf("      - name: Claude analysiert und behebt\n"));
+    expect(wf.indexOf("      - name: Fix ausliefern\n")).toBeLessThan(wf.indexOf("      - name: Urteil pruefen\n"));
+    expect(wf).toContain("ABGELEHNT: ${{ steps.liefern.outputs.abgelehnt }}");
+    expect(readFileSync("scripts/autofix-outcome.ts", "utf8")).toContain("abgelehnt: process.env.ABGELEHNT");
   });
 });

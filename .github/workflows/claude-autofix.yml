@@ -51,7 +51,8 @@ jobs:
   autofix:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # Model (up to ~30 min) plus the gate check on the fix branch (up to 35 min).
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
         with:
@@ -198,9 +199,13 @@ jobs:
             4. Verifiziere am lebenden System: `npm run health-check` erneut laufen lassen
                und zeigen, dass der Wert wirklich besser ist. Ein Fix ohne Nachmessung ist
                kein Fix, sondern eine Behauptung.
-            5. Committe auf main (englische Commit-Message, die den Befund und die Ursache
-               erklärt) und pushe. Der Deploy läuft automatisch. Nenne die Commit-Kennung
-               im Ergebnis — ein "behoben" ohne Commit auf main zählt als stummer Lauf.
+            5. Committe (englische Commit-Message, die den Befund und die Ursache erklärt)
+               und pushe AUSSCHLIESSLICH auf den Zweig autofix/${{ github.run_id }}:
+               `git push origin HEAD:refs/heads/autofix/${{ github.run_id }}`. NIE auf main —
+               main nimmt nur Commits an, deren Pflichtprüfung grün ist; die lässt der
+               Workflow nach dir auf diesem Zweig laufen und liefert bei Grün selbst aus.
+               Nenne die Commit-Kennung (die Spitze des Zweigs) im Ergebnis. Änderungen an
+               Workflow-Dateien kann dieser Weg nicht ausliefern — dann "blockiert".
 
             WAS DU NICHT OHNE RÜCKFRAGE ÄNDERST:
             - Berechnungslogik, Zahlen, Einheiten oder Annahmen der Rechner. Laut CLAUDE.md
@@ -218,8 +223,9 @@ jobs:
             WIE DIESER LAUF ENDET — PFLICHT: Du gibst am Ende genau ein Urteil im
             vorgegebenen Format ab. Ein Lauf ohne Urteil wird als stummer Lauf gewertet,
             und ein stummer Lauf ist selbst ein Befund.
-            - "behoben": du hast einen Fix auf main gepusht. `commit` = die Kennung des
-              Commits, `begruendung` = Ursache und Fix in zwei Sätzen.
+            - "behoben": du hast einen Fix auf den Zweig autofix/${{ github.run_id }}
+              gepusht. `commit` = die Kennung dieses Commits, `begruendung` = Ursache und
+              Fix in zwei Sätzen. Fällt er in der Pflichtprüfung durch, wird das vermerkt.
             - "kein_handlungsbedarf": beide Messungen sind klar unauffällig, oder der Befund
               ist schon von anderer Seite behoben. `begruendung` = woran du das festmachst
               (Messwerte, Commit), mindestens zwei Sätze.
@@ -229,12 +235,26 @@ jobs:
               mit klarer Empfehlung. Lege KEIN GitHub-Issue an und schicke keine Mail — das
               Urteil wird gespeichert und jeder Sitzung beim Start angezeigt.
 
+      # main only accepts a commit whose required gate check passed on that very
+      # commit. The model pushes its fix to its own branch; this runs the gate
+      # there and fast-forwards main when it is green.
+      - name: Fix ausliefern
+        if: steps.plan.outputs.key != '' && contains(steps.claude.outputs.structured_output, '"ergebnis":"behoben"')
+        id: liefern
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          STRUCTURED: ${{ steps.claude.outputs.structured_output }}
+        run: node --import tsx scripts/autofix-deliver.ts
+
       - name: Urteil pruefen
         if: always() && steps.plan.outputs.key != ''
         id: urteil
         env:
           KEY: ${{ steps.plan.outputs.key }}
           STRUCTURED: ${{ steps.claude.outputs.structured_output }}
+          GELIEFERT: ${{ steps.liefern.outputs.geliefert }}
+          ABGELEHNT: ${{ steps.liefern.outputs.abgelehnt }}
         run: node --import tsx scripts/autofix-outcome.ts
 
       - name: Urteil sichern

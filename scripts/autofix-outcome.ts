@@ -23,7 +23,7 @@ function main() {
   const runId = Number(process.env.GITHUB_RUN_ID);
   if (!key || !process.env.GITHUB_OUTPUT) throw new Error("Missing workflow context");
   const ledger = readLedger(JSON.parse(readFileSync(".autofix/ledger.json", "utf8")));
-  const b = bewerteErgebnis(process.env.STRUCTURED, commitAufMain);
+  const b = bewerteErgebnis(process.env.STRUCTURED, commitAufMain, { geliefert: process.env.GELIEFERT || undefined, abgelehnt: process.env.ABGELEHNT || undefined });
   writeFileSync(".autofix/ledger.json", JSON.stringify(schliesseVersuch(ledger, runId, key, b, new Date()), null, 2));
   const zeile = `Reparatur ${key}: ${b.ergebnis} — ${b.begruendung}${b.benoetigt ? ` (gebraucht: ${b.benoetigt})` : ""}`;
   console.log(zeile);

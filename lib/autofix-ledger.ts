@@ -145,7 +145,8 @@ export type Bewertung = { ergebnis: Exclude<Ergebnis, "laeuft">; begruendung: st
  * are not believed: "fixed" without a commit on main is silent, a reason that
  * says nothing is silent, and no output at all is silent.
  */
-export function bewerteErgebnis(roh: string | undefined, commitAufMain: (sha: string) => boolean): Bewertung {
+export type Lieferung = { geliefert?: string; abgelehnt?: string };
+export function bewerteErgebnis(roh: string | undefined, commitAufMain: (sha: string) => boolean, lieferung: Lieferung = {}): Bewertung {
   let o: Record<string, unknown> | null = null;
   try {
     o = roh?.trim() ? JSON.parse(roh) : null;
@@ -155,7 +156,13 @@ export function bewerteErgebnis(roh: string | undefined, commitAufMain: (sha: st
   if (!o || typeof o !== "object") return { ergebnis: "stumm", begruendung: "Der Lauf endete ohne Urteil (kein Commit, keine Begründung)." };
   const begruendung = typeof o.begruendung === "string" ? o.begruendung.trim() : "";
   const benoetigt = typeof o.benoetigt === "string" ? o.benoetigt.trim() : "";
-  const commit = typeof o.commit === "string" ? o.commit.trim() : "";
+  const gemeldet = typeof o.commit === "string" ? o.commit.trim() : "";
+  // The delivery step may have rebased the fix: then the shipped commit counts.
+  const commit = lieferung.geliefert || gemeldet;
+  if (o.ergebnis === "behoben" && lieferung.abgelehnt) {
+    // A fix that did not pass the gate is a result, not silence — and not a fix.
+    return { ergebnis: "blockiert", begruendung: `${begruendung || "Fix gebaut"} — nicht ausgeliefert: ${lieferung.abgelehnt}`, benoetigt: "Ein neuer Reparaturlauf am nächsten Tag; vorher den Prüflauf des Fix-Zweigs ansehen.", commit: gemeldet };
+  }
   if (o.ergebnis === "behoben") {
     if (!/^[0-9a-f]{7,40}$/i.test(commit) || !commitAufMain(commit)) {
       return { ergebnis: "stumm", begruendung: `Der Lauf meldete „behoben“, aber der genannte Commit (${commit || "keiner"}) liegt nicht auf main.` };
