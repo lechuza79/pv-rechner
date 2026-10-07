@@ -911,6 +911,7 @@ export function healRegionConfig(
 //
 /** Die Action, deren Zeitplan den Import-Rhythmus festlegt. */
 export const MASTR_WORKFLOW = "mastr-refresh.yml";
+export const CH_WORKFLOW = "ch-import.yml";
 
 /**
  * Liest eine Workflow-Datei aus dem Arbeitsverzeichnis. Leerer String, wenn sie
@@ -1311,6 +1312,52 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
       // Tagesstempel im Dateinamen der Behörde), deshalb genügt hier das
       // Abschneiden des hereingereichten Zeitstempels.
       befund: plan ? importPlanBefund(importedAt.slice(0, 10), plan, jetzt) : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Läuft der Schweizer Monatslauf noch?
+ *
+ * GEURTEILT WIRD ÜBER DEN LAUF, NICHT ÜBER DEN DATENSTAND — und das ist der
+ * Unterschied zur deutschen Aufsicht darüber. Der deutsche Gesamtdatenexport
+ * erscheint täglich, sein Stand wandert also mit jedem Monatslauf mit; das
+ * Schweizer Register wurde zuletzt am 14.09.2026 veröffentlicht und wandert
+ * eben nicht. Gegen den Quellstand geurteilt meldete die Aufsicht hier jeden
+ * Monat einen Ausfall, den es nicht gibt — und wer eine Meldung regelmäßig
+ * grundlos bekommt, filtert sie weg und verpasst die echte.
+ *
+ * `null` heißt „konnte nicht nachsehen" und ist ausdrücklich kein Urteil: ohne
+ * Datenbank, ohne Zeile oder ohne Zeitstempel wird nichts behauptet.
+ */
+export type ChFrische = {
+  laufAm: string;
+  /** Stand der Quelle (Tag der Veröffentlichung des Registers), nur zur Anzeige. */
+  quellStand: string | null;
+  /** `null` = Zeitplan der Action nicht lesbar, also kein Urteil möglich. */
+  befund: ImportPlanBefund | null;
+};
+
+async function messeChFrische(): Promise<ChFrische | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  try {
+    const r = await fetch(`${url}/rest/v1/mastr_meta?select=lauf_am,imported_at&markt=eq.ch`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!r.ok) return null;
+    const rows = (await r.json()) as { lauf_am?: string; imported_at?: string }[];
+    const laufAm = rows?.[0]?.lauf_am;
+    if (!laufAm || Number.isNaN(Date.parse(laufAm))) return null;
+    const plan = importTageAusZeitplan(leseWorkflow(CH_WORKFLOW));
+    return {
+      laufAm,
+      quellStand: rows[0]?.imported_at?.slice(0, 10) ?? null,
+      befund: plan ? importPlanBefund(laufAm.slice(0, 10), plan, new Date()) : null,
     };
   } catch {
     return null;
@@ -2235,6 +2282,35 @@ async function main() {
     unknown.push("mastr-import");
     technical("mastr-measurement", false, "Anlagen-Datenstand nicht abrufbar.");
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
+  }
+
+  // ── Läuft der Schweizer Monatslauf noch? ──────────────────────────────────
+  // BEWUSST NUR EINE WARNUNG, kein roter Lauf: Es gibt keine Schweizer Seite,
+  // also auch keinen Besucher, der eine falsche Zahl liest — und der Autofix
+  // könnte hier ohnehin nichts tun (er fasst die Datenbank nicht an). Was ein
+  // ausgefallener Lauf kostet, zahlt erst der Livegang: Er setzte dann auf
+  // einem halben Jahr altem Bestand auf, ohne dass es jemandem auffiele.
+  const ch = await messeChFrische();
+  if (ch) {
+    lines.push(`CH-Import: Lauf ${ch.laufAm.slice(0, 10)}, Registerstand ${ch.quellStand ?? "unbekannt"}.`);
+    if (!ch.befund) {
+      warnings.push(
+        `CH-Import: Der Zeitplan der Action (${CH_WORKFLOW}) ist nicht lesbar — ohne Termin gibt es kein ` +
+          `Urteil darüber, ob ein Lauf ausgefallen ist.`,
+      );
+    } else if (ch.befund.art === "ausgefallen") {
+      warnings.push(
+        `CH-Import ausgefallen: fällig am ${ch.befund.zyklusStart}, letzter geplanter Anlauf ` +
+          `${ch.befund.letzterVersuch} — beide verstrichen, zuletzt gelaufen am ${ch.laufAm.slice(0, 10)}. ` +
+          `Keine Seite betroffen (es ist keine freigeschaltet); nachholen über „CH Import" ` +
+          `(gh run list --workflow=${CH_WORKFLOW}).`,
+      );
+    }
+  } else {
+    // Kein Urteil, sondern eine Protokollzeile: Ohne Zeile in der Datenbank
+    // (noch kein Lauf) oder ohne Zugang lässt sich über den Lauf nichts sagen,
+    // und „nichts gesagt" soll nicht wie „in Ordnung" aussehen.
+    lines.push("CH-Import: kein Lauf hinterlegt oder nicht abrufbar — kein Urteil.");
   }
 
   // Verify the complete active generation; never infer it from one fast page.

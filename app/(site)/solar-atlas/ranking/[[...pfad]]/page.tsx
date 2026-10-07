@@ -27,6 +27,7 @@ import {
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 import { GROESSENKLASSEN_WARUM } from "../../../../../lib/gemeindegroesse";
 import GroessenklasseLink from "../../../../../components/atlas/GroessenklasseLink";
+import { ebenenName } from "../../../../../lib/markt-ebenen";
 
 /**
  * EINEN TAG, nicht eine Stunde.
@@ -324,7 +325,9 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
     { label: `Ranking: ${kategorie.thema}` },
   ];
 
-  const kindWort = region.level === "de" ? "Bundesland" : "Landkreis";
+  // Die Gattung kommt aus dem MARKT (Kanton statt Bundesland) — siehe
+  // lib/markt-ebenen.ts.
+  const kindWort = ebenenName(region.level === "de" ? "bundesland" : "landkreis", region.region_id);
   const zeigtVeraenderung = zeilen.some((r) => r.veraenderung !== null);
   const nav = rankingNav();
   const aktiverPunkt = navPunktVon(kategorie.slug);

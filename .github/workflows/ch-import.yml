@@ -1,0 +1,74 @@
+name: CH Import
+
+# Holt den Schweizer Anlagenbestand (Register, Gemeindeverzeichnis, Grenzen) und
+# legt ihn in dieselben Tabellen wie den deutschen.
+#
+# ER SCHALTET NICHTS FREI. Es gibt keine Schweizer Seite; der Lauf haelt die
+# Zahlen aktuell, damit ein spaeterer Livegang nicht auf einem halben Jahr
+# altem Bestand aufsetzt. Deshalb fehlen hier auch die beiden Folgejobs des
+# deutschen Laufs (Ungueltig-Erklaeren, Aufwaermen): Es gibt keine Seite, die
+# ungueltig werden koennte.
+#
+# Was er braucht, ist klein: Register 19 MB, Grenzen 37 MB, Verzeichnis 135 kB.
+# Der Lauf dauert wenige Minuten — anders als beim deutschen Gesamtdatenexport
+# (3,2 GB, zweieinhalb Stunden) kostet ein zusaetzlicher Anlauf hier fast
+# nichts, weshalb es keine "ist der Import faellig"-Abfrage gibt.
+
+on:
+  schedule:
+    # Am 8. und als Nachhol-Termine am 10. und 12., jeweils 04:00 Weltzeit.
+    #
+    # BEWUSST NICHT AM 1. — der deutsche Lauf liegt dort. Beide bauen am Ende
+    # die ZUGEHOERIGKEIT neu auf, und die ist marktuebergreifend: Sie wird
+    # geleert und aus allen Regionen neu gefuellt. Zwei Laeufe gleichzeitig
+    # heisst, dass der eine die Summen gegen eine Zugehoerigkeit bildet, die der
+    # andere gerade leert — kein Fehler, keine rote Action, nur fehlende Zeilen
+    # auf Kreis- und Landesseiten. Die gemeinsame Sperre unten (`concurrency`)
+    # faengt das auch bei Laeufen von Hand; der Abstand im Kalender ist die
+    # erste, sichtbare Haelfte derselben Massnahme.
+    - cron: "0 4 8,10,12 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  # DIESELBE GRUPPE WIE DER DEUTSCHE LAUF — siehe oben. Nicht umbenennen, ohne
+  # den anderen Lauf mitzunehmen: Eine eigene Gruppe je Markt sperrt nichts.
+  group: mastr-datenlauf
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # sqlite3 liest das GeoPackage (die Grenzen), unzip packt beide Archive
+      # aus. Beides bringt das Laeufer-Abbild mit; der Schritt ist der Beleg,
+      # dass es wirklich da ist, statt es anzunehmen.
+      - name: Werkzeuge pruefen
+        run: sqlite3 --version && unzip -v | head -n 1
+
+      - name: Schweizer Bestand einlesen
+        run: npm run ch:import -- --schreiben
+
+      - name: Datenstand ausgeben
+        if: always()
+        run: |
+          curl -sS \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/mastr_meta?select=markt,imported_at,lauf_am,total_units_imported&markt=eq.ch"

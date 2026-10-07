@@ -423,7 +423,23 @@ export async function GET(req: NextRequest) {
   }
   results.push({ step: "mastr_region_rollup_refresh", status: e2e ? "error" : "ok", error: e2e?.message });
 
-  // 3. mastr_meta — single-row metadata (last import, source version)
+  // 3. mastr_meta — der Datenstand je MARKT (zuletzt importiert, Quellversion)
+  //
+  // EINE ZEILE JE MARKT, UND `id = 1` BLEIBT DEUTSCHLAND — BLOCKER. Die Tabelle
+  // trug einen CHECK auf `id = 1`, war also strukturell einmarktfähig. Der
+  // Schweiz-Lauf braucht ihren eigenen Datenstand; neu vergeben wird aber NICHT:
+  // An diesem Repo hängen dauerhaft ein Dutzend Arbeitsstände, und sie lesen
+  // alle dieselbe Produktionsdatenbank mit `id = eq.1`. Wer die Zeilen
+  // umnummeriert, liefert jedem älteren Zweig stillschweigend den Datenstand
+  // eines anderen Marktes — dieselbe Fehlerklasse wie die Datenform des
+  // Förderkatalogs, nur in der anderen Richtung.
+  //
+  // `markt` ist der fachliche Schlüssel (eindeutig), `id` bleibt der technische.
+  // `lauf_am` ist der Zeitpunkt UNSERES Laufs und nicht der Stand der Quelle:
+  // Der deutsche Gesamtdatenexport erscheint täglich, sein Stand wandert also
+  // mit jedem Monatslauf; das Schweizer Register wurde zuletzt am 14.09.2026
+  // veröffentlicht (am Dateikopf gemessen) und wandert eben nicht. Für die
+  // Frage „ist ein Lauf ausgefallen?" taugt dort nur der Lauf selbst.
   const { error: e3 } = await supabase.rpc("exec_sql", {
     sql: `
       CREATE TABLE IF NOT EXISTS mastr_meta (
@@ -435,6 +451,11 @@ export async function GET(req: NextRequest) {
         notes text,
         CONSTRAINT single_row CHECK (id = 1)
       );
+      ALTER TABLE mastr_meta DROP CONSTRAINT IF EXISTS single_row;
+      ALTER TABLE mastr_meta ADD COLUMN IF NOT EXISTS markt text;
+      ALTER TABLE mastr_meta ADD COLUMN IF NOT EXISTS lauf_am timestamptz;
+      UPDATE mastr_meta SET markt = 'de' WHERE id = 1 AND markt IS NULL;
+      CREATE UNIQUE INDEX IF NOT EXISTS mastr_meta_markt_idx ON mastr_meta (markt);
     `,
   });
   results.push({ step: "mastr_meta", status: e3 ? "error" : "ok", error: e3?.message });

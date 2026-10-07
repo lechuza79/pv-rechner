@@ -16,6 +16,7 @@ import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
 import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 import { ATLAS_WURZEL } from "./atlas-wurzel";
+import { ebenenName } from "./markt-ebenen";
 
 export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
@@ -176,11 +177,9 @@ export type RegionHit = {
   parent_region_id: string | null;
 };
 
-const LEVEL_FALLBACK: Record<string, string> = {
-  bundesland: "Bundesland",
-  landkreis: "Landkreis",
-  gemeinde: "Gemeinde",
-};
+// Die Gattung je Ebene kommt aus dem MARKT, nicht aus einer deutschen Liste:
+// Ein Schweizer Kanton stünde hier sonst als „Bundesland" im Suchtreffer (siehe
+// lib/markt-ebenen.ts).
 
 /**
  * Namenssuche über alle navigierbaren Regionen (Bundesland, Kreis, Gemeinde) für
@@ -223,7 +222,7 @@ export async function searchRegions(
       name: regionDisplayName(String(r.name)),
       // Echte Gattung statt technischer Ebene: eine kreisfreie Stadt ist kein
       // „Landkreis", auch wenn sie auf dessen Ebene liegt.
-      label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
+      label: (r.bezeichnung as string | null) || ebenenName(r.level, String(r.region_id)),
       parent_region_id: (r.parent_region_id as string | null) ?? null,
     }));
   // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.

@@ -8,6 +8,8 @@
 // — erst für die Rangliste, später für die Tendenz, die Karte, die Breadcrumb
 // und die strukturierten Daten, jedes Mal einzeln und jedes Mal unvollständig.
 
+import { ebenenWort } from "./markt-ebenen";
+
 /** Region-Merkmale, die für Ortsangaben gebraucht werden. */
 export type OrtRegion = {
   name: string;
@@ -137,12 +139,16 @@ export function anzeigeOrtsname(name: string): string {
   return erste.length >= 2 ? erste : name;
 }
 
-/** Gattungswort der untergeordneten Ebene, mit korrektem Numerus. */
-export function childNoun(childLevel: string | null, anzahl?: number): string {
-  const eins = anzahl === 1;
-  if (childLevel === "bundesland") return eins ? "Bundesland" : "Bundesländer";
-  if (childLevel === "landkreis") return eins ? "Kreis" : "Kreise";
-  return eins ? "Gemeinde" : "Gemeinden";
+/**
+ * Gattungswort der untergeordneten Ebene, mit korrektem Numerus.
+ *
+ * `regionKey` entscheidet den MARKT: Ohne ihn stünde auf einer Schweizer
+ * Landesseite „26 Bundesländer". Er ist optional, damit der deutsche Bestand
+ * unverändert bleibt — und genau deshalb hält ein Test fest, dass die
+ * Atlas-Seite ihn mitgibt (siehe lib/__tests__/markt-ebenen.test.ts).
+ */
+export function childNoun(childLevel: string | null, anzahl?: number, regionKey?: string | null): string {
+  return ebenenWort(childLevel, regionKey, anzahl);
 }
 
 /**
