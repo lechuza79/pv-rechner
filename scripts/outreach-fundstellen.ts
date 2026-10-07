@@ -33,14 +33,19 @@ import {
   type Fund,
 } from "../lib/outreach-fundstellen";
 
-const PARALLEL = 8; // different hosts; each host is read one page at a time
-const MAX_SEITEN_JE_WEBSITE = 40;
+const PARALLEL = 4; // different sites; many small towns share one host, so stay low
+// Gentle by design (07.10.2026): 40 pages per site with no pause got this
+// machine blocked by a municipal hosting provider serving ~45 towns ("Zugriff
+// verweigert" for any user agent) — the same towns whose contact pages the
+// send run re-reads before a letter goes out. A news item sits on the start
+// page or one click below; twelve pages and a pause per site are enough.
+const MAX_SEITEN_JE_WEBSITE = 12;
 
 type Ziel = { name: string; url: string };
 
 let zeitlimitMs = 15_000;
 /** Pause zwischen zwei Seiten derselben Website (nur im zweiten Durchgang). */
-let pauseMs = 0;
+let pauseMs = 1_000;
 const warte = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function hole(url: string): Promise<{ html: string; url: string } | null> {
@@ -185,7 +190,7 @@ async function main() {
   const ersteFehlt = await durchgang(ziele, PARALLEL);
   if (ersteFehlt.length) await warte(120_000);
   zeitlimitMs = 30_000;
-  pauseMs = 1_500;
+  pauseMs = 2_000;
   const unerreichbar = (await durchgang(ersteFehlt, 1)).map((z) => z.name);
 
   const offen = ohneUebersichten(offeneFunde(funde, erledigt), erledigt);
