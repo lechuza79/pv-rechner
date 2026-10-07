@@ -119,10 +119,10 @@ type Paket = {
   uebersprungen: { region_id: string; name: string | null; grund: string }[];
 };
 
-async function holePaket(basis: string, schub: string, charge: number, limit: number): Promise<Paket> {
+async function holePaket(basis: string, schub: string, charge: number, limit: number, probe?: string): Promise<Paket> {
   const secret = process.env.CRON_SECRET;
   if (!secret) throw new Error("CRON_SECRET fehlt — ohne ihn gibt der Endpunkt nichts heraus.");
-  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}`;
+  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}${probe ? `&probe=${encodeURIComponent(probe)}` : ""}`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${secret}` } });
   if (!res.ok) throw new Error(`Versandpaket ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return (await res.json()) as Paket;
@@ -806,7 +806,8 @@ async function main(): Promise<void> {
   }
   const pauseMs = arg("pause") ? zahl("pause", PAUSE_MS / 1000) * 1000 : PAUSE_MS;
 
-  const paket = await holePaket(basis, schub, charge, limit);
+  // A proof with --ags builds exactly that town's letter, in or out of a charge.
+  const paket = await holePaket(basis, schub, charge, limit, arg("test") ? arg("ags") : undefined);
 
   if (hat("liste")) return zeigeListe(paket);
   if (hat("vorschau")) {

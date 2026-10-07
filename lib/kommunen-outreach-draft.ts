@@ -555,6 +555,48 @@ function standLabel(iso: string): string {
  * Spitzenreiter" muss sie erst prüfen und umschreiben. Jede Zahl trägt ihre
  * Quelle, damit die Meldung ohne uns nachprüfbar bleibt.
  */
+function weitereAbsatz(c: DraftContext): string {
+  // Further top placements. They show the number is no fluke. Since
+  // 07.10.2026 they stand INSIDE the message (operator: after the closing line
+  // of the box they read as a stray afterthought, and a press office that
+  // copies the box lost them).
+  //
+  // DIE VERGLEICHSGRUPPE STEHT EINMAL, NICHT IN JEDER ZEILE.
+  //
+  // Vorher endete jede Zeile mit „unter den Mittelgroßen Städten in Hessen" —
+  // bei drei Zeilen dreimal dieselben sechs Wörter untereinander. Das ist die
+  // Stelle, an der ein Brief aussieht, als hätte ihn eine Vorlage ausgespuckt.
+  // Ist die Gruppe bei allen Einträgen dieselbe, wird sie ausgeklammert; sonst
+  // bleibt sie an der Zeile, weil sie sonst etwas Falsches behaupten würde.
+  const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
+  const gruppenGleich =
+    weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
+  return weitereListe.length
+    ? gruppenGleich
+      ? // Die Vergleichsgruppe steht hier NICHT mehr (Vorgabe des Betreibers,
+        // 19.08.2026). Sie steht bereits in der Meldung darüber, und „von 53"
+        // sagt von selbst, dass es um eine Teilmenge geht — Hessen hat keine
+        // 53 Gemeinden.
+        `Auch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
+          .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
+          .join(", ")}${
+          // Only drop the group when it IS the group of the message above.
+          // Kempen: message ranked nationwide among 626 towns, these lines
+          // among the 5 in the district — "Platz 1 von 5" without the district
+          // read as a second nationwide claim.
+          gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
+            ? ""
+            : `, ${weitereListe.length > 1 ? "jeweils " : ""}unter den ${kleinKlasse(weitereListe[0].gruppe)}`
+        }.`
+      : `Auch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
+          .map(
+            (w) =>
+              `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${kleinKlasse(w.gruppe)}`,
+          )
+          .join("\n")}`
+    : "";
+}
+
 export function renderMeldung(c: DraftContext): string {
   const { anlagen, stand } = c.zahlen;
   // In der MELDUNG der Kurzname: Kein Ort schreibt seinen Unterscheidungszusatz
@@ -662,9 +704,10 @@ export function renderMeldung(c: DraftContext): string {
   // wird: Die Freigabe hängt am Gemeindeschlüssel des Empfängers, nicht an
   // dieser Zeichenkette. Zeigt der Brief künftig woandershin, muss die Freigabe
   // mitwandern — sonst ist wieder eine Seite verlinkt und gesperrt.
+  const weitere = weitereAbsatz(c);
   return `${ueberschrift}
 
-${anlagenSatz}${vergleichSatz}${belegSatz}
+${anlagenSatz}${vergleichSatz}${belegSatz}${weitere ? `\n\n${weitere}` : ""}
 
 Laufend aktualisierte Übersicht für ${kurz}: ${c.pageUrl ?? "https://solar-check.io"}
 
@@ -752,44 +795,6 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
     : "";
 
-  // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
-  // die Zahl kein Zufallstreffer ist.
-  //
-  // DIE VERGLEICHSGRUPPE STEHT EINMAL, NICHT IN JEDER ZEILE.
-  //
-  // Vorher endete jede Zeile mit „unter den Mittelgroßen Städten in Hessen" —
-  // bei drei Zeilen dreimal dieselben sechs Wörter untereinander. Das ist die
-  // Stelle, an der ein Brief aussieht, als hätte ihn eine Vorlage ausgespuckt.
-  // Ist die Gruppe bei allen Einträgen dieselbe, wird sie ausgeklammert; sonst
-  // bleibt sie an der Zeile, weil sie sonst etwas Falsches behaupten würde.
-  const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
-  const gruppenGleich =
-    weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
-  const weitereAbsatz = weitereListe.length
-    ? gruppenGleich
-      ? // Die Vergleichsgruppe steht hier NICHT mehr (Vorgabe des Betreibers,
-        // 19.08.2026). Sie steht bereits in der Meldung darüber, und „von 53"
-        // sagt von selbst, dass es um eine Teilmenge geht — Hessen hat keine
-        // 53 Gemeinden.
-        `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
-          .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
-          .join(", ")}${
-          // Only drop the group when it IS the group of the message above.
-          // Kempen: message ranked nationwide among 626 towns, these lines
-          // among the 5 in the district — "Platz 1 von 5" without the district
-          // read as a second nationwide claim.
-          gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
-            ? ""
-            : `, ${weitereListe.length > 1 ? "jeweils " : ""}unter den ${kleinKlasse(weitereListe[0].gruppe)}`
-        }.`
-      : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
-          .map(
-            (w) =>
-              `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${kleinKlasse(w.gruppe)}`,
-          )
-          .join("\n")}`
-    : "";
-
   //
   // KEINE RANGLISTEN-ZEILE IM BRIEF (Entscheidung des Betreibers, 20.08.2026,
   // nach einem Hin und Her — deshalb steht die Begründung hier ausführlich).
@@ -821,7 +826,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand.${szeneAbsatz}${linkZeile}${weitereAbsatz}${widgetAbsatz}${kommunenAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand.${szeneAbsatz}${linkZeile}${widgetAbsatz}${kommunenAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
