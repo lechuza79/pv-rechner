@@ -87,6 +87,15 @@ const nextConfig = {
         ],
       },
       {
+        // Landscape scenes are republished under the same address after
+        // repairs (scene bucket, see rewrites). Immutable would keep a
+        // returning visitor on the broken scene for a year. Later rule wins.
+        source: "/geo/landscape-tours/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" },
+        ],
+      },
+      {
         // Harmlose Basis-Header global — MIME-Sniffing aus, Referrer sparsam.
         // Absichtlich KEIN X-Frame-Options hier: die /embed/*-Widgets müssen
         // fremd-einbettbar bleiben. Der Framing-Schutz steht im nächsten

@@ -12,6 +12,15 @@ describe("scene bucket", () => {
     expect(regel!.destination).toBe(`${SZENEN_BASIS_URL}/landscape-tours/:place/:file`);
   });
 
+  it("scenes are not cached as immutable: a repaired scene must reach returning visitors", async () => {
+    const config = (await import("../../next.config.js")).default as { headers: () => Promise<{ source: string; headers: { key: string; value: string }[] }[]> };
+    const regeln = (await config.headers()).filter(r => ["/geo/:path*", "/geo/landscape-tours/:path*"].includes(r.source));
+    const letzte = regeln.at(-1)!.headers.find(h => h.key === "Cache-Control")!.value;
+    expect(regeln.at(-1)!.source).toBe("/geo/landscape-tours/:path*");
+    expect(letzte).not.toContain("immutable");
+    expect(Number(letzte.match(/max-age=(\d+)/)![1])).toBeLessThanOrEqual(86400);
+  });
+
   it("builds the scene address per place", () => {
     expect(szeneUrl("05166012")).toBe(`${SZENEN_BASIS_URL}/landscape-tours/05166012/scene.json`);
   });
