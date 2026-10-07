@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { plzNorm, telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
+import { verwandteDomain, plzNorm, telefonImBlock, geschwisterWebsite, belegseiteTraegt, traegtDomainwort, telefonIn, telefonKern, kernName, vollerNameIn, impressumHerkunft, abrufWiederholen, identifizierend, parkListe, anschriftSchluessel, besterBeleg, beurteilen, funktionsPostfach, ortsWoerterAus, trefferRelevant, zitatName, impressumBelegt, maildomain, marke, nameWoerter, registerKandidaten, standVon, suchanfrage, websiteHerkunft, type Registerzeile, type Kandidatenquelle, type Beleg } from "../windbetreiber";
 
 // Imprint excerpts as fetched on 06.10.2026 — real text, shortened.
 const IMPRESSUM = {
@@ -59,6 +59,18 @@ describe("impressumBelegt — calibrated on the five hand-solved cases", () => {
     expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@gmx.de", "04835-9728773")).toBeNull();
     expect(belegseiteTraegt("Kontakt Spedition Tel. 04835 9728773", a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9728773")).toBeNull();
     expect(belegseiteTraegt(seite, a, "Windpark Iselbek GmbH & Co. KG", "bb-wind.de", undefined, "s.behrends@bb-wind.de", "04835-9738773")).toBeNull();
+  });
+
+  it("knows sister domains of one organisation, and nothing looser", () => {
+    expect(verwandteDomain("xn--brgerwindpark-barlt-ost-cpc.de", "buergerwindpark-barlt-ost.de")).toBe(true);
+    expect(verwandteDomain("www.unfallreparatur-menge.de", "lackiererei-menge.de")).toBe(true);
+    expect(verwandteDomain("getec-greenenergy.de", "getec-green.de")).toBe(true);
+    expect(verwandteDomain("wisag-energy.de", "wisag.de")).toBe(true);
+    // Kind-of-company words and a hoster are no link.
+    expect(verwandteDomain("stadtwerke-voerde.de", "stadtwerke-dinslaken.de")).toBe(false);
+    expect(verwandteDomain("windpark-a.de", "windpark-b.de")).toBe(false);
+    expect(verwandteDomain("vermoegenundbau-bw.de", "vbv.bwl.de")).toBe(false);
+    expect(verwandteDomain("musterwind.de", "webdesign-schulz.de")).toBe(false);
   });
 
   it("reads a postcode with a country prefix or a British one (Momentum, Roskilde)", () => {

@@ -31,7 +31,7 @@ import { ohneAdressVerschleierung } from "../lib/presse-extrakt";
 import { webKomponentenAusklappen } from "../lib/web-komponenten";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
 import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
-import { impressumHerkunft, kontaktFelder, maildomain } from "../lib/windbetreiber";
+import { impressumHerkunft, kontaktFelder, maildomain, verwandteDomain } from "../lib/windbetreiber";
 import { WINDBETREIBER_SQL } from "../lib/windbetreiber-sql";
 import { nurBekannteSpalten, spaltenAusDdl } from "../lib/ddl-spalten";
 import { bewerten, laufen, readJson, recherchieren, sha, writeJson, type Bestand, type Eintrag, type Ergebnis, type Seite } from "./lib/kontakt-lauf";
@@ -92,7 +92,11 @@ export function impressumPostfach(basis: Ergebnis, evidence: Evidence[]): Record
   // A free-mail box in the operator's own imprint is its own (matthes.kg@t-online.de,
   // manual pass 06.10.2026): the engine's raw verdict still calls it foreign.
   const gratis = (e: Evidence) => GRATIS_POSTFACH.test(e.email.split("@")[1] ?? "");
-  const sauber = evidence.filter((e) => !e.reasons.some((r) => !(r === "mailbox-foreign-domain" && gratis(e))) && IMPRESSUM_SEITE.test(e.url) && postfachTauglich(e.email).ok);
+  // …and so is a mailbox on a sister domain of the same organisation, as its own
+  // imprint names it (lackiererei-menge.de in unfallreparatur-menge.de's imprint,
+  // the umlaut spelling of Barlt-Ost — contact pass, 07.10.2026).
+  const schwester = (e: Evidence) => { try { return verwandteDomain(new URL(e.url).hostname, e.email.split("@")[1] ?? ""); } catch { return false; } };
+  const sauber = evidence.filter((e) => !e.reasons.some((r) => !(r === "mailbox-foreign-domain" && (gratis(e) || schwester(e)))) && IMPRESSUM_SEITE.test(e.url) && postfachTauglich(e.email).ok);
   if (!sauber.length) return {};
   const rang = (m: string) => (WIND_ROLLENWERK.allgemein.test(m.split("@")[0]) ? 0 : 1);
   const best = [...sauber].sort((a, b) => rang(a.email) - rang(b.email) || a.email.localeCompare(b.email))[0];
@@ -375,6 +379,7 @@ async function main() {
     const { bestand, eintraege } = bestandAus(await betreiber());
     const e = eintraege.get(domain);
     if (!e) throw new Error(`${domain} ist keine belegte Website eines aktiven Betreibers`);
+    if (gerendert) console.log(`Seite im Browser gelesen und als Quelle gespeichert: ${url}`);
     const r = await recherchieren(bestand, e, BUDGET, { vonHand: true });
     const k = kontaktAus(bewerten(bestand, e));
     console.log(JSON.stringify(r), k ? `→ Kontakt: ${k.email} (${k.kanal}) auf ${k.url}` : "→ kein Kontakt belegt");

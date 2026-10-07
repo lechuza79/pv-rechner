@@ -292,6 +292,8 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     // A free-mail box in the imprint counts; on another page it stays foreign.
     expect(impressumPostfach(basis, [ev("matthes.kg@t-online.de", "https://matthes-kg.de/impressum/", ["mailbox-foreign-domain"])])).toMatchObject({ general: ["matthes.kg@t-online.de"] });
     expect(impressumPostfach(basis, [ev("info@agentur.de", "https://x.de/impressum", ["mailbox-foreign-domain"])])).toEqual({});
+    // A sister domain of the same organisation in its own imprint counts (Lackiererei Menge).
+    expect(impressumPostfach(basis, [ev("info@lackiererei-menge.de", "https://www.unfallreparatur-menge.de/impressum/", ["mailbox-foreign-domain"])])).toMatchObject({ general: ["info@lackiererei-menge.de"] });
     expect(impressumPostfach(basis, [ev("a@t-online.de", "https://x.de/impressum", ["mailbox-foreign-domain", "excluded-purpose"])])).toEqual({});
     // Nothing is overridden when the engine already chose.
     expect(impressumPostfach({ general: ["info@x.de"], kanaele: {} } as never, [ev("a@x.de", "https://x.de/impressum")])).toEqual({});

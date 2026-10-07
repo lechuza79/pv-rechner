@@ -1,3 +1,4 @@
+import { domainToUnicode } from "node:url";
 /**
  * Wind farm operators — the rules, without I/O.
  *
@@ -765,6 +766,25 @@ export function belegseiteTraegt(text: string, a: Akteur, name: string, domain: 
   }
   return null;
 }
+
+/**
+ * Two domains of one organisation, as an imprint shows them: the same name with
+ * and without umlaut (xn--brgerwindpark-barlt-ost-cpc.de / buergerwindpark-
+ * barlt-ost.de), or one distinguishing word in both labels (unfallreparatur-
+ * menge.de / lackiererei-menge.de, getec-greenenergy.de / getec-green.de,
+ * wisag-energy.de / wisag.de — contact pass, 07.10.2026). Kind-of-company words
+ * do not count: "stadtwerke-x" and "stadtwerke-y" are two utilities.
+ */
+export function verwandteDomain(a: string, b: string): boolean {
+  const label = (d: string) => falten(domainToUnicode(d).replace(/^www\./, "").split(".").slice(0, -1).join("-"));
+  const la = label(a), lb = label(b);
+  if (!la || !lb) return false;
+  if (la.replace(/[^a-z0-9]/g, "") === lb.replace(/[^a-z0-9]/g, "")) return true;
+  const woerter = (l: string) => new Set(l.split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !GENERISCH.has(w) && !DOMAIN_FUELLWORT.has(w)));
+  const wb = woerter(lb);
+  return [...woerter(la)].some((w) => wb.has(w));
+}
+const DOMAIN_FUELLWORT = new Set(["stadtwerke", "gemeindewerke", "online", "service", "gruppe", "group", "info", "mail", "post", "home", "web", "verwaltung", "green", "renewables", "power"]);
 
 /** Does the operator's name carry a distinguishing word of the domain's label? (the family firm on its own site) */
 export function traegtDomainwort(name: string, domain: string): boolean {
