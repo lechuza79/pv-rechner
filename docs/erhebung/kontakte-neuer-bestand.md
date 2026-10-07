@@ -192,11 +192,15 @@ verteilt wird. **Ein Skript, das an diesem Lauf vorbei sendet, gibt es nicht** �
 **16. Rücklauf und Wirkung.** Antworten werden der Aussendung zugeordnet, die
 Wirkung an Tag 3, 7, 14 und 28 gemessen (`npm run wirkung`). Antwort,
 Veröffentlichung, Verweis, Abo und Besuch sind **getrennte** Ergebnisse — ein Abo
-oder Besuch beweist keine Veröffentlichung. **Stand 07.10.2026 gemessen nur für
-Gemeinden**; für die Presse steht der Versand seit diesem Tag im Protokoll, aber
-Antworten werden ihr noch nicht zugeordnet. Eine neue Zielgruppe bekommt beides,
-bevor ihr erster Schub hinausgeht — sonst ist „hat nichts gebracht" nicht von
-„nicht gemessen" zu unterscheiden.
+oder Besuch beweist keine Veröffentlichung. Der tägliche Rücklauf ordnet
+Antworten auf `aussendungen` zu — zuerst über die Kennung unserer Mail im Kopf
+der Antwort, dann über die Absender-Domain, aber nur, wo keine Gemeinde dieselbe
+Domain hat (`lib/aussendung-ruecklauf.ts`); ein Widerspruch sperrt die Domain für
+die Zielgruppe. Eine neue Zielgruppe wird in der Wirkungsmessung als eigener Fall
+eingetragen (`scripts/outreach-wirkung.ts`), **bevor** ihr erster Schub
+hinausgeht — sonst ist „hat nichts gebracht" nicht von „nicht gemessen" zu
+unterscheiden. Eine Antwort zählt in einem Messpunkt erst ab ihrem Tag; ein
+nachgeholter Messpunkt zeigt deshalb nicht den Stand von heute.
 
 ### Auftragstext für Helfer der Handprüfung (Vorlage)
 

@@ -47,6 +47,12 @@ export const AUSSENDUNG_DDL = `
     vermerkt_am timestamptz not null default now(),
     herkunft text not null default 'versandlauf'
   );
+  -- Die Rückmeldung zur Mail (zugeordnet im täglichen Rücklauf,
+  -- lib/aussendung-ruecklauf.ts). Ohne diese Spalten maß die Wirkung der
+  -- Presse eine erfundene Null.
+  alter table aussendungen add column if not exists antwort_am timestamptz;
+  alter table aussendungen add column if not exists antwort_art text;
+  alter table aussendungen add column if not exists antwort_notiz text;
   create unique index if not exists aussendungen_einmal on aussendungen (zielgruppe, lower(empfaenger), betreff);
   create index if not exists aussendungen_domain on aussendungen (zielgruppe, domain);
   alter table aussendungen enable row level security;
@@ -170,20 +176,30 @@ export async function bestaetigeVersand(db: Db, id: number, messageId: string, a
 }
 
 /** Alle Empfänger einer Zielgruppe, die schon etwas von uns bekommen haben — je Domain. */
-export async function schonAngeschrieben(db: Db, zielgruppe: Zielgruppe): Promise<Map<string, { empfaenger: string; betreff: string; am: string | null }[]>> {
-  const raus = new Map<string, { empfaenger: string; betreff: string; am: string | null }[]>();
+export async function schonAngeschrieben(db: Db, zielgruppe: Zielgruppe): Promise<Map<string, { empfaenger: string; betreff: string; am: string | null; antwort: string | null }[]>> {
+  const raus = new Map<string, { empfaenger: string; betreff: string; am: string | null; antwort: string | null }[]>();
   for (let von = 0; ; von += 1000) {
     const { data, error } = await db
       .from("aussendungen")
-      .select("domain, empfaenger, betreff, gesendet_am, vermerkt_am")
+      .select("domain, empfaenger, betreff, gesendet_am, vermerkt_am, antwort_art")
       .eq("zielgruppe", zielgruppe)
       .order("id")
       .range(von, von + 999);
     if (error) throw new Error(`Versandprotokoll lesen: ${error.message}`);
-    const zeilen = (data ?? []) as { domain: string; empfaenger: string; betreff: string; gesendet_am: string | null; vermerkt_am: string }[];
+    const zeilen = (data ?? []) as { domain: string; empfaenger: string; betreff: string; gesendet_am: string | null; vermerkt_am: string; antwort_art: string | null }[];
     for (const z of zeilen) {
-      raus.set(z.domain, [...(raus.get(z.domain) ?? []), { empfaenger: z.empfaenger, betreff: z.betreff, am: z.gesendet_am ?? z.vermerkt_am }]);
+      raus.set(z.domain, [...(raus.get(z.domain) ?? []), { empfaenger: z.empfaenger, betreff: z.betreff, am: z.gesendet_am ?? z.vermerkt_am, antwort: z.antwort_art }]);
     }
     if (zeilen.length < 1000) return raus;
   }
+}
+
+/**
+ * Hat diese Domain in dieser Zielgruppe widersprochen? Dann geht dorthin nichts
+ * mehr — auch keine andere Mail an eine andere Adresse derselben Redaktion. Wie
+ * „gesperrt" bei den Gemeinden: eine Einbahnstraße, die nur ein Mensch
+ * zurücknimmt.
+ */
+export function hatWidersprochen(bisher: { antwort: string | null }[] | undefined): boolean {
+  return (bisher ?? []).some((b) => b.antwort === "widerspruch");
 }

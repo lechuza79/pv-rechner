@@ -21,7 +21,7 @@ import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
 import { adresseAus, leseSmtpKonfig } from "../lib/outreach-mail";
 import { dkimAktiv } from "../lib/outreach-dkim";
 import {
-  AUSSENDUNG_DDL, AUSSENDUNG_UMZUG_SQL, anlassAusBetreff, aussendungsMaengel, bestaetigeVersand, schonAngeschrieben, vermerkeVorVersand,
+  AUSSENDUNG_DDL, AUSSENDUNG_UMZUG_SQL, anlassAusBetreff, aussendungsMaengel, hatWidersprochen, bestaetigeVersand, schonAngeschrieben, vermerkeVorVersand,
 } from "../lib/aussendung";
 
 const arg = (name: string) => {
@@ -133,6 +133,7 @@ async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
       // Wer schon DIESELBE Mail hat, überspringt der Vermerk ohnehin; hier wird
       // zusätzlich gemeldet, wer in dieser Zielgruppe überhaupt schon etwas bekam.
       const bisher = vorher.get(an.split("@")[1]);
+      if (hatWidersprochen(bisher)) { console.log(`– ${an}: diese Redaktion hat widersprochen`); continue; }
       if (bisher?.some((b) => b.betreff === m.betreff)) { console.log(`– ${an}: schon verschickt`); continue; }
       if (!erste) await new Promise((r) => setTimeout(r, 60_000 + Math.floor(Math.random() * 90_000))); // uneven gaps, 1–2.5 min
       erste = false;

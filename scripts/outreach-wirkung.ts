@@ -13,7 +13,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
 import {
-  MESSPUNKTE, WIRKUNG_DDL, WIRKUNG_UNSICHTBAR, faelligeMesspunkte, kostenHinweis, nachtraeglich,
+  MESSPUNKTE, WIRKUNG_DDL, WIRKUNG_UNSICHTBAR, antwortBisMesstag, faelligeMesspunkte, kostenHinweis, nachtraeglich,
   type Bestand,
 } from "../lib/outreach-wirkung";
 import { heuteInBerlin } from "../lib/zeit";
@@ -44,7 +44,7 @@ async function db() {
 
 type Client = Awaited<ReturnType<typeof db>>;
 /** `id` trägt bei Kommunen den Gemeindeschlüssel — für die Abo-Zählung. */
-type Angeschrieben = { domain: string | null; id?: string; versandTag: string; geantwortet: boolean };
+type Angeschrieben = { domain: string | null; id?: string; versandTag: string; geantwortet: boolean; antwortTag?: string | null };
 
 /**
  * Wer wurde wann angeschrieben, und hat er geantwortet?
@@ -67,17 +67,22 @@ async function angeschriebene(bestand: Bestand, client: Client): Promise<Angesch
     case "kommunen": {
       const rows = await seiten<{ region_id: string; website: string | null; contacted_at: string; responded_at: string | null }>(
         "kommunen_kontakt", "region_id, website, contacted_at, responded_at", q => q.not("contacted_at", "is", null));
-      return rows.map(r => ({ domain: domainAus(r.website), id: r.region_id, versandTag: r.contacted_at.slice(0, 10), geantwortet: !!r.responded_at }));
+      return rows.map(r => ({ domain: domainAus(r.website), id: r.region_id, versandTag: r.contacted_at.slice(0, 10), geantwortet: !!r.responded_at, antwortTag: r.responded_at ? heuteInBerlin(new Date(r.responded_at)) : null }));
+    }
+    // Every audience other than the municipalities sends through one run and
+    // one table (`aussendungen`), and since 07.10.2026 the daily reply intake
+    // writes the replies there too. An automatic receipt or a bounce is not an
+    // answer.
+    case "presse": {
+      const rows = await seiten<{ domain: string; gesendet_am: string; antwort_art: string | null; antwort_am: string | null }>(
+        "aussendungen", "domain, gesendet_am, antwort_art, antwort_am",
+        q => q.eq("zielgruppe", "presse").not("gesendet_am", "is", null).order("id"));
+      return rows.map(r => ({ domain: r.domain, versandTag: heuteInBerlin(new Date(r.gesendet_am)), geantwortet: r.antwort_art === "antwort", antwortTag: r.antwort_am ? heuteInBerlin(new Date(r.antwort_am)) : null }));
     }
     // `fachbetriebe.kontakt_at` is the day the contact page was CRAWLED, not a
     // send: reading it as one reported 1,260 "contacted" trades that nobody ever
-    // wrote to. Fachbetriebe and Versorger have no send path yet.
-    // The press HAS one since 07.10.2026 (table `aussendungen`, 145 mails), but
-    // replies are not yet matched to it — measuring now would write "0
-    // answered", a made-up zero. Wire replies first, then read `aussendungen`
-    // here (zielgruppe = bestand).
+    // wrote to. No send path yet; when they get one, it is the case above.
     case "fachbetriebe":
-    case "presse":
     case "versorger":
       return [];
   }
@@ -155,7 +160,7 @@ async function main() {
         versand_am: a.versandTag,
         tage,
         angeschrieben: a.zeilen.length,
-        geantwortet: a.zeilen.filter(z => z.geantwortet).length,
+        geantwortet: a.zeilen.filter(z => antwortBisMesstag(z.geantwortet, z.antwortTag, a.versandTag, tage)).length,
         verlinkt: a.zeilen.filter(z => z.domain && verlinken.has(z.domain)).length,
         // Nur Kommunen haben ein Abo; gezählt wird die Gemeinde, nicht die Adresse.
         angemeldet: a.zeilen.filter(z => z.id && aboOrte.has(z.id)).length,
