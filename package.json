@@ -75,6 +75,8 @@
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:auswertung": "tsx scripts/kommunen-auswertung.ts",
+    "outreach:fundstellen": "tsx scripts/outreach-fundstellen.ts",
+    "outreach:kennzahlen": "tsx scripts/outreach-kennzahlen.ts",
     "traffic:bericht": "tsx scripts/traffic-bericht.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",

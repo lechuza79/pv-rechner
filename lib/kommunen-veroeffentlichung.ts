@@ -116,6 +116,35 @@ export function quoteText(q: number): string {
   return `${(q * 100).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
 }
 
+/**
+ * Veröffentlichungen aus einer Aussendung an andere Zielgruppen (Presse), über
+ * einen Ort, dem wir keinen Brief geschrieben haben. Getrennt von der
+ * Gemeinde-Tabelle, weil die Quote dort „Briefe, die zu einer Veröffentlichung
+ * geführt haben" heißt — Moers stand am 06.10.2026 in einem Radioartikel aus
+ * der Pressemitteilung über den Kreis Wesel, einen Brief hat Moers nie
+ * bekommen. In die Gemeindequote gezählt, stiege sie mit jeder Pressenotiz.
+ */
+export const PRESSE_VEROEFFENTLICHUNG_DDL = `
+  create table if not exists aussendung_veroeffentlichung (
+    id uuid primary key default gen_random_uuid(),
+    url text not null unique,
+    domain text not null,
+    region_id text not null,
+    mit_link boolean not null,
+    gesehen_ab date,
+    noch_online boolean not null default true,
+    notiz text,
+    erfasst_am timestamptz not null default now()
+  );
+  alter table aussendung_veroeffentlichung enable row level security;
+  revoke all on aussendung_veroeffentlichung from anon, authenticated;
+`;
+
+/** Gehört der Ort zu einer Region, die eine Aussendung genannt hat? Kreis ⊃ Gemeinde, in beide Richtungen. */
+export function liegtImBezug(regionId: string, bezug: readonly string[]): boolean {
+  return bezug.some((b) => regionId.startsWith(b) || b.startsWith(regionId));
+}
+
 export const VEROEFFENTLICHUNG_DDL = `
   create table if not exists kommunen_veroeffentlichung (
     id uuid primary key default gen_random_uuid(),

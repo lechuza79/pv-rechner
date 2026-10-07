@@ -36,6 +36,7 @@ import {
   type Herkunft,
 } from "../lib/outreach-herkunft";
 import { ordneWebsiteVerweis, type Angeschrieben } from "../lib/outreach-website-verweise";
+import { adressen, ladeRegionen } from "../lib/outreach-adressen";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -54,33 +55,6 @@ async function makeClient() {
   if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt");
   const { createClient } = await import("@supabase/supabase-js");
   return createClient(url, key, { auth: { persistSession: false } });
-}
-
-type RegionZeile = { region_id: string; name: string; slug: string | null; parent_region_id: string | null };
-
-/**
- * Atlas-Adresse je Gemeinde, aus der Elternkette gebaut — dieselbe Regel wie
- * in lib/atlas.ts. Ohne Kürzel irgendwo in der Kette gibt es keine Adresse;
- * diese Gemeinden werden gezählt und benannt statt stillschweigend übergangen.
- */
-function adressen(regionen: Map<string, RegionZeile>, ids: string[]): Map<string, string> {
-  const raus = new Map<string, string>();
-  for (const id of ids) {
-    const teile: string[] = [];
-    let cursor: string | null = id;
-    let vollstaendig = true;
-    while (cursor && cursor !== "de") {
-      const r: RegionZeile | undefined = regionen.get(cursor);
-      if (!r?.slug) {
-        vollstaendig = false;
-        break;
-      }
-      teile.unshift(r.slug);
-      cursor = r.parent_region_id;
-    }
-    if (vollstaendig && teile.length === 3) raus.set(id, `/solar-atlas/${teile.join("/")}`);
-  }
-  return raus;
 }
 
 async function main() {
@@ -126,22 +100,8 @@ async function main() {
     notes: string | null;
   }[];
 
-  // Regionen samt Eltern, für die Adressen. SEITENWEISE: Eine Abfrage ohne
-  // Bereich liefert stumm nur die ersten 1.000 Zeilen — bei rund 11.000
-  // Regionen hätte fast jede Gemeinde dann „keine Adresse", und das sähe wie
-  // ein Befund aus statt wie ein abgeschnittener Lesevorgang.
-  const regionen = new Map<string, RegionZeile>();
-  for (let von = 0; ; von += 1000) {
-    const { data, error: regFehler } = await db
-      .from("mastr_regions")
-      .select("region_id, name, slug, parent_region_id")
-      .order("region_id")
-      .range(von, von + 999);
-    if (regFehler) throw new Error(regFehler.message);
-    if (!data?.length) break;
-    for (const r of data as RegionZeile[]) regionen.set(r.region_id, r);
-    if (data.length < 1000) break;
-  }
+  // Regionen samt Eltern, für die Adressen (seitenweise, lib/outreach-adressen.ts).
+  const regionen = await ladeRegionen(db);
 
   const pfade = adressen(regionen, zeilen.map((z) => z.region_id));
   const gemeindeJePfad = new Map<

@@ -8,6 +8,7 @@ import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 import InfoTooltip from "../../../../../components/InfoTooltip";
 import { DatenTabelle } from "../../../../../components/admin/DatenTabelle";
 import { KANAELE, KANAL_TEXT, quoteText, type Bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
+import { OFFEN, type Kennzahlen, type LinkZahl, type Zelle } from "../../../../../lib/aussand-kennzahlen";
 
 // Auswertung des Kommunen-Outreach.
 //
@@ -33,6 +34,7 @@ export default function VersandAuswertung() {
   const [wirkung, setWirkung] = useState<Wirkung | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [pubs, setPubs] = useState<Veroeffentlichungen | null | undefined>(undefined);
+  const [jeAussendung, setJeAussendung] = useState<Kennzahlen | null | undefined>(undefined);
   const offeneSchuebe = (wirkung?.jeKampagne ?? []).filter((k) => k.offen > 0);
 
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function VersandAuswertung() {
       .then((j) => {
         setWirkung(j.wirkung ?? null);
         setPubs(j.veroeffentlichungen ?? null);
+        setJeAussendung(j.jeAussendung ?? null);
       })
       .catch((e) => setFehler(e instanceof Error ? e.message : String(e)));
   }, []);
@@ -58,6 +61,13 @@ export default function VersandAuswertung() {
 
       {wirkung && (
         <>
+          {jeAussendung === null && (
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginBottom: space.lg }}>
+              Die Tabelle je Aussendung konnte nicht geladen werden.
+            </p>
+          )}
+          {jeAussendung && <JeAussendung daten={jeAussendung} />}
+
           {/* Was noch aussteht. Ohne diese Zeile liest sich „0 Antworten" wie
               ein Ergebnis, obwohl der halbe Schub noch gar nicht raus ist. */}
           <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
@@ -190,6 +200,93 @@ export default function VersandAuswertung() {
     </div>
   );
 }
+
+/**
+ * One row per sending, in fair windows after the send day. A window that has
+ * not elapsed yet says "noch offen" — a smaller number would only look worse.
+ */
+function JeAussendung({ daten }: { daten: Kennzahlen }) {
+  const zahl = (z: Zelle<number> | undefined) => (z === OFFEN ? <span style={offenStil}>{OFFEN}</span> : z);
+  const link = (z: Zelle<LinkZahl>) =>
+    z === OFFEN ? (
+      <span style={offenStil}>{OFFEN}</span>
+    ) : (
+      <>
+        {z.gesamt}
+        {z.sozial > 0 && (
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>davon {z.sozial} soziale Netze</div>
+        )}
+      </>
+    );
+  return (
+    <section style={{ marginBottom: space.xl }}>
+      <h2 style={ueberschrift}>
+        Je Aussendung{" "}
+        <InfoTooltip ariaLabel="Was die Spalten zählen" exportNote={false}>
+          „Seite aufgerufen" heißt: Die Ortsseite eines zugestellten Empfängers wurde im Fenster nach seinem Versandtag
+          besucht. Das belegt nicht, dass der Empfänger selbst geklickt hat; Suchmaschinen, Mail-Prüfdienste und eigene
+          Aufrufe zählen nicht. Bei der Presse ist das nicht je Mail messbar, weil sie dieselben Ortsseiten verlinkt.
+          Links sind belegte Veröffentlichungen mit Link auf uns, zugeordnet der frühesten Aussendung, die den Ort vorher
+          erreicht hat. Ein Fenster, das noch nicht vorbei ist, steht als „noch offen".
+        </InfoTooltip>
+      </h2>
+      <table style={{ ...adminTabelle, maxWidth: 900 }}>
+        <thead>
+          <tr>
+            <th style={adminTh} rowSpan={2}>
+              Aussendung
+            </th>
+            <th style={thRechts} rowSpan={2}>
+              Mails
+            </th>
+            <th style={thRechts} colSpan={2}>
+              Seite aufgerufen
+            </th>
+            <th style={thRechts} colSpan={2}>
+              Links
+            </th>
+          </tr>
+          <tr>
+            <th style={thRechts}>2 Tage</th>
+            <th style={thRechts}>bisher</th>
+            <th style={thRechts}>28 Tage</th>
+            <th style={thRechts}>bisher</th>
+          </tr>
+        </thead>
+        <tbody>
+          {daten.zeilen.map((z) => (
+            <tr key={z.id} style={adminZeile}>
+              <td style={adminTd}>{z.label}</td>
+              <td style={tdRechts}>{z.mails}</td>
+              {z.seite ? (
+                <>
+                  <td style={tdRechts}>{zahl(z.seite[2])}</td>
+                  <td style={tdRechts}>{zahl(z.seite.bisher)}</td>
+                </>
+              ) : (
+                <td style={tdRechts} colSpan={2}>
+                  –{" "}
+                  <InfoTooltip ariaLabel="Warum kein Wert" exportNote={false}>
+                    Nicht je Mail messbar: Die Presse verlinkt dieselben Ortsseiten wie die Briefe.
+                  </InfoTooltip>
+                </td>
+              )}
+              <td style={tdRechts}>{link(z.links[28])}</td>
+              <td style={tdRechts}>{link(z.links.bisher)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {daten.ohneZuordnung.length > 0 && (
+        <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.sm }}>
+          {daten.ohneZuordnung.length} Link(s) ohne vorherige Aussendung an den Ort, hier nicht gezählt.
+        </p>
+      )}
+    </section>
+  );
+}
+
+const offenStil: React.CSSProperties = { color: v("--color-text-muted"), whiteSpace: "nowrap" };
 
 /**
  * Die belegten Veröffentlichungen: Quote, Beiträge, Links, wo sie stehen.

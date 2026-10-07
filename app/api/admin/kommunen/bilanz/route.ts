@@ -7,6 +7,20 @@ import { aboZeilenFuerAuswertung } from "../../../../../lib/gemeinde-abo";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
 import { liesNotiz } from "../../../../../lib/outreach-ruecklauf";
+import { unstable_cache } from "next/cache";
+import { ladeAussandKennzahlen } from "../../../../../lib/aussand-kennzahlen-server";
+
+// Per-sending figures ask the visitor statistics a few dozen times (about half
+// a minute). Cached for an hour so the page stays fast; the figures move by
+// the day, not by the minute.
+const jeAussendungGecacht = unstable_cache(
+  async () => {
+    if (!serviceDb) throw new Error("DB not configured");
+    return ladeAussandKennzahlen(serviceDb);
+  },
+  ["kommunen-je-aussendung"],
+  { revalidate: 6 * 3600 },
+);
 
 // Auswertung des Outreach: was hinausging und was daraus wurde.
 //
@@ -103,8 +117,18 @@ export async function GET(req: NextRequest) {
   const kampagne = req.nextUrl.searchParams.get("kampagne") ?? vorgabe;
   const zeilen = alle.filter((z) => z.kampagne === kampagne);
 
+  // A failure here must not take the rest of the evaluation with it: the page
+  // says the table is missing instead of showing zeros.
+  let jeAussendung: unknown = null;
+  try {
+    jeAussendung = await jeAussendungGecacht();
+  } catch (e) {
+    console.error("[kommunen/bilanz] je Aussendung:", e instanceof Error ? e.message : e);
+  }
+
   return NextResponse.json({
     kampagne,
+    jeAussendung,
     wirkung: { gesamt, jeKampagne, jeTag },
     veroeffentlichungen,
     verteilung: verteile(zeilen),
