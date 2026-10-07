@@ -18,6 +18,10 @@ for (const path of [
         json: { annual: NATIONAL_AVG_YIELD, monthly: null },
       }));
       await page.goto(`${path}#atlas-buerger`, { waitUntil: "domcontentloaded" });
+      if (path.startsWith("/solar-atlas/")) {
+        const heading = page.locator("#atlas-stories .atlas-insights-head h2");
+        await expect(heading).toHaveCSS("font-size", "20px");
+      }
       const cards = page.locator(".gemeinde-buerger-card");
       await expect(cards.first()).toBeAttached();
       const captions = cards.locator(".v3-result-amount > small");
