@@ -16,7 +16,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
 import { freigabeUrteil, freigeben, type Pruefling } from "./lib/kontakt-freigabe";
-import { weitereSitesVon } from "./windbetreiber-kontakte";
+import { weitereSitesVon, windSeiteVorbereiten } from "./windbetreiber-kontakte";
 
 /** The block reasons the wind stock carried before this run (two-strike rule). */
 let vorherWind = new Map<string, string | null>();
@@ -97,7 +97,7 @@ const BESTAENDE: Record<string, Bestand> = {
       const weitere = new Map<string, string[]>();
       return z.map(r => {
         if (!weitere.has(r.website)) weitere.set(r.website, weitereSitesVon(r.website));
-        return { schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true, weitereSites: weitere.get(r.website) };
+        return { schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true, weitereSites: weitere.get(r.website), vorbereiten: windSeiteVorbereiten };
       });
     },
     async schreiben(c, schluessel, heute, grund) {

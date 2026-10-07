@@ -103,6 +103,9 @@ export function impressumPostfach(basis: Ergebnis, evidence: Evidence[]): Record
   return { general: [best.email], selected: [best.email], fundstellen: { ...(basis.fundstellen ?? {}), [best.email]: best.url }, outcome: "general-only", reason: "imprint mailbox (§ 5 DDG)" };
 }
 
+/** The wind stock's page preparation — the same for the contact search and its release. */
+export const windSeiteVorbereiten = (html: string): string => klammerAdressen(ohneAdressVerschleierung(webKomponentenAusklappen(html)));
+
 /** Addresses written "name (at) domain.de", "name[@]domain.de", "name(a)domain.de". */
 export function klammerAdressen(html: string): string {
   // Also "[*at*]" (meerwind.de), ")at(" (nordum-akademie.de) and "( - at - )"
@@ -255,7 +258,7 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
     ergebnisForm: (basis, _m, evidence) => impressumPostfach(basis, evidence),
     // Cloudflare-protected and bracket-written addresses (rwe.com, altus-re.de,
     // windmanager(at)wpd.de) — decoded for this stock only, see impressumPostfach.
-    htmlVorbereiten: { kennung: "wind-3", f: (html) => klammerAdressen(ohneAdressVerschleierung(webKomponentenAusklappen(html))) },
+    htmlVorbereiten: { kennung: "wind-3", f: windSeiteVorbereiten },
     eintraege: () => [...eintraege.values()],
     // Done when there is a press contact — the general imprint mailbox comes for free on the way.
     fertigWenn: (r: Ergebnis) => (r.kanaele.presse?.length ?? 0) > 0,

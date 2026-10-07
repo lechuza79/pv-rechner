@@ -25,6 +25,13 @@ export type Pruefling = {
   nurEigeneWebsite?: boolean;
   /** Sites that are the same website: its redirect target, the domain of its imprint. */
   weitereSites?: string[];
+  /**
+   * The stock's own page preparation (decoding "(at)" spellings, Cloudflare,
+   * web components). Without it the release re-read the page plainly and
+   * blocked addresses the contact search had decoded — "( - at - )" on
+   * energiebauern.com (07.10.2026).
+   */
+  vorbereiten?: (html: string) => string;
 };
 
 /** Is the page on the site `domain` (the domain itself or one of its hosts)? */
@@ -48,12 +55,12 @@ function nimmtMails(domain: string): Promise<boolean> {
  * blocked with a reason that states something we never observed — the same
  * fault class as a check date nobody checked.
  */
-async function adressenAuf(url: string, domain: string, gesucht: string[]): Promise<{ gefunden: Set<string>; gelesen: boolean; fehler: string | null }> {
+async function adressenAuf(url: string, domain: string, gesucht: string[], vorbereiten: (html: string) => string = (h) => h): Promise<{ gefunden: Set<string>; gelesen: boolean; fehler: string | null }> {
   const gefunden = new Set<string>();
   let gelesen = false;
   const lesen = (html: string) => {
     gelesen = true;
-    for (const c of contactCandidates(html, url, domain)) gefunden.add(c.email.toLowerCase());
+    for (const c of contactCandidates(vorbereiten(html), url, domain)) gefunden.add(c.email.toLowerCase());
   };
   const live = await fetchLive(url);
   if ("html" in live) lesen(live.html);
@@ -117,7 +124,7 @@ export async function freigeben(
       for (const url of urls) {
         const pruef = jeSeite.get(url)!;
         const da = await mitFrist(
-          adressenAuf(url, pruef[0].domain, pruef.map(p => p.email)),
+          adressenAuf(url, pruef[0].domain, pruef.map(p => p.email), pruef[0].vorbereiten),
           SEITE_MAX_MS,
           { gefunden: new Set<string>(), gelesen: false, fehler: null },
         );

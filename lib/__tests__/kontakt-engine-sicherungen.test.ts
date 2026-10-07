@@ -302,6 +302,13 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     // Nothing is overridden when the engine already chose.
     expect(impressumPostfach({ general: ["info@x.de"], kanaele: {} } as never, [ev("a@x.de", "https://x.de/impressum")])).toEqual({});
   });
+  it("re-reads a proof page for the release with the same preparation the search used (energiebauern)", () => {
+    const f = lies("scripts/lib/kontakt-freigabe.ts");
+    expect(f).toMatch(/contactCandidates\(vorbereiten\(html\), url, domain\)/);
+    expect(f).toMatch(/adressenAuf\(url, pruef\[0\]\.domain, pruef\.map\(p => p\.email\), pruef\[0\]\.vorbereiten\)/);
+    expect(lies("scripts/kontakte-freigabe.ts")).toMatch(/vorbereiten: windSeiteVorbereiten/);
+    expect(lies("scripts/windbetreiber-kontakte.ts")).toMatch(/htmlVorbereiten: \{ kennung: "wind-3", f: windSeiteVorbereiten \}/);
+  });
   it("gives a website's contact to EVERY operator of it, and only rewrites the differing ones", () => {
     const k = lies("scripts/windbetreiber-kontakte.ts");
     const a = k.slice(k.indexOf("async function apply()"), k.indexOf("async function main()"));
