@@ -120,6 +120,7 @@ export const EMBED_WIDGETS = [
   "kennzahl",
   "micro-solar",
   "micro-wind",
+  "partner",
   "pv-kostenrennen",
   "pv-zubau-deutschland",
   "region-anlagentyp",

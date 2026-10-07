@@ -1,8 +1,9 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ZubauChart from "../atlas/ZubauChart";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
+import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 import {ExportOnly} from "../WidgetExport";
 import {WIDGETS} from "../../lib/widget-registry";
 import {WidgetSetting} from "../dashboard/WidgetSetting";
@@ -11,10 +12,17 @@ import "../gemeinde/municipal-data.css";
 import "../dashboard/dashboard.css";
 
 export function AnnualGrowth({ years, stand, name, regionId }: { name:string; regionId:string; years: { year: number; count: number }[]; stand: string }) {
+  const {partner} = useWidgetPresentation();
   const [range, setRange] = useState("all");
+  useEffect(() => {
+    const selected = new URLSearchParams(window.location.search).get('range');
+    if (selected && ['all','10','5'].includes(selected)) setRange(selected);
+  }, []);
   const end = Number(stand.slice(0, 4));
   return (
     <ExportableWidgetFrame widget={WIDGETS.regionalAnnualGrowth} place={name} stand={dashboardDate(stand)} filename={`solar-check-growth-${regionId}`} data-story-scheme="dark" stateLabel={`${range === "all" ? 2014 : end - Number(range) + 1}–${end}`}
+      sourcePlacement="plot" actions="primary" directActions
+      shareParams={{range}}
       title="Zubau pro Jahr"
       kind="time-series"
       help={<p>Solaranlagen nach Inbetriebnahmejahr. Das laufende Jahr ist noch nicht vollständig. Registerstand: {dashboardDate(stand)}.</p>}
@@ -35,9 +43,9 @@ export function AnnualGrowth({ years, stand, name, regionId }: { name:string; re
       <div className="monitor-native-chart">
         <ZubauChart years={years} from={range === "all" ? 2014 : end - Number(range) + 1} asOfYear={end} />
       </div>
-      <ExportOnly style={{padding:"0 var(--widget-padding)",fontSize:"var(--font-size-small)"}}>
+      {!partner && <ExportOnly style={{padding:"0 var(--widget-padding)",fontSize:"var(--font-size-small)"}}>
         <p>Anlagen nach Inbetriebnahmejahr: {years.filter(row=>row.year>=(range==="all"?2014:end-Number(range)+1)&&row.year<=end).map(row=>`${row.year}: ${row.count.toLocaleString("de-DE")}`).join(" · ")}</p>
-      </ExportOnly>
+      </ExportOnly>}
     </ExportableWidgetFrame>
   );
 }

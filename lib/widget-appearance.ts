@@ -1,8 +1,9 @@
+import type {WidgetBrand, WidgetHeaderMode} from './widget-brand';
 import {allWidgets} from './widget-registry';
 /** Shared presentation options; data and permissions remain separate. */
 export type WidgetTheme = 'light' | 'dark' | 'hero';
 export type WidgetSharing = 'on' | 'off' | 'secondary' | 'primary';
-export type WidgetAppearance = {theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group'; autoplay?: boolean};
+export type WidgetAppearance = {partner?: {brand: WidgetBrand; header: WidgetHeaderMode}; theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group'; autoplay?: boolean};
 export function parseWidgetAppearance(query: {theme?: string; background?: string; sharing?: string; layout?: string; autoplay?: string}): WidgetAppearance {
   return {theme: ['light','dark','hero'].includes(query.theme ?? '') ? query.theme as WidgetTheme : undefined,
     ...(query.layout === 'group' ? {layout: 'group' as const} : {}),

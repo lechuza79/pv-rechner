@@ -90,6 +90,7 @@
     "fachbetriebe:formulare": "tsx scripts/fachbetriebe-formularfelder.ts",
     "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
     "presse": "tsx scripts/presse-refresh.ts",
+    "presse:versand": "tsx scripts/presse-versand.ts",
     "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts",
     "flows:matrix": "tsx scripts/flow-matrix.ts",
     "seitenwert": "tsx scripts/seitenwert.ts",

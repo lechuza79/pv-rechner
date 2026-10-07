@@ -478,6 +478,9 @@ Diese Entscheidungen sind bewusst so gefallen und dürfen nicht „aufgeräumt" 
 
 ## Embed-Widgets (Energie-Widgets)
 
+Partner embeds: `/embed/partner/[partner]/[widget]/[full|title|none]` reuse the municipal widget adapter and shared export frame. Trusted presets live in `lib/widget-brand.ts`; header mode never suppresses chart titles or attribution. Generate responsive customer HTML through `partnerEmbedCode`. See `docs/partner-widgets.md`.
+
+
 Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**, Stromkosten-Rennen). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
 
 **Geteilte Bausteine (nicht neu erfinden, keine Inline-Kopien):**
@@ -1904,6 +1907,16 @@ einer (er springt bei den rund zwei Dritteln der Orte ohne Auszeichnung, nur
 andersherum). **Die naheliegende Abkürzung ist falsch:** „öffentlich erreichbar
 sind ohnehin nur angeschriebene Orte" — die Freigabe steuert die INDEXIERUNG,
 nicht die Erreichbarkeit; über den Atlas kommt man auf jede der 11.000 Seiten.
+
+## Jede Aussendung steht in der Datenbank — BLOCKER (07.10.2026)
+
+**Egal aus welcher Sitzung: Wer eine Mail an Gemeinden, Redaktionen, Förderstellen oder sonst jemanden außerhalb verschickt, schreibt sie vorher in eine Tabelle.** Eine Datei ist kein Protokoll, ein temporärer Ordner erst recht nicht.
+
+- **Der Anlass:** 138 Pressemitteilungen an Lokalredaktionen (29./30.09.2026) und sieben Update-Mails (28.09.) gingen aus einem nie eingecheckten Skript hinaus, das sein Protokoll in den temporären Ordner der Sitzung schrieb. Der wurde aufgeräumt; eine Woche später meldete eine andere Sitzung „Regionalpresse nie angeschrieben" — der nächste Schub hätte dieselben Redaktionen ein zweites Mal angeschrieben. Zurückgeholt wurde die Liste nur, weil jede Mail zufällig auch im Gesendet-Ordner lag (`presse_versand`, Herkunft „nachgetragen").
+- **Der Gesendet-Ordner ist KEIN Protokoll.** Das Postfach legt dort nichts von selbst ab — von 468 Kommunen-Anschreiben steht dort keines. Was ein Lauf nicht selbst hineinkopiert, existiert dort nicht.
+- **Versandwege und ihre Tabellen:** Kommunen → `kommunen_kontakt` (`scripts/kommunen-versand.ts`), Förderstellen → `funding_anfragen` (`scripts/funding-anfrage.ts`), Presse → `presse_versand` (`npm run presse:versand`; entworfen wird mit `scripts/presse-kreise.ts`, das selbst nicht sendet). Ein neuer Empfängerkreis bekommt eine eigene Tabelle und einen Eintrag in `lib/versand-wache.ts`, BEVOR die erste Mail hinausgeht.
+- **Zwei Sicherungen, weil eine nicht reicht:** `lib/__tests__/versand-protokoll.test.ts` hält jedes eingecheckte Skript, das über das Postfach sendet, gegen die Liste. `npm run sessions` sucht in jedem Arbeitsstand nach NIE eingecheckten Dateien, die senden — genau dort lag das verlorene Skript, und dort sieht kein Test hin. Steht dort ein Befund, wird vor dem nächsten Versand nichts verschickt, bis der Weg über einen eingecheckten Lauf führt.
+- **Was die Sicherungen nicht können:** Ein Skript, das jemand anlegt, ausführt und löscht, ohne dass dazwischen `npm run sessions` läuft, sieht keine von beiden. Deshalb ist die Regel eine Regel und nicht nur ein Test.
 
 ## Kommunen-Outreach (interner Bereich)
 

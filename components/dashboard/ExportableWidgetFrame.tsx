@@ -1,5 +1,5 @@
 "use client";
-import {useCallback, useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
+import {useCallback, useEffect, useLayoutEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
 import {trackWidgetEvent} from "../../lib/analytics";
 import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
 import {captureNodeToBlob} from '../../lib/chart-export';
@@ -24,6 +24,9 @@ const embeddable = (w: WidgetDef) => embedPath(w) !== null;
 import {EXPORT_BRIGHTEST_ATTR, EXPORT_CSS_ATTR} from '../../lib/export-markers';
 import foundation from '../social/atlas-foundations.module.css';
 import './dashboard.css';
+import './widget-brand.css';
+import {widgetBrandStyle} from '../../lib/widget-brand';
+import {WidgetBrandHeader} from './WidgetBrandHeader';
 import {chartQuantityLabel, chartDataDate} from '../../lib/chart-labels';
 
 /**
@@ -44,9 +47,11 @@ import {chartQuantityLabel, chartDataDate} from '../../lib/chart-labels';
 const EDGE_INSET = 28;
 const EDGE_GAP = 6;
 
-export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
   sourceVisible?: boolean;
+  sourcePlacement?: 'frame' | 'plot';
+  directActions?: boolean;
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
   /** Selection needed to reconstruct this widget when following a shared link. */
@@ -78,6 +83,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   einbetten?: {params: Record<string, string>; height: number};
 }) {
   const presentation=useWidgetPresentation();
+  const partner = presentation.partner;
   const effectiveActions=widgetActionPresentation(presentation.sharing, actions);
   const [imageOpen, setImageOpen] = useState(false);
   const [imageFormat, setImageFormat] = useState(0);
@@ -131,16 +137,19 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   const copyDetailLink = async () => {
     let url = new URL(window.location.href);
     try {
-      if (window.parent !== window && window.parent.location.origin === window.location.origin) {
+      if (!partner && window.parent !== window && window.parent.location.origin === window.location.origin) {
         url = new URL(window.parent.location.href);
       }
     } catch { /* External embeds keep their own directly accessible URL. */ }
-    url.searchParams.set('chart', detailId);
+    if (!partner) url.searchParams.set('chart', detailId);
     for (const [key, value] of Object.entries(shareParams ?? {})) url.searchParams.set(key, value);
     url.hash = '';
     if (navigator.clipboard && window.isSecureContext) {
       try {
-        await navigator.clipboard.writeText(url.toString());
+        await Promise.race([
+          navigator.clipboard.writeText(url.toString()),
+          new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('Clipboard unavailable')), 1200)),
+        ]);
         return;
       } catch { /* Embedded browsers may deny the asynchronous Clipboard API. */ }
     }
@@ -181,6 +190,22 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     mode: 'node',
     nodeSize: imageFormats?.[imageFormat],
   });
+  const [plotRail, setPlotRail] = useState<{top:number;height:number}>();
+  useLayoutEffect(() => {
+    if (sourcePlacement !== 'plot') return;
+    const frameNode = chartExport.chartRef.current;
+    const body = frameNode?.querySelector<HTMLElement>('.sc-widget-body');
+    const plot = body?.querySelector<HTMLElement>('.sc-category-plot');
+    if (!body || !plot) return;
+    const measure = () => {
+      const a = body.getBoundingClientRect(), b = plot.getBoundingClientRect();
+      setPlotRail({top: b.top-a.top, height: Math.max(0,b.height-10)});
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(body); observer.observe(plot);
+    return () => observer.disconnect();
+  }, [sourcePlacement, chartExport.chartRef]);
   const measure = useCallback((action:WidgetAction) => {
     let path=window.location.pathname;
     try {path=window.top?.location.pathname??path;} catch {/* External embeds retain their own scope. */}
@@ -202,15 +227,21 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     if (!node) return null;
     return captureNodeToBlob(node, Math.min(1, 160 / node.getBoundingClientRect().width));
   }, [chartExport.chartRef]);
-  const widgetActions = <ChartOptionsMenu help={frame.help} showDownload={def.exportable!==false} presentation={effectiveActions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
+  const widgetActions = <ChartOptionsMenu help={frame.help} showDownload={def.exportable!==false} presentation={partner || directActions ? "embedded-footer" : effectiveActions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
         onRestart={animated&&restartAction?async()=>{
           const node=chartExport.chartRef.current;
           if(node)await controlChartAnimation(node,{mode:'restart'});
         }:undefined}
         onShare={copyDetailLink}
         onForward={async()=>{
-          if(navigator.share)await navigator.share({title:frame.title,url:contactPage.toString()});
-          else await copyDetailLink();
+          const url = new URL(partner ? window.location.href : contactPage.toString());
+          for (const [key, value] of Object.entries(shareParams ?? {})) url.searchParams.set(key, value);
+          if(navigator.share) {
+            try { await navigator.share({title:frame.title,url:url.toString()}); return; }
+            catch(error) { if (!(error instanceof Error && error.name === 'NotAllowedError')) throw error; }
+          }
+          await copyDetailLink();
+          return 'copied' as const;
         }}
         onDownload={async()=>{
           if(chartExport.chartRef.current?.querySelector('[data-export-ready="false"]')) throw new Error('Die Daten sind noch nicht verfügbar. Bitte später erneut versuchen.');
@@ -249,6 +280,12 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   const content = <ExportNotesProvider>
     <WidgetFrame
       {...frame}
+      data-widget-brand={partner?.brand.id}
+      data-source-placement={sourcePlacement}
+      style={partner ? {...frame.style, ...widgetBrandStyle(partner.brand)} : frame.style}
+      masthead={partner ? <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
+      context={frame.context ?? (partner ? `Stand: ${stand}` : undefined)}
+      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner}/></div> : frame.bodyAside}
       exportSubtitle={exportScope !== undefined || exportUnit !== undefined
         ? [exportScope ?? place, `Stand ${chartDataDate(stand)}`, exportUnit ? chartQuantityLabel(exportUnit) : undefined].filter(Boolean).join(' · ')
         : frame.exportSubtitle}
@@ -263,7 +300,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
       data-chart-detail-open={detailOpen ? true : undefined}
       ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
       className={`${foundation.foundation} sc-dashboard ${className}`}
-      {...{[EXPORT_BRIGHTEST_ATTR]: '', [EXPORT_CSS_ATTR]: exportCss}}
+      {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement === 'plot' ? 'position:relative;text-align:left;' : exportCss}}
       settings={settings && <>
         <ExportIgnore inline>{settings}</ExportIgnore>
         {stateLabel && <ExportOnly display="inline-block" style={{fontSize: "var(--atlas-label-size)", color: "var(--atlas-secondary)"}}>{stateLabel}</ExportOnly>}
@@ -293,15 +330,15 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
             </div>
           </div>
         </ExportIgnore>}
-        {effectiveActions === 'primary' && <div className="sc-widget-actions">{widgetActions}</div>}
+        {effectiveActions === 'primary' && <div className="sc-widget-actions" data-sc-export-ignore={partner ? "" : undefined}>{widgetActions}</div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
-        <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
+        {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
           <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible} spalten={edgeColumns} />
-        </div>
+        </div>}
         {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
           width={WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: def.shareUrl.replace("https://solar-check.io", ""), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
-        <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={exportNote === null ? undefined : exportNote ?? `Ort: ${place}`} /></ExportOnly>
+        {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={exportNote === null ? undefined : exportNote ?? `Ort: ${place}`} /></ExportOnly>}
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;
