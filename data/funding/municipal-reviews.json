@@ -88216,5 +88216,83 @@
       "website": "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
       "question": "Auf Ihrer Seite zum PV-Förderprogramm der Ortsgemeinde Neustadt (Wied) stand am 23.09.2026 der Hinweis, die Fördermittel seien ausgeschöpft und es könnten keine weiteren Förderanträge gestellt werden. Dieser Hinweis ist inzwischen nicht mehr auf der Seite zu finden. Können derzeit wieder Anträge für die 6. Förderperiode 2026 gestellt werden, oder sind die Mittel weiterhin ausgeschöpft?"
     }
+  },
+  {
+    "regionId": "07315000",
+    "name": "Mainz",
+    "checkedAt": "2026-10-07T06:04:00Z",
+    "recheckAt": "2027-01-05T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Landeshauptstadt Mainz fördert seit dem Stadtratsbeschluss vom 17.06.2026 neue Balkonkraftwerke von Haushalten mit geringem Einkommen mit 200 € (aufgenommen als mainz-balkon-einkommen, ohne Rechenwert wegen Einkommensgrenze). Die Modernisierungsrichtlinie für ältere Menschen schließt PV und Heizung aus. Der Stiftungs-Speicherzuschuss (KIPKI) bleibt ausgeschöpft ohne Abzug. Kein städtischer Zuschuss für Dach-PV oder Wärmepumpen gefunden.",
+    "searches": [
+      "07.10.2026 Ortsrecht mainz.de: Balkon-Richtlinie (HTML und PDF) und Modernisierungsrichtlinie gelesen",
+      "Websuche „site:mainz.de Balkonkraftwerk Förderung Wohnraumförderung Antrag“ und „Mainz Balkonkraftwerk Zuschuss 200 Euro geringes Einkommen“ — Hinweis „ausgeschöpft“ betrifft nur das ältere Stiftungsprogramm „Klimaneutrales Mainz 2035“",
+      "Gegenprüfung durch zwei unabhängige Prüfer (einer adversarial), beide bestätigt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung.php.media/168670/richtlinie-zur-foerderung-von-balkonkraftwerken.pdf",
+        "finding": "07.10.2026 vollständig gelesen: Stadtratsbeschluss 17.06.2026, Nr. 5.1 „Zuschuss von 200 €“, halbiert unter 50 % der zulässigen Leistung; Nr. 2 Einkommensgrenze § 13 Abs. 2 LWoFG + 10 %; Antrag vor Kauf bei der Wohnraumförderstelle; keine Doppelförderung; kein Hinweis auf erschöpfte Mittel."
+      },
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf",
+        "finding": "07.10.2026 gelesen: Modernisierungsrichtlinie für Eigentümer ab 65 mit geringem Einkommen (30 %, max. 6.000 €); Nr. 4.1 schließt Warmwasser, Beheizung, Photovoltaik- und Solaranlagen ausdrücklich aus."
+      },
+      {
+        "url": "https://www.mainzer-stiftung.de/foerderprogramme/photovoltaik-batteriespeicher/",
+        "finding": "Katalogeintrag mainz-kipki-speicher (Mainzer Stiftung, Speicher 2025) steht auf ausgeschöpft ohne Abzug; Programmseite seit 12.09.2026 auf „Über uns“ umgeleitet, unverändert seit den Prüfungen vom 17./20.09.2026."
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung.php.media/168670/richtlinie-zur-foerderung-von-balkonkraftwerken.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie gelesen, als mainz-balkon-einkommen aufgenommen.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung.php.media/168670/richtlinie-zur-foerderung-von-balkonkraftwerken.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung",
+        "disposition": "replaced",
+        "reason": "Ortsrechtseintrag derselben Richtlinie; Inhalt steht im gelesenen PDF.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung.php.media/168670/richtlinie-zur-foerderung-von-balkonkraftwerken.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf",
+        "disposition": "reviewed",
+        "reason": "Schließt PV, Solar und Heizung ausdrücklich aus.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen",
+        "disposition": "replaced",
+        "reason": "Ortsrechtseintrag derselben Modernisierungsrichtlinie; Inhalt im gelesenen PDF.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/startseite-mainz.de/rechtsanspruch-auf-ganztagsfoerderung",
+        "disposition": "replaced",
+        "reason": "Adresse antwortet mit 404; Ganztagsbetreuung, keine Energieförderung (Wortfund „Förderung“).",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/vv/medien/internet/ganztagsfoerderungsgesetz",
+        "disposition": "replaced",
+        "reason": "Ganztagsförderungsgesetz, keine Energieförderung (Wortfund „Förderung“).",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/verzeichnisse/ortsrecht/satzung-der-landeshauptstadt-mainz-ueber-die-schuelerbefoerderung-vom-13-6-2012",
+        "disposition": "replaced",
+        "reason": "Schülerbeförderung, Wortfund „Beförderung“, keine Energieförderung.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      },
+      {
+        "url": "https://www.mainz.de/vv/produkte/schulamt/schuelerbefoerderung-fahrtkostenerstattung-beantragen",
+        "disposition": "replaced",
+        "reason": "Fahrtkostenerstattung Schülerbeförderung, keine Energieförderung.",
+        "evidenceUrl": "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.php.media/163333/richtlinie-zur-foerderung-kleinerer-modernisierungs-und-klimaschutzmassnahmen.pdf"
+      }
+    ]
   }
 ]

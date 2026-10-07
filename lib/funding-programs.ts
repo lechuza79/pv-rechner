@@ -3095,6 +3095,47 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // „Status unklar" und nicht „eingestellt": Dass die Stiftung das Programm
     // beendet hat, hat niemand gesehen; gesehen haben wir eine Website im Umbau.
   },
+  "mainz-balkon-einkommen": {
+    id: "mainz-balkon-einkommen", name: "Balkonkraftwerke für Haushalte mit geringem Einkommen",
+    traeger: "Landeshauptstadt Mainz (Amt für soziale Leistungen, Wohnraumförderung)",
+    level: "kommune", region: "Mainz", bundesland: "Rheinland-Pfalz", agsCode: "07315",
+    url: "https://www.mainz.de/verzeichnisse/ortsrecht/richtlinie-zur-foerderung-steckerfertiger-photovoltaikanlagen-sog.balkonkraftwerke-durch-gewaehrung-eines-einmaligen-investitionszuschusses-in-der-gemaess-beschluss-des-stadtrates-vom-17.06.2026-geltenden-fassung.php.media/168670/richtlinie-zur-foerderung-von-balkonkraftwerken.pdf",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-06-17",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für ein neues Balkonkraftwerk — nur bei geringem Einkommen",
+    maxFoerderung: "max. 200 € je Haushalt",
+    rates: [
+      {
+        label: "Balkonkraftwerk (nur bei geringem Einkommen)",
+        value: "200 € pauschal, 100 € bei weniger als der Hälfte der zulässigen Leistung",
+        nur: ["balkon"],
+      },
+    ],
+    conditions: [
+      "Nur für Haushalte, deren Einkommen die Einkommensgrenze der sozialen Wohnraumförderung in Rheinland-Pfalz um höchstens 10 % übersteigt; kein erhebliches Vermögen",
+      "Für Mieterinnen und Mieter mit Hauptwohnsitz in Mainz und für Eigentümer, die ein Haus mit höchstens zwei Wohnungen oder eine Eigentumswohnung selbst nutzen",
+      "Der Antrag geht schriftlich an die Wohnraumförderstelle der Stadt, und zwar vor dem Kauf",
+      "Liegt die installierte Leistung unter der Hälfte der gesetzlich zulässigen, halbiert sich der Zuschuss",
+      "Für den erzeugten Strom darf keine EEG-Vergütung beansprucht werden",
+      "Ausgezahlt wird nach Rechnung und Nachweis der Anmeldung im Marktstammdatenregister",
+      "Die Anlage muss fünf Jahre betrieben werden, sonst wird der Zuschuss zurückgefordert",
+      "Gefördert wird im Rahmen der verfügbaren Haushaltsmittel, in der Reihenfolge der Anträge",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
+    // NEU AUFGENOMMEN 07.10.2026. Richtlinie im Ortsrecht der Stadt (Fassung
+    // nach Stadtratsbeschluss vom 17.06.2026) vollständig gelesen, Nr. 5.1:
+    // „Für das installierte Balkonkraftwerk wir[d] ein Zuschuss von 200 €
+    // gewährt." Nr. 2: Einkommensgrenze § 13 Abs. 2 LWoFG + 10 %. Nr. 4.7
+    // schließt Doppelförderung aus → combinableWith leer. Gegenprüfung 2/2
+    // (ein Prüfer adversarial); der dabei gefundene Hinweis „ausgeschöpft"
+    // betrifft das ältere Programm „Klimaneutrales Mainz 2035" der Mainzer
+    // Stiftung, nicht diese Richtlinie. Datum der amtlichen Bekanntmachung
+    // nicht gesehen; die Richtlinie steht als geltendes Ortsrecht.
+    // KEIN RECHENWERT: Die Berechtigung hängt am Haushaltseinkommen, das der
+    // Rechner nicht kennt — dieselbe Zurückhaltung wie hamburg-balkon-einkommen.
+  },
   "muenchen-fkg": {
     id: "muenchen-fkg", name: "Förderprogramm Klimaneutrale Gebäude (FKG)",
     traeger: "Landeshauptstadt München", level: "kommune", region: "München", bundesland: "Bayern", agsCode: "09162",
