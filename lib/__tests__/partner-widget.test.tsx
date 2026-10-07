@@ -3,7 +3,7 @@ import {describe, expect, it} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {WidgetBrandHeader} from '../../components/dashboard/WidgetBrandHeader';
 import {WidgetFrame} from '../../components/dashboard/WidgetFrame';
-import {NIDDA_WIDGET_BRAND, parseWidgetHeader, widgetPartner} from '../widget-brand';
+import {NIDDA_WIDGET_BRAND, parseWidgetHeader, widgetPartner, parsePartnerWidgetHeight, widgetBrandStyle} from '../widget-brand';
 import {parseWidgetAppearanceObject} from '../widget-appearance';
 
 describe('partner embedding', () => {
@@ -35,6 +35,28 @@ describe('partner embedding', () => {
     expect(code).toContain('Number.isFinite(h)');
     expect(code).toContain('allow="clipboard-write; web-share"');
     expect(code).not.toContain('<p style=');
+  });
+  it('uses the selected responsive width and header in the copied code', () => {
+    for (const width of [320,480,720,960] as const) {
+      for (const header of ['full','title','none'] as const) {
+        const code = partnerEmbedCode('nidda','regional-annual-growth',header,'https://solar-check.io',width);
+        expect(code).toContain('max-width:' + width + 'px');
+        expect(code).toContain('width="' + width + '"');
+        expect(code).toContain('/regional-annual-growth/' + header);
+        expect(code).toContain('width:100%');
+      }
+    }
+  });
+  it('validates height and carries it into the frame and copied URL', () => {
+    expect(parsePartnerWidgetHeight(undefined)).toBe(720);
+    expect(parsePartnerWidgetHeight('720')).toBe(720);
+    for (const input of ['0','-1','999999','320px','NaN','0400']) expect(parsePartnerWidgetHeight(input)).toBeUndefined();
+    expect(widgetBrandStyle(NIDDA_WIDGET_BRAND, 720)).toHaveProperty('--partner-widget-height', '720px');
+    expect(partnerEmbedCode('nidda','regional-annual-growth','none','https://solar-check.io',480,840)).toContain('/none/840');
+    expect(partnerEmbedCode('nidda','regional-annual-growth')).not.toContain('/full/720');
+    const withoutHeader = partnerEmbedCode('nidda','regional-annual-growth','none','https://solar-check.io',720,720,629);
+    expect(withoutHeader).toContain('height="629"');
+    expect(withoutHeader).toContain('/regional-annual-growth/none"');
   });
   it('leaves ordinary frames unbranded', () => {
     expect(renderToStaticMarkup(<WidgetFrame title="Zubau" kind="time-series">Chart</WidgetFrame>)).not.toContain('sc-widget-brand-head');

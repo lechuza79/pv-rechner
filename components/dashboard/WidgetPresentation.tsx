@@ -20,5 +20,5 @@ export default function WidgetPresentation({appearance,children}:{appearance:Wid
     window.parent.postMessage({type:'widget:appearance-request'},window.location.origin);
     return()=>window.removeEventListener('message',receive);
   },[]);
-  return <div className={`${foundation.foundation} ${styles.presentation}`} data-story-scheme={live.theme==='hero'?'highlight':live.theme??'dark'} data-widget-layout={live.layout} data-widget-background={live.background===false?'off':'on'}><WidgetPresentationProvider appearance={live}>{children}</WidgetPresentationProvider></div>;
+  return <div className={`${foundation.foundation} ${styles.presentation}`} data-story-scheme={live.theme==='hero'?'highlight':live.theme??'dark'} data-widget-partner={live.partner?.brand.id} data-widget-layout={live.layout} data-widget-background={live.background===false?'off':'on'}><WidgetPresentationProvider appearance={live}>{children}</WidgetPresentationProvider></div>;
 }

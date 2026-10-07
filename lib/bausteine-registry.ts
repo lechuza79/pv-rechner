@@ -112,6 +112,7 @@ export interface Baustein {
 export const BAUSTEINE: Baustein[] = [
   {datei: "components/dashboard/WidgetControls.tsx", name: "WidgetControls", zweck: "Shared segmented month/day controls and playback icon buttons with one geometry.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons"], keinBeispielWeil: "Echte Instanzen in der monatlichen Solar-Vorschau der Widget-Galerie; Auswahl und Tagesknopf verwenden denselben Baustein."},
   {datei: "components/dashboard/WidgetSetting.tsx", name: "WidgetSetting", zweck: "Shared widget selections with segmented navigation; the Hero stage retains its existing scale.", gruppe: "eingabe", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["WidgetControls", "SelectField", "InfoTooltip", "Icons"]},
+  {datei: "components/PartnerWidgetConfigurator.tsx", name: "PartnerWidgetConfigurator", keinBeispielWeil: "Real preview at /widgets/partner/nidda uses the published partner renderer.", zweck: "Partner embed preview with responsive width, header settings and copyable code.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ActionButton", "SelectField", "Logo", "OptionalDisclosure", "Icons"]},
   {datei: "components/dashboard/WidgetBrandHeader.tsx", name: "WidgetBrandHeader", keinBeispielWeil: "Partner header modes are reviewed on their real public embed route.", zweck: "Trusted partner introduction with full, title-only and hidden modes.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
   {datei: "components/dashboard/WidgetPresentationContext.tsx", name: "WidgetPresentationContext", keinBeispielWeil: "Unsichtbarer Kontext für Host-Einstellungen; sein Verhalten wird an den echten Widget-Vorschauen mit Teilen-Optionen sichtbar.", zweck: "Optional host settings shared with widget action frames and consumers.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
   {datei: "components/dashboard/WidgetPresentation.tsx", name: "WidgetPresentation", keinBeispielWeil: "Der Adapter verarbeitet Nachrichten zwischen Einbettung und übergeordneter Seite; dieses Verhalten lässt sich nur an den echten Widget-Vorschauen prüfen, nicht innerhalb einer Galerie-Karte.", zweck: "Embed presentation adapter for shared themes, artwork and actions.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["WidgetPresentationContext"]},
@@ -197,7 +198,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Icons", "InfoTooltip"],
+    bestehtAus: ["Icons", "InfoTooltip", "ActionButton"],
   },
   {
     datei: "components/AccordionField.tsx",
