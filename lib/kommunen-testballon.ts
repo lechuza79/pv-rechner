@@ -269,6 +269,8 @@ export const SCHUEBE: Record<string, Schub> = {
     bl: ["05", "12", "15"],
     kanal: "brief-empfaenger",
     regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 100 },
+    // Short info letter for towns without a placement (operator, 07.10.2026).
+    briefarten: ["platzierung", "info"],
     kreise: ["05166", "05334", "05366", "05382", "05554", "05566", "05754", "12060", "12061", "12063", "12064", "12069", "12071", "15081", "15083", "15085", "15087", "15088", "15089", "15090"],
     abIso: "2026-10-06",
     grund:

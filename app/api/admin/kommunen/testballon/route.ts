@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
     verwaltung_domain: string | null;
     outreach_status: string;
     kampagne: string | null;
+    charge: number | null;
     ask_variante: string | null;
     variante_manuell: boolean | null;
     ref_token: string | null;
@@ -77,7 +78,7 @@ export async function POST(req: NextRequest) {
       const { data, error } = await serviceDb
         .from("kommunen_kontakt")
         .select(
-          "region_id, website, kontakt_url, rollen_email, rollen_email_quelle, presse_email, klima_email, presse_kontakt_email, contacted_at, verwaltung_domain, outreach_status, kampagne, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
+          "region_id, website, kontakt_url, rollen_email, rollen_email_quelle, presse_email, klima_email, presse_kontakt_email, contacted_at, verwaltung_domain, outreach_status, kampagne, charge, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
         )
         .like("region_id", `${prefix}%`)
         .order("region_id")
@@ -145,6 +146,10 @@ export async function POST(req: NextRequest) {
       // district goes out in one day, as decided on 05.10.2026.
       waehleGanzeKreise(kandidaten, schub.regeln.chargeGroesse, (k) => k.regionId)
     : waehleTestballon(kandidaten, schub.regeln);
+  // A second draw into the same campaign continues after its last charge:
+  // reusing charge 1 would mix new towns into a day that has already gone out.
+  const letzteCharge = Math.max(0, ...zeilen.filter((z) => z.kampagne === KAMPAGNE).map((z) => z.charge ?? 0));
+  for (const g of auswahl.gewaehlt) g.charge += letzteCharge;
 
   // Bereits vergebene Weiterleitungs-Token, damit ein zweiter Lauf keine
   // Dubletten erzeugt und bestehende Links gültig bleiben.
