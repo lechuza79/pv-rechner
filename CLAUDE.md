@@ -1908,6 +1908,16 @@ andersherum). **Die naheliegende Abkürzung ist falsch:** „öffentlich erreich
 sind ohnehin nur angeschriebene Orte" — die Freigabe steuert die INDEXIERUNG,
 nicht die Erreichbarkeit; über den Atlas kommt man auf jede der 11.000 Seiten.
 
+## Jede Aussendung steht in der Datenbank — BLOCKER (07.10.2026)
+
+**Egal aus welcher Sitzung: Wer eine Mail an Gemeinden, Redaktionen, Förderstellen oder sonst jemanden außerhalb verschickt, schreibt sie vorher in eine Tabelle.** Eine Datei ist kein Protokoll, ein temporärer Ordner erst recht nicht.
+
+- **Der Anlass:** 138 Pressemitteilungen an Lokalredaktionen (29./30.09.2026) und sieben Update-Mails (28.09.) gingen aus einem nie eingecheckten Skript hinaus, das sein Protokoll in den temporären Ordner der Sitzung schrieb. Der wurde aufgeräumt; eine Woche später meldete eine andere Sitzung „Regionalpresse nie angeschrieben" — der nächste Schub hätte dieselben Redaktionen ein zweites Mal angeschrieben. Zurückgeholt wurde die Liste nur, weil jede Mail zufällig auch im Gesendet-Ordner lag (`presse_versand`, Herkunft „nachgetragen").
+- **Der Gesendet-Ordner ist KEIN Protokoll.** Das Postfach legt dort nichts von selbst ab — von 468 Kommunen-Anschreiben steht dort keines. Was ein Lauf nicht selbst hineinkopiert, existiert dort nicht.
+- **Versandwege und ihre Tabellen:** Kommunen → `kommunen_kontakt` (`scripts/kommunen-versand.ts`), Förderstellen → `funding_anfragen` (`scripts/funding-anfrage.ts`), Presse → `presse_versand` (`npm run presse:versand`; entworfen wird mit `scripts/presse-kreise.ts`, das selbst nicht sendet). Ein neuer Empfängerkreis bekommt eine eigene Tabelle und einen Eintrag in `lib/versand-wache.ts`, BEVOR die erste Mail hinausgeht.
+- **Zwei Sicherungen, weil eine nicht reicht:** `lib/__tests__/versand-protokoll.test.ts` hält jedes eingecheckte Skript, das über das Postfach sendet, gegen die Liste. `npm run sessions` sucht in jedem Arbeitsstand nach NIE eingecheckten Dateien, die senden — genau dort lag das verlorene Skript, und dort sieht kein Test hin. Steht dort ein Befund, wird vor dem nächsten Versand nichts verschickt, bis der Weg über einen eingecheckten Lauf führt.
+- **Was die Sicherungen nicht können:** Ein Skript, das jemand anlegt, ausführt und löscht, ohne dass dazwischen `npm run sessions` läuft, sieht keine von beiden. Deshalb ist die Regel eine Regel und nicht nur ein Test.
+
 ## Kommunen-Outreach (interner Bereich)
 
 Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, RLS **nur service_role** — interne Daten, bewusste Abweichung vom Atlas-Muster), befüllt von `scripts/kommunen-kontakt-refresh.ts` (Phasen `--setup`, `--wikidata`, `--forms`/`--probe`, `--profil`, `--luecke`, `--wahl`, `--rang`, `--stats`; DB-schonend). Cockpit `/admin/kommunen` mit Anschreiben-Generator (**Template statt LLM**, Einheiten nur aus `atlas-format`). **Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.** Rechtsrahmen: Legal-Checkliste #6.
