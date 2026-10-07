@@ -33,7 +33,7 @@
  *   frisch   invalidate the Atlas pages (they read the packages)
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
 import { loadEnvConfig } from "@next/env";
 
@@ -42,6 +42,10 @@ const los = process.argv.includes("--los");
 const ab = process.argv.find((a) => a.startsWith("--ab="))?.slice(5);
 const SCHRITTE = ["export", "caches", "wetter", "pakete", "upload", "kreise", "frisch"] as const;
 const BNETZA = "scripts/.cache/bnetza";
+// Earlier raw exports are kept here, outside BNETZA (so the one-zip rule
+// below still holds): the agency serves only recent exports, and two editions
+// side by side are the only way to measure how much gets reported late.
+const ARCHIV = "scripts/.cache/bnetza-archiv";
 
 function befehl(titel: string, cmd: string, args: string[], env: Record<string, string> = {}) {
   console.log(`\n▶ ${titel}\n  ${cmd} ${args.join(" ")}`);
@@ -89,9 +93,15 @@ async function main() {
     // The other scripts pick "the newest" or "the first" zip in the folder;
     // with exactly one there, they all pick the database's export.
     const andere = existsSync(BNETZA) ? readdirSync(BNETZA).filter((f) => f.endsWith(".zip") && f !== exp.datei) : [];
-    console.log(`\n▶ Export bereitlegen: ${ziel}${andere.length ? ` (entfernt: ${andere.join(", ")})` : ""}`);
+    // Data derived from an earlier edition is rebuilt from its archived zip if ever needed.
+    const alteAbleitungen = existsSync(BNETZA)
+      ? readdirSync(BNETZA).filter((f) => /^story-history-\d{4}-\d{2}-\d{2}$/.test(f) && f !== `story-history-${exp.datum}`)
+      : [];
+    console.log(`\n▶ Export bereitlegen: ${ziel}${andere.length ? ` (ins Archiv: ${andere.join(", ")})` : ""}${alteAbleitungen.length ? ` (entfernt: ${alteAbleitungen.join(", ")})` : ""}`);
     if (los) {
-      for (const f of andere) rmSync(path.join(BNETZA, f));
+      if (andere.length) mkdirSync(ARCHIV, { recursive: true });
+      for (const f of andere) renameSync(path.join(BNETZA, f), path.join(ARCHIV, f));
+      for (const f of alteAbleitungen) rmSync(path.join(BNETZA, f), { recursive: true });
       if (!existsSync(ziel) || statSync(ziel).size < 1e9) {
         const head = await fetch(exp.url, { method: "HEAD" });
         if (!head.ok) {
