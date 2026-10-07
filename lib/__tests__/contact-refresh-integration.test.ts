@@ -23,6 +23,7 @@ describe('real press refresh write paths',()=>{
     const db = {from:()=>({delete:()=>{throw Error('Deletion forbidden');}})};
     const profil = scriptFunction('profil', {
       makeClient:async()=>db, alleZeilen:async()=>[{domain:'ort.de',paket:1,profil_at:null}], verwaltungsDomains:async()=>new Set<string>(),
+      verbandBelegt:async()=>new Set<string>(), verbandBelegeErsetzen:async()=>{},
       observedFields, log:()=>{}, ladeEntscheidungen:async()=>entscheidungen, pool:async(items:unknown[],_n:number,fn:(x:unknown)=>Promise<void>)=>Promise.all(items.map(fn)),
       holeMedium:async()=>failed?{fehler:'HTTP 503'}:Object.assign([],{incomplete:partial}),
       werteAus:()=>({domain:'ort.de',ist_medium:'medium',kontakte:[{domain:'ort.de',schluessel:'name:anna',name:'Anna',mail:null}],belege:[]}),

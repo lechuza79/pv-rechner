@@ -1,5 +1,7 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { medientypAus, verbandAus } from "../presse-extrakt";
+import { FUNDSTELLE_SEITENTEXT, medientypAus, verbandAus, verbandBelegTraegt, verbandUrteil } from "../presse-extrakt";
 
 /**
  * "Verband" says who publishes, so it is read at the imprint's provider block
@@ -17,7 +19,7 @@ describe("medium type 'Verband' comes from the imprint, not from the page", () =
   });
 
   it("a finding from the imprint is carried into the type list", () => {
-    expect(medientypAus("Newsletter", { wo: "Anbieter im Impressum", treffer: "e.V." })).toEqual(["Newsletter", "Verband"]);
+    expect(medientypAus("Newsletter", true)).toEqual(["Newsletter", "Verband"]);
   });
 
   it("e.V. before a space in the provider block (netzwerkrecherche.org)", () => {
@@ -88,5 +90,51 @@ describe("medium type 'Verband' comes from the imprint, not from the page", () =
 
   it("an unread imprint is no finding", () => {
     expect(verbandAus("", "Startseite – Lokalnachrichten aus Bochum")).toBeNull();
+  });
+});
+
+describe("what a run writes when the imprint cannot be judged", () => {
+  const verein = "Impressum Netzwerk Recherche e.V. c/o Publix Hermannstraße 90 12051 Berlin";
+  const gmbh = "Impressum Verlag Bayerische Kommunalpresse GmbH Breslauer Weg 44 82538 Geretsried";
+
+  it("an unread imprint keeps a flag that the imprint once proved", () => {
+    expect(verbandUrteil("", "Startseite", true)).toEqual({ verband: true, fund: null, gelesen: false });
+  });
+
+  it("an unread imprint does not invent one", () => {
+    expect(verbandUrteil("", "Startseite", false).verband).toBe(false);
+  });
+
+  it("a read imprint decides, whatever stood before", () => {
+    expect(verbandUrteil(gmbh, "", true)).toEqual({ verband: false, fund: null, gelesen: true });
+    expect(verbandUrteil(verein, "", false).verband).toBe(true);
+  });
+
+  it("a local radio's imprint counts as read (the exclusion is a decision)", () => {
+    const radio = "Veranstaltergemeinschaft Radio Muster e.V. ohne Postleitzahl";
+    expect(verbandUrteil(radio, "", true)).toEqual({ verband: false, fund: null, gelesen: true });
+  });
+
+  it("evidence of the old whole-page rule carries nothing over", () => {
+    expect(verbandBelegTraegt(FUNDSTELLE_SEITENTEXT)).toBe(false);
+    expect(verbandBelegTraegt(null)).toBe(false);
+    expect(verbandBelegTraegt('Anbieter im Impressum: „e.V."')).toBe(true);
+  });
+});
+
+describe("the profile run uses the decision (not only the library)", () => {
+  const lauf = readFileSync(resolve(__dirname, "../../scripts/presse-refresh.ts"), "utf8");
+
+  it("passes the prior imprint-proven flag into each medium's evaluation", () => {
+    expect(lauf).toMatch(/werteAus\(m\.domain, res, verwaltung, verbandVorher\.has\(m\.domain\)\)/);
+    expect(lauf).toMatch(/const verbandVorher = await verbandBelegt\(sb\)/);
+  });
+
+  it("replaces stale 'Verband' evidence right after writing the new evidence", () => {
+    expect(lauf).toMatch(/upsert\(sb, "presse_belege", evidence, "domain,merkmal,quelle_url"\);\s*await verbandBelegeErsetzen\(sb, verbandNeu\)/);
+  });
+
+  it("never writes 'Verband' evidence as a whole-page finding", () => {
+    expect(lauf).toMatch(/if \(m === "Verband"\) continue;/);
   });
 });

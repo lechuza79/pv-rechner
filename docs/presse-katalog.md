@@ -12,6 +12,24 @@ ausdrücklich **nicht**.
   Journalisten)
 - Ausgabe: `docs/presse/*.csv`
 
+## Medientyp „Verband": nur am Impressum (06.10.2026)
+
+Wer ein Medium herausgibt, steht im Anbieterblock des Impressums, nicht in einem
+Wort irgendwo auf der Seite. Die alte Erkennung über den ganzen Seitentext lag
+bei 196 von 268 Markierungen daneben (Verlage, Landratsämter, Tageszeitungen).
+Seit dem 06.10.2026 neu bewertet: 231 Medien, jede mit einem Beleg aus Impressum
+oder Seitentitel; Stichproben 10/10 neu richtig, 6/6 entfernt richtig.
+
+- Ist das Impressum nicht lesbar, bleibt eine frühere Markierung stehen — aber
+  nur, wenn ihr Beleg selbst aus dem Impressum stammt. Belege der alten Regel
+  („Merkmal im Seitentext") tragen nichts mehr.
+- Ein Erhebungslauf ersetzt die Verband-Belege eines Mediums; vorher blieben
+  alte Belege neben neuen stehen, weil sie eine andere Quell-Adresse hatten.
+- Nach einer Regeländerung ohne Vollauf neu bewerten:
+  `npm run presse -- --verband --protokoll <datei>` misst nur, Protokoll
+  gegenlesen, dann `--verband --aus <datei>` schreibt.
+- Tests: `lib/__tests__/presse-verband.test.ts`.
+
 ## Warum die Trefferquote hier höher ist als bei den drei vorigen
 
 Bei Gemeinden, Versorgern und Fachbetrieben ist der Ansprechpartner eine
