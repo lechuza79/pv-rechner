@@ -105,7 +105,9 @@ export function impressumPostfach(basis: Ergebnis, evidence: Evidence[]): Record
 
 /** Addresses written "name (at) domain.de", "name[@]domain.de", "name(a)domain.de". */
 export function klammerAdressen(html: string): string {
-  return html.replace(/\b([a-z0-9][a-z0-9._%+-]*)\s*(?:\(at\)|\[at\]|\{at\}|\(@\)|\[@\]|\(a\))\s*([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})\b/gi, "$1@$2");
+  // Also "[*at*]" (meerwind.de), ")at(" (nordum-akademie.de) and "( - at - )"
+  // (energiebauern.com) — contact pass, 07.10.2026.
+  return html.replace(/\b([a-z0-9][a-z0-9._%+-]*)\s*(?:\(at\)|\[at\]|\{at\}|\(@\)|\[@\]|\(a\)|\[\*at\*\]|\)at\(|\(\s*-\s*at\s*-\s*\))\s*([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})\b/gi, "$1@$2");
 }
 
 const WIND_SCOPE: ScopeRegeln = {
@@ -253,7 +255,7 @@ function bestandAus(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string,
     ergebnisForm: (basis, _m, evidence) => impressumPostfach(basis, evidence),
     // Cloudflare-protected and bracket-written addresses (rwe.com, altus-re.de,
     // windmanager(at)wpd.de) — decoded for this stock only, see impressumPostfach.
-    htmlVorbereiten: { kennung: "wind-2", f: (html) => klammerAdressen(ohneAdressVerschleierung(webKomponentenAusklappen(html))) },
+    htmlVorbereiten: { kennung: "wind-3", f: (html) => klammerAdressen(ohneAdressVerschleierung(webKomponentenAusklappen(html))) },
     eintraege: () => [...eintraege.values()],
     // Done when there is a press contact — the general imprint mailbox comes for free on the way.
     fertigWenn: (r: Ergebnis) => (r.kanaele.presse?.length ?? 0) > 0,

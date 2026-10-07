@@ -280,6 +280,9 @@ describe("Klasse 39 — Kontakt-Lücken der Handprüfung", () => {
     expect(klammerAdressen("info(a)naturenergie-heidenrod.de")).toBe("info@naturenergie-heidenrod.de");
     expect(klammerAdressen("h.selzer(@)beg-hochwald.de")).toBe("h.selzer@beg-hochwald.de");
     expect(klammerAdressen("Windpark (at) Musterdorf")).toBe("Windpark (at) Musterdorf");
+    expect(klammerAdressen("falkenhagen5[*at*] meerwind.de")).toBe("falkenhagen5@meerwind.de");
+    expect(klammerAdressen("info)at(nordum-akademie.de")).toBe("info@nordum-akademie.de");
+    expect(klammerAdressen("lisa.schaffer ( - at - ) energiebauern.com")).toBe("lisa.schaffer@energiebauern.com");
   });
   it("takes a clean imprint mailbox when nothing else was selected, whatever its name", async () => {
     const { impressumPostfach } = await import("../../scripts/windbetreiber-kontakte");
