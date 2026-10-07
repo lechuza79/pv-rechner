@@ -224,6 +224,9 @@ jobs:
         env:
           FLOW_FLAG: ${{ matrix.job.flag }}
           FLOW_MUSTER: ${{ matrix.job.muster }}
+          # Teil eines aufgeteilten Flows ("k/n", sonst leer) — e2e/flows.ts,
+          # `nachtTeil`. Seit 07.10.2026 läuft der PV-Rechner in zwei Hälften.
+          FLOW_TEIL: ${{ matrix.job.teil }}
           FLOW_ALLE_KOMBINATIONEN: "1"
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
