@@ -24,6 +24,8 @@
     "region:zugehoerigkeit": "tsx scripts/region-zugehoerigkeit-messen.ts",
     "region:rollup-probe": "tsx scripts/region-rollup-probe.ts",
     "region:kinder": "tsx scripts/region-kinder-messen.ts",
+    "rollup:einspielen": "tsx scripts/rollup-einspielen.ts",
+    "ch:import": "tsx scripts/ch-import.ts",
     "mastr:wind": "tsx scripts/mastr-wind-anlagen.ts",
     "bestaende:abgleich": "tsx scripts/bestaende-abgleich.ts",
     "windbetreiber": "tsx scripts/windbetreiber-refresh.ts",

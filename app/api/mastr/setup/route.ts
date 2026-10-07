@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MASTR_AWARD_SQL } from "../../../../lib/mastr-award-sql";
 import { supabase } from "../../../../lib/supabase-server";
+import { MASTR_ROLLUP_SQL, rollupSchrittweise } from "../../../../lib/mastr-rollup-sql";
 import { MASTR_REGION_FUNCTIONS_SQL } from "../../../../lib/mastr-region-sql";
 
 // One-time setup route to create MaStR data lake tables.
@@ -193,52 +194,7 @@ export async function GET(req: NextRequest) {
       -- per PK schon genau eine Zeile, da braucht es keinen Rollup. Alle Keys sind
       -- 8-stellig, daher summieren die drei Ebenen disjunkt (kein Doppelzählen).
       -- Statement-Timeout hier bewusst aufheben (läuft nur beim Datenlauf).
-      CREATE OR REPLACE FUNCTION mastr_refresh_region_rollup()
-      RETURNS void LANGUAGE plpgsql AS $fn$
-      BEGIN
-        SET LOCAL statement_timeout = 0;
-
-        -- Die Zugehörigkeit wird VOR dem Rollup neu erzeugt, aus derselben
-        -- Stellenlogik wie bisher. Damit bleibt Deutschland zeichengleich, und
-        -- ein zweiter Markt trägt seine eigene Zuordnung ein, ohne dass hier
-        -- noch eine Annahme über die Form des Schlüssels steckt.
-        TRUNCATE mastr_region_mitglied;
-        INSERT INTO mastr_region_mitglied (region_key, gemeinde_id)
-        SELECT DISTINCT left(region_id,5), region_id FROM mastr_aggregates_gem
-        UNION
-        SELECT DISTINCT left(region_id,2), region_id FROM mastr_aggregates_gem
-        UNION
-        SELECT DISTINCT '', region_id FROM mastr_aggregates_gem
-        UNION
-        -- Die Gemeinde ist Mitglied VON SICH SELBST. Ohne diese Zeile gäbe es
-        -- für eine Gemeinde keinen Eintrag, und die Abfragen, die über die
-        -- Zugehörigkeit eingrenzen, lieferten dort nicht „wenig", sondern
-        -- NICHTS — eine leere Gemeindeseite ohne Fehlermeldung. Gemessen am
-        -- 06.10.2026: genau das passierte beim ersten Versuch (0 statt 81
-        -- Zeilen für Nordkirchen). Mit ihr gilt derselbe Verbund auf jeder
-        -- Ebene, ohne Sonderweg für die unterste.
-        SELECT DISTINCT region_id, region_id FROM mastr_aggregates_gem;
-
-        -- LAUT SCHEITERN, NICHT STILL: Eine leere Zugehörigkeit ergäbe einen
-        -- leeren Rollup, und ein leerer Rollup sieht auf jeder Kreis- und
-        -- Landesseite wie „hier steht nichts" aus — ohne Fehler, ohne roten
-        -- Test, ohne kaputtes Aussehen. Genau die Fehlerklasse, gegen die der
-        -- Rest dieses Projekts gebaut ist.
-        IF NOT EXISTS (SELECT 1 FROM mastr_region_mitglied) THEN
-          RAISE EXCEPTION 'mastr_region_mitglied ist leer — Rollup nicht gebaut';
-        END IF;
-
-        TRUNCATE mastr_region_rollup;
-        INSERT INTO mastr_region_rollup (region_key, energietraeger, segment, year, count, kwp, kwh)
-        SELECT m.region_key, a.energietraeger, a.segment, a.year,
-               sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
-          FROM mastr_aggregates_gem a
-          JOIN mastr_region_mitglied m ON m.gemeinde_id = a.region_id
-         GROUP BY 1,2,3,4;
-      END;
-      $fn$;
-      REVOKE ALL ON FUNCTION mastr_refresh_region_rollup() FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_refresh_region_rollup() TO service_role;
+      ${MASTR_ROLLUP_SQL}
     `,
   });
   results.push({ step: "mastr_aggregates_gem", status: e2gem ? "error" : "ok", error: e2gem?.message });
@@ -446,9 +402,25 @@ export async function GET(req: NextRequest) {
   //     selbstheilende region_series sind da schon committed; scheitert die
   //     Befüllung (Timeout o. Ä.), bleibt die Seite über den Fallback-Scan
   //     korrekt und wird beim nächsten erfolgreichen Refresh schnell.
-  const { error: e2e } = await supabase.rpc("exec_sql", {
-    sql: `SELECT mastr_refresh_region_rollup();`,
-  });
+  //     SCHRITTWEISE: Die Funktion hebt ihr Statement-Timeout nicht selbst auf
+  //     (siehe lib/mastr-rollup-sql.ts) — in einem Zug wird sie nach acht
+  //     Sekunden abgeschnitten. Hier wird die Zugehörigkeit erzeugt und je
+  //     Energieträger summiert; scheitert ein Teil, bleibt die Seite über den
+  //     Fallback-Scan korrekt.
+  const sb = supabase!;
+  const { data: traegerZeilen } = await sb
+    .from("mastr_aggregates_gem")
+    .select("energietraeger")
+    .limit(100_000);
+  const traegerListe = [
+    ...new Set((traegerZeilen ?? []).map((r) => (r as { energietraeger: string }).energietraeger)),
+  ].sort();
+  let e2e: { message: string } | null = null;
+  try {
+    await rollupSchrittweise((fn, args) => sb.rpc(fn, args ?? {}), traegerListe);
+  } catch (err) {
+    e2e = { message: err instanceof Error ? err.message : String(err) };
+  }
   results.push({ step: "mastr_region_rollup_refresh", status: e2e ? "error" : "ok", error: e2e?.message });
 
   // 3. mastr_meta — single-row metadata (last import, source version)

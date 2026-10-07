@@ -29,6 +29,7 @@ import iconv from "iconv-lite";
 import sax from "sax";
 import { importNoetig, importTageAusZeitplan } from "../lib/mastr-import-plan";
 import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
+import { rollupSchrittweise } from "../lib/mastr-rollup-sql";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -1006,10 +1007,25 @@ async function phaseUpload(): Promise<void> {
   // Vorberechneten Region-Rollup (Kreis/Land/Bund) neu aufbauen, sonst zeigen die
   // Atlas-Seiten bis zum nächsten Setup-Lauf noch die alten Summen. region_series
   // fällt zwar auf den Live-Scan zurück, aber nur bis der Rollup wieder passt —
-  // hier direkt frischziehen. Die Funktion hebt ihr Statement-Timeout selbst auf.
+  // hier direkt frischziehen.
+  //
+  // SCHRITTWEISE, und das ist keine Vorsicht: Die Funktion hebt ihr
+  // Statement-Timeout NICHT selbst auf (so stand es hier zwei Monate). Postgres
+  // legt das Limit beim Start des Statements fest; `SET LOCAL` darin verlängert
+  // dieses nicht mehr. Gemessen am 07.10.2026: Die Rolle bringt acht Sekunden
+  // mit, der Aufbau braucht rund sechs plus das Schreiben von 65.137 Zeilen —
+  // und wurde abgeschnitten. Jeder Teilaufruf hier bekommt seine eigenen acht
+  // Sekunden, und der Lauf bleibt gegen weiteren Zubau robust.
   log(`Rebuilding region rollup...`);
-  const { error: rollupErr } = await supabase.rpc("mastr_refresh_region_rollup");
-  if (rollupErr) throw new Error(`mastr_refresh_region_rollup failed: ${rollupErr.message}`);
+  const { data: traegerZeilen, error: traegerErr } = await supabase
+    .from("mastr_aggregates_gem")
+    .select("energietraeger")
+    .limit(100_000);
+  if (traegerErr) throw new Error(`energietraeger lesen: ${traegerErr.message}`);
+  const traegerListe = [
+    ...new Set((traegerZeilen ?? []).map((r) => (r as { energietraeger: string }).energietraeger)),
+  ].sort();
+  await rollupSchrittweise((fn, args) => supabase.rpc(fn, args ?? {}), traegerListe);
   log(`Region rollup rebuilt`, "ok");
 
   // Dasselbe für die Gemeinde-Summen, aus denen der Größenklassen-Vergleich
