@@ -14,6 +14,7 @@ import { askVariante, refToken } from "../../../../../lib/kommunen-ask";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { windgemeinde } from "../../../../../lib/windgemeinden";
+import { hatSzene } from "../../../../../lib/kommunen-seite";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
@@ -104,6 +105,10 @@ export async function POST(req: NextRequest) {
     if (schub.kreise && !schub.kreise.includes(z.region_id.slice(0, 5))) continue;
     if (z.region_id.length !== 8) continue; // district administrations get their own letter
     if (schub.ohneWindgemeinden && windgemeinde(z.region_id)) continue;
+    // Whole-district letters link the town's 3D stage, and the send run refuses
+    // a letter without one. A town whose stage is not published yet stays open
+    // and is drawn once it is, instead of blocking a charge it was put in.
+    if (schub.kreise && !hatSzene(z.region_id)) continue;
     const hook = hookByRegion.get(z.region_id) ?? null;
     // Whole districts take every town with a hook — win, podium or top tenth,
     // the largest level first (DE > BL > district); the older batches only took
