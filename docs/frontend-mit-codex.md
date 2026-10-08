@@ -332,3 +332,12 @@ separate, unchanged chart issue, not a calculation or button regression.
 Layout checks retain strict bounds and measure chart text at the final timeline
 position; the initial-position defect remains explicitly recorded in the browser
 suite. Do not broaden this acceptance to hero values, controls, or later positions.
+
+## Text-led funding cards (8 October 2026)
+
+GemeindeFoerderung uses the shared `sc-feature-card--compact` variant: 160 px
+illustrations on wide sections, 120 px on narrower sections, existing hidden
+mobile illustrations unchanged. Its `solar-illustration thumbnail` option routes
+local raster layers through the existing image optimizer before DOM insertion;
+full-size illustration consumers retain their original sources. The funding
+cards prepare 1200 px ahead. The thumbnail test protects both paths.

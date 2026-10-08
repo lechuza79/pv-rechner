@@ -111,7 +111,7 @@ export default function GemeindeFoerderung({
             const satz = saetzeFuer(p.programm.rates)[0];
             const techniken = technikenVon(p.programm);
             return (
-              <article key={p.programm.id} className="sc-feature-card">
+              <article key={p.programm.id} className="sc-feature-card sc-feature-card--compact">
                 {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
                 <solar-illustration
                   class="v3-example-art sc-feature-visual"
@@ -119,6 +119,8 @@ export default function GemeindeFoerderung({
                   label={TECHNIK_WORT[techniken[0]] ?? "Förderung"}
                   circle=""
                   loading="lazy"
+                  loading-margin="1200"
+                  thumbnail=""
                 />
                 <div className="v3-example-copy sc-feature-content">
                   <div className="gemeinde-foerder-kopf" data-status={p.programm.status}><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} compact /></div>
