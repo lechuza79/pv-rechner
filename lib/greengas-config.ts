@@ -632,7 +632,10 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43 Stufen
   //   10/15/30/60 % unverändert; Bundestag 7.–9.10. ohne Heizungsgesetz.
   //   Bioheizöl-Suche: nur HVO-Marktnotierungen, keine Endkunden-Preisreihe.
-  geprueftRechtIso: "2026-10-07",
+  // 08.10.2026: gesetze-im-internet.de §§ 42a/43 GEG erneut gelesen, Text
+  //   identisch zum 07.10.; Bundestag 8./9.10. ohne Heizungs-/Quotengesetz.
+  //   Bioheizöl: weiter keine Endkunden-Preisreihe einer Trägerquelle.
+  geprueftRechtIso: "2026-10-08",
   reviewBy: "2027-07-25",
 };
 
