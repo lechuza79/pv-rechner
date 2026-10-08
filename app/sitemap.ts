@@ -22,6 +22,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 // Ein fehlendes Datum ist ehrlicher als ein falsches.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const programs = await getFundingPrograms();
+  const {releasedAssociations,associationPath}=await import('../lib/verband-reference');
+  const {atlasPathForRegionId}=await import('../lib/atlas');
+  const associationPages=await Promise.all(releasedAssociations().map(async association=>{
+    const parent=await atlasPathForRegionId(association.districtId);
+    if(!parent)throw new Error('Released association district path missing');
+    return {url:BASE_URL+associationPath(parent,association.slug)};
+  }));
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
     const d = new Date(iso);
@@ -212,6 +219,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
 
   return [
+    ...associationPages,
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },

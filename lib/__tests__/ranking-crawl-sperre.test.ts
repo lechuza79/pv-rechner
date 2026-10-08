@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import robots from "../../app/robots";
@@ -112,3 +112,9 @@ describe("Ranglisten: Crawl-Sperre und Indexierbarkeit dürfen sich nicht widers
     ).toEqual([]);
   });
 });
+
+// Resolve the newly released association parents without a Next request cache.
+vi.mock('../atlas',()=>({atlasPathForRegionId:vi.fn(async(id:string)=>({
+ '07131':'/solar-atlas/rheinland-pfalz/landkreis-ahrweiler',
+ '07335':'/solar-atlas/rheinland-pfalz/landkreis-kaiserslautern',
+}[id]??null))}));

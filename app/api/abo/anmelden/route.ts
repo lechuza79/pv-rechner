@@ -10,7 +10,7 @@ import { techniken } from "../../../../lib/abo-technik";
 import { bestaetigungsToken, einstellungenLink } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
-import { getRegionById } from "../../../../lib/atlas";
+import { aboRegion } from "../../../../lib/abo-region";
 import { AKTUELLE_EINWILLIGUNG, einwilligungsFassung } from "../../../../lib/abo-einwilligung";
 
 // ─── Anmeldung zu einem Gemeinde-Abo ─────────────────────────────────────────
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
 
   // All Atlas levels share the same subscription flow. The registry lookup
   // below remains authoritative; the format check only rejects malformed IDs.
-  if (!/^(?:de|\d{2}|\d{5}|\d{8})$/.test(regionId)) {
+  if (!/^(?:de|\d{2}|\d{5}|\d{8}|\d{9})$/.test(regionId)) {
     return NextResponse.json({ error: "Keine gültige Region." }, { status: 400 });
   }
   if (!siehtNachEmailAus(email)) {
@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
   // Gibt es den Ort? Ohne diese Prüfung ließen sich Abos auf erfundene
   // Schlüssel anlegen — Zeilen, die nie eine Mail bekommen, und ein Ortsname,
   // den die Bestätigungsmail nicht nennen könnte.
-  const region = await getRegionById(regionId);
+  const region = await aboRegion(regionId);
   if (!region) {
     return NextResponse.json({ error: "Diesen Ort kennen wir nicht." }, { status: 400 });
   }

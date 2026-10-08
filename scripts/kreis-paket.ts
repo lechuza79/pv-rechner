@@ -151,6 +151,12 @@ async function main() {
   const { regions, skipped } = regionsFromRegister(rows, districts);
   if (regions.length !== 17) throw new Error(`Register nennt ${regions.length} statt 16 Länder + Deutschland — Abbruch`);
   if (skipped.length) console.log(`Nicht summiert (aufgelöste Kreise, gemeindefreie Gebiete; werden auf Anlagenfreiheit geprüft): ${skipped.join(" ")}`);
+  const {releasedAssociations,selectAssociationMembers}=await import('../lib/verband-reference');
+  const associations=releasedAssociations();
+  for(const association of associations) {
+    selectAssociationMembers(rows,association.members,association.districtId);
+    districts.push({regionId:association.id,name:association.name,members:association.members});
+  }
   const townTags = new Map(
     (await store.listEntries(""))
       .filter((e) => /^\d{8}\.json\.br$/.test(e.name) && e.metadata?.eTag)
@@ -194,7 +200,7 @@ async function main() {
     registerEdition,
     // Exactly the page's order: the uncached body of lib/atlas getChildren.
     orderMembers: async (d) =>
-      (await mitWiederholung(`Reihenfolge ${d.regionId}`, () => getChildrenUncached({ region_id: d.regionId, level: "landkreis" } as never)))
+      associations.find(a=>a.id===d.regionId)?.members ?? (await mitWiederholung(`Reihenfolge ${d.regionId}`, () => getChildrenUncached({ region_id: d.regionId, level: "landkreis" } as never)))
         .filter((c) => isDistrictMember(c, d.regionId))
         .map((c) => c.region_id),
     dryRun: flag("trocken"),
@@ -218,7 +224,9 @@ async function main() {
       return empty;
     },
     ranking: async (regionId, level) => {
-      const cells = await mitWiederholung(`Rangliste ${regionId}`, () => loadRankingCells({ region_id: regionId, level } as never));
+      const association=associations.find(a=>a.id===regionId);
+      const allCells = await mitWiederholung(`Rangliste ${regionId}`, () => loadRankingCells({ region_id: association?.districtId??regionId, level } as never));
+      const cells=association?allCells.filter(c=>association.members.includes(c.region_id)):allCells;
       if ((await importDate()) !== rankingStand) throw new Error(`Registerimport hat während des Laufs gewechselt (${regionId}) — Abbruch, die bisherige Generation bleibt`);
       return encodeRankingCells(cells, rankingStand);
     },

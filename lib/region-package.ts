@@ -94,7 +94,7 @@ export function regionsFromRegister(rows: RegisterRow[], districts: DistrictMemb
   for (const r of rows) if (r.parent_region_id) children.set(r.parent_region_id, [...(children.get(r.parent_region_id) ?? []), r]);
   const skipped: string[] = [];
   const states: RegionMembership[] = rows
-    .filter((r) => r.level === "bundesland")
+    .filter((r) => r.level === "bundesland" && /^(0[1-9]|1[0-6])$/.test(r.region_id))
     .map((s) => {
       const parts: RegionPart[] = [];
       const excluded: string[] = [];
@@ -109,7 +109,7 @@ export function regionsFromRegister(rows: RegisterRow[], districts: DistrictMemb
       return { regionId: s.region_id, name: s.name, level: "bundesland" as const, parts: parts.sort((a, b) => a.id.localeCompare(b.id)), excluded: sorted(excluded) };
     })
     .sort((a, b) => a.regionId.localeCompare(b.regionId));
-  const de = rows.find((r) => r.level === "de");
+  const de = rows.find((r) => r.level === "de" && r.region_id === "de");
   const regions = [...states];
   if (de) regions.push({ regionId: de.region_id, name: de.name, level: "de", parts: states.map((s) => ({ id: s.regionId, kind: "state" as const })), excluded: [] });
   return { regions, skipped };

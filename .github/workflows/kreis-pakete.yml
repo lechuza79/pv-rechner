@@ -36,6 +36,8 @@ on:
       - "lib/region-package.ts"
       - "lib/gemeinde-paket.ts"
       - "scripts/kreis-paket.ts"
+      - "lib/verband-reference.ts"
+      - "lib/verband-*-source.json"
   workflow_dispatch:
     inputs:
       alle:

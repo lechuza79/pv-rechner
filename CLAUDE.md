@@ -2780,3 +2780,13 @@ Video-capable monitor charts use one server queue and one entitlement in `lib/vi
 `VIDEO_WIDGETS` in `lib/video-export-config.ts` defines accepted places, period shape, render route and period control for each chart. `ExportableWidgetFrame` binds the shared email request from `videoParams`. Regional races and monthly solar charts at municipal/regional level use that same modal and service. Pages without real source data reject requests; no synthetic fallback.
 
 `prepareNodeCapture` owns the export DOM for both PNG and server MP4. `VideoRenderBridge` advances the existing animation timeline. The worker captures native Chromium frames at 30 fps and encodes H.264 with FFmpeg; it does not rebuild the chart or alter the timeline. Regional racing page and render surface consume `regionalRaceData`. Existing transactional limits, confirmation, caching and expiry remain shared.
+
+## Verbandsgemeinden (8 October 2026)
+
+Bad Breisig and Weilerbach share `LandkreisSeite` and all its widgets. Official
+membership from the bundled GV100AD records adds a navigation group, never a
+municipality parent or a second count in the county. Existing municipality URLs
+remain unchanged. `scripts/kreis-paket.ts` publishes and refreshes their packages
+with the county generation; rendering reads one package, never member packages.
+Subscriptions store the association key through the existing confirmation flow;
+update scheduling is independent. See `docs/verbandsgemeinde-referenz.md`.

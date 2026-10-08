@@ -154,3 +154,9 @@ describe("Sitemap: jede Förder-Stadtseite darin existiert auch", () => {
     expect(inSitemap.length).toBeGreaterThan(20);
   });
 }, REPO_WEIT_MS);
+
+// Resolve the newly released association parents without a Next request cache.
+vi.mock('../atlas',()=>({atlasPathForRegionId:vi.fn(async(id:string)=>({
+ '07131':'/solar-atlas/rheinland-pfalz/landkreis-ahrweiler',
+ '07335':'/solar-atlas/rheinland-pfalz/landkreis-kaiserslautern',
+}[id]??null))}));

@@ -1,3 +1,4 @@
+import {associationBreadcrumb} from '../../../../../../lib/verband-reference-server';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
@@ -65,6 +66,7 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
   const bl = bundeslandByAgs(region.region_id.slice(0, 2));
   const kreisfrei = istKreisfrei(region.region_id, kreis, region.name);
   const stadtstaat = istStadtstaat(region.region_id);
+  const association=await associationBreadcrumb(region.region_id,`/solar-atlas/${params.bundesland}/${params.kreis}`);
   const pfad = [
     { name: "Solar-Atlas", href: "/solar-atlas" },
     // Berlin and Hamburg would otherwise name themselves three times, a
@@ -72,6 +74,8 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
     ...(stadtstaat ? [] : [{ name: bl?.name ?? params.bundesland, href: `/solar-atlas/${params.bundesland}` }]),
     ...(kreisfrei || stadtstaat ? [] : [{ name: kreis?.name ?? params.kreis, href: `/solar-atlas/${params.bundesland}/${params.kreis}` }]),
   ];
+
+  if(association)pfad.push(association);
 
   return (
     <GemeindeSeite

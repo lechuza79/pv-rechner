@@ -248,7 +248,7 @@ export function districtsFromRegister(rows: { region_id: string; name: string; l
   const children = new Map<string, typeof rows>();
   for (const r of rows) if (r.parent_region_id) children.set(r.parent_region_id, [...(children.get(r.parent_region_id) ?? []), r]);
   return rows
-    .filter((r) => r.level === "landkreis")
+    .filter((r) => r.level === "landkreis" && /^(0[1-9]|1[0-6])\d{3}$/.test(r.region_id))
     .flatMap((k) => {
       const kids = children.get(k.region_id) ?? [];
       const members = kids.filter((c) => isDistrictMember(c, k.region_id)).map((c) => c.region_id);

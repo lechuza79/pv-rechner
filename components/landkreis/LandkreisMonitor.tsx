@@ -25,8 +25,8 @@ import {ortPhrase} from "../../lib/atlas-orte";
  * energy widgets. Live power uses the prepared daily curve for the selected regional level. Missing
  * packages retain register snapshots, never fabricated monthly history.
  */
-export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId,name,livePower=true}:{regionId:string;name:string;livePower?:boolean;cells:ChildYearRow[];stand:string;monitor?:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
-  const weatherSource=useMemo(()=>regionalSolarWeatherSource(regionId),[regionId]);
+export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId,name,livePower=true,weatherEndpoint,videoSupported=true}:{regionId:string;name:string;livePower?:boolean;weatherEndpoint?:string;videoSupported?:boolean;cells:ChildYearRow[];stand:string;monitor?:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
+  const weatherSource=useMemo(()=>regionalSolarWeatherSource(regionId,weatherEndpoint),[regionId,weatherEndpoint]);
   const solar=cells.filter(row=>SEGMENT_OWNER[row.segment]!=null&&!row.segment.startsWith("batterie"));
   const years=[...new Set(solar.map(row=>row.year))].sort((a,b)=>a-b).map(year=>({year,count:solar.filter(row=>row.year===year).reduce((sum,row)=>sum+row.count,0)}));
   const groups=[
@@ -42,6 +42,6 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
     growth={<AnnualGrowth years={years} stand={stand} name={name} regionId={regionId}/>}
     stock={<>      <ExportableWidgetFrame widget={WIDGETS.regionalComposition} place={name} stand={dashboardDate(stand)} filename={`solar-check-categories-${regionId}`} data-story-scheme="dark" title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute {ortPhrase({name})} erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></ExportableWidgetFrame>
       {groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>)}</>}
-    {...(monitor?.status==='ready' ? districtEnergyWidgets({data:monitor.energy,name,regionId}) : {})}
+    {...(monitor?.status==='ready' ? districtEnergyWidgets({data:monitor.energy,name,regionId,videoSupported}) : {})}
   />;
 }
