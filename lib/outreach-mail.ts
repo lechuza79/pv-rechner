@@ -443,7 +443,11 @@ export const PAUSE_MS = 60_000;
  * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
  * Spam-Ordner dagegen sofort.
  */
-export const MAX_JE_LAUF = 100;
+export const MAX_JE_LAUF = 250;
+// 250 statt 100 am 08.10.2026 (Betreiber, „heute alle rausschicken“): die 242
+// Gemeinden der 20 Kreise mit fertiger Szene an einem Tag. Getragen von 178
+// Briefen am 06./07.10. mit 3 Unzustellbarkeiten und keiner Spam-Meldung; der
+// Versand legt eine Minute zwischen zwei Mails, 242 Briefe dauern rund vier Stunden.
 // 100 statt 65 am 05.10.2026 (Betreiber): ganze Kreise an einem Tag, Kreisverwaltung
 // und alle ihre Gemeinden. Getragen von 96 Pressemails an einem Tag am 30.09.2026
 // ohne einen Zustellfehler.
