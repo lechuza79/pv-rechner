@@ -50,11 +50,13 @@ bisher ab. Lizenz CC BY 4.0 laut CDS-Katalog. Das Konto gehört dem Betreiber.
 - **Monatslauf** (`scripts/gemeinde-monatslauf.ts`) baut heute beides in einem
   Lauf und bricht ab, wenn das Wetter des Vormonats fehlt. Geplanter Auftrag
   `solar-check-gemeinde-monatslauf` (lokal, 8./10./12.) startet ihn.
-- **Offen — Stufe 1 als eigener Lauf.** Hürde: Die Euro-Bewertung der Pakete
-  (`baseline.values[LETZTER_MONAT]` in `scripts/gemeinde-paket.ts`) hängt am
-  Wetter des jüngsten Monats. Ohne Wetter fiele sie für ALLE Monate weg — ein
-  Paket der Stufe 1 wäre schlechter als das des Vormonats. Stufe 1 muss deshalb
-  entweder die Monitor-Zeiträume des bisherigen Pakets übernehmen oder die
-  Bewertung vom jüngsten Monat entkoppeln.
+- **Stufe 1 gebaut (08.10.2026):** `gemeinde-monatslauf.ts --los --stufe=register`
+  baut alle Pakete aus dem neuen Export mit dem Wettermonat einen Schritt
+  zurück (Story-Vorbereitung über `STORY_WETTER_MONAT`, Pakete über `--monat`).
+  Getestet an München: „303 neue Solaranlagen im September“, Monatsdiagramme
+  und Euro-Werte bis August. Die Vorbereitung hält nur den Wert des
+  Wettermonats; der Wechsel auf Stufe 2 stellt die Zahlen exakt her.
+  Eigene Fertig-Zeile („✓ Register-Stufe fertig.“), damit Stufe 2 sich nicht
+  für erledigt hält. Auftrag `solar-check-monatslauf-register` (1./3./5.).
 - **Offen — Neuigkeiten und Rückblick** hängen an Stufe 1; Abo-Versand nur für
   freigegebene Meldungsarten (`ABO_MAIL_FREIGEGEBEN`).
