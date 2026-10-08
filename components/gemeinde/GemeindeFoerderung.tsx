@@ -1,10 +1,11 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Modal from "../Modal";
+import FundingDetailModal from "../FundingDetailModal";
 import ContactForm from "../ContactForm";
-import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "../FundingProgramParts";
+import { FundingStatusBadge } from "../FundingProgramParts";
 import { istFinanzierung, saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } from "../../lib/funding-programs";
 
 /**
@@ -37,12 +38,6 @@ const MOTIV: Record<FundingTechnik, string> = {
   balkon: "balcony-modern",
   waermepumpe: "heatpump-modern",
 };
-
-const pfeil = (
-  <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 export type FoerderProgrammAnsicht = {
   programm: FundingProgram;
@@ -96,12 +91,8 @@ export default function GemeindeFoerderung({
   programme: FoerderProgrammAnsicht[];
 }) {
   const [offen, setOffen] = useState<FoerderProgrammAnsicht | null>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
   const [meldung, setMeldung] = useState<FoerderProgrammAnsicht | null>(null);
 
-  useEffect(() => {
-    if (offen) dialog.current?.showModal();
-  }, [offen]);
 
   const archiv = programme.filter(istArchiviert);
   const aktuell = programme.filter((p) => !istArchiviert(p));
@@ -169,53 +160,7 @@ export default function GemeindeFoerderung({
         </>}
       </Modal>
 
-      {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —
-          die Sätze und Bedingungen kommen aus den geteilten Bausteinen. */}
-      <dialog
-        ref={dialog}
-        className="atlas-dialog gemeinde-foerder-dialog"
-        aria-modal="true"
-        aria-labelledby="gemeinde-foerder-titel"
-        onClose={() => setOffen(null)}
-        onClick={(e) => {
-          if (e.target === dialog.current) dialog.current?.close();
-        }}
-      >
-        {offen && (
-          <>
-            <button className="atlas-close" aria-label="Schließen" onClick={() => dialog.current?.close()}>
-              ×
-            </button>
-            <h2 id="gemeinde-foerder-titel">{offen.programm.name}</h2>
-            <div className="atlas-dialog-body">
-              <p className="gemeinde-foerder-traeger">
-                <FundingStatusBadge status={offen.programm.status} /> <span>{offen.programm.traeger}</span>
-              </p>
-              <p>
-                Förderfähig: {offen.programm.coveredCosts}
-                {istDachSicht(technikenVon(offen.programm)[0]) && offen.programm.maxFoerderung ? ` · ${offen.programm.maxFoerderung}` : ""}
-              </p>
-              {/* Je Technik ein Abschnitt — nie alles in einer Liste: Bei Nidda
-                  stünde sonst „höchstens zwei Module je Haushalt" (Balkon)
-                  neben dem Satz je kWp (Dach), und beides schlösse einander
-                  aus. Dieselbe Regel wie auf der Stadtseite und im Rechner. */}
-              {technikenVon(offen.programm).map((technik) => (
-                <section key={technik} className="gemeinde-foerder-technikblock">
-                  {technikenVon(offen.programm).length > 1 && <h3>{TECHNIK_WORT[technik]}</h3>}
-                  <FundingRates rates={offen.programm.rates} bordered label="Konditionen" technik={technik} />
-                  <FundingConditions conditions={offen.programm.conditions} eligibility={offen.programm.eligibility} technik={technik} />
-                </section>
-              ))}
-              <p className="gemeinde-foerder-quelle">
-                <a href={offen.programm.url} target="_blank" rel="noopener noreferrer">
-                  Zur offiziellen Quelle {pfeil}
-                </a>
-                <span>{offen.standLabel}</span>
-              </p>
-            </div>
-          </>
-        )}
-      </dialog>
+      <FundingDetailModal selected={offen} onClose={() => setOffen(null)} ort={ort} />
     </div>
   );
 }

@@ -339,6 +339,24 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/FundingOverviewCard.tsx",
+    name: "FundingOverviewCard",
+    zweck: "Compact funding summary opening the shared detail dialog.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["ActionButton", "FundingDetailModal", "FundingProgramParts"],
+  },
+  {
+    datei: "components/FundingDetailModal.tsx",
+    name: "FundingDetailModal",
+    zweck: "Shared funding details, conditions, verification and matching calculator for Atlas and funding overview.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Modal", "ActionButton", "FoerderFlow", "FundingProgramParts"],
+  },
+  {
     datei: "components/Modal.tsx",
     name: "Modal",
     zweck:

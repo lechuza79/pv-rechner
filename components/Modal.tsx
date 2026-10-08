@@ -96,7 +96,7 @@ const ModalStickyOwnership = createContext(false);
  * dieselbe Komponente kann damit auf der Seite und im Fenster stehen (das
  * Kontaktformular tut genau das).
  */
-export function ModalSticky({ children }: { children: ReactNode }) {
+export function ModalSticky({ children, transparent = false }: { children: ReactNode; transparent?: boolean }) {
   const kontext = useContext(ModalKontext);
   const owned = useContext(ModalStickyOwnership);
   if (!kontext || owned) return <>{children}</>;
@@ -119,10 +119,10 @@ export function ModalSticky({ children }: { children: ReactNode }) {
         marginRight: -DIALOG_PAD_X,
         marginBottom: -DIALOG_PAD_BOTTOM,
         padding: `${space.md}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
-        background: v("--color-bg"),
+        background: transparent ? "transparent" : v("--color-bg"),
         // Der Strich sagt „hier geht es weiter, da ist noch mehr" — steht kein
         // Inhalt darunter, wäre er eine Behauptung ohne Inhalt.
-        borderTop: kontext.scrollt ? `1px solid ${v("--color-border")}` : "1px solid transparent",
+        borderTop: kontext.scrollt && !transparent ? `1px solid ${v("--color-border")}` : "1px solid transparent",
       }}
     >
       <ModalStickyOwnership.Provider value={true}>{children}</ModalStickyOwnership.Provider>
