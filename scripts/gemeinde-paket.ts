@@ -54,7 +54,9 @@ const arg = (key: string) => process.argv.find((a) => a.startsWith(`--${key}=`))
 const CACHE = "scripts/.cache";
 const EDITION = arg("stand") ?? "2026-09-10";
 let RANG_STAND = "";
-const OUT = path.join(CACHE, "gemeinde-pakete", EDITION);
+// --ausgabe=<dir> writes elsewhere, e.g. to compare a code change against the
+// packages of the same edition without touching them.
+const OUT = arg("ausgabe") ?? path.join(CACHE, "gemeinde-pakete", EDITION);
 /** Periods follow the edition: the last complete month before it, and the
  *  three complete calendar years before its year (overridable for tests). */
 const [EY, EM] = EDITION.split("-").map(Number);

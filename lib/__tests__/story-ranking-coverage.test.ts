@@ -26,3 +26,17 @@ it.runIf(existsSync('scripts/.cache/story-ranking-month/sources'))('checks actua
   for(const rank of selected){expect(rank.size).toBeGreaterThanOrEqual(3);expect(rank.rank===1||rank.rank/rank.size<=0.1).toBe(true);}
  }
 },60000);
+it('the shared ranking cache never answers for another data set',()=>{
+ const town=(n:number):GemeindeStats=>({regionId:`010010${String(n).padStart(2,'0')}`,name:`Ort ${n}`,bezeichnung:'Gemeinde',population:1000+n*37,privatDachKwp:50+n*3,gewerbeDachKwp:10,freiflaecheKwp:0,balkonCount:5+n,balkonKwp:4+n,batteriePrivatKwh:20+n,batterieGewerbeKwh:0,windKwp:0,biomasseKwp:0,wasserKwp:0,solarZubauKwp:5+n});
+ const many=Array.from({length:40},(_,n)=>town(n+1));
+ const id=many[10].regionId;
+ const first=atlasRankMonth(many,id,'2026-09-09','Landkreis');
+ expect(first.ranks.length).toBeGreaterThan(0);
+ // Same data again: the cached answer equals the first one.
+ expect(atlasRankMonth(many,id,'2026-09-09','Landkreis')).toEqual(first);
+ // Fewer towns: every ranking must be rebuilt, so every size shrinks.
+ const fewer=many.slice(0,20);
+ const second=atlasRankMonth(fewer,id,'2026-09-09','Landkreis');
+ expect(second.ranks.length).toBe(first.ranks.length);
+ second.ranks.forEach((rank,i)=>expect(rank.size).toBeLessThan(first.ranks[i].size));
+});

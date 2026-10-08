@@ -7,8 +7,17 @@
 
 import { VORANGESTELLTE_GATTUNG } from "./atlas-orte";
 
-const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-const dez = (n: number, stellen: number) => n.toLocaleString("de-DE", { maximumFractionDigits: stellen });
+// One formatter per precision, built once: `toLocaleString` with options builds
+// a new one on every call, and the package run formats millions of numbers
+// (a tenth of its CPU time, measured 08.10.2026). Same output by definition.
+const GANZ = new Intl.NumberFormat("de-DE");
+const DEZ = new Map<number, Intl.NumberFormat>();
+const nf = (n: number) => GANZ.format(Math.round(n));
+const dez = (n: number, stellen: number) => {
+  let f = DEZ.get(stellen);
+  if (!f) DEZ.set(stellen, (f = new Intl.NumberFormat("de-DE", { maximumFractionDigits: stellen })));
+  return f.format(n);
+};
 
 /**
  * Zahl und Einheit — getrennt.
