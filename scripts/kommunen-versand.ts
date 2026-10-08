@@ -471,7 +471,9 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
       log(`${b.name}: Versand fehlgeschlagen — ${(e as Error).message}`, "err");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: [(e as Error).message] });
     }
-    if (i < zuSenden.length - 1) await new Promise((r) => setTimeout(r, pauseMs));
+    // Irregular spacing (operator, 08.10.2026: "unrunde Zeiten"): a fixed beat
+    // reads as a machine to filters and recipients alike. 70–140 % of the pause.
+    if (i < zuSenden.length - 1) await new Promise((r) => setTimeout(r, Math.round(pauseMs * (0.7 + Math.random() * 0.7))));
   }
 
   // ZUSTELLUNGSPROBE — eine Mail an eigene Postfächer bei großen Anbietern.
