@@ -38,6 +38,8 @@ export type Era5BlockManifest = {
   /** Last-Modified of the archive file, so a later revision is recognisable. */
   sourceLastModified: string | null;
   retrievedAt: string;
+  /** Whole days the archive lacked, filled from the Copernicus CDS (`lib/era5-cds.ts`). */
+  filled?: { source: string; days: string[]; referenceDay: string; maxDifference: number };
 };
 
 export function era5BlockPaths(variable: Era5Variable, chunk: number, root = ERA5_STORE_ROOT) {
@@ -76,6 +78,7 @@ export function era5WriteBlock(
   root = ERA5_STORE_ROOT,
   /** Where the values came from; a block before 2022 comes from year files. */
   sourceUrl = era5ChunkUrl(variable, chunk),
+  filled?: Era5BlockManifest['filled'],
 ) {
   const expected = ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS;
   if (values.length !== expected) {
@@ -105,6 +108,7 @@ export function era5WriteBlock(
     sourceUrl,
     sourceLastModified,
     retrievedAt: new Date().toISOString(),
+    ...(filled ? { filled } : {}),
   };
   writeFileSync(manifest + '.tmp', JSON.stringify(entry));
   renameSync(manifest + '.tmp', manifest);

@@ -35,6 +35,14 @@ archiviert). Echte Messungen gäbe es an DWD-Stationen (Folgetag), aber nur
 punktuell; je Gemeinde müsste interpoliert werden — ungeprüft, wieder eine
 andere Methode.
 
+**Lücken im Archiv füllt Copernicus** (seit 08.10.2026). Am 08.10. fehlte im
+Archiv der ganze 25.09.2026, obwohl es bis 03.10. reichte
+(open-meteo/open-meteo#2183). Fehlt ein ganzer Tag in allen Zellen und ist
+`CDSAPI_KEY` gesetzt, holt der Wetterlauf ihn aus dem Copernicus CDS — vorher
+vergleicht er einen Nachbartag, den beide haben (gemessen: höchstens 0,025 K
+bzw. 0,5 W/m², die Speicherrundung des Archivs). Ohne Schlüssel bricht er wie
+bisher ab. Lizenz CC BY 4.0 laut CDS-Katalog. Das Konto gehört dem Betreiber.
+
 ## Stand der Umsetzung
 
 - **Register-Import** läuft bereits am 1./3./5. (`.github/workflows/mastr-refresh.yml`,

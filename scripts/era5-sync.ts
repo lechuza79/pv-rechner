@@ -29,6 +29,7 @@ import {
   type Era5Variable,
 } from '../lib/era5-archive';
 import { era5BlockReady, era5ReadManifest, era5WriteBlock, era5DropBlock } from '../lib/era5-store';
+import { cdsFillBlock } from '../lib/era5-cds';
 
 const arg = (key: string, fallback = '') =>
   process.argv.find((a) => a.startsWith('--' + key + '='))?.slice(key.length + 3) ?? fallback;
@@ -114,8 +115,14 @@ async function readWindowFrom(url: string, fileFrom: number, count: number, expe
 async function fetchBlock(variable: Era5Variable, chunk: number) {
   const source = await blockSource(variable, chunk);
   if (source.kind === 'chunk') {
-    const values = await readWindowFrom(source.url, 0, ERA5_CHUNK_HOURS, ERA5_CHUNK_HOURS);
-    return era5WriteBlock(variable, chunk, values, source.stamp);
+    const values = Float32Array.from(await readWindowFrom(source.url, 0, ERA5_CHUNK_HOURS, ERA5_CHUNK_HOURS));
+    // A whole day the archive lacks is taken from the Copernicus CDS, after a
+    // comparison on a day both hold (lib/era5-cds.ts). Without a key the block
+    // fails on the missing value, as before.
+    const key = process.env.CDSAPI_KEY;
+    const filled = key && values.some((v) => !Number.isFinite(v)) ? await cdsFillBlock(variable, chunk, values, key) : null;
+    if (filled) console.log(`  ${variable}/${chunk}: ${filled.days.join(', ')} aus Copernicus ergänzt (Vergleichstag ${filled.referenceDay}, Abweichung höchstens ${filled.maxDifference.toFixed(3)})`);
+    return era5WriteBlock(variable, chunk, values, source.stamp, undefined, source.url, filled ?? undefined);
   }
   const block = new Float32Array(ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS).fill(Number.NaN);
   for (const part of source.parts) {
