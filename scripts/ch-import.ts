@@ -30,6 +30,7 @@ import {
   chElternSchluessel,
   chGemeindeSchluessel,
   chKantonSchluessel,
+  neuesteGrenzenAusgabe,
 } from "../lib/ch-register";
 import { FlaechenIndex, flaechenAusGpkg } from "../lib/gpkg-punkt";
 import { rollupSchrittweise } from "../lib/mastr-rollup-sql";
@@ -40,9 +41,33 @@ const ARBEIT = resolve(process.env.CH_ARBEIT ?? "/tmp/ch-import");
 function hole(url: string, ziel: string): string {
   const pfad = resolve(ARBEIT, ziel);
   if (existsSync(pfad)) return pfad;
+  return holeFrisch(url, ziel);
+}
+
+/** Immer neu holen — für alles, dessen Zweck gerade die Frische ist. */
+function holeFrisch(url: string, ziel: string): string {
+  const pfad = resolve(ARBEIT, ziel);
   mkdirSync(ARBEIT, { recursive: true });
   execFileSync("curl", ["-sS", "-f", "-o", pfad, url], { stdio: ["ignore", "inherit", "inherit"] });
   return pfad;
+}
+
+/**
+ * Wann wurde diese Datei veröffentlicht?
+ *
+ * DER DATENSTAND IST DER TAG DER QUELLE, NIE DER TAG DES LAUFS — sonst steht an
+ * den Zahlen ein Datum, an dem niemand etwas erhoben hat (dieselbe Fehlerklasse
+ * wie ein Prüfdatum aus dem Schreibzeitpunkt). Gemessen am 07.10.2026: Das
+ * Register trägt den 14.09.2026, also 23 Tage vor diesem Lauf — es erscheint
+ * NICHT täglich, und ein Monatslauf, der sich selbst ein frisches Datum
+ * stempelt, behauptet eine Aktualisierung, die es nicht gab.
+ */
+function quellDatum(url: string): string | null {
+  const kopf = execFileSync("curl", ["-sS", "-f", "-I", url], { encoding: "utf8", maxBuffer: 1 << 20 });
+  const zeile = kopf.split(/\r?\n/).find((z) => /^last-modified:/i.test(z));
+  if (!zeile) return null;
+  const d = new Date(zeile.slice(zeile.indexOf(":") + 1).trim());
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
 }
 
 /** Zeilen einer CSV mit Kopfzeile; Trennzeichen wird am Kopf erkannt. */
@@ -134,7 +159,7 @@ async function main() {
   console.log("Gemeindeverzeichnis …");
   const heute = new Date();
   const datum = `${String(heute.getDate()).padStart(2, "0")}-${String(heute.getMonth() + 1).padStart(2, "0")}-${heute.getFullYear()}`;
-  const verz = csv(hole(CH_QUELLEN.verzeichnis + datum, "verzeichnis.csv")).filter((r) => !r["ValidTo"]);
+  const verz = csv(hole(CH_QUELLEN.verzeichnis + datum, `verzeichnis-${datum}.csv`)).filter((r) => !r["ValidTo"]);
   // Die historische Kennung ist nur INNERHALB einer Ebene eindeutig (11 Kollisionen
   // gemessen) — nachgeschlagen wird deshalb mit Kennung UND Zielebene.
   const nachKennung = new Map<string, Record<string, string>>();
@@ -147,7 +172,14 @@ async function main() {
 
   // ── 2. Grenzen: Einwohner, Mittelpunkt und die Zuordnung der Koordinaten ──
   console.log("Gemeindegrenzen …");
-  const gpkgZip = hole(CH_QUELLEN.grenzen, "grenzen.zip");
+  // Die Ausgabe wird nachgeschlagen, nicht hingeschrieben — Begründung in
+  // `neuesteGrenzenAusgabe`. Der Katalog ist klein (rund 80 kB) und wird bei
+  // jedem Lauf frisch geholt; ein zwischengespeicherter Katalog verfehlte
+  // genau den Zweck.
+  const katalog = JSON.parse(readFileSync(holeFrisch(CH_QUELLEN.grenzenKatalog, "grenzen-katalog.json"), "utf8"));
+  const grenzen = neuesteGrenzenAusgabe(katalog);
+  console.log(`  Ausgabe ${grenzen.ausgabe}`);
+  const gpkgZip = hole(grenzen.url, `grenzen-${grenzen.ausgabe}.zip`);
   execFileSync("unzip", ["-o", "-q", gpkgZip, "-d", ARBEIT]);
   const gpkg = resolve(
     ARBEIT,
@@ -191,7 +223,12 @@ async function main() {
 
   // ── 3. Register: Anlagen, über die Koordinate zugeordnet ──────────────────
   console.log("Anlagenregister …");
-  const regZip = hole(CH_QUELLEN.register, "register.zip");
+  // Der Dateiname trägt den Tag des Laufs: Ein gleichnamiger Zwischenstand von
+  // letztem Monat sieht einem frischen zum Verwechseln ähnlich. Auf einem
+  // Läufer ist der Ordner ohnehin leer.
+  const regZip = hole(CH_QUELLEN.register, `register-${datum}.zip`);
+  const registerStand = quellDatum(CH_QUELLEN.register);
+  console.log(`  veröffentlicht am ${registerStand ?? "unbekannt"}`);
   execFileSync("unzip", ["-o", "-q", regZip, "-d", ARBEIT]);
   const anlagen = csv(resolve(ARBEIT, "ElectricityProductionPlant.csv"));
   console.log(`  ${anlagen.length} Anlagen`);
@@ -326,6 +363,43 @@ async function main() {
   await rollupSchrittweise((fn, args) => db.rpc(fn, args ?? {}), traegerListe);
   const { count } = await db.from("mastr_region_mitglied").select("*", { count: "exact", head: true });
   console.log(`  Mitgliederzeilen jetzt: ${count}`);
+
+  // ── 6. Datenstand festhalten ──────────────────────────────────────────────
+  // ZWEI DATEN, ZWEI BEDEUTUNGEN: `imported_at` ist der Stand der QUELLE (der
+  // Tag, an dem das Register veröffentlicht wurde), `lauf_am` der Zeitpunkt
+  // DIESES Laufs. Für die Schweiz fallen sie auseinander — das Register
+  // erscheint nicht monatlich —, und nur das zweite beantwortet die Frage, ob
+  // ein Monatslauf ausgefallen ist. Eines für beides zu nehmen hieße, einen
+  // ausgefallenen Lauf für einen unveränderten zu halten oder umgekehrt.
+  const anlagenGesamt = zeilen.reduce((s, z) => s + z.count, 0);
+  const { error: metaFehler } = await db.from("mastr_meta").upsert(
+    {
+      id: 2,
+      markt: "ch",
+      source_version: `Register ${registerStand ?? "ohne Datum"} · Grenzen ${grenzen.ausgabe}`,
+      source_url: CH_QUELLEN.register,
+      imported_at: registerStand,
+      total_units_imported: anlagenGesamt,
+      lauf_am: new Date().toISOString(),
+      notes:
+        `${regionen.length} Regionen, ${zeilen.length} Zellen, ${anlagenGesamt} Anlagen. ` +
+        `Zuordnung über die Koordinate; ${stat.ohneKoordinate + stat.ausserhalb} Anlagen ohne Gemeinde ` +
+        `(in der Landessumme, auf keiner Ortsseite).`,
+    },
+    { onConflict: "markt" },
+  );
+  if (metaFehler) {
+    // Die Spalten `markt` und `lauf_am` kommen aus der Setup-Route
+    // (app/api/mastr/setup/route.ts) — sie ist die Quelle des Schemas und
+    // idempotent. Fehlen sie, ist das kein Datenproblem, sondern eine nicht
+    // eingespielte Migration; die Meldung sagt das, statt eine Fehlermeldung
+    // von PostgREST durchzureichen.
+    throw new Error(
+      `mastr_meta (ch): ${metaFehler.message} — fehlen die Spalten „markt" oder „lauf_am", ` +
+        `zuerst GET /api/mastr/setup aufrufen (Bearer CRON_SECRET).`,
+    );
+  }
+  console.log(`  Datenstand festgehalten: Quelle ${registerStand ?? "unbekannt"}, Lauf jetzt`);
   console.log("Fertig.");
 }
 

@@ -42,7 +42,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: mastr-refresh
+  # GEMEINSAME SPERRE MIT DEM SCHWEIZER LAUF (07.10.2026). Beide bauen am Ende
+  # die Zugehoerigkeit neu auf, und die ist marktuebergreifend: Sie wird geleert
+  # und aus allen Regionen neu gefuellt. Liefen beide gleichzeitig, bildete der
+  # eine seine Summen gegen eine Zugehoerigkeit, die der andere gerade leert —
+  # ohne Fehler, ohne rote Action, nur mit fehlenden Zeilen auf Kreis- und
+  # Landesseiten. Wer die Gruppe umbenennt, nimmt .github/workflows/ch-import.yml
+  # mit; eine eigene Gruppe je Markt sperrt nichts.
+  group: mastr-datenlauf
   cancel-in-progress: false  # never interrupt an in-flight upsert
 
 jobs:

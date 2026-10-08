@@ -53,12 +53,56 @@ export const CH_QUELLEN = {
     "https://data.geo.admin.ch/ch.bfe.elektrizitaetsproduktionsanlagen/csv/2056/ch.bfe.elektrizitaetsproduktionsanlagen.zip",
   /** Amtliches Gemeindeverzeichnis — liefert die Hierarchie ausgeschrieben. */
   verzeichnis: "https://www.agvchapp.bfs.admin.ch/api/communes/snapshot?date=",
-  /** Grenzen UND Einwohnerzahl in einer Datei. */
-  grenzen:
-    "https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d/swissboundaries3d_2026-01/swissboundaries3d_2026-01_2056_5728.gpkg.zip",
+  /**
+   * Grenzen UND Einwohnerzahl in einer Datei — die AUSGABE wird nachgeschlagen,
+   * nicht hingeschrieben (siehe `neuesteGrenzenAusgabe`).
+   */
+  grenzenKatalog:
+    "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swissboundaries3d/items?limit=100",
   /** Nur für die Gegenprobe, nie im Routinelauf: je Kanton rund 120 MB. */
   gebaeuderegister: "https://public.madd.bfs.admin.ch/",
 } as const;
+
+/**
+ * WELCHE AUSGABE DER GEMEINDEGRENZEN IST DIE NEUESTE — BLOCKER.
+ *
+ * Die Adresse der Grenzen trug bis zum 07.10.2026 eine feste Ausgabe
+ * („2026-01"). Für einen Lauf von Hand ist das richtig und nachvollziehbar, für
+ * einen Monatslauf ist es eine tickende Bombe mit einem bekannten Zündtag: Die
+ * Schweiz schließt ihre Gemeindefusionen zum 1. Januar ab. Das Verzeichnis
+ * führt danach die neuen Gemeinden, die festgeschriebenen Grenzen die alten —
+ * jede Anlage in einer fusionierten Gemeinde bekäme über die Koordinate eine
+ * Nummer, die es nicht mehr gibt. Der Lauf bricht dann zwar ab (jede Zelle
+ * braucht eine Region), aber mit einer Meldung über Seeflächen, die in die
+ * falsche Richtung zeigt.
+ *
+ * Nachgeschlagen wird deshalb im Katalog der Quelle. Gemessen am 07.10.2026:
+ * 16 Ausgaben, die jüngste „2026-01", je Ausgabe genau ein GeoPackage im
+ * Landeskoordinatensystem. Die Kennung trägt Jahr und Monat und sortiert
+ * deshalb als Zeichenkette richtig.
+ *
+ * FEHLT das GeoPackage in der jüngsten Ausgabe, wird LAUT abgebrochen statt auf
+ * eine ältere zurückzufallen: Ein stiller Rückfall ist genau der Zustand, den
+ * die feste Adresse hatte — nur ohne die Zeile im Code, an der man ihn sieht.
+ */
+export function neuesteGrenzenAusgabe(katalog: unknown): { ausgabe: string; url: string } {
+  const eintraege = (katalog as { features?: Array<{ id?: string; assets?: Record<string, { href?: string }> }> })
+    ?.features;
+  if (!Array.isArray(eintraege) || eintraege.length === 0) {
+    throw new Error("Grenzen-Katalog: keine Ausgaben gefunden — Quelle oder Format hat sich geändert.");
+  }
+  const sortiert = [...eintraege].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+  const juengste = sortiert[sortiert.length - 1];
+  const ausgabe = String(juengste.id ?? "");
+  const treffer = Object.entries(juengste.assets ?? {}).filter(([name]) => name.endsWith(".gpkg.zip"));
+  if (treffer.length !== 1 || !treffer[0][1]?.href) {
+    throw new Error(
+      `Grenzen-Katalog: Ausgabe ${ausgabe} führt ${treffer.length} GeoPackage-Dateien statt einer — ` +
+        "hier wird nicht geraten.",
+    );
+  }
+  return { ausgabe, url: String(treffer[0][1].href) };
+}
 
 /**
  * DER REGIONSSCHLÜSSEL TRÄGT SEINEN MARKT — BLOCKER.

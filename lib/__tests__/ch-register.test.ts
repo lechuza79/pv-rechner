@@ -17,9 +17,11 @@ import {
   chGemeindeSchluessel,
   chKantonSchluessel,
   istChSchluessel,
+  neuesteGrenzenAusgabe,
 } from "../ch-register";
 import { FlaechenIndex, imPolygon, type Flaeche } from "../gpkg-punkt";
 import { MASTR_ROLLUP_SQL } from "../mastr-rollup-sql";
+import { importTageAusZeitplan } from "../mastr-import-plan";
 
 describe("Schweizer Regionsschlüssel", () => {
   it("kollidiert mit keinem deutschen Schlüssel", () => {
@@ -242,5 +244,81 @@ describe("Niemand ruft den Neuaufbau in einem Zug", () => {
       const text = readFileSync(resolve(__dirname, "../..", d), "utf8");
       expect(text, `${d} behauptet es noch`).not.toMatch(/hebt ihr Statement-Timeout selbst auf/);
     }
+  });
+});
+
+describe("Welche Ausgabe der Gemeindegrenzen gilt", () => {
+  const katalog = {
+    features: [
+      { id: "swissboundaries3d_2025-04", assets: { "a_2056_5728.gpkg.zip": { href: "https://x/2025-04.gpkg.zip" } } },
+      { id: "swissboundaries3d_2016-01", assets: { "a_2056_5728.gpkg.zip": { href: "https://x/2016-01.gpkg.zip" } } },
+      { id: "swissboundaries3d_2026-01", assets: { "a_2056_5728.gpkg.zip": { href: "https://x/2026-01.gpkg.zip" } } },
+    ],
+  };
+
+  it("nimmt die jüngste Ausgabe, nicht die erste der Liste", () => {
+    // Der Katalog liefert nicht sortiert — gemessen am 07.10.2026 steht
+    // „2016-01" vor „2026-01". Wer die Reihenfolge der Quelle übernimmt, holt
+    // zehn Jahre alte Grenzen und sieht es an nichts.
+    expect(neuesteGrenzenAusgabe(katalog)).toEqual({
+      ausgabe: "swissboundaries3d_2026-01",
+      url: "https://x/2026-01.gpkg.zip",
+    });
+  });
+
+  it("bricht laut ab, wenn der Katalog leer oder anders gebaut ist", () => {
+    expect(() => neuesteGrenzenAusgabe({ features: [] })).toThrow(/keine Ausgaben/);
+    expect(() => neuesteGrenzenAusgabe({})).toThrow(/keine Ausgaben/);
+    expect(() => neuesteGrenzenAusgabe(null)).toThrow(/keine Ausgaben/);
+  });
+
+  it("fällt NICHT auf eine ältere Ausgabe zurück, wenn der jüngsten das GeoPackage fehlt", () => {
+    // Ein stiller Rückfall wäre genau der Zustand, den die feste Adresse hatte:
+    // Die Gemeindefusionen zum 1. Januar liegen dann nicht in den Grenzen, und
+    // der Lauf ordnet Anlagen Gemeindenummern zu, die es nicht mehr gibt.
+    const ohne = {
+      features: [
+        { id: "swissboundaries3d_2025-04", assets: { "a_2056_5728.gpkg.zip": { href: "https://x/alt.zip" } } },
+        { id: "swissboundaries3d_2026-01", assets: { "a_2056_5728.shp.zip": { href: "https://x/shp.zip" } } },
+      ],
+    };
+    expect(() => neuesteGrenzenAusgabe(ohne)).toThrow(/GeoPackage/);
+  });
+
+  it("die Adresse der Grenzen steht NICHT mehr mit fester Ausgabe im Code", () => {
+    const quelle = readFileSync(resolve(__dirname, "../ch-register.ts"), "utf8");
+    // Eine Jahr-Monat-Kennung in einer Adresse ist der Zustand vor dem
+    // 07.10.2026 — sie altert lautlos bis zur nächsten Gemeindefusion.
+    expect(quelle).not.toMatch(/swissboundaries3d_\d{4}-\d{2}\//);
+  });
+});
+
+describe("Der Schweizer Monatslauf hat einen Termin und teilt die Sperre", () => {
+  const lauf = (datei: string) =>
+    readFileSync(resolve(__dirname, "../../.github/workflows", datei), "utf8");
+
+  it("sein Zeitplan ist als fester Tag des Monats geschrieben", () => {
+    // Der Gesundheitscheck liest die Tage aus dieser Datei heraus. Ein
+    // Sternchen oder eine Schrittweite ergibt dort „kein Urteil möglich" —
+    // eine Aufsicht, die sich lautlos abschaltet.
+    expect(importTageAusZeitplan(lauf("ch-import.yml"))).toEqual([8, 10, 12]);
+  });
+
+  it("beide Datenläufe hängen an DERSELBEN Sperre", () => {
+    // Beide bauen die marktübergreifende Zugehörigkeit neu auf. Zwei eigene
+    // Gruppen sperren nichts: Der eine bildet dann seine Summen gegen eine
+    // Zugehörigkeit, die der andere gerade leert — ohne Fehler, ohne rote
+    // Action, nur mit fehlenden Zeilen auf Kreis- und Landesseiten.
+    const gruppe = (t: string) => t.match(/^\s*group:\s*(\S+)/m)?.[1];
+    expect(gruppe(lauf("ch-import.yml"))).toBe("mastr-datenlauf");
+    expect(gruppe(lauf("mastr-refresh.yml"))).toBe("mastr-datenlauf");
+  });
+
+  it("die Termine der beiden Läufe fallen nicht zusammen", () => {
+    const de = importTageAusZeitplan(lauf("mastr-refresh.yml")) ?? [];
+    const ch = importTageAusZeitplan(lauf("ch-import.yml")) ?? [];
+    expect(de.length).toBeGreaterThan(0);
+    expect(ch.length).toBeGreaterThan(0);
+    expect(ch.filter((t) => de.includes(t))).toEqual([]);
   });
 });

@@ -371,13 +371,13 @@ async function AtlasBody({
   ];
   const defaultRefKey = kpiRefs[0]?.key ?? "";
 
-  const kindWort = childNoun(childLevel);
+  const kindWort = childNoun(childLevel, undefined, region.region_id);
   // Districts count their current municipalities (one rule with hero and map);
   // other levels as before, without unincorporated areas.
   const gezaehlteKinder = region.level === "landkreis"
     ? children.filter(child => isDistrictMember(child, region.region_id)).length
     : children.filter(child => child.bezeichnung !== "Gemeindefreies Gebiet").length;
-  const kindWortGezaehlt = childNoun(childLevel, gezaehlteKinder);
+  const kindWortGezaehlt = childNoun(childLevel, gezaehlteKinder, region.region_id);
   const einordnung = buildRegionHighlight({
     level: region.level as "de" | "bundesland" | "landkreis",
     name: region.name,
@@ -612,7 +612,7 @@ async function AtlasBody({
             <div style={S.card}>
               <h2 style={{ ...S.h2, marginBottom: 6 }}>Alle Zahlen im Detail</h2>
               <p style={{ ...S.sub, marginBottom: 12 }}>
-                {region.name} ist nicht in {childNoun(childLevel)} gegliedert. Die
+                {region.name} ist nicht in {childNoun(childLevel, undefined, region.region_id)} gegliedert. Die
                 ausführliche Auswertung mit Batteriespeichern, Dachpotenzial und
                 aktueller Leistung steht auf der Stadtseite.
               </p>
