@@ -158,13 +158,20 @@ test.describe("Gemeindeseite", () => {
     const box = abschnitt.locator(".sc-feature-card").first();
     const knopf = box.locator("button.sc-feature-action:not(.gemeinde-foerder-melden)");
     await expect(box).toContainText("Photovoltaik");
-    // Der Dialog steht immer im Dokument; geöffnet ist er erst mit [open].
-    const fenster = page.locator("dialog.gemeinde-foerder-dialog[open]");
+    // The shared modal exposes its accessible dialog role only while visible.
+    const fenster = page.getByRole("dialog").filter({ visible: true });
     await klickBisWirkung(knopf, fenster, "Förder-Fenster");
     // Die Bedingungen stehen je Technik getrennt: Die Balkon-Bedingung „zwei
     // Module je Haushalt" darf nicht unter der Dachanlage stehen.
     await expect(fenster).toContainText("Balkonkraftwerk");
-    await expect(fenster.getByRole("link", { name: /offiziellen Quelle/ })).toBeVisible();
+    await expect(fenster.getByRole("link", { name: "Offizielle Quelle", exact: true })).toBeVisible();
+    await expect(fenster).not.toContainText(/zwei Modulen? je Haushalt/);
+    await fenster.getByRole("button", { name: "Balkonkraftwerk", exact: true }).click();
+    await expect(fenster).toContainText(/zwei Modulen? je Haushalt/);
+    await expect(fenster).not.toContainText("4 kWp");
+    await expect(fenster.getByRole("link", { name: "Balkonkraftwerk-Rechner starten →", exact: true })).toHaveAttribute("href", "/balkonkraftwerk/rechner");
+    await page.keyboard.press("Escape");
+    await expect(fenster).toHaveCount(0);
   });
 
   test("ein Ort ohne eigenen Zuschuss bekommt den Satz, der wirklich gilt", async ({ page }) => {
