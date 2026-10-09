@@ -676,7 +676,10 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // 08.10.2026: Tagesordnung komplett (Stand 06.10.2026 18.30 Uhr) und
   //   tagesaktuelle Tagesordnung Donnerstag (Stand 08.10.2026 9.15 Uhr) im
   //   Original gelesen: kein Tagesordnungspunkt zu 21/7867. Zustand unverändert.
-  geprueftIso: "2026-10-08",
+  // 09.10.2026: DIP-Vorgang zu 21/7867 im Original gelesen: Beratungsstand
+  //   „Überwiesen", letzter Schritt 30.09.2026 (Unterrichtung 21/8298,
+  //   Stellungnahme Bundesrat/Gegenäußerung). Kein Beschluss. Zustand unverändert.
+  geprueftIso: "2026-10-09",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
