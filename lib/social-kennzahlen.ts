@@ -56,7 +56,7 @@ async function ladeGemeinden(): Promise<AwardZeile[]> {
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
     const { data, error } = await withDbTimeout(
-      supabase.from("mastr_gemeinde_award").select(spalten).range(von, von + schritt - 1),
+      supabase.from("mastr_gemeinde_award").select(spalten).not("region_id", "like", "ch%").order("region_id", { ascending: true }).range(von, von + schritt - 1),
       "social-kennzahlen: gemeinden",
       DB_SOFT_READ_TIMEOUT_MS,
     );

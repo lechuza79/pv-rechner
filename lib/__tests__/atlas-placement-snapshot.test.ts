@@ -88,7 +88,7 @@ describe("precomputed municipality placements", () => {
     db.from.mockImplementation((table) => {
       if (table === "mastr_gemeinde_award" || table === "mastr_regions") {
         const query = { select: vi.fn().mockReturnThis(), order: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(), range: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(), not: vi.fn().mockReturnThis(), range: vi.fn().mockReturnThis(),
           then: (resolve: (result: unknown) => unknown) => Promise.resolve(resolve({ error: null, data:
             table === "mastr_regions" ? [{ region_id: "09679147", name: "Test", bezeichnung: "Gemeinde" }] :
             [{ region_id: "09679147", population: 2000, privat_dach_kwp: power, privat_dach_count: 200,

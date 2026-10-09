@@ -98,8 +98,10 @@ export const WEITERE_MIN_GRUPPE = 10;
 export async function loadAwardStatsFresh(): Promise<GemeindeStats[]> {
   if (!supabase) return [];
   const [stats, regions] = await Promise.all([
-    pageAll("mastr_gemeinde_award", "*"),
-    pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde")),
+    // Deutsche Ranglisten: Schweizer Gemeinden ("ch…") liegen seit dem Import vom
+    // 07.10.2026 in derselben Award-Tabelle, gehören aber in keine deutsche Liste.
+    pageAll("mastr_gemeinde_award", "*", (q) => q.not("region_id", "like", "ch%")),
+    pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde").not("region_id", "like", "ch%")),
   ]);
   return zuStats(stats, regions);
 }

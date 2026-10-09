@@ -2280,7 +2280,7 @@ async function main() {
       active: async () => (await read("atlas_platzierung_aktiv?select=lauf_id")).json(),
       metadata: async id => (await read(`atlas_platzierung_laeufe?id=eq.${encodeURIComponent(id)}&select=orte,erneuert_am`)).json(),
       actual: async () => count(await read("atlas_platzierungen?select=region_id", true)),
-      expected: async () => count(await read("mastr_gemeinde_award?select=region_id", true)),
+      expected: async () => count(await read("mastr_gemeinde_award?select=region_id&region_id=not.like.ch*", true)),
     }, mastr?.importedAt ?? null);
     const problems = placementSnapshotProblems(snapshot, new Date());
     lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
