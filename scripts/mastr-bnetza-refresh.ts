@@ -28,6 +28,8 @@ import * as unzipper from "unzipper";
 import iconv from "iconv-lite";
 import sax from "sax";
 import { importNoetig, importTageAusZeitplan } from "../lib/mastr-import-plan";
+import { windGemeinde } from "../lib/wind-standort";
+import { ladeGemeindeflaechen, type Vg250Gemeinden } from "./lib/vg250";
 import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
 import { rollupSchrittweise } from "../lib/mastr-rollup-sql";
 
@@ -48,7 +50,8 @@ const URL_LOOKBACK_DAYS = 7;
 const AGGREGATES_TABLE = "mastr_aggregates_gem";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "bnetza");
+// Overridable so a worktree can read the 3 GB export the main checkout already holds.
+const CACHE_DIR = process.env.MASTR_CACHE_DIR ?? resolve(SCRIPT_DIR, ".cache", "bnetza");
 const SCHEMA_OUT = resolve(SCRIPT_DIR, "mastr-bnetza-schema.json");
 const AGGREGATES_OUT = resolve(CACHE_DIR, "aggregates.json");
 
@@ -627,7 +630,7 @@ export function classifyStorage(
   return kind === "privat" ? "batterie_privat" : "batterie_gewerbe";
 }
 
-function parseYear(s: string | undefined): number | null {
+export function parseYear(s: string | undefined): number | null {
   if (!s || s.length < 4) return null;
   const y = parseInt(s.substring(0, 4), 10);
   if (isNaN(y) || y < 1900 || y > 2100) return null;
@@ -731,14 +734,24 @@ export async function buildActorMap(zipPath: string): Promise<Map<string, ActorK
   return map;
 }
 
-async function aggregateUnit(
+/** How many wind turbines were placed by location, and why the rest kept their register key. */
+export type WindStandortStatistik = Record<string, { anzahl: number; kw: number }>;
+
+export async function aggregateUnit(
   zipPath: string,
   spec: UnitSpec,
   actorMap: Map<string, ActorKind>,
   capacityMap: Map<string, number>,
   agg: Map<AggregateKey, AggregateValue>,
   regions: Map<string, RegionMeta>,
+  // Wind only: the official municipal areas. Wind is counted where the turbine
+  // STANDS — see lib/wind-standort.ts (Steinfurt, 20 MW by register key, 92 MW
+  // on its land). Required for wind: a silent fallback to the register key
+  // would quietly bring the wrong numbers back.
+  windFlaechen?: Vg250Gemeinden,
+  windStatistik?: WindStandortStatistik,
 ): Promise<{ processed: number; accepted: number; skipped: Record<string, number> }> {
+  if (spec.et === "wind" && !windFlaechen) throw new Error("Wind braucht die Gemeindeflächen (Zuordnung nach Standort).");
   const directory = await unzipper.Open.file(zipPath);
   const unitEntries = directory.files
     .filter((f) => f.type === "File" && spec.filePattern.test(f.path))
@@ -792,8 +805,26 @@ async function aggregateUnit(
       // 06415000, zero plants on its page for eight months). Kreis and Land are
       // taken from the CURRENT key — Hanau left the Main-Kinzig-Kreis.
       const gks8 = gks.substring(0, 8);
-      const regionId = aktuellerGemeindeschluessel(gks8);
+      let regionId = aktuellerGemeindeschluessel(gks8);
       if (regionId !== gks8) skipped.umgeschluesselt++;
+      let standortName: string | undefined;
+      if (spec.et === "wind" && windFlaechen) {
+        const z = windGemeinde(
+          { registerAgs: regionId, breitengrad: row.Breitengrad, laengengrad: row.Laengengrad, ort: row.Ort, gemarkung: row.Gemarkung },
+          windFlaechen,
+        );
+        const grund = z.quelle === "standort" ? "standort" : z.grund;
+        if (windStatistik) {
+          const s = (windStatistik[grund] ??= { anzahl: 0, kw: 0 });
+          s.anzahl++;
+          s.kw += kwp;
+        }
+        if (z.quelle === "standort") {
+          regionId = z.regionId;
+          // The register's own name fields describe the WRONG municipality here.
+          standortName = windFlaechen.name(regionId);
+        }
+      }
       const kreisAgs = regionId.substring(0, 5);
       const blAgs = regionId.substring(0, 2);
 
@@ -801,11 +832,11 @@ async function aggregateUnit(
       // they are operator free-text and carry no official designation (BNetzA
       // lists both Landkreis and kreisfreie Stadt Würzburg as plain "Würzburg").
       // The Destatis Gemeindeverzeichnis overwrites them on upload.
-      if (!regions.has(kreisAgs) && row.Landkreis) {
+      if (!regions.has(kreisAgs) && row.Landkreis && !standortName) {
         regions.set(kreisAgs, { level: "landkreis", name: row.Landkreis, parent: blAgs });
       }
-      if (!regions.has(regionId) && row.Gemeinde) {
-        regions.set(regionId, { level: "gemeinde", name: row.Gemeinde, parent: kreisAgs });
+      if (!regions.has(regionId) && (standortName ?? row.Gemeinde)) {
+        regions.set(regionId, { level: "gemeinde", name: standortName ?? row.Gemeinde, parent: kreisAgs });
       }
 
       // Only storage has a capacity; for every other Träger kwh stays 0.
@@ -854,13 +885,15 @@ async function phaseAggregate(): Promise<void> {
   log("Step 2/3: streaming unit XMLs...");
   const agg = new Map<AggregateKey, AggregateValue>();
   const regions = new Map<string, RegionMeta>();
+  const windFlaechen = await ladeGemeindeflaechen();
+  const windStatistik: WindStandortStatistik = {};
 
   for (const spec of UNIT_SPECS) {
     if (spec.et === "speicher") {
       capacityMap = await buildStorageCapacityMap(zipPath);
     }
     log(`  aggregating ${spec.et}...`);
-    const r = await aggregateUnit(zipPath, spec, actorMap, capacityMap, agg, regions);
+    const r = await aggregateUnit(zipPath, spec, actorMap, capacityMap, agg, regions, windFlaechen, windStatistik);
     log(
       `    ${spec.et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
         `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, gksShort=${r.skipped.gksShort}, ` +
@@ -869,6 +902,14 @@ async function phaseAggregate(): Promise<void> {
       "ok",
     );
   }
+
+  log(
+    "  wind placement: " +
+      Object.entries(windStatistik)
+        .map(([g, v]) => `${g} ${v.anzahl.toLocaleString()} (${Math.round(v.kw / 1000).toLocaleString()} MW)`)
+        .join(", "),
+    "ok",
+  );
 
   // Free the lookup maps before serialising output.
   actorMap.clear();

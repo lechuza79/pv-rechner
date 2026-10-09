@@ -31,6 +31,7 @@
     "windbetreiber": "tsx scripts/windbetreiber-refresh.ts",
     "windbetreiber:kontakte": "tsx scripts/windbetreiber-kontakte.ts",
     "mastr:umschluesseln": "tsx scripts/mastr-ags-umschluesseln.ts",
+    "mastr:wind-standort": "tsx scripts/mastr-wind-standort.ts",
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "kommunen:versand": "tsx scripts/kommunen-versand.ts",
     "kommunen:ruecklauf": "tsx scripts/kommunen-ruecklauf.ts",

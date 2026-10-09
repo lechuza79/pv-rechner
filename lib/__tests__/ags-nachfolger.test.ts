@@ -88,7 +88,7 @@ describe("die eingecheckte Tabelle (aus den Destatis-Listen erzeugt)", () => {
       expect(src, datei).toMatch(/aktuellerGemeindeschluessel\(\s*gks[\w.]*(\(\s*0\s*,\s*8\s*\))?\s*\)/);
     }
     const haupt = readFileSync(resolve(__dirname, "../../scripts/mastr-bnetza-refresh.ts"), "utf8");
-    expect(haupt).toMatch(/const regionId = aktuellerGemeindeschluessel\(/);
+    expect(haupt).toMatch(/(?:const|let) regionId = aktuellerGemeindeschluessel\(/);
     expect(haupt).toMatch(/const kreisAgs = regionId\.substring\(0, 5\)/);
     const monat = readFileSync(resolve(__dirname, "../../scripts/mastr-monat-refresh.ts"), "utf8");
     expect(monat).toMatch(/const key = `\$\{aktuellerGemeindeschluessel\(gks\.slice\(0, 8\)\)\}\|/);

@@ -15,6 +15,8 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
+import { windGemeinde } from "../lib/wind-standort";
+import { ladeGemeindeflaechen, type Vg250Gemeinden } from "./lib/vg250";
 import { MASTR_WIND_SQL, MASTR_WIND_TABELLE } from "../lib/mastr-wind-sql";
 import { UNIT_SPECS, findCachedZip, listZipEntries, parseKwp, streamXmlRecords } from "./mastr-bnetza-refresh";
 
@@ -22,7 +24,12 @@ const flag = (name: string) => process.argv.includes(`--${name}`);
 
 export type WindZeile = {
   mastr_nr: string;
+  /** Municipality the turbine STANDS in (lib/wind-standort.ts) — the key every
+   *  Atlas number uses. */
   region_id: string | null;
+  /** The municipality the register names. Kept: where the two differ, the
+   *  register entry is wrong, and that is worth being able to show. */
+  region_id_register: string | null;
   status: string;
   lage: string | null;
   lat: number | null;
@@ -75,7 +82,7 @@ function koordinate(lat: number | null, lon: number | null) {
 
 const text = (raw: string | undefined) => (raw && raw.trim() ? raw.trim() : null);
 
-export function windZeile(row: Record<string, string>, katalog: Katalog): WindZeile | null {
+export function windZeile(row: Record<string, string>, katalog: Katalog, flaechen: Vg250Gemeinden): WindZeile | null {
   const mastr = text(row.EinheitMastrNummer);
   const status = text(row.EinheitBetriebsstatus);
   if (!mastr || !status) return null;
@@ -83,11 +90,20 @@ export function windZeile(row: Record<string, string>, katalog: Katalog): WindZe
   const { lat, lon } = koordinate(zahl(row.Breitengrad), zahl(row.Laengengrad));
   const brutto = parseKwp(row.Bruttoleistung);
   const netto = parseKwp(row.Nettonennleistung);
+  // Same key translation as the main import, so a turbine lands on the page
+  // that exists today and not on a merged-away Gemeinde — then the same
+  // placement by location, so this table and the Atlas sums agree.
+  const register = gks.length >= 8 ? aktuellerGemeindeschluessel(gks.slice(0, 8)) : null;
+  const region_id = register
+    ? windGemeinde(
+        { registerAgs: register, breitengrad: row.Breitengrad, laengengrad: row.Laengengrad, ort: row.Ort, gemarkung: row.Gemarkung },
+        flaechen,
+      ).regionId
+    : null;
   return {
     mastr_nr: mastr,
-    // Same key translation as the main import, so a turbine lands on the page
-    // that exists today and not on a merged-away Gemeinde.
-    region_id: gks.length >= 8 ? aktuellerGemeindeschluessel(gks.slice(0, 8)) : null,
+    region_id,
+    region_id_register: register,
     status,
     lage: row.WindAnLandOderAufSee ? (katalog.get(row.WindAnLandOderAufSee) ?? row.WindAnLandOderAufSee) : null,
     lat,
@@ -131,11 +147,12 @@ async function main() {
   });
   if (katalog.size < 1000) throw new Error(`Katalog unvollständig (${katalog.size} Werte).`);
 
+  const flaechen = await ladeGemeindeflaechen();
   const zeilen: WindZeile[] = [];
   let verworfen = 0;
   for (const name of eintraege) {
     await streamXmlRecords(zipPath, name, spec.recordTag, (row) => {
-      const z = windZeile(row, katalog);
+      const z = windZeile(row, katalog, flaechen);
       if (z) zeilen.push(z);
       else verworfen++;
     });
@@ -145,6 +162,7 @@ async function main() {
   const zaehle = (f: (z: WindZeile) => boolean) => inBetrieb.filter(f).length;
   console.log(`${zeilen.length} Windräder gelesen (${verworfen} ohne Kennung verworfen), ${inBetrieb.length} in Betrieb`);
   console.log(`  in Betrieb mit Gemeinde: ${zaehle((z) => !!z.region_id)}`);
+  console.log(`  in Betrieb, nach Standort in anderer Gemeinde als im Register: ${zaehle((z) => z.region_id !== z.region_id_register)}`);
   console.log(`  in Betrieb mit Koordinate: ${zaehle((z) => z.lat !== null)}`);
   console.log(`  in Betrieb mit Nabenhöhe: ${zaehle((z) => z.nabenhoehe_m !== null)}`);
   console.log(`  in Betrieb mit Rotor: ${zaehle((z) => z.rotor_m !== null)}`);
