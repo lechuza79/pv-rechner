@@ -97,6 +97,11 @@ async function prepareCity(city:typeof cities[number]){
  try{if(!Number.isFinite(lat)||!Number.isFinite(lon))throw Error('Keine örtliche Wetterkoordinate vorhanden.');const detailPath=base+'/bnetza/story-history-'+report.sourceDate+'/cities/'+city.regionId+'.json';if(existsSync(detailPath))detail=read(detailPath);else{const inventory=read(base+'/story-radial/'+city.regionId+'-value-units.json');if(inventory.sourceDate!==report.sourceDate||inventory.units.some((u:ValuationUnit)=>u.status==='35'&&u.kwp>0))throw Error('Örtliche Solar-Detaildaten fehlen.');detail={daily:[]};}monthWeather=await weather(city.regionId,'month',lat,lon,start,end);if(data.monthly?.month!==month)data.monthly={...solarMonth(monthWeather.weather,detail.daily,month,report.sourceDate,monthWeather.retrievedAt??new Date().toISOString(),monthWeather.sourceUrl),town:city.name};mark('Solar-Monatsrecap',true,coordinateNote+' · vollständige Wetterstunden.');}
  catch(e){mark('Solar-Monatsrecap',!!data.monthly,(e as NodeJS.ErrnoException).code==='ENOENT'?'Benötigte örtliche Ausgangsdaten fehlen.':(e as Error).message);}
  try{
+  // Recompute when the cached profile was built on another wind stock: the
+  // stock can be corrected within an edition (wind by location, 09.10.2026),
+  // and a profile kept from before would still say 20 MW where 92 stand.
+  const annualStock=stocks.get(city.regionId);
+  if(data.annual&&annualStock&&Number.isFinite(annualStock.windKwpLy)&&Math.abs(Number(data.annual.windKw)-annualStock.windKwpLy)>0.5)delete data.annual;
   if(!data.annual){const stock=stocks.get(city.regionId);if(!stock||!Number.isFinite(stock.windKwpLy)||stock.windKwpLy<0||Number(stockDate.slice(0,4))!==sourceYear)throw Error('Kein passender Wind-Vorjahresbestand vorhanden.');if(!detail||!Number.isFinite(lat)||!Number.isFinite(lon))throw Error('Örtlicher Anlagenbestand oder Wetterkoordinate fehlt.');
    const source=await weather(city.regionId,'year',lat,lon,`${year}-01-01`,`${year}-12-31`);
    const solarKwp=detail.daily.filter((d:any)=>d.day<`${year+1}-01-01`&&['gebaeude','freiflaeche','steckersolar','sonstige'].includes(d.segment)).reduce((s:number,d:any)=>s+d.kwp,0);
