@@ -12275,7 +12275,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Aachen", level: "kommune", region: "Aachen",
     bundesland: "Nordrhein-Westfalen", agsCode: "05334002",
     url: "https://www.aachen.de/solar",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Photovoltaik und Speicher an Mehrfamilienhäusern, Photovoltaik und Dachgutachten an Betriebsgebäuden kleiner und mittlerer Unternehmen",
     maxFoerderung: "max. 10.000 € je Photovoltaikanlage, 5.000 € je Speicher",
@@ -12290,11 +12290,17 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anlagen auf Ein- und Zweifamilienhäusern und Balkonkraftwerke werden nicht gefördert",
       "Der Antrag wird vor der Beauftragung gestellt; beauftragt werden darf erst nach dem Zuwendungsbescheid",
       "Die Arbeiten müssen innerhalb von 18 Monaten ausgeführt werden",
-      "Das Budget 2026 ist auf ein Drittel gekürzt; neue Anträge werden bearbeitet, solange Restmittel verfügbar sind",
+      "Die Haushaltsmittel für 2026 sind aufgebraucht; neue Anträge können nicht eingereicht werden, bereits eingegangene werden noch bearbeitet",
       "Gefördert werden nur Vorhaben im Aachener Stadtgebiet",
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
+    // AUSGESCHÖPFT seit Oktober 2026 (09.10.2026 live gelesen, zweimal
+    // unabhängig gegengeprüft): „Die Haushaltsmittel für das
+    // Solarförderprogramm für das Jahr 2026 sind aufgebraucht. Bereits
+    // eingegangene Anträge werden bearbeitet … Neue Anträge können nicht
+    // eingereicht werden." Gilt für alle Bausteine.
+    //
     // NEU AUFGENOMMEN 11.09.2026, www.aachen.de/solar im Rohtext gelesen:
     // „Die Haushaltsmittel für das Solarförderprogramm wurden für das Jahr 2026
     // freigegeben. Allerdings wurde das Gesamtbudget auf ein Drittel gekürzt. …

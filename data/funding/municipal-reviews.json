@@ -89722,5 +89722,531 @@
         "evidenceUrl": "https://www.adenau.de/adenau.de/verbandsgemeinde/abwasserwerk/wiederaufbau-klaeranlage/foerderbescheiduebergabe/"
       }
     ]
+  },
+  {
+    "regionId": "07232006",
+    "name": "Auw an der Kyll",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Auw an der Kyll gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232010",
+    "name": "Beilingen",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beilingen gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232050",
+    "name": "Herforst",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Herforst gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232055",
+    "name": "Hosten",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hosten gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232104",
+    "name": "Philippsheim",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Philippsheim gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232107",
+    "name": "Preist",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Preist gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232123",
+    "name": "Speicher",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Speicher gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232289",
+    "name": "Orenhofen",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Orenhofen gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "07232311",
+    "name": "Spangdahlem",
+    "checkedAt": "2026-10-09T20:40:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-speicher.de: Seitenverzeichnis (390 Adressen) gefiltert, Satzungen aller Ortsgemeinden, Klimaschutz- und PV-Seiten gelesen (09.10.2026)",
+      "Klimaschutzportal Eifelkreis: Seiten VG Speicher und Eifelkreis gelesen",
+      "Websuche VG Speicher / Eifelkreis Bitburg-Prüm Förderprogramm PV, Balkonkraftwerk, Speicher, Wärmepumpe"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-speicher.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG Speicher (390 Adressen) am 09.10.2026 nach Förder-, Klima-, Energie-, Solar-, Wärme-, Zuschuss- und Richtlinien-Adressen gefiltert: einzige Treffer sind Klimaschutz-Seite, PV-Freiflächen-Steuerungsrahmen, Zuschüsse für Schulessen, Vereine und Jugendarbeit — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.vg-speicher.de/rathaus-gemeinden/verbandsgemeinde/satzungen/",
+        "finding": "Satzungen und Richtlinien der VG und aller neun Ortsgemeinden (Auw, Beilingen, Herforst, Hosten, Orenhofen, Philippsheim, Preist, Spangdahlem, Stadt Speicher) im Seitenverzeichnis durchgesehen: Haupt-, Friedhofs-, Hundesteuer-, Beitrags-, Gebühren- und Vereinszuschuss-Satzungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/klimaschutz/",
+        "finding": "Im Original gelesen (09.10.2026): Klimaschutz-Seite der VG verweist auf das Klimaschutzportal des Eifelkreises (Klimakennzahlen, Tipps) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-speicher",
+        "finding": "Gelesen (09.10.2026): Klimaschutzkonzept, PV auf kommunalen Dächern, Klimabäume, Windpark Orenhofen, Mitfahrerbänke, E-Ladesäule — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://bitburg-pruem.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/eifelkreis-bitburg-pruem",
+        "finding": "Gelesen (09.10.2026): Eifelkreis nennt KIPKI nur für eigene Vorhaben der Kreisverwaltung (Dienstwagen, Schülerbeförderung) — kein Kreisprogramm für Privathaushalte; der Katalog führt kein Programm mit Kreisschlüssel 07232."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/",
+        "finding": "Im Original gelesen (09.10.2026): Steuerungsrahmen für PV-Freiflächenanlagen (VG-Rat 10.11.2020) mit Standortkonzeption — Planungsinstrument für Freiflächenprojekte, keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "finding": "PDF gelesen (09.10.2026, 10 Seiten, bghplan im Auftrag der VG): Standortkriterien und Ausschlussgebiete für PV-Freiflächenanlagen — keine Förderung."
+      },
+      {
+        "url": "https://www.vg-speicher.de/buergerservice/",
+        "finding": "Bürgerservice-Übersicht der VG (bereits als keine Förderung abgehakt): Verweis auf den PV-Freiflächen-Steuerungsrahmen, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-speicher.de/buergerservice",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht der VG — Verweis auf PV-Freiflächen-Steuerungsrahmen, keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/"
+      },
+      {
+        "url": "vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d",
+        "disposition": "reviewed",
+        "reason": "Standortkonzeption PV-Freiflächenanlagen (Planungsinstrument der VG, 2020) — keine Förderung.",
+        "evidenceUrl": "https://www.vg-speicher.de/buergerservice/bauleitplanung/steuerungsrahmen-photovoltaik-freiflaechenanlagen/standortkonzeption-pv-freiflaechenanlagen-2020-11-11-endfassung.pdf?cid=11d"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Spangdahlem gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
   }
 ]
