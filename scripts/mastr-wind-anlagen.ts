@@ -194,7 +194,13 @@ async function main() {
   const jetzt = new Date().toISOString();
   for (let i = 0; i < zeilen.length; i += 1000) {
     const teil = zeilen.slice(i, i + 1000).map((z) => ({ ...z, updated_at: jetzt }));
-    const { error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" });
+    // A new column reaches the API only after its schema reload; 3 s were not
+    // always enough (09.10.2026). Retry that one error, nothing else.
+    let { error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" });
+    for (let v = 0; error && /schema cache/.test(error.message) && v < 6; v++) {
+      await new Promise((r) => setTimeout(r, 5000));
+      ({ error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" }));
+    }
     if (error) throw new Error(`Schreiben ab Zeile ${i}: ${error.message}`);
   }
   // Turbines that left the register would otherwise stay forever.
