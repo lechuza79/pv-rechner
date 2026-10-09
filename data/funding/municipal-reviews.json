@@ -27728,7 +27728,7 @@
   {
     "regionId": "07143038",
     "name": "Hundsdorf",
-    "checkedAt": "2026-09-21T12:40:00Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -27751,6 +27751,10 @@
       {
         "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
         "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "finding": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog."
       }
     ],
     "sources": [
@@ -27765,6 +27769,12 @@
         "disposition": "reviewed",
         "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
         "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog.",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF"
       }
     ]
   },
@@ -28126,7 +28136,7 @@
   {
     "regionId": "07143059",
     "name": "Oberhaid",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -28165,6 +28175,10 @@
       {
         "url": "https://ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung.php",
         "finding": "Am 05.10.2026 gelesen: Adresse leitet auf die Startseite der VG Ransbach-Baumbach um; Programm unter Klimaschutz katalogisiert."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "finding": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog."
       }
     ],
     "sources": [
@@ -28191,6 +28205,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Adresse leitet auf die Startseite der VG Ransbach-Baumbach um; Programm unter Klimaschutz katalogisiert.",
         "evidenceUrl": "https://ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung.php"
+      },
+      {
+        "url": "ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog.",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF"
       }
     ]
   },
@@ -28302,7 +28322,7 @@
   {
     "regionId": "07143068",
     "name": "Sessenbach",
-    "checkedAt": "2026-09-21T12:40:00Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -28329,6 +28349,10 @@
       {
         "url": "https://sessenbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
         "finding": "Dieselbe Richtlinie wie auf ransbach-baumbach.de (gleiche Dokumentnummer 3768.1216.1), Mini-Solaranlage 200 € pauschal."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "finding": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog."
       }
     ],
     "sources": [
@@ -28349,6 +28373,12 @@
         "disposition": "reviewed",
         "reason": "Dieselbe Förderrichtlinie der Verbandsgemeinde",
         "evidenceUrl": "https://sessenbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF"
+      },
+      {
+        "url": "ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog.",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF"
       }
     ]
   },
@@ -28635,7 +28665,7 @@
   {
     "regionId": "07143082",
     "name": "Wirscheid",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -28678,6 +28708,10 @@
       {
         "url": "https://ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung-Regenwassernutzungsanlage.php",
         "finding": "Am 05.10.2026 gelesen: Adresse leitet auf die Startseite der VG Ransbach-Baumbach um; Zisternenförderung fachfremd."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "finding": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog."
       }
     ],
     "sources": [
@@ -28704,6 +28738,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Adresse leitet auf die Startseite der VG Ransbach-Baumbach um; Programm unter Klimaschutz katalogisiert.",
         "evidenceUrl": "https://ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung.php"
+      },
+      {
+        "url": "ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: Einladung zur Bevölkerungsbeteiligung an der kommunalen Wärmeplanung der VG Ransbach-Baumbach (September 2025) — Planungsdokument, kein Zuschussprogramm; das Balkonkraftwerk-Programm der VG steht unverändert als ransbach-baumbach-balkonkraftwerke im Katalog.",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/output/download.php?fid=3768.1373.1.PDF"
       }
     ]
   },
@@ -29289,7 +29329,7 @@
   {
     "regionId": "07143211",
     "name": "Bölsberg",
-    "checkedAt": "2026-09-25T12:06:50Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -29343,6 +29383,10 @@
       {
         "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
         "finding": "Seitenlinks der Programmseite am Ursprungs-HTML geprüft: die gespeicherten {{ … }}-Adressen stehen wörtlich als data-ng-href-Vorlagen der Suchmaske im HTML; keine eigenständigen Dokumente. Richtlinie der Verbandsgemeinde vom 26.01.2026 (22 Seiten) am 25.09.2026 erneut vollständig abgerufen: Geltung für alle Grundstücke der Verbandsgemeinde (Nr. 1 Abs. 2); Positionen 3.5 Wärmepumpe 1.000 EUR, 3.6 Brauchwasserwärmepumpe 500 EUR, 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckungsgleich mit dem Katalogeintrag bad-marienberg-erneuerbare-energien. Budgetmeldung vom 16.09.2026 am 25.09.2026 unverändert live: 2026 keine weiteren Anträge."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -29387,6 +29431,12 @@
         "disposition": "reviewed",
         "reason": "Richtlinie der Verbandsgemeinde vom 26.01.2026 (22 Seiten) am 25.09.2026 erneut vollständig abgerufen: Geltung für alle Grundstücke der Verbandsgemeinde (Nr. 1 Abs. 2); Positionen 3.5 Wärmepumpe 1.000 EUR, 3.6 Brauchwasserwärmepumpe 500 EUR, 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckungsgleich mit dem Katalogeintrag bad-marienberg-erneuerbare-energien. Budgetmeldung vom 16.09.2026 am 25.09.2026 unverändert live: 2026 keine weiteren Anträge.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
@@ -30170,7 +30220,7 @@
   {
     "regionId": "07143231",
     "name": "Hahn bei Marienberg",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -30229,6 +30279,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
         "finding": "Am 05.10.2026 gelesen: NKI-Projekte der Kommunen; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -30273,6 +30327,12 @@
         "disposition": "reviewed",
         "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
@@ -30404,7 +30464,7 @@
   {
     "regionId": "07143234",
     "name": "Hardt",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -30462,6 +30522,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
         "finding": "Am 05.10.2026 gelesen: NKI-Projekte der Kommunen; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -30506,6 +30570,12 @@
         "disposition": "reviewed",
         "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
@@ -31486,7 +31556,7 @@
   {
     "regionId": "07143255",
     "name": "Lautzenbrücken",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -31552,6 +31622,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
         "finding": "Am 05.10.2026 gelesen: NKI-Projekte der Kommunen; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -31596,6 +31670,12 @@
         "disposition": "reviewed",
         "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
@@ -31885,7 +31965,7 @@
   {
     "regionId": "07143264",
     "name": "Mörlen",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -31951,6 +32031,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
         "finding": "Am 05.10.2026 gelesen: NKI-Projekte der Kommunen; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -31995,6 +32079,12 @@
         "disposition": "reviewed",
         "reason": "Die Richtlinie der Verbandsgemeinde selbst (Fassung 26.01.2026) — dieselbe Quelle, auf der der Katalogeintrag beruht. Position 3.8: „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke … 100 EUR / Kilowatt pauschal, maximal 600 EUR“. Kein eigenes Programm der Ortsgemeinde.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
@@ -33715,7 +33805,7 @@
   {
     "regionId": "07143297",
     "name": "Stockhausen-Illfurth",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-09T14:19:43Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -33781,6 +33871,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
         "finding": "Am 05.10.2026 gelesen: NKI-Projekte der Kommunen; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "finding": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft)."
       }
     ],
     "sources": [
@@ -33825,6 +33919,12 @@
         "disposition": "reviewed",
         "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
+        "disposition": "reviewed",
+        "reason": "Programmübersicht der VG Bad Marienberg (Stand 26.01.2026), am 09.10.2026 gelesen: Nr. 3.5 Wärmepumpe 1.000 € pauschal, 3.6 Brauchwasserwärmepumpe 500 €, 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckt sich mit bad-marienberg-erneuerbare-energien (ausgeschöpft).",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7"
       }
     ]
   },
