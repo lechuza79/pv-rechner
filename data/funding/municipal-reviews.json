@@ -1140,7 +1140,7 @@
   {
     "regionId": "01053039",
     "name": "Groß Boden",
-    "checkedAt": "2026-09-22T16:05:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-21T16:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -1171,6 +1171,10 @@
       {
         "url": "https://grossboden.amt-sn.de/gemeinde/aktuelles/",
         "finding": "Gemeindeseite grossboden.amt-sn.de und „Aktuelles“ gelesen (22.09.2026) — kein Förderhinweis; einziger Suchtreffer ein örtlicher Elektrobetrieb im Firmenverzeichnis"
+      },
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Geänderte Seite am 09.10.2026 gelesen: Abteilungsseite Schülerbeförderung des Amtes Sandesneben-Nusse; kein Energiezuschuss."
       }
     ],
     "sources": [
@@ -5493,7 +5497,7 @@
   {
     "regionId": "01059067",
     "name": "Oersberg",
-    "checkedAt": "2026-09-25T12:06:50Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2027-09-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
     "outcome": "keine-passende-foerderung",
@@ -5517,6 +5521,10 @@
       {
         "url": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869=",
         "finding": "Am 25.09.2026 gelesen: Informationsvorlage für den Bauausschuss der Stadt Kappeln (2023) zur Landesrichtlinie Schleswig-Holstein für PV-Balkonanlagen (bis 200 €, max. 50 %, ab 16.01.2023, Antrag im Serviceportal des Landes); ausdrücklich ohne Relevanz für Beschlüsse der Stadt. Kein Programm der Stadt; das Landesprogramm steht als sh-balkon-klimaschutz-bub im Katalog."
+      },
+      {
+        "url": "https://www.kappeln.de/media/custom/2989_967_1.PDF?1676982946=",
+        "finding": "Am 09.10.2026 gelesen: Informationsvorlage der Stadt Kappeln zur Landesrichtlinie Schleswig-Holstein für nicht-fossile Heizsysteme (Wärmepumpe bis 2.000 €, Stand 2023) — Landesprogramm, kein Programm der Stadt."
       }
     ],
     "sources": [
@@ -5543,6 +5551,12 @@
         "disposition": "reviewed",
         "reason": "Am 25.09.2026 gelesen: Informationsvorlage für den Bauausschuss der Stadt Kappeln (2023) zur Landesrichtlinie Schleswig-Holstein für PV-Balkonanlagen (bis 200 €, max. 50 %, ab 16.01.2023, Antrag im Serviceportal des Landes); ausdrücklich ohne Relevanz für Beschlüsse der Stadt. Kein Programm der Stadt; das Landesprogramm steht als sh-balkon-klimaschutz-bub im Katalog.",
         "evidenceUrl": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869="
+      },
+      {
+        "url": "kappeln.de/media/custom/2989_967_1.PDF?1676982946=",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: Informationsvorlage der Stadt Kappeln zur Landesrichtlinie Schleswig-Holstein für nicht-fossile Heizsysteme (Wärmepumpe bis 2.000 €, Stand 2023) — Landesprogramm, kein Programm der Stadt.",
+        "evidenceUrl": "https://www.kappeln.de/media/custom/2989_967_1.PDF?1676982946="
       }
     ]
   },
@@ -7017,7 +7031,7 @@
   {
     "regionId": "01060006",
     "name": "Bahrenhof",
-    "checkedAt": "2026-09-18T00:32:52Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -7035,6 +7049,22 @@
       {
         "url": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich",
         "finding": "Richtlinie des Amtes Trave-Land zum Förderprogramm Löschwasserversorgung im Außenbereich — Brandschutz, kein Zuschuss für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "finding": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "finding": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "finding": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "finding": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt)."
       }
     ],
     "sources": [
@@ -7049,6 +7079,30 @@
         "disposition": "reviewed",
         "reason": "Löschwasserversorgung im Außenbereich; anderer Gegenstand, keine Energieförderung.",
         "evidenceUrl": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "disposition": "reviewed",
+        "reason": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen.",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym"
       }
     ]
   },
@@ -7992,7 +8046,7 @@
   {
     "regionId": "01060081",
     "name": "Strukdorf",
-    "checkedAt": "2026-09-18T22:36:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -8021,6 +8075,22 @@
       {
         "url": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich/",
         "finding": "Richtlinie der Gemeinde Schieren zur Förderung der Löschwasserversorgung im Außenbereich (2026) — Brandschutz, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "finding": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "finding": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "finding": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "finding": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt)."
       }
     ],
     "sources": [
@@ -8035,6 +8105,30 @@
         "disposition": "reviewed",
         "reason": "Richtlinie der Gemeinde Schieren zur Förderung der Löschwasserversorgung im Außenbereich (2026) — Brandschutz, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
         "evidenceUrl": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich/"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "disposition": "reviewed",
+        "reason": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen.",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym"
       }
     ],
     "outcome": "keine-passende-foerderung",
@@ -8043,7 +8137,7 @@
   {
     "regionId": "01060090",
     "name": "Travenhorst",
-    "checkedAt": "2026-09-18T22:36:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -8072,6 +8166,22 @@
       {
         "url": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich/",
         "finding": "Richtlinie der Gemeinde Schieren zur Förderung der Löschwasserversorgung im Außenbereich (2026) — Brandschutz, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "finding": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "finding": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "finding": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt)."
+      },
+      {
+        "url": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "finding": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt)."
       }
     ],
     "sources": [
@@ -8086,6 +8196,30 @@
         "disposition": "reviewed",
         "reason": "Richtlinie der Gemeinde Schieren zur Förderung der Löschwasserversorgung im Außenbereich (2026) — Brandschutz, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
         "evidenceUrl": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich/"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "disposition": "reviewed",
+        "reason": "Antragsformular Bahrenhof (gelesen 09.10.2026): „Das Förderprogramm endet am 31.12.2023“ — ausgelaufen, im Katalog als bahrenhof-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Bahrenhof (gelesen 09.10.2026), Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.“ Ausgelaufen.",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf?cid=16mg"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Weede (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als weede-mini-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/foerderprogramm.pdf?cid=13zy"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Wakendorf I (gelesen 09.10.2026), Nr. 8: „läuft bis zum 31.12.2023“ — andere Gemeinde, ausgelaufen, im Katalog als wakendorf-i-solar (eingestellt).",
+        "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym"
       }
     ],
     "outcome": "keine-passende-foerderung",
@@ -8507,7 +8641,7 @@
   {
     "regionId": "01061023",
     "name": "Dammfleth",
-    "checkedAt": "2026-09-18T14:09:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -8537,6 +8671,10 @@
       {
         "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
         "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Geänderte Lebenslagen-Seite am 09.10.2026 gelesen: allgemeiner Text zu Wohnungs- und Städtebauförderung (Landesprogramme), kein Programm des Amtes oder der Gemeinde."
       }
     ],
     "sources": [
@@ -8890,7 +9028,7 @@
   {
     "regionId": "01061102",
     "name": "Stördorf",
-    "checkedAt": "2026-09-18T14:09:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -8920,6 +9058,10 @@
       {
         "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
         "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Geänderte Lebenslagen-Seite am 09.10.2026 gelesen: allgemeiner Text zu Wohnungs- und Städtebauförderung (Landesprogramme), kein Programm des Amtes oder der Gemeinde."
       }
     ],
     "sources": [
@@ -9399,7 +9541,7 @@
   {
     "regionId": "03158002",
     "name": "Baddeckenstedt",
-    "checkedAt": "2026-09-22T18:26:55Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-21T12:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
     "outcome": "keine-passende-foerderung",
@@ -9447,6 +9589,10 @@
       {
         "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
         "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Geänderte Seite am 09.10.2026 gelesen: Verweise auf Förderung ärztliche Versorgung und Solarpotenzialkataster; kein Bürgerzuschuss."
       }
     ],
     "sources": [
@@ -10829,7 +10975,7 @@
   {
     "regionId": "03251037",
     "name": "Stuhr",
-    "checkedAt": "2026-09-23T20:56:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf stuhr.de — dieselbe Programmseite unter zwei Adressen.",
     "outcome": "programme-geprueft",
@@ -10849,6 +10995,10 @@
       {
         "url": "https://www.stuhr.de/downloads/datei/OGVmNDZlYTMzMDBlZjE1YlhTckFmV0Z5YThvdGhXUHZKeEpiNTJtVUxDa2RDMU9aZTY0WTlVR3NvRXVRYlZMalhJdW9COWxvWE1yVFhZTENuUmpuWHF1K1lKUjNkRVBvclZudk5UTHJJZG1iZldlcmx4OFpYeGY2S2VVVno1SXVCd0dBbk90N2xWMFozVUhKdm5hM2ZmZmJUVEtRamtxRHZqUDF6TzVIRm5ibGtSQ0NvWk51ZFMwTmZqWjhqMkF1SGdodm9ocGVEYnJBYk94Ng",
         "finding": "Antragsformular 2026, Seite 2 „Richtlinien zur Förderung von Maßnahmen zum Klimaschutz\", am 23.09.2026 im Volltext gelesen: „500,00 Euro Förderung für Solarstromspeicher — Förderung der Erstinstallation von stationären Batteriespeichersystemen gemäß § 14a EnWG in Verbindung mit einer Photovoltaikanlage, die an das elektrische Stromnetz angeschlossen ist · Nutzbare Mindestspeicherkapazität von 5 kWh · Zeitwertersatzgarantie von Händler für mindestens zehn Jahre · Pro Photovoltaikanlage nur Förderung für ein Batteriespeichersystem · Maximal eine Förderung pro Haushalt … Die Anlage darf nicht anderweitig mit öffentlichen Geldern gefördert werden.\" Und: „Eine Doppelförderung im Zusammenhang mit sonstigen Förderprogrammen ist ausgeschlossen. Ein Rechtsanspruch auf Gewährung der Förderung besteht nicht.\""
+      },
+      {
+        "url": "https://www.stuhr.de/portal/seiten/klimaschutzfoerderung-2026-900001215-21780.html?naviID=900000569&brotID=900000569&rubrik=4000016",
+        "finding": "Am 09.10.2026 gelesen: „Die im Jahre 2026 … zur Verfügung gestellten Fördergelder für individuelle Klimaschutzmaßnahmen sind vollständig aufgebraucht.“ Deckt sich mit stuhr-klimaschutz-speicher (ausgeschöpft). Die neu erfasste Adresse ist dieselbe Portalseite mit maskiertem Und-Zeichen."
       }
     ],
     "sources": [
@@ -10863,6 +11013,12 @@
         "disposition": "reviewed",
         "reason": "Gelesen; dieselbe Programmseite unter der Portal-Adresse.",
         "evidenceUrl": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/"
+      },
+      {
+        "url": "stuhr.de/portal/seiten/klimaschutzfoerderung-2026-900001215-21780.html?naviID=900000569&amp;brotID=900000569&amp;rubrik=4000016",
+        "disposition": "reviewed",
+        "reason": "Am 09.10.2026 gelesen: „Die im Jahre 2026 … zur Verfügung gestellten Fördergelder für individuelle Klimaschutzmaßnahmen sind vollständig aufgebraucht.“ Deckt sich mit stuhr-klimaschutz-speicher (ausgeschöpft). Die neu erfasste Adresse ist dieselbe Portalseite mit maskiertem Und-Zeichen.",
+        "evidenceUrl": "https://www.stuhr.de/portal/seiten/klimaschutzfoerderung-2026-900001215-21780.html?naviID=900000569&brotID=900000569&rubrik=4000016"
       }
     ]
   },
@@ -12637,7 +12793,7 @@
   {
     "regionId": "03354011",
     "name": "Jameln",
-    "checkedAt": "2026-10-05T11:34:38Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12678,6 +12834,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "Geänderte LEADER-Seite am 09.10.2026 gelesen: Projektförderung 48–65 % bis 150.000 € mit Vorfinanzierung und öffentlicher Kofinanzierung — kein Haushaltszuschuss für PV, Speicher, Balkon oder Wärmepumpe."
       }
     ],
     "sources": [
@@ -12722,7 +12882,7 @@
   {
     "regionId": "03354012",
     "name": "Karwitz",
-    "checkedAt": "2026-10-05T11:34:38Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12763,6 +12923,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "Geänderte LEADER-Seite am 09.10.2026 gelesen: Projektförderung 48–65 % bis 150.000 € mit Vorfinanzierung und öffentlicher Kofinanzierung — kein Haushaltszuschuss für PV, Speicher, Balkon oder Wärmepumpe."
       }
     ],
     "sources": [
@@ -13591,7 +13755,7 @@
   {
     "regionId": "03355024",
     "name": "Melbeck",
-    "checkedAt": "2026-09-21T02:15:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -13609,6 +13773,10 @@
       {
         "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
         "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/ResourceImage.aspx?raid=26660",
+        "finding": "Am 09.10.2026 erneut abgerufen: weiterhin HTTP 404 (falsch aufgelöster Pfad); die Richtlinie liegt unter der Wurzel der Domain, bisheriges Urteil unverändert."
       }
     ],
     "sources": [
@@ -14606,7 +14774,7 @@
   {
     "regionId": "03361008",
     "name": "Ottersberg",
-    "checkedAt": "2026-09-23T21:10:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf flecken-ottersberg.de.",
     "outcome": "keine-passende-foerderung",
@@ -14618,6 +14786,10 @@
       {
         "url": "https://www.flecken-ottersberg.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000016-0.html",
         "finding": "Die Seite trägt die Überschrift „Finanzielle Hilfen und Förderprogramme\" und darunter keinen einzigen Eintrag — eine leere Kategorieseite des Serviceportals."
+      },
+      {
+        "url": "https://www.flecken-ottersberg.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000016-0.html",
+        "finding": "Geänderte Lebenslagen-Seite am 09.10.2026 gelesen: nur Überschrift und Navigation, kein Programm."
       }
     ],
     "sources": [
@@ -59244,7 +59416,7 @@
   {
     "regionId": "03360010",
     "name": "Hanstedt",
-    "checkedAt": "2026-09-24T06:12:27Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59288,6 +59460,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Am 09.10.2026: alte Adresse liefert 404, Beitrag unter heutiger Adresse gelesen — Landessofortprogramm „Perspektive Innenstadt“ (755.000 € für die Samtgemeinde, REACT-EU) für Innenstadtprojekte, kein Bürgerzuschuss."
       }
     ],
     "sources": [
@@ -59302,7 +59478,7 @@
   {
     "regionId": "03360017",
     "name": "Römstedt",
-    "checkedAt": "2026-09-24T06:12:27Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59346,6 +59522,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Am 09.10.2026: alte Adresse liefert 404, Beitrag unter heutiger Adresse gelesen — Landessofortprogramm „Perspektive Innenstadt“ (755.000 € für die Samtgemeinde, REACT-EU) für Innenstadtprojekte, kein Bürgerzuschuss."
       }
     ],
     "sources": [
@@ -59360,7 +59540,7 @@
   {
     "regionId": "03360019",
     "name": "Schwienau",
-    "checkedAt": "2026-09-24T06:12:27Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59404,6 +59584,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Am 09.10.2026: alte Adresse liefert 404, Beitrag unter heutiger Adresse gelesen — Landessofortprogramm „Perspektive Innenstadt“ (755.000 € für die Samtgemeinde, REACT-EU) für Innenstadtprojekte, kein Bürgerzuschuss."
       }
     ],
     "sources": [
@@ -59418,7 +59602,7 @@
   {
     "regionId": "03360026",
     "name": "Weste",
-    "checkedAt": "2026-09-24T06:12:27Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59462,6 +59646,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Am 09.10.2026: alte Adresse liefert 404, Beitrag unter heutiger Adresse gelesen — Landessofortprogramm „Perspektive Innenstadt“ (755.000 € für die Samtgemeinde, REACT-EU) für Innenstadtprojekte, kein Bürgerzuschuss."
       }
     ],
     "sources": [
@@ -66128,7 +66316,7 @@
   {
     "regionId": "03151009",
     "name": "Gifhorn",
-    "checkedAt": "2026-09-25T22:05:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-24T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen der Stadt Gifhorn.",
     "outcome": "keine-passende-foerderung",
@@ -66156,6 +66344,10 @@
       {
         "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
         "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/foerderung-von-klimaschutzmassnahmen",
+        "finding": "Geänderte Seite am 09.10.2026 gelesen: geförderte Klimaschutzprojekte der Stadt selbst (LED-Flutlicht, Lüftung Boxmühle, Klimaschutzmanagement über die Kommunalrichtlinie) — kein Zuschuss an Privathaushalte."
       }
     ],
     "sources": [
@@ -68171,7 +68363,7 @@
   {
     "regionId": "03351016",
     "name": "Lachendorf",
-    "checkedAt": "2026-09-26T11:30:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68194,6 +68386,18 @@
       {
         "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
         "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen",
+        "finding": "Geänderte Übersicht am 09.10.2026 gelesen: „Jung kauft Alt“, geförderte Projekte, LEADER-Region — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "finding": "Am 09.10.2026 gelesen: Liste geförderter Projekte der Samtgemeinde; kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/Dorferneuerungen",
+        "finding": "Am 09.10.2026 gelesen: Dorferneuerung; kein Zuschuss für PV, Speicher, Balkon oder Wärmepumpe."
       }
     ],
     "sources": [
@@ -68238,7 +68442,7 @@
   {
     "regionId": "03351010",
     "name": "Faßberg",
-    "checkedAt": "2026-09-26T11:30:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68256,6 +68460,14 @@
       {
         "url": "https://www.landkreis-celle.de/Kurzmen%C3%BC/F%C3%B6rderm%C3%B6glichkeiten-f%C3%BCr-private-Haushalte.php?object=tx,3314.16811.1",
         "finding": "Am 26.09.2026 gelesen: „Der Landkreis Celle hat selbst keinen eigenen Fördertopf zur Verfügung.“"
+      },
+      {
+        "url": "https://www.fassberg.de/bauen-wirtschaft/wirtschaft/foerderprogramme",
+        "finding": "Geänderte Seite am 09.10.2026 gelesen: Wegweiser zu Förderdatenbank des Bundes, NBank und LEADER-Region Oberes Örtzetal; kein eigenes Programm der Gemeinde."
+      },
+      {
+        "url": "https://www.fassberg.de/portal/seiten/foerderprogramme-900000186-29550.html",
+        "finding": "Portal-Adresse derselben Wegweiser-Seite am 09.10.2026 gelesen, gleicher Inhalt."
       }
     ],
     "sources": [
@@ -77211,7 +77423,7 @@
   {
     "regionId": "03361013",
     "name": "Thedinghausen",
-    "checkedAt": "2026-09-28T10:45:00Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2027-03-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -77242,6 +77454,14 @@
       {
         "url": "https://www.landkreis-verden.de/portal/seiten/foerderprogramme-901000373-20600.html",
         "finding": "28.09.2026: Förderprogramm-Seite des Landkreises Verden nennt kein Programm für private Haushalte zu Photovoltaik, Balkonkraftwerken, Speichern oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.thedinghausen.de/leben-in-/natur-und-umwelt/heckenschnitt-foerderung",
+        "finding": "Am 09.10.2026 gelesen: Förderung Heckenschnitt — Naturschutz, keine Energieförderung."
+      },
+      {
+        "url": "https://www.thedinghausen.de/buergerservice/online/angebot/antrag-zur-foerderung-von-baumpflanzungen-auf-privatgrundstuecken-entlang-von-gemeindestrassen-900000028-20710.html",
+        "finding": "Am 09.10.2026 gelesen: Antrag Baumpflanzungen an Gemeindestraßen — keine Energieförderung."
       }
     ],
     "sources": [
@@ -80149,7 +80369,7 @@
   {
     "regionId": "01054076",
     "name": "Leck",
-    "checkedAt": "2026-09-30T16:04:38Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-29T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -80170,6 +80390,10 @@
       {
         "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel",
         "finding": "30.09.2026 nachgelesen: Fördertöpfe des Kreises (Energieberatung, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, Mobilität, Kleine Projekte) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.leck.de/page/2/?s=f%C3%B6rderprogramm",
+        "finding": "Geänderte Suchergebnisseite am 09.10.2026 gelesen: Treffer AktivRegion/ELER-Förderphase und Städtebauförderung „Lecker Osten“ — kein Bürgerzuschuss für PV, Speicher, Balkon oder Wärmepumpe."
       }
     ],
     "sources": [
@@ -80226,7 +80450,7 @@
   {
     "regionId": "01054168",
     "name": "Sylt",
-    "checkedAt": "2026-10-06T14:15:38Z",
+    "checkedAt": "2026-10-09T14:07:06Z",
     "recheckAt": "2026-12-29T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -80252,6 +80476,10 @@
       {
         "url": "https://www.gemeinde-sylt.de/zuschuesse-aus-der-henner-krogh-stiftung-jetzt-beantragen",
         "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks beide Henner-Krogh-Meldungen live neu gelesen (14.01.2019 und 09.02.2021): Zuschüsse der Stiftung zur Förderung Sylter Musiker — keine Energieförderung. Ergebnis unverändert."
+      },
+      {
+        "url": "https://www.gemeinde-sylt.de/foerderprogramme-fuer-unternehmen-ein-hilfreicher-ueberblick",
+        "finding": "Geänderte Seite am 09.10.2026 gelesen: Beitrag vom 02.04.2020 zu Corona-Hilfen für Unternehmen; keine Energieförderung für Haushalte."
       }
     ],
     "sources": [
