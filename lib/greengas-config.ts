@@ -638,7 +638,10 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 09.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
   //   Stufen 10/15/30/60 % unverändert, § 42a weiter nur Ankündigung; kein
   //   Quotengesetz-Entwurf gefunden. (Die Adresse lautet geg/, nicht gmodg/.)
-  geprueftRechtIso: "2026-10-09",
+  // 10.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung); weder
+  //   Quotengesetz-Entwurf noch Bioheizöl-Preisreihe einer Trägerquelle gefunden.
+  geprueftRechtIso: "2026-10-10",
   reviewBy: "2027-07-25",
 };
 

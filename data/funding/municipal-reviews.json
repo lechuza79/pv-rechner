@@ -90248,5 +90248,305 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Spangdahlem gehört zur Verbandsgemeinde Speicher (Eifelkreis Bitburg-Prüm). Weder die VG noch die Ortsgemeinde noch der Eifelkreis führen ein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; die erfassten Quellen betreffen den Steuerungsrahmen für PV-Freiflächenanlagen. Stand 09.10.2026."
+  },
+  {
+    "regionId": "03457003",
+    "name": "Brinkum",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brinkum gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03457009",
+    "name": "Firrel",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Firrel gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03457010",
+    "name": "Hesel",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hesel gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03457011",
+    "name": "Holtland",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Holtland gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03457015",
+    "name": "Neukamperfehn",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukamperfehn gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03457019",
+    "name": "Schwerinsdorf",
+    "checkedAt": "2026-10-09T22:05:00Z",
+    "recheckAt": "2027-01-07T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwerinsdorf gehört zur Samtgemeinde Hesel (Landkreis Leer). Die einzige Bürgerförderung der Samtgemeinde ist die Umweltförderrichtlinie vom 15.06.2021 (Feuchtbiotope, Nistkästen, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck bis 75 €, Lastenrad, Schulprojekte) — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde und aller sechs Mitgliedsgemeinden enthält keine weitere Förderrichtlinie dieser Art; das Klimaschutzkonzept 2023 nennt ein PV-Förderprogramm nur als geplante Maßnahme H-02. Der Landkreis Leer führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "rathaus.hesel.de Startseite und Sitemap durchgesehen (kein Klimaschutz-/Förderbereich außer Kulturförderung)",
+      "Ortsrecht der Samtgemeinde Hesel und der Gemeinden Brinkum, Firrel, Hesel, Holtland, Neukamperfehn, Schwerinsdorf gelesen (Liste aller Satzungen/Richtlinien)",
+      "Umweltförderrichtlinie der Samtgemeinde (2 Seiten) im Volltext gelesen",
+      "Klimaschutzkonzept 2023 (Maßnahme H-02, Abschnitt 2.2.1) und Energiebericht 2021–2023 gelesen",
+      "Landkreis Leer: Seitensuche nach „Balkonkraftwerk“ und „Förderprogramm Photovoltaik“ ohne Treffer; Katalog ohne Programm mit Schlüssel 03457 außer Moormerland",
+      "Websuche: Gemeindenamen + Balkonkraftwerk Förderung; Landkreis Leer Förderprogramm Photovoltaik Speicher — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://rathaus.hesel.de/uploads/mediathek/136/Umweltf%C3%B6rderrichtlinie.pdf",
+        "finding": "„Richtlinie der Samtgemeinde Hesel zur Förderung von Umweltmaßnahmen“ (Ratsbeschluss 15.06.2021), §§ 2–10: Feuchtbiotope, Brutmöglichkeiten, Dachbegrünung, Regenwasser, Blühwiesen, Laubbaum, EnergieCheck („bis zu 75,00 Euro“), Lastenfahrräder, Schul-/Vereinsprojekte — keine Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/Ortsrecht/Samtgemeinde-Hesel",
+        "finding": "Ortsrecht der Samtgemeinde und (je eigene Seite) der sechs Mitgliedsgemeinden: neben der Umweltförderrichtlinie nur Vereins-, Jugend-, Kultur- und Sportförderung, Gebühren- und Haushaltssatzungen."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "finding": "Klimaschutzkonzept 2023, Maßnahme H-02 „Förderprogramme für Privathaushalte“: „Im Rahmen dieser Maßnahme soll die Förderkulisse überarbeitet … werden“, Photovoltaikanlagen als mögliche Inhalte — Planung, kein laufendes Programm."
+      },
+      {
+        "url": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "finding": "Energiebericht 2021–2023 der Samtgemeinde über eigene Liegenschaften; keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht über kommunale Liegenschaften gelesen; kein Bürgerprogramm.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/1136/Samtgemeinde%20Hesel%20Energiebericht%202021-2023.pdf"
+      },
+      {
+        "url": "rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept gelesen: PV-Förderung nur als geplante Maßnahme H-02; die bestehende Umweltförderrichtlinie enthält sie nicht.",
+        "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
+      }
+    ]
   }
 ]
