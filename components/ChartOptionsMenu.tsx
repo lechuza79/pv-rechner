@@ -41,7 +41,7 @@ export function widgetMenuPosition({host,trigger,viewportWidth,viewportHeight,co
  * Home/End move; Escape closes and returns focus to the button; Tab closes.
  * Pointer: a tap or click outside closes it.
  */
-export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, animation, contactHref, designContactHref, onVideoRequest, videoParams, videoPeriod, videoPlace, loadVideoThumbnail, presentation = "menu", showDownload = true, help, busy = false }: {
+export default function ChartOptionsMenu({ label, onShare, onDownload, onForward, onRestart, embed, animation, contactHref, designContactHref, onVideoRequest, videoParams, videoPeriod, videoPlace, loadVideoThumbnail, presentation = "menu", showDownload = true, help, busy = false }: {
   /** Chart name, for the accessible button label. */
   label: string;
   showDownload?: boolean;
@@ -55,10 +55,10 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   videoPeriod?: string;
   videoPlace?: string;
   loadVideoThumbnail?: () => Promise<Blob | null>;
-  presentation?: "menu" | "footer";
+  presentation?: "menu" | "footer" | "embedded-footer";
   onShare: () => void | Promise<void>;
   onDownload: () => void | Promise<void>;
-  onForward?: () => void | Promise<void>;
+  onForward?: () => void | 'copied' | Promise<void | 'copied'>;
   onRestart?: () => void | Promise<void>;
   embed: { onEmbed: () => void } | { unavailable: string };
   animation?: {end:()=>Promise<void>;video?:()=>Promise<void>};
@@ -83,6 +83,8 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     setContact({ topic: isContactTopic(topic) ? topic : DEFAULT_CONTACT_TOPIC, message: params.get("message") ?? "" });
   };
   const [menuPosition,setMenuPosition] = useState<ReturnType<typeof widgetMenuPosition>>();
+  const [forwarded, setForwarded] = useState<'shared'|'copied'|false>(false);
+  const [forwarding, setForwarding] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copying, setCopying] = useState(false);
   const [status, setStatus] = useState("");
@@ -123,7 +125,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   },[open,group,presentation,menuId]);
 
   const close = (refocus = true) => { setOpen(false); if (refocus) button.current?.focus({preventScroll:true}); };
-  const run = (fn: () => void | Promise<void>, done?: string, keepOpen = false) => async () => {
+  const run = (fn: () => unknown | Promise<unknown>, done?: string, keepOpen = false) => async () => {
     if (!keepOpen) close();
     try {
       await fn();
@@ -145,6 +147,17 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     const timer=window.setTimeout(()=>setCopied(false),2500);
     return()=>window.clearTimeout(timer);
   }, [copied]);
+  useEffect(() => {
+    if (!forwarded) return;
+    const timer = window.setTimeout(() => setForwarded(false), 2500);
+    return () => window.clearTimeout(timer);
+  }, [forwarded]);
+  const forwardLink = async () => {
+    setForwarding(true);
+    try { const result = await onForward?.(); setForwarded(result === 'copied' ? 'copied' : 'shared'); }
+    catch (error) { if (!(error instanceof Error && error.name === 'AbortError')) setStatus('Weiterleiten fehlgeschlagen. Bitte erneut versuchen.'); }
+    finally { setForwarding(false); }
+  };
   const onMenuKey = (e: React.KeyboardEvent) => {
     const list = items(), index = list.indexOf(document.activeElement as HTMLElement);
     if (e.key === "Escape") { e.preventDefault(); close(); }
@@ -156,6 +169,8 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   };
   const onButtonKey = (e: React.KeyboardEvent) => { if(e.key === "Escape"){e.preventDefault();close();} else if (e.key === "ArrowDown") { e.preventDefault(); keyboardOpen.current=true; setOpen(true); } };
 
+  const unavailable = "unavailable" in embed ? embed.unavailable : null;
+  const embedded = presentation === "embedded-footer";
   const footer = presentation === "footer";
   const leadingIcon: React.CSSProperties = {gridColumn:1,gridRow:1,order:-1,justifySelf:"start",flexShrink:0};
   const contactIcon = {...leadingIcon,alignSelf:"start",marginTop:3};
@@ -163,14 +178,19 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   const separator = <div role="separator" className={styles.separator}/>;
 
   return (
-    <div ref={wrap} className="sc-chart-options" data-presentation={presentation} style={{ position: "relative", display: footer ? "block" : "inline-flex", width: footer ? "100%" : undefined }} {...{ [EXPORT_IGNORE_ATTR]: "" }}>
+    <div ref={wrap} className="sc-chart-options" data-presentation={presentation} style={{ position: "relative", display: footer||embedded ? "block" : "inline-flex", width: footer||embedded ? "100%" : undefined }} {...{ [EXPORT_IGNORE_ATTR]: "" }}>
+      {embedded&&<div role="group" aria-label={`Aktionen für ${label}`}>
+        {showDownload&&<button type="button" data-widget-action="image" disabled={busy} onClick={run(onDownload)}><IconDownload size={16}/><span>{busy ? 'Wird erstellt …' : 'Herunterladen'}</span></button>}
+        <button type="button" data-widget-action="copy_link" disabled={busy||copying} onClick={copyLink}>{copied?<IconCheck size={16}/>:<IconCopy size={16}/>}<span aria-live="polite">{copied?'Link kopiert':'Link kopieren'}</span></button>
+        {onForward&&<button type="button" data-widget-action="forward" disabled={busy||forwarding} onClick={forwardLink}>{forwarded?<IconCheck size={16}/>:<IconShare size={16}/>}<span aria-live="polite">{forwarded?(forwarded==='shared'?'Weitergeleitet':'Link kopiert'):'Weiterleiten'}</span></button>}
+      </div>}
       {footer&&<div role="group" aria-label={`Aktionen für ${label}`} className={styles.actions}>
         {onRestart&&<button type="button" className={`${styles.action} ${styles.restart}`} aria-label="Animation neu starten" title="Neu starten" data-widget-action="restart" disabled={busy} onClick={run(onRestart)}><IconRefresh size={16}/></button>}
         <button type="button" className={styles.action} aria-label={copied?"Link kopiert":"Link kopieren"} title="Link kopieren" data-widget-action="copy_link" disabled={busy||copying} onClick={copyLink}>{copied?<IconCheck size={16}/>:<IconCopy size={16}/>}</button>
         {([{id:"embed",text:"Einbetten",Icon:IconCode},{id:"download",text:"Herunterladen",Icon:IconDownload},{id:"share",text:"Teilen",Icon:IconShare}] as const).filter(action=>action.id!=="download"||showDownload).map(({id,text,Icon})=><button key={id} type="button" className={`${styles.action} ${id==="share"?styles.shareAction:""}`} data-widget-action="options" aria-label={text} title={text} aria-haspopup="menu" aria-expanded={open&&group===id} aria-controls={open&&group===id?menuId:undefined} disabled={busy}
           onClick={event=>{keyboardOpen.current=event.detail===0;button.current=event.currentTarget;setGroup(id);setOpen(!open||group!==id);}}><Icon size={16}/><span className={id==="share"?styles.shareLabel:styles.actionLabel}>{text}</span></button>)}
       </div>}
-      {!footer&&<button ref={button} data-widget-action="options" type="button" aria-haspopup="menu" aria-expanded={open} aria-controls={open ? menuId : undefined}
+      {!footer&&!embedded&&<button ref={button} data-widget-action="options" type="button" aria-haspopup="menu" aria-expanded={open} aria-controls={open ? menuId : undefined}
         aria-label={`Optionen für ${label}`} title="Optionen" onClick={event => {keyboardOpen.current=event.detail===0;setOpen(o => !o);}} onKeyDown={onButtonKey} disabled={busy}
         style={{ width: 32, height: 32, border: 0, background: "transparent", color: "inherit", display: "grid", placeItems: "center", padding: 0, cursor: "pointer" }}>
         <IconMore size={16} style={{ transform: "rotate(90deg)" }} />
@@ -203,7 +223,10 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           </>}
           {!footer&&separator}
           {(!footer||group==="embed")&&<>
-          <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed_contact" className={`${styles.item} ${styles.contactItem}`} onClick={()=>openContact(contactHref)}><IconCode size={16} style={contactIcon}/><span>Einbetten{contactAction}</span></button>
+          {unavailable
+            ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed_contact" className={`${styles.item} ${styles.contactItem}`} onClick={()=>openContact(contactHref)}><IconMail size={16} style={contactIcon}/><span>Einbetten<small className={styles.secondary}>Für dieses Diagramm noch nicht verfügbar.</small>{contactAction}</span></button>
+            : <><button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed" disabled={busy} className={styles.item} onClick={run((embed as { onEmbed: () => void }).onEmbed)}><IconCode size={16} style={leadingIcon}/><span>Einbetten</span></button>
+              <button type="button" role="menuitem" tabIndex={-1} data-widget-action="embed_contact" className={`${styles.item} ${styles.contactItem} ${styles.followup}`} onClick={()=>openContact(contactHref)}><IconMail size={16} style={contactIcon}/><span>Fragen zum Einbetten? {contactAction}</span></button></>}
 
           </>}
         </div>

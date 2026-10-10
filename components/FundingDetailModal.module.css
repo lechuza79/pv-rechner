@@ -1,0 +1,73 @@
+/* Reapply the Atlas design at the portal boundary; the page cannot inherit here. */
+.dialog.dialog {
+  --color-bg: var(--atlas-surface);
+  --color-bg-muted: var(--atlas-card);
+  --color-text-primary: var(--atlas-text);
+  --color-text-secondary: var(--atlas-secondary);
+  --color-text-muted: var(--atlas-secondary);
+  --color-border: var(--atlas-border);
+  --color-accent: var(--atlas-text);
+  --color-cta: var(--atlas-action);
+  --color-cta-ink: var(--atlas-action-ink);
+  --color-text-on-accent: var(--atlas-action-ink);
+  --font-text: var(--atlas-body);
+  --font-heading: var(--atlas-display);
+  --font-mono: var(--atlas-body);
+}
+.title { font-family: var(--atlas-display); }
+.dialog [data-action-button] { font-family: var(--atlas-display); font-weight: 700; }
+.content { display: grid; gap: var(--space-xl); }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: var(--space-xl); color: var(--atlas-secondary); font-size: var(--font-size-small); line-height: 1.5; }
+.card.card {
+  --color-bg: var(--sc-surface-light, #e8ece3);
+  --color-bg-muted: var(--sc-surface-light-inset, #dce5db);
+  --color-accent: var(--atlas-text);
+  --color-accent-dim: var(--sc-surface-light-inset, #dce5db);
+  --font-text: var(--atlas-body);
+  --font-mono: var(--atlas-body);
+  background: var(--color-bg);
+  color: var(--atlas-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xxl);
+  font-size: var(--font-size-body);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.intro { display: grid; gap: 8px; margin-bottom: var(--space-xxl); }
+.card p, .card h3 { margin: 0; }
+.card h3 { font-size: var(--font-size-lead); line-height: 1.35; }
+.provider, .audience { color: var(--atlas-secondary); font-size: var(--font-size-small); }
+.card .description { margin-bottom: var(--space-xxl); }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-xxl); }
+.rates { display: grid; gap: var(--space-xl); margin: 0 0 var(--space-xxl); }
+.rates > div { display: grid; gap: 4px; }
+.rates dt { font-weight: 700; }
+.rates dd { margin: 0; color: var(--atlas-text); text-align: left; }
+.details { display: grid; gap: var(--space-xl); }
+.sourceRow { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; font-size: var(--font-size-small); }
+.sourceRow a, .sourceRow button { color: var(--atlas-text); text-decoration: underline; text-underline-offset: .2em; }
+.sourceRow button { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+.sourceRow span { color: var(--atlas-secondary); }
+.actions { display: flex; justify-content: flex-end; }
+.actions > * { white-space: normal; text-align: center; }
+@media (max-width: 640px) {
+  .card.card { padding: var(--space-xl); }
+  .actions > * { width: 100%; }
+}
+
+.requirements, .scope { margin-top: var(--space-xxl); padding-top: var(--space-xl); border-top: 1px solid var(--atlas-border); }
+.scope { margin-bottom: var(--space-xxl); }
+.scope h4 { margin: 0 0 var(--space-xl); font-size: var(--font-size-body); }
+.requirements li { padding-bottom: 8px; }
+
+.presentation { --font-text: var(--atlas-body); --font-mono: var(--atlas-body); --color-cta: var(--color-brand); --color-cta-ink: var(--color-text-on-accent); }
+.presentation[data-story-scheme=light] .meta { color: var(--atlas-secondary); --sc-profit-outline: var(--color-positive-text); --sc-profit-fill: var(--color-chart-positive-bg); }
+.presentation[data-story-scheme=light] { margin-bottom: var(--space-xxl); }
+.presentation[data-story-scheme=light] .actions { margin-top: var(--space-xl); }
+
+.overview { margin-bottom: var(--space-xxl); }
+.overviewMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: var(--space-xl); color: var(--atlas-secondary); font-size: var(--font-size-small); --sc-profit-outline: var(--color-positive-text); --sc-profit-fill: var(--color-chart-positive-bg); }
+.overviewActions { display: flex; flex-wrap: wrap; gap: var(--space-xl); align-items: center; }
+.overviewActions a { color: var(--atlas-text); text-underline-offset: .2em; font-size: var(--font-size-small); }
+.presentation[data-story-scheme=light] { --color-cta-ink: var(--atlas-text); }
+.presentation[data-story-scheme=dark] { --color-cta-ink: var(--atlas-action-ink); }

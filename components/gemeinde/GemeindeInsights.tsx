@@ -33,13 +33,15 @@ export type MunicipalStoryModalProps={
  onClose:()=>void;
  surfaceScheme?:string;
  open?:boolean;
+ inline?:boolean;
  onSelect?:(index:number)=>void;
 };
 
 /** The same reader shell is shared by the municipality and homepage hosts. */
-export function MunicipalStoryModal({stories,name,initial=0,onClose,surfaceScheme='light',open=true,onSelect=ignoreStorySelection}:MunicipalStoryModalProps){
+export function MunicipalStoryModal({stories,name,initial=0,onClose,surfaceScheme='light',open=true,onSelect=ignoreStorySelection,inline=false}:MunicipalStoryModalProps){
  if(!stories.length)return null;
  const start=Math.max(0,Math.min(stories.length-1,Math.trunc(initial)||0));
+ if(inline)return <section className={`${foundation.foundation} story-reader-inline`} data-story-scheme={surfaceScheme} aria-label={`Datengeschichten aus ${name}`}><h3>{name}</h3><StoryReader name={name} stories={stories} initial={start} visual={storyVisual} styles={styles} onSelect={onSelect} isOpen={open} inline onClose={onClose}/></section>;
  return <Modal scheme={surfaceScheme} open={open} onClose={onClose} title={name} maxWidth={900} className={`${foundation.foundation} story-reader-dialog`}>
   <StoryReader name={name} stories={stories} initial={start} visual={storyVisual} styles={styles} onSelect={onSelect} isOpen={open} onClose={onClose}/>
  </Modal>;
@@ -99,7 +101,7 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  </section></>;
 }
 
-function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose}:any){
+function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose,inline=false}:any){
  const startIndex=useRef(initial);
  const [viewport,api]=useEmblaCarousel({loop:true,startIndex:startIndex.current,duration:25,watchDrag:(_api,event)=>!(event.target as HTMLElement).closest('button,a,input,select,textarea,[role=slider],.story-reader-context')});
  useEffect(()=>{if(!api)return;const preference=matchMedia('(prefers-reduced-motion: reduce)');const update=()=>api.reInit({duration:preference.matches?0:25});update();preference.addEventListener('change',update);return()=>preference.removeEventListener('change',update);},[api]);
@@ -119,28 +121,21 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
   if(!api)return;
   const select=()=>{const next=api.selectedScrollSnap();setIndex(next);onSelect(next);setFeedback('');setTextOpen(false);};
   api.on('select',select);
-  const keys=(event:KeyboardEvent)=>{if(event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey||/INPUT|TEXTAREA|SELECT/.test((event.target as HTMLElement)?.tagName))return;if(event.key==='ArrowRight'){event.preventDefault();api.scrollNext();}if(event.key==='ArrowLeft'){event.preventDefault();api.scrollPrev();}};
+  const keys=(event:KeyboardEvent)=>{if(inline&&!bodyRef.current?.closest('.story-reader-inline')?.contains(document.activeElement))return;if(event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey||/INPUT|TEXTAREA|SELECT/.test((event.target as HTMLElement)?.tagName))return;if(event.key==='ArrowRight'){event.preventDefault();api.scrollNext();}if(event.key==='ArrowLeft'){event.preventDefault();api.scrollPrev();}};
   window.addEventListener('keydown',keys);
   return()=>{api.off('select',select);window.removeEventListener('keydown',keys);};
- },[api,onSelect]);
+ },[api,onSelect,inline]);
  const storyUrl=()=>{const url=new URL(window.parent.location.href);url.searchParams.set('story',stories[index].id);url.hash='atlas-stories';return url.href;};
  const copy=async()=>{try{await navigator.clipboard.writeText(storyUrl());setFeedback('Link kopiert.');}catch{setFeedback('Link konnte nicht kopiert werden.');}};
  const share=async()=>{setBusy(true);try{if(navigator.share){await navigator.share({title:stories[index].title,url:storyUrl()});}else await copy();}catch(error){if((error as Error).name!=='AbortError')await copy();}finally{setBusy(false);}};
  const download=async()=>{
   const node=bodyRef.current?.querySelector<HTMLElement>('.story-reader-slide[aria-hidden="false"] .story-export-card');if(!node)return;
   setBusy(true);setFeedback('Bild wird erstellt …');
-  try{await document.fonts.ready;const {captureNodeToBlob,downloadBlob}=await import('../../lib/chart-export');const exportHost=document.createElement('div');
-   exportHost.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none;';
-   const exportCard=node.cloneNode(true) as HTMLElement;
-   // The shared footer's source edge sits OUTSIDE the story width, so the headline keeps its line breaks.
-   const edge=Number(node.getAttribute('data-export-edge')??0);
-   exportCard.style.cssText=`${node.getAttribute('data-sc-export-css')};width:${node.getBoundingClientRect().width+edge}px;box-sizing:border-box;`;
-   exportHost.appendChild(exportCard);document.body.appendChild(exportHost);
-   try{const blob=await captureNodeToBlob(exportCard,3);downloadBlob(blob,`solar-check-story-${index+1}.png`);}finally{exportHost.remove();}setFeedback('Bild heruntergeladen.');}catch{setFeedback('Download fehlgeschlagen. Bitte erneut versuchen.');}finally{setBusy(false);}
+  try{await document.fonts.ready;const {exportNode}=await import('../../lib/chart-export');await exportNode(node,{filename:`solar-check-story-${index+1}.png`,mode:'download'});setFeedback('Bild heruntergeladen.');}catch{setFeedback('Download fehlgeschlagen. Bitte erneut versuchen.');}finally{setBusy(false);}
  };
  return <>
 
- <ModalHeader><div className="story-progress-row"><div className="story-reader-segments" aria-label="Story auswählen">{stories.map((story:any,i:number)=><button key={story.id} aria-label={`Story ${i+1}: ${story.title}`} aria-current={index===i?'step':undefined} onClick={()=>api?.scrollTo(i)}><span className="story-segment-track" role={index===i?'progressbar':undefined} aria-label={index===i?'Story-Fortschritt':undefined} aria-valuemin={0} aria-valuemax={100}><span className="story-segment-fill" key={`${i}-${index}`} ref={index===i?progressRef:undefined} style={{transform:`scaleX(${i<index?1:0})`}}/></span></button>)}</div><button className="story-timer-toggle" aria-label={paused?'Story fortsetzen':'Story pausieren'} onClick={()=>setPaused(value=>!value)}>{paused?<IconPlay/>:<IconPause/>}</button><button className="story-close" aria-label="Schließen" onClick={onClose}><IconClose/></button></div></ModalHeader><div ref={bodyRef} className="story-reader-body"><div className="story-reader-viewport" ref={viewport}><div className="story-reader-track">{stories.map((story:any,i:number)=><article key={story.id} className="story-reader-slide" aria-label={story.title} aria-hidden={i!==index} inert={i!==index} >
+ <ModalHeader><div className="story-progress-row"><div className="story-reader-segments" aria-label="Story auswählen">{stories.map((story:any,i:number)=><button key={story.id} aria-label={`Story ${i+1}: ${story.title}`} aria-current={index===i?'step':undefined} onClick={()=>api?.scrollTo(i)}><span className="story-segment-track" role={index===i?'progressbar':undefined} aria-label={index===i?'Story-Fortschritt':undefined} aria-valuemin={0} aria-valuemax={100}><span className="story-segment-fill" key={`${i}-${index}`} ref={index===i?progressRef:undefined} style={{transform:`scaleX(${i<index?1:0})`}}/></span></button>)}</div><button className="story-timer-toggle" aria-label={paused?'Story fortsetzen':'Story pausieren'} onClick={()=>setPaused(value=>!value)}>{paused?<IconPlay/>:<IconPause/>}</button>{!inline&&<button className="story-close" aria-label="Schließen" onClick={onClose}><IconClose/></button>}</div></ModalHeader><div ref={bodyRef} className="story-reader-body"><div className="story-reader-viewport" ref={viewport}><div className="story-reader-track">{stories.map((story:any,i:number)=><article key={story.id} className="story-reader-slide" aria-label={story.title} aria-hidden={i!==index} inert={i!==index} >
  
  <div className="story-widget-area" onPointerEnter={event=>{if(event.pointerType==='mouse')setHovered(true);}} onPointerLeave={()=>setHovered(false)} onPointerDownCapture={()=>{readUntil.current=performance.now()+1500;}} onFocusCapture={()=>setFocused(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setFocused(false);}}><StoryArtwork story={story} visual={visual} name={name} active={i===index&&isOpen}/></div><div className={`story-caption-overlay ${textOpen?'is-open':''}`}>
  <button className="story-caption-toggle" aria-expanded={textOpen} onClick={()=>{setTextOpen(value=>!value);setHeld(false);setFocused(false);readUntil.current=0;}} aria-label={textOpen?'Beschreibung schließen':'Beschreibung öffnen'}>{textOpen?'Schließen':null}</button>

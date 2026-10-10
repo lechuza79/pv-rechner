@@ -62,6 +62,8 @@ export function Auswahl({
   hoechstens = 80,
   pfeile,
   umlaufend = false,
+  menuAlign = "start",
+  variant = "default",
 }: {
   /** Was auf dem Knopf steht — der gewählte Wert, nicht der Name des Filters. */
   titel: string;
@@ -84,6 +86,10 @@ export function Auswahl({
   pfeile?: boolean;
   /** Wrap arrow navigation for cyclic selections. */
   umlaufend?: boolean;
+  /** Align a menu with the trigger at either viewport edge. */
+  menuAlign?: "start" | "end";
+  /** Quiet trigger on a scene; the menu retains its readable surface. */
+  variant?: "default" | "quiet";
 }) {
   const [offen, setOffen] = useState(false);
   const [suche, setSuche] = useState("");
@@ -136,7 +142,7 @@ export function Auswahl({
     justifyContent: "center",
     font: "inherit",
     padding: pad("xs", "xs"),
-    background: v("--color-bg"),
+    background: variant === "quiet" ? "transparent" : v("--color-bg"),
     color: v("--color-text-muted"),
     border: `1px solid ${v("--color-border")}`,
     cursor: "pointer",
@@ -174,8 +180,8 @@ export function Auswahl({
           minWidth: breite,
           font: "inherit",
           fontSize: v("--font-size-small"),
-          padding: pad("xs", "sm"),
-          background: v("--color-bg"),
+          padding: variant === "quiet" ? pad("md", "lg") : pad("xs", "sm"),
+          background: variant === "quiet" ? "transparent" : v("--color-bg"),
           color: v("--color-text-primary"),
           border: `1px solid ${v("--color-border")}`,
           borderTopLeftRadius: eckenLinks && !mitPfeilen ? ecke : 0,
@@ -195,7 +201,7 @@ export function Auswahl({
         >
           {titel}
         </span>
-        <IconChevronDown size={12} />
+        <span style={{ display: "inline-flex", flexShrink: 0, opacity: variant === "quiet" ? 0.5 : 1 }}><IconChevronDown size={12} /></span>
       </button>
       {mitPfeilen && (
         <button
@@ -222,7 +228,8 @@ export function Auswahl({
           style={{
             position: "absolute",
             top: "calc(100% + 4px)",
-            left: 0,
+            left: menuAlign === "start" ? 0 : undefined,
+            right: menuAlign === "end" ? 0 : undefined,
             background: v("--color-bg"),
             border: `1px solid ${v("--color-border")}`,
             borderRadius: ecke,

@@ -28,9 +28,11 @@
 
 import { catalogProblems, CATALOG_TABLE, type CatalogStatus } from "../lib/product-catalog";
 import { collectColdProbes } from "../lib/health-cold-probe";
-import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
+import { folgeabrufBefund, ranglistenAdressen, type FolgeabrufMessung } from "../lib/health-folgeabruf";
+import { atlasStichprobenPfade, istKreisfreieStadt, UNTER_ATLAS_WURZEL } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { LIEGT_NACH_STUNDEN, leeresLedger, liegenUnbearbeitet, readLedger, reparaturStand, stummeLaeufe, type Ledger } from "../lib/autofix-ledger";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
@@ -56,18 +58,15 @@ import { paramsToRow } from "../lib/types";
 import { verlinktePfade, verlinkteSeiteBefund } from "../lib/verlinkte-seiten";
 import {
   BASIS_TAGE,
-  FEHLBETRAG_MELDEN_AB_ANTEIL,
   KOSTEN_PROJEKTE,
   KOSTEN_TEAM_ID,
-  KOSTENWACHE_ZUGANG,
-  PROTOKOLL_AUFBEWAHRUNG_TAGE,
   SPRUNG_FAKTOR,
+  abrechnungVerspaetet,
+  abrufZeitraum,
   beurteileKostenTag,
-  fehlbetragObergrenze,
   groesstesVielfaches,
-  leseGruppen,
   menge,
-  zuBeurteilenderTag,
+  tagesmengenAusAbrechnung,
 } from "../lib/kostenwache";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
@@ -417,6 +416,97 @@ export function wetterBefund(b: WetterFrische | null, jetzt: Date): string[] {
   return befunde;
 }
 
+/**
+ * Kommen auf der Strommix-Seite Erzeugungsdaten an?
+ *
+ * Am 05.10.2026 lieferte der Datendienst von Energy-Charts stundenlang nur
+ * HTTP 503, und die Seite zeigte drei leere Kästen — während dieser Check
+ * durchgehend grün war: Er prüfte, ob die SEITE lädt, und die lädt auch ohne
+ * Daten. Gemessen wird deshalb die Antwort, aus der die Seite ihre Zahlen
+ * holt. Mit Zufallszahl, damit sie nicht aus dem CDN kommt.
+ */
+export type EnergieBefund = { status: number; punkte: number; stale: boolean; smard?: boolean; letzterPunkt: string | null };
+
+async function messeEnergiedaten(): Promise<EnergieBefund | null> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/energy/generation?hours=24&hc=${Date.now()}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    const body = (await res.json().catch(() => null)) as { data?: { ts: string }[]; stale?: boolean; fallback?: string } | null;
+    const data = Array.isArray(body?.data) ? body!.data! : [];
+    return {
+      status: res.status,
+      punkte: data.length,
+      stale: body?.stale === true,
+      smard: body?.fallback === "smard",
+      letzterPunkt: data.length ? data[data.length - 1].ts : null,
+    };
+  } catch {
+    return null; // nicht nachsehen können ist kein Befund
+  }
+}
+
+/**
+ * Ab diesem Alter des neuesten Punkts ist ein Upstream-Ausfall nicht mehr „die
+ * übliche Störung bei Fraunhofer", sondern ein Grund nachzusehen, ob es an uns
+ * liegt (geänderte Schnittstelle, Sperre, falsche Parameter). Kürzere Ausfälle
+ * fängt der Ersatzstand ab; die stehen nur im Protokoll.
+ */
+export const ENERGIE_MAX_ALTER_STUNDEN = 6;
+
+/**
+ * Urteil über die Energiedaten. `warnungen` = steht im Protokoll (Fraunhofer
+ * gestört, der Ersatzstand greift — wir können daran nichts ändern);
+ * `fuerClaude` = braucht Analyse (kein Ersatzstand, oder seit Stunden nichts
+ * Neues).
+ */
+export function energieBefund(b: EnergieBefund | null, jetzt: Date): { warnungen: string[]; fuerClaude: string[] } {
+  const leer = { warnungen: [] as string[], fuerClaude: [] as string[] };
+  if (!b) return leer;
+  if (b.status !== 200 || b.punkte === 0) {
+    return {
+      warnungen: [],
+      fuerClaude: [
+        `Die Strommix-Daten antworten mit HTTP ${b.status} und ${b.punkte} Punkten — die Seite zeigt leere Kästen. ` +
+          "Weder Energy-Charts noch der gespeicherte Ersatzstand liefern. Zuerst prüfen, ob die Tabelle " +
+          "energy_letzter_stand existiert und gefüllt wird (Einrichtung über die Energie-Setup-Route).",
+      ],
+    };
+  }
+  const alterStunden = b.letzterPunkt ? (jetzt.getTime() - Date.parse(b.letzterPunkt)) / 3600000 : null;
+  const alt = alterStunden !== null && alterStunden > ENERGIE_MAX_ALTER_STUNDEN;
+  if (b.stale) {
+    const satz =
+      `Energy-Charts liefert gerade nicht; die Strommix-Seite zeigt den gespeicherten Stand` +
+      (alterStunden !== null ? ` von vor ${Math.round(alterStunden)} Stunden.` : ".");
+    return alt
+      ? {
+          warnungen: [],
+          fuerClaude: [
+            `${satz} Das dauert länger als ${ENERGIE_MAX_ALTER_STUNDEN} Stunden — nachsehen, ob die Schnittstelle ` +
+              "sich geändert hat oder uns sperrt, statt auf Fraunhofer zu warten.",
+          ],
+        }
+      : { warnungen: [satz], fuerClaude: [] };
+  }
+  if (b.smard && !alt) {
+    // Energy-Charts down, SMARD covers it with live numbers. Nothing for us to
+    // fix — but it belongs in the log, so a long outage stays visible.
+    return { warnungen: ["Energy-Charts liefert gerade nicht; die Strommix-Seite zeigt Live-Zahlen von SMARD."], fuerClaude: [] };
+  }
+  if (alt) {
+    return {
+      warnungen: [],
+      fuerClaude: [
+        `Die Strommix-Daten kommen frisch, aber ihr neuester Punkt ist ${Math.round(alterStunden!)} Stunden alt — ` +
+          "Energy-Charts liefert veraltete Reihen oder unsere Abfrage schneidet zu viel ab.",
+      ],
+    };
+  }
+  return leer;
+}
+
 /** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
 export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
   if (!b) return [];
@@ -514,7 +604,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   for (let i = 0; i < count; i++) {
     const offset = Math.floor(Math.random() * 10000);
     const [row] = await q(
-      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+      `mastr_regions?select=slug,parent_region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}&limit=1&offset=${offset}`,
     );
     if (row) gem.push(row);
   }
@@ -524,7 +614,7 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const kreisIds = Array.from(new Set(gem.map((g) => g.parent_region_id).filter(Boolean)));
   const kreise = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${kreisIds.join(",")})`);
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
-  const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
+  const laender = await q(`mastr_regions?select=region_id,slug,parent_region_id&region_id=in.(${landIds.join(",")})`);
 
   // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
   // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
@@ -1346,119 +1436,37 @@ async function auslieferungsAlterMinuten(): Promise<number | null> {
 }
 
 /**
- * Fragt die Laufzeitprotokolle nach Gruppen ab.
+ * Holt die Abrechnungsdaten des Teams als JSONL (siehe KOSTENWACHE_ZUGANG).
  *
- * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen. Drei Fälle sehen
- * an der Aufrufstelle sonst gleich aus und verlangen völlig Verschiedenes:
- * ein abgewiesener Zugang (der Betreiber muss ein Geheimnis anlegen oder
- * erneuern), ein leerer Tag (zu spät gefragt, die Protokolle halten einen Tag)
- * und ein Netzfehler. „Kennzahl ist nicht Zustand" — dieselbe Trennung wie beim
- * Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
+ * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen: Ein abgewiesener
+ * Zugang (das Geheimnis hat keine Abrechnungsrechte oder ist abgelaufen) und ein
+ * Netzfehler verlangen Verschiedenes.
  */
-type ProtokollAusgang =
+type AbrechnungsAusgang =
   | { art: "ok"; text: string }
   | { art: "kein-zugang"; status: number }
-  | { art: "nicht-abrufbar" };
+  | { art: "nicht-abrufbar"; grund: string };
 
-async function protokollGruppen(
-  token: string,
-  projectId: string,
-  tag: string,
-  gruppe: "statusCode" | "requestPath",
-): Promise<ProtokollAusgang> {
+async function abrechnungAbrufen(token: string, jetzt: Date): Promise<AbrechnungsAusgang> {
+  const { von, bis } = abrufZeitraum(jetzt);
   try {
-    const res = await fetch("https://mcp.vercel.com", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "content-type": "application/json",
-        accept: "application/json, text/event-stream",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: 1,
-        method: "tools/call",
-        params: {
-          name: "get_runtime_logs",
-          arguments: {
-            projectId,
-            teamId: KOSTEN_TEAM_ID,
-            environment: "production",
-            since: `${tag}T00:00:00.000Z`,
-            until: `${tag}T23:59:59.999Z`,
-            group_by: gruppe,
-          },
-        },
-      }),
-      signal: AbortSignal.timeout(60000),
-    });
+    const res = await fetch(
+      `https://api.vercel.com/v1/billing/charges?from=${encodeURIComponent(von)}&to=${encodeURIComponent(bis)}` +
+        `&teamId=${KOSTEN_TEAM_ID}`,
+      { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(60000) },
+    );
     if (res.status === 401 || res.status === 403) return { art: "kein-zugang", status: res.status };
-    if (!res.ok) return { art: "nicht-abrufbar" };
-    const roh = await res.text();
-    // Die Antwort kommt als Ereignisstrom; die Nutzlast steht in der data-Zeile.
-    const zeile = roh.match(/^data: (.*)$/m);
-    if (!zeile) return { art: "nicht-abrufbar" };
-    const nutzlast = JSON.parse(zeile[1]) as {
-      result?: { content?: { text?: string }[]; isError?: boolean };
-      error?: unknown;
-    };
-    if (nutzlast.error || nutzlast.result?.isError) return { art: "nicht-abrufbar" };
-    const text = (nutzlast.result?.content ?? []).map((c) => c.text ?? "").join("\n");
-    return text ? { art: "ok", text } : { art: "nicht-abrufbar" };
-  } catch {
-    return { art: "nicht-abrufbar" };
+    if (!res.ok) return { art: "nicht-abrufbar", grund: `HTTP ${res.status}` };
+    return { art: "ok", text: await res.text() };
+  } catch (error) {
+    return { art: "nicht-abrufbar", grund: String(error) };
   }
 }
-
-type KostenZeile = {
-  projekt: string;
-  tag: string;
-  aufbauten: number;
-  adressen: number;
-  gemeldet_am: string | null;
-};
 
 function supabaseZugang(): { url: string; key: string } | null {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   return url && key ? { url, key } : null;
-}
-
-async function kostenZeilen(projekt: string, bisTag: string): Promise<KostenZeile[] | null> {
-  const z = supabaseZugang();
-  if (!z) return null;
-  try {
-    const r = await fetch(
-      `${z.url}/rest/v1/kosten_tageswerte?select=projekt,tag,aufbauten,adressen,gemeldet_am` +
-        `&projekt=eq.${encodeURIComponent(projekt)}&tag=lte.${bisTag}&order=tag.desc&limit=${BASIS_TAGE + 1}`,
-      { headers: { apikey: z.key, Authorization: `Bearer ${z.key}` }, signal: AbortSignal.timeout(20000) },
-    );
-    if (!r.ok) return null;
-    return (await r.json()) as KostenZeile[];
-  } catch {
-    return null;
-  }
-}
-
-async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean> {
-  const z = supabaseZugang();
-  if (!z) return false;
-  try {
-    const r = await fetch(`${z.url}/rest/v1/kosten_tageswerte`, {
-      method: "POST",
-      headers: {
-        apikey: z.key,
-        Authorization: `Bearer ${z.key}`,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates,return=minimal",
-      },
-      body: JSON.stringify(zeile),
-      signal: AbortSignal.timeout(20000),
-    });
-    return r.ok;
-  } catch {
-    return false;
-  }
 }
 
 export type KostenBefund = {
@@ -1475,123 +1483,61 @@ export type KostenBefund = {
 export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
   const b: KostenBefund = { zeilen: [], fuerClaude: [], incidents: [], warnungen: [] };
   const token = vercelToken();
-  const tag = zuBeurteilenderTag(jetzt);
 
   if (!token) {
     b.warnungen.push(
-      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die Tagesmengen wurden weder erfasst " +
-        "noch beurteilt. Kein Urteil heißt hier nicht „in Ordnung“: Die Protokolle werden nur einen Tag " +
-        "aufbewahrt, ein verpasster Tag ist für immer verpasst.",
+      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die abgerechneten Mengen wurden nicht beurteilt.",
     );
     return b;
   }
-  if (!supabaseZugang()) {
+
+  const abruf = await abrechnungAbrufen(token, jetzt);
+  if (abruf.art === "kein-zugang") {
     b.warnungen.push(
-      "Kostenwache: keine Datenbank erreichbar — ohne Ablage gibt es kein Vergleichsniveau und damit kein Urteil.",
+      `Kostenwache: Die Abrechnungsdaten wurden abgewiesen (HTTP ${abruf.status}). Das Geheimnis VERCEL_TOKEN braucht ` +
+        `eine Rolle mit Abrechnungsrechten (Owner, Member, Developer oder Billing) — solange das steht, beurteilt die ` +
+        `Wache nichts. Die Daten selbst gehen dabei nicht verloren, sie bleiben bei der Plattform abrufbar.`,
     );
+    return b;
+  }
+  if (abruf.art === "nicht-abrufbar") {
+    b.warnungen.push(`Kostenwache: Abrechnungsdaten nicht abrufbar (${abruf.grund}) — kein Urteil in diesem Lauf.`);
     return b;
   }
 
   for (const p of KOSTEN_PROJEKTE) {
-    const bestand = await kostenZeilen(p.schluessel, tag);
-    if (bestand === null) {
-      b.warnungen.push(`Kostenwache ${p.name}: Ablage nicht lesbar — kein Urteil über diesen Tag.`);
+    const bestand = tagesmengenAusAbrechnung(abruf.text, p.projectId);
+    const heute = bestand[bestand.length - 1];
+    if (!heute) {
+      b.warnungen.push(`Kostenwache ${p.name}: keine Abrechnungstage in den Daten — kein Urteil.`);
       continue;
     }
-
-    let heute = bestand.find((z) => z.tag === tag) ?? null;
-
-    // Erst messen, wenn der Tag noch fehlt. Zweimal am Tag dieselbe Abfrage
-    // liefert dasselbe und belastet die Plattform ohne Erkenntnis.
-    if (!heute) {
-      const [statusAusgang, pfadAusgang] = await Promise.all([
-        protokollGruppen(token, p.projectId, tag, "statusCode"),
-        protokollGruppen(token, p.projectId, tag, "requestPath"),
-      ]);
-
-      const abgewiesen = [statusAusgang, pfadAusgang].find((a) => a.art === "kein-zugang");
-      if (abgewiesen && abgewiesen.art === "kein-zugang") {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Der Zugang zur Plattform wurde abgewiesen (HTTP ${abgewiesen.status}). ` +
-            `Das ist kein leerer Tag, sondern ein ungültiges oder abgelaufenes Geheimnis — VERCEL_TOKEN in den ` +
-            `Repo-Geheimnissen prüfen. Solange das steht, sammelt die Wache nichts, und jeder Tag ist danach ` +
-            `unwiederbringlich weg (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag aufbewahrt).`,
-        );
-        continue;
-      }
-
-      const last = statusAusgang.art === "ok" ? leseGruppen(statusAusgang.text) : null;
-      const flaeche = pfadAusgang.art === "ok" ? leseGruppen(pfadAusgang.text) : null;
-
-      if (!last || !flaeche) {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Der ${tag} war nicht abrufbar — kein Wert abgelegt. ` +
-            `Eine Null wäre hier eine Falschaussage (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag ` +
-            `aufbewahrt; „nichts gefunden“ heißt fast immer „zu spät gefragt“, nicht „kein Verkehr“).`,
-        );
-        continue;
-      }
-
-      // Die Antwort listet nur die größten Gruppen auf. Fehlt etwas, ist es
-      // höchstens so groß wie die kleinste gezeigte Gruppe — das wird
-      // AUSGERECHNET statt behauptet. Bei der Gruppierung nach Statuscode sind
-      // es eine Handvoll Gruppen und die Lücke rechnerisch belanglos; wächst sie
-      // eines Tages, soll das auffallen und nicht in die Vergleichszahl wandern.
-      const luecke = fehlbetragObergrenze(last);
-      if (luecke > last.summe * FEHLBETRAG_MELDEN_AB_ANTEIL) {
-        b.warnungen.push(
-          `Kostenwache ${p.name}: Die Antwort für den ${tag} hat nur ${last.gezeigt} von ${last.verschiedene} ` +
-            `Gruppen aufgelistet; die Zahl der Aufbauten kann um bis zu ${menge(luecke)} zu niedrig sein. ` +
-            `Der Wert wird trotzdem abgelegt — er ist dann eine Untergrenze, keine Summe.`,
-        );
-      }
-
-      const geschrieben = await kostenSchreiben({
-        projekt: p.schluessel,
-        tag,
-        aufbauten: last.summe,
-        adressen: flaeche.verschiedene,
-        quelle: KOSTENWACHE_ZUGANG.quelle,
-        gruppen_gezeigt: last.gezeigt,
-        gruppen_gesamt: last.verschiedene,
-      });
-      if (!geschrieben) {
-        b.warnungen.push(`Kostenwache ${p.name}: Tageswert für ${tag} konnte nicht abgelegt werden.`);
-        continue;
-      }
-      heute = { projekt: p.schluessel, tag, aufbauten: last.summe, adressen: flaeche.verschiedene, gemeldet_am: null };
-      bestand.unshift(heute);
+    if (abrechnungVerspaetet(heute.tag, jetzt)) {
+      b.warnungen.push(
+        `Kostenwache ${p.name}: Der jüngste Abrechnungstag ist der ${heute.tag} — die Plattform liefert verspätet. ` +
+          `Beurteilt wird dieser Tag; neuere fehlen noch.`,
+      );
     }
+    const tag = heute.tag;
 
-    // Number() auch hier: Große Ganzzahlen können aus der Datenbank als
-    // Zeichenkette ankommen, und dann verglichen sich zwei Strings — der Sprung
-    // fiele stumm aus, ohne Fehler und ohne dass es jemandem auffiele.
-    const urteil = beurteileKostenTag(
-      { tag: heute.tag, aufbauten: Number(heute.aufbauten), adressen: Number(heute.adressen) },
-      bestand.map((z) => ({ tag: z.tag, aufbauten: Number(z.aufbauten), adressen: Number(z.adressen) })),
-    );
+    const urteil = beurteileKostenTag(heute, bestand);
 
     if (urteil.art === "kein-urteil") {
       // Ausdrücklich als offener Zustand ausgewiesen, nicht als grün.
-      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(Number(heute.aufbauten))} Aufbauten, ` +
-        `${menge(Number(heute.adressen))} verschiedene Adressen — noch kein Urteil möglich (${urteil.grund})`);
+      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(heute.aufbauten)} Funktionsaufrufe, ` +
+        `${menge(heute.schreibvorgaenge)} Cache-Schreibvorgänge — noch kein Urteil möglich (${urteil.grund})`);
       continue;
     }
 
-    const reihe = bestand.map((z) => ({
-      tag: z.tag,
-      aufbauten: Number(z.aufbauten),
-      adressen: Number(z.adressen),
-    }));
-    const maxLast = groesstesVielfaches(reihe, "aufbauten");
-    const maxFlaeche = groesstesVielfaches(reihe, "adressen");
+    const maxLast = groesstesVielfaches(bestand, "aufbauten");
+    const maxSchreiben = groesstesVielfaches(bestand, "schreibvorgaenge");
     const teil = urteil.groessen
-      .map((g) => `${g.groesse === "aufbauten" ? "Aufbauten" : "Adressen"} ${menge(g.wert)} ` +
+      .map((g) => `${g.groesse === "aufbauten" ? "Funktionsaufrufe" : "Cache-Schreibvorgänge"} ${menge(g.wert)} ` +
         `(Niveau ${menge(Math.round(g.basis))}, ${g.vielfaches === null ? "—" : `${g.vielfaches.toFixed(2)}×`})`)
       .join(" · ");
     b.zeilen.push(
       `Kostenwache ${p.name} (${tag}): ${teil}; Schwelle ${SPRUNG_FAKTOR}× — ` +
-        `größtes bisher abgelegtes Vielfaches: Last ${maxLast ?? "—"}×, Fläche ${maxFlaeche ?? "—"}×`,
+        `größtes Vielfaches im Abruffenster: Last ${maxLast ?? "—"}×, Schreiben ${maxSchreiben ?? "—"}×`,
     );
 
     if (urteil.art === "sprung") {
@@ -1603,16 +1549,33 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
         .join("; ");
       b.fuerClaude.push(
         `Kostensprung bei ${p.name} am ${tag}: ${details}. ${urteil.satz} ` +
-          `Gemessen sind Mengen, nicht Euro — aber genau diese Mengen treiben den größten Rechnungsposten. ` +
+          `Gemessen sind die abgerechneten Mengen aus der Abrechnung der Plattform, nicht der Betrag. ` +
           `Die Schwelle liegt beim ${SPRUNG_FAKTOR}-fachen des Medians der bis zu ${BASIS_TAGE} Vortage. ` +
-          `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
-          `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
+          `Nachsehen: wer die Seiten aufruft (Anfrageprotokolle der Plattform halten 24 Stunden: Kennung, ` +
+          `Netzbetreiber, Cache-Status). Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
       );
       b.incidents.push({key: `cost:${p.schluessel}`, text: b.fuerClaude[b.fuerClaude.length - 1]});
     }
   }
 
   return b;
+}
+
+/** Reads each fresh town page's HTML (now cached) and times its first Kreis ranking list. */
+async function messeFolgeabrufe(seiten: Probe[]): Promise<FolgeabrufMessung[]> {
+  const out: FolgeabrufMessung[] = [];
+  for (const seite of seiten) {
+    try {
+      const html = await (await fetch(seite.url, { headers: { "user-agent": "solar-check-health-check" }, signal: AbortSignal.timeout(30000) })).text();
+      const [adresse] = ranglistenAdressen(html);
+      if (!adresse) continue;
+      const m = await probe("Gemeinde-Rangliste", adresse);
+      out.push({ url: m.url, status: m.status, seconds: m.seconds, cache: m.cache });
+    } catch {
+      // A failed read is "not measured", never "fast".
+    }
+  }
+  return out;
 }
 
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
@@ -1951,6 +1914,20 @@ export function laufStumm(
   return { stumm: true, wie: haeufigste };
 }
 
+/**
+ * The repair ledger restored by scripts/health-history.ts. Absent means no
+ * repair run has ever stored one (or all expired) — an empty ledger. Present but
+ * unreadable IS an error: then nobody can tell whether a run went silent.
+ */
+export function reparaturLedgerLesen(pfad = ".health/autofix-ledger.json"): { ledger?: Ledger; fehler?: string } {
+  if (!existsSync(pfad)) return { ledger: leeresLedger() };
+  try {
+    return { ledger: readLedger(JSON.parse(readFileSync(pfad, "utf8"))) };
+  } catch (e) {
+    return { fehler: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 async function main() {
   if (process.env.HEALTH_INCIDENTS === "1") {
     for (const name of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "CRON_SECRET", "GITHUB_TOKEN", "GITHUB_REPOSITORY", "VERCEL_TOKEN"]) {
@@ -2196,6 +2173,13 @@ async function main() {
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
     }
+    // What the fresh town pages load next (lib/health-folgeabruf.ts): the
+    // page can be quick while its ranking podium waits seconds for its list.
+    const folge = await messeFolgeabrufe(coldResult.all.filter((p) => p.label.includes("Gemeinde") && p.status === 200));
+    if (folge.length) lines.push(`Ranglisten der frischen Gemeindeseiten: ${folge.map((m) => `${m.seconds.toFixed(2)} s (${m.cache || "?"})`).join(" / ")}`);
+    const folgeBefund = folgeabrufBefund(folge);
+    if (folgeBefund?.stufe === "rot") technical("gemeinde-folgeabruf-latency", false, folgeBefund.text);
+    else if (folgeBefund) warnings.push(folgeBefund.text);
   } else {
     unknown.push("atlas-cold-latency");
     technical("atlas-cold-measurement", false, "Kein frischer Atlas-Aufbau messbar; keine Entwarnung möglich.");
@@ -2310,7 +2294,10 @@ async function main() {
     // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
     // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
     // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
-    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    // Nur Orte unter der Atlas-Wurzel haben eine Seite. Seit dem Schweizer
+    // Import (07.10.2026) stehen 2.110 Schweizer Gemeinden in derselben Tabelle;
+    // ungefiltert meldete diese Zeile 2.113 Seiten ohne Platzierung statt 3.
+    const seiten = count(await read(`mastr_regions?select=region_id,${UNTER_ATLAS_WURZEL.select}&level=eq.gemeinde&slug=not.is.null&${UNTER_ATLAS_WURZEL.filter}`, true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
     warnings.push(...luecke);
@@ -2359,6 +2346,18 @@ async function main() {
   );
   technical("preview-image", false, ...vorschaubildBefund(vorschau));
   technical("weather-freshness", false, ...wetterBefund(await messeWetterFrische(), new Date()));
+
+  // ── Kommen auf der Strommix-Seite Erzeugungsdaten an? ─────────────────────
+  const energie = await messeEnergiedaten();
+  lines.push(
+    energie === null
+      ? "Strommix-Daten: nicht messbar (Produktion antwortete gar nicht)."
+      : `Strommix-Daten: HTTP ${energie.status}, ${energie.punkte} Punkte${energie.stale ? ", gespeicherter Ersatzstand" : energie.smard ? ", aus SMARD (Energy-Charts gestört)" : ""}` +
+          `${energie.letzterPunkt ? `, neuester Punkt ${energie.letzterPunkt}` : ""}.`,
+  );
+  const energieUrteil = energieBefund(energie, new Date());
+  warnings.push(...energieUrteil.warnungen);
+  technical("energy-data", false, ...energieUrteil.fuerClaude);
   if (!vorschau) { unknown.push("preview-image"); technical("preview-measurement", true, "Vorschaubild-Prüfung nicht erreichbar."); }
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
@@ -2680,9 +2679,24 @@ async function main() {
 
   const managed = process.env.HEALTH_INCIDENTS === "1";
   const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  // The repair lane is watched like everything else: a model run that ended
+  // without a checkable verdict is a finding of its own (lib/autofix-ledger.ts).
+  const reparatur = managed ? reparaturLedgerLesen() : null;
+  if (reparatur?.ledger) {
+    const offeneKeys = [...new Set(findings.map(f => f.key))];
+    for (const f of stummeLaeufe(reparatur.ledger, offeneKeys, new Date())) technical(f.key, false, f.text);
+  } else if (reparatur?.fehler) {
+    // Unreadable is not "nothing silent": keep earlier silent-run incidents open.
+    unknown.push("autofix-stumm:");
+    warnings.push(`Reparatur-Protokoll nicht lesbar (${reparatur.fehler}) — ob ein Reparaturlauf stumm endete, ist in dieser Messung unbekannt.`);
+  }
   const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
   lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
-  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}${reparatur?.ledger && !i.operator ? ` — Reparatur: ${reparaturStand(i.key, reparatur.ledger, new Date())}` : ""}`));
+  if (reparatur?.ledger) {
+    const liegen = liegenUnbearbeitet(Object.values(incidents.state.incidents), reparatur.ledger, new Date());
+    if (liegen.length) warnings.push(`${liegen.length} offene Befunde seit über ${LIEGT_NACH_STUNDEN} Stunden ohne Reparaturlauf: ${liegen.map(i => i.key).join(", ")}.`);
+  }
   lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
 
   // ── Bericht ───────────────────────────────────────────────────────────────

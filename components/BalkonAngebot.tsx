@@ -326,7 +326,7 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0, funding, desi
   if (design === "result" || example) return <div className="bkw-offer-result wp-input-page">
     <div className="wp-section-heading"><h2>Passende Sets zu kaufen</h2></div>
     <p className="bkw-offer-intro">{example ? <>Beispielrechnung: {example.description} Die Sets werden über {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen.</> : <>Diese Sets sind mit deinen Angaben durchgerechnet und mit Blick auf {basis.horizonYears ?? DEFAULT_BALKON_CONFIG.lifetimeYears} Jahre verglichen. Mögliche Förderung wird für jedes Set einzeln berücksichtigt.{!!basis.additionalCosts && <> Deine zusätzlichen Kosten von {basis.additionalCosts.toLocaleString("de-DE")} € sind jeweils eingerechnet.</>}</>}</p>
-    <AffiliateCarousel label="Weitere Balkonkraftwerke">
+    <AffiliateCarousel label="Weitere Balkonkraftwerke" desktopSidebar={design === "result" && !example}>
       {alle.map((entry, index) => <li key={entry.angebot.id} className="wp-geraete-kachel"><ResultProduct entry={entry} recommended={index === 0} selected={entry.angebot.id === selectedOfferId} onCalculate={onCalculate} onFundingDetails={onFundingDetails} date={daten.abgerufenIso} /></li>)}
     </AffiliateCarousel>
     <p className="bkw-offer-price-note">Preisstand {datumKurz(daten.abgerufenIso)} · Maßgeblich sind Preis und Versandbedingungen im Shop.</p>

@@ -21,7 +21,6 @@ import {
   angebotsSeiten,
   FRAGEN,
   GEWERKE,
-  KEIN_BETRIEB,
   besteMail,
   bewertungAusDaten,
   faviconUrl,
@@ -630,6 +629,11 @@ describe("Impressum-Adresse: nicht ratbar, sondern aus den Links gelesen", () =>
   });
 
   it("ignoriert mailto und Anker", () => {
+    // The site's own imprint before another domain's, even when that one is listed first (E-Werk Mittelbaden).
+    const zwei = '<a href="https://www.badencloud.de/rechtliche-hinweise/impressum/">Impressum Baden Cloud</a><a href="/impressum">Impressum</a>';
+    expect(impressumUrl(zwei, "https://www.e-werk-mittelbaden.de/")).toBe("https://www.e-werk-mittelbaden.de/impressum");
+    // Without an own link the other domain's still counts.
+    expect(impressumUrl('<a href="https://konzern.de/impressum">Impressum</a>', "https://marke.de/")).toBe("https://konzern.de/impressum");
     expect(impressumUrl('<a href="mailto:a@b.de">Impressum</a>', "https://b.de/")).toBeNull();
     expect(impressumUrl('<a href="#impressum">Impressum</a>', "https://b.de/")).toBeNull();
   });
@@ -750,23 +754,32 @@ describe("Über-uns-Seite: dieselbe Lehre wie beim Impressum", () => {
   });
 });
 
-describe("Einordnung: „nichts gefunden“ ist nicht „ist keiner“", () => {
+describe("Einordnung im Profil: am Impressum, nicht am Wort", () => {
+  // The rules themselves are tested in fachbetrieb-einordnung.test.ts; these
+  // only check that profilAus hands its verdict through.
   const seite = (html: string) => ({ html, url: "https://beispiel.de/" });
+  const impressum = (html: string) => ({ html, url: "https://beispiel.de/impressum" });
 
-  it("stuft ein erkanntes Kommunal-Muster auf kein-betrieb zurück", () => {
+  it("stuft eine Kommune am Herausgeber im Impressum zurück", () => {
     const p = profilAus(
       "gemeinde-beispiel.de",
-      seite("<p>Stadtverwaltung Musterstadt</p><p>Photovoltaik auf dem Rathausdach</p>"),
-      null,
+      seite("<p>Photovoltaik auf dem Rathausdach</p>"),
+      impressum("<p>Herausgeber: Stadt Musterstadt</p><p>Der Bürgermeister</p><p>Markt 1</p><p>12345 Musterstadt</p>"),
       JETZT,
     );
     expect(p.art).toBe("kein-betrieb");
     expect(p.art_grund).toContain("Kommune");
+    expect(p.belege.some((b) => b.merkmal === "einordnung")).toBe(true);
+  });
+
+  it("eine Erwähnung auf der Seite allein stuft nicht zurück — ohne Beleg bleibt es unklar", () => {
+    // Früher reichte „Stadtverwaltung" irgendwo auf der Seite; das traf auch
+    // Betriebe mit einer Rathaus-Referenz.
+    const p = profilAus("gemeinde-beispiel.de", seite("<p>Stadtverwaltung Musterstadt</p><p>Photovoltaik</p>"), null, JETZT);
+    expect(p.art).toBe("unklar");
   });
 
   it("erkennt eine ehrenamtliche Initiative — der Fall, der die Regel ausgelöst hat", () => {
-    // heidel-solar.de trägt „solar“ im Namen und stand in der Wettbewerbsmessung
-    // unter „Solarteure“. Es ist eine ehrenamtliche Balkonstrom-Initiative.
     const p = profilAus(
       "irgendwas-solar.de",
       seite("<p>Wir arbeiten ehrenamtlich und semi-professionell.</p><p>Photovoltaik</p>"),
@@ -777,41 +790,26 @@ describe("Einordnung: „nichts gefunden“ ist nicht „ist keiner“", () => {
   });
 
   it("erkennt ein Vermittlungsportal", () => {
-    const p = profilAus(
-      "portal.de",
-      seite("<p>Jetzt bis zu 3 kostenlose Angebote für Photovoltaik erhalten</p>"),
-      null,
-      JETZT,
-    );
+    const p = profilAus("portal.de", seite("<p>Jetzt bis zu 3 kostenlose Angebote für Photovoltaik erhalten</p>"), null, JETZT);
     expect(p.art).toBe("kein-betrieb");
     expect(p.art_grund?.toLowerCase()).toContain("portal");
   });
 
   it("sagt bei fehlendem PV-Wort NUR „unklar“, nicht „kein Betrieb“", () => {
-    // Eine Seite, die ihren Inhalt per Skript nachlädt, liefert uns nichts.
-    // Sie deshalb abzustempeln wäre ein Urteil ohne Messung.
     const p = profilAus("hersteller.de", seite("<p>Willkommen</p>"), null, JETZT);
     expect(p.art).toBe("unklar");
-    expect(p.art_grund).toContain("von Hand");
+    expect(p.art_grund).toContain("Photovoltaik");
   });
 
-  it("lässt einen echten Betrieb unangetastet", () => {
-    const p = profilAus(
-      "elektro-mueller.de",
-      seite("<p>Photovoltaik und Wärmepumpe vom Meisterbetrieb</p>"),
-      null,
-      JETZT,
-    );
-    expect(p.art).toBeNull();
+  it("nennt einen echten Betrieb mit seinem Beleg", () => {
+    const p = profilAus("elektro-mueller.de", seite("<p>Photovoltaik und Wärmepumpe vom Meisterbetrieb</p>"), null, JETZT);
+    expect(p.art).toBe("betrieb");
+    expect(p.art_grund).toBe("Meister/Handwerksrolle");
     expect(p.geschaeftsfelder).toContain("photovoltaik");
     expect(p.meisterbetrieb).toBe(true);
   });
 
   it("erkennt einen Lead-Vermittler, den die Streuung durchlässt", () => {
-    // Nachgetragen: Ein Lead-Vermittler wirbt regional wie ein Betrieb und
-    // erscheint deshalb in wenigen Kreisen — die Streuungsmessung sieht ihn
-    // nicht. Gefunden wurde er in der Stichprobe der fertigen Erhebung
-    // („Leads Navigator GmbH" hinter photovoltaik-firma.de).
     const p = profilAus(
       "photovoltaik-firma.de",
       seite("<p>Photovoltaik für Ihr Dach</p><p>Betreiber: Leads Navigator GmbH</p>"),
@@ -820,12 +818,6 @@ describe("Einordnung: „nichts gefunden“ ist nicht „ist keiner“", () => {
     );
     expect(p.art).toBe("kein-betrieb");
     expect(p.art_grund).toContain("Lead");
-  });
-
-  it("kennt zu jedem Rückstufungs-Muster einen Grund", () => {
-    for (const k of KEIN_BETRIEB) {
-      expect(k.grund.length).toBeGreaterThan(3);
-    }
   });
 });
 

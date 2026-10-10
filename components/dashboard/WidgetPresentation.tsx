@@ -16,11 +16,11 @@ export default function WidgetPresentation({appearance,children,widgetId,variant
     const receive=(event:MessageEvent)=>{
       if(event.source!==window.parent||event.origin!==window.location.origin||event.data?.type!=="widget:appearance")return;
       const value=parseWidgetAppearanceObject(event.data.appearance);
-      if(value)setLive(value);
+      if(value)setLive({...value, partner: appearance.partner});
     };
     window.addEventListener('message',receive);
     window.parent.postMessage({type:'widget:appearance-request'},window.location.origin);
     return()=>window.removeEventListener('message',receive);
   },[]);
-  return <div style={contract?{'--widget-max-width':`${contract.maxWidth}px`,'--widget-compact-max-width':`${contract.maxWidth}px`} as CSSProperties:undefined} data-widget-variant={variant} data-widget-height={contract?.height} className={`${foundation.foundation} sc-dashboard ${styles.presentation}`} data-story-scheme={live.theme==='hero'?'highlight':live.theme??'dark'} data-widget-layout={live.layout} data-widget-background={live.background===false?'off':'on'}><WidgetPresentationProvider appearance={live}>{children}</WidgetPresentationProvider></div>;
+  return <div style={contract?{'--widget-max-width':`${contract.maxWidth}px`,'--widget-compact-max-width':`${contract.maxWidth}px`} as CSSProperties:undefined} data-widget-variant={variant} data-widget-height={contract?.height} className={`${foundation.foundation} sc-dashboard ${styles.presentation}`} data-story-scheme={live.theme==='hero'?'highlight':live.theme??'dark'} data-widget-partner={live.partner?.brand.id} data-widget-layout={live.layout} data-widget-background={live.background===false?'off':'on'}><WidgetPresentationProvider appearance={live}>{children}</WidgetPresentationProvider></div>;
 }

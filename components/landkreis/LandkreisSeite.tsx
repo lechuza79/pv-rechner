@@ -1,3 +1,5 @@
+import {readAssociationReference} from '../../lib/verband-reference-server';
+import {associationPath,RELEASED_ASSOCIATIONS,type AssociationSlug} from '../../lib/verband-reference';
 import {kaiserslauternRaceSettings} from "../../lib/race-settings";
 import {loadRegionalRace} from "../../lib/regional-race-server";
 import {regionalRaceData} from "../../lib/regional-race";
@@ -53,32 +55,34 @@ const LEVEL_TEXT: Record<"landkreis" | "bundesland" | "de", {noun: string; membe
  * register and prepared monitor packages. Only districts have stories and
  * live power; states and Germany reuse the same historical energy widgets.
  */
-export default async function LandkreisSeite({ region, children, ranking, basePath, crumbs, stand, intro, einordnung, zusatz, state, variant = false }: {
-  region: AtlasRegion; children: AtlasChild[]; ranking: { regions: RankingRegion[]; cells: ChildYearRow[] };
+export default async function LandkreisSeite({ region, children, ranking, basePath, crumbs, stand, intro, einordnung, zusatz, state, variant = false, association, memberBasePath=basePath }: {
+  region: Omit<AtlasRegion,'level'> & {level:AtlasRegion['level']|'verbandsgemeinde'}; children: AtlasChild[]; ranking: { regions: RankingRegion[]; cells: ChildYearRow[] };
+  association?:{districtId:string;members:readonly string[];content:Promise<DistrictContent>}; memberBasePath?:string;
   state: {id:string;name:string}; basePath: string; crumbs: Crumb[]; stand: string; intro: ReactNode; einordnung?: ReactNode; zusatz?: ReactNode; variant?: boolean | "dark";
 }) {
   // The authoritative municipality list is the region register (one rule with
   // the district package build). Geometry also contains forests and the
   // enclosed independent city; neither becomes a card, nor do retired keys.
   const level = region.level === "bundesland" || region.level === "de" ? region.level : "landkreis";
-  const text = LEVEL_TEXT[level];
+  const text = association ? {...LEVEL_TEXT.landkreis,race:{title:'Welche Gemeinde hat die meisten Solaranlagen?',members:'Alle Gemeinden in der Verbandsgemeinde',leaders:'Die führenden Gemeinden',unit:'Orte'}} : LEVEL_TEXT[level];
   const isDistrict = level === "landkreis";
   // Bundesland: every Landkreis AND kreisfreie Stadt; Deutschland: the 16 Länder.
-  const towns = isDistrict ? children.filter(c => isDistrictMember(c, region.region_id)) : children.filter(c => c.bezeichnung !== "Gemeindefreies Gebiet");
+  const towns = isDistrict ? children.filter(c => association ? association.members.includes(c.region_id) : isDistrictMember(c, region.region_id)) : children.filter(c => c.bezeichnung !== "Gemeindefreies Gebiet");
   // The three reads of this component start together (28.09.2026): the monitor
   // package used to begin only after the map outline and the funding catalogue
   // had arrived, one wait after the other. Guarded by
   // lib/__tests__/atlas-seite-parallel.test.ts.
-  const content=monitorContentForPreview(isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand));
-  const [shapes, allPrograms, featuredRace] = await Promise.all([
-    isDistrict ? districtGeometry(region.region_id) : childGeometry(level as "bundesland" | "de", region.region_id),
+  const content=monitorContentForPreview(association?.content ?? (isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand)));
+  const [shapes, allPrograms, featuredRace, reference] = await Promise.all([
+    isDistrict ? districtGeometry(association?.districtId??region.region_id,association?.members) : childGeometry(level as "bundesland" | "de", region.region_id),
     level === "de" ? Promise.resolve([] as Awaited<ReturnType<typeof getFundingPrograms>>) : getFundingPrograms(),
     region.region_id === "07335" ? loadRegionalRace("07",kaiserslauternRaceSettings) : Promise.resolve(null),
+    readAssociationReference((Object.keys(RELEASED_ASSOCIATIONS) as AssociationSlug[]).find(slug=>RELEASED_ASSOCIATIONS[slug].slice(0,5)===(association?.districtId??region.region_id))??'bad-breisig'),
   ]);
   const sums = new Map(foldSiblings(ranking.regions, ranking.cells).map(r => [r.region_id, r.sums.alle]));
   const places: MapValue[] = towns.map(town => {
     const value = sums.get(town.region_id)?.kwp ?? null;
-    return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${basePath}/${town.slug}` : null };
+    return { id: town.region_id, name: town.name, value, formatted: value === null ? { value: "–", unit: "" } : pvLeistungTeile(value), href: town.slug ? `${memberBasePath}/${town.slug}` : null };
   }).sort((a, b) => a.name.localeCompare(b.name, "de"));
   // Reuse the map's geographic boundaries for the footer-style navigation cards.
   const outlines = shapes.map(shape => {
@@ -95,7 +99,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const value = sums.get(p.id)?.[m.id as "kwp" | "count" | "speicher"] ?? null;
     return { ...p, value, formatted: value === null ? { value: "–", unit: "" } : m.format(value) };
   }) }));
-  const districtPrograms = matchFundingForAgs(allPrograms,region.region_id);
+  const districtPrograms = association ? [] : matchFundingForAgs(allPrograms,region.region_id);
   const programs = new Map(districtPrograms.filter(p=>p.level!=="bund").map(p=>[p.id,p]));
   const coverage = new Map<string,string[]>();
   // Districts list programmes of their municipalities too; a Bundesland lists its own only.
@@ -106,10 +110,11 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   }
   const foerderProgramme=[...programs.values()].map(programm=>({programm,standLabel:fundingStandLabel(programm),zaehlt:fundingZaehlt(programm),geltungsbereich:districtPrograms.some(p=>p.id===programm.id)?(isDistrict?"Gilt im gesamten Landkreis":"Gilt im gesamten Bundesland"):"Gilt in: "+coverage.get(programm.id)?.join(", ")}));
   const naechstesUpdate=naechsteAktualisierung(IMPORT_TAGE,stand,new Date());
-  const raceData = regionalRaceData(towns,ranking,stand,basePath);
+  const raceData = regionalRaceData(towns,ranking,stand,memberBasePath);
   const townIds = new Set(towns.map(t => t.region_id));
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
   const comparable=towns.length>1;
+  const referenceLink=!association&&reference?.districtId===region.region_id ? {name:reference.name,href:associationPath(basePath,reference.slug)} : null;
   return <><div className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
     <link rel="stylesheet" href="/gemeinde/region-sections.css" precedence="default"/>
     <link rel="stylesheet" href="/design-system/feature-card.css" precedence="default"/>
@@ -121,14 +126,14 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       <div className={styles.heroStage} data-map-hero-stage data-map-clear-heading={!isDistrict}>
       <div className={styles.heroHeading} data-map-hero-heading>
 
-        <h1>{region.name}</h1>
+        <h1 aria-label={region.name}>{region.name.replace(/^Verbandsgemeinde\b/, "Verbands\u00adgemeinde")}</h1>
         <p className={styles.lede}>{comparable&&<>{places.length.toLocaleString("de-DE")} {text.noun}.<br /></>}Solarenergie im Überblick.</p>
       </div>
       {shapes.length>0 ? <RegionKarte shapes={shapes} metrics={metrics} member={text.member} overview={text.overview} framingScale={isDistrict ? 1 : 0.84} /> : <p>Für dieses Gebiet liegt derzeit keine aktuelle Karte vor. Die Gemeindedaten stehen unten in der Übersicht.</p>}
       </div>
     </section>
     </div></div>
-    <GemeindeAboDialog name={region.name} ags={region.region_id} verwaltungLabel={isDistrict ? "Für den Landkreis" : level === "bundesland" ? "Für das Bundesland" : "Für eine Organisation"}/>
+    <GemeindeAboDialog name={region.name} ags={region.region_id} verwaltungLabel={association ? "Für die Verbandsgemeinde" : isDistrict ? "Für den Landkreis" : level === "bundesland" ? "Für das Bundesland" : "Für eine Organisation"}/>
     <script dangerouslySetInnerHTML={{__html:ABO_SOFORT_SKRIPT}}/>
     <div className={styles.subnavRail}><GemeindeAbschnittNav subscribable name={region.name} naechstesUpdate={naechstesUpdate} links={[
       {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},{href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
@@ -138,24 +143,25 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
         <div><p>Stand {dashboardDate(stand)}</p><h2>So steht es um Solar<br/>{ortPhrase(region)}.</h2></div>
         <div><p>{intro}</p>{einordnung&&<p>{einordnung}</p>}</div>
       </section>
-      {isDistrict&&<section id="atlas-stories" className={styles.districtStories} aria-label="Geschichten aus dem Landkreis">
+      {referenceLink&&<p><a href={referenceLink.href}>{referenceLink.name} ansehen</a></p>}
+      {isDistrict&&<section id="atlas-stories" className={styles.districtStories} aria-label={association?"Geschichten aus der Verbandsgemeinde":"Geschichten aus dem Landkreis"}>
         <h2>Insights {ortPhrase(region)}</h2>
         <Suspense fallback={<p>Geschichten werden geladen …</p>}><LandkreisStories content={content} name={region.name}/></Suspense>
       </section>}
     </div>
     {missingGeometry.length > 0 && <p>Für {missingGeometry.map(p => p.name).join(", ")} fehlt der Kartenumriss. Die Werte stehen in der Übersicht.</p>}
     {comparable&&<><section id="atlas-ranking" data-widget-ranking className={`${styles.section} ${styles.raceSection}`} aria-label="Ranking">
-      {region.region_id === "07335" ? featuredRace ? <DistrictRaceWidget regionId="07" name={featuredRace.region.name} stand={featuredRace.stand} rows={featuredRace.rows} history={featuredRace.history} settings={kaiserslauternRaceSettings} wording={{title:"Solarleistung auf privaten Dächern je Einwohner",members:"Alle Landkreise",leaders:"Die zehn führenden Landkreise",unit:"Landkreise"}}/> : <p role="status">Der Landkreisvergleich ist gerade nicht verfügbar.</p> : <DistrictRaceWidget regionId={region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
+      {region.region_id === "07335" ? featuredRace ? <DistrictRaceWidget regionId="07" name={featuredRace.region.name} stand={featuredRace.stand} rows={featuredRace.rows} history={featuredRace.history} settings={kaiserslauternRaceSettings} wording={{title:"Solarleistung auf privaten Dächern je Einwohner",members:"Alle Landkreise",leaders:"Die zehn führenden Landkreise",unit:"Landkreise"}}/> : <p role="status">Der Landkreisvergleich ist gerade nicht verfügbar.</p> : <DistrictRaceWidget regionId={association?undefined:region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
     </section>
     </>}
     <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>
 
-    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
+    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} videoSupported={!association} weatherEndpoint={association?`/api/verband/solartag?verband=${region.slug}`:undefined} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
     {comparable&&<LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}
       closed={<ul>{places.filter(p=>p.href).map(p=><li key={p.id}><a href={p.href!}>{p.name}</a></li>)}</ul>}>
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>{text.tableHeading}</h2></div></div>
       <div style={variant === "dark" ? stageDefaults(0) as CSSProperties : undefined}>
-        <RankingTable regions={ranking.regions} zellen={packeRankingZellen(ranking.cells, ranking.regions)} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
+        <RankingTable regions={ranking.regions} zellen={packeRankingZellen(ranking.cells, ranking.regions)} basePath={memberBasePath} lastFullYear={lastFullYear()} popInMillions={level==="de"} />
       </div>
     </LazyDisclosure>}
     {zusatz&&<section id="atlas-related" className={`${styles.section} ${styles.regionExtras}`} aria-label="Weitere Auswertungen">{zusatz}</section>}
@@ -163,9 +169,9 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
     </section>}
     <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive"/>
-    <GemeindeSkripte navigationOnly daten={{districtOverview:true,overviewLabel:isDistrict?"Landkreisübersicht":level==="bundesland"?"Länderübersicht":"Deutschlandübersicht",ortPhrase:ortPhrase(region),ags:null,kreisAgs:region.region_id,kreisLabel:region.name,landAgs:state.id,landLabel:state.name,startArea:region.region_id,startKategorie:"count",klasse:"alle",kreisBase:basePath+"/",stufen:STUFEN,discoveries:[],name:region.name,liveUrl:`https://solar-check.io${basePath}`,genitiv:region.name,widgetUrl:"https://solar-check.io/energie-widgets"}}/>
+    <GemeindeSkripte navigationOnly daten={{districtOverview:true,overviewLabel:association?"Verbandsgemeindeübersicht":isDistrict?"Landkreisübersicht":level==="bundesland"?"Länderübersicht":"Deutschlandübersicht",ortPhrase:ortPhrase(region),ags:null,kreisAgs:region.region_id,kreisLabel:region.name,landAgs:state.id,landLabel:state.name,startArea:region.region_id,startKategorie:"count",klasse:"alle",kreisBase:memberBasePath+"/",stufen:STUFEN,discoveries:[],name:region.name,liveUrl:`https://solar-check.io${basePath}`,genitiv:region.name,widgetUrl:"https://solar-check.io/energie-widgets"}}/>
 
-  </div><div data-page-footer><SiteFuss zwischen={<DataSourcesSection><DataSourceNote label="Datenbasis:" source={[DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.iconD2Archive, DATA_SOURCES.era5Archive]}/></DataSourcesSection>}/></div></>;
+  </div><div data-page-footer><SiteFuss zwischen={<DataSourcesSection><DataSourceNote label="Datenbasis:" source={[DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.iconD2Archive, DATA_SOURCES.era5Archive, ...(association ? [DATA_SOURCES.destatis] : [])]}/></DataSourcesSection>}/></div></>;
 }
 
 /** The map and introduction must not wait for all municipality monitor packages. */

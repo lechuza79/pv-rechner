@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { FLOWS, flowTestTitel, flowGrep, FLOW_TITEL_MARKE } from "../../e2e/flows";
+import { FLOWS, flowTestTitel, flowGrep, FLOW_TITEL_MARKE, nachtTeil, gehoertZumTeil } from "../../e2e/flows";
 import { flowJobs } from "../../scripts/flow-matrix";
 
 /**
@@ -32,13 +32,44 @@ const workflow = readFileSync(resolve(WURZEL, ".github/workflows/flows-nightly.y
 const spec = readFileSync(resolve(WURZEL, "e2e/flows.spec.ts"), "utf8");
 
 describe("Aufteilung des nächtlichen Flow-Laufs", () => {
-  it("gibt jedem Flow einen eigenen Job", () => {
+  it("gibt jedem Flow einen eigenen Job — einem aufgeteilten Flow einen je Teil", () => {
     const jobs = flowJobs();
     for (const flow of FLOWS) {
-      expect(jobs.map((j) => j.name)).toContain(flow.name);
+      const n = flow.nachtTeile ?? 1;
+      const eigene = jobs.filter((j) => j.muster === flowGrep(flow.name));
+      expect(eigene, flow.name).toHaveLength(n);
+      // Jeder Teil genau einmal, keiner doppelt, keiner vergessen.
+      expect(eigene.map((j) => j.teil).sort()).toEqual(
+        n < 2 ? [""] : Array.from({ length: n }, (_, i) => `${i + 1}/${n}`).sort(),
+      );
     }
-    // Ein Job je Flow plus genau EIN Sammel-Job.
-    expect(jobs).toHaveLength(FLOWS.length + 1);
+    const teileGesamt = FLOWS.reduce((a, f) => a + (f.nachtTeile ?? 1), 0);
+    expect(jobs).toHaveLength(teileGesamt + 1);
+  });
+
+  it("teilt den ersten Auswahlschritt so, dass die Teile zusammen jede Option genau einmal gehen", () => {
+    for (const n of [2, 3]) {
+      for (const optionen of [1, 4, 5, 9]) {
+        const gegangen: number[] = [];
+        for (let k = 1; k <= n; k++) {
+          for (let i = 0; i < optionen; i++) if (gehoertZumTeil(i, { k, n })) gegangen.push(i);
+        }
+        expect(gegangen.sort((a, b) => a - b)).toEqual(Array.from({ length: optionen }, (_, i) => i));
+      }
+    }
+    expect(gehoertZumTeil(3, null)).toBe(true);
+  });
+
+  it("weist einen kaputten Teil ab, statt still alles oder nichts zu gehen", () => {
+    expect(nachtTeil(undefined)).toBeNull();
+    expect(nachtTeil("")).toBeNull();
+    expect(nachtTeil("2/2")).toEqual({ k: 2, n: 2 });
+    for (const kaputt of ["0/2", "3/2", "1/1", "1-2", "a/b"]) expect(() => nachtTeil(kaputt)).toThrow();
+  });
+
+  it("reicht den Teil in den Testschritt durch", () => {
+    expect(workflow).toContain("FLOW_TEIL: ${{ matrix.job.teil }}");
+    expect(spec).toContain("nachtTeil()");
   });
 
   it("fängt alles Übrige mit genau einem Sammel-Job ein", () => {
@@ -66,7 +97,7 @@ describe("Aufteilung des nächtlichen Flow-Laufs", () => {
 
   it("erzeugt für jeden Job einen Ausdruck, der seinen eigenen Titel trifft", () => {
     for (const flow of FLOWS) {
-      const job = flowJobs().find((j) => j.name === flow.name);
+      const job = flowJobs().find((j) => j.muster === flowGrep(flow.name));
       expect(job, `kein Job für „${flow.name}"`).toBeDefined();
       const muster = new RegExp(job!.muster);
       expect(muster.test(flowTestTitel(flow.name))).toBe(true);

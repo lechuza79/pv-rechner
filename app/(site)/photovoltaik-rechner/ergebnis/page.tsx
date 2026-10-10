@@ -68,11 +68,13 @@ export default async function RechnerErgebnisPage(props: {
   const searchParams = await props.searchParams;
   return (
     <ErrorBoundary>
+      <div className="sc-calculator-page-boundary">
       <PVRechner initialParams={searchParams} />
       <CalculatorContent inset>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
         <StandNote variant="cards" pfad="/photovoltaik-rechner" />
       </CalculatorContent>
+      </div>
     </ErrorBoundary>
   );
 }

@@ -6,3 +6,10 @@ body:has([data-page-footer]) .site-footer-slot{display:none;}
 
 .sc-data-sources a:hover{ text-decoration-thickness:2px; }
 .sc-data-sources a:focus-visible{ outline:2px solid currentColor;outline-offset:3px; }
+
+/* Sources share the footer surface in React and document hosts. */
+[data-sc-fuss]{background:#08191c;}
+.sc-data-sources div{font:inherit;color:inherit;}
+.sc-data-sources p{margin:0 0 12px;font:inherit;color:inherit;}
+.sc-data-sources p:last-child{margin-bottom:0;}
+.sc-data-sources{scroll-margin-top:100px;}

@@ -131,6 +131,7 @@ export default function InfoTooltip({
 
   // Position the tooltip relative to the trigger, clamped to the viewport on all
   // four edges. Runs as a layout effect so the position is set before paint.
+  const positionRef = useRef<() => void>(() => {});
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
     const tooltip = tooltipRef.current;
@@ -153,18 +154,27 @@ export default function InfoTooltip({
       const next = { top, left, width, maxHeight: Math.max(1, vh - 2 * EDGE) };
       setPos(previous => Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
     };
+    positionRef.current = position;
     position();
     const observer = new ResizeObserver(position);
     observer.observe(tooltip);
-    return () => observer.disconnect();
+    window.addEventListener("resize", position);
+    window.addEventListener("scroll", position, true);
+    return () => { observer.disconnect(); window.removeEventListener("resize", position); window.removeEventListener("scroll", position, true); };
   }, [open, mounted, portalTheme, maxWidth]);
 
-  // Close on outside click, scroll, resize, or Escape.
+  // Close on outside click or Escape. Scrolling and resizing only close it once
+  // the trigger has left the viewport; otherwise the box follows the trigger.
+  // Closing on every scroll event lost the tooltip during a smooth scroll that
+  // was still running when it opened (html has scroll-behavior: smooth).
   useEffect(() => {
     if (!open) return;
     const closeOnViewportChange = (event: Event) => {
       if (event.target instanceof Node && tooltipRef.current?.contains(event.target)) return;
-      close();
+      const t = triggerRef.current?.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (!t || t.bottom <= 0 || t.top >= vh) close();
+      else positionRef.current();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();

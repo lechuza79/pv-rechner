@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { verlinktePfade, verlinkteSeiteBefund } from "../verlinkte-seiten";
+import { indexierbarBefund, verlinktePfade, verlinkteSeiteBefund } from "../verlinkte-seiten";
 
 const regionen = [
   { region_id: "06", slug: "hessen", name: "Hessen" },
@@ -13,6 +13,12 @@ describe("Seiten, auf die jemand verlinkt", () => {
   it("prüft Gemeinde und Kreis", () => {
     expect(verlinktePfade(["06440016", "06440016"], regionen).map((s) => s.pfad)).toEqual([
       "/solar-atlas/hessen/landkreis-wetteraukreis/nidda",
+      "/solar-atlas/hessen/landkreis-wetteraukreis",
+    ]);
+  });
+
+  it("eine Veröffentlichung über einen Kreis prüft nur die Kreisseite (Fehlalarm 05.10.2026)", () => {
+    expect(verlinktePfade(["06440"], regionen).map((s) => s.pfad)).toEqual([
       "/solar-atlas/hessen/landkreis-wetteraukreis",
     ]);
   });
@@ -46,5 +52,22 @@ describe("Seiten, auf die jemand verlinkt", () => {
     const check = readFileSync(resolve(__dirname, "../../scripts/health-check.ts"), "utf8");
     expect(check).toMatch(/verlinkteSeiteBefund\(/);
     expect(check).toMatch(/verlinktePfade\(/);
+  });
+});
+
+describe("Angeschriebene Seiten sind indexierbar", () => {
+  it("noindex ist ein Befund", () => {
+    expect(indexierbarBefund(200, '<meta name="robots" content="noindex, nofollow"/>')).toMatch(/nicht indexieren/);
+    expect(indexierbarBefund(200, "<meta content=\"noindex\" name='robots'>")).toMatch(/nicht indexieren/);
+  });
+  it("index ist in Ordnung", () => {
+    expect(indexierbarBefund(200, '<meta name="robots" content="index, follow"/>')).toBeNull();
+  });
+  it("Fehlerstatus ist ein Befund, Weiterleitung nicht", () => {
+    expect(indexierbarBefund(404, "")).toBe("HTTP 404");
+    expect(indexierbarBefund(308, "")).toBeNull();
+  });
+  it("ein zweites robots-Tag mit noindex zählt", () => {
+    expect(indexierbarBefund(200, '<meta name="robots" content="index"/><meta name="robots" content="noindex"/>')).not.toBeNull();
   });
 });

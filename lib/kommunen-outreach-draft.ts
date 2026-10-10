@@ -189,6 +189,14 @@ export type DraftContext = {
   empfaenger?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
+  /** Personal salutation without the comma ("Sehr geehrte Frau Kuhn"); null
+   *  means no named person is known. */
+  anrede?: string | null;
+  /** The place's 3D scene is published; the municipal page then opens on it. */
+  mitSzene?: boolean;
+  /** "Unter den besten X %" when the subject says so; then the message says it
+   *  too, instead of a rank that reads weaker (Kempen: "Platz 29"). */
+  rangProzent?: number | null;
   /**
    * Weitere Spitzenplätze — im BRIEF, nicht in der Meldung.
    *
@@ -209,6 +217,12 @@ export type DraftContext = {
    * bleibt reiner Text.
    */
   widgetUrl?: string | null;
+  /**
+   * The municipal product page, as one closing sentence (operator, 05.10.2026:
+   * "auf die Kommunen-Produktlanding verweisen"). An addition, not the hook:
+   * the ready-made news item is what got published so far, so it stays first.
+   */
+  kommunenUrl?: string | null;
 };
 
 export type OutreachDraft = { subject: string; body: string; bodyHtml: string; meldung: string };
@@ -470,7 +484,11 @@ export function herkunftsangabe(
   // hude.de. Fünf Zeichen sind die Grenze, ab der ein Ortsname kein Zufall mehr
   // ist; „Berg" (vier) bliebe damit außen vor, und das ist die vorsichtige
   // Richtung — dort steht dann die Domain statt des Ortsnamens.
-  const wort = HERKUNFT_WORT[herkunft];
+  // The stored source column also carries PROCESS names ("handpruefung",
+  // "kontaktsuche-v2") instead of a page type. Measured 06.10.2026: 31 of 95
+  // letters said "Kontaktdaten (undefined von …)". An unknown source names the
+  // website, which is true for every address we collect.
+  const wort = HERKUNFT_WORT[herkunft] ?? "Website";
   // DIE HERKUNFT SCHLAEGT DEN NAMENSVERGLEICH. „verwaltung" heisst, dass die
   // Adresse der mitverwaltenden Gemeinde gehoert — dann MUSS deren Domain
   // dastehen, auch wenn der Ortsname zufaellig darin vorkommt. Gemessen:
@@ -511,6 +529,11 @@ export function herkunftsangabe(
 
 const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
 
+function gleicheGruppe(a: string, b: string | null | undefined): boolean {
+  const norm = (x: string) => x.replace(/^unter den\s+/i, "").trim().toLowerCase();
+  return !!b && norm(a) === norm(b);
+}
+
 export function kleinKlasse(gruppe: string): string {
   const [erstes, ...rest] = gruppe.split(" ");
   if (!rest.length || !KLASSEN_ADJEKTIVE.includes(erstes)) return gruppe;
@@ -532,6 +555,48 @@ function standLabel(iso: string): string {
  * Spitzenreiter" muss sie erst prüfen und umschreiben. Jede Zahl trägt ihre
  * Quelle, damit die Meldung ohne uns nachprüfbar bleibt.
  */
+function weitereAbsatz(c: DraftContext): string {
+  // Further top placements. They show the number is no fluke. Since
+  // 07.10.2026 they stand INSIDE the message (operator: after the closing line
+  // of the box they read as a stray afterthought, and a press office that
+  // copies the box lost them).
+  //
+  // DIE VERGLEICHSGRUPPE STEHT EINMAL, NICHT IN JEDER ZEILE.
+  //
+  // Vorher endete jede Zeile mit „unter den Mittelgroßen Städten in Hessen" —
+  // bei drei Zeilen dreimal dieselben sechs Wörter untereinander. Das ist die
+  // Stelle, an der ein Brief aussieht, als hätte ihn eine Vorlage ausgespuckt.
+  // Ist die Gruppe bei allen Einträgen dieselbe, wird sie ausgeklammert; sonst
+  // bleibt sie an der Zeile, weil sie sonst etwas Falsches behaupten würde.
+  const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
+  const gruppenGleich =
+    weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
+  return weitereListe.length
+    ? gruppenGleich
+      ? // Die Vergleichsgruppe steht hier NICHT mehr (Vorgabe des Betreibers,
+        // 19.08.2026). Sie steht bereits in der Meldung darüber, und „von 53"
+        // sagt von selbst, dass es um eine Teilmenge geht — Hessen hat keine
+        // 53 Gemeinden.
+        `Auch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
+          .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
+          .join(", ")}${
+          // Only drop the group when it IS the group of the message above.
+          // Kempen: message ranked nationwide among 626 towns, these lines
+          // among the 5 in the district — "Platz 1 von 5" without the district
+          // read as a second nationwide claim.
+          gleicheGruppe(weitereListe[0].gruppe, c.gruppe)
+            ? ""
+            : `, ${weitereListe.length > 1 ? "jeweils " : ""}unter den ${kleinKlasse(weitereListe[0].gruppe)}`
+        }.`
+      : `Auch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
+          .map(
+            (w) =>
+              `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${kleinKlasse(w.gruppe)}`,
+          )
+          .join("\n")}`
+    : "";
+}
+
 export function renderMeldung(c: DraftContext): string {
   const { anlagen, stand } = c.zahlen;
   // In der MELDUNG der Kurzname: Kein Ort schreibt seinen Unterscheidungszusatz
@@ -588,8 +653,13 @@ export function renderMeldung(c: DraftContext): string {
   // zuverlaessig der Teil weg, der die Aussage wahr macht (die Groessenklasse).
   // Deshalb: Ort, Platz, Thema — mehr nicht. Der vollstaendige Satz steht
   // darunter, wo Platz dafuer ist.
+  const prozent = platz != null && platz > 1 ? (c.rangProzent ?? null) : null;
   const ueberschrift =
-    platz != null
+    prozent != null
+      ? // Same wording as the subject on purpose: it is the opener and works as
+        // the headline (operator, 06.10.2026).
+        `${kurz} ${c.phrase} unter den besten ${prozent} %`
+      : platz != null
       ? `${kurz}: Platz ${platz} ${c.phrase}`
       : `Solarausbau in ${kurz}: der aktuelle Stand`;
 
@@ -606,7 +676,9 @@ export function renderMeldung(c: DraftContext): string {
     platz === 1
       ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen}: Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
       : platz != null
-        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
+        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${
+            prozent != null ? ` und damit unter den besten ${prozent} %` : ""
+          }${klammerTeil}.`
         : "";
 
   //
@@ -632,9 +704,10 @@ export function renderMeldung(c: DraftContext): string {
   // wird: Die Freigabe hängt am Gemeindeschlüssel des Empfängers, nicht an
   // dieser Zeichenkette. Zeigt der Brief künftig woandershin, muss die Freigabe
   // mitwandern — sonst ist wieder eine Seite verlinkt und gesperrt.
+  const weitere = weitereAbsatz(c);
   return `${ueberschrift}
 
-${anlagenSatz}${vergleichSatz}${belegSatz}
+${anlagenSatz}${vergleichSatz}${belegSatz}${weitere ? `\n\n${weitere}` : ""}
 
 Laufend aktualisierte Übersicht für ${kurz}: ${c.pageUrl ?? "https://solar-check.io"}
 
@@ -705,39 +778,21 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
-          c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
-        } Für Kommunen ist das kostenfrei; wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
+      ? // No second "kostenfrei" and no preview link (operator, 06.10.2026):
+        // the place page in the message already shows the graphic.
+        `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
-  // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
-  // die Zahl kein Zufallstreffer ist.
-  //
-  // DIE VERGLEICHSGRUPPE STEHT EINMAL, NICHT IN JEDER ZEILE.
-  //
-  // Vorher endete jede Zeile mit „unter den Mittelgroßen Städten in Hessen" —
-  // bei drei Zeilen dreimal dieselben sechs Wörter untereinander. Das ist die
-  // Stelle, an der ein Brief aussieht, als hätte ihn eine Vorlage ausgespuckt.
-  // Ist die Gruppe bei allen Einträgen dieselbe, wird sie ausgeklammert; sonst
-  // bleibt sie an der Zeile, weil sie sonst etwas Falsches behaupten würde.
-  const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
-  const gruppenGleich =
-    weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
-  const weitereAbsatz = weitereListe.length
-    ? gruppenGleich
-      ? // Die Vergleichsgruppe steht hier NICHT mehr (Vorgabe des Betreibers,
-        // 19.08.2026). Sie steht bereits in der Meldung darüber, und „von 53"
-        // sagt von selbst, dass es um eine Teilmenge geht — Hessen hat keine
-        // 53 Gemeinden.
-        `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
-          .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
-          .join(", ")}.`
-      : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
-          .map(
-            (w) =>
-              `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${kleinKlasse(w.gruppe)}`,
-          )
-          .join("\n")}`
+  // The 3D scene of the place, right under the message (operator,
+  // 06.10.2026) — only once it is published (`mitSzene`). Neutral about what
+  // it shows: not every scene has both wind and solar parks.
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  const szeneAbsatz =
+    c.mitSzene && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurzOrtsname(c.name)} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : "";
+  const kommunenAbsatz = c.kommunenUrl && !szeneAbsatz
+    ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
     : "";
 
   //
@@ -763,7 +818,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // gern gekürzt" setzt die Entscheidung, ihn zu veröffentlichen, bereits
   // voraus. Nach zehn Sekunden wusste der Leser, dass jemand Zahlen über seinen
   // Ort hat — nicht, was er damit tun soll. Jetzt steht es als Bitte da.
-  const body = `Sehr geehrte Damen und Herren,${weiterleitung}
+  const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
 
 ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur steckt gerade eine kleine Meldung für ${c.name}. Ich habe sie fertig formuliert, Sie können sie so übernehmen:
 
@@ -771,7 +826,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand.${szeneAbsatz}${linkZeile}${widgetAbsatz}${kommunenAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
@@ -783,4 +838,83 @@ Datenschutz: https://solar-check.io/datenschutz
 ${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
 
   return { subject: c.betreff, body, bodyHtml: briefAlsHtml(body), meldung };
+}
+
+/**
+ * Which letter a town gets. Decided by the operator (draft 05.10.2026, confirmed
+ * 06.10.2026: "ich dachte wir schicken an alle auch ohne"): a town WITH a
+ * placement gets the press letter with the ready-made message; a town WITHOUT
+ * one gets the short info letter — data prepared, everything on its own page,
+ * plus the municipal offer. No number, no comparison.
+ *
+ * This lives in code because it was decided once in a chat, lost when the
+ * conversation was summarised, and asked again the next morning.
+ */
+export type Briefart = "platzierung" | "info";
+
+export type InfoDraftContext = {
+  name: string;
+  /** Canonical town page. */
+  pageUrl: string;
+  /** "im Kreis Viersen" / "in Brandenburg" — where the page compares the town. */
+  vergleichWo: string;
+  einwohner?: number | null;
+  funktion?: string | null;
+  anPresse?: boolean;
+  anrede?: string | null;
+  empfaenger?: string | null;
+  adressherkunft?: Adressherkunft;
+  kommunenUrl: string | null;
+  mitSzene: boolean;
+};
+
+export function renderInfoDraft(c: InfoDraftContext): OutreachDraft {
+  const kurz = kurzOrtsname(c.name);
+  const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
+  // Same forwarding rule as the press letter: none when we already write to
+  // the named role or the press mailbox.
+  const weiterleitung = c.funktion || c.anPresse
+    ? ""
+    : grosseVerwaltung
+      ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
+      : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
+  const einstiegGross = !c.funktion && !c.anPresse;
+
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  // "kostenfrei" exactly once, as in the press letter; the 3D sentence only for
+  // a published scene (both rules settled 06.10.2026).
+  const angebotAbsatz =
+    c.mitSzene && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurz} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : c.kommunenUrl
+        ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
+        : "";
+
+  const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
+
+${einstiegGross ? "Für" : "für"} ${c.name} gibt es auf solar-check.io eine eigene Seite. Sie zeigt aus dem Marktstammdatenregister der Bundesnetzagentur, wie viele Solaranlagen, Balkonkraftwerke und Speicher im Ort in Betrieb sind, was jedes Jahr hinzukommt und wie ${kurz} ${c.vergleichWo} dasteht. Die Seite aktualisiert sich jeden Monat von selbst:
+${c.pageUrl}
+
+Drei Dinge können Sie damit ohne Aufwand machen:
+– auf die Seite verlinken, etwa unter Klimaschutz oder Energie,
+– die Zahlen als Grafik auf Ihrer Website einbauen; Farben und Schrift lassen sich anpassen, den Code schicke ich Ihnen gern,
+– sich Bescheid geben lassen, sobald sich im Ort etwas Nennenswertes tut.
+
+Für Kommunen ist das kostenfrei, und anmelden muss sich niemand.${angebotAbsatz}
+
+Mit freundlichen Grüßen
+${SIGNATURE}
+
+${FUSS_TRENNER}
+Impressum: https://solar-check.io/impressum
+Datenschutz: https://solar-check.io/datenschutz
+
+${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
+
+  return {
+    subject: `Solarstrom in ${kurz}: eine Übersicht für Ihre Website`,
+    body,
+    bodyHtml: briefAlsHtml(body),
+    meldung: "",
+  };
 }

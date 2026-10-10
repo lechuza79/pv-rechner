@@ -1,16 +1,14 @@
 /**
  * Which towns are wind towns — the rule and the generated list.
  *
- * A wind town has more wind than solar capacity installed, counted by the
- * register's municipality key, and at least two turbines. The two-turbine floor
+ * A wind town has more wind than solar capacity installed and at least two
+ * turbines. The two-turbine floor
  * keeps a single small turbine on a farm (369 towns have only turbines under
  * 50 kW) from turning a solar town into a wind town.
  *
  * Deliberately loose (operator, 28.09.2026): the flag decides a picture in the
- * hero, not a number. It is NOT the rule for statements about a town — those
- * need the position of each turbine, because roughly one in five stands in a
- * neighbouring municipality according to its coordinates (measured 27.09.2026,
- * see docs/windraeder-3d-uebergabe.md).
+ * hero, not a number. Wind is counted where the turbine stands since
+ * 09.10.2026 (lib/wind-standort.ts), so the list follows the Atlas numbers.
  *
  * The list is generated (scripts/windgemeinden-build.ts, `npm run
  * windgemeinden:build`) so the town page reads a Set instead of querying the

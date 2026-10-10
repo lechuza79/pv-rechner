@@ -37,7 +37,9 @@ export type EmbedCodeOpts = {
   height: number;
   /** Steht im Titel des Rahmens — für Screenreader und als Beschriftung. */
   titel: string;
-  attribution: EmbedAttribution;
+  attribution: EmbedAttribution | null;
+  /** Resize only from this iframe and its expected origin. */
+  autoHeight?: boolean;
   /** Basis-Adresse. Hereingereicht, damit ein Test nicht die Produktion nennt. */
   siteUrl: string;
 };
@@ -71,10 +73,13 @@ export function embedCode(o: EmbedCodeOpts): string {
     `  style="border:0;display:block;width:100%;max-width:${o.width}px"`,
     `  title="${attr(o.titel)} — Solar Check"`,
     `  loading="lazy"`,
+    `  allow="clipboard-write; web-share"`,
     `></iframe>`,
+    ...(o.resize !== "fixed" ? [`<script>(function(){var f=document.currentScript.previousElementSibling;window.addEventListener("message",function(e){if(e.source!==f.contentWindow||e.origin!==new URL(f.src).origin||e.data?.type!=="widget:height")return;var h=e.data.height;if(typeof h==="number"&&Number.isFinite(h)&&h>=100&&h<=10000)f.style.height=Math.ceil(h)+"px";});})();</script>`] : []),
+    ...(o.attribution ? [
     `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
     `  <a href="${attr(`${o.siteUrl}${o.attribution.path}`)}" target="_blank" rel="noopener">${attr(o.attribution.text)}</a>`,
     `</p>`,
-    ...(o.resize === "fixed" ? [] : [`<script src="${attr(`${o.siteUrl}/widgets/resize.js`)}" async></script>`]),
+    ] : []),
   ].join("\n");
 }

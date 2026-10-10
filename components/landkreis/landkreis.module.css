@@ -75,6 +75,8 @@
 .sceneLayer[hidden]{display:none}
 .sceneHost{width:100%;height:100%}
 .sceneHost canvas{display:block;width:100%;height:100%}
+.sceneHost output[data-flight-metrics]{position:absolute;bottom:12px;left:24px;right:24px;z-index:4;font:400 11px/1.5 DMSans,sans-serif;color:var(--color-text-primary);background:var(--color-bg-raised);width:fit-content;max-width:calc(100% - 48px);padding:6px 10px;border-radius:6px;pointer-events:none}
+.sceneHost [data-flight-plan]{position:absolute;right:24px;top:140px;width:180px;height:140px;padding:12px;z-index:4;color:var(--color-text-primary);background:var(--color-bg-raised);border-radius:12px;pointer-events:none}
 .scenePin{position:absolute;transform:translate(-50%,-100%);border:1px solid var(--atlas-secondary);border-radius:12px 12px 12px 2px;width:23px;height:23px;padding:0;background:var(--atlas-card);color:var(--atlas-text);font-size:9px;font-weight:700;cursor:pointer;line-height:21px}
 .bar{fill:var(--color-brand)}
 .mapTooltip{z-index:3}
@@ -178,6 +180,8 @@
 /* The canvas starts at the hero's top, behind the header and breadcrumb. */
 .heroBand{position:relative;isolation:isolate}
 .heroHeader,.breadcrumbBand{position:relative;z-index:5}
+/* The header carries the nav flyouts and search panel; it must sit above everything else in the hero. */
+.heroHeader{z-index:10}
 .heroStage .sceneLayer{top:calc(-1 * var(--map-headroom,0px))}
 .heroStage .mapTools{top:0;left:auto;right:0;justify-content:flex-end;font-size:var(--font-size-base);line-height:normal}
 .heroHeading{padding-top:0;max-width:calc(100% - 250px)}
@@ -272,7 +276,7 @@
 /* Only the map control floats directly on its scene. */
 .mapTools :global(.sc-setting-stepper){background:transparent;}
 
-/* Section spacing comes from the shared EnergyMonitor composition. */
+.districtMonitor{display:grid;gap:var(--widget-gap,20px);}
 
 /* Viewport-bound map flag; full-bleed scene must never clip it. */
 .mapTooltip{position:fixed;right:auto;max-width:calc(100vw - 24px);z-index:100;background:#163338;color:#e7efeb;}
@@ -289,9 +293,7 @@
 .heroBand::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mask-image:radial-gradient(ellipse,black 55%,transparent 95%);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");mix-blend-mode:soft-light;}
 .sceneHost::after{display:none;}
 @media(max-width:1280px){.heroHeader :global(.site-header){min-height:48px;}}
-.regionExtras{display:block;margin-top:80px;margin-bottom:0;padding-block:64px;border-block:1px solid var(--atlas-border)}
-.page:has(>.regionExtras:last-child){padding-bottom:0}
-@media(max-width:480px){.regionExtras{margin-top:64px;padding-block:48px}}
+.regionExtras{display:block}
 /* Comparison badges sit on dark cards even when the surrounding site uses daylight mode. */
 .darkVariant .regionExtras{--color-positive:#2BE06E;--color-positive-text:#2BE06E;--color-negative:#F26D6D;--color-negative-text:#F26D6D;}
 
@@ -315,24 +317,47 @@
 .mapGestureReplay{position:absolute;bottom:12px;right:12px;z-index:4;min-height:44px;padding:8px 12px;border:1px solid #ffffff30;border-radius:20px;background:#08191ccc;color:#fff;font:inherit;font-size:12px;cursor:pointer}
 .mapGestureReplay:focus-visible{outline:2px solid white;outline-offset:3px}
 
-/* Shared editorial text uses the site's body typography and neutral links. */
-.page .districtIntro{grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr);gap:48px}
-.page .districtIntro p{font-family:var(--font-body);font-size:var(--sc-type-body-size);line-height:var(--sc-type-body-leading)}
-.page .districtIntro p+p{margin-top:16px}
-.page .districtIntro a{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
-.page .districtIntro a:hover{text-decoration-color:currentColor}
-@media(max-width:700px){.page .districtIntro{grid-template-columns:1fr;gap:28px}}
+.sceneLayer button.sceneLocation{position:absolute;transform:translate(-50%,calc(-100% - 16px));padding:6px 9px;border:0!important;box-shadow:none!important;border-radius:5px;background:var(--atlas-card);color:var(--atlas-text);font:400 12px/1.4 DMSans,var(--font-dm-sans,'DM Sans'),sans-serif!important;white-space:nowrap;cursor:pointer;pointer-events:auto}
+.sceneLocation::after{content:"";position:absolute;left:50%;top:100%;height:16px;border-left:1px solid currentColor}
+.sceneLocation{left:0;top:0}
 
-@media(min-width:801px){.heroStage[data-map-clear-heading=true] .mapCanvas{height:clamp(520px,75svh,660px)}}
+.sceneLocationMarker{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 16px));z-index:2;pointer-events:auto;font:400 12px/1.4 DMSans,sans-serif;transition:width .3s ease}
+.sceneLocationCard{width:250px;max-width:calc(100% - 24px);z-index:3}
+.sceneLocationPin{width:40px;height:44px}
+:is(.sceneLayer,.sceneLocationOverlay) .sceneLocationPin button{width:40px;height:44px;padding:7px!important;min-height:0;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;color:var(--color-text-primary)!important}
+.sceneLocationPin svg{width:26px;height:30px;display:block}
+.sceneLocationPin button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.sceneLocationMarker{transition:none}}
 
-/* Reserve the actual control width, not a guessed 250px beside long titles.
-   Keep the canvas in the same grid row so the existing scene framing is retained. */
-.heroBand .heroHeading h1{font-size:var(--sc-type-hero-size,clamp(34px,3.8vw,48px));overflow-wrap:anywhere}
-@media(min-width:601px){
-  .heroStage{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:32px}
-  .heroStage .map{display:contents}
-  .heroStage .heroHeading{position:relative;grid-area:1/1;align-self:start;min-width:0;max-width:none}
-  .heroStage .mapTools{position:relative;grid-area:1/2;align-self:start;top:auto;right:auto;left:auto;margin:0}
-  .heroStage .mapCanvas{grid-area:1/1/2/3;min-width:0}
-}
-@media(max-width:600px){.heroBand .heroHeading h1{font-size:32px}}
+/* A billboard has a fixed world size and a foot at its exact ground coordinate. */
+.sceneLocationCard{transform-origin:50% 100%;transform:translate(-50%,-100%) scale(var(--location-scale,1)) translateY(-18px)}
+.sceneLocationCard[data-scene-sign="true"]{transform-origin:0 0}
+.sceneSignStem{position:absolute;top:100%;left:50%;height:var(--scene-sign-stem,18px);border-left:1px solid var(--color-accent-dark)}
+
+/* Arrival cards follow their location while keeping the reveal independent of movement. */
+.sceneCardReveal{opacity:1;transform:scale(1);transform-origin:50% calc(100% + var(--scene-sign-stem,18px));transition:transform .65s cubic-bezier(.22,1,.36,1),opacity .25s ease}
+.sceneLocationCard[data-card-visible="false"]{pointer-events:none}
+.sceneLocationCard[data-card-visible="false"] .sceneCardReveal{opacity:0;transform:scale(.025)}
+@media(prefers-reduced-motion:reduce){.sceneCardReveal{animation:none;transition:none}}
+
+.sceneLocationOverlay{position:absolute;inset:0;z-index:4;pointer-events:none}
+
+/* Invisible accessible hit targets follow the actual 3D billboards. */
+.sceneLocationMarker[data-scene-pin="true"]{transform:translate(-50%,-100%)}
+.sceneLocationMarker[data-scene-pin="true"] svg{visibility:hidden}
+
+/* Standalone maps size against their container, never the page viewport. */
+.map[data-presentation=widget]{container-type:inline-size}
+.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;padding-inline:var(--widget-padding);justify-content:flex-start;max-width:100%}
+.map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
+.map[data-presentation=widget] .sceneLayer{inset:0}
+.mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}
+.mapWidget .map{padding-top:0}
+.mapWidget .sceneHost::before{background:linear-gradient(0deg,var(--atlas-card),transparent 12%,transparent 92%,var(--atlas-card))}
+.mapWidgetSource{padding:16px var(--widget-padding);font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.mapWidgetSource p{margin:0 0 8px}
+
+.mapWidget :global(.sc-widget-head){padding-bottom:16px}
+.mapSelection{position:absolute;top:8px;left:var(--widget-padding);z-index:4;max-width:calc(100% - var(--widget-padding));pointer-events:none}
+
+.mapWidget .sceneHost canvas{filter:drop-shadow(0 14px 18px rgb(0 0 0 / .35))}

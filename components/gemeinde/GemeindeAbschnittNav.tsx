@@ -5,7 +5,7 @@ import { formatStoryDate } from "../../lib/story-format";
 
 /** Shared municipality/district section bar; behavior comes from GemeindeSkripte. */
 export default function GemeindeAbschnittNav({name="",naechstesUpdate,links,subscribable=true,actions=true,theme}:{name?:string;naechstesUpdate?:string;actions?:boolean;theme?:"light";subscribable?:boolean;links:{href:string;label:string}[]}) {
-  return <nav className="v3-section-nav" data-theme={theme} data-collapse-at={theme === "light" ? 640 : undefined} aria-label="Auf dieser Seite">
+  return <nav className="v3-section-nav" data-theme={theme} data-collapse-at={theme === "light" && links.length <= 4 ? 640 : 860} aria-label="Auf dieser Seite">
     <details className="v3-nav-menu" open>
       <summary aria-label="Abschnitt wählen"><span className="v3-nav-aktiv">{links[0]?.label}</span></summary>
       <div className="v3-nav-links">{links.map(link=><a key={link.href} href={link.href}>{link.label}</a>)}</div>

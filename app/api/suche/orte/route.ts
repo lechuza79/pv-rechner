@@ -10,8 +10,7 @@ export async function GET(req: NextRequest) {
   const limited = rateLimit(req, "suche");
   if (limited) return limited;
   const q = req.nextUrl.searchParams.get("q") ?? "";
-  const requested = req.nextUrl.searchParams.get("ebene");
-  const ebene = requested === "regional" ? "regional" : requested === "kreis" ? "kreis" : "ort";
+  const ebene = req.nextUrl.searchParams.get("ebene") === "kreis" ? "kreis" : "ort";
   try {
     const orte = await ortVorschlaege(q, ebene);
     return NextResponse.json({ q, orte }, { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } });

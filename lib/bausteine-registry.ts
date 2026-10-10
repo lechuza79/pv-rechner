@@ -110,6 +110,19 @@ export interface Baustein {
 }
 
 export const BAUSTEINE: Baustein[] = [
+  {datei: "components/dashboard/WidgetControls.tsx", name: "WidgetControls", zweck: "Shared segmented month/day controls and playback icon buttons with one geometry.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons"], keinBeispielWeil: "Echte Instanzen in der monatlichen Solar-Vorschau der Widget-Galerie; Auswahl und Tagesknopf verwenden denselben Baustein."},
+  {datei: "components/dashboard/WidgetSetting.tsx", name: "WidgetSetting", zweck: "Shared widget selections with segmented navigation; the Hero stage retains its existing scale.", gruppe: "eingabe", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["WidgetControls", "SelectField", "InfoTooltip", "Icons"]},
+  {datei: "components/PartnerWidgetConfigurator.tsx", name: "PartnerWidgetConfigurator", keinBeispielWeil: "Real preview at /widgets/partner/nidda uses the published partner renderer.", zweck: "Partner embed preview with responsive width, header settings and copyable code.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ActionButton", "SelectField", "Logo", "OptionalDisclosure", "Icons"]},
+  {datei: "components/dashboard/WidgetBrandHeader.tsx", name: "WidgetBrandHeader", keinBeispielWeil: "Partner header modes are reviewed on their real public embed route.", zweck: "Trusted partner introduction with full, title-only and hidden modes.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/dashboard/WidgetPresentationContext.tsx", name: "WidgetPresentationContext", keinBeispielWeil: "Unsichtbarer Kontext für Host-Einstellungen; sein Verhalten wird an den echten Widget-Vorschauen mit Teilen-Optionen sichtbar.", zweck: "Optional host settings shared with widget action frames and consumers.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/dashboard/WidgetPresentation.tsx", name: "WidgetPresentation", keinBeispielWeil: "Der Adapter verarbeitet Nachrichten zwischen Einbettung und übergeordneter Seite; dieses Verhalten lässt sich nur an den echten Widget-Vorschauen prüfen, nicht innerhalb einer Galerie-Karte.", zweck: "Embed presentation adapter for shared themes, artwork and actions.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["WidgetPresentationContext"]},
+  {datei: "components/dashboard/WidgetConfigurationGroup.tsx", name: "WidgetConfigurationGroup", zweck: "Shared configuration and equal height composition for related widgets.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["ControlPanel", "SelectField", "WidgetPreviewCard"]},
+  {datei: "components/dashboard/WidgetPreviewCard.tsx", name: "WidgetPreviewCard", zweck: "Shared widget preview, loading behavior and supported presentation settings.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ControlPanel", "SecondaryButton", "SelectField", "WidgetSettingsFlyout"]},
+  {datei: "components/dashboard/WidgetSettingsFlyout.tsx", name: "WidgetSettingsFlyout", zweck: "Movable settings panel with shared actions and keyboard operation.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons", "SecondaryButton"]},
+  {datei: "components/ActionButton.tsx", name: "ActionButton", zweck: "One primary, secondary and icon action style for native buttons and links.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: []},
+  {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Compatibility wrapper for the shared secondary ActionButton.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["ActionButton"]},
+  {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
+  // ─── Eingabe ───────────────────────────────────────────────────────────────
   // ─── Eingabe ───────────────────────────────────────────────────────────────
   {
     datei: "components/OptionCard.tsx",
@@ -185,7 +198,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Icons", "InfoTooltip"],
+    bestehtAus: ["Icons", "InfoTooltip", "ActionButton"],
   },
   {
     datei: "components/AccordionField.tsx",
@@ -238,11 +251,11 @@ export const BAUSTEINE: Baustein[] = [
     datei: "components/FlowNav.tsx",
     name: "FlowNav",
     zweck:
-      "Zurück links, Weiter rechts, Weiter gesperrt bis eine gültige Auswahl da ist — die Schrittführung jedes Frage-Flows.",
+      "Zurück links, Weiter rechts, Weiter gesperrt bis eine gültige Auswahl da ist — die Schrittführung jedes Frage-Flows. FlowFooter richtet Seitenaktionen an der gesamten Rechnerhülle aus; eingebettete Schritte behalten ihren Dialogfuß.",
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Modal"],
+    bestehtAus: ["ActionButton", "Modal"],
   },
   {
     datei: "components/PersonBox.tsx",
@@ -326,6 +339,24 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/FundingOverviewCard.tsx",
+    name: "FundingOverviewCard",
+    zweck: "Compact funding summary opening the shared detail dialog.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["ActionButton", "FundingDetailModal", "FundingProgramParts"],
+  },
+  {
+    datei: "components/FundingDetailModal.tsx",
+    name: "FundingDetailModal",
+    zweck: "Shared funding details, conditions, verification and matching calculator for Atlas and funding overview.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Modal", "ActionButton", "FoerderFlow", "FundingProgramParts"],
+  },
+  {
     datei: "components/Modal.tsx",
     name: "Modal",
     zweck:
@@ -338,7 +369,7 @@ export const BAUSTEINE: Baustein[] = [
       muster: 'role="dialog"',
       bedeutet:
         "Hier entsteht ein zweiter Dialog von Hand. Es gab schon einmal drei, und sie unterschieden sich in Fokus-Rückgabe, Tastatur-Falle, Scroll-Sperre und Verhalten auf dem Handy — Unterschiede, die man erst bemerkt, wenn jemand mit der Tastatur navigiert.",
-      ausser: [],
+      ausser: [{datei: "components/dashboard/WidgetSettingsFlyout.tsx", grund: "Explicitly requested non-modal movable settings: the chart stays interactive, without modal focus trapping or page scroll locking."}],
     },
   },
   {
@@ -357,7 +388,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Icons"],
+    bestehtAus: ["Icons", "Modal"],
   },
   {
     datei: "components/KlebenderKnopf.tsx",
@@ -367,7 +398,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Modal"],
     keinBeispielWeil:
       "Der Baustein zeigt sich erst, wenn der beobachtete Knopf aus dem Bild gescrollt ist. In einer Galerie mit vielen kleinen Beispielen nebeneinander ist er entweder immer sichtbar (dann ist es nicht dieser Baustein) oder nie — und eine klebende Leiste am Fenster­rand würde die übrigen Beispiele überdecken. Zu sehen ist er im Ergebnis jedes Rechners.",
   },
@@ -439,13 +470,13 @@ export const BAUSTEINE: Baustein[] = [
     gegenprobe: {
       muster: "className\\s*=\\s*[\"']wp-product-trust[\"']",
       bedeutet: "Use AffiliateTrust instead of duplicating its accepted affiliate markup.",
-      ausser: [],
+      ausser: [{datei:"components/dashboard/WidgetSettingsFlyout.tsx",grund:"Non-modal movable settings panel keeps the preview interactive; Modal intentionally traps focus and blocks the page."}],
     },
   },
   {
     datei: "components/AffiliateActions.tsx", name: "AffiliateActions",
     zweck: "Identische Produktaktionen zum Weiterleiten, Kaufen und Kopieren.",
-    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["ActionButton", "Icons"],
     gegenprobe: {
       muster: "className\\s*=\\s*[\"']wp-product-actions[\"']",
       bedeutet: "Use AffiliateActions instead of duplicating its accepted affiliate markup.",
@@ -489,6 +520,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
   },
   {datei: "components/SidebarNavigation.tsx", name: "SidebarNavigation", bestehtAus: ["Auswahl", "LoadingDots"], zweck: "Gemeinsame seitliche Bereichsnavigation; mobil horizontale Links. Unverändert aus der lokalen Förderseite übernommen.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", keinBeispielWeil: "Die Navigation braucht einen echten Seitenrahmen mit Scrollposition; ihre Beispiele sind die Förderübersicht und die Atomstrom-Jahresansichten."},
+  {datei:"app/(site)/photovoltaik-rechner/_components/PvResultOverview.tsx",name:"PvResultOverview",zweck:"Vollständiges PV-Ergebnis für Rechner und Präsentationen aus einer Quelle.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["ResultOverview", "ResultStatCard"]},
+  {datei:"components/PvHouseholdQuestion.tsx",name:"PvHouseholdQuestion",zweck:"Gemeinsame Haushaltsfragen in Rechner und Präsentation.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["OptionCard"]},
   {datei:"components/PvConsumerSection.tsx",name:"PvConsumerSection",zweck:"Gemeinsame Verbraucherauswahl mit Vorschau, Vergleich und Übernahme für Rechner und Ratgeber.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["FlowNav", "Modal", "KlebenderKnopf", "InfoTooltip", "AffiliateCarousel", "PvConsumerComparison", "PvConsumerFields", "ResultChoiceHeader", "MetricValue", "PvCoolingEditor"]},
   {datei:"components/PvConsumerExample.tsx",name:"PvConsumerExample",zweck:"Eigenständige Beispielrechnung mit Rechengrundlagen und Übergabe in den PV-Frageflow.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["PvConsumerFields", "ResultSettings", "PvConsumerSection", "PvPlantFields"]},
   {datei:"components/PvCoolingEditor.tsx",name:"PvCoolingEditor",zweck:"Gemeinsamer Editor für den Kühlstrombedarf in Verbraucherfragen und Ergebniseinstellungen.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["KlimaDetailModal"]},
@@ -534,7 +567,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/calculator/ResultActions.tsx", name: "ResultActions",
     zweck: "Gemeinsame Ergebnisaktionen: im Inhalt, beim Scrollen oben haftend.",
-    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["Icons"],
+    gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["ActionButton", "Icons"],
   },
   {
     datei: "components/calculator/BalkonRace.tsx", name: "BalkonRace",
@@ -548,7 +581,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "verbindlich",
-    bestehtAus: ["Icons", "Modal", "FlowNav", "AccordionField"],
+    bestehtAus: ["ActionButton", "Icons", "Modal", "FlowNav", "AccordionField"],
   },
   {
     datei: "components/ResultSection.tsx",
@@ -588,7 +621,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["SelectField", "Modal"],
+    bestehtAus: ["ControlPanel", "SelectField", "Modal"],
   },
   {
     datei: "components/StorySlider.tsx",
@@ -622,7 +655,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Modal"],
     keinBeispielWeil:
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
@@ -687,6 +720,16 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "baustein",
     stand: "im-aufbau",
     bestehtAus: [],
+  },
+  {datei:"components/HomepageToolCards.tsx",name:"HomepageToolCards",zweck:"Shared tool selection from the homepage catalogue for municipal presentations.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["ToolTeaser"]},
+  {
+    datei: "components/ToolTeaser.tsx",
+    name: "ToolTeaser",
+    zweck: "Kompakte Tool-Karte mit geschichteter Illustration links, Kreis und Splashes, gemeinsamem Pfeil und Hover-Zustand. Angekündigte Tools verlinken mit Mehr erfahren zur Teaser-Seite.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/ArticleTeasers.tsx",
@@ -787,10 +830,10 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/DataSourcesSection.tsx",
     name: "DataSourcesSection",
-    zweck: "Gemeinsamer Quellenabschnitt unter dem Vertrauensbereich auf Orts- und Landkreis-Seiten.",
+    zweck: "Verbindlicher Quellenabschnitt zwischen Vertrauen und Fußzeile für Orts-, Landkreis- und Produktseiten; Inhalt aus den jeweiligen Datenquellen.",
     gruppe: "struktur",
     ebene: "baustein",
-    stand: "im-aufbau",
+    stand: "verbindlich",
     bestehtAus: [],
   },
   {
@@ -1300,7 +1343,6 @@ export const BAUSTEINE: Baustein[] = [
 export const NOCH_NICHT_EINGEORDNET: string[] = [
   "BegFundingQuestions",
   "Collapse",
-  "ControlPanel",
   "DesignFooterNavigation",
   "HeatPumpDesignHeader",
   "LiveDataStatus",

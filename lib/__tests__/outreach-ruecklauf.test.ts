@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nenntAngeschriebeneGemeinde, ortAusAbsender } from "../outreach-ruecklauf";
+import { nenntAngeschriebeneGemeinde, ohneZitat, ordneEin, ortAusAbsender } from "../outreach-ruecklauf";
 
 
 describe("Antwort von einer fremden Amtsdomain", () => {
@@ -65,5 +65,39 @@ describe("Was überhaupt nach einem Rückläufer klingt", () => {
 
   it("nimmt einen Namen nicht mitten aus einem Wort", () => {
     expect(nenntAngeschriebeneGemeinde("Düsseldorfer Straße 1", gemeinden)).toEqual([]);
+  });
+});
+
+// Real case (05.10.2026): a local newsroom answered our press release from an
+// English-language mail client. The quote header "On <date> <name> wrote:" was
+// not recognised, so the search for objection words ran through our OWN quoted
+// footer ("Keine weiteren Mails gewünscht?") and classified a fee offer as an
+// objection. For a municipality that would have meant a permanent block.
+describe("Zitatkopf englischer Mailprogramme", () => {
+  const antwort = [
+    "Hallo Herr Schäder,",
+    "",
+    "gerne können wir gegen ein Honorar Ihre Pressemitteilung veröffentlichen.",
+    "",
+    "Herzliche Grüße",
+    "",
+    "On Wednesday, September 30, 2026 13:12 CEST, Sebastian Schäder <sebastian@solar-check.io> wrote:",
+    "",
+    "PRESSEMITTEILUNG",
+    "Ihre Adresse stammt aus dem Impressum Ihrer Website und wird nur für diese Nachricht genutzt. Keine weiteren Mails gewünscht? Eine kurze Antwort genügt.",
+  ].join("\n");
+
+  it("schneidet den zitierten Brief ab", () => {
+    expect(ohneZitat(antwort)).not.toMatch(/keine weiteren mails/i);
+    expect(ohneZitat(antwort)).toMatch(/Honorar/);
+  });
+
+  it("stuft die Antwort nicht als Widerspruch ein", () => {
+    expect(ordneEin({ von: "redaktion@example.de", betreff: "Re: Pressemitteilung", text: antwort })).not.toBe("widerspruch");
+  });
+
+  it("lässt einen Satz mit „on“ und „wrote“ im eigenen Text stehen", () => {
+    const eigen = "Wir haben online darüber berichtet, the editor wrote: bitte keine weiteren Mails.";
+    expect(ohneZitat(eigen)).toBe(eigen);
   });
 });

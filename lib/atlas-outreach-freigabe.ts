@@ -46,43 +46,65 @@ import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
  * Index geraten.
  */
 async function verlinkendeGemeindenUncached(): Promise<string[]> {
-  try {
-    const { supabase } = await import("./supabase-server");
-    if (!supabase) return [];
-    // Weiches Zeitbudget: Es gibt einen vollwertigen Rückfall (die Seite bleibt
-    // gesperrt), also wäre längeres Warten reine Verzögerung — dieselbe Regel
-    // wie bei Marktpreisen und Förderkatalog.
-    const { data, error } = await withDbTimeout(
-      supabase
-        .from("kommunen_kontakt")
-        .select("region_id")
-        .not("contacted_at", "is", null)
-        .neq("outreach_status", "gesperrt")
-        .limit(1000),
-      "angeschriebeneGemeinden",
-      DB_SOFT_READ_TIMEOUT_MS,
-    );
-    if (error) return [];
-    const angeschrieben = ((data ?? []) as { region_id: string }[])
-      .map((z) => z.region_id)
-      .filter((id) => typeof id === "string" && id.length === 8);
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) throw new Error("angeschriebeneGemeinden: kein Datenbankzugang");
+  // Weiches Zeitbudget: Es gibt einen vollwertigen Rückfall (die Seite bleibt
+  // gesperrt), also wäre längeres Warten reine Verzögerung — dieselbe Regel
+  // wie bei Marktpreisen und Förderkatalog.
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("kommunen_kontakt")
+      .select("region_id")
+      .not("contacted_at", "is", null)
+      .neq("outreach_status", "gesperrt")
+      .limit(1000),
+    "angeschriebeneGemeinden",
+    DB_SOFT_READ_TIMEOUT_MS,
+  );
+  if (error) throw new Error(`angeschriebeneGemeinden: ${error.message}`);
+  const angeschrieben = ((data ?? []) as { region_id: string }[])
+    .map((z) => z.region_id)
+    .filter((id) => typeof id === "string" && id.length === 8);
 
-    return angeschrieben;
-  } catch {
-    return [];
-  }
+  return angeschrieben;
 }
 
 /**
  * Gecacht, weil jede Gemeindeseite beim Aufbau danach fragt.
  *
- * Eine Stunde Haltbarkeit: Der Versandstand ändert sich höchstens täglich (er
- * kommt aus einem Lauf, nicht aus einer Nutzerinteraktion), und eine Freigabe,
- * die eine Stunde später wirkt, verliert nichts. Ohne diesen Deckel wäre es ein
- * zusätzlicher Datenbank-Zugriff je Seitenaufbau — bei 11.000 Seiten die Sorte
- * Kosten, vor der die Kostenwache warnt.
+ * EIN TAG Haltbarkeit, nicht eine Stunde (05.10.2026). Diese Ablage steckt in
+ * jeder Gemeinde-, Kreis- und Landesseite, und Next gibt ihre Frist an die
+ * ganze Seite weiter: Mit einer Stunde stand JEDE Gemeindeseite eine Stunde im
+ * Zwischenspeicher statt der einen Tag, die die Seite selbst angibt (gemessen:
+ * Cache-TTL 3600 im Anfrageprotokoll). Bei Crawler-Verkehr über 11.000
+ * Adressen heißt das bis zu 24 bezahlte Neuaufbauten je Seite und Tag statt
+ * einem. Der Versandstand ändert sich höchstens täglich; eine Freigabe, die
+ * einen Tag später wirkt, verliert nichts.
+ *
+ * Ein FEHLER wird nicht abgelegt: Der innere Lauf wirft, die Ablage speichert
+ * nur Erfolge, und erst außen fällt er auf die leere Menge zurück (die Seiten
+ * bleiben dann gesperrt). Läge die leere Menge im Speicher, wären alle
+ * angeschriebenen Orte nach einer Datenbankstörung einen ganzen Tag lang
+ * gesperrt.
  */
-export const verlinkendeGemeinden = unstable_cache(verlinkendeGemeindenUncached, ["atlas-outreach-verlinker-v1"], {
-  revalidate: 3600,
-  tags: ["atlas-outreach-verlinker"],
+/**
+ * Marker on the list AND on every town page that read it. A send must
+ * invalidate it (POST /api/atlas/revalidate?umfang=outreach), otherwise the
+ * pages keep their cached "noindex" for up to a day — measured 06.10.2026: all
+ * 95 towns of that morning's send still said noindex in the afternoon, because
+ * the preflight had warmed them while they were not yet released.
+ */
+export const OUTREACH_VERLINKER_TAG = "atlas-outreach-verlinker";
+
+const verlinkendeGemeindenGecacht = unstable_cache(verlinkendeGemeindenUncached, ["atlas-outreach-verlinker-v1"], {
+  revalidate: 86400,
+  tags: [OUTREACH_VERLINKER_TAG],
 });
+
+export async function verlinkendeGemeinden(): Promise<string[]> {
+  try {
+    return await verlinkendeGemeindenGecacht();
+  } catch {
+    return [];
+  }
+}

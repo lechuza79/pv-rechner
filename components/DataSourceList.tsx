@@ -17,6 +17,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   smardTrade: "Grenzüberschreitender Stromhandel und Börsenbewertung",
   worldBankPopulation: "Einwohnerzahlen für den internationalen Stromvergleich",
+  smard: "Ersatzquelle für Strommix und Stromerzeugung in Deutschland, wenn Energy-Charts ausfällt",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Energie-Atlas, Karten, Kennzahlen)",
   nexGddp: "Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlstunden in rund zwanzig Jahren zunehmen",

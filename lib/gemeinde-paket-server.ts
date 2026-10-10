@@ -1,3 +1,5 @@
+import {getRegionAtlasData} from "./mastr-data";
+import {previewData} from "./preview-data";
 import "server-only";
 import type { StoryConcept } from "./story-konzepte";
 import { energyYearTitle } from "./story-energy-year-labels";
@@ -41,7 +43,7 @@ function mitJahrestiteln(data: GemeindePaket): GemeindePaket {
   })};
 }
 
-export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
+async function readladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
   if (!/^\d{8}$/.test(ags)) return null;
   const lokal = process.env.GEMEINDE_PAKET_LOKAL;
   if (lokal) {
@@ -80,4 +82,27 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
   } catch (e) {
     throw e instanceof Error ? e : new Error(`gemeinde-paket/${ags}: ${String(e)}`);
   }
+}
+
+export function ladeGemeindePaket(ags: string) {
+  if(process.env.GEMEINDE_PAKET_LOKAL)return readladeGemeindePaket(ags);
+  return previewData("gemeinde-paket-server-v1:"+JSON.stringify([ags]),()=>readladeGemeindePaket(ags));
+}
+
+/** Page data includes current register counts; batch package readers stay offline-compatible. */
+export async function ladeGemeindeAnzeigePaket(ags: string) {
+  const paket = await ladeGemeindePaket(ags);
+  if (!paket) return null;
+  // All municipal surfaces (including partner embeds) use the same current
+  // register query and invalidation as the regional charts. Weather packages
+  // must not hold back commissioning counts. A failed read remains an error.
+  const atlas = await getRegionAtlasData(ags);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(atlas.data_as_of) || atlas.data_as_of === "2025-01-31") {
+    throw new Error("Current register date unavailable");
+  }
+  if (atlas.data_as_of < paket.registerStand) throw new Error("Current register is older than the municipality package");
+  return {...paket, solarAnnualGrowth: {
+    stand: atlas.data_as_of,
+    years: atlas.solar.by_year.map(({year, count}) => ({year, count})),
+  }};
 }

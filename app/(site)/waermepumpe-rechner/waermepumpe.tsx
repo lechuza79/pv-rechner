@@ -11,7 +11,7 @@ import FlowSchritte from "../../../components/FlowSchritte";
 import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import FlowNav from "../../../components/FlowNav";
+import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import CalculatorTheme from "../../../components/calculator/CalculatorTheme";
 import StandortPrompt from "../../../components/StandortPrompt";
 import Toast from "../../../components/Toast";
@@ -818,7 +818,7 @@ export default function Waermepumpe({
   return (
     <div className={isResult ? "wp-calculator-page wp-result-page" : "wp-calculator-page wp-input-page"} style={{ ...({ "--wp-chevron-size": `${iconSizes.sm}px`, "--wp-positive": tokens["--color-positive"] } as React.CSSProperties), background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
       <CalculatorTheme />
-      <CalculatorContent>
+      <CalculatorContent state={isResult ? "result" : "input"} withOffers={isResult}>
         {!embedded && (
           <div className={isResult ? "wp-result-heading" : undefined} style={{ textAlign: "center", marginBottom: 24 }}>
 
@@ -1014,7 +1014,7 @@ export default function Waermepumpe({
 
           </div>
             {/* Keep viewport navigation outside the animated step. */}
-            <div className="wp-flow-footer">
+            <FlowFooter embedded={embedded}>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
@@ -1036,7 +1036,7 @@ export default function Waermepumpe({
                 } : () => router.push("/")}
                 inaktivHinweis={stepHinweis}
               />
-            </div>
+            </FlowFooter>
           </>
         )}
 

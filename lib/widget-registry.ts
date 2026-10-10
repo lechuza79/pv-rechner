@@ -419,7 +419,6 @@ export const WIDGETS = {
     embeddable: false,
   },
   microSolar: {
-    embeddable: false,
     id: "micro-solar", title: "Tagesverlauf · Solar", kind: "chart",
     configuration: {previewWidth: 250, themes: ["light", "dark", "hero"], background: false, sharing: false, data: "Modellierte Solarleistung des örtlichen Anlagenbestands", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
     place: {title: "Tagesverlauf · Solar · {ort}", shareText: "Tagesverlauf · Solar in {ort} – Solar Check"},
@@ -428,7 +427,6 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], exportable: false,
   },
   microWind: {
-    embeddable: false,
     id: "micro-wind", title: "Windstärke und Tagesverlauf", kind: "chart",
     configuration: {previewWidth: 512, themes: ["light", "dark", "hero"], background: false, sharing: false, autoplay: true, data: "Wind in 100 m Höhe und modellierte Windleistung", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
     place: {title: "Windstärke und Tagesverlauf · {ort}", shareText: "Windstärke und Tagesverlauf in {ort} – Solar Check"},
@@ -482,7 +480,6 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
   regionalMap: {
-    embeddable: false,
     id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",
     configuration: {presentations:{full:{label:'Vollständig',gridSizes:['medium','stage'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:480,includes:['Title','Plot','Controls','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Gemeinden im Landkreis; Kennzahl im Chart wählbar", period: "Aktueller Registerstand"},
     place: {title: "Energie im regionalen Vergleich · {ort}", shareText: "Energie im regionalen Vergleich · {ort} – Solar Check"},

@@ -103,7 +103,7 @@ describe('Bundesland and Deutschland packages',()=>{
     const row=(region_id:string,level:string,parent:string|null,bezeichnung:string|null=null)=>({region_id,name:region_id,level,parent_region_id:parent,bezeichnung});
     const rows=[row('de','de',null),row('15','bundesland','de'),row('15001','landkreis','15'),row('15001001','gemeinde','15001'),row('15001002','gemeinde','15001'),row('15003','landkreis','15','Kreisfreie Stadt'),row('15003000','gemeinde','15003','Kreisfreie Stadt'),row('15009','landkreis','15'),row('15000999','gemeinde','15','Gemeindefreies Gebiet')];
     const districts:DistrictMembership[]=[{regionId:'15001',name:'A',members:['15001001','15001002']}];
-    const {regions,skipped}=regionsFromRegister(rows,districts);
+    const {regions,skipped}=regionsFromRegister([row('ch','de',null),row('chk01','bundesland','ch'),...rows],districts);
     expect(regions.map(r=>r.regionId)).toEqual(['15','de']);
     expect(regions[0].parts).toEqual([{id:'15001',kind:'district'},{id:'15003',kind:'town',town:'15003000'}]);
     expect(regions[0].excluded).toEqual(['15000999','15009']);

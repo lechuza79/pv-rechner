@@ -61,6 +61,11 @@ const MOBILE_MAX_PX = 640;
  */
 const ModalKontext = createContext<{ scrollt: boolean; header: HTMLDivElement | null } | null>(null);
 
+/** Shared controls detect dialog ownership instead of relying on every caller. */
+export function useInModal(): boolean {
+  return useContext(ModalKontext) !== null;
+}
+
 /** Render contextual controls in the dialog header while retaining local state. */
 export function ModalHeader({ children }: { children: ReactNode }) {
   const context = useContext(ModalKontext);
@@ -72,6 +77,7 @@ export function ModalHeader({ children }: { children: ReactNode }) {
  *  seinem Hintergrund bis an beide Kanten zu reichen. */
 const DIALOG_PAD_X = space.xl;
 const DIALOG_PAD_BOTTOM = space.xl;
+const ModalStickyOwnership = createContext(false);
 
 /**
  * Legt den primären Knopf an den unteren Rand des Dialogs — er bleibt stehen,
@@ -90,9 +96,10 @@ const DIALOG_PAD_BOTTOM = space.xl;
  * dieselbe Komponente kann damit auf der Seite und im Fenster stehen (das
  * Kontaktformular tut genau das).
  */
-export function ModalSticky({ children }: { children: ReactNode }) {
+export function ModalSticky({ children, transparent = false }: { children: ReactNode; transparent?: boolean }) {
   const kontext = useContext(ModalKontext);
-  if (!kontext) return <>{children}</>;
+  const owned = useContext(ModalStickyOwnership);
+  if (!kontext || owned) return <>{children}</>;
   return (
     <div
       style={{
@@ -112,13 +119,13 @@ export function ModalSticky({ children }: { children: ReactNode }) {
         marginRight: -DIALOG_PAD_X,
         marginBottom: -DIALOG_PAD_BOTTOM,
         padding: `${space.md}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
-        background: v("--color-bg"),
+        background: transparent ? "transparent" : v("--color-bg"),
         // Der Strich sagt „hier geht es weiter, da ist noch mehr" — steht kein
         // Inhalt darunter, wäre er eine Behauptung ohne Inhalt.
-        borderTop: kontext.scrollt ? `1px solid ${v("--color-border")}` : "1px solid transparent",
+        borderTop: kontext.scrollt && !transparent ? `1px solid ${v("--color-border")}` : "1px solid transparent",
       }}
     >
-      {children}
+      <ModalStickyOwnership.Provider value={true}>{children}</ModalStickyOwnership.Provider>
     </div>
   );
 }
@@ -414,7 +421,7 @@ function LocalModal({
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
-        <ModalKontext.Provider value={{ scrollt, header }}>{children}</ModalKontext.Provider>
+        <ModalKontext.Provider value={{ scrollt, header }}><ModalStickyOwnership.Provider value={false}>{children}</ModalStickyOwnership.Provider></ModalKontext.Provider>
       </div>
     </div>,
     document.body,

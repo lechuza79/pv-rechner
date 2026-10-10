@@ -3,7 +3,8 @@
 import { useState, type ReactNode } from "react";
 import { AccordionField } from "./AccordionField";
 import Modal from "./Modal";
-import FlowNav, { secondaryButtonStyle } from "./FlowNav";
+import FlowNav from "./FlowNav";
+import ActionButton from "./ActionButton";
 import { IconEdit } from "./Icons";
 import { v, space, pad } from "../lib/theme";
 
@@ -26,7 +27,7 @@ export default function ResultSettings<T extends object>({
   const [initial, setInitial] = useState<T | null>(null);
   const changed = !!draft && !!initial && (Object.keys(initial) as (keyof T)[]).some(key => draft[key] !== initial[key]);
   return <>
-    {embedded ? <div className="wp-result-settings-basis">{basis ? <dl>{basis.map(item => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl> : <p>{summary}</p>}<button id={triggerId} className="wp-result-settings-edit" aria-label="Rechengrundlagen anpassen" type="button" style={{ ...secondaryButtonStyle, fontFamily: v("--font-text"), fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.5, display: "inline-flex", alignItems: "center", gap: space.sm, whiteSpace: "nowrap" }} onClick={() => { setInitial({ ...values }); setDraft({ ...values }); }}><IconEdit /><span>Anpassen</span></button></div> : flow ? <AccordionField triggerId={triggerId} completedStyle="check" label={title} answered summary={summary} open={false} onEdit={() => { setInitial({ ...values }); setDraft({ ...values }); }}>{null}</AccordionField> : <button id={triggerId} type="button" onClick={() => { setInitial({ ...values }); setDraft({ ...values }); }}
+    {embedded ? <div className="wp-result-settings-basis">{basis ? <dl>{basis.map(item => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl> : <p>{summary}</p>}<ActionButton id={triggerId} aria-label="Rechengrundlagen anpassen" type="button" onClick={() => { setInitial({ ...values }); setDraft({ ...values }); }}><IconEdit /><span>Anpassen</span></ActionButton></div> : flow ? <AccordionField triggerId={triggerId} completedStyle="check" label={title} answered summary={summary} open={false} onEdit={() => { setInitial({ ...values }); setDraft({ ...values }); }}>{null}</AccordionField> : <button id={triggerId} type="button" onClick={() => { setInitial({ ...values }); setDraft({ ...values }); }}
       style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: space.md,
         width: "100%", padding: pad("lg", "xl"), marginBottom: space.xl, cursor: "pointer",
         borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`,

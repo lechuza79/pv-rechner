@@ -17,13 +17,14 @@ function scriptFunction(name: string, dependencies: Record<string, unknown>, fil
 }
 
 describe('real press refresh write paths',()=>{
-  async function scenario(failed: boolean, partial = false) {
+  async function scenario(failed: boolean, partial = false, entscheidungen = new Map<string, { falsch: string[]; notiz: string }>()) {
     const media = new Map<string, Record<string, unknown>>([['ort.de',{domain:'ort.de',profil_at:'old',notiz:'human note'}]]);
     const contacts = new Map<string, Record<string, unknown>>([['name:anna',{schluessel:'name:anna',mail:'anna@ort.de',stand:'vorgemerkt',notiz:'keep'}]]);
     const db = {from:()=>({delete:()=>{throw Error('Deletion forbidden');}})};
     const profil = scriptFunction('profil', {
-      makeClient:async()=>db, alleZeilen:async()=>[{domain:'ort.de',paket:1,profil_at:null}],
-      observedFields, log:()=>{}, pool:async(items:unknown[],_n:number,fn:(x:unknown)=>Promise<void>)=>Promise.all(items.map(fn)),
+      makeClient:async()=>db, alleZeilen:async()=>[{domain:'ort.de',paket:1,profil_at:null}], verwaltungsDomains:async()=>new Set<string>(),
+      verbandBelegt:async()=>new Set<string>(), verbandBelegeErsetzen:async()=>{},
+      observedFields, log:()=>{}, ladeEntscheidungen:async()=>entscheidungen, pool:async(items:unknown[],_n:number,fn:(x:unknown)=>Promise<void>)=>Promise.all(items.map(fn)),
       holeMedium:async()=>failed?{fehler:'HTTP 503'}:Object.assign([],{incomplete:partial}),
       werteAus:()=>({domain:'ort.de',ist_medium:'medium',kontakte:[{domain:'ort.de',schluessel:'name:anna',name:'Anna',mail:null}],belege:[]}),
       upsert:async(_db:unknown,table:string,rows:Record<string,unknown>[])=>{
@@ -40,6 +41,13 @@ describe('real press refresh write paths',()=>{
   });
   it('preserves a previously found address when the same person is found without one',async()=>{
     expect((await scenario(false)).contact).toMatchObject({mail:'anna@ort.de',stand:'vorgemerkt',notiz:'keep'});
+  });
+  it('keeps a domain a person declared not a press outlet out of the press stock, whatever the page says',async()=>{
+    const r=await scenario(false,false,new Map([['ort.de',{falsch:['presse'],notiz:'Handwerksbetrieb, kein Medium'}]]));
+    expect(r.media).toMatchObject({ist_medium:'kein-medium',medium_grund:'von Hand entschieden: Handwerksbetrieb, kein Medium'});
+  });
+  it('leaves the classification alone without a decision',async()=>{
+    expect((await scenario(false)).media.ist_medium).toBe('medium');
   });
   it('does not refresh the verification date after a partial read',async()=>{
     const r=await scenario(false,true);expect(r.media.profil_at).toBe('old');expect(r.media.fehler).toContain('Teilabruf');

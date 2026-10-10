@@ -1,0 +1,10 @@
+.particle{animation:wind-flow var(--duration,8s) linear infinite}
+@keyframes wind-flow{
+ 0%{transform:translateY(60px);opacity:0}
+ 12%{opacity:.9}
+ 78%{opacity:.9}
+ 100%{transform:translateY(-76px);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .particle{animation:none;transform:translateY(var(--rest-y,0px));opacity:.65}
+}

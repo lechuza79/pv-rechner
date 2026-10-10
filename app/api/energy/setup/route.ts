@@ -156,6 +156,24 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "rls_policies", status: e4 ? "error" : "ok", error: e4?.message });
 
+  // 6. energy_letzter_stand — durable copy of the last good Energy-Charts
+  // response per route + window, served (marked stale) when Energy-Charts is
+  // down. See lib/energy-letzter-stand.ts. RLS on WITHOUT policy: only the
+  // service key reads and writes it; it is a server-side fallback, not data the
+  // browser should query.
+  const { error: e6 } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS energy_letzter_stand (
+        key text PRIMARY KEY,
+        payload jsonb NOT NULL,
+        gespeichert_am timestamptz NOT NULL DEFAULT now()
+      );
+      ALTER TABLE energy_letzter_stand ENABLE ROW LEVEL SECURITY;
+      NOTIFY pgrst, 'reload schema';
+    `,
+  });
+  results.push({ step: "energy_letzter_stand", status: e6 ? "error" : "ok", error: e6?.message });
+
   const allOk = results.every((r) => r.status === "ok");
   return NextResponse.json({ success: allOk, results }, { status: allOk ? 200 : 500 });
 }

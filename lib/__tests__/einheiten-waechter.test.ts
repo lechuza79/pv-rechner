@@ -72,6 +72,25 @@ const EINZELDATEIEN = [
 const ANGEKLEBT = /\}(?:\s*(?:kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W|kg|t|ct)\b|\s*€|\s+%)/g;
 
 /**
+ * Generated prose on town pages and in posts (09.10.2026). The energy-year
+ * story said "20.105 kW Windleistung" — five digits in kW for a town total.
+ * Rule: installed capacity and energy of a PLACE go through the scaling
+ * formatters (kW → MW → GW, kWp → MWp, MWh → GWh). Values of ONE plant or per
+ * head stay in kW/kWp/kWh and are listed in ERLAUBT. Narrower than ANGEKLEBT:
+ * percent and euro in these texts are not part of this rule.
+ */
+const PROSA_DATEIEN = [
+  "lib/story-energy-year.ts",
+  "lib/story-copy.ts",
+  "lib/story-city-sets.ts",
+  "lib/orts-stories.ts",
+  "lib/social-posts.ts",
+  "lib/social-funde.ts",
+  "lib/awards.ts",
+];
+const LEISTUNG_ENERGIE = /\}\s*(?:kWp|MWp|GWp|kWh|MWh|GWh|TWh|kW|MW|GW|Wp|W)\b/g;
+
+/**
  * Begründete Ausnahmen. Jede Zeile hier ist eine bewusste Entscheidung:
  * die Einheit hängt an einer Auswahl (Energieträger) oder beschreibt etwas
  * anderes als installierte Photovoltaik.
@@ -82,6 +101,18 @@ const ERLAUBT: { fragment: string; grund: string }[] = [
   { fragment: "kW${peak}", grund: "⌀ Anlagengröße, folgt ebenfalls dem Energieträger" },
   { fragment: "} MW`", grund: "Momentanleistung der Live-Simulation und Technologie-Mix — kein Peak" },
   { fragment: "} kW`", grund: "Technologie-Mix unterhalb 1 MW — kein Peak" },
+  { fragment: "im Schnitt ${alt.toLocaleString", grund: "mittlere Größe EINER Anlage — kWp ist hier die lesbare Einheit" },
+  { fragment: "waren es ${neu.toLocaleString", grund: "wie oben, derselbe Satz" },
+  { fragment: "im Durchschnitt ${number(mean)} kWp", grund: "mittlere Anlagengröße" },
+  { fragment: "${number(top.wert / top.count)} kWp", grund: "mittlere Anlagengröße" },
+  { fragment: "${precise(min)} bis ${precise(max)} kWp", grund: "Spanne einzelner Anlagen" },
+  { fragment: "jeweils ${precise(min)} kWp", grund: "Größe einzelner Anlagen" },
+  { fragment: "Mittlere Größe ${de(c.mittlereKwp", grund: "mittlere Anlagengröße" },
+  { fragment: "Dachanlage war ${frueh.year}", grund: "typische Größe einer Dachanlage" },
+  { fragment: "kWh je Einwohner", grund: "spezifischer Wert je Kopf, kein Bestand" },
+  { fragment: "kWh je kWp", grund: "spezifischer Ertrag, kein Bestand" },
+  { fragment: "Anlage bis ${de(satz.thresholdKwp)} kW", grund: "gesetzliche Größengrenze einer Anlage" },
+  { fragment: "(≤ ${de(satz.thresholdKwp)} kWp)", grund: "gesetzliche Größengrenze einer Anlage" },
   { fragment: "`${signed(result.percent,1)} %`", grund: "relative Veränderung mit Vorzeichen in der Kennzahl-Übersicht — kein Anteil, kein atlas-format-Fall" },
 ];
 
@@ -119,6 +150,19 @@ describe("Wächter: keine handgeschriebenen Einheiten", () => {
     // Bei einem Treffer: die Einheit gehört nach lib/atlas-format.ts. Ist der
     // Fall wirklich anders, kommt er mit Begründung in ERLAUBT — nicht einfach
     // die Regex aufweichen.
+    expect(funde).toEqual([]);
+  });
+
+  it("nennt Leistung und Energie eines Ortes in Texten in der lesbaren Größenordnung", () => {
+    const funde: string[] = [];
+    for (const datei of PROSA_DATEIEN.flatMap(dateienUnter)) {
+      readFileSync(datei, "utf8").split("\n").forEach((zeile, i) => {
+        LEISTUNG_ENERGIE.lastIndex = 0;
+        if (!LEISTUNG_ENERGIE.test(zeile)) return;
+        if (ERLAUBT.some((a) => zeile.includes(a.fragment))) return;
+        funde.push(`${datei.slice(ROOT.length + 1)}:${i + 1}  ${zeile.trim()}`);
+      });
+    }
     expect(funde).toEqual([]);
   });
 });

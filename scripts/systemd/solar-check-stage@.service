@@ -1,0 +1,22 @@
+[Unit]
+Description=Prepare a new municipal landscape candidate %i (no publication)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/solar-check-landscape
+EnvironmentFile=/opt/solar-check-landscape/jobs/stages/%i.env
+ExecStart=/opt/solar-check-landscape/venv/bin/python workflow/current/scripts/stage-workflow.py run --place %i --osm-file ${OSM_FILE}
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=1
+CPUQuota=75%
+MemoryMax=1800M
+Nice=15
+TimeoutStartSec=2h
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/solar-check-landscape/inputs /opt/solar-check-landscape/candidates /opt/solar-check-landscape/queue /opt/solar-check-landscape/logs /opt/solar-check-landscape/jobs/stages

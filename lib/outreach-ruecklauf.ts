@@ -77,6 +77,11 @@ const ZITAT_TRENNER = [
   "datenschutz-hinweis (art. 14 dsgvo)",
   "von: ",
   "am .* schrieb",
+  // English mail clients ("On Wednesday, September 30, 2026 … wrote:").
+  // Anchored to a line start: "on" inside a word ("online") must not cut the
+  // reply. Missing until 05.10.2026 — a newsroom's fee offer was classified as
+  // an objection because the search ran through our own quoted footer.
+  "(^|\\n)on .* wrote:",
 ];
 
 /** Den zitierten Teil abschneiden. Übrig bleibt, was der Mensch geschrieben hat. */
@@ -177,6 +182,13 @@ const EINGANGSBESTAETIGUNG_TEXT = [
   "wir werden ihre nachricht an die zustaendige stelle",
   "ihre nachricht wird an die zuständige stelle",
   "ihre nachricht wird an die zustaendige stelle",
+  // Zwei Anzeigenblätter derselben Verlagsgruppe, 30.09.2026: „Vielen Dank für
+  // Ihre E-Mail. Wir verarbeiten Ihre zugesandten Daten zum Zweck der
+  // bestmöglichen Beantwortung Ihrer Anfrage …" — der Datenschutz-Baustein
+  // eines Eingangsautomaten, der erst im Presse-Rücklauf sichtbar wurde und
+  // dort als zwei echte Redaktionsantworten zählte. Kein Mensch beginnt eine
+  // Antwort mit der Rechtsgrundlage seiner Datenverarbeitung.
+  "wir verarbeiten ihre zugesandten daten",
 ];
 
 /**

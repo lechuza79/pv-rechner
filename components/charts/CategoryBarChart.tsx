@@ -5,8 +5,11 @@ import ChartFlag from './ChartFlag';
 import MetricValue from '../MetricValue';
 export type CategoryBar = {id:string; label:string; axisLabel?:string; labelContent?:ReactNode; value:number; partial?:boolean; partialLabel?:string; missing?:boolean; highlighted?:boolean;flagSrc?:string;silhouetteSrc?:string};
 /** Numeric plotting only; period semantics come from the adapter. */
-export function CategoryBarChart({rows, unit, label, orientation="vertical",paired=false,compact=false,country=false,partialStyle="hatched",partialLabel="Laufendes Jahr · noch nicht vollständig."}:{rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean;compact?:boolean;country?:boolean;partialStyle?:"hatched"|"solid";partialLabel?:string}) {
+export function CategoryBarChart({rows, unit, label, orientation="vertical",paired=false,responsiveLabels=false,compact=false,country=false,partialStyle="hatched",partialLabel="Laufendes Jahr · noch nicht vollständig."}:{responsiveLabels?:boolean;rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean;compact?:boolean;country?:boolean;partialStyle?:"hatched"|"solid";partialLabel?:string}) {
  const [active,setActive]=useState<string|null>(null);
+ const barsRef=useRef<HTMLDivElement>(null);
+ const [plotWidth,setPlotWidth]=useState(640);
+ useLayoutEffect(()=>{if(!responsiveLabels)return;const el=barsRef.current;if(!el)return;const measure=()=>setPlotWidth(el.clientWidth);measure();const observer=new ResizeObserver(measure);observer.observe(el);return()=>observer.disconnect();},[orientation,responsiveLabels]);
  const pairRef=useRef<HTMLDivElement>(null);
  useLayoutEffect(()=>{
   const pair=pairRef.current;
@@ -45,7 +48,8 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
    <div className="sc-category-horizontal-track" aria-hidden="true"><div data-highlighted={row.highlighted} style={{width:`${max?Math.max(0,row.value)/max*100:0}%`}}/></div>
   </div>)}
  </div>;
- return <div className="sc-category-bars" data-compact={compact || undefined} data-partial-style={partialStyle} role="group" aria-label={label}>
+ const labelStep=Math.max(1,Math.ceil((rows.length-1)/Math.max(1,Math.floor(plotWidth/64)-1)));
+ return <div ref={barsRef} className="sc-category-bars" data-compact={compact || undefined} data-partial-style={partialStyle} role="group" aria-label={label}>
   <div className="sc-category-plot">
    {rows.map((row,index)=><button key={row.id} type="button" aria-label={describe(row)} onFocus={()=>setActive(row.id)} onMouseEnter={()=>setActive(row.id)} onClick={()=>setActive(row.id)} onBlur={()=>setActive(null)} onMouseLeave={()=>setActive(null)} className="sc-category-column" data-active={row.id===active} data-highlighted={row.highlighted} data-missing={row.missing}>
     <span className="sc-category-bar" data-partial={row.partial} style={{height:`${max?row.value/max*100:0}%`}}>
@@ -53,6 +57,6 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
     </span>
    </button>)}
   </div>
-  <div className="sc-category-axis" aria-hidden="true">{rows.map((row,index)=><span key={row.id}>{rows.length<=8||index%2===0||index===rows.length-1?(row.axisLabel??row.label):''}</span>)}</div>
+  <div className="sc-category-axis" aria-hidden="true">{rows.map((row,index)=><span key={row.id}>{(responsiveLabels ? index===0||index===rows.length-1||(index%labelStep===0&&rows.length-1-index>=labelStep*.7) : rows.length<=8||index%2===0||index===rows.length-1)?(row.axisLabel??row.label):''}</span>)}</div>
  </div>;
 }

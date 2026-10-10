@@ -176,23 +176,58 @@ export function istPressePostfach(email: string | null | undefined): boolean {
  */
 export type EmpfaengerRolle = "klima" | "presse-kontakt" | "presse-postfach" | "allgemein";
 
+/**
+ * Mailboxes of departments that have nothing to do with a letter about the
+ * local solar build-out. Checked on the first part of the name. A secretariat
+ * stays allowed: it is the last resort when nothing else exists.
+ */
+export const FACHFREMDE_POSTFAECHER = [
+  "tourismus", "touristik", "tourist", "touristinfo", "touristinformation", "gaesteinfo",
+  "bauleitplanung", "bauamt", "bauverwaltung", "bauordnung", "bauhof", "standesamt", "ordnungsamt",
+  "kasse", "stadtkasse", "gemeindekasse", "amtskasse", "steuern", "steueramt", "friedhof", "friedhofsverwaltung",
+  "kita", "schule", "bibliothek", "buecherei", "stadtbuecherei", "museum", "wahlen", "wahlamt", "fundbuero",
+  "gewerbe", "gewerbeamt", "einwohnermeldeamt", "meldeamt", "feuerwehr", "jugendamt", "sozialamt", "wohngeld",
+];
+
+export function fachfremdesPostfach(email: string): boolean {
+  const lokal = email.trim().toLowerCase().split("@")[0] ?? "";
+  const erstes = lokal.replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").split(/[.\-_]+/)[0] ?? "";
+  return FACHFREMDE_POSTFAECHER.includes(erstes);
+}
+
 export function empfaengerFuerBrief(o: {
   rollenEmail: string | null;
   presseEmail?: string | null;
   /** Belegte Fachkontakte der Kontaktsuche, siehe lib/kommunen-fachkontakt.ts. */
   klimaEmail?: string | null;
   presseKontaktEmail?: string | null;
-}): { email: string | null; anPresse: boolean; fach: boolean; rolle: EmpfaengerRolle } {
+  /** Where the general mailbox came from; "handpruefung" means a person read the page. */
+  rollenQuelle?: string | null;
+}): { email: string | null; anPresse: boolean; fach: boolean; rolle: EmpfaengerRolle; belegt: boolean } {
   // Belegte Fachkontakte schlagen jedes Funktionspostfach — sie sind Personen
   // oder Stellen, deren Rolle auf der Seite der Verwaltung steht. Klimaschutz
   // ist der bevorzugte Kontakt (Betreiber, 19.09.2026), Presse der zweite.
-  const klima = (o.klimaEmail ?? "").trim();
-  if (klima) return { email: klima, anPresse: false, fach: true, rolle: "klima" };
-  const presseKontakt = (o.presseKontaktEmail ?? "").trim();
-  if (presseKontakt) return { email: presseKontakt, anPresse: true, fach: true, rolle: "presse-kontakt" };
-  const presse = (o.presseEmail ?? "").trim();
-  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true, fach: false, rolle: "presse-postfach" };
-  return { email: o.rollenEmail?.trim() || null, anPresse: false, fach: false, rolle: "allgemein" };
+  // Department mailboxes outside our topic never take the letter, wherever
+  // they were found (operator, 06.10.2026: tourismus@, bauleitplanung@).
+  const tauglich = (e: string | null | undefined) => {
+    const x = (e ?? "").trim();
+    return x && !fachfremdesPostfach(x) ? x : "";
+  };
+  const klima = tauglich(o.klimaEmail);
+  if (klima) return { email: klima, anPresse: false, fach: true, rolle: "klima", belegt: true };
+  const presseKontakt = tauglich(o.presseKontaktEmail);
+  if (presseKontakt) return { email: presseKontakt, anPresse: true, fach: true, rolle: "presse-kontakt", belegt: true };
+  const presse = tauglich(o.presseEmail);
+  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true, fach: false, rolle: "presse-postfach", belegt: false };
+  // A mailbox a person verified on the administration's own page is proven the
+  // way a contact-search find is: its name no longer decides (05.10.2026 —
+  // "organisation@rhinow.de" is the Amt's office, the name check called it a surname).
+  const allgemein = tauglich(o.rollenEmail);
+  if (allgemein) return { email: allgemein, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
+  // Nothing better at all: then a department mailbox after all (operator,
+  // 06.10.2026: "wenn gar kein Postfach sonst, kann es auch an die Bauleitplanung").
+  const notfall = [o.rollenEmail, o.klimaEmail, o.presseKontaktEmail, o.presseEmail].map((e) => (e ?? "").trim()).find(Boolean);
+  return { email: notfall || null, anPresse: false, fach: false, rolle: "allgemein", belegt: o.rollenQuelle === "handpruefung" };
 }
 
 /**

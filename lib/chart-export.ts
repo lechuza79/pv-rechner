@@ -61,9 +61,10 @@ export interface ExportContext {
    * Rendered in a grey box above the credit line. */
   notes?: ExportNoteItem[];
   source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
-  /** Actual data vintage; never replaced with the download date. */
+  /** Explicit region and unit for the image metadata. */
   scope?: string;
   unit?: string;
+  /** Known data vintage; missing dates remain explicit. */
   dataAsOf?: string;
 }
 
@@ -693,12 +694,10 @@ export async function exportNode(
 ): Promise<Blob | null> {
   let blob: Blob;
   if (options.mode === 'download') {
-    const snapshot = await prepareNodeCapture(node, 'export', options.size, false, true);
-    try { blob = await domToBlob(snapshot.node, {scale:2}); }
-    finally { snapshot.dispose(); }
-  } else {
-    blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
-  }
+    const capture = await prepareNodeCapture(node, 'export', options.size, false, true);
+    try { blob = await domToBlob(capture.node, {scale:2}); }
+    finally { capture.dispose(); }
+  } else { blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size); }
   const filename = options.filename || 'solar-check-chart.png';
 
   if (options.mode === 'download') {

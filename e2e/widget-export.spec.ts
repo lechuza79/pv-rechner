@@ -259,7 +259,7 @@ test.describe("Gemeinde-Monitor: Optionsmenü", () => {
     await button.focus();
     await page.keyboard.press("Enter");
     const items = widget.getByRole("menuitem");
-    await expect(items).toHaveText([/Link kopieren/, /Weiterleiten/, /Download/, /In Ihrem Design.*Anfragen/, /Einbetten.*noch nicht verfügbar.*Anfragen/]);
+    await expect(items).toHaveText([/Informationen zum Diagramm/, /Link kopieren/, /Weiterleiten/, /Download/, /In Ihrem Design.*Anfragen/, /Einbetten.*noch nicht verfügbar.*Anfragen/]);
     await expect(items.first()).toBeFocused();
     await page.keyboard.press("ArrowDown");
     await expect(items.nth(1)).toBeFocused();

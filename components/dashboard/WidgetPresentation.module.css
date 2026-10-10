@@ -1,15 +1,23 @@
-.presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto;border-radius:var(--widget-radius,16px)}
+.presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto}
 /* A configured embed inherits the host palette, including nested chart frames. */
-.presentation.presentation :global([data-story-scheme]),
-.presentation.presentation :global([data-widget-id]){
+.presentation.presentation :global([data-story-scheme]){
  --atlas-picker-bg:inherit;--atlas-action:inherit;--atlas-action-ink:inherit;
  --atlas-surface:inherit;--atlas-card:inherit;--atlas-text:inherit;--atlas-secondary:inherit;--atlas-border:inherit;
  color-scheme:inherit;
 }
 .presentation[data-widget-background=off] :global([data-widget-artwork]){display:none}
-/* Composed cards share a baseline; larger content grows without clipping. */
-.presentation[data-widget-layout=group]{container-type:inline-size}
-.presentation[data-widget-layout=group] :global(.sc-widget){height:auto;min-height:var(--widget-group-min-height,max(520px,calc(100cqw + 160px)));}
+/* One shared compact row geometry for the three municipality widgets. */
+.presentation[data-widget-layout=group] :global(.sc-widget){height:520px;min-height:520px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;--widget-title-size:20px}
+.presentation[data-widget-layout=group] :global(.sc-widget-head){min-height:0;padding-bottom:16px;box-sizing:border-box;flex-shrink:0}
+.presentation[data-widget-layout=group] :global(.sc-widget-head h4){font-size:20px;line-height:1.35}
+.presentation[data-widget-layout=group] :global(.sc-widget-body){flex:1;min-height:0;display:flex;flex-direction:column}
+.presentation[data-widget-layout=group] :global([data-presentation=widget]){flex:1;min-height:0;display:flex;flex-direction:column}
+.presentation[data-widget-layout=group] :global([data-map-canvas]){height:auto;flex:1;min-height:0}
+.presentation[data-widget-layout=group] :global([data-chart-animation=month]){height:100%;min-height:0;display:flex;flex-direction:column}
+.presentation[data-widget-layout=group] :global([data-chart-animation=month]>svg){flex:1;min-height:0;width:100%;margin:8px auto}
+.presentation[data-widget-layout=group] :global([data-chart-animation=month]>div){flex-shrink:0}
+.presentation[data-widget-layout=group] :global([data-podium-visual]){flex:1}
+.presentation[data-widget-layout=group] :global([data-energy-monitor]){padding:0}
 
 /* Compact tiles own their individual card surfaces, including the gap. */
 .presentation:has(>[data-layout=separate]){background:transparent}
@@ -20,6 +28,10 @@
 .presentation:has(:global(.sc-widget[data-widget-kind="radial"])),
 .presentation:has(:global(.sc-widget[data-widget-kind="donut"])),
 .presentation:has(:global(.sc-widget[data-widget-kind="bar-comparison"])) {width:100%;max-width:var(--widget-compact-max-width,720px);margin-inline:auto;}
+
+/* A standalone partner frame owns its surface and its complete outer bounds. */
+.presentation[data-widget-partner]{background:transparent}
+.presentation[data-widget-partner] :global(.municipal-data){padding-bottom:0}
 
 /* Allocation is opt-in: standalone embeds keep their content-driven height. */
 .presentation[data-widget-layout=allocated]{height:100dvh;max-width:none;display:flex;flex-direction:column;}

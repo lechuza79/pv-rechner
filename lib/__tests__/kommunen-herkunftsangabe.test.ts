@@ -68,4 +68,12 @@ describe("Herkunftsangabe im Datenschutz-Hinweis", () => {
   it("fällt ohne Adresse auf die allgemeine Angabe zurück", () => {
     expect(herkunftsangabe("Nidda", null)).toContain("Website von Nidda");
   });
+
+  it("names the website when the stored source is a process name, never 'undefined'", () => {
+    for (const q of ["handpruefung", "kontaktsuche-v2"]) {
+      const satz = herkunftsangabe("Stolberg (Rhld.)", "info@stolberg.de", q as never);
+      expect(satz).not.toContain("undefined");
+      expect(satz).toMatch(/^Website von /);
+    }
+  });
 });

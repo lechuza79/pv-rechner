@@ -29,7 +29,7 @@ export type SucheEintrag = {
 };
 
 export const KATEGORIE_TITEL: Record<SucheKategorie, string> = {
-  rechner: "Rechner & Tools",
+  rechner: "Checks & Rechner",
   foerderung: "Förderung",
   ratgeber: "Ratgeber",
   energiedaten: "Energiedaten",

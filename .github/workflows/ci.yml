@@ -10,30 +10,44 @@ on:
   push:
     branches: [main]
   pull_request:
+  # The autofix delivers through a branch: main requires this workflow's gate
+  # check on the exact commit, and a push made with the workflow token starts
+  # no workflow by itself. Dispatch is the one way it can run the gate first
+  # (scripts/autofix-deliver.ts).
+  workflow_dispatch: {}
 
 jobs:
-  test:
-    name: Type check + unit tests + e2e smoke
+  # AUFGETEILT AM 06.10.2026 — und das ist die dritte Runde derselben Frage,
+  # deshalb diesmal nicht mit einer größeren Zahl.
+  #
+  # GEMESSEN am roten Lauf 37422081484: Der Smoke-Schritt riss sein
+  # 22-Minuten-Limit, und zwar nicht an einem kaputten Test — er war nach
+  # 19,5 Minuten Testzeit einfach nicht durch. Im Protokoll steht die Ursache
+  # als Zahl: „Running 438 tests using 2 workers". Im September waren es 200.
+  # Die Arbeit hat sich in vier Wochen mehr als verdoppelt; die Maschine hat
+  # weiter zwei Kerne.
+  #
+  # Das Limit war schon zweimal angehoben worden (16 → 22), und der Kommentar
+  # am Schritt sagt selbst, dass Anheben dann die falsche Antwort ist. Es
+  # stimmt auch rechnerisch nicht mehr: Zwei der letzten fünf GRÜNEN Läufe
+  # lagen bei 20:25 und 22:18 — der Schritt war längst kein Grenzfall mehr,
+  # sondern eine Münze. Dieselbe Lage gab es am 07.09.2026 beim nächtlichen
+  # Flow-Läufer, und dort hat die Aufteilung in eigene Jobs die Gesamtzeit
+  # gesenkt, OHNE einen einzigen Testweg zu opfern. Hier gilt es genauso:
+  # 3 Scherben teilen sich dieselben 438 Tests.
+  #
+  # Zwei Nebenwirkungen, beide gewollt. Erstens melden Typprüfung und
+  # Unit-Tests ihr Urteil jetzt nach wenigen Minuten, statt zwanzig Minuten
+  # hinter den Browser-Tests zu warten — bis heute verzögerte ein Zeitablauf
+  # im Browser das Urteil über 5.927 Unit-Tests, die längst grün waren.
+  # Zweitens sagt ein roter Lauf jetzt, WELCHE Scherbe rot ist.
+  unit:
+    name: Typprüfung + Unit-Tests
     runs-on: ubuntu-latest
-    # Das Job-Limit ist die LETZTE Notbremse, nicht die scharfe Grenze — die
-    # sitzt seit 27.08.2026 an den teuren Schritten selbst (Begruendung dort).
-    # Deshalb liegt es ueber der Summe der Schritt-Limits (16 + 10 + 5) plus
-    # Grundlast: Ein Job-Limit UNTER dieser Summe macht die Schritt-Limits
-    # wirkungslos, weil dann wieder der Job zuerst reisst — und ein Job-Abbruch
-    # endet „cancelled" statt rot.
-    #
-    # GEMESSEN 27.08.2026 (40 Laeufe, GitHub-API): Der Job brauchte im Median
-    # 12,7 von 15 erlaubten Minuten, im Maximum 13,7 — und riss das Limit am
-    # 26.08. einmal wirklich (15,3 min, Lauf 32946344841, „cancelled"). Das war
-    # kein Defekt, sondern gewollte Arbeit: Der Ergebnis-Laeufer kam am 24.08.
-    # dazu, seitdem stieg der Testschritt von 5,4 auf 11,4 Minuten im Median.
-    #
-    # 05.09.2026 auf 45 angehoben, weil der Smoke-Schritt 22 statt 16 Minuten
-    # bekam (Begruendung dort). Das Job-Limit MUSS ueber der Summe der
-    # Schritt-Limits liegen — sonst reisst wieder der Job zuerst, der Ausgang
-    # heisst „abgebrochen", und das Schritt-Limit ist wirkungslos, waehrend es
-    # im Diff richtig aussieht.
-    timeout-minutes: 45
+    # Reichlich über dem Gemessenen (99 s Unit-Tests plus Installation):
+    # Dieses Limit ist die Notbremse gegen einen hängenden Lauf, nicht die
+    # scharfe Grenze — die sitzt an den teuren Schritten des Smoke-Jobs.
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +76,45 @@ jobs:
       # Sekunde; sie darf rot werden, das ist ihr Zweck.
       - name: CLAUDE.md gegen den Code
         run: npm run claude-md:verify
+
+  # Die Browser-Smoke-Tests, auf 3 Läufer verteilt. Playwright teilt selbst
+  # auf (`--shard`), deterministisch und ohne von Hand gepflegte Liste — eine
+  # zweite Liste neben den Testdateien wäre genau die Drift, gegen die dieses
+  # Projekt seine Register gebaut hat.
+  #
+  # `fail-fast: false` ist Absicht: Bricht eine Scherbe, sollen die anderen
+  # ihr Urteil trotzdem fällen. Sonst ersetzt ein einzelner Fehlschlag die
+  # Auskunft über zwei Drittel der Oberfläche durch „abgebrochen" — und das
+  # liest sich als „egal".
+  #
+  # JE SCHERBE EIN EIGENER BUILD, und das ist der Preis der Aufteilung:
+  # gemessen 57 s Übersetzung plus rund 100 s Vorwärmen, also dreimal statt
+  # einmal. Dagegen steht, dass jede Scherbe nur noch rund 146 Tests fährt.
+  # Actions-Minuten kosten in einem öffentlichen Repo nichts; teuer ist hier
+  # allein die Wanduhr, und die sinkt.
+  smoke:
+    name: Smoke-Tests ${{ matrix.scherbe }}/3
+    runs-on: ubuntu-latest
+    # Über der Summe der Schritt-Limits (22 + 10 + 5) plus Grundlast — sonst
+    # reißt wieder der Job zuerst, der Ausgang heißt „cancelled", und das
+    # Schritt-Limit ist wirkungslos, während es im Diff richtig aussieht.
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        scherbe: [1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       # Cache Playwright browsers — saves ~30s on every run.
       # Cache key is tied to package-lock so a Playwright version bump invalidates it.
@@ -159,7 +212,7 @@ jobs:
       # voller Build je Durchlauf waere die falsche Rechnung.
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
-        run: npm run test:e2e
+        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3
         env:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
@@ -202,6 +255,38 @@ jobs:
           name: playwright-report
           path: test-results/
           retention-days: 7
+
+  # DER NAME BLEIBT, WEIL DER GESCHÜTZTE ZWEIG IHN VERLANGT.
+  #
+  # „Type check + unit tests + e2e smoke" ist die eingetragene Pflichtprüfung
+  # von `main` (gemessen über die Zweigschutz-Schnittstelle, 06.10.2026). Wer
+  # den Job umbenennt oder auflöst, macht die Pflichtprüfung unerfüllbar: Sie
+  # wartet dann auf einen Namen, den kein Lauf mehr meldet, und das sieht im
+  # Diff vollkommen richtig aus. Dieser Job ist deshalb das Tor, nicht die
+  # Arbeit — er fasst die Urteile der Jobs darüber zusammen.
+  #
+  # `if: always()` ist dabei KEINE Formalität: Ohne es wird das Tor
+  # „skipped", sobald ein Vorgänger rot ist — und eine übersprungene
+  # Pflichtprüfung blockiert den Zweig für immer, statt rot zu werden.
+  test:
+    name: Type check + unit tests + e2e smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [unit, smoke]
+    if: always()
+
+    steps:
+      - name: Urteile der Vorgänger zusammenfassen
+        run: |
+          echo "Typprüfung + Unit-Tests: ${{ needs.unit.result }}"
+          echo "Smoke-Tests (3 Scherben):      ${{ needs.smoke.result }}"
+          fehler=0
+          [ "${{ needs.unit.result }}" = "success" ] || fehler=1
+          [ "${{ needs.smoke.result }}" = "success" ] || fehler=1
+          if [ "$fehler" -ne 0 ]; then
+            echo "::error::Mindestens eine Stufe ist nicht grün — Einzelheiten im jeweiligen Job."
+            exit 1
+          fi
 
   # Eigener Job, weil diese Stufe eine andere Größenordnung hat: Der Flow-Läufer
   # klickt jede Option jedes Schritts durch jeden Flow und baut dafür je Weg
@@ -314,9 +399,9 @@ jobs:
   # breiter ist als das Fenster (e2e/kein-ueberlauf.spec.ts) — der Mechanismus,
   # der die Abnahme von Layout-Details durch den Betreiber ersetzt.
   telefon:
-    name: Telefonbreite (keine Seite läuft seitlich über)
+    name: Telefonbreite (keine Seite läuft seitlich über) + Menü unverdeckt
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - uses: actions/checkout@v4
@@ -363,10 +448,12 @@ jobs:
       # 12 Minuten: Bau ~4 min plus 33 Seitenaufrufe mit 30-s-Grenze je Test.
       # Eigener Job, weil der Smoke-Schritt am 05.09.2026 bei 14,5–15,5 seiner
       # 16 Minuten stand — mit diesen Aufrufen darin riss er das Limit und
-      # fällte kein Urteil. Summe der Schritt-Limits (12 + 10 + 5) unter dem
-      # Job-Limit von 30.
-      - name: Telefonbreite (production build)
-        timeout-minutes: 12
+      # fällte kein Urteil. Summe der Schritt-Limits (22 + 10 + 5) unter dem
+      # Job-Limit von 40. Seit 06.10.2026 läuft hier zusätzlich die Prüfung,
+      # dass kein Seitenelement über einem offenen Menü liegt (14 Seiten ×
+      # Desktop/Telefon) — daher 22 statt 12 Minuten.
+      - name: Telefonbreite + Menü (production build)
+        timeout-minutes: 22
         run: npm run test:telefon
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

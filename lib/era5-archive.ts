@@ -7,9 +7,10 @@
  * of each file on disk, so a municipality run touches the network once per
  * variable and 21-day block rather than once per place.
  *
- * Deliberately not the Copernicus Climate Data Store: that needs an account, a
- * manually accepted licence and a download queue, and its raw product would
- * still have to be converted into the hourly means the API already publishes.
+ * Not the Copernicus Climate Data Store as the main source: it needs an
+ * account, an accepted licence and a download queue. It is used only to fill a
+ * whole day the archive lacks (`lib/era5-cds.ts`), after a comparison on a day
+ * both sources hold.
  */
 export const ERA5_ARCHIVE_BASE = 'https://openmeteo.s3.amazonaws.com/data/copernicus_era5/';
 /** `chunk_time_length` from the archive's own `static/meta.json`. */

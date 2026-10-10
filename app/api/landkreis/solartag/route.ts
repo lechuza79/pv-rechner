@@ -3,11 +3,7 @@ import {unstable_cache} from 'next/cache';
 import {getRegionById,getChildren} from '../../../../lib/atlas';
 import {loadDistrictMonitor} from '../../../../lib/district-monitor-server';
 import {isDistrictMember} from '../../../../lib/district-package';
-import {gemeindeWetterpunkt} from '../../../../lib/atlas-geo';
-import {shardKey} from '../../../../lib/icon-d2';
-import {loadIconD2Shard} from '../../../../lib/icon-d2-store';
-import {solarTagAusModell} from '../../../../lib/solar-tag-modell';
-import {districtSolarCurve} from '../../../../lib/district-solar-curve';
+import {regionalSolarDay} from '../../../../lib/regional-solar-day';
 import {berlinTagesgrenzen} from '../../../../lib/zeit';
 import {rateLimit} from '../../../../lib/rate-limit';
 import {ATLAS_DATEN_TAG,KREIS_PAKET_TAG} from '../../../../lib/atlas-revalidate-routen';
@@ -19,12 +15,7 @@ const load=unstable_cache(async(id:string,start:number,end:number)=>{
  // Only the site list is used here; its edition label does not matter.
  const monitor=await loadDistrictMonitor(id,towns.map(t=>t.region_id),'');
  if(!monitor.sites?.length)return null;
- const locations=await Promise.all(monitor.sites.map(async site=>({...site,geo:await gemeindeWetterpunkt(site.ags)})));
- if(locations.some(s=>!s.geo||!Number.isFinite(s.geo.lat)||!Number.isFinite(s.geo.lon)))return null;
- const keys=[...new Set(locations.map(s=>shardKey(s.geo!.plz)))];
- const shards=new Map(await Promise.all(keys.map(async key=>[key,await loadIconD2Shard(key)] as const)));
- const points=districtSolarCurve(locations.map(s=>{const g=s.geo!,shard=shards.get(shardKey(g.plz));return {kwp:s.kwp,points:shard?solarTagAusModell(shard,g.plz,g.lat,g.lon,[start,end]):null};}));
- return points?{points,installedKwp:monitor.sites.reduce((sum,s)=>sum+s.kwp,0)}:null;
+ return regionalSolarDay(monitor.sites,start,end);
 },['district-solar-day-v3'],{revalidate:300,tags:[ATLAS_DATEN_TAG,KREIS_PAKET_TAG]});
 export async function GET(req:NextRequest){
  const limited=rateLimit(req,'landkreis-solartag');if(limited)return limited;

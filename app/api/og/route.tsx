@@ -1,3 +1,4 @@
+import { municipalLogo } from "./kommunen-logo";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { ogRechnung } from "../../../lib/og-rechnung";
@@ -145,6 +146,38 @@ export async function GET(req: NextRequest) {
         <span>Berechnung: Solar Check · solar-check.io/atomstrom-import</span>
       </div>
     </div>, {width:1200,height:630,fonts:[{name:"AtlasConcept",data:displayFont,weight:700,style:"normal"}]});
+  }
+  // Municipal sharing card uses the same theme and bundled-font pipeline.
+  if (params.view === "kommunen" || params.view === "atlas") {
+    const atlas = params.view === "atlas";
+    const place = (params.name || "Deutschland").trim().slice(0, 100);
+    const municipalFont = await fetch(new URL("./Montserrat-Bold.ttf", import.meta.url)).then(r => r.arrayBuffer());
+    const monitor = await fetch(new URL("./kommunen-five-charts.png", import.meta.url)).then(r => r.arrayBuffer());
+    const city = await fetch(new URL("./kommunen-city-scene.png", import.meta.url)).then(r => r.arrayBuffer());
+    return new ImageResponse(
+      <div style={{ width: "100%", height: "100%", display: "flex", overflow: "hidden", background: C_BG, color: C_TEXT, fontFamily: "Montserrat" }}>
+        <img src={city as unknown as string} width={2160} height={1500} style={{ position: "absolute", left: 0, top: -705, opacity: 0.8 }} />
+        <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", background: C_BG, opacity: 0.55 }} />
+        <img src={municipalLogo} width={238} height={56} style={{ position: "absolute", left: 56, top: 48 }} />
+        <div style={{ position: "absolute", left: 56, top: 220, display: "flex", flexDirection: "column", width: 465 }}>
+          <span style={{ fontSize: 22, color: C_SECONDARY, marginBottom: 24 }}>{atlas ? "Solar-Atlas" : "Für Kommunen"}</span>
+          {atlas ? <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+            <span style={{ fontSize: place.length > 32 ? 34 : place.length > 18 ? 44 : 58, lineHeight: 1.12, letterSpacing: -1, overflowWrap: "break-word" }}>{place}</span>
+            <span style={{ fontSize: 34, lineHeight: 1.2, marginTop: 24 }}>Energiewende im Blick.</span>
+          </div> : <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+            <span style={{ fontSize: 62, lineHeight: 1.05, letterSpacing: -2 }}>Energiewende</span>
+            <span style={{ fontSize: 62, lineHeight: 1.05, letterSpacing: -2 }}>vor Ort.</span>
+          </div>}
+        </div>
+        <div style={{ display: "flex", position: "absolute", left: 588, top: 48, width: 660, height: 706, borderRadius: 36, background: C_TEXT, border: `3px solid ${C_SECONDARY}`, boxShadow: "0 22px 55px rgba(0,0,0,0.25)" }}>
+          <div style={{ display: "flex", position: "absolute", left: 20, top: 20, width: 614, height: 662, borderRadius: 18, overflow: "hidden" }}>
+            <img src={monitor as unknown as string} width={614} height={652} style={{ position: "absolute", left: 0, top: 0 }} />
+          </div>
+        </div>
+        <span style={{ position: "absolute", left: 56, bottom: 18, fontSize: 10, color: C_SECONDARY }}>3D: LGLN (2026), CC BY 4.0 · © OpenStreetMap contributors</span>
+      </div>,
+      { width: 1200, height: 630, fonts: [{ name: "Montserrat", data: municipalFont, weight: 700 }] },
+    );
   }
 
   // Branded card for non-calculator pages (Wärmepumpe, Energie, Simulation …).

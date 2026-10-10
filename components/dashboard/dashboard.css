@@ -208,3 +208,11 @@
 .sc-widget-setting[data-variant=widget][data-size=sm] .sc-setting-stepper select{height:36px;}
 
 .sc-widget-actions{position:relative;z-index:1;}
+
+/* The annual chart reserves a source lane beside its plot, never beside its footer. */
+.sc-widget[data-source-placement=plot] .sc-widget-body{position:relative;padding-right:34px;}
+@container(max-width:420px){
+ .sc-widget[data-source-placement=plot] .sc-widget-head{flex-direction:column;gap:12px;}
+ .sc-widget[data-source-placement=plot] .sc-widget-head h4{flex:none;}
+ .sc-widget[data-source-placement=plot] .sc-widget-tools{margin-left:0;justify-content:flex-start;}
+}

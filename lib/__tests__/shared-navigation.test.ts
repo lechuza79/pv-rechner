@@ -13,8 +13,8 @@ describe("Shared public navigation", () => {
     ["/balkonkraftwerk/ratgeber/mit-speicher", "knowledge"],
     ["/angebot-pruefen", "tools"],
     ["/elektroauto-check", "tools"],
-    ["/solar-atlas/niedersachsen/gifhorn/meinersen", "monitor"],
-    ["/solar-atlas/ranking", "monitor"],
+    ["/solar-atlas/niedersachsen/gifhorn/meinersen", "local"],
+    ["/solar-atlas/ranking", "local"],
     ["/atomstrom-import", "monitor"],
     ["/photovoltaik-zubau-deutschland", "monitor"],
     ["/energie-widgets", "organisations"],
@@ -29,7 +29,7 @@ describe("Shared public navigation", () => {
     const organisations = $('[data-section="organisations"]');
     expect(organisations.length).toBe(1);
     expect(organisations.find('a[href="/fuer-organisationen/kommunen"]').length).toBe(1);
-    expect($('[data-section="local"]').length).toBe(0);
+    expect($('[data-section="local"] a[href="/fuer-organisationen/kommunen"]').length).toBe(1);
     const upcoming = organisations.find('article').filter((_, el) => $(el).text().includes('Demnächst'));
     expect(upcoming.length).toBe(3);
     expect(upcoming.find('a').length).toBe(0);
@@ -53,9 +53,9 @@ describe("Shared public navigation", () => {
     expect($('[data-section="organisations"] a[href="/energie-widgets"]').length).toBeGreaterThan(0);
   });
 
-  it("uses the existing Atlas destination in the regional monitor", () => {
+  it("uses the existing Atlas destination for both local entry points", () => {
     const $ = load(navigationContent());
-    for (const section of ["monitor"]) {
+    for (const section of ["local", "monitor"]) {
       expect($(`[data-section="${section}"] a[href="/solar-atlas"]`).length).toBeGreaterThan(0);
     }
     expect($('a[href^="/energiemonitor/"]').length).toBe(0);
@@ -63,12 +63,12 @@ describe("Shared public navigation", () => {
     expect($('img:not([alt=""])').length).toBe(0);
   });
 
-  it("offers one regional search and a separate state selection", () => {
+  it("leads 'Vor Ort' with the place field, then Deutschland, Bundesland and Landkreis", () => {
     const $ = load(navigationContent());
-    const local = $('[data-section="monitor"]');
+    const local = $('[data-section="local"]');
     // The town field comes first: postcode or name is the main way in.
-    expect(local.find('[data-local-search="regional"]').length).toBe(1);
-    expect(local.find('[data-local-search="kreis"]').length).toBe(0);
+    expect(local.find("form, a").first().is('[data-local-search="ort"]')).toBe(true);
+    expect(local.find('[data-local-search="kreis"]').length).toBe(1);
     expect(local.find('a[href="/solar-atlas"]').length).toBe(1);
     // One link per Land, from the shared list, each a real atlas address.
     const lands = local.find("[data-local-land] a").map((_, a) => $(a).attr("href")).get();
@@ -84,18 +84,4 @@ describe("Shared public navigation", () => {
     expect(live.length).toBeGreaterThan(0);
     expect(live.filter(id => fallback.includes(id))).toEqual([]);
   });
-  it("groups monitor topics, regions and the additional park directory without duplicate article destinations", () => {
-    const $ = load(navigationContent());
-    const monitor = $('[data-section="monitor"]');
-    expect(monitor.find('.sc-nav-column > [role="heading"]').map((_, el) => $(el).text()).get()).toEqual(['Deutschland', 'Energiemonitor regional']);
-    expect(monitor.find('a[href="/datenstand"]').length).toBe(0);
-    expect(monitor.find('a[href="/atomstrom-import"]').closest('.sc-nav-column').find('[role="heading"]').first().text()).toBe('Deutschland');
-    expect(monitor.find('a[href="/langzeit-strommix"]').length).toBe(0);
-    const parks = $('[data-section="parks"]');
-    expect(monitor.find('img[src="/illustrations/energy/nuclear-mono.webp"]').closest('.sc-nav-tool').find('a[href="/atomstrom-import"]').length).toBe(1);
-    expect(parks.find('img[src="/brand/wind-ranking-mono.svg"]').length).toBe(1);
-    expect(parks.text()).toContain('Demnächst');
-    expect(parks.find('a').length).toBe(0);
-  });
-
 });

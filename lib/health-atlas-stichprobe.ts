@@ -1,3 +1,5 @@
+import { ATLAS_WURZEL } from "./atlas-wurzel";
+
 /** Which Atlas paths a health-check run may probe.
  *
  *  A kreisfreie Stadt sits at Kreis level but has exactly ONE Gemeinde beneath
@@ -32,6 +34,26 @@ export type RegionZeile = { slug?: string | null; parent_region_id?: string | nu
  *  Null Zeilen heißen NICHT „kreisfrei", sondern „nicht feststellbar" (Abruf
  *  gescheitert, Zeitlimit, Datenlücke). Dann wird nicht ausgeschlossen: ein
  *  Fehlalarm ist billiger als eine Prüfung, die bei Störungen stumm ausfällt. */
+/** Does this Land belong to the published Atlas? Only a Land directly below the
+ *  root the page walks from has pages; a Swiss canton (parent `ch`) does not.
+ *  Measured 07.10.2026: after the Swiss import the random draw picked Tenniken
+ *  (Basel-Landschaft) and escalated "Atlas-Seite antwortet mit 404" for a page
+ *  that is deliberately unpublished. A missing parent counts as NOT published —
+ *  a probe that cannot be placed under the root is not a probe of a real page. */
+export function landIstVeroeffentlicht(land: RegionZeile | undefined): boolean {
+  return land?.parent_region_id === ATLAS_WURZEL;
+}
+
+/** The same question as a PostgREST fragment for a Gemeinde row: Gemeinde →
+ *  Kreis → Land → root. Every published Gemeinde sits exactly three levels below
+ *  the root (a kreisfreie Stadt too: its Gemeinde hangs below its Kreis row).
+ *  Measured 07.10.2026: 10,749 Gemeinden with the filter, 12,859 without — the
+ *  difference is exactly the 2,110 Swiss ones. */
+export const UNTER_ATLAS_WURZEL = {
+  select: "k:parent_region_id!inner(l:parent_region_id!inner(parent_region_id))",
+  filter: `k.l.parent_region_id=eq.${ATLAS_WURZEL}`,
+} as const;
+
 export function istKreisfreieStadt(gemeindenDarunter: number): boolean {
   return gemeindenDarunter === 1;
 }
@@ -51,6 +73,7 @@ export function atlasStichprobenPfade(input: {
     const k = input.kreisById.get(kreisId);
     const l = k ? input.landById.get(k.parent_region_id ?? "") : undefined;
     if (!k?.slug || !l?.slug) continue;
+    if (!landIstVeroeffentlicht(l)) continue;
 
     if (g.slug) gemeinde.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
     if (!input.einzelkind.has(kreisId)) kreis.add(`/solar-atlas/${l.slug}/${k.slug}`);

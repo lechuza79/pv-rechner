@@ -104,14 +104,16 @@ describe("Zwei Ask-Varianten", () => {
   // Domain ohne Sendehistorie ist ein Spam-Muster. Der Vorschau-Link war einen
   // Tag lang mit draußen, weil die Grafik schmal nicht vorzeigbar war; das ist
   // behoben (Quellen-Kante mit eigener Spur, Zahl und Einheit gestaffelt).
-  it("zeigt die Grafik, sobald eine Adresse bekannt ist", () => {
+  // No preview link (operator, 06.10.2026): the place page in the message
+  // already shows the graphic; a second link read as clutter.
+  it("verlinkt die Grafik nicht gesondert", () => {
     const d = renderOutreachDraft({
       ...BASIS,
       variante: "meldung_plus_widget",
       widgetUrl: "https://solar-check.io/embed/gemeinde-solar?ags=09679138",
     });
-    expect(d.body).toContain("https://solar-check.io/embed/gemeinde-solar?ags=09679138");
-    expect(d.body).toContain("So sieht sie");
+    expect(d.body).not.toContain("/embed/gemeinde-solar");
+    expect(d.body).toContain("Grafik für Ihre Website");
   });
 
   // Ohne Adresse KEIN halber Satz: Der Brief darf nicht „So sieht sie aus:" ohne
@@ -141,11 +143,11 @@ describe("Zwei Ask-Varianten", () => {
   //
   // Die Frage entsteht beim Einbau, also muss die Antwort im Widget-Absatz
   // stehen — nicht drei Absätze darüber bei einer anderen Sache.
-  it("sagt im Widget-Absatz selbst, dass es für Kommunen nichts kostet", () => {
+  // The cost is said once, in the paragraph after the message (operator,
+  // 06.10.2026): a second "kostenfrei" two paragraphs later read as filler.
+  it("sagt genau einmal, dass es für Kommunen nichts kostet", () => {
     const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" });
-    const widgetAbsatz = d.body.split("\n\n").find((a) => a.includes("Grafik für Ihre Website"));
-    expect(widgetAbsatz).toBeDefined();
-    expect(widgetAbsatz).toMatch(/kostenfrei|kostenlos|keine Kosten/);
+    expect(d.body.match(/kostenfrei|kostenlos|keine Kosten/g)).toHaveLength(1);
   });
 
   it("die Meldung ist in beiden Fassungen dieselbe", () => {
@@ -487,6 +489,22 @@ describe("Kurz oben, genau unten", () => {
   });
 });
 
+describe("Rang und Prozent sprechen dieselbe Sprache", () => {
+  // Kempen (10/2026): Betreff "unter den besten 5 % bundesweit", Überschrift
+  // "Platz 29" — derselbe Rang, in der Meldung klang er plötzlich schwächer.
+  it("trägt die Prozentangabe des Betreffs in Überschrift und Satz", () => {
+    const d = renderOutreachDraft({ ...BASIS, rang: { platz: 29, von: 626 }, rangProzent: 5 });
+    expect(d.meldung.split("\n")[0]).toMatch(/unter den besten 5 %$/);
+    expect(d.meldung).toContain("auf Platz 29 von 626");
+    expect(d.meldung).toMatch(/und damit unter den besten 5 %/);
+    expect(d.meldung).not.toMatch(/Platz 29 bei/);
+  });
+  it("bleibt beim Platz, wenn der Betreff keinen Prozentwert nennt", () => {
+    const d = renderOutreachDraft({ ...BASIS, rang: { platz: 2, von: 5 }, rangProzent: null });
+    expect(d.meldung.split("\n")[0]).toMatch(/Platz 2/);
+  });
+});
+
 describe("Weitere Platzierungen im Brief", () => {
   // Der Brief darf zeigen, dass die Zahl kein Zufallstreffer ist — die MELDUNG
   // nicht: Ein Text, den eine Verwaltung veröffentlichen soll, trägt eine Aussage.
@@ -516,6 +534,22 @@ describe("Weitere Platzierungen im Brief", () => {
     );
   });
 
+  // Kempen (Schub 10/2026): Meldung bundesweit unter 626 Städten, die weiteren
+  // Plätze unter den 5 im Kreis. Ohne Gruppe las sich „Platz 1 von 5" als
+  // zweiter bundesweiter Rang.
+  it("nennt die gemeinsame Gruppe, wenn sie nicht die der Meldung ist", () => {
+    const b = renderOutreachDraft({
+      ...BASIS,
+      gruppe: "Mittelgroßen Städten bundesweit",
+      weitere: [
+        { phrase: "bei der privaten Speicherkapazität", gruppe: "Mittelgroßen Städten im Kreis Viersen", platz: 1, von: 5 },
+        { phrase: "bei privater Solarleistung", gruppe: "Mittelgroßen Städten im Kreis Viersen", platz: 2, von: 5 },
+      ],
+    }).body;
+    const zeile = b.split("\n\n").find((a) => a.startsWith("Auch sonst")) ?? "";
+    expect(zeile).toMatch(/, jeweils unter den mittelgroßen Städten im Kreis Viersen\.$/);
+  });
+
   it("nennt jede weitere Platzierung mit Platz, Gruppengrösse und Vergleichsgruppe", () => {
     const b = renderOutreachDraft(MIT).body;
     // Verschiedene Vergleichsgruppen — dann bleibt die Gruppe an der Zeile,
@@ -535,10 +569,16 @@ describe("Weitere Platzierungen im Brief", () => {
     expect(renderOutreachDraft(MIT).body).not.toContain(MIT.ranglisteUrl as string);
   });
 
-  it("lässt die weiteren Platzierungen aus der Meldung heraus", () => {
+  // Operator, 07.10.2026: after the box the further placements read as a stray
+  // afterthought, and a press office copying the box lost them. They belong to
+  // the message, before its link line — and only there, not twice.
+  it("führt die weiteren Platzierungen IN der Meldung, vor der Link-Zeile", () => {
     const m = renderMeldung(MIT);
-    expect(m).not.toContain("Balkonkraftwerken");
-    expect(m).not.toContain("weiteren Messgrößen");
+    expect(m).toContain("Auch sonst steht Höchberg weit vorn");
+    expect(m.indexOf("Auch sonst")).toBeLessThan(m.indexOf("Laufend aktualisierte"));
+    const body = renderOutreachDraft(MIT).body;
+    expect(body.split("Auch sonst").length - 1).toBe(1);
+    expect(body.indexOf("Auch sonst")).toBeLessThan(body.lastIndexOf("----------------------------------------"));
   });
 
   it("schweigt, wenn es keine weiteren gibt", () => {
@@ -808,5 +848,32 @@ describe("HTML-Fassung", () => {
     const d = renderOutreachDraft({ ...BASIS, name: "Musterdorf <script>" });
     expect(d.bodyHtml).not.toContain("<script>");
     expect(d.bodyHtml).toContain("&lt;script&gt;");
+  });
+});
+
+describe("Anrede", () => {
+  it("spricht eine benannte Person mit Namen an", () => {
+    const d = renderOutreachDraft({ ...BASIS, anrede: "Sehr geehrte Frau Kuhn" });
+    expect(d.body.startsWith("Sehr geehrte Frau Kuhn,")).toBe(true);
+    expect(d.bodyHtml).toContain("Sehr geehrte Frau Kuhn,");
+  });
+  it("bleibt ohne Namen bei der allgemeinen Anrede", () => {
+    expect(renderOutreachDraft({ ...BASIS, anrede: null }).body.startsWith("Sehr geehrte Damen und Herren,")).toBe(true);
+  });
+});
+
+describe("Kein Satz doppelt, Szene unter der Meldung", () => {
+  it("sagt das monatliche Aktualisieren nicht zusätzlich", () => {
+    const b = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" }).body;
+    expect(b).not.toContain("aktualisiere ich monatlich");
+  });
+  it("verweist nur bei veröffentlichter Szene auf die 3D-Ansicht, mit einem Link", () => {
+    const url = "https://solar-check.io/fuer-organisationen/kommunen?gemeinde=09679147";
+    const mit = renderOutreachDraft({ ...BASIS, kommunenUrl: url, mitSzene: true }).body;
+    expect(mit).toContain("interaktive 3D-Ansicht");
+    expect(mit.split(url).length - 1).toBe(1);
+    const ohne = renderOutreachDraft({ ...BASIS, kommunenUrl: url, mitSzene: false }).body;
+    expect(ohne).not.toContain("3D-Ansicht");
+    expect(ohne).toContain(url);
   });
 });

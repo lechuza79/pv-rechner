@@ -29,6 +29,11 @@ export default function AutoHeightIframe({
   framed = true,
   scheme,
   startWhenVisible = false,
+  rounded = framed,
+  onReady,
+  onHeightChange,
+  loading = "lazy",
+  appearance,
 }: {
   src: string;
   title: string;
@@ -37,6 +42,11 @@ export default function AutoHeightIframe({
   scheme?: "light" | "dark";
   /** Defer animation-bearing embeds until they actually enter the viewport. */
   startWhenVisible?: boolean;
+  rounded?: boolean;
+  onReady?: () => void;
+  onHeightChange?: (height: number) => void;
+  loading?: "lazy" | "eager";
+  appearance?: import("../lib/widget-appearance").WidgetAppearance;
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
@@ -54,6 +64,9 @@ export default function AutoHeightIframe({
     return () => observer.disconnect();
   }, [startWhenVisible, entered]);
   const [loadedSource, setLoadedSource] = useState<string | null>(null);
+
+  useEffect(() => { if (bereit) onHeightChange?.(height); }, [bereit, height, onHeightChange]);
+  useEffect(() => { if (bereit) onReady?.(); }, [bereit, onReady]);
 
   // Der Pfad hängt an der Adresse, nicht an einer Nachricht: so ist er schon
   // beim ersten Rendern im iframe da und der Knopf blitzt nicht kurz auf.
@@ -89,11 +102,23 @@ export default function AutoHeightIframe({
   }, [ref, bereit, scheme]);
 
   const activeSource = !startWhenVisible || entered ? quelle : undefined;
-  const loading = !activeSource || (!bereit && loadedSource !== quelle);
+  const pending = !activeSource || (!bereit && loadedSource !== quelle);
+
+  useEffect(() => {
+    if (!appearance) return;
+    const origin = new URL(quelle, window.location.href).origin;
+    const send = () => ref.current?.contentWindow?.postMessage({type:"widget:appearance",appearance},origin);
+    const receive = (event: MessageEvent) => {
+      if(event.source===ref.current?.contentWindow && event.origin===origin && event.data?.type==='widget:appearance-request')send();
+    };
+    window.addEventListener('message',receive);
+    send();
+    return()=>window.removeEventListener('message',receive);
+  }, [appearance, bereit, quelle, ref]);
 
   return (
-    <div ref={container} style={{ position: "relative", width: "100%" }} aria-busy={loading}>
-      {loading && (
+    <div ref={container} style={{ position: "relative", width: "100%" }} aria-busy={pending}>
+      {pending && (
         <div style={{
           position: "absolute", inset: 0, display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center", gap: 16,
@@ -110,10 +135,10 @@ export default function AutoHeightIframe({
       ref={ref}
       src={activeSource}
       title={title}
-      loading="lazy"
-      onLoad={() => { if (activeSource) setLoadedSource(activeSource); }}
+      loading={loading}
+      onLoad={() => { if (activeSource) setLoadedSource(activeSource); ref.current?.contentWindow?.postMessage({type:"widget:measure"},new URL(quelle,window.location.href).origin); }}
       style={{
-        opacity: loading ? 0 : 1,
+        opacity: pending ? 0 : 1,
         width: "100%",
         maxWidth: "100%",
         boxSizing: "border-box",
@@ -121,7 +146,7 @@ export default function AutoHeightIframe({
         background: scheme ? "var(--atlas-surface, var(--color-bg))" : undefined,
         height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
-        borderRadius: framed ? v("--radius-md") : 0,
+        borderRadius: rounded ? v("--radius-md") : 0,
         display: "block",
       }}
     />

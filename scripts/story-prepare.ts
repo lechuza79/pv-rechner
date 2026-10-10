@@ -24,6 +24,7 @@ for(const [code,places] of Object.entries(ags)){if(!plz[code])continue;for(const
 const stockPath=arg('stock');const stockDate=arg('stock-date');
 if(!stockPath||!/^\d{4}-\d{2}-\d{2}$/.test(stockDate))throw Error('Explicit --stock and --stock-date required');
 const stockRaw=read(stockPath),stocks=new Map<string,any>((Array.isArray(stockRaw)?stockRaw:stockRaw.stats).map((r:any)=>[r.regionId,r]));
+const wetterMonat=process.env.STORY_WETTER_MONAT||undefined;if(wetterMonat&&!/^\d{4}-\d{2}$/.test(wetterMonat))throw Error('STORY_WETTER_MONAT erwartet JJJJ-MM');
 const fetchEnabled=process.argv.includes('--fetch');let rateLimited=false;let limitReason='';
 // Which archive the hours come from. Separate cache trees per source, so the
 // provider answers this run is measured against are never overwritten.
@@ -77,7 +78,10 @@ async function prepareCity(city:typeof cities[number]){
  data.availability=[];
  const mark=(topic:string,ready:boolean,reason:string)=>data.availability.push({topic,status:ready?'ready':'missing',reason});
  const sourceYear=Number(report.sourceDate.slice(0,4)),sourceMonth=Number(report.sourceDate.slice(5,7));
- const month=new Date(Date.UTC(sourceYear,sourceMonth-2,15)).toISOString().slice(0,7),year=sourceYear-1;
+ // The weather month: the one before the edition, or an earlier one the
+ // monthly run names (register stage, before ERA5 has the month just ended).
+ const month=wetterMonat??new Date(Date.UTC(sourceYear,sourceMonth-2,15)).toISOString().slice(0,7),year=sourceYear-1;
+ if(month>new Date(Date.UTC(sourceYear,sourceMonth-2,15)).toISOString().slice(0,7))throw Error('Wettermonat '+month+' liegt nach dem Monat vor dem Registerstand.');
  const start=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5))-1,0)).toISOString().slice(0,10);
  const end=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5)),0)).toISOString().slice(0,10);
  const r=regions.get(city.regionId),ps=points.get(city.regionId)??[];
@@ -90,15 +94,23 @@ async function prepareCity(city:typeof cities[number]){
  const coordinateNote=savedUrl?'Wetterpunkt des gespeicherten Berechnungsstands':r?.centroid_lat!=null?'Gemeindemittelpunkt':boundary?'Mittelpunkt des umschließenden Gemeinderechtecks':'Mittelpunkt der örtlichen Postleitzahl-Koordinaten';
  let monthWeather:any;
  let detail:any;
- try{if(!Number.isFinite(lat)||!Number.isFinite(lon))throw Error('Keine örtliche Wetterkoordinate vorhanden.');const detailPath=base+'/bnetza/story-history-'+report.sourceDate+'/cities/'+city.regionId+'.json';if(existsSync(detailPath))detail=read(detailPath);else{const inventory=read(base+'/story-radial/'+city.regionId+'-value-units.json');if(inventory.sourceDate!==report.sourceDate||inventory.units.some((u:ValuationUnit)=>u.status==='35'&&u.kwp>0))throw Error('Örtliche Solar-Detaildaten fehlen.');detail={daily:[]};}monthWeather=await weather(city.regionId,'month',lat,lon,start,end);if(!data.monthly)data.monthly={...solarMonth(monthWeather.weather,detail.daily,month,report.sourceDate,monthWeather.retrievedAt??new Date().toISOString(),monthWeather.sourceUrl),town:city.name};mark('Solar-Monatsrecap',true,coordinateNote+' · vollständige Wetterstunden.');}
+ try{if(!Number.isFinite(lat)||!Number.isFinite(lon))throw Error('Keine örtliche Wetterkoordinate vorhanden.');const detailPath=base+'/bnetza/story-history-'+report.sourceDate+'/cities/'+city.regionId+'.json';if(existsSync(detailPath))detail=read(detailPath);else{const inventory=read(base+'/story-radial/'+city.regionId+'-value-units.json');if(inventory.sourceDate!==report.sourceDate||inventory.units.some((u:ValuationUnit)=>u.status==='35'&&u.kwp>0))throw Error('Örtliche Solar-Detaildaten fehlen.');detail={daily:[]};}monthWeather=await weather(city.regionId,'month',lat,lon,start,end);if(data.monthly?.month!==month)data.monthly={...solarMonth(monthWeather.weather,detail.daily,month,report.sourceDate,monthWeather.retrievedAt??new Date().toISOString(),monthWeather.sourceUrl),town:city.name};mark('Solar-Monatsrecap',true,coordinateNote+' · vollständige Wetterstunden.');}
  catch(e){mark('Solar-Monatsrecap',!!data.monthly,(e as NodeJS.ErrnoException).code==='ENOENT'?'Benötigte örtliche Ausgangsdaten fehlen.':(e as Error).message);}
  try{
+  // Recompute when the cached profile was built on another wind stock: the
+  // stock can be corrected within an edition (wind by location, 09.10.2026),
+  // and a profile kept from before would still say 20 MW where 92 stand.
+  const annualStock=stocks.get(city.regionId);
+  if(data.annual&&annualStock&&Number.isFinite(annualStock.windKwpLy)&&Math.abs(Number(data.annual.windKw)-annualStock.windKwpLy)>0.5)delete data.annual;
   if(!data.annual){const stock=stocks.get(city.regionId);if(!stock||!Number.isFinite(stock.windKwpLy)||stock.windKwpLy<0||Number(stockDate.slice(0,4))!==sourceYear)throw Error('Kein passender Wind-Vorjahresbestand vorhanden.');if(!detail||!Number.isFinite(lat)||!Number.isFinite(lon))throw Error('Örtlicher Anlagenbestand oder Wetterkoordinate fehlt.');
    const source=await weather(city.regionId,'year',lat,lon,`${year}-01-01`,`${year}-12-31`);
    const solarKwp=detail.daily.filter((d:any)=>d.day<`${year+1}-01-01`&&['gebaeude','freiflaeche','steckersolar','sonstige'].includes(d.segment)).reduce((s:number,d:any)=>s+d.kwp,0);
    data.annual=energyYear(source.weather,{town:city.name,year,solarKwp,windKw:stock.windKwpLy,sourceDate:report.sourceDate,retrievedAt:source.retrievedAt??new Date().toISOString(),sourceUrl:source.sourceUrl});
   }mark('Energie-Jahresprofil',true,coordinateNote+' · Windbestand vom '+stockDate+'.');
  }catch(e){mark('Energie-Jahresprofil',false,(e as NodeJS.ErrnoException).code==='ENOENT'?'Benötigte örtliche Ausgangsdaten fehlen.':(e as Error).message);}
+ // Only the weather month is valued; a value kept from the other stage would
+ // become a second, older value story next to the current one.
+ if(data.values)for(const key of Object.keys(data.values))if(key!==month)delete data.values[key];
  try{
   if(!data.values?.[month]){
    if(!monthWeather)throw Error('Vollständige Monats-Wetterdaten fehlen.');

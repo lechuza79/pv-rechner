@@ -34,13 +34,14 @@ const MEDIUM_SPALTEN =
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
   "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler, " +
   "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, beleg_luecke, werkzeug, beleg_datum, beleg_alter_tage, " +
-  "beleg_traegt, beleg_traegt_grund, anknuepfung_tage";
+  "beleg_traegt, beleg_traegt_grund, anknuepfung_tage, liste, liste_grund";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
   "seitenart, anker, fundstelle, geprueft_am, stand, notiz, stand_at";
 
 type Filter = {
+  liste: string;
   eignung: string;
   rubrik: string;
   aufhaenger: string;
@@ -57,6 +58,10 @@ type Filter = {
 
 function filterAus(sp: URLSearchParams): Filter {
   return {
+    // Press by default: the topic associations and the archive of unrelated
+    // clubs live in the same table (lib/presse-listen.ts) but are their own
+    // lists; mixed in, the archive would sit between the titles one works with.
+    liste: sp.get("liste") ?? "presse",
     // VOREINSTELLUNG „fach". Der Betreiber am 04.09.2026: „ZEIT und COMPUTER
     // BILD brauche ich nicht anschreiben." Publikumsmedien bleiben im Bestand
     // — gelöscht wird nichts —, aber sie stehen nicht mehr zwischen den
@@ -81,6 +86,8 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   let q = db
     .from("presse_medien")
     .select(MEDIUM_SPALTEN, zaehlen ? { count: "exact" } : undefined);
+  if (f.liste === "presse") q = q.or("liste.is.null,liste.eq.presse");
+  else if (f.liste) q = q.eq("liste", f.liste);
   // GEFILTERT WIRD AUF DIE EFFEKTIVE EINORDNUNG: Wo eine Handentscheidung
   // steht, gilt sie; sonst die Messung. Nur auf die Messung zu filtern hieße,
   // dass eine Korrektur von Hand in der Ansicht folgenlos bleibt — die Zeile

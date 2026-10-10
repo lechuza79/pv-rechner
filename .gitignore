@@ -39,3 +39,16 @@ docs/presse/
 # Empfängeradresse und den Wortlaut — der Nachweis, was wann hinausging, gehört
 # nicht in ein öffentliches Repo.
 .foerder-anfragen/
+
+# Generated municipal composition (rebuilt before the production build)
+public/kommunen/
+docs/design/kommunen/.generated*/
+
+# Prepared landscape scenes are published to the Hetzner scene bucket
+# (scripts/landscape-szenen-hochladen.ts), not deployed. Only the test fixtures stay.
+/public/geo/landscape-tours/*
+!/public/geo/landscape-tours/09679147/
+!/public/geo/landscape-tours/07312000/
+!/public/geo/landscape-tours/06632009/
+!/public/geo/landscape-tours/03458009/
+!/public/geo/landscape-tours/09679/

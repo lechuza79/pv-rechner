@@ -2,7 +2,7 @@
  * Release every stored contact of a population for a letter, and write the
  * result next to the contact: a release date or the reason for refusal.
  *
- *   npm run kontakte:freigabe -- --bestand=fachbetriebe|versorger|presse [--schreiben]
+ *   npm run kontakte:freigabe -- --bestand=fachbetriebe|versorger|presse|windbetreiber [--schreiben]
  *                                [--ids=A,B] [--part=i --parts=n]
  *
  * The check itself is one shared function (scripts/lib/kontakt-freigabe.ts);
@@ -15,7 +15,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
-import { freigeben, type Pruefling } from "./lib/kontakt-freigabe";
+import { freigabeUrteil, freigeben, type Pruefling } from "./lib/kontakt-freigabe";
+import { weitereSitesVon, windSeiteVorbereiten } from "./windbetreiber-kontakte";
+
+/** The block reasons the wind stock carried before this run (two-strike rule). */
+let vorherWind = new Map<string, string | null>();
 import { heuteInBerlin } from "../lib/zeit";
 import { host } from "../lib/kontakt-suche";
 
@@ -80,12 +84,39 @@ const BESTAENDE: Record<string, Bestand> = {
       if (error) throw new Error(`${schluessel}: ${error.message}`);
     },
   },
+  windbetreiber: {
+    // Columns are created by the stock's own setup (lib/windbetreiber-sql.ts).
+    ddl: `ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_freigabe_am date;
+          ALTER TABLE windbetreiber ADD COLUMN IF NOT EXISTS kontakt_sperrgrund text;`,
+    async laden(c) {
+      // Only contacts found on the operator's own proven website; a register
+      // mailbox has no page that could be re-read.
+      const z = await alle(c, "windbetreiber", "mastr_nr, website, kontakt_email, kontakt_beleg_url, kontakt_sperrgrund", "mastr_nr",
+        q => q.eq("aktiv", true).not("kontakt_email", "is", null).not("website", "is", null));
+      vorherWind = new Map(z.map(r => [r.mastr_nr, r.kontakt_sperrgrund]));
+      const weitere = new Map<string, string[]>();
+      return z.map(r => {
+        if (!weitere.has(r.website)) weitere.set(r.website, weitereSitesVon(r.website));
+        return { schluessel: r.mastr_nr, email: r.kontakt_email, belegUrl: r.kontakt_beleg_url, domain: r.website, nurEigeneWebsite: true, weitereSites: weitere.get(r.website), vorbereiten: windSeiteVorbereiten };
+      });
+    },
+    async schreiben(c, schluessel, heute, grund) {
+      // One unreadable read is no finding; the second in a row blocks.
+      const u = freigabeUrteil(grund, vorherWind.get(schluessel));
+      const felder = !u.grund ? { kontakt_freigabe_am: heute, kontakt_sperrgrund: null }
+        : u.sperren ? { kontakt_freigabe_am: null, kontakt_sperrgrund: u.grund }
+        : { kontakt_sperrgrund: u.grund };
+      const { error } = await c.from("windbetreiber").update(felder).eq("mastr_nr", schluessel);
+      if (error) throw new Error(`${schluessel}: ${error.message}`);
+    },
+  },
   presse: {
     ddl: `ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS freigabe_am date;
           ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS sperrgrund text;`,
     async laden(c) {
-      // Only real media; advertising mailboxes never take an editorial letter.
-      const medien = new Set((await alle(c, "presse_medien", "domain", "domain", q => q.eq("ist_medium", "medium"))).map(m => m.domain));
+      // Real media and the topic associations (never the archive); advertising
+      // mailboxes never take an editorial letter.
+      const medien = new Set((await alle(c, "presse_medien", "domain", "domain", q => q.or("ist_medium.eq.medium,liste.eq.verbaende").or("liste.is.null,liste.neq.archiv"))).map(m => m.domain));
       const z = await alle(c, "presse_kontakte", "domain, schluessel, mail, mail_art, quelle_url", "domain",
         q => q.not("mail", "is", null).neq("mail_art", "werblich"));
       return z.filter(r => medien.has(r.domain))

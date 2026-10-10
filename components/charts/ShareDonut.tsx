@@ -12,7 +12,7 @@ export type DonutValue={label:string;value:number;visual?:string;visualCrop?:{wi
  * uses the theme accent; inactive segments share the neutral treatment.
  * Values default to installed kWp; other variants supply their own formatter.
  */
-export function ShareDonut({values,formatValue=pvLeistungTeile,defaultIndex,label="Solarleistung nach Anlagentyp",hideDefaultCard=false,centerVisual,centerVisualFocus=50,palette="accent",showLegend=true,showCenter=true,overview=false,totalCenter,legendColumns}:{values:DonutValue[];formatValue?:(value:number)=>{value:string;unit:string};defaultIndex?:number;label?:string;hideDefaultCard?:boolean;centerVisual?:string;centerVisualFocus?:number;palette?:"accent"|"neutral"|"accent-monochrome";showLegend?:boolean;showCenter?:boolean;overview?:boolean;totalCenter?:{value:string;unit:string;label:string};legendColumns?:4}){
+export function ShareDonut({values,formatValue=pvLeistungTeile,defaultIndex,label="Solarleistung nach Anlagentyp",hideDefaultCard=false,centerVisual,centerVisualFocus=50,palette="neutral",showLegend=true,showCenter=true,overview=false,totalCenter,legendColumns}:{values:DonutValue[];formatValue?:(value:number)=>{value:string;unit:string};defaultIndex?:number;label?:string;hideDefaultCard?:boolean;centerVisual?:string;centerVisualFocus?:number;palette?:"accent"|"neutral"|"accent-monochrome";showLegend?:boolean;showCenter?:boolean;overview?:boolean;totalCenter?:{value:string;unit:string;label:string};legendColumns?:4}){
  const [active,setActive]=useState<number|null>(null);
  const total=values.reduce((sum,row)=>sum+row.value,0);
  const selectedIndex=active??(overview?undefined:defaultIndex);

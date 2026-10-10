@@ -40,6 +40,7 @@ export default function BalkonPage() {
 
   return (
     <ErrorBoundary>
+      <div className="sc-calculator-page-boundary">
       <Balkon stand={standSeite("/balkonkraftwerk/rechner")} />
 
       <CalculatorContent inset>
@@ -108,6 +109,7 @@ export default function BalkonPage() {
           ]}
         />
 </CalculatorContent>
+      </div>
     </ErrorBoundary>
   );
 }

@@ -1,0 +1,8 @@
+# Existing Hetzner preparation environment, verified 2026-10-05.
+# Server Python only; never install in the website runtime or replace blindly.
+requests==2.34.2
+numpy==2.5.3
+shapely==2.1.2
+pyproj==3.8.0
+rasterio==1.5.2
+osmium==4.3.1

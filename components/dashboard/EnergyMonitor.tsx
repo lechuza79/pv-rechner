@@ -21,6 +21,7 @@ type Props = {
   topics?: MonitorTopicSection[];
   sectionStyle?: "plain" | "product";
   rootRef?: Ref<HTMLDivElement>;
+  single?: "currentPower" | "growth" | "stock" | keyof MonitorEnergyWidgets;
   className?: string;
   kpis?: ReactNode;
   currentPower?: ReactNode;
@@ -34,7 +35,11 @@ type Props = {
 /** The accepted municipality composition, shared by every regional level and embed.
  * Adapters supply widgets and data availability; section geometry lives only here.
  */
-export function EnergyMonitor({ rootRef, className = "", kpis, currentPower, growth, stock, energy, energyNotice, map, scheme = "dark", topics, sectionStyle = "plain" }: Props) {
+export function EnergyMonitor({ single, rootRef, className = "", kpis, currentPower, growth, stock, energy, energyNotice, map, scheme = "dark", topics, sectionStyle = "plain" }: Props) {
+  if (single) {
+    const content = single === "currentPower" ? currentPower : single === "growth" ? growth : single === "stock" ? stock : energy?.[single];
+    return <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme="dark" data-energy-monitor data-embed-layout-root>{content || <p>Für diesen Ort liegen noch keine Daten vor.</p>}</div>;
+  }
   return (
     <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme={scheme} data-energy-monitor data-section-style={sectionStyle} data-embed-layout-root>
       {topics?.map(topic => <section key={topic.id} id={topic.id} aria-labelledby={`${topic.id}-title`} className="sc-monitor-topic" data-chart-side={topic.chartSide}>

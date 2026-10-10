@@ -40,6 +40,9 @@ async function main() {
 
   const wind = new Map<string, { kw: number; n: number }>();
   for (const z of await alle((q) => q.eq("energietraeger", "wind"))) {
+    // German municipalities only. Swiss rows share the table since 07.10.2026
+    // ("chg0261"); the hero picture and its list are German.
+    if (!/^\d{8}$/.test(z.region_id)) continue;
     const w = wind.get(z.region_id) ?? { kw: 0, n: 0 };
     w.kw += Number(z.kwp);
     w.n += z.count;

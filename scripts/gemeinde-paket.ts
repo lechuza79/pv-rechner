@@ -54,7 +54,9 @@ const arg = (key: string) => process.argv.find((a) => a.startsWith(`--${key}=`))
 const CACHE = "scripts/.cache";
 const EDITION = arg("stand") ?? "2026-09-10";
 let RANG_STAND = "";
-const OUT = path.join(CACHE, "gemeinde-pakete", EDITION);
+// --ausgabe=<dir> writes elsewhere, e.g. to compare a code change against the
+// packages of the same edition without touching them.
+const OUT = arg("ausgabe") ?? path.join(CACHE, "gemeinde-pakete", EDITION);
 /** Periods follow the edition: the last complete month before it, and the
  *  three complete calendar years before its year (overridable for tests). */
 const [EY, EM] = EDITION.split("-").map(Number);
@@ -395,7 +397,24 @@ async function main() {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(RANG_STAND)) throw new Error("Atlas-Importdatum fehlt");
   const storage = read(`${CACHE}/bnetza/story-history-${EDITION}/storage.json`);
   if (storage.sourceDate !== EDITION) throw new Error("Speicher-Verlauf aus anderem Registerstand");
-  const regions = await db<Region[]>("mastr_regions?select=region_id,name,slug&region_id=not.like.________&limit=1000");
+  // States and districts only, read page by page in a fixed order. This read
+  // used to take "everything that is not a municipality" with a flat limit of
+  // 1,000 — fine until 2,254 associations (seven-digit keys) joined the table;
+  // then most districts fell out unsorted, and the 08.10.2026 packages said
+  // "Wir vergleichen 40 Orte in 14626" instead of the district's name.
+  const regions: Region[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const page = await db<Region[]>(
+      `mastr_regions?select=region_id,name,slug&or=(region_id.like.__,region_id.like._____)&order=region_id&offset=${offset}&limit=1000`,
+    );
+    regions.push(...page);
+    if (page.length < 1000) break;
+  }
+  // Every district and state the stats reach must have a name and a page, or
+  // the packages carry bare keys and dead links — refuse instead.
+  const known = new Set(regions.filter((r) => r.name && r.slug).map((r) => r.region_id));
+  const fehlend = [...new Set(stats.flatMap((s) => [s.regionId.slice(0, 2), s.regionId.slice(0, 5)]))].filter((id) => !known.has(id));
+  if (fehlend.length) throw new Error(`Name oder Seite fehlt für ${fehlend.length} Länder/Kreise, z. B. ${fehlend.slice(0, 5).join(", ")}`);
   const slugs = Object.fromEntries(regions.map((r) => [r.region_id, r.slug]));
   const regionNames = new Map(regions.map((r) => [r.region_id, r.name]));
   // --alle: the CURRENT municipalities of the Atlas, never the file listing of

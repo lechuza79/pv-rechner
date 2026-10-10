@@ -17,6 +17,7 @@
  * gerade an einer Quelle scheitert.
  */
 import { faelligkeiten, tageZwischen, PRUEFSTAND } from "../lib/pruefstand";
+import { marktName, marktVon, pruefSchluessel } from "../lib/markt";
 import { heuteInBerlin } from "../lib/zeit";
 
 const alle = process.argv.includes("--alle");
@@ -29,14 +30,28 @@ const heute = heuteInBerlin();
 
 const offen = faelligkeiten(heute);
 
+// Der Markt steht nur in der Zeile, wenn es mehr als einen gibt. Solange nur
+// Deutschland läuft, wäre „(Deutschland)" hinter jedem Eintrag eine Angabe ohne
+// Unterschied — und Angaben ohne Unterschied liest man irgendwann nicht mehr,
+// auch die mit Unterschied nicht.
+const maerkteImStand = new Set(PRUEFSTAND.map(marktVon));
+const markiere = (e: { markt?: Parameters<typeof marktName>[0] }) =>
+  maerkteImStand.size > 1 ? ` [${marktName(marktVon(e))}]` : "";
+
 if (alle) {
   console.log(`Prüfstand am ${heute}\n`);
   for (const e of PRUEFSTAND) {
     const alter = tageZwischen(e.geprueftIso, heute);
-    const faellig = offen.find(o => o.feld === e.feld);
+    // Über Markt UND Feld, nie über das Feld allein: Zwei Märkte dürfen
+    // denselben Feldnamen tragen, und dann markierte ein Vergleich nur über das
+    // Feld die falsche Zeile als überfällig — die eine sähe grundlos rot aus,
+    // die andere bliebe still fällig.
+    const faellig = offen.find(
+      o => pruefSchluessel(marktVon(o), o.feld) === pruefSchluessel(marktVon(e), e.feld),
+    );
     const marke = faellig ? "ÜBERFÄLLIG" : "ok        ";
     console.log(
-      `${marke}  ${e.was}\n` +
+      `${marke}  ${e.was}${markiere(e)}\n` +
       `            geprüft ${e.geprueftIso} (vor ${alter} ${alter === 1 ? "Tag" : "Tagen"})` +
       `${e.reviewBy ? `, Termin ${e.reviewBy}` : ""}\n` +
       `            ${e.waechter} — ${e.rhythmus}\n`
@@ -60,7 +75,7 @@ for (const o of offen) {
       : o.grund === "stillstand"
         ? `seit ${o.alterTage} Tagen unbewegt (erlaubt: ${o.maxAlterTage}) — läuft der Wächter noch?`
         : `Termin ${o.reviewBy} überzogen UND seit ${o.alterTage} Tagen unbewegt`;
-  console.log(`• ${o.was}\n  ${grund}\n  ${o.feld} · ${o.waechter} (${o.rhythmus}) · ${o.runbook}\n`);
+  console.log(`• ${o.was}${markiere(o)}\n  ${grund}\n  ${o.feld} · ${o.waechter} (${o.rhythmus}) · ${o.runbook}\n`);
 }
 
 // Exit 1, damit ein Wächter-Lauf die Liste nicht übersehen kann.

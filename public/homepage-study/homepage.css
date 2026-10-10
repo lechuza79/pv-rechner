@@ -1190,3 +1190,10 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.h
 .hs-tools .hs-five-tools.hs-six-tools .hs-tool .hs-tool-actions{margin-top:auto}
 @media(max-width:850px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.hs-tools .hs-five-tools.hs-six-tools{grid-template-columns:1fr}.hs-tools .hs-five-tools.hs-six-tools .hs-tool:nth-child(n){padding:24px}}
+
+/* Shared hero copy geometry for homepage and landscape integrations. */
+:root{--sc-hero-copy-width:720px;--sc-hero-copy-gap:75px;--sc-hero-mobile-description-width:285px}
+@media(min-width:1100px) and (max-width:1279px){:root{--sc-hero-copy-width:600px}}
+@media(min-width:701px) and (max-width:1099px){:root{--sc-hero-copy-width:360px;--sc-hero-copy-gap:60px}}
+@media(max-width:700px){:root{--sc-hero-copy-width:calc(100% - 2 * var(--sc-page-inset));--sc-hero-copy-gap:70px}}
+@media(min-width:701px){:is(.homepage-study,html[data-homepage-preview]) .hero-copy{width:var(--sc-hero-copy-width);padding-top:var(--sc-hero-copy-gap)}}

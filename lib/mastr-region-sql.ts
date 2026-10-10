@@ -10,18 +10,52 @@
  * Eine zweite handgetippte Kopie ist ein Fehler, kein Duplikat: Setup-Route und
  * Apply-Skript importieren jetzt beide von hier.
  *
- * DER PRÄFIX MUSS IM ABFRAGETEXT STEHEN — BLOCKER
- * -----------------------------------------------
- * Die Atlas-Hierarchie hängt am AGS-Präfix (2 = Land, 5 = Kreis, 8 = Gemeinde),
- * und `mastr_aggregates_gem` hat dafür einen Index. Der greift aber NUR, wenn der
- * Planer den Präfix beim Planen kennt. Supabase reicht die Argumente eines
- * Funktionsaufrufs als JSON-Nutzlast über einen LATERAL-Join herein — der Präfix
- * ist damit ein zur Planungszeit unbekannter Wert, und `region_id LIKE p_prefix ||
- * '%'` fällt auf einen vollständigen Durchlauf über alle 591.024 Zeilen zurück.
+ * DIE HIERARCHIE STEHT IM VERZEICHNIS, NICHT IN DEN STELLEN — BLOCKER
+ * -------------------------------------------------------------------
+ * Bis zum 06.10.2026 beantworteten diese Funktionen „welche Kinder hat diese
+ * Region" über die Zeichenlänge des Schlüssels (2 = Land, 5 = Kreis, 8 =
+ * Gemeinde) und „was liegt darunter" über den gemeinsamen Anfang. Das ist eine
+ * Eigenschaft des deutschen Gemeindeschlüssels, keine der Sache: Eine Zürcher
+ * Gemeindenummer beginnt nicht mit der ihres Kantons, und sie ist auch nicht
+ * fest sechsstellig — `region_id LIKE '1%'` träfe dort 12, 100 und 1234 mit.
+ *
+ * Seitdem kommen beide Fragen aus geschriebenen Beziehungen:
+ *   - WELCHE KINDER   → `mastr_regions.parent_region_id` (das amtliche
+ *     Verzeichnis schreibt es beim Import mit),
+ *   - WAS LIEGT DARUNTER → `mastr_region_mitglied` (Regionsschlüssel ×
+ *     Gemeinde, inklusive der Gemeinde als Mitglied von sich selbst).
+ *
+ * GEMESSEN, NICHT BEHAUPTET (06.10.2026, in der Datenbank, drei Läufe je Fall;
+ * der Rechner stand unter Last 38, eine Client-Messung wäre wertlos gewesen):
+ *
+ *   Kinder aus dem Rollup      Länge+Präfix → Verzeichnis
+ *     Länder des Bundes            34 ms  →   7 ms
+ *     Kreise Bayerns               53 ms  →  19 ms
+ *     Kreise NRWs                  42 ms  →  10 ms
+ *   Zeilen über die Rohtabelle   Präfix    → Mitgliedschaft
+ *     eine Gemeinde                 1 ms  →   1 ms
+ *     Gemeinden eines Kreises       4 ms  →   2 ms
+ *     bundesweit (nur Notfall)    385 ms  → 530 ms
+ *
+ * Die neue Form ist überall dort schneller, wo sie im Betrieb wirklich läuft.
+ * Langsamer ist allein der bundesweite Durchlauf über die Rohtabelle — und der
+ * ist der Selbstheilungs-Zweig, der nur greift, wenn der Rollup fehlt.
+ * Zeilenzahlen und Werte sind in allen Fällen gleich geblieben; die
+ * Kindermengen beider Regeln wurden zusätzlich über den GANZEN Bestand
+ * verglichen (`npm run region:kinder`, 0 Abweichungen).
+ *
+ * DER SCHLÜSSEL MUSS IM ABFRAGETEXT STEHEN — BLOCKER
+ * --------------------------------------------------
+ * `mastr_aggregates_gem` hat einen Index auf dem Gemeindeschlüssel. Der greift
+ * NUR, wenn der Planer den Wert beim Planen kennt. Supabase reicht die
+ * Argumente eines Funktionsaufrufs als JSON-Nutzlast über einen LATERAL-Join
+ * herein — der Schlüssel ist damit zur Planungszeit unbekannt, und die
+ * Bedingung fällt auf einen vollständigen Durchlauf über alle 595.962 Zeilen
+ * zurück.
  *
  * Gemessen am 28.07.2026 (Nordkirchen, sonst identische Abfrage):
- *   Präfix als Parameter (alt):  590–650 ms   ← jede Gemeindeseite, zweimal
- *   Präfix als Literal (neu):     67–80 ms   ← reine Netzlaufzeit, DB-Arbeit ~0
+ *   Schlüssel als Parameter:  590–650 ms   ← jede Gemeindeseite, zweimal
+ *   Schlüssel als Literal:     67–80 ms   ← reine Netzlaufzeit, DB-Arbeit ~0
  *
  * Der irreführende Teil: `EXPLAIN ANALYZE` mit einem Literal meldet 0,8 ms und
  * zeigt einen sauberen Index-Scan — die Bremse ist im Plan gar nicht zu sehen,
@@ -30,38 +64,48 @@
  * den echten, von Supabase umschlossenen Aufruf). WER HIER MISST, MUSS DEN
  * ECHTEN AUFRUFWEG MESSEN, nicht die Abfrage von Hand nachbauen.
  *
- * Deshalb bauen die Zweige, die auf die große Tabelle gehen, ihre Bedingung mit
- * `format(%L)` in den Abfragetext. Zwei Auswege wurden gemessen und verworfen:
- * Bereichsgrenzen statt LIKE (`region_id >= … AND <= …`) waren LANGSAMER, und ein
- * zusätzlicher Index bringt nichts — der vorhandene wird ja nur nicht benutzt.
+ * Deshalb bauen die Zweige, die auf die große Tabelle gehen, ihre Bedingung
+ * weiterhin mit `format(%L)` in den Abfragetext — jetzt mit dem Schlüssel der
+ * Mitgliedschaft statt mit einem Präfix-Muster.
  *
  * WAS SICH NICHT ÄNDERT
  * ---------------------
- * Die Zahlen. Alle vier Funktionen liefern Zeile für Zeile dasselbe wie zuvor
- * (geprüft über alle vier Ebenen und Stichproben quer durch die Republik,
- * scripts/atlas-verify.ts). Ebenso erhalten bleiben:
+ * Die Zahlen. Ebenso erhalten bleiben:
  *   - der schnelle Weg über den vorberechneten `mastr_region_rollup`
  *     (Bund/Land/Kreis = Punkt-Lookup),
  *   - die Selbstheilung: fehlt der Rollup-Schlüssel, wird live aggregiert statt
  *     leer geliefert — ein halber Rollup kann eine Seite nie brechen,
- *   - SECURITY INVOKER + die Rechtevergabe.
- *
- * Neu ist eine Eingangsprüfung: der Präfix darf nur Ziffern enthalten. Das ist
- * die Gegenprobe zum Einbau ins Abfragetext (zusätzlich zu `%L`) und macht den
- * Vertrag der Funktion sichtbar — ein AGS ist immer eine Ziffernfolge.
+ *   - SECURITY INVOKER + die Rechtevergabe,
+ *   - die Signaturen. `p_child_len` wird für die Auswahl der Ebene NICHT mehr
+ *     gebraucht (die Kinder stehen im Verzeichnis) und bleibt nur stehen, damit
+ *     bereits ausgeliefertes JavaScript weiter aufrufen kann. Es wird noch
+ *     geprüft, aber nicht mehr verwendet; herausgenommen wird es, wenn kein
+ *     Aufrufer es mehr mitschickt. Ein Parameter wegzunehmen, während die
+ *     laufende Seite ihn schickt, wäre ein Ausfall mitten im Betrieb.
  */
 
-/** Ziffernprüfung + erlaubte Präfixlängen, wortgleich in allen vier Funktionen. */
+/**
+ * Eingangsprüfung des Regionsschlüssels.
+ *
+ * Ziffern UND Kleinbuchstaben, weil die Wurzel eines Markts kein Zahlenwert
+ * ist (Deutschland trägt den leeren Schlüssel, ein zweiter Markt sein Kürzel).
+ * Die Sicherheit gegen Einbau in den Abfragetext liefert `%L`, nicht diese
+ * Prüfung — sie macht den Vertrag der Funktion sichtbar und fängt Unfug früh.
+ */
 const GUARD = `
-  IF p_prefix IS NULL OR p_prefix !~ '^[0-9]*$' THEN
-    RAISE EXCEPTION 'prefix must be digits only, got %', p_prefix USING ERRCODE = '22023';
+  IF p_prefix IS NULL OR p_prefix !~ '^[0-9a-z]*$' OR length(p_prefix) > 16 THEN
+    RAISE EXCEPTION 'region key must be digits/lowercase letters, max 16, got %', p_prefix USING ERRCODE = '22023';
   END IF;`;
 
-/** `AND a.region_id LIKE '<prefix>%'` als Text — leer beim Bundes-Schnitt. */
-const PREFIX_CLAUSE = `
-    CASE WHEN p_prefix = '' THEN ''
-         ELSE format('AND a.region_id LIKE %L', p_prefix || '%')
-    END`;
+/**
+ * `JOIN mastr_region_mitglied …` als Text: alle Gemeinden unter diesem
+ * Schlüssel. Der Schlüssel steht als Literal im Abfragetext (siehe Kopf).
+ *
+ * Die Gemeinde ist Mitglied von sich selbst, ein Markt-Wurzelschlüssel hat alle
+ * seine Gemeinden — damit gilt derselbe Verbund auf jeder Ebene, ohne Sonderweg.
+ */
+const MITGLIED_JOIN = `
+    format('JOIN mastr_region_mitglied m ON m.gemeinde_id = a.region_id AND m.region_key = %L', p_prefix)`;
 
 export const MASTR_REGION_FUNCTIONS_SQL = `
 -- ─── Eine Region, volle Reihe (Segment x Jahr), summiert über alles darunter ──
@@ -89,23 +133,28 @@ BEGIN${GUARD}
   END IF;
 
   -- Gemeinde-Ebene (und Selbstheilung, falls der Rollup leer ist): live über die
-  -- Rohtabelle. Der Präfix steht als Literal im Abfragetext — siehe Kopf.
+  -- Rohtabelle, eingegrenzt über die Mitgliedschaft.
   RETURN QUERY EXECUTE format($q$
     SELECT a.energietraeger, a.segment, a.year,
            sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
     FROM mastr_aggregates_gem a
-    WHERE a.energietraeger = ANY($1::text[]) %s
+    %s
+    WHERE a.energietraeger = ANY($1::text[])
     GROUP BY 1, 2, 3
-  $q$,${PREFIX_CLAUSE}
+  $q$,${MITGLIED_JOIN}
   ) USING p_traeger;
 END
 $fn$;
 
--- ─── Kinder einer Region, auf die verlangte AGS-Länge gruppiert ───────────────
+-- ─── Kinder einer Region ──────────────────────────────────────────────────────
 -- Bedient die Choropleth-Karte (16 Länder / ~400 Kreise) und die Ranglisten
 -- (~55 Gemeinden je Kreis). p_year_max schneidet die Historie an einem Jahr ab:
 -- mit der Vorjahreszahl entsteht die Rangliste von damals, gegen die das
 -- Rang-Delta auf der Gemeindeseite vergleicht.
+--
+-- WELCHE Kinder: die des Verzeichnisses. Der Bundes-Elternteil heißt dort 'de',
+-- während der Bundes-Schlüssel dieser Funktionen der leere String ist — die
+-- Umrechnung steht an EINER Stelle (p_eltern), nicht in jedem Zweig.
 DROP FUNCTION IF EXISTS mastr_children(text, int, text[], int);
 CREATE OR REPLACE FUNCTION mastr_children(
   p_prefix text,
@@ -118,16 +167,20 @@ RETURNS TABLE (region_id text, segment text, count bigint, kwp numeric, count_re
 LANGUAGE plpgsql
 STABLE
 AS $fn$
+DECLARE
+  p_eltern text;
 BEGIN${GUARD}
-  IF p_child_len NOT IN (2, 5, 8) THEN
+  IF p_child_len IS NOT NULL AND p_child_len NOT IN (2, 5, 8) THEN
     RAISE EXCEPTION 'child_len must be 2, 5 or 8, got %', p_child_len USING ERRCODE = '22023';
   END IF;
+  p_eltern := CASE WHEN p_prefix = '' THEN 'de' ELSE p_prefix END;
 
-  -- Land (2) / Kreis (5) aus dem Rollup — sofern er für diese Ebene befüllt ist.
-  IF p_child_len IN (2, 5) AND EXISTS (
+  -- Kinder, die selbst im Rollup stehen (Land, Kreis) — sofern er für sie
+  -- befüllt ist. Punkt-Lookups über den Elternteil statt Längenfilter.
+  IF EXISTS (
        SELECT 1 FROM mastr_region_rollup r2
-       WHERE length(r2.region_key) = p_child_len
-         AND (p_prefix = '' OR r2.region_key LIKE p_prefix || '%')
+         JOIN mastr_regions g2 ON g2.region_id = r2.region_key
+        WHERE g2.parent_region_id = p_eltern
      ) THEN
     RETURN QUERY
       SELECT r.region_key, r.segment,
@@ -135,24 +188,29 @@ BEGIN${GUARD}
              sum(CASE WHEN p_year_recent IS NOT NULL AND r.year = p_year_recent
                       THEN r.count ELSE 0 END)::bigint
       FROM mastr_region_rollup r
-      WHERE length(r.region_key) = p_child_len
-        AND (p_prefix = '' OR r.region_key LIKE p_prefix || '%')
+      JOIN mastr_regions g ON g.region_id = r.region_key
+      WHERE g.parent_region_id = p_eltern
         AND r.energietraeger = ANY(p_traeger)
         AND (p_year_max IS NULL OR r.year <= p_year_max)
       GROUP BY 1, 2;
     RETURN;
   END IF;
 
-  -- Gemeinde-Kinder (Länge 8) und Selbstheilung.
+  -- Kinder, die nicht im Rollup stehen (Gemeinden) und Selbstheilung: live über
+  -- die Rohtabelle. Gruppiert wird über den Schlüssel des KINDES aus der
+  -- Mitgliedschaft, nicht über eine abgeschnittene Zeichenkette.
   RETURN QUERY EXECUTE format($q$
-    SELECT left(a.region_id, %s) AS region_id, a.segment,
+    SELECT m.region_key AS region_id, a.segment,
            sum(a.count)::bigint, sum(a.kwp),
            sum(CASE WHEN $2::int IS NOT NULL AND a.year = $2::int THEN a.count ELSE 0 END)::bigint
-    FROM mastr_aggregates_gem a
-    WHERE a.energietraeger = ANY($1::text[])
-      AND ($3::int IS NULL OR a.year <= $3::int) %s
+    FROM mastr_region_mitglied m
+    JOIN mastr_aggregates_gem a ON a.region_id = m.gemeinde_id
+    JOIN mastr_regions g ON g.region_id = m.region_key
+    WHERE g.parent_region_id = %L
+      AND a.energietraeger = ANY($1::text[])
+      AND ($3::int IS NULL OR a.year <= $3::int)
     GROUP BY 1, 2
-  $q$, p_child_len,${PREFIX_CLAUSE}
+  $q$, p_eltern
   ) USING p_traeger, p_year_recent, p_year_max;
 END
 $fn$;
@@ -170,22 +228,25 @@ RETURNS TABLE (region_id text, segment text, year int, count bigint, kwp numeric
 LANGUAGE plpgsql
 STABLE
 AS $fn$
+DECLARE
+  p_eltern text;
 BEGIN${GUARD}
-  IF p_child_len NOT IN (2, 5, 8) THEN
+  IF p_child_len IS NOT NULL AND p_child_len NOT IN (2, 5, 8) THEN
     RAISE EXCEPTION 'child_len must be 2, 5 or 8, got %', p_child_len USING ERRCODE = '22023';
   END IF;
+  p_eltern := CASE WHEN p_prefix = '' THEN 'de' ELSE p_prefix END;
 
-  IF p_child_len IN (2, 5) AND EXISTS (
+  IF EXISTS (
        SELECT 1 FROM mastr_region_rollup r2
-       WHERE length(r2.region_key) = p_child_len
-         AND (p_prefix = '' OR r2.region_key LIKE p_prefix || '%')
+         JOIN mastr_regions g2 ON g2.region_id = r2.region_key
+        WHERE g2.parent_region_id = p_eltern
      ) THEN
     RETURN QUERY
       SELECT r.region_key, r.segment, r.year,
              sum(r.count)::bigint, sum(r.kwp), sum(r.kwh)
       FROM mastr_region_rollup r
-      WHERE length(r.region_key) = p_child_len
-        AND (p_prefix = '' OR r.region_key LIKE p_prefix || '%')
+      JOIN mastr_regions g ON g.region_id = r.region_key
+      WHERE g.parent_region_id = p_eltern
         AND r.energietraeger = ANY(p_traeger)
         AND (p_year_min IS NULL OR r.year >= p_year_min)
       GROUP BY 1, 2, 3;
@@ -193,19 +254,22 @@ BEGIN${GUARD}
   END IF;
 
   RETURN QUERY EXECUTE format($q$
-    SELECT left(a.region_id, %s) AS region_id, a.segment, a.year,
+    SELECT m.region_key AS region_id, a.segment, a.year,
            sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
-    FROM mastr_aggregates_gem a
-    WHERE a.energietraeger = ANY($1::text[])
-      AND ($2::int IS NULL OR a.year >= $2::int) %s
+    FROM mastr_region_mitglied m
+    JOIN mastr_aggregates_gem a ON a.region_id = m.gemeinde_id
+    JOIN mastr_regions g ON g.region_id = m.region_key
+    WHERE g.parent_region_id = %L
+      AND a.energietraeger = ANY($1::text[])
+      AND ($2::int IS NULL OR a.year >= $2::int)
     GROUP BY 1, 2, 3
-  $q$, p_child_len,${PREFIX_CLAUSE}
+  $q$, p_eltern
   ) USING p_traeger, p_year_min;
 END
 $fn$;
 
 -- ─── Rangliste der Gemeinden nach Solarleistung je Einwohner ─────────────────
--- p_prefix grenzt ein: '' = bundesweit, '09' = Bayern, '09679' = ein Kreis.
+-- p_prefix grenzt ein: '' = ganzer Markt, '09' = Bayern, '09679' = ein Kreis.
 -- Die Einwohnerzahl hier zu verbinden macht es überhaupt möglich — 10.943
 -- Gemeinden in Node zu sortieren hieße, die ganze Tabelle über die Leitung zu
 -- ziehen. p_min_pop/p_max_pop begrenzen auf eine Größenklasse: ohne sie führt
@@ -235,12 +299,13 @@ BEGIN${GUARD}
     WITH agg AS (
       SELECT a.region_id, sum(a.kwp) AS kwp
       FROM mastr_aggregates_gem a
+      %s
       WHERE a.energietraeger = 'solar'
         AND (
           $1::text = 'alle'
           OR ($1::text = 'privat' AND a.segment IN ('privat_dach', 'steckersolar'))
           OR ($1::text = 'gewerbe' AND a.segment IN ('gewerbe_dach', 'freiflaeche'))
-        ) %s
+        )
       GROUP BY 1
     ),
     ranked AS (
@@ -256,7 +321,7 @@ BEGIN${GUARD}
         AND ($3::int IS NULL OR r.population <= $3::int)
     )
     SELECT * FROM ranked ORDER BY rang LIMIT $4::int
-  $q$,${PREFIX_CLAUSE}
+  $q$,${MITGLIED_JOIN}
   ) USING p_owner, p_min_pop, p_max_pop, p_limit;
 END
 $fn$;

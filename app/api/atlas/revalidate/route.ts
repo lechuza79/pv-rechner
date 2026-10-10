@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { baueAuszeichnungen } from "../../../../lib/awards-server";
 import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG, KREIS_PAKET_TAG } from "../../../../lib/atlas-revalidate-routen";
+import { OUTREACH_VERLINKER_TAG } from "../../../../lib/atlas-outreach-freigabe";
 
 /**
  * ATLAS-SEITEN NACH DEM DATENLAUF FÜR UNGÜLTIG ERKLÄREN.
@@ -93,6 +94,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // An unknown scope must not fall through to the full 11,000-page run — an
+  // older deployment did exactly that with "umfang=outreach" (06.10.2026).
+  const umfang = req.nextUrl.searchParams.get("umfang");
+  if (umfang !== null && umfang !== "kreise" && umfang !== "outreach") {
+    return NextResponse.json({ ok: false, fehler: [{ schritt: "umfang", grund: `unbekannt: ${umfang}` }] }, { status: 400 });
+  }
+
   const erledigt: string[] = [];
   const fehler: { schritt: string; grund: string }[] = [];
 
@@ -105,6 +113,19 @@ export async function POST(req: NextRequest) {
       erledigt.push(`tag:${KREIS_PAKET_TAG}`);
     } catch (e) {
       fehler.push({ schritt: `tag:${KREIS_PAKET_TAG}`, grund: e instanceof Error ? e.message : String(e) });
+    }
+    const ok = fehler.length === 0;
+    return NextResponse.json({ ok, erledigt, fehler }, { status: ok ? 200 : 500 });
+  }
+
+  // After a letter send: only the list of written-to towns and the pages that
+  // read it (their index rule). No new data, so nothing else.
+  if (req.nextUrl.searchParams.get("umfang") === "outreach") {
+    try {
+      revalidateTag(OUTREACH_VERLINKER_TAG);
+      erledigt.push(`tag:${OUTREACH_VERLINKER_TAG}`);
+    } catch (e) {
+      fehler.push({ schritt: `tag:${OUTREACH_VERLINKER_TAG}`, grund: e instanceof Error ? e.message : String(e) });
     }
     const ok = fehler.length === 0;
     return NextResponse.json({ ok, erledigt, fehler }, { status: ok ? 200 : 500 });

@@ -6,6 +6,7 @@ import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
 import {ExportOnly, ExportIgnore} from '../WidgetExport';
 import {WIDGETS} from '../../lib/widget-registry';
 import styles from './GemeindeRankingWidget.module.css';
+import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 
 export type RankingPodiumData = {
   place: string; category: string; title: string; unit: string; scope: string; stand: string;
@@ -17,6 +18,7 @@ export type RankingPodiumData = {
 
 /** Pure visual: selection and rank calculations stay with the data adapter. */
 export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
+  const animate=useWidgetPresentation().autoplay??data.animate;
   const visualRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const node = visualRef.current;
@@ -113,15 +115,20 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
   const rows = data.rows.slice(0,3);
   const podium = rows.length === 3 ? [rows[1], rows[0], rows[2]] : rows;
   const growthOrder = [...rows.filter(row=>!row.own).sort((a,b)=>b.rank-a.rank), ...rows.filter(row=>row.own)];
-  const [elapsed,setElapsed] = useState(data.animate ? 0 : Infinity);
+  const [elapsed,setElapsed] = useState(animate ? 0 : Infinity);
   useEffect(()=>{
     if(data.missing)return;
-    if(!data.animate){data.onReveal?.();return;}
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(!animate||reduced.matches){setElapsed(Infinity);data.onReveal?.();return;}
+    setElapsed(0);
     let frame=0; const start=performance.now();
     const duration=rows.length*850+400+rows.length*930;
-    const tick=(now:number)=>{const time=now-start;setElapsed(time);if(time<duration)frame=requestAnimationFrame(tick);else data.onReveal?.();};
-    frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame);
-  },[data.category,data.scope,data.animate]);
+    const finish=()=>{cancelAnimationFrame(frame);setElapsed(Infinity);data.onReveal?.();};
+    const stop=()=>{if(reduced.matches)finish();};
+    const tick=(now:number)=>{if(reduced.matches){finish();return;}const time=now-start;setElapsed(time);if(time<duration)frame=requestAnimationFrame(tick);else data.onReveal?.();};
+    reduced.addEventListener('change',stop);
+    frame=requestAnimationFrame(tick);return()=>{cancelAnimationFrame(frame);reduced.removeEventListener('change',stop)};
+  },[data.category,data.scope,animate]);
   const displayValue=(row:RankingPodiumData['rows'][number])=>{
     const final=data.unit === "Anlagen / 1.000 Einwohner" ? row.value.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}) : row.formatted;
     const progress=Math.min(1,Math.max(0,(elapsed-growthOrder.indexOf(row)*850)/850));
@@ -131,12 +138,11 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
   };
   const max = Math.max(0, ...rows.map(row => row.value));
   return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={data.shareParams}
-    stand={data.stand} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
+    stand={data.stand} exportScope={data.scope} exportUnit={data.unit} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
     imageFormats={[{label:"Querformat · 16:9",width:960,height:540},{label:"Quadrat · 1:1",width:720,height:720},{label:"Hochformat · 4:5",width:720,height:900}]}
     title={heading} eyebrow="Die Top 3" subtitle={subtitle} help={/speicherquote/i.test(data.category) ? 'Angemeldete private Batteriespeicher je 100 private Dachanlagen. Die Bestände werden getrennt gezählt; dies ist nicht der Anteil der Dächer mit Speicher. Werte über 100 sind möglich.' : /je Einwohner/i.test(data.title) ? 'Installierter Bestand geteilt durch die Einwohnerzahl der angezeigten Vergleichsgruppe. Leistung und Speicherkapazität sind keine Messung der Stromerzeugung.' : 'In Betrieb gemeldete Anlagen laut Marktstammdatenregister. Verglichen wird die angezeigte Kategorie innerhalb der gewählten Vergleichsgruppe.'} helpExportNote={false} exportNote={null} className={styles.widget} data-story-scheme="light">
-    <div ref={visualRef} className={styles.visual} data-animate={data.animate || undefined} key={`${data.category}-${data.scope}`}>
-      <div className={styles.artwork} aria-hidden="true"><div className={styles.splash}/><img className={styles.backdrop} src={motif} alt=""/></div>
-      <ExportOnly><p className={styles.scope}>{data.scope}</p></ExportOnly>
+    <div data-podium-visual ref={visualRef} className={styles.visual} data-animate={animate || undefined} key={`${data.category}-${data.scope}`}>
+      <div data-widget-artwork className={styles.artwork} aria-hidden="true"><div className={styles.splash}/><img className={styles.backdrop} src={motif} alt=""/></div>
       {data.missing || !rows.length ? <p data-export-ready="false">{data.missing ?? 'Für diese Auswahl liegt keine Rangliste vor.'}</p> :
         <div className={styles.podium} key={`${data.category}-${data.scope}`}>
           {podium.map(row => <div key={row.id} className={styles.contender} data-own={row.own} style={{"--bar-fraction":max > 0 ? row.value / max : 0,"--grow-delay":`${growthOrder.indexOf(row)*850}ms`,"--reveal-delay":`${rows.length*850+400+growthOrder.indexOf(row)*930}ms`} as CSSProperties}>

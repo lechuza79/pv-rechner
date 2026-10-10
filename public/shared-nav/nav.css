@@ -1,4 +1,8 @@
 .site-header.sc-global-header{position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:24px;overflow:visible}
+/* While a flyout, the search or the account menu is open, the header (and with it the panel) must lie above the page's own sticky bars (flow actions, sticky CTA: z-index 60) and below dialogs and toasts. */
+.site-header.sc-global-header:is(.sc-menu-open,.sc-search-open,:has(details[open])){z-index:80}
+/* Some pages put the header inside its own stacking context (the simulation hero isolates); lift that container too, or a later section paints over the flyout. */
+:has(>.site-header.sc-global-header:is(.sc-menu-open,.sc-search-open)),:has(>.site-header.sc-global-header details[open]){z-index:80}
 .sc-global-nav{display:flex;align-items:center;gap:clamp(16px,2vw,30px);font:14px 'DM Sans',sans-serif;color:inherit}
 .sc-global-nav a,.sc-global-nav summary,.sc-global-nav button{font:inherit;color:inherit;text-decoration:none;cursor:pointer}
 .sc-global-nav>a,.sc-nav-group>summary{padding:16px 0;white-space:nowrap}
@@ -500,13 +504,3 @@
 /* iOS zooms into any field under 16px on focus; only the typed line grows. */
 @media(pointer:coarse){.sc-global-nav .sc-local-card input{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.sc-global-nav .sc-local-card,.sc-local-chevron{transition:none}}
-
-/* Topic and geographic entries share one monitor panel. */
-.sc-nav-section-monitor > .sc-nav-panel > .sc-nav-columns{grid-template-columns:repeat(2,minmax(0,1fr))}
-.sc-nav-section-monitor .sc-nav-column .sc-nav-tools{grid-template-columns:1fr}
-.sc-nav-section-monitor .sc-nav-tool .sc-hd{text-transform:none;letter-spacing:normal}
-@media(min-width:1281px){.sc-nav-section-monitor>.sc-nav-panel{overflow:visible}}
-@media(max-width:700px){.sc-nav-section-monitor > .sc-nav-panel > .sc-nav-columns{grid-template-columns:1fr}}
-
-.sc-nav-section-monitor .sc-nav-column > .sc-nav-tools{margin-bottom:8px}
-.sc-nav-section-monitor .sc-nav-column > .sc-local{margin-bottom:16px}

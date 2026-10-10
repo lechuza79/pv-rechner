@@ -2,7 +2,7 @@ import { ATOMSTROM_RELEASE_READY, ATOMSTROM_ARCHIVE_YEARS } from '../lib/atomstr
 import { getPageContentModifiedAt } from '../lib/page-content-state';
 import { getAnnualVariant } from './(site)/atomstrom-import/annual-variant';
 import { MetadataRoute } from "next";
-import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom, cityIndexFreigegeben } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingListFrom, cityIndexFreigegeben, type AtlasCity } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
@@ -29,6 +29,13 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const atomstromModifiedAt = ATOMSTROM_RELEASE_READY ? await getPageContentModifiedAt('/atomstrom-import') : undefined;
   const programs = await getFundingPrograms();
+  const {releasedAssociations,associationPath}=await import('../lib/verband-reference');
+  const {atlasPathForRegionId}=await import('../lib/atlas');
+  const associationPages=await Promise.all(releasedAssociations().map(async association=>{
+    const parent=await atlasPathForRegionId(association.districtId);
+    if(!parent)throw new Error('Released association district path missing');
+    return {url:BASE_URL+associationPath(parent,association.slug)};
+  }));
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
     const d = new Date(iso);
@@ -56,11 +63,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
   // wir ihm per noindex gerade verweigern.
+  // A city page shows every programme of its place (06.10.2026): it changed
+  // when the most recently verified of them was checked.
+  const geprueftAm = (c: AtlasCity): Date | undefined =>
+    fundingListFrom(programs, c)
+      .map((p) => toDate(p.lastVerified))
+      .filter((d): d is Date => !!d)
+      .sort((a, b) => b.getTime() - a.getTime())[0];
   const cityPages: MetadataRoute.Sitemap = liveCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c) ?? maxFundingDate,
       changeFrequency: "weekly",
       priority: 0.7,
     };
@@ -68,10 +81,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c) ?? maxFundingDate,
       changeFrequency: "monthly",
       priority: 0.5,
     };
@@ -214,6 +226,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
 
   return [
+    ...associationPages,
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
@@ -253,6 +266,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/atomstrom-import`, ...(atomstromModifiedAt ? { lastModified: atomstromModifiedAt } : {}), changeFrequency: "daily", priority: 0.7 },
     ...(ATOMSTROM_RELEASE_READY ? ATOMSTROM_ARCHIVE_YEARS.map(year => ({url: `${BASE_URL}/atomstrom-import/${year}`, lastModified: getAnnualVariant(year).annual.modifiedAt, changeFrequency: "yearly" as const, priority: 0.6})) : []),
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/fuer-organisationen/kommunen`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
     // Zitierfähigkeit: Die Lizenzseite ist die Stelle, die Redaktionen vor einer
     // Übernahme suchen — deshalb indexierbar und höher gewichtet als die reinen

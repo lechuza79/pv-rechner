@@ -56,7 +56,7 @@
 
 /* The savings flag crosses the following divider by eight pixels. */
 .pv-consumer-comparison .sc-category-pair{padding-bottom:0;margin-bottom:0}
-.pv-consumer-comparison .sc-category-pair>.sc-category-horizontal-label:last-child{box-sizing:border-box;min-height:calc(var(--pair-flag-height,76px) - 4px);margin-bottom:0;align-content:flex-start;row-gap:2px}
+.pv-consumer-comparison .sc-category-pair>.sc-category-horizontal-label:last-child{box-sizing:border-box;min-height:calc(var(--pair-flag-height,76px) + 16px);margin-bottom:0;align-content:flex-start;row-gap:2px}
 .pv-consumer-comparison .sc-category-pair-saving.sc-category-flag{--flag-center:calc(100cqw - 100px);width:168px;color:var(--color-text-primary)}
 .pv-consumer-comparison .sc-category-pair-saving.sc-category-flag:after{left:calc(50% - 6px)}
 @media(max-width:480px){
@@ -98,3 +98,18 @@
 .pv-consumer-scenarios[data-variant=editorial] .wp-product-navigation>button:last-child{right:0}
 
 .pv-consumer-scenarios[data-variant=editorial] .wp-product-navigation{inset:0;width:100%}
+
+/* Cards respond to their own available width, including narrow embeds. */
+.pv-consumer-options .wp-product-carousel{width:100%;margin-inline:0;padding-inline:0}
+@container product-carousel (min-width:380px) and (max-width:759px){
+ body .pv-consumer-options .wp-product-carousel-frame[data-desktop-slides="2"] .wp-geraete-kachel{flex:0 0 calc((100% - var(--carousel-gap)) / 2)}
+}
+@container (max-width:279px){
+ .pv-consumer-card .sc-result-choice-header{padding:116px 16px 20px;align-items:flex-start}
+ .pv-consumer-card .sc-result-choice-header>div>strong{padding-right:0;overflow-wrap:anywhere}
+ .pv-consumer-card .sc-result-choice-art,
+ .pv-consumer-card[data-consumer=ea] .sc-result-choice-art{left:4px;top:-12px;width:128px;height:128px}
+ .pv-consumer-card .sc-result-choice-art .sc-result-choice-illustration,
+ .pv-consumer-card[data-consumer=ea] .sc-result-choice-art .sc-result-choice-illustration{width:100%;height:100%}
+ .pv-consumer-card .sc-result-choice-action{width:44px;height:44px;right:10px;top:10px}
+}

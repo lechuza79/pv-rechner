@@ -10,6 +10,8 @@
  * Nutzung:
  *   npm run kommunen:versand -- --liste                      Schub-Liste ansehen
  *   npm run kommunen:versand -- --vorschau --n=5             fünf echte Briefe lesen
+ *   npm run kommunen:versand -- --pruefen                    VORFLUG: alle Bremsen ohne Senden,
+ *                                                        endet mit BEREIT / NICHT BEREIT
  *   npm run kommunen:versand -- --test=adresse@example.org   EINE Probemail an sich selbst
  *   npm run kommunen:versand -- --senden --limit=20
  *                                                        Geprüften Schub senden
@@ -37,6 +39,7 @@ import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from "node
 import {
   leseSmtpKonfig,
   fehlendePflichtangaben,
+  platzhalterLoecher,
   postfachBefund,
   mailKopfzeilen,
   adresseAus,
@@ -44,6 +47,7 @@ import {
   MAX_JE_LAUF,
   zustellprobeAdressen,
 } from "../lib/outreach-mail";
+import { dkimAktiv } from "../lib/outreach-dkim";
 import { versandfenster } from "../lib/schulferien";
 import { kommunenVersandtag } from "../lib/kommunen-versandtag";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
@@ -51,6 +55,8 @@ import { berlinOffset, heuteInBerlin } from "../lib/zeit";
 import { execFileSync } from "node:child_process";
 import { v2Urteil, type V2Urteil } from "../lib/contact-v2-gate";
 import { RECHECK_MAX_AGE_DAYS, REPO_ROOT, outDir, rulesVersion } from "./lib/contact-v2-config";
+import { handbelegLesen, handbelegNachpruefen } from "./lib/handbelege";
+import { indexierbarBefund } from "../lib/verlinkte-seiten";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -95,6 +101,8 @@ type Brief = {
   /** Dieselbe Nachricht als HTML, mechanisch aus dem Text erzeugt. */
   body_html: string;
   variante: string;
+  /** Press letter (with placement) or short info letter (without). */
+  briefart?: "platzierung" | "info";
   /** Belegte Domain der gemeinsamen Verwaltung, für die Empfängerprüfung. */
   verwaltung_domain: string | null;
   seite_url: string | null;
@@ -112,10 +120,10 @@ type Paket = {
   uebersprungen: { region_id: string; name: string | null; grund: string }[];
 };
 
-async function holePaket(basis: string, schub: string, charge: number, limit: number): Promise<Paket> {
+async function holePaket(basis: string, schub: string, charge: number, limit: number, probe?: string): Promise<Paket> {
   const secret = process.env.CRON_SECRET;
   if (!secret) throw new Error("CRON_SECRET fehlt — ohne ihn gibt der Endpunkt nichts heraus.");
-  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}`;
+  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}${probe ? `&probe=${encodeURIComponent(probe)}` : ""}`;
   const res = await fetch(url, { headers: { Authorization: `Bearer ${secret}` } });
   if (!res.ok) throw new Error(`Versandpaket ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return (await res.json()) as Paket;
@@ -133,6 +141,8 @@ function bremsen(b: Brief, heute: string, kontakt?: V2Urteil): string[] {
   if (!fenster.frei) gruende.push(fenster.grund);
   const fehlt = fehlendePflichtangaben(b.body);
   if (fehlt.length) gruende.push(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
+  const loecher = platzhalterLoecher(b.subject, b.body, b.body_html);
+  if (loecher.length) gruende.push(`leerer Platzhalter im Brief: ${loecher.join(", ")}`);
   // Auch hier, obwohl das Paket es schon geprüft hat: Es ist die einzige
   // Bremse, die entscheidet, ob eine natürliche Person angeschrieben wird, und
   // die einzige, die bis eben nur an einer Stelle stand.
@@ -225,63 +235,6 @@ function protokolliere(name: string, inhalt: unknown): string {
   return pfad;
 }
 
-/**
- * Ist DKIM überhaupt aktiv?
- *
- * SPF bricht bei JEDER Weiterleitung, DKIM überlebt sie — und diese
- * Empfängerliste besteht überwiegend aus kleinen Ortsgemeinden, deren
- * `info@`-Adresse an ein anderes Postfach weitergeleitet wird. Ohne DKIM heißt
- * das am Zielsystem `spf=fail, dkim=none, dmarc=fail`, bei einer Absenderdomain,
- * die dort noch nie etwas geschickt hat.
- *
- * DER SELEKTOR MUSS ANGEGEBEN WERDEN, ER LÄSST SICH NICHT RATEN.
- *
- * Erste Fassung fragte fest `default._domainkey` ab — der Konvention nach der
- * naheliegende Name. All-Inkl vergibt aber einen datierten eigenen Selektor
- * (`kas202603240809`), und die Zone von solar-check.io trägt zusätzlich einen
- * Wildcard-Eintrag: Damit ANTWORTET jede beliebige Selektor-Abfrage, nur eben
- * mit dem Wildcard-Ziel statt mit einem Schlüssel. Das Ergebnis las sich wie
- * „DKIM ist halb eingerichtet und kaputt", während es in Wahrheit längst lief.
- *
- * Eine geratene Prüfung ist schlimmer als keine: Sie behauptet einen Befund.
- * Deshalb kommt der Selektor aus der Umgebung (`OUTREACH_DKIM_SELECTOR`, mehrere
- * durch Komma getrennt), und ohne Angabe verweigert die Prüfung die Aussage.
- * Zu finden im KAS unter Tools → DNS-Einstellungen: der TXT-Eintrag, dessen
- * Name auf `._domainkey` endet und dessen Wert mit `v=DKIM1` beginnt.
- */
-async function dkimAktiv(domain: string): Promise<{ ok: boolean; hinweis: string }> {
-  const selektoren = (process.env.OUTREACH_DKIM_SELECTOR ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (!selektoren.length) {
-    return {
-      ok: false,
-      hinweis:
-        "OUTREACH_DKIM_SELECTOR ist nicht gesetzt — welcher Selektor signiert, lässt sich nicht raten " +
-        "(ein Wildcard-DNS-Eintrag beantwortet jede Abfrage). Im KAS unter Tools → DNS-Einstellungen den " +
-        "TXT-Eintrag suchen, dessen Name auf ._domainkey endet, und den Teil davor eintragen.",
-    };
-  }
-  for (const sel of selektoren) {
-    try {
-      const res = await fetch(`https://dns.google/resolve?name=${sel}._domainkey.${domain}&type=TXT`, {
-        headers: { accept: "application/dns-json" },
-      });
-      const json = (await res.json()) as { Answer?: { data: string }[] };
-      // Der Wert MUSS `v=DKIM1` enthalten — ein Wildcard-Treffer tut das nicht.
-      if ((json.Answer ?? []).some((a) => a.data.includes("v=DKIM1"))) {
-        return { ok: true, hinweis: `DKIM-Schlüssel veröffentlicht (Selektor ${sel})` };
-      }
-    } catch (e) {
-      return { ok: false, hinweis: `DKIM ließ sich nicht prüfen (${(e as Error).message}) — im Zweifel nicht senden.` };
-    }
-  }
-  return {
-    ok: false,
-    hinweis: `Unter ${selektoren.map((s) => `${s}._domainkey.${domain}`).join(", ")} steht kein Schlüssel mit v=DKIM1.`,
-  };
-}
 
 /**
  * Sperre gegen einen zweiten gleichzeitigen Lauf.
@@ -313,9 +266,22 @@ function sperreNehmen(): () => void {
   };
 }
 
-function kontaktPruefung(briefe: Brief[]): Map<string, V2Urteil> {
+async function kontaktPruefung(briefe: Brief[]): Promise<Map<string, V2Urteil>> {
   const out = outDir();
-  const recipients = briefe.map(b => ({ organizationId: b.region_id, email: b.empfaenger }));
+  const urteile = new Map<string, V2Urteil>();
+  // Proven by hand or by the follow-up search: recheck the publishing page here.
+  const ueberContactSuche: Brief[] = [];
+  for (const b of briefe) {
+    const beleg = handbelegLesen(b.region_id);
+    if (beleg && beleg.email.toLowerCase() === b.empfaenger.trim().toLowerCase()) {
+      const recheck = await handbelegNachpruefen(b.region_id, beleg);
+      if (!recheck.ok) console.log(`✗ ${b.region_id} ${b.empfaenger} — ${recheck.reason}`);
+      // "now" AFTER the recheck: a check stamped later than "now" counts as negative age.
+      urteile.set(b.region_id, v2Urteil(b.empfaenger, null, { ...recheck }, "", new Date(), RECHECK_MAX_AGE_DAYS, beleg));
+    } else ueberContactSuche.push(b);
+  }
+  if (!ueberContactSuche.length) return urteile;
+  const recipients = ueberContactSuche.map(b => ({ organizationId: b.region_id, email: b.empfaenger }));
   const file = resolve(out, `recheck-batch-${Date.now()}.json`);
   mkdirSync(out, { recursive: true });
   writeFileSync(file, JSON.stringify(recipients));
@@ -327,7 +293,10 @@ function kontaktPruefung(briefe: Brief[]): Map<string, V2Urteil> {
   const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
   const rules = rulesVersion();
   const now = new Date();
-  return new Map(briefe.map(b => [b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS)]));
+  for (const b of ueberContactSuche) {
+    urteile.set(b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS));
+  }
+  return urteile;
 }
 
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
@@ -344,7 +313,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   // die Adresse steht, wird noch einmal abgerufen. Ersetzt die erste
   // Generation, die verlangte, dass bundesweit KEINE Gemeinde mehr offen ist —
   // ein Zustand, der nie eintrat und den Versand dauerhaft sperrte.
-  const kontakt = kontaktPruefung(p.paket.slice(0, limit));
+  const kontakt = await kontaktPruefung(p.paket.slice(0, limit));
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];
   const dkim = await dkimAktiv(absenderDomain);
@@ -555,11 +524,55 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   });
   log();
   log(`${raus} von ${zuSenden.length} versendet · Protokoll: ${pfad}`, "ok");
+  if (raus > 0) {
+    const gesendet = new Set(protokoll.filter((e) => e.gesendet).map((e) => e.region_id));
+    const seiten = zuSenden.filter((b) => gesendet.has(b.region_id)).map((b) => b.seite_url).filter((u): u is string => !!u);
+    if (!(await seitenFreischalten(seiten))) process.exitCode = 1;
+  }
+}
+
+/**
+ * The letter links the town page, so the send releases it for search engines.
+ * The release is a cached list; without invalidating it the pages keep their
+ * "noindex" for up to a day (06.10.2026: all 95 still noindex hours later).
+ * Measured on real pages afterwards — a 200 from the route proves nothing.
+ */
+async function seitenFreischalten(seiten: string[]): Promise<boolean> {
+  const basis = arg("basis") ?? "https://solar-check.io";
+  let offen = [...new Set(seiten.map((u) => u.split("?")[0]))];
+  // EVERY sent page is checked, not a sample — the release is the point of
+  // this step, and a sample of three let 92 others go unseen. A failed check
+  // retries the release; after three rounds the run ends red.
+  for (let runde = 1; runde <= 3 && offen.length; runde++) {
+    const res = await fetch(`${basis}/api/atlas/revalidate?umfang=outreach`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }).catch(() => null);
+    if (!res?.ok) log(`Freischaltung: Aufruf fehlgeschlagen (${res?.status ?? "kein Abruf"}), Runde ${runde}`, "warn");
+    await new Promise((r) => setTimeout(r, 5000 * runde));
+    const nochZu: string[] = [];
+    for (const url of offen) {
+      const r = await fetch(url, { redirect: "manual", headers: { "User-Agent": "solar-check-health-check" } }).catch(() => null);
+      const befund = indexierbarBefund(r?.status ?? 0, r ? await r.text() : "");
+      if (befund) nochZu.push(url);
+    }
+    offen = nochZu;
+  }
+  if (offen.length) {
+    log(`${offen.length} von ${seiten.length} Ortsseiten stehen nach drei Freischalt-Runden noch auf noindex:`, "err");
+    for (const u of offen) log(`  ${u}`, "err");
+    return false;
+  }
+  log(`Alle ${seiten.length} Ortsseiten der verschickten Briefe sind für Google freigegeben (einzeln geprüft).`, "ok");
+  return true;
 }
 
 async function probemail(an: string, p: Paket): Promise<void> {
-  const b = p.paket[0];
-  if (!b) throw new Error("Kein Brief im Paket — erst die Charge festschreiben.");
+  // `--ags=` picks a specific letter, so both variants (with and without 3D
+  // scene) can be proofed before a run.
+  const wahl = arg("ags");
+  const b = wahl ? p.paket.find((x) => x.region_id === wahl) : p.paket[0];
+  if (!b) throw new Error(wahl ? `Kein Brief für ${wahl} im Paket.` : "Kein Brief im Paket — erst die Charge festschreiben.");
   // NIE AN EINE GEMEINDE. Der Probemail-Zweig läuft vor allen Bremsen — ein
   // Tippfehler im Parameter schickte den Brief mit „[PROBE]" im Betreff an ein
   // echtes Rathaus, und das wäre verbrannt.
@@ -620,6 +633,96 @@ function zahl(name: string, standard: number): number {
   return n;
 }
 
+/** Preflight; true when the charge may go out today as it stands. */
+async function vorflug(p: Paket, limit: number): Promise<boolean> {
+  const maengel: string[] = [];
+  const briefe = p.paket.slice(0, limit);
+  log(`Vorflug ${p.schub}, Charge ${p.charge}: ${briefe.length} Briefe im Paket`);
+
+  const tag = kommunenVersandtag(new Date());
+  if (!tag.ok) maengel.push(`Versandtag: ${tag.grund}`);
+  log(tag.ok ? "Versandtag in Ordnung" : `Versandtag: ${tag.grund}`, tag.ok ? "ok" : "err");
+
+  const { transport, konfig } = await baueTransport();
+  transport.close();
+  const dkim = await dkimAktiv(adresseAus(konfig.from).split("@")[1]);
+  log(dkim.hinweis, dkim.ok ? "ok" : "err");
+  if (!dkim.ok) maengel.push("DKIM");
+
+  // Same evidence check and per-letter brakes as the real run.
+  const kontakt = await kontaktPruefung(briefe);
+  let gehalten = 0;
+  for (const b of briefe) {
+    const halt = bremsen(b, p.heute, kontakt.get(b.region_id));
+    if (halt.length) {
+      gehalten++;
+      log(`${b.name} (${b.region_id}) ${b.empfaenger} — ${halt.join(" · ")}`, "err");
+    }
+  }
+  log(`${briefe.length - gehalten} von ${briefe.length} Briefen bestehen alle Bremsen.`, gehalten ? "warn" : "ok");
+
+  // Which letter goes out, counted — and towns dropped because the batch
+  // declares no letter for them are an OPEN DECISION, not a silent skip. The
+  // short letter for towns without a placement was decided once in a chat and
+  // lost; this is where such a gap now shows up before the go.
+  const proArt = new Map<string, number>();
+  for (const b of briefe) proArt.set(b.briefart ?? "platzierung", (proArt.get(b.briefart ?? "platzierung") ?? 0) + 1);
+  log(
+    `Briefarten: ${[...proArt].map(([a, n]) => `${n} ${a === "info" ? "Kurzbrief ohne Platzierung" : "Pressebrief mit Platzierung"}`).join(", ")}`,
+    "ok",
+  );
+  const ohneBrief = p.uebersprungen.filter((u) => /nicht vorgesehen/.test(u.grund));
+  if (ohneBrief.length) {
+    maengel.push(`${ohneBrief.length} Orte ohne festgelegte Briefart`);
+    log(
+      `${ohneBrief.length} Orte der Charge bekämen keinen Brief, weil der Schub ihre Briefart nicht festlegt: ` +
+        ohneBrief.map((u) => u.name ?? u.region_id).join(", "),
+      "err",
+    );
+  }
+
+  // Scenes are a separate session's work. The letter mentions the 3D view only
+  // where a scene is published; a letter without one blocks the send.
+  const ohneSzene = briefe.filter((b) => !b.body.includes("3D-Ansicht"));
+  log(
+    `${briefe.length - ohneSzene.length} von ${briefe.length} Briefen zeigen eine 3D-Szene` +
+      (ohneSzene.length ? ` — ohne: ${ohneSzene.map((b) => b.name).join(", ")}` : ""),
+    ohneSzene.length ? "err" : "ok",
+  );
+  // Every letter is meant to show its 3D scene (operator, 06.10.2026): a
+  // missing scene is not information but a gap to close before the send.
+  if (ohneSzene.length) maengel.push(`${ohneSzene.length} Briefe ohne 3D-Szene — Szenen nachziehen`);
+
+  // Every link a recipient can click, called once as a recipient would. This
+  // also warms the cold pages before the first real click.
+  const links = [...new Set(briefe.flatMap((b) => (b.body.match(/https:\/\/solar-check\.io[^\s)"<>]*/g) ?? []).map((u) => u.replace(/[.,]$/, ""))))];
+  const kaputt: string[] = [];
+  for (let i = 0; i < links.length; i += 6) {
+    await Promise.all(
+      links.slice(i, i + 6).map(async (u) => {
+        try {
+          const r = await fetch(u, { headers: { "user-agent": "solar-check-health-check" }, redirect: "follow" });
+          if (r.status !== 200) kaputt.push(`${r.status} ${u}`);
+        } catch (e) {
+          kaputt.push(`${(e as Error).message} ${u}`);
+        }
+      }),
+    );
+  }
+  for (const k of kaputt) log(k, "err");
+  log(`${links.length - kaputt.length} von ${links.length} Links antworten.`, kaputt.length ? "err" : "ok");
+  if (kaputt.length) maengel.push(`${kaputt.length} Links`);
+
+  log();
+  if (maengel.length) {
+    log(`NICHT BEREIT: ${maengel.join(" · ")}${gehalten ? ` · ${gehalten} Briefe würden zurückgehalten` : ""}`, "err");
+    return false;
+  }
+  if (gehalten) log(`BEREIT für ${briefe.length - gehalten} Briefe; ${gehalten} würden zurückgehalten (siehe oben).`, "warn");
+  else log(`BEREIT: alle ${briefe.length} Briefe.`, "ok");
+  return true;
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
 
@@ -636,12 +739,23 @@ async function main(): Promise<void> {
   }
   const pauseMs = arg("pause") ? zahl("pause", PAUSE_MS / 1000) * 1000 : PAUSE_MS;
 
-  const paket = await holePaket(basis, schub, charge, limit);
+  // A proof with --ags builds exactly that town's letter, in or out of a charge.
+  const paket = await holePaket(basis, schub, charge, limit, arg("test") ? arg("ags") : undefined);
 
   if (hat("liste")) return zeigeListe(paket);
   if (hat("vorschau")) {
     zeigeListe(paket);
     return zeigeVorschau(paket, zahl("n", 5));
+  }
+
+  // PREFLIGHT: every brake of the send run, without sending. One command, one
+  // verdict. Before 06.10.2026 "ready" meant "links and texts look fine"; the
+  // send then stopped at a rotated DKIM selector, after 31 letters had been
+  // found carrying "undefined". A check that only runs inside --senden is found
+  // out at the worst possible moment.
+  if (hat("pruefen")) {
+    process.exitCode = (await vorflug(paket, limit)) ? 0 : 1;
+    return;
   }
 
   const test = arg("test");

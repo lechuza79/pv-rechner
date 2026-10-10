@@ -8,6 +8,13 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
   "app/(site)/atomstrom-import/AtomstromPage.tsx":["../../../components/dashboard/EnergyMonitor","../../../components/DataSourcesSection","../../../components/MetricValue"],
+  'components/FlowNav.tsx':['./calculator/usePageActionLayout','./Modal','./ActionButton'],
+  'components/AffiliateActions.tsx':['./ActionButton'],
+  'components/calculator/ResultActions.tsx':['../ActionButton'],
+  'components/SecondaryButton.tsx':['./ActionButton'],
+  'components/KlebenderKnopf.tsx':['./calculator/usePageActionLayout'],
+  'components/StickyCta.tsx':['./calculator/usePageActionLayout'],
+  'components/Toast.tsx':['./calculator/usePageActionLayout'],
   'components/PvConsumerSection.tsx':['./PvConsumerFields','./PvConsumerComparison','./ResultChoiceHeader','./KlebenderKnopf','../lib/pv-consumer-model'],
   'components/PvConsumerExample.tsx':['./PvConsumerSection','./ResultSettings','./PvPlantFields'],
   'app/(site)/photovoltaik-rechner/rechner.tsx':['../../../components/PvConsumerSection','../../../components/PvPlantFields'],
@@ -21,6 +28,7 @@ const consumers: Record<string,string[]> = {
   'components/BalkonAngebot.tsx':['./AffiliateTrust','./AffiliateActions','./AffiliateCarousel','./AffiliateDetails'],
   'components/dashboard/ExportableWidgetFrame.tsx':['./WidgetFrame','../ChartOptionsMenu','../Modal','../WidgetExport','../../lib/useChartExport','../../lib/chart-animation-export'],
   'components/dashboard/WidgetFrame.tsx':['../InfoTooltip'],
+  'app/(embed)/embed/partner/[partner]/[...widget]/page.tsx':['../../../../../../components/gemeinde/GemeindeAnsicht','../../../../../../components/dashboard/WidgetPresentation','../../../../../../lib/municipal-widget-views'],
   'components/GlossaryTerm.tsx':['./InfoTooltip'],
   'components/InfoTooltipBindings.tsx':['./InfoTooltip'],
   'components/gemeinde/GemeindeMonitor.tsx':['../dashboard/EnergyMonitor','../dashboard/KpiOverview','../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],

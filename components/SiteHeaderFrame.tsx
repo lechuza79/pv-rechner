@@ -6,7 +6,7 @@ import Header from "./SharedSiteHeader";
 export default function SiteHeaderFrame({ bottomGap }: { bottomGap: number }) {
   const pathname = usePathname();
   const parts=pathname.split("/").filter(Boolean);
-  const isRegional=parts[0]==="solar-atlas" && parts.length<=3 && !["ranking","ranking-tief"].includes(parts[1]);
-  if(isRegional || (pathname === "/atomstrom-import" || /^\/atomstrom-import\/\d{4}$/.test(pathname)))return null;
+  const isRegional=parts[0]==="solar-atlas" && (parts.length<=3 || (parts.length===5 && parts[3]==="verbandsgemeinden")) && !["ranking","ranking-tief"].includes(parts[1]);
+  if(isRegional || pathname === "/atomstrom-import" || /^\/atomstrom-import\/\d{4}$/.test(pathname))return null;
   return <div className="site-header-frame" style={{ padding: `28px var(--header-frame-pad) ${bottomGap}px` }}><Header /></div>;
 }

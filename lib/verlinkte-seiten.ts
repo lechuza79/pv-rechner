@@ -24,12 +24,16 @@ export function verlinktePfade(
   const nach = new Map(regionen.map((r) => [r.region_id, r]));
   const out = new Map<string, VerlinkteSeite>();
   for (const id of [...new Set(gemeindeIds)].sort()) {
-    const g = nach.get(id);
+    // A publication can belong to a district itself (five digits, e.g. a
+    // newspaper linking the district page): then there is no municipality
+    // below it, and treating the district as one built a path that never existed.
+    const istKreis = id.length === 5;
+    const g = istKreis ? undefined : nach.get(id);
     const k = nach.get(id.slice(0, 5));
     const l = nach.get(id.slice(0, 2));
-    if (!g?.slug || !k?.slug || !l?.slug) continue;
+    if ((!istKreis && !g?.slug) || !k?.slug || !l?.slug) continue;
     const kreis = `/solar-atlas/${l.slug}/${k.slug}`;
-    out.set(`${kreis}/${g.slug}`, { pfad: `${kreis}/${g.slug}`, name: g.name });
+    if (g?.slug) out.set(`${kreis}/${g.slug}`, { pfad: `${kreis}/${g.slug}`, name: g.name });
     out.set(kreis, { pfad: kreis, name: k.name });
   }
   return [...out.values()];
@@ -50,5 +54,25 @@ export function verlinkteSeiteBefund(status: number, html: string, name: string)
   const titel = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
   const kern = name.replace(/^(Landkreis|Kreis|Stadt)\s+/, "").replace(/\s*\(.*\)$/, "");
   if (!titel.includes(kern)) return `Seitentitel nennt „${kern}" nicht (${titel.slice(0, 60) || "kein Titel"})`;
+  return null;
+}
+
+/**
+ * A page named in a letter must be indexable once the letter is out.
+ *
+ * WHY (06.10.2026): The rule "a town's page goes live when its letter goes
+ * out" existed since 01.09.2026 — and was never measured. On 06.10.2026 all 95
+ * pages of that day's batch still said "noindex" hours after the send, because
+ * the list of written-to towns sat in a 24-hour cache. Nobody noticed until
+ * the operator asked. The send now releases the pages itself and checks
+ * every page it linked with this function; it ends red if one stays closed.
+ *
+ * Returns null when the page may be indexed, otherwise the reason.
+ */
+export function indexierbarBefund(status: number, html: string): string | null {
+  if (status === 301 || status === 308) return null;
+  if (status !== 200) return `HTTP ${status || "keine Antwort"}`;
+  const robots = [...html.matchAll(/<meta[^>]+name=["']robots["'][^>]*>/gi)].map((m) => m[0]);
+  if (robots.some((tag) => /noindex/i.test(tag))) return "steht noch auf „nicht indexieren“";
   return null;
 }

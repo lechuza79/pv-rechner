@@ -6,8 +6,9 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, deckt, foerdergebiete, foerdertDach, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
+import { nurBalkon } from "./foerder-stadt-meta";
 import { heuteInBerlin } from "./zeit";
 
 export interface AtlasCity {
@@ -58,75 +59,90 @@ export interface AtlasCity {
    * keinen Punkt, an dem man messen könnte.
    */
   yieldKwhKwp: number;
-  /** Id into FUNDING_PROGRAMS. Nur nötig, wenn die Zuordnung über den
-   *  Gemeindeschlüssel nicht eindeutig ist — sonst leitet fundingFor() sie ab. */
+  /** Id into FUNDING_PROGRAMS. Bestimmt bei gleich engem Fördergebiet, welches
+   *  Programm die Seite anführt — gezeigt werden alle (fundingListFrom). */
   fundingId?: string;
 }
 
 /**
- * Das Förderprogramm dieser Stadt — abgeleitet, nicht von Hand gepflegt.
+ * Das Förderprogramm dieser Stadt, das die Seite anführt — abgeleitet, nicht
+ * von Hand gepflegt. Es ist der erste Eintrag von {@link fundingListFrom}.
  *
- * WARUM (18.08.2026): Katalog und Städte-Verzeichnis waren zwei Listen, die
- * auseinanderliefen. Herne und Ludwigshafen standen längst im Verzeichnis, ihre
- * neu aufgenommenen Programme aber blieben unsichtbar, weil niemand das Feld
- * `fundingId` nachgetragen hatte — die Seite existierte, sagte aber nichts vom
- * Programm. Ein zweites Verzeichnis, das man synchron halten MUSS, wird
- * irgendwann nicht synchron gehalten.
+ * WARUM ABGELEITET (18.08.2026): Katalog und Städte-Verzeichnis waren zwei
+ * Listen, die auseinanderliefen. Herne und Ludwigshafen standen längst im
+ * Verzeichnis, ihre neu aufgenommenen Programme aber blieben unsichtbar, weil
+ * niemand das Feld `fundingId` nachgetragen hatte. Ein zweites Verzeichnis, das
+ * man synchron halten MUSS, wird irgendwann nicht synchron gehalten.
  *
- * Deshalb: Steht kein `fundingId` da, wird das Programm über den
- * Gemeindeschlüssel gesucht — dieselbe Zuordnung, die auch der Rechner benutzt.
- * Ein gesetztes `fundingId` gewinnt weiterhin, für die Fälle, in denen mehrere
- * Programme auf denselben Schlüssel passen.
+ * Für Fragen, die EIN Programm brauchen (Sitemap-Datum, Kartenzeile der
+ * Landesübersicht). Wer wissen will, was an einem Ort gilt, fragt die Liste.
  */
 export function fundingFor(c: AtlasCity): FundingProgram | undefined {
   return fundingForFrom(allFundingPrograms(), c);
 }
 
-/**
- * Dieselbe Zuordnung über einer FREMDEN Programmliste — für die Seiten, die
- * ihre Daten aus der Datenbank lesen statt aus dem Code-Seed.
- *
- * Ohne diese Variante lösten Stadtseiten, Bundesland-Übersicht und Sitemap
- * weiterhin über das handgepflegte `fundingId` auf: Die drei neu verknüpften
- * Städte hätten eine Seite bekommen, auf der kein Programm steht. Die Ableitung
- * muss überall dieselbe sein, sonst verschiebt sich die Drift nur eine Ebene
- * tiefer.
- */
+/** Dieselbe Zuordnung über einer FREMDEN Programmliste (Datenbank statt Code-Seed). */
 export function fundingForFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram | undefined {
-  if (c.fundingId) return programs.find((p) => p.id === c.fundingId);
+  return fundingListFrom(programs, c)[0];
+}
 
-  // Ein Programm gilt für diese Stadt, wenn ihr Gemeindeschlüssel INNERHALB des
-  // Fördergebiets liegt: Land (2 Stellen) ⊃ Kreis/kreisfreie Stadt (5) ⊃
-  // Gemeinde (8). Die Stadt trägt hier fünf Stellen.
-  //
-  // Zwei Fehler der ersten Fassung, gefunden in der Prüfrunde am 18.08.2026:
-  //
-  //  1. Sie kürzte den Programm-Schlüssel auf fünf Stellen. Damit hätte
-  //     Höhr-Grenzhausens Zuschuss (07143032) dem GANZEN Westerwaldkreis
-  //     gegolten, sobald jemand dafür einen Eintrag anlegt — ein Dorfprogramm,
-  //     das für jede Postleitzahl des Kreises Geld abzieht. Ein achtstelliger
-  //     Schlüssel ist ENGER als die Stadtzeile und darf sie deshalb nie treffen.
-  //  2. Bei mehreren Treffern gab sie `undefined` zurück. Landesprogramme
-  //     (Berlin 11, Bremen 04) passen aber auf jede Stadt ihres Landes: Bekäme
-  //     Bremerhaven ein eigenes Programm, hätten sich Land und Kommune
-  //     gegenseitig aufgehoben und die Seite wäre still auf 404 gefallen.
-  //     Richtig ist der SPEZIFISCHERE Schlüssel — die Kommune schlägt das Land.
-  // Ein Programm kann MEHRERE Fördergebiete haben (Verbandsgemeinden, deren
-  // Ortsgemeinden sich keinen eigenen Schlüssel teilen). Verglichen wird
-  // deshalb über `deckt`, und die Spezifität ist die Länge des Gebiets, das
-  // wirklich getroffen hat — nicht die des ersten Feldes.
-  const treffer = (p: FundingProgram): string | undefined =>
-    foerdergebiete(p)
-      .filter((g) => g.length <= c.ags.length && c.ags.startsWith(g))
-      .sort((x, y) => y.length - x.length)[0];
-  const passend = programs
-    .filter((p) => p.level !== "bund" && !!treffer(p))
-    .sort((a, b) => (treffer(b)!.length - treffer(a)!.length));
+/** Alle Programme, die die Förderseite dieses Orts zeigt (Code-Seed). */
+export function fundingListFor(c: AtlasCity): FundingProgram[] {
+  // Der Code-Seed ändert sich zur Laufzeit nicht; die Liste wird je Ort einmal
+  // gerechnet. Ohne das kostet jede Freigabe-Frage einen Durchlauf über den
+  // ganzen Katalog, und Sitemap, Landesübersicht und Routen fragen sie für
+  // jeden Ort mehrfach.
+  let liste = listenCache.get(c);
+  if (!liste) {
+    liste = fundingListFrom(allFundingPrograms(), c);
+    listenCache.set(c, liste);
+  }
+  return liste;
+}
+const listenCache = new WeakMap<AtlasCity, FundingProgram[]>();
 
-  // Gleich spezifisch und trotzdem mehrere: echte Mehrdeutigkeit, dann gehört
-  // `fundingId` gesetzt. Raten wäre hier schlimmer als nichts zu zeigen.
-  if (passend.length > 1 && treffer(passend[0])!.length === treffer(passend[1])!.length) return undefined;
-  return passend[0];
+/**
+ * ALLE Programme, die die Förderseite dieses Orts zeigt — eigene Gemeinde,
+ * Verbandsgemeinde/Amt, Landkreis, bei Stadtstaaten das Land.
+ *
+ * WARUM EINE LISTE (06.10.2026, Betreiber-Auftrag): Bis dahin zeigte jede
+ * Stadtseite genau EIN Programm, das spezifischste. Orte mit mehreren gingen
+ * leer aus — Tübingen fördert Dachanlagen, Balkonkraftwerke und Wärmepumpen
+ * in drei Programmen, die Seite zeigte nur das Dach; Hockenheim hat ein
+ * Balkon- und ein Heizungsprogramm, Hillscheid das eigene und das der
+ * Verbandsgemeinde, Würselen das eigene und das der StädteRegion. Die Seite
+ * soll beantworten, was hier gilt — nicht, was am engsten gilt.
+ *
+ * Wer dazugehört: jedes Programm, dessen Fördergebiet den Ort ENTHÄLT
+ * ({@link deckt} — nie umgekehrt: ein Dorfzuschuss gilt nie für den Kreis).
+ * Draußen bleiben:
+ *  - Bundesprogramme (gelten überall, sagen über den Ort nichts);
+ *  - Landesprogramme der Flächenländer (sonst stünde dieselbe Auskunft unter
+ *    jedem Ortsnamen des Landes, siehe programmTraegtStadtseite);
+ *  - Programme mit Status „unsicher": Was wir nicht belegen können, zeigen wir
+ *    auf keiner Seite.
+ *
+ * Reihenfolge: laufende Programme zuerst, dann das engste Fördergebiet (die
+ * Gemeinde vor der Verbandsgemeinde vor dem Kreis), dann ein gesetztes
+ * `fundingId`, dann die Technik (Dach vor Balkon vor Wärmepumpe).
+ */
+export function fundingListFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram[] {
+  const gesetzt = c.fundingId;
+  // Die Spezifität ist die Länge des Gebiets, das wirklich getroffen hat —
+  // ein Verbandsgemeinde-Programm trägt mehrere Gebiete (foerdergebiete).
+  const enge = (p: FundingProgram): number =>
+    Math.max(0, ...foerdergebiete(p).filter((g) => g.length <= c.ags.length && c.ags.startsWith(g)).map((g) => g.length));
+  const rang = (p: FundingProgram): number => (foerdertDach(p) ? 0 : nurBalkon(p) ? 1 : 2);
+  return programs
+    .filter((p) => p.level !== "bund" && p.status !== "unsicher" && programmTraegtStadtseite(p))
+    .filter((p) => p.id === gesetzt || deckt(p, c.ags))
+    .sort(
+      (a, b) =>
+        Number(b.status === "aktiv") - Number(a.status === "aktiv") ||
+        enge(b) - enge(a) ||
+        Number(b.id === gesetzt) - Number(a.id === gesetzt) ||
+        rang(a) - rang(b),
+    );
 }
 
 export const ATLAS_CITIES: AtlasCity[] = [
@@ -511,6 +527,10 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "heddesheim", name: "Heddesheim", ags: "08226028", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1072 },
   { slug: "leimen", name: "Leimen", ags: "08226041", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1114 },
   { slug: "hemsbach", name: "Hemsbach", ags: "08226031", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1069 },
+  { slug: "walldorf", name: "Walldorf", ags: "08226095", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1123 },
+  { slug: "hirschberg-bergstrasse", name: "Hirschberg (Bergstraße)", ags: "08226107", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1051 },
+  { slug: "schwetzingen", name: "Schwetzingen", ags: "08226084", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "hockenheim", name: "Hockenheim", ags: "08226032", fundingId: "hockenheim-stadtwerke-balkon", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1113 },
   { slug: "laudenbach", name: "Laudenbach", ags: "08226040", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1075 },
   { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
   { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
@@ -554,6 +574,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023 },
   { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108 },
   { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007 },
+  { slug: "kaufungen", name: "Kaufungen", ags: "06633015", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 978 },
   { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097 },
   { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
   { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052 },
@@ -621,6 +642,68 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // Gemeinde Niederkrüchten (Kreis Viersen), 21.09.2026: Förderprogramm Klimaschutz
   // 2026. Standort-Ertrag über /api/pvgis an der repräsentativen Lage gemessen (PLZ 41366).
   { slug: "niederkruechten", name: "Niederkrüchten", ags: "05166020", kreis: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1065 },
+
+  // Reine Balkon-Programme ohne bisherigen Eintrag, 06.10.2026 (Betreiber-
+  // Entscheidung: jeder Ort mit Balkon-Programm bekommt seine Förderseite,
+  // formuliert als „Balkonkraftwerk-Förderung"). Namen und Schlüssel aus der
+  // PLZ-Gemeinde-Tabelle, die Fördergebiete aus dem Katalog; Standort-Ertrag
+  // über /api/pvgis an der repräsentativen Lage gemessen. Samt- und
+  // Verbandsgemeinden: je Mitgliedsgemeinde eine Seite (Muster Ostheide).
+  { slug: "mehren", name: "Mehren", ags: "07132069", kreis: "Landkreis Altenkirchen", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1025 },
+  { slug: "holzminden", name: "Holzminden", ags: "03255023", kreis: "Landkreis Holzminden", bundesland: "Niedersachsen", yieldKwhKwp: 954 },
+  // Kreisprogramm: ein Kreis hat keinen einen Messpunkt — gemessen an der
+  // Kreisstadt Stadthagen (PLZ 31655), wie ein Handwert zu lesen.
+  { slug: "landkreis-schaumburg", name: "Landkreis Schaumburg", ags: "03257", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  { slug: "suedheide", name: "Südheide", ags: "03351026", kreis: "Landkreis Celle", bundesland: "Niedersachsen", yieldKwhKwp: 973 },
+  { slug: "cremlingen", name: "Cremlingen", ags: "03158006", kreis: "Landkreis Wolfenbüttel", bundesland: "Niedersachsen", yieldKwhKwp: 1030 },
+  { slug: "goedenstorf", name: "Gödenstorf", ags: "03353013", kreis: "Landkreis Harburg", bundesland: "Niedersachsen", yieldKwhKwp: 997 },
+  // Würselen liegt auch im Gebiet des (pausierten) Kreisprogramms der
+  // StädteRegion, gleich spezifisch — deshalb fundingId.
+  { slug: "wuerselen", name: "Würselen", ags: "05334036", kreis: "StädteRegion Aachen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1070, fundingId: "wuerselen-balkonkraftwerke" },
+  { slug: "eckental", name: "Eckental", ags: "09572121", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1065 },
+  { slug: "fritzlar", name: "Fritzlar", ags: "06634005", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1046 },
+  { slug: "ehningen", name: "Ehningen", ags: "08115013", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
+  { slug: "mauer", name: "Mauer", ags: "08226048", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1115 },
+  { slug: "rauschenberg", name: "Rauschenberg", ags: "06534017", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1038 },
+  { slug: "schwarzenfeld", name: "Schwarzenfeld", ags: "09376163", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1074 },
+  { slug: "kumhausen", name: "Kumhausen", ags: "09274146", kreis: "Landkreis Landshut", bundesland: "Bayern", yieldKwhKwp: 1122 },
+  { slug: "mutterstadt", name: "Mutterstadt", ags: "07338019", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1121 },
+  { slug: "adendorf", name: "Adendorf", ags: "03355001", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
+  // Samtgemeinde Ilmenau
+  { slug: "barnstedt", name: "Barnstedt", ags: "03355006", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  { slug: "deutsch-evern", name: "Deutsch Evern", ags: "03355014", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "embsen", name: "Embsen", ags: "03355016", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 994 },
+  { slug: "melbeck", name: "Melbeck", ags: "03355024", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 999 },
+  // Samtgemeinde Scharnebeck
+  { slug: "artlenburg", name: "Artlenburg", ags: "03355003", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
+  { slug: "brietlingen", name: "Brietlingen", ags: "03355011", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
+  { slug: "echem", name: "Echem", ags: "03355015", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "hittbergen", name: "Hittbergen", ags: "03355018", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1015 },
+  { slug: "hohnstorf-elbe", name: "Hohnstorf (Elbe)", ags: "03355019", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1015 },
+  { slug: "luedersburg", name: "Lüdersburg", ags: "03355021", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "rullstorf", name: "Rullstorf", ags: "03355032", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "scharnebeck", name: "Scharnebeck", ags: "03355033", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  // Verbandsgemeinde Ransbach-Baumbach
+  { slug: "alsbach", name: "Alsbach", ags: "07143001", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "breitenau", name: "Breitenau", ags: "07143006", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "caan", name: "Caan", ags: "07143007", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "deesen", name: "Deesen", ags: "07143009", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "hundsdorf", name: "Hundsdorf", ags: "07143038", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1023 },
+  { slug: "nauort", name: "Nauort", ags: "07143050", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "oberhaid", name: "Oberhaid", ags: "07143059", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "ransbach-baumbach", name: "Ransbach-Baumbach", ags: "07143062", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1023 },
+  { slug: "sessenbach", name: "Sessenbach", ags: "07143068", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "wirscheid", name: "Wirscheid", ags: "07143082", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  { slug: "wittgert", name: "Wittgert", ags: "07143084", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1021 },
+  // Verbandsgemeinde Höhr-Grenzhausen: die Stadt selbst und Hillscheid tragen
+  // ihre eigenen Dach-Programme (fundingId oben), die übrigen beiden das
+  // Balkon-Programm der Verbandsgemeinde.
+  { slug: "hilgert", name: "Hilgert", ags: "07143030", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1004 },
+  { slug: "kammerforst", name: "Kammerforst", ags: "07143040", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1004 },
+  { slug: "oberviechtach", name: "Oberviechtach", ags: "09376151", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1051 },
+  { slug: "maxhuette-haidhof", name: "Maxhütte-Haidhof", ags: "09376141", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1073 },
+  { slug: "bruck-i-d-opf", name: "Bruck i.d.OPf.", ags: "09376117", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1079 },
+  { slug: "bad-kreuznach", name: "Bad Kreuznach", ags: "07133006", kreis: "Landkreis Bad Kreuznach", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1116 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {
@@ -666,14 +749,28 @@ export function bundeslaenderWithCities(): { name: string; slug: string }[] {
 // to include inactive programs to re-expand the catalog.
 
 /**
- * True if the city has its own program, it is currently active AND it funds
- * rooftop PV. An active balcony-only program (München) is shown as an archive
- * page: the page is a "Photovoltaik-Förderung" page and must not present a
- * balcony grant as running PV funding (01.10.2026).
+ * Does the programme fund a technology a funding city page is written for —
+ * rooftop PV, or balcony systems (then the page is worded as
+ * "Balkonkraftwerk-Förderung", see stadtseiteFall)? A heat-pump-only programme
+ * does not: a page titled "Photovoltaik-Förderung" would promise money it does
+ * not pay. Since 06.10.2026 (operator decision); before, balcony-only
+ * programmes were held back, first for low search volume (19.08.2026), which
+ * lib/seo-grundregeln.ts rejects as a reason.
+ */
+export function foerdertStadtseitenTechnik(p: FundingProgram): boolean {
+  return foerdertDach(p) || nurBalkon(p);
+}
+
+/**
+ * True if at least ONE programme the page shows (fundingListFor) is currently
+ * active AND funds rooftop PV or balcony systems. An active balcony-only
+ * programme is a live page since 06.10.2026, worded as
+ * "Balkonkraftwerk-Förderung". Since the page shows every programme of the
+ * place (06.10.2026), the rule is evaluated over the set: an ended programme
+ * may stand on a page that exists, but never creates one on its own.
  */
 export function isCityLive(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  return p?.status === "aktiv" && foerdertDach(p);
+  return fundingListFor(c).some((p) => p.status === "aktiv" && foerdertStadtseitenTechnik(p));
 }
 
 /** Cities with a live (active) program — drives page generation, sitemap, listings. */
@@ -727,9 +824,10 @@ function programmTraegtStadtseite(p: FundingProgram | undefined): boolean {
 
 /** True if the city's own program is inactive but published as an archive page. */
 export function isCityArchived(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  if (!programmTraegtStadtseite(p)) return false;
-  return ARCHIVE_STATUSES.includes(p!.status) || (p!.status === "aktiv" && !foerdertDach(p!));
+  if (isCityLive(c)) return false;
+  return fundingListFor(c).some(
+    (p) => ARCHIVE_STATUSES.includes(p.status) || (p.status === "aktiv" && !foerdertStadtseitenTechnik(p)),
+  );
 }
 
 /** Cities with an inactive (archived) program. */
@@ -829,10 +927,14 @@ export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): bo
  *      eingestellter Topf ergibt eine Förderseite ohne abrufbares Geld — sie
  *      beantwortet die Frage nicht, für die jemand kommt (Göttingen, Weyhe,
  *      Feucht); dieselbe Begründung wie beim zurückgenommenen Archiv-Schub.
- *   2. Es muss DACH-Photovoltaik fördern. Eine Seite mit dem Titel
- *      „Photovoltaik-Förderung“, die nur Balkonkraftwerke fördert, hält nicht,
- *      was sie verspricht — betrifft heute 35 Orte, die eine eigene
- *      Seitenfamilie brauchen.
+ *   2. Es muss DACH-Photovoltaik ODER Balkonkraftwerke fördern. Ein reines
+ *      Balkon-Programm trägt seit dem 06.10.2026 (Betreiber-Entscheidung) seine
+ *      Seite unter derselben Adresse, aber als „Balkonkraftwerk-Förderung“
+ *      formuliert — dieselbe Weiche (stadtseiteFall), keine eigene
+ *      Seitenfamilie. Zurückgehalten wurden diese Orte vorher wegen geringer
+ *      gemessener Nachfrage, und die ist kein Grund (seo-grundregeln). Ein
+ *      reines Wärmepumpen-Programm trägt weiterhin keine Seite: Unter
+ *      „Photovoltaik-Förderung“ verspräche es Geld, das es nicht zahlt.
  *
  * NICHT geprüft wird hier der BELEG-Zustand (`fundingZaehlt`), und das ist eine
  * bewusste Trennung: Der Beleg entscheidet, ob ein Betrag im Rechner Geld
@@ -848,10 +950,10 @@ export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): bo
  * lib/seo-grundregeln.ts, Regel „kein-ertrag-ist-kein-schaden“).
  */
 export function foerderseiteTraegt(c: AtlasCity): boolean {
-  const p = fundingFor(c);
-  if (!programmTraegtStadtseite(p)) return false;
-  if (p!.status !== "aktiv") return false;
-  return foerdertDach(p!);
+  // Über die MENGE (06.10.2026): Es genügt ein gezeigtes Programm, das die
+  // Schwelle besteht. Landesprogramme der Flächenländer stehen gar nicht erst
+  // in der Liste (programmTraegtStadtseite).
+  return isCityLive(c);
 }
 
 /**

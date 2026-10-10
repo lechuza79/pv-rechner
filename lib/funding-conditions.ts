@@ -397,7 +397,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // eine der beiden Fassungen wählen — das ist eine Entscheidung, keine
   // Übersetzung. Die Bedingungen stehen vollständig auf der Karte.
   "horneburg-nachhaltige-projekte", "nottensdorf-nachhaltige-projekte",
-  "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
+  "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "bergkamen-solardach", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
   // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
@@ -470,6 +470,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
   // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
   "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
+  // Aufgenommen am 07.10.2026, Richtlinie im Volltext gelesen. Wie Hamburg:
+  // Berechtigung hängt am Haushaltseinkommen, das das Modell nicht kennt.
+  "mainz-balkon-einkommen",
   // Aufgenommen am 05.09.2026, Richtlinie und Service-Portal im Volltext
   // gelesen. Die Prüfformen fehlen noch, und eine davon kennt das Modell gar
   // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
@@ -768,6 +771,25 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // operation duty and the first-come 2026 budget have no test form yet; the
   // entry deducts nothing.
   "hemsbach-steckersolar",
+  // Added 4 Oct 2026: three Walldorf guidelines (PV, plug-in solar, heating)
+  // read in full. Approval before contract, the post-2022 building-permit
+  // cut-off, kWp-tiered storage and caps incl. federal funds have no test
+  // form yet; the entry deducts nothing.
+  "walldorf-klimaschutz",
+  // Added 4 Oct 2026: Hirschberg guideline (scan, read as image) and town page.
+  // Application after purchase, invoice-date cut-off, five-year operation and
+  // the first-come 2026 budget have no test form yet; deducts nothing.
+  "hirschberg-steckersolar",
+  // Added 5 Oct 2026: Schwetzingen KlimaIMPULS guideline 2025 (read as image),
+  // continued unchanged in 2026 per the town page. Application after purchase,
+  // three-month deadline and the first-come budget have no test form; deducts
+  // nothing.
+  "schwetzingen-klimaimpuls",
+  // Added 6 Oct 2026: Stadtwerke Hockenheim balcony (2023 guideline) and heat
+  // pump hybrid (2024 guideline), both tied to being a Stadtwerke customer;
+  // deduct nothing.
+  "hockenheim-stadtwerke-balkon",
+  "hockenheim-stadtwerke-hauswaerme",
 ];
 
 /**

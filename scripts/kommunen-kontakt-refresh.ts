@@ -318,6 +318,17 @@ async function setup(): Promise<void> {
        WHERE ref_token = p_token
       RETURNING kommunen_kontakt.region_id;
     $fn$;
+    -- Personal salutation of a named contact, keyed by the mailbox: if the
+    -- address changes, the salutation no longer applies. Read by hand from the
+    -- page that publishes the address (beleg_url); "Frau"/"Herr" only where
+    -- that page says so.
+    CREATE TABLE IF NOT EXISTS kommunen_anrede (
+      email text PRIMARY KEY,
+      anrede text NOT NULL,
+      beleg_url text,
+      geprueft_am date NOT NULL DEFAULT current_date
+    );
+    ALTER TABLE kommunen_anrede ENABLE ROW LEVEL SECURITY;
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;
@@ -350,6 +361,7 @@ async function validGemeindeIds(
       .from("mastr_regions")
       .select("region_id")
       .eq("level", "gemeinde")
+      .order("region_id")
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`read region ids failed: ${error.message}`);
     if (!data || data.length === 0) break;
@@ -776,6 +788,7 @@ async function uploadRang(dry: boolean): Promise<void> {
     const { data, error } = await supabase
       .from("mastr_gemeinde_solar")
       .select("region_id, population, kwp_dach")
+      .order("region_id")
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`read gemeinde_solar failed: ${error.message}`);
     if (!data || data.length === 0) break;

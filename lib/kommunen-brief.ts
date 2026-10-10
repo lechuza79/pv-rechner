@@ -1,16 +1,24 @@
 import "server-only";
 import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
-import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
+import {
+  renderInfoDraft,
+  renderOutreachDraft,
+  type Adressherkunft,
+  type Briefart,
+  type OutreachDraft,
+} from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
+import { hatSzene, kommunenSeiteUrl } from "./kommunen-seite";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
 import { DEFAULT_HOOK_SETTINGS } from "./award-hook";
-import { atlasPathForRegionId, getRegionById, ownerAnker, type AtlasOwner } from "./atlas";
+import { atlasPathForRegionId, getRegionById } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
 import { bundeslandByAgs } from "./mastr-regions";
 import { ortPhrase } from "./atlas-orte";
+import { regionDisplayName } from "./atlas-format";
 import { gemeindeVergleich } from "./gemeinde-vergleich";
 import { askVariante, type AskVariante } from "./kommunen-ask";
 
@@ -32,6 +40,8 @@ export type BriefErgebnis = {
   name: string;
   population: number | null;
   variante: AskVariante;
+  /** Press letter (town has a placement) or short info letter (it has none). */
+  briefart: Briefart;
   seiteUrl: string | null;
   ranglisteUrl: string | null;
   /** Datenstand des Marktstammdatenregisters (ISO) — steht in der Meldung. */
@@ -61,7 +71,7 @@ export async function briefFuerGemeinde(
 ): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
-  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
+  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap, { data: anredeRow }] = await Promise.all([
     serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", regionId).single(),
     serviceDb
       .from("kommunen_kontakt")
@@ -71,6 +81,11 @@ export async function briefFuerGemeinde(
     atlasPathForRegionId(regionId),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
     loadElternSlugs(),
+    // Personal salutation, read by hand from the page that publishes the
+    // address. Keyed by the mailbox, so preview and dispatch read the same.
+    empfaenger
+      ? serviceDb.from("kommunen_anrede").select("anrede").eq("email", empfaenger.trim().toLowerCase()).maybeSingle()
+      : Promise.resolve({ data: null }),
   ]);
   if (!reg) return { grund: "unbekannt" };
   // Kein Brief an einen Landkreis. Die Kontakttabelle führt sie seit dem
@@ -119,25 +134,10 @@ export async function briefFuerGemeinde(
   const vergleichBezug = blName ? ortPhrase({ name: blName, level: "bundesland" }) : "";
   const hook = index.rows.find((r) => r.regionId === regionId);
 
-  //
-  // DER LINK OEFFNET DIE SEITE IN DER STELLUNG, VON DER DER BRIEF HANDELT.
-  //
-  // Die Gemeindeseite zeigt von Haus aus alle Anlagen. Der Brief handelt aber
-  // von dem, was die Buerger gebaut haben — und genau diese Zahl suchte der
-  // Leser dann von Hand, waehrend oben eine andere stand (Melsungen: 880 Wp
-  // gesamt gegen 576 Wp privat). Der Rauteteil stellt den Umschalter, der
-  // Sprung landet am Bestandsblock.
-  //
-  // Abgeleitet aus der KATEGORIE des Aufhaengers, nicht fest gesetzt: Heute
-  // sind alle Aufhaenger Buerger-Kategorien (HOOK_TRAEGER), aber das ist eine
-  // Einstellung und keine Naturkonstante.
-  const bestandOwner: AtlasOwner =
-    hook?.categoryKey && AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.traeger === "gewerbe"
-      ? "gewerbe"
-      : "privat";
-  const seiteUrl = path
-    ? mitHerkunft(`${SITE_URL}${path}#${ownerAnker(bestandOwner)}`)
-    : null;
+  // No anchor: the former owner switch (#bestand-privat) lived on the old place
+  // page. The current one has no such target, so the link landed at the top
+  // anyway while promising a jump. The overview starts at the top by design.
+  const seiteUrl = path ? mitHerkunft(`${SITE_URL}${path}`) : null;
 
   const variante: AskVariante =
     (leadRow?.ask_variante as AskVariante | null) ??
@@ -154,6 +154,45 @@ export async function briefFuerGemeinde(
     const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet, true);
     return pfad ? mitHerkunft(`${SITE_URL}${pfad}`) : null;
   })();
+
+  // NO PLACEMENT → THE SHORT INFO LETTER, never a press release without a hook.
+  // Until 06.10.2026 the fallback here was a press letter "So steht X beim
+  // Solar-Ausbau da" that the dispatch then silently dropped; the agreed short
+  // letter existed only in a chat.
+  const ohnePlatzierung = !hook || hook.kind === "neutral" || !hook.rank;
+  if (ohnePlatzierung) {
+    if (!seiteUrl) return { grund: "unbekannt" };
+    const kreisAgs = regionId.slice(0, 5);
+    const kreis = regionId.length === 8 ? await getRegionById(kreisAgs) : null;
+    const vergleichWo =
+      kreis && kreis.name !== reg.name
+        ? ortPhrase({ name: regionDisplayName(kreis.name) })
+        : vergleichBezug || "im Vergleich";
+    const draft = renderInfoDraft({
+      name: reg.name,
+      pageUrl: seiteUrl,
+      vergleichWo,
+      einwohner: reg.population ?? null,
+      funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+      anPresse: !!opt?.anPresse,
+      anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
+      empfaenger: empfaenger ?? null,
+      adressherkunft: opt?.herkunft,
+      kommunenUrl: kommunenSeiteUrl(SITE_URL, regionId),
+      mitSzene: hatSzene(regionId),
+    });
+    return {
+      regionId,
+      name: reg.name,
+      population: reg.population ?? null,
+      variante,
+      briefart: "info",
+      seiteUrl,
+      ranglisteUrl: null,
+      stand: atlas.data_as_of,
+      draft,
+    };
+  }
 
   const draft = renderOutreachDraft({
     name: reg.name,
@@ -175,9 +214,11 @@ export async function briefFuerGemeinde(
     vergleich,
     vergleichBezug,
     empfaenger: empfaenger ?? null,
+    anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
     anPresse: !!opt?.anPresse,
     adressherkunft: opt?.herkunft,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
+    rangProzent: hook?.bestenProzent ?? null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,
     // Die fertige Grafik für genau diesen Ort — live geprüft, kein Anhang.
@@ -188,6 +229,11 @@ export async function briefFuerGemeinde(
     // Brief-Klick mehr, sondern dauerhaft jeder Aufruf des eingebauten Widgets
     // — die Zählung würde von da an etwas anderes messen, als sie behauptet.
     widgetUrl: `${SITE_URL}/embed/gemeinde-solar?ags=${regionId}`,
+    // Without the origin tag: the product page is a static document without the
+    // tag reader, so the tag would measure nothing there. With the place, once
+    // its scene is published.
+    kommunenUrl: kommunenSeiteUrl(SITE_URL, regionId),
+    mitSzene: hatSzene(regionId),
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,
@@ -202,6 +248,7 @@ export async function briefFuerGemeinde(
     name: reg.name,
     population: reg.population ?? null,
     variante,
+    briefart: "platzierung",
     seiteUrl,
     ranglisteUrl: liste,
     stand: atlas.data_as_of,

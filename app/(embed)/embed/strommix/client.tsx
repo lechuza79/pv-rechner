@@ -20,6 +20,7 @@ import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
+import { quellenHinweis, letzterZeitpunkt } from "../../../../lib/energy-ersatzstand";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { iconSizes, v } from "../../../../lib/theme";
 // Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
@@ -446,6 +447,12 @@ function ChartArea({ tab }: { tab: TabState }) {
   return (
     <div style={{ flex: 1, marginTop: 14, display: "flex", flexDirection: "column" }}>
       <Headline shares={shares} />
+      {/* Upstream down, our last stored copy: name the real time of the data. */}
+      {genData.data.length > 0 && quellenHinweis(genData, null) && (
+        <div role="status" style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 6 }}>
+          {quellenHinweis(genData, letzterZeitpunkt(genData.data))}
+        </div>
+      )}
       <div style={{ flex: 1, minHeight: 220, position: "relative" }}>
         {error && genData.data.length === 0 && (
           <CenteredMessage

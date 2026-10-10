@@ -345,15 +345,21 @@ export function WidgetSourceEdge({
   visible = true,
   stand,
   spalten = 1,
+  ownCredit = false,
+  minFontSize,
 }: {
   widget: WidgetDef;
+  ownCredit?: boolean;
+  minFontSize?: number;
   visible?: boolean;
   /** Zahl der senkrechten Textspalten. Ein Chart mit ZWEI Quellen bekommt an
    *  einer Kante von Chart-Höhe den Vermerk sonst nur in 6 px unter — zwei
    *  Spalten halten die Schrift auf dem kleinsten Token. Der Wirt legt dann
    *  `SOURCE_EDGE_WIDTH * spalten` Platz an; die Kante wächst nie von selbst. */
   spalten?: 1 | 2;
-  /** Actual data vintage; missing dates stay explicit, never the download date. */
+  /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
+   *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
+   *  Missing dates stay explicit rather than implying a fresh data vintage. */
   stand?: string;
 }) {
   // Auf einer sehr flachen Karte (Einzel-Kennzahl, Ampel) passt selbst bei
@@ -373,7 +379,7 @@ export function WidgetSourceEdge({
   const label =
     widget.sources
       .map((s) => sourceLabel(s, { kurz: true }))
-      .join(" · ") + (datum ? ` · Stand: ${datum}` : "");
+      .join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + (datum ? ` · Stand: ${datum}` : "");
 
   // Der Vermerk passt sich der Kartenhöhe an, statt abgeschnitten zu werden.
   //
@@ -393,6 +399,19 @@ export function WidgetSourceEdge({
     const el = wrapRef.current;
     if (!el) return;
     const passeAn = () => {
+      if (minFontSize) {
+        el.style.fontSize = minFontSize + 'px';
+        el.style.width = Math.ceil(minFontSize * 1.4 * spalten) + 'px';
+        el.style.display = 'block';
+        el.style.overflowWrap = 'anywhere';
+        let width = el.clientWidth;
+        while (el.scrollWidth > el.clientWidth + 1 && width < 240) {
+          width += Math.ceil(minFontSize * 1.4);
+          el.style.width = width + 'px';
+        }
+        el.closest<HTMLElement>('.sc-widget')?.style.setProperty('--plot-source-width', width + 'px');
+        return;
+      }
       // Immer von der Ausgangsgröße aus messen, sonst schaukelt sich die
       // Anpassung über mehrere Läufe nach unten.
       let groesse = SOURCE_EDGE_FONT;
@@ -421,13 +440,13 @@ export function WidgetSourceEdge({
     const ro = new ResizeObserver(passeAn);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [label, spalten]);
+  }, [label, spalten, minFontSize]);
 
   return (
     <div
       ref={wrapRef}
       data-sc-source-edge=""
-      data-sc-source-export-label={widget.sources.map(s => sourceLabel(s, {kurz:true})).join(" · ") + ` · Stand: ${chartDataDate(stand)}`}
+      data-sc-source-export-label={widget.sources.map(s => sourceLabel(s, {kurz:true})).join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + ` · Stand: ${chartDataDate(stand)}`}
       data-sc-source-export-size={fsPx("--font-size-caption")}
       // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
       // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
@@ -452,7 +471,7 @@ export function WidgetSourceEdge({
         transform: "rotate(180deg)",
         whiteSpace: spalten > 1 ? "normal" : "nowrap",
         overflow: "hidden",
-        fontSize: SOURCE_EDGE_FONT,
+        fontSize: minFontSize ?? SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
         color: "var(--widget-muted, var(--color-text-faint))",

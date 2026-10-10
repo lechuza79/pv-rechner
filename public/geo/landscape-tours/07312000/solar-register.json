@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-02T14:46:55.227176+00:00",
+  "sourceUrl": "https://www.marktstammdatenregister.de/MaStR/Einheit/EinheitJson/GetErweiterteOeffentlicheEinheitStromerzeugung?page=1&pageSize=100&filter=Gemeindeschl%C3%BCssel~eq~%2707312000%27~and~Art+der+Solaranlage~eq~%27852%27~and~Betriebs-Status~eq~%2735%27",
+  "footprintId": "osm-way-534045827",
+  "selection": "All 10 active ground-mounted units in Kaiserslautern inspected; 3 coordinates inside the mapped Hölzengraben park boundary, corroborated by unit names.",
+  "units": [
+    {
+      "id": "SEE908257083350",
+      "name": "FFA Hölzengraben",
+      "capacityKw": 4880.0,
+      "lon": 7.786869,
+      "lat": 49.45803,
+      "status": "In Betrieb",
+      "direction": "West"
+    },
+    {
+      "id": "SEE975876909255",
+      "name": "Solarpark Hölzengraben I",
+      "capacityKw": 1480.0,
+      "lon": 7.786946,
+      "lat": 49.459645,
+      "status": "In Betrieb",
+      "direction": "Ost-West"
+    },
+    {
+      "id": "SEE996383972655",
+      "name": "Solarpark Hölzengraben II",
+      "capacityKw": 749.89,
+      "lon": 7.786814,
+      "lat": 49.459405,
+      "status": "In Betrieb",
+      "direction": "Ost-West"
+    }
+  ],
+  "capacityKw": 7109.89,
+  "modelLimitations": "Weather-derived power uses the shared municipal solar profile. Registered west/east-west orientation is recorded here; the shared profile is not a park-specific generation forecast."
+}

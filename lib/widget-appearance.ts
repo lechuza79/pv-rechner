@@ -1,9 +1,10 @@
+import type {WidgetBrand, WidgetHeaderMode, PartnerWidgetHeight} from './widget-brand';
 import {WIDGET_GRID_SIZES,gridExtent,type WidgetGridSize} from './widget-composition';
 import {allWidgets} from './widget-registry';
 /** Shared presentation options; data and permissions remain separate. */
 export type WidgetTheme = 'light' | 'dark' | 'hero';
 export type WidgetSharing = 'on' | 'off' | 'secondary' | 'primary';
-export type WidgetAppearance = {theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group' | 'allocated'; autoplay?: boolean};
+export type WidgetAppearance = {partner?: {brand: WidgetBrand; header: WidgetHeaderMode; widgetHeight?: PartnerWidgetHeight}; theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group' | 'allocated'; autoplay?: boolean};
 export function parseWidgetAppearance(query: {theme?: string; background?: string; sharing?: string; layout?: string; autoplay?: string}): WidgetAppearance {
   return {theme: ['light','dark','hero'].includes(query.theme ?? '') ? query.theme as WidgetTheme : undefined,
     ...(query.layout === 'group' || query.layout === 'allocated' ? {layout: query.layout} : {}),

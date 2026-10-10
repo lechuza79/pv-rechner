@@ -667,7 +667,21 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // 03.10.2026: Textarchiv des Bundestages zur 1. Lesung (kw39, 1211294) im
   //   Original gelesen: Überweisung an den Ausschuss für Wirtschaft und Energie,
   //   keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
-  geprueftIso: "2026-10-03",
+  // 06.10.2026: Textarchiv des Bundestages (kw41-pa-wirtschaft-stromsektor-1218072,
+  //   Stand 06.10.2026) im Original gelesen: Anhörung zu 21/7867 am 05.10.2026
+  //   fand statt; keine 2./3. Lesung angesetzt. Zustand und Werte unverändert.
+  // 07.10.2026: Tagesordnung komplett des Bundestages (98.–100. Sitzung,
+  //   7.–9.10.2026, Stand 06.10.2026 18.30 Uhr) im Original gelesen: kein
+  //   Tagesordnungspunkt zu 21/7867, keine 2./3. Lesung. Zustand unverändert.
+  // 08.10.2026: Tagesordnung komplett (Stand 06.10.2026 18.30 Uhr) und
+  //   tagesaktuelle Tagesordnung Donnerstag (Stand 08.10.2026 9.15 Uhr) im
+  //   Original gelesen: kein Tagesordnungspunkt zu 21/7867. Zustand unverändert.
+  // 09.10.2026: DIP-Vorgang zu 21/7867 im Original gelesen: Beratungsstand
+  //   „Überwiesen", letzter Schritt 30.09.2026 (Unterrichtung 21/8298,
+  //   Stellungnahme Bundesrat/Gegenäußerung). Kein Beschluss. Zustand unverändert.
+  // 10.10.2026: DIP-Suche zu 21/7867 im Original gelesen: Beratungsstand
+  //   „Überwiesen", letzter Schritt weiter 30.09.2026. Zustand unverändert.
+  geprueftIso: "2026-10-10",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
