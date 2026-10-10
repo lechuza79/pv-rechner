@@ -14,6 +14,7 @@ import {
   ExportOnly,
   ExportOnlyG,
 } from "../WidgetExport";
+import {nodeToText} from "../export-notes";
 import Link from "next/link";
 import { IconChevronLeft, IconChevronRight, IconArrowRight, IconPause, IconPlay, IconRefresh } from "../Icons";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
@@ -747,7 +748,7 @@ function RaceCard({
     <ExportableWidgetFrame widget={widget} title={headingTitle ?? widget.title} titleContent={titleContent} headingMeta={<span className={styles.currentYear}>{currentYear}</span>} helpExportNote={false} showHeading={showTitle} kind="time-series"
       place={annualYears ? 'Weltweit' : ''} exportUnit={valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
       className={`${frameStyles.frame} ${styles.frame} ${styles.racingFrame}`} data-story-scheme={presentation.theme === 'hero' ? 'highlight' : presentation.theme}
-      animated clientVideo restartAction={false} sourceVisible={!onsite} exportNote={exportNote}
+      animated clientVideo restartAction={false} sourceVisible={!onsite} exportNote={annualYears ? exportNote : [exportNote, titelHilfe.title, nodeToText(titelHilfe.inhalt), zeitraumHilfe.title, nodeToText(zeitraumHilfe.inhalt)].filter(Boolean).join(" ")}
       exportLegend={titleSeries && showTitle ? undefined : [{color:FARBE_B,label:anderer.label,shape:"line"},{color:FARBE_A,label:kamera.label,shape:"line"}]}
       einbetten={showEmbed ? {params:{}, height:700} : undefined}
       help={<div style={{display:'grid',gap:12}}>

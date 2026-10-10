@@ -125,7 +125,8 @@ test.describe("Stromkosten-Rennen", () => {
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("PVGIS");
     const downloadPromise = page.waitForEvent("download");
-    await page.getByTitle("Als Bild herunterladen").click();
+    await page.getByRole("button", {name: /^Optionen für/}).click();
+    await page.getByRole("menuitem", {name: "Aktueller Stand als Bild", exact:true}).click();
     const download = await downloadPromise;
     const buf = await readFile((await download.path())!);
     expect(buf.byteLength).toBeGreaterThan(30_000);
@@ -154,7 +155,8 @@ test.describe("Heizkosten-Rennen", () => {
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("Wetterdienst");
     const downloadPromise = page.waitForEvent("download");
-    await page.getByTitle("Als Bild herunterladen").click();
+    await page.getByRole("button", {name: /^Optionen für/}).click();
+    await page.getByRole("menuitem", {name: "Aktueller Stand als Bild", exact:true}).click();
     const download = await downloadPromise;
     const buf = await readFile((await download.path())!);
     expect(buf.byteLength).toBeGreaterThan(30_000);
@@ -252,9 +254,9 @@ test.describe("Gemeinde-Monitor: Optionsmenü", () => {
     const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Ein Rechteck steht für"]') }).first();
     await expect(widget).toBeVisible({ timeout: 60_000 });
     const button = widget.getByRole("button", { name: /^Optionen für/ });
-    // No footer action row any more; help sits in the headline.
+    // Help is available from the shared options menu without a duplicate trigger.
     await expect(widget.locator(".sc-widget-actions")).toHaveCount(0);
-    await expect(widget.locator("h4 .sc-widget-title-help")).toHaveCount(1);
+    await expect(widget.locator("h4 .sc-widget-title-help")).toHaveCount(0);
 
     await button.focus();
     await page.keyboard.press("Enter");
