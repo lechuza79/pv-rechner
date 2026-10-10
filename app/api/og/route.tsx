@@ -1,3 +1,4 @@
+import MetricValue from "../../../components/MetricValue";
 import { municipalLogo } from "./kommunen-logo";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
@@ -120,32 +121,38 @@ export async function GET(req: NextRequest) {
     }
     // Match the current Atlas dark hero, including its bundled display font.
     const displayFont = await fetch(new URL("../../../public/fonts/atlas-montserrat-bold.ttf", import.meta.url)).then(response => response.arrayBuffer());
+    // PNG/TTF derivatives of the shared nuclear illustration and DM Sans font;
+    // Satori cannot decode the original WebP/WOFF2 formats.
+    const bodyFont = await fetch(new URL("./DM-Sans-Regular.ttf", import.meta.url)).then(response => response.arrayBuffer());
     const palette = { background: "#08191c", text: "#e8eee9", secondary: "#a7bcbb", track: "#405b5e", accent: tokens["--color-brand"] };
-    const number = (n: number) => n.toLocaleString("de-DE", {maximumFractionDigits: 1, minimumFractionDigits: 1});
+    const logoSource = await fetch(new URL("../../../public/brand/logo-result.svg", import.meta.url)).then(response => response.text());
+    const logoColors: Record<string,string> = {"--color-accent":palette.text,"--color-text-faint":palette.secondary,"--color-brand":palette.text,"--color-brand-deep":palette.secondary};
+    const logo = `data:image/svg+xml;base64,${btoa(logoSource.replace(/var\((--[a-z-]+)\)/g, (_,name:string) => logoColors[name] ?? palette.text))}`;
+    const plant = await fetch(new URL("./nuclear-mono.png", import.meta.url)).then(response => response.arrayBuffer());
     const radius = 132, circumference = 2 * Math.PI * radius;
-    return new ImageResponse(<div style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",padding:"40px 52px",background:palette.background,color:palette.text,fontFamily:"AtlasConcept"}}>
-      <div style={{display:"flex",justifyContent:"space-between",fontSize:24}}><span>solar-check.io</span><span>Atomstrom-Import</span></div>
+    return new ImageResponse(<div style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",padding:"40px 52px",position:"relative",overflow:"hidden",background:palette.background,color:palette.text,fontFamily:"AtlasConcept"}}>
+      <img src={plant as unknown as string} width={860} height={860} style={{position:"absolute",right:-60,bottom:-200,opacity:.14}} />
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:24}}><img src={logo} width={238} height={56} /><span>Atomstrom-Import</span></div>
       <div style={{display:"flex",alignItems:"center",gap:48,flex:1}}>
         <div style={{display:"flex",width:340,height:340,position:"relative",alignItems:"center",justifyContent:"center"}}>
           <svg width="340" height="340" viewBox="0 0 340 340" style={{position:"absolute",top:0,left:0}}>
             <circle cx="170" cy="170" r={radius} fill="none" stroke={palette.track} strokeWidth="42" />
             <circle cx="170" cy="170" r={radius} fill="none" stroke={palette.accent} strokeWidth="42" strokeDasharray={`${circumference * share / 100} ${circumference}`} transform="rotate(-90 170 170)" />
           </svg>
-          <span style={{fontSize:64,color:palette.accent}}>{number(share)} %</span>
+          <MetricValue value={share} unit="%" maximumFractionDigits={1} minimumFractionDigits={1} stacked image={{size:64,color:palette.accent,unitColor:palette.secondary,unitFont:"DM Sans"}} />
         </div>
         <div style={{display:"flex",flexDirection:"column",width:640}}>
-          <span style={{fontSize:34,lineHeight:1.2}}>Wie viel Atomstrom importiert Deutschland?</span>
-          <span style={{fontSize:82,marginTop:18,color:palette.accent}}>{number(twh)} TWh</span>
-          <span style={{fontSize:23,marginTop:10,lineHeight:1.4}}>rechnerisch importiert</span>
-          <span style={{fontSize:21,color:palette.secondary,marginTop:12}}>{params.period === "Erfasste Teilmenge im Kalenderjahr" ? `Erfasste Teilmenge ${year}` : `${weeks} erfasste Wochen ${year}`}</span>
+          <span style={{fontSize:34,lineHeight:1.2}}>{params.period === "Erfasste Teilmenge im Kalenderjahr" ? `Wie viel Atomstrom hat Deutschland ${year} importiert?` : `Wie viel Atomstrom hat Deutschland ${year} bis jetzt importiert?`}</span>
+          <div style={{display:"flex",marginTop:18}}><MetricValue value={twh} unit="TWh" maximumFractionDigits={1} image={{size:82,color:palette.accent,unitColor:palette.secondary,unitFont:"DM Sans"}} /></div>
+          {params.period === "Erfasste Teilmenge im Kalenderjahr" && <span style={{fontSize:21,color:palette.secondary,marginTop:12,fontFamily:"DM Sans"}}>Erfasste Teilmenge im Kalenderjahr</span>}
         </div>
       </div>
-      <div style={{display:"flex",flexDirection:"column",fontSize:16,color:palette.secondary,lineHeight:1.5}}>
+      <div style={{display:"flex",flexDirection:"column",fontSize:16,color:palette.secondary,lineHeight:1.5,fontFamily:"DM Sans"}}>
         <span>Anteil an deutscher Erzeugung plus Atomstrom-Import.</span>
-        <span>Andere Importe nicht enthalten. Quelle: Energy-Charts (Fraunhofer ISE), CC BY 4.0</span>
+        <span>Andere Importe nicht enthalten. Daten: Energy-Charts.info (Fraunhofer ISE), CC BY 4.0</span>
         <span>Berechnung: Solar Check · solar-check.io/atomstrom-import</span>
       </div>
-    </div>, {width:1200,height:630,fonts:[{name:"AtlasConcept",data:displayFont,weight:700,style:"normal"}]});
+    </div>, {width:1200,height:630,fonts:[{name:"AtlasConcept",data:displayFont,weight:700,style:"normal"},{name:"DM Sans",data:bodyFont,weight:400,style:"normal"}]});
   }
   // Municipal sharing card uses the same theme and bundled-font pipeline.
   if (params.view === "kommunen" || params.view === "atlas") {

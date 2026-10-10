@@ -20,12 +20,15 @@ export default function SidebarPageLayout({ children, links, activeHref, label, 
     if (!enabled || !darkHero || !root.current || !sidebar.current) return;
     const container = root.current;
     const rail = sidebar.current;
+    const content = container.querySelector<HTMLElement>(`.${styles.content}`);
     const alignment = alignWith ? container.querySelector(alignWith) : null;
     const boundary = container.querySelector('[data-sidebar-light-start]');
     if (!boundary) return;
     let frame = 0;
     const update = () => {
       frame = 0;
+      // Reserve the actual header, breadcrumb and mobile navigation height.
+      if (content) container.style.setProperty('--sidebar-content-top', `${content.getBoundingClientRect().top + window.scrollY}px`);
       if (alignment) container.style.setProperty('--sidebar-start', `${alignment.getBoundingClientRect().top - container.getBoundingClientRect().top}px`);
       const edge = boundary.getBoundingClientRect().top;
       const box = rail.getBoundingClientRect();
@@ -37,6 +40,7 @@ export default function SidebarPageLayout({ children, links, activeHref, label, 
     const resize = new ResizeObserver(schedule);
     resize.observe(container);
     resize.observe(boundary);
+    resize.observe(document.body);
     if (alignment) resize.observe(alignment);
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
