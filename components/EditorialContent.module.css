@@ -133,3 +133,5 @@
 .flushEnd { margin-bottom: 0; }
 .contextGap { margin-top: calc(var(--space-xl) * .75); }
 .closingNote { margin-top: var(--space-xl); margin-bottom: calc(var(--space-xl) * .75); }
+
+.reading { max-width: var(--content-max-width); }

@@ -21,3 +21,6 @@
 /* Give the introduction, section navigation and article distinct spacing. */
 .content > :global(.v3-section-nav) { margin-block:32px 48px; }
 .content > :global(.v3-section-nav) ~ h2:first-of-type { margin-top:48px; }
+
+/* Monitor pages give charts the shared site width; prose keeps its reading measure. */
+.wide { max-width: var(--sc-layout-content, 1000px); }

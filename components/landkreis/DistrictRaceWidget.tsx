@@ -15,7 +15,7 @@ type RaceRow = {id:string;name:string;href:string|null;value:number};
 type RaceFrame = {year:number;rows:{id:string;value:number}[]};
 declare global {
   interface Window {
-    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number,frameMaximum:number)=>string;unit?:(frameMaximum:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean})=>Promise<void>;
+    solarDistrictRace?: (options:{stage:HTMLElement;label?:string;clockHost:HTMLElement;rows:RaceRow[];history:RaceFrame[];format:(value:number,frameMaximum:number)=>string;unit?:(frameMaximum:number)=>string;animate:boolean;current:()=>boolean;skip:()=>boolean;stacked?:boolean;stackMaximum?:number;onProgress?:(progress:number)=>void})=>Promise<void>;
   }
 }
 

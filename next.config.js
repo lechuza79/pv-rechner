@@ -117,6 +117,8 @@ const nextConfig = {
     // also entsteht keine Schleife mit der Umkehrung oben.
     return {
       beforeFiles: [
+        // Local energy widgets read the deployed app, including its shared caches.
+        ...(process.env.NODE_ENV === "development" ? [{ source: "/api/energy/:path*", destination: "https://solar-check.io/api/energy/:path*" }] : []),
         { source: "/solar-atlas/hamburg", destination: "/solar-atlas/hamburg/hamburg/hamburg" },
         { source: "/solar-atlas/berlin", destination: "/solar-atlas/berlin/berlin/berlin" },
         // Embed codes carry their subject in the query (`?ags=…`). A page

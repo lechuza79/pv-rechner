@@ -1,3 +1,4 @@
+import type {WidgetPresentationContract} from './widget-presentation-contract';
 import { DATA_SOURCES, type DataSource } from "./data-sources";
 
 // One entry per embeddable widget / exportable chart — the single place where a
@@ -47,7 +48,24 @@ export interface WidgetPlaceTemplates {
   shareText: string;
 }
 
+/** Supported presentation and data rules, shared by gallery and consumers. */
+export interface WidgetConfiguration {
+  presentations?: WidgetPresentationContract;
+  /** Data selections travel in the embed URL; the gallery owns their shared editor. */
+  dataSettings?: readonly {key:string;label:string;defaultValue:string;options:readonly {value:string;label:string}[];when?:{key:string;values:readonly string[]}}[];
+  themes: readonly ('light' | 'dark' | 'hero')[];
+  previewWidth?: number;
+  /** Only present when the actual widget consumes the live autoplay setting. */
+  autoplay?: boolean;
+  autoplayDefault?: boolean;
+  background: boolean;
+  sharing: boolean;
+  data: string;
+  period: string;
+}
+
 export interface WidgetDef {
+  configuration?: WidgetConfiguration;
   /** Embed slug + gallery anchor, e.g. "gruengas-heizkosten". */
   id: string;
   title: string;
@@ -114,6 +132,7 @@ const BEISPIEL_BUNDESLAND = "13";
 export const WIDGETS = {
   kostenrennen: {
     id: "pv-kostenrennen",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['portrait','stage'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:560,includes:['Title','Current year','Cost curves','Insights','Playback','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Modellierte Gesamtkosten", period: "Zeitraum der Modellrechnung"},
     title: "Stromkosten mit und ohne Solaranlage",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
@@ -126,6 +145,7 @@ export const WIDGETS = {
   },
   heizkostenrennen: {
     id: "heizkostenrennen",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['portrait','stage'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:560,includes:['Title','Current year','Cost curves','Insights','Playback','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Modellierte Gesamtkosten", period: "Zeitraum der Modellrechnung"},
     title: "Heizkosten mit Gasheizung und Wärmepumpe",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/gasheizung-oder-waermepumpe#heizkostenrennen`,
@@ -146,6 +166,7 @@ export const WIDGETS = {
   },
   strommix: {
     id: "strommix",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "24 Stunden, 7 Tage, 30 Tage oder Jahr"},
     title: "Strommix Deutschland",
     kind: "chart",
     shareUrl: `${SITE}/strommix-deutschland`,
@@ -153,8 +174,18 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.energyCharts],
     cta: { label: "Alle Energiedaten ansehen", href: "/strommix-deutschland" },
   },
+  atomstromJahr: {
+    id: "atomstrom-jahr",
+    title: "Atomstrom-Import im Jahresverlauf",
+    kind: "chart",
+    shareUrl: `${SITE}/atomstrom-import`,
+    shareText: "Rechnerischer Atomstrom-Import: Jahresrückblick bei Solar Check",
+    sources: [DATA_SOURCES.energyCharts],
+    embeddable: false,
+  },
   strommixAnteil: {
     id: "strommix-anteil",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "Laufendes Jahr, verfügbare Wochen"},
     title: "Kernenergie im deutschen Strommix",
     kind: "chart",
     shareUrl: `${SITE}/atomstrom-import`,
@@ -162,8 +193,52 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.energyCharts],
     cta: { label: "Fakten zum Atomstrom-Import", href: "/atomstrom-import" },
   },
+  nuclearShareHero: {
+    id: "atomstrom-anteil-hero",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: false, previewWidth: 330, data: "Kernenergie und sonstiger Strommix in Deutschland", period: "Laufendes Jahr, verfügbare Wochen"},
+    title: "Atomstrom-Anteil · Hero",
+    kind: "chart",
+    embeddable: false,
+    shareUrl: `${SITE}/atomstrom-import`,
+    shareText: "Kernenergie im deutschen Strommix",
+    sources: [DATA_SOURCES.energyCharts],
+  },
+  nuclearDaily: {
+    id: "atomstrom-tage",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Rechnerischer Atomstrom-Import nach Kalendertagen", period: "Sieben Datentage; unvollständige Tage gekennzeichnet"},
+    title: "Atomstrom-Import",
+    kind: "chart",
+    shareUrl: `${SITE}/atomstrom-import`,
+    shareText: "Rechnerischer Atomstrom-Import im Tagesverlauf",
+    sources: [DATA_SOURCES.energyCharts],
+  },
+  electricityTrade: {
+    id:"stromhandel",title:"Stromimport und Stromexport",kind:"chart",
+    configuration:{presentations:{full:{label:'Vollständig',gridSizes:['medium'],params:{},minWidth:320,preferredWidth:480,maxWidth:720,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:440,includes:['Title','Period','Net balance','Plot','Interaction','Help and export'],omits:[]},compact:{label:'Kompakt',gridSizes:['small'],params:{presentation:'compact'},minWidth:280,preferredWidth:380,maxWidth:560,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:264,includes:['Title','Net balance beside plot','Trade share','Plot'],omits:['Day labels','Hover details','Controls','Gross totals']},hero:{label:'Hero / Story',params:{presentation:'hero'},minWidth:240,preferredWidth:320,maxWidth:380,height:'content',plot:'proportional',includes:['Title','Net balance in plot','Plot'],omits:['Day labels','Trade share','Hover details','Controls','Gross totals']}},themes:["light","dark","hero"],background:false,sharing:true,data:"Kommerzielle Handelsmengen von SMARD",period:"Jahr, Monat oder letzte sieben vollständige Tage",dataSettings:[
+      {key:"period",label:"Zeitraum",defaultValue:"year",options:[{value:"year",label:"Jahr"},{value:"month",label:"Monat"},{value:"seven",label:"Letzte 7 Tage"}]},
+      {key:"year",label:"Jahr",defaultValue:String(new Date().getFullYear()),options:Array.from({length:new Date().getFullYear()-2020},(_,i)=>({value:String(new Date().getFullYear()-i),label:String(new Date().getFullYear()-i)})),when:{key:"period",values:["year","month"]}},
+      {key:"month",label:"Monat",defaultValue:String(new Date().getMonth()+1).padStart(2,"0"),options:Array.from({length:12},(_,i)=>({value:String(i+1).padStart(2,"0"),label:new Intl.DateTimeFormat("de-DE",{month:"long",timeZone:"UTC"}).format(new Date(Date.UTC(2000,i,1)))})),when:{key:"period",values:["month"]}}
+    ]},
+    shareUrl:`${SITE}/strommix-deutschland`,shareText:"Stromimport und Stromexport im Vergleich",sources:[DATA_SOURCES.smardTrade],
+  },
+  countryElectricityMixRace: {
+    id:"laender-strommixrennen",title:"Strommix im Ländervergleich",kind:"chart",
+    configuration:{presentations:{full:{label:'Vollständig',gridSizes:['list'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:768,includes:['Title','Period','Ranking rows','Playback','Help and export'],omits:[]}},themes:["light","dark","hero"],background:false,sharing:true,autoplay:true,data:"Erneuerbare, Atomkraft und sonstige Stromerzeugung in zehn Ländern",period:"Verfügbare gemeinsame Jahresdaten"},
+    shareUrl:`${SITE}/atomstrom-import`,shareText:"Wie verändert sich der Strommix im Ländervergleich?",sources:[DATA_SOURCES.ember,DATA_SOURCES.worldBankPopulation],
+  },
+  countryElectricityPerCapitaRace: {
+    id:"laender-strommix-pro-kopf",title:"Stromerzeugung pro Kopf · Länderracing",kind:"chart",
+    configuration:{presentations:{full:{label:'Vollständig',gridSizes:['list'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:768,includes:['Title','Period','Ranking rows','Playback','Help and export'],omits:[]}},themes:["light","dark","hero"],background:false,sharing:true,autoplay:true,data:"Jährliche Stromerzeugung je Einwohner in zehn Ländern",period:"Verfügbare gemeinsame Jahresdaten"},
+    shareUrl:`${SITE}/atomstrom-import`,shareText:"Stromerzeugung pro Kopf im Ländervergleich",sources:[DATA_SOURCES.ember,DATA_SOURCES.worldBankPopulation],
+  },
+  worldCapacityRace: {
+    id:"welt-zubaurennen",title:"Zubau weltweit: Wind + Solar vs. Atomkraft",kind:"chart",
+    configuration:{presentations:{full:{label:'Vollständig',gridSizes:['tall','stage'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:560,includes:['Title','Year','Capacity curves','Playback','Help and export'],omits:[]}},themes:["light","dark","hero"],background:false,sharing:true,autoplay:true,data:"Weltweiter jährlicher Nettozubau in GW",period:"2010–2025"},
+    shareUrl:`${SITE}/atomstrom-import`,shareText:"Weltweiter Zubau: Wind + Solar gegenüber Kernenergie",sources:[DATA_SOURCES.ember],
+  },
   zubauErneuerbareAtom: {
     id: "zubau-erneuerbare-atom",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Deutschland bzw. ausgewähltes Land", period: "Verfügbare Datensatzjahre"},
     title: "Zubau: Erneuerbare vs. Atomkraft",
     kind: "chart",
     // Ziel ist die Atomstrom-Seite, NICHT der Ländervergleich: der steht noch
@@ -270,6 +345,7 @@ export const WIDGETS = {
   // hier steht die Gattung, damit Galerie und Übersicht etwas Sinnvolles zeigen.
   gemeindeRanking: {
     id: "gemeinde-ranking", title: "Top 3 im Ortsvergleich", kind: "chart",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['portrait'],params:{},minWidth:320,preferredWidth:360,maxWidth:720,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:490,includes:['Title','Place','Three ranks','Values','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Anlagenzahl; drei führende Gemeinden im Landkreis", period: "Aktueller Registerstand"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Die Top 3 im Solar-Ranking – Solar Check",
     sources: [DATA_SOURCES.mastr, DATA_SOURCES.destatis],
     cta: { label: "Orte vergleichen", href: "/solar-atlas" },
@@ -342,8 +418,27 @@ export const WIDGETS = {
     // Fällt weg, sobald die Route steht.
     embeddable: false,
   },
+  microSolar: {
+    embeddable: false,
+    id: "micro-solar", title: "Tagesverlauf · Solar", kind: "chart",
+    configuration: {previewWidth: 250, themes: ["light", "dark", "hero"], background: false, sharing: false, data: "Modellierte Solarleistung des örtlichen Anlagenbestands", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
+    place: {title: "Tagesverlauf · Solar · {ort}", shareText: "Tagesverlauf · Solar in {ort} – Solar Check"},
+    exampleParams: {ags: BEISPIEL_GEMEINDE},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Tagesverlauf · Solar – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], exportable: false,
+  },
+  microWind: {
+    embeddable: false,
+    id: "micro-wind", title: "Windstärke und Tagesverlauf", kind: "chart",
+    configuration: {previewWidth: 512, themes: ["light", "dark", "hero"], background: false, sharing: false, autoplay: true, data: "Wind in 100 m Höhe und modellierte Windleistung", period: "Heute; ein gemeinsamer Modellzeitpunkt"},
+    place: {title: "Windstärke und Tagesverlauf · {ort}", shareText: "Windstärke und Tagesverlauf in {ort} – Solar Check"},
+    exampleParams: {ags: BEISPIEL_GEMEINDE},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Windstärke und Tagesverlauf – Solar Check",
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr], exportable: false,
+  },
   regionalElectricityValue: {
     id: "regional-electricity-value", title: "Wert des Solarstroms (Modellrechnung)", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Modellierter Solarstromwert in Euro", period: "Ausgewählter Monat"},
     place: {title: "Wert des Solarstroms · {ort}", shareText: "Wert des Solarstroms · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Wert des Solarstroms – Solar Check",
@@ -351,13 +446,20 @@ export const WIDGETS = {
   },
   regionalFeedInValue: {
     id: "regional-feed-in-value", title: "Einspeisevergütung (Modellrechnung)", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Modellierte Einspeisevergütung in Euro", period: "Ausgewählter Monat"},
     place: {title: "Einspeisevergütung · {ort}", shareText: "Einspeisevergütung · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Einspeisevergütung – Solar Check",
     sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr], embeddable: false,
   },
+  regionalBasicStats: {
+    id:'regional-basic-stats',title:'Bestand und Entwicklung',kind:'chart',
+    configuration:{presentations:{full:{label:'Vollständig',params:{},minWidth:320,preferredWidth:900,maxWidth:1400,height:'content',plot:'intrinsic',includes:['KPI groups','Shared period control','History','Help'],omits:[]}},themes:['light','dark','hero'],background:false,sharing:false,data:'Bestand und Entwicklung des Ortes',period:'Gemeinsam gewählter Vergleichszeitraum'},
+    shareUrl:`${SITE}/solar-atlas`,shareText:'Bestand und Entwicklung',sources:[DATA_SOURCES.mastr],embeddable:false,
+  },
   regionalCurrentPower: {
     id: "regional-current-power", title: "Solarleistung heute (simuliert)", kind: "chart",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['medium'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:380,includes:['Title','Daily curve','Current power','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Modellierte Solarleistung des Anlagenbestands", period: "Heute"},
     place: {title: "Solarleistung heute (simuliert) · {ort}", shareText: "Solarleistung heute (simuliert) · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung heute (simuliert) – Solar Check",
@@ -365,6 +467,7 @@ export const WIDGETS = {
   },
   regionalAnnualGrowth: {
     id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Jährlicher Zubau an Solaranlagen", period: "Verfügbare Registerjahre"},
     place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",
@@ -372,13 +475,24 @@ export const WIDGETS = {
   },
   regionalComposition: {
     id: "regional-composition", title: "Solarleistung nach Anlagentyp", kind: "chart",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Solarleistung nach Anlagenart", period: "Aktueller Registerstand"},
     place: {title: "Solarleistung nach Anlagentyp · {ort}", shareText: "Solarleistung nach Anlagentyp · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
+  regionalMap: {
+    embeddable: false,
+    id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['medium','stage'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:480,includes:['Title','Plot','Controls','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Gemeinden im Landkreis; Kennzahl im Chart wählbar", period: "Aktueller Registerstand"},
+    place: {title: "Energie im regionalen Vergleich · {ort}", shareText: "Energie im regionalen Vergleich · {ort} – Solar Check"},
+    exampleParams: {ags: "06440"},
+    shareUrl: `${SITE}/solar-atlas`, shareText: "Energie im regionalen Vergleich – Solar Check",
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg],
+  },
   regionalRace: {
     id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['list'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:768,includes:['Title','Period','Ranking rows','Playback','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Vergleichsebene, Anlagenart und Kennzahl wählbar", period: "Verfügbare Registerjahre"},
     place: {title: "Solaranlagen im regionalen Vergleich · {ort}", shareText: "Solaranlagen im regionalen Vergleich · {ort} – Solar Check"},
     exampleParams: {ags: "09679"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solaranlagen im regionalen Vergleich – Solar Check",
@@ -390,6 +504,7 @@ export const WIDGETS = {
     // district monitor and in stories. One identity for monitor export, story
     // export and later embeds.
     id: "gemeinde-anlagenraster",
+    configuration: {themes: ["light", "dark", "hero"], background: true, sharing: true, data: "Anteil einer Anlagenart an Anzahl und Leistung", period: "Aktueller Registerstand"},
     title: "Anteil einer Anlagenart an Anzahl und Solarleistung",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },
@@ -409,6 +524,7 @@ export const WIDGETS = {
     // municipality and district monitor and stories. Weather from our ERA5
     // archive, capacity from the register.
     id: "gemeinde-energie-jahr",
+    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Modelliertes Solar- und Windpotenzial", period: "Ausgewähltes Jahr"},
     title: "Solar- und Windpotenzial im Jahresverlauf",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },
@@ -427,6 +543,7 @@ export const WIDGETS = {
     // Template "radial": modelled solar output over 24 hours for every day of
     // one month, municipality and district monitor and stories.
     id: "gemeinde-solar-monat",
+    configuration: {presentations:{full:{label:'Vollständig',gridSizes:['tall'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:560,includes:['Title','Plot','Controls','Help and export'],omits:[]}},themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Modellierte Solarerzeugung über 24 Stunden", period: "Ausgewählter Monat"},
     title: "Solarerzeugung im Tagesverlauf",
     kind: "chart",
     exampleParams: { ags: BEISPIEL_GEMEINDE },

@@ -1,3 +1,4 @@
+import SiteApplicationSchema from "../../components/SiteApplicationSchema";
 import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono, Montserrat } from "next/font/google";
@@ -5,7 +6,7 @@ import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap, SIT
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
-import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
+import { organizationJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import SiteHeaderFrame from "../../components/SiteHeaderFrame";
 import LocationChangeToast from "../../components/LocationChangeToast";
@@ -100,10 +101,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdHtml(organizationJsonLd) }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdHtml(softwareAppJsonLd) }}
-        />
+        <SiteApplicationSchema />
       </head>
       <body
         style={{

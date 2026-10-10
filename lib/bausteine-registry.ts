@@ -425,7 +425,7 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/dashboard/EnergyMonitor.tsx",
     name: "EnergyMonitor",
-    zweck: "Gemeinsame Monitor-Zusammenstellung nach der Kommunenseite: Kennzahlen, aktueller Ausbau, Anlagenbestand, Strom und Wert, optionale Karte.",
+    zweck: "Gemeinsame Monitor-Zusammenstellung für Regionen und Themen: Kennzahlen, Ausbau, Bestand, Strom und Wert, Karte oder benannte Themenabschnitte.",
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "verbindlich",
@@ -488,6 +488,7 @@ export const BAUSTEINE: Baustein[] = [
     zweck: "Running heating cost comparison reused from the PV technical result.",
     gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["OptionalDisclosure", "AccordionField"],
   },
+  {datei: "components/SidebarNavigation.tsx", name: "SidebarNavigation", bestehtAus: ["Auswahl", "LoadingDots"], zweck: "Gemeinsame seitliche Bereichsnavigation; mobil horizontale Links. Unverändert aus der lokalen Förderseite übernommen.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", keinBeispielWeil: "Die Navigation braucht einen echten Seitenrahmen mit Scrollposition; ihre Beispiele sind die Förderübersicht und die Atomstrom-Jahresansichten."},
   {datei:"components/PvConsumerSection.tsx",name:"PvConsumerSection",zweck:"Gemeinsame Verbraucherauswahl mit Vorschau, Vergleich und Übernahme für Rechner und Ratgeber.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["FlowNav", "Modal", "KlebenderKnopf", "InfoTooltip", "AffiliateCarousel", "PvConsumerComparison", "PvConsumerFields", "ResultChoiceHeader", "MetricValue", "PvCoolingEditor"]},
   {datei:"components/PvConsumerExample.tsx",name:"PvConsumerExample",zweck:"Eigenständige Beispielrechnung mit Rechengrundlagen und Übergabe in den PV-Frageflow.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["PvConsumerFields", "ResultSettings", "PvConsumerSection", "PvPlantFields"]},
   {datei:"components/PvCoolingEditor.tsx",name:"PvCoolingEditor",zweck:"Gemeinsamer Editor für den Kühlstrombedarf in Verbraucherfragen und Ergebniseinstellungen.",gruppe:"struktur",ebene:"zusammensetzung",stand:"verbindlich",bestehtAus:["KlimaDetailModal"]},
@@ -587,13 +588,13 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Modal"],
+    bestehtAus: ["SelectField", "Modal"],
   },
   {
     datei: "components/StorySlider.tsx",
     name: "StorySlider",
     zweck:
-      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+      "Teaser als wischbare Reihe oder einzelne Hero-Kachel mit Blende, Auswahlpunkten und pausierbarem automatischem Wechsel.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
@@ -831,7 +832,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["LoadingDots"],
     keinBeispielWeil:
       "Braucht ein eingebettetes Widget um sich herum; für sich allein wäre nur ein leerer Rahmen zu sehen.",
   },
@@ -1299,10 +1300,16 @@ export const BAUSTEINE: Baustein[] = [
 export const NOCH_NICHT_EINGEORDNET: string[] = [
   "BegFundingQuestions",
   "Collapse",
+  "ControlPanel",
   "DesignFooterNavigation",
   "HeatPumpDesignHeader",
+  "LiveDataStatus",
   "PvSystemQuestions",
+  "ScrollIndicator",
+  "SidebarPageLayout",
+  "SiteApplicationSchema",
   "VideoRenderBridge",
+  "VisibleWidget",
   "WidgetVideoDialog",
   // Die Geräteempfehlung unter dem Wärmepumpen-Ergebnis (seit 05.09.2026).
   // Noch kein geteilter Baustein: Sie steht an genau einer Stelle und trägt

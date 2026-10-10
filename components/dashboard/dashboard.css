@@ -2,6 +2,7 @@
 .sc-dashboard {
  --widget-surface:var(--atlas-card,#163338);--widget-ink:var(--atlas-text,#e8eee9);
  --widget-muted:var(--atlas-secondary,#a7bcbb);--widget-accent:var(--atlas-action,#d4ff24);
+ --widget-meta-size:12px;--widget-meta-leading:1.5;--widget-meta-font:var(--font-text,sans-serif);
  --widget-radius:16px;--widget-gap:20px;--widget-padding:24px;--widget-title-size:20px;
  --chart-bar-radius:6px;--chart-bar-width:72%;--chart-bar-gap:8px;--chart-plot-height:220px;
  color:var(--widget-ink);container-type:inline-size;
@@ -12,8 +13,11 @@
 .sc-widget[data-columns="3"]{grid-column:1/-1;}
 .sc-widget-head {display:flex;align-items:start;justify-content:space-between;gap:16px;padding:var(--widget-padding) var(--widget-padding) 0;}
 .sc-widget-head h4 {font-size:var(--widget-title-size);line-height:1.35;margin:0;}
+.sc-widget-subtitle {display:block;margin-top:8px;color:var(--widget-muted);font-size:14px;font-weight:400;line-height:1.5;}
 .sc-widget-context {padding:0 var(--widget-padding);margin-block:12px;color:var(--widget-muted);font-size:12px;line-height:1.5;}
 .sc-widget-body {min-width:0;}
+/* Shared content inset for data adapters rendered inside WidgetFrame. */
+.sc-widget-inset { padding: var(--space-md,16px) var(--widget-padding,24px) var(--widget-padding,24px); min-width:0; }
 .sc-widget-help {position:relative;}
 .sc-widget-help summary {list-style:none;border:1px solid currentColor;border-radius:50%;width:24px;height:24px;text-align:center;cursor:pointer;}
 .sc-widget-help summary::-webkit-details-marker{display:none;}
@@ -79,11 +83,11 @@
 .sc-widget-head{flex-wrap:wrap;position:relative;z-index:3;}
 .sc-widget-head h4{flex:1 1 150px;}
 .sc-widget-tools{margin-left:auto;}
-.sc-kpi-overview{background:var(--widget-surface);border-radius:var(--widget-radius);padding:24px;}
+.sc-kpi-overview{background:var(--widget-surface);border-radius:var(--widget-radius);padding:var(--widget-padding);}
 .sc-kpi-head{padding:0;margin-bottom:24px;}
 .sc-kpi-head h3{margin:0;font-size:20px;}
 .sc-kpi-overview .sc-kpi{background:color-mix(in srgb,var(--widget-ink) 5%,var(--widget-surface));}
-@container(max-width:540px){.sc-kpi-overview{padding:16px;}.sc-kpi-value{gap:8px;}.sc-kpi strong{font-size:28px;}.sc-kpi-delta{font-size:12px;}}
+@container(max-width:540px){.sc-kpi-value{gap:8px;}.sc-kpi strong{font-size:28px;}.sc-kpi-delta{font-size:12px;}}
 .sc-widget-settings-row{display:flex;justify-content:flex-start;padding:16px var(--widget-padding) 0;}
 .sc-widget-settings-row .sc-widget-setting{width:auto;min-width:156px;}
 .sc-widget-settings-row select{font-size:14px!important;line-height:20px;}
@@ -152,7 +156,7 @@
 
 @container(min-width:851px){.sc-widget-grid>.sc-widget:has(.sc-share-donut){grid-column:span 2;}}
 /* Footer rows of an exportable widget (ExportableWidgetFrame). */
-.sc-widget-actions{padding:0 var(--widget-padding) var(--widget-padding);}
+.sc-widget-actions{padding:4px;flex-shrink:0;}
 .sc-widget-actions>div{margin-top:4px!important;}
 /* Help right beside the headline (charts with an options menu). */
 .sc-widget-title-help{display:inline-flex;vertical-align:middle;margin-left:8px;}
@@ -170,3 +174,37 @@
 .sc-video-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:180px;width:100%;animation:sc-video-state-in .25s ease-out;}
 @keyframes sc-video-state-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.sc-video-state{animation:none}}
+
+/* Topic monitors share section geometry, while adapters supply charts and text. */
+.sc-monitor-topic {scroll-margin-top:88px;}
+.sc-monitor-topic-copy > h2 {margin:0 0 16px;color:var(--widget-ink);}
+.sc-monitor-topic-description {max-width:var(--content-max-width);margin-bottom:24px;font-size:var(--font-size-body);line-height:1.7;color:var(--widget-muted);}
+.sc-monitor-topic-widgets {display:grid;gap:var(--widget-gap);min-width:0;}
+.sc-monitor-topic-widgets > * {min-width:0;}
+.municipal-data > .sc-monitor-topic + .sc-monitor-topic {margin-top:64px;}
+
+@container (min-width:760px) { .sc-monitor-topic-widgets[data-layout="pair"] { grid-template-columns:repeat(2,minmax(0,1fr));align-items:start; } }
+
+/* Editorial composition keeps chart placement explicit and stacks copy first on mobile. */
+@container (min-width: 900px) {
+  .sc-monitor-topic[data-chart-side] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 48px; align-items: center; }
+  .sc-monitor-topic[data-chart-side="left"] { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  .sc-monitor-topic[data-chart-side="left"] > .sc-monitor-topic-widgets { grid-column: 1; grid-row: 1; }
+  .sc-monitor-topic[data-chart-side="left"] > .sc-monitor-topic-copy { grid-column: 2; grid-row: 1; }
+  .sc-monitor-topic[data-chart-side] .sc-monitor-topic-description { margin-bottom: 0; }
+}
+
+/* Product sections share a divider and a restrained visual overlap. */
+.sc-dashboard[data-section-style="product"] > .sc-monitor-topic { border-top:1px solid var(--widget-border, var(--color-border)); padding-block:48px; }
+.sc-dashboard[data-section-style="product"] > .sc-monitor-topic + .sc-monitor-topic { margin-top:48px; }
+@container (min-width:760px) {
+ .sc-dashboard[data-section-style="product"] > .sc-monitor-topic { padding-top:0; }
+ .sc-dashboard[data-section-style="product"] .sc-monitor-topic-copy { padding-top:48px; }
+ .sc-dashboard[data-section-style="product"] .sc-monitor-topic-widgets { margin-top:-24px; }
+}
+/* Shared widget controls; the hero stage retains its separate scale. */
+.sc-widget-setting[data-variant=widget] .sc-setting-stepper>button svg{width:16px;height:16px;}
+.sc-widget-setting[data-variant=widget] .sc-setting-stepper{box-shadow:none;}
+.sc-widget-setting[data-variant=widget][data-size=sm] .sc-setting-stepper select{height:36px;}
+
+.sc-widget-actions{position:relative;z-index:1;}

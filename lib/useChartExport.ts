@@ -53,6 +53,7 @@ export function useChartExport(options: UseChartExportOptions) {
         await exportNode(chartRef.current, {
           filename: options.filename,
           size: options.nodeSize,
+          context: options.context,
           mode: "download",
         });
       } else {

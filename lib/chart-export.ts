@@ -15,7 +15,9 @@
 //    dropped from the snapshot.
 
 import '../components/charts/chart-export.css';
+import {fitPodiumPlot} from './widget-plot-fit';
 import { domToBlob } from 'modern-screenshot';
+import {chartMetadataLabel, chartDataDate} from './chart-labels';
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR } from './export-markers';
 import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
@@ -59,7 +61,9 @@ export interface ExportContext {
    * Rendered in a grey box above the credit line. */
   notes?: ExportNoteItem[];
   source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
-  /** Known data vintage; without it the image carries the retrieval date. */
+  /** Actual data vintage; never replaced with the download date. */
+  scope?: string;
+  unit?: string;
   dataAsOf?: string;
 }
 
@@ -194,6 +198,13 @@ export function buildExportSvg(
   chartHeight: number,
   context: ExportContext,
 ): string {
+  // Compose with the palette of this chart, including ancestor-scoped themes.
+  const computed = typeof getComputedStyle === 'function' ? getComputedStyle(chartSvg) : null;
+  const palette: Record<TokenName, string> = {...tokens};
+  for (const key of Object.keys(palette) as TokenName[]) {
+    const value = computed?.getPropertyValue(key).trim();
+    if (value) palette[key] = value;
+  }
   const hasStats = context.stats && context.stats.length > 0;
   const hasLegend = context.legend && context.legend.length > 0;
 
@@ -216,19 +227,17 @@ export function buildExportSvg(
   // eigenen Umbruch läuft eine lange Quelle in die Marke hinein (SVG bricht
   // Text nicht um). Deshalb: umbrechen und den Fuß mitwachsen lassen.
   const BRAND_W = 250;
-  // Datum ins Bild: Ein weitergereichtes Bild ohne Datum lässt niemanden
-  // erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind. Hier ist
-  // `new Date()` unbedenklich — der Aufbau läuft erst beim Klick im Browser.
-  const abrufdatum = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const sourceLines = context.source
-    ? wrapText(`Datenquelle: ${context.source} · Stand: ${context.dataAsOf ?? abrufdatum}`, innerW - BRAND_W - 16, 10)
+    ? wrapText(`Datenquelle: ${context.source} · Stand: ${chartDataDate(context.dataAsOf)}`, innerW - BRAND_W - 16, 11)
     : [];
-  const footerH = Math.max(FOOTER_H, sourceLines.length * 13 + 16);
+  const footerH = Math.max(FOOTER_H, sourceLines.length * 15 + 16);
 
   // Calculate vertical layout
   let y = PAD;
   const titleY = y; y += TITLE_H;
-  const headingY = context.heading ? y : 0; if (context.heading) y += HEADING_H;
+  const heading = chartMetadataLabel({scope:context.scope, dataAsOf:context.dataAsOf, unit:context.unit, period:[...new Set([context.heading, context.subtitle].filter(Boolean))].join(' · ')});
+  const headingLines = wrapText(heading, innerW - 16, 13);
+  const headingY = heading ? y : 0; if (heading) y += Math.max(HEADING_H, headingLines.length * 18 + 8);
   const statsY = hasStats ? y : 0; if (hasStats) y += STATS_H + 8;
   const chartY = y;
   const chartBoxH = chartHeight + 16; // padding inside chart card
@@ -261,20 +270,14 @@ export function buildExportSvg(
   }
 
   // Outer card background
-  p.push(`<rect width="${totalW}" height="${totalH}" rx="${CARD_R}" fill="${tokens['--color-bg']}" stroke="${tokens['--color-border']}" stroke-width="1"/>`);
+  p.push(`<rect width="${totalW}" height="${totalH}" rx="${CARD_R}" fill="${palette['--color-bg']}" stroke="${palette['--color-border']}" stroke-width="1"/>`);
 
   // ── Title Bar ──
-  p.push(`<text x="${PAD + 8}" y="${titleY + 20}" font-family="${FONT_TEXT}" font-size="14" font-weight="700" fill="${tokens['--color-text-primary']}">${esc(context.title)}</text>`);
-  if (context.subtitle) {
-    // Measure title width approximately (14px bold ≈ 8px per char)
-    const titleTextW = context.title.length * 8;
-    p.push(`<text x="${PAD + 8 + titleTextW + 12}" y="${titleY + 20}" font-family="${FONT_TEXT}" font-size="13" font-weight="400" fill="${tokens['--color-text-secondary']}">${esc(context.subtitle)}</text>`);
-  }
-
-  // ── Zwischenüberschrift: der gewählte Zustand (Zeitraum, Region, Variante) ──
-  if (context.heading) {
-    p.push(`<text x="${PAD + 8}" y="${headingY + 14}" font-family="${FONT_TEXT}" font-size="13" font-weight="700" fill="${tokens['--color-text-primary']}">${esc(context.heading)}</text>`);
-  }
+  p.push(`<text x="${PAD + 8}" y="${titleY + 20}" font-family="${FONT_TEXT}" font-size="14" font-weight="700" fill="${palette['--color-text-primary']}">${esc(context.title)}</text>`);
+  // Context, date and quantity share one typographic level and wrap together.
+  headingLines.forEach((line, index) => {
+    p.push(`<text x="${PAD + 8}" y="${headingY + 14 + index * 18}" font-family="${FONT_TEXT}" font-size="13" font-weight="400" fill="${palette['--color-text-secondary']}">${esc(line)}</text>`);
+  });
 
   // ── Stats Widgets ──
   if (hasStats && context.stats) {
@@ -284,16 +287,16 @@ export function buildExportSvg(
       const bx = PAD + i * (boxW + STATS_GAP);
       const by = statsY;
       // Box background
-      p.push(`<rect x="${bx}" y="${by}" width="${boxW}" height="${STATS_H}" rx="12" fill="none" stroke="${tokens['--color-border']}" stroke-width="1"/>`);
+      p.push(`<rect x="${bx}" y="${by}" width="${boxW}" height="${STATS_H}" rx="12" fill="none" stroke="${palette['--color-border']}" stroke-width="1"/>`);
       // Label
-      p.push(`<text x="${bx + boxW / 2}" y="${by + 18}" text-anchor="middle" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">${esc(stat.label)}</text>`);
+      p.push(`<text x="${bx + boxW / 2}" y="${by + 18}" text-anchor="middle" font-family="${FONT_TEXT}" font-size="10" fill="${palette['--color-text-muted']}">${esc(stat.label)}</text>`);
       // Value + unit
-      p.push(`<text x="${bx + boxW / 2}" y="${by + 50}" text-anchor="middle" font-family="${FONT_MONO}" font-weight="800" font-size="22" fill="${tokens['--color-text-primary']}">${esc(stat.value)}<tspan font-size="13" font-weight="400" fill="${tokens['--color-text-muted']}" dx="3">${esc(stat.unit)}</tspan></text>`);
+      p.push(`<text x="${bx + boxW / 2}" y="${by + 50}" text-anchor="middle" font-family="${FONT_MONO}" font-weight="800" font-size="22" fill="${palette['--color-text-primary']}">${esc(stat.value)}<tspan font-size="13" font-weight="400" fill="${palette['--color-text-muted']}" dx="3">${esc(stat.unit)}</tspan></text>`);
     });
   }
 
   // ── Chart Card ──
-  p.push(`<rect x="${PAD}" y="${chartY}" width="${innerW}" height="${chartBoxH}" rx="${INNER_R}" fill="none" stroke="${tokens['--color-border']}" stroke-width="1"/>`);
+  p.push(`<rect x="${PAD}" y="${chartY}" width="${innerW}" height="${chartBoxH}" rx="${INNER_R}" fill="none" stroke="${palette['--color-border']}" stroke-width="1"/>`);
   // Chart SVG embedded
   p.push(`<svg x="${PAD}" y="${chartY + 8}" width="${innerW}" height="${chartHeight}" ${vbAttr}>`);
   p.push(chartInner);
@@ -309,22 +312,22 @@ export function buildExportSvg(
       // ist ungültig und rendert SCHWARZ — die Legende zeigte damit für alle drei
       // Szenarien dasselbe Kästchen, während die Kurven farbig blieben.
       p.push(`<rect x="${lx}" y="${ly - 5}" width="10" height="10" rx="2" fill="${resolveVars(item.color)}"/>`);
-      p.push(`<text x="${lx + 14}" y="${ly + 3}" font-family="${FONT_TEXT}" font-size="11" fill="${tokens['--color-text-muted']}">${esc(item.label)}</text>`);
+      p.push(`<text x="${lx + 14}" y="${ly + 3}" font-family="${FONT_TEXT}" font-size="11" fill="${palette['--color-text-muted']}">${esc(item.label)}</text>`);
       lx += 14 + item.label.length * 6.5 + 16; // approximate text width + gap
     });
   }
 
   // ── Fußnoten in einer grauen Box (wie im 1:1-Weg) ──
   if (hasNotes) {
-    p.push(`<rect x="${PAD}" y="${notesY}" width="${innerW}" height="${notesBoxH}" rx="${INNER_R}" fill="${tokens['--color-bg-muted']}"/>`);
+    p.push(`<rect x="${PAD}" y="${notesY}" width="${innerW}" height="${notesBoxH}" rx="${INNER_R}" fill="${palette['--color-bg-muted']}"/>`);
     noteLines.forEach((line, i) => {
       const ly = notesY + NOTE_PAD + 11 + i * NOTE_LINE_H;
       if (line.bold) {
         // Erste Zeile eines Eintrags: Stichwort fett, Rest normal.
         const rest = line.text.slice(line.bold.length + 1);
-        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}"><tspan font-weight="700" fill="${tokens['--color-text-secondary']}">${esc(line.bold)}:</tspan>${esc(rest)}</text>`);
+        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${palette['--color-text-muted']}"><tspan font-weight="700" fill="${palette['--color-text-secondary']}">${esc(line.bold)}:</tspan>${esc(rest)}</text>`);
       } else {
-        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">${esc(line.text)}</text>`);
+        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${palette['--color-text-muted']}">${esc(line.text)}</text>`);
       }
     });
   }
@@ -341,15 +344,15 @@ export function buildExportSvg(
   const logoX = totalW - PAD - 8 - logoW;
   const textX = logoX - 10;
 
-  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-secondary']}">${esc(brandLabel(context.kind ?? 'chart'))}</text>`);
+  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${palette['--color-text-secondary']}">${esc(brandLabel(context.kind ?? 'chart'))}</text>`);
   if (logoBase64Cache) {
     p.push(`<image href="${logoBase64Cache}" x="${logoX}" y="${footerCenterY - logoH / 2}" width="${logoW}" height="${logoH}"/>`);
   }
 
   // Left-aligned: data-source credit (licence-required on shared images).
   sourceLines.forEach((line, i) => {
-    const ly = footerCenterY - ((sourceLines.length - 1) * 13) / 2 + i * 13;
-    p.push(`<text x="${PAD + 8}" y="${ly}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">${esc(line)}</text>`);
+    const ly = footerCenterY - ((sourceLines.length - 1) * 15) / 2 + i * 15;
+    p.push(`<text x="${PAD + 8}" y="${ly}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="11" fill="${palette['--color-text-secondary']}">${esc(line)}</text>`);
   });
 
   p.push(`</svg>`);
@@ -533,7 +536,7 @@ export async function captureNodeToBlob(
 }
 
 /** Shared export DOM for image capture and native server video frames. */
-export async function prepareNodeCapture(node: HTMLElement, presentation: 'export' | 'screen' = 'export', size?: {width:number;height:number}, visible = false) {
+export async function prepareNodeCapture(node: HTMLElement, presentation: 'export' | 'screen' = 'export', size?: {width:number;height:number}, visible = false, preserveTheme = false) {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
   // flag on click — that reconciliation undoes any edit we make to the live tree
@@ -548,9 +551,47 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
   const wrapper = document.createElement('div');
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
-  if(presentation==='export')applyBrightestStage(wrapper);
+  if(presentation==='export' && !preserveTheme)applyBrightestStage(wrapper);
   if(presentation==='export')wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
+  // Keep allocated layout rules on the detached clone. Its iframe viewport is
+  // not available during capture, so freeze the assigned card rectangle.
+  const allocation = node.closest<HTMLElement>('[data-widget-layout="allocated"]');
+  if (allocation) {
+    wrapper.className = allocation.className;
+    wrapper.setAttribute('data-widget-layout', 'allocated');
+    wrapper.style.width = `${size?.width ?? rect.width}px`;
+    wrapper.style.height = `${size?.height ?? rect.height}px`;
+  }
   const clone = node.cloneNode(true) as HTMLElement;
+  // DOM cloning does not copy canvas pixels (including WebGL scenes).
+  // Snapshot each live surface before export markers remove any descendants.
+  const sourceCanvases = node.querySelectorAll('canvas');
+  clone.querySelectorAll('canvas').forEach((canvas, index) => {
+    const source = sourceCanvases[index];
+    canvas.width = source.width;
+    canvas.height = source.height;
+    canvas.getContext('2d')?.drawImage(source, 0, 0);
+  });
+  if (preserveTheme) {
+    const originals = [node, ...node.querySelectorAll<HTMLElement | SVGElement>('*')];
+    const copies = [clone, ...clone.querySelectorAll<HTMLElement | SVGElement>('*')];
+    originals.forEach((original, index) => {
+      const style = getComputedStyle(original);
+      const parentStyle = index > 0 && original.parentElement ? getComputedStyle(original.parentElement) : null;
+      for (const property of style) {
+        if (!property.startsWith('--')) continue;
+        const value = style.getPropertyValue(property);
+        // Inherited tokens must remain inherited: freezing them on every child
+        // prevents plots from adapting when export metadata changes the layout.
+        if (!parentStyle || value !== parentStyle.getPropertyValue(property)) copies[index].style.setProperty(property, value);
+      }
+    });
+    [clone, ...clone.querySelectorAll<HTMLElement>(`[${EXPORT_BRIGHTEST_ATTR}]`)].forEach(el => el.removeAttribute(EXPORT_BRIGHTEST_ATTR));
+    wrapper.style.setProperty('--chart-export-source', getComputedStyle(node).getPropertyValue('--widget-muted').trim() || getComputedStyle(node).color);
+    wrapper.style.setProperty('--chart-export-source-opacity', '.7');
+    clone.style.setProperty('--chart-export-source', getComputedStyle(node).getPropertyValue('--widget-muted').trim() || getComputedStyle(node).color);
+    clone.style.setProperty('--chart-export-source-opacity', '.7');
+  }
   if(presentation==='export')applyExportMarkers(clone);
   clone.querySelectorAll('[data-video-overlay]').forEach(overlay=>overlay.remove());
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
@@ -571,6 +612,7 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
   freeze(clone);
   clone.querySelectorAll<HTMLElement | SVGElement>('*').forEach(freeze);
   clone.style.width = `${size?.width ?? rect.width}px`;
+  if (allocation && !size) clone.style.height = `${rect.height}px`;
   if (size) {
     clone.style.height = `${size.height}px`;
     clone.style.setProperty('--chart-export-height', `${size.height}px`);
@@ -583,10 +625,17 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
 
   try {
     await document.fonts.ready;
+    if (allocation || size) clone.querySelectorAll<HTMLElement>('[data-podium-layout]').forEach(fitPodiumPlot);
     // Export-only notes and removed controls change the card's dimensions.
     // Refit source labels on the actual capture clone, which has no observers.
     clone.querySelectorAll<HTMLElement>('[data-sc-source-edge]').forEach(edge => {
-      let size = parseFloat(getComputedStyle(edge).fontSize);
+      if (preserveTheme) {
+        edge.style.setProperty('--chart-export-source', getComputedStyle(node).getPropertyValue('--widget-muted').trim() || getComputedStyle(node).color);
+        edge.style.setProperty('--chart-export-source-opacity', '.7');
+      }
+      if (edge.dataset.scSourceExportLabel) edge.textContent = edge.dataset.scSourceExportLabel;
+      let size = Math.min(9, Number(edge.dataset.scSourceExportSize) || parseFloat(getComputedStyle(edge).fontSize));
+      edge.style.fontSize = `${size}px`;
       while ((edge.scrollHeight > edge.clientHeight + 1 || edge.scrollWidth > edge.clientWidth + 1) && size > 5) {
         size = Math.round((size - .2) * 10) / 10;
         edge.style.fontSize = `${size}px`;
@@ -639,9 +688,17 @@ export async function exportNode(
     size?: {width: number; height: number};
     shareTitle?: string;
     shareText?: string;
+    context?: ExportContext;
   },
 ): Promise<Blob | null> {
-  const blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
+  let blob: Blob;
+  if (options.mode === 'download') {
+    const snapshot = await prepareNodeCapture(node, 'export', options.size, false, true);
+    try { blob = await domToBlob(snapshot.node, {scale:2}); }
+    finally { snapshot.dispose(); }
+  } else {
+    blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
+  }
   const filename = options.filename || 'solar-check-chart.png';
 
   if (options.mode === 'download') {

@@ -32,6 +32,8 @@ export type EmbedCodeOpts = {
   params?: Record<string, string>;
   /** Breite in Pixeln. Der Rahmen bleibt darunter flexibel. */
   width: number;
+  /** Automatic height requires the shared script; fixed mode works in iframe-only CMS fields. */
+  resize?: "auto" | "fixed";
   height: number;
   /** Steht im Titel des Rahmens — für Screenreader und als Beschriftung. */
   titel: string;
@@ -62,6 +64,7 @@ export function embedCode(o: EmbedCodeOpts): string {
   const url = `${o.siteUrl}${o.src}${qs ? `?${qs}` : ""}`;
   return [
     `<iframe`,
+    ...(o.resize === "fixed" ? [] : ['  data-solar-check-resize']),
     `  src="${attr(url)}"`,
     `  width="${o.width}"`,
     `  height="${o.height}"`,
@@ -72,5 +75,6 @@ export function embedCode(o: EmbedCodeOpts): string {
     `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
     `  <a href="${attr(`${o.siteUrl}${o.attribution.path}`)}" target="_blank" rel="noopener">${attr(o.attribution.text)}</a>`,
     `</p>`,
+    ...(o.resize === "fixed" ? [] : [`<script src="${attr(`${o.siteUrl}/widgets/resize.js`)}" async></script>`]),
   ].join("\n");
 }

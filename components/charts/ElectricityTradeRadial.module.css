@@ -1,0 +1,63 @@
+.root{position:relative;width:100%;max-width:520px;color:var(--widget-muted);font-family:var(--atlas-body);}
+.root svg{display:block;width:100%;overflow:visible;}
+.axis{fill:var(--widget-muted);opacity:.65;font:400 var(--atlas-caption-size,13px) var(--atlas-body);}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;gap:4px;font:400 var(--widget-meta-size,12px)/1.4 var(--atlas-body);}
+.center :global(.sc-metric-value strong){font-size:clamp(20px,5cqi,32px);color:var(--trade-export-color,var(--widget-ink));}
+.center :global(.sc-metric-affix){font-size:12px;}
+.center small{font:inherit;max-width:120px;text-align:center;}
+.scale{margin:0;text-align:center;font:400 var(--widget-meta-size,12px)/1.4 var(--atlas-body);color:var(--widget-muted);}
+
+@container (max-width:400px){.axis{font-size:20px;}}
+
+.barMetric{display:flex;flex-direction:column;align-items:center;gap:4px;font:400 var(--widget-meta-size,12px)/1.4 var(--atlas-body);min-height:76px;}
+.barMetric small{font:inherit;}
+
+.center[data-direction="import"] :global(.sc-metric-value strong),.barMetric[data-direction="import"] :global(.sc-metric-value strong){color:var(--widget-accent);}
+.barMetric[data-direction="export"] :global(.sc-metric-value strong){color:var(--trade-export-color,var(--widget-ink));}
+
+.center :global(.sc-metric-value[data-stacked=true]),.barMetric :global(.sc-metric-value[data-stacked=true]){align-items:center;}
+
+.center .share,.barMetric .share{max-width:145px;margin-top:6px;text-align:center;font-size:var(--widget-meta-size,12px);line-height:1.35;}
+
+.allocatedBars{display:flex;flex-direction:column;min-height:0;}
+.allocatedBars .barMetric{flex-shrink:0;}
+.allocatedBars > .barPlot{flex:1;min-height:80px;height:0;aspect-ratio:auto;}
+.allocatedBars .axis{font-size:12px;}
+
+/* Compact grid card: preserve a square plot, place the same metric beside it. */
+.root[data-summary-placement=beside] .radialPlot{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,1fr);gap:16px;align-items:center;max-width:none;}
+.root[data-summary-placement=beside] svg{aspect-ratio:1;height:auto;min-width:0;}
+.root[data-summary-placement=beside] .center{position:static;align-items:flex-start;min-width:0;}
+.root[data-summary-placement=beside] .center :global(.sc-metric-value[data-stacked=true]){align-items:flex-start;}
+.root[data-summary-placement=beside] .center small{text-align:left;max-width:160px;}
+
+/* The annotation overlays the flexible plot instead of consuming a metric row. */
+.metricOverlay{position:absolute;top:0;right:0;z-index:1;max-width:100%;pointer-events:none;}
+.root[data-metric-overlay=true] > .barPlot{width:100%;height:100%;min-height:0;}
+
+.radialPlot{position:relative;width:100%;min-width:0;}
+.root[data-separate-caption=true]{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.compactCaption{font:400 11px/1.35 var(--atlas-body);text-align:center;display:grid;gap:2px;min-height:32px;}
+.compactCaption small{font:inherit;max-width:200px;}
+.root[data-compact-center=true] .center :global(.sc-metric-value strong){font-size:clamp(18px,8cqi,26px);}
+.root[data-compact-center=true] .radialPlot{container-type:inline-size;}
+
+.root[data-compact-center=true] .center button{pointer-events:auto;cursor:help;}
+
+.metricOverlay[data-corner=top-left]{left:0;right:auto;}
+.metricOverlay[data-corner=bottom-right]{top:auto;bottom:0;}
+.metricOverlay[data-corner=bottom-left]{top:auto;bottom:0;left:0;right:auto;}
+
+/* Each tooltip is anchored to its bar; the summary remains the period total. */
+.barTargets{position:absolute;inset:0;pointer-events:none;}
+.barTargets>div{position:absolute;}
+.barTargets>div>span,.barTargets button,.barTarget{display:block!important;width:100%;height:100%;}
+.barTargets button{pointer-events:auto;}
+.barTargets button:focus-visible{outline:none;}
+
+.barPlot{position:relative;width:100%;aspect-ratio:520/400;}
+.barPlot>svg{height:100%;}
+
+.dayCalculation{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-variant-numeric:tabular-nums;}
+.dayCalculation> :nth-child(even){text-align:right;white-space:nowrap;}
+.dayCalculation>strong{border-top:1px solid currentColor;padding-top:7px;margin-top:3px;font-size:15px;}

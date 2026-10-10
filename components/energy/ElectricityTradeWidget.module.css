@@ -1,0 +1,26 @@
+.frame{--trade-export-color:var(--widget-ink);--font-heading:var(--atlas-display);--font-text:var(--atlas-body);}
+:global([data-sc-export-capture]) .frame,.frame:global([data-story-scheme="light"]){--trade-export-color:var(--widget-muted);}
+.controls{display:grid;grid-template-columns:minmax(0,180px) minmax(0,180px);grid-template-rows:36px 36px;align-items:start;gap:8px;width:100%;padding-top:12px;}
+.controls>:nth-child(3){grid-column:2;}
+.plotSlot{margin-top:24px;width:100%;max-width:520px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;}
+.summary{display:flex;justify-content:space-evenly;flex-wrap:wrap;gap:16px;padding:0 var(--widget-padding) 16px;font-family:var(--atlas-body);}
+.summary>div{display:flex;flex-direction:column;gap:4px;font-size:var(--atlas-label-size,14px);color:var(--widget-muted);}
+.summary :global(.sc-metric-value strong){font-size:24px;color:var(--trade-export-color);}
+.summary>div:first-child :global(.sc-metric-value strong){color:var(--widget-accent);}
+.status{margin:0;padding:0 var(--widget-padding) var(--widget-padding);font:400 var(--widget-meta-size,12px)/var(--widget-meta-leading,1.5) var(--atlas-body);color:var(--widget-muted);}
+
+.compact{max-width:320px;margin-inline:auto}
+
+.plotSlot[data-trade-shape=bars]{aspect-ratio:auto;}
+.compact[data-allocated=true],.plotSlot[data-allocated=true]{flex:1;min-height:0;max-width:none;width:100%;aspect-ratio:auto;display:flex;align-items:center;justify-content:center;container-type:size;box-sizing:border-box;}
+.compact[data-allocated=true]{padding:16px var(--widget-padding) 24px;}
+.plotSlot[data-allocated=true]{height:100%;margin-top:0;padding-top:24px;}
+:is(.compact,.plotSlot)[data-allocated=true][data-trade-shape=radial]>div,:is(.compact,.plotSlot)[data-allocated=true][data-trade-shape=auto]>div{width:min(100cqw,100cqh);max-width:520px;}
+:is(.compact,.plotSlot)[data-allocated=true][data-trade-shape=bars]>div{height:100%;max-width:none;}
+
+.compact[data-summary-layout=auto]{max-width:none;width:100%;padding:16px var(--widget-padding) 24px;box-sizing:border-box;}
+.compact[data-summary-layout=auto][data-allocated=true]>div[data-summary-placement=beside]{width:100%;max-width:none;}
+
+
+
+.plotSlot[data-allocated=true]>div[data-separate-caption=true]{width:min(100cqw,calc(100cqh - 64px));}

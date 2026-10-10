@@ -104,6 +104,11 @@ export function hostAusHerkunft(roh: string | null | undefined): string | null {
 // fehlenden Zahlen.
 export const EMBED_WIDGETS = [
   "anlagenbestand-deutschland",
+  "atomstrom-tage",
+  "laender-strommix-pro-kopf",
+  "laender-strommixrennen",
+  "stromhandel",
+  "welt-zubaurennen",
   "ee-ampel",
   "einspeiseverguetung-verlauf",
   "erzeugung",

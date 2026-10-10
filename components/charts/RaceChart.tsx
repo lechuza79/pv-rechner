@@ -1,26 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import InfoTooltip from "../InfoTooltip";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
+import {useWidgetPresentation, WidgetPresentationProvider} from '../dashboard/WidgetPresentationContext';
+import {CHART_ANIMATION_EVENT, type ChartAnimationCommand} from '../../lib/chart-animation-export';
+import {raceCurveValue} from '../../lib/race-curve';
+import {raceTimeline, racePositionAt, milestoneRaceTimeline} from '../../lib/race-timeline';
+import frameStyles from '../energy/EnergyWidgetFrame.module.css';
+import styles from './RaceChart.module.css';
 import {
   ExportBox,
   ExportNotesProvider,
   ExportOnly,
   ExportOnlyG,
-  WidgetFooter,
-  WidgetSourceEdge,
-  SOURCE_EDGE_WIDTH,
-  WidgetExportFooter,
-  type ExportLegendEntry,
 } from "../WidgetExport";
 import Link from "next/link";
-import { IconArrowRight, IconPause, IconPlay, IconRefresh } from "../Icons";
-import { useChartExport } from "../../lib/useChartExport";
+import { IconChevronLeft, IconChevronRight, IconArrowRight, IconPause, IconPlay, IconRefresh } from "../Icons";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
-import { brandLabel, type WidgetDef } from "../../lib/widget-registry";
-import { v, fsPx, space, pad as abstand, tokens, iconSizes, type TokenName } from "../../lib/theme";
-import { RaceVideo, videoFormat, type VideoFrameDaten } from "../../lib/race-video";
-import { downloadBlob } from "../../lib/chart-export";
+import { type WidgetDef } from "../../lib/widget-registry";
+import { v, fsPx, space, pad as abstand, iconSizes, type TokenName } from "../../lib/theme";
 import { sourceLabel } from "../../lib/data-sources";
 
 // Der Race-Chart: ZWEI Läufer über einen langen Zeitraum, Tag für Tag, als
@@ -79,11 +77,7 @@ export interface RaceSkala {
 }
 export const TEMPO_STANDARD: RaceTempo = { ruhigeTage: 730, msJeTagStart: 22, msJeTagEnde: 1.5 };
 export const SKALA_STANDARD: RaceSkala = { minTage: 365, luft: 0.9, minSpanne: 120, minRand: 20, zoomAb: 0.5 };
-const msJeTag = (t: number, T: number, tempo: RaceTempo) => {
-  if (t < tempo.ruhigeTage) return tempo.msJeTagStart;
-  const u = Math.min(1, (t - tempo.ruhigeTage) / Math.max(1, T - tempo.ruhigeTage));
-  return tempo.msJeTagStart * Math.pow(tempo.msJeTagEnde / tempo.msJeTagStart, Math.sqrt(u));
-};
+
 const SCHRITT_MS = 500; // bei reduzierter Bewegung: ein Jahr je Schritt
 
 export const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
@@ -124,6 +118,7 @@ export interface RaceEreignis {
   /** Kurzer Titel („Anlage bezahlt · Sep 2038") und ein Erklärsatz für die Zeitleiste. */
   label: string;
   text: string;
+  source?: {label:string;url:string};
   /** Gestrichelte Senkrechte im Chart an diesem Tag. */
   linie?: boolean;
   /** Text im Chart NUR im Bild (auf der Seite steht er an der Zeitleiste). */
@@ -148,6 +143,8 @@ export interface RaceChartProps {
   fmtKurz: (wert: number) => string;
   /** „?" am Titel (was verglichen wird) und am Zeitraum (was die Linien zählen). */
   showTitle?: boolean;
+  headingTitle?: string;
+  titleSeries?: {text:string;runner:"camera"|"other"}[];
   showYAxisLabels?: boolean;
   valueUnit?: string;
   actions?: boolean;
@@ -178,6 +175,9 @@ export interface RaceChartProps {
    * dort die Seite, wie bei jedem eigenen Einbau.
    */
   variante?: "voll" | "mini";
+  /** Annual observations remain annual; only the drawing interpolates. */
+  annualYears?: readonly number[];
+  milestoneTiming?: boolean;
 }
 
 export default function RaceChart(props: RaceChartProps) {
@@ -190,20 +190,37 @@ export default function RaceChart(props: RaceChartProps) {
 
 function RaceCard({
   widget, kamera, anderer, startJahr, jahre, ersterTag, datumVon, ereignisse, fmt, fmtKurz,
-  showTitle = true, showYAxisLabels = true, valueUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
-  onsite = false, branding = true, showEmbed = false, autoplay = true, stand: quellenStand,
-  tempo: tempoProp, skala: skalaProp, variante = "voll",
+  showTitle = true, headingTitle, titleSeries, showYAxisLabels = false, valueUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
+  onsite = false, showEmbed = false, autoplay = true, stand: quellenStand,
+  tempo: tempoProp, skala: skalaProp, variante = "voll", annualYears, milestoneTiming=false,
 }: RaceChartProps) {
+  const clipId = useId();
   const mini = variante === "mini";
+  const presentation = useWidgetPresentation();
+  const autoPlay = presentation.autoplay ?? autoplay;
   const tempo: RaceTempo = { ...TEMPO_STANDARD, ...tempoProp };
   const skala: RaceSkala = { ...SKALA_STANDARD, ...skalaProp };
   const kA = kamera.werte, kB = anderer.werte;
   const T = kA.length - 1;
-  const FARBE_A = v(kamera.farbe), FARBE_B = v(anderer.farbe);
-  const [t, setT] = useState(Math.max(0, Math.min(1, initialProgress)) * T);
+  const plotValue=annualYears?raceCurveValue:wertBei;
+  const timeline = useMemo(() => milestoneTiming?milestoneRaceTimeline(T,ereignisse.map(event=>event.tag)):raceTimeline(T, tempo), [T, tempo.ruhigeTage, tempo.msJeTagStart, tempo.msJeTagEnde,milestoneTiming,ereignisse]);
+  const axisWidth = useMemo(() => Math.max(58, ...[kA, kB].map(values => {
+    const largest = values.reduce((max, value) => Math.max(max, Math.abs(value)), 0);
+    return Math.ceil(fmtKurz(largest).length * fsPx("--font-size-small") * .65 + 8);
+  })), [kA, kB, fmtKurz]);
+  const FARBE_A = v(kamera.farbe), FARBE_B = `var(--race-comparison-color, ${v(anderer.farbe)})`;
+  const [t, setT] = useState(Math.max(0, Math.min(1, autoPlay ? initialProgress : 1)) * T);
   const [spielt, setSpielt] = useState(false);
   const [hoverDay, setHoverDay] = useState<number | null>(null);
   const [plotWidth, setPlotWidth] = useState(640);
+  const [allocatedHeight,setAllocatedHeight]=useState(260);
+  const allocated=presentation.layout==='allocated';
+  const plotRef=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    const node=plotRef.current;if(!node||!allocated)return;
+    const observer=new ResizeObserver(()=>setAllocatedHeight(Math.max(120,node.clientHeight)));
+    observer.observe(node);return()=>observer.disconnect();
+  },[allocated]);
   const narrow = plotWidth <= 560;
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
@@ -236,11 +253,7 @@ function RaceCard({
   useEffect(() => () => cancelAnimationFrame(gleitRaf.current), []);
   const hostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  // Video-Aufnahme: läuft in Echtzeit mit der Animation (siehe lib/race-video.ts).
-  const [aufnahme, setAufnahme] = useState<RaceVideo | null>(null);
-  const frameRef = useRef<() => Promise<void>>(async () => {});
-  const [videoKann, setVideoKann] = useState(false);
-  useEffect(() => { setVideoKann(videoFormat() !== null); }, []);
+
 
   useEffect(() => {
     // Match SVG units to CSS pixels so labels never scale with the card.
@@ -259,20 +272,22 @@ function RaceCard({
     return () => { observer.disconnect(); rm.removeEventListener("change", onRm); };
   }, []);
 
-  // Von selbst loslaufen, wenn die Karte zum ersten Mal sichtbar wird — einmal.
-  // Bei reduzierter Bewegung bleibt sie stehen; die Zeit wählt man dann selbst.
+  // Start when visible, including after autoplay is explicitly re-enabled.
+  // Respect reduced motion; manual playback remains available.
   useEffect(() => {
-    if (!autoplay || ruhig || gestartet.current || !svgRef.current) return;
+    if (!autoPlay) { setSpielt(false); return; }
+    if (ruhig || !svgRef.current) return;
     const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.6) && !gestartet.current) {
+      if (entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.6)) {
         gestartet.current = true;
+        setT(previous => previous >= T ? 0 : previous);
         setSpielt(true);
         io.disconnect();
       }
     }, { threshold: 0.6 });
     io.observe(svgRef.current);
     return () => io.disconnect();
-  }, [autoplay, ruhig]);
+  }, [autoPlay, ruhig]);
 
   // Abspielen: gleichmäßig über requestAnimationFrame; bei reduzierter
   // Bewegung in ganzen Jahresschritten (keine Zwischenbilder).
@@ -283,8 +298,8 @@ function RaceCard({
       const iv = setInterval(() => {
         setT((prev) => {
           // Nächster Jahresanfang nach prev, sonst das Ende.
-          let n = T;
-          for (let m = 13; m <= 12 * jahre; m += 12) {
+          let n = annualYears ? Math.min(T, Math.floor(prev) + 1) : T;
+          for (let m = 13; !annualYears && m <= 12 * jahre; m += 12) {
             if (ersterTag[m] - 1 > prev) { n = ersterTag[m] - 1; break; }
           }
           if (n >= T) setSpielt(false);
@@ -301,7 +316,9 @@ function RaceCard({
       const dt = Math.max(0, now - last);
       last = now;
       setT((prev) => {
-        const n = Math.min(Math.max(0, prev + dt / msJeTag(prev, T, tempo)), T);
+        const index = Math.min(T, Math.floor(prev));
+        const elapsed = timeline[index] + (prev-index) * ((timeline[index+1] ?? timeline[index])-timeline[index]);
+        const n = racePositionAt(timeline, elapsed + dt);
         if (n >= T) setSpielt(false);
         return n;
       });
@@ -309,34 +326,51 @@ function RaceCard({
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [spielt, ruhig, T, jahre, ersterTag, tempo.ruhigeTage, tempo.msJeTagStart, tempo.msJeTagEnde]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [spielt, ruhig, T, jahre, ersterTag, annualYears, timeline]); // eslint-disable-line react-hooks/exhaustive-deps
 
   tRef.current = t;
   const tag = Math.min(T, Math.floor(t));
   const datum = datumVon(tag);
-  const stand = tag === 0 ? `${startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
-  const zeitraum = (bis: number) => `${startJahr} – ${bis}`;
+  const currentYear = tag === 0 ? startJahr : datum.jahr;
+  const stand = annualYears ? String(annualYears[tag]) : tag === 0 ? `${startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
 
-  const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
-    useChartExport({
-      context: { title: `${widget.title} — ${stand}` },
-      filename: dateiname,
-      shareText: widget.shareText,
-      shareUrl: widget.shareUrl,
-      mode: "node",
-    });
+  const savedExport = useRef<{t:number; playing:boolean; hover:number|null} | null>(null);
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    const control = (event:Event) => {
+      const command = (event as CustomEvent<ChartAnimationCommand>).detail;
+      if (command.mode === 'describe') { command.report?.({durationMs:timeline[T] + 1500}); return; }
+      cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null;
+      if (command.mode === 'restart') {
+        savedExport.current = null; gestartet.current = true; setHoverDay(null); setT(0); setSpielt(true); return;
+      }
+      if (command.mode === 'restore') {
+        const saved = savedExport.current;
+        if (saved) { setT(saved.t); setSpielt(saved.playing); setHoverDay(saved.hover); savedExport.current = null; }
+        return;
+      }
+      savedExport.current ??= {t, playing:spielt, hover:hoverDay};
+      setSpielt(false); setHoverDay(null);
+      if (command.mode === 'seek') setT(command.timeMs === undefined
+        ? Math.max(0, Math.min(1, command.progress ?? 0)) * T
+        : racePositionAt(timeline, command.timeMs));
+    };
+    host.addEventListener(CHART_ANIMATION_EVENT, control);
+    return () => host.removeEventListener(CHART_ANIMATION_EVENT, control);
+  }, [t, spielt, hoverDay, T, timeline]);
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
-  const W = plotWidth, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
+  const W = plotWidth, H = allocated ? allocatedHeight : mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
   // Mini: kein Platz für Achsenzahlen nötig — das Raster allein bleibt.
-  const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: showYAxisLabels ? (narrow ? 58 : 56) : 8 };
+  const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: showYAxisLabels ? axisWidth : 8 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
 
-  const xEnd = Math.max(skala.minTage, t);
+  const xEnd = Math.max(annualYears ? 1 : skala.minTage, t);
   const xStart = 0;
   const iStart = 0;
-  const iEnd = Math.min(T, Math.ceil(t));
+  const iEnd = Math.min(T, Math.floor(t));
   // Kamera auf Läufer A: seine Spanne im Bild, dazu LUFT Luft-Spannen nach
   // unten und oben — genug, dass Läufer B hereinwachsen kann, ohne dass die
   // Skala springt. Sein aktueller Wert wird eingeschlossen, sobald er
@@ -347,17 +381,20 @@ function RaceCard({
     aHi = Math.max(aHi, kA[d]);
   }
   if (!Number.isFinite(aLo)) { aLo = 0; aHi = 1; }
+  aLo=Math.min(aLo,plotValue(kA,t));aHi=Math.max(aHi,plotValue(kA,t));
   const spanne = Math.max(skala.minSpanne, aHi - aLo);
-  const bTip = kB[tag];
+  const bTip = plotValue(kB,t);
   const lo = Math.min(aLo, Math.max(bTip, aLo - skala.luft * spanne));
   const hi = Math.max(aHi, Math.min(bTip, aHi + skala.luft * spanne));
   // Ab der Hälfte der Strecke öffnet sich die Kamera linear auf das ganze
   // Bild (0 bis zum Endstand des höheren Läufers), sodass am letzten Tag
   // beide Linien vollständig im Bild stehen.
   const pad = Math.max(skala.minRand, (hi - lo) * 0.06);
-  const vollHi = Math.max(kA[T], kB[T]) * 1.04;
+  const annualMin=annualYears?Math.min(0,...kA,...kB):0;
+  const vollLo=annualMin<0?annualMin-pad:0;
+  const vollHi = (annualYears?Math.max(...kA,...kB):Math.max(kA[T], kB[T])) * 1.04;
   const w = Math.min(1, Math.max(0, (t - T * skala.zoomAb) / (T * (1 - skala.zoomAb))));
-  const yMin = Math.max(0, (lo - pad) * (1 - w)), yMax = (hi + pad) * (1 - w) + vollHi * w;
+  const yMin = annualYears ? vollLo : Math.max(vollLo, (lo - pad) * (1 - w)+vollLo*w), yMax = (hi + pad) * (1 - w) + vollHi * w;
   const bImBild = bTip >= yMin && bTip <= yMax;
   const yStep = niceStep(yMax - yMin);
   const yTicks: number[] = [];
@@ -370,18 +407,27 @@ function RaceCard({
   const xL = (tagIdx: number) => r2(P.l + ((Math.min(tagIdx, xEnd) - xStart) / (xEnd - xStart)) * cW);
   const yL = (wert: number) => r2(y0 - ((wert - yMin) / (yMax - yMin)) * cH);
   // Jahresmarken: jeder Januar im Bild, ausgedünnt, sobald es eng wird.
-  const jahreImBild = xEnd / 365;
+  const jahreImBild = annualYears ? xEnd : xEnd / 365;
   const xSchritt = narrow
     ? (jahreImBild <= 3 ? 1 : jahreImBild <= 10 ? 3 : 10)
     : (jahreImBild <= 6 ? 1 : jahreImBild <= 13 ? 2 : 5);
   const xJahre: { x: number; jahr: number }[] = [];
-  for (let m = 1, j = 1; m <= 12 * jahre; m += 12, j++) {
+  for (let m = 1, j = 1; !annualYears && m <= 12 * jahre; m += 12, j++) {
     const d = ersterTag[m];
     if (d <= xEnd && (j - 1) % xSchritt === 0) xJahre.push({ x: xL(d), jahr: datumVon(d).jahr });
   }
+  annualYears?.forEach((year, index) => { if (index <= xEnd && index % xSchritt === 0) xJahre.push({x:xL(index), jahr:year}); });
   // Linien: alle Tage bis heute plus die interpolierte Spitze. Bei vielen
   // Tagen nur jeden n-ten Punkt — mehr als ein Punkt je Pixel zeichnet nichts.
   const pfad = (reihe: Float64Array) => {
+    if(annualYears){
+      const points:string[]=[];
+      for(let step=0;step<=Math.floor(t*16);step++){
+        const x=step/16;points.push(`${xL(x)},${yL(plotValue(reihe,x))}`);
+      }
+      points.push(`${xL(t)},${yL(plotValue(reihe,t))}`);
+      return points.join(' ');
+    }
     const bis = Math.min(T, Math.floor(t));
     const schritt = Math.max(1, Math.floor((bis - iStart) / (cW * 2)));
     const pts: string[] = [];
@@ -394,8 +440,8 @@ function RaceCard({
   // mit der Linienrichtung hin- und herspringt; gegen die Linie darunter trägt
   // die Zahl einen Halo in Hintergrundfarbe.
   const spitzen = [
-    { key: kamera.key, farbe: FARBE_A, wert: wertBei(kA, t), zahl: kA[tag] },
-    ...(bImBild ? [{ key: anderer.key, farbe: FARBE_B, wert: wertBei(kB, t), zahl: kB[tag] }] : []),
+    { key: kamera.key, farbe: FARBE_A, wert: plotValue(kA, t), zahl: kA[tag] },
+    ...(bImBild ? [{ key: anderer.key, farbe: FARBE_B, wert: plotValue(kB, t), zahl: kB[tag] }] : []),
   ].map((s) => ({ ...s, y: yL(s.wert) })).sort((a, b) => a.y - b.y);
   // Liegen beide Spitzen nah beieinander (um die Kreuzung), rutscht die untere
   // unter ihren Punkt, damit sich die Zahlen nicht überlagern.
@@ -403,7 +449,6 @@ function RaceCard({
   // Liegt Läufer B außerhalb des Bildes, zeigt eine Marke am Rand, wo er
   // steht — unten, solange er hinten liegt, oben, wenn er führt.
   const bUnten = !bImBild && bTip < yMin;
-  const clipId = `race-clip-${widget.id}`;
 
   // Sekundär, nur Icon — dieselbe Form wie die Aktionsknöpfe in der Fußzeile.
   const knopf: React.CSSProperties = {
@@ -412,17 +457,9 @@ function RaceCard({
     border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), color: v("--color-text-primary"),
     cursor: "pointer",
   };
-  // Die Kante steht nur am Chart-Bereich (Chart, Spur, Ereignis-Box), nicht am
-  // Player oder der Fußzeile. Zwei Quellen passen dort nur in zwei Spalten,
-  // wenn die Schrift beim kleinsten Token bleiben soll.
-  const kantenSpalten: 1 | 2 = widget.sources.length > 1 ? 2 : 1;
   // Die Ereignis-Box: eine leichte Tönung des gedämpften Hintergrunds, ohne
   // Kontur. Der Player darunter bleibt auf dem Kartengrund (Betreiber, 05.09.2026).
-  const toenung = `color-mix(in srgb, ${v("--color-bg-muted")} 55%, ${v("--color-bg")})`;
-  const legend: ExportLegendEntry[] = [
-    { color: FARBE_B, label: anderer.label, shape: "line" },
-    { color: FARBE_A, label: kamera.label, shape: "line" },
-  ];
+  const toenung = "var(--race-event-surface)";
   const amEnde = t >= T;
 
   // Immer EIN Ereignis ist aktiv — das zuletzt erreichte; es wird unter der
@@ -446,16 +483,17 @@ function RaceCard({
         type="button"
         onClick={() => springe(ziel)}
         disabled={aus}
+        className={styles.eventArrow}
         aria-label={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
         title={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
         style={{
-          flexShrink: 0, width: 32, height: 32, padding: 0, boxSizing: "border-box", borderRadius: "50%",
+          flexShrink: 0, width: 28, height: 28, padding: 0, boxSizing: "border-box", borderRadius: "50%",
           border: `1px solid ${v("--color-border")}`, background: v("--color-bg"),
           color: aus ? v("--color-text-muted") : v("--color-text-primary"), fontSize: v("--font-size-h3"), lineHeight: 1,
           cursor: aus ? "default" : "pointer", opacity: aus ? 0.4 : 1, display: "inline-flex", alignItems: "center", justifyContent: "center",
         }}
       >
-        {richtung < 0 ? "‹" : "›"}
+        {richtung < 0 ? <IconChevronLeft size={14}/> : <IconChevronRight size={14}/>}
       </button>
     );
   };
@@ -463,111 +501,48 @@ function RaceCard({
   // stehen jederzeit übereinander.
   const posPct = (d: number) => (xL(d) / W) * 100;
 
-  // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
-  // damit die Aufnahme-Schleife immer den jüngsten Stand malt.
-  const frameDaten: VideoFrameDaten = {
-    titel: widget.title,
-    jahr: zeitraum(tag === 0 ? startJahr : datum.jahr),
-    svg: svgRef.current,
-    // Auf der Video-Leinwand gibt es keine CSS-Variablen — dieselben Tokens als Wert.
-    legende: [{ farbe: tokens[anderer.farbe], label: anderer.label }, { farbe: tokens[kamera.farbe], label: kamera.label }],
-    zeitleiste: sichtbareEreignisse.map((e) => ({ posPct: posPct(e.tag), aktiv: e === aktivesEreignis })),
-    ereignis: aktivesEreignis ? { jahr: String(aktivesEreignis.jahr), label: aktivesEreignis.label, text: aktivesEreignis.text } : null,
-    spur: { vonPct: (P.l / W) * 100, bisPct: ((P.l + cW) / W) * 100 },
-    marke: `${brandLabel(widget.kind)} solar-check.io`,
-    quelle: widget.sources.map((q) => sourceLabel(q, { kurz: true })).join(" · "),
-  };
-  frameRef.current = () => (aufnahme ? aufnahme.frame(frameDaten) : Promise.resolve());
-
-  // Aufnahme starten: von vorn, in Echtzeit; die Schleife malt, solange sie läuft.
-  const downloadVideo = () => {
-    const format = videoFormat();
-    if (!format || aufnahme) return;
-    const video = new RaceVideo(format);
-    video.vorbereiten(H / W);
-    gestartet.current = true;
-    setT(0);
-    setAufnahme(video);
-    setSpielt(true);
-    video.start();
-  };
-  useEffect(() => {
-    if (!aufnahme) return;
-    let raf = 0, lebt = true;
-    const tick = () => { if (!lebt) return; void frameRef.current().finally(() => { if (lebt) raf = requestAnimationFrame(tick); }); };
-    raf = requestAnimationFrame(tick);
-    return () => { lebt = false; cancelAnimationFrame(raf); };
-  }, [aufnahme]);
-  // Am Ende der Animation: den Endstand noch anderthalb Sekunden stehen lassen, dann speichern.
-  useEffect(() => {
-    if (!aufnahme || spielt || t < T) return;
-    const timer = setTimeout(async () => {
-      await frameRef.current();
-      const blob = await aufnahme.stop();
-      setAufnahme(null);
-      if (blob.size > 0) downloadBlob(blob, `${dateiname}.${aufnahme.format.ext}`);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [aufnahme, spielt, t, T, dateiname]);
-
+  const titleParts = titleSeries?.reduce<{text:string;color?:string}[]>((parts,series)=>parts.flatMap(part=> {
+    if(part.color || !part.text.includes(series.text)) return [part];
+    const chunks=part.text.split(series.text);
+    return chunks.flatMap((text,index)=>index ? [{text:series.text,color:series.runner==='camera'?FARBE_A:FARBE_B},{text}] : [{text}]);
+  }),[{text:headingTitle ?? widget.title}]);
+  const titleContent=titleParts ? <span className={styles.titleText}>{titleParts.map((part,index)=>part.color ? <span key={index} className={styles.titleSeries} >{part.text}<span aria-hidden="true" className={styles.titleSeriesMark} style={{backgroundColor:part.color}}/></span> : part.text)}</span> : undefined;
   const karte = (
     <div
-      ref={(el) => { (chartRef as { current: HTMLDivElement | null }).current = el; hostRef.current = el; }}
+      ref={hostRef}
+      data-chart-animation="race"
       style={{
         position: "relative",
-        background: v("--color-bg"),
-        border: `1px solid ${v("--color-border")}`,
+        background: mini ? v("--color-bg") : undefined,
+        border: mini ? `1px solid ${v("--color-border")}` : undefined,
         borderRadius: v("--radius-lg"),
-        padding: mini ? `${space.lg}px` : `${space.xl}px ${space.xl}px ${space.lg}px ${space.xl}px`,
+        padding: mini ? `${space.lg}px` : `16px var(--widget-padding) ${space.lg}px`,
         boxSizing: "border-box",
         cursor: mini ? "pointer" : undefined,
       }}
     >
-      {/* Titel groß; das „?" hängt am letzten Wort, auch wenn der Titel umbricht. */}
-      {!mini && showTitle && <div style={{ fontSize: v("--font-size-h2"), fontWeight: 800, lineHeight: 1.2, color: v("--color-text-primary"), marginBottom: space.md }}>
-        {widget.title}{" "}
-        <span style={{ display: "inline-block", verticalAlign: "middle", fontSize: v("--font-size-body"), fontWeight: 400 }}>
-          <InfoTooltip title="Berechnung & Quellen" ariaLabel="Berechnung und Quellen" size={16}>
-            <div style={{ display: "grid", gap: 12 }}>
-              <div><strong>{titelHilfe.title}</strong>{titelHilfe.inhalt}</div>
-              <div><strong style={{ display: "block", marginBottom: 4 }}>{zeitraumHilfe.title}</strong>{zeitraumHilfe.inhalt}</div>
-              <div><strong>Quellen</strong>
-                {widget.sources.map((source) => <div key={source.name}>
-                  <a href={source.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>{sourceLabel(source)}</a>
-                </div>)}
-                {quellenStand && <div>Stand: {quellenStand}</div>}
-              </div>
-            </div>
-          </InfoTooltip>
-        </span>
-      </div>}
-
-      {/* Zeitraum „Start – jetzt" in fester Breite (Tabellenziffern + Platz für
-          das letzte Jahr, damit die Zeile beim Hochzählen nicht springt), das „?"
-          zu dem, was die Linien zählen, und die Legende daneben. */}
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: mini ? space.md : space.xl }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
-          <span className="race-year-range" style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
-            {zeitraum(tag === 0 ? startJahr : datum.jahr)}
-          </span>
-        </span>
+      {/* A titleless or mini host keeps the same current-year display in its body. */}
+      {(mini || !showTitle || !titleSeries) && <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: mini ? space.md : space.xl }}>
+        {(mini || !showTitle) && <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
+          <span className={styles.currentYear}>{currentYear}</span>
+        </span>}
         {/* Legende: die Spitzen tragen nur Zahlen, die Zuordnung braucht einen
             Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
-        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xxs}px ${space.lg}px`, marginLeft: space.sm }}>
+        {(!titleSeries || !showTitle) && <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xxs}px ${space.lg}px`, marginLeft: space.sm }}>
           {[{ l: anderer, f: FARBE_B }, { l: kamera, f: FARBE_A }].map(({ l, f }) => (
             <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), whiteSpace: "nowrap", lineHeight: 1.3 }}>
               <span style={{ width: 14, height: 3, borderRadius: v("--radius-sm"), background: f }} />
               {narrow ? l.kurz : l.label}
             </span>
           ))}
-        </div>
-      </div>
+        </div>}
+      </div>}
 
       {/* Die Quellen-Kante steht am Chart-Bereich, nicht über die Fußzeile
           hinaus: dieser Rahmen trägt sie und lässt ihr rechts Platz. */}
-      <div style={{ position: "relative", paddingRight: mini || onsite ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
+      <div ref={plotRef} data-race-plot style={{ position: "relative", paddingRight: 0 }}>
       <ExportBox>
-        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: H, display: "block" }} role="img"
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: allocated ? "100%" : H, display: "block" }} role="img"
           aria-label={ariaLabel(stand, kA[tag], kB[tag])}
           tabIndex={mini ? undefined : 0}
           onPointerMove={mini ? undefined : event => {
@@ -583,7 +558,7 @@ function RaceCard({
             if (event.key === "Escape") { setHoverDay(null); return; }
             if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
             event.preventDefault();
-            setHoverDay(day => event.key === "Home" ? 0 : event.key === "End" ? tag : Math.max(0, Math.min(tag, (day ?? tag) + (event.key === "ArrowLeft" ? -30 : 30))));
+            setHoverDay(day => event.key === "Home" ? 0 : event.key === "End" ? tag : Math.max(0, Math.min(tag, (day ?? tag) + (event.key === "ArrowLeft" ? -1 : 1) * (annualYears ? 1 : 30))));
           }}>
           {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
               eigenes Element und wird beim Auftauchen neu gemountet — die Animation
@@ -601,7 +576,7 @@ function RaceCard({
               )}
             </g>
           ))}
-          <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
+          {yMin <= 0 && yMax >= 0 && <line x1={P.l} x2={P.l + cW} y1={yL(0)} y2={yL(0)} stroke="var(--color-chart-zero)" strokeWidth={1} />}
           {xJahre.map(({ x, jahr }) => (
             <g key={jahr} className="kr-neu">
               <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
@@ -667,12 +642,11 @@ function RaceCard({
         background: v("--color-bg"), color: v("--color-text-primary"), border: `1px solid ${v("--color-border")}`,
         borderRadius: v("--radius-md"), boxShadow: v("--shadow-md"), padding: abstand("md", "lg"), fontSize: v("--font-size-small"),
       }}>
-        <strong>{datumVon(hoverDay).tag}. {MONATE[datumVon(hoverDay).monat]} {datumVon(hoverDay).jahr}</strong>
+        <strong>{annualYears ? annualYears[hoverDay] : `${datumVon(hoverDay).tag}. ${MONATE[datumVon(hoverDay).monat]} ${datumVon(hoverDay).jahr}`}</strong>
         {[anderer, kamera].map(series => <div key={series.key} style={{ display: "flex", justifyContent: "space-between", gap: space.sm, marginTop: space.xs }}>
           <span>{series.kurz}</span><strong style={{ color: v(series.farbe), whiteSpace: "nowrap" }}>{fmt(series.werte[hoverDay])}</strong>
         </div>)}
       </div>}
-      {!mini && !onsite && <WidgetSourceEdge widget={widget} stand={quellenStand} spalten={kantenSpalten} />}
       </div>
 
       {mini ? (
@@ -693,37 +667,32 @@ function RaceCard({
             Derselbe rechte Rand wie das Chart, damit die Punkte über den
             Chart-Tagen stehen; die Quellen-Kante steht nur neben dem Chart. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
-          <div style={{ position: "relative", height: 32, marginRight: onsite ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
+          <div style={{ position: "relative", height: 32, marginRight: 0 }}>
             <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
               const d = aktiv ? 22 : 13;
               return (
-                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-cta"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? `0 2px 6px color-mix(in srgb, ${v("--color-accent")} 35%, transparent)` : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
+                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: aktiv ? "var(--widget-accent)" : "var(--widget-muted)", border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? `0 2px 6px color-mix(in srgb, ${v("--color-accent")} 35%, transparent)` : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
               );
             })}
           </div>
-          <div style={{ marginTop: space.sm, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
-            {!narrow && pfeil(-1)}
-            <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 64 }}>
+          <div style={{ marginTop: space.sm, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: "row", alignItems: "center", gap: space.sm }}>
+            {pfeil(-1)}
+            <div style={{ flex: 1, minWidth: 0, minHeight: 64 }}>
               {aktivesEreignis && (
                 <div key={aktivesEreignis.tag} className="kr-neu">
-                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
+                  <div className={styles.eventTitle}>
                     <span style={{ fontFamily: v("--font-mono"), color: v("--color-accent") }}>{aktivesEreignis.jahr}</span>
                     {"  ·  "}
                     {aktivesEreignis.label}
                   </div>
-                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 400, lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
+                  <div className={`${styles.eventDescription} race-event-description`}>{aktivesEreignis.text}</div>
+                  {aktivesEreignis.source&&<a className={styles.eventSource} href={aktivesEreignis.source.url} target="_blank" rel="noreferrer">{aktivesEreignis.source.label}</a>}
                 </div>
               )}
             </div>
-            {!narrow && pfeil(1)}
-            {narrow && (
-              <div style={{ display: "flex", gap: space.md }}>
-                {pfeil(-1)}
-                {pfeil(1)}
-              </div>
-            )}
+            {pfeil(1)}
           </div>
         </div>
 
@@ -733,7 +702,7 @@ function RaceCard({
           Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
           Chart-Block von der Fußzeile trennt. */}
       <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: v("--color-bg"), borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
-        <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--color-cta);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--color-cta);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
+        <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--widget-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--widget-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
         <button
           type="button"
           onClick={() => {
@@ -756,7 +725,7 @@ function RaceCard({
           step={1}
           value={tag}
           onChange={(e) => { cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null; setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
-          aria-label="Tag wählen"
+          aria-label={annualYears ? "Jahr wählen" : "Tag wählen"}
           aria-valuetext={stand}
           className="kr-regler"
           style={{ flex: 1, minWidth: 0 }}
@@ -767,27 +736,28 @@ function RaceCard({
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
       <ExportOnly style={{ marginTop: space.md }}>
         <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          {tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
+          {annualYears ? `Stromerzeugung im Jahr ${stand}` : tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
         </span>
       </ExportOnly>
 
-      {actions && <WidgetFooter
-        surface={toenung}
-        actionSize={32}
-        secondaryActions
-        widget={widget}
-        chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare, downloadVideo: videoKann ? downloadVideo : undefined, isRecording: aufnahme !== null }}
-        onsite={onsite}
-        branding={branding}
-        showEmbed={showEmbed}
-        narrow={narrow}
-      />}
-
-      <WidgetExportFooter widget={widget} legend={legend} note={exportNote} />
       </>)}
     </div>
   );
-  if (!mini) return karte;
+  if (!mini) return <WidgetPresentationProvider appearance={{...presentation, sharing:actions ? presentation.sharing : 'off'}}>
+    <ExportableWidgetFrame widget={widget} title={headingTitle ?? widget.title} titleContent={titleContent} headingMeta={<span className={styles.currentYear}>{currentYear}</span>} helpExportNote={false} showHeading={showTitle} kind="time-series"
+      place={annualYears ? 'Weltweit' : ''} exportUnit={valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
+      className={`${frameStyles.frame} ${styles.frame} ${styles.racingFrame}`} data-story-scheme={presentation.theme === 'hero' ? 'highlight' : presentation.theme}
+      animated clientVideo restartAction={false} sourceVisible={!onsite} exportNote={exportNote}
+      exportLegend={titleSeries && showTitle ? undefined : [{color:FARBE_B,label:anderer.label,shape:"line"},{color:FARBE_A,label:kamera.label,shape:"line"}]}
+      einbetten={showEmbed ? {params:{}, height:700} : undefined}
+      help={<div style={{display:'grid',gap:12}}>
+        <div><strong>{titelHilfe.title}</strong>{titelHilfe.inhalt}</div>
+        <div><strong>{zeitraumHilfe.title}</strong>{zeitraumHilfe.inhalt}</div>
+        <div><strong>Quellen</strong>{widget.sources.map(source => <div key={source.name}><a href={source.url} target="_blank" rel="noopener noreferrer">{sourceLabel(source)}</a></div>)}{quellenStand && <div>Stand: {quellenStand}</div>}</div>
+      </div>}>
+      {karte}
+    </ExportableWidgetFrame>
+  </WidgetPresentationProvider>;
   // Die ganze Mini-Karte ist der Link auf die Seite des Rennens.
   const ziel = (() => { try { const u = new URL(widget.shareUrl); return u.pathname + u.hash; } catch { return widget.shareUrl; } })();
   return <Link href={ziel} style={{ display: "block", textDecoration: "none", color: "inherit" }}>{karte}</Link>;

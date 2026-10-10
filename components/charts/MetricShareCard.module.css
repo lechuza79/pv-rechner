@@ -1,0 +1,21 @@
+.card{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 8px;border-radius:var(--radius-md,12px);background:#fff;color:#18323e;width:max-content;max-width:100%;box-sizing:border-box;pointer-events:none}
+.donut{position:relative;width:80px;height:80px;flex-shrink:0}
+.donut svg{display:block;width:100%;height:100%}
+.donut>div{position:absolute;inset:21%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut strong{font-size:15px;font-weight:800;line-height:1.1;white-space:nowrap;max-width:100%}
+.donut small{font-size:10px;line-height:1.3;font-weight:400;opacity:.7}
+.text{display:grid;gap:4px;font-size:12px;line-height:1.3}
+.text>strong{font-size:14px;font-weight:700}
+.text>span{opacity:.75;white-space:nowrap}
+
+/* Small plot annotations retain the same metric and share semantics. */
+.card[data-density=small]{gap:2px;padding:5px 10px 5px 5px;max-width:100%;}
+.card[data-density=small] .donut{width:72px;height:72px;}
+.card[data-density=small] .donut small{font-size:10px;}
+.card[data-density=small] .text{gap:2px;font-size:10px;}
+.card[data-density=small] .text>strong{font-size:11px;white-space:nowrap;}
+.card[data-density=small] .text>span{white-space:normal;}
+
+.card>button{pointer-events:auto;width:auto!important;flex:0 0 auto;}
+
+.card[data-tone=accent]{background:var(--widget-accent,#d4ff00);}

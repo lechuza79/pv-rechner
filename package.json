@@ -143,6 +143,7 @@
     "d3-shape": "^3.2.0",
     "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "fflate": "^0.8.3",
     "mailparser": "^3.9.25",
     "mediabunny": "^1.60.0",
     "modern-screenshot": "^4.7.0",

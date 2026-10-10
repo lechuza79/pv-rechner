@@ -48,12 +48,13 @@ window.solarRaceRowPosition = function (state, target, time) {
 };
 
 /* Animate actual commissioning-year totals, using the shared ranking's filters and formatting. */
-window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden Gemeinden im Zeitverlauf", rows, history, format, unit, animate, current, skip, clockHost }) {
+window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden Gemeinden im Zeitverlauf", rows, history, format, unit, animate, current, skip, clockHost, stacked = false, stackMaximum = 100, onProgress }) {
   const race = document.createElement('div');
   race.className = 'district-race';
+  if(stacked)race.dataset.stacked='true';
   race.setAttribute('aria-label', label);
   const clock = clockHost ?? document.createElement('p');
-  clock.className = 'district-race-year';
+  clock.className += ' district-race-year';
   const positions = document.createElement('div');
   positions.className = 'district-race-positions';
   positions.setAttribute('aria-hidden', 'true');
@@ -71,20 +72,39 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     item.dataset.raceTown = row.id;
     if(stage.dataset.highlight===row.id)item.dataset.highlighted='true';
     const name = document.createElement(row.href ? 'a' : 'span');
-    name.className = 'district-race-name'; name.textContent = row.name;
+    name.className = 'district-race-name';
+    if(row.flagSrc){
+      const flag=document.createElement('img');flag.className='district-race-flag';
+      flag.src=row.flagSrc;flag.alt='';flag.width=14;flag.height=14;
+      const label=document.createElement('span');label.className='district-race-name-label';label.textContent=row.name;
+      name.append(flag,label);
+    }else name.textContent=row.name;
     if (row.href) name.href = row.href;
     const value = document.createElement('strong'); value.className = 'district-race-value';
     const number = document.createElement('span'); value.append(number);
+    const seriesCells=[];
+    const seriesValues = stacked ? [0,1].map(index => {
+      const label = document.createElement('span'); label.className='district-race-series-value'; label.dataset.series=String(index); number.append(label);seriesCells.push(label);const digits=document.createElement('span');label.append(digits);return digits;
+    }) : [];
+    if(stacked) number.className='district-race-series-values';
     const unitLabel=document.createElement('small');unitLabel.className='district-race-unit';
-    if(unit||stage.dataset.valueUnit){unitLabel.textContent=stage.dataset.valueUnit||'';value.append(unitLabel);}
+    if(unit||stage.dataset.valueUnit){unitLabel.textContent=stage.dataset.valueUnit||'';if(stacked)seriesCells[1].append(unitLabel);else value.append(unitLabel);}
     const track = document.createElement('div'); track.className = 'district-race-track'; track.setAttribute('aria-hidden','true');
     const bar = document.createElement('div'); bar.className = 'district-race-bar'; track.append(bar);
+    const segments=[];
+    if(stacked){
+      track.replaceChildren();
+      for(let index=0;index<3;index++){
+        const segment=document.createElement('span');segment.className='district-race-segment';
+        segment.dataset.series=String(index);track.append(segment);segments.push(segment);
+      }
+    }
     item.append(name,value,track); race.append(item);
-    return [row.id,{row,item,value:number,bar,unitLabel}];
+    return [row.id,{row,item,value:number,bar,unitLabel,segments,track,seriesValues}];
   }));
   let frames = history.filter(frame => frame.rows.some(row => row.value > 0));
   if (!frames.length) frames = [{year:'Heute',rows}];
-  const indexed = frames.map(frame => ({year:frame.year, values:new Map(frame.rows.map(row => [row.id,row.value]))}));
+  const indexed = frames.map(frame => ({year:frame.year, values:new Map(frame.rows.map(row => [row.id,row.value])), segments:new Map(frame.rows.map(row=>[row.id,row.segments]))}));
   race.style.height = `${Math.min(10, rows.length) * 44}px`;
   stage.querySelector('.ranking-stage-subline')?.remove();
   if (!clockHost) stage.append(clock);
@@ -94,10 +114,13 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
   const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;},{threshold:0}); observer.observe(race);
   let lastProgress=0, exportProgress=null, savedProgress=0, paintTime=0, savedTime=0;
   const motionStates=new Map();
+  let rowPitch=44, lastEntrance=1;
   let playbackGeneration=0;
   function paint(progress,time=paintTime,entrance=1) {
     paintTime=time;
+    lastEntrance=entrance;
     lastProgress=progress;
+    onProgress?.(progress);
     const position=progress*(indexed.length-1), from=indexed[Math.floor(position)], to=indexed[Math.min(indexed.length-1,Math.floor(position)+1)];
     const fraction=position%1;
     clock.textContent=String(fraction<.5?from.year:to.year);
@@ -106,9 +129,9 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     const frameUnit=typeof unit==='function'?unit(frameMaximum):stage.dataset.valueUnit||'';
     const max=frameMaximum||1;
     order.forEach((row,index)=>{
-      const {item,value,bar,unitLabel}=items.get(row.id);
-      const shown=index<10 && row.value>0;
-      const motion=window.solarRaceRowPosition(motionStates.get(row.id),Math.min(index,11)*44,time);
+      const {item,value,bar,unitLabel,segments,track,seriesValues}=items.get(row.id);
+      const shown=index<10 && (stacked || row.value>0);
+      const motion=window.solarRaceRowPosition(motionStates.get(row.id),Math.min(index,11)*rowPitch,time);
       motionStates.set(row.id,motion);
       item.style.transition="none";
       item.style.transform=`translateY(${motion.value}px)`;
@@ -117,16 +140,29 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
       const place=1+order.filter(other=>other.value>row.value).length;
       item.dataset.rank=place;
       item.setAttribute('aria-label', `Platz ${place}: ${row.name}`);
-      value.textContent=format(row.value,frameMaximum);
+      if(!stacked) value.textContent=format(row.value,frameMaximum);
       unitLabel.textContent=frameUnit;
       // Clip a stable box with fixed-radius caps; scaling would flatten the caps.
       const width=Math.max(0,Math.min(1,row.value/max))*entrance;
       bar.style.clipPath=`inset(0 ${(1-width)*100}% 0 0 round 0 4px 4px 0)`;
+      if(stacked){
+        const a=from.segments.get(row.id),b=to.segments.get(row.id);
+        const mix=a.map((value,index)=>value*(1-fraction)+b[index]*fraction);
+        segments.forEach((segment,index)=>{
+          segment.style.width=`${mix[index]/stackMaximum*100}%`;
+          segment.dataset.separated=String(index>0&&mix.slice(0,index).some(value=>value>0));
+        });
+        track.style.clipPath=`inset(0 ${(1-entrance)*100}% 0 0 round 0 4px 4px 0)`;
+        seriesValues.forEach((label,index)=>{label.textContent=format(mix[index],stackMaximum);});
+        unitLabel.textContent=frameUnit;
+        item.setAttribute('aria-label',`Platz ${place}: ${row.name}, Erneuerbare ${format(mix[0],stackMaximum)}, Atomkraft ${format(mix[1],stackMaximum)}, Sonstige ${format(mix[2],stackMaximum)}${frameUnit?` ${frameUnit}${frameUnit==='kWh'?' je Einwohner':''}`:""}`);
+      }
     });
     return order;
   }
   const exportControl=event=>{
     const command=event.detail;
+    if(command.mode==='resume'){exportProgress=null;void play(true,lastProgress);return;}
     if(command.mode==='restart'){exportProgress=null;void play(true);return;}
     if(command.mode==='describe'){command.report({durationMs:introDuration+raceDuration+finishDelay});return;}
     if(command.mode==='restore'){
@@ -144,11 +180,13 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
   const raceDuration = timeline.duration, finishDelay = 2000, introDuration = 800;
   const entranceAt=time=>1-Math.pow(1-Math.min(1,Math.max(0,time/introDuration)),3);
   const timelineProgress = timeline.progress;
-  async function play(motion) {
+  async function play(motion,startProgress=0) {
     const generation=++playbackGeneration;
     race.dataset.state='racing';
-    motionStates.clear();paint(0,0,motion&&!reduced.matches?0:1);
-    let elapsed=0,last=performance.now();
+    let lo=0,hi=1;
+    for(let i=0;i<30;i++){const mid=(lo+hi)/2;if(timelineProgress(mid)<startProgress)lo=mid;else hi=mid;}
+    let elapsed=startProgress>0?introDuration+(lo+hi)/2*raceDuration:0,last=performance.now();
+    motionStates.clear();paint(startProgress,elapsed,startProgress>0?1:motion&&!reduced.matches?0:1);
     await new Promise(resolve=>{
       function tick(now){
         if(generation!==playbackGeneration||!current()||!stage.isConnected){resolve();return;}
@@ -168,9 +206,20 @@ window.solarDistrictRace = async function ({ stage, label = "Die zehn führenden
     // Reduced motion and skipped playback must settle immediately at final ranks.
     motionStates.clear();
     const order=paint(1),winners=order.filter(row=>row.value>0&&row.value===order[0]?.value);
-    if(motion&&!reduced.matches&&visible&&!document.hidden&&winners.length)
+    if(!stacked&&motion&&!reduced.matches&&visible&&!document.hidden&&winners.length)
       window.dispatchEvent(new CustomEvent('atlas-ranking-celebrate',{detail:{target:items.get(winners[0].id).item}}));
   }
-  const cleanup=new MutationObserver(()=>{if(!stage.contains(race)){observer.disconnect();cleanup.disconnect();stage.removeEventListener('chart-export-animation',exportControl);}});cleanup.observe(stage,{childList:true});
+  // Only assigned dashboard rectangles distribute spare height; natural embeds keep their rhythm.
+  const resize = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+    const allocated=!!stage.closest('[data-widget-layout="allocated"]');
+    const next=allocated ? Math.max(44,race.clientHeight/Math.max(1,Math.min(10,rows.length))) : 44;
+    if(Math.abs(next-rowPitch)<.01)return;
+    rowPitch=next;
+    Array.from(positions.children).forEach((position,index)=>{position.style.top=`${index*rowPitch+10}px`;});
+    motionStates.clear();
+    paint(lastProgress,paintTime,lastEntrance);
+  });
+  resize?.observe(race);
+  const cleanup=new MutationObserver(()=>{if(!stage.contains(race)){observer.disconnect();resize?.disconnect();cleanup.disconnect();stage.removeEventListener('chart-export-animation',exportControl);}});cleanup.observe(stage,{childList:true});
   await play(animate);
 };

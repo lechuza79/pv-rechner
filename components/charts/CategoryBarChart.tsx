@@ -3,9 +3,9 @@ import {useState,useRef,useLayoutEffect,type CSSProperties,type ReactNode} from 
 import './category-bar-chart.css';
 import ChartFlag from './ChartFlag';
 import MetricValue from '../MetricValue';
-export type CategoryBar = {id:string; label:string; labelContent?:ReactNode; value:number; partial?:boolean; highlighted?:boolean};
+export type CategoryBar = {id:string; label:string; axisLabel?:string; labelContent?:ReactNode; value:number; partial?:boolean; partialLabel?:string; missing?:boolean; highlighted?:boolean;flagSrc?:string;silhouetteSrc?:string};
 /** Numeric plotting only; period semantics come from the adapter. */
-export function CategoryBarChart({rows, unit, label, orientation="vertical",paired=false}:{rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean}) {
+export function CategoryBarChart({rows, unit, label, orientation="vertical",paired=false,compact=false,country=false,partialStyle="hatched",partialLabel="Laufendes Jahr · noch nicht vollständig."}:{rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean;compact?:boolean;country?:boolean;partialStyle?:"hatched"|"solid";partialLabel?:string}) {
  const [active,setActive]=useState<string|null>(null);
  const pairRef=useRef<HTMLDivElement>(null);
  useLayoutEffect(()=>{
@@ -20,7 +20,8 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
   return ()=>observer.disconnect();
  },[paired,orientation]);
  const max=Math.max(0,...rows.map(row=>row.value));
- const describe=(row:CategoryBar)=>`${row.label}: ${row.value.toLocaleString('de-DE')} ${unit}${row.partial?' · Laufendes Jahr, noch nicht vollständig.':''}`;
+ const getPartialLabel=(row:CategoryBar)=>row.partialLabel??partialLabel;
+ const describe=(row:CategoryBar)=>`${row.label}: ${row.missing?'Keine Daten':`${row.value.toLocaleString('de-DE')} ${unit}`}${row.partial?` · ${getPartialLabel(row)}`:''}`;
  if(orientation === "horizontal" && paired && rows.length===2) {
   const [reference,current]=rows;
   const difference=reference.value-current.value;
@@ -37,20 +38,21 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
    <div className="sc-category-horizontal-label"><span>{current.labelContent??current.label}</span><strong>{Math.round(current.value).toLocaleString('de-DE')} <small>{unit}</small></strong></div>
   </div>;
  }
- if(orientation === "horizontal") return <div className="sc-category-horizontal" role="group" aria-label={label}>
-  {rows.map(row=><div key={row.id} className="sc-category-horizontal-row">
-   <div className="sc-category-horizontal-label"><span>{row.label}</span><strong>{Math.round(row.value).toLocaleString('de-DE')} <small>{unit}</small></strong></div>
+ if(orientation === "horizontal") return <div className="sc-category-horizontal" data-country={country||undefined} role="group" aria-label={label}>
+  {rows.map(row=><div key={row.id} className="sc-category-horizontal-row" aria-label={describe(row)}>
+   {country&&row.silhouetteSrc&&<img className="sc-category-country-silhouette" src={row.silhouetteSrc} alt="" aria-hidden="true"/>}
+   <div className="sc-category-horizontal-label"><span className={country?"sc-category-country-label":undefined}>{country&&row.flagSrc&&<img src={row.flagSrc} alt="" width={14} height={14}/>} {row.labelContent??row.label}</span><strong>{row.missing?"–":Math.round(row.value).toLocaleString('de-DE')} <small>{unit}</small></strong></div>
    <div className="sc-category-horizontal-track" aria-hidden="true"><div data-highlighted={row.highlighted} style={{width:`${max?Math.max(0,row.value)/max*100:0}%`}}/></div>
   </div>)}
  </div>;
- return <div className="sc-category-bars" role="group" aria-label={label}>
+ return <div className="sc-category-bars" data-compact={compact || undefined} data-partial-style={partialStyle} role="group" aria-label={label}>
   <div className="sc-category-plot">
-   {rows.map((row,index)=><button key={row.id} type="button" aria-label={describe(row)} onFocus={()=>setActive(row.id)} onMouseEnter={()=>setActive(row.id)} onClick={()=>setActive(row.id)} onBlur={()=>setActive(null)} onMouseLeave={()=>setActive(null)} className="sc-category-column" data-active={row.id===active}>
+   {rows.map((row,index)=><button key={row.id} type="button" aria-label={describe(row)} onFocus={()=>setActive(row.id)} onMouseEnter={()=>setActive(row.id)} onClick={()=>setActive(row.id)} onBlur={()=>setActive(null)} onMouseLeave={()=>setActive(null)} className="sc-category-column" data-active={row.id===active} data-highlighted={row.highlighted} data-missing={row.missing}>
     <span className="sc-category-bar" data-partial={row.partial} style={{height:`${max?row.value/max*100:0}%`}}>
-     {active===row.id&&<ChartFlag tooltip edge={index===0?'start':index===rows.length-1?'end':'middle'}><span>{row.label}</span><strong>{row.value.toLocaleString('de-DE')} <small>{unit}</small></strong>{row.partial&&<span className="sc-category-note">Laufendes Jahr · noch nicht vollständig.</span>}</ChartFlag>}
+     {row.missing&&<span aria-hidden="true">–</span>}{active===row.id&&<ChartFlag tooltip edge={index===0?'start':index===rows.length-1?'end':'middle'}><span>{row.label}</span><strong>{row.missing?'Keine Daten':row.value.toLocaleString('de-DE')} <small>{row.missing?'':unit}</small></strong>{row.partial&&<span className="sc-category-note">{getPartialLabel(row)}</span>}</ChartFlag>}
     </span>
    </button>)}
   </div>
-  <div className="sc-category-axis" aria-hidden="true">{rows.map((row,index)=><span key={row.id}>{rows.length<=8||index%2===0||index===rows.length-1?row.label:''}</span>)}</div>
+  <div className="sc-category-axis" aria-hidden="true">{rows.map((row,index)=><span key={row.id}>{rows.length<=8||index%2===0||index===rows.length-1?(row.axisLabel??row.label):''}</span>)}</div>
  </div>;
 }

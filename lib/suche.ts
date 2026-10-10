@@ -223,7 +223,7 @@ export type OrtVorschlag = { name: string; gattung: string; kontext: string; hre
  * town lies in. Deliberately lighter than `suche()`: one link per place (its
  * atlas page), no funding or calculator lookups, since this runs while typing.
  */
-export async function ortVorschlaege(qRoh: string, ebene: "ort" | "kreis"): Promise<OrtVorschlag[]> {
+export async function ortVorschlaege(qRoh: string, ebene: "ort" | "kreis" | "regional"): Promise<OrtVorschlag[]> {
   const q = qRoh.trim().slice(0, 80);
   if (normalisiere(q).length < 2) return [];
   const plz = /^\d{5}$/.test(q) ? q : null;
@@ -250,7 +250,9 @@ export async function ortVorschlaege(qRoh: string, ebene: "ort" | "kreis"): Prom
     const hits = await searchRegions(q, DB_SOFT_READ_TIMEOUT_MS, ebene === "kreis" ? ["landkreis"] : ["gemeinde", "landkreis", "bundesland"]);
     treffer.push(
       ...hits.filter((h) =>
-        ebene === "kreis"
+        ebene === "regional"
+          ? h.region_id.length >= 5 || /^(02|04|11)$/.test(h.region_id)
+          : ebene === "kreis"
           ? h.label !== "Kreisfreie Stadt"
           : h.region_id.length === 8 || h.label === "Kreisfreie Stadt" || /^(02|04|11)$/.test(h.region_id),
       ),

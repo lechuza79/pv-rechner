@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { LoadingDots } from "./LoadingDots";
 import { usePathname } from "next/navigation";
 import { useIframeAutoHeight } from "../lib/useIframeAutoHeight";
 import { v } from "../lib/theme";
@@ -26,20 +27,41 @@ export default function AutoHeightIframe({
   title,
   fallbackHeight,
   framed = true,
+  scheme,
+  startWhenVisible = false,
 }: {
   src: string;
   title: string;
   fallbackHeight: number;
   framed?: boolean;
+  scheme?: "light" | "dark";
+  /** Defer animation-bearing embeds until they actually enter the viewport. */
+  startWhenVisible?: boolean;
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
+  const container = useRef<HTMLDivElement>(null);
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    if (!startWhenVisible || entered || !container.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setEntered(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.15 });
+    observer.observe(container.current);
+    return () => observer.disconnect();
+  }, [startWhenVisible, entered]);
+  const [loadedSource, setLoadedSource] = useState<string | null>(null);
 
   // Der Pfad hängt an der Adresse, nicht an einer Nachricht: so ist er schon
   // beim ersten Rendern im iframe da und der Knopf blitzt nicht kurz auf.
   const quelle = pathname ? `${src}${src.indexOf("?") === -1 ? "?" : "&"}hp=${encodeURIComponent(pathname)}` : src;
 
   useEffect(() => {
+    // Explicit embed themes must not be overwritten by the surrounding page theme.
+    if (scheme) return;
     const fenster = ref.current?.contentWindow;
     if (!fenster) return;
     const senden = () => {
@@ -64,21 +86,45 @@ export default function AutoHeightIframe({
     return () => beobachter.disconnect();
     // `bereit` als Auslöser: erst wenn das Widget seine Höhe gemeldet hat, hört
     // im iframe jemand zu.
-  }, [ref, bereit]);
+  }, [ref, bereit, scheme]);
+
+  const activeSource = !startWhenVisible || entered ? quelle : undefined;
+  const loading = !activeSource || (!bereit && loadedSource !== quelle);
 
   return (
+    <div ref={container} style={{ position: "relative", width: "100%" }} aria-busy={loading}>
+      {loading && (
+        <div style={{
+          position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 16,
+          background: "var(--atlas-surface, var(--color-bg-raised))",
+          color: v("--color-text-muted"), borderRadius: v("--radius-md"),
+          border: `1px solid ${v("--color-border")}`, boxSizing: "border-box",
+          pointerEvents: "none",
+        }}>
+          <LoadingDots size={6} baseline={false} />
+          <span>Diagramm wird geladen …</span>
+        </div>
+      )}
     <iframe
       ref={ref}
-      src={quelle}
+      src={activeSource}
       title={title}
       loading="lazy"
+      onLoad={() => { if (activeSource) setLoadedSource(activeSource); }}
       style={{
+        opacity: loading ? 0 : 1,
         width: "100%",
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        colorScheme: scheme,
+        background: scheme ? "var(--atlas-surface, var(--color-bg))" : undefined,
         height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
         borderRadius: framed ? v("--radius-md") : 0,
         display: "block",
       }}
     />
+    </div>
   );
 }

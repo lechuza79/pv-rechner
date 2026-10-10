@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { v, space } from "../lib/theme";
 import { IconChevronLeft, IconChevronRight } from "./Icons";
+import heroStyles from "./StorySliderHero.module.css";
 
 /**
  * Eine Reihe Teaser, die man wischt — mit Endlosschleife, Pfeilen und
@@ -26,7 +27,7 @@ import { IconChevronLeft, IconChevronRight } from "./Icons";
  * Gemeinde mit zwei Meldungen, die sich endlos dreht, zeigt dieselben zwei
  * Karten immer wieder, und das sieht nach Fehler aus, nicht nach Fülle.
  */
-export default function StorySlider({
+function ScrollingStorySlider({
   children,
   ariaLabel,
 }: {
@@ -198,3 +199,63 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
 };
+
+
+/** One hero card at a time, using the municipality's fade and pause contract. */
+export default function StorySlider(props: {
+  children: React.ReactNode[];
+  ariaLabel: string;
+  variant?: "strip" | "hero";
+  labels?: string[];
+}) {
+  return props.variant === "hero" ? <HeroStorySlider {...props} /> : <ScrollingStorySlider {...props} />;
+}
+
+function HeroStorySlider({ children, ariaLabel, labels }: {
+  children: React.ReactNode[]; ariaLabel: string; labels?: string[];
+}) {
+  const root = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  // Hero controls stay minimal; choosing a slide stops automatic rotation.
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    const node = root.current;
+    if (!node || paused || children.length < 2) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      clearTimeout(timer);
+      if (!visible || document.hidden || reduced.matches || node.matches(":hover,:focus-within")) return;
+      timer = setTimeout(() => setActive(index => (index + 1) % children.length), 7000);
+    };
+    const stop = () => clearTimeout(timer);
+    let blurFrame: number | undefined;
+    const afterBlur = () => { blurFrame = requestAnimationFrame(schedule); };
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
+    observer.observe(node);
+    node.addEventListener("mouseenter", stop);
+    node.addEventListener("mouseleave", schedule);
+    node.addEventListener("focusin", stop);
+    node.addEventListener("focusout", afterBlur);
+    document.addEventListener("visibilitychange", schedule);
+    reduced.addEventListener("change", schedule);
+    return () => {
+      stop(); observer.disconnect();
+      if (blurFrame !== undefined) cancelAnimationFrame(blurFrame);
+      node.removeEventListener("mouseenter", stop); node.removeEventListener("mouseleave", schedule);
+      node.removeEventListener("focusin", stop); node.removeEventListener("focusout", afterBlur);
+      document.removeEventListener("visibilitychange", schedule); reduced.removeEventListener("change", schedule);
+    };
+  }, [active, paused, children.length]);
+  return <div ref={root} className={heroStyles.hero} role="region" aria-roledescription="Karussell" aria-label={ariaLabel}>
+    <div className={heroStyles.stack}>
+      {children.map((child, index) => <div key={index} className={heroStyles.slide} data-active={index === active} aria-hidden={index !== active} inert={index !== active} role="group" aria-roledescription="Folie" aria-label={labels?.[index] ?? `${index + 1} von ${children.length}`}>
+        {child}
+      </div>)}
+    </div>
+    <nav className={heroStyles.controls} aria-label="Energiekachel wechseln">
+      {children.map((_, index) => <button key={index} type="button" aria-label={labels?.[index] ?? `Kachel ${index + 1}`} aria-pressed={index === active} onClick={() => { setActive(index); setPaused(true); }}><span /></button>)}
+    </nav>
+  </div>;
+}

@@ -111,15 +111,12 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
     expect(eintraegeOhneMarkierung(mitOrganisationen)).toEqual([]);
   });
 
-  it("mehrere Einstiege auf dieselbe Seite gibt es wirklich (sonst prüft die Regel darüber nichts)", () => {
-    // Realitäts-Anker: Ohne diesen Fall wäre die Regel „einer davon muss in der
-    // besitzenden Gruppe liegen" trivial erfüllt, und niemand merkte, wenn sie
-    // durch eine Umstellung wirkungslos würde.
-    const links = menueLinks(mitOrganisationen);
-    const mehrfach = [...new Set(links.map(l => l.pfad))].filter(
-      pfad => new Set(links.filter(l => l.pfad === pfad).map(l => l.gruppe)).size > 1,
-    );
-    expect(mehrfach.length).toBeGreaterThan(0);
+  it("accepts duplicate entries only when the owning section includes the destination", () => {
+    const extra = '<div data-section="tools"><a href="/solar-atlas">Atlas</a></div>';
+    expect(eintraegeOhneMarkierung(mitOrganisationen + extra)).toEqual([]);
+    const $ = load(mitOrganisationen + extra);
+    $('[data-section="monitor"] a[href="/solar-atlas"]').remove();
+    expect(eintraegeOhneMarkierung($.html()).some(message => message.startsWith('/solar-atlas:'))).toBe(true);
   });
 
   it("jeder Ratgeber mit eigenem Slug wird von der Registry-Regel erfasst", () => {

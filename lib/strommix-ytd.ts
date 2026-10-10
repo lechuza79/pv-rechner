@@ -1,3 +1,4 @@
+import {usesLivePreviewData,livePreviewJson} from "./preview-data";
 /**
  * Server-seitige Jahres-Aggregation (YTD) des deutschen Strommix aus der
  * voraggregierten Wochentabelle `energy_weekly`. Für das Kernenergie-Anteil-
@@ -60,8 +61,13 @@ const sumCols = (rows: WeeklyRow[], cols: string[]): number =>
  * vorliegen (Supabase nicht konfiguriert oder Jahr noch leer).
  */
 export async function getStrommixYtd(now: Date): Promise<StrommixYtd | null> {
-  if (!supabase) return null;
   const year = now.getUTCFullYear();
+  if(usesLivePreviewData()) {
+    const result=await livePreviewJson(`/api/energy/generation?country=de&start=${year}-01-01&end=${now.toISOString().slice(0,10)}&trim=0`);
+    if(result.resolution!=='weekly')throw new Error('Expected weekly energy totals');
+    return aggregateStrommixYtd(result.data as WeeklyRow[],year);
+  }
+  if (!supabase) return null;
 
   // Zeitbudget + eigener Fang: Fällt der Read aus, blendet sich der Block aus
   // (null ist der vorgesehene Rückfall) — statt den Seitenaufbau anzuhalten.
@@ -77,7 +83,10 @@ export async function getStrommixYtd(now: Date): Promise<StrommixYtd | null> {
   }
 
   if (error || !data || data.length === 0) return null;
-  const rows = data as WeeklyRow[];
+  return aggregateStrommixYtd(data as WeeklyRow[],year);
+}
+
+export function aggregateStrommixYtd(rows:WeeklyRow[],year:number):StrommixYtd|null {
 
   // Heimische Kernenergie (seit April 2023 = 0) + rechnerischer Import.
   const kernenergie = sumCols(rows, NUCLEAR_KEYS) + sumCols(rows, ["nuclear_import"]);

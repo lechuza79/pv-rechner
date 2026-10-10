@@ -27,6 +27,13 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  { datei: "charts/BarRaceHeading", art: "baustein", wofuer: "Gemeinsame Jahresanzeige mit Abspielsteuerung für animierte Ranglisten." },
+  { datei: "charts/ElectricityTradeRadial", art: "baustein", wofuer: "Tägliche Stromhandelssalden als Radial oder Balken mit gemeinsamer Mengenbewertung." },
+  { datei: "charts/MetricShareCard", art: "baustein", wofuer: "Kennzahlkachel für einen Anteil mit Bild, Einheit und Auswahlzustand." },
+  { datei: "charts/RadialChartLayout", art: "baustein", wofuer: "Gemeinsame Anordnung von radialem Plot, Zeitraum und Abspielsteuerung." },
+  { datei: "charts/SparklineMetric", art: "baustein", wofuer: "Kompakte Tagesbalken mit hervorgehobener Kennzahl für Hero-Vorschauen." },
+
+  { datei: "energy/NuclearYearWidget", art: "widget", wofuer: "Calendar-year import months, origin countries and generation totals using shared category bars and export frame." },
   { datei: "charts/ChartFlag", art: "baustein", wofuer: "Shared value flag positioned above or below a chart segment." },
   { datei: "charts/AnnualGrowthWidget", art: "widget", wofuer: "Shared annual growth chart with period selection and export actions for municipality and regional monitors." },
   { datei: "charts/CurrentPowerWidget", art: "baustein", wofuer: "Shared weather adapter and current solar power dial for municipality, regional monitor and compact header." },

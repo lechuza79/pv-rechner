@@ -7,6 +7,7 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  "app/(site)/atomstrom-import/AtomstromPage.tsx":["../../../components/dashboard/EnergyMonitor","../../../components/DataSourcesSection","../../../components/MetricValue"],
   'components/PvConsumerSection.tsx':['./PvConsumerFields','./PvConsumerComparison','./ResultChoiceHeader','./KlebenderKnopf','../lib/pv-consumer-model'],
   'components/PvConsumerExample.tsx':['./PvConsumerSection','./ResultSettings','./PvPlantFields'],
   'app/(site)/photovoltaik-rechner/rechner.tsx':['../../../components/PvConsumerSection','../../../components/PvPlantFields'],

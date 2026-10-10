@@ -2,7 +2,7 @@
 .sc-share-ring{position:relative;max-width:280px;margin:auto;}
 .sc-share-ring svg{display:block;width:100%;overflow:visible;}
 .sc-share-ring circle[role=button]{cursor:pointer;transition:stroke-width .15s;}
-.sc-share-ring circle:focus-visible{outline:none;stroke:var(--widget-ink);}
+.sc-share-ring circle:focus-visible{outline:none;filter:drop-shadow(0 0 2px var(--widget-ink));}
 .sc-share-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
 .sc-share-center strong{font:700 32px/1.2 var(--atlas-display,inherit);}
 .sc-share-center span,.sc-share-center small{color:var(--widget-muted);font-size:13px;}
@@ -18,3 +18,45 @@
 
 .sc-share-donut{container:share-donut / inline-size;}
 @container share-donut (min-width:420px){.sc-share-legend{grid-template-columns:repeat(3,minmax(0,1fr));}.sc-share-legend strong{font-size:26px;}}
+
+.sc-share-highlight{filter:drop-shadow(2px 0 3px #0008);transition:opacity .28s ease,stroke-width .32s cubic-bezier(.2,.7,.2,1);}
+.sc-share-center{isolation:isolate;}
+/* Crop decorative artwork inside the ring; fade only the image, never the value. */
+.sc-share-center-artwork{position:absolute;inset:19%;overflow:hidden;border-radius:50%;opacity:0;transition:opacity .32s ease;mask-image:linear-gradient(to bottom,#000 65%,transparent 100%);z-index:-1;pointer-events:none;}
+.sc-share-center-artwork img{position:absolute;width:150%;height:150%;max-width:none;left:-25%;top:-31%;object-fit:contain;}
+
+.sc-share-legend button[aria-pressed=true] strong{color:var(--widget-accent);}
+
+.sc-share-center-artwork[data-active=true]{opacity:.16;}
+.sc-share-center-artwork img{filter:grayscale(1);}
+.sc-share-value{display:flex;flex-direction:column;align-items:center;animation:sc-share-value-in .25s ease both;}
+.sc-share-legend strong{transition:color .28s ease;}
+@keyframes sc-share-value-in{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .sc-share-donut .sc-share-highlight,.sc-share-donut .sc-share-center-artwork,.sc-share-donut .sc-share-legend button,.sc-share-donut .sc-share-legend strong{transition:none;}
+ .sc-share-value{animation:none;}
+}
+
+/* A value and its unit are one metric, independent of the card content gap. */
+.sc-share-metric{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1;}
+.sc-share-value{gap:2px;}
+.sc-share-center strong{line-height:1.05;}
+
+/* Explicit four-column comparison, independent of the default image legend. */
+.sc-share-legend[data-columns="4"]{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.sc-share-legend[data-columns="4"] button{display:grid;grid-template-rows:subgrid;grid-row:span 2;gap:6px;padding:12px 4px;align-items:start;min-width:0;}
+.sc-share-legend[data-columns="4"] button>span{overflow-wrap:anywhere;align-self:start;}
+.sc-share-legend[data-columns="4"] .sc-share-metric{align-self:end;}
+.sc-share-legend[data-columns="4"] strong{font-size:clamp(14px,4.5cqi,26px);}
+.sc-share-legend[data-columns="4"] small{font-size:11px;}
+@supports not (grid-template-rows:subgrid){
+ .sc-share-legend[data-columns="4"] button{display:flex;justify-content:space-between;}
+ .sc-share-legend[data-columns="4"] button>span{min-height:4.2em;align-self:stretch;}
+}
+
+@container share-donut (max-width:420px){
+ .sc-share-legend[data-columns="4"]{gap:5px;}
+ .sc-share-legend[data-columns="4"] button{padding:8px 4px;gap:5px;}
+ .sc-share-legend[data-columns="4"] button>span{font-size:10px;line-height:1.4;min-height:2.8em;overflow-wrap:normal;hyphens:none;}
+ .sc-share-legend[data-columns="4"] strong{font-size:22px;}
+}

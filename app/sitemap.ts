@@ -1,3 +1,6 @@
+import { ATOMSTROM_RELEASE_READY, ATOMSTROM_ARCHIVE_YEARS } from '../lib/atomstrom-release';
+import { getPageContentModifiedAt } from '../lib/page-content-state';
+import { getAnnualVariant } from './(site)/atomstrom-import/annual-variant';
 import { MetadataRoute } from "next";
 import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom, cityIndexFreigegeben } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
@@ -20,7 +23,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 //     (dieselbe Quelle, aus der die Seiten ihr "Stand …" rendern),
 //   - alles andere lässt lastmod weg und überlässt es dem Crawler.
 // Ein fehlendes Datum ist ehrlicher als ein falsches.
+// Keep persisted content changes discoverable between deployments.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const atomstromModifiedAt = ATOMSTROM_RELEASE_READY ? await getPageContentModifiedAt('/atomstrom-import') : undefined;
   const programs = await getFundingPrograms();
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
@@ -243,7 +250,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Build-Zeit wäre das Deploy-Datum, nicht das Änderungsdatum. Deshalb ohne
     // lastmod: changeFrequency="daily" sagt dem Crawler dasselbe, ohne zu lügen.
     { url: `${BASE_URL}/strommix-deutschland`, changeFrequency: "daily", priority: 0.8 },
-    { url: `${BASE_URL}/atomstrom-import`, changeFrequency: "daily", priority: 0.7 },
+    { url: `${BASE_URL}/atomstrom-import`, ...(atomstromModifiedAt ? { lastModified: atomstromModifiedAt } : {}), changeFrequency: "daily", priority: 0.7 },
+    ...(ATOMSTROM_RELEASE_READY ? ATOMSTROM_ARCHIVE_YEARS.map(year => ({url: `${BASE_URL}/atomstrom-import/${year}`, lastModified: getAnnualVariant(year).annual.modifiedAt, changeFrequency: "yearly" as const, priority: 0.6})) : []),
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
     // Zitierfähigkeit: Die Lizenzseite ist die Stelle, die Redaktionen vor einer

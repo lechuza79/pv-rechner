@@ -1,0 +1,44 @@
+.presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto;border-radius:var(--widget-radius,16px)}
+/* A configured embed inherits the host palette, including nested chart frames. */
+.presentation.presentation :global([data-story-scheme]),
+.presentation.presentation :global([data-widget-id]){
+ --atlas-picker-bg:inherit;--atlas-action:inherit;--atlas-action-ink:inherit;
+ --atlas-surface:inherit;--atlas-card:inherit;--atlas-text:inherit;--atlas-secondary:inherit;--atlas-border:inherit;
+ color-scheme:inherit;
+}
+.presentation[data-widget-background=off] :global([data-widget-artwork]){display:none}
+/* Composed cards share a baseline; larger content grows without clipping. */
+.presentation[data-widget-layout=group]{container-type:inline-size}
+.presentation[data-widget-layout=group] :global(.sc-widget){height:auto;min-height:var(--widget-group-min-height,max(520px,calc(100cqw + 160px)));}
+
+/* Compact tiles own their individual card surfaces, including the gap. */
+.presentation:has(>[data-layout=separate]){background:transparent}
+
+.presentation[data-widget-layout=group] :global([data-monthly-profile] .monitor-widget-body){flex:1;min-height:0;display:flex;flex-direction:column;}
+
+/* Compact chart kinds share one width policy in every embed host. */
+.presentation:has(:global(.sc-widget[data-widget-kind="radial"])),
+.presentation:has(:global(.sc-widget[data-widget-kind="donut"])),
+.presentation:has(:global(.sc-widget[data-widget-kind="bar-comparison"])) {width:100%;max-width:var(--widget-compact-max-width,720px);margin-inline:auto;}
+
+/* Allocation is opt-in: standalone embeds keep their content-driven height. */
+.presentation[data-widget-layout=allocated]{height:100dvh;max-width:none;display:flex;flex-direction:column;}
+.presentation[data-widget-layout=allocated] :global(.sc-widget){width:100%;max-width:none;height:100%;min-height:0;display:flex;flex-direction:column;flex:1;}
+.presentation[data-widget-layout=allocated] :global(.sc-widget-head){flex-shrink:0;}
+.presentation[data-widget-layout=allocated] :global(.sc-widget-body){flex:1;min-height:0;display:flex;flex-direction:column;}
+.presentation[data-widget-layout=allocated] :global([data-chart-animation=race]){flex:1;min-height:0;display:flex;flex-direction:column;}
+.presentation[data-widget-layout=allocated] :global([data-race-plot]){flex:1;min-height:120px;}
+.presentation[data-widget-layout=allocated] :global([data-race-plot]>div:first-child){height:100%;}
+.presentation[data-widget-layout=allocated] :global([data-trade-widget]){flex:1;min-height:0;display:flex;flex-direction:column;}
+.presentation[data-widget-layout=allocated]>div:has(> :global(.sc-widget)){width:100%;height:100%;min-height:0;display:flex;flex-direction:column;}
+.presentation.presentation[data-widget-layout=allocated]{max-width:none;}
+
+/* Allocated single-widget adapters must not reserve page-level bottom spacing. */
+.presentation[data-widget-layout=allocated]>:global(.municipal-data){padding:0;}
+
+.presentation[data-widget-layout=allocated] :global([data-chart-animation=month]){flex:1;min-height:0;}
+.presentation[data-widget-layout=allocated] :global([data-presentation=widget]){display:flex;flex-direction:column;flex:1;min-height:0;}
+.presentation[data-widget-layout=allocated] :global([data-map-canvas]){flex:1;height:auto;min-height:200px;}
+
+/* Carry the allocated rectangle through the shared monitor body to its plot. */
+.presentation[data-widget-layout=allocated] :global(.monitor-widget-body){width:100%;max-width:none;margin:0;flex:1;min-height:0;display:flex;flex-direction:column;}

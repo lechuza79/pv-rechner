@@ -1,19 +1,20 @@
+@import "../charts/country-flag.css";
 /* Plot geometry is independent of its host page; chrome belongs to WidgetFrame. */
 .district-race-widget{--widget-surface:var(--atlas-surface);--atlas-ink:var(--atlas-text);--atlas-muted:var(--atlas-secondary);color-scheme:light;}
 .district-race-widget .sc-widget-head h4{font-size:18px;}
 .district-race-widget .sc-widget-heading-meta{font-size:clamp(32px,4vw,40px);line-height:1.1;}
 .district-race-widget .sc-widget-context{max-width:calc(60ch + 2 * var(--widget-padding));font-size:16px;line-height:1.5;}
 @media(min-width:1000px){.district-race-layout{width:80%;margin-inline:auto;}}
-.district-race-plot{min-height:476px;padding:12px var(--widget-padding) var(--widget-padding);}
-.district-race{position:relative;overflow:hidden;text-align:left;min-height:440px;}
-.district-race-row{position:absolute;inset:0 0 auto;display:grid;grid-template-columns:32px minmax(0,1fr) auto;grid-template-rows:16px 8px;gap:4px 8px;align-items:center;font-size:13px;line-height:1.2;transition:transform 220ms linear,opacity 180ms;will-change:transform;}
+.district-race-plot{min-height:var(--race-plot-min-height,476px);padding:12px var(--widget-padding) var(--widget-padding);}
+.district-race{--race-leading-width:32px;--race-leading-gap:12px;position:relative;overflow:hidden;text-align:left;min-height:var(--race-rows-min-height,440px);}
+.district-race-row{position:absolute;inset:0 0 auto;display:grid;grid-template-columns:var(--race-leading-width) minmax(0,1fr) auto;grid-template-rows:16px 8px;gap:4px var(--race-leading-gap);align-items:center;font-size:13px;line-height:1.2;transition:transform 220ms linear,opacity 180ms;will-change:transform;}
 .district-race-name{grid-column:2;grid-row:1;color:var(--widget-ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;padding:0 0 0 8px;}
 .district-race-value{grid-column:3;grid-row:1;font-size:13px;font-variant-numeric:tabular-nums;}
 .district-race-track{grid-column:2/4;grid-row:2;height:8px;overflow:hidden;contain:paint;}
 .district-race-bar{width:100%;height:100%;background:var(--widget-ink);border-radius:0 999px 999px 0;transform-origin:left;}
-.district-race::before{content:"";position:absolute;left:40px;top:20px;bottom:10px;width:1px;background:var(--widget-muted);opacity:.45;pointer-events:none;z-index:2;}
+.district-race::before{content:"";position:absolute;left:calc(var(--race-leading-width) + var(--race-leading-gap));top:20px;bottom:10px;width:1px;background:var(--widget-muted);opacity:.45;pointer-events:none;z-index:2;}
 .district-race-positions{position:absolute;inset:0 auto 0 0;width:32px;z-index:3;pointer-events:none;}
-.district-race-rank{position:absolute;left:2px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--widget-ink);font-weight:700;text-align:center;line-height:1;font-variant-numeric:tabular-nums;}
+.district-race-rank{position:absolute;left:2px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--widget-ink);color:var(--widget-surface);font-weight:700;text-align:center;line-height:1;font-variant-numeric:tabular-nums;}
 @container(max-width:340px){.district-race-plot{padding-inline:16px;}}
 @media(prefers-reduced-motion:reduce){.district-race-row{transition:none;}}
 
@@ -33,5 +34,42 @@
 .district-race-row[data-highlighted=true] .district-race-name{font-weight:800}
 
 .district-race-value{display:flex;align-items:baseline;gap:.35em}
-.district-race-unit{font-size:var(--atlas-number-unit-scale,.72em);font-weight:var(--atlas-number-unit-weight,400);color:var(--widget-muted);opacity:.75}
+.district-race-unit{font-size:max(10px,var(--atlas-number-unit-scale,.72em));font-weight:var(--atlas-number-unit-weight,400);color:var(--widget-muted);opacity:.75}
 .district-race-row[data-highlighted=true] .district-race-track{overflow:visible;contain:none;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .16))}
+
+/* A full mix is an explicit mode of the shared horizontal race, never max-scaled. */
+.country-mix-race-widget .sc-widget-context{font:400 14px/1.5 var(--atlas-body);color:var(--widget-muted);}
+.district-race[data-stacked=true] .district-race-track{height:5px;display:flex;border-radius:0 4px 4px 0;}
+.district-race[data-stacked=true] .district-race-segment{height:100%;flex:none;}
+.district-race[data-stacked=true] .district-race-segment[data-series="0"]{background:var(--widget-accent);}
+.district-race[data-stacked=true] .district-race-segment[data-series="1"]{background:var(--widget-ink);}
+.district-race[data-stacked=true] .district-race-segment[data-series="2"]{background:var(--race-other-color,color-mix(in srgb,var(--widget-muted) 30%,var(--widget-surface)));}
+.district-race[data-stacked=true] .district-race-row{grid-template-rows:16px 5px;row-gap:7px;}
+.district-race[data-stacked=true] .district-race-name{display:flex;align-items:center;gap:6px;min-width:0;padding-left:8px;}
+.district-race[data-stacked=true] .district-race-row[data-highlighted=true] .district-race-name{color:var(--widget-accent);}
+.district-race[data-stacked=true] .district-race-value{font-weight:400;font-size:12px;}
+
+/* Country flags belong to the inset name label; rank badges keep their leading lane. */
+.district-race-name-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.district-race[data-stacked=true] .district-race-segment[data-separated=true]{clip-path:inset(0 0 0 min(2px,20%));}
+
+/* Secondary rank markers leave the country and its mix in focus. */
+.district-race[data-stacked=true] .district-race-rank{background:color-mix(in srgb,var(--widget-muted) 10%,transparent);color:var(--widget-muted);font-size:12px;font-weight:400;}
+
+.district-race-series-values{display:inline-grid;grid-template-columns:6ch 9ch;column-gap:13px;text-align:right;font-variant-numeric:tabular-nums;}
+.district-race-series-value[data-series="0"]{color:var(--widget-accent);}
+.district-race-series-value[data-series="1"]{position:relative;text-align:left;color:var(--widget-ink);}
+.district-race-series-value[data-series="1"]::before{content:"";position:absolute;left:-7px;top:0.15em;bottom:0.15em;width:1px;background:color-mix(in srgb,var(--widget-muted) 30%,var(--widget-surface));}
+
+.district-race-series-value .district-race-unit{margin-left:3px;}
+
+.country-mix-race-widget{--race-other-color:color-mix(in srgb,var(--widget-muted) 30%,var(--widget-surface));}
+
+/* Assigned dashboard space changes row spacing, never label or bar legibility. */
+[data-widget-layout="allocated"] .district-race-layout{width:100%;margin:0;}
+[data-widget-layout="allocated"] .district-race-plot{box-sizing:border-box;flex:1;min-height:476px;display:flex;flex-direction:column;}
+[data-widget-layout="allocated"] .district-race{flex:1;min-height:var(--race-rows-min-height,440px);}
+
+/* Shorter rankings keep the same row geometry without reserving ten rows. */
+.district-race-plot[data-race-size="content"] { min-height:0; }
+.district-race-plot[data-race-size="content"] .district-race { min-height:0; }

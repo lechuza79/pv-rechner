@@ -1,3 +1,4 @@
+import ScrollIndicator from "../ScrollIndicator";
 import AtlasBreadcrumb from "./AtlasBreadcrumb";
 import { HERO_SZENE_INNER_HTML } from "./hero-szene";
 import SharedSiteHeader from "../SharedSiteHeader";
@@ -189,12 +190,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
               Entdecke die Energiewende in {ort.name}: Insights erklären die Entwicklung, das Ranking zeigt den
               Ortsvergleich und der Energiemonitor macht die Zahlen sichtbar.
             </p>
-            <a className="v3-scroll-indicator is-visible" href="#atlas-stories" aria-label="Insights entdecken" data-sc-contrast="">
-              <span>Entdecken</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-                <path d="M12 4v16m-6-6 6 6 6-6" />
-              </svg>
-            </a>
+            <ScrollIndicator href="#atlas-stories">Entdecken</ScrollIndicator>
           </div>
           <div className="atlas-hero-local-nav" data-sc-contrast="">
             <AtlasBreadcrumb parents={ort.pfad} name={ort.name} />

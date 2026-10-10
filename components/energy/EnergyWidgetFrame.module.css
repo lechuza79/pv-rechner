@@ -1,0 +1,18 @@
+.frame {--widget-bg:var(--atlas-card);--widget-fg:var(--atlas-text);--widget-accent-fg:var(--atlas-action-ink);--widget-font-family:var(--atlas-body);width:100%;max-width:960px;margin-inline:auto;}
+.body {padding:16px var(--widget-padding) 24px;min-width:0;}
+.body [data-energy-controls] {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:16px;}
+
+/* Adapt legacy chart tokens once; renderers retain their semantic series colors. */
+.frame {
+ --color-bg:var(--atlas-card);
+ --color-text-primary:var(--atlas-text);
+ --color-text-secondary:var(--atlas-secondary);
+ --color-text-muted:var(--atlas-secondary);
+ --color-text-faint:var(--atlas-secondary);
+ --color-border:color-mix(in srgb,var(--atlas-secondary) 35%,transparent);
+ --color-chart-grid:color-mix(in srgb,var(--atlas-secondary) 18%,transparent);
+ --font-text:var(--atlas-body);
+ --font-mono:var(--atlas-body);
+ font-family:var(--atlas-body);
+ font-variant-numeric:tabular-nums;
+}
