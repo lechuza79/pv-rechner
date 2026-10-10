@@ -176,8 +176,8 @@ test.describe("Gemeinde-Monitor: Anlagenraster", () => {
     await expect(widget.locator("[data-sc-export-ignore]").first()).toBeAttached();
     const exportOnly = widget.locator("[data-sc-export-only]");
     await expect(exportOnly.filter({ hasText: "Anlagenbestand: Heute" })).toHaveCount(1);
-    // Nested export-only wrappers (padding frame + footer) both contain the note.
-    await expect(exportOnly.filter({ hasText: "Ort: Veitshöchheim" }).first()).toBeAttached();
+    // The designed metadata line carries the place once, alongside the data vintage.
+    await expect(exportOnly.filter({ hasText: /Veitshöchheim.*Stand/ }).first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
 
     // Full attribution at the edge: provider, licence, change note, data date.

@@ -59,6 +59,7 @@ test('map download retains the dark theme, live camera, crop and fitted metric',
 });
 
 test('municipality embeds the district map and downloads its live view', async ({page}, testInfo) => {
+  await page.emulateMedia({reducedMotion:'reduce'});
   await page.goto('/solar-atlas/niedersachsen/landkreis-gifhorn/meinersen');
   const monitorElement=page.locator('iframe[title="Energiedaten für Meinersen"]');
   await expect(async()=>{await monitorElement.scrollIntoViewIfNeeded();}).toPass({timeout:20000});
@@ -70,7 +71,8 @@ test('municipality embeds the district map and downloads its live view', async (
     await expect(heading).toBeVisible();
   }).toPass({timeout:25000});
   const map=monitor.frameLocator('iframe[title="3D-Energiekarte · Landkreis Gifhorn"]');
-  await expect(map.locator('[data-region-scene] canvas')).toBeVisible();
+  // The nested, near-viewport embed still has to fetch and initialize WebGL.
+  await expect(map.locator('[data-region-scene] canvas')).toBeVisible({timeout:30_000});
   await map.getByRole('button',{name:/Optionen für/}).click();
   const pending=page.waitForEvent('download');
   await map.getByText('Download',{exact:true}).click();
