@@ -91759,5 +91759,246 @@
         "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
       }
     ]
+  },
+  {
+    "regionId": "01055012",
+    "name": "Eutin",
+    "checkedAt": "2026-10-10T04:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eutin (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die fünf Treffer im Dienstleistungsverzeichnis der Verwaltungsgemeinschaft Eutin-Süsel sind fachfremde Einträge des Landes-Leistungskatalogs. Der Klimaschutz-Bereich der Stadt bietet Klimaschutzkonzept, Solardachkataster und Veranstaltungen, aber kein Förderprogramm; der Fördermittel-Überblick des Kreises nennt nur Bundes- und Landesprogramme (Stand 10.10.2026).",
+    "searches": [
+      "Alle fünf Dienstleistungsverzeichnis-Treffer nach Titel und Landeskatalog eingeordnet: fachfremd",
+      "Klimaschutz-Bereich eutin.de und Unterseite Veranstaltungen/Aktuelles gelesen: kein Zuschussprogramm",
+      "Seitensuche vg-eutin-suesel.de nach Balkonkraftwerk/Photovoltaik/Wärmepumpe/Zuschuss: nur Navigationseinträge",
+      "Websuche: Eutin Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss — keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus, gelesen 22.09.2026); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/",
+        "finding": "Klimaschutz-Bereich der Stadt mit Klimaschutzkonzept, KlimaKlatsch, Klimaanpassung, Solardachkataster, gOHolstein, Nachhaltigkeit — kein Förderprogramm."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: BEG/KfW-Programme, Energieberatung, kreiseigener Klimaschutzfonds für kleine Projekte; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      },
+      {
+        "url": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765=",
+        "finding": "„Informelles Rahmenkonzept für Solar-Freiflächenanlagen in der Gemeinde Süsel“ (Beschluss 10.02.2022) — Flächenplanung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Existenzgr%C3%BCndungsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (ZuFiSH) zur Existenzgründungsförderung, kein Haushaltsprogramm für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/F%C3%B6rdermittel-f%C3%BCr-selbst-genutztes-Wohneigentum-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur sozialen Wohnraumförderung (Eigentumsförderung über IB.SH), kein Zuschuss für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Fr%C3%BChf%C3%B6rderung-f%C3%BCr-H%C3%B6rgesch%C3%A4digte-in-Anspruch-nehmen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Frühförderung Hörgeschädigter, fachfremd.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/GAK-F%C3%B6rderung-der-integrierten-l%C3%A4ndlichen-Entwicklung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur GAK-Förderung ländlicher Entwicklung (Antragsteller v. a. Gemeinden/Vereine), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Landschaftspflege-F%C3%B6rderung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Landschaftspflege-Förderung, fachfremd.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/F%C3%B6rderung-von-Gedenkst%C3%A4tten-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Förderung von Gedenkstätten, fachfremd.",
+        "evidenceUrl": "https://www.eutin.de/Stadt-Eutin/Stadt/Klimaschutz/"
+      },
+      {
+        "url": "vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765=",
+        "disposition": "reviewed",
+        "reason": "Informelles Rahmenkonzept für Solar-Freiflächenanlagen der Gemeinde Süsel (Planungskonzept, Beschluss 10.02.2022), kein Förderprogramm; gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      }
+    ]
+  },
+  {
+    "regionId": "01055041",
+    "name": "Süsel",
+    "checkedAt": "2026-10-10T04:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Süsel (Kreis Ostholstein, verwaltet durch die Verwaltungsgemeinschaft Eutin-Süsel) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Das Süseler Dokument mit Photovoltaik-Bezug ist das informelle Rahmenkonzept für Solar-Freiflächenanlagen (Planung, Beschluss 10.02.2022); die übrigen Treffer sind fachfremde Einträge des Landes-Leistungskatalogs. Der Fördermittel-Überblick des Kreises nennt nur Bundes- und Landesprogramme (Stand 10.10.2026).",
+    "searches": [
+      "PDF 3152_2973_1 vollständig gelesen: Rahmenkonzept Solar-Freiflächenanlagen, kein Förderprogramm",
+      "Fünf Dienstleistungsverzeichnis-Treffer nach Landeskatalog eingeordnet: fachfremd",
+      "Seitensuche vg-eutin-suesel.de nach Balkonkraftwerk/Photovoltaik/Wärmepumpe/Zuschuss: keine Förderseite",
+      "Websuche: Süsel Gemeinde Förderung Balkonkraftwerk Solar Zuschuss — nur eingestelltes Landesprogramm",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus, gelesen 22.09.2026); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765=",
+        "finding": "„Informelles Rahmenkonzept für Solar-Freiflächenanlagen in der Gemeinde Süsel“, PROKOM 20.12.2021, Beschluss Gemeindevertretung 10.02.2022 — Flächenplanung, kein Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: BEG/KfW-Programme, Energieberatung, kreiseigener Klimaschutzfonds für kleine Projekte; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Existenzgr%C3%BCndungsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (ZuFiSH) zur Existenzgründungsförderung, kein Haushaltsprogramm für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/F%C3%B6rdermittel-f%C3%BCr-selbst-genutztes-Wohneigentum-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur sozialen Wohnraumförderung (Eigentumsförderung über IB.SH), kein Zuschuss für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Fr%C3%BChf%C3%B6rderung-f%C3%BCr-H%C3%B6rgesch%C3%A4digte-in-Anspruch-nehmen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Frühförderung Hörgeschädigter, fachfremd.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/GAK-F%C3%B6rderung-der-integrierten-l%C3%A4ndlichen-Entwicklung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur GAK-Förderung ländlicher Entwicklung (Antragsteller v. a. Gemeinden/Vereine), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/Landschaftspflege-F%C3%B6rderung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Landschaftspflege-Förderung, fachfremd.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765=",
+        "disposition": "reviewed",
+        "reason": "Informelles Rahmenkonzept für Solar-Freiflächenanlagen der Gemeinde Süsel (Planungskonzept, Beschluss 10.02.2022), kein Förderprogramm; gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      },
+      {
+        "url": "vg-eutin-suesel.de/Stadt-Eutin/Service/Was-erledige-ich-wo-/F%C3%B6rderung-von-Gedenkst%C3%A4tten-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Förderung von Gedenkstätten, fachfremd.",
+        "evidenceUrl": "https://www.vg-eutin-suesel.de/media/custom/3152_2973_1.PDF?1733384765="
+      }
+    ]
+  },
+  {
+    "regionId": "01055021",
+    "name": "Heiligenhafen",
+    "checkedAt": "2026-10-10T04:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heiligenhafen (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Klimaschutzseite der Stadt verweist für Fördermittel an Privatpersonen ausdrücklich auf den Überblick des Kreises Ostholstein und den Klimaschutzfonds des Kreises; die Seite „geförderte Projekte“ listet städtische Vorhaben, der Wohneigentums-Treffer ist der Landeskatalog (Stand 10.10.2026).",
+    "searches": [
+      "Klimaschutz-Seiten heiligenhafen.de (Übersicht und „Allgemein“) gelesen: Verweis auf Fördermittel-Überblick des Kreises",
+      "Seite „geförderte Projekte“ gelesen: städtische Vorhaben",
+      "Websuche: Heiligenhafen Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss — keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus, gelesen 22.09.2026); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.heiligenhafen.de/heiligenhafen/klimaschutz/allgemein/",
+        "finding": "„Überblick über Fördermittel im Bereich Klimaschutz für Privatpersonen — Der Kreis Ostholstein hat einen aktuellen Überblick … zusammengestellt“ mit Link auf klimaschutz.kreis-oh.de; daneben Klimaschutzfonds des Kreises. Kein städtisches Programm."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: BEG/KfW-Programme, Energieberatung, kreiseigener Klimaschutzfonds für kleine Projekte; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "heiligenhafen.de/stadtverwaltung-politik/ansprechpartner/leistungen/ansicht/ort/23774/Heiligenhafen/vorgang/foerdermittel-fuer-selbst-genutztes-wohneigentum-bea",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur sozialen Wohnraumförderung (Eigentumsförderung über IB.SH), kein Zuschuss für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.heiligenhafen.de/heiligenhafen/klimaschutz/allgemein/"
+      },
+      {
+        "url": "heiligenhafen.de/stadtverwaltung-politik/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste von Projekten, die die Stadt Heiligenhafen selbst mit Fördermitteln umgesetzt hat; kein Zuschuss für private Haushalte.",
+        "evidenceUrl": "https://www.heiligenhafen.de/heiligenhafen/klimaschutz/allgemein/"
+      }
+    ]
+  },
+  {
+    "regionId": "01055046",
+    "name": "Fehmarn",
+    "checkedAt": "2026-10-10T04:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fehmarn (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Stadt verfolgt Klimaneutralität 2030 über einen Maßnahmenkatalog des Umweltrats; ihre Klimaschutz-Unterseite verweist für Förderungen auf Land, EKSH, EKI und weitere Institutionen. Die ZuFiSH-Treffer sind fachfremde Landeseinträge (Stand 10.10.2026).",
+    "searches": [
+      "Seite „Klimaziele der Stadt Fehmarn / Klimanotstand“ gelesen: Maßnahmenkatalog, Bilanz, kein Zuschuss",
+      "Unterwebsite unki.stadtfehmarn.de/Klimawandel/Klimaschutz gelesen: Verweise auf Land, EKSH, EKI, bewirk, Wattbewerb, dena; kein städtisches Programm",
+      "Fünf ZuFiSH-Treffer nach Titel eingeordnet: fachfremd bzw. Kommunalförderung",
+      "Websuche: Fehmarn Stadt Förderung Balkonkraftwerk Photovoltaik Wärmepumpe — keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus, gelesen 22.09.2026); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/",
+        "finding": "Klimanotstand 27.06.2019, Ziel Klimaneutralität 2030, Maßnahmenkatalog (12/2021) und Umsetzungsstand 08/2023; kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://unki.stadtfehmarn.de/Klimawandel/Klimaschutz/",
+        "finding": "Informationen über Institutionen, die Klimaschutzbemühungen „mit Informationen oder Förderungen“ unterstützen (Land SH, EKSH, EKI u. a.); kein städtischer Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtfehmarn.de/B%C3%BCrgerservice/ZuFiSH/Existenzgr%C3%BCndungsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (ZuFiSH) zur Existenzgründungsförderung, kein Haushaltsprogramm für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
+      },
+      {
+        "url": "stadtfehmarn.de/B%C3%BCrgerservice/ZuFiSH/Fr%C3%BChf%C3%B6rderung-H%C3%B6rgesch%C3%A4digte.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Frühförderung Hörgeschädigter, fachfremd.",
+        "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
+      },
+      {
+        "url": "stadtfehmarn.de/B%C3%BCrgerservice/ZuFiSH/Hochwasserschutz-F%C3%B6rderung-von-Ma%C3%9Fnahmen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Hochwasserschutz-Förderung, fachfremd.",
+        "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
+      },
+      {
+        "url": "stadtfehmarn.de/B%C3%BCrgerservice/ZuFiSH/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landesförderung für Kommunen (Antragsteller sind Gemeinden), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
+      },
+      {
+        "url": "stadtfehmarn.de/B%C3%BCrgerservice/ZuFiSH/Landschaftspflege-F%C3%B6rderung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Landschaftspflege-Förderung, fachfremd.",
+        "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
+      }
+    ]
   }
 ]
