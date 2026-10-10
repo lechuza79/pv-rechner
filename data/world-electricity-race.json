@@ -1,0 +1,165 @@
+{
+  "source": "https://files.ember-energy.org/public-downloads/generation/outputs/release_generation_yearly_global.csv",
+  "methodology": "https://ember-energy.org/data/yearly-electricity-data/",
+  "retrieved": "2026-10-04",
+  "sha256": "ea214963f4a98b26f52aaf541736d4310349a905e64f83e63425bfc3ab6255d7",
+  "unit": "TWh",
+  "rows": [
+    {
+      "year": 2000,
+      "wind": 31.15,
+      "solar": 1.092,
+      "nuclear": 2540.457
+    },
+    {
+      "year": 2001,
+      "wind": 38.189,
+      "solar": 1.431,
+      "nuclear": 2613.172
+    },
+    {
+      "year": 2002,
+      "wind": 52.217,
+      "solar": 1.788,
+      "nuclear": 2654.777
+    },
+    {
+      "year": 2003,
+      "wind": 63.197,
+      "solar": 2.184,
+      "nuclear": 2601.052
+    },
+    {
+      "year": 2004,
+      "wind": 85.478,
+      "solar": 2.846,
+      "nuclear": 2719.409
+    },
+    {
+      "year": 2005,
+      "wind": 104.396,
+      "solar": 4.024,
+      "nuclear": 2726.968
+    },
+    {
+      "year": 2006,
+      "wind": 133.202,
+      "solar": 5.495,
+      "nuclear": 2761.593
+    },
+    {
+      "year": 2007,
+      "wind": 171.149,
+      "solar": 7.364,
+      "nuclear": 2703.49
+    },
+    {
+      "year": 2008,
+      "wind": 220.85,
+      "solar": 11.922,
+      "nuclear": 2694.724
+    },
+    {
+      "year": 2009,
+      "wind": 276.269,
+      "solar": 19.889,
+      "nuclear": 2656.76
+    },
+    {
+      "year": 2010,
+      "wind": 345.993,
+      "solar": 32.282,
+      "nuclear": 2725.912
+    },
+    {
+      "year": 2011,
+      "wind": 439.985,
+      "solar": 63.631,
+      "nuclear": 2610.34
+    },
+    {
+      "year": 2012,
+      "wind": 529.265,
+      "solar": 96.995,
+      "nuclear": 2432.218
+    },
+    {
+      "year": 2013,
+      "wind": 634.144,
+      "solar": 131.82,
+      "nuclear": 2448.521
+    },
+    {
+      "year": 2014,
+      "wind": 706.103,
+      "solar": 197.806,
+      "nuclear": 2498.728
+    },
+    {
+      "year": 2015,
+      "wind": 829.635,
+      "solar": 256.079,
+      "nuclear": 2532.928
+    },
+    {
+      "year": 2016,
+      "wind": 960.296,
+      "solar": 327.539,
+      "nuclear": 2571.048
+    },
+    {
+      "year": 2017,
+      "wind": 1139.44,
+      "solar": 444.719,
+      "nuclear": 2594.23
+    },
+    {
+      "year": 2018,
+      "wind": 1268.14,
+      "solar": 575.232,
+      "nuclear": 2658.7
+    },
+    {
+      "year": 2019,
+      "wind": 1420.964,
+      "solar": 698.007,
+      "nuclear": 2754.08
+    },
+    {
+      "year": 2020,
+      "wind": 1591.465,
+      "solar": 852.125,
+      "nuclear": 2648.77
+    },
+    {
+      "year": 2021,
+      "wind": 1856.097,
+      "solar": 1052.566,
+      "nuclear": 2760.96
+    },
+    {
+      "year": 2022,
+      "wind": 2105.656,
+      "solar": 1332.534,
+      "nuclear": 2639.93
+    },
+    {
+      "year": 2023,
+      "wind": 2317.181,
+      "solar": 1664.044,
+      "nuclear": 2698.03
+    },
+    {
+      "year": 2024,
+      "wind": 2505.634,
+      "solar": 2143.678,
+      "nuclear": 2777.4
+    },
+    {
+      "year": 2025,
+      "wind": 2704.379,
+      "solar": 2780.204,
+      "nuclear": 2809.351
+    }
+  ]
+}
