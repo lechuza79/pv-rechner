@@ -91557,5 +91557,207 @@
         "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
       }
     ]
+  },
+  {
+    "regionId": "01055004",
+    "name": "Bad Schwartau",
+    "checkedAt": "2026-10-10T02:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bad Schwartau (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die beiden Bürgerportal-Treffer sind Einträge des Landes-Leistungskatalogs: „Zuschuss für steckerfertige Photovoltaikanlagen“ beschreibt das 2023 gestoppte Landesprogramm, „Förderung von haushaltsbezogenen Solarpanelen (Balkonkraftwerke)“ ist im Zuständigkeitsfinder auch mit Ort Bad Schwartau ohne Beschreibung und ohne zuständige Stelle. Startseite und Umweltbeirat-Seite der Stadt nennen kein Förderprogramm; der Klimaschutzfonds des Kreises schließt Erzeugungs- und Speicheranlagen aus (Stand 10.10.2026).",
+    "searches": [
+      "Bürgerportal-Einträge (Detailansicht) gelesen, Deep-Link zum Zuständigkeitsfinder SH im echten Browser mit Ort Bad Schwartau geöffnet: Leistungsbeschreibung leer",
+      "Startseite bad-schwartau.de nach Klima/Energie/Förder-Links durchsucht: nur Städtebauförderung, Bildungsförderung, Umweltbeirat",
+      "Umweltbeirat-Seite gelesen: ehrenamtlicher Beirat, Umweltbriefe, kein Zuschuss",
+      "Websuche: Bad Schwartau Förderung Balkonkraftwerk Zuschuss 2026 — nur Landesprogramm (eingestellt) und Ratgeber",
+      "Klimaschutzfonds des Kreises Ostholstein schließt Anlagen zur Wärme-/Stromerzeugung und -speicherung aus (gelesen 22.09.2026, Prüfung Göhl); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220",
+        "finding": "„Im Rahmen des Förderprogramms „Klimaschutz für Bürgerinnen und Bürger“ … PV-Balkon-Anlage: max. Förderung 200 Euro“; „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden … beschieden.“ — Landesprogramm, beendet."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=18371&ags=01&pstId=286389527&infotype=0",
+        "finding": "Leistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ mit Ort Bad Schwartau: Abschnitt Leistungsbeschreibung ohne Inhalt, keine zuständige Stelle."
+      },
+      {
+        "url": "https://www.bad-schwartau.de/Politik-Wahlen/Beirat-Beauftragte/Umweltbeirat/",
+        "finding": "Ehrenamtlicher Umweltbeirat mit Umweltbriefen und Jahresbericht, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      },
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      },
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3948.220&such=Zuschuss%25f%C3%BCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=2327.1&k_sub=1&startkat=3948.217&ModID=10&object=tx%7C3948.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      },
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3948.220&such=Zuschuss%25f%C3%BCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=2327.1&k_sub=1&startkat=3948.217&ModID=10&object=tx%7C3948.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      },
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3948.220&such=Zuschuss%25f%C3%BCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=2327.1&k_sub=1&startkat=3948.217&ModID=10&object=tx%7C3948.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      },
+      {
+        "url": "bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundes-/Landesförderung für Unternehmen (Güterkraftverkehr bzw. KMU), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220"
+      }
+    ]
+  },
+  {
+    "regionId": "01055035",
+    "name": "Ratekau",
+    "checkedAt": "2026-10-10T02:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ratekau (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Treffer im Dienstleistungsverzeichnis sind der leere Landeskatalog-Eintrag zu Balkonkraftwerken (im Zuständigkeitsfinder ohne Beschreibung und ohne zuständige Stelle). Die Seite „Energie und Klimaschutz“ der Gemeinde beschreibt Naturschutz- und Moorvorhaben und verlinkt nur Solarkataster und Klimaschutzatlas des Kreises; der Klimaschutzfonds des Kreises schließt Erzeugungs- und Speicheranlagen aus (Stand 10.10.2026).",
+    "searches": [
+      "Dienstleistungsverzeichnis-Treffer gelesen; zugrunde liegender Landeskatalog-Eintrag 286389527 im Zuständigkeitsfinder SH im echten Browser geöffnet: ohne Beschreibung",
+      "Seite „Energie und Klimaschutz“ gelesen: Schutzgebiete, Moore, Fehmarnbelt-Stellungnahme, Kontakt Klimaschutz; Links nur Solarkataster und Klimaschutzatlas",
+      "Startseite ratekau.de nach Klima/Energie/Förder-Links durchsucht",
+      "Websuche: Ratekau Förderung Balkonkraftwerk Photovoltaik Zuschuss 2026 — keine Fundstelle",
+      "Klimaschutzfonds des Kreises Ostholstein schließt Anlagen zur Wärme-/Stromerzeugung und -speicherung aus (gelesen 22.09.2026, Prüfung Göhl); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/",
+        "finding": "Klimaschutzseite mit Naturschutz- und Moorrenaturierungsvorhaben, Externe Links „Solarkataster des Kreises Ostholstein“ und „Klimaschutzatlas“; kein Zuschussprogramm."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=18371&ags=01&pstId=286389527&infotype=0",
+        "finding": "Landeskatalog-Eintrag „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“)“: Leistungsbeschreibung ohne Inhalt, keine zuständige Stelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?NavID=4094.14&such=F%C3%B6rderung%25von%25haushaltsbezogenen%25Solarpanelen%25Balkonkraftwerke%25beantragen&sfwort=1&kat=4094.26&kuo=1&ort=4094.1&startkat=4094.26&k_sub=1&ModID=10&object=tx%7C4094.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?NavID=4094.14&such=F%C3%B6rderung%25von%25haushaltsbezogenen%25Solarpanelen%25Balkonkraftwerke%25beantragen&sfwort=1&kat=4094.26&kuo=1&ort=4094.1&startkat=4094.26&k_sub=1&ModID=10&object=tx%7C4094.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?NavID=4094.14&such=F%C3%B6rderung%25von%25haushaltsbezogenen%25Solarpanelen%25Balkonkraftwerke%25beantragen&sfwort=1&kat=4094.26&kuo=1&ort=4094.1&startkat=4094.26&k_sub=1&ModID=10&object=tx%7C4094.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?NavID=4094.14&such=F%C3%B6rderung%25von%25haushaltsbezogenen%25Solarpanelen%25Balkonkraftwerke%25beantragen&sfwort=1&kat=4094.26&kuo=1&ort=4094.1&startkat=4094.26&k_sub=1&ModID=10&object=tx%7C4094.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/B%C3%BCrgerservice/Dienstleistungen/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?NavID=4094.14&such=F%C3%B6rderung%25von%25haushaltsbezogenen%25Solarpanelen%25Balkonkraftwerke%25beantragen&sfwort=1&kat=4094.26&kuo=1&ort=4094.1&startkat=4094.26&k_sub=1&ModID=10&object=tx%7C4094.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs (Zuständigkeitsfinder SH, Leistung 286389527). Im echten Browser für Bad Schwartau gelesen (10.10.2026): Leistungsbeschreibung leer, keine zuständige Stelle, kein Programm der Gemeinde.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      },
+      {
+        "url": "ratekau.de/index.php?object=tx,4094.2.1&amp;ModID=10&amp;kat=4094.131.1&amp;k_sub=1&amp;ort=4094.1&amp;sfwort=1&amp;startkat=4094.26",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungsverzeichnis Ratekau (Listenansicht), enthält nur den Landeskatalog-Eintrag zu Balkonkraftwerken; gleicher Inhalt wie der gelesene Eintrag.",
+        "evidenceUrl": "https://www.ratekau.de/Gemeinde/Was-uns-noch-bewegt/Energie-und-Klimaschutz/"
+      }
+    ]
+  },
+  {
+    "regionId": "01055032",
+    "name": "Neustadt in Holstein",
+    "checkedAt": "2026-10-10T02:05:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neustadt in Holstein (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die sechs Treffer unter „Was erledige ich wo“ sind Einträge des Landes-Leistungskatalogs: das 2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stecker-PV und nicht-fossile Heizungen), Landesförderung für Kommunen, Unternehmensprogramme und der Heizkostenzuschuss. Die Stadt bietet laut Pressemitteilung vom 10.06.2026 nur kostenfreie Energieberatung der Verbraucherzentrale an; der Klimaschutzfonds des Kreises schließt Erzeugungs- und Speicheranlagen aus (Stand 10.10.2026).",
+    "searches": [
+      "Alle sechs Leistungsseiten abgerufen (10.10.2026): liefern nur das allgemeine Dienstleistungsverzeichnis; Inhalte über den gleichlautenden Landeskatalog (Bürgerportal Bad Schwartau, gleicher Lauf) gelesen",
+      "Pressemitteilung der Stadt vom 10.06.2026 gelesen: Energieberatungstag der Verbraucherzentrale, kein Zuschuss",
+      "Startseite stadt-neustadt.de ohne Klima-/Energie-Förderseite",
+      "Websuche: Neustadt in Holstein Klimaschutz Förderung private Haushalte Solar Wärmepumpe — nur Wärmeplanung, Stadtwerke-Quartier, Beratung",
+      "Klimaschutzfonds des Kreises Ostholstein schließt Anlagen zur Wärme-/Stromerzeugung und -speicherung aus (gelesen 22.09.2026, Prüfung Göhl); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF",
+        "finding": "Pressemitteilung 10.06.2026: kostenfreier Energieberatungstag der Verbraucherzentrale SH im Rathaus, Themen u. a. Solaranlagen und Fördermittel; kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.bad-schwartau.de/Rathaus-%C3%84mter/B%C3%BCrgerportal-Onlinedienste/B%C3%BCrgerportal/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?object=tx,3948.2.1&ModID=10&FID=3948.832.1&NavID=3948.220",
+        "finding": "Gleichlautender Landeskatalog-Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“: Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, gestoppt am 16.11.2023."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundes-/Landesförderung für Unternehmen (Güterkraftverkehr bzw. KMU), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      },
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Heizkostenzuschuss für nicht leitungsgebundene Energieträger (Härtefallhilfe 2023), kein Investitionszuschuss für PV/Speicher/Wärmepumpe.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      },
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      },
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landesförderung für Kommunen (Antragsteller sind Gemeinden), kein Haushaltsprogramm; Seite lieferte am 10.10.2026 nur das allgemeine Dienstleistungsverzeichnis.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      },
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerportal-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage bis 200 €, nicht-fossile Heizungen); laut Landesportal am 16.11.2023 gestoppt, bereits als beendetes Landesprogramm im Katalog.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      },
+      {
+        "url": "stadt-neustadt.de/Stadt-Rathaus/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundes-/Landesförderung für Unternehmen (Güterkraftverkehr bzw. KMU), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.stadt-neustadt.de/media/custom/3563_2119_1.PDF"
+      }
+    ]
   }
 ]
