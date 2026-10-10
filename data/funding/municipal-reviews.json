@@ -90548,5 +90548,934 @@
         "evidenceUrl": "https://rathaus.hesel.de/uploads/press_release/files/735/Klimaschutzkonzept_SG-Hesel_2023_WEB.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01055006",
+    "name": "Beschendorf",
+    "checkedAt": "2026-10-10T00:20:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beschendorf gehört zum Amt Lensahn (Kreis Ostholstein). Das Ortsrecht des Amts und aller sieben Mitgliedsgemeinden (75 Vorschriften) enthält keine Förderrichtlinie; die Klimaschutzseite des Amts nennt nur den Klimaschutzfonds des Kreises, der Anlagen zur Strom-/Wärmeerzeugung und -speicherung ausdrücklich ausschließt. Der Wärmeplan Lensahn (April 2026) führt Zuschüsse für dezentrale Heizungen nur als Vorschlag. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 10.10.2026).",
+    "searches": [
+      "lensahn.de Startseite, Klimaschutzseite und Gemeindeseiten durchgesehen",
+      "Ortsrecht des Amts Lensahn mit allen Vorschriften des Amts und der Gemeinden Beschendorf, Damlos, Harmsdorf, Kabelhorst, Lensahn, Manhagen, Riepsdorf (75 Einträge) nach Förderrichtlinien durchgesehen",
+      "Kommunaler Wärmeplan Lensahn (April 2026) nach Förder-/Zuschuss-Stellen durchsucht",
+      "Kreis Ostholstein: Klimaschutzfonds-Seite gelesen (Ausschluss von Erzeugungs-/Speicheranlagen); Katalog ohne Kreisprogramm 01055",
+      "Websuche: Ortsnamen + Balkonkraftwerk/Photovoltaik Förderung; Kreis Ostholstein Förderprogramm Balkonkraftwerk — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lensahn.de/rathaus/ortsrecht",
+        "finding": "Ortsrecht des Amts und der Gemeinden: Haupt-, Gebühren-, Steuer-, Benutzungssatzungen, Richtlinien über Berichtswesen und Ehrungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lensahn.de/buergerservice/klimaschutz",
+        "finding": "Klimaschutzseite des Amts: verweist auf den Klimaschutzfonds des Kreises; „die Errichtung von PV-Anlagen oder anderer Anlagen zur Wärme-/Stromerzeugung“ sind ausgeschlossen."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Klimaschutzfonds",
+        "finding": "„Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“."
+      },
+      {
+        "url": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "finding": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm.",
+        "evidenceUrl": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01055020",
+    "name": "Harmsdorf",
+    "checkedAt": "2026-10-10T00:20:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Harmsdorf gehört zum Amt Lensahn (Kreis Ostholstein). Das Ortsrecht des Amts und aller sieben Mitgliedsgemeinden (75 Vorschriften) enthält keine Förderrichtlinie; die Klimaschutzseite des Amts nennt nur den Klimaschutzfonds des Kreises, der Anlagen zur Strom-/Wärmeerzeugung und -speicherung ausdrücklich ausschließt. Der Wärmeplan Lensahn (April 2026) führt Zuschüsse für dezentrale Heizungen nur als Vorschlag. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 10.10.2026).",
+    "searches": [
+      "lensahn.de Startseite, Klimaschutzseite und Gemeindeseiten durchgesehen",
+      "Ortsrecht des Amts Lensahn mit allen Vorschriften des Amts und der Gemeinden Beschendorf, Damlos, Harmsdorf, Kabelhorst, Lensahn, Manhagen, Riepsdorf (75 Einträge) nach Förderrichtlinien durchgesehen",
+      "Kommunaler Wärmeplan Lensahn (April 2026) nach Förder-/Zuschuss-Stellen durchsucht",
+      "Kreis Ostholstein: Klimaschutzfonds-Seite gelesen (Ausschluss von Erzeugungs-/Speicheranlagen); Katalog ohne Kreisprogramm 01055",
+      "Websuche: Ortsnamen + Balkonkraftwerk/Photovoltaik Förderung; Kreis Ostholstein Förderprogramm Balkonkraftwerk — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lensahn.de/rathaus/ortsrecht",
+        "finding": "Ortsrecht des Amts und der Gemeinden: Haupt-, Gebühren-, Steuer-, Benutzungssatzungen, Richtlinien über Berichtswesen und Ehrungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lensahn.de/buergerservice/klimaschutz",
+        "finding": "Klimaschutzseite des Amts: verweist auf den Klimaschutzfonds des Kreises; „die Errichtung von PV-Anlagen oder anderer Anlagen zur Wärme-/Stromerzeugung“ sind ausgeschlossen."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Klimaschutzfonds",
+        "finding": "„Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“."
+      },
+      {
+        "url": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "finding": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm.",
+        "evidenceUrl": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01055023",
+    "name": "Kabelhorst",
+    "checkedAt": "2026-10-10T00:20:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kabelhorst gehört zum Amt Lensahn (Kreis Ostholstein). Das Ortsrecht des Amts und aller sieben Mitgliedsgemeinden (75 Vorschriften) enthält keine Förderrichtlinie; die Klimaschutzseite des Amts nennt nur den Klimaschutzfonds des Kreises, der Anlagen zur Strom-/Wärmeerzeugung und -speicherung ausdrücklich ausschließt. Der Wärmeplan Lensahn (April 2026) führt Zuschüsse für dezentrale Heizungen nur als Vorschlag. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 10.10.2026).",
+    "searches": [
+      "lensahn.de Startseite, Klimaschutzseite und Gemeindeseiten durchgesehen",
+      "Ortsrecht des Amts Lensahn mit allen Vorschriften des Amts und der Gemeinden Beschendorf, Damlos, Harmsdorf, Kabelhorst, Lensahn, Manhagen, Riepsdorf (75 Einträge) nach Förderrichtlinien durchgesehen",
+      "Kommunaler Wärmeplan Lensahn (April 2026) nach Förder-/Zuschuss-Stellen durchsucht",
+      "Kreis Ostholstein: Klimaschutzfonds-Seite gelesen (Ausschluss von Erzeugungs-/Speicheranlagen); Katalog ohne Kreisprogramm 01055",
+      "Websuche: Ortsnamen + Balkonkraftwerk/Photovoltaik Förderung; Kreis Ostholstein Förderprogramm Balkonkraftwerk — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lensahn.de/rathaus/ortsrecht",
+        "finding": "Ortsrecht des Amts und der Gemeinden: Haupt-, Gebühren-, Steuer-, Benutzungssatzungen, Richtlinien über Berichtswesen und Ehrungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lensahn.de/buergerservice/klimaschutz",
+        "finding": "Klimaschutzseite des Amts: verweist auf den Klimaschutzfonds des Kreises; „die Errichtung von PV-Anlagen oder anderer Anlagen zur Wärme-/Stromerzeugung“ sind ausgeschlossen."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Klimaschutzfonds",
+        "finding": "„Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“."
+      },
+      {
+        "url": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "finding": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm.",
+        "evidenceUrl": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01055029",
+    "name": "Manhagen",
+    "checkedAt": "2026-10-10T00:20:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Manhagen gehört zum Amt Lensahn (Kreis Ostholstein). Das Ortsrecht des Amts und aller sieben Mitgliedsgemeinden (75 Vorschriften) enthält keine Förderrichtlinie; die Klimaschutzseite des Amts nennt nur den Klimaschutzfonds des Kreises, der Anlagen zur Strom-/Wärmeerzeugung und -speicherung ausdrücklich ausschließt. Der Wärmeplan Lensahn (April 2026) führt Zuschüsse für dezentrale Heizungen nur als Vorschlag. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 10.10.2026).",
+    "searches": [
+      "lensahn.de Startseite, Klimaschutzseite und Gemeindeseiten durchgesehen",
+      "Ortsrecht des Amts Lensahn mit allen Vorschriften des Amts und der Gemeinden Beschendorf, Damlos, Harmsdorf, Kabelhorst, Lensahn, Manhagen, Riepsdorf (75 Einträge) nach Förderrichtlinien durchgesehen",
+      "Kommunaler Wärmeplan Lensahn (April 2026) nach Förder-/Zuschuss-Stellen durchsucht",
+      "Kreis Ostholstein: Klimaschutzfonds-Seite gelesen (Ausschluss von Erzeugungs-/Speicheranlagen); Katalog ohne Kreisprogramm 01055",
+      "Websuche: Ortsnamen + Balkonkraftwerk/Photovoltaik Förderung; Kreis Ostholstein Förderprogramm Balkonkraftwerk — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lensahn.de/rathaus/ortsrecht",
+        "finding": "Ortsrecht des Amts und der Gemeinden: Haupt-, Gebühren-, Steuer-, Benutzungssatzungen, Richtlinien über Berichtswesen und Ehrungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lensahn.de/buergerservice/klimaschutz",
+        "finding": "Klimaschutzseite des Amts: verweist auf den Klimaschutzfonds des Kreises; „die Errichtung von PV-Anlagen oder anderer Anlagen zur Wärme-/Stromerzeugung“ sind ausgeschlossen."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Klimaschutzfonds",
+        "finding": "„Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“."
+      },
+      {
+        "url": "https://www.lensahn.de/lensahn.de/fileadmin/download/Manhagen/Bauleitplanung/B_Plan_3_Solarpark/230209_BP3_PV_Begr_Vorentwurf.pdf",
+        "finding": "Begründung zum B-Plan Nr. 3 Solarpark (Vorentwurf): Bauleitplanung für eine Freiflächenanlage, keine Förderung für private Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lensahn.de/fileadmin/download/Manhagen/Bauleitplanung/B_Plan_3_Solarpark/230209_BP3_PV_Begr_Vorentwurf.pdf",
+        "disposition": "reviewed",
+        "reason": "Begründung zum B-Plan Nr. 3 Solarpark (Vorentwurf): Bauleitplanung für eine Freiflächenanlage, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.lensahn.de/lensahn.de/fileadmin/download/Manhagen/Bauleitplanung/B_Plan_3_Solarpark/230209_BP3_PV_Begr_Vorentwurf.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01055036",
+    "name": "Riepsdorf",
+    "checkedAt": "2026-10-10T00:20:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Riepsdorf gehört zum Amt Lensahn (Kreis Ostholstein). Das Ortsrecht des Amts und aller sieben Mitgliedsgemeinden (75 Vorschriften) enthält keine Förderrichtlinie; die Klimaschutzseite des Amts nennt nur den Klimaschutzfonds des Kreises, der Anlagen zur Strom-/Wärmeerzeugung und -speicherung ausdrücklich ausschließt. Der Wärmeplan Lensahn (April 2026) führt Zuschüsse für dezentrale Heizungen nur als Vorschlag. Keine laufende kommunale Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 10.10.2026).",
+    "searches": [
+      "lensahn.de Startseite, Klimaschutzseite und Gemeindeseiten durchgesehen",
+      "Ortsrecht des Amts Lensahn mit allen Vorschriften des Amts und der Gemeinden Beschendorf, Damlos, Harmsdorf, Kabelhorst, Lensahn, Manhagen, Riepsdorf (75 Einträge) nach Förderrichtlinien durchgesehen",
+      "Kommunaler Wärmeplan Lensahn (April 2026) nach Förder-/Zuschuss-Stellen durchsucht",
+      "Kreis Ostholstein: Klimaschutzfonds-Seite gelesen (Ausschluss von Erzeugungs-/Speicheranlagen); Katalog ohne Kreisprogramm 01055",
+      "Websuche: Ortsnamen + Balkonkraftwerk/Photovoltaik Förderung; Kreis Ostholstein Förderprogramm Balkonkraftwerk — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lensahn.de/rathaus/ortsrecht",
+        "finding": "Ortsrecht des Amts und der Gemeinden: Haupt-, Gebühren-, Steuer-, Benutzungssatzungen, Richtlinien über Berichtswesen und Ehrungen — keine Förderrichtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lensahn.de/buergerservice/klimaschutz",
+        "finding": "Klimaschutzseite des Amts: verweist auf den Klimaschutzfonds des Kreises; „die Errichtung von PV-Anlagen oder anderer Anlagen zur Wärme-/Stromerzeugung“ sind ausgeschlossen."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Klimaschutzfonds",
+        "finding": "„Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“."
+      },
+      {
+        "url": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "finding": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Kommunaler Wärmeplan der Gemeinde Lensahn (April 2026) gelesen: Zuschüsse für dezentrale Heizsysteme nur als Vorschlag im Maßnahmenkatalog, kein beschlossenes Bürgerprogramm.",
+        "evidenceUrl": "https://www.lensahn.de/lensahn.de/fileadmin/download/Klimaschutz/Abschlussbericht_KWP_Lensahn_Finale_Fassung_09_04_2026.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074001",
+    "name": "Albersdorf",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Albersdorf wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Albersdorf und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/albersdorf: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/albersdorf",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074005",
+    "name": "Bobeck",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bobeck wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Bobeck und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/bobeck: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/bobeck",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074082",
+    "name": "Scheiditz",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Scheiditz wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Scheiditz und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/scheiditz: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/scheiditz",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074086",
+    "name": "Schöngleina",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schöngleina wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Schöngleina und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/schoengleina: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/schoengleina",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074091",
+    "name": "Serba",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Serba wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Serba und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/serba: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/serba",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074098",
+    "name": "Tautenhain",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tautenhain wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Tautenhain und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/tautenhain: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/tautenhain",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074105",
+    "name": "Waldeck",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Waldeck wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Waldeck und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/waldeck: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/waldeck",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074109",
+    "name": "Weißenborn",
+    "checkedAt": "2026-10-10T00:40:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weißenborn wird von der erfüllenden Gemeinde Bad Klosterlausnitz (Saale-Holzland-Kreis) verwaltet. Das Ortsrecht von Weißenborn und von Bad Klosterlausnitz enthält keine Förderrichtlinie für Haushalte (nur Vereinsförderung in Bad Klosterlausnitz); die Seiten „Umwelt & Naturschutz“, „Fördermaßnahmen“ (ohne Inhalt) und „Regionalförderung“ (LEADER/Regionalbudget) nennen kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Klimaschutzkonzept und Abschlussbericht des Kreises enthalten kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "bad-klosterlausnitz.de/gemeinden/weissenborn: Gemeindeseite mit Ortsrecht durchgesehen",
+      "Ortsrecht der erfüllenden Gemeinde Bad Klosterlausnitz (Satzungen, Richtlinien) durchgesehen",
+      "Seiten Umwelt & Naturschutz, Fördermaßnahmen (im Browser gerendert: ohne Inhalt), Kommunale Wärmeplanung, Regionalförderung gelesen",
+      "Klimaschutzkonzept und Abschlussbericht 2023 des Saale-Holzland-Kreises sowie Konzept klimaneutraler Kurort nach Förder-/Zuschuss-Stellen durchsucht",
+      "Websuche: Saale-Holzland-Kreis/Bad Klosterlausnitz/Gemeindenamen + Balkonkraftwerk/Photovoltaik Förderung — keine Fundstelle; Katalog ohne Programm mit Schlüssel 16074",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-klosterlausnitz.de/gemeinden/weissenborn",
+        "finding": "Gemeindeseite mit Ortsrecht: Haupt-, Verwaltungskosten-, Steuer- und Benutzungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/buergerservice/ortsrecht",
+        "finding": "Ortsrecht Bad Klosterlausnitz: einzige Förderrichtlinie ist die „Richtlinie zur Förderung von Vereinen“."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "finding": "Seite „Fördermaßnahmen“ zeigt nur die Überschrift „Informationen zu Fördermaßnahmen“, kein Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "finding": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "finding": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm."
+      },
+      {
+        "url": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "finding": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht 2023 des Klimaschutzmanagements des Saale-Holzland-Kreises gelesen: Liegenschafts- und Förderanträge des Kreises, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=4D3PzwizzGfa1-V_89RHMdPjzfT9ETJBBmb6N1WItBA&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2F2023_09_11_abschlussbericht_2023_veroeffentlichung_20230718.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf",
+        "disposition": "reviewed",
+        "reason": "Anhang „Auf dem Weg zum klimaneutralen Kurort“ (BTE) gelesen: Maßnahmenkonzept, nur Hinweis auf bezuschusste Energieberatung Dritter, kein kommunales Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=78v6keXx1nasH02eEYHLirSZ0g7Lj-gBN4vzkAGygGY&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1590%3B%7D&d=attachment&f=auf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fauf-dem-weg-zum-klimaneutralen-kurort_bad-klosterlausnitz_anhang.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "16074006",
+    "name": "Bollberg",
+    "checkedAt": "2026-10-10T00:55:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bollberg gehört zum Verwaltungsbereich der Stadt Stadtroda (erfüllende Gemeinde, Saale-Holzland-Kreis). Die Satzungsliste der Stadt und ihrer Mitglieds-/Ortsteilgemeinden (Stadtroda 38, Bollberg, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen u. a.) enthält keine Förderrichtlinie; die Seiten „Projekte mit staatlicher Förderung“, „Energetische Quartierssanierung“ und das Webseitenförderprogramm betreffen keine Haushaltsförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Saale-Holzland-Kreis führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "stadtroda.de Satzungen (alle Gemeinden) gelesen",
+      "Seiten Projekte mit staatlicher Förderung, Energetische Quartierssanierung, Webseitenförderprogramm gelesen",
+      "Saale-Holzland-Kreis: Klimaschutzkonzept und Abschlussbericht 2023 ohne Bürgerprogramm (gleicher Lauf, Bad Klosterlausnitz); Katalog ohne Programm mit Schlüssel 16074",
+      "Websuche: Stadtroda Förderprogramm Balkonkraftwerk/Photovoltaik — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtroda.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Satzungen der Stadt Stadtroda und der Gemeinden Bollberg, Gernewitz, Hainbücht, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen: Haupt-, Gebühren-, Steuer-, Beitrags- und Ordnungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/642058/energetische-quartierssanierung.html",
+        "finding": "Nur ein gefördertes Gutachten zur Quartierssanierung Schützenhaus/Freibad, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16074058",
+    "name": "Möckern",
+    "checkedAt": "2026-10-10T00:55:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Möckern gehört zum Verwaltungsbereich der Stadt Stadtroda (erfüllende Gemeinde, Saale-Holzland-Kreis). Die Satzungsliste der Stadt und ihrer Mitglieds-/Ortsteilgemeinden (Stadtroda 38, Bollberg, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen u. a.) enthält keine Förderrichtlinie; die Seiten „Projekte mit staatlicher Förderung“, „Energetische Quartierssanierung“ und das Webseitenförderprogramm betreffen keine Haushaltsförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Saale-Holzland-Kreis führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "stadtroda.de Satzungen (alle Gemeinden) gelesen",
+      "Seiten Projekte mit staatlicher Förderung, Energetische Quartierssanierung, Webseitenförderprogramm gelesen",
+      "Saale-Holzland-Kreis: Klimaschutzkonzept und Abschlussbericht 2023 ohne Bürgerprogramm (gleicher Lauf, Bad Klosterlausnitz); Katalog ohne Programm mit Schlüssel 16074",
+      "Websuche: Stadtroda Förderprogramm Balkonkraftwerk/Photovoltaik — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtroda.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Satzungen der Stadt Stadtroda und der Gemeinden Bollberg, Gernewitz, Hainbücht, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen: Haupt-, Gebühren-, Steuer-, Beitrags- und Ordnungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/642058/energetische-quartierssanierung.html",
+        "finding": "Nur ein gefördertes Gutachten zur Quartierssanierung Schützenhaus/Freibad, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16074069",
+    "name": "Quirla",
+    "checkedAt": "2026-10-10T00:55:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Quirla gehört zum Verwaltungsbereich der Stadt Stadtroda (erfüllende Gemeinde, Saale-Holzland-Kreis). Die Satzungsliste der Stadt und ihrer Mitglieds-/Ortsteilgemeinden (Stadtroda 38, Bollberg, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen u. a.) enthält keine Förderrichtlinie; die Seiten „Projekte mit staatlicher Förderung“, „Energetische Quartierssanierung“ und das Webseitenförderprogramm betreffen keine Haushaltsförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Saale-Holzland-Kreis führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "stadtroda.de Satzungen (alle Gemeinden) gelesen",
+      "Seiten Projekte mit staatlicher Förderung, Energetische Quartierssanierung, Webseitenförderprogramm gelesen",
+      "Saale-Holzland-Kreis: Klimaschutzkonzept und Abschlussbericht 2023 ohne Bürgerprogramm (gleicher Lauf, Bad Klosterlausnitz); Katalog ohne Programm mit Schlüssel 16074",
+      "Websuche: Stadtroda Förderprogramm Balkonkraftwerk/Photovoltaik — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtroda.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Satzungen der Stadt Stadtroda und der Gemeinden Bollberg, Gernewitz, Hainbücht, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen: Haupt-, Gebühren-, Steuer-, Beitrags- und Ordnungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/642058/energetische-quartierssanierung.html",
+        "finding": "Nur ein gefördertes Gutachten zur Quartierssanierung Schützenhaus/Freibad, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16074081",
+    "name": "Ruttersdorf-Lotschen",
+    "checkedAt": "2026-10-10T00:55:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ruttersdorf-Lotschen gehört zum Verwaltungsbereich der Stadt Stadtroda (erfüllende Gemeinde, Saale-Holzland-Kreis). Die Satzungsliste der Stadt und ihrer Mitglieds-/Ortsteilgemeinden (Stadtroda 38, Bollberg, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen u. a.) enthält keine Förderrichtlinie; die Seiten „Projekte mit staatlicher Förderung“, „Energetische Quartierssanierung“ und das Webseitenförderprogramm betreffen keine Haushaltsförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Saale-Holzland-Kreis führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "stadtroda.de Satzungen (alle Gemeinden) gelesen",
+      "Seiten Projekte mit staatlicher Förderung, Energetische Quartierssanierung, Webseitenförderprogramm gelesen",
+      "Saale-Holzland-Kreis: Klimaschutzkonzept und Abschlussbericht 2023 ohne Bürgerprogramm (gleicher Lauf, Bad Klosterlausnitz); Katalog ohne Programm mit Schlüssel 16074",
+      "Websuche: Stadtroda Förderprogramm Balkonkraftwerk/Photovoltaik — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtroda.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Satzungen der Stadt Stadtroda und der Gemeinden Bollberg, Gernewitz, Hainbücht, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen: Haupt-, Gebühren-, Steuer-, Beitrags- und Ordnungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/642058/energetische-quartierssanierung.html",
+        "finding": "Nur ein gefördertes Gutachten zur Quartierssanierung Schützenhaus/Freibad, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.stadtroda.de/contact/index/link",
+        "finding": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
+      },
+      {
+        "url": "stadtroda.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt.",
+        "evidenceUrl": "https://www.stadtroda.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16074094",
+    "name": "Stadtroda",
+    "checkedAt": "2026-10-10T00:55:00Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stadtroda gehört zum Verwaltungsbereich der Stadt Stadtroda (erfüllende Gemeinde, Saale-Holzland-Kreis). Die Satzungsliste der Stadt und ihrer Mitglieds-/Ortsteilgemeinden (Stadtroda 38, Bollberg, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen u. a.) enthält keine Förderrichtlinie; die Seiten „Projekte mit staatlicher Förderung“, „Energetische Quartierssanierung“ und das Webseitenförderprogramm betreffen keine Haushaltsförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Der Saale-Holzland-Kreis führt kein Bürgerprogramm. Keine laufende kommunale Förderung gefunden (Stand 10.10.2026).",
+    "searches": [
+      "stadtroda.de Satzungen (alle Gemeinden) gelesen",
+      "Seiten Projekte mit staatlicher Förderung, Energetische Quartierssanierung, Webseitenförderprogramm gelesen",
+      "Saale-Holzland-Kreis: Klimaschutzkonzept und Abschlussbericht 2023 ohne Bürgerprogramm (gleicher Lauf, Bad Klosterlausnitz); Katalog ohne Programm mit Schlüssel 16074",
+      "Websuche: Stadtroda Förderprogramm Balkonkraftwerk/Photovoltaik — keine Fundstelle",
+      "Gemeindeschlüssel gegen das Melderegister (mastr_regions) geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadtroda.de/rechtsgrundlagen/1/satzungen.html",
+        "finding": "Satzungen der Stadt Stadtroda und der Gemeinden Bollberg, Gernewitz, Hainbücht, Möckern, Quirla/Dorna, Ruttersdorf-Lotschen: Haupt-, Gebühren-, Steuer-, Beitrags- und Ordnungssatzungen, keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/642058/energetische-quartierssanierung.html",
+        "finding": "Nur ein gefördertes Gutachten zur Quartierssanierung Schützenhaus/Freibad, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.stadtroda.de/contact/index/link",
+        "finding": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html",
+        "finding": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung für städtische Projekte (Freibadpumpen, Blühflächen), kein Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtroda.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt.",
+        "evidenceUrl": "https://www.stadtroda.de/contact/index/link"
+      },
+      {
+        "url": "stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung für städtische Projekte (Freibadpumpen, Blühflächen), kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html"
+      }
+    ]
   }
 ]
