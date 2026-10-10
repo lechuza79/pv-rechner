@@ -92000,5 +92000,233 @@
         "evidenceUrl": "https://www.stadtfehmarn.de/Leben-auf-Fehmarn/Klimaziele-der-Stadt-Fehmarn/"
       }
     ]
+  },
+  {
+    "regionId": "01055028",
+    "name": "Malente",
+    "checkedAt": "2026-10-10T06:06:26Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Malente (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die beiden Treffer sind die energetischen Quartierskonzepte Dieksee und Innenstadt, die nur Bundesförderungen als Beispiele nennen; die Seitensuche nach Balkonkraftwerk, Photovoltaik und Förderung findet kein Programm (Stand 10.10.2026).",
+    "searches": [
+      "Beide Quartierskonzept-PDFs nach Förder- und Zuschussstellen durchsucht: nur BAFA/KfW/Kommunalrichtlinie",
+      "Seitensuche malente.de nach Förderung (61 Treffer), Balkonkraftwerk (2), Photovoltaik (17): kein Zuschussprogramm",
+      "Websuche Ostholsteiner Gemeinden + Balkonkraftwerk/Photovoltaik-Zuschuss: keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.malente.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Zwei Treffer, beide im Quartierskonzept (Beispielrechnung Balkonkraftwerk); kein Förderprogramm."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: Bundes-/Landesprogramme und kreiseigener Klimaschutzfonds; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "malente.de/fileadmin/Gemeinde/Dateien/Klimaschutzkonzepte/Klimakonzept_Malente_-_Dieksee_-_finale_Fassung_12_2021.pdf",
+        "disposition": "reviewed",
+        "reason": "Integriertes energetisches Quartierskonzept (KfW 432) der Gemeinde Malente; nennt nur Bundesförderungen (BAFA/KfW) als Beispiele, kein kommunales Förderprogramm; gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.malente.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk"
+      },
+      {
+        "url": "malente.de/fileadmin/Gemeinde/Dateien/Klimaschutzkonzepte/Klimakonzept_Malente_-_Innenstadt_-_finale_Fassung.pdf",
+        "disposition": "reviewed",
+        "reason": "Integriertes energetisches Quartierskonzept (KfW 432) der Gemeinde Malente; nennt nur Bundesförderungen (BAFA/KfW) als Beispiele, kein kommunales Förderprogramm; gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.malente.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "01055033",
+    "name": "Oldenburg in Holstein",
+    "checkedAt": "2026-10-10T06:06:26Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oldenburg in Holstein (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite Umwelt, Energie und Klimaschutz der Stadt beschreibt Wärmeplanung und städtische Förderprojekte (LED-Flutlicht), die übrigen Treffer sind fachfremde Einträge des Landes-Leistungskatalogs, darunter der ausgelaufene Bundes-Umweltbonus (Stand 10.10.2026).",
+    "searches": [
+      "Seite Umwelt-Energie-Klimaschutz gelesen: Wärmeplanung und städtische Förderprojekte, kein Zuschuss",
+      "Sieben Leistungskatalog-Treffer nach Titel und Inhalt eingeordnet: fachfremd bzw. ausgelaufen (Bund)",
+      "Websuche Ostholsteiner Gemeinden + Balkonkraftwerk/Photovoltaik-Zuschuss: keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/",
+        "finding": "Wärmeplanung, Klimaschutzmaßnahmen der Stadt, geförderte LED-Flutlichtprojekte (Förderkennzeichen 67K19663); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: Bundes-/Landesprogramme und kreiseigener Klimaschutzfonds; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kredit-mit-Tilgungszuschuss-f%C3%BCr-Neubau-oder-Kauf-von-energieeffizienten-Nichtwohngeb%C3%A4uden-der-kommunalen-und-sozialen-Infrastruktur-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Mittel-zu-einem-gef%C3%B6rderten-Vorhaben-aus-dem-F%C3%B6rderprogramm-%C3%9Cbergangshilfe-aus-dem-KWI-Titel-anfordern.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Mittel-zu-einem-gef%C3%B6rderten-Vorhaben-aus-dem-F%C3%B6rderprogramm-Politische-Stiftungen-anfordern.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Rechtsmittelverzichtserkl%C3%A4rung-zu-einem-gef%C3%B6rderten-Vorhaben-aus-dem-F%C3%B6rderprogramm-Politische-Stiftungen-einreichen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Umweltbonus-f%C3%BCr-Elektrofahrzeuge-beantragen-F%C3%B6rderung-ausgelaufen-.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zum ausgelaufenen Bundes-Umweltbonus für Elektrofahrzeuge, kein kommunales Programm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      },
+      {
+        "url": "oldenburg-holstein.de/Verwaltung-Politik/Verwaltung-und-Politik/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs für Unternehmen bzw. öffentliche Träger, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.oldenburg-holstein.de/Wirtschaft-Bauen-Umwelt/Umwelt-Energie-Klimaschutz/"
+      }
+    ]
+  },
+  {
+    "regionId": "01055040",
+    "name": "Stockelsdorf",
+    "checkedAt": "2026-10-10T06:06:26Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stockelsdorf (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Treffer sind Förderprojekte der Gemeinde selbst (Lichtmasterplan, Herrengarten, Verkehrsentwicklungsplan); die Klimaschutz-Website nennt kein Förderprogramm, ihr Bereich Energie ist noch im Aufbau (Stand 10.10.2026).",
+    "searches": [
+      "Übersicht Regionalentwicklung/Förderprojekte und drei Unterseiten gelesen: gemeindeeigene Projekte",
+      "klimaschutz.stockelsdorf.de Startseite und Bereich Energie im Browser gelesen: kein Zuschuss, Bereich im Aufbau",
+      "Websuche Ostholsteiner Gemeinden + Balkonkraftwerk/Photovoltaik-Zuschuss: keine Fundstelle",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz.stockelsdorf.de/energie/",
+        "finding": "„Diese Seite ist noch im Aufbau“ — kein Förderprogramm; Klima-Team (Klimaschutz- und Klimaanpassungsmanagerin)."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: Bundes-/Landesprogramme und kreiseigener Klimaschutzfonds; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stockelsdorf.de/bauen-umwelt/regionalentwicklung-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite zu Förderprojekten, die die Gemeinde Stockelsdorf selbst umsetzt (Lichtmasterplan, Herrengarten, Verkehrsentwicklungsplan); kein Zuschuss für private Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://klimaschutz.stockelsdorf.de/energie/"
+      },
+      {
+        "url": "stockelsdorf.de/bauen-umwelt/regionalentwicklung-foerderprojekte/foerderprojekt-lichtmasterplan",
+        "disposition": "reviewed",
+        "reason": "Seite zu Förderprojekten, die die Gemeinde Stockelsdorf selbst umsetzt (Lichtmasterplan, Herrengarten, Verkehrsentwicklungsplan); kein Zuschuss für private Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://klimaschutz.stockelsdorf.de/energie/"
+      },
+      {
+        "url": "stockelsdorf.de/bauen-umwelt/regionalentwicklung-foerderprojekte/herrengarten",
+        "disposition": "reviewed",
+        "reason": "Seite zu Förderprojekten, die die Gemeinde Stockelsdorf selbst umsetzt (Lichtmasterplan, Herrengarten, Verkehrsentwicklungsplan); kein Zuschuss für private Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://klimaschutz.stockelsdorf.de/energie/"
+      },
+      {
+        "url": "stockelsdorf.de/bauen-umwelt/regionalentwicklung-foerderprojekte/verkehrsentwicklungsplan",
+        "disposition": "reviewed",
+        "reason": "Seite zu Förderprojekten, die die Gemeinde Stockelsdorf selbst umsetzt (Lichtmasterplan, Herrengarten, Verkehrsentwicklungsplan); kein Zuschuss für private Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://klimaschutz.stockelsdorf.de/energie/"
+      }
+    ]
+  },
+  {
+    "regionId": "01055044",
+    "name": "Scharbeutz",
+    "checkedAt": "2026-10-10T06:06:26Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Scharbeutz (Kreis Ostholstein) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Treffer sind Bekanntmachungen zu Förderprojekten der Gemeinde selbst (LED-Beleuchtung); die Klimaschutzseite listet Projekte bis 2026 (Klimasprechstunde, PV auf dem Bürgerhaus), aber kein Programm für Haushalte (Stand 10.10.2026).",
+    "searches": [
+      "Sechs Bekanntmachungs-/Leistungsseiten im Browser gelesen (einfacher Abruf lieferte leere Seiten): gemeindeeigene Projekte bzw. fachfremd",
+      "Dokument 390984 gelesen: Bekanntmachung KSI-Straßenbeleuchtung 2017",
+      "Klimaschutzseite Wirtschaft-und-Tourismus/Klima-und-Umwelt gelesen: Projektliste 2017–2026, kein Zuschussprogramm",
+      "Fördermittel-Überblick des Kreises Ostholstein (klimaschutz.kreis-oh.de, gelesen 10.10.2026) nennt für Privatpersonen nur Bundes-/Landesprogramme und den kreiseigenen Klimaschutzfonds für kleine Projekte (schließt Erzeugungs- und Speicheranlagen aus); Katalog ohne Programm mit Schlüssel 01055."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm",
+        "finding": "Klimaschutzprojekte der Gemeinde 2017–2026 (LED, E-Dorfbus, Wärmeplanung, Klimasprechstunde, PV Bürgerhaus); kein Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/Mitmachen/F%C3%B6rdermittel",
+        "finding": "Kreis-Überblick für Privatpersonen: Bundes-/Landesprogramme und kreiseigener Klimaschutzfonds; kein kommunales PV-/Balkon-/Wärmepumpenprogramm einer Ostholsteiner Gemeinde genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-scharbeutz.de/city_info/display/dokument/show.cfm?region_id=358&amp;id=390984",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Aktuelle-Informationen/Bekanntmachungen.htm/Bekanntmachungen/Foerdermittel-fuer-die-energetische-Sanierung-der-Beleuchtung-in-der-Strandpromenade.html",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Aktuelle-Informationen/Bekanntmachungen.htm/Bekanntmachungen/Foerdermittel-fuer-die-energetische-Sanierung-der-Strassenbeleuchtung.html",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Aktuelle-Informationen/Bekanntmachungen.htm/Bekanntmachungen/Foerdermittel-Grund-und-Gemeinschaftsschule-Poenitz-3-Feld-Sporthalle-Sanierung-der-Beleuchtungsanlage.html",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Aktuelle-Informationen/Bekanntmachungen.htm/Bekanntmachungen/Foerdermittel-Sanierung-der-Beleuchtungsanlage-in-der-GGemS-Poenitz.html",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Aktuelle-Informationen/Bekanntmachungen.htm/Bekanntmachungen/Foerderprojekt-energieeffiziente-LED-Flutlichtanlage.html",
+        "disposition": "reviewed",
+        "reason": "Bekanntmachung zu einem Förderprojekt der Gemeinde selbst (LED-Beleuchtung Straße/Promenade/Sporthalle/Flutlicht, Bundes- bzw. Landesmittel); kein Zuschuss für private Haushalte; im Browser gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      },
+      {
+        "url": "gemeinde-scharbeutz.de/Gemeinde/Gemeindeverwaltung/Was-erledige-ich-wo.htm/Dienstleistungen/Projektgebundene-oder-institutionelle-Foerdermittel-im-Rahmen-der-Entwicklungszusammenarbeit-beantragen.html",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Leistungskatalogs zur Entwicklungszusammenarbeit (Ansprechpartnerin Fördermittelmanagement), fachfremd.",
+        "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
+      }
+    ]
   }
 ]
