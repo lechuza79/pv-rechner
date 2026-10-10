@@ -504,7 +504,7 @@ export function WidgetExportFooter({
   legend,
   branding = true,
   note,
-  includeHelpNotes = false,
+  includeHelpNotes = true,
 }: {
   /** Registry entry — carries sources and decides the brand wording. It keeps
    * image, page footer and gallery in sync. */
