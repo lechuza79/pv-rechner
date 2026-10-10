@@ -472,3 +472,5 @@ export function energieMwhTeile(mwh: number): Messwert {
     unit: divisor === 1_000_000 ? "TWh" : divisor === 1_000 ? "GWh" : "MWh",
   };
 }
+
+export const fmtEnergieMwh = (mwh: number): string => zusammen(energieMwhTeile(mwh));
