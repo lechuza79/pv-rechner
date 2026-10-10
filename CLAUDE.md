@@ -2795,3 +2795,7 @@ remain unchanged. `scripts/kreis-paket.ts` publishes and refreshes their package
 with the county generation; rendering reads one package, never member packages.
 Subscriptions store the association key through the existing confirmation flow;
 update scheduling is independent. See `docs/verbandsgemeinde-referenz.md`.
+
+### Municipal district map and image downloads (10.10.2026)
+
+The municipal monitor embeds the shared regional 3D map with the current municipality selected. The existing near-viewport boundary defers loading. Image downloads preserve the current theme and WebGL camera while retaining the designed title, metric, data vintage, source rail and branding; interactive controls and general help stay outside the image. Ranking exports retain their explicit formats plus the current dimensions. Regression coverage: `e2e/municipal-map-release.spec.ts` (opt in with `ATLAS_DATA_E2E=1`; requires the populated municipal database).

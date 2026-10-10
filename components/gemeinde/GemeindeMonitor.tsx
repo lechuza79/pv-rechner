@@ -31,7 +31,7 @@ import { KpiOverview } from "../dashboard/KpiOverview";
 import {regionalSolarWeatherSource} from "../../lib/dashboard/regional-solar-weather";
 import {AnnualGrowth} from "../charts/AnnualGrowthWidget";
 import {CurrentPower, type SolarWeatherSource} from "../charts/CurrentPowerWidget";
-import { MastrMap } from "../MastrMap";
+import AutoHeightIframe from "../AutoHeightIframe";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import {ortPhrase} from "../../lib/atlas-orte";
 import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
@@ -63,38 +63,12 @@ function WennNah({ children, hoehe }: { children: React.ReactNode; hoehe: number
 }
 
 function LocalMap({ paket }: { paket: GemeindePaket }) {
-  const [selected, setSelected] = useState(paket.ags);
-  const peers = paket.district.districtPeers as Any[];
-  const place = peers.find((row) => row.region_id === selected);
-  // A kreisfreie Stadt or a Stadtstaat has no district to map.
-  if (peers.length < 2) return null;
-  return (
-    <section aria-label="Karte">
-      <h3>Solaranlagen im Landkreis</h3>
-      <article className="monitor-map monitor-widget">
-        <p>Tippen Sie auf einen Ort für Anlagenzahl und installierte Leistung. Stand {formatDate(paket.rangStand)}</p>
-        <WidgetSetting label="Ort" value={selected} onChange={setSelected} options={peers.map((row) => ({ value: row.region_id, label: row.name }))} />
-        <MastrMap
-          level="landkreis"
-          parentAgs={paket.kreis.ags}
-          selectedAgs={selected}
-          selectionStyle="pin"
-          values={peers.map((row) => ({ ags: row.region_id, value: row.sums.alle.count }))}
-          // Die Karte steht hier in einer Reihe mit den übrigen Kacheln; mit
-          // der vollen Höhe wuchs ihre Box auf über 800 px und hing unten aus
-          // dem Rahmen (Betreiber, 23.09.2026).
-          maxHeight={420}
-          valueLabel="Solaranlagen"
-          onSelect={setSelected}
-        />
-        <p aria-live="polite">
-          {place
-            ? `${place.name}: ${place.sums.alle.count.toLocaleString("de-DE")} Solaranlagen · ${(place.sums.alle.kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWp`
-            : "Für diesen Ort liegen hier keine Werte vor."}
-        </p>
-      </article>
-    </section>
-  );
+  if ((paket.district.districtPeers as Any[]).length < 2) return null;
+  const params = new URLSearchParams({ags: paket.kreis.ags, selected: paket.ags, theme: "dark", onsite: "1"});
+  return <section aria-label="Karte">
+    <h3>Energie im Landkreis</h3>
+    <AutoHeightIframe src={`/embed/regional-map?${params}`} title={`3D-Energiekarte · ${paket.kreis.name}`} fallbackHeight={640} framed={false} rounded loading="eager" appearance={{theme:"dark"}} />
+  </section>;
 }
 
 const widgetRole = (item: Any) => monitorWidgetRole(item.template, item.story);

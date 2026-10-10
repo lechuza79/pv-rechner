@@ -40,9 +40,9 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   locationClearance?:()=>number;
   locations?: (points:(SceneLocation & {screenX:number;screenY:number;signTransform?:string;strokeScale?:number;stemPixels?:number;blur:number})[])=>void;
   pin: (point: { x: number; y: number } | null) => void; failed: () => void;
-}, heightEnvelope: Record<string, number> = {}, turbines?: SceneTurbine[], terrain?:SceneTerrain, windScale=1, windConditions:WindConditions|null=null, buildings?:SceneBuilding[], solar?:SolarFootprint[], locations?:SceneLocation[],framingScale=1) {
+}, heightEnvelope: Record<string, number> = {}, turbines?: SceneTurbine[], terrain?:SceneTerrain, windScale=1, windConditions:WindConditions|null=null, buildings?:SceneBuilding[], solar?:SolarFootprint[], locations?:SceneLocation[],framingScale=1,exportable=false) {
   const DEPTH=buildings?4:BASE_DEPTH;
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer:exportable, powerPreference: "low-power" });
   const quality=buildings?createSceneQuality():null;
   renderer.setPixelRatio(quality?scenePixelRatio(window.devicePixelRatio,host.clientWidth,host.clientHeight):Math.min(window.devicePixelRatio,2));
   renderer.setClearColor(0, 0);
@@ -66,12 +66,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   canvas.setAttribute("aria-hidden", "true");
   host.append(canvas);
   const scene = new THREE.Scene();
-  scene.add(new THREE.HemisphereLight(turbines ? 0xf2f4f6 : 0xe5f2ed, turbines ? 0x8c9299 : 0x26343b, 1.8));
-  const key = new THREE.DirectionalLight(turbines ? 0xffffff : 0xfff1cc, turbines ? 1.5 : 2.2); key.position.set(-350, 650, 350);
+  scene.add(new THREE.HemisphereLight(exportable ? 0xffffff : turbines ? 0xf2f4f6 : 0xe5f2ed, exportable ? 0x444444 : turbines ? 0x8c9299 : 0x26343b, exportable ? 1.2 : 1.8));
+  const key = new THREE.DirectionalLight(exportable ? 0xffffff : turbines ? 0xffffff : 0xfff1cc, turbines ? 1.5 : 2.2); key.position.set(-350, 650, 350);
   key.castShadow=true;key.shadow.mapSize.set(2048,2048);
   Object.assign(key.shadow.camera,{left:-650,right:650,top:650,bottom:-650,near:1,far:2000});
   key.shadow.bias=-.0002;key.shadow.normalBias=.5;scene.add(key);
-  const fill = new THREE.DirectionalLight(0xb8d1df, .8); fill.position.set(500, 220, -350); scene.add(fill);
+  const fill = new THREE.DirectionalLight(exportable ? 0xffffff : 0xb8d1df, exportable ? .45 : .8); fill.position.set(500, 220, -350); scene.add(fill);
   const city = shapes.find(s=>s.kind === "Kreisfreie Stadt");
   const pivot = new THREE.Vector3(city?.groundAnchor[0]??0,DEPTH+1,city?.groundAnchor[1]??0);
   const camera = buildings ? new THREE.PerspectiveCamera(42,1,.1,4000) : new THREE.OrthographicCamera(-500,500,400,-400,1,4000);
@@ -111,7 +111,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   controls.update(); canvas.style.touchAction = "pan-y";
   controls.touches.ONE = THREE.TOUCH.ROTATE; controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
   const pickables: THREE.Object3D[] = [];
-  const surfaces = new Map<string, THREE.MeshBasicMaterial>();
+  const surfaces = new Map<string, THREE.MeshBasicMaterial | THREE.MeshLambertMaterial>();
+  const SurfaceMaterial = exportable ? THREE.MeshLambertMaterial : THREE.MeshBasicMaterial;
+  const initialViewInverse = camera.quaternion.clone().invert();
+  const keyViewOffset = key.position.clone().applyQuaternion(initialViewInverse);
+  const fillViewOffset = fill.position.clone().applyQuaternion(initialViewInverse);
+  const lightView = camera.quaternion.clone();
   const bars = new Map<string, THREE.Mesh>();
   const materials = new Set<THREE.Material>();
   const outlines = new Set<LineMaterial>();
@@ -123,9 +128,9 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   let dead = false, visible = true, queued = 0, selected = "", hovered: string | null = null;
   const theme = getComputedStyle(host);
   const background = new THREE.Color(theme.getPropertyValue("--color-bg-page").trim())
-    .lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()), .5);
-  const side = new THREE.MeshBasicMaterial({color:new THREE.Color(theme.getPropertyValue(terrain ? "--color-border" : "--color-bg-raised").trim()).multiplyScalar(terrain ? 1 : 1.65),toneMapped:false});
-  side.onBeforeCompile = shader => {
+    .lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()), exportable ? 0 : .5);
+  const side = new SurfaceMaterial({color:new THREE.Color(theme.getPropertyValue(terrain ? "--color-border" : "--color-bg-raised").trim()).multiplyScalar(terrain ? 1 : 1.65),toneMapped:false});
+  if (!exportable) side.onBeforeCompile = shader => {
     shader.vertexShader="varying float edgeHeight;\n"+shader.vertexShader;
     shader.vertexShader=shader.vertexShader.replace("#include <begin_vertex>","#include <begin_vertex>\nedgeHeight=position.y;");
     shader.fragmentShader="varying float edgeHeight;\n"+shader.fragmentShader;
@@ -139,7 +144,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   // Box faces supply restrained depth shading; bars still cast real scene shadows.
   const brand = new THREE.Color(getComputedStyle(host).getPropertyValue("--color-brand").trim());
   const barFaces = (selected: boolean) => [selected ? .78 : .62, .88, 1, .5, 1, .72].map(shade => {
-    const face = new THREE.MeshBasicMaterial({ color: brand.clone().multiplyScalar(shade), toneMapped: false });
+    const face = exportable ? new THREE.MeshLambertMaterial({color:brand,emissive:brand,emissiveIntensity:selected ? .72 : .62,toneMapped:false}) : new THREE.MeshBasicMaterial({ color: brand.clone().multiplyScalar(shade), toneMapped: false });
     materials.add(face); return face;
   });
   const barMaterial = barFaces(false);
@@ -165,8 +170,8 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const barGeometry = new THREE.BoxGeometry(6.5, 1, 6.5); geometries.add(barGeometry);
   for (const region of shapes) {
     const forest = region.kind === "Gemeindefreies Gebiet";
-    const top = new THREE.MeshBasicMaterial({color:background,toneMapped:false});
-    top.onBeforeCompile = shader => {
+    const top = new SurfaceMaterial({color:background,toneMapped:false});
+    if (!exportable) top.onBeforeCompile = shader => {
       shader.vertexShader = "varying vec3 districtPosition;\n" + shader.vertexShader;
       shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\ndistrictPosition = position;");
       shader.fragmentShader = "varying vec3 districtPosition;\n" + shader.fragmentShader;
@@ -387,6 +392,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     // before takeoff, causing an abrupt camera jump when the route starts.
     const waitingForReference = !!referencePlan && resumeRotationAt === Infinity && !manual;
     const moving = journey || waitingForReference ? false : controls.update(dt);
+    if (exportable && !lightView.equals(camera.quaternion)) {
+      key.position.copy(keyViewOffset).applyQuaternion(camera.quaternion);
+      fill.position.copy(fillViewOffset).applyQuaternion(camera.quaternion);
+      lightView.copy(camera.quaternion);
+      renderer.shadowMap.needsUpdate=true;
+    }
     canvas.dataset.orbit=controls.autoRotate?'active':'paused';
     if(buildings)canvas.dataset.cameraPosition=camera.position.toArray().map(v=>v.toFixed(3)).join(',');
     lastFrame=now;
@@ -686,12 +697,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     palette(){
       if(buildings)return;
       const currentTheme=getComputedStyle(host);
-      background.set(currentTheme.getPropertyValue('--color-bg-page').trim()).lerp(new THREE.Color(currentTheme.getPropertyValue('--color-bg-raised').trim()),.5);
+      background.set(currentTheme.getPropertyValue('--color-bg-page').trim()).lerp(new THREE.Color(currentTheme.getPropertyValue('--color-bg-raised').trim()),exportable ? 0 : .5);
       side.color.set(currentTheme.getPropertyValue('--color-bg-raised').trim()).multiplyScalar(1.65);
       brand.set(currentTheme.getPropertyValue('--color-brand').trim());
       for(const [selected,faces] of [[false,barMaterial],[true,selectedBar]] as const){
         const shades=[selected ? .78 : .62,.88,1,.5,1,.72];
-        faces.forEach((face,index)=>face.color.copy(brand).multiplyScalar(shades[index]));
+        faces.forEach((face,index)=>{face.color.copy(brand).multiplyScalar(exportable ? 1 : shades[index]);if(face instanceof THREE.MeshLambertMaterial)face.emissive.copy(brand);});
       }
       highlight();invalidate();
     },

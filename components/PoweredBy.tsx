@@ -83,7 +83,7 @@ export function dataSourceCredit(source: DataSource): string {
  * fixed brand colours (it's a logo); the link text follows the widget accent so
  * it fits the host theme (on the default theme the accent IS the brand blue).
  */
-export function PoweredBy({ label = "Powered by", light = false }: { label?: string; light?: boolean } = {}) {
+export function PoweredBy({ label = "Powered by", light = false, inheritColor = false }: { label?: string; light?: boolean; inheritColor?: boolean } = {}) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
       <span>{label}</span>
@@ -96,7 +96,7 @@ export function PoweredBy({ label = "Powered by", light = false }: { label?: str
           alignItems: "center",
           gap: 3,
           textDecoration: "none",
-          color: v("--color-accent"),
+          color: inheritColor ? "inherit" : v("--color-accent"),
           fontWeight: 600,
         }}
       >

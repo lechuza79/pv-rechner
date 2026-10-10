@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
 import { NurImBild } from "../lib/nur-im-bild";
+import {chartDataDate} from "../lib/chart-labels";
 import { useExportNotes } from "./export-notes";
 import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
@@ -358,23 +359,16 @@ export function WidgetSourceEdge({
   spalten?: 1 | 2;
   /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
    *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
-   *  Ohne Angabe steht das Abrufdatum da — die ehrlichere Aussage bei
-   *  Live-Daten, die sich stündlich ändern. */
+   *  Missing dates stay explicit rather than implying a fresh data vintage. */
   stand?: string;
 }) {
-  // Abrufdatum erst nach dem Mounten: Server- und Client-Render dürfen nicht
-  // auseinanderlaufen, wenn der Tag zwischen beiden wechselt.
-  const [heute, setHeute] = useState("");
-  useEffect(() => {
-    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
-  }, []);
   // Auf einer sehr flachen Karte (Einzel-Kennzahl, Ampel) passt selbst bei
   // kleinster Schrift nicht alles an die Kante. Dann fällt ZUERST das Datum —
   // es ist der einzige Teil, den keine Lizenz verlangt. Der Bereitsteller, das
   // Lizenzkürzel und der Änderungshinweis bleiben in jedem Fall stehen; lieber
   // ein Vermerk ohne Datum als ein abgeschnittener.
   const [ohneDatum, setOhneDatum] = useState(false);
-  const datum = ohneDatum ? "" : (stand ?? heute);
+  const datum = ohneDatum ? "" : chartDataDate(stand);
 
   // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
   // Kante jeden Klammer-Zusatz aus dem Namen — das traf nicht nur Beiwerk wie
@@ -452,6 +446,7 @@ export function WidgetSourceEdge({
     <div
       ref={wrapRef}
       data-sc-source-edge=""
+      data-sc-source-export-label={widget.sources.map(s => sourceLabel(s, {kurz:true})).join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + ` · Stand: ${chartDataDate(stand)}`}
       data-sc-source-export-size={fsPx("--font-size-caption")}
       // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
       // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
@@ -509,6 +504,7 @@ export function WidgetExportFooter({
   legend,
   branding = true,
   note,
+  includeHelpNotes = false,
 }: {
   /** Registry entry — carries sources and decides the brand wording. It keeps
    * image, page footer and gallery in sync. */
@@ -518,8 +514,10 @@ export function WidgetExportFooter({
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
+  includeHelpNotes?: boolean;
 }) {
-  const notes = useExportNotes();
+  const collectedNotes = useExportNotes();
+  const notes = includeHelpNotes ? collectedNotes : [];
   // Quellenvermerk und Datenstand trägt seit 08/2026 die senkrechte Kante
   // (WidgetSourceEdge) — auch im Bild. Deshalb nimmt dieser Fuß kein
   // `dataAsOf` mehr entgegen: zwei Stellen für dieselbe Angabe waren der
@@ -592,7 +590,7 @@ export function WidgetExportFooter({
           <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
-                <PoweredBy light label={brandLabel(widget?.kind ?? "chart")} />
+                <PoweredBy inheritColor label={brandLabel(widget?.kind ?? "chart")} />
                 <span> · {OWN_WORK_LICENSE.code}</span>
               </>
             ) : (

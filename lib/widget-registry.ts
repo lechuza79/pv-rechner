@@ -421,7 +421,7 @@ export const WIDGETS = {
     place: {title: "Energie im regionalen Vergleich · {ort}", shareText: "Energie im regionalen Vergleich · {ort} – Solar Check"},
     exampleParams: {ags: "06440"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Energie im regionalen Vergleich – Solar Check",
-    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg], exportable: false,
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg],
   },
   regionalRace: {
     id: "regional-race", title: "Solaranlagen im regionalen Vergleich", kind: "chart",

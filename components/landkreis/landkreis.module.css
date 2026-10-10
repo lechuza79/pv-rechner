@@ -359,3 +359,5 @@
 
 .mapWidget :global(.sc-widget-head){padding-bottom:16px}
 .mapSelection{position:absolute;top:8px;left:var(--widget-padding);z-index:4;max-width:calc(100% - var(--widget-padding));pointer-events:none}
+
+.mapWidget .sceneHost canvas{filter:drop-shadow(0 14px 18px rgb(0 0 0 / .35))}

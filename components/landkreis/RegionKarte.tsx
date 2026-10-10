@@ -50,10 +50,10 @@ function MapGestureGuide({ready,showReplay=true}:{ready:boolean;showReplay?:bool
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "" }: {
+export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "", onMetricChange }: {
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
   /** Singular of the mapped unit (link hint) and the name of the table below. */
-  member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string;
+  member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string; onMetricChange?: (label:string,unit:string)=>void;
 }) {
   const router=useRouter();
   useEffect(()=>{
@@ -79,6 +79,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   }, [metrics]);
   const [metricId, setMetricId] = useState(metrics[0].id);
   const { values, label: metric } = metrics.find(m => m.id === metricId) ?? metrics[0];
+  useEffect(()=>{onMetricChange?.(metric,values.find(value=>value.value!==null)?.formatted.unit??"");},[metric,values,onMetricChange]);
   const [sceneFailed, setSceneFailed] = useState(false);
   // Side walls of the fallback map: derived here, only once the scene failed.
   const sidePaths = useMemo(() => sceneFailed ? new Map(shapes.map(s => [s.id, sidePathFromPath(s.path)])) : null, [shapes, sceneFailed]);
@@ -139,7 +140,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const top = Math.min(...shapes.map(s => Math.min(s.bounds[1], s.anchor[1] - barHeight(byId.get(s.id)?.value ?? null, maximum)))) - 32;
   const bottom = Math.max(...shapes.map(s => s.bounds[3])) + 32;
   return <div className={styles.map} data-presentation={presentation} data-navigating={navigating}>
-    <div className={`${styles.mapTools} sc-dashboard`} role="group" aria-label="Kennzahl der Karte">
+    <div className={`${styles.mapTools} sc-dashboard`} data-sc-export-ignore="" role="group" aria-label="Kennzahl der Karte">
       <WidgetSetting label="Kennzahl der Karte" hideLabel variant={presentation==="hero"?"hero":"widget"} size={presentation==="hero"?"md":"sm"} stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
     </div>
     <div className={styles.mapCanvas} data-map-canvas onPointerDown={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerMove={event=>{if(!touchInfo||!hovered)setPointer({x:event.clientX,y:event.clientY});}} onPointerLeave={event => {if(event.pointerType!=="touch"&&!touchInfo)setHovered(null);}}>

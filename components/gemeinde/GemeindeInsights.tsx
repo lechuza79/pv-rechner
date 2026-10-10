@@ -131,14 +131,7 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
  const download=async()=>{
   const node=bodyRef.current?.querySelector<HTMLElement>('.story-reader-slide[aria-hidden="false"] .story-export-card');if(!node)return;
   setBusy(true);setFeedback('Bild wird erstellt …');
-  try{await document.fonts.ready;const {captureNodeToBlob,downloadBlob}=await import('../../lib/chart-export');const exportHost=document.createElement('div');
-   exportHost.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none;';
-   const exportCard=node.cloneNode(true) as HTMLElement;
-   // The shared footer's source edge sits OUTSIDE the story width, so the headline keeps its line breaks.
-   const edge=Number(node.getAttribute('data-export-edge')??0);
-   exportCard.style.cssText=`${node.getAttribute('data-sc-export-css')};width:${node.getBoundingClientRect().width+edge}px;box-sizing:border-box;`;
-   exportHost.appendChild(exportCard);document.body.appendChild(exportHost);
-   try{const blob=await captureNodeToBlob(exportCard,3);downloadBlob(blob,`solar-check-story-${index+1}.png`);}finally{exportHost.remove();}setFeedback('Bild heruntergeladen.');}catch{setFeedback('Download fehlgeschlagen. Bitte erneut versuchen.');}finally{setBusy(false);}
+  try{await document.fonts.ready;const {exportNode}=await import('../../lib/chart-export');await exportNode(node,{filename:`solar-check-story-${index+1}.png`,mode:'download'});setFeedback('Bild heruntergeladen.');}catch{setFeedback('Download fehlgeschlagen. Bitte erneut versuchen.');}finally{setBusy(false);}
  };
  return <>
 

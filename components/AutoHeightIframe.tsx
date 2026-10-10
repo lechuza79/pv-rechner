@@ -26,6 +26,7 @@ export default function AutoHeightIframe({
   title,
   fallbackHeight,
   framed = true,
+  rounded = framed,
   onReady,
   onHeightChange,
   loading = "lazy",
@@ -35,6 +36,7 @@ export default function AutoHeightIframe({
   title: string;
   fallbackHeight: number;
   framed?: boolean;
+  rounded?: boolean;
   onReady?: () => void;
   onHeightChange?: (height: number) => void;
   loading?: "lazy" | "eager";
@@ -99,7 +101,7 @@ export default function AutoHeightIframe({
         width: "100%",
         height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
-        borderRadius: framed ? v("--radius-md") : 0,
+        borderRadius: rounded ? v("--radius-md") : 0,
         display: "block",
       }}
     />

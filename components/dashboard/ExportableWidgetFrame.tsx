@@ -27,7 +27,7 @@ import './dashboard.css';
 import './widget-brand.css';
 import {widgetBrandStyle} from '../../lib/widget-brand';
 import {WidgetBrandHeader} from './WidgetBrandHeader';
-import {chartQuantityLabel, chartDataDate} from '../../lib/chart-labels';
+import {chartMetadataLabel} from '../../lib/chart-labels';
 
 /**
  * A monitor widget that can be shared and downloaded through the shared export
@@ -45,9 +45,9 @@ import {chartQuantityLabel, chartDataDate} from '../../lib/chart-labels';
  */
 /** Source edge lane: clear of the rounded corners (widget radius 16px) and off the card border. */
 const EDGE_INSET = 28;
-const EDGE_GAP = 6;
+const EDGE_GAP = 14;
 
-export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, restartAction = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
   sourceVisible?: boolean;
   sourcePlacement?: 'frame' | 'plot';
@@ -73,6 +73,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   /** Explicit export context; existing consumers retain their subtitles. */
   exportScope?: string;
   exportUnit?: string;
+  exportDescription?: ReactNode;
   /** What the selector currently shows, printed in the image instead of the control. */
   stateLabel?: string;
   filename: string;
@@ -86,7 +87,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   const partner = presentation.partner;
   const effectiveActions=widgetActionPresentation(presentation.sharing, actions);
   const [imageOpen, setImageOpen] = useState(false);
-  const [imageFormat, setImageFormat] = useState(0);
+  const [imageFormat, setImageFormat] = useState(-1);
   const [imageError, setImageError] = useState('');
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
@@ -297,9 +298,10 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
         : <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
       context={frame.context ?? (partner ? `Stand: ${stand}` : undefined)}
       bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner} minFontSize={partner ? 10 : undefined}/></div> : frame.bodyAside}
-      exportSubtitle={exportScope !== undefined || exportUnit !== undefined
-        ? [exportScope ?? place, `Stand ${chartDataDate(stand)}`, exportUnit ? chartQuantityLabel(exportUnit) : undefined].filter(Boolean).join(' · ')
-        : frame.exportSubtitle}
+      exportSubtitle={<>
+        {chartMetadataLabel({scope:exportScope ?? (typeof frame.title === 'string' && place && frame.title.includes(place) ? undefined : place), dataAsOf:stand, unit:exportUnit, period:stateLabel})}
+        {(exportDescription ?? frame.exportSubtitle) && <> · {exportDescription ?? frame.exportSubtitle}</>}
+      </>}
       data-widget-id={widget.id}
       onClickCapture={event=>{
         const target=event.target instanceof Element?event.target.closest('button,a,[role="button"],[role="menuitem"]'):null;
@@ -312,10 +314,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
       ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
       className={`${foundation.foundation} sc-dashboard ${className}`}
       {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement === 'plot' ? 'position:relative;text-align:left;' : exportCss}}
-      settings={settings && <>
-        <ExportIgnore inline>{settings}</ExportIgnore>
-        {stateLabel && <ExportOnly display="inline-block" style={{fontSize: "var(--atlas-label-size)", color: "var(--atlas-secondary)"}}>{stateLabel}</ExportOnly>}
-      </>}
+      settings={settings && <ExportIgnore inline>{settings}</ExportIgnore>}
       helpPlacement={effectiveActions === 'menu' ? 'title' : 'tools'}
       menu={effectiveActions === 'menu' ? widgetActions : undefined}
       footer={<>
@@ -349,7 +348,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
         </div>}
         {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
           width={WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: def.shareUrl.replace("https://solar-check.io", ""), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
-        {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={exportNote === null ? undefined : exportNote ?? `Ort: ${place}`} /></ExportOnly>}
+        {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;
@@ -357,6 +356,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     <p style={{margin:'0 0 20px'}}>{frame.title}</p>
     <label style={{display:'grid',gap:8}}>Bildformat
       <SelectField ariaLabel="Bildformat" block value={imageFormat} onChange={event=>setImageFormat(Number(event.target.value))}>
+        <option value={-1}>Wie angezeigt</option>
         {imageFormats.map((format,index)=><option key={format.label} value={index}>{format.label}</option>)}
       </SelectField>
     </label>

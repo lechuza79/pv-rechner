@@ -1,4 +1,4 @@
-.presentation{background:var(--atlas-card);width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto}
+.presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto}
 /* A configured embed inherits the host palette, including nested chart frames. */
 .presentation.presentation :global([data-story-scheme]){
  --atlas-picker-bg:inherit;--atlas-action:inherit;--atlas-action-ink:inherit;
