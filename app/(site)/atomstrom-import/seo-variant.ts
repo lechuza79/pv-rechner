@@ -1,3 +1,4 @@
+import { ATOMSTROM_OG_VERSION } from "../../../lib/atomstrom-release";
 import { cache } from "react";
 import { getStrommixYtd } from "../../../lib/strommix-ytd";
 import { getNuclearImport, nf1 } from "./figure";
@@ -26,6 +27,6 @@ export const getSeoVariant = cache(async () => {
   const dayComparison = comparable
     ? `Am Vortag waren es ${nf1(previous!.gwh!)} GWh. ${difference === 0 ? "Die Tagesmengen waren gleich groß." : `Das sind ${nf1(Math.abs(difference!))} GWh ${difference! < 0 ? "weniger" : "mehr"}${previous!.gwh! > 0 ? `, eine Veränderung um ${nf1(Math.abs(difference! / previous!.gwh! * 100))} %` : ""}.`}`
     : "Ein Tagesvergleich wird nur bei zwei vollständig erfassten Tagen angegeben.";
-  const ogParams = ytd ? new URLSearchParams({ view: "atomstrom", year: String(ytd.year), weeks: String(ytd.weeks), share: String(ytd.nuclearShare), twh: String(ytd.nuclearGwh / 1000) }) : new URLSearchParams({view:"brand", t:"Atomstrom-Import", s:"Aktuelle Strommengen, Herkunft und Einordnung"});
+  const ogParams = ytd ? new URLSearchParams({ view: "atomstrom", v: ATOMSTROM_OG_VERSION, year: String(ytd.year), weeks: String(ytd.weeks), share: String(ytd.nuclearShare), twh: String(ytd.nuclearGwh / 1000) }) : new URLSearchParams({view:"brand", t:"Atomstrom-Import", s:"Aktuelle Strommengen, Herkunft und Einordnung"});
   return { ytd, daily, yearAnswer, dayAnswer, dayComparison, ogPath: `/api/og?${ogParams}` };
 });

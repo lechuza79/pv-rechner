@@ -1,3 +1,4 @@
+import { ATOMSTROM_OG_VERSION } from "../../../lib/atomstrom-release";
 import trade from '../../../data/atomstrom/trade-2025.json';
 import snapshot from '../../../data/atomstrom/2025.json';
 import { CATEGORY_COLORS } from '../../../lib/chart-utils';
@@ -22,6 +23,6 @@ export function getAnnualVariant(year: number) {
     : 'Die Berechnung deckt das vollständige Kalenderjahr ab.';
   const ytd: StrommixYtd = { year, weeks: 52, totalGwh, nuclearGwh: annual.nuclearGwh, nuclearShare: annual.nuclearGwh / totalGwh * 100, segments: raw.map(row => ({ ...row, share: row.gwh / totalGwh * 100 })) };
   const yearAnswer = `${year} wurden rechnerisch rund ${nf1(annual.nuclearGwh / 1000)} TWh Atomstrom nach Deutschland importiert.`;
-  const ogParams = new URLSearchParams({ view: 'atomstrom', year: String(year), weeks: '52', share: String(ytd.nuclearShare), twh: String(annual.nuclearGwh / 1000), period: 'Erfasste Teilmenge im Kalenderjahr' });
+  const ogParams = new URLSearchParams({ view: 'atomstrom', v: ATOMSTROM_OG_VERSION, year: String(year), weeks: '52', share: String(ytd.nuclearShare), twh: String(annual.nuclearGwh / 1000), period: 'Erfasste Teilmenge im Kalenderjahr' });
   return { annual, trade, ytd, yearAnswer, dayAnswer: 'Die Jahresübersicht zeigt die monatlichen Strommengen, die rechnerischen Herkunftsländer und den Atomstrom-Anteil im Vergleich zur deutschen Stromerzeugung.', dayComparison: '', daily: { days: [], totalGwh: null }, coverageNote, ogPath: `/api/og?${ogParams}` };
 }
