@@ -92228,5 +92228,334 @@
         "evidenceUrl": "https://www.gemeinde-scharbeutz.de/Wirtschaft-und-Tourismus/Klima-und-Umwelt/Klimaschutz.htm"
       }
     ]
+  },
+  {
+    "regionId": "07131006",
+    "name": "Bad Breisig",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bad Breisig gehört zur Verbandsgemeinde Bad Breisig (Landkreis Ahrweiler). Anwendbar ist das VG-Programm „Förderung von privaten Balkonkraftwerken“ (50 % der Erwerbskosten, höchstens 125 € je Haushalt, Module bis 2.000 W, Wechselrichter bis 800 W, 7.000 € Budget, vom 01.07.2026 bis zur Verausgabung, spätestens 30.06.2027): Richtlinie und Programmseite am 10.10.2026 im Original gelesen, deckungsgleich mit dem Katalogeintrag vg-bad-breisig-balkonkraftwerke. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden; der Kreis Ahrweiler stellt nach eigener Angabe keine Mittel für PV oder Speicher bereit.",
+    "searches": [
+      "Programmseite und gescannte Richtlinie (4 Seiten) der VG Bad Breisig gelesen",
+      "Suchergebnisse bad-breisig.de zu „Förderprogramm“ (3 Seiten) durchgesehen: nur das Balkonprogramm",
+      "Websuche Ahrweiler-Gemeinden + Balkonkraftwerk/Photovoltaik-Förderung 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf",
+        "finding": "Richtlinie (Beschluss 23.06.2026, gescannt, alle 4 Seiten gelesen 10.10.2026): Nr. 1 „beginnt am 01.07.2026 und endet nach Verausgabung … spätestens am 30.06.2027“; Nr. 4 „Pro Haushalt kann eine Anlage mit maximal 125 € gefördert werden. Gefördert werden maximal 50 % der Erwerbskosten.“, 7.000 €; Nr. 5 Wohnsitz in der Verbandsgemeinde Bad Breisig."
+      },
+      {
+        "url": "https://www.bad-breisig.de/2026/07/02/foerderprogramm-fuer-balkonkraftwerke/",
+        "finding": "Programmseite: „Alle privaten Haushalte (Mieter und Eigentümer) innerhalb der Verbandsgemeinde“; Mittel „derzeit 7.000 €“."
+      },
+      {
+        "url": "https://www.bad-breisig.de/gemeinden/gonnersdorf/daten-und-fakten/",
+        "finding": "Gemeindedatenblatt: Gönnersdorf, Gebietsschlüssel 07 131 03 025, Verbandsgemeinde Bad Breisig (Gegenprüfung 10.10.2026); amtliches Gemeindeverzeichnis führt Bad Breisig, Brohl-Lützing, Gönnersdorf, Waldorf."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-breisig.de/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der VG Bad Breisig zu „Förderprogramm“; führt zum Balkonkraftwerk-Programm der VG (geprüft) und sonst fachfremden Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "bad-breisig.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Folgeseite derselben Suche; fachfremde bzw. bereits geprüfte Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "07131014",
+    "name": "Brohl-Lützing",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Brohl-Lützing gehört zur Verbandsgemeinde Bad Breisig (Landkreis Ahrweiler). Anwendbar ist das VG-Programm „Förderung von privaten Balkonkraftwerken“ (50 % der Erwerbskosten, höchstens 125 € je Haushalt, Module bis 2.000 W, Wechselrichter bis 800 W, 7.000 € Budget, vom 01.07.2026 bis zur Verausgabung, spätestens 30.06.2027): Richtlinie und Programmseite am 10.10.2026 im Original gelesen, deckungsgleich mit dem Katalogeintrag vg-bad-breisig-balkonkraftwerke. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden; der Kreis Ahrweiler stellt nach eigener Angabe keine Mittel für PV oder Speicher bereit.",
+    "searches": [
+      "Programmseite und gescannte Richtlinie (4 Seiten) der VG Bad Breisig gelesen",
+      "Suchergebnisse bad-breisig.de zu „Förderprogramm“ (3 Seiten) durchgesehen: nur das Balkonprogramm",
+      "Websuche Ahrweiler-Gemeinden + Balkonkraftwerk/Photovoltaik-Förderung 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf",
+        "finding": "Richtlinie (Beschluss 23.06.2026, gescannt, alle 4 Seiten gelesen 10.10.2026): Nr. 1 „beginnt am 01.07.2026 und endet nach Verausgabung … spätestens am 30.06.2027“; Nr. 4 „Pro Haushalt kann eine Anlage mit maximal 125 € gefördert werden. Gefördert werden maximal 50 % der Erwerbskosten.“, 7.000 €; Nr. 5 Wohnsitz in der Verbandsgemeinde Bad Breisig."
+      },
+      {
+        "url": "https://www.bad-breisig.de/2026/07/02/foerderprogramm-fuer-balkonkraftwerke/",
+        "finding": "Programmseite: „Alle privaten Haushalte (Mieter und Eigentümer) innerhalb der Verbandsgemeinde“; Mittel „derzeit 7.000 €“."
+      },
+      {
+        "url": "https://www.bad-breisig.de/gemeinden/gonnersdorf/daten-und-fakten/",
+        "finding": "Gemeindedatenblatt: Gönnersdorf, Gebietsschlüssel 07 131 03 025, Verbandsgemeinde Bad Breisig (Gegenprüfung 10.10.2026); amtliches Gemeindeverzeichnis führt Bad Breisig, Brohl-Lützing, Gönnersdorf, Waldorf."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-breisig.de/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der VG Bad Breisig zu „Förderprogramm“; führt zum Balkonkraftwerk-Programm der VG (geprüft) und sonst fachfremden Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "bad-breisig.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Folgeseite derselben Suche; fachfremde bzw. bereits geprüfte Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "07131081",
+    "name": "Waldorf",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Waldorf gehört zur Verbandsgemeinde Bad Breisig (Landkreis Ahrweiler). Anwendbar ist das VG-Programm „Förderung von privaten Balkonkraftwerken“ (50 % der Erwerbskosten, höchstens 125 € je Haushalt, Module bis 2.000 W, Wechselrichter bis 800 W, 7.000 € Budget, vom 01.07.2026 bis zur Verausgabung, spätestens 30.06.2027): Richtlinie und Programmseite am 10.10.2026 im Original gelesen, deckungsgleich mit dem Katalogeintrag vg-bad-breisig-balkonkraftwerke. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden; der Kreis Ahrweiler stellt nach eigener Angabe keine Mittel für PV oder Speicher bereit.",
+    "searches": [
+      "Programmseite und gescannte Richtlinie (4 Seiten) der VG Bad Breisig gelesen",
+      "Suchergebnisse bad-breisig.de zu „Förderprogramm“ (3 Seiten) durchgesehen: nur das Balkonprogramm",
+      "Websuche Ahrweiler-Gemeinden + Balkonkraftwerk/Photovoltaik-Förderung 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf",
+        "finding": "Richtlinie (Beschluss 23.06.2026, gescannt, alle 4 Seiten gelesen 10.10.2026): Nr. 1 „beginnt am 01.07.2026 und endet nach Verausgabung … spätestens am 30.06.2027“; Nr. 4 „Pro Haushalt kann eine Anlage mit maximal 125 € gefördert werden. Gefördert werden maximal 50 % der Erwerbskosten.“, 7.000 €; Nr. 5 Wohnsitz in der Verbandsgemeinde Bad Breisig."
+      },
+      {
+        "url": "https://www.bad-breisig.de/2026/07/02/foerderprogramm-fuer-balkonkraftwerke/",
+        "finding": "Programmseite: „Alle privaten Haushalte (Mieter und Eigentümer) innerhalb der Verbandsgemeinde“; Mittel „derzeit 7.000 €“."
+      },
+      {
+        "url": "https://www.bad-breisig.de/gemeinden/gonnersdorf/daten-und-fakten/",
+        "finding": "Gemeindedatenblatt: Gönnersdorf, Gebietsschlüssel 07 131 03 025, Verbandsgemeinde Bad Breisig (Gegenprüfung 10.10.2026); amtliches Gemeindeverzeichnis führt Bad Breisig, Brohl-Lützing, Gönnersdorf, Waldorf."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-breisig.de/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der VG Bad Breisig zu „Förderprogramm“; führt zum Balkonkraftwerk-Programm der VG (geprüft) und sonst fachfremden Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "bad-breisig.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Folgeseite derselben Suche; fachfremde bzw. bereits geprüfte Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "bad-breisig.de/page/3/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Folgeseite derselben Suche; fachfremde bzw. bereits geprüfte Meldungen.",
+        "evidenceUrl": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "07131025",
+    "name": "Gönnersdorf",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Gönnersdorf gehört zur Verbandsgemeinde Bad Breisig (Landkreis Ahrweiler). Anwendbar ist das VG-Programm „Förderung von privaten Balkonkraftwerken“ (50 % der Erwerbskosten, höchstens 125 € je Haushalt, Module bis 2.000 W, Wechselrichter bis 800 W, 7.000 € Budget, vom 01.07.2026 bis zur Verausgabung, spätestens 30.06.2027): Richtlinie und Programmseite am 10.10.2026 im Original gelesen, deckungsgleich mit dem Katalogeintrag vg-bad-breisig-balkonkraftwerke. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden; der Kreis Ahrweiler stellt nach eigener Angabe keine Mittel für PV oder Speicher bereit.",
+    "searches": [
+      "Programmseite und gescannte Richtlinie (4 Seiten) der VG Bad Breisig gelesen",
+      "Suchergebnisse bad-breisig.de zu „Förderprogramm“ (3 Seiten) durchgesehen: nur das Balkonprogramm",
+      "Websuche Ahrweiler-Gemeinden + Balkonkraftwerk/Photovoltaik-Förderung 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-breisig.de/wp-content/uploads/2026/07/Richtlinie-Balkonkraftwerke.pdf",
+        "finding": "Richtlinie (Beschluss 23.06.2026, gescannt, alle 4 Seiten gelesen 10.10.2026): Nr. 1 „beginnt am 01.07.2026 und endet nach Verausgabung … spätestens am 30.06.2027“; Nr. 4 „Pro Haushalt kann eine Anlage mit maximal 125 € gefördert werden. Gefördert werden maximal 50 % der Erwerbskosten.“, 7.000 €; Nr. 5 Wohnsitz in der Verbandsgemeinde Bad Breisig."
+      },
+      {
+        "url": "https://www.bad-breisig.de/2026/07/02/foerderprogramm-fuer-balkonkraftwerke/",
+        "finding": "Programmseite: „Alle privaten Haushalte (Mieter und Eigentümer) innerhalb der Verbandsgemeinde“; Mittel „derzeit 7.000 €“."
+      },
+      {
+        "url": "https://www.bad-breisig.de/gemeinden/gonnersdorf/daten-und-fakten/",
+        "finding": "Gemeindedatenblatt: Gönnersdorf, Gebietsschlüssel 07 131 03 025, Verbandsgemeinde Bad Breisig (Gegenprüfung 10.10.2026); amtliches Gemeindeverzeichnis führt Bad Breisig, Brohl-Lützing, Gönnersdorf, Waldorf."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07131070",
+    "name": "Remagen",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Remagen (Landkreis Ahrweiler) hatte 2025 das Programm „Balkonkraftwerke für Remagener Bürger*innen“ (50 % der Kosten, höchstens 300 €, KIPKI, 10.000 €), das nach Nr. 2 seiner Richtlinie am 31.12.2025 endete; am 10.10.2026 als beendetes Programm remagen-balkonkraftwerke aufgenommen (kein Rechenwert). Die Fördermittel-Übersicht der Stadt nennt nur Bundes- und Landesprogramme, eine Neuauflage 2026 ist nicht veröffentlicht. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden. Ratsinfo nicht durchsucht.",
+    "searches": [
+      "Richtlinie Fassung 14.07.2025 im Archiv der Amtsseite gelesen (Originaladresse seit Relaunch 404)",
+      "Fördermittel-Übersicht remagen.de gelesen (10.10.2026)",
+      "Websuche „Remagen Balkonkraftwerke Förderung 2026“: keine Neuauflage"
+    ],
+    "evidence": [
+      {
+        "url": "https://web.archive.org/web/2025/https://www.remagen.de/images/KlimaMobilitaet/Richtlinie_Balkonkraftwerke.pdf",
+        "finding": "Nr. 2 „Förderzeitraum … rückwirkend vom 01.01.2025 bis zum 15.12.2025 … endet … spätestens zum 31.12.2025“; Nr. 6 „maximaler Zuschuss von 300,00 EUR, maximal jedoch 50,00 %“."
+      },
+      {
+        "url": "https://remagen.de/stadtentwicklung-bauen-wohnen/foerdermittel",
+        "finding": "Übersicht für Privatpersonen: KfW-, BAFA- und ISB-Programme, kein städtischer Energie-Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "remagen.de/buergerservice-views/leistungen/RLP:entry:9868534:ANLR-VLR/federfuehrendes-amt-bundesfoerderprogramm-demokratie-leben",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm Demokratie leben, fachfremd.",
+        "evidenceUrl": "https://web.archive.org/web/2025/https://www.remagen.de/images/KlimaMobilitaet/Richtlinie_Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "remagen.de/stadtentwicklung-bauen-wohnen/foerdermittel",
+        "disposition": "reviewed",
+        "reason": "Fördermittel-Übersicht (Bund/Land), kein städtischer Energie-Zuschuss; gelesen 10.10.2026.",
+        "evidenceUrl": "https://web.archive.org/web/2025/https://www.remagen.de/images/KlimaMobilitaet/Richtlinie_Balkonkraftwerke.pdf"
+      },
+      {
+        "url": "remagen.de/Wirtschaft-Stadtmarketing/foerderrichtlinie-hausaerzte",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie Hausärzte, fachfremd.",
+        "evidenceUrl": "https://web.archive.org/web/2025/https://www.remagen.de/images/KlimaMobilitaet/Richtlinie_Balkonkraftwerke.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "07131077",
+    "name": "Sinzig",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Sinzig (Landkreis Ahrweiler) förderte Balkonkraftwerke im KIPKI-Bürgerprogramm mit bis zu 150 € je Haushalt; die Richtlinie (2. Novellierung, Beschluss 10.10.2024) endete nach Nr. 2 spätestens am 31.03.2026. Am 10.10.2026 als beendetes Programm sinzig-kipki-stecker-pv aufgenommen (kein Rechenwert). Die Programmseite steht noch im Präsens, nennt aber denselben Endtermin; ein Nachfolger ist nicht veröffentlicht. Keine Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "Programmseite Bürgerbeteiligung/KIPKI gelesen (10.10.2026)",
+      "Förderrichtlinie KIPKI (9 Seiten) im Volltext gelesen",
+      "Websuche Ahrweiler-Gemeinden + Balkonkraftwerk-Förderung 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm",
+        "finding": "Nr. 2 „endet nach Verausgabung … spätestens jedoch am 31.03.2026“; Nr. 4.4 „Die Förderhöhe beträgt maximal 150€ pro Haushalt oder Verein.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "sinzig.de/leben-in-sinzig/klima-stadtwald-hochwasservorsorge/klimaschutz-und-klimaanpassung/buergerbeteiligung",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Bürgerprogramm mit Balkon-Teil (bis 150 €), beendet spätestens 31.03.2026; Richtlinie gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm"
+      },
+      {
+        "url": "sinzig.de/leben-in-sinzig/klima-stadtwald-hochwasservorsorge/klimaschutz-und-klimaanpassung/buergerbeteiligung/?sds=1",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Bürgerprogramm mit Balkon-Teil (bis 150 €), beendet spätestens 31.03.2026; Richtlinie gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm"
+      }
+    ]
+  },
+  {
+    "regionId": "07131007",
+    "name": "Bad Neuenahr-Ahrweiler",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bad Neuenahr-Ahrweiler (Landkreis Ahrweiler) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderprogramm-Übersicht der Stadt nennt Miscanthus-Anbau, Städtebauförderung, Dorferneuerung und Entsiegelung; KIPKI wird für städtische Projekte verwendet; die Sitemap (3.179 Adressen) enthält kein Energie-Zuschussprogramm, nur Hinweise (Balkonkraftwerke 2023, Wärmepumpen 2023) und Lastenrad-Förderung (Stand 10.10.2026).",
+    "searches": [
+      "Förderprogramm-Übersicht und Seiten Geförderte Projekte/KIPKI gelesen",
+      "Sitemap bad-neuenahr-ahrweiler.de (3.179 Adressen) nach Förder-, Zuschuss-, Solar-, Balkon- und Wärmepumpenbegriffen durchsucht",
+      "Websuche Ahrweiler-Städte + Balkonkraftwerk/Photovoltaik-Zuschuss 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme",
+        "finding": "Miscanthus, Aktive Stadt, Dorferneuerung, Entsiegelung/Begrünung — kein Energie-Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://bad-neuenahr-ahrweiler.de/die-stadt/klimaschutz/gefoerderte-projekte/kipki",
+        "finding": "KIPKI-Mittel (775.846 €) für städtische Investitionen; kein Bürgerprogramm genannt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm-Übersicht der Stadt; kein Energie-Zuschuss für Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      },
+      {
+        "url": "bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme/dorferneuerung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dorferneuerung (Ortsbild), fachfremd.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      },
+      {
+        "url": "bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme/miscanthus",
+        "disposition": "reviewed",
+        "reason": "Miscanthus-Anbau (Hochwasservorsorge), fachfremd.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      },
+      {
+        "url": "bad-neuenahr-ahrweiler.de/die-stadt/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter städtischer Klimaschutzprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      },
+      {
+        "url": "bad-neuenahr-ahrweiler.de/die-stadt/klimaschutz/gefoerderte-projekte/energiemanagement",
+        "disposition": "reviewed",
+        "reason": "Städtisches Energiemanagement (Förderprojekt der Stadt), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      },
+      {
+        "url": "bad-neuenahr-ahrweiler.de/die-stadt/klimaschutz/gefoerderte-projekte/kipki",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Mittel für städtische Projekte, kein Bürgerprogramm.",
+        "evidenceUrl": "https://bad-neuenahr-ahrweiler.de/buergerservice/verwaltung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07131090",
+    "name": "Grafschaft",
+    "checkedAt": "2026-10-10T08:18:30Z",
+    "recheckAt": "2027-01-08T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grafschaft (Landkreis Ahrweiler) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite Förderprogramme verweist für Unternehmen an die Kreisverwaltung; die Förder- und Zuschussrichtlinien vom 28.05.2026 regeln Vereins-, Jugend-, Kultur- und Partnerschaftszuschüsse ohne Energietechnik; weitere Programme sind Zisternen, Streuobst und Glasfaser-Hausanschlüsse (Stand 10.10.2026).",
+    "searches": [
+      "Seite Wirtschaft/Förderprogramme gelesen",
+      "Förder- und Zuschussrichtlinien 28.05.2026 im Volltext nach Energie-, Solar-, Balkon-, Speicher- und Wärmepumpenbegriffen durchsucht: kein Treffer",
+      "Sitemap gemeinde-grafschaft.de (1.671 Adressen) durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-grafschaft.de/lebenkultur/zuschuesse/foerder-und-zuschussrichtlinien-der-gemeinde-grafschaft-vom-28.05.2026-aenderung.pdf?cid=tvs",
+        "finding": "Gliederung: Jugend/Senioren, Sport, Kultur/Brauchtum/Umwelt, Städtepartnerschaften, Ausrüstung, Verfahren — keine Energietechnik."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-grafschaft.de/wirtschaft/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm-Übersicht der Stadt; kein Energie-Zuschuss für Haushalte; gelesen 10.10.2026.",
+        "evidenceUrl": "https://www.gemeinde-grafschaft.de/lebenkultur/zuschuesse/foerder-und-zuschussrichtlinien-der-gemeinde-grafschaft-vom-28.05.2026-aenderung.pdf?cid=tvs"
+      }
+    ]
   }
 ]
