@@ -116,7 +116,7 @@ test.describe("Stromkosten-Rennen", () => {
     await expect(exportOnly.first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
     // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
-    const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" });
+    const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" }).last();
     await expect(footer).toContainText("Mit PV-Anlage");
     await expect(footer).toContainText("Ohne PV-Anlage");
     await expect(footer).toContainText("Was hier zählt");
@@ -146,7 +146,7 @@ test.describe("Heizkosten-Rennen", () => {
     const exportOnly = page.locator("[data-sc-export-only]");
     await expect(exportOnly.first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
-    const footer = exportOnly.filter({ hasText: "Das Beispielhaus" });
+    const footer = exportOnly.filter({ hasText: "Das Beispielhaus" }).last();
     await expect(footer).toContainText("Wärmepumpe");
     await expect(footer).toContainText("Neue Gasheizung");
     await expect(footer).toContainText("Was hier zählt");
