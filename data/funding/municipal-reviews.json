@@ -90552,7 +90552,7 @@
   {
     "regionId": "01055006",
     "name": "Beschendorf",
-    "checkedAt": "2026-10-10T00:20:00Z",
+    "checkedAt": "2026-10-10T00:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90595,7 +90595,7 @@
   {
     "regionId": "01055020",
     "name": "Harmsdorf",
-    "checkedAt": "2026-10-10T00:20:00Z",
+    "checkedAt": "2026-10-10T00:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90638,7 +90638,7 @@
   {
     "regionId": "01055023",
     "name": "Kabelhorst",
-    "checkedAt": "2026-10-10T00:20:00Z",
+    "checkedAt": "2026-10-10T00:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90681,7 +90681,7 @@
   {
     "regionId": "01055029",
     "name": "Manhagen",
-    "checkedAt": "2026-10-10T00:20:00Z",
+    "checkedAt": "2026-10-10T00:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90724,7 +90724,7 @@
   {
     "regionId": "01055036",
     "name": "Riepsdorf",
-    "checkedAt": "2026-10-10T00:20:00Z",
+    "checkedAt": "2026-10-10T00:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90767,7 +90767,7 @@
   {
     "regionId": "16074001",
     "name": "Albersdorf",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90824,13 +90824,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074005",
     "name": "Bobeck",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90887,13 +90893,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074082",
     "name": "Scheiditz",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -90950,13 +90962,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074086",
     "name": "Schöngleina",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91013,13 +91031,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074091",
     "name": "Serba",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91076,13 +91100,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074098",
     "name": "Tautenhain",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91139,13 +91169,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074105",
     "name": "Waldeck",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91202,13 +91238,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074109",
     "name": "Weißenborn",
-    "checkedAt": "2026-10-10T00:40:00Z",
+    "checkedAt": "2026-10-10T00:15:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91265,13 +91307,19 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept des Saale-Holzland-Kreises gelesen: kein Zuschussprogramm für Haushalte.",
         "evidenceUrl": "https://bad-klosterlausnitz.de/rathaus/ortsentwicklung/umwelt-naturschutz?_hash=UArYDgiQf3-Qjy9ioiyaLp--HZP95Y27m1KR7pH7ZHk&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A1594%3B%7D&d=attachment&f=klimaschutzkonzept-shk.pdf&p=1-rathaus%2F1-2-ortsentwicklung%2F1-2-5-umwelt-naturschutz%2Fklimaschutzkonzept-shk%2Fklimaschutzkonzept-shk.pdf"
+      },
+      {
+        "url": "bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl",
+        "disposition": "reviewed",
+        "reason": "Seite „Fördermaßnahmen“ am 10.10.2026 im Browser gerendert: nur Überschrift „Informationen zu Fördermaßnahmen“, kein Programm.",
+        "evidenceUrl": "https://bad-klosterlausnitz.de/F%C3%B6rderma%C3%9Fnahmen-bkl"
       }
     ]
   },
   {
     "regionId": "16074006",
     "name": "Bollberg",
-    "checkedAt": "2026-10-10T00:55:00Z",
+    "checkedAt": "2026-10-10T00:19:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91309,7 +91357,7 @@
   {
     "regionId": "16074058",
     "name": "Möckern",
-    "checkedAt": "2026-10-10T00:55:00Z",
+    "checkedAt": "2026-10-10T00:19:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91347,7 +91395,7 @@
   {
     "regionId": "16074069",
     "name": "Quirla",
-    "checkedAt": "2026-10-10T00:55:00Z",
+    "checkedAt": "2026-10-10T00:19:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91385,7 +91433,7 @@
   {
     "regionId": "16074081",
     "name": "Ruttersdorf-Lotschen",
-    "checkedAt": "2026-10-10T00:55:00Z",
+    "checkedAt": "2026-10-10T00:19:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91413,6 +91461,10 @@
       {
         "url": "https://www.stadtroda.de/contact/index/link",
         "finding": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html",
+        "finding": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung städtischer Projekte, kein Bürgerprogramm."
       }
     ],
     "sources": [
@@ -91427,13 +91479,25 @@
         "disposition": "reviewed",
         "reason": "Kontaktformular-Link; antwortet am 10.10.2026 mit „Die Seite wurde nicht gefunden“, kein Inhalt.",
         "evidenceUrl": "https://www.stadtroda.de/contact/index/link"
+      },
+      {
+        "url": "stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung städtischer Projekte, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html"
+      },
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Seite; die Normalfassung (Webseitenförderprogramm „Stadtroda vernetzt“, kostenlose Webseiten für Vereine, keine Energieförderung) wurde am 10.10.2026 gelesen.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
       }
     ]
   },
   {
     "regionId": "16074094",
     "name": "Stadtroda",
-    "checkedAt": "2026-10-10T00:55:00Z",
+    "checkedAt": "2026-10-10T00:19:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91461,6 +91525,10 @@
       {
         "url": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html",
         "finding": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung für städtische Projekte (Freibadpumpen, Blühflächen), kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Druckfassung derselben Seite; die Normalfassung (Webseitenförderprogramm „Stadtroda vernetzt“, kostenlose Webseiten für Vereine, keine Energieförderung) wurde am 10.10.2026 gelesen."
       }
     ],
     "sources": [
@@ -91475,6 +91543,18 @@
         "disposition": "reviewed",
         "reason": "„Projekte mit staatlicher Förderung“ gelesen: Landesförderung für städtische Projekte (Freibadpumpen, Blühflächen), kein Bürgerprogramm.",
         "evidenceUrl": "https://www.stadtroda.de/seite/598810/projekte-mit-staatl.-f%C3%B6rderung.html"
+      },
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Seite; die Normalfassung (Webseitenförderprogramm „Stadtroda vernetzt“, kostenlose Webseiten für Vereine, keine Energieförderung) wurde am 10.10.2026 gelesen.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
+      },
+      {
+        "url": "stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm „Stadtroda vernetzt“ gelesen: kostenlose Webseiten für Vereine/Einrichtungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html"
       }
     ]
   }
