@@ -157,7 +157,15 @@ const NOCH_KEIN_URTEIL: string[] = ["/solar-atlas/bayern/landkreis-wuerzburg/hoe
       const befunde: Kontrastbefund[] = [];
       for (const b of verdaechtig) {
         const el = page.locator(`[data-kontrast="${b.marke}"]`).first();
-        const bild = await el.screenshot({ timeout: 5_000 }).catch(() => null);
+        // The scene animates continuously. Capture the current painted rectangle
+        // without locator.screenshot waiting for two idle animation frames.
+        // Missing captures still fail below; no contrast finding is skipped.
+        const bild = await (async () => {
+          await el.evaluate(node => node.scrollIntoView({block: "center", behavior: "instant"}));
+          const box = await el.boundingBox();
+          if (!box || box.width <= 0 || box.height <= 0) return null;
+          return page.screenshot({clip: box, timeout: 5_000});
+        })().catch(() => null);
         if (!bild) {
           // Kein Urteil möglich — und das wird gemeldet, nicht verschwiegen.
           befunde.push(b);

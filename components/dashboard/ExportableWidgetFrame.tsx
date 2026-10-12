@@ -322,7 +322,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
       className={`${foundation.foundation} sc-dashboard ${className}`}
       {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement === 'plot' ? 'position:relative;text-align:left;' : exportCss}}
       settings={settings && <ExportIgnore inline>{settings}</ExportIgnore>}
-      helpPlacement={effectiveActions === 'menu' ? 'menu' : 'tools'}
+      helpPlacement={effectiveActions === 'menu' && !directActions && !partner ? 'menu' : 'tools'}
       menu={effectiveActions === 'menu' ? widgetActions : undefined}
       footer={<>
         {(videoProgress!==null||videoFile||videoError)&&<ExportIgnore inline={false} style={{position:'absolute',inset:0,zIndex:5,borderRadius:'inherit',overflow:'hidden'}}>
