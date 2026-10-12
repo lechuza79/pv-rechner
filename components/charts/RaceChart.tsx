@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "rea
 import {WidgetIconButton} from '../dashboard/WidgetControls';
 import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
 import {useWidgetPresentation, WidgetPresentationProvider} from '../dashboard/WidgetPresentationContext';
+import {useWidgetMinimumHeight} from '../dashboard/WidgetMinimumHeight';
 import {CHART_ANIMATION_EVENT, type ChartAnimationCommand} from '../../lib/chart-animation-export';
 import {raceCurveValue} from '../../lib/race-curve';
 import {raceTimeline, racePositionAt, milestoneRaceTimeline} from '../../lib/race-timeline';
@@ -256,6 +257,42 @@ function RaceCard({
   useEffect(() => () => cancelAnimationFrame(gleitRaf.current), []);
   const hostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const reportMinimumHeight = useWidgetMinimumHeight();
+
+  useEffect(() => {
+    const root = hostRef.current;
+    const card = root?.closest<HTMLElement>('.sc-widget');
+    const events = root?.querySelector<HTMLElement>(`.${styles.eventLayout}`);
+    const player = root?.querySelector<HTMLElement>(`.${styles.player}`);
+    if (!allocated || mini || !root || !card || !events || !player) {
+      reportMinimumHeight(0);
+      return;
+    }
+    const measure = () => {
+      if (getComputedStyle(root).display === 'grid') {
+        reportMinimumHeight(0);
+        return;
+      }
+      // Reserve actual wrapped content, never the already allocated plot height.
+      // Feeding the current card height back would cause resize feedback loops.
+      const px = (value: string) => Number.parseFloat(value) || 0;
+      const outerHeight = (element: HTMLElement) => {
+        const css = getComputedStyle(element);
+        return element.getBoundingClientRect().height + px(css.marginTop) + px(css.marginBottom);
+      };
+      const css = getComputedStyle(root);
+      const heading = card.querySelector<HTMLElement>('.sc-widget-head');
+      const context = card.querySelector<HTMLElement>('.sc-widget-context');
+      const intro = root.firstElementChild instanceof HTMLElement && !root.firstElementChild.hasAttribute('data-race-plot')
+        ? outerHeight(root.firstElementChild) : 0;
+      reportMinimumHeight((heading ? outerHeight(heading) : 0) + (context ? outerHeight(context) : 0)
+        + px(css.paddingTop) + px(css.paddingBottom) + 180 + intro + outerHeight(events) + outerHeight(player));
+    };
+    const observer = new ResizeObserver(measure);
+    [root, events, player, card.querySelector('.sc-widget-head')].forEach(node => {if (node) observer.observe(node);});
+    measure();
+    return () => {observer.disconnect();reportMinimumHeight(0);};
+  }, [allocated, mini, reportMinimumHeight]);
 
 
   useEffect(() => {
@@ -500,7 +537,7 @@ function RaceCard({
   const karte = (
     <div
       ref={hostRef}
-      className={mini ? undefined : styles.raceLayout}
+      className={[!mini && styles.raceLayout, allocated && styles.allocatedLayout].filter(Boolean).join(' ') || undefined}
       data-chart-animation="race"
       style={{
         position: "relative",
@@ -727,7 +764,7 @@ function RaceCard({
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
       <ExportOnly style={{ marginTop: space.md }}>
         <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          {annualYears ? `Stromerzeugung im Jahr ${stand}` : tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
+          {annualYears ? `Jahr ${stand}` : tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
         </span>
       </ExportOnly>
 

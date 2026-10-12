@@ -1,6 +1,7 @@
 'use client';
-import {useLayoutEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react';
-import {COMPOSITION_GAP,selectCompositionPlan,resolveComposition,compositionMinWidth,type CompositionPlan,type CompositionItem,type CompositionAllocation} from '../../lib/widget-composition';
+import {useCallback,useLayoutEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react';
+import {COMPOSITION_GAP,selectCompositionPlan,resolveComposition,compositionMinWidth,withMeasuredMinimumHeights,type CompositionPlan,type CompositionItem,type CompositionAllocation} from '../../lib/widget-composition';
+import {WidgetMinimumHeightContext} from './WidgetMinimumHeight';
 import styles from './WidgetComposition.module.css';
 
 /** Host viewport only; iframe content reports must never become this budget. */
@@ -27,6 +28,8 @@ export function ResponsiveWidgetComposition({item,heightBudget,render,label}:{
 }){
  const ref=useRef<HTMLDivElement>(null);
  const [width,setWidth]=useState(0);
+ const [minimums,setMinimums]=useState<Record<string,number>>({});
+ const report=useCallback((id:string,height:number)=>setMinimums(previous=>previous[id]===height?previous:{...previous,[id]:height}),[]);
  useLayoutEffect(()=>{
   const element=ref.current;if(!element)return;
   const measure=()=>setWidth(element.clientWidth);
@@ -40,9 +43,9 @@ export function ResponsiveWidgetComposition({item,heightBudget,render,label}:{
    display:'grid',gap:COMPOSITION_GAP,alignItems:'start',
    gridTemplateColumns:allocation.direction==='row'?allocation.children.map(child=>`${child.width}px`).join(' '):'minmax(0,1fr)',
   }:{})}}>
-  {allocation.children?allocation.children.map(draw):render(allocation.id)}
+  {allocation.children?allocation.children.map(draw):<WidgetMinimumHeightContext.Provider value={{id:allocation.id,report}}>{render(allocation.id)}</WidgetMinimumHeightContext.Provider>}
  </div>;
  return <div ref={ref} aria-label={label} data-responsive-composition style={{minWidth:0,width:'100%'}}>
-  {draw(resolveComposition(item,width||compositionMinWidth(item),heightBudget))}
+  {draw(resolveComposition(withMeasuredMinimumHeights(item,minimums),width||compositionMinWidth(item),heightBudget))}
  </div>;
 }

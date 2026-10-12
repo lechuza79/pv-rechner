@@ -59,6 +59,21 @@ as development; Vercel deployments ignore it to prevent self-proxying.
   the adjacent heating variant unchanged. All five energy inventory pages loaded.
 - Browser: layout reference checked at 375 and 1440 px without document overflow;
   current solar power and the topographic scene rendered with actual data.
+  This initial check missed an internal race-chart overflow: a host-level flex
+  rule overrode the renderer's wide grid, collapsing the plot and moving playback
+  below the card. Internal arrangement now belongs to `RaceChart`; allocation
+  styles no longer compete with its container query. The dedicated
+  `e2e/race-dashboard-layout.spec.ts` checks plot, explanation and player bounds,
+  rather than treating a correctly sized outer card as sufficient evidence.
+  Narrow races also report the measured header, wrapped explanation, timeline
+  and player height plus a readable plot minimum to the composition. Nested
+  groups propagate this content minimum and move following siblings accordingly;
+  widening releases it again. The feedback excludes allocated plot/card height,
+  so it does not recursively grow the grid or change another presentation.
+  Follow-up browser checks passed for both races at 390 and 1440 px, including
+  narrow-to-wide resizing, event navigation and the generated dashboard embed.
+  The PNG download retains the data, unit and source; its annual caption is
+  metric-neutral so capacity is not incorrectly labelled electricity generation.
 - Browser: Storyview opens the shared reader; PNG download includes data, unit,
   sources and date. The homepage's preserved cards open the same reader and export
   successfully at 375 px. A CSS-name collision in the static bundle was fixed by

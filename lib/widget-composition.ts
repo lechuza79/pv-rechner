@@ -61,6 +61,13 @@ export type CompositionAllocation = {
   children?: CompositionAllocation[];
 };
 
+/** Content minima propagate through nested groups without changing catalog defaults. */
+export function withMeasuredMinimumHeights(item:CompositionItem,minimums:Readonly<Record<string,number>>):CompositionItem {
+  return item.kind==='group'
+    ? {...item,children:item.children.map(child=>withMeasuredMinimumHeights(child,minimums))}
+    : {...item,minHeight:Math.max(item.minHeight,minimums[item.id]??0)};
+}
+
 /** Width needed to keep this group's intended arrangement, including nested groups. */
 export function compositionRowWidth(item: CompositionItem): number {
   if (item.kind === 'chart') return item.minWidth;

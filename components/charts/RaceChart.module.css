@@ -35,6 +35,13 @@
 .eventPanel{box-sizing:border-box;display:flex;flex-direction:row;align-items:center}
 .eventArrow{display:inline-flex;flex-shrink:0}
 
+/* The renderer owns its internal arrangement. Hosts allocate the card only;
+   a host flex rule must never override the wide grid while its children use
+   grid placement and display:contents. */
+.allocatedLayout{flex:1;min-height:0;display:flex;flex-direction:column}
+.allocatedLayout > [data-race-plot]{flex:1;min-height:120px}
+.allocatedLayout > [data-race-plot] > div:first-child{height:100%}
+
 /* Container width, not page width, determines when prose can sit beside a plot. */
 @container (min-width:640px){
  .raceLayout.raceLayout[data-chart-animation=race]{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.48fr);grid-template-rows:minmax(180px,1fr) 32px auto;column-gap:40px;row-gap:16px;align-items:center}
