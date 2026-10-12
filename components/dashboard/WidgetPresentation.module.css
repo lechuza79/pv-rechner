@@ -1,3 +1,9 @@
+/* A themed standalone document must agree with its host iframe's scheme.
+   Keep the canvas transparent: matching schemes let the host show through.
+   Direct-child scoping excludes presentations nested inside ordinary pages. */
+:global(html):has(> :global(body) > .presentation[data-story-scheme=dark]){color-scheme:dark}
+:global(html):has(> :global(body) > .presentation[data-story-scheme=light]),
+:global(html):has(> :global(body) > .presentation[data-story-scheme=highlight]){color-scheme:light}
 .presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto}
 /* A configured embed inherits the host palette, including nested chart frames. */
 .presentation.presentation :global([data-story-scheme]){

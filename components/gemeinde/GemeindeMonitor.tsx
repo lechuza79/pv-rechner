@@ -67,7 +67,7 @@ function LocalMap({ paket }: { paket: GemeindePaket }) {
   const params = new URLSearchParams({ags: paket.kreis.ags, selected: paket.ags, theme: "dark", onsite: "1"});
   return <section aria-label="Karte">
     <h3>Energie im Landkreis</h3>
-    <AutoHeightIframe src={`/embed/regional-map?${params}`} title={`3D-Energiekarte · ${paket.kreis.name}`} fallbackHeight={640} framed={false} rounded loading="eager" appearance={{theme:"dark"}} />
+    <AutoHeightIframe src={`/embed/regional-map?${params}`} title={`3D-Energiekarte · ${paket.kreis.name}`} fallbackHeight={640} framed={false} rounded scheme="dark" loading="eager" appearance={{theme:"dark"}} />
   </section>;
 }
 
