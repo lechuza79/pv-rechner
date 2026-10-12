@@ -323,7 +323,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
       {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement === 'plot' ? 'position:relative;text-align:left;' : exportCss}}
       settings={settings && <ExportIgnore inline>{settings}</ExportIgnore>}
       helpPlacement={effectiveActions === 'menu' && !directActions && !partner ? 'menu' : 'tools'}
-      menu={effectiveActions === 'menu' ? widgetActions : undefined}
+      menu={effectiveActions === 'menu' && !directActions && !partner ? widgetActions : undefined}
       footer={<>
         {(videoProgress!==null||videoFile||videoError)&&<ExportIgnore inline={false} style={{position:'absolute',inset:0,zIndex:5,borderRadius:'inherit',overflow:'hidden'}}>
           <div className="sc-video-overlay" data-video-overlay="">
@@ -347,7 +347,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
             </div>
           </div>
         </ExportIgnore>}
-        {effectiveActions === 'primary' && <div className="sc-widget-actions" data-sc-export-ignore={partner ? "" : undefined}>{widgetActions}</div>}
+        {(effectiveActions === 'primary' || effectiveActions === 'menu' && (directActions || partner)) && <div className="sc-widget-actions" data-sc-export-ignore={partner ? "" : undefined}>{widgetActions}</div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
         {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
