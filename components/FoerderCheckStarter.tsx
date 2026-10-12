@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import ActionButton from "./ActionButton";
 import Modal from "./Modal";
 import FoerderFlow from "./FoerderFlow";
 import { IconArrowRight } from "./Icons";
-import { v, iconSizes, space, pad } from "../lib/theme";
+import { iconSizes } from "../lib/theme";
 import type { FundingProgram } from "../lib/funding-programs";
 
 /**
@@ -21,9 +22,13 @@ export const FOERDER_CHECK_OEFFNEN = "sc:foerder-check-oeffnen";
 export default function FoerderCheckStarter({
   programme,
   ortName,
+  variant = "primary",
+  showArrow = true,
 }: {
   programme: FundingProgram[];
   ortName: string;
+  variant?: "primary" | "secondary";
+  showArrow?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
 
@@ -40,11 +45,11 @@ export default function FoerderCheckStarter({
 
   return (
     <>
-      <button type="button" onClick={() => setOffen(true)} style={knopf}>
+      <ActionButton variant={variant} onClick={() => setOffen(true)}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          Förder-Check starten <IconArrowRight size={iconSizes.sm} />
+          Förder-Check starten {showArrow && <IconArrowRight size={iconSizes.sm} />}
         </span>
-      </button>
+      </ActionButton>
       <Modal
         open={offen}
         onClose={() => setOffen(false)}
@@ -56,16 +61,3 @@ export default function FoerderCheckStarter({
     </>
   );
 }
-
-const knopf: React.CSSProperties = {
-  alignSelf: "flex-start",
-  marginTop: space.md,
-  padding: pad("sm", "lg"),
-  borderRadius: v("--radius-pill"),
-  fontSize: "var(--font-size-body)",
-  fontWeight: 700,
-  background: v("--color-cta"),
-  color: v("--color-text-on-accent"),
-  border: "none",
-  cursor: "pointer",
-};

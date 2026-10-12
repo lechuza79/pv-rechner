@@ -1,8 +1,8 @@
 import styles from "./AtlasBreadcrumb.module.css";
 
 /** Shared breadcrumb from the approved municipality hero. */
-export default function AtlasBreadcrumb({ parents, name }: { parents: { name: string; href: string }[]; name: string }) {
-  return <nav aria-label="Brotkrümel" className={`atlas-breadcrumb ${styles.breadcrumb}`}>
+export default function AtlasBreadcrumb({ parents, name, framed = false }: { parents: { name: string; href: string }[]; name: string; framed?: boolean }) {
+  return <nav aria-label="Brotkrümel" className={`atlas-breadcrumb ${styles.breadcrumb} ${framed ? styles.framed : ""}`}>
     {parents.map(parent => <span key={parent.href} style={{display:"contents"}}>
       <a href={parent.href}>{parent.name}</a>
       <svg className="sc-live-icon" aria-hidden="true" focusable="false" height="16" viewBox="0 0 28 14" fill="none">

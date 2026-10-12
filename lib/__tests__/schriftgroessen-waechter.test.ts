@@ -89,6 +89,10 @@ const GEOMETRIE_GEBUNDEN: { datei: string; grund: string }[] = [
       "Rasterspalten und Scroll-Rastpunkte.",
   },
   {
+    datei: "app/api/og/funding/route.tsx",
+    grund: "Fixed 1200 by 630 social export canvas without a CSS token stylesheet.",
+  },
+  {
     datei: "app/api/og/route.tsx",
     grund:
       "Das Vorschaubild ist eine feste Leinwand ohne Stylesheet — es kennt " +

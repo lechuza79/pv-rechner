@@ -1,4 +1,5 @@
 import ScrollIndicator from "../ScrollIndicator";
+import breadcrumbStyles from "./AtlasBreadcrumb.module.css";
 import AtlasBreadcrumb from "./AtlasBreadcrumb";
 import { HERO_SZENE_INNER_HTML } from "./hero-szene";
 import SharedSiteHeader from "../SharedSiteHeader";
@@ -192,8 +193,8 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             </p>
             <ScrollIndicator href="#atlas-stories">Entdecken</ScrollIndicator>
           </div>
-          <div className="atlas-hero-local-nav" data-sc-contrast="">
-            <AtlasBreadcrumb parents={ort.pfad} name={ort.name} />
+          <div className={`atlas-hero-local-nav ${breadcrumbStyles.placement}`} data-sc-contrast="">
+            <AtlasBreadcrumb framed parents={ort.pfad} name={ort.name} />
           </div>
           <GemeindeKopfKacheln ags={ort.ags} name={ort.name} rang={kopfRang(paket)} />
           <GemeindeSzene plz={ort.plz} />

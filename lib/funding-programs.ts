@@ -12,6 +12,7 @@
 // vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
 
 import { heuteInBerlin } from "./zeit";
+import type { FundingApplication } from "./funding-application";
 
 export type Eligibility = "privat" | "gewerblich";
 
@@ -145,6 +146,10 @@ export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
 };
 
 export interface FundingProgram {
+  /** Source-backed application instructions; absent means not yet reviewed. */
+  application?: FundingApplication;
+  /** Actual editorial content revision; never a crawl, deployment or unchanged verification date. */
+  contentUpdatedAt?: string;
   id: string;
   name: string;
   traeger: string;
@@ -279,6 +284,14 @@ export interface FundingProgram {
   conditions: FundingCondition[];
   /** Confirmed combinations; [] means prohibited, null means not established. */
   combinableWith: string[] | null;
+  /** Explicit eligible scenario for editorial examples only; never personal calculator defaults. */
+  exampleScenario?: {
+    assumption: string;
+    pvPerKwp: number;
+    pvCap: number;
+    pvMin?: number;
+    pvMax?: number;
+  };
   // Structured rates so example calculations can show a concrete amount.
   pvPerKwp?: number;
   /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
@@ -2908,6 +2921,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anlage muss mindestens 15 Jahre in Heidelberg betrieben werden; Zuschüsse unter 150 € werden nicht bewilligt",
       "Mittel begrenzt und mit dem Programm Starkregen- und Hochwasserschutz geteilt (250.000 € im Nachtragshaushalt 2026); kein Rechtsanspruch",
     ],
+    exampleScenario: {
+      assumption: "Dachanlage außerhalb der PV-Pflicht: Die gesamte Anlagenleistung ist förderfähig. Der Speicher erhält keinen Zuschuss. Antrag vor Beauftragung; Bewilligung und verfügbare Mittel vorausgesetzt.",
+      pvPerKwp: 100, pvCap: 10000, pvMin: 1.5, pvMax: 100,
+    },
     combinableWith: BUND,
   },
   "mannheim-solarbonus": {

@@ -1,3 +1,4 @@
+import breadcrumbStyles from "./AtlasBreadcrumb.module.css";
 import type {ReactNode} from 'react';
 import SharedSiteHeader from '../SharedSiteHeader';
 import AtlasBreadcrumb from './AtlasBreadcrumb';
@@ -12,7 +13,7 @@ export default function GemeindeHeroStage({name,parents,scene,children,descripti
       <p className="hero-description" data-sc-contrast="">{description??`Entdecke die Energiewende in ${name}: Insights erklären die Entwicklung, das Ranking zeigt den Ortsvergleich und der Energiemonitor macht die Zahlen sichtbar.`}</p>
       <a className="v3-scroll-indicator is-visible" href={discoverHref} aria-label="Insights entdecken" data-sc-contrast=""><span>Entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></a>
     </div>
-    {!productPreview&&<div className="atlas-hero-local-nav" data-sc-contrast=""><AtlasBreadcrumb parents={parents} name={name}/></div>}
+    {!productPreview&&<div className={`atlas-hero-local-nav ${breadcrumbStyles.placement}`} data-sc-contrast=""><AtlasBreadcrumb framed parents={parents} name={name}/></div>}
     {children}
   </section>;
 }

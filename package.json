@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "homepage:race": "node scripts/homepage-race-build.mjs",
-    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\" && npm run kommunen:build",
+    "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\" && node scripts/location-search-build.mjs && npm run kommunen:build",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",

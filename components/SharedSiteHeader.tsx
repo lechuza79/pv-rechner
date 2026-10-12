@@ -9,9 +9,11 @@ import { ratgeberBySlug } from "../lib/ratgeber";
 import { navigationContent } from "../public/shared-nav/nav-content.js";
 import { mountGlobalNav, SUCHE_IM_MENUE } from "../public/shared-nav/nav.js";
 import "../public/shared-nav/nav.css";
+import "../public/shared-nav/header.css";
+import "../public/shared-nav/hero-presentation.css";
 
 /** Keep the same menu on React pages and the standalone homepage. */
-export default function SharedSiteHeader({ aktiv }: { aktiv?: string } = {}) {
+export default function SharedSiteHeader({ aktiv, scene = false }: { aktiv?: string; scene?: boolean } = {}) {
   const header = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const auth = useAuth();
@@ -96,7 +98,7 @@ export default function SharedSiteHeader({ aktiv }: { aktiv?: string } = {}) {
     return () => aufraeumen.forEach(f => f());
   }, [auth.status, isAdmin, pathname]);
 
-  return <header ref={header} className="site-header sc-react-header">
+  return <header ref={header} className={`site-header sc-react-header${scene ? " sc-scene-header" : ""}`}>
     <Link className="brand" href="/" aria-label="Solar Check – Startseite"><Logo width={166} /></Link>
     <details className="sc-react-fallback">
       <summary>Menü</summary>

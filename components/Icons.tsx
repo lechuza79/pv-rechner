@@ -423,3 +423,10 @@ export function IconSettings({ size = 16, color = "currentColor", style }: IconP
 export function IconMail({ size = 16, color = "currentColor", style }: IconProps) {
   return <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style={{display:"inline-block",verticalAlign:"middle",flexShrink:0,...style}}><rect x="1.5" y="3" width="13" height="10" rx="2" stroke={color} strokeWidth="1.33"/><path d="m2 4 6 4.5L14 4" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
+
+/** Business premises, using the same grid and stroke as IconUser. */
+export function IconBuilding({ size = 16, color = "currentColor", style }: IconProps) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+    <path d="M3.333 14V2.667A.667.667 0 0 1 4 2h8a.667.667 0 0 1 .667.667V14M2 14h12M6 4.667h.667M9.333 4.667H10M6 7.333h.667M9.333 7.333H10M6.667 14v-4h2.666v4" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>;
+}

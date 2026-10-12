@@ -1,5 +1,9 @@
 "use client";
+import { useAboConfirmation } from "../lib/use-abo-confirmation";
 
+import "./gemeinde/section-nav.css";
+import { IconShare } from "./Icons";
+import ActionButton, { ActionLink } from "./ActionButton";
 import { useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { createPortal } from "react-dom";
@@ -31,9 +35,14 @@ export default function StickyCta({
   sekundaer,
   dritte,
   startId,
+  share,
+  surface = "fade",
 }: {
   /** Optional section threshold; existing consumers keep the scroll default. */
   startId?: string;
+  surface?: "fade" | "floating";
+  /** Public canonical page URL, excluding preview and calculator state. */
+  share?: { url: string; title: string };
   primaer: { href: string; label: string };
   /**
    * Zweite Aktion — entfällt, wo es nur einen nächsten Schritt gibt.
@@ -69,6 +78,20 @@ export default function StickyCta({
    */
   dritte?: { ereignis: string; label: string; icon: React.ReactNode; klasse?: string };
 }) {
+  const [shareStatus, setShareStatus] = useState("");
+  const [sharing, setSharing] = useState(false);
+  const sharePage = async () => {
+    if (!share) return;
+    setSharing(true);
+    setShareStatus("");
+    try {
+      if (navigator.share) await navigator.share(share);
+      else { await navigator.clipboard.writeText(share.url); setShareStatus("Link kopiert."); }
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") setShareStatus("Teilen nicht möglich. Bitte die Seitenadresse kopieren.");
+    } finally { setSharing(false); }
+  };
+  const aboConfirmed = useAboConfirmation();
   const [hidden, setHidden] = useState(false);
   const [gescrollt, setGescrollt] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -124,25 +147,7 @@ export default function StickyCta({
 
   const sichtbar = gescrollt && !hidden;
 
-  const base: React.CSSProperties = {
-    flex: 1,
-    minWidth: 0,
-    textAlign: "center",
-    padding: "12px 10px",
-    borderRadius: v("--radius-pill"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    textDecoration: "none",
-    lineHeight: 1.2,
-    // KEIN nowrap. Mit drei Elementen bleiben auf 375 px je rund 145 px für die
-    // beiden Textknöpfe, und „Anlage durchrechnen" braucht mehr — die Reihe lief
-    // gemessen 42 px über den Rand. Ein zweizeiliger Knopf ist besser als eine
-    // Leiste, die sich seitlich schieben lässt.
-    //
-    // Auf breiten Schirmen bricht ohnehin nichts um; die Regel kostet dort
-    // nichts.
-    hyphens: "auto",
-  };
+  const base: React.CSSProperties = { flex: 1, minWidth: share ? 120 : 0, whiteSpace: "normal", textAlign: "center" };
 
   const bar = (
     <div
@@ -168,85 +173,25 @@ export default function StickyCta({
         padding: "64px 12px calc(12px + env(safe-area-inset-bottom))",
         ...layout?.style,
         ...(layout?.style.width ? { paddingInline: 0 } : {}),
+        ...(surface === "floating" ? { background:"transparent", padding:"0 0 env(safe-area-inset-bottom)", bottom:12 } : {}),
         transform: sichtbar ? "none" : "translateY(130%)",
         transition: "transform 0.28s ease",
         pointerEvents: sichtbar ? "auto" : "none",
         ...(inModal ? { position: "static", left: "auto", right: "auto", transform: "none", padding: 0 } : {}),
       }}
     >
-      <div style={{ maxWidth: layout?.style.width ? "none" : 640, margin: "0 auto", display: "flex", gap: 8 }}>
-        <a
-          href={primaer.href}
-          style={{
-            ...base,
-            background: v("--color-cta"),
-            color: v("--color-text-on-accent"),
-          }}
-        >
-          {primaer.label}
-        </a>
-        {sekundaer && (
-          sekundaer.ereignis ? (
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new Event(sekundaer.ereignis!))}
-              className={sekundaer.klasse}
-              style={{
-                ...base,
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                background: v("--color-bg"),
-                color: v("--color-accent"),
-                border: `1px solid ${v("--color-border-accent")}`,
-              }}
-            >
-              {sekundaer.icon}
-              {sekundaer.label}
-            </button>
-          ) : (
-            <a
-              href={sekundaer.href}
-              {...(sekundaer.extern ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              style={{
-                ...base,
-                background: v("--color-bg"),
-                color: v("--color-accent"),
-                border: `1px solid ${v("--color-border-accent")}`,
-              }}
-            >
-              {sekundaer.label}
-            </a>
-          )
-        )}
-        {dritte && (
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new Event(dritte.ereignis))}
-            className={`sc-cta-dritte${dritte.klasse ? ` ${dritte.klasse}` : ""}`}
-            aria-label={dritte.label}
-            title={dritte.label}
-            style={{
-              ...base,
-              flex: "0 0 auto",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              padding: "12px 14px",
-              background: v("--color-bg"),
-              color: v("--color-accent"),
-              border: `1px solid ${v("--color-border-accent")}`,
-            }}
-          >
-            {dritte.icon}
-            <span className="sc-cta-dritte-text">{dritte.label}</span>
-          </button>
-        )}
+      <div className={surface === "floating" ? "sc-floating-actions" : undefined} style={{ maxWidth: layout?.style.width ? "none" : 640, margin: "0 auto", display: "flex", gap: 8, flexWrap: share ? "wrap" : undefined, justifyContent: "center" }}>
+        <ActionLink href={primaer.href} style={base}>{primaer.label}</ActionLink>
+        {sekundaer && (sekundaer.ereignis
+          ? <ActionButton className={sekundaer.klasse} style={{...base, flex:share ? 1.2 : 1}} onClick={() => window.dispatchEvent(new Event(sekundaer.ereignis!))}>{sekundaer.icon}{sekundaer.label}</ActionButton>
+          : <ActionLink variant="secondary" href={sekundaer.href} style={base} {...(sekundaer.extern ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{sekundaer.label}</ActionLink>)}
+        {(dritte || share) && <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        {dritte && !aboConfirmed && <ActionButton iconOnly className={dritte.klasse} title={dritte.label} aria-label={dritte.label} onClick={() => window.dispatchEvent(new Event(dritte.ereignis))}>{dritte.icon}</ActionButton>}
+        {share && <ActionButton iconOnly title="Seite teilen" aria-label="Seite teilen" disabled={sharing} onClick={sharePage}><IconShare /></ActionButton>}
+        </div>}
+
       </div>
+      {shareStatus && <p role="status" style={{ textAlign: "center", margin: "8px 0 0", fontSize: "var(--font-size-small)" }}>{shareStatus}</p>}
     </div>
   );
   return <><div ref={ref} hidden />{inModal ? (sichtbar ? <ModalSticky>{bar}</ModalSticky> : null) : layout && createPortal(bar, document.body)}</>;

@@ -395,3 +395,8 @@ gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
 - 10 Programme bestätigt (Berlin, Karlsruhe, Regensburg, Frankfurt, Darmstadt,
   Köln, Düsseldorf, Hannover, Bonn, Göttingen).
 - **Beobachten:** Karlsruhe + Bonn (Neustart 2027), Düsseldorf (in Überarbeitung).
+
+
+## Application procedures
+
+For each programme reviewed, also follow [Programme-specific application review](funding-application-review.md). Capture application timing, submission route, required documents and payment steps from the official originals in the shared `application` field. This is part of the existing evidence/review workflow; missing instructions must never be inferred from a generic application flow.

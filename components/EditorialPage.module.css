@@ -1,8 +1,10 @@
-.page {
+.page, .typography {
   --font-size-body: var(--font-size-editorial-body);
   --font-size-lead: var(--font-size-editorial-intro);
   --font-size-small: var(--font-size-editorial-note);
   --font-size-caption: var(--font-size-editorial-label);
+}
+.page {
   font-family: var(--font-text);
   font-variant-numeric: tabular-nums;
   color: var(--color-text-primary);

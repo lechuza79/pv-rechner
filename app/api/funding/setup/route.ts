@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 import { FUNDING_PROGRAMS, landProgramBundeslaender, type FundingProgram } from "../../../../lib/funding-programs";
+import { validFundingApplication } from "../../../../lib/funding-application";
 import { publishedCities, cityPath, publishedBundeslaender } from "../../../../lib/atlas-cities";
 import { pingIndexNow } from "../../../../lib/indexnow";
 import { vergleiche, zuEintraegen } from "../../../../lib/funding-history";
@@ -349,6 +350,8 @@ export async function GET(req: NextRequest) {
   let seeded = 0;
   const { count } = await supabase.from("funding_programs").select("id", { count: "exact", head: true });
   if (!count || resync) {
+    const invalid = Object.values(FUNDING_PROGRAMS).filter(p => p.application !== undefined && !validFundingApplication(p.application));
+    if (invalid.length) return NextResponse.json({ error: "Invalid application evidence", programs: invalid.map(p => p.id) }, { status: 422 });
     const rows = Object.values(FUNDING_PROGRAMS).map((p) => ({
       id: p.id,
       data: p,

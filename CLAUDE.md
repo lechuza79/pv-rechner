@@ -641,6 +641,8 @@ Die Regel gilt weiter, der Anlassfall ist Geschichte. Die alte Kopfzeile entschi
 
 **Die Menü-Einträge der beiden Balkon-Ratgeber sind dabei ersatzlos weg, und das ist die Regel, nicht ein Verlust.** Seit der Betreiber-Vorgabe vom 20.08.2026 gehört in das Menü, was direkt unter einem Bereich liegt (Startseite, Rechner, Förder-Überblick); was in einer Kategorie liegt, gehört in die Übersicht seiner Kategorie. Die Crawlbarkeit hängt davon nicht ab — die trägt die Fußzeile, und die prüft derselbe Test unverändert weiter.
 
+Municipal funding pages share `FundingPageShell` and `FundingProgramDetails`; programme values and examples remain local to each programme. Release boundaries and browser coverage are documented in `docs/frontend-mit-codex.md`, “Shared municipal funding presentation”.
+
 ## Die klebende Aktionsleiste: `components/StickyCta.tsx`
 
 Sie lag bis 26.08.2026 als Datei IM Wärmepumpen-Ratgeber, fest verdrahtet auf zwei Beschriftungen und einen Sprungpunkt. Als die Förder-Stadtseiten dieselbe Leiste brauchten, war die Versuchung eine zweite — und die hätte sich binnen einer Woche in Verlauf, Sicherheitszone und Ausblenden am Seitenende unterschieden. **Ein Baustein, zwei Aufrufer**, Aktionen als Parameter.
