@@ -1,4 +1,5 @@
 "use client";
+import { FundingStand } from "./FundingStand";
 
 import { useState } from "react";
 import ActionButton from "./ActionButton";
@@ -17,7 +18,7 @@ export default function FundingOverviewCard({selected, ort, detailHref}: {
   const program = selected.programm;
   return <div className={`${foundation.foundation} ${styles.overview}`} data-story-scheme="light">
     <article className={styles.card}>
-      <div className={styles.overviewMeta}><FundingStatusBadge status={program.status} compact /><span>{selected.standLabel}</span></div>
+      <div className={styles.overviewMeta}><FundingStatusBadge status={program.status} compact /><FundingStand program={program} /></div>
       <header className={styles.intro}>
         <p className={styles.provider}>{program.traeger}</p>
         <h3>{program.name}</h3>

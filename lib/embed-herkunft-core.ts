@@ -114,6 +114,7 @@ export const EMBED_WIDGETS = [
   "erzeugung",
   "erzeugung-mini",
   "foerder-check",
+  "funding-hero",
   "galerie",
   "gemeinde",
   "gemeinde-erneuerbare",

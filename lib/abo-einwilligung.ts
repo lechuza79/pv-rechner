@@ -91,9 +91,18 @@ export const EINWILLIGUNGS_FASSUNGEN: EinwilligungsFassung[] = [
  */
 export const AKTUELLE_EINWILLIGUNG = EINWILLIGUNGS_FASSUNGEN[EINWILLIGUNGS_FASSUNGEN.length - 1];
 
+/** Funding-only subscriptions preserve their exact scope and leave cadence open. */
+export const FOERDER_ABO_EINWILLIGUNG: EinwilligungsFassung = {
+  ...EINWILLIGUNGS_FASSUNGEN[0],
+  version: "2026-10-08-foerderumfang",
+  seit: "2026-10-08",
+  foerderung: "Ich möchte per E-Mail über Änderungen der Förderkonditionen zur oben genannten Auswahl informiert werden, etwa zu Fördersätzen, Voraussetzungen oder verfügbaren Mitteln. Versandzeitpunkt und Häufigkeit stehen noch nicht fest. Jederzeit abmeldbar.",
+};
+
 /** Den Wortlaut zu einer gespeicherten Version nachschlagen. */
 export function einwilligungsFassung(version: string | null): EinwilligungsFassung | null {
   if (!version) return null;
+  if (version === FOERDER_ABO_EINWILLIGUNG.version) return FOERDER_ABO_EINWILLIGUNG;
   if (version === VIDEO_ABO_EINWILLIGUNG.version) return VIDEO_ABO_EINWILLIGUNG;
   return EINWILLIGUNGS_FASSUNGEN.find((f) => f.version === version) ?? null;
 }

@@ -1,6 +1,7 @@
-import { FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
+import { FUNDING_PROGRAMS, FUNDING_STATUS_LABEL, type FundingProgram } from "./funding-programs";
 import { alsListe, leitProgramm, nurAndereTechnikSatz, stadtseiteFall, stadtseiteThema, technikenSatz, type StadtProgramme } from "./foerder-stadt-meta";
 import { BALKON_RECHT } from "./balkon-config";
+import { fundingApplicationAnswer } from "./funding-application";
 
 // FAQ wird aus den Förderdaten generiert (nicht separat gespeichert) — so
 // spiegelt sie immer den Live-Stand der Programme aus der DB. Wird auf den
@@ -55,7 +56,7 @@ export function buildFundingFaq(
     });
     faq.push({
       q: `Muss der Förderantrag vor dem Kauf gestellt werden?`,
-      a: `Das legt jedes Programm in seiner Förderrichtlinie selbst fest. Für „${program.name}" steht es in der Richtlinie des Trägers — am besten vor dem Kauf nachsehen, ob der Antrag schon vorher gestellt werden muss.`,
+      a: fundingApplicationAnswer(program),
     });
   } else if (program) {
     const active = program.status === "aktiv";
@@ -77,11 +78,13 @@ export function buildFundingFaq(
     });
     faq.push({
       q: `Lässt sich die Förderung in ${cityName} mit der Bundesförderung kombinieren?`,
-      a: `Ja. Zusätzlich zur kommunalen Förderung gilt bundesweit die 0 % Mehrwertsteuer auf den Kauf und die Installation einer Photovoltaikanlage; über die KfW ist außerdem ein zinsgünstiger Kredit möglich.`,
+      a: program.combinableWith?.length
+        ? `Als ergänzende Angebote sind ${program.combinableWith.map(id => FUNDING_PROGRAMS[id]?.name).filter(Boolean).join(" und ")} beim Programm verlinkt. Ihre eigenen Voraussetzungen gelten zusätzlich; Zuschüsse dürfen nicht automatisch addiert werden.`
+        : `Für „${program.name}“ ist hier keine verlässlich bestätigte Kombination erfasst. Prüfe die Kumulierungsregeln in der offiziellen Richtlinie, bevor du mehrere Förderungen einplanst.`,
     });
     faq.push({
       q: `Muss der Förderantrag vor dem Kauf gestellt werden?`,
-      a: `In der Regel ja: Der Antrag muss meist vor dem Kauf oder der Montage bewilligt sein. Die genauen Bedingungen stehen in der offiziellen Förderrichtlinie des Programms.`,
+      a: fundingApplicationAnswer(program),
     });
   } else {
     faq.push({
@@ -102,10 +105,10 @@ export function buildFundingFaq(
   }
 
   const amort = opts.amortYears;
-  faq.push({
+  if (stadtseiteThema(liste) !== "balkon") faq.push({
     q: `Lohnt sich eine Photovoltaikanlage in ${cityName} ${year}?`,
     a: amort != null
-      ? `In den meisten Fällen ja. Eine typische 10-kWp-Anlage mit Speicher amortisiert sich in ${cityName} in etwa ${amort} Jahren — abhängig von Eigenverbrauch, Strompreis und Förderung. Im PV-Rechner kannst du es mit deinen eigenen Werten nachrechnen.`
+      ? `Im dargestellten Beispiel amortisiert sich eine 10-kWp-Anlage mit Speicher in ${cityName} in etwa ${amort} Jahren. Das ist eine Modellrechnung mit den angegebenen Annahmen. Im PV-Rechner kannst du Eigenverbrauch, Strompreis, Kosten und Förderung für dein Vorhaben anpassen.`
       : `Das hängt von Eigenverbrauch, Strompreis und Anlagengröße ab. Im PV-Rechner kannst du es für ${cityName} mit deinen eigenen Werten nachrechnen.`,
   });
 

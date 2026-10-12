@@ -8,3 +8,18 @@
 .dropdown[data-open="true"]{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
 .dropdown button{transition:background-color 120ms ease}
 @media(prefers-reduced-motion:reduce){.field,.icon,.dropdown,.dropdown button{transition:none !important}}
+
+/* Geometry and palette taken from the live simulation postcode field. */
+.local[data-location-appearance="simulation"] .field { border:1px solid rgba(212,255,36,.72)!important;border-radius:999px!important;min-height:57px!important;padding:6px 8px 6px 22px!important;gap:10px!important;background:rgba(212,255,36,.14)!important;color:var(--color-text-primary); }
+.local[data-location-appearance="simulation"] .field:focus-within { background:rgba(234,241,238,.94)!important;border-color:#6b8589!important;box-shadow:0 0 0 3px rgba(234,241,238,.18)!important; }
+.local[data-location-appearance="simulation"] input { font:400 18px/1.4 var(--font-text)!important;padding:6px 0!important;min-width:0;flex:1; }
+.local[data-location-appearance="simulation"] input::placeholder { color:inherit;opacity:.78; }
+.local[data-location-appearance="simulation"] .simulationAction { display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;padding:0;border:0;border-radius:50%;background:var(--color-cta);color:var(--color-cta-ink,var(--color-text-primary));cursor:pointer; }
+.local[data-location-appearance="simulation"] .simulationAction:focus-visible { outline:2px solid currentColor;outline-offset:3px; }
+.local[data-location-appearance="simulation"] .dropdown button { flex-wrap:wrap;gap:2px 10px; }
+
+.inputContents { display:contents; }
+.selectedPlace { position:relative; display:flex; align-items:center; flex:1; min-width:0; min-height:38px; padding:0 42px 0 12px; border-radius:var(--radius-pill); background:var(--color-bg); color:var(--color-text-primary); }
+.selectedPlace input { padding-right:0!important; }
+
+.local input { text-overflow:ellipsis; }

@@ -4,3 +4,10 @@
 .breadcrumb [aria-current]{opacity:.7}
 .breadcrumb svg{display:block;flex-shrink:0;width:14px;height:14px;margin:0}
 @media(max-width:700px){.breadcrumb{font-size:11px;gap:5px;flex:0 1 auto}}
+
+/* The municipality breadcrumb band: spacing and rule travel with the component. */
+.framed{position:relative;padding-block:17px;width:100%;box-sizing:border-box}
+.framed::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:currentColor;opacity:.1;pointer-events:none}
+
+.placement:global(.atlas-hero-local-nav){padding-block:0!important;border-top:0!important}
+.placement:global(.atlas-hero-local-nav)::before{display:none}

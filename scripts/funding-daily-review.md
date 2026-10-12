@@ -107,3 +107,29 @@ Record active additions, historical additions, corrections and unresolved cases 
 Each run records municipality counts before/after (positive, supported negative, manual check, queued question, awaiting answer, reply to review), denominator, net resolved towns and oldest overdue case; source counts are supplementary. A completed run is not a completed backlog. Each run also records: discovery-run outcome; programme/source/reply items reviewed; official evidence and decisions; actually deployed changes and public checks; inquiry/mail failures; unresolved items and the exact next work. Use `details` for evidence and backlog, `done` for measured completed work, and `decisions` only for a real operator decision. Preserve the existing monthly heartbeat exception. A source count is not a grant count, and an increase in catalogue entries is not automatically an increase in active grants.
 
 This procedure is configured work, not proof of future execution. The local watcher still requires its existing app/host to run. The GitHub source, enquiry and mailbox jobs run independently and must be checked separately.
+
+
+## Application procedures
+
+For each programme reviewed, also follow [Programme-specific application review](funding-application-review.md). Capture application timing, submission route, required documents and payment steps from the official originals in the shared `application` field. This is part of the existing evidence/review workflow; missing instructions must never be inferred from a generic application flow.
+
+## Daily renewal of the displayed verification date
+
+After reading and reconciling all displayed programme information, supply the complete
+reviewed source inventory as a JSON array of HTTPS URLs with `foerder:probe -- --ok
+<id> --wie traeger --url <evidence> --zitat <quote> --quellen <inventory.json>`.
+Include the programme/status page, application evidence, guideline index and every
+applicable guideline PDF supporting the displayed claims. This is an explicit reviewer
+attestation of completeness, never a list automatically inferred from yesterday's crawl.
+The command captures live fingerprints and binds them to the exact programme content.
+It fails before stamping if a listed source cannot be read. A subsequent manual review
+without an inventory disables the previous baseline until a complete inventory is supplied.
+
+The existing daily `foerder-watch` compares against this immutable reviewed baseline.
+Only a complete unchanged live source set AND unchanged programme content renew
+`last_verified`; failures, archives, changed links/PDFs or changed programme data do not.
+Changed observations never become a new baseline. The UI retains the single label
+“Zuletzt geprüft”. Existing programmes without a baseline retain their genuine prior date
+until their next substantive review; do not backfill baselines from unreviewed crawls.
+Use `foerder:watch -- --dry --review-only --id <id>` for bounded acceptance checks.
+This extends the existing workflow and introduces no model calls or additional scheduler.

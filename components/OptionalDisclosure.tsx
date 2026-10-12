@@ -8,8 +8,9 @@ import { iconSizes, space } from "../lib/theme";
 import "./optional-disclosure.css";
 
 /** Shared optional-input disclosure; callers supply content, never trigger styling. */
-export default function OptionalDisclosure({ label, children, open, onOpenChange, heading, description, descriptionAsHelp = false, action }: {
+export default function OptionalDisclosure({ label, children, open, onOpenChange, heading, description, descriptionAsHelp = false, action, icon }: {
   label: string;
+  icon?: ReactNode;
   /** Optional action beside a compact disclosure trigger. */
   action?: ReactNode;
   heading?: string;
@@ -29,7 +30,7 @@ export default function OptionalDisclosure({ label, children, open, onOpenChange
     {action ? <ActionButton iconOnly aria-label={label} title={label} aria-expanded={expanded} aria-controls={id} onClick={toggle}><IconChevronDown size={iconSizes.md}/></ActionButton> : <button type="button" className="sc-optional-disclosure-trigger" aria-expanded={expanded} aria-controls={id}
       style={{ gap: space.md, padding: `${space.lg}px 0` }}
       onClick={toggle}>
-      {label}<IconChevronDown size={iconSizes.md} />
+      {icon && <span aria-hidden="true">{icon}</span>}{label}<IconChevronDown size={iconSizes.md} />
     </button>}
     <Collapse open={expanded}><div id={id} className="sc-optional-disclosure-content">{children}</div></Collapse>
   </div>;

@@ -119,7 +119,11 @@ export const BAUSTEINE: Baustein[] = [
   {datei: "components/dashboard/WidgetConfigurationGroup.tsx", name: "WidgetConfigurationGroup", zweck: "Shared configuration and equal height composition for related widgets.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["ControlPanel", "SelectField", "WidgetPreviewCard"]},
   {datei: "components/dashboard/WidgetPreviewCard.tsx", name: "WidgetPreviewCard", zweck: "Shared widget preview, loading behavior and supported presentation settings.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ControlPanel", "SecondaryButton", "SelectField", "WidgetSettingsFlyout"]},
   {datei: "components/dashboard/WidgetSettingsFlyout.tsx", name: "WidgetSettingsFlyout", zweck: "Movable settings panel with shared actions and keyboard operation.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons", "SecondaryButton"]},
-  {datei: "components/ActionButton.tsx", name: "ActionButton", zweck: "One primary, secondary and icon action style for native buttons and links.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: []},
+  {datei:"components/gemeinde/AtlasBreadcrumb.tsx",name:"AtlasBreadcrumb",zweck:"Gemeinsamer Breadcrumb-Renderer. framed enthält die abgenommene Kommunen-Linie mit 10 Prozent Deckkraft und 17px Innenabstand; auch auf Förderseiten.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:[],keinBeispielWeil:"Das lebende Breadcrumb-Beispiel in dieser Galerie verwendet diesen Renderer einschließlich Linie und Abständen."},
+  {datei: "components/SidebarPageLayout.tsx", name: "SidebarPageLayout", zweck: "Shared sidebar and page surface used by editorial and funding pages.", gruppe: "struktur", ebene: "baustein", stand: "verbindlich", bestehtAus: ["SidebarNavigation"], keinBeispielWeil: "Needs the complete page and scroll position; verified on the funding preview and annual energy pages."},
+  {datei: "components/FundingPageShell.tsx", name: "FundingPageShell", zweck: "Beständiger Förderrahmen mit Szene, Themenwechsel und gemeinsamer Ortssuche.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["LocationSearch", "SidebarPageLayout", "SharedSiteHeader", "AtlasBreadcrumb", "ActionButton", "Icons", "EditorialPage"], keinBeispielWeil: "Der vollständige Rahmen steht auf den drei Förderübersichten; eine zweite Szene gehört nicht in die Galerie."},
+  {datei: "components/LocationSearch.tsx", name: "LocationSearch", zweck: "Live-Simulationsfeld mit geteilter PLZ-, Orts- und Landkreissuche.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["OnsiteSearch", "ActionButton"], keinBeispielWeil: "Die echten Standortfelder stehen in Live-Simulation und Förderübersicht und teilen den gespeicherten Standort."},
+  {datei: "components/ActionButton.tsx", name: "ActionButton", zweck: "One primary, secondary, text and icon action style for native buttons and links.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: []},
   {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Compatibility wrapper for the shared secondary ActionButton.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["ActionButton"]},
   {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
   // ─── Eingabe ───────────────────────────────────────────────────────────────
@@ -149,7 +153,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/SelectField.tsx",
@@ -222,7 +226,7 @@ export const BAUSTEINE: Baustein[] = [
     datei: "components/Auswahl.tsx",
     name: "Auswahl",
     zweck:
-      "Das Multitool: Pfeile zum Durchsteppen, Menü zum Springen — für Listen, die man sowohl durchgehen als auch anspringen will.",
+      "Dropdown / Auswahlmenü: Auswahl verwenden, für reine Menüs pfeile=false. Für Formularwerte SelectField. Keine nachgebauten Trigger oder eigenen Menüstile.",
     gruppe: "eingabe",
     ebene: "baustein",
     // Im Aufbau, nicht verbindlich: Drei ältere Fassungen desselben Elements
@@ -338,6 +342,8 @@ export const BAUSTEINE: Baustein[] = [
     stand: "im-aufbau",
     bestehtAus: [],
   },
+  {datei: "components/FundingStand.tsx", name: "FundingStand", zweck: "Shared funding verification date, value period and freshness caveats.", gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: []},
+  {datei: "components/FundingSources.tsx", name: "FundingSources", zweck: "Official source context for funding pages in the shared footer position.", gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["DataSourcesSection"]},
   {
     datei: "components/FundingOverviewCard.tsx",
     name: "FundingOverviewCard",
@@ -345,7 +351,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "verbindlich",
-    bestehtAus: ["ActionButton", "FundingDetailModal", "FundingProgramParts"],
+    bestehtAus: ["ActionButton", "FundingDetailModal", "FundingProgramParts", "FundingStand"],
   },
   {
     datei: "components/FundingDetailModal.tsx",
@@ -354,7 +360,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "verbindlich",
-    bestehtAus: ["Modal", "ActionButton", "FoerderFlow", "FundingProgramParts"],
+    bestehtAus: ["FundingPageShell", "Modal", "ActionButton", "FoerderFlow", "FundingProgramParts", "Pill", "Icons", "FundingStand", "FormError", "OptionalDisclosure"],
   },
   {
     datei: "components/Modal.tsx",
@@ -651,11 +657,11 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/StickyCta.tsx",
     name: "StickyCta",
-    zweck: "Die klebende Aktionsleiste am unteren Rand — erscheint beim Scrollen, verschwindet am Seitenende.",
+    zweck: "Die klebende Aktionsleiste am unteren Rand — erscheint beim Scrollen, verschwindet am Seitenende; optionales Teilen mit öffentlicher Seitenadresse.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Modal"],
+    bestehtAus: ["Modal", "ActionButton", "Icons"],
     keinBeispielWeil:
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
@@ -706,11 +712,11 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/Breadcrumb.tsx",
     name: "Breadcrumb",
-    zweck: "Die Krümelspur — nennt das Thema als Elternteil, nie eine Hierarchie, die die Adresse nicht hat.",
+    zweck: "Breadcrumb / Brotkrümel: Für neue Seiten variant=page verwenden. Vollständige Kommunen-Vorlage mit oberer Linie, Abständen und responsiver Schrift. Keine Seiten-CSS für Linie oder Typografie.",
     gruppe: "struktur",
     ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: [],
+    stand: "verbindlich",
+    bestehtAus: ["AtlasBreadcrumb"],
   },
   {
     datei: "components/BackLink.tsx",
@@ -759,6 +765,13 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
     keinBeispielWeil:
       "Rahmen und Navigation der internen Bereiche — er umgibt diese Seite gerade.",
+  },
+  {
+    datei: "components/Pill.tsx",
+    name: "Pill",
+    zweck: "Shared non-interactive labels with compact calendar and regular website sizes.",
+    gruppe: "struktur", ebene: "baustein", stand: "im-aufbau", bestehtAus: [],
+    keinBeispielWeil: "Shown in the funding programme headers and calendar labels with their real contextual icons and text.",
   },
   {
     datei: "components/Icons.tsx",
@@ -1144,7 +1157,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["FoerderFlow", "Icons", "Modal"],
+    bestehtAus: ["FoerderFlow", "Icons", "Modal", "ActionButton"],
   },
   {
     datei: "components/FoerderFlow.tsx",
@@ -1174,7 +1187,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["InfoTooltip", "StatusBadge"],
+    bestehtAus: ["InfoTooltip", "StatusBadge", "MetricValue", "ExampleCard", "ActionButton"],
   },
   {
     datei: "components/FundingTechnikTabs.tsx",
@@ -1344,11 +1357,11 @@ export const NOCH_NICHT_EINGEORDNET: string[] = [
   "BegFundingQuestions",
   "Collapse",
   "DesignFooterNavigation",
+  "FundingPageLoading",
   "HeatPumpDesignHeader",
   "LiveDataStatus",
   "PvSystemQuestions",
   "ScrollIndicator",
-  "SidebarPageLayout",
   "SiteApplicationSchema",
   "VideoRenderBridge",
   "VisibleWidget",

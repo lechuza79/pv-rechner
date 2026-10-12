@@ -50,7 +50,7 @@ function karte(html: string, id: string): string {
   expect(start, `card of ${id} missing`).toBeGreaterThan(-1);
   const next = html.indexOf("data-foerderprogramm=", start + 10);
   // The last card ends where the programme section ends (the overview link).
-  const ende = next === -1 ? html.indexOf("Alle Förderprogramme im Überblick", start) : next;
+  const ende = next === -1 ? html.indexOf('id="foerder-beispiele"', start) : next;
   expect(ende).toBeGreaterThan(start);
   return html.slice(start, ende);
 }

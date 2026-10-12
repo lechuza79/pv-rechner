@@ -762,7 +762,7 @@ const BEISPIELE: Record<string, Beispiel> = {
     </Reihe>
   ),
   Breadcrumb: () => (
-    <Breadcrumb
+    <Breadcrumb variant="page"
       items={[
         { href: "/", label: "Start" },
         { href: "/balkonkraftwerk", label: "Balkonkraftwerk" },

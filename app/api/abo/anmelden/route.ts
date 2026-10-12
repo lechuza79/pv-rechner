@@ -121,7 +121,8 @@ export async function POST(req: NextRequest) {
 
   // All Atlas levels share the same subscription flow. The registry lookup
   // below remains authoritative; the format check only rejects malformed IDs.
-  if (!/^(?:de|\d{2}|\d{5}|\d{8}|\d{9})$/.test(regionId)) {
+  const fundingScope = /^funding:(?:program:[a-z0-9][a-z0-9-]{0,150}|region:(?:de|\d{2}|\d{5}|\d{8}|\d{9}))$/.test(regionId);
+  if ((!/^(?:de|\d{2}|\d{5}|\d{8}|\d{9})$/.test(regionId) && !fundingScope) || (fundingScope && payload.quelle !== "foerderung")) {
     return NextResponse.json({ error: "Keine gültige Region." }, { status: 400 });
   }
   if (!siehtNachEmailAus(email)) {

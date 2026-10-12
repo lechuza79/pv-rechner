@@ -64,6 +64,7 @@ export function Auswahl({
   umlaufend = false,
   menuAlign = "start",
   variant = "default",
+  size = "compact",
 }: {
   /** Was auf dem Knopf steht — der gewählte Wert, nicht der Name des Filters. */
   titel: string;
@@ -90,6 +91,8 @@ export function Auswahl({
   menuAlign?: "start" | "end";
   /** Quiet trigger on a scene; the menu retains its readable surface. */
   variant?: "default" | "quiet";
+  /** Comfortable touch target for page filters; compact remains the widget default. */
+  size?: "compact" | "comfortable";
 }) {
   const [offen, setOffen] = useState(false);
   const [suche, setSuche] = useState("");
@@ -179,8 +182,9 @@ export function Auswahl({
           gap: space.xs,
           minWidth: breite,
           font: "inherit",
-          fontSize: v("--font-size-small"),
-          padding: variant === "quiet" ? pad("md", "lg") : pad("xs", "sm"),
+          minHeight: size === "comfortable" ? 48 : undefined,
+          fontSize: v(size === "comfortable" ? "--font-size-body" : "--font-size-small"),
+          padding: size === "comfortable" ? "12px 16px" : variant === "quiet" ? pad("md", "lg") : pad("xs", "sm"),
           background: variant === "quiet" ? "transparent" : v("--color-bg"),
           color: v("--color-text-primary"),
           border: `1px solid ${v("--color-border")}`,
@@ -253,10 +257,11 @@ export function Auswahl({
                 boxSizing: "border-box",
                 font: "inherit",
                 fontSize: v("--font-size-small"),
-                padding: pad("xs", "sm"),
+                minHeight: size === "comfortable" ? 48 : undefined,
+                padding: size === "comfortable" ? "12px 16px" : pad("xs", "sm"),
                 border: "none",
                 borderBottom: `1px solid ${v("--color-border")}`,
-                background: "transparent",
+                background: v("--color-bg"),
                 color: v("--color-text-primary"),
                 position: "sticky",
                 top: 0,
@@ -279,7 +284,9 @@ export function Auswahl({
                 gap: space.sm,
                 width: "100%",
                 textAlign: "left",
-                padding: pad("xs", "md"),
+                alignItems: "center",
+                minHeight: size === "comfortable" ? 44 : undefined,
+                padding: size === "comfortable" ? "12px 16px" : pad("xs", "md"),
                 border: "none",
                 background: e.schluessel === aktiv ? v("--color-bg-accent") : "transparent",
                 color: e.schluessel === aktiv ? v("--color-accent") : v("--color-text-primary"),

@@ -1,6 +1,7 @@
 import { ATOMSTROM_RELEASE_READY, ATOMSTROM_ARCHIVE_YEARS } from '../lib/atomstrom-release';
 import { getPageContentModifiedAt } from '../lib/page-content-state';
 import { getAnnualVariant } from './(site)/atomstrom-import/annual-variant';
+import { fundingContentDate } from "../lib/funding-page-dates";
 import { MetadataRoute } from "next";
 import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingListFrom, cityIndexFreigegeben, type AtlasCity } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
@@ -41,12 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const d = new Date(iso);
     return isNaN(d.getTime()) ? undefined : d;
   };
-  const fundingDates = programs.map((p) => toDate(p.lastVerified)).filter((d): d is Date => !!d);
-  // Kein Prüfdatum in den Programmen (z. B. Datenbank aus) → gar kein lastmod,
-  // nicht die Build-Zeit.
-  const maxFundingDate = fundingDates.length
-    ? new Date(Math.max(...fundingDates.map((d) => d.getTime())))
-    : undefined;
+  const maxFundingDate = fundingContentDate(programs);
 
   // Datenstand des Marktstammdatenregisters — er datiert alles, was aus MaStR
   // gerechnet ist (Atlas + Zubau-Story). Der Read ist ein Einzeiler auf
@@ -63,17 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
   // wir ihm per noindex gerade verweigern.
-  // A city page shows every programme of its place (06.10.2026): it changed
-  // when the most recently verified of them was checked.
-  const geprueftAm = (c: AtlasCity): Date | undefined =>
-    fundingListFrom(programs, c)
-      .map((p) => toDate(p.lastVerified))
-      .filter((d): d is Date => !!d)
-      .sort((a, b) => b.getTime() - a.getTime())[0];
+  // Only actual revisions of programmes on this page can supply its date.
+  const geprueftAm = (c: AtlasCity): Date | undefined => fundingContentDate(fundingListFrom(programs, c));
   const cityPages: MetadataRoute.Sitemap = liveCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: geprueftAm(c) ?? maxFundingDate,
+      lastModified: geprueftAm(c),
       changeFrequency: "weekly",
       priority: 0.7,
     };
@@ -83,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: geprueftAm(c) ?? maxFundingDate,
+      lastModified: geprueftAm(c),
       changeFrequency: "monthly",
       priority: 0.5,
     };
@@ -91,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blSlugs = new Set([...publishedBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
   const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
     url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
-    lastModified: maxFundingDate,
+    lastModified: fundingContentDate(programs.filter(p => p.bundesland && slugify(p.bundesland) === slug)),
     changeFrequency: "weekly",
     priority: 0.7,
   }));

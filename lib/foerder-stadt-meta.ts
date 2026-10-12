@@ -239,6 +239,7 @@ export function foerderStadtMeta(
     description: kappe(
       mehrereMitSatz,
       mehrere,
+      satz ? `${Ort}: ${satz.value} für ${satz.label}. Voraussetzungen, Antragstellung und Beispielrechnungen zur Photovoltaik-Förderung.` : null,
       mitSatz,
       `${ort[0].toUpperCase()}${ort.slice(1)} gibt es Förderung über das Programm ${programm}. Beträge, Bedingungen und Beispielrechnungen für deine PV-Anlage.`,
       `${ort[0].toUpperCase()}${ort.slice(1)} gibt es ein kommunales Förderprogramm für Solaranlagen. Beträge, Bedingungen und Beispielrechnungen für deine PV-Anlage.`,

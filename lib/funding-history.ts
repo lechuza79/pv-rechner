@@ -142,7 +142,7 @@ function ausRechenwerten(p: FundingProgram): string | null {
  *               Förderung; wer ihn als solche ausweist, verwässert den Verlauf.
  */
 const NICHT_PROTOKOLLIERT = [
-  "stand", "verified", "lastVerified", "pageSeenAt", "changedSinceIso",
+  "stand", "verified", "lastVerified", "pageSeenAt", "changedSinceIso", "contentUpdatedAt", "application",
   "name", "traeger", "url", "agsCode", "region", "bundesland", "level", "combinableWith",
 ] as const;
 export const NICHT_PROTOKOLLIERTE_FELDER: readonly string[] = NICHT_PROTOKOLLIERT;

@@ -37,3 +37,15 @@
   .action[data-action-button][data-collapse-label] { width: 44px; height: 44px; padding: 0; flex: 0 0 44px; }
   .action[data-collapse-label] > span { display: none; }
 }
+
+.action[data-size="large"] { min-height: 52px; padding: 14px 24px; font: 700 var(--font-size-lead, 18px)/1.25 var(--font-heading, var(--font-text)); white-space: normal; max-width: 100%; }
+
+.action[data-variant="text"] { border:0; border-radius:0; padding:0; background:transparent; box-shadow:none; min-height:44px; font:600 var(--font-size-body)/1.5 var(--font-text); }
+.action[data-variant="text"]:hover { text-decoration:underline; text-underline-offset:.2em; }
+
+/* Shared compact control size for secondary navigation. */
+.action[data-size="small"] { min-height:32px; padding:6px 12px; }
+.action[data-size="small"][data-icon-only] { width:32px; height:32px; padding:0; flex-basis:32px; }
+
+/* Keep keyboard focus visible without a second ring around icon buttons. */
+.action[data-icon-only]:focus-visible { outline-offset:-2px; }
