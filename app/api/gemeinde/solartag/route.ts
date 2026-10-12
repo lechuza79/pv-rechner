@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { gemeindeWetterpunkt } from "../../../../lib/atlas-geo";
 import { rateLimit } from "../../../../lib/rate-limit";
@@ -17,6 +18,8 @@ import plzCoords from "../../../../public/plz.json";
 const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "gemeinde-solartag");
   if (limited) return limited;
   const ags = req.nextUrl.searchParams.get("ags") ?? "";

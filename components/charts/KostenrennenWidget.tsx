@@ -104,6 +104,8 @@ export default function KostenrennenWidget({ rennen, onsite, branding, showEmbed
   return (
     <RaceChart
       widget={WIDGETS.kostenrennen}
+      headingTitle="Stromkosten: Mit PV vs. Ohne PV"
+      titleSeries={[{text:"Mit PV",runner:"camera"},{text:"Ohne PV",runner:"other"}]}
       kamera={{ key: pv.key, label: pv.label, kurz: pv.kurz, farbe: "--color-accent", werte: verlauf.kosten[pv.key] }}
       anderer={{ key: ohne.key, label: ohne.label, kurz: ohne.kurz, farbe: "--color-text-primary", werte: verlauf.kosten[ohne.key] }}
       startJahr={rennen.startJahr}

@@ -122,6 +122,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
     ? {
         widget: WIDGETS[exportKey],
         place: paket.name,
+        exportUnit: item.story.unit,
         // Stock widgets: the chosen month end; others: the story's own data date.
         stand: formatDate(hasStockPeriod ? (selected?.end ?? paket.registerStand) : (item.story.sourceDate ?? paket.registerStand)),
         // Charts with their own selectors print their state themselves.
@@ -289,7 +290,7 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
           }
         />
       )}
-    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
+    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} exportUnit="MW" title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
     growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.solarAnnualGrowth?.stand ?? paket.registerStand} name={paket.name} regionId={paket.ags} />}
     stock={widgets("Anlagenbestand")}
     energy={Object.keys(energy).length ? energy : undefined}

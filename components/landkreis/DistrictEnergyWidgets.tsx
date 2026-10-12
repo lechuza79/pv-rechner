@@ -6,11 +6,11 @@ import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
 import {WIDGETS} from '../../lib/widget-registry';
 import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
-import {MonitorMonthlySolarChart} from '../gemeinde/MonitorMonthlySolarChart';
+import {RegionalMonthlySolarWidget} from './RegionalMonthlySolarWidget';
+export {RegionalMonthlySolarWidget} from './RegionalMonthlySolarWidget';
 import {MonitorAnnualEnergyChart} from '../gemeinde/MonitorAnnualEnergyChart';
 import {ApprovedStoryVisual} from '../social/ApprovedStoryVisual';
 import chart from '../social/StoryConceptLab.module.css';
-import {ortPhrase} from '../../lib/atlas-orte';
 import {dashboardDate} from '../../lib/dashboard/format';
 
 /** Months without a value in every part are left out, not summed short. The
@@ -28,13 +28,9 @@ function ValueWidget({data,name,regionId,feedIn=false}:{data:DistrictEnergy;name
  if(!selected?.value)return null;
  const title=feedIn?'Einspeisevergütung':'Wert des Solarstroms';
  const coverage=valueCoverageNote(data);
- return <ExportableWidgetFrame widget={feedIn?WIDGETS.regionalFeedInValue:WIDGETS.regionalElectricityValue} place={name} stand={formatStoryDate(selected.solar.sourceDate)} filename={`solar-check-${feedIn?"feed-in":"electricity-value"}-${regionId}`} stateLabel={new Date(selected.month+"-15T12:00:00").toLocaleDateString("de-DE",{month:"long",year:"numeric"})} title={title} kind="number" className={chart.visualTheme} data-story-scheme="dark" settingsPlacement="below-title" settings={<WidgetSetting label="Monat der Berechnung" hideLabel stepper value={selected.month} onChange={setMonth} options={rows.map(row=>({value:row.month,label:new Date(row.month+'-15T12:00:00').toLocaleDateString('de-DE',{month:'long',year:'numeric'})}))}/>} help={<><p>Summe aller Teilgebiete für vollständig berechenbare Monate. Wetter und Inbetriebnahmen des gewählten Monats, bewertet mit den gespeicherten Preis- und örtlichen Eigenverbrauchsannahmen{data.valuationAssumptionDate?` vom ${dashboardDate(data.valuationAssumptionDate)}`:''}. Modellwerte, keine tatsächlichen Einnahmen.</p>{" "}{coverage&&<><p>{coverage}</p>{" "}</>}<p>Bei {selected.value.approximateTariffCount.toLocaleString('de-DE')} Anlagen ist die Vergütung angenähert; bei {selected.value.unknownModeCount.toLocaleString('de-DE')} ist die Betriebsart unbekannt. Gewerblicher Eigenverbrauch ist bei {selected.value.commercialSelfUseUnknownCount.toLocaleString('de-DE')} Anlagen nicht bestimmbar.</p></>}>
+ return <ExportableWidgetFrame widget={feedIn?WIDGETS.regionalFeedInValue:WIDGETS.regionalElectricityValue} place={name} stand={formatStoryDate(selected.solar.sourceDate)} filename={`solar-check-${feedIn?"feed-in":"electricity-value"}-${regionId}`} stateLabel={new Date(selected.month+"-15T12:00:00").toLocaleDateString("de-DE",{month:"long",year:"numeric"})} exportUnit="€" title={title} kind="number" className={chart.visualTheme} data-story-scheme="dark" settingsPlacement="below-title" settings={<WidgetSetting label="Monat der Berechnung" hideLabel stepper value={selected.month} onChange={setMonth} options={rows.map(row=>({value:row.month,label:new Date(row.month+'-15T12:00:00').toLocaleDateString('de-DE',{month:'long',year:'numeric'})}))}/>} help={<><p>Summe aller Teilgebiete für vollständig berechenbare Monate. Wetter und Inbetriebnahmen des gewählten Monats, bewertet mit den gespeicherten Preis- und örtlichen Eigenverbrauchsannahmen{data.valuationAssumptionDate?` vom ${dashboardDate(data.valuationAssumptionDate)}`:''}. Modellwerte, keine tatsächlichen Einnahmen.</p>{" "}{coverage&&<><p>{coverage}</p>{" "}</>}<p>Bei {selected.value.approximateTariffCount.toLocaleString('de-DE')} Anlagen ist die Vergütung angenähert; bei {selected.value.unknownModeCount.toLocaleString('de-DE')} ist die Betriebsart unbekannt. Gewerblicher Eigenverbrauch ist bei {selected.value.commercialSelfUseUnknownCount.toLocaleString('de-DE')} Anlagen nicht bestimmbar.</p></>}>
   <div className="monitor-widget-body"><ApprovedStoryVisual bild={{art:'kennzahl',stil:'hell',aussage:title,gemessen:'Modellrechnung',quelle:'Summe der Gemeindeberechnungen',serien:[{label:feedIn?'Einspeisevergütung':'Stromwert',wert:feedIn?selected.value.feedInEuro:selected.value.euro,einheit:'€'}]}}/></div>
  </ExportableWidgetFrame>;
-}
-export function RegionalMonthlySolarWidget({data,name,regionId,videoSupported=true}:{data:DistrictEnergy;name:string;regionId:string;videoSupported?:boolean}) {
- const [month,setMonth]=useState(data.monthly[0].solar.month);
- return <ExportableWidgetFrame animated videoParams={videoSupported?{widget:"gemeinde-solar-monat",ags:regionId,period:month}:undefined} videoPeriod={formatStoryDate(month)} title={`Solarerzeugung im Tagesverlauf ${ortPhrase({name})}`} exportNote={null} helpExportNote={false} kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={<p>Modellierte Erzeugung aller Teilgebiete, keine Messung.</p>} widget={WIDGETS.gemeindeSolarMonat} place={name} stand={formatStoryDate(data.monthly[0].solar.sourceDate)} filename={`solar-check-radial-${regionId}`}><div className="monitor-widget-body"><MonitorMonthlySolarChart data={data.monthly[0].solar} datasets={data.monthly.map(row=>row.solar)} onPeriodChange={setMonth}/></div></ExportableWidgetFrame>;
 }
 export function districtEnergyWidgets({data,name,regionId,videoSupported=true}:{data:DistrictEnergy|null;name:string;regionId:string;videoSupported?:boolean}): {energy?: MonitorEnergyWidgets; energyNotice?: React.ReactNode} {
  if(!data)return {energyNotice:<p role="status">Die Erzeugungsdaten aller Teilgebiete sind derzeit nicht vollständig verfügbar.</p>};

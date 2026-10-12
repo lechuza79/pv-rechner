@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -15,7 +17,7 @@ export type RegionSolarleistungEmbedProps = {
 };
 
 /** Themebare Hülle für das Bundesland-Solarleistungs-Widget im Embed-Kontext. */
-export default function RegionSolarleistungEmbed(props: RegionSolarleistungEmbedProps) {
+function RegionSolarleistungEmbedContent(props: RegionSolarleistungEmbedProps) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -50,3 +52,5 @@ export default function RegionSolarleistungEmbed(props: RegionSolarleistungEmbed
     />
   );
 }
+
+export default function RegionSolarleistungEmbed(props:ComponentProps<typeof RegionSolarleistungEmbedContent>){return <WidgetPresentation widgetId="region-solarleistung"><RegionSolarleistungEmbedContent {...props}/></WidgetPresentation>;}

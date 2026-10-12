@@ -5,7 +5,7 @@ import {WindMicroCompass} from './WindMicroCompass';
 import {powerDisplay} from '../../lib/microchart-power';
 import styles from './WeatherMicroTile.module.css';
 
-type Props = {place?:string;validAt?:string;layout?:'horizontal'|'stacked'|'separate';loading?:boolean} & (
+type Props = {place?:string;validAt?:string;layout?:'horizontal'|'stacked'|'separate'|'widget';showPlace?:boolean;showLabel?:boolean;loading?:boolean} & (
  | {kind:'solar'; label?:string; chart:ComponentProps<typeof SolarMicroRadial>}
  | {kind:'wind'; label?:string; chart:ComponentProps<typeof WindMicroCompass>;day?:SolarMicroPoint[]|null});
 const timeLabel=(time?:string)=>time&&Number.isFinite(Date.parse(time))?new Intl.DateTimeFormat('de-DE',{timeZone:'Europe/Berlin',hour:'2-digit',minute:'2-digit'}).format(new Date(time))+' Uhr':'Zeitpunkt nicht verfügbar';
@@ -26,16 +26,16 @@ export function WeatherMicroTile(props:Props){
  // While weather loads: spinner in the chart, skeleton bars for text, never "nicht verfügbar".
  const skeleton=(width:number)=><span className={styles.skeleton} style={{width}} aria-hidden="true"/>;
  const spinner=<span className={styles.spinner} role="status" aria-label="Wetterdaten werden geladen"/>;
- const header=(title:string,at?:string)=><header className={styles.header}><h2 className={styles.label}>{title}</h2>{loading?skeleton(52):<time className={styles.detail} dateTime={at}>{timeLabel(at)}</time>}</header>;
+ const header=(title:string,at?:string,showLabel=true)=><header className={styles.header}>{showLabel&&<h2 className={styles.label}>{title}</h2>}{loading?skeleton(52):<time className={styles.detail} dateTime={at}>{timeLabel(at)}</time>}</header>;
  return <article className={styles.tile} data-layout={props.layout??'separate'} data-combined={props.kind==='wind'}>
   <section className={styles.panel}>
-   {header(props.label??(props.kind==='solar'?'Tagesverlauf':'Windstärke'),time)}
+   {header(props.label??(props.kind==='solar'?'Tagesverlauf':'Windstärke'),time,props.showLabel!==false)}
    <div className={styles.row}>
     <div className={styles.chart}>{loading?spinner:props.kind==='solar'?<SolarMicroRadial {...props.chart} size={80} showValue={false}/>:<WindMicroCompass {...props.chart} size={80} showValue={false}/>}</div>
     {loading?<div className={styles.info}>{skeleton(90)}{skeleton(70)}{skeleton(80)}</div>:<div className={styles.info}>
      <span className={styles.detail}>{props.kind==='solar'?(relativeSolar?'Modellierte Auslastung':'Modellierte Leistung'):'Aktuell'}</span>
      <div className={styles.value}>{value==null?'–':(props.kind==='solar'&&!relativeSolar?power.value!:value).toLocaleString('de-DE',{maximumFractionDigits:props.kind==='wind'?2:1})} <small>{unit}</small></div>
-     <span className={styles.detail}>{props.kind==='solar'?props.place??'Solar':value===0?'Windstille':direction?`aus ${direction}`:'Richtung fehlt'}</span>
+     {(props.kind==='wind'||props.showPlace!==false||relativeSolar)&&<span className={styles.detail}>{props.kind==='solar'?props.place??'Solar':value===0?'Windstille':direction?`aus ${direction}`:'Richtung fehlt'}</span>}
     </div>}
    </div>
   </section>
@@ -43,7 +43,7 @@ export function WeatherMicroTile(props:Props){
    {header('Tagesverlauf',dayCurrent?.time)}
    <div className={styles.row}>
     <div className={styles.chart}>{loading?spinner:<SolarMicroRadial kind="wind" power points={dayPoints??null} currentTime={dayCurrent?.time} size={80} showValue={false}/>}</div>
-    {loading?<div className={styles.info}>{skeleton(90)}{skeleton(70)}{skeleton(80)}</div>:<div className={styles.info}><span className={styles.detail}>Modellierte Leistung</span><div className={styles.value}>{dayCurrent?dayPower.value!.toLocaleString('de-DE',{maximumFractionDigits:1}):'–'} <small>{dayPower.unit}</small></div><span className={styles.detail}>{dayCurrent?props.place??'Wind':'Höhenwind fehlt'}</span></div>}
+    {loading?<div className={styles.info}>{skeleton(90)}{skeleton(70)}{skeleton(80)}</div>:<div className={styles.info}><span className={styles.detail}>Modellierte Leistung</span><div className={styles.value}>{dayCurrent?dayPower.value!.toLocaleString('de-DE',{maximumFractionDigits:1}):'–'} <small>{dayPower.unit}</small></div>{(props.showPlace!==false||!dayCurrent)&&<span className={styles.detail}>{dayCurrent?props.place??'Wind':'Höhenwind fehlt'}</span>}</div>}
    </div>
   </section>}
  </article>;

@@ -167,11 +167,11 @@ describe("Quellenangaben", () => {
       expect(w.exampleParams, `${w.id}: Beispiel-Ort fehlt`).toBeTruthy();
       const pfad = embedExamplePath(w);
       expect(pfad, `${w.id}: Beispiel-Pfad fehlt`).toBeTruthy();
-      expect(pfad!, `${w.id}: Beispiel-Ort landet nicht im Link`).toMatch(/\?(ags|bl)=\d+$/);
+      expect(pfad!, `${w.id}: Beispiel-Ort landet nicht im Link`).toMatch(/[?&](ags|bl)=\d+(&|$)/);
     }
     // Einträge ohne Ortsbezug bleiben unverändert — sonst hängt an jedem Link
     // ein Fragezeichen ohne Grund.
-    for (const w of allWidgets().filter((x) => !x.place && x.embeddable !== false)) {
+    for (const w of allWidgets().filter((x) => !x.place && !x.exampleParams && x.embeddable !== false)) {
       expect(embedExamplePath(w)).toBe(`/embed/${w.id}`);
     }
   });

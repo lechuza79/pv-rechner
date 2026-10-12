@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
@@ -15,7 +16,9 @@ export const dynamic = "force-dynamic";
 
 // ─── GET: Current feed-in rates (public) ──────────────────────────────────────
 
-export async function GET() {
+export async function GET(req: Request) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   if (cached && Date.now() - cached.ts < TTL) {
     return NextResponse.json(cached.data, {
       headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },

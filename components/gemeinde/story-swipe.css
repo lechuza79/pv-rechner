@@ -215,3 +215,5 @@
 .story-reader-inline .story-reader-body{flex:1;min-height:0}
 .story-reader-inline .story-reader-actions{gap:2px}
 .story-reader-inline .story-reader-bottom{padding:8px}
+/* A reusable strip can sit in a card without adopting the page viewport. */
+[data-story-layout="contained"] .story-strip{width:100%;margin-inline:0}

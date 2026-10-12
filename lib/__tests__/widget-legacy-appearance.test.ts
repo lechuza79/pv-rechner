@@ -1,0 +1,21 @@
+import {afterEach,it,expect,vi} from 'vitest';
+import {useWidgetTheme} from '../useWidgetTheme';
+const effects=vi.hoisted(()=>({run:undefined as undefined|(()=>void|(()=>void))}));
+vi.mock('../../components/dashboard/WidgetHost',()=>({useWidgetHost:()=>null}));
+vi.mock('react',()=>({useRef:(current:unknown)=>({current}),useEffect:(run:()=>void)=>{effects.run=run;}}));
+afterEach(()=>vi.unstubAllGlobals());
+it('shares the validated appearance channel without trusting foreign frames',()=>{
+ const callbacks:Record<string,Function>={};const settings=vi.fn();const parent={};
+ vi.stubGlobal('window',{parent,location:{search:'?sharing=off&onsite=1',origin:'https://test.local'},addEventListener:(name:string,fn:Function)=>callbacks[name]=fn,removeEventListener:()=>{}});
+ vi.stubGlobal('document',{documentElement:{style:{setProperty:vi.fn(),removeProperty:vi.fn()},dataset:{}}});
+ useWidgetTheme({onSettings:settings});effects.run!();
+ expect(settings).toHaveBeenCalledWith({share:false});settings.mockClear();
+ const data={type:'widget:appearance',appearance:{sharing:'on'}};
+ callbacks.message({source:parent,origin:'https://foreign.test',data});
+ callbacks.message({source:{},origin:'https://test.local',data});
+ expect(settings).not.toHaveBeenCalled();
+ callbacks.message({source:parent,origin:'https://test.local',data});
+ expect(settings).toHaveBeenLastCalledWith({share:true});
+ callbacks.message({source:parent,origin:'https://test.local',data:{type:'widget:appearance',appearance:{sharing:'invalid'}}});
+ expect(settings).toHaveBeenCalledTimes(1);
+});

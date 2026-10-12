@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse, after } from "next/server";
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import { createCache, fetchPublicPower, clampAbsoluteRange, safeCountry } from "../../../../lib/energy-api";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { supabase } from "../../../../lib/supabase-server";
@@ -167,6 +168,8 @@ function trimIncompleteTrailingWeeks(data: GenerationDataPoint[]): GenerationDat
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "energy-generation");
   if (limited) return limited;
 

@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { cacheStorage } from "./embed-context";
+import {useWidgetResource} from "../components/dashboard/WidgetData";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -23,121 +22,8 @@ export interface GenerationData {
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────
 
-const CACHE_PREFIX = "sc-energy-";
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes (live data)
-// Historical series never change, so within one visit they never expire. They
-// are deliberately NOT persisted across visits: § 25 Abs. 2 Nr. 2 TDDDG exempts
-// storage on the user's device only where it is *technically indispensable* for
-// the requested service, and a pure speed cache is an optimisation — the
-// exemption would not carry it, and a consent banner for a data cache is absurd.
-// Session scope keeps the benefit within a visit and takes the question off the
-// table. Applies to DATA only; settings the user chose (postcode, colour scheme,
-// home municipality) stay persistent and DO rely on Nr. 2.
-const LONG_CACHE_TTL = Infinity;
-
-const RETRY_DELAYS = [3000, 8000]; // 2 retries after 3s and 8s
-
-function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, isHistorical = false): {
-  data: T;
-  loading: boolean;
-  error: string | null;
-  isStale: boolean;
-  refetch: () => void;
-} {
-  const [data, setData] = useState<T>(defaultValue);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isStale, setIsStale] = useState(false);
-  const [fetchTrigger, setFetchTrigger] = useState(0);
-  const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const refetch = useCallback(() => {
-    setFetchTrigger(n => n + 1);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    if (retryRef.current) clearTimeout(retryRef.current);
-
-    const ttl = isHistorical ? LONG_CACHE_TTL : CACHE_TTL;
-    // Both live and historical data go to sessionStorage — see LONG_CACHE_TTL
-    // above for why nothing here is persisted across visits. Inside an embed
-    // widget cacheStorage() swaps in an in-memory fallback (no browser storage
-    // on a third-party page, see lib/embed-context.ts).
-    const store = cacheStorage("session");
-    const fullKey = CACHE_PREFIX + cacheKey;
-
-    // Check cache — show stale data immediately if available
-    let hasStaleData = false;
-    try {
-      const cached = store?.getItem(fullKey);
-      if (cached) {
-        const { data: d, ts } = JSON.parse(cached);
-        setData(d);
-        if (Date.now() - ts < ttl) {
-          // Fresh cache hit — done
-          setLoading(false);
-          setError(null);
-          setIsStale(false);
-          return;
-        }
-        // Stale cache — show it but refetch in background
-        hasStaleData = true;
-        setLoading(false);
-        setIsStale(true);
-      }
-    } catch { /* ignore */ }
-
-    if (!hasStaleData) {
-      setData(defaultValue);
-      setLoading(true);
-    }
-    setError(null);
-
-    const doFetch = (retryIndex: number) => {
-      fetch(endpoint)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then((d: T) => {
-          if (cancelled) return;
-          setData(d);
-          setLoading(false);
-          setError(null);
-          setIsStale(false);
-          try {
-            store?.setItem(fullKey, JSON.stringify({ data: d, ts: Date.now() }));
-          } catch { /* ignore */ }
-        })
-        .catch((e) => {
-          if (cancelled) return;
-          // Auto-retry
-          if (retryIndex < RETRY_DELAYS.length) {
-            retryRef.current = setTimeout(() => {
-              if (!cancelled) doFetch(retryIndex + 1);
-            }, RETRY_DELAYS[retryIndex]);
-            return;
-          }
-          // All retries exhausted
-          setError(e.message);
-          setLoading(false);
-          // Keep stale data visible if we have it
-          if (hasStaleData) {
-            setIsStale(true);
-          }
-        });
-    };
-
-    doFetch(0);
-
-    return () => {
-      cancelled = true;
-      if (retryRef.current) clearTimeout(retryRef.current);
-    };
-  }, [endpoint, cacheKey, fetchTrigger]);
-
-  return { data, loading, error, isStale, refetch };
+function useCachedFetch<T>(endpoint: string, _cacheKey: string, defaultValue: T, historical = false) {
+  return useWidgetResource(endpoint, defaultValue, historical ? 24 * 60 * 60_000 : 300_000);
 }
 
 /** Check if a date range refers to a completed past period (safe to cache long-term) */

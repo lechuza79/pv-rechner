@@ -1,3 +1,5 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
+import {parseWidgetAppearance} from '../../../../lib/widget-appearance';
 import type { Metadata } from "next";
 import { getStrommixYtd } from "../../../../lib/strommix-ytd";
 import StrommixAnteilWidget from "./client";
@@ -13,7 +15,9 @@ export const metadata: Metadata = {
 // energy_weekly aktualisiert sich wöchentlich).
 export const revalidate = 3600;
 
-export default async function StrommixAnteilEmbedPage() {
+export default async function StrommixAnteilEmbedPage({searchParams}:{searchParams:Promise<Record<string,string>>}) {
   const ytd = await getStrommixYtd(new Date());
-  return <StrommixAnteilWidget ytd={ytd} />;
+  const params=await searchParams;
+  const appearance = parseWidgetAppearance(params);
+  return <WidgetPresentation widgetId="strommix-anteil" appearance={{...appearance,theme:appearance.theme ?? 'light'}}><StrommixAnteilWidget ytd={ytd} variant={params.variant==='teaser'?'teaser':'full'} /></WidgetPresentation>;
 }

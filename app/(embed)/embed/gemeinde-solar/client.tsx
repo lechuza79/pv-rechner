@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useState } from "react";
 import { Kachel, formatDataAsOf } from "../../../../components/MastrHeroSection";
@@ -30,7 +32,7 @@ export type GemeindeWidgetProps = {
  * shared widget shell: registry identity resolved to this municipality, so the
  * title, the shared image and the citation all name the place.
  */
-export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
+function GemeindeSolarWidgetContent(props: GemeindeWidgetProps) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -93,3 +95,5 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
     </GemeindeWidgetShell>
   );
 }
+
+export default function GemeindeSolarWidget(props:ComponentProps<typeof GemeindeSolarWidgetContent>){return <WidgetPresentation widgetId="gemeinde-solar"><GemeindeSolarWidgetContent {...props}/></WidgetPresentation>;}

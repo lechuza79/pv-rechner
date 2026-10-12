@@ -15,7 +15,7 @@
 //    dropped from the snapshot.
 
 import '../components/charts/chart-export.css';
-import {fitPodiumPlot} from './widget-plot-fit';
+import {fitPodiumPlot,fitCartesianSnapshot} from './widget-plot-fit';
 import { domToBlob } from 'modern-screenshot';
 import {chartMetadataLabel, chartDataDate} from './chart-labels';
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR } from './export-markers';
@@ -61,10 +61,9 @@ export interface ExportContext {
    * Rendered in a grey box above the credit line. */
   notes?: ExportNoteItem[];
   source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
-  /** Explicit region and unit for the image metadata. */
+  /** Actual data vintage; never replaced with the download date. */
   scope?: string;
   unit?: string;
-  /** Known data vintage; missing dates remain explicit. */
   dataAsOf?: string;
 }
 
@@ -569,6 +568,9 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
   const sourceCanvases = node.querySelectorAll('canvas');
   clone.querySelectorAll('canvas').forEach((canvas, index) => {
     const source = sourceCanvases[index];
+    if (!source.width || !source.height) {
+      throw new Error('Die Ansicht ist noch nicht bereit für den Bilddownload. Bitte laden Sie sie erneut.');
+    }
     canvas.width = source.width;
     canvas.height = source.height;
     canvas.getContext('2d')?.drawImage(source, 0, 0);
@@ -627,6 +629,7 @@ export async function prepareNodeCapture(node: HTMLElement, presentation: 'expor
   try {
     await document.fonts.ready;
     if (allocation || size) clone.querySelectorAll<HTMLElement>('[data-podium-layout]').forEach(fitPodiumPlot);
+    clone.querySelectorAll<HTMLElement>('[data-widget-plot="cartesian"]').forEach(fitCartesianSnapshot);
     // Export-only notes and removed controls change the card's dimensions.
     // Refit source labels on the actual capture clone, which has no observers.
     clone.querySelectorAll<HTMLElement>('[data-sc-source-edge]').forEach(edge => {
@@ -694,10 +697,12 @@ export async function exportNode(
 ): Promise<Blob | null> {
   let blob: Blob;
   if (options.mode === 'download') {
-    const capture = await prepareNodeCapture(node, 'export', options.size, false, true);
-    try { blob = await domToBlob(capture.node, {scale:2}); }
-    finally { capture.dispose(); }
-  } else { blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size); }
+    const snapshot = await prepareNodeCapture(node, 'export', options.size, false, true);
+    try { blob = await domToBlob(snapshot.node, {scale:2}); }
+    finally { snapshot.dispose(); }
+  } else {
+    blob = await captureNodeToBlob(node, 2, undefined, 'export', options.size);
+  }
   const filename = options.filename || 'solar-check-chart.png';
 
   if (options.mode === 'download') {

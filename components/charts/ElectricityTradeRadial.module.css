@@ -42,7 +42,7 @@
 .root[data-compact-center=true] .center :global(.sc-metric-value strong){font-size:clamp(18px,8cqi,26px);}
 .root[data-compact-center=true] .radialPlot{container-type:inline-size;}
 
-.root[data-compact-center=true] .center button{pointer-events:auto;cursor:help;}
+.root[data-compact-center=true] .center button{pointer-events:auto;cursor:help;text-align:center!important;}
 
 .metricOverlay[data-corner=top-left]{left:0;right:auto;}
 .metricOverlay[data-corner=bottom-right]{top:auto;bottom:0;}
@@ -61,3 +61,9 @@
 .dayCalculation{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-variant-numeric:tabular-nums;}
 .dayCalculation> :nth-child(even){text-align:right;white-space:nowrap;}
 .dayCalculation>strong{border-top:1px solid currentColor;padding-top:7px;margin-top:3px;font-size:15px;}
+
+/* A compact line may reach deep inside the zero ring; keep its value outside the plot. */
+.root[data-compact-center=true] .center{position:static;min-height:44px;}
+
+/* Respect both dimensions of the allocated plot when its summary sits beside it. */
+.root[data-allocated=true][data-summary-placement=beside] .radialPlot{grid-template-columns:min(100cqh,calc((100cqw - 16px)/2)) minmax(110px,1fr);}

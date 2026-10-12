@@ -8,7 +8,7 @@ describe('shared chart headings', () => {
     ['Anlagen / 1.000 Einwohner', 'Anzahl Anlagen je 1.000 Einwohner'],
     ['Mio. Anlagen', 'Anzahl Anlagen (in Mio.)'],
     ['Haushalte', 'Anzahl Haushalte'],
-    ['MW', 'in MW'], ['kWh je Einwohner', 'in kWh je Einwohner'],
+    ['MW', 'in MW'], ['Mrd. €', 'in Mrd. €'], ['MWp', 'in MWp'], ['kWh je Einwohner', 'in kWh je Einwohner'],
     ['%', 'in %'], ['Anzahl und installierte Leistung', 'Anzahl und installierte Leistung'],
     ['Installierte Leistung nach Technologie', 'Installierte Leistung nach Technologie'],
     ['Anlagenbestand', 'Anlagenbestand'], ['Speicherquote', 'Speicherquote'],

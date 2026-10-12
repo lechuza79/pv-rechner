@@ -3,6 +3,8 @@ import {useCallback, useEffect, useLayoutEffect, useState, type ComponentProps, 
 import {trackWidgetEvent} from "../../lib/analytics";
 import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
 import {captureNodeToBlob} from '../../lib/chart-export';
+import {useWidgetHost} from './WidgetHost';
+import {widgetShareUrl} from '../../lib/widget-share-url';
 import {useWidgetPresentation} from './WidgetPresentationContext';
 import {widgetActionPresentation} from '../../lib/widget-appearance';
 import {WidgetFrame} from './WidgetFrame';
@@ -89,6 +91,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
 }) {
   const presentation=useWidgetPresentation();
   const partner = presentation.partner;
+  const host=useWidgetHost();
   const effectiveActions=widgetActionPresentation(presentation.sharing, actions);
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
@@ -113,7 +116,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
   };
   const [detailOpen, setDetailOpen] = useState(false);
   // Include the title because one template can render multiple stock segments.
-  const detailId = `${filename}-${frame.title}`;
+  const detailId = `${host?.instanceId?host.instanceId+':':''}${filename}-${frame.title}`;
   useEffect(() => {
     const sync = () => setDetailOpen(new URL(window.location.href).searchParams.get('chart') === detailId);
     sync();
@@ -143,9 +146,10 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
         url = new URL(window.parent.location.href);
       }
     } catch { /* External embeds keep their own directly accessible URL. */ }
-    if (!partner) url.searchParams.set('chart', detailId);
-    for (const [key, value] of Object.entries(shareParams ?? {})) url.searchParams.set(key, value);
-    url.hash = '';
+    if (partner) { for (const [key,value] of Object.entries(shareParams ?? {})) url.searchParams.set(key,value); url.hash=''; }
+    else {
+    url = widgetShareUrl(url.toString(), detailId, shareParams, embedPath(widget), host?.query);
+    }
     if (navigator.clipboard && window.isSecureContext) {
       try {
         await Promise.race([
@@ -172,10 +176,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     catch { setLiveUrl(undefined); }
   }, []);
   const def = widgetForPlace(widget, place, liveUrl);
-  const contactPage = new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io');
-  contactPage.hash = '';
-  contactPage.searchParams.set('chart', detailId);
-  for (const [key, value] of Object.entries(shareParams ?? {})) contactPage.searchParams.set(key, value);
+  const contactPage = widgetShareUrl(new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io').toString(), detailId, shareParams, embedPath(widget), host?.query);
   const contactHref = `/kontakt?${new URLSearchParams({
     topic: 'Widget einbetten',
     message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,
@@ -350,7 +351,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
         {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
-          <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible} spalten={edgeColumns} />
+          <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible&&!host} spalten={edgeColumns} />
         </div>}
         {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
           width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: def.shareUrl.replace("https://solar-check.io", ""), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}

@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { searchRegions } from "../../../../lib/atlas";
@@ -12,6 +13,8 @@ import { searchRegions } from "../../../../lib/atlas";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "atlas-search");
   if (limited) return limited;
 
@@ -19,7 +22,8 @@ export async function GET(req: NextRequest) {
   if (q.length < 2) return NextResponse.json({ hits: [] });
 
   try {
-    const hits = await searchRegions(q);
+    const level = req.nextUrl.searchParams.get("level");
+    const hits = await searchRegions(q, undefined, level === "landkreis" ? ["landkreis"] : level === "bundesland" ? ["bundesland"] : undefined);
     return NextResponse.json(
       { hits },
       { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },

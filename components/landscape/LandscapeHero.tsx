@@ -1,14 +1,14 @@
 "use client";
+import {municipalHeroCss,municipalSubline} from './hero-presentation';
 import HeroTownPicker from '../landkreis/HeroTownPicker';
 import MunicipalityHeroPreview from '../landkreis/MunicipalityHeroPreview';
-import BuildingPreviewMap from '../landkreis/BuildingPreviewMap';
 import {getCssVariables,stageDefaults} from '../../lib/theme';
 import {landscapePlaces,landscapeAttribution} from '../../lib/landscape-places';
-import {useEffect,useRef,useState,type CSSProperties} from 'react';
+import {useEffect,useRef,useState,useId,type CSSProperties} from 'react';
 import GemeindeHeroStage from '../gemeinde/GemeindeHeroStage';
 import styles from '../landkreis/wind-map.module.css';
 
-export type LandscapeHeroProps={placeId:string;showPlacePicker?:boolean;sourcesHref?:string};
+export type LandscapeHeroProps={placeId:string;showPlacePicker?:boolean;sourcesHref?:string;presentation?:'product'|'widget';initialStop?:string;onStopChange?:(stop:string)=>void;destinationTarget?:HTMLElement|null};
 
 /** Render the same location-specific credits inline or in the host's sources section. */
 export function LandscapeSources({placeId:id}:{placeId:string}){
@@ -23,7 +23,8 @@ export function LandscapeSources({placeId:id}:{placeId:string}){
  </>;
 }
 /** Shared product hero entry point. Hosts select data, never copy the scene. */
-export default function LandscapeHero({placeId:id,showPlacePicker=false,sourcesHref}:LandscapeHeroProps){
+export default function LandscapeHero({placeId:id,showPlacePicker=false,sourcesHref,presentation='product',initialStop,onStopChange,destinationTarget}:LandscapeHeroProps){
+ const instanceId=useId();
  const [attempt,setAttempt]=useState(0);
  const request=useRef({id,attempt,revision:0});
  if(request.current.id!==id||request.current.attempt!==attempt)request.current={id,attempt,revision:request.current.revision+1};
@@ -50,25 +51,26 @@ export default function LandscapeHero({placeId:id,showPlacePicker=false,sourcesH
   return()=>clearTimeout(timer);
  },[phase,requestKey]);
  const name=landscapePlaces[id]??'Ort';
- return <div id="root" data-nidda-hero style={{position:"relative"}}>
-  <style dangerouslySetInnerHTML={{__html:getCssVariables().replace(':root','[data-nidda-hero]')}}/>
-  <div className={`solar-page ${styles.page} ${styles.municipalPage}`} data-mode="day" data-dark="false" style={stageDefaults(6) as CSSProperties}>
-   {showPlacePicker&&<HeroTownPicker active={id} towns={landscapePlaces}/>}
-   <section data-map-hero-band className={`${styles.band} ${styles.municipalBand} ${styles.referenceMode}`}>
-    <GemeindeHeroStage productPreview name={name} parents={[]} description="Zeigen Sie, was sich in Ihrer Kommune bewegt." discoverHref="#landscape-notes" scene={
-     <div className={styles.placeScene} data-place-phase={phase} inert={phase!=='ready'} aria-busy={phase==='loading'}>
-      {shown&&(shown.id==='06440016'?<BuildingPreviewMap key={shown.key} source="/geo/nidda-preview/scene.json" municipalHero sceneOnly onReady={ok=>ready(shown.key,ok)}/>:<MunicipalityHeroPreview key={shown.key} municipality={shown.id} name={landscapePlaces[shown.id]??'Ort'} sceneOnly onReady={ok=>ready(shown.key,ok)}/>)}
-     </div>
-    }>
+ const scene=<div className={styles.placeScene} data-place-phase={phase} inert={phase!=='ready'} aria-busy={phase==='loading'}>
+      {shown&&<MunicipalityHeroPreview key={shown.key} municipality={shown.id} name={landscapePlaces[shown.id]??'Ort'} sceneOnly onReady={ok=>ready(shown.key,ok)} initialStop={initialStop} onStopChange={onStopChange} destinationTarget={destinationTarget}/>}
+     </div>;
+ const notice=<>
      {(phase==='loading'||phase==='error')&&<div className={styles.placeLoading} role={phase==='error'?'alert':'status'} aria-live="polite">
       {phase==='loading'?<><span className={styles.placeSpinner} aria-hidden="true"/>{name} wird geladen …</>:<>Die Ansicht konnte nicht geladen werden. <button type="button" onClick={()=>setAttempt(n=>n+1)}>Erneut versuchen</button></>}
      </div>}
-    </GemeindeHeroStage>
+</>;
+ if(presentation==='widget')return <div data-map-hero-band data-landscape-widget className={`${styles.page} ${styles.widgetStage}`}><style dangerouslySetInnerHTML={{__html:getCssVariables().replace(':root','[data-landscape-widget]')}}/>{scene}{notice}</div>;
+ return <div id={`landscape-${instanceId}`} data-nidda-hero data-landscape-product style={{position:"relative"}}>
+  <style dangerouslySetInnerHTML={{__html:getCssVariables().replace(':root','[data-nidda-hero]')+municipalHeroCss({referenceControls:styles.referenceControls})}}/>
+  <div className={`solar-page ${styles.page} ${styles.municipalPage}`} data-mode="day" data-dark="false" style={stageDefaults(6) as CSSProperties}>
+   {showPlacePicker&&<HeroTownPicker active={id} towns={landscapePlaces}/>}
+   <section data-map-hero-band className={`${styles.band} ${styles.municipalBand} ${styles.referenceMode}`}>
+    <GemeindeHeroStage productPreview name={name} parents={[]} description={municipalSubline} discoverHref={`#landscape-notes-${instanceId}`} scene={scene}>{notice}</GemeindeHeroStage>
    </section>
    <div style={{position:'absolute',right:4,top:'50dvh',transform:'translateY(-50%) rotate(180deg)',writingMode:'vertical-rl',whiteSpace:'nowrap',fontSize:"var(--font-size-caption)",lineHeight:1.4,letterSpacing:.2,color:'var(--color-text-muted)',zIndex:32}} aria-label="Kartennachweis">
-    © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href={sourcesHref??'#landscape-notes'}>Quellen und Daten</a>
+    © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href={sourcesHref??`#landscape-notes-${instanceId}`}>Quellen und Daten</a>
    </div>
-   {!sourcesHref&&<section className={styles.copy} id="landscape-notes" aria-label="Quellen und Daten"><LandscapeSources placeId={id}/></section>}
+   {!sourcesHref&&<section className={styles.copy} id={`landscape-notes-${instanceId}`} aria-label="Quellen und Daten"><LandscapeSources placeId={id}/></section>}
   </div>
  </div>;
 }

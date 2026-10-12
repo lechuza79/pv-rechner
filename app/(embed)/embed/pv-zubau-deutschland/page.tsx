@@ -1,3 +1,4 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
 import ZubauEmbed from "./client";
 import { getNationalSolarByYear, type NationalSolarSeries } from "../../../../lib/mastr-data";
@@ -21,5 +22,5 @@ export default async function ZubauEmbedPage() {
   } catch {
     series = null;
   }
-  return <ZubauEmbed series={series} />;
+  return <WidgetPresentation widgetId="pv-zubau-deutschland"><ZubauEmbed series={series} /></WidgetPresentation>;
 }

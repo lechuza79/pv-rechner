@@ -24,8 +24,8 @@ export default function MetricShareCard({name,value,unit,share,context,density='
   const endX=Number((40+30*Math.sin(angle)).toFixed(3)),endY=Number((40-30*Math.cos(angle)).toFixed(3));
   const donut=<div className={styles.donut}>
       <svg viewBox="0 0 80 80" aria-hidden="true">
-        <circle cx="40" cy="40" r="30" fill="none" stroke="color-mix(in srgb, var(--widget-surface, #18323e) 14%, white)" strokeWidth="10"/>
-        {fraction>0&&<><circle cx="40" cy="40" r="30" fill="none" stroke={ringColor??"var(--widget-accent)"} strokeWidth="10" pathLength="1" strokeDasharray={`${fraction} 1`} transform="rotate(-90 40 40)"/>{fraction<1&&<circle cx={endX} cy={endY} r="5" fill={ringColor??"var(--widget-accent)"}/>}</>}
+        <circle cx="40" cy="40" r="30" fill="none" stroke="color-mix(in srgb, currentColor 16%, transparent)" strokeWidth="10"/>
+        {fraction>0&&<><circle cx="40" cy="40" r="30" fill="none" stroke={ringColor??"currentColor"} strokeWidth="10" pathLength="1" strokeDasharray={`${fraction} 1`} transform="rotate(-90 40 40)"/>{fraction<1&&<circle cx={endX} cy={endY} r="5" fill={ringColor??"currentColor"}/>}</>}
       </svg>
       <div><strong ref={numberRef}>{value}</strong><small>{unit}</small></div>
     </div>

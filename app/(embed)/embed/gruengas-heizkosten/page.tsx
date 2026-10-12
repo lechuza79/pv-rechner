@@ -1,3 +1,4 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
 import GruengasHeizkostenWidget from "./client";
 
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function GruengasHeizkostenEmbedPage() {
-  return <GruengasHeizkostenWidget />;
+  return <WidgetPresentation widgetId="gruengas-heizkosten"><GruengasHeizkostenWidget /></WidgetPresentation>;
 }

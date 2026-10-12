@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import {NextRequest,NextResponse} from 'next/server';
 import {unstable_cache} from 'next/cache';
 import {getRegionById,getChildren} from '../../../../lib/atlas';
@@ -18,6 +19,8 @@ const load=unstable_cache(async(id:string,start:number,end:number)=>{
  return regionalSolarDay(monitor.sites,start,end);
 },['district-solar-day-v3'],{revalidate:300,tags:[ATLAS_DATEN_TAG,KREIS_PAKET_TAG]});
 export async function GET(req:NextRequest){
+  const live = await livePreviewResponse(req);
+  if (live) return live;
  const limited=rateLimit(req,'landkreis-solartag');if(limited)return limited;
  const id=req.nextUrl.searchParams.get('ags')??'';
  if(!/^\d{5}$/.test(id))return NextResponse.json({error:'Ungültiger Landkreis'},{status:400});

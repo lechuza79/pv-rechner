@@ -1,5 +1,6 @@
 "use client";
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,useMemo} from 'react';
+import {useWidgetReferenceData} from '../dashboard/WidgetReferenceData';
 import Script from 'next/script';
 import data from '../../data/country-electricity-mix-race.json';
 import perCapitaData from '../../data/country-electricity-per-capita-race.json';
@@ -17,12 +18,14 @@ const prepare=(source:typeof data)=>({
  maximum:Math.max(...source.history.flatMap(frame=>frame.rows.map(row=>row.segments.reduce((a,b)=>a+b,0)))),
  rows:source.countries.map(country=>({...country,flagSrc:`/flags/${flags[country.id]}.svg`,value:source.history.at(-1)!.rows.find(row=>row.id===country.id)!.value})),
 });
-const datasets={share:prepare(data),'per-capita':prepare(perCapitaData)};
+
 const formatShare=(value:number)=>value.toLocaleString('de-DE',{maximumFractionDigits:1});
 const formatPerCapita=(value:number)=>value.toLocaleString('de-DE',{maximumFractionDigits:0});
 
 /** The municipal racing engine owns the clock, ranking and row transitions. */
 export default function CountryElectricityMixRaceWidget({onsite=true,metric:initialMetric='share'}:{onsite?:boolean;metric?:'share'|'per-capita'}) {
+ const reference=useWidgetReferenceData();
+ const datasets=useMemo(()=>({share:prepare(reference?.countryMix??data),'per-capita':prepare(reference?.countryPerCapita??perCapitaData)}),[reference]);
  const [metric,setMetric]=useState(initialMetric);
  const perCapita=metric==='per-capita';
  const {history,last,rows,maximum}=datasets[metric];

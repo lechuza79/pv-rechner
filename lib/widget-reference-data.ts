@@ -1,4 +1,4 @@
-import {verlaufJahre} from '../app/(site)/einspeiseverguetung-tabelle/VerlaufsChart';
+import {verlaufJahre} from './feedin-timeline';
 import {FEEDIN_HISTORY_META} from './feedin-history';
 import countryMix from '../data/country-electricity-mix-race.json';
 import countryPerCapita from '../data/country-electricity-per-capita-race.json';

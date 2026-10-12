@@ -34,7 +34,9 @@ export default function AutoHeightIframe({
   onHeightChange,
   loading = "lazy",
   appearance,
+  allocated = false,
 }: {
+  allocated?: boolean;
   src: string;
   title: string;
   fallbackHeight: number;
@@ -116,6 +118,18 @@ export default function AutoHeightIframe({
     return()=>window.removeEventListener('message',receive);
   }, [appearance, bereit, quelle, ref]);
 
+  useEffect(() => {
+    if (!appearance) return;
+    const origin = new URL(quelle, window.location.href).origin;
+    const send = () => ref.current?.contentWindow?.postMessage({type:"widget:appearance",appearance},origin);
+    const receive = (event: MessageEvent) => {
+      if(event.source===ref.current?.contentWindow && event.origin===origin && event.data?.type==='widget:appearance-request')send();
+    };
+    window.addEventListener('message',receive);
+    send();
+    return()=>window.removeEventListener('message',receive);
+  }, [appearance, bereit, quelle, ref]);
+
   return (
     <div ref={container} style={{ position: "relative", width: "100%" }} aria-busy={pending}>
       {pending && (
@@ -144,7 +158,7 @@ export default function AutoHeightIframe({
         boxSizing: "border-box",
         colorScheme: scheme,
         background: scheme ? "var(--atlas-surface, var(--color-bg))" : undefined,
-        height,
+        height: allocated ? "100%" : height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
         borderRadius: rounded ? v("--radius-md") : 0,
         display: "block",

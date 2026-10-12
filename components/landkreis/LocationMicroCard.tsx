@@ -6,7 +6,7 @@ import type {WindConditions} from '../../lib/wind-animation';
 import styles from './wind-map.module.css';
 import foundation from '../social/atlas-foundations.module.css';
 /** Scene adapter only: the central widget owns the complete sign and chart design. */
-export default function LocationMicroCard({name,weather,municipality='06440016',placeName='Nidda',kind,capacityKw,microcharts,loading:providedLoading}:{loading?:boolean;microcharts?:MicrochartData|null;name:string;weather:WindConditions|null;municipality?:string;placeName?:string;kind?:'town'|'wind'|'solar';capacityKw?:number|null}){
+export default function LocationMicroCard({name,weather,municipality='06440016',placeName='Nidda',kind,capacityKw,microcharts,loading:providedLoading,presentation='scene'}:{presentation?:'scene'|'widget';loading?:boolean;microcharts?:MicrochartData|null;name:string;weather:WindConditions|null;municipality?:string;placeName?:string;kind?:'town'|'wind'|'solar';capacityKw?:number|null}){
  const provided=microcharts!==undefined;
  const loaded=useMicrocharts(provided?null:municipality);
  const data=provided?microcharts:loaded.data;
@@ -20,8 +20,8 @@ export default function LocationMicroCard({name,weather,municipality='06440016',
  const current=profile?.filter(p=>Date.parse(p.time)<=Date.parse(data?.at??'')).at(-1);
  const conditions=provided?weather:weather??loaded.weather;
  const loading=provided?Boolean(providedLoading):loaded.loading;
- return <div className={`${foundation.foundation} ${styles.microSign}`} data-story-scheme="dark" data-location-weather data-current-place={name} data-capacity-kw={capacityKw??''} data-municipal-kw={municipalKw??''} data-profile-samples={profile?.length??0} data-wind-speed={conditions?.speedMs??''} data-weather-at={conditions?.validAt??''} onPointerDown={e=>e.stopPropagation()}>
-  {wind?<WeatherMicroTile kind="wind" label={name} place={name} validAt={conditions?.validAt} layout="stacked" loading={loading} day={profile??null} chart={{speedMs:conditions?.speedMs??null,directionDeg:conditions?.directionDeg??null}}/>:
-   <WeatherMicroTile kind="solar" loading={loading} label={name} place={relativeSolar?'Anlagenleistung noch nicht zugeordnet':kind==='town'?placeName:name} validAt={current?.time} chart={{points:profile??null,currentTime:current?.time,power:!relativeSolar}}/>}
+ return <div className={presentation==='scene'?`${foundation.foundation} ${styles.microSign}`:undefined} data-story-scheme={presentation==='scene'?"dark":undefined} data-location-weather data-current-place={name} data-capacity-kw={capacityKw??''} data-municipal-kw={municipalKw??''} data-profile-samples={profile?.length??0} data-wind-speed={conditions?.speedMs??''} data-weather-at={conditions?.validAt??''} onPointerDown={e=>e.stopPropagation()}>
+  {wind?<WeatherMicroTile kind="wind" label={name} place={name} validAt={conditions?.validAt} layout={presentation==='widget'?'widget':'stacked'} showPlace={presentation!=='widget'} showLabel={presentation!=='widget'} loading={loading} day={profile??null} chart={{speedMs:conditions?.speedMs??null,directionDeg:conditions?.directionDeg??null}}/>:
+   <WeatherMicroTile layout={presentation==='widget'?'widget':'separate'} showPlace={presentation!=='widget'} showLabel={presentation!=='widget'} kind="solar" loading={loading} label={name} place={relativeSolar?'Anlagenleistung noch nicht zugeordnet':kind==='town'?placeName:name} validAt={current?.time} chart={{points:profile??null,currentTime:current?.time,power:!relativeSolar}}/>}
  </div>;
 }

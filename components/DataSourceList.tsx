@@ -14,8 +14,8 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   // NICHT "in Echtzeit" (Audit 18.08.2026): Energy-Charts liefert mit rund einer
   // Stunde Verzug, Solar mit etwa zwei — steht so in ErzeugungWidget.tsx. Zwei
   // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
+  smardTrade: "Kommerzieller Stromhandel und Day-Ahead-Börsenwert",
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
-  smardTrade: "Grenzüberschreitender Stromhandel und Börsenbewertung",
   worldBankPopulation: "Einwohnerzahlen für den internationalen Stromvergleich",
   smard: "Ersatzquelle für Strommix und Stromerzeugung in Deutschland, wenn Energy-Charts ausfällt",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",

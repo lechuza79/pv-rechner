@@ -1,10 +1,16 @@
 import 'server-only';
+import {liveWidgetDataUrl, validateLiveWidgetData} from './widget-data-services';
 import {createHash} from 'node:crypto';
 import {mkdir, readFile, rename, writeFile, unlink, readdir, stat} from 'node:fs/promises';
 import path from 'node:path';
 import {serialize, deserialize} from 'node:v8';
 
-export const usesLivePreviewData = () => process.env.NODE_ENV === 'development' && process.env.WIDGET_PREVIEW_DATA !== 'local';
+/** A built local preview needs the same data boundary as the development server.
+ * Hosted production never proxies its own public endpoints back to itself. */
+export const usesLivePreviewData = () => !process.env.VERCEL && (
+  process.env.WIDGET_PREVIEW_DATA === 'live'
+  || (process.env.NODE_ENV === 'development' && process.env.WIDGET_PREVIEW_DATA !== 'local')
+);
 const FRESH_MS = 5 * 60_000;
 const MAX_AGE_MS = 24 * 60 * 60_000;
 type Snapshot<T> = {version:1; fetchedAt:number; data:T};
@@ -84,21 +90,43 @@ export function previewDataStatus(){
   return {stale:stale.length>0,fetchedAt:stale.length?new Date(Math.min(...stale.map(value=>value.fetchedAt))).toISOString():null};
 }
 
-const LIVE_PATHS = new Set(['/api/energy/generation','/api/energy/nuclear-import']);
-export async function livePreviewJson(endpoint:string):Promise<Record<string,unknown>>{
-  const url=new URL(endpoint,'https://solar-check.io');
-  if(url.origin!=='https://solar-check.io'||!LIVE_PATHS.has(url.pathname))throw new Error('Unsupported preview data service');
-  url.searchParams.sort();
-  return previewData(`live-v1:${url.href}`,async()=>{
-    const response=await fetch(url,{signal:AbortSignal.timeout(12_000),cache:'no-store',redirect:'error'});
-    if(!response.ok)throw new Error(`Live data unavailable (${response.status})`);
-    const data:unknown=await response.json();
-    if(!data || typeof data!=='object' || !('data' in data) || !Array.isArray(data.data) || data.data.length===0 || 'error' in data)throw new Error('Invalid live data response');
-    const rows=data.data as Record<string,unknown>[];
-    if(rows.some(row=>!row || typeof row.ts!=='string'))throw new Error('Invalid live data timestamps');
-    if(url.pathname.endsWith('/generation')) {
-      if(!('country' in data) || data.country!==(url.searchParams.get('country')??'de') || rows.some(row=>typeof row.solar!=='number' || !Number.isFinite(row.solar)))throw new Error('Invalid generation data');
-    } else if(rows.some(row=>typeof row.nuclear_gw!=='number' || !Number.isFinite(row.nuclear_gw)))throw new Error('Invalid nuclear import data');
-    return data as Record<string,unknown>;
+class LiveDataError extends Error {
+  constructor(readonly status: number) { super(`Live data unavailable (${status})`); }
+}
+
+export async function livePreviewJson(endpoint: string): Promise<Record<string, unknown>> {
+  const url = liveWidgetDataUrl(endpoint);
+  return previewData(`live-v2:${url.href}`, async () => {
+    // Never forward local cookies, authorization, or arbitrary request headers.
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(20_000), cache: 'no-store', redirect: 'error',
+      credentials: 'omit', headers: {Accept: 'application/json'},
+    });
+    if (!response.ok) throw new LiveDataError(response.status);
+    return validateLiveWidgetData(url, await response.json());
   });
+}
+
+/** Carry observation age across the server/browser cache boundary. */
+export function livePreviewSnapshotState(endpoint:string){
+  return states.get(`live-v2:${liveWidgetDataUrl(endpoint).href}`);
+}
+
+/** The shared GET boundary; writes and all production handlers stay local. */
+export async function livePreviewResponse(request: Request): Promise<Response | null> {
+  if (!usesLivePreviewData() || request.method !== 'GET') return null;
+  const incoming = new URL(request.url);
+  const endpoint = incoming.pathname + incoming.search;
+  try { liveWidgetDataUrl(endpoint); }
+  catch { return Response.json({error: 'Ungültige Datenanfrage.'}, {status: 400}); }
+  const headers = {'Cache-Control': 'no-store', 'X-Widget-Data-Origin': 'https://solar-check.io'};
+  try {
+    const data=await livePreviewJson(endpoint);
+    const state=livePreviewSnapshotState(endpoint);
+    return Response.json(data, {headers:{...headers,...(state?{'X-Widget-Data-Fetched-At':String(state.fetchedAt),'X-Widget-Data-Stale':state.stale?'1':'0'}:{})}});
+  }
+  catch (error) {
+    const status = error instanceof LiveDataError && [400, 404, 422, 429].includes(error.status) ? error.status : 503;
+    return Response.json({error: 'Live-Daten gerade nicht verfügbar.'}, {status, headers});
+  }
 }

@@ -49,7 +49,7 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
   </div>)}
  </div>;
  const labelStep=Math.max(1,Math.ceil((rows.length-1)/Math.max(1,Math.floor(plotWidth/64)-1)));
- return <div ref={barsRef} className="sc-category-bars" data-compact={compact || undefined} data-partial-style={partialStyle} role="group" aria-label={label}>
+ return <div data-widget-plot="bars" ref={barsRef} className="sc-category-bars" data-compact={compact || undefined} data-partial-style={partialStyle} role="group" aria-label={label}>
   <div className="sc-category-plot">
    {rows.map((row,index)=><button key={row.id} type="button" aria-label={describe(row)} onFocus={()=>setActive(row.id)} onMouseEnter={()=>setActive(row.id)} onClick={()=>setActive(row.id)} onBlur={()=>setActive(null)} onMouseLeave={()=>setActive(null)} className="sc-category-column" data-active={row.id===active} data-highlighted={row.highlighted} data-missing={row.missing}>
     <span className="sc-category-bar" data-partial={row.partial} style={{height:`${max?row.value/max*100:0}%`}}>

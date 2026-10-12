@@ -66,7 +66,6 @@ function modulGraph(eintrag) {
 }
 DATEIEN.push(...modulGraph("dynamic-hero/dist/test.js"));
 const ORDNER = [
-  "homepage-study/story-dist",
   "homepage-study/audience-v3/assets",
   "illustrations-neon/assets-web",
   "illustrations-neon/motifs",
@@ -77,7 +76,7 @@ const ORDNER = [
 // copy would silently overwrite that work. Only the built scene bundles and
 // their assets still come from the package (their sources and build live
 // there until the scene is rebuilt after launch).
-const IM_PROJEKT = [/^homepage-study\/race-dist\//, /^shared-nav\//, /^shared-footer\//, /^shared-person\//, /^(?!.*(?:^|\/)(?:dist|race-dist|story-dist)\/).*\.css$/];
+const IM_PROJEKT = [/^homepage-study\/story-dist\//, /^homepage-study\/race-dist\//, /^shared-nav\//, /^shared-footer\//, /^shared-person\//, /^(?!.*(?:^|\/)(?:dist|race-dist|story-dist)\/).*\.css$/];
 // Only web formats; the packages also carry multi-megabyte masters.
 const ERLAUBT = /\.(js|css|json|webp|svg|woff2|jpg|png)$/;
 
@@ -250,7 +249,6 @@ const PATCHES = [
     to: 'function Xe(a,{base:n=""}={}){let sT=document.querySelector(".sc-trust[data-sc-server]");if(sT){a.replaceWith(sT);return{trust:sT,dispose(){}}}',
     why: "Die Vertrauensleiste trägt die geprüften Zusagen aus lib/trust-signals.ts; das Skript rückt die serverseitige Leiste an ihren Platz, statt eigene Texte zu bauen.",
   },
-  { datei: "homepage-study/story-dist/atlas-story-cards.js", ...DOMAIN_WEG },
   // The atlas is called "Energie-Atlas" (operator, 19.09.2026). Optional: the
   // race and story bundles are built from our own sources, which already carry
   // the new name — once the package is rebuilt there is nothing left to replace.

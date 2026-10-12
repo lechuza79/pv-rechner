@@ -12,7 +12,6 @@
 .eventTitle {font-weight:700;color:var(--widget-ink);margin-bottom:4px;}
 .eventDescription {font-weight:400;color:var(--widget-muted);}
 
-.eventArrow > svg {width:14px;height:14px;flex:none;}
 
 .currentYear {display:block;font-family:var(--atlas-display);font-size:clamp(32px,4cqi,40px);font-weight:700;line-height:1.1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:4ch;}
 .racingFrame {--widget-title-size:18px;}
@@ -32,3 +31,32 @@
 /* Context follows the year closely and leaves more space before the plot. */
 .racingFrame:has(> :global(.sc-widget-context)) > :global(.sc-widget-head) {padding-bottom:4px;}
 .racingFrame > :global(.sc-widget-context) {margin-top:4px;margin-bottom:20px;}
+
+.eventPanel{box-sizing:border-box;display:flex;flex-direction:row;align-items:center}
+.eventArrow{display:inline-flex;flex-shrink:0}
+
+/* The renderer owns its internal arrangement. Hosts allocate the card only;
+   a host flex rule must never override the wide grid while its children use
+   grid placement and display:contents. */
+.allocatedLayout{flex:1;min-height:0;display:flex;flex-direction:column}
+.allocatedLayout > [data-race-plot]{flex:1;min-height:120px}
+.allocatedLayout > [data-race-plot] > div:first-child{height:100%}
+
+/* Container width, not page width, determines when prose can sit beside a plot. */
+@container (min-width:640px){
+ .raceLayout.raceLayout[data-chart-animation=race]{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.48fr);grid-template-rows:minmax(180px,1fr) 32px auto;column-gap:40px;row-gap:16px;align-items:center}
+ .raceLayout > :global([data-race-plot]){grid-column:1;grid-row:1;min-width:0;width:100%;height:100%}
+ .eventLayout{display:contents}
+ .eventTrack{grid-column:1;grid-row:2}
+ .eventPanel{grid-column:2;grid-row:1 / 4;margin-top:0!important;align-self:stretch;padding:32px!important;display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-rows:1fr auto;align-items:start;row-gap:24px!important}
+ .eventCopy{grid-column:1 / -1;grid-row:1}
+ .eventArrow{grid-row:2}
+ .eventArrow:first-child{grid-column:1}
+ .eventArrow:last-child{grid-column:2}
+ .eventTitle,.eventDescription{font-size:var(--atlas-body-size,16px);line-height:1.65}
+ .eventTitle{margin-bottom:12px}
+ .player{grid-column:1;grid-row:3;margin-top:0!important}
+ .raceLayout > :global([data-sc-export-only]){grid-column:1 / -1}
+}
+/* Exports omit playback and retain the full chart width. */
+:global([data-sc-export-capture]) .raceLayout.raceLayout[data-chart-animation=race]{display:block}

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "homepage:stories": "node scripts/homepage-stories-build.mjs",
     "homepage:race": "node scripts/homepage-race-build.mjs",
     "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\" && node scripts/location-search-build.mjs && npm run kommunen:build",
     "build": "next build",
@@ -155,6 +156,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "fflate": "^0.8.3",
+    "gridstack": "^14.0.0",
     "mailparser": "^3.9.25",
     "mediabunny": "^1.60.0",
     "modern-screenshot": "^4.7.0",

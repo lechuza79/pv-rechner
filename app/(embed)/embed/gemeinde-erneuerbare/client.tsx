@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -9,6 +11,7 @@ type Gen = { count: number; kwp: number };
 
 export type ErneuerbareEmbedProps = {
   name?: string;
+  dataAsOf?: string;
   solarKwp?: number;
   generators?: { wind: Gen; biomasse: Gen; wasser: Gen };
   speicherKwh?: number;
@@ -17,7 +20,7 @@ export type ErneuerbareEmbedProps = {
 };
 
 /** Themebare Hülle für das Erneuerbaren-Mix-Widget im Embed-Kontext. */
-export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
+function GemeindeErneuerbareEmbedContent(props: ErneuerbareEmbedProps) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -34,6 +37,7 @@ export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
   return (
     <GemeindeErneuerbareWidget
       name={props.name}
+      dataAsOf={props.dataAsOf}
       solarKwp={props.solarKwp ?? 0}
       generators={props.generators}
       speicherKwh={props.speicherKwh ?? 0}
@@ -45,3 +49,5 @@ export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
     />
   );
 }
+
+export default function GemeindeErneuerbareEmbed(props:ComponentProps<typeof GemeindeErneuerbareEmbedContent>){return <WidgetPresentation widgetId="gemeinde-erneuerbare"><GemeindeErneuerbareEmbedContent {...props}/></WidgetPresentation>;}

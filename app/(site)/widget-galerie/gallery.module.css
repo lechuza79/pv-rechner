@@ -1,0 +1,28 @@
+.page{max-width:1440px;margin:0 auto;padding:24px var(--header-frame-pad) 64px;color:var(--color-text-primary);font-family:var(--font-text)}
+.page h1{font-family:var(--font-heading);font-size:var(--font-size-h1);line-height:1.15;margin:0 0 32px}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:24px;margin-bottom:24px}
+.place,.search{display:grid;gap:8px;min-width:0;font-size:var(--font-size-small);font-weight:600}
+.place>span{font-weight:400;color:var(--color-text-secondary)}
+.filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.filters>span{margin-left:auto;color:var(--color-text-secondary);font-size:var(--font-size-small)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:36px 24px}
+@media(max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}.controls{gap:16px}.filters>span{width:100%;margin:4px 0 0}.page{padding-top:16px}}
+
+@media(min-width:361px) and (max-width:600px){.controls label{min-height:2.6em}}
+@media(max-width:360px){.controls{grid-template-columns:1fr}}
+
+.contact{scroll-margin-top:120px}
+
+.introduction{max-width:var(--content-width,820px);margin-bottom:32px;font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-secondary)}
+.introduction p{margin:0 0 16px}
+.introduction .usage{font-size:var(--font-size-small)}
+.introduction a,.example>a{text-decoration:underline;text-underline-offset:3px;color:inherit}
+.examples{margin-top:64px}
+.examples h2{font-family:var(--font-heading);font-size:var(--font-size-h2);margin:0 0 24px}
+.example{min-width:0}
+.example h3{font-family:var(--font-heading);font-size:var(--font-size-h3);margin:0 0 12px}
+.example>p{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-secondary);margin:0 0 24px}
+.example>a{display:inline-block;margin-top:20px;font-size:var(--font-size-small)}
+
+/* Preserve the smallest supported widget width on narrow phones. */
+@media(max-width:355px){.page{padding-inline:0}.page>header{padding-inline:16px}}

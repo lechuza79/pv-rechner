@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {partnerEmbedCode} from '../partner-embed-code';
 import {describe, expect, it} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -30,9 +31,12 @@ describe('partner embedding', () => {
   it('binds automatic resizing to the correct frame and origin', () => {
     const code=partnerEmbedCode('nidda','regional-annual-growth','none');
     expect(code).toContain('/embed/partner/nidda/regional-annual-growth/none');
-    expect(code).toContain('e.source!==f.contentWindow');
-    expect(code).toContain('e.origin!==new URL(f.src).origin');
-    expect(code).toContain('Number.isFinite(h)');
+    expect(code).toContain('data-solar-check-resize');
+    expect(code).toContain('/widgets/resize.js');
+    const sizing=readFileSync('public/widgets/resize.js','utf8');
+    expect(sizing).toContain('event.source!==frame.contentWindow');
+    expect(sizing).toContain('event.origin!==new URL(frame.src, document.baseURI).origin');
+    expect(sizing).toContain('Number.isFinite(data.height)');
     expect(code).toContain('allow="clipboard-write; web-share"');
     expect(code).not.toContain('<p style=');
   });

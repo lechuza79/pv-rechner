@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
@@ -24,7 +25,9 @@ export const dynamic = "force-dynamic";
 
 // ─── GET: Current prices (public) ─────────────────────────────────────────────
 
-export async function GET() {
+export async function GET(req: Request) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   // Check cache
   if (cached && Date.now() - cached.ts < TTL) {
     return NextResponse.json(cached.data, {
