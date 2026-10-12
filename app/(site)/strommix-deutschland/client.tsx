@@ -331,7 +331,9 @@ export default function EnergieClient() {
     context: {
       title: "Stromerzeugung nach Energieträger in Deutschland",
       kind: "chart",
-      subtitle: rangeLabel,
+      scope: "Deutschland",
+      unit: "GW",
+      dataAsOf: genData.data.at(-1)?.ts,
       stats: stats ? (() => {
         const u = energyUnit(stats.totalGenerationGWh);
         const f = (v: number) => formatGWhIn(v, u);

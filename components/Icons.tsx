@@ -47,12 +47,9 @@ export function IconExternal({ size = 16, color = "currentColor", style }: IconP
   );
 }
 
+/** Preserve the curved share motif; its padded canvas matches the other UI icons. */
 export function IconShare({ size = 16, color = "currentColor", style }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
-      <path d="M15.576 8.267c.204-.175.305-.262.343-.366a.5.5 0 0 0 0-.282c-.038-.104-.14-.19-.343-.366L8.517 1.204c-.35-.3-.525-.45-.674-.454a.5.5 0 0 0-.333.153c-.094.115-.094.346-.094.807v3.579a8.36 8.36 0 0 0-6.666 7.93v.51a8.74 8.74 0 0 0 6.666-3.497v3.492c0 .461 0 .692.094.807a.5.5 0 0 0 .333.153c.149-.003.324-.153.674-.454l7.059-6.05Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <svg width={size} height={size} viewBox="-0.5 -1 18 18" fill="none" aria-hidden="true" style={{display:"inline-block",verticalAlign:"middle",flexShrink:0,...style}}><path d="M15.576 8.267c.204-.175.305-.262.343-.366a.5.5 0 0 0 0-.282c-.038-.104-.14-.19-.343-.366L8.517 1.204c-.35-.3-.525-.45-.674-.454a.5.5 0 0 0-.333.153c-.094.115-.094.346-.094.807v3.579a8.36 8.36 0 0 0-6.666 7.93v.51a8.74 8.74 0 0 0 6.666-3.497v3.492c0 .461 0 .692.094.807a.5.5 0 0 0 .333.153c.149-.003.324-.153.674-.454l7.059-6.05Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
 
 export function IconWhatsApp({ size = 16, color = "currentColor", style }: IconProps) {

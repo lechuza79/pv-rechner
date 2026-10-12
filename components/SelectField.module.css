@@ -1,0 +1,23 @@
+/* Native keyboard and focus handling, with a shared themed picker surface. */
+@supports (appearance: base-select) {
+ .select, .select::picker(select) {appearance:base-select!important;}
+ .select {display:inline-flex;align-items:center;}
+ .select::picker-icon {display:none;}
+ .select::picker(select) {
+  color:var(--widget-ink,var(--color-text-primary));
+  background:var(--widget-surface,var(--color-bg-muted));
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  padding:4px;
+  margin-block:4px;
+  box-shadow:0 8px 24px #0003;
+  font:400 var(--font-size-small)/1.5 var(--font-text);
+ }
+ .select option {padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;gap:10px;color:var(--widget-ink,var(--color-text-primary));background:transparent;font-weight:400;}
+ .select option:hover,.select option:focus-visible {background:var(--color-bg-muted);outline:none;}
+ .select option:checked {color:var(--widget-ink,var(--color-text-primary));background:transparent;}
+ .select option::checkmark {display:none;}
+ .select option::before {content:"";display:block;flex:none;width:14px;height:14px;box-sizing:border-box;border:1px solid var(--widget-muted,var(--color-text-secondary));border-radius:50%;background:transparent;}
+ .select option:checked::before {background:radial-gradient(circle,var(--widget-accent,var(--color-accent)) 0 3px,transparent 3.5px);}
+ .select option:hover,.select option:focus-visible {background:var(--color-bg-muted);}
+}

@@ -1,13 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import {useMemo} from "react";
+import {useWidgetResource} from "../components/dashboard/WidgetData";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
-import { cacheStorage } from "./embed-context";
 
 // Re-export for convenience (client consumers can import from here)
 export { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
-
-const CACHE_KEY = "solar-check-prices";
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 // Merge stored prices with defaults — guards against stale cache from an older code
 // version that didn't yet ship a field (e.g. electricityPrice). Without this, the
@@ -29,39 +26,6 @@ export function mergeWithDefaults(data: Partial<PriceConfig>): PriceConfig {
 // ─── Client Hook ──────────────────────────────────────────────────────────────
 
 export function usePrices(): PriceConfig {
-  const [prices, setPrices] = useState<PriceConfig>(DEFAULT_PRICES);
-
-  useEffect(() => {
-    // Embed widgets get an in-memory fallback instead of Web Storage (§ 25
-    // TDDDG, see lib/embed-context.ts).
-    const store = cacheStorage("session");
-
-    // Check cache first
-    try {
-      const cached = store?.getItem(CACHE_KEY);
-      if (cached) {
-        const { data, ts } = JSON.parse(cached);
-        if (Date.now() - ts < CACHE_TTL) {
-          setPrices(mergeWithDefaults(data));
-          return;
-        }
-      }
-    } catch { /* ignore */ }
-
-    // Fetch from API
-    fetch("/api/prices")
-      .then(res => res.ok ? res.json() : null)
-      .then((data: Partial<PriceConfig> | null) => {
-        if (data && typeof data.pvPriceSmall === "number" && data.pvPriceSmall > 0) {
-          const merged = mergeWithDefaults(data);
-          setPrices(merged);
-          try {
-            store?.setItem(CACHE_KEY, JSON.stringify({ data: merged, ts: Date.now() }));
-          } catch { /* ignore */ }
-        }
-      })
-      .catch(() => { /* keep defaults */ });
-  }, []);
-
-  return prices;
+  const {data} = useWidgetResource<Partial<PriceConfig>>("/api/prices", DEFAULT_PRICES, 60*60_000);
+  return useMemo(()=>mergeWithDefaults(data),[data]);
 }

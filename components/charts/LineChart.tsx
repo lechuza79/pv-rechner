@@ -15,7 +15,7 @@ import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
 import { GridRows } from "@visx/grid";
 import { AxisBottom } from "@visx/axis";
-import { ParentSize } from "@visx/responsive";
+import {ChartViewport} from './ChartViewport';
 import { curveMonotoneX } from "d3-shape";
 
 export interface LineSeries {
@@ -65,13 +65,11 @@ const cssVar = (token: string) => `var(${token})`;
 export default function LineChart(props: LineChartProps) {
   const height = props.height ?? 380;
   return (
-    <div style={{ width: "100%", height }}>
-      <ParentSize>
-        {({ width }) =>
+    <ChartViewport height={height}>
+        {({ width, height }) =>
           width > 0 ? <LineChartInner {...props} width={width} height={height} /> : null
         }
-      </ParentSize>
-    </div>
+    </ChartViewport>
   );
 }
 
@@ -115,7 +113,10 @@ function LineChartInner({
     // geteilten Bild nicht mehr zu reparieren.
     return Math.min(Math.round(geschaetzt * 1.25) + 8, 160);
   })();
-  const margin = compact
+  const insetLabels = width < 480;
+  const margin = insetLabels
+    ? { top: 20, right: 20, bottom: 30, left: 40 }
+    : compact
     ? { top: 12, right: Math.max(78, beschriftungsBreite), bottom: 26, left: 40 }
     : { top: 16, right: Math.max(104, beschriftungsBreite), bottom: 30, left: 48 };
   const innerWidth = Math.max(0, width - margin.left - margin.right);
@@ -338,8 +339,14 @@ function LineChartInner({
           {endLabels.map((l) => (
             <text
               key={l.key}
-              x={innerWidth + 8}
+              x={insetLabels ? innerWidth - 6 : innerWidth + 8}
               y={l.y}
+              dy={insetLabels ? -10 : 0}
+              textAnchor={insetLabels ? "end" : "start"}
+              paintOrder="stroke"
+              stroke="var(--color-bg)"
+              strokeWidth={3}
+              strokeLinejoin="round"
               dominantBaseline="middle"
               fontSize={labelFont}
               fontWeight={l.key === highlightKey ? 800 : 600}

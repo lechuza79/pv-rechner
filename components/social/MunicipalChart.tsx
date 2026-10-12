@@ -1,20 +1,7 @@
 'use client';
-import React from 'react';
 import type {StoryConcept} from '../../lib/story-konzepte';
-import {approvedStoryVisual} from '../../lib/story-approved-visual';
-import {ApprovedStoryVisual} from './ApprovedStoryVisual';
-import {YieldChart} from './YieldChart';
-import {RankStoryChart} from './RankStoryChart';
-import {MonthlySolarChart} from './MonthlySolarChart';
-import {AnnualEnergyChart} from './AnnualEnergyChart';
-
-/** Shared chart body for live municipal views and period-specific editorial snapshots. */
+import {MunicipalWidgetVisual} from '../dashboard/MunicipalWidgetVisual';
+/** Compatibility adapter for existing callers; all hosts use the common widget body. */
 export function MunicipalChart({story,compact=false,autoPlay=false,ohneBedienung=false}:{story:StoryConcept;compact?:boolean;autoPlay?:boolean;ohneBedienung?:boolean}){
- if(story.energyYear)return <AnnualEnergyChart data={story.energyYear} compact={compact} ohneBedienung={ohneBedienung}/>;
- if(story.solarMonth)return <MonthlySolarChart data={story.solarMonth} compact={compact} autoPlay={autoPlay} ohneBedienung={ohneBedienung}/>;
- if(story.kind==='rank'&&story.rankSummary?.length)return <RankStoryChart story={story} compact={compact} ohneBedienung={ohneBedienung}/>;
- const approved=approvedStoryVisual(story);
- if(approved)return <ApprovedStoryVisual bild={approved} compact={compact} date={story.sourceDate} provisional={story.label==='Vorjahreszeitraum'}/>;
- if(story.kind==='yield'&&story.yieldSeries?.length)return <YieldChart story={story} compact={compact}/>;
- return null;
+ return <MunicipalWidgetVisual story={story} view={{detail:compact?'reduced':'full',controls:!ohneBedienung,autoplay:autoPlay}}/>;
 }

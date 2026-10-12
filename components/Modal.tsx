@@ -164,7 +164,7 @@ function useMediaQuery(query: string): boolean {
   );
 }
 
-export default function Modal({
+function LocalModal({
   open,
   onClose,
   title,
@@ -457,3 +457,45 @@ const S: Record<string, React.CSSProperties> = {
   // der Seite dahinter, von der der Leser gerade kommt.
   intro: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginBottom: space.xl, lineHeight: 1.5 },
 };
+
+
+const HOST_MODAL_EVENT = "sc:host-modal";
+type HostModalRequest = {token:object;props:ModalProps|null;accepted:boolean};
+
+/** Same-origin embeds delegate dialogs to the host, which owns focus and scroll. */
+export function EmbeddedModalHost() {
+  const [request,setRequest]=useState<HostModalRequest|null>(null);
+  useEffect(()=>{
+    const receive=(event:Event)=>{
+      const detail=(event as CustomEvent<HostModalRequest>).detail;
+      detail.accepted=true;
+      setRequest(current=>detail.props?detail:current?.token===detail.token?null:current);
+    };
+    window.addEventListener(HOST_MODAL_EVENT,receive);
+    return()=>window.removeEventListener(HOST_MODAL_EVENT,receive);
+  },[]);
+  return request?.props?<LocalModal {...request.props}/>:null;
+}
+
+export default function Modal(props:ModalProps) {
+  const token=useRef({});
+  const [local,setLocal]=useState(false);
+  useEffect(()=>{
+    if(!props.open){setLocal(false);return;}
+    let host:Window|null=null;
+    try {
+      if(window.parent!==window&&window.parent.location.origin===window.location.origin)host=window.parent;
+    } catch { /* Third-party embeds keep their own dialog. */ }
+    const detail:HostModalRequest={token:token.current,props,accepted:false};
+    host?.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail}));
+    setLocal(!detail.accepted);
+  },[props.open,props.onClose,props.title,props.ariaLabel,props.intro,props.maxWidth,props.className,props.scheme,props.children]);
+  useEffect(()=>()=>{
+    try { if(window.parent!==window)window.parent.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail:{token:token.current,props:null,accepted:false}})); } catch { /* Cross-origin host. */ }
+  },[]);
+  useEffect(()=>{
+    if(props.open)return;
+    try { if(window.parent!==window)window.parent.dispatchEvent(new CustomEvent(HOST_MODAL_EVENT,{detail:{token:token.current,props:null,accepted:false}})); } catch { /* Cross-origin host. */ }
+  },[props.open]);
+  return local?<LocalModal {...props}/>:null;
+}

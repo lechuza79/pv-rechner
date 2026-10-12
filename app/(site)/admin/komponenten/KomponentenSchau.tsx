@@ -1,4 +1,9 @@
 "use client";
+import SectionFilter from '../../../../components/SectionFilter';
+import {ControlPanel,ControlField} from '../../../../components/ControlPanel';
+import SecondaryButton from '../../../../components/SecondaryButton';
+import WidgetSettingsFlyout from '../../../../components/dashboard/WidgetSettingsFlyout';
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import PvConsumerExample from "../../../../components/PvConsumerExample";
 import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { DEFAULT_BALKON_CONFIG } from "../../../../lib/balkon-config";
@@ -703,7 +708,14 @@ function OnsiteSearchBeispiel() {
     <p aria-live="polite">{query ? `Filter: ${query}` : "Alle Bausteine"}</p></div>;
 }
 
+function WidgetControlsExample(){const [enabled,setEnabled]=useState(true);return <ControlPanel><ControlField label="Hintergrundbild" toggle={{enabled,onChange:setEnabled}} onReset={!enabled?()=>setEnabled(true):undefined}/></ControlPanel>}
+function SectionFilterExample(){const [value,setValue]=useState('solar');return <SectionFilter label="Themen" items={[{id:'solar',label:'Solar'},{id:'wind',label:'Wind'}]} value={value} onChange={setValue}/>}
 const BEISPIELE: Record<string, Beispiel> = {
+  SectionFilter: SectionFilterExample,
+  ControlPanel: WidgetControlsExample,
+  SecondaryButton: ()=><SecondaryButton>Beispielaktion</SecondaryButton>,
+  WidgetSettingsFlyout: ()=><WidgetSettingsFlyout title="Widget"><WidgetControlsExample/></WidgetSettingsFlyout>,
+  WidgetPresentation: ()=><WidgetPresentation appearance={{theme:'hero'}}><p style={{padding:16,color:'var(--atlas-text)'}}>Hero-Theme</p></WidgetPresentation>,
   OnsiteSearch: OnsiteSearchBeispiel,
  ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
  MetricValue: () => <MetricValue value={12345} signed/>,

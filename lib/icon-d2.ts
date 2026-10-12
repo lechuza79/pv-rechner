@@ -27,6 +27,10 @@ export const ICON_D2_VARIABLES = {
   temperature_2m: 10, // °C
   wind_u_component_10m: 10, // m/s
   wind_v_component_10m: 10,
+  wind_u_component_80m: 10,
+  wind_v_component_80m: 10,
+  wind_u_component_120m: 10,
+  wind_v_component_120m: 10,
   weather_code: 1, // WMO interpretation code
   precipitation: 10, // mm, preceding hour
   snowfall_water_equivalent: 10, // mm, preceding hour
@@ -108,7 +112,7 @@ export type ModelWeather = {
  * uses, "average of the preceding hour". The weather code is a category and
  * is not interpolated.
  */
-export function modelWeatherAt(shard: IconD2Shard, plz: string, at: Date): ModelWeather | null {
+export function modelWeatherAt(shard: IconD2Shard, plz: string, at: Date, windHeight: 10 | 100 = 10): ModelWeather | null {
   const point = shard.points[plz];
   if (!point) return null;
   const first = Date.parse(shard.firstHour);
@@ -131,8 +135,15 @@ export function modelWeatherAt(shard: IconD2Shard, plz: string, at: Date): Model
     if (a === null || b === null) return null;
     return a + (b - a) * fraction;
   };
-  const u = interpolate('wind_u_component_10m');
-  const v = interpolate('wind_v_component_10m');
+  // ICON exposes 80/120 m levels. Interpolate vector components to 100 m,
+  // preserving direction across north and refusing missing height fields.
+  const windComponent = (axis:'u'|'v') => {
+    if(windHeight===10)return interpolate(`wind_${axis}_component_10m`);
+    const low=interpolate(`wind_${axis}_component_80m`),high=interpolate(`wind_${axis}_component_120m`);
+    return low===null||high===null?null:(low+high)/2;
+  };
+  const u = windComponent('u');
+  const v = windComponent('v');
   const direct = raw('direct_radiation', ending);
   const diffuse = raw('diffuse_radiation', ending);
   return {

@@ -1,4 +1,5 @@
 "use client";
+import {ENERGY_CHART_COLORS as ENERGY_COLORS_HEX, ENERGY_CHART_CATEGORIES as CATEGORY_COLORS} from "../../lib/energy-widget-palette";
 
 import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { fsPx } from "../../lib/theme";
@@ -7,19 +8,17 @@ import { scaleTime, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
-import { ParentSize } from "@visx/responsive";
+import {ChartViewport} from "./ChartViewport";
 import { LinearGradient } from "@visx/gradient";
 import { curveMonotoneX } from "d3-shape";
 import { bisector } from "d3-array";
 import {
-  ENERGY_COLORS_HEX,
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
   NUCLEAR_KEYS,
   SONSTIGE_KEYS,
-  CATEGORY_COLORS,
   formatMWIn,
   powerUnit,
   formatTime,
@@ -501,7 +500,6 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
             fill="transparent"
             onTouchStart={handleTooltip}
             onTouchMove={handleTooltip}
-            onTouchEnd={() => setTooltip(null)}
             onMouseMove={handleTooltip}
             onMouseLeave={() => setTooltip(null)}
           />
@@ -530,14 +528,12 @@ export default function StackedAreaChart({ data, keys, height, xFormat, nuclearO
 
   const h = height || CHART_HEIGHT;
   return (
-    <div style={{ width: "100%", height: h }}>
-      <ParentSize>
-        {({ width }) =>
+    <ChartViewport height={h}>
+        {({ width, height: plotHeight }) =>
           width > 0 ? (
-            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} compact={compact} />
+            <StackedAreaInner data={data} keys={keys} height={plotHeight} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} compact={compact} />
           ) : null
         }
-      </ParentSize>
-    </div>
+      </ChartViewport>
   );
 }

@@ -12,7 +12,7 @@
 // Needs: VIDEO_EXPORT_RENDER_ORIGIN (site to render from), the database and
 // storage variables of lib/video-export-db.ts / -storage.ts, mail settings.
 
-import { mkdtemp, readFile, rm } from "fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "fs/promises";
 import { execFile, spawn } from "child_process";
 import { hostname, tmpdir } from "os";
 import path from "path";
@@ -48,14 +48,16 @@ function probe(file: string): Promise<{ duration: number; width: number; height:
   });
 }
 
-async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, unknown> }> {
+async function render(job: Job, localOutput = false): Promise<{ bytes: Buffer; info: Record<string, unknown> }> {
   const def = VIDEO_WIDGETS[job.widget];
   if (!def || !checkVideoParams(job).ok) throw new Error("not_allowlisted");
-  const url = `${origin()}${def.embedPath(job)}?scVideoRender=1`;
+  const renderUrl = new URL(def.embedPath(job), origin());
+  renderUrl.searchParams.set("scVideoRender", "1");
+  const url = renderUrl.toString();
   const dir = await mkdtemp(path.join(tmpdir(), "sc-video-"));
   const browser = await chromium.launch({ headless: true });
   // Closing the browser cancels both rendering and download on timeout.
-  const deadline = setTimeout(() => { void browser.close().catch(() => {}); }, VIDEO_TTL.renderTimeoutSeconds * 1000);
+  const deadline = setTimeout(() => { void browser.close().catch(() => {}); }, (localOutput ? 3600 : VIDEO_TTL.renderTimeoutSeconds) * 1000);
   try {
     const context = await browser.newContext({
       viewport: VIEWPORT, deviceScaleFactor: 1.5, acceptDownloads: true,
@@ -91,7 +93,7 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
     const meta=await page.evaluate(widgetId=>window.__scVideoFrame!({widgetId,timeMs:0}),job.widget);
     const frames=Math.ceil(meta.durationMs/1000*fps);
     const file=path.join(dir,"out.mp4");
-    const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
+    const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","scale=trunc(iw/2)*2:trunc(ih/2)*2","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
     let encoderError="";
     encoder.stderr.on("data",chunk=>{encoderError+=chunk.toString();});
     const encoded=new Promise<void>((resolve,reject)=>{
@@ -109,13 +111,13 @@ async function render(job: Job): Promise<{ bytes: Buffer; info: Record<string, u
         // Capture the same pixels losslessly through Chromium, with fast PNG
         // compression; FFmpeg still encodes the unchanged 30 fps output.
         const screenshot=await captureSession.send("Page.captureScreenshot",{
-          format:"png",optimizeForSpeed:true,fromSurface:true,
+          ...(localOutput?{format:"jpeg",quality:95}:{format:"png",optimizeForSpeed:true}),fromSurface:true,
           clip:{x:0,y:0,width:Math.ceil(meta.width),height:Math.ceil(meta.height),scale:1.5},
         });
         const png=Buffer.from(screenshot.data,"base64");
         await new Promise<void>((resolve,reject)=>encoder.stdin.write(png,error=>error?reject(error):resolve()));
         const progress=Math.min(99,Math.round((frame+1)/frames*100));
-        if(progress!==lastProgress) {await callVideoFn("video_job_progress",{id:job.id,worker:WORKER,progress});lastProgress=progress;}
+        if(progress!==lastProgress) {if(localOutput){if(progress%5===0)console.log(`Render ${progress}%`);}else await callVideoFn("video_job_progress",{id:job.id,worker:WORKER,progress});lastProgress=progress;}
       }
       encoder.stdin.end();
       await encoded;
@@ -171,6 +173,16 @@ async function onePass(): Promise<"rendered" | "idle"> {
 }
 
 async function main() {
+  const output=process.argv.find(a=>a.startsWith('--output='))?.slice(9);
+  if(output){
+    const ags=process.argv.find(a=>a.startsWith('--region='))?.slice(9)??'';
+    const period=process.argv.find(a=>a.startsWith('--period='))?.slice(9)??'';
+    const result=await render({id:'local-export',cache_key:'',widget:'regional-race',ags,period,attempts:1},true);
+    await writeFile(output,result.bytes);
+    console.log(JSON.stringify({output,...result.info}));
+    return;
+  }
+
   const loop = process.argv.includes("--loop");
   // Scheduled runs: drain the queue, then stop; never past the time budget.
   const untilIdle = process.argv.includes("--until-idle");

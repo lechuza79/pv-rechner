@@ -1,4 +1,5 @@
 "use client";
+import styles from "./SelectField.module.css";
 import { IconChevronDown } from "./Icons";
 import { iconSizes, v } from "../lib/theme";
 
@@ -72,7 +73,7 @@ export default function SelectField({
    * in den Daten statt im Filter. Bewusst OHNE Schreibmaschinenschrift und ohne
    * eigenen Hintergrund: Hier ist der Wert ein Ortsname, kein Zahlenwert.
    */
-  ton?: "neutral" | "akzent" | "aktiv";
+  ton?: "neutral" | "akzent" | "aktiv" | "wert";
   /**
    * SEMANTISCHE Farbe — grün/gelb/rot einer Ampel, die den gewählten Zustand
    * trägt. Nur dafür: Hier IST die Farbe die Information, und sie hängt am
@@ -91,6 +92,7 @@ export default function SelectField({
   const klein = size === "sm";
   const akzent = ton === "akzent";
   const aktiv = ton === "aktiv";
+  const wert = ton === "wert";
   return (
     <span
       style={{
@@ -102,6 +104,7 @@ export default function SelectField({
       }}
     >
       <select
+        className={styles.select}
         id={id}
         name={name}
         value={value}
@@ -118,8 +121,8 @@ export default function SelectField({
           fontSize: klein ? v("--font-size-small") : v("--font-size-body"),
           fontWeight: ampel || akzent || aktiv || klein ? 700 : 400,
           color: ampel?.text ?? (akzent || aktiv ? v("--color-accent") : v("--color-text-primary")),
-          background: ampel?.hintergrund ?? (akzent ? v("--color-accent-dim") : v("--color-bg-muted")),
-          border: `1px solid ${akzent || aktiv ? v("--color-accent") : v("--color-border")}`,
+          background: ampel?.hintergrund ?? (wert ? "color-mix(in srgb,var(--color-text-primary) 7%,var(--color-bg))" : akzent ? v("--color-accent-dim") : v("--color-bg-muted")),
+          border: `1px solid ${wert ? "transparent" : akzent || aktiv ? v("--color-accent") : v("--color-border")}`,
           // Maße wie die Texteingaben daneben (Muster Kontaktformular): gleiche
           // Ecke, gleiche Innenhöhe. Sie waren auseinandergelaufen — im
           // Kontaktformular stand das Auswahlfeld 4 px niedriger als die Felder

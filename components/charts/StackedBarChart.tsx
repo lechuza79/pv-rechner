@@ -1,4 +1,5 @@
 "use client";
+import {ENERGY_CHART_COLORS as ENERGY_COLORS_HEX, ENERGY_CHART_CATEGORIES as CATEGORY_COLORS} from "../../lib/energy-widget-palette";
 
 import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { fsPx } from "../../lib/theme";
@@ -7,16 +8,14 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
-import { ParentSize } from "@visx/responsive";
+import {ChartViewport} from "./ChartViewport";
 import {
-  ENERGY_COLORS_HEX,
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
   NUCLEAR_KEYS,
   SONSTIGE_KEYS,
-  CATEGORY_COLORS,
   formatGWhIn,
   energyUnit,
   CHART_MARGIN,
@@ -523,8 +522,6 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
   const [tooltip, setTooltip] = useState<{ data: WeekBucket; left: number } | null>(null);
 
-  if (innerWidth <= 0 || buckets.length < 1) return null;
-
   // Tick labels
   const tickValues = useMemo(() => {
     if (preAggregated) {
@@ -555,6 +552,10 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
     const interval = buckets.length > 40 ? 8 : buckets.length > 20 ? 4 : buckets.length > 10 ? 2 : 1;
     return buckets.filter((_, i) => i % interval === 0).map(d => d.weekKey);
   }, [buckets, mode, preAggregated]);
+  // Preserve readable date spacing in every host, including narrow dashboard cards.
+  const tickStride = Math.max(1, Math.ceil(tickValues.length / Math.max(2, Math.floor(innerWidth / 60))));
+  const visibleTicks = tickValues.filter((_, index) => index % tickStride === 0);
+  if (innerWidth <= 0 || buckets.length < 1) return null;
 
   return (
     <div style={{ position: "relative" }}>
@@ -618,8 +619,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                           left: bar.x + bar.width / 2 + margin.left,
                         });
                       }}
-                      onTouchEnd={() => setTooltip(null)}
-                    />
+                              />
                   ) : (
                     <rect
                       key={`bar-${barStack.index}-${bar.index}`}
@@ -642,8 +642,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                           left: bar.x + bar.width / 2 + margin.left,
                         });
                       }}
-                      onTouchEnd={() => setTooltip(null)}
-                    />
+                              />
                   );
 
                   return barEl;
@@ -702,7 +701,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
           <AxisBottom
             top={innerHeight}
             scale={xScale}
-            tickValues={tickValues}
+            tickValues={visibleTicks}
             tickFormat={(key) => {
               const k = key as string;
               // Weekly buckets: show month name
@@ -730,8 +729,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             numTicks={5}
             tickFormat={(d) => {
               const v = d as number;
-              if (yMax >= 1000) return `${Math.round(v / 1000)}`;
-              return `${Math.round(v)}`;
+              return (yMax >= 1000 ? v / 1000 : v).toLocaleString("de-DE", {maximumFractionDigits: 1});
             }}
             stroke="transparent"
             tickStroke="transparent"
@@ -788,14 +786,12 @@ export default function StackedBarChart({ data, keys, height, mode, nuclearOverl
 
   const h = height || CHART_HEIGHT;
   return (
-    <div style={{ width: "100%", height: h }}>
-      <ParentSize>
-        {({ width }) =>
+    <ChartViewport height={h}>
+        {({ width, height: plotHeight }) =>
           width > 0 ? (
-            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} preAggregated={preAggregated} compact={compact} />
+            <StackedBarInner data={data} keys={keys} height={plotHeight} width={width} mode={mode} nuclearOverlay={nuclearOverlay} preAggregated={preAggregated} compact={compact} />
           ) : null
         }
-      </ParentSize>
-    </div>
+      </ChartViewport>
   );
 }

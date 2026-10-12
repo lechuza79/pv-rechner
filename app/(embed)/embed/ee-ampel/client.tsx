@@ -132,7 +132,7 @@ export default function EeAmpelWidget() {
     >
       {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
-      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+      <WidgetSourceEdge widget={WIDGET} stand={current?.ts} visible={!settings.onsite} />
       <div style={{ fontSize: "var(--font-size-small)", fontWeight: 600, letterSpacing: 0.2, marginBottom: 12 }}>
         EE-Ampel · Strommix Deutschland
       </div>

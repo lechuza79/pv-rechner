@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { IconClose } from "./Icons";
 import { v } from "../lib/theme";
 import styles from "./onsite-search.module.css";
 
@@ -27,11 +28,18 @@ export default function OnsiteSearch({
   onQueryChange,
   placeholder = "Suchen …",
   persistent = false,
+  suggestions = true,
+  selectedItem,
+  onClear,
 }: {
+  selectedItem?: OnsiteSearchItem | null;
+  onClear?: () => void;
   /** Already loaded regions: persistent field, local suggestions, no request. */
   items?: SearchHit[];
   /** Keep the shared field visible for a page-level asynchronous search. */
   persistent?: boolean;
+  /** Filter already rendered content using the same shared search field. */
+  suggestions?: boolean;
   onQueryChange?: (query: string) => void;
   placeholder?: string;
   onPick?: (item: OnsiteSearchItem) => void;
@@ -52,7 +60,7 @@ export default function OnsiteSearch({
 
   const close = () => {
     setOpen(false);
-    if (!items) { setQ(""); setHits([]); }
+    if (!items && suggestions) { setQ(""); setHits([]); }
     setActive(-1);
   };
 
@@ -74,6 +82,7 @@ export default function OnsiteSearch({
 
   // Entprellte Suche.
   useEffect(() => {
+    if (!suggestions) return;
     const term = q.trim();
     if (items) {
       const fold = (value: string) => value.toLocaleLowerCase("de").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
@@ -102,7 +111,7 @@ export default function OnsiteSearch({
       }
     }, 200);
     return () => { clearTimeout(t); controller.abort(); };
-  }, [q, items, loadItems]);
+  }, [q, items, loadItems, suggestions]);
 
   const pick = (h: SearchHit) => {
     close();
@@ -111,6 +120,7 @@ export default function OnsiteSearch({
   };
 
   const onKey = (e: React.KeyboardEvent) => {
+    if (!suggestions) return;
     if (e.key === "Escape") return close();
     if (e.key === "ArrowDown") {
       setOpen(true);
@@ -140,27 +150,29 @@ export default function OnsiteSearch({
         >
           <SearchGlyph />
         </button>
-        <input
+        {selectedItem && !open ? <span className={styles.selection}><strong>{selectedItem.label}</strong><button type="button" aria-label={`${selectedItem.label}: Auswahl entfernen`} onClick={() => { onClear?.(); setQ(""); setHits([]); setOpen(true); inputRef.current?.focus(); }}><IconClose size={16}/></button></span> : <input
           ref={inputRef}
+          className={expandedField ? styles.input : undefined}
           value={q}
-          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); setOpen(true); }}
-          onFocus={() => { if (expandedField) setOpen(true); }}
-          onClick={() => { if (expandedField) setOpen(true); }}
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-autocomplete="list"
+          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); if (suggestions) setOpen(true); }}
+          onFocus={() => { if (expandedField && suggestions) setOpen(true); }}
+          onClick={() => { if (expandedField && suggestions) setOpen(true); }}
+          type="text"
+          role={suggestions ? "combobox" : "searchbox"}
+          aria-expanded={suggestions ? open : undefined}
+          aria-controls={suggestions ? listId : undefined}
+          aria-autocomplete={suggestions ? "list" : undefined}
           aria-activedescendant={open && active >= 0 ? `${listId}-${active}` : undefined}
           onKeyDown={onKey}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          style={{ ...S.input, ...((open || expandedField) ? S.inputOpen : null), ...(expandedField ? { width: "100%", minWidth: 0, fontSize: "var(--font-size-base)" } : null) }}
+          style={expandedField ? undefined : { ...S.input, ...(open ? S.inputOpen : null) }}
           tabIndex={open || expandedField ? 0 : -1}
-        />
+        />}
       </div>
 
-      {(expandedField || (open && q.trim().length >= 2)) && (
-        <div className={expandedField ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(expandedField ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
+      {suggestions && (expandedField || (open && q.trim().length >= 2)) && (
+        <div className={expandedField ? styles.dropdown : undefined} data-open={open && (Boolean(items) || q.trim().length>=2) ? "true" : "false"} aria-hidden={!open || (!items && q.trim().length<2)} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(expandedField ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
           {loading && !hits.length ? (
             <div style={S.empty}>Suche …</div>
           ) : hits.length ? (

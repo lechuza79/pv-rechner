@@ -29,7 +29,24 @@ describe('gallery curation',()=>{
       expect(full.some(entry=>entry.id===id)).toBe(true);
       expect(visible.some(entry=>entry.id===id)).toBe(false);
     }
-    expect(visible.every(entry=>GALLERY_CATEGORIES.some(category=>category.id===entry.group))).toBe(true);
+    expect(visible.filter(entry=>entry.group!=='microcharts').every(entry=>GALLERY_CATEGORIES.some(category=>category.id===entry.group))).toBe(true);
     expect(visible.filter(entry=>entry.group==='comparison').map(entry=>entry.id)).toEqual(['regional-map','gemeinde-ranking','regional-race']);
+  });
+});
+
+
+describe('compact parent chart variants',()=>{
+  it('offers compact renderers on parents without a duplicate hero entry',()=>{
+    const entries=curatedGalleryEntries(place);
+    expect(entries.some(entry=>entry.id==='atomstrom-anteil-hero')).toBe(false);
+    for(const id of ['strommix-anteil','atomstrom-tage','stromhandel']){
+      const variant=entries.find(entry=>entry.id===id)!.variants[0];
+      expect(variant.heroSrc).toBeTruthy();
+      const full=new URL(variant.src,'https://example.test');
+      const compact=new URL(variant.heroSrc!,'https://example.test');
+      expect(compact.pathname).toBe(full.pathname);
+      expect(compact.searchParams.get('metric')).toBe(full.searchParams.get('metric'));
+    }
+    expect(entries.find(entry=>entry.id==='regional-map')!.variants[0].compactSrc).toBeUndefined();
   });
 });

@@ -7,6 +7,11 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  'components/charts/RaceChart.tsx':['../dashboard/ExportableWidgetFrame','../dashboard/WidgetPresentationContext','../../lib/chart-animation-export'],
+  'components/energy/WorldElectricityRaceWidget.tsx':['../charts/RaceChart','../../lib/world-electricity-race'],
+  'app/(site)/widget-galerie/WidgetGallery.tsx':['../../../components/dashboard/WidgetPreviewCard','../../../components/dashboard/WidgetConfigurationGroup','../../../components/SectionFilter','../../../components/OnsiteSearch'],
+  'components/dashboard/WidgetPreviewCard.tsx':['../ControlPanel','../SelectField','./WidgetSettingsFlyout','../../lib/widget-appearance'],
+  'components/dashboard/MicrochartEmbed.tsx':['../charts/WeatherMicroTile','../../lib/microchart-server','./WidgetPresentation'],
   'components/PvConsumerSection.tsx':['./PvConsumerFields','./PvConsumerComparison','./ResultChoiceHeader','./KlebenderKnopf','../lib/pv-consumer-model'],
   'components/PvConsumerExample.tsx':['./PvConsumerSection','./ResultSettings','./PvPlantFields'],
   'app/(site)/photovoltaik-rechner/rechner.tsx':['../../../components/PvConsumerSection','../../../components/PvPlantFields'],
@@ -26,7 +31,7 @@ const consumers: Record<string,string[]> = {
   'components/landkreis/LandkreisMonitor.tsx':['../dashboard/EnergyMonitor','../dashboard/KpiOverview','../charts/AnnualGrowthWidget','../charts/CurrentPowerWidget','../charts/CompositionChart','../dashboard/ExportableWidgetFrame'],
   'components/landkreis/DistrictRaceWidget.tsx':['../dashboard/ExportableWidgetFrame'],
   'components/landkreis/DistrictEnergyWidgets.tsx':['../dashboard/ExportableWidgetFrame'],
-  'components/gemeinde/MonitorMonthlySolarChart.tsx':['../charts/MonthlySolarRadial','../dashboard/WidgetSetting'],
+  'components/gemeinde/MonitorMonthlySolarChart.tsx':['../charts/MonthlySolarRadial','../dashboard/WidgetSetting','../charts/RadialChartLayout'],
   'components/social/MonthlySolarChart.tsx':['../charts/MonthlySolarRadial'],
   'components/gemeinde/MonitorAnnualEnergyChart.tsx':['../charts/EnergyYearRadial','../dashboard/WidgetSetting'],
   'components/social/AnnualEnergyChart.tsx':['../charts/EnergyYearRadial'],

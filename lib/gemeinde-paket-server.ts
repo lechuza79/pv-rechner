@@ -1,3 +1,4 @@
+import {previewData} from "./preview-data";
 import "server-only";
 import type { StoryConcept } from "./story-konzepte";
 import { energyYearTitle } from "./story-energy-year-labels";
@@ -41,7 +42,7 @@ function mitJahrestiteln(data: GemeindePaket): GemeindePaket {
   })};
 }
 
-export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
+async function readladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
   if (!/^\d{8}$/.test(ags)) return null;
   const lokal = process.env.GEMEINDE_PAKET_LOKAL;
   if (lokal) {
@@ -80,4 +81,9 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
   } catch (e) {
     throw e instanceof Error ? e : new Error(`gemeinde-paket/${ags}: ${String(e)}`);
   }
+}
+
+export function ladeGemeindePaket(ags: string) {
+  if(process.env.GEMEINDE_PAKET_LOKAL)return readladeGemeindePaket(ags);
+  return previewData("gemeinde-paket-server-v1:"+JSON.stringify([ags]),()=>readladeGemeindePaket(ags));
 }

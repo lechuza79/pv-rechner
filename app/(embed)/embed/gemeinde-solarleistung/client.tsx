@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -15,7 +17,7 @@ export type SolarleistungEmbedProps = {
 };
 
 /** Themebare Hülle für das Solarleistung-Simulations-Widget im Embed-Kontext. */
-export default function GemeindeSolarleistungEmbed(props: SolarleistungEmbedProps) {
+function GemeindeSolarleistungEmbedContent(props: SolarleistungEmbedProps) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -49,3 +51,5 @@ export default function GemeindeSolarleistungEmbed(props: SolarleistungEmbedProp
     />
   );
 }
+
+export default function GemeindeSolarleistungEmbed(props:ComponentProps<typeof GemeindeSolarleistungEmbedContent>){return <WidgetPresentation widgetId="gemeinde-solarleistung"><GemeindeSolarleistungEmbedContent {...props}/></WidgetPresentation>;}

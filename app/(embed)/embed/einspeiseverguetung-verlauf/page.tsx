@@ -1,3 +1,4 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
 import { verlaufJahre } from "../../../(site)/einspeiseverguetung-tabelle/VerlaufsChart";
 import VerlaufEmbed from "./client";
@@ -19,5 +20,5 @@ export default function VerlaufEmbedPage() {
   // Serverseitig berechnet und als Prop gereicht (statt im Client neu):
   // so sind SSR-HTML und Hydration garantiert derselbe Datenstand.
   const jahre = verlaufJahre();
-  return <VerlaufEmbed jahre={jahre} />;
+  return <WidgetPresentation widgetId="einspeiseverguetung-verlauf"><VerlaufEmbed jahre={jahre} /></WidgetPresentation>;
 }

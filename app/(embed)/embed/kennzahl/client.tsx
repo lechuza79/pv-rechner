@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useMemo, useState } from "react";
 import { Kachel, formatDataAsOf } from "../../../../components/MastrHeroSection";
@@ -38,7 +40,7 @@ const TRAEGER_LABEL: Record<string, string> = {
   speicher: "Speicher",
 };
 
-export default function KennzahlWidget({
+function KennzahlWidgetContent({
   metric = "leistung",
   traeger = "gesamt",
 }: {
@@ -134,3 +136,5 @@ export default function KennzahlWidget({
     </div>
   );
 }
+
+export default function KennzahlWidget(props:ComponentProps<typeof KennzahlWidgetContent>){return <WidgetPresentation widgetId="kennzahl"><KennzahlWidgetContent {...props}/></WidgetPresentation>;}

@@ -207,3 +207,6 @@
 
 /* Shared export footer (migrated templates): hidden on the page, spacing only; colours come from the export palette. */
 .story-export-shared{display:none;box-sizing:border-box;padding:0 20px 20px}
+
+/* A reusable strip can sit in a card without adopting the page viewport. */
+[data-story-layout="contained"] .story-strip{width:100%;margin-inline:0}

@@ -33,7 +33,6 @@ export default function KostenrennenEmbed() {
         background: onsite ? "transparent" : "var(--widget-bg)",
         color: "var(--widget-fg)",
         fontFamily: "var(--widget-font-family)",
-        maxWidth: 560,
         margin: "0 auto",
       }}
     >

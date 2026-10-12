@@ -14,6 +14,6 @@ describe("Shared municipality monitor composition", () => {
     expect(html).not.toContain("Anlagenbestand");
     expect(html).toContain("Strom und Wert");
     expect(html).toContain("Missing weather");
-    expect(html.match(/sc-widget-grid/g)).toHaveLength(1);
+    expect(html.match(/data-responsive-composition/g)).toHaveLength(1);
   });
 });

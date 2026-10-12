@@ -1,0 +1,15 @@
+.container{container:radial-layout / inline-size;flex:1;min-height:0;width:100%;}
+.layout{box-sizing:border-box;display:grid;grid-template-columns:max-content minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"period playback" "plot plot";gap:16px 8px;height:100%;padding:0 var(--widget-padding,24px) 24px;}
+.period{grid-area:period;min-width:0;}
+.playback{grid-area:playback;min-width:0;}
+.plot{grid-area:plot;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;}
+.plot>svg{display:block;width:100%;max-width:480px;max-height:100%;min-height:0;}
+@container radial-layout (max-width:540px){
+ .layout{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"period" "plot" "playback";}
+}
+
+.layout[data-controls="false"]{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"plot";gap:0;}
+.layout[data-controls="false"]>.period,.layout[data-controls="false"]>.playback{display:none;}
+
+.container[data-allocated] .plot{container-type:size;}
+.container[data-allocated] .plot>svg{width:min(100cqw,100cqh);height:min(100cqw,100cqh);flex:none;aspect-ratio:1;}

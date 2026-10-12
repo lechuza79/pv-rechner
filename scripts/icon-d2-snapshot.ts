@@ -32,7 +32,7 @@ import {
   type IconD2Shard,
   type IconD2Variable,
 } from '../lib/icon-d2';
-import { SEA_MARKER, selectCell, temperatureOffset } from '../lib/regular-grid';
+import { SEA_MARKER, selectCell, temperatureOffset, gridRow, gridColumn } from '../lib/regular-grid';
 import plzCoordinates from '../public/plz.json';
 import plzElevation from '../lib/plz-elevation.json';
 import plzWeatherPoint from '../lib/plz-weather-point.json';
@@ -40,7 +40,14 @@ import { berlinTagesgrenzen } from '../lib/zeit';
 
 const flag = (key: string) => process.argv.includes('--' + key);
 /** Germany plus one cell of margin, in grid indices. */
-const WINDOW = { rowFrom: 191, rowTo: 607, columnFrom: 472, columnTo: 973 };
+const onlyPostcode=process.argv.find(arg=>arg.startsWith('--plz='))?.split('=')[1];
+if(onlyPostcode&&!flag('lokal'))throw Error('--plz requires --lokal; partial shards must never replace the shared store');
+const chosen=onlyPostcode?(plzWeatherPoint as {points:Record<string,{latitude:number;longitude:number}>}).points[onlyPostcode]:null;
+const coordinate=onlyPostcode?(plzCoordinates as unknown as Record<string,[number,number]>)[onlyPostcode]:null;
+if(onlyPostcode&&!coordinate)throw Error('Unknown postcode');
+const row=coordinate?gridRow(ICON_D2_GRID,chosen?.latitude??coordinate[0]):0;
+const column=coordinate?gridColumn(ICON_D2_GRID,chosen?.longitude??coordinate[1]):0;
+const WINDOW = onlyPostcode?{rowFrom:row-2,rowTo:row+3,columnFrom:column-2,columnTo:column+3}:{ rowFrom: 191, rowTo: 607, columnFrom: 472, columnTo: 973 };
 const ROWS = WINDOW.rowTo - WINDOW.rowFrom;
 const COLUMNS = WINDOW.columnTo - WINDOW.columnFrom;
 const PARALLEL = 4;
@@ -107,6 +114,7 @@ async function main() {
   // (scripts/plz-wetterpunkt-build.ts); otherwise the centroid as before.
   const townPoints = (plzWeatherPoint as { points: Record<string, { latitude: number; longitude: number; elevation: number }> }).points;
   for (const [plz, centroid] of Object.entries(coordinates)) {
+    if(onlyPostcode&&plz!==onlyPostcode)continue;
     const town = townPoints[plz];
     const [latitude, longitude] = town ? [town.latitude, town.longitude] : centroid;
     const elevation = town ? town.elevation : elevations[plz];
@@ -131,7 +139,7 @@ async function main() {
     shards.get(key)!.points[plz] = { cell: [Number(cell.latitude.toFixed(2)), Number(cell.longitude.toFixed(2))], elevation, values };
   }
   // A handful of gaps is the edge of the model domain; many mean a broken read.
-  const total = Object.keys(coordinates).length;
+  const total = onlyPostcode ? 1 : Object.keys(coordinates).length;
   if (gaps > total * 0.01) throw new Error(`${gaps} Postleitzahlen mit Lücken; Schnappschuss wird nicht geschrieben.`);
   console.log(`${total - missingHeight - gaps} Postleitzahlen, ${shards.size} Dateien, ${missingHeight} ohne Höhe, ${gaps} mit Lücken.`);
 

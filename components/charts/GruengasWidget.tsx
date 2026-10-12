@@ -1,5 +1,7 @@
 "use client";
 
+import {ChartExportMetadata} from "./ChartExportMetadata";
+
 import { useEffect, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
 import {
@@ -7,7 +9,6 @@ import {
   ExportNotesProvider,
   WidgetFooter,
   WidgetSourceEdge,
-  ExportOnly,
   ExportOnlyG,
   WidgetExportFooter,
   type ExportLegendEntry,
@@ -17,7 +18,6 @@ import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
 import { v, fsPx } from "../../lib/theme";
 import { MUSTER_STAND_ISO, type MusterVariant } from "../../lib/greengas-muster";
-import { formatDataAsOf } from "../../lib/atlas-format";
 
 // Grüngas-Widget: Gasheizung mit GModG-Grüngas-Pflicht vs. Wärmepumpe über 20
 // Jahre. Selbst-enthaltendes Kombi-Widget (Graph + Ersparnis + Kosten) — dasselbe
@@ -296,10 +296,12 @@ function GruengasCard({
         padding: isBars ? 0 : "16px 24px 14px 16px",
         boxSizing: "border-box",
       }}>
+      {isBars && <ChartExportMetadata scope={`Muster-Einfamilienhaus · ${m.label}`} dataAsOf={MUSTER_STAND_ISO} unit="€" style={{marginBottom:8}}/>}
       {/* Kopf (nicht in der reinen Balken-Ansicht) */}
       {!isBars && (
         <>
           <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>Die Rechnung über 20 Jahre</div>
+          <ChartExportMetadata scope={`Muster-Einfamilienhaus · ${m.label}`} dataAsOf={MUSTER_STAND_ISO} unit="€" style={{marginBottom:8}}/>
           <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: 12 }}>
             So entwickeln sich die jährlichen Heizkosten für ein typisches{" "}
             <span style={{ whiteSpace: "nowrap" }}>
@@ -324,11 +326,7 @@ function GruengasCard({
           </div>
           {/* Im Bild ersetzt eine Zwischenüberschrift den Umschalter — sonst
               bliebe offen, welcher Gebäudestand abgebildet ist. */}
-          <ExportOnly style={{ marginBottom: 8 }}>
-            <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>
-              Gebäude: {m.label}
-            </span>
-          </ExportOnly>
+
           <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: 8, padding: "0 2px" }}>
             {m.explain}
           </div>
@@ -458,7 +456,7 @@ function GruengasCard({
           visible={!onsite || showCredit}
           // Ohne Angabe stünde das Abrufdatum da, also das heutige — an einer
           // Rechnung mit gepflegten Stichtagswerten eine falsche Aussage.
-          stand={formatDataAsOf(MUSTER_STAND_ISO)}
+          stand={MUSTER_STAND_ISO}
         />
       )}
 

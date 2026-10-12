@@ -71,3 +71,7 @@
 .monitor-current-power .monitor-live-radial{flex:1;height:100%;}
 .monitor-live-radial>div>div{height:100%;}
 
+
+/* The monthly plot owns its scale; controls and artwork use the full card width. */
+.sc-widget[data-monthly-profile] .monitor-widget-body{width:100%;max-width:none;margin:0;}
+.sc-widget[data-monthly-profile] .sc-widget-body{position:relative;z-index:1;}

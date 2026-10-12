@@ -1,3 +1,5 @@
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
+import {parseWidgetAppearance} from "../../../../lib/widget-appearance";
 import type { Metadata } from "next";
 import HeizkostenrennenEmbed from "./client";
 
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function HeizkostenrennenEmbedPage() {
-  return <HeizkostenrennenEmbed />;
+export default async function HeizkostenrennenEmbedPage({searchParams}:{searchParams:Promise<Record<string,string>>}) {
+  const appearance=parseWidgetAppearance(await searchParams);
+  return <WidgetPresentation widgetId="heizkostenrennen" appearance={{...appearance,theme:appearance.theme??'light'}}><HeizkostenrennenEmbed /></WidgetPresentation>;
 }

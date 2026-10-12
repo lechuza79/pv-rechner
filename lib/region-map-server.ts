@@ -1,3 +1,4 @@
+import {previewData} from "./preview-data";
 import 'server-only';
 import {getRegionById,getChildren} from './atlas';
 import {getRankingDataForPage} from './atlas-ranking-server';
@@ -6,7 +7,7 @@ import {isDistrictMember} from './district-package';
 import {districtGeometry,childGeometry} from './district-geometry';
 import {regionMapMetrics} from './region-map-metrics';
 
-export async function loadRegionMap(id:string) {
+async function readloadRegionMap(id:string) {
   const region=await getRegionById(id);
   if(!region||!['landkreis','bundesland','de'].includes(region.level))return null;
   const childrenPromise=getChildren(region);
@@ -17,4 +18,8 @@ export async function loadRegionMap(id:string) {
   if(!stand||!shapes.length)return null;
   const towns=region.level==='landkreis'?children.filter(child=>isDistrictMember(child,id)):children.filter(child=>child.bezeichnung!=='Gemeindefreies Gebiet');
   return {region,stand,shapes,metrics:regionMapMetrics(towns,ranking)};
+}
+
+export function loadRegionMap(id:string) {
+  return previewData("region-map-server-v1:"+JSON.stringify([id]),()=>readloadRegionMap(id));
 }

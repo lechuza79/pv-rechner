@@ -39,3 +39,12 @@ docs/presse/
 # Empfängeradresse und den Wortlaut — der Nachweis, was wann hinausging, gehört
 # nicht in ein öffentliches Repo.
 .foerder-anfragen/
+
+# Local successful widget data snapshots (never shipped)
+.cache/widget-preview-data/
+
+# Quarantined dependency installs are not project source.
+node_modules.*/
+next-env.d.ts.blocked
+
+.next*.blocked-*/

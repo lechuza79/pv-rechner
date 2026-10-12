@@ -1,5 +1,10 @@
 "use client";
 
+import {ResponsiveWidgetComposition,useWidgetHeightBudget} from './WidgetComposition';
+import WidgetPresentation from './WidgetPresentation';
+import {widgetCompositionItem} from '../../lib/widget-appearance';
+import {useId} from 'react';
+import {WidgetHostProvider} from './WidgetHost';
 import type { ReactNode, Ref } from "react";
 import foundation from "../social/atlas-foundations.module.css";
 import "../gemeinde/municipal-data.css";
@@ -20,6 +25,16 @@ type Props = {
   map?: ReactNode;
 };
 
+/** Existing onsite widgets use the same constraints as the portable dashboard. */
+function MonitorComposition({items,label}:{items:{id:string;content:ReactNode}[];label:string}){
+ const heightBudget=useWidgetHeightBudget();
+ const instance=useId();
+ const available=items.filter(item=>item.content);
+ if(!available.length)return null;
+ return <ResponsiveWidgetComposition label={label} heightBudget={heightBudget} item={{id:label,kind:'group',direction:'grid',columns:2,children:available.map(item=>widgetCompositionItem(item.id))}}
+  render={id=><WidgetHostProvider instanceId={`${instance}-${id}`} query={{}} appearance={{theme:'dark',layout:'allocated',sharing:'on'}}><WidgetPresentation widgetId={id} appearance={{theme:'dark',layout:'allocated',sharing:'on'}}>{available.find(item=>item.id===id)?.content}</WidgetPresentation></WidgetHostProvider>}/>;
+}
+
 /** The accepted municipality composition, shared by every regional level and embed.
  * Adapters supply widgets and data availability; section geometry lives only here.
  */
@@ -32,15 +47,15 @@ export function EnergyMonitor({ single, rootRef, className = "", kpis, currentPo
     <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme="dark" data-energy-monitor data-embed-layout-root>
       {kpis}
       {(currentPower || growth) && <section aria-label="Aktuelle Solarleistung und Ausbau">
-        <div className="sc-widget-grid">{currentPower}{growth}</div>
+        <MonitorComposition label="Aktuelle Solarleistung und Ausbau" items={[{id:'regional-current-power',content:currentPower},{id:'regional-annual-growth',content:growth}]}/>
       </section>}
       {stock && <section aria-label="Anlagenbestand">
         <h3>Anlagenbestand</h3>
-        <div className="sc-widget-grid">{stock}</div>
+        <MonitorComposition label="Anlagenbestand" items={[{id:'regional-composition',content:stock}]}/>
       </section>}
       {(energy || energyNotice) && <section aria-label="Strom und Wert">
         <h3>Strom und Wert</h3>
-        {energy && <div className="sc-widget-grid">{energy["electricity-value"]}{energy["feed-in-value"]}{energy.radial}{energy["energy-year"]}</div>}
+        {energy && <MonitorComposition label="Strom und Wert" items={[{id:'regional-electricity-value',content:energy['electricity-value']},{id:'regional-feed-in-value',content:energy['feed-in-value']},{id:'gemeinde-solar-monat',content:energy.radial},{id:'gemeinde-energie-jahr',content:energy['energy-year']}]}/>}
         {energyNotice}
       </section>}
       {map}

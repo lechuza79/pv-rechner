@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { createCache, clampAbsoluteRange } from "../../../../lib/energy-api";
 import { rateLimit } from "../../../../lib/rate-limit";
@@ -16,6 +17,8 @@ const historicalCache = createCache<NuclearImportResponse>(24 * 60 * 60 * 1000);
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "energy-nuclear-import");
   if (limited) return limited;
 

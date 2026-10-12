@@ -1,0 +1,6 @@
+.page{max-width:1280px;margin:0 auto;padding:40px 24px 80px;}
+.page>p{max-width:720px;line-height:1.6;}
+.examples{display:flex;flex-wrap:wrap;align-items:start;gap:32px;margin-block:32px;}
+.examples section{min-width:0;}
+.examples h2{font-size:16px;margin-bottom:12px;}
+.page li{margin-bottom:10px;max-width:760px;}

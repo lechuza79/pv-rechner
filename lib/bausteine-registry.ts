@@ -110,6 +110,23 @@ export interface Baustein {
 }
 
 export const BAUSTEINE: Baustein[] = [
+  {datei: "components/dashboard/WidgetDashboard.tsx", name: "WidgetDashboard", zweck: "Direct dashboard host with shared data, registered sizing, nested compositions and portable partner embeds.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["WidgetData", "WidgetHost", "WidgetErrorBoundary", "WidgetComposition", "WidgetSetting", "SecondaryButton", "EinbettenDialog", "Modal", "WidgetPreviewCard"]},
+  {datei: "components/dashboard/WidgetData.tsx", name: "WidgetData", zweck: "Server-seeded shared observations, deduplicated refresh and stale-data retention.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: [], keinBeispielWeil: "Nonvisual data boundary; exercised with actual widgets on the shared dashboard reference page."},
+  {datei: "components/dashboard/WidgetHost.tsx", name: "WidgetHost", zweck: "Instance-scoped configuration without document-global side effects.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: [], keinBeispielWeil: "Nonvisual per-instance context; its settings are exercised on the shared dashboard reference page."},
+  {datei: "components/dashboard/WidgetErrorBoundary.tsx", name: "WidgetErrorBoundary", zweck: "Isolate chart failures while preserving sibling dashboard widgets.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: [], keinBeispielWeil: "Failure boundary in each dashboard slot; meaningful only around an actual widget that can fail."},
+  {datei: "components/dashboard/WidgetComposition.tsx", name: "WidgetComposition", zweck: "Nested responsive compositions derived from renderer minima, flexible height preferences and intrinsic groups; explicit legacy plans remain supported.", gruppe: "struktur", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/dashboard/WidgetSlotGrid.tsx", name: "WidgetSlotGrid", zweck: "GridStack placement adapter for reusable, nested widget slots; chart rendering stays independent.", gruppe: "struktur", ebene: "baustein", stand: "im-aufbau", bestehtAus: [], keinBeispielWeil: "Placement adapter for real dashboard slots; its interactive example is the widget grid demonstration."},
+  {datei: "components/dashboard/WidgetControls.tsx", name: "WidgetControls", zweck: "Shared segmented month/day controls and playback icon buttons with one geometry.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Icons"], keinBeispielWeil: "Echte Instanzen in der monatlichen Solar-Vorschau der Widget-Galerie; Auswahl und Tagesknopf verwenden denselben Baustein."},
+  {datei: "components/dashboard/WidgetSetting.tsx", name: "WidgetSetting", zweck: "Shared widget selections with segmented navigation; the Hero stage retains its existing scale.", gruppe: "eingabe", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["WidgetControls", "SelectField", "InfoTooltip", "Icons"]},
+  {datei: "components/dashboard/WidgetPresentationContext.tsx", name: "WidgetPresentationContext", keinBeispielWeil: "Unsichtbarer Kontext für Host-Einstellungen; sein Verhalten wird an den echten Widget-Vorschauen mit Teilen-Optionen sichtbar.", zweck: "Optional host settings shared with widget action frames and consumers.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/dashboard/WidgetPresentation.tsx", name: "WidgetPresentation", zweck: "Embed presentation adapter for shared themes, artwork and actions.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["WidgetHost", "WidgetPresentationContext"]},
+  {datei: "components/dashboard/WidgetConfigurationGroup.tsx", name: "WidgetConfigurationGroup", zweck: "Shared configuration and equal height composition for related widgets.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["ControlPanel", "SelectField", "WidgetPreviewCard"]},
+  {datei: "components/dashboard/WidgetPreviewCard.tsx", name: "WidgetPreviewCard", zweck: "Shared widget preview, loading behavior and supported presentation settings.", gruppe: "widget", ebene: "zusammensetzung", stand: "im-aufbau", bestehtAus: ["SecondaryButton", "WidgetComposition", "WidgetSettingsFlyout", "ControlPanel", "SelectField", "Switch"]},
+  {datei: "components/dashboard/WidgetSettingsFlyout.tsx", name: "WidgetSettingsFlyout", zweck: "Movable settings panel with shared actions and keyboard operation.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["SecondaryButton", "Modal", "Icons"]},
+  {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Shared secondary action button with icon and consistent token styles.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
+  {datei: "components/SectionFilter.tsx", name: "SectionFilter", zweck: "Filter navigation using the shared anchor navigation appearance.", gruppe: "struktur", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
+  // ─── Eingabe ───────────────────────────────────────────────────────────────
   // ─── Eingabe ───────────────────────────────────────────────────────────────
   {
     datei: "components/OptionCard.tsx",
@@ -136,7 +153,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "eingabe",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/SelectField.tsx",
@@ -338,7 +355,7 @@ export const BAUSTEINE: Baustein[] = [
       muster: 'role="dialog"',
       bedeutet:
         "Hier entsteht ein zweiter Dialog von Hand. Es gab schon einmal drei, und sie unterschieden sich in Fokus-Rückgabe, Tastatur-Falle, Scroll-Sperre und Verhalten auf dem Handy — Unterschiede, die man erst bemerkt, wenn jemand mit der Tastatur navigiert.",
-      ausser: [],
+      ausser: [{datei: "components/dashboard/WidgetSettingsFlyout.tsx", grund: "Explicitly requested non-modal movable settings: the chart stays interactive, without modal focus trapping or page scroll locking."}],
     },
   },
   {
@@ -429,7 +446,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["WidgetComposition", "WidgetPresentation", "WidgetHost"],
   },
 
   {
@@ -587,7 +604,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Modal"],
+    bestehtAus: ["ControlPanel", "SelectField", "Modal"],
   },
   {
     datei: "components/StorySlider.tsx",
@@ -1209,7 +1226,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["InfoTooltip"],
+    bestehtAus: ["WidgetData", "InfoTooltip"],
   },
   {
     datei: "components/RegionAnlagentypWidget.tsx",
@@ -1239,7 +1256,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["MastrLiveRadial", "WidgetExport"],
+    bestehtAus: ["WidgetData", "WidgetExport", "MastrLiveRadial"],
   },
   {
     datei: "components/SimulationPanel.tsx",

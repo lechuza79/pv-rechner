@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import {useWidgetReferenceData} from "../../../../components/dashboard/WidgetReferenceData";
 import VerlaufMitMeilensteinen from "../../../(site)/einspeiseverguetung-tabelle/VerlaufMitMeilensteinen";
 import type { VerlaufJahr } from "../../../(site)/einspeiseverguetung-tabelle/VerlaufsChart";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -13,6 +14,7 @@ import {
  *  funktionalen Schalter durch (embed/branding/share/onsite), wie beim
  *  Zubau-Embed. */
 export default function VerlaufEmbed({ jahre }: { jahre: VerlaufJahr[] }) {
+  const reference = useWidgetReferenceData();
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -23,7 +25,7 @@ export default function VerlaufEmbed({ jahre }: { jahre: VerlaufJahr[] }) {
     // iframe-Breite und die Kurve wirkt flacher, als sie ist.
     <div style={{ maxWidth: 860, marginInline: "auto" }}>
       <VerlaufMitMeilensteinen
-        jahre={jahre}
+        jahre={reference?.feedIn.years ?? jahre}
         variant="embed"
         showEmbed={settings.embed}
         branding={settings.branding}

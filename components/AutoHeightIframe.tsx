@@ -28,13 +28,17 @@ export default function AutoHeightIframe({
   framed = true,
   onReady,
   loading = "lazy",
+  appearance,
+  allocated = false,
 }: {
+  allocated?: boolean;
   src: string;
   title: string;
   fallbackHeight: number;
   framed?: boolean;
   onReady?: () => void;
   loading?: "lazy" | "eager";
+  appearance?: import("../lib/widget-appearance").WidgetAppearance;
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
@@ -71,15 +75,28 @@ export default function AutoHeightIframe({
     // im iframe jemand zu.
   }, [ref, bereit]);
 
+  useEffect(() => {
+    if (!appearance) return;
+    const origin = new URL(quelle, window.location.href).origin;
+    const send = () => ref.current?.contentWindow?.postMessage({type:"widget:appearance",appearance},origin);
+    const receive = (event: MessageEvent) => {
+      if(event.source===ref.current?.contentWindow && event.origin===origin && event.data?.type==='widget:appearance-request')send();
+    };
+    window.addEventListener('message',receive);
+    send();
+    return()=>window.removeEventListener('message',receive);
+  }, [appearance, bereit, quelle, ref]);
+
   return (
     <iframe
       ref={ref}
       src={quelle}
       title={title}
       loading={loading}
+      onLoad={() => ref.current?.contentWindow?.postMessage({type:"widget:measure"},new URL(quelle,window.location.href).origin)}
       style={{
         width: "100%",
-        height,
+        height: allocated ? "100%" : height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
         borderRadius: framed ? v("--radius-md") : 0,
         display: "block",

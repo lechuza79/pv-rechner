@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-05T12:08:52.851140+00:00",
+  "sourceUrl": "https://www.marktstammdatenregister.de/MaStR/Einheit/EinheitJson/GetErweiterteOeffentlicheEinheitStromerzeugung",
+  "retrievalDateUtc": "2026-10-04",
+  "sourceCheckedAt": "2026-10-04T05:17:28.084469+00:00",
+  "sourceStatus": "complete",
+  "registerUnit": {
+    "id": "SEE925738700520",
+    "status": "active",
+    "kind": "solar",
+    "capacityKw": 100.5,
+    "netCapacityKw": 95.0,
+    "lon": 8.989053,
+    "lat": 50.401078,
+    "municipalityCode": "06440016",
+    "commissionedAt": "/Date(1406160000000)/",
+    "sourceUpdatedAt": "/Date(1759301629520)/",
+    "direction": "Süd-West",
+    "tiltRange": "21 - 40 Grad",
+    "moduleCount": 402
+  },
+  "linkage": {
+    "method": "Register coordinate is inside the upper mapped ground-mounted solar footprint. Matching municipality. Only one active ground-mounted solar register unit within 2 km of shown rows.",
+    "matchedFootprint": "osm-way-864791489",
+    "siteSource": "https://www.openstreetmap.org/way/45731937"
+  },
+  "limitations": [
+    "Register point links the registered ground-mounted unit to the displayed location, but register supplies no polygon or assignment of all three mapped rows.",
+    "Module count is a register value; rendered subdivision remains schematic.",
+    "Mapped footprint areas and area per module provide a plausibility check only; no power capacity is inferred from them.",
+    "Capacity is for the located register unit, not total site PV capacity. Weather model uses the municipal reference profile, not a measured park forecast."
+  ],
+  "capacityKw": 100.5,
+  "label": "PV-Freifläche an der Kläranlage"
+}

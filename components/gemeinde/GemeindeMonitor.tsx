@@ -12,6 +12,7 @@ import { requestWidgetVideo, type VideoRequestParams } from "../../lib/video-exp
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
 import { WIDGETS } from "../../lib/widget-registry";
+import {WidgetArtwork} from "../dashboard/WidgetArtwork";
 import { ExportableWidgetFrame } from "../dashboard/ExportableWidgetFrame";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
 import { MonitorMonthlySolarChart } from "./MonitorMonthlySolarChart";
@@ -147,12 +148,14 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
     ? {
         widget: WIDGETS[exportKey],
         place: paket.name,
+        exportUnit: item.story.unit,
         // Stock widgets: the chosen month end; others: the story's own data date.
         stand: formatDate(hasStockPeriod ? (selected?.end ?? paket.registerStand) : (item.story.sourceDate ?? paket.registerStand)),
         // Charts with their own selectors print their state themselves.
         stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : isValuation ? monthLabel(chosenValue?.month ?? item.story.period) : undefined,
         filename: `solar-check-${item.template}-${paket.ags}`,
         animated: item.template === "radial",
+        restartAction: !item.story.solarMonth,
         videoParams,
         videoPeriod: videoMonth ? monthLabel(videoMonth) : undefined,
         onVideoRequest: videoParams ? (email: string, options: import("../WidgetVideoDialog").VideoMailOptions) => requestWidgetVideo({...videoParams, email, ...options}) : undefined,
@@ -162,6 +165,8 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   return (
     <Frame
       {...exportProps}
+      data-monthly-profile={item.story.solarMonth?true:undefined}
+      artwork={item.story.solarMonth?<WidgetArtwork src="/brand/pv-modules-mono-contained.svg" texture="/brand/feed-in-v4-splashes.svg"/>:undefined}
       title={item.template === "radial" ? `${role.title} ${ortPhrase({name:paket.name})}` : role.title}
       kind={role.kind}
       className={chart.visualTheme}
@@ -311,7 +316,7 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
           }
         />
       )}
-    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
+    currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} exportUnit="MW" title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
     growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} name={paket.name} regionId={paket.ags} />}
     stock={widgets("Anlagenbestand")}
     energy={Object.keys(energy).length ? energy : undefined}

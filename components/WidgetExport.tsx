@@ -8,6 +8,7 @@ import { useExportNotes } from "./export-notes";
 import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
 import CiteModal from "./CiteModal";
+import {chartDataDate} from "../lib/chart-labels";
 import { sourceLabel } from "../lib/data-sources";
 import { OWN_WORK_LICENSE } from "../lib/license";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
@@ -352,25 +353,16 @@ export function WidgetSourceEdge({
    *  Spalten halten die Schrift auf dem kleinsten Token. Der Wirt legt dann
    *  `SOURCE_EDGE_WIDTH * spalten` Platz an; die Kante wächst nie von selbst. */
   spalten?: 1 | 2;
-  /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
-   *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
-   *  Ohne Angabe steht das Abrufdatum da — die ehrlichere Aussage bei
-   *  Live-Daten, die sich stündlich ändern. */
+  /** Actual data vintage; missing dates stay explicit, never the download date. */
   stand?: string;
 }) {
-  // Abrufdatum erst nach dem Mounten: Server- und Client-Render dürfen nicht
-  // auseinanderlaufen, wenn der Tag zwischen beiden wechselt.
-  const [heute, setHeute] = useState("");
-  useEffect(() => {
-    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
-  }, []);
   // Auf einer sehr flachen Karte (Einzel-Kennzahl, Ampel) passt selbst bei
   // kleinster Schrift nicht alles an die Kante. Dann fällt ZUERST das Datum —
   // es ist der einzige Teil, den keine Lizenz verlangt. Der Bereitsteller, das
   // Lizenzkürzel und der Änderungshinweis bleiben in jedem Fall stehen; lieber
   // ein Vermerk ohne Datum als ein abgeschnittener.
   const [ohneDatum, setOhneDatum] = useState(false);
-  const datum = ohneDatum ? "" : (stand ?? heute);
+  const datum = ohneDatum ? "" : chartDataDate(stand);
 
   // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
   // Kante jeden Klammer-Zusatz aus dem Namen — das traf nicht nur Beiwerk wie
@@ -435,6 +427,8 @@ export function WidgetSourceEdge({
     <div
       ref={wrapRef}
       data-sc-source-edge=""
+      data-sc-source-export-label={widget.sources.map(s => sourceLabel(s, {kurz:true})).join(" · ") + ` · Stand: ${chartDataDate(stand)}`}
+      data-sc-source-export-size={fsPx("--font-size-caption")}
       // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
       // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
       // den Vermerk gerade dort, wo das Bild ohne die Seite weiterwandert.
@@ -461,7 +455,7 @@ export function WidgetSourceEdge({
         fontSize: SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
-        color: v("--color-text-faint"),
+        color: "var(--widget-muted, var(--color-text-faint))",
         pointerEvents: "none",
         opacity: visible ? 1 : 0,
         transition: "opacity .18s ease-out",
@@ -491,6 +485,7 @@ export function WidgetExportFooter({
   legend,
   branding = true,
   note,
+  includeHelpNotes = false,
 }: {
   /** Registry entry — carries sources and decides the brand wording. It keeps
    * image, page footer and gallery in sync. */
@@ -500,8 +495,10 @@ export function WidgetExportFooter({
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
+  includeHelpNotes?: boolean;
 }) {
-  const notes = useExportNotes();
+  const collectedNotes = useExportNotes();
+  const notes = includeHelpNotes ? collectedNotes : [];
   // Quellenvermerk und Datenstand trägt seit 08/2026 die senkrechte Kante
   // (WidgetSourceEdge) — auch im Bild. Deshalb nimmt dieser Fuß kein
   // `dataAsOf` mehr entgegen: zwei Stellen für dieselbe Angabe waren der
@@ -574,7 +571,7 @@ export function WidgetExportFooter({
           <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
-                <PoweredBy light label={brandLabel(widget?.kind ?? "chart")} />
+                <PoweredBy inheritColor label={brandLabel(widget?.kind ?? "chart")} />
                 <span> · {OWN_WORK_LICENSE.code}</span>
               </>
             ) : (

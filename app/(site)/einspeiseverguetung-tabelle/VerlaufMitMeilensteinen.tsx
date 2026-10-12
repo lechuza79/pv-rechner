@@ -1,5 +1,7 @@
 "use client";
 
+import {ChartExportMetadata} from "../../../components/charts/ChartExportMetadata";
+
 // Verlaufs-Widget „Einspeisevergütung seit 2000" — dieselbe Widget-Konvention
 // wie die Zubau-Datenstory: Register-Eintrag als Identität, geteilte Fußzeilen
 // (WidgetFooter/WidgetExportFooter/WidgetSourceEdge), Bild-Export, Embed-fähig.
@@ -24,7 +26,7 @@ import {
   WidgetSourceEdge,
 } from "../../../components/WidgetExport";
 import { sourceLabel } from "../../../lib/data-sources";
-import { fmtCt } from "../../../lib/feedin-config";
+import { FEED_IN_GEPRUEFT_ISO, fmtCt } from "../../../lib/feedin-config";
 import { tokens, v, fsPx } from "../../../lib/theme";
 import { useChartExport } from "../../../lib/useChartExport";
 import { WIDGETS } from "../../../lib/widget-registry";
@@ -123,13 +125,14 @@ export default function VerlaufMitMeilensteinen({
           style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
         >
           <div style={S.title}>{WIDGET.title}</div>
-          <div style={S.sub}>{WIDGET_SUBLINE}</div>
+          <div data-sc-export-ignore="" style={S.sub}>{WIDGET_SUBLINE}</div>
+          <ChartExportMetadata scope="Deutschland" dataAsOf={FEED_IN_GEPRUEFT_ISO} unit="ct/kWh"/>
         </div>
 
         <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
           {/* Quelle vertikal an der rechten Kante (Konvention — nie als
               horizontaler Block). Im Artikel trägt der Seitenfuß die Quelle. */}
-          <WidgetSourceEdge widget={WIDGET} visible={isEmbed && !isOnsite} />
+          <WidgetSourceEdge widget={WIDGET} visible={isEmbed && !isOnsite} stand={FEED_IN_GEPRUEFT_ISO} />
           <div ref={wrapRef} style={{ position: "relative" }}>
             {/* Sofortiger, gestylter Hover-Tooltip (native <title>-Tooltips
                 erscheinen erst nach Sekunden und wirkten wie „kein Hover").

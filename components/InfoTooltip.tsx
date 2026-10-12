@@ -26,6 +26,8 @@ const GAP = 8; // px between trigger and tooltip
 const EDGE = 8; // min px from viewport edge
 
 interface Props {
+  maxWidth?: number;
+  onOpenChange?: (open: boolean) => void;
   /** Optional bold heading shown above the body text. */
   title?: string;
   /** Tooltip body content. */
@@ -73,6 +75,8 @@ interface Props {
 
 export default function InfoTooltip({
   title,
+  onOpenChange,
+  maxWidth = TOOLTIP_MAX_WIDTH,
   children,
   size = 13,
   ariaLabel,
@@ -83,6 +87,9 @@ export default function InfoTooltip({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
+  const openCallback = useRef(onOpenChange);
+  openCallback.current = onOpenChange;
+  useEffect(() => { openCallback.current?.(open); }, [open]);
   const [mounted, setMounted] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number; width: number; maxHeight: number }>({
     top: 0,
@@ -126,34 +133,31 @@ export default function InfoTooltip({
   // four edges. Runs as a layout effect so the position is set before paint.
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
-    const t = triggerRef.current.getBoundingClientRect();
-    // Fall back if the viewport reports 0 — happens for an embed page loaded
-    // outside its iframe; inside a real iframe innerWidth is the iframe size.
-    const vw = window.innerWidth || document.documentElement.clientWidth || TOOLTIP_MAX_WIDTH + 2 * EDGE;
-    const vh = window.innerHeight || document.documentElement.clientHeight || 600;
-
-    // Width: never wider than the viewport (minus edge margins). Constraining
-    // the rendered box to the SAME width used for centering keeps the math and
-    // the paint in sync, so it never overhangs on narrow phones.
-    const width = Math.min(TOOLTIP_MAX_WIDTH, vw - 2 * EDGE);
-    const height = tooltipRef.current?.offsetHeight ?? 80;
-
-    // Vertical: prefer above. Flip below only if it doesn't fit above AND there
-    // is more room below. Then clamp the top edge and cap the height so a tall
-    // tooltip scrolls internally instead of running off-screen.
-    const spaceAbove = t.top - GAP - EDGE;
-    const spaceBelow = vh - t.bottom - GAP - EDGE;
-    const below = height > spaceAbove && spaceBelow > spaceAbove;
-    const maxHeight = Math.max(80, below ? spaceBelow : spaceAbove);
-    let top = below ? t.bottom + GAP : t.top - GAP - height;
-    top = Math.max(EDGE, Math.min(top, vh - EDGE - Math.min(height, maxHeight)));
-
-    // Center horizontally on the trigger, clamp to viewport.
-    let left = t.left + t.width / 2 - width / 2;
-    left = Math.max(EDGE, Math.min(left, vw - width - EDGE));
-
-    setPos({ top, left, width, maxHeight });
-  }, [open, portalTheme]);
+    const tooltip = tooltipRef.current;
+    if (!tooltip) return;
+    const position = () => {
+      if (!triggerRef.current) return;
+      const t = triggerRef.current.getBoundingClientRect();
+      const vw = window.innerWidth || document.documentElement.clientWidth;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const width = Math.min(maxWidth, Math.max(1, vw - 2 * EDGE));
+      // Measure at the final width: wrapping can change the height substantially.
+      tooltip.style.width = `${width}px`;
+      tooltip.style.maxWidth = `${width}px`;
+      const height = Math.min(tooltip.scrollHeight + 2, Math.max(1, vh - 2 * EDGE));
+      const above = t.top - GAP - height;
+      const below = t.bottom + GAP;
+      const preferAbove = above >= EDGE || t.top >= height / 2;
+      const top = Math.max(EDGE, Math.min(preferAbove ? above : below, vh - EDGE - height));
+      const left = Math.max(EDGE, Math.min(t.left + t.width / 2 - width / 2, vw - width - EDGE));
+      const next = { top, left, width, maxHeight: Math.max(1, vh - 2 * EDGE) };
+      setPos(previous => Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
+    };
+    position();
+    const observer = new ResizeObserver(position);
+    observer.observe(tooltip);
+    return () => observer.disconnect();
+  }, [open, mounted, portalTheme, maxWidth]);
 
   // Close on outside click, scroll, resize, or Escape.
   useEffect(() => {
