@@ -1,3 +1,4 @@
+import {supportsWidgetPresentation,widgetPresentationSource} from './widget-appearance';
 import {storyWidgetTemplates} from './story-widget-selection';
 import { WIDGETS, type WidgetDef } from './widget-registry';
 import { SECTIONS } from './widget-gallery-sections';
@@ -9,7 +10,6 @@ const singles = new Set(['regional-basic-stats','gemeinde-ranking','regional-cur
 const order = ['regional-map','gemeinde-ranking','regional-annual-growth','gemeinde-solar-monat','regional-race','regional-composition','gemeinde-anlagenraster','gemeinde-energie-jahr','regional-electricity-value','regional-feed-in-value','regional-current-power'];
 /** Gallery curation only: hidden entries remain registered and embeddable. */
 export const GALLERY_HIDDEN: Readonly<Record<string, string>> = {
-  'atomstrom-anteil-hero': 'Compact presentation belongs to strommix-anteil.',
   'simulation': 'Full application rather than a gallery chart.',
   'foerder-check': 'Interactive questionnaire rather than a gallery chart.',
 };
@@ -67,17 +67,15 @@ export function galleryEntries(place:GalleryPlace):GalleryEntry[] {
         if(params.ags) {params.ags=place.ags;placeLabel=place.name;}
         if(params.bl) {params.bl=place.stateId;placeLabel=place.stateName;}
         const query=new URLSearchParams(params).toString();
-        return {label:placeLabel??v.label,src:v.src+(query?`?${query}`:''),height:v.height,supportsGrid:v.supportsGrid,...(((v.supportsCompact?w.configuration?.presentations?.compact?.params:undefined)??v.compactParams)?{compactSrc:v.src+'?'+new URLSearchParams({...params,...((v.supportsCompact?w.configuration?.presentations?.compact?.params:undefined)??v.compactParams)}).toString()}:{})};
+        return {label:placeLabel??v.label,src:v.src+(query?`?${query}`:''),height:v.height,supportsGrid:v.supportsGrid};
       });
     }
-    // Existing atom teasers are hero/story previews, not small dashboard slots.
+    // All hosts derive supported representations from the parent widget.
     variants=variants.map(variant=>{
-      const hero=w.configuration?.presentations?.hero;
-      const heroParams=hero?.params;
-      if(hero?.when&&!hero.when.values.includes(new URL(variant.src,'https://preview.local').searchParams.get(hero.when.key)??''))return variant;
-      if(heroParams){const url=new URL(variant.src,'https://preview.local');for(const [key,value] of Object.entries(heroParams))url.searchParams.set(key,value);return {...variant,heroSrc:url.pathname+url.search,...(!w.configuration?.presentations?.compact?{compactSrc:undefined}:{})};}
-      if(variant.compactSrc&&!w.configuration?.presentations?.compact){return {...variant,heroSrc:variant.compactSrc,compactSrc:undefined};}
-      return variant;
+      const query=new URL(variant.src,'https://preview.local').searchParams;
+      return {...variant,
+        ...(supportsWidgetPresentation(w.id,query,'compact')?{compactSrc:widgetPresentationSource(w.id,variant.src,'compact')}:{}),
+        ...(supportsWidgetPresentation(w.id,query,'hero')?{heroSrc:widgetPresentationSource(w.id,variant.src,'hero')}:{})};
     });
     return {id:w.id,title:w.title,group,variants,placeLabel} as GalleryEntry;
   }).sort((a,b)=>(order.indexOf(a.id)<0?100:order.indexOf(a.id))-(order.indexOf(b.id)<0?100:order.indexOf(b.id)));

@@ -136,7 +136,7 @@ const BEISPIEL_BUNDESLAND = "13";
 export const WIDGETS = {
   kostenrennen: {
     id: "pv-kostenrennen",
-    configuration: {presentations:{full:widgetVariant('race',{label:'Vollständig',gridSizes:['portrait','stage'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:560,allocatedHeightBreakpoints:[{maxWidth:400,minHeight:640}],includes:['Title','Current year','Cost curves','Insights','Playback','Help and export'],omits:[]})},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Modellierte Gesamtkosten", period: "Zeitraum der Modellrechnung"},
+    configuration: {presentations:{full:widgetVariant('race',{label:'Vollständig',gridSizes:['portrait','stage'],params:{},minWidth:320,preferredWidth:480,maxWidth:960,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:560,allocatedHeightBreakpoints:[{maxWidth:400,minHeight:640}],includes:['Title','Current year','Cost curves','Insights','Playback','Help and export'],omits:[]}),hero:widgetVariant('race',{label:'Redaktionelle Vorschau',params:{presentation:'hero'},minWidth:240,preferredWidth:480,maxWidth:960,contentSizing:'Existing mini race with natural chart height and parent link.',includes:['Existing cost curves','Current year','Summary','Parent link'],omits:['Detailed milestones','Playback controls','Widget actions']})},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Modellierte Gesamtkosten", period: "Zeitraum der Modellrechnung"},
     title: "Stromkosten mit und ohne Solaranlage",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
@@ -189,17 +189,6 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.energyCharts],
     cta: { label: "Fakten zum Atomstrom-Import", href: "/atomstrom-import" },
   },
-  nuclearShareHero: {
-    id: "atomstrom-anteil-hero",
-    // Retired standalone entry; the real teaser belongs to strommix-anteil.
-    embeddable: false,
-    configuration: {themes: ["light", "dark", "hero"], background: false, sharing: false, previewWidth: 330, data: "Kernenergie und sonstiger Strommix in Deutschland", period: "Laufendes Jahr, verfügbare Wochen"},
-    title: "Atomstrom-Anteil · Hero",
-    kind: "chart",
-    shareUrl: `${SITE}/atomstrom-import`,
-    shareText: "Kernenergie im deutschen Strommix",
-    sources: [DATA_SOURCES.energyCharts],
-  },
   nuclearDaily: {
     id: "atomstrom-tage",
     configuration: {presentations:{full:widgetVariant('cartesian',{contentSizing:"Timeline, labels and existing controls determine the natural card height."}),hero:widgetVariant('cartesian',{label:'Hero / Story',params:{variant:'teaser'},minWidth:240,preferredWidth:330,maxWidth:560,contentSizing:'Independent teaser with natural height.',includes:['Headline','Summary and plot'],omits:['Full controls and detail legend']})},themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Rechnerischer Atomstrom-Import nach Kalendertagen", period: "Sieben Datentage; unvollständige Tage gekennzeichnet"},
@@ -211,7 +200,7 @@ export const WIDGETS = {
   },
   electricityTrade: {
     id:"stromhandel",title:"Stromimport und Stromexport",kind:"chart",
-    configuration:{presentations:{full:widgetVariant('radial',{label:'Vollständig',gridSizes:['medium'],params:{},minWidth:320,preferredWidth:480,maxWidth:720,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:440,includes:['Title','Period','Net balance','Plot','Interaction','Help and export'],omits:[]}),compact:widgetVariant('radial',{label:'Kompakt',gridSizes:['small'],params:{presentation:'compact'},minWidth:280,preferredWidth:380,maxWidth:560,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:336,includes:['Title','Net balance beside plot','Trade share','Plot'],omits:['Day labels','Hover details','Controls','Gross totals']}),hero:widgetVariant('radial',{label:'Hero / Story',when:{key:'variant',values:['','radial','bars']},params:{presentation:'hero'},minWidth:240,preferredWidth:320,maxWidth:380,height:'content',plot:'proportional',includes:['Title','Net balance in plot','Plot'],omits:['Day labels','Trade share','Hover details','Controls','Gross totals']})},themes:["light","dark","hero"],background:false,sharing:true,data:"Kommerzielle Handelsmengen von SMARD",period:"Jahr, Monat oder letzte sieben vollständige Tage",dataSettings:[
+    configuration:{presentations:{full:widgetVariant('radial',{label:'Vollständig',gridSizes:['medium'],params:{},minWidth:320,preferredWidth:480,maxWidth:720,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:440,includes:['Title','Period','Net balance','Plot','Interaction','Help and export'],omits:[]}),compact:widgetVariant('radial',{label:'Kompakt',when:{key:'variant',values:['','radial','bars']},gridSizes:['small'],params:{presentation:'compact'},minWidth:280,preferredWidth:380,maxWidth:560,height:'content',plot:'proportional',supportsAllocation:true,minAllocatedHeight:336,includes:['Title','Net balance beside plot','Trade share','Plot'],omits:['Day labels','Hover details','Controls','Gross totals']}),hero:widgetVariant('radial',{label:'Hero / Story',when:{key:'variant',values:['','radial','bars']},params:{presentation:'hero'},minWidth:240,preferredWidth:320,maxWidth:380,height:'content',plot:'proportional',includes:['Title','Net balance in plot','Plot'],omits:['Day labels','Trade share','Hover details','Controls','Gross totals']})},themes:["light","dark","hero"],background:false,sharing:true,data:"Kommerzielle Handelsmengen von SMARD",period:"Jahr, Monat oder letzte sieben vollständige Tage",dataSettings:[
       {key:"period",label:"Zeitraum",defaultValue:"year",options:[{value:"year",label:"Jahr"},{value:"month",label:"Monat"},{value:"seven",label:"Letzte 7 Tage"}]},
       {key:"year",label:"Jahr",defaultValue:String(new Date().getFullYear()),options:Array.from({length:new Date().getFullYear()-2020},(_,i)=>({value:String(new Date().getFullYear()-i),label:String(new Date().getFullYear()-i)})),when:{key:"period",values:["year","month"]}},
       {key:"month",label:"Monat",defaultValue:String(new Date().getMonth()+1).padStart(2,"0"),options:Array.from({length:12},(_,i)=>({value:String(i+1).padStart(2,"0"),label:new Intl.DateTimeFormat("de-DE",{month:"long",timeZone:"UTC"}).format(new Date(Date.UTC(2000,i,1)))})),when:{key:"period",values:["month"]}}

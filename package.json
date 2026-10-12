@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "homepage:stories": "node scripts/homepage-stories-build.mjs",
     "homepage:race": "node scripts/homepage-race-build.mjs",
     "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\"",
     "build": "next build",

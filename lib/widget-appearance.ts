@@ -53,11 +53,17 @@ export function widgetCompositionItem(widgetId:string, options:{id?:string;prese
   sizing:contract.supportsAllocation?'allocated':'content',preferredHeight:options.preferredHeight};
 }
 
+/** One eligibility rule for gallery, dashboard and linked hero hosts. */
+export function supportsWidgetPresentation(id:string,query:URLSearchParams,presentation:'full'|'compact'|'hero'):boolean {
+ const contract=widgetPresentationContract(id,presentation);
+ return !!contract&&(!contract.when||contract.when.values.includes(query.get(contract.when.key)??''));
+}
+
 /** Match only registered representations; an absent match preserves the full widget. */
 export function widgetVariantFromQuery(id:string, query:URLSearchParams):'full'|'compact'|'hero' {
  for(const variant of ['compact','hero'] as const){
   const contract=widgetPresentationContract(id,variant);
-  if(contract?.when&&!contract.when.values.includes(query.get(contract.when.key)??''))continue;
+  if(!supportsWidgetPresentation(id,query,variant))continue;
   const params=contract?.params;
   if(params&&Object.keys(params).length&&Object.entries(params).every(([key,value])=>query.get(key)===value))return variant;
  }
@@ -70,7 +76,7 @@ export function widgetPresentationSource(id:string,src:string,presentation:'full
  const previous=widgetVariantFromQuery(id,url.searchParams);
  if(previous===presentation)return url.pathname+url.search;
  const target=widgetPresentationContract(id,presentation);
- if(!target||target.when&&!target.when.values.includes(url.searchParams.get(target.when.key)??''))throw new Error('Unsupported widget presentation');
+ if(!target||!supportsWidgetPresentation(id,url.searchParams,presentation))throw new Error('Unsupported widget presentation');
  for(const key of Object.keys(widgetPresentationContract(id,previous)?.params??{}))url.searchParams.delete(key);
  for(const [key,value] of Object.entries(target.params))url.searchParams.set(key,value);
  return url.pathname+url.search;

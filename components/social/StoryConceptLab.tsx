@@ -1,14 +1,12 @@
 "use client";
-import {chartQuantityLabel} from "../../lib/chart-labels";
+import {MunicipalWidgetVisual} from '../dashboard/MunicipalWidgetVisual';
 import {IconChevronLeft,IconChevronRight} from '../Icons';
 import SelectField from '../SelectField';
-import {MunicipalChart} from './MunicipalChart';
-import {storyVisualTemplate} from '../../lib/story-approved-visual';
 import {approvedStoryVisual} from '../../lib/story-approved-visual';
-import {YieldChart} from './YieldChart';
 import { useEffect, useState } from "react";
 import { STORY_CONCEPTS, type StoryConcept } from "../../lib/story-konzepte";
-import {formatStoryValue,formatStoryDate} from "../../lib/story-format";
+import {monthLabel} from "../../lib/story-monatspeak";
+import {formatStoryDate} from "../../lib/story-format";
 import {DEFAULT_STORY_TEXT,renderStoryText} from "../../lib/story-text-patterns";
 import { conceptFromFinding } from "../../lib/story-finding-concept";
 import type { DiscoveryReport } from "../../lib/story-discovery";
@@ -17,7 +15,6 @@ import {buildStoryPool, type StoryTopic} from "../../lib/story-pool";
 import {relatedStoryTopics,storyDataset} from "../../lib/story-related";
 import styles from "./StoryConceptLab.module.css";
 import { MONTH_PEAK_EXAMPLES } from "../../lib/story-monatspeak-examples";
-import { monthLabel } from "../../lib/story-monatspeak";
 import { FeedVorschau } from "./FeedVorschau";
 
 
@@ -125,26 +122,9 @@ function StoryCard({story,open,scheme}:{story:StoryConcept;open:()=>void;scheme:
   return <button className={styles.card} onClick={open}><div data-story-scheme={scheme} className={`${styles.thumb} ${styles.visualTheme}`}><ConceptChart story={story} compact /></div><div className={styles.cardCopy}><small>{formatStoryDate(story.period)}</small><h3>{story.title}</h3><p>{story.teaser}</p><span>Story lesen →</span></div></button>;
 }
 function ConceptChart({story,compact=false}:{story:StoryConcept;compact?:boolean}) {
-  if(storyVisualTemplate(story))return <MunicipalChart story={story} compact={compact}/>;
-  const max = Math.max(1,...story.values.map(v=>v.value));
-  if(story.kind==='yield')return <YieldChart story={story} compact={compact}/>;
-  if (story.kind === "facts" && !story.values.length) return <p className={styles.factChart}>{story.comparisonLabel}</p>;
-  if (story.kind === "facts") return <div className={styles.factChart} aria-label={story.title}>{story.values.map((value,index)=><div key={`${value.label}-${index}`}><span>{value.label}</span><strong>{formatStoryValue(value.value)}<small> {value.unit}</small></strong></div>)}</div>;
-  if(story.kind === "columns" && story.values.length>8) return <div className={styles.timeline}><p>{chartQuantityLabel(story.unit)}</p><svg viewBox="0 0 440 230" role="img" aria-label={`${story.title}. ${story.comparisonLabel}`}><line x1="18" y1="188" x2="430" y2="188" stroke="var(--story-line)"/>{story.values.map((v,i)=>{const step=410/story.values.length,h=v.value/max*140;return <g key={v.label}><title>{`${v.label}: ${v.value} ${v.unit??story.unit}`}</title><rect x={20+i*step} y={188-h} width={step*.7} height={h} fill="var(--story-accent)" opacity={v.value===max?1:.3} rx="2"/>{v.value===max&&<text x={20+i*step} y={178-h} fontSize="18" fill="var(--story-ink)" fontWeight="700">{v.value}</text>}{i%5===0&&<text x={20+i*step} y="213" fontSize="14" textAnchor={i===story.values.length-1?'end':'start'} fill="var(--story-muted)">{v.label}</text>}</g>})}</svg></div>;
-  if(story.kind === "columns") return <div className={styles.yearChart}><p>{chartQuantityLabel(story.unit)}</p><div className={styles.yearColumns}>{story.values.map(v=><div key={v.label}><strong>{formatStoryValue(v.value)}</strong><i style={{height:`${Math.max(2,v.value/Math.max(max,1)*(compact?100:150))}px`,opacity:story.id.endsWith("-gebaeude")?(v===story.values.at(-1)?1:v===story.values.at(-2)?0.65:0.25):(v.value===max?1:0.4)}}/><span>{v.label}</span></div>)}</div></div>;
-  if(story.kind === "shares") return <div className={styles.shareChart}><p>Balkonkraftwerke · {story.town}</p>{story.values.map(v=><div key={v.label}><div><strong>{formatStoryValue(v.value)}<small> %</small></strong><span>{v.label}</span></div><div className={styles.shareTrack}><i style={{width:`${v.value}%`}}/></div></div>)}<small>Rest: Gebäudeanlagen · ohne Freiflächen</small></div>;
-  if(story.kind === "project") return <div className={styles.projectChart}><p>{story.values[0].label} · {story.town}</p><strong>{story.values[0].value.toLocaleString("de-DE", {maximumFractionDigits:1})} <small>MWp</small></strong><p>{story.period}</p><hr/><p>{story.values[1].label}</p><b>{story.values[1].value.toLocaleString("de-DE", {maximumFractionDigits:2})} MWp zusammen</b></div>;
-  if(story.kind === "timeline") return <div className={styles.timeline}><p>{chartQuantityLabel(story.unit)}</p><svg viewBox="0 0 440 230" role="img" aria-label={`${story.town}: ${story.chartSummary}. ${story.values.length} Monatswerte.`}>{story.eventEnd && story.event && <rect x={20+story.values.findIndex(v=>v.label===story.event!.month)*410/story.values.length} y="10" width={(story.values.findIndex(v=>v.label===story.eventEnd)-story.values.findIndex(v=>v.label===story.event!.month)+1)*410/story.values.length} height="178" fill="var(--story-accent)" opacity="0.08"/>}{story.event && <line x1={20+story.values.findIndex(v=>v.label===story.event!.month)*410/story.values.length} x2={20+story.values.findIndex(v=>v.label===story.event!.month)*410/story.values.length} y1="12" y2="188" stroke="var(--story-accent)" strokeDasharray="4 4"><title>{story.event.label}</title></line>}<line x1="18" y1="188" x2="430" y2="188" stroke="var(--story-line)"/>{story.values.map((v,i)=>{const selected=story.highlightedMonths?.includes(v.label);const step=410/Math.max(story.values.length,1);const h=v.value/Math.max(max,1)*140;return <g key={v.label}><title>{`${monthLabel(v.label)}: ${v.value} ${v.unit??story.unit}`}</title><rect x={20+i*step} y={188-h} width={step*0.65} height={h} rx="2" fill="var(--story-accent)" opacity={selected?1:0.3}/>{selected&&<text x={20+i*step+step*0.325} y={179-h} textAnchor="middle" fill="var(--story-ink)" fontSize="18" fontWeight="700">{v.value}</text>}</g>})}<text x="18" y="213" fontSize="18" fill="var(--story-muted)">{story.values[0] ? monthLabel(story.values[0].label) : ""}</text><text x="430" y="213" textAnchor="end" fontSize="18" fill="var(--story-muted)">{story.values.at(-1) ? monthLabel(story.values.at(-1)!.label) : ""}</text></svg><p><strong>{story.chartSummary}</strong></p>{story.eventEnd && <p>Markierte Fläche: {story.event?.label} · {story.event?.month}–{story.eventEnd}</p>}</div>;
-  if(story.kind === "rank") return <div className={`${styles.rankChart} ${compact?styles.compact:""}`} aria-label="Layoutbeispiel: Platz 5 zu Platz 3"><div><span>{story.values[0].label}</span><strong>{story.values[0].value}</strong></div><span>→</span><div><span>{story.values[1].label}</span><strong>{story.values[1].value}</strong></div><small>Layoutbeispiel · keine echten Ränge</small></div>;
-  if(story.kind === "donut") {
-    const total=story.values.reduce((sum,v)=>sum+v.value,0),circle=2*Math.PI*70;
-    let offset=0;
-    const unit=story.values[0]?.unit??story.unit;
-    const scaled=unit==='kWp'&&total>=1000;
-    return <div className={`${styles.donutChart} ${compact?styles.compact:""}`}><svg viewBox="0 0 200 200" role="img" aria-label={story.values.map(v=>`${v.label}: ${v.value} ${v.unit??unit}`).join(', ')}>{story.values.map((v,i)=>{const length=total?v.value/total*circle:0;const start=offset;offset+=length;return <circle key={v.label} cx="100" cy="100" r="70" fill="none" stroke="var(--story-accent)" opacity={1-i/Math.max(story.values.length,1)*.65} strokeWidth="26" strokeDasharray={`${Math.max(0,length-3)} ${circle}`} strokeDashoffset={-start} transform="rotate(-90 100 100)"/>;})}<text x="100" y="99" textAnchor="middle" fill="var(--story-ink)" fontSize="27" fontWeight="700">{(scaled?total/1000:total).toLocaleString('de-DE',{maximumFractionDigits:1})}</text><text x="100" y="121" textAnchor="middle" fill="var(--story-muted)" fontSize="13">{scaled?'MWp':unit}</text><text x="100" y="137" textAnchor="middle" fill="var(--story-muted)" fontSize="13">installiert</text></svg>{!compact&&<div className={styles.legend}>{story.values.map((v,i)=><p key={v.label}><i style={{opacity:1-i/Math.max(story.values.length,1)*.65}}/>{v.label}<b>{(total?v.value/total*100:0).toLocaleString('de-DE',{maximumFractionDigits:1})} %</b></p>)}</div>}</div>;
-  }
-  return <div className={`${styles.bars} ${compact?styles.compact:""}`}><p>{chartQuantityLabel(story.unit)}</p>{story.values.map((v,i)=><div className={styles.barRow} key={v.label}><div><span>{v.label}</span><strong>{formatStoryValue(v.value)}</strong></div><div className={styles.track}><i style={{width:`${v.value/max*100}%`,opacity:i?0.35:1}}/></div></div>)}</div>;
+  return <MunicipalWidgetVisual story={story} view={{detail:compact?'reduced':'full',editorialDraft:true}}/>;
 }
+
 function SourceLine({story}:{story:StoryConcept}) {
  const caption=story.sourceCaption??'Marktstammdatenregister · eigene Auswertung';
  return <p className={styles.source}>Quelle: {story.sources?.length===1?<a href={story.sources[0].url} target="_blank" rel="noreferrer">{caption} ↗</a>:<>{caption}{story.sources?.map((s,i)=><a key={s.url} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label}> [{i+1}]</a>)}</>}</p>;

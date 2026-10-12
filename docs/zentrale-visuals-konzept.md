@@ -1,4 +1,81 @@
-# Central visual system and regional pages — plan
+# Central visual system and regional pages
+
+## Current implementation status — 12 October 2026
+
+The curated catalog contains 42 widget identities. Existing variants use the
+same registry, presentation contracts, dashboard renderer and data bootstrap.
+The inventory mounts at most eight views per page; all variants remain reachable.
+The two full applications (`simulation`, `rechner`) and the funding questionnaire
+remain applications/tools, not artificially reduced chart cards.
+
+### Migration audit
+
+| Existing family | Shared implementation / retained variants |
+| --- | --- |
+| PV and heating cost races | `RaceChart`, `KostenrennenWidget`, `HeizkostenrennenWidget`; existing full and PV mini presentations, same calculations and event controls. The already existing PV mini is now a registered hero presentation. |
+| Heating comparison | `GruengasWidget`; complete composition, bars and lines remain explicit variants. |
+| National generation and trade | `GenerationMixWidget`, `ErzeugungWidget`, `NuclearShareWidget`, `NuclearDailyWidget`, `ElectricityTradeWidget`; existing full, compact, teaser, radial, bars and totals retain their supported combinations. Totals do not acquire a fictitious compact/hero view. |
+| Country/world comparisons | Country mix race, per-capita race, capacity race, electricity race and static renewable growth use their existing shared chart owners. Capacity and electricity export units are GW and TWh, not the cost-race default euro. |
+| Historic tariffs and solar growth | `FeedInTimelineWidget`, `ZubauWidget`; article, dashboard and embed use the same components. Tariff year preparation lives in `lib/feedin-timeline.ts`. Old import paths re-export these owners. |
+| Registry summaries and national map | Existing map, plant composition, metric tile and solar trend components retain their data and actions. `MastrMetricWidget` and `EeAmpelWidget` no longer live in embed routes. |
+| Municipality/district/state | Existing regional map/race, top three, current power, annual growth, composition, KPI group, monthly solar, annual energy, solar value and tariff value use the shared monitor/chart families. State and older municipality addresses remain adapters. |
+| Topographic landscape and small weather views | `LandscapeWidget`, shared landscape cards, `WeatherMicroTile`, solar and wind profiles retain their scene/data owners and declared geometry. No new scene or layout variant was introduced. |
+| Ten active municipal story templates | `MunicipalWidgetVisual` dispatches monthly additions, electricity value, feed-in value, plant composition, columns, share donut, yield, annual energy, monthly solar and ranking. Reader, standalone widget, reduced preview and editorial ideas use this same dispatch. |
+| Older editorial design examples | `EditorialStoryVisual` preserves facts, column sequences, shares, project, timeline, rank example, donut fallback and bars. The common body exposes these only with an explicit editorial-draft option; they do not become published stories or fabricated live data. |
+| Existing social poster formats | `SocialKarte` remains the shared poster renderer for feed, placement modal, story card and template gallery; `ApprovedStoryVisual` reuses its parts. Poster framing is an output format, not another live widget identity. |
+| Funding questionnaire | `FundingCheckWidget` uses the existing calculation engine and common source/action components; its embed address remains unchanged. |
+
+`MunicipalChart` is a compatibility adapter. The ten active story templates are
+covered by actual existing report data in full and reduced rendering tests.
+Drafts retain their original markup and cannot silently enter the live story
+selection. Historic source identities stay attached to their snapshots.
+
+Presentation support belongs to the parent in `widget-registry.ts`. Gallery links,
+dashboard configuration and source conversion use that same contract. The retired
+`atomstrom-anteil-hero` catalog identity is gone; its accepted graphic remains the
+registered preview of `strommix-anteil`. The static homepage story entry also builds from `GemeindeInsights` and therefore
+`MunicipalWidgetVisual`, via `npm run homepage:stories`. Its 33 approved snapshots,
+labels and six-card selection order are retained. The old script address is a
+compatibility export; package takeovers cannot overwrite this shared build.
+The route-implementation debt list is now
+empty, with compatibility exports for existing consumers. No CSS, plot geometry,
+button style or full-view control was redesigned in this migration.
+
+### Local acceptance server
+
+Use the existing managed preview in built mode for a complete-gallery acceptance
+run: `WIDGET_PREVIEW_DATA=live npm run build`, then install the local supervisor
+with `python3 scripts/local-preview/install.py --mode built`. It stays bound to
+127.0.0.1:4319 and starts only on explicit request. Rebuild after code changes;
+this mode does not hot-reload. Development mode remains available for small edits.
+The explicit local live-data mode shares the same disk cache and read-only proxy
+as development; Vercel deployments ignore it to prevent self-proxying.
+
+### Acceptance evidence — 12 October 2026
+
+- Production build passed with the explicit local live-data setting. The managed
+  built preview serves the reference, inventory and story routes on port 4319.
+- Browser: cost full → hero → full updates the mounted frame correctly and leaves
+  the adjacent heating variant unchanged. All five energy inventory pages loaded.
+- Browser: layout reference checked at 375 and 1440 px without document overflow;
+  current solar power and the topographic scene rendered with actual data.
+- Browser: Storyview opens the shared reader; PNG download includes data, unit,
+  sources and date. The homepage's preserved cards open the same reader and export
+  successfully at 375 px. A CSS-name collision in the static bundle was fixed by
+  retaining scoped module names; the narrow view was then rechecked.
+- Browser: tariff milestone navigation and PNG download work; the funding
+  questionnaire advances through its existing questions.
+- One hydration recovery was logged during the initial inventory pass. Direct
+  reload and the same page transition were repeated without errors. This is not
+  evidence of exhaustive browser coverage of every possible configuration.
+- Automated coverage renders all ten active story templates and all 33 preserved
+  homepage snapshots in full and reduced form, plus compatibility and source
+  conversion checks. Local supervisor tests pass (12 tests).
+
+Release gates remain separate: authenticated admin save/reopen,
+hosted dashboard storage setup and production acceptance are not implied by this
+local renderer migration. Historical sections below describe intermediate states
+and do not override this audit.
 
 ## Verbindliche Systemregel — 8. Oktober 2026
 
@@ -42,8 +119,9 @@ curves and trade bars, while trade radial plots fit a square into both available
 dimensions. Two stacked cards plus their gap equal the adjacent full card.
 Internal scrollbars and diagnostic overflow notices are not layout solutions.
 
-The first allocated consumers are the shared cost-race renderer and electricity
-trade (full/compact, radial/bars). Other families have not been migrated.
+The first allocated consumers were the shared cost-race renderer and electricity
+trade (full/compact, radial/bars). Allocation now follows each registered presentation
+contract; content-driven families retain their natural height.
 The reference composition remains a CSS Grid prototype, not a GridStack install
 or a general constraint solver. Its explicit responsive layouts must leave enough
 space for readable controls; arbitrary user resizing is not yet supported.
@@ -73,17 +151,17 @@ the iframe. The initial URL must stay stable until data or variant changes.
 
 ### Dashboard loading and partner compositions — agreed direction, 11 October 2026
 
-Planned: onsite dashboards render the registered widget components directly and
-receive reusable initial data, then refresh in the background. Removing iframe
-boundaries must preserve each widget's shared options, sharing, downloads,
-source attribution, data configuration and appearance. This migration is not yet
-implemented; the current reference still uses independent iframe previews.
+Implemented: onsite dashboards render registered widget components directly with
+shared initial data and background refresh. Widget options, sharing, downloads,
+source attribution, data configuration and appearance remain on the shared frame.
+The layout reference uses direct renderers; variant exploration and external
+embedding retain their iframe boundary.
 
 Partner embedding must support both a single widget and a configured composition
 of registered widgets. A composition uses the same nested layout definition and
 widget renderers as onsite dashboards; its external embed wraps the composition
-once. Do not build a second partner-specific dashboard renderer or strip actions
-from its children. Arbitrary saved partner compositions remain future work.
+once. The implemented `/embed/dashboard` host uses this same composition. Saved
+versions are immutable; their hosted storage rollout remains a separate release gate.
 
 The compact trade radial now draws the daily net balance as a connected line;
 full views retain daily spokes. Missing observations break the line. Both plots

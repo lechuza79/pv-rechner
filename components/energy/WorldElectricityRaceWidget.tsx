@@ -16,7 +16,7 @@ export default function WorldElectricityRaceWidget({onsite=true,autoplay=true}:{
  const renewableValues=useMemo(()=>dataset?Float64Array.from(dataset.rows,row=>row.wind+row.solar):WORLD_WIND_SOLAR,[dataset]);
  const nuclearValues=useMemo(()=>dataset?Float64Array.from(dataset.rows,row=>row.nuclear):WORLD_NUCLEAR,[dataset]);
  const dateAt=(index:number)=>({jahr:years[Math.min(years.length-1,Math.max(0,Math.floor(index)))],monat:0,tag:1});
- return <RaceChart titleSeries={[{text:"Wind + Solar",runner:"camera"},{text:"Atomkraft",runner:"other"}]} widget={WIDGETS.worldElectricityRace}
+ return <RaceChart exportUnit="TWh" titleSeries={[{text:"Wind + Solar",runner:"camera"},{text:"Atomkraft",runner:"other"}]} widget={WIDGETS.worldElectricityRace}
   kamera={{key:'wind-solar',label:'Wind + Solar',kurz:'Wind + Solar',farbe:'--color-accent',werte:renewableValues}}
   anderer={{key:'nuclear',label:'Kernenergie',kurz:'Kernenergie',farbe:'--color-text-primary',werte:nuclearValues}}
   startJahr={years[0]} jahre={years.length-1} ersterTag={noDailyCalendar} datumVon={dateAt} annualYears={years}

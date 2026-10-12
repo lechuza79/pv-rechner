@@ -5,6 +5,7 @@ import {loadLandscapeAsset,loadLandscapeStops} from '../landscape-data.server';
 import solarRegister from '../../public/geo/nidda-preview/solar-register.json';
 
 describe('standalone landscape cards',()=>{
+ // Reads prepared landscape assets from disk; this is not a performance assertion.
  it('keeps the same destinations and plant capacity without shipping geometry',async()=>{
   const data=await loadLandscapeStops('06440016');
   expect(data.stops.map(stop=>stop.id)).toEqual(['nidda-market','nidda-windpark','nidda-sewage']);
@@ -13,7 +14,7 @@ describe('standalone landscape cards',()=>{
   expect(data).not.toHaveProperty('buildings');
   expect(data).not.toHaveProperty('terrain');
   expect(JSON.stringify(data).length).toBeLessThan(3000);
- });
+ },30_000);
  it('retains the prepared wind park identity used for the weather request',async()=>{
   const data=await loadLandscapeStops('03458009');
   expect(data.municipality).toBe('03458009');

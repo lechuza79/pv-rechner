@@ -36,11 +36,11 @@ export function approvedStoryVisual(story:StoryConcept):PostBild|null {
  * One catalog of visual templates: gallery choices, readiness, and the monitor
  * role (widget title + layout kind) for templates that appear as monitor widgets.
  * `widget` names the widget-registry entry (identity, sources, share target) and
- * marks templates migrated to the shared export pipeline; the rest still carry
- * the story reader's legacy credit line until they are migrated.
+ * supplies its source identity when provenance matches. Other templates use
+ * the same export pipeline with the source identity of their story snapshot.
  */
 export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};widget?:keyof typeof WIDGETS;
- /** Only stories whose data really stems from the registry entry's sources use its footer; others keep the legacy credit. */
+ /** Use the registry source identity only when it matches the story data. */
  exportProvenance?:(story:StoryConcept)=>boolean};
 export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
  {id:'verlauf',name:'Monatlicher Zubau · Verlauf',monitor:{title:'Zubau pro Monat',kind:'time-series'}},

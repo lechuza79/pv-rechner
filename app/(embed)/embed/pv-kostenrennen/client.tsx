@@ -12,7 +12,7 @@ import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget
 // gerendert im Ratgeber. Preise kommen live wie im Rechner (usePrices), damit
 // Rennen und Rechner nie auseinanderlaufen.
 
-export default function KostenrennenEmbed() {
+export default function KostenrennenEmbed({preview=false}:{preview?:boolean}) {
   const [showEmbed, setShowEmbed] = useState(true);
   const [showBranding, setShowBranding] = useState(true);
   const [onsite, setOnsite] = useState(false);
@@ -36,7 +36,7 @@ export default function KostenrennenEmbed() {
         margin: "0 auto",
       }}
     >
-      <KostenrennenWidget rennen={rennen} onsite={onsite} branding={showBranding} showEmbed={showEmbed} preiseStandIso={prices.validFrom} />
+      <KostenrennenWidget rennen={rennen} variante={preview?"mini":"voll"} onsite={onsite} branding={showBranding} showEmbed={showEmbed} preiseStandIso={prices.validFrom} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
-import {parseWidgetAppearance} from "../../../../lib/widget-appearance";
+import {parseWidgetAppearance,widgetVariantFromQuery} from "../../../../lib/widget-appearance";
 import type { Metadata } from "next";
 import KostenrennenEmbed from "./client";
 
@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function KostenrennenEmbedPage({searchParams}:{searchParams:Promise<Record<string,string>>}) {
-  const appearance=parseWidgetAppearance(await searchParams);
-  return <WidgetPresentation widgetId="pv-kostenrennen" appearance={{...appearance,theme:appearance.theme??'light'}}><KostenrennenEmbed /></WidgetPresentation>;
+  const query=await searchParams;
+  const appearance=parseWidgetAppearance(query);
+  const variant=widgetVariantFromQuery('pv-kostenrennen',new URLSearchParams(query));
+  return <WidgetPresentation widgetId="pv-kostenrennen" variant={variant} appearance={{...appearance,theme:appearance.theme??'light'}}><KostenrennenEmbed preview={variant==='hero'} /></WidgetPresentation>;
 }

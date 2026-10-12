@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import {EditorialStoryVisual} from '../social/EditorialStoryVisual';
 import type {StoryConcept} from '../../lib/story-konzepte';
 import {approvedStoryVisual} from '../../lib/story-approved-visual';
 import {ApprovedStoryVisual} from '../social/ApprovedStoryVisual';
@@ -9,7 +10,9 @@ import {MonthlySolarChart} from '../social/MonthlySolarChart';
 import {AnnualEnergyChart} from '../social/AnnualEnergyChart';
 
 /** Shared chart body for live municipal views and period-specific editorial snapshots. */
-export type MunicipalWidgetView = {detail?:'full'|'reduced'; controls?:boolean; autoplay?:boolean};
+export type MunicipalWidgetView = {detail?:'full'|'reduced'; controls?:boolean; autoplay?:boolean;
+ /** Explicit opt-in for existing, unpublished design examples; never used by live hosts. */
+ editorialDraft?:boolean};
 /** Hosts choose detail and interaction independently; the data and renderer stay identical. */
 export function MunicipalWidgetVisual({story,view={}}:{story:StoryConcept;view?:MunicipalWidgetView}){
  const compact=view.detail==='reduced', autoPlay=view.autoplay??false, ohneBedienung=view.controls===false;
@@ -19,5 +22,5 @@ export function MunicipalWidgetVisual({story,view={}}:{story:StoryConcept;view?:
  const approved=approvedStoryVisual(story);
  if(approved)return <ApprovedStoryVisual bild={approved} compact={compact} date={story.sourceDate} controls={!ohneBedienung} provisional={story.label==='Vorjahreszeitraum'}/>;
  if(story.kind==='yield'&&story.yieldSeries?.length)return <YieldChart story={story} compact={compact}/>;
- return null;
+ return view.editorialDraft?<EditorialStoryVisual story={story} compact={compact}/>:null;
 }

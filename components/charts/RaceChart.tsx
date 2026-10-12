@@ -148,6 +148,8 @@ export interface RaceChartProps {
   titleSeries?: {text:string;runner:"camera"|"other"}[];
   showYAxisLabels?: boolean;
   valueUnit?: string;
+  /** Export metadata can declare units without changing the value-label styling. */
+  exportUnit?: string;
   actions?: boolean;
   initialProgress?: number;
   titelHilfe: { title: string; ariaLabel: string; inhalt: ReactNode };
@@ -191,7 +193,7 @@ export default function RaceChart(props: RaceChartProps) {
 
 function RaceCard({
   widget, kamera, anderer, startJahr, jahre, ersterTag, datumVon, ereignisse, fmt, fmtKurz,
-  showTitle = true, headingTitle, titleSeries, showYAxisLabels = false, valueUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
+  showTitle = true, headingTitle, titleSeries, showYAxisLabels = false, valueUnit, exportUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
   onsite = false, showEmbed = false, autoplay = true, stand: quellenStand,
   tempo: tempoProp, skala: skalaProp, variante = "voll", annualYears, milestoneTiming=false,
 }: RaceChartProps) {
@@ -734,7 +736,7 @@ function RaceCard({
   );
   if (!mini) return <WidgetPresentationProvider appearance={{...presentation, sharing:actions ? presentation.sharing : 'off'}}>
     <ExportableWidgetFrame widget={widget} title={headingTitle ?? widget.title} titleContent={titleContent} headingMeta={<span className={styles.currentYear}>{currentYear}</span>} helpExportNote={false} showHeading={showTitle} kind="time-series"
-      place={annualYears ? 'Weltweit' : ''} exportUnit={valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
+      place={annualYears ? 'Weltweit' : ''} exportUnit={exportUnit ?? valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
       className={`${frameStyles.frame} ${styles.frame} ${styles.racingFrame}`} data-story-scheme={presentation.theme === 'hero' ? 'highlight' : presentation.theme}
       animated clientVideo restartAction={false} sourceVisible={!onsite} exportNote={exportNote}
       exportLegend={titleSeries && showTitle ? undefined : [{color:FARBE_B,label:anderer.label,shape:"line"},{color:FARBE_A,label:kamera.label,shape:"line"}]}

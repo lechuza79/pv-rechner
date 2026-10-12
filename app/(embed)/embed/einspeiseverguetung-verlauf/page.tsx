@@ -1,6 +1,6 @@
 import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
-import { verlaufJahre } from "../../../(site)/einspeiseverguetung-tabelle/VerlaufsChart";
+import { verlaufJahre } from "../../../../lib/feedin-timeline";
 import VerlaufEmbed from "./client";
 
 // Einbettbares Widget: Einspeisevergütung für kleine Dachanlagen seit 2000

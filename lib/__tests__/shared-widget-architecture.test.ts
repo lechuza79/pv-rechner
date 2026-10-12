@@ -7,6 +7,10 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  'components/social/StoryConceptLab.tsx':['../dashboard/MunicipalWidgetVisual'],
+  'components/social/StoryIdeas.tsx':['../dashboard/MunicipalWidgetVisual'],
+  'components/social/MunicipalChart.tsx':['../dashboard/MunicipalWidgetVisual'],
+  'components/energy/FeedInTimelineEmbed.tsx':['../charts/FeedInTimelineWidget','../dashboard/WidgetReferenceData'],
   'components/charts/RaceChart.tsx':['../dashboard/ExportableWidgetFrame','../dashboard/WidgetPresentationContext','../../lib/chart-animation-export'],
   'components/energy/WorldElectricityRaceWidget.tsx':['../charts/RaceChart','../../lib/world-electricity-race'],
   'app/(site)/widget-galerie/WidgetGallery.tsx':['../../../components/dashboard/WidgetPreviewCard','../../../components/dashboard/WidgetConfigurationGroup','../../../components/SectionFilter','../../../components/OnsiteSearch'],

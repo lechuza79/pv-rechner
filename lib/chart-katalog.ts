@@ -29,6 +29,13 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  {datei:"social/EditorialStoryVisual",art:"baustein",wofuer:"Preserved editorial draft forms dispatched by the shared municipal visual, without changing publication eligibility."},
+  {datei:"energy/EeAmpelWidget",art:"widget",wofuer:"Existing renewable traffic light with the shared generation data, theme, sources and actions."},
+  {datei:"energy/MastrMetricWidget",art:"widget",wofuer:"Existing registry KPI tile with shared cache, presentation and sharing for pages and embeds."},
+  {datei:"energy/FundingCheckWidget",art:"widget",wofuer:"Existing funding questionnaire using the shared calculation engine, sources and widget actions."},
+  {datei:"energy/FeedInTimelineEmbed",art:"widget",wofuer:"Theme and settings adapter for the shared historical feed-in timeline, using retrieved reference data."},
+  {datei:"charts/FeedInTimelineWidget",art:"widget",wofuer:"Historical feed-in tariffs and milestones shared by the article, dashboard and embedding route."},
+
   {datei:"energy/CountryElectricityMixRaceWidget",art:"widget",wofuer:"Full 100% generation mix for a fixed country cohort; uses the municipal horizontal racing engine, shared heading tokens and export/menu frame."},
   {datei:"energy/WorldCapacityRaceWidget",art:"widget",wofuer:"Worldwide annual net capacity additions in GW using the shared RaceChart and milestone timing; retains static growth and generation variants."},
   {datei:"charts/WeatherMicroTile",art:"widget",wofuer:"Compact weather tile with modelled power, shared timestamp and optional wind day profile."},
@@ -88,15 +95,4 @@ export const CHART_KATALOG: KatalogEintrag[] = [
 /** Einbett-Routen, deren Widget noch IN der Route liegt statt in components/.
  *  Die Liste ist eine Schuldenliste, keine Erlaubnis — sie darf nur kürzer
  *  werden. Wer eine dieser Routen ohnehin anfasst, zieht sie mit um. */
-export const NOCH_IN_DER_ROUTE = [
-  // Liegt in app/(site)/einspeiseverguetung-tabelle/ statt in components/ —
-  // derselbe Fehlertyp wie beim Erzeugungs-Widget, nur in einer Seiten- statt
-  // einer Einbett-Route. Vom Katalog-Test gefunden, nicht von Hand.
-  "einspeiseverguetung-verlauf",
-  "foerder-check",
-  "strommix",
-  "zubau-erneuerbare-atom",
-  "ee-ampel",
-  "strommix-anteil",
-  "kennzahl",
-];
+export const NOCH_IN_DER_ROUTE: string[] = [];

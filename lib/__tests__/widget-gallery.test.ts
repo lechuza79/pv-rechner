@@ -1,5 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import {galleryEntries,curatedGalleryEntries,GALLERY_HIDDEN,GALLERY_CATEGORIES,type GalleryPlace} from '../widget-gallery';
+import {allWidgets} from '../widget-registry';
+import {supportsWidgetPresentation,widgetPresentationSource} from '../widget-appearance';
 const place:GalleryPlace={ags:'09679147',name:'Höchberg',districtId:'09679',districtName:'Würzburg',stateId:'09',stateName:'Bayern'};
 describe('shared gallery place',()=>{
   it('uses one selected municipality and its actual ancestors across old and new widgets',()=>{
@@ -38,6 +40,7 @@ describe('gallery curation',()=>{
 describe('compact parent chart variants',()=>{
   it('offers compact renderers on parents without a duplicate hero entry',()=>{
     const entries=curatedGalleryEntries(place);
+    expect(allWidgets().some(entry=>entry.id==='atomstrom-anteil-hero')).toBe(false);
     expect(entries.some(entry=>entry.id==='atomstrom-anteil-hero')).toBe(false);
     for(const id of ['strommix-anteil','atomstrom-tage','stromhandel']){
       const variant=entries.find(entry=>entry.id===id)!.variants[0];
@@ -50,3 +53,21 @@ describe('compact parent chart variants',()=>{
     expect(entries.find(entry=>entry.id==='regional-map')!.variants[0].compactSrc).toBeUndefined();
   });
 });
+
+ describe('presentation capability parity',()=>{
+  it('offers exactly the parent-supported presentations for every catalog variant',()=>{
+   for(const entry of galleryEntries(place))for(const variant of entry.variants){
+    const query=new URL(variant.src,'https://example.test').searchParams;
+    for(const presentation of ['compact','hero'] as const){
+     const source=presentation==='compact'?variant.compactSrc:variant.heroSrc;
+     expect(!!source,`${entry.id}: ${variant.label} / ${presentation}`).toBe(supportsWidgetPresentation(entry.id,query,presentation));
+     if(source)expect(source).toBe(widgetPresentationSource(entry.id,variant.src,presentation));
+    }
+   }
+  });
+  it('rejects compact and hero for trade totals while preserving the full source',()=>{
+   const source='/embed/stromhandel?variant=totals&period=seven';
+   expect(widgetPresentationSource('stromhandel',source,'full')).toBe(source);
+   for(const presentation of ['compact','hero'] as const)expect(()=>widgetPresentationSource('stromhandel',source,presentation)).toThrow('Unsupported widget presentation');
+  });
+ });

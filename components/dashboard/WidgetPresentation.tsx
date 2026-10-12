@@ -13,14 +13,16 @@ import './dashboard.css';
 /** Embed presentation adapter: chart data and chart rendering remain unchanged. */
 export default function WidgetPresentation({appearance,children,widgetId,variant}:{appearance?:WidgetAppearance;children:ReactNode;widgetId?:string;variant?:'full'|'compact'|'hero'}) {
   const host=useWidgetHost();
-  const [selectedVariant,setSelectedVariant]=useState(variant??(host&&widgetId?widgetVariantFromQuery(widgetId,new URLSearchParams(host.query)):'full'));
+  const [queryVariant,setQueryVariant]=useState<'full'|'compact'|'hero'>('full');
+  // Controlled hosts may switch a mounted instance without remounting it.
+  const selectedVariant=variant??(host&&widgetId?widgetVariantFromQuery(widgetId,new URLSearchParams(host.query)):queryVariant);
   const contract=widgetId?widgetPresentationContract(widgetId,selectedVariant):undefined;
   const [live,setLive]=useState<WidgetAppearance>(appearance??{});
   useEffect(()=>{
     if(host)return;
     const query=new URLSearchParams(window.location.search);
     if(!appearance)setLive(parseWidgetAppearance(Object.fromEntries(query)));
-    if(!variant&&widgetId)setSelectedVariant(widgetVariantFromQuery(widgetId,query));
+    if(!variant&&widgetId)setQueryVariant(widgetVariantFromQuery(widgetId,query));
   },[appearance,variant,widgetId,host]);
   useEffect(()=>{
     if(host)return;

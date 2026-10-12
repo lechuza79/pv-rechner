@@ -38,7 +38,7 @@ const lies = (p: string) => readFileSync(join(REPO, p), "utf8");
 const OBERFLAECHEN = [
   "app/(site)/ratgeber/waermepumpe-foerderung/page.tsx",
   "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
-  "app/(embed)/embed/foerder-check/client.tsx",
+  "components/energy/FundingCheckWidget.tsx",
 ];
 
 describe("BEG-Antragsreihenfolge — Geltungsbereich", () => {
@@ -268,7 +268,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     // zurückgenommene Zusage in vier Oberflächen gehalten hat.
     for (const pfad of [
       "app/(site)/ratgeber/waermepumpe-foerderung/page.tsx",
-      "app/(embed)/embed/foerder-check/client.tsx",
+      "components/energy/FundingCheckWidget.tsx",
       "lib/glossary.ts",
       "lib/faq.ts",
     ]) {

@@ -5,10 +5,8 @@ export interface WidgetVariant {
   height: number;
   /** If set, the iframe renders at this fixed width; otherwise the width selector applies. */
   fixedWidth?: number;
-  /** Optional reduced presentation of the same data variant. */
-  supportsCompact?: boolean;
+  /** Whether this data variant supports allocated grid slots. */
   supportsGrid?: boolean;
-  compactParams?: Record<string, string>;
   /** Fixed query params for this variant (e.g. metric=leistung), merged into both
    * the live-preview src and the copy-paste embed URL. */
   params?: Record<string, string>;
@@ -136,15 +134,7 @@ export const SECTIONS: WidgetSection[] = [
       text: "Kernenergie im deutschen Strommix – Solar Check",
     },
     showFrameWidth: true,
-    variants: [{ id: "strommix-anteil", label: "Kernenergie-Anteil", src: "/embed/strommix-anteil", compactParams:{variant:"teaser"}, height: 400 }],
-  },
-  {
-    id: "atomstrom-anteil-hero",
-    label: "Atomstrom-Anteil · Hero",
-    intro: "Kompakte Hero-Variante des gemeinsamen Kernenergie-Donuts.",
-    attribution: {path: "/atomstrom-import", text: "Atomstrom-Anteil — Solar Check"},
-    showFrameWidth: true,
-    variants: [{id: "atomstrom-anteil-hero", label: "Hero", src: "/embed/strommix-anteil", params: {variant: "teaser"}, height: 380}],
+    variants: [{ id: "strommix-anteil", label: "Kernenergie-Anteil", src: "/embed/strommix-anteil", height: 400 }],
   },
   {
     id: "atomstrom-tage",
@@ -153,14 +143,14 @@ export const SECTIONS: WidgetSection[] = [
     attribution: {path: "/atomstrom-import", text: "Atomstrom-Import nach Tagen — Solar Check"},
     showFrameWidth: true,
     variants: [
-      {id: "atomstrom-tage-full", label: "Detail", src: "/embed/atomstrom-tage", params: {variant: "full", metric:"energy"}, compactParams:{variant:"teaser"}, height: 480},
+      {id: "atomstrom-tage-full", label: "Detail", src: "/embed/atomstrom-tage", params: {variant: "full", metric:"energy"}, height: 480},
     ],
   },
   {
     id:"stromhandel",label:"Stromimport und Stromexport",
     intro:"Kommerzielle Handelsmengen: Zukauf, Verkauf und die Differenz in GWh oder TWh.",
     attribution:{path:"/strommix-deutschland",text:"Stromhandel — Solar Check"},showFrameWidth:true,
-    variants:[{id:"stromhandel",supportsCompact:true,label:"Automatisch",src:"/embed/stromhandel",height:780},{id:"stromhandel-radial",supportsCompact:true,label:"Radiale Balken",src:"/embed/stromhandel",params:{variant:"radial"},height:780},{id:"stromhandel-balken",supportsCompact:true,label:"Balken",src:"/embed/stromhandel",params:{variant:"bars"},height:600},{id:"stromhandel-summen",supportsGrid:false,label:"Gesamtsummen",src:"/embed/stromhandel",params:{variant:"totals"},height:260}],
+    variants:[{id:"stromhandel",label:"Automatisch",src:"/embed/stromhandel",height:780},{id:"stromhandel-radial",label:"Radiale Balken",src:"/embed/stromhandel",params:{variant:"radial"},height:780},{id:"stromhandel-balken",label:"Balken",src:"/embed/stromhandel",params:{variant:"bars"},height:600},{id:"stromhandel-summen",supportsGrid:false,label:"Gesamtsummen",src:"/embed/stromhandel",params:{variant:"totals"},height:260}],
   },
   {
     id:"laender-strommixrennen",label:"Strommix im Ländervergleich · Racing",

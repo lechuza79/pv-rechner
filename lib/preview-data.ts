@@ -5,7 +5,12 @@ import {mkdir, readFile, rename, writeFile, unlink, readdir, stat} from 'node:fs
 import path from 'node:path';
 import {serialize, deserialize} from 'node:v8';
 
-export const usesLivePreviewData = () => process.env.NODE_ENV === 'development' && process.env.WIDGET_PREVIEW_DATA !== 'local';
+/** A built local preview needs the same data boundary as the development server.
+ * Hosted production never proxies its own public endpoints back to itself. */
+export const usesLivePreviewData = () => !process.env.VERCEL && (
+  process.env.WIDGET_PREVIEW_DATA === 'live'
+  || (process.env.NODE_ENV === 'development' && process.env.WIDGET_PREVIEW_DATA !== 'local')
+);
 const FRESH_MS = 5 * 60_000;
 const MAX_AGE_MS = 24 * 60 * 60_000;
 type Snapshot<T> = {version:1; fetchedAt:number; data:T};

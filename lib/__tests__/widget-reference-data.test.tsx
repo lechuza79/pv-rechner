@@ -7,7 +7,7 @@ vi.mock('../preview-data', () => ({livePreviewResponse: async () => null}));
 import {validateLiveWidgetData} from '../widget-data-services';
 import {WidgetReferenceDataProvider} from '../../components/dashboard/WidgetReferenceData';
 import VerlaufEmbed from '../../app/(embed)/embed/einspeiseverguetung-verlauf/client';
-vi.mock('../../app/(site)/einspeiseverguetung-tabelle/VerlaufMitMeilensteinen', () => ({default: ({jahre}: {jahre: unknown}) => <output>{JSON.stringify(jahre)}</output>}));
+vi.mock('../../components/charts/FeedInTimelineWidget', () => ({default: ({jahre}: {jahre: unknown}) => <output>{JSON.stringify(jahre)}</output>}));
 import WorldCapacityRaceWidget from '../../components/energy/WorldCapacityRaceWidget';
 import WorldElectricityRaceWidget from '../../components/energy/WorldElectricityRaceWidget';
 

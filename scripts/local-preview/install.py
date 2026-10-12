@@ -35,11 +35,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=4319)
     parser.add_argument('--label', default='io.solar-check.widget-preview')
+    parser.add_argument('--mode', choices=['dev', 'built'], default='dev')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     node = shutil.which('node')
     if not node or not (root/'node_modules/next/dist/bin/next').is_file():
         raise SystemExit('Missing local Node/Next installation')
+    if args.mode == 'built' and not (root/'.next/BUILD_ID').is_file():
+        raise SystemExit('Build the local preview first with WIDGET_PREVIEW_DATA=live npm run build')
     with socket.socket() as probe:
         if probe.connect_ex(('127.0.0.1', args.port)) == 0:
             raise SystemExit('Port is occupied. Verify and stop its owner first.')
@@ -56,10 +59,12 @@ def main():
     shutil.copy2(Path(__file__).with_name('control.py'), destination/'control.py')
     config = dict(
         cwd=str(root), port=args.port,
-        command=[node, str(root/'node_modules/next/dist/bin/next'), 'dev',
-                 '--disable-source-maps', '--hostname', '127.0.0.1', '--port', str(args.port)],
+        command=[node, str(root/'node_modules/next/dist/bin/next'),
+                 *(['start'] if args.mode == 'built' else ['dev', '--disable-source-maps']),
+                 '--hostname', '127.0.0.1', '--port', str(args.port)],
         health_path='/icon.svg',
-        environment={'NODE_OPTIONS': '--max-old-space-size=8192'},
+        environment={'NODE_OPTIONS': '--max-old-space-size='+('2048' if args.mode == 'built' else '8192'),
+                     'WIDGET_PREVIEW_DATA': 'live'},
         status=str(destination/'status.json'), log=str(logs/f'{args.label}.log'),
     )
     (destination/'config.json').write_text(json.dumps(config, indent=2)+'\n')

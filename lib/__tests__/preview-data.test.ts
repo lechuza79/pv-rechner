@@ -3,12 +3,13 @@ import {mkdtemp,readFile,writeFile,readdir,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {serialize,deserialize} from 'node:v8';
-import {previewData,livePreviewJson,livePreviewResponse} from '../preview-data';
+import {previewData,livePreviewJson,livePreviewResponse,usesLivePreviewData} from '../preview-data';
 import {liveWidgetDataUrl} from '../widget-data-services';
 let dir:string;
 beforeEach(async()=>{
   dir=await mkdtemp(path.join(tmpdir(),'widget-data-test-'));
   vi.spyOn(process,'cwd').mockReturnValue(dir);
+  vi.stubEnv('VERCEL','');
   vi.stubEnv('NODE_ENV','development');
   vi.stubEnv('WIDGET_PREVIEW_DATA','live');
 });
@@ -22,6 +23,15 @@ async function ageSnapshot(age:number){
   await writeFile(file,serialize(data));
 }
 describe('shared preview data',()=>{
+  it('uses the same live-data boundary in an explicitly configured local build only',()=>{
+    vi.stubEnv('VERCEL','');vi.stubEnv('NODE_ENV','production');vi.stubEnv('WIDGET_PREVIEW_DATA','');
+    expect(usesLivePreviewData()).toBe(false);
+    vi.stubEnv('WIDGET_PREVIEW_DATA','live');expect(usesLivePreviewData()).toBe(true);
+    vi.stubEnv('VERCEL','1');expect(usesLivePreviewData()).toBe(false);
+    vi.stubEnv('VERCEL','');vi.stubEnv('NODE_ENV','development');vi.stubEnv('WIDGET_PREVIEW_DATA','');
+    expect(usesLivePreviewData()).toBe(true);
+    vi.stubEnv('WIDGET_PREVIEW_DATA','local');expect(usesLivePreviewData()).toBe(false);
+  });
   it('uses live once and reuses a successful disk snapshot',async()=>{
     const load=vi.fn().mockResolvedValue({place:'Nidda',value:12,stand:'2026-09'});
     await previewData('town',load);
@@ -54,7 +64,7 @@ describe('shared preview data',()=>{
   });
   it('leaves production and explicit local mode untouched',async()=>{
     const load=vi.fn().mockResolvedValue({value:1});
-    vi.stubEnv('NODE_ENV','production');
+    vi.stubEnv('NODE_ENV','production');vi.stubEnv('WIDGET_PREVIEW_DATA','');
     await previewData('production',load);await previewData('production',load);
     vi.stubEnv('NODE_ENV','development');vi.stubEnv('WIDGET_PREVIEW_DATA','local');
     await previewData('production',load);expect(load).toHaveBeenCalledTimes(3);
@@ -90,7 +100,7 @@ describe('shared preview data',()=>{
   it('does not intercept writes or production reads',async()=>{
     const fetcher=vi.fn();vi.stubGlobal('fetch',fetcher);
     expect(await livePreviewResponse(new Request('http://localhost/api/prices',{method:'POST'}))).toBeNull();
-    vi.stubEnv('NODE_ENV','production');
+    vi.stubEnv('NODE_ENV','production');vi.stubEnv('WIDGET_PREVIEW_DATA','');
     expect(await livePreviewResponse(new Request('http://localhost/api/prices'))).toBeNull();
     expect(fetcher).not.toHaveBeenCalled();
   });
