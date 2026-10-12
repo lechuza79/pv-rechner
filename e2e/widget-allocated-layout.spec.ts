@@ -23,10 +23,10 @@ for(const width of [390,1440])for(let index=0;index<Math.ceil(items.length/pageS
    await expect(slot.locator('[role=alert]')).toHaveCount(0);
    await expect.poll(()=>slot.evaluate(element=>element.scrollWidth-element.clientWidth),{message:item.src}).toBeLessThanOrEqual(2);
    await expect.poll(()=>slot.evaluate(element=>element.scrollHeight-element.clientHeight),{message:item.src}).toBeLessThanOrEqual(2);
-   await expect.poll(()=>slot.locator('svg,canvas,[data-widget-id],[data-widget-state=empty]').count(),{message:item.src,timeout:65_000}).toBeGreaterThan(0);
+   await expect.poll(()=>slot.locator('svg,canvas,[data-widget-plot],[data-widget-id],[data-widget-state=empty]').count(),{message:item.src,timeout:65_000}).toBeGreaterThan(0);
    if(await slot.locator('[data-widget-state=empty]').count()){
     await expect(slot.getByRole('status')).toContainText('keine veröffentlichte Story');
-   }else expect(await slot.locator('svg,canvas,[data-widget-id]').count(),item.src).toBeGreaterThan(0);
+   }else expect(await slot.locator('svg,canvas,[data-widget-plot],[data-widget-id]').count(),item.src).toBeGreaterThan(0);
   }
   expect(errors).toEqual([]);
   // A viewport transition previously threw outside the individual widget boundary.

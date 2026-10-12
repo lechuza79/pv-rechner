@@ -122,7 +122,7 @@ test("district race uses one widget with footer actions and monitor dates live i
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     if(width===451||width===1226)await page.screenshot({path:`scratch/landkreis/race-widget-${width}.png`});
   }
-  await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
+  await expect(ranking.getByRole('button',{name:/^(Abspielen|Pausieren|Erneut abspielen)$/})).toBeVisible();
   await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
   await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild',/Video herunterladen.*Downloadlink per E-Mail/,/In Ihrem Design.*Anfragen/]);
   const originalUrl = page.url();

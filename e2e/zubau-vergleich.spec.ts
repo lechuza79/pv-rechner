@@ -8,9 +8,8 @@ import { test, expect } from "@playwright/test";
 
 async function chinaMitDeutschland(page: import("@playwright/test").Page) {
   await page.goto("/embed/zubau-erneuerbare-atom");
-  await expect(page.getByText("Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
-  await page.locator("button").filter({ hasText: "Weltweit" }).first().click();
-  await page.locator('button:has-text("China")').last().click();
+  await expect(page.getByRole("heading", { name: "Erneuerbare vs. Atomkraft", exact: true })).toBeVisible();
+  await page.getByRole("combobox", {name: "Land", exact: true}).selectOption({label: "🇨🇳 China"});
   await page.locator('button[role="switch"]').click();
   // Die Kachel klappt auf (0,28 s). Wer währenddessen hovert, verliert den
   // Zeiger wieder: Das Element wandert unter ihm weg, und der Effekt sieht wie
@@ -54,7 +53,7 @@ test.describe("Zubau-Widget: Deutschland im Vergleich", () => {
 
   test("die Kachel wächst, statt zu springen", async ({ page }) => {
     await page.goto("/embed/zubau-erneuerbare-atom");
-    await expect(page.getByText("Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Erneuerbare vs. Atomkraft", exact: true })).toBeVisible();
 
     const klapp = page.locator(".sc-aufklapp").first();
     // Zu: das Raster gibt der Zeile keine Höhe.

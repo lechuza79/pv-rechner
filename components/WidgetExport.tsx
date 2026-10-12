@@ -148,6 +148,63 @@ export function useShareOnlyActions(
  * The source itself is NOT here: it sits vertically along the card's right edge
  * (widget convention) and, in the image, in {@link WidgetExportFooter}.
  */
+/** Keep the next step identical in legacy footers and shared widget frames. */
+function useWidgetNextStep(widget: WidgetDef, showCta: boolean) {
+  // Ein nächster Schritt, der auf die Seite zeigt, die man gerade liest, ist
+  // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
+  // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
+  // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
+  //
+  // Im iframe ist `usePathname()` die Adresse des Widgets (`/embed/…`), nicht
+  // die der Seite — dort trägt die Seite ihren Pfad als `hp` bei. Ohne ihn stand
+  // auf `/atomstrom-import` ein Knopf, der genau diese Seite noch einmal
+  // aufgerufen hat, und zwar innerhalb des iframes.
+  const pathname = usePathname();
+  const [rahmen, setRahmen] = useState<{ imIframe: boolean; hostPfad: string | null }>({
+    imIframe: false,
+    hostPfad: null,
+  });
+  useEffect(() => {
+    setRahmen({
+      imIframe: window.self !== window.top,
+      hostPfad: parseHostPfad(window.location.search),
+    });
+  }, []);
+  const seitenPfad = rahmen.hostPfad ?? pathname;
+  const zeigtHierhin = !!seitenPfad && seitenPfad === widget.cta?.href;
+  const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
+  // Ein Link im iframe navigiert sonst NUR das iframe: der Artikel erschien im
+  // Chart-Rahmen. Auf einer eigenen Seite öffnet `_top` ihn im ganzen Fenster,
+  // auf einer fremden ein neuer Tab — deren Seite bleibt stehen. Außerhalb eines
+  // iframes bleibt es der ganz normale Klick.
+  const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
+
+  return {cta, ctaZiel};
+}
+
+export function WidgetNextStep({widget, showCta=true}: {widget:WidgetDef;showCta?:boolean}) {
+  const {cta, ctaZiel} = useWidgetNextStep(widget, showCta);
+  if (!cta) return null;
+  return <a
+            href={cta.href}
+            target={ctaZiel}
+            rel={ctaZiel === "_blank" ? "noopener" : undefined}
+            style={{
+              flexShrink: 0,
+              textAlign: "center",
+              padding: "9px 16px",
+              borderRadius: v("--radius-pill"),
+              background: v("--color-cta"),
+              color: v("--color-text-on-accent"),
+              fontSize: 13,
+              fontWeight: 700,
+              textDecoration: "none",
+            }}
+          >
+            {cta.label} →
+          </a>;
+}
+
 export function WidgetFooter({
   widget,
   chartExport,
@@ -208,39 +265,12 @@ export function WidgetFooter({
   surface?: string;
 }) {
   const [citeOpen, setCiteOpen] = useState(false);
+  const {cta} = useWidgetNextStep(widget, showCta);
   const copy =
     onCopyLink ??
     (() => {
       navigator.clipboard?.writeText(`${widget.shareText}\n${widget.shareUrl}`).catch(() => {});
     });
-  // Ein nächster Schritt, der auf die Seite zeigt, die man gerade liest, ist
-  // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
-  // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
-  // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
-  //
-  // Im iframe ist `usePathname()` die Adresse des Widgets (`/embed/…`), nicht
-  // die der Seite — dort trägt die Seite ihren Pfad als `hp` bei. Ohne ihn stand
-  // auf `/atomstrom-import` ein Knopf, der genau diese Seite noch einmal
-  // aufgerufen hat, und zwar innerhalb des iframes.
-  const pathname = usePathname();
-  const [rahmen, setRahmen] = useState<{ imIframe: boolean; hostPfad: string | null }>({
-    imIframe: false,
-    hostPfad: null,
-  });
-  useEffect(() => {
-    setRahmen({
-      imIframe: window.self !== window.top,
-      hostPfad: parseHostPfad(window.location.search),
-    });
-  }, []);
-  const seitenPfad = rahmen.hostPfad ?? pathname;
-  const zeigtHierhin = !!seitenPfad && seitenPfad === widget.cta?.href;
-  const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
-  // Ein Link im iframe navigiert sonst NUR das iframe: der Artikel erschien im
-  // Chart-Rahmen. Auf einer eigenen Seite öffnet `_top` ihn im ganzen Fenster,
-  // auf einer fremden ein neuer Tab — deren Seite bleibt stehen. Außerhalb eines
-  // iframes bleibt es der ganz normale Klick.
-  const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
 
   return (
     <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14, ...(surface ? { background: surface, padding: "12px 16px", borderRadius: v("--radius-md") } : {}) }}>
@@ -261,26 +291,7 @@ export function WidgetFooter({
           gap: 10,
         }}
       >
-        {cta && (
-          <a
-            href={cta.href}
-            target={ctaZiel}
-            rel={ctaZiel === "_blank" ? "noopener" : undefined}
-            style={{
-              flexShrink: 0,
-              textAlign: "center",
-              padding: "9px 16px",
-              borderRadius: v("--radius-pill"),
-              background: v("--color-cta"),
-              color: v("--color-text-on-accent"),
-              fontSize: 13,
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            {cta.label} →
-          </a>
-        )}
+        <WidgetNextStep widget={widget} showCta={showCta}/>
         {share && (
           <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
             <ChartActionBar

@@ -26,7 +26,7 @@ export default async function Page({params, searchParams}: {params: Promise<{wid
     return series.length ? <Suspense fallback={<p>Wird geladen …</p>}><WidgetPresentation widgetId="solar-trend-monat"><SolarTrendCard series={series}/></WidgetPresentation></Suspense> : <p>Für den Monatsvergleich liegen noch keine Daten vor.</p>;
   }
   const single = views[widget as keyof typeof views];
-  if (!single && widget !== "gemeinde-ranking") notFound();
+  if (!single && widget !== "gemeinde-ranking" && widget !== "regional-basic-stats") notFound();
   const query=await searchParams;
   const appearance=parseWidgetAppearance(query);
   const {ags = "06440016"} = query;
