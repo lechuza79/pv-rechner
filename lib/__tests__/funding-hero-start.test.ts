@@ -4,15 +4,28 @@ import {describe,it,expect,vi} from 'vitest';
 
 const source=readFileSync('public/hero-system/funding-host.js','utf8').replace(/^import .*;\n/gm,'');
 describe('funding hero initial location',()=>{
-  it.each(['','67685'])('starts the shared stage with postcode %s',async plz=>{
+  it.each([['',false],['67685',false],['',true],['67685',true]] as const)('starts postcode %s with overlay open=%s',async (plz,overlayOpen)=>{
     const scene={},stage={querySelector:()=>scene},root={dataset:{},querySelector:()=>stage};
     const mount=vi.fn(()=>({dispose:vi.fn(),update:vi.fn()}));
     const fetch=vi.fn(async()=>({ok:true,json:async()=>({location:{name:'Freiburg'},weather:{}})}));
     const postMessage=vi.fn();
+    const body={style:{overflow:overlayOpen?"hidden":""}};
+    let overlayChanged=()=>{};
+    const disconnect=vi.fn();
+    class MutationObserver {
+      constructor(callback:()=>void){overlayChanged=callback;}
+      observe=vi.fn();
+      disconnect=disconnect;
+    }
     const listeners = new Map<string, (event: unknown) => void>();
-    const context={window:{frameElement:null},document:{querySelector:()=>root,hidden:false},location:{href:`https://example.test/embed/funding-hero${plz?'?plz='+plz:''}`,origin:'https://example.test'},URL,AbortSignal,Date,fetch,parent:{postMessage},mountHeroStage:mount,sceneState:()=>({}),validateWeather:(v:unknown)=>v,heroInstances:{homepage:{}},setInterval:vi.fn(),clearInterval:vi.fn(),addEventListener:(name:string, listener:(event:unknown)=>void)=>listeners.set(name,listener)};
+    const context={window:{frameElement:null},document:{querySelector:()=>root,hidden:false},location:{href:`https://example.test/embed/funding-hero${plz?'?plz='+plz:''}`,origin:'https://example.test'},URL,AbortSignal,Date,fetch,parent:{postMessage,document:{body}},MutationObserver,mountHeroStage:mount,sceneState:()=>({}),validateWeather:(v:unknown)=>v,heroInstances:{homepage:{quality:"auto"}},setInterval:vi.fn(),clearInterval:vi.fn(),removeEventListener:vi.fn(),addEventListener:(name:string, listener:(event:unknown)=>void)=>listeners.set(name,listener)};
     await runInNewContext(source.replace('refresh();\nconst onVisibility','const initial = refresh();\nconst onVisibility')+'\ninitial;',context);
     expect(fetch).toHaveBeenCalledWith(plz?'/scene-data?plz=67685':'/scene-data',expect.any(Object));
+    if(overlayOpen){
+      expect(mount).not.toHaveBeenCalled();
+      body.style.overflow="";
+      overlayChanged();
+    }
     expect(mount).toHaveBeenCalledTimes(1);
     postMessage.mockClear();
     listeners.get('message')?.({origin:context.location.origin,source:context.parent,data:{type:'funding-scene-request'}});
@@ -26,6 +39,17 @@ describe('funding hero initial location',()=>{
     send('');
     send('97204');
     expect(fetch).toHaveBeenCalledTimes(requests);
-    expect(mount.mock.results[0].value.dispose).not.toHaveBeenCalled();
+    const instance=mount.mock.results[0].value;
+    body.style.overflow="hidden";
+    overlayChanged();
+    expect(instance.update).toHaveBeenLastCalledWith(expect.objectContaining({motion:false,quality:"static"}));
+    body.style.overflow="";
+    overlayChanged();
+    expect(instance.update).toHaveBeenLastCalledWith(expect.objectContaining({motion:true,quality:"auto"}));
+    expect(mount).toHaveBeenCalledTimes(1);
+    expect(instance.dispose).not.toHaveBeenCalled();
+    listeners.get("pagehide")?.({});
+    expect(disconnect).toHaveBeenCalledTimes(1);
+    expect(instance.dispose).toHaveBeenCalledTimes(1);
   });
 });

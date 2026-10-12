@@ -164,12 +164,12 @@ test.describe("Gemeindeseite", () => {
     // Die Bedingungen stehen je Technik getrennt: Die Balkon-Bedingung „zwei
     // Module je Haushalt" darf nicht unter der Dachanlage stehen.
     await expect(fenster).toContainText("Balkonkraftwerk");
-    await expect(fenster.getByRole("link", { name: "Offizielle Quelle", exact: true })).toBeVisible();
+    await expect(fenster.getByRole("link", { name: "Zur Programmseite beim Fördergeber", exact: true })).toBeVisible();
     await expect(fenster).not.toContainText(/zwei Modulen? je Haushalt/);
     await fenster.getByRole("button", { name: "Balkonkraftwerk", exact: true }).click();
     await expect(fenster).toContainText(/zwei Modulen? je Haushalt/);
     await expect(fenster).not.toContainText("4 kWp");
-    await expect(fenster.getByRole("link", { name: "Balkonkraftwerk-Rechner starten →", exact: true })).toHaveAttribute("href", "/balkonkraftwerk/rechner");
+    await expect(fenster.getByRole("link", { name: "Balkonkraftwerk-Rechner starten", exact: true })).toHaveAttribute("href", "/balkonkraftwerk/rechner");
     await page.keyboard.press("Escape");
     await expect(fenster).toHaveCount(0);
   });

@@ -9,7 +9,15 @@ function bindPresentation(){
  if(parentHero&&!presentationBound)presentationBound=window.bindSolarHeroPresentation({root:parentHero,scene,sceneRoot:root,targets:()=>[...parentHero.querySelectorAll('.site-header,[data-sc-contrast]')],offsetTop:()=>window.frameElement.getBoundingClientRect().top});
 }
 let plz=new URL(location.href).searchParams.get('plz')||'';
-let instance,disposed=false,status="loading",revision=0;
+let instance,latestState,disposed=false,status="loading",revision=0;
+// Pause the covered scene while a parent dialog locks page scrolling.
+const motionEnabled=()=>parent.document.body.style.overflow!=="hidden";
+function syncScene(){
+ if(instance)instance.update({...(latestState?{state:latestState}:{}),motion:motionEnabled(),quality:motionEnabled()?heroInstances.homepage.quality:"static"});
+ else if(latestState&&motionEnabled())instance=mountHeroStage({root,stage,scene,state:latestState,...heroInstances.homepage});
+}
+const overlayObserver=new MutationObserver(syncScene);
+overlayObserver.observe(parent.document.body,{attributes:true,attributeFilter:["style"]});
 const notify=next=>{status=next;parent.postMessage({type:'funding-scene',plz,status,dark:root.dataset.dark==='true'},location.origin);};
 addEventListener('message',event=>{
  if(event.origin!==location.origin||event.source!==parent||event.data?.type!=='funding-scene-request')return;
@@ -26,9 +34,8 @@ async function refresh(){
   if(!response.ok)throw new Error('Weather unavailable');
   const data=await response.json(),weather=validateWeather(data.weather);
   if(disposed||request!==revision)return;
-  const state=sceneState(new Date(),data.location,weather);
-  if(instance)instance.update({state});
-  else instance=mountHeroStage({root,stage,scene,state,...heroInstances.homepage});
+  latestState=sceneState(new Date(),data.location,weather);
+  syncScene();
   notify(plz?'loaded':'example');
  }catch{if(!disposed&&request===revision)notify('unavailable');}
 }
@@ -36,4 +43,4 @@ refresh();
 const onVisibility=()=>{if(!document.hidden)refresh();};
 addEventListener('visibilitychange',onVisibility);
 const timer=setInterval(onVisibility,300000);
-addEventListener('pagehide',()=>{disposed=true;clearInterval(timer);removeEventListener('visibilitychange',onVisibility);instance?.dispose();});
+addEventListener('pagehide',()=>{disposed=true;overlayObserver.disconnect();clearInterval(timer);removeEventListener('visibilitychange',onVisibility);instance?.dispose();});
