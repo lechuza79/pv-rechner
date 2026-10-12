@@ -46,7 +46,8 @@ describe('Widget autoplay appearance',()=>{
  });
  it('keeps monthly manual playback and deterministic export controls independent of autoplay',()=>{
   const source=readFileSync('components/gemeinde/MonitorMonthlySolarChart.tsx','utf8');
-  expect(source).toContain('autoPlay={presentation.autoplay??autoPlay}');
+  expect(source).toContain('autoPlay={linkPlayback || (presentation.autoplay??autoPlay)}');
+  expect(source).toContain("setLinkPlayback(query.get('autoplay')==='on')");
   expect(source).toContain('onClick={togglePlayback}');
   expect(source).toContain("command.mode==='seek'");
   expect(source).toContain("command.mode==='restore'");
