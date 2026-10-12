@@ -5,7 +5,8 @@ import {join} from 'node:path';
 import {parseDashboardConfiguration,type DashboardConfiguration} from './widget-dashboard';
 import {supabase} from './supabase-server';
 const validId=(id:string)=>/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id);
-const local=()=>process.env.NODE_ENV==='development'&&!process.env.VERCEL;
+// A built local preview must never write test dashboards into production storage.
+const local=()=>!process.env.VERCEL&&(process.env.NODE_ENV==='development'||process.env.WIDGET_PREVIEW_DATA==='live');
 const directory=()=>join(process.cwd(),'scripts/.cache/widget-dashboards');
 /** Immutable saved versions: existing partner links never change when an admin saves again. */
 export async function saveWidgetDashboard(value:DashboardConfiguration){

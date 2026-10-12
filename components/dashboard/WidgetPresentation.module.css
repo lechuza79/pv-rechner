@@ -1,4 +1,7 @@
 .presentation{background:transparent;width:100%;max-width:var(--widget-max-width,960px);margin-inline:auto;border-radius:var(--widget-radius,16px)}
+/* Bare plots can opt into the host surface at their actual bounds.
+   Framed cards and standalone/onsite embeds retain their own backgrounds. */
+.presentation[data-widget-host=dashboard][data-widget-background=on]{--widget-bare-surface:var(--atlas-card)}
 /* A configured embed inherits the host palette, including nested chart frames. */
 .presentation.presentation :global([data-story-scheme]),
 .presentation.presentation :global([data-widget-id]){

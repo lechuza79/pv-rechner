@@ -17,14 +17,14 @@ describe('responsive composition allocations',()=>{
   expect(full.width+stack.width+24).toBe(width);
   expect(full.height).toBe(608);
  });
- it.each([320,375,557])('reflows without scaling chart text or using outer ratios at %ipx',width=>{
+ it.each([288,320,375,557])('reflows without scaling chart text or using outer ratios at %ipx',width=>{
   const result=resolveComposition(composition,width,800);
   expect(leaves(result).map(item=>item.width)).toEqual([width,width,width]);
   expect(leaves(result).map(item=>item.height)).toEqual([560,320,264]);
   expect(result.height).toBe(1192);
  });
- it('rejects allocations below renderer minima rather than declaring them compatible',()=>{
-  expect(()=>resolveComposition(composition,288,800)).toThrow(RangeError);
+ it.each([0,-1,NaN,Infinity])('rejects invalid host widths: %s',width=>{
+  expect(()=>resolveComposition(composition,width,800)).toThrow(RangeError);
  });
  it('accounts for wrapped chart chrome before aligning adjacent groups',()=>{
   const item:CompositionItem={...leaf('full',320,560),heightBreakpoints:[{maxWidth:400,minHeight:640}]};

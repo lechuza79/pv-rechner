@@ -290,7 +290,7 @@ function GruengasCard({
         // Solider Hintergrund überall AUSSER der reinen Balken-Ansicht onsite
         // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
         // Hintergrund (transparenter Export ist ein Fehler).
-        background: onsite && isBars ? "transparent" : v("--color-bg"),
+        background: onsite && isBars ? "var(--widget-bare-surface, transparent)" : v("--color-bg"),
         border: onsite && isBars ? "none" : `1px solid ${v("--color-border")}`,
         borderRadius: onsite && isBars ? 0 : v("--radius-lg"),
         padding: isBars ? 0 : "16px 24px 14px 16px",

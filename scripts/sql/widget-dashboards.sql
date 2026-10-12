@@ -7,4 +7,6 @@ create table if not exists public.widget_dashboards (
  constraint widget_dashboard_size check (octet_length(configuration::text) <= 30000)
 );
 alter table public.widget_dashboards enable row level security;
-revoke all on public.widget_dashboards from anon, authenticated;
+revoke all on public.widget_dashboards from public, anon, authenticated;
+grant select, insert, update, delete on public.widget_dashboards to service_role;
+notify pgrst, 'reload schema';

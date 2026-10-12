@@ -352,6 +352,7 @@ export function MastrLiveRadial({
         // bleibt block-Level (volle Container-Breite). `fuelltBreite` hebt das
         // Schrumpfen auf, wenn die Karte in einer Spalte steht.
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        verticalAlign: "top",
         ...(fuelltBreite ? { width: "100%", boxSizing: "border-box" as const } : {}),
       };
 
@@ -467,6 +468,7 @@ export function MastrLiveRadial({
       style={{
         perspective: "1200px",
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        verticalAlign: "top",
         ...(fuelltBreite ? { width: "100%" } : {}),
       }}
     >

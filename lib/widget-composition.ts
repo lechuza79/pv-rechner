@@ -90,7 +90,9 @@ export function compositionMinWidth(item: CompositionItem): number {
 export function resolveComposition(
   item: CompositionItem, width: number, heightBudget: number, allocatedHeight?: number,
 ): CompositionAllocation {
-  if (width < compositionMinWidth(item)) throw new RangeError(`Composition ${item.id} requires at least ${compositionMinWidth(item)}px`);
+  if (!Number.isFinite(width) || width <= 0) throw new RangeError('Composition width must be positive');
+  // Minimum widths decide when siblings stack. A narrower host still renders
+  // one column at its real width; resizing must never crash the entire page.
   if (item.kind === 'chart') {
     const preferred = item.preferredHeight;
     return {id: item.id, width, height: item.sizing === 'content' ? undefined : Math.max(

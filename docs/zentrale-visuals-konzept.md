@@ -999,3 +999,8 @@ its actual PNG contains the title, municipality, period, data date, sources and
 shared export footer. The first reverse-switch attempt was interrupted by a
 local preview-server restart; it is not counted as passing. Admin save/reopen
 and hosted database migration remain separate rollout gates.
+
+
+## Verbindlicher Abschlussnachweis — 12. Oktober 2026
+
+Der tatsächliche Bestand und die getrennten Nachweise für Umsetzung, Browserprüfung und Veröffentlichung stehen in [widget-system-completion.md](widget-system-completion.md). Frühere Teilprüfungen in diesem Dokument sind kein vollständiger Abnahmenachweis. Der Bestand wird aus dem bestehenden Katalog abgeleitet; es gibt keine zusätzliche Widget-Registry.

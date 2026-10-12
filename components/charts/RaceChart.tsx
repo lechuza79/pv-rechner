@@ -657,7 +657,7 @@ function RaceCard({
           {spitzen.map((s, i) => (
             <g key={s.key}>
               <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
-              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
+              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor={xL(t) < P.l + cW / 2 ? "start" : "end"} fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
                 {valueUnit ? <>{(narrow ? fmtKurz(s.zahl) : fmt(s.zahl)).replace(new RegExp(`\\s*${valueUnit}$`), "")}<tspan fontSize="0.65em" fontWeight={400} opacity={0.7}> {valueUnit}</tspan></> : (narrow ? fmtKurz(s.zahl) : fmt(s.zahl))}
               </text>
             </g>

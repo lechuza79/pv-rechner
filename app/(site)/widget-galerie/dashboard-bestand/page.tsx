@@ -2,7 +2,7 @@ import {isAdminSession} from '../../../../lib/admin-guard';
 import Link from 'next/link';
 import DataSourcesSection from '../../../../components/DataSourcesSection';
 import {DataSourceNote} from '../../../../components/PoweredBy';
-import {widgetVariantFromQuery} from '../../../../lib/widget-appearance';
+import {widgetInventory} from '../../../../lib/widget-inventory';
 import {allWidgets} from '../../../../lib/widget-registry';
 import {curatedGalleryEntries} from '../../../../lib/widget-gallery';
 import {prepareWidgetDashboard} from '../../../../components/dashboard/WidgetDashboard.server';
@@ -15,10 +15,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{gruppe?
  const place={ags:'06440016',name:'Nidda',districtId:'06440',districtName:'Wetteraukreis',stateId:'06',stateName:'Hessen'};
  const entries=curatedGalleryEntries(place).filter(entry=>entry.variants.length&&(!gruppe||entry.group===gruppe));
  const labels:Record<string,string>={comparison:'Orte vergleichen',regional:'Energie vor Ort',energy:'Energiedaten',cost:'Kosten vergleichen',microcharts:'Kleine Ergänzungen'};
- const items=entries.flatMap(entry=>entry.variants.flatMap((variant,index)=>{
-  const sources=varianten==='alle'?[variant.src,variant.compactSrc,variant.heroSrc].filter((src):src is string=>!!src):index===0?[variant.src]:[];
-  return [...new Set(sources)].map((src,i)=>({id:`${entry.id}-${index}-${i}`,widgetId:entry.id,src,label:entry.title,group:entry.group,presentation:widgetVariantFromQuery(entry.id,new URL(src,'https://solar-check.io').searchParams)}));
- }));
+ const items=widgetInventory(entries,varianten==='alle');
  // The inventory is a browsing tool, not a stress dashboard: mount a bounded page.
  const pageSize=8;
  const pageCount=Math.max(1,Math.ceil(items.length/pageSize));

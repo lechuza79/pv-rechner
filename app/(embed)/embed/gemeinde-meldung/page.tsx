@@ -1,4 +1,5 @@
 import {ladeGemeindePaket} from '../../../../lib/gemeinde-paket-server';
+import {WidgetFrame} from '../../../../components/dashboard/WidgetFrame';
 import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import StorySingleWidget from '../../../../components/dashboard/StorySingleWidget';
 import {selectWidgetStory,storyWidgetTemplates} from '../../../../lib/story-widget-selection';
@@ -13,7 +14,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Record<s
  if(query.view==='single'){
   if(query.template&&!storyWidgetTemplates.some(template=>template.id===query.template))return <p role="alert">Diese Storyvariante ist nicht verfügbar.</p>;
   const story=selectWidgetStory(stories,query.template,query.story);
-  return <WidgetPresentation widgetId="gemeinde-meldung" appearance={parseWidgetAppearance(query)}>{story?<StorySingleWidget story={story} ags={ags} query={query}/>:<p role="status">Für diesen Ort und diese Auswahl liegt keine veröffentlichte Story vor.</p>}</WidgetPresentation>;
+  return <WidgetPresentation widgetId="gemeinde-meldung" appearance={parseWidgetAppearance(query)}>{story?<StorySingleWidget story={story} ags={ags} query={query}/>:<WidgetFrame title={storyWidgetTemplates.find(template=>template.id===query.template)?.name??"Geschichte vor Ort"} subtitle={paket?.name} kind="composition" data-widget-state="empty"><p role="status" style={{padding:"0 var(--widget-pad, 24px) 24px"}}>Für diesen Ort und diese Auswahl liegt keine veröffentlichte Story vor.</p></WidgetFrame>}</WidgetPresentation>;
  }
  return <WidgetPresentation widgetId="gemeinde-meldung" appearance={parseWidgetAppearance(query)}>{paket&&stories.length?<StoryWidget stories={stories} name={paket.name}/>:<p>Für diesen Ort liegen noch keine veröffentlichten Storys vor.</p>}</WidgetPresentation>;
 }

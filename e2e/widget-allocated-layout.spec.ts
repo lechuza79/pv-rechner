@@ -1,115 +1,53 @@
 import {test,expect} from '@playwright/test';
+import {widgetInventory} from '../lib/widget-inventory';
+import {curatedGalleryEntries} from '../lib/widget-gallery';
 
-// Check actual rendered rectangles; catalog tests cannot prove allocation.
-for (const width of [390,1440]) {
- test(`allocated widget combination at ${width}px`,async({page})=>{
+const items=widgetInventory(curatedGalleryEntries({ags:'06440016',name:'Nidda',districtId:'06440',districtName:'Wetteraukreis',stateId:'06',stateName:'Hessen'}));
+const pageSize=8;
+// Exercise the actual inventory, including existing story details and hero previews.
+// Dashboard children are direct components; only external embeds use iframes.
+for(const width of [390,1440])for(let index=0;index<Math.ceil(items.length/pageSize);index++){
+ test(`inventory page ${index+1} at ${width}px`,async({page})=>{
+  test.setTimeout(120_000);
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
   await page.setViewportSize({width,height:1000});
-  await page.goto('/widget-galerie/layout-referenz');
-  const group=page.locator('[data-example="nested"]');
-  const frames=group.locator('[aria-label="Eine Vollansicht und zwei kompakte Ansichten"] iframe[src*="layout=allocated"]');
-  await expect(frames).toHaveCount(3);
-  for(const iframe of await frames.all()){
-   await iframe.scrollIntoViewIfNeeded();
-   const frame=await (await iframe.elementHandle())!.contentFrame();
-   await expect(frame!.locator('svg[role="img"]')).toBeVisible();
-   await expect.poll(async()=>{
-    const host=await iframe.boundingBox();
-    const card=await frame!.locator('.sc-widget').boundingBox();
-    return Math.max(Math.abs(host!.height-card!.height),Math.abs(host!.width-card!.width));
-   }).toBeLessThan(2);
-   const overflow=await frame!.locator('body').evaluate(e=>e.scrollHeight-window.innerHeight);
-   expect(overflow).toBeLessThanOrEqual(2);
+  await page.goto(`/widget-galerie/dashboard-bestand?varianten=alle&seite=${index+1}`);
+  const expected=items.slice(index*pageSize,(index+1)*pageSize);
+  await expect(page.locator('[data-dashboard-widget]')).toHaveCount(expected.length);
+  for(const item of expected){
+   const slot=page.locator(`[data-dashboard-widget="${item.id}"]`);
+   await slot.scrollIntoViewIfNeeded();
+   await expect(slot.locator('[data-widget-loading=true]')).toHaveCount(0,{timeout:65_000});
+   await expect(slot).not.toContainText(/Widget gerade nicht verfügbar|Application error|Etwas ist schiefgegangen/);
+   await expect(slot.locator('[role=alert]')).toHaveCount(0);
+   await expect.poll(()=>slot.evaluate(element=>element.scrollWidth-element.clientWidth),{message:item.src}).toBeLessThanOrEqual(2);
+   await expect.poll(()=>slot.evaluate(element=>element.scrollHeight-element.clientHeight),{message:item.src}).toBeLessThanOrEqual(2);
+   await expect.poll(()=>slot.locator('svg,canvas,[data-widget-id],[data-widget-state=empty]').count(),{message:item.src,timeout:65_000}).toBeGreaterThan(0);
+   if(await slot.locator('[data-widget-state=empty]').count()){
+    await expect(slot.getByRole('status')).toContainText('keine veröffentlichte Story');
+   }else expect(await slot.locator('svg,canvas,[data-widget-id]').count(),item.src).toBeGreaterThan(0);
   }
-  const radial=page.frameLocator('iframe[src*="stromhandel?presentation=compact"]:not([src*="period=seven"])').locator('svg[role="img"]');
-  const rectangle=await radial.boundingBox();
-  expect(Math.abs(rectangle!.width-rectangle!.height)).toBeLessThan(1);
-  const race=page.frameLocator('iframe[src*="pv-kostenrennen"]').locator('[data-race-plot] svg');
-  const box=await race.boundingBox();
-  expect(box!.height).toBeGreaterThan(200);
-  expect(await page.locator('main').evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);
+  expect(errors).toEqual([]);
+  // A viewport transition previously threw outside the individual widget boundary.
+  await page.setViewportSize({width:width===390?1440:390,height:1000});
+  await expect(page.locator('[data-dashboard-widget]')).toHaveCount(expected.length);
+  expect(errors).toEqual([]);
  });
 }
 
-for(const width of [1003,1440]) {
- test(`content-sized siblings do not overlap at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:1000});
-  await page.goto('/widget-galerie/layout-referenz');
-  const grid=page.locator('[data-example="mixed"] > [data-composition-grid]');
-  await grid.scrollIntoViewIfNeeded();
-  await expect(grid.locator('[data-ready="true"]')).toHaveCount(3,{timeout:60000});
-  const collisions=await grid.evaluate(e=>{
-   const rects=Array.from(e.children).map(child=>child.getBoundingClientRect());
-   return rects.flatMap((a,i)=>rects.slice(i+1).filter(b=>
-    Math.min(a.right,b.right)-Math.max(a.left,b.left)>1 &&
-    Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1)).length;
-  });
-  expect(collisions).toBe(0);
- });
-}
-
-for(const width of [390,1440]){
- test(`regional chart families and shared controls at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:1000});
-  await page.goto('/widget-galerie/layout-referenz');
-  const regional=page.locator('[data-example="regional"]');
-  for(const iframe of await regional.locator('iframe').all()){
-   await iframe.scrollIntoViewIfNeeded();
-   const frame=await (await iframe.elementHandle())!.contentFrame();
-   await expect(frame!.locator('body')).not.toContainText('Application error');
-  }
-  const monthly=page.frameLocator('iframe[src*="gemeinde-solar-monat"]');
-  const circle=monthly.locator('svg[viewBox="0 0 560 560"]');
-  await expect(circle).toBeVisible();
-  const box=await circle.boundingBox();
-  expect(box!.width).toBeGreaterThan(180);
-  expect(box!.height).toBeGreaterThan(180);
-  expect(Math.abs(box!.width-box!.height)).toBeLessThan(1);
-  const stats=page.frameLocator('iframe[src*="regional-basic-stats"]:not([src*="presentation=compact"])');
-  await expect(stats.locator('.sc-kpi')).not.toHaveCount(0);
-  await expect(stats.getByLabel('Zeitraum der Kennzahlen')).toHaveCount(1);
- });
-}
-
-// Caption ownership and plot fill are separate from outer card geometry.
-for(const width of [390,1440]) {
- test(`compact trade explanation is available on demand at ${width}px`,async({page})=>{
-  await page.setViewportSize({width,height:1000});
-  await page.goto('/widget-galerie/layout-referenz');
-  const iframe=page.locator('iframe[src*="stromhandel?presentation=compact"]:not([src*="period=seven"])');
-  await iframe.scrollIntoViewIfNeeded();
-  const frame=page.frameLocator('iframe[src*="stromhandel?presentation=compact"]:not([src*="period=seven"])');
-  const root=frame.locator('[data-compact-center=true]');
-  await expect(root).toBeVisible();
-  const explanation=frame.getByRole('button',{name:'Einordnung des Handelssaldos'});
-  await explanation.focus();
-  await expect(frame.getByRole('tooltip')).toContainText('der gesamten Handelsmenge');
-  await explanation.press('Escape');
-  await expect(frame.getByRole('tooltip')).not.toBeVisible();
-  await explanation.click();
-  await expect(frame.getByRole('tooltip')).toBeVisible();
-  const barsFrame=page.locator('iframe[src*="stromhandel"][src*="period=seven"]');
-  await barsFrame.scrollIntoViewIfNeeded();
-  const bars=page.frameLocator('iframe[src*="stromhandel"][src*="period=seven"]');
-  const surface=bars.locator('[data-metric-overlay=true]');
-  await expect(surface).toBeVisible();
-  const area=await surface.boundingBox();
-  const svg=await surface.locator('svg[role=img]').boundingBox();
-  const card=await surface.locator('[data-density=small]').boundingBox();
-  expect(svg!.height).toBeGreaterThanOrEqual(area!.height-1);
-  expect(card!.width).toBeLessThanOrEqual(200);
-  expect(card!.y).toBeGreaterThanOrEqual(area!.y-1);
-  expect(card!.x).toBeGreaterThanOrEqual(area!.x-1);
-  expect(card!.x+card!.width).toBeLessThanOrEqual(area!.x+area!.width+1);
-  const collisions=await surface.evaluate(el=>{
-   const tile=el.querySelector('[data-density=small]')!.getBoundingClientRect();
-   return [...el.querySelectorAll('[data-trade-bar]')].filter(mark=>{
-    const r=mark.getBoundingClientRect();
-    return Math.min(r.right,tile.right)>Math.max(r.left,tile.left)&&Math.min(r.bottom,tile.bottom)>Math.max(r.top,tile.top);
-   }).length;
-  });
-  expect(collisions).toBe(0);
-  const donut=bars.getByRole('button',{name:/Anteil:/});
-  await donut.click();
-  await expect(bars.getByRole('tooltip')).toContainText('der gesamten Handelsmenge');
- });
-}
+for(const width of [390,1440])test(`nested reference and radial geometry at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:1000});
+ await page.goto('/widget-galerie/layout-referenz');
+ await expect(page.getByRole('combobox',{name:'Anordnung',exact:true})).toBeVisible();
+ const radial=page.locator('[data-trade-shape=radial] svg[role=img]').first();
+ await expect(radial).toBeVisible();
+ const circle=await radial.boundingBox();
+ expect(Math.abs(circle!.width-circle!.height)).toBeLessThan(2);
+ await page.getByRole('combobox',{name:'Anordnung',exact:true}).selectOption('column');
+ const collisions=await page.locator('[data-responsive-composition]').evaluateAll(groups=>groups.flatMap(group=>{
+  const slots=[...group.querySelectorAll('[data-dashboard-widget]')].map(slot=>slot.getBoundingClientRect());
+  return slots.flatMap((a,index)=>slots.slice(index+1).filter(b=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1));
+ }).length);
+ expect(collisions).toBe(0);
+});

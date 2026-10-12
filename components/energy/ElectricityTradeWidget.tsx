@@ -14,7 +14,7 @@ const stamp=(value:string)=>`${formatStoryDate(tradeDate(Date.parse(value)))}, $
 export default function ElectricityTradeWidget({presentation='full',initialData,onsite=false,today,variant='auto',period='year',year=today.slice(0,4),month=today.slice(5,7),mode='energy'}:{presentation?:'full'|'compact'|'hero';initialData?:TradeResult|null;onsite?:boolean;today:string;variant?:'auto'|'radial'|'bars'|'totals';period?:TradePeriod;year?:string;month?:string;mode?:'money'|'energy'}){
  const appearance=useWidgetPresentation();
  const requestUrl=`/api/energy/trade?period=${period}${period==='year'||period==='month'?`&year=${year}`:''}${period==='month'?`&month=${month}`:''}`;
- const {data,error:loadError}=useWidgetResource<TradeResult|null>(initialData!==undefined?null:requestUrl,initialData??null);
+ const {data,error:loadError}=useWidgetResource<TradeResult|null>(requestUrl,initialData??null,300_000,initialData?{data:initialData,fetchedAt:0}:undefined);
  // A refresh failure must not replace a successfully loaded chart.
  const error=data?null:loadError;
  const chartVariant=variant==='auto'?(period==='seven'?'bars':'radial'):variant;

@@ -33,3 +33,15 @@ describe('actual dashboard example constraints',()=>{
   expect(stats.height).toBeUndefined();
  });
 });
+
+it('stacks oversized minima inside a narrow host without crashing during resize',()=>{
+ const root={id:'narrow',kind:'group' as const,direction:'row' as const,children:[
+  {id:'a',kind:'chart' as const,minWidth:320,minHeight:440,sizing:'allocated' as const},
+  {id:'b',kind:'chart' as const,minWidth:360,minHeight:280,sizing:'content' as const},
+ ]};
+ for(const width of [280,319.5,320]){
+  const result=resolveComposition(root,width,800);
+  expect(result.direction).toBe('column');
+  expect(result.children?.map(child=>child.width)).toEqual([width,width]);
+ }
+});
