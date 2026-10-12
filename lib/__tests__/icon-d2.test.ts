@@ -67,3 +67,16 @@ describe('lastModelHour', () => {
     expect(lastModelHour(3600 * 10 + 1)).toBe(10);
   });
 });
+
+it('interpolates 100 m wind components between 80 and 120 m',()=>{
+ const s=shard({wind_u_component_80m:Array(6).fill(4),wind_u_component_120m:Array(6).fill(8),wind_v_component_80m:Array(6).fill(0),wind_v_component_120m:Array(6).fill(0)});
+ const w=modelWeatherAt(s,'10115',new Date('2026-09-18T05:00:00Z'),100)!;
+ expect(w.windSpeed).toBe(6);
+ expect(w.windDirection).toBe(270);
+});
+it('does not substitute surface wind for absent upper-level data',()=>{
+ const s=shard({wind_u_component_10m:Array(6).fill(4)});
+ const index=s.variables.indexOf('wind_u_component_80m');
+ s.points['10115'].values[index]=Array(6).fill(null);
+ expect(modelWeatherAt(s,'10115',new Date('2026-09-18T05:00:00Z'),100)!.windSpeed).toBeNull();
+});

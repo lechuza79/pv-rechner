@@ -375,3 +375,10 @@ dark story section. National, state, balcony and heat-pump overview redesigns re
 preview work until their separate visual review. Funding subscription confirmation
 returns to the municipal funding page and retains its receipt without sharing the
 confirmation query parameter. Browser coverage: e2e/gemeinde-abo.spec.ts.
+
+## Shared units across comparable chart values
+
+Follow “Shared chart units — operator rule, 2 October 2026” in
+`docs/zentrale-visuals-konzept.md` for every comparable chart and data layer.
+Choose units for the whole comparison, never independently per item. The same
+unit decision and precision must reach the page, image export and backend video.

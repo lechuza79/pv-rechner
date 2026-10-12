@@ -216,3 +216,7 @@
  .sc-widget[data-source-placement=plot] .sc-widget-head h4{flex:none;}
  .sc-widget[data-source-placement=plot] .sc-widget-tools{margin-left:0;justify-content:flex-start;}
 }
+/* Immersive widgets retain the same title, help and export actions. */
+.sc-widget[data-heading-placement=overlay] > .sc-widget-head{position:absolute;inset:0 0 auto;z-index:8;border-radius:var(--widget-radius,16px) var(--widget-radius,16px) 0 0;padding-bottom:24px;background:linear-gradient(var(--widget-bg,var(--color-bg)) 0%,transparent 100%);pointer-events:none;}
+.sc-widget[data-heading-placement=overlay] > .sc-widget-head .sc-widget-tools{pointer-events:auto;}
+.sc-widget[data-heading-placement=overlay] > .sc-widget-body{margin-top:0;}

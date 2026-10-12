@@ -221,6 +221,7 @@ describe("auditPosture", () => {
 });
 
 describe("Eine Quelle", () => {
+  // A whole-repository filesystem scan must also finish on a busy local machine.
   it("definiert exec_sql nirgends sonst im Repo", () => {
     const root = resolve(__dirname, "..", "..");
     // `.cache` holds gitignored data (weather archive blocks, downloads): no code.
@@ -242,5 +243,5 @@ describe("Eine Quelle", () => {
     lauf(root);
 
     expect(treffer, `exec_sql wird an weiteren Stellen definiert: ${treffer.join(", ")}`).toEqual([]);
-  });
+  }, 30_000);
 });

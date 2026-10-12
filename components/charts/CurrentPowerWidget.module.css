@@ -1,0 +1,5 @@
+/* The plot fits the available rectangle without stretching its circle. */
+.allocated{container-type:size;min-height:0;width:100%;}
+.allocated :global(.monitor-live-radial){width:100%;}
+.allocated :global(.sc-mastr-live-radial-card){justify-content:center;align-items:center;}
+.allocated :global(.sc-mastr-live-radial-card)>div:has(>svg[aria-label="24-Stunden-Verlauf"]){width:min(100cqw,100cqh)!important;max-width:100%;margin:0!important;}

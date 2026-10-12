@@ -34,6 +34,8 @@ const nextConfig = {
     return config;
   },
   experimental: {
+    // Keep a multi-widget development gallery below the restart threshold.
+    webpackMemoryOptimizations: process.env.NODE_ENV === 'development',
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own
     // root layout, and a root not-found.tsx without one is refused by Next

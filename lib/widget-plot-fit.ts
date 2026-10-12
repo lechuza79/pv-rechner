@@ -8,3 +8,22 @@ export function fitPodiumPlot(podium: HTMLElement) {
   const available = podium.clientHeight - parseFloat(padding.paddingTop) - parseFloat(padding.paddingBottom) - labelHeight - 12 - rankHeight;
   podium.closest<HTMLElement>('[data-podium-visual]')?.style.setProperty('--ranking-plot-height', `${Math.max(0, Math.floor(available))}px`);
 }
+
+/** Detached snapshots have no ResizeObserver: refit the preserved SVG geometry. */
+export function fitCartesianSnapshot(plot: HTMLElement) {
+  const svg = plot.querySelector('svg');
+  if (!svg) return;
+  const width = Number(svg.getAttribute('width'));
+  const height = Number(svg.getAttribute('height'));
+  if (!(width > 0 && height > 0)) return;
+  const inner = svg.parentElement;
+  if (inner && inner !== plot) {
+    inner.style.width = '100%';
+    inner.style.height = '100%';
+  }
+  // Fit both dimensions after export-only metadata, source lane and footer settle.
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.setAttribute('width', String(plot.clientWidth));
+  svg.setAttribute('height', String(plot.clientHeight));
+}

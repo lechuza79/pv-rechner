@@ -29,6 +29,7 @@ export function LoadingDots({
   return (
     <span
       role="status"
+      data-widget-loading="true"
       aria-label="Lade"
       style={{
         display: "inline-flex",

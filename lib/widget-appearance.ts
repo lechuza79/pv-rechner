@@ -1,5 +1,5 @@
 import type {WidgetBrand, WidgetHeaderMode, PartnerWidgetHeight} from './widget-brand';
-import {WIDGET_GRID_SIZES,gridExtent,type WidgetGridSize} from './widget-composition';
+import {WIDGET_GRID_SIZES,gridExtent,type WidgetGridSize,type CompositionItem} from './widget-composition';
 import {allWidgets} from './widget-registry';
 /** Shared presentation options; data and permissions remain separate. */
 export type WidgetTheme = 'light' | 'dark' | 'hero';
@@ -45,6 +45,44 @@ export function widgetPresentationContract(id:string,variant:'full'|'compact'|'h
  return presentations?.[variant];
 }
 
+/** The host chooses arrangement, never repeats a chart's geometry contract. */
+export function widgetCompositionItem(widgetId:string, options:{id?:string;presentation?:'full'|'compact'|'hero';grow?:number;preferredHeight?:{fraction:number;max:number}}={}):CompositionItem {
+ const contract=widgetPresentationContract(widgetId,options.presentation??'full');
+ if(!contract)throw new Error(`Missing presentation contract for ${widgetId}`);
+ return {id:options.id??widgetId,kind:'chart',grow:options.grow,minWidth:contract.minWidth,
+  minHeight:contract.minAllocatedHeight??0,heightBreakpoints:contract.allocatedHeightBreakpoints,
+  sizing:contract.supportsAllocation?'allocated':'content',preferredHeight:options.preferredHeight};
+}
+
+/** One eligibility rule for gallery, dashboard and linked hero hosts. */
+export function supportsWidgetPresentation(id:string,query:URLSearchParams,presentation:'full'|'compact'|'hero'):boolean {
+ const contract=widgetPresentationContract(id,presentation);
+ return !!contract&&(!contract.when||contract.when.values.includes(query.get(contract.when.key)??''));
+}
+
+/** Match only registered representations; an absent match preserves the full widget. */
+export function widgetVariantFromQuery(id:string, query:URLSearchParams):'full'|'compact'|'hero' {
+ for(const variant of ['compact','hero'] as const){
+  const contract=widgetPresentationContract(id,variant);
+  if(!supportsWidgetPresentation(id,query,variant))continue;
+  const params=contract?.params;
+  if(params&&Object.keys(params).length&&Object.entries(params).every(([key,value])=>query.get(key)===value))return variant;
+ }
+ return 'full';
+}
+
+/** Switch presentation without replacing the selected place, period or story snapshot. */
+export function widgetPresentationSource(id:string,src:string,presentation:'full'|'compact'|'hero'):string {
+ const url=new URL(src,'https://solar-check.io');
+ const previous=widgetVariantFromQuery(id,url.searchParams);
+ if(previous===presentation)return url.pathname+url.search;
+ const target=widgetPresentationContract(id,presentation);
+ if(!target||!supportsWidgetPresentation(id,url.searchParams,presentation))throw new Error('Unsupported widget presentation');
+ for(const key of Object.keys(widgetPresentationContract(id,previous)?.params??{}))url.searchParams.delete(key);
+ for(const [key,value] of Object.entries(target.params))url.searchParams.set(key,value);
+ return url.pathname+url.search;
+}
+
 /** Onsite previews always use the onsite source policy, regardless of their host. */
 export function onsiteWidgetPreviewSource(src:string,appearance?:WidgetAppearance):string {
  const url=new URL(src,'https://preview.local');
@@ -69,4 +107,15 @@ export function widgetGridOptions(id:string,compactAvailable=true) {
 export function selectWidgetGridOption(id:string,requested:WidgetGridSize,compactAvailable=true){
  const options=widgetGridOptions(id,compactAvailable);
  return options.find(option=>option.size===requested)??options.find(option=>option.presentation==='full')??options[0];
+}
+
+/** Compare renderer/data selection independently of presentation-only query options. */
+export function widgetDataSourceKey(id:string,src:string):string {
+ const url=new URL(widgetPreviewSource(src),'https://solar-check.io');
+ url.searchParams.delete('onsite');
+ for(const setting of widgetConfiguration(id)?.dataSettings??[]){
+  if(!url.searchParams.has(setting.key))url.searchParams.set(setting.key,setting.defaultValue);
+ }
+ url.searchParams.sort();
+ return url.pathname+url.search;
 }

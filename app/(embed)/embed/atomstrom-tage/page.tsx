@@ -9,5 +9,5 @@ export default async function Page({searchParams}:{searchParams:Promise<Record<s
  const now=new Date();
  const energy=params.metric==='energy';
  const data=await (energy?nuclearEnergyPreviewData(now):nuclearPreviewData(now));
- return <WidgetPresentation appearance={parseWidgetAppearance(params)}><NuclearDailyWidget data={data} variant={params.variant==='full'?'full':'teaser'} {...(params.metric==='energy'?{metric:'energy' as const,asOf:now.toISOString()}:{metric:'power' as const})}/></WidgetPresentation>;
+ return <WidgetPresentation widgetId="atomstrom-tage" appearance={parseWidgetAppearance(params)}><NuclearDailyWidget data={data} variant={params.variant==='full'?'full':'teaser'} {...(params.metric==='energy'?{metric:'energy' as const,asOf:now.toISOString()}:{metric:'power' as const})}/></WidgetPresentation>;
 }

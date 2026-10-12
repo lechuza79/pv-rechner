@@ -40,7 +40,9 @@ import {
 // über den Spaltenköpfen klebte. Die fängt der Browser-Test des Ranglisten-
 // Verhaltens, nicht dieser hier.
 
-test.describe.configure({ timeout: 45_000 });
+// Software-rendered landscape scenes can take several seconds per painted
+// capture on CI. Keep the same pixel checks and allow them to finish.
+test.describe.configure({ timeout: 120_000 });
 
 // Der eigene Ort muss gesetzt sein, sonst gibt es die markierte Zeile gar
 // nicht — und genau sie war der Anlass. Ein Test, der nur Seiten AUFRUFT,
@@ -157,7 +159,15 @@ const NOCH_KEIN_URTEIL: string[] = ["/solar-atlas/bayern/landkreis-wuerzburg/hoe
       const befunde: Kontrastbefund[] = [];
       for (const b of verdaechtig) {
         const el = page.locator(`[data-kontrast="${b.marke}"]`).first();
-        const bild = await el.screenshot({ timeout: 5_000 }).catch(() => null);
+        // The scene animates continuously. Capture the current painted rectangle
+        // without locator.screenshot waiting for two idle animation frames.
+        // Missing captures still fail below; no contrast finding is skipped.
+        const bild = await (async () => {
+          await el.evaluate(node => node.scrollIntoView({block: "center", behavior: "instant"}));
+          const box = await el.boundingBox();
+          if (!box || box.width <= 0 || box.height <= 0) return null;
+          return page.screenshot({clip: box, timeout: 20_000});
+        })().catch(() => null);
         if (!bild) {
           // Kein Urteil möglich — und das wird gemeldet, nicht verschwiegen.
           befunde.push(b);

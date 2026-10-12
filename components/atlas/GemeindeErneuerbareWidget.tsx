@@ -35,6 +35,7 @@ export default function GemeindeErneuerbareWidget({
   solarKwp,
   generators,
   speicherKwh,
+  dataAsOf,
   liveUrl,
   onsite = false,
   share = true,
@@ -46,6 +47,7 @@ export default function GemeindeErneuerbareWidget({
   solarKwp: number;
   generators: { wind: Gen; biomasse: Gen; wasser: Gen };
   speicherKwh: number;
+  dataAsOf?: string;
   liveUrl: string;
   /** First-party embed auf einer eigenen Seite: Quelle erst beim Überfahren,
    *  keine Markenzeile (die Seite trägt beides). */
@@ -83,6 +85,9 @@ export default function GemeindeErneuerbareWidget({
   return (
     <GemeindeWidgetShell
       widget={widget}
+      exportScope={name}
+      exportUnit={unit}
+      dataAsOf={dataAsOf}
       subline="Installierte Leistung nach Technologie"
       filename={`solar-check-erneuerbare-${slug}.png`}
       onsite={onsite}

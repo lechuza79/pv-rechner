@@ -105,7 +105,7 @@ export default function RegionScene(props:Props) {
       instance.update(current.current.values,current.current.selected,current.current.hovered);
       void instance.season(current.current.season??"summer");
       current.current.onReady(true);
-    }).catch(()=>{if(!disposed){setFailed(true);current.current.onReady(false);}});
+    }).catch(error=>{console.error("Region scene initialization failed",error);if(!disposed){setFailed(true);current.current.onReady(false);}});
     return()=>{disposed=true;scene.current?.dispose();scene.current=null;};
   },[props.shapes]);
   useEffect(()=>{scene.current?.autoplay(presentation.autoplay??true);},[presentation.autoplay]);

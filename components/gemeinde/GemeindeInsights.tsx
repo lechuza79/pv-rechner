@@ -1,11 +1,10 @@
 'use client';
+import {ChartExportMetadata} from '../charts/ChartExportMetadata';
 import {IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '../Icons';
-import {mitLizenzangaben} from '../../lib/data-sources';
 import {EXPORT_BRIGHTEST_ATTR} from '../../lib/export-markers';
-import {WIDGETS,widgetFuerMeldung,type WidgetDef} from '../../lib/widget-registry';
+import {type WidgetDef} from '../../lib/widget-registry';
 import {WidgetExportFooter,WidgetSourceEdge,SOURCE_EDGE_WIDTH} from '../WidgetExport';
-import {storyVisualTemplate,storyVisualTemplateDef} from '../../lib/story-approved-visual';
-import {useState,useEffect,useRef} from 'react';
+import {useState,useEffect,useRef,useId} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import './story-swipe.css';
@@ -17,13 +16,14 @@ import './story-swipe.css';
 const KARTEN_STIL = "/homepage-study/story-dist/atlas-story-cards.css";
 import type {StoryConcept} from '../../lib/story-konzepte';
 import {formatStoryDate} from '../../lib/story-format';
-import {MunicipalChart} from '../social/MunicipalChart';
+import {MunicipalWidgetVisual} from '../dashboard/MunicipalWidgetVisual';
+import {storyWidgetDefinition} from '../../lib/story-widget-definition';
 import Modal,{ModalHeader} from '../Modal';
 import foundation from '../social/atlas-foundations.module.css';
 import chart from '../social/StoryConceptLab.module.css';
 import styles from '../social/MunicipalStoryPreview.module.css';
 
-const storyVisual=(story:StoryConcept,compact:boolean,autoPlay=false,scheme='dark')=><div className={`${chart.visualTheme} ${compact?styles.visual:chart.figure} ${story.kind==='yield'&&compact?chart.preview:''}`} data-story-scheme={scheme}><MunicipalChart story={story} compact={compact} autoPlay={autoPlay} ohneBedienung={!compact}/></div>;
+const storyVisual=(story:StoryConcept,compact:boolean,autoPlay=false,scheme='dark')=><div className={`${chart.visualTheme} ${compact?styles.visual:chart.figure} ${story.kind==='yield'&&compact?chart.preview:''}`} data-story-scheme={scheme}><MunicipalWidgetVisual story={story} view={{detail:compact?'reduced':'full',autoplay:autoPlay,controls:false}}/></div>;
 const ignoreStorySelection=(_index:number)=>{};
 
 export type MunicipalStoryModalProps={
@@ -51,6 +51,7 @@ export type MunicipalStoryPreviewProps={
  stories:(StoryConcept & {thumbLabel?:string})[];
  name:string;
  embedded?:boolean;
+ layout?:'page'|'contained';
  surfaceScheme?:string;
  visualScheme?:string;
  onStoryOpen?:(story:StoryConcept)=>void;
@@ -60,7 +61,8 @@ export type MunicipalStoryPreviewProps={
  paused?:boolean;
 };
 
-export default function MunicipalStoryPreview({stories,name,embedded=false,surfaceScheme='light',visualScheme='dark',onStoryOpen,showHeader=true,showDate=true,showTown=false,paused=false}:MunicipalStoryPreviewProps) {
+export default function MunicipalStoryPreview({stories,name,embedded=false,layout=embedded?'contained':'page',surfaceScheme='light',visualScheme='dark',onStoryOpen,showHeader=true,showDate=true,showTown=false,paused=false}:MunicipalStoryPreviewProps) {
+ const instanceId=useId();
  const sectionRef=useRef<HTMLElement>(null);
  const autoplay=useRef(AutoScroll({speed:.55,startDelay:700,playOnInit:false,stopOnInteraction:false,stopOnMouseEnter:true,stopOnFocusIn:true}));
  const [stripRef,stripApi]=useEmblaCarousel({loop:true,align:'start',duration:35,dragFree:true},[autoplay.current]);
@@ -93,7 +95,7 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  // beim Schließen nichts springt.
  const cards=(all:boolean)=><div className={`${all?styles.feed:'story-strip'}${!all&&selected!==null?' story-strip-verdeckt':''}`} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:Array.from({length:kopien},()=>stories).flat()).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`} aria-hidden={!all && index >= stories.length ? true : undefined}><button tabIndex={!all && index >= stories.length ? -1 : undefined} className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
  return <><link rel="stylesheet" href={KARTEN_STIL} precedence="default"/>
- <section ref={sectionRef} data-story-scheme={surfaceScheme} id="geschichten" className={`${foundation.foundation} ${styles.section} ${embedded?styles.embedded:''}`}>
+ <section ref={sectionRef} data-story-scheme={surfaceScheme} id={layout==='page'?'geschichten':`stories-${instanceId}`} data-story-layout={layout} className={`${foundation.foundation} ${styles.section} ${layout==='contained'?styles.embedded:''}`}>
  {showHeader&&<header><h2>Insights aus {name}</h2></header>}
  {cards(false)}
  <Modal scheme={surfaceScheme} open={feed&&selected===null} onClose={()=>setFeed(false)} title={`Geschichten aus ${name}`} maxWidth={1040} className={foundation.foundation}>{cards(true)}</Modal>
@@ -125,7 +127,7 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
   window.addEventListener('keydown',keys);
   return()=>{api.off('select',select);window.removeEventListener('keydown',keys);};
  },[api,onSelect,inline]);
- const storyUrl=()=>{const url=new URL(window.parent.location.href);url.searchParams.set('story',stories[index].id);url.hash='atlas-stories';return url.href;};
+ const storyUrl=()=>{let href=window.location.href;try{href=window.parent.location.href;}catch{/* Partner origins do not expose their URL. */}const url=new URL(href);url.searchParams.set('story',stories[index].id);url.hash='atlas-stories';return url.href;};
  const copy=async()=>{try{await navigator.clipboard.writeText(storyUrl());setFeedback('Link kopiert.');}catch{setFeedback('Link konnte nicht kopiert werden.');}};
  const share=async()=>{setBusy(true);try{if(navigator.share){await navigator.share({title:stories[index].title,url:storyUrl()});}else await copy();}catch(error){if((error as Error).name!=='AbortError')await copy();}finally{setBusy(false);}};
  const download=async()=>{
@@ -148,10 +150,7 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
  </>;
 }
 
-// Fit the whole original widget uniformly; its internal proportions stay untouched.
-/** Templates migrated to the shared export footer declare their sources in the template catalog. */
-/** Registry identity for templates migrated to the shared export pipeline; null keeps the legacy credit. */
-function storyExportWidget(story:StoryConcept):WidgetDef|null{const def=storyVisualTemplateDef(storyVisualTemplate(story));if(!def?.widget||(def.exportProvenance&&!def.exportProvenance(story)))return null;return widgetFuerMeldung(WIDGETS[def.widget],story.town,story.title);}
+
 /**
  * Image-only footer from the shared export pipeline: brand line + own licence
  * (WidgetExportFooter) and the vertical source edge with licence and data date
@@ -160,9 +159,9 @@ function storyExportWidget(story:StoryConcept):WidgetDef|null{const def=storyVis
 function StoryExportFooter({story,widget}:{story:StoryConcept;widget:WidgetDef}){
  const columns=widget.sources.length>1?2:1;
  // Lane clear of the rounded card corners and off the border (same as the monitor export).
- return <><div style={{position:'absolute',top:24,bottom:24,right:6,width:SOURCE_EDGE_WIDTH*columns,pointerEvents:'none'}}><WidgetSourceEdge widget={widget} visible={false} spalten={columns} stand={formatStoryDate(story.sourceDate??story.period)}/></div><div className="story-export-shared" data-sc-export-only="block"><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div></>;
+ return <><div style={{position:'absolute',top:24,bottom:24,right:6,width:SOURCE_EDGE_WIDTH*columns,pointerEvents:'none'}}><WidgetSourceEdge widget={widget} visible={false} spalten={columns} stand={story.sourceDate}/></div><div className="story-export-shared" data-sc-export-only="block"><ChartExportMetadata scope={story.town} dataAsOf={story.sourceDate} unit={story.unit} period={story.period}/><WidgetExportFooter widget={widget}/></div></>;
 }
-function StoryArtwork({story,visual,name,active}:any){
+function StoryArtwork({story,visual,active}:any){
  const stage=useRef<HTMLDivElement>(null),canvas=useRef<HTMLDivElement>(null);
  const [foreground,setForeground]=useState(true);
  useEffect(()=>{const update=()=>setForeground(!document.hidden);update();document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
@@ -172,14 +171,11 @@ function StoryArtwork({story,visual,name,active}:any){
  // dann in einem Kasten, der für den Tagesverlauf gebaut war.
  const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
- const shared=storyExportWidget(story);
+ const shared=storyWidgetDefinition(story);
  // Room for the source edge outside the story width: one column per source, at most two.
- const edge=shared?SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+14:0;
- return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={shared
-  // Migrated: default export palette (brightest stage; light Atlas scheme via EXPORT_BRIGHTEST_ATTR), source edge outside the story width.
-  ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${edge}px;`
-  :'position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;'} data-export-edge={shared?edge:undefined} {...(shared?{[EXPORT_BRIGHTEST_ATTR]:''}:{})}>
- {visual(story,false,active&&foreground)}{shared?<StoryExportFooter story={story} widget={shared}/>:<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>}
+ const edge=SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+14;
+ return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={`position:relative;left:0;top:0;transform:none;height:auto;min-height:0;background:var(--atlas-card);border-radius:12px;display:block;padding-right:${edge}px;`} data-export-edge={edge} {...{[EXPORT_BRIGHTEST_ATTR]:''}}>
+ {visual(story,false,active&&foreground)}<StoryExportFooter story={story} widget={shared}/>
  </div></div>;
 }
 function VisibleWidget({story,visual,enabled}:any){

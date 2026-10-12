@@ -100,9 +100,7 @@ export default function GemeindeSolarLive({
 
   // „Stand HH:MM Uhr" in die Subline — der grüne Live-Punkt entfällt bewusst,
   // weil eine Simulation kein Live-Messwert ist.
-  const stand = weather ? `${weather.current.time.slice(11, 16)} Uhr` : null;
-  const subline =
-    "Simuliert aus dem heutigen Wetter am Standort" + (stand ? ` · Stand ${stand}` : "");
+  const subline = "Simuliert aus dem Wetter am Standort";
 
   const widget = widgetForPlace(WIDGETS.gemeindeSolarleistung, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -110,6 +108,9 @@ export default function GemeindeSolarLive({
   return (
     <GemeindeWidgetShell
       widget={widget}
+      exportScope={name}
+      exportUnit="MW"
+      dataAsOf={weather?.current.time}
       subline={subline}
       filename={`solar-check-solarleistung-${slug}.png`}
       // Das Bild zeigt eine Momentaufnahme — ohne diesen Satz wüsste niemand,

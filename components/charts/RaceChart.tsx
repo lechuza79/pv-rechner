@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import {WidgetIconButton} from '../dashboard/WidgetControls';
 import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
 import {useWidgetPresentation, WidgetPresentationProvider} from '../dashboard/WidgetPresentationContext';
+import {useWidgetMinimumHeight} from '../dashboard/WidgetMinimumHeight';
 import {CHART_ANIMATION_EVENT, type ChartAnimationCommand} from '../../lib/chart-animation-export';
 import {raceCurveValue} from '../../lib/race-curve';
 import {raceTimeline, racePositionAt, milestoneRaceTimeline} from '../../lib/race-timeline';
@@ -148,6 +150,8 @@ export interface RaceChartProps {
   titleSeries?: {text:string;runner:"camera"|"other"}[];
   showYAxisLabels?: boolean;
   valueUnit?: string;
+  /** Export metadata can declare units without changing the value-label styling. */
+  exportUnit?: string;
   actions?: boolean;
   initialProgress?: number;
   titelHilfe: { title: string; ariaLabel: string; inhalt: ReactNode };
@@ -191,7 +195,7 @@ export default function RaceChart(props: RaceChartProps) {
 
 function RaceCard({
   widget, kamera, anderer, startJahr, jahre, ersterTag, datumVon, ereignisse, fmt, fmtKurz,
-  showTitle = true, headingTitle, titleSeries, showYAxisLabels = false, valueUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
+  showTitle = true, headingTitle, titleSeries, showYAxisLabels = false, valueUnit, exportUnit, actions = true, initialProgress = 0, titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
   onsite = false, showEmbed = false, autoplay = true, stand: quellenStand,
   tempo: tempoProp, skala: skalaProp, variante = "voll", annualYears, milestoneTiming=false,
 }: RaceChartProps) {
@@ -254,6 +258,42 @@ function RaceCard({
   useEffect(() => () => cancelAnimationFrame(gleitRaf.current), []);
   const hostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const reportMinimumHeight = useWidgetMinimumHeight();
+
+  useEffect(() => {
+    const root = hostRef.current;
+    const card = root?.closest<HTMLElement>('.sc-widget');
+    const events = root?.querySelector<HTMLElement>(`.${styles.eventLayout}`);
+    const player = root?.querySelector<HTMLElement>(`.${styles.player}`);
+    if (!allocated || mini || !root || !card || !events || !player) {
+      reportMinimumHeight(0);
+      return;
+    }
+    const measure = () => {
+      if (getComputedStyle(root).display === 'grid') {
+        reportMinimumHeight(0);
+        return;
+      }
+      // Reserve actual wrapped content, never the already allocated plot height.
+      // Feeding the current card height back would cause resize feedback loops.
+      const px = (value: string) => Number.parseFloat(value) || 0;
+      const outerHeight = (element: HTMLElement) => {
+        const css = getComputedStyle(element);
+        return element.getBoundingClientRect().height + px(css.marginTop) + px(css.marginBottom);
+      };
+      const css = getComputedStyle(root);
+      const heading = card.querySelector<HTMLElement>('.sc-widget-head');
+      const context = card.querySelector<HTMLElement>('.sc-widget-context');
+      const intro = root.firstElementChild instanceof HTMLElement && !root.firstElementChild.hasAttribute('data-race-plot')
+        ? outerHeight(root.firstElementChild) : 0;
+      reportMinimumHeight((heading ? outerHeight(heading) : 0) + (context ? outerHeight(context) : 0)
+        + px(css.paddingTop) + px(css.paddingBottom) + 180 + intro + outerHeight(events) + outerHeight(player));
+    };
+    const observer = new ResizeObserver(measure);
+    [root, events, player, card.querySelector('.sc-widget-head')].forEach(node => {if (node) observer.observe(node);});
+    measure();
+    return () => {observer.disconnect();reportMinimumHeight(0);};
+  }, [allocated, mini, reportMinimumHeight]);
 
 
   useEffect(() => {
@@ -479,24 +519,11 @@ function RaceCard({
   const pfeil = (richtung: -1 | 1) => {
     const ziel = (gleitZiel.current ?? idxAktiv) + richtung;
     const aus = ziel < 0 || ziel >= ereignisse.length;
-    return (
-      <button
-        type="button"
-        onClick={() => springe(ziel)}
-        disabled={aus}
-        className={styles.eventArrow}
-        aria-label={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
-        title={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
-        style={{
-          flexShrink: 0, width: 28, height: 28, padding: 0, boxSizing: "border-box", borderRadius: "50%",
-          border: `1px solid ${v("--color-border")}`, background: v("--color-bg"),
-          color: aus ? v("--color-text-muted") : v("--color-text-primary"), fontSize: v("--font-size-h3"), lineHeight: 1,
-          cursor: aus ? "default" : "pointer", opacity: aus ? 0.4 : 1, display: "inline-flex", alignItems: "center", justifyContent: "center",
-        }}
-      >
-        {richtung < 0 ? <IconChevronLeft size={14}/> : <IconChevronRight size={14}/>}
-      </button>
-    );
+    return <span className={styles.eventArrow}><WidgetIconButton onClick={() => springe(ziel)} disabled={aus} size="xs" expandOnWide
+      label={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
+      title={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}>
+      {richtung < 0 ? <IconChevronLeft size={16}/> : <IconChevronRight size={16}/>}
+    </WidgetIconButton></span>;
   };
   // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
   // stehen jederzeit übereinander.
@@ -511,6 +538,7 @@ function RaceCard({
   const karte = (
     <div
       ref={hostRef}
+      className={[!mini && styles.raceLayout, allocated && styles.allocatedLayout].filter(Boolean).join(' ') || undefined}
       data-chart-animation="race"
       style={{
         position: "relative",
@@ -630,7 +658,7 @@ function RaceCard({
           {spitzen.map((s, i) => (
             <g key={s.key}>
               <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
-              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
+              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor={xL(t) < P.l + cW / 2 ? "start" : "end"} fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
                 {valueUnit ? <>{(narrow ? fmtKurz(s.zahl) : fmt(s.zahl)).replace(new RegExp(`\\s*${valueUnit}$`), "")}<tspan fontSize="0.65em" fontWeight={400} opacity={0.7}> {valueUnit}</tspan></> : (narrow ? fmtKurz(s.zahl) : fmt(s.zahl))}
               </text>
             </g>
@@ -667,8 +695,8 @@ function RaceCard({
             Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026).
             Derselbe rechte Rand wie das Chart, damit die Punkte über den
             Chart-Tagen stehen; die Quellen-Kante steht nur neben dem Chart. */}
-        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
-          <div style={{ position: "relative", height: 32, marginRight: 0 }}>
+        <div className={styles.eventLayout} {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
+          <div className={styles.eventTrack} style={{ position: "relative", height: 32, marginRight: 0 }}>
             <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
@@ -678,9 +706,9 @@ function RaceCard({
               );
             })}
           </div>
-          <div style={{ marginTop: space.sm, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: "row", alignItems: "center", gap: space.sm }}>
+          <div className={styles.eventPanel} style={{ marginTop: space.sm, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), gap: space.sm }}>
             {pfeil(-1)}
-            <div style={{ flex: 1, minWidth: 0, minHeight: 64 }}>
+            <div className={styles.eventCopy} style={{ flex: 1, minWidth: 0, minHeight: 64 }}>
               {aktivesEreignis && (
                 <div key={aktivesEreignis.tag} className="kr-neu">
                   <div className={styles.eventTitle}>
@@ -702,7 +730,7 @@ function RaceCard({
           Strecke — auf seiner eigenen, festen Skala, nicht auf der wachsenden
           Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
           Chart-Block von der Fußzeile trennt. */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: v("--color-bg"), borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
+      <div className={styles.player} {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: v("--color-bg"), borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
         <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--widget-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--widget-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
         <button
           type="button"
@@ -737,7 +765,7 @@ function RaceCard({
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
       <ExportOnly style={{ marginTop: space.md }}>
         <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          {annualYears ? `Stromerzeugung im Jahr ${stand}` : tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
+          {annualYears ? `Jahr ${stand}` : tag < T ? `Zwischenstand am ${stand} von ${jahre} Jahren` : `Endstand nach ${jahre} Jahren`}
         </span>
       </ExportOnly>
 
@@ -746,7 +774,7 @@ function RaceCard({
   );
   if (!mini) return <WidgetPresentationProvider appearance={{...presentation, sharing:actions ? presentation.sharing : 'off'}}>
     <ExportableWidgetFrame widget={widget} title={headingTitle ?? widget.title} titleContent={titleContent} headingMeta={<span className={styles.currentYear}>{currentYear}</span>} helpExportNote={false} showHeading={showTitle} kind="time-series"
-      place={annualYears ? 'Weltweit' : ''} exportUnit={valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
+      place={annualYears ? 'Weltweit' : ''} exportUnit={exportUnit ?? valueUnit ?? '€'} stand={quellenStand ?? ''} filename={dateiname}
       className={`${frameStyles.frame} ${styles.frame} ${styles.racingFrame}`} data-story-scheme={presentation.theme === 'hero' ? 'highlight' : presentation.theme}
       animated clientVideo restartAction={false} sourceVisible={!onsite} exportNote={annualYears ? exportNote : [exportNote, titelHilfe.title, nodeToText(titelHilfe.inhalt), zeitraumHilfe.title, nodeToText(zeitraumHilfe.inhalt)].filter(Boolean).join(" ")}
       exportLegend={titleSeries && showTitle ? undefined : [{color:FARBE_B,label:anderer.label,shape:"line"},{color:FARBE_A,label:kamera.label,shape:"line"}]}

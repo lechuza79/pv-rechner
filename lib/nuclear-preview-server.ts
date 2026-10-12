@@ -8,6 +8,19 @@ export async function nuclearPreviewData(now=new Date()):Promise<NuclearImportRe
 
 /** Fetch raw intervals in short ranges so the source adapter never downsamples them. */
 export async function nuclearEnergyPreviewData(now=new Date()):Promise<NuclearImportResponse|null> {
+ if (usesLivePreviewData()) {
+  // Two overlapping calendar windows stay below the live service's hourly
+  // downsampling threshold. Daily energy still uses raw quarter-hour values.
+  const day=(offset:number)=>new Date(now.getTime()-offset*86400000).toISOString().slice(0,10);
+  try {
+   const parts=await Promise.all([
+    livePreviewJson(`/api/energy/nuclear-import?start=${day(9)}&end=${day(5)}`),
+    livePreviewJson(`/api/energy/nuclear-import?start=${day(5)}&end=${day(0)}`),
+   ]) as unknown as NuclearImportResponse[];
+   const data=[...new Map(parts.flatMap(part=>part.data).map(point=>[point.ts,point])).values()].sort((a,b)=>a.ts.localeCompare(b.ts));
+   return {...parts[1],data};
+  } catch { return null; }
+ }
  const {previewData}=await import('./preview-data');
  const end=now.toISOString();
  const middle=new Date(now.getTime()-108*3600000).toISOString();

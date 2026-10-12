@@ -3,12 +3,13 @@
 import type { ReactNode } from "react";
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
+import { DONUT_INACTIVE_OPACITY } from "../../lib/donut-style";
 import { roundSvgPath } from "../../lib/svg-path";
 
 export interface DonutSegment {
   key: string;
   label: string;
-  /** Hex-Farbe (Energie-Palette). Kein CSS-Var-Token — im Embed nicht definiert. */
+  /** Semantic color or a CSS token supplied by the widget theme. */
   color: string;
   value: number;
 }
@@ -28,6 +29,8 @@ interface DonutChartProps {
   /** Aktives Segment von außen: es wird hervorgehoben, die anderen treten
    *  zurück. So kann eine Legende daneben denselben Zustand steuern. */
   activeKey?: string | null;
+  highlightedKey?: string;
+  label?: string;
 }
 
 /**
@@ -35,7 +38,7 @@ interface DonutChartProps {
  * Kanten, kein Hintergrund (transparentes SVG). Reihenfolge = wie übergeben.
  * Die Mitte ist ein HTML-Overlay (siehe `children`).
  */
-export default function DonutChart({ segments, size = 200, children, onActive, activeKey }: DonutChartProps) {
+export default function DonutChart({ segments, size = 200, children, onActive, activeKey, highlightedKey, label }: DonutChartProps) {
   const radius = size / 2;
   const innerRadius = radius * 0.72;
   // ~1px-Lücke am Außenrand: padAngle ≈ Lückenbreite / Radius.
@@ -43,7 +46,7 @@ export default function DonutChart({ segments, size = 200, children, onActive, a
 
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
-      <svg width={size} height={size} role="img">
+      <svg width={size} height={size} role={onActive ? "group" : "img"} aria-label={label} style={{overflow:"visible"}}>
         <Group top={radius} left={radius}>
           <Pie
             data={segments}
@@ -69,7 +72,15 @@ export default function DonutChart({ segments, size = 200, children, onActive, a
                     key={arc.data.key}
                     d={d ? roundSvgPath(d) : undefined}
                     fill={arc.data.color}
-                    opacity={gedimmt ? 0.3 : 1}
+                    stroke={highlightedKey===arc.data.key ? arc.data.color : undefined}
+                    strokeWidth={highlightedKey===arc.data.key ? 3 : undefined}
+                    tabIndex={onActive ? 0 : undefined}
+                    role={onActive ? "img" : undefined}
+                    aria-label={`${arc.data.label}: ${(arc.data.value / (segments.reduce((sum, segment)=>sum+segment.value,0)||1)*100).toLocaleString('de-DE',{maximumFractionDigits:1})} %`}
+                    onFocus={()=>onActive?.(arc.data.key)}
+                    onBlur={()=>onActive?.(null)}
+                    onKeyDown={event=>{if(event.key==='Escape')onActive?.(null)}}
+                    opacity={gedimmt ? DONUT_INACTIVE_OPACITY : 1}
                     style={{ transition: "opacity 0.15s", cursor: onActive ? "pointer" : undefined }}
                     // Touch: Tippen meldet dasselbe wie Überfahren. Ohne das
                     // bliebe der Ring auf dem Telefon unbeschriftet.

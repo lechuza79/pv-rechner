@@ -90,7 +90,7 @@ describe("Länderreihen und ihre Jahresachsen", () => {
 
   it("das Widget schreibt den Zeitraum aus den Daten, nicht aus dem Text", () => {
     const client = readFileSync(
-      join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),
+      join(process.cwd(), "components/energy/RenewablesGrowthWidget.tsx"),
       "utf8",
     );
     // „Zubau gesamt 2010–2024" stand dort getippt — nach dem ersten Datenlauf
@@ -101,7 +101,7 @@ describe("Länderreihen und ihre Jahresachsen", () => {
 
   it("die Überschrift des Widgets hängt an keiner Auswahl", () => {
     const client = readFileSync(
-      join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),
+      join(process.cwd(), "components/energy/RenewablesGrowthWidget.tsx"),
       "utf8",
     );
     // Sie trug einmal das gewählte Gebiet — dann sprang bei jedem Umschalten die
@@ -109,7 +109,7 @@ describe("Länderreihen und ihre Jahresachsen", () => {
     // Karten zwischen einer und zwei Zeilen wechselte. Das Veränderliche steht
     // seitdem in der Zeile darunter, beim Wähler.
     // Der Text steht als fester Inhalt im Markup, nicht als Platzhalter.
-    expect(client).toMatch(/>\s*\n\s*Erneuerbare vs\. Atomkraft\s*\n\s*<\/div>/);
+    expect(client).toContain('title="Erneuerbare vs. Atomkraft"');
   });
 });
 
@@ -152,11 +152,11 @@ describe("Deutschland im Vergleich", () => {
     // Er saß fest im Ergebnis-Abschnitt; als das Widget einen brauchte, wäre er
     // dort ein zweites Mal entstanden — mit eigenen Maßen und eigener Bewegung.
     const widget = readFileSync(
-      join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),
+      join(process.cwd(), "components/energy/RenewablesGrowthWidget.tsx"),
       "utf8",
     );
     const abschnitt = readFileSync(join(process.cwd(), "components/ResultSection.tsx"), "utf8");
-    expect(widget).toMatch(/from "\.\.\/\.\.\/\.\.\/\.\.\/components\/Switch"/);
+    expect(widget).toContain('from "../Switch"');
     expect(abschnitt).toMatch(/from "\.\/Switch"/);
     // Und keine zweite Bauanleitung daneben.
     expect(abschnitt).not.toMatch(/role="switch"/);

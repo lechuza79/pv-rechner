@@ -24,3 +24,4 @@
 
 
 .plotSlot[data-allocated=true]>div[data-separate-caption=true]{width:min(100cqw,calc(100cqh - 64px));}
+.compact[data-allocated=true]>div[data-compact-center=true]{width:min(100cqw,calc(100cqh - 48px));}

@@ -16,3 +16,6 @@
  font-family:var(--atlas-body);
  font-variant-numeric:tabular-nums;
 }
+
+/* Plot axes own their inset; avoid adding the frame padding a second time. */
+.body [data-energy-plot]{margin-inline:calc(-1 * var(--widget-padding));min-width:0;}

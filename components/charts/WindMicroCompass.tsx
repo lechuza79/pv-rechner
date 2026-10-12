@@ -1,11 +1,14 @@
+'use client';
 import {useId,type CSSProperties} from 'react';
 import styles from './WindMicroCompass.module.css';
+import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 
 /** Input direction names the meteorological origin; the particles show flow toward the opposite direction.
  * Use the same maxSpeedMs for all instances being compared.
  */
 export function WindMicroCompass({speedMs,directionDeg,maxSpeedMs=20,size=112,showValue=true}:{speedMs:number|null;directionDeg:number|null;maxSpeedMs?:number;size?:number;showValue?:boolean}){
  const clipId=useId();
+ const autoplay=useWidgetPresentation().autoplay??true;
  const speedValid=speedMs!==null&&Number.isFinite(speedMs)&&speedMs>=0;
  const directionValid=directionDeg!==null&&Number.isFinite(directionDeg);
  if(!speedValid||!Number.isFinite(maxSpeedMs)||maxSpeedMs<=0)return <span role="status">Winddaten nicht verfügbar</span>;
@@ -18,7 +21,7 @@ export function WindMicroCompass({speedMs,directionDeg,maxSpeedMs=20,size=112,sh
  const from=directionValid?directions[Math.round(angle/(Math.PI/4))%8]:null;
  const style:CSSProperties={fontFamily:'var(--font-text, sans-serif)',color:'var(--atlas-text, currentColor)'};
  return <div style={{...style,width:size,textAlign:'center'}}>
-  <svg width={size} height={size} viewBox="0 0 112 112" role="img" aria-label={calm?'Windstille':from?`Wind aus ${from}, ${speedMs.toLocaleString('de-DE',{maximumFractionDigits:2})} Meter pro Sekunde`:'Windrichtung nicht verfügbar'}>
+  <svg width={size} height={size} viewBox="0 0 112 112" role="img" aria-label={calm?'Windstille':from?`Wind aus ${from}, ${speedMs.toLocaleString('de-DE',{maximumFractionDigits:1})} Meter pro Sekunde`:'Windrichtung nicht verfügbar'}>
    {[25,48].map(r=><circle key={r} cx="56" cy="56" r={r} fill="none" stroke="currentColor" strokeOpacity=".16"/>)}
    <g aria-label="Norden"><path d="M56 0 L49 13 L56 10 L63 13 Z" fill="currentColor"/></g>
    <defs>
@@ -30,7 +33,7 @@ export function WindMicroCompass({speedMs,directionDeg,maxSpeedMs=20,size=112,sh
     </linearGradient>
    </defs>
    {(calm||directionValid)&&<g clipPath={`url(#${clipId})`} aria-hidden="true">
-    <g transform={`rotate(${flowAngle*180/Math.PI} 56 56)`} data-wind-flow={(!calm&&directionValid)?'moving':'still'}>
+    <g transform={`rotate(${flowAngle*180/Math.PI} 56 56)`} data-wind-flow={(!calm&&directionValid&&autoplay)?'moving':'still'}>
      {Array.from({length:48},(_,i)=>{
       // Uneven lanes and phases avoid a marching row, including in reduced motion.
       const random=(seed:number)=>{
@@ -43,7 +46,7 @@ export function WindMicroCompass({speedMs,directionDeg,maxSpeedMs=20,size=112,sh
       const particleDuration=duration*(.85+random(i+201)*.3);
       const restY=36-phase*72;
       return <g key={i} transform={`translate(${x} 56)`}>
-       <g className={!calm&&directionValid?styles.particle:undefined} style={{'--duration':`${particleDuration}s`,'--rest-y':`${restY}px`,animationDelay:`-${phase*particleDuration}s`,transform:calm?`translateY(${restY}px)`:undefined,opacity:calm?.35:undefined} as CSSProperties}>
+       <g className={!calm&&directionValid&&autoplay?styles.particle:undefined} style={{'--duration':`${particleDuration}s`,'--rest-y':`${restY}px`,animationDelay:`-${phase*particleDuration}s`,transform:calm||!autoplay?`translateY(${restY}px)`:undefined,opacity:calm?.35:!autoplay?.65:undefined} as CSSProperties}>
         {calm ? <circle r=".65" fill="var(--atlas-action, currentColor)"/> :
          <rect x="-.55" y="0" width="1.1" height={12+(i%5)*1.5} rx=".55" fill={`url(#${clipId}-trail)`}/>}
        </g>
@@ -53,7 +56,7 @@ export function WindMicroCompass({speedMs,directionDeg,maxSpeedMs=20,size=112,sh
    </g>}
 
   </svg>
-  {showValue&&<><div><strong>{speedMs.toLocaleString('de-DE',{maximumFractionDigits:2})}</strong> <small>m/s</small></div>
+  {showValue&&<><div><strong>{speedMs.toLocaleString('de-DE',{maximumFractionDigits:1})}</strong> <small>m/s</small></div>
   <small>{calm?'Windstille':from?`aus ${from}`:'Richtung fehlt'}</small></>}
  </div>;
 }

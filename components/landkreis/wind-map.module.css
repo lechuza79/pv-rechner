@@ -6,7 +6,7 @@
 .note{color:var(--color-text-secondary);font-size:var(--font-size-small);line-height:1.6;max-width:80ch}
 .band{position:relative}.stage{position:relative;height:580px;isolation:isolate}
 .tools{max-width:1100px;margin:auto;padding:8px 24px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--color-text-secondary);font-size:var(--font-size-small)}
-.page button,.page select{font:inherit;color:var(--color-text-primary);background:var(--color-bg-raised);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 14px;cursor:pointer;min-height:44px}
+.page:not(.widgetStage) button,.page:not(.widgetStage) select{font:inherit;color:var(--color-text-primary);background:var(--color-bg-raised);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 14px;cursor:pointer;min-height:44px}
 .tools>div{display:flex;gap:8px;flex-wrap:wrap}.readout{position:absolute;right:24px;bottom:80px;z-index:4;width:300px;max-width:calc(100% - 32px);box-sizing:border-box;background:var(--color-bg-raised);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;font-size:var(--font-size-small);box-shadow:0 8px 32px color-mix(in srgb,var(--color-bg-page) 70%,transparent)}
 .readout>strong{display:block;padding-right:30px}.close{position:absolute;right:4px;top:4px}.details{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;line-height:1.4}.details dt{color:var(--color-text-secondary)}.details dd{margin:0;overflow-wrap:anywhere}
 .list{max-width:1100px;box-sizing:border-box;margin:24px auto;padding:20px 24px;border-top:1px solid var(--color-border)}.list summary{cursor:pointer;font-weight:600}.list ol{list-style:none;padding:0}.list li{padding:24px 0;display:flex;gap:16px;border-bottom:1px solid var(--color-border)}.list li>div{flex:1;min-width:0}.ordinal{color:var(--color-text-secondary);font-variant-numeric:tabular-nums}.loading{position:absolute;left:24px;right:24px;top:45%;text-align:center;color:var(--color-text-secondary)}.selector{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:24px}
@@ -103,3 +103,16 @@
 .placeSpinner{flex:none;width:18px;height:18px;border:2px solid var(--color-border);border-top-color:var(--color-cta);border-radius:50%;animation:placeSpin .8s linear infinite}
 @keyframes placeSpin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.placeScene,.placeScene [data-location],.placeScene [data-tour]{transition:none!important;animation:none!important}.placeSpinner{animation:none}}
+
+/* A scene slot uses its own dimensions, never the page viewport. */
+.widgetStage{position:relative;isolation:isolate;width:100%;height:520px;min-height:440px;padding:0;overflow:hidden;border-radius:var(--widget-radius,16px)}
+.widgetStage .referenceControls{right:16px;bottom:16px;max-width:calc(100% - 32px)}
+.widgetStage .referenceControls label{display:none}
+.widgetStage .referenceControls button{font-size:var(--font-size-small);padding:10px 16px}
+
+/* Widget navigation shares the established searchable selection control. */
+.widgetTourControls{position:absolute;bottom:44px;left:var(--widget-padding,24px);right:var(--widget-padding,24px);z-index:6;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;pointer-events:auto;color:var(--color-text-primary);font-size:14px}
+.widgetTourControls>div{min-width:0;justify-content:center}
+.widgetTourControls .tourStatus{position:absolute;bottom:100%;left:0;right:0;text-align:center}
+
+.tourStatus{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}

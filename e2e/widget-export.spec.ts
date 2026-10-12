@@ -105,7 +105,7 @@ test.describe("Anlagenbestand-Widget", () => {
 test.describe("Stromkosten-Rennen", () => {
   test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
     await page.goto("/embed/pv-kostenrennen");
-    await expect(page.getByText("Stromkosten mit und ohne Solaranlage").first()).toBeVisible();
+    await expect(page.getByRole("heading", {name: /Stromkosten: Mit PV vs. Ohne PV/})).toBeVisible();
 
     // Der Abspielknopf ist Bedienung und fliegt aus dem Bild; der eingestellte
     // Zeitraum steht als Text im Kopf und bleibt.
@@ -117,8 +117,9 @@ test.describe("Stromkosten-Rennen", () => {
     await expect(exportOnly.first()).toBeHidden();
     // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
     const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" }).last();
-    await expect(footer).toContainText("Mit PV-Anlage");
-    await expect(footer).toContainText("Ohne PV-Anlage");
+    // The series legend is part of the exported heading in this variant.
+    await expect(page.getByRole("heading", {name: /Stromkosten:/})).toContainText("Mit PV");
+    await expect(page.getByRole("heading", {name: /Stromkosten:/})).toContainText("Ohne PV");
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');
@@ -148,7 +149,7 @@ test.describe("Heizkosten-Rennen", () => {
     await expect(exportOnly.first()).toBeHidden();
     const footer = exportOnly.filter({ hasText: "Das Beispielhaus" }).last();
     await expect(footer).toContainText("Wärmepumpe");
-    await expect(footer).toContainText("Neue Gasheizung");
+    await expect(footer).toContainText(/neue Gasheizung/i);
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');

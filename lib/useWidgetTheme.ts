@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import {useWidgetHost} from "../components/dashboard/WidgetHost";
+import {parseWidgetAppearanceObject} from './widget-appearance';
 import { parseWidgetThemeQuery, WIDGET_THEME_PARAMS } from "./widget-theme";
 import {
   WidgetSettings,
@@ -41,10 +43,17 @@ export function useWidgetTheme(opts?: {
 }) {
   // Hold the latest callback in a ref so the effect subscribes exactly once and
   // callers don't need to memoise the function.
+  const host = useWidgetHost();
+  const hostQuery = host ? new URLSearchParams(host.query).toString() : null;
+  const hostSharing = host?.appearance.sharing;
   const onSettingsRef = useRef(opts?.onSettings);
   onSettingsRef.current = opts?.onSettings;
 
   useEffect(() => {
+    if (hostQuery !== null) {
+      onSettingsRef.current?.({...parseWidgetSettingsQuery('?'+hostQuery), onsite:true, ...(hostSharing ? {share:hostSharing!=='off'} : {})});
+      return;
+    }
     const root = document.documentElement;
     const setVars = (vars: Record<string, unknown>) => {
       Object.keys(vars).forEach((k) => {
@@ -59,14 +68,22 @@ export function useWidgetTheme(opts?: {
       root.dataset.scThemeQuelle = "einbettend";
     }
     onSettingsRef.current?.(parseWidgetSettingsQuery(window.location.search));
+    const sharing=new URLSearchParams(window.location.search).get('sharing');
+    if(sharing)onSettingsRef.current?.({share:sharing!=='off'});
 
     // Live updates from the parent frame — same-origin only (the demo).
     function onMessage(event: MessageEvent) {
       if (event.origin !== window.location.origin) return;
       const payload = event.data as
-        | { type?: unknown; vars?: unknown; settings?: unknown; quelle?: unknown }
+        | { type?: unknown; vars?: unknown; settings?: unknown; quelle?: unknown; appearance?: unknown }
         | undefined;
       if (!payload) return;
+
+      if(payload.type==='widget:appearance'&&event.source===window.parent){
+        const appearance=parseWidgetAppearanceObject(payload.appearance);
+        if(appearance?.sharing)onSettingsRef.current?.({share:appearance.sharing!=='off'});
+        return;
+      }
 
       if (payload.type === "widget:settings") {
         onSettingsRef.current?.(parseWidgetSettingsObject(payload.settings));
@@ -93,5 +110,5 @@ export function useWidgetTheme(opts?: {
 
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, []);
+  }, [hostQuery, hostSharing]);
 }

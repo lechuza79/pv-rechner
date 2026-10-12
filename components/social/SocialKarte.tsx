@@ -1,3 +1,4 @@
+import {chartMetadataLabel} from "../../lib/chart-labels";
 import React from 'react';
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
@@ -238,12 +239,8 @@ export function SocialKarte({
         {bild.aussage}
       </div>
       )}
-      {!klein && dataAsOf && <div style={{ fontSize: storyChart.detail * skala, color: v("--color-text-muted"), marginBottom: storyChart.gap * skala }}>Stand {dataAsOf}</div>}
-      {!klein && bild.gemessen && !(bild.art === "anteilsdonut" && bild.gesamtAnzeige) && (
-        <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(quadrat ? 28 : 64) }}>
-          {bild.gemessen}
-        </div>
-      )}
+      {!klein && <div style={{fontFamily:v("--font-text"), fontSize:storyChart.detail * skala, fontWeight:400, color:v("--color-text-secondary"), marginBottom:storyChart.gap * skala}}>{chartMetadataLabel({dataAsOf, period:bild.gemessen})}</div>}
+
 
       {bild.art === "anteilsdonut" && !klein ? (
         <AnteilsDonut bild={bild} skala={skala} palette={palette} stufe={stufe} />

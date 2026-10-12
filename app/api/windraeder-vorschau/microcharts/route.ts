@@ -1,9 +1,11 @@
+import {livePreviewResponse} from '../../../../lib/preview-data';
 import stops from '../../../../public/geo/landscape-wind-stops.json';
 import {NextRequest,NextResponse} from 'next/server';
 import {loadMicrocharts} from '../../../../lib/microchart-server';
 import {isWindWeatherTown} from '../../../../lib/wind-map';
 import {rateLimit} from '../../../../lib/rate-limit';
 export async function GET(req:NextRequest){
+ const live=await livePreviewResponse(req);if(live)return live;
  const limited=rateLimit(req,'weather-now');if(limited)return limited;
  const id=req.nextUrl.searchParams.get('gemeinde')??'';
  if(!isWindWeatherTown(id))return NextResponse.json({error:'Unknown preview municipality'},{status:400});

@@ -74,7 +74,7 @@ describe("Chart-Katalog", () => {
     // Sie war am 08.08.2026 sieben Einträge lang (sechs bekannte plus eine,
     // die dieser Test selbst gefunden hat). Wer eine Route umzieht, nimmt sie
     // hier raus; wer eine neue dicke Route baut, kommt hier nicht durch.
-    expect(NOCH_IN_DER_ROUTE.length).toBeLessThanOrEqual(7);
+    expect(NOCH_IN_DER_ROUTE).toEqual([]);
     for (const name of NOCH_IN_DER_ROUTE) {
       expect(existsSync(join(EMBEDS, name)), `${name} steht auf der Schuldenliste, existiert aber nicht mehr`).toBe(true);
     }

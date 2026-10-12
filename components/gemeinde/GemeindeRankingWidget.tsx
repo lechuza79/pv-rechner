@@ -5,6 +5,7 @@ import {createPortal} from 'react-dom';
 import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
 import {ExportOnly, ExportIgnore} from '../WidgetExport';
 import {WIDGETS} from '../../lib/widget-registry';
+import {fitPodiumPlot} from '../../lib/widget-plot-fit';
 import styles from './GemeindeRankingWidget.module.css';
 import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 
@@ -18,7 +19,9 @@ export type RankingPodiumData = {
 
 /** Pure visual: selection and rank calculations stay with the data adapter. */
 export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
-  const animate=useWidgetPresentation().autoplay??data.animate;
+  const presentation = useWidgetPresentation();
+  const animate=presentation.autoplay??data.animate;
+  const allocated = presentation.layout === 'allocated';
   const visualRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const node = visualRef.current;
@@ -106,6 +109,17 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
     document.fonts.ready.then(() => { if (!disposed) { lastWidth = -1; measure(); } });
     return () => { disposed = true; observer.disconnect(); };
   }, [data.headingVariants]);
+  useLayoutEffect(() => {
+    const visual = visualRef.current;
+    const podium = visual?.querySelector<HTMLElement>(`.${styles.podium}`);
+    if (!allocated || !visual || !podium) return;
+    const measure = () => fitPodiumPlot(podium);
+    const observer = new ResizeObserver(measure);
+    observer.observe(podium);
+    podium.querySelectorAll(`.${styles.label}`).forEach(label => observer.observe(label));
+    measure();
+    return () => { observer.disconnect(); visual.style.removeProperty('--ranking-plot-height'); };
+  }, [allocated, data.category, data.scope]);
   const title = data.title.charAt(0).toLocaleUpperCase("de-DE") + data.title.slice(1);
   const qualifierAt = title.indexOf(" je ");
   const heading = qualifierAt < 0 ? title : title.slice(0, qualifierAt);
@@ -144,13 +158,13 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
     <div data-podium-visual ref={visualRef} className={styles.visual} data-animate={animate || undefined} key={`${data.category}-${data.scope}`}>
       <div data-widget-artwork className={styles.artwork} aria-hidden="true"><div className={styles.splash}/><img className={styles.backdrop} src={motif} alt=""/></div>
       {data.missing || !rows.length ? <p data-export-ready="false">{data.missing ?? 'Für diese Auswahl liegt keine Rangliste vor.'}</p> :
-        <div className={styles.podium} key={`${data.category}-${data.scope}`}>
+        <div data-podium-layout className={styles.podium} key={`${data.category}-${data.scope}`}>
           {podium.map(row => <div key={row.id} className={styles.contender} data-own={row.own} style={{"--bar-fraction":max > 0 ? row.value / max : 0,"--grow-delay":`${growthOrder.indexOf(row)*850}ms`,"--reveal-delay":`${rows.length*850+400+growthOrder.indexOf(row)*930}ms`} as CSSProperties}>
-            <div className={styles.label}>{row.href ? <a href={row.href}>{row.name}</a> : <span>{row.name}</span>}<strong><ExportIgnore>{displayValue(row).live}</ExportIgnore><ExportOnly display="inline">{displayValue(row).final}</ExportOnly></strong></div>
+            <div data-podium-label className={styles.label}>{row.href ? <a href={row.href}>{row.name}</a> : <span>{row.name}</span>}<strong><ExportIgnore>{displayValue(row).live}</ExportIgnore><ExportOnly display="inline">{displayValue(row).final}</ExportOnly></strong></div>
             <div className={styles.bar} data-ranking-celebration-origin={row.own && row.rank <= 3 ? true : undefined} style={{'--bar-fraction': max > 0 ? row.value / max : 0, '--bar-height': `${max > 0 ? 160 * row.value / max : 0}px`} as CSSProperties}>
               {row.own && row.rank <= 3 && <img className={styles.badge} src={`/atlas-design-preview/rank-badges/rank-${row.rank}.svg`} alt={`Platz ${row.rank}`} width={96} height={96}/>}
             </div>
-            <span className={styles.rank}>{row.rank}</span>
+            <span data-podium-rank className={styles.rank}>{row.rank}</span>
           </div>)}
         </div>}
     </div>

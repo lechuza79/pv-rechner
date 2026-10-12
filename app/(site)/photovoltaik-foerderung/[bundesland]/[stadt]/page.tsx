@@ -224,7 +224,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   return (
     <>
     <FundingLocalHero compact={compact} title={`${STADTSEITE_UEBERSCHRIFT[stadtseiteThema(liste)]} in ${city.name}`}>
-        {compact && fundingPromotion(f) && <p className={editorial.subtitle}>{fundingPromotion(f)!.text} · je nach Vorhaben</p>}
+        {compact && fundingPromotion(f) && <p className={editorial.subtitle} data-sc-contrast>{fundingPromotion(f)!.text} · je nach Vorhaben</p>}
         {!compact && <p className={editorial.subtitle} data-sc-contrast>
           {f ? <>{f.status !== "aktiv" && <>{FUNDING_STATUS_LABEL[f.status]}: </>}{f.coveredCosts}.{!compact && <> Die Voraussetzungen und den Weg zum Antrag findest du beim jeweiligen Programm.</>}</> : <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>}
           {!compact && weitere.length > 0 && <> Hier gelten {liste.length} erfasste Programme. Die Beträge und Voraussetzungen werden getrennt dargestellt.</>}

@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import {unstable_cache} from 'next/cache';
 import {NextRequest,NextResponse} from 'next/server';
 import {rateLimit} from '../../../../lib/rate-limit';
@@ -5,6 +6,8 @@ import {fetchSmardTrade} from '../../../../lib/smard-trade';
 import {tradeDate,shiftTradeDate,summarizeTrade,type TradePeriod} from '../../../../lib/electricity-trade';
 export const maxDuration=60;
 export async function GET(req:NextRequest){
+  const live = await livePreviewResponse(req);
+  if (live) return live;
  const limited=rateLimit(req,'electricity-trade');if(limited)return limited;
  const q=req.nextUrl.searchParams,now=Date.now(),today=tradeDate(now),currentYear=Number(today.slice(0,4));
  const mode=(q.get('period')??'seven') as TradePeriod,year=Number(q.get('year')??currentYear),month=Number(q.get('month')??today.slice(5,7));

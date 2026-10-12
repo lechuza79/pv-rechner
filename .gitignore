@@ -52,3 +52,11 @@ docs/design/kommunen/.generated*/
 !/public/geo/landscape-tours/06632009/
 !/public/geo/landscape-tours/03458009/
 !/public/geo/landscape-tours/09679/
+# Local successful widget data snapshots (never shipped)
+.cache/widget-preview-data/
+
+# Quarantined dependency installs are not project source.
+node_modules.*/
+next-env.d.ts.blocked
+
+.next*.blocked-*/

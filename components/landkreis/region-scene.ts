@@ -42,7 +42,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   pin: (point: { x: number; y: number } | null) => void; failed: () => void;
 }, heightEnvelope: Record<string, number> = {}, turbines?: SceneTurbine[], terrain?:SceneTerrain, windScale=1, windConditions:WindConditions|null=null, buildings?:SceneBuilding[], solar?:SolarFootprint[], locations?:SceneLocation[],framingScale=1,exportable=false) {
   const DEPTH=buildings?4:BASE_DEPTH;
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer:exportable, powerPreference: "low-power" });
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer:exportable || !!buildings, powerPreference: "low-power" });
   const quality=buildings?createSceneQuality():null;
   renderer.setPixelRatio(quality?scenePixelRatio(window.devicePixelRatio,host.clientWidth,host.clientHeight):Math.min(window.devicePixelRatio,2));
   renderer.setClearColor(0, 0);
@@ -55,6 +55,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   renderer.shadowMap.type = THREE.PCFShadowMap;
   const canvas = renderer.domElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let autoplay = true;
   let enteredAt: number | null = null;
   let manual = false, resumeRotationAt = 0, lastFrame = performance.now();
   let spinVelocity = 0;
@@ -124,7 +125,6 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const textures = new Set<THREE.Texture>();
   const trees: THREE.Group[] = [];
   const leaves: THREE.Mesh[] = [];
-  let autoplay=true;
   let dead = false, visible = true, queued = 0, selected = "", hovered: string | null = null;
   const theme = getComputedStyle(host);
   const background = new THREE.Color(theme.getPropertyValue("--color-bg-page").trim())
@@ -254,7 +254,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   }
   function stopFlight(arrived=false){if(frameTimes){reportFrames(arrived);frameTimes=null;}flight=null;journey=null;canvas.dataset.flight='idle';events.flight?.(false,arrived);}
   function updateReferenceGuide(route:{curve:THREE.Curve<THREE.Vector3>},goal:THREE.Vector3){
-    if(!flightMetrics){flightMetrics=document.createElement('output');flightMetrics.dataset.flightMetrics='';host.append(flightMetrics);}
+    if(!flightMetrics){flightMetrics=document.createElement('output');flightMetrics.dataset.flightMetrics='';flightMetrics.hidden=true;flightMetrics.dataset.scExportIgnore='';host.append(flightMetrics);}
     {
       const points=route.curve.getPoints(100),xs=points.map(p=>p.x),zs=points.map(p=>p.z);
       const left=Math.min(...xs,goal.x)-25,top=Math.min(...zs,goal.z)-25,width=Math.max(...xs,goal.x)-left+25,height=Math.max(...zs,goal.z)-top+25;
@@ -350,7 +350,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     queued = 0;
     if (dead || !visible || document.hidden) return;
     const now = performance.now();
-    if ((!manual || quality) && !reducedMotion.matches && !pace.shouldDraw(now)) { invalidate(); return; }
+    if (((autoplay && !manual) || quality) && !reducedMotion.matches && !pace.shouldDraw(now)) { invalidate(); return; }
     if(enteredAt===null){enteredAt=now;if(transition)transition.start=now+180;}
     const elapsed = now-enteredAt;
     const opacity = reducedMotion.matches ? "1" : String(Math.min(1,elapsed/240));
@@ -496,6 +496,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       canvas.dataset.renderQuality=JSON.stringify({...measurement,pixelRatio:renderer.getPixelRatio()});
       if(measurement.changed){pace=createFramePacer(quality!.fps);resize();}
     }
+    if (transition || moving || journey || flight || (autoplay && !manual && !reducedMotion.matches) || elapsed<240) invalidate();
     if (city) {
       const point = new THREE.Vector3(city.groundAnchor[0],DEPTH+1,city.groundAnchor[1]).project(camera);
       const next={x:(point.x+1)*renderWidth/2,y:(1-point.y)*renderHeight/2};
@@ -711,7 +712,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     flyTo,
     previewReference,
     leaveReferencePark,
-    showReferencePath(show:boolean){if(referencePlan)referencePlan.style.display=show?'block':'none';invalidate();},
+    showReferencePath(show:boolean){if(flightMetrics)flightMetrics.hidden=!show;if(referencePlan)referencePlan.style.display=show?'block':'none';invalidate();},
     zoom(factor:number) { stopFlight();if(camera instanceof THREE.PerspectiveCamera){controls.dollyIn(factor);invalidate();return;}camera.zoom=THREE.MathUtils.clamp(camera.zoom*factor,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();invalidate(); },
     focus(id:string) { const turbine=turbines?.find(t=>t.id===id);if(turbine)flyTo({x:turbine.x,z:turbine.z,zoom:8}); },
     reset() { if(buildings)flyTo({x:pivot.x,z:pivot.z,zoom:1});else {stopFlight();camera.position.copy(cameraOffset).add(pivot);controls.target.copy(pivot);camera.zoom=1;windFocused=false;resize();invalidate();} },

@@ -22,7 +22,7 @@ type SearchHit = OnsiteSearchItem;
 /** Shared local filtering or asynchronous suggestions; domain adapters own data and navigation. */
 export default function OnsiteSearch({
   onPick, selectedLabel, onClear, appearance = "default", onLocate, minQueryLength = 2,
-  alwaysOpen = false,
+  alwaysOpen = false, persistent: persistentField = false, suggestions = true, selectedItem,
   loadItems,
   ariaLabel = "Suchen",
   align = "right",
@@ -37,6 +37,9 @@ export default function OnsiteSearch({
   selectedLabel?: string;
   onClear?: () => void;
   alwaysOpen?: boolean;
+  persistent?: boolean;
+  suggestions?: boolean;
+  selectedItem?: OnsiteSearchItem | null;
   /** Already loaded regions: persistent field, local suggestions, no request. */
   items?: SearchHit[];
   onQueryChange?: (query: string) => void;
@@ -47,7 +50,7 @@ export default function OnsiteSearch({
   /** Auf welcher Seite das Vorschlags-Panel andockt. */
   align?: "left" | "right";
 }) {
-  const persistent = alwaysOpen || !!items;
+  const persistent = alwaysOpen || persistentField || !!items;
   const selected = persistent && !!selectedLabel && !!onClear;
   const listId = useId();
   const [open, setOpen] = useState(false);
@@ -84,6 +87,7 @@ export default function OnsiteSearch({
 
   // Entprellte Suche.
   useEffect(() => {
+    if (!suggestions) return;
     const term = q.trim();
     if (items) {
       const fold = (value: string) => value.toLocaleLowerCase("de").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
@@ -113,7 +117,7 @@ export default function OnsiteSearch({
       }
     }, 200);
     return () => { clearTimeout(t); controller.abort(); };
-  }, [q, items, loadItems, minQueryLength]);
+  }, [q, items, loadItems, minQueryLength, suggestions]);
 
   const pick = (h: SearchHit) => {
     close();
@@ -122,6 +126,7 @@ export default function OnsiteSearch({
   };
 
   const onKey = (e: React.KeyboardEvent) => {
+    if (!suggestions) return;
     if (e.key === "Escape") return close();
     if (e.key === "ArrowDown") {
       setOpen(true);
@@ -152,19 +157,19 @@ export default function OnsiteSearch({
         >
           <SearchGlyph />
         </button>}
-        <div className={selected && appearance === "default" ? styles.selectedPlace : styles.inputContents}>
+        {selectedItem && !open ? <span className={styles.selection}><strong>{selectedItem.label}</strong><button type="button" aria-label={`${selectedItem.label}: Auswahl entfernen`} onClick={() => { onClear?.(); setQ(""); setHits([]); setOpen(true); inputRef.current?.focus(); }}><IconClose size={16}/></button></span> : <div className={selected && appearance === "default" ? styles.selectedPlace : styles.inputContents}>
         <input
           ref={inputRef}
           value={q}
           readOnly={selected}
           autoComplete="off"
-          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); setOpen(true); }}
-          onFocus={() => { if (persistent && !selected) setOpen(true); }}
-          onClick={() => { if (persistent && !selected) setOpen(true); }}
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-autocomplete="list"
+          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); if (suggestions) setOpen(true); }}
+          onFocus={() => { if (persistent && !selected && suggestions) setOpen(true); }}
+          onClick={() => { if (persistent && !selected && suggestions) setOpen(true); }}
+          role={suggestions ? "combobox" : "searchbox"}
+          aria-expanded={suggestions ? open : undefined}
+          aria-controls={suggestions ? listId : undefined}
+          aria-autocomplete={suggestions ? "list" : undefined}
           aria-activedescendant={open && active >= 0 ? `${listId}-${active}` : undefined}
           onKeyDown={onKey}
           placeholder={placeholder}
@@ -174,10 +179,10 @@ export default function OnsiteSearch({
         />
         {persistent && q && onClear && <button className={appearance === "simulation" ? styles.simulationAction : locationStyles.clear} type="button" aria-label="Standort löschen" onClick={() => { setQ(""); setHits([]); setOpen(false); onClear(); inputRef.current?.focus(); }}><IconClose size={18} /></button>}
         {appearance === "simulation" && !q && onLocate && <button type="button" className={styles.simulationAction} aria-label="Meinen Standort verwenden" onClick={onLocate}><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></svg></button>}
-        </div>
+        </div>}
       </div>
 
-      {!selected && (persistent || (open && q.trim().length >= 2)) && (
+      {suggestions && !selected && (persistent || (open && q.trim().length >= 2)) && (
         <div className={persistent ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(persistent ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
           {loading && !hits.length ? (
             <div style={S.empty}>Suche …</div>

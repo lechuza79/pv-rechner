@@ -45,6 +45,7 @@ export default async function GemeindeErneuerbareEmbedPage(
   return (
     <GemeindeErneuerbareEmbed
       name={region.name}
+      dataAsOf={atlas.data_as_of}
       solarKwp={atlas.solar.total_kwp}
       generators={atlas.generators}
       speicherKwh={atlas.speicher.kwh_batterie}

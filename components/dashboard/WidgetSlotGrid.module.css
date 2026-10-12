@@ -1,0 +1,48 @@
+.root {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.grid {
+  min-width: 0;
+}
+
+.grid > :global(.grid-stack-item) > .content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.content > * {
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/* Remove GridStack's outer half-gaps: only gaps between slots remain. */
+.root {
+  display: flow-root;
+}
+
+.grid {
+  margin: calc(var(--slot-gap) / -2);
+}
+
+/* Preserve meaningful server-rendered geometry until the engine initializes. */
+.grid:not([data-ready]) {
+  height: var(--slot-initial-height);
+}
+
+.grid:not([data-ready]) > :global(.grid-stack-item) {
+  left: var(--slot-x);
+  top: var(--slot-y);
+  width: var(--slot-w);
+  height: var(--slot-h);
+}
+
+.grid:not([data-ready]) > :global(.grid-stack-item) > .content {
+  inset: calc(var(--slot-gap) / 2);
+}

@@ -38,3 +38,9 @@
 
 .iconButton[data-size="xs"] {--control-height:28px;border-radius:9px;}
 .iconButton[data-size="xs"] svg {width:12px;height:12px;}
+
+/* Opt-in only: compact controls expand in a wide widget container. */
+@container (min-width:640px) {
+ .iconButton[data-size="xs"][data-expand-on-wide="true"] {--control-height:36px;border-radius:12px;}
+ .iconButton[data-size="xs"][data-expand-on-wide="true"] svg {width:16px;height:16px;}
+}

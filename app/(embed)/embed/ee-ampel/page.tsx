@@ -1,3 +1,4 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
 import EeAmpelWidget from "./client";
 
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function EeAmpelEmbedPage() {
-  return <EeAmpelWidget />;
+  return <WidgetPresentation widgetId="ee-ampel"><EeAmpelWidget /></WidgetPresentation>;
 }

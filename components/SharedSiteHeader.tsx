@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useId } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
@@ -14,6 +14,7 @@ import "../public/shared-nav/hero-presentation.css";
 
 /** Keep the same menu on React pages and the standalone homepage. */
 export default function SharedSiteHeader({ aktiv, scene = false }: { aktiv?: string; scene?: boolean } = {}) {
+  const instanceId = useId();
   const header = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const auth = useAuth();
@@ -102,7 +103,7 @@ export default function SharedSiteHeader({ aktiv, scene = false }: { aktiv?: str
     <Link className="brand" href="/" aria-label="Solar Check – Startseite"><Logo width={166} /></Link>
     <details className="sc-react-fallback">
       <summary>Menü</summary>
-      <div dangerouslySetInnerHTML={{ __html: navigationContent({ idPrefix: "sc-fallback-local" }) }} />
+      <div dangerouslySetInnerHTML={{ __html: navigationContent({ idPrefix: `sc-fallback-${instanceId}`, staticImages: true }) }} />
       {/* Same switch as the magnifier: without JavaScript the search is a link. */}
       {SUCHE_IM_MENUE && <Link href="/suche">Suche</Link>}
       <Link href="/login">Login</Link>

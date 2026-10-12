@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import {chartQuantityLabel, chartMetadataLabel} from "../../lib/chart-labels";
 import { v, space } from "../../lib/theme";
 import {
   ExportBox,
@@ -47,6 +48,8 @@ export default function GemeindeWidgetShell({
   legend,
   note,
   dataAsOf,
+  exportScope,
+  exportUnit,
   onsite = false,
   branding = true,
   share = true,
@@ -68,8 +71,10 @@ export default function GemeindeWidgetShell({
   legend?: ExportLegendEntry[];
   /** Extra line the image needs (assumptions, reference period). */
   note?: string;
-  /** Data vintage, where known — otherwise the image shows the retrieval date. */
+  /** Actual data vintage; unknown dates stay explicit in exports. */
   dataAsOf?: string;
+  exportScope?: string;
+  exportUnit?: string;
   /** First-party embed on one of our own pages: source on hover, no brand line. */
   onsite?: boolean;
   branding?: boolean;
@@ -141,9 +146,11 @@ export default function GemeindeWidgetShell({
         {!nackt && (
           <div>
             <div style={S.title}>{widget.title}</div>
-            <div style={S.sub}>{subline}</div>
+            <div style={S.sub}><span data-sc-export-ignore="">{chartQuantityLabel(subline)}</span><span data-sc-export-only="inline" style={{display:"none"}}>{chartMetadataLabel({scope:exportScope, unit:exportUnit, dataAsOf, period:chartQuantityLabel(subline)})}</span></div>
           </div>
         )}
+
+        {nackt && <div data-sc-export-only="block" style={{...S.sub, display:"none"}}>{chartMetadataLabel({scope:exportScope, unit:exportUnit, dataAsOf, period:chartQuantityLabel(subline)})}</div>}
 
         {/* Body grows, so two cards side by side end at the same height. */}
         <div style={S.body}>

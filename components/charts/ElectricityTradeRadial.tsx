@@ -1,4 +1,5 @@
 'use client';
+import {signedTradeLine,tradeBalanceDirection,TRADE_DIRECTION_COLORS} from '../../lib/trade-chart-style';
 import {chartAnnotationCorner} from '../../lib/chart-annotation-placement';
 import {useState,useRef,useEffect} from 'react';
 import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
@@ -52,7 +53,9 @@ export default function ElectricityTradeRadial({days,money,importValue,exportVal
  const marks=net.flatMap((value,i)=>value===null?[]:[{x:left+(i+.15)*step,y:value>=0?baseZero-Math.abs(value)/max*baseAmplitude:baseZero,width:step*.7,height:Math.max(1,Math.abs(value)/max*baseAmplitude)}]);
  const annotation=metricOverlay?chartAnnotationCorner(bw,bh,tileSize,marks):'top-right';
  const top=annotation==='above'?tileSize.height+12:20,zero=(top+bottom)/2,amplitude=Math.max(1,(bottom-top)/2-8);
- const point=(i:number,value:number)=>{const angle=i/days.length*Math.PI*2-Math.PI/2,r=165+value/max*80;return [260+Math.cos(angle)*r,260+Math.sin(angle)*r];};
+ const zeroRadius=preview?125:165,radialAmplitude=245-zeroRadius;
+ const point=(i:number,value:number)=>{const angle=i/days.length*Math.PI*2-Math.PI/2,r=zeroRadius+value/max*radialAmplitude;return [260+Math.cos(angle)*r,260+Math.sin(angle)*r].map(value=>Number(value.toFixed(4)));};
+ const lineSegments=preview&&variant==='radial'?signedTradeLine(net):[];
  const selected=active===null?null:days[active];
  const imp=active===null?importValue:imports[active],exp=active===null?exportValue:exports[active];
  const saldo=imp===null||exp===null?null:exp-imp;
@@ -64,7 +67,7 @@ export default function ElectricityTradeRadial({days,money,importValue,exportVal
  const description=(i:number)=>{const a=tradeDisplay(imports[i],money,unitReference),b=tradeDisplay(exports[i],money,unitReference),n=tradeDisplay(net[i],money,unitReference);const value=(v:ReturnType<typeof tradeDisplay>)=>v.value===null?'Daten fehlen':`${v.value.toLocaleString('de-DE',{maximumFractionDigits:2})} ${v.unit}`;return `${formatStoryDate(days[i].date)}: Tagessaldo ${net[i]!==null&&net[i]!>0?'+':''}${value(n)}, Zukauf ${value(a)}, Verkauf ${value(b)}`;};
  const formatTrade=(value:number|null)=>{const shown=tradeDisplay(value,money,unitReference);return shown.value===null?'Daten fehlen':`${shown.value.toLocaleString('de-DE',{maximumFractionDigits:2})} ${shown.unit}`;};
  if(variant==='bars')return <div className={`${styles.root} ${allocated?styles.allocatedBars:''}`} data-metric-overlay={metricOverlay||undefined}>
-  {metricOverlay?<div ref={tileRef} className={styles.metricOverlay} data-corner={annotation}><MetricShareCard tone={saldo!==null&&saldo>0?'accent':'neutral'} label={saldo!==null&&saldo!==0?<>Mehr<br/>{saldo>0?'verkauft':'zugekauft'}</>:undefined} density="small" explanation="tooltip" ringColor="var(--widget-surface)" name={saldo===null?'Daten fehlen':saldo===0?'Ausgeglichen':saldo>0?'Mehr verkauft':'Mehr zugekauft'} value={centre.value===null?'–':centre.value.toLocaleString('de-DE',{maximumFractionDigits:2})} unit={centre.unit} share={share} context={money?'des gesamten Handelswerts':'der gesamten Handelsmenge'}/></div>:
+  {metricOverlay?<div ref={tileRef} className={styles.metricOverlay} data-corner={annotation}><MetricShareCard tone={tradeBalanceDirection(saldo)==='import'?'accent':'neutral'} label={saldo!==null&&saldo!==0?<>Mehr<br/>{saldo>0?'verkauft':'zugekauft'}</>:undefined} density="small" explanation="tooltip" name={saldo===null?'Daten fehlen':saldo===0?'Ausgeglichen':saldo>0?'Mehr verkauft':'Mehr zugekauft'} value={centre.value===null?'–':centre.value.toLocaleString('de-DE',{maximumFractionDigits:2})} unit={centre.unit} share={share} context={money?'des gesamten Handelswerts':'der gesamten Handelsmenge'}/></div>:
   <div className={styles.barMetric} data-direction={saldo!==null&&saldo<0?'import':'export'}>{selected&&<small>{formatStoryDate(selected.date)}</small>}<span>{saldo===null?'Daten fehlen':saldo===0?'Ausgeglichen':saldo>0?'Mehr verkauft':'Mehr zugekauft'}</span><MetricValue stacked {...centre} maximumFractionDigits={centre.unit==='TWh'||centre.unit==='Mrd. €'?2:1}/>{(!preview||summaryPlacement!=='center')&&shareLabel&&<small className={styles.share}>{shareLabel}</small>}</div>}
   <div className={styles.barPlot}>
   <svg ref={svgRef} viewBox={`0 0 ${bw} ${bh}`} role="img" aria-label="Verkauf minus Zukauf: positive Werte oberhalb, negative unterhalb der Nulllinie">
@@ -72,7 +75,7 @@ export default function ElectricityTradeRadial({days,money,importValue,exportVal
    <line x1={left} x2={right} y1={zero} y2={zero} stroke="var(--widget-muted)" strokeOpacity=".5"/>
    <text x="6" y={zero+4} className={styles.axis}>0</text>
    {net.map((value,i)=>{const step=(right-left)/days.length,x=left+(i+.5)*step,h=value===null?0:Math.abs(value)/max*amplitude;const label=days.length<=31?String(Number(days[i].date.slice(8))):new Intl.DateTimeFormat('de-DE',{month:'short',timeZone:'UTC'}).format(new Date(days[i].date+'T12:00:00Z'));const show=days.length<=7||(days.length<=31?i%5===0:days[i].date.endsWith('-01'));return <g key={days[i].date}>
-    {value!==null?<path data-trade-bar={i} d={(()=>{const l=x-step*.35,r=x+step*.35,tip=zero+(value>=0?-1:1)*Math.max(1,h),radius=Math.min(2,h/2,step*.15),dir=value>=0?-1:1;return `M${l},${zero} V${tip-dir*radius} Q${l},${tip} ${l+radius},${tip} H${r-radius} Q${r},${tip} ${r},${tip-dir*radius} V${zero} Z`;})()} fill={value>=0?'var(--trade-export-color,var(--widget-ink))':'var(--widget-accent)'} opacity={activeBar!==null&&activeBar!==i?.45:1}/>:<circle cx={x} cy={zero} r="2" fill="none" stroke="var(--widget-muted)"/>}
+    {value!==null?<path data-trade-bar={i} d={(()=>{const l=x-step*.35,r=x+step*.35,tip=zero+(value>=0?-1:1)*Math.max(1,h),radius=Math.min(2,h/2,step*.15),dir=value>=0?-1:1;return `M${l},${zero} V${tip-dir*radius} Q${l},${tip} ${l+radius},${tip} H${r-radius} Q${r},${tip} ${r},${tip-dir*radius} V${zero} Z`;})()} fill={TRADE_DIRECTION_COLORS[tradeBalanceDirection(value)]} opacity={activeBar!==null&&activeBar!==i?.45:1}/>:<circle cx={x} cy={zero} r="2" fill="none" stroke="var(--widget-muted)"/>}
     {!preview&&show&&<text x={x} y={bh-8} textAnchor="middle" className={styles.axis}>{label}</text>}
 
    </g>;})}
@@ -92,12 +95,18 @@ export default function ElectricityTradeRadial({days,money,importValue,exportVal
   </div>
   </div>
  </div>;
- return <div ref={rootRef} className={styles.root} data-summary-placement={placement} data-compact-center={compactCenter||undefined} data-separate-caption={separateCaption||undefined}>
+ return <div ref={rootRef} className={styles.root} data-allocated={allocated||undefined} data-summary-placement={placement} data-compact-center={compactCenter||undefined} data-separate-caption={separateCaption||undefined}>
   <div className={styles.radialPlot}>
   <svg viewBox="0 0 520 520" role="img" aria-label={`Kommerzieller Stromhandel: Tagessaldo Export minus Import: positiv nach außen, negativ nach innen, gleiche Skala. ${money?'Börsenwert in Euro.':'Strommenge.'}`}>
-   {[85,125,205,245].map(r=><circle key={r} cx="260" cy="260" r={r} fill="none" stroke="var(--widget-muted)" strokeOpacity=".12" strokeWidth="1"/>)}
-   <circle cx="260" cy="260" r="165" fill="none" stroke="var(--widget-muted)" strokeOpacity=".5" strokeWidth="1" vectorEffect="non-scaling-stroke" aria-label="Gemeinsame Nulllinie"/>
-   {net.map((value,i)=>value===null?null:<path key={days[i].date} d={`M${point(i,0).join(',')} L${point(i,value===0?max*.002:value).join(',')}`} fill="none" stroke={value>=0?'var(--trade-export-color,var(--widget-ink))':'var(--widget-accent)'} strokeWidth={Math.min(18,2*Math.PI*125/days.length*.72)} strokeLinecap="round"/>)}
+   {lineSegments.map((segment,i)=>{
+    const start=segment.points[0][0],end=segment.points[segment.points.length-1][0];
+    const curve=segment.points.map(([index,value],j)=>`${j?'L':'M'}${point(index,value).join(',')}`).join(' ');
+    return <path key={i} data-trade-area={segment.direction} d={`${curve} L${point(end,0).join(',')} A${zeroRadius},${zeroRadius} 0 ${end-start>days.length/2?1:0} 0 ${point(start,0).join(',')} Z`} fill={TRADE_DIRECTION_COLORS[segment.direction]} fillOpacity=".14"/>;
+   })}
+   {[-1,-.5,.5,1].map(f=>zeroRadius+f*radialAmplitude).map(r=><circle key={r} cx="260" cy="260" r={r} fill="none" stroke="var(--widget-muted)" strokeOpacity=".12" strokeWidth="1"/>)}
+   <circle cx="260" cy="260" r={zeroRadius} fill="none" stroke="var(--widget-muted)" strokeOpacity=".5" strokeWidth="1" vectorEffect="non-scaling-stroke" aria-label="Gemeinsame Nulllinie"/>
+   {preview?lineSegments.map((segment,i)=><path key={i} data-trade-line={segment.direction} d={segment.points.map(([index,value],j)=>`${j?'L':'M'}${point(index,value).join(',')}`).join(' ')} fill="none" stroke={TRADE_DIRECTION_COLORS[segment.direction]} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke"/>):net.map((value,i)=>value===null?null:<path key={days[i].date} d={`M${point(i,0).join(',')} L${point(i,value===0?max*.002:value).join(',')}`} fill="none" stroke={TRADE_DIRECTION_COLORS[tradeBalanceDirection(value)]} strokeWidth={Math.min(18,2*Math.PI*125/days.length*.72)} strokeLinecap="round"/>)}
+   {preview&&net.map((value,i)=>value!==null&&(i===0||net[i-1]===null)&&(i===net.length-1||net[i+1]===null)?<circle key={days[i].date} data-trade-observation={i} cx={point(i,value)[0]} cy={point(i,value)[1]} r="2" fill={TRADE_DIRECTION_COLORS[tradeBalanceDirection(value)]}/>:null)}
    {days.map((day,i)=>{const label=days.length<=31?String(Number(day.date.slice(8))):new Intl.DateTimeFormat('de-DE',{month:'short',timeZone:'UTC'}).format(new Date(day.date+'T12:00:00Z'));const show=days.length<=7|| (days.length<=31?i%5===0:day.date.endsWith('-01'));const p=point(i,max*1.08),hit=point(i,0);return <g key={day.date}>
     {!preview&&show&&<text x={p[0]} y={p[1]+4} textAnchor="middle" className={styles.axis}>{label}</text>}
     {day.expected>0&&(imports[i]===null||exports[i]===null)&&<circle cx={hit[0]} cy={hit[1]} r="2" fill="none" stroke="var(--widget-muted)"/>}

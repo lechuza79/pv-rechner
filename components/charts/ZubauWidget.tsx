@@ -1,5 +1,7 @@
 "use client";
 
+import {ChartExportMetadata} from "./ChartExportMetadata";
+
 /**
  * Geteiltes, einbettbares Widget der Zubau-Datenstory: der Zubau-Chart + die
  * interaktive Ereignis-Timeline (inkl. Erklär-Panels) + Aktionsleiste
@@ -196,7 +198,8 @@ export default function ZubauWidget({
           style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
         >
           <div style={S.title}>{WIDGET_TITLE}</div>
-          <div style={S.sub}>{WIDGET_SUBLINE}</div>
+          <div data-sc-export-ignore="" style={S.sub}>{WIDGET_SUBLINE}</div>
+          <ChartExportMetadata scope="Deutschland" dataAsOf={series.data_as_of} unit="GWp"/>
         </div>
 
         {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
