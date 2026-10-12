@@ -326,7 +326,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                   title={`Energiedaten für ${ort.name}`}
                   nachricht="municipal-data-layout"
                   vollbild
-                  durchreichen={["chart"]}
+                  durchreichen={["chart", "period", "autoplay"]}
                   startHoehe={1400}
                 />
               </div>

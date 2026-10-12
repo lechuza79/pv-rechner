@@ -66,7 +66,20 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
 export function MonitorMonthlySolarChart({data,datasets=[data],onPeriodChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;datasets?:SolarMonth[];onPeriodChange?:(month:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}){
  const presentation=useWidgetPresentation();
  const [month,setMonth]=useState(data.month);
+ const [linkPlayback,setLinkPlayback]=useState(false);
+ const linkApplied=useRef(false);
+ useEffect(()=>{
+  if(linkApplied.current)return;
+  linkApplied.current=true;
+  const query=new URLSearchParams(window.location.search);
+  if(!query.get('chart')?.startsWith('solar-check-radial-'))return;
+  const requested=datasets.find(item=>item.month===query.get('period'));
+  if(!requested)return;
+  setMonth(requested.month);
+  onPeriodChange?.(requested.month);
+  setLinkPlayback(query.get('autoplay')==='on');
+ },[datasets,onPeriodChange]);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={presentation.autoplay??autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={linkPlayback || (presentation.autoplay??autoPlay)} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
 }
 export default MonitorMonthlySolarChart;
