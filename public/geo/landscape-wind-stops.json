@@ -4872,5 +4872,103 @@
       "latitude": 51.28752,
       "longitude": 7.57832
     }
+  },
+  "05170004": {
+    "wind-1": {
+      "name": "Windanlagen bei Alpen",
+      "latitude": 51.60464,
+      "longitude": 6.46352
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Alpen",
+      "latitude": 51.57662,
+      "longitude": 6.55273
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Alpen",
+      "latitude": 51.60935,
+      "longitude": 6.4196
+    }
+  },
+  "05170008": {
+    "wind-1": {
+      "name": "Windanlagen bei Dinslaken",
+      "latitude": 51.59006,
+      "longitude": 6.7724
+    }
+  },
+  "05170016": {
+    "wind-1": {
+      "name": "Windanlagen bei Hünxe",
+      "latitude": 51.60837,
+      "longitude": 6.77688
+    }
+  },
+  "05170024": {
+    "wind-1": {
+      "name": "Windanlagen bei Moers",
+      "latitude": 51.51785,
+      "longitude": 6.59562
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Moers",
+      "latitude": 51.49291,
+      "longitude": 6.62109
+    }
+  },
+  "05170032": {
+    "wind-1": {
+      "name": "Windanlagen bei Rheinberg",
+      "latitude": 51.57007,
+      "longitude": 6.56427
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Rheinberg",
+      "latitude": 51.61662,
+      "longitude": 6.55583
+    }
+  },
+  "05170036": {
+    "wind-1": {
+      "name": "Windanlagen bei Schermbeck",
+      "latitude": 51.70229,
+      "longitude": 6.7683
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schermbeck",
+      "latitude": 51.67961,
+      "longitude": 6.9065
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Schermbeck",
+      "latitude": 51.65533,
+      "longitude": 6.89292
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Schermbeck",
+      "latitude": 51.6397,
+      "longitude": 6.8744
+    }
+  },
+  "05170040": {
+    "wind-1": {
+      "name": "Windanlagen bei Sonsbeck",
+      "latitude": 51.6227,
+      "longitude": 6.35815
+    }
+  },
+  "05170044": {
+    "wind-1": {
+      "name": "Windanlagen bei Voerde (Niederrhein)",
+      "latitude": 51.58387,
+      "longitude": 6.64333
+    }
+  },
+  "05170048": {
+    "wind-1": {
+      "name": "Windanlagen bei Wesel",
+      "latitude": 51.62806,
+      "longitude": 6.55195
+    }
   }
 }
