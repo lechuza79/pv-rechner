@@ -37,3 +37,12 @@ export function checkedNavigationEnergy(value: RegionNavigationEnergy | null | u
   if (!Number.isFinite(value.totalMwh) || value.totalMwh < 0 || value.values.some(v=>(!wanted.has(v.regionId)&&v.mwh!==0)||!Number.isFinite(v.mwh)||v.mwh<0)) return null;
   return Math.abs(value.values.reduce((sum,v)=>sum+v.mwh,0)-value.totalMwh) <= Math.max(1e-6,value.totalMwh*1e-9) ? value : null;
 }
+
+/** A subgroup uses only its own complete member totals from the same month. */
+export function subsetNavigationEnergy(value:RegionNavigationEnergy|null|undefined,ids:readonly string[]):RegionNavigationEnergy|null {
+ if(!value || new Set(ids).size!==ids.length || !checkedNavigationEnergy(value,value.values.map(row=>row.regionId)))return null;
+ const values=ids.map(id=>value.values.find(row=>row.regionId===id));
+ if(values.some(row=>!row||!Number.isFinite(row.mwh)||row.mwh<0))return null;
+ const selected=values as RegionNavigationEnergy['values'];
+ return checkedNavigationEnergy({month:value.month,totalMwh:selected.reduce((sum,row)=>sum+row.mwh,0),values:selected},[...ids]);
+}

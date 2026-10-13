@@ -1,3 +1,4 @@
+import {searchAssociations} from '../../../../lib/verband-directory';
 import {livePreviewResponse} from "../../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
@@ -14,7 +15,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const live = await livePreviewResponse(req);
-  if (live) return live;
+  if (live) {
+    // Preview data comes from production; include locally added directory entries.
+    if (!live.ok || req.nextUrl.searchParams.has('level')) return live;
+    const payload=await live.json();
+    const groups=searchAssociations(req.nextUrl.searchParams.get('q')??'').map(group=>({region_id:group.id,name:group.name,label:'Verbandsgemeinde',parent_region_id:group.districtId}));
+    const ids=new Set(groups.map(group=>group.region_id));
+    return NextResponse.json({...payload,hits:[...groups,...(payload.hits??[]).filter((hit:{region_id:string})=>!ids.has(hit.region_id))].slice(0,8)},{headers:live.headers});
+  }
   const limited = rateLimit(req, "atlas-search");
   if (limited) return limited;
 

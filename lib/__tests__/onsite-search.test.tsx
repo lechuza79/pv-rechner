@@ -1,8 +1,10 @@
-import {describe,expect,it} from 'vitest';
+import {describe,expect,it,vi} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {readFileSync} from 'node:fs';
 import OnsiteSearch from '../../components/OnsiteSearch';
 import RegionNavigation from '../../components/landkreis/RegionNavigation';
+
+vi.mock('next/navigation',()=>({useRouter:()=>({push:vi.fn()})}));
 
 describe('Shared onsite search and regional directory',()=>{
   it('renders an accessible local search without initial autofocus or visible suggestions',()=>{
@@ -19,6 +21,17 @@ describe('Shared onsite search and regional directory',()=>{
       expect(source).not.toContain('role="combobox"');
       expect(source).not.toContain('role="listbox"');
     }
+  });
+  it('renders association destinations beside municipalities with two shared search fields',()=>{
+    const html=renderToStaticMarkup(<RegionNavigation title="Gemeindeübersicht" locationPhrase="im Landkreis" parentName="Kreis" directoryPath="/solar-atlas/land/kreis"
+      places={[{id:'a',name:'Ort',href:'/ort'}]} groups={[{id:'g',name:'Verband',districtId:'k',members:['a']}]}
+      energy={{month:'2026-09',totalMwh:10,values:[{regionId:'a',mwh:10}]}}/>);
+    expect(html.match(/role="combobox"/g)).toHaveLength(2);
+    expect(html).not.toContain('<select');
+    expect(html).toContain('href="/solar-atlas/land/kreis/verbandsgemeinden/verband"');
+    expect(html).toContain('href="/ort"');
+    expect(html).toContain('Verbandsgemeinde</small>');
+    expect(html).not.toContain('200 %');
   });
   it.each([
     ['Gemeindeübersicht','im Landkreis Wittenberg','Gemeinde suchen'],

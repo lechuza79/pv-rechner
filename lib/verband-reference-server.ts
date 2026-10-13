@@ -1,5 +1,9 @@
 import 'server-only';
 import {cache} from 'react';
+import {isDistrictMember} from './district-package';
+import {districtAssociations,associationDirectory,associationDirectoryDate} from './verband-directory';
+import {associationSlug} from './verband-directory-path';
+import {subsetNavigationEnergy} from './region-navigation-energy';
 import {releasedAssociations,selectAssociationMembers,associationPath,type AssociationSlug} from './verband-reference';
 import {getRegionById,getChildren,getAncestors,atlasPathForRegionId,type AtlasRegion} from './atlas';
 import {getRankingDataForPage} from './atlas-ranking-server';
@@ -11,13 +15,15 @@ export const readAssociationReference=cache(async(slug:AssociationSlug='bad-brei
 });
 
 export async function associationBreadcrumb(ags:string,districtPath:string) {
-  const association=releasedAssociations().find(group=>group.members.includes(ags));
+  const group=associationDirectory.find(group=>group.members.includes(ags));
+  const association=group?{...group,name:`Verbandsgemeinde ${group.name}`,slug:associationSlug(group.name)}:null;
   return association?.members.includes(ags)?{name:association.name,href:associationPath(districtPath,association.slug)}:null;
 }
 
 /** Uses the shared published package; never reads member packages during rendering. */
-export const loadAssociationReference=cache(async(slug:AssociationSlug='bad-breisig')=>{
-  const association=await readAssociationReference(slug);
+export const loadAssociationReference=cache(async(slug:string='bad-breisig',districtId?:string)=>{
+  const group=districtId?districtAssociations(districtId).find(group=>associationSlug(group.name)===slug):null;
+  const association=group?{...group,name:`Verbandsgemeinde ${group.name}`,slug,asOf:associationDirectoryDate}:releasedAssociations().find(group=>group.slug===slug);
   if(!association)return null;
   const district=await getRegionById(association.districtId);
   if(!district || district.level!=='landkreis')throw new Error('Association district unavailable');
@@ -38,8 +44,15 @@ export const loadAssociationReference=cache(async(slug:AssociationSlug='bad-brei
     population_as_of:dates.size===1?towns[0].population_as_of:null,
     area_km2:towns.every(town=>town.area_km2!==null)?towns.reduce((sum,town)=>sum+town.area_km2!,0):null,
   };
-  const content:Promise<DistrictContent>=loadDistrictContent(association.id,association.members,stand);
+  const overviewOnly=!releasedAssociations().some(group=>group.id===association.id);
+  // The district package already contains all child totals. Do not fetch member packages.
+  const content:Promise<DistrictContent>=overviewOnly
+    ? loadDistrictContent(district.region_id,children.filter(child=>isDistrictMember(child,district.region_id)).map(child=>child.region_id),stand).then(parent=>({
+        ...parent,stories:[],monitor:{status:'unavailable' as const,reason:'not-prepared' as const,energy:null,sites:null},
+        childEnergy:subsetNavigationEnergy(parent.childEnergy,association.members),
+      }))
+    : loadDistrictContent(association.id,association.members,stand);
   void content.catch(()=>{});
-  return {association,region,district,towns,ranking:{regions,cells:ranking.cells.filter(row=>ids.has(row.region_id))},stand,ancestors,districtPath,
+  return {association,overviewOnly,region,district,towns,ranking:{regions,cells:ranking.cells.filter(row=>ids.has(row.region_id))},stand,ancestors,districtPath,
     basePath:associationPath(districtPath,association.slug),content};
 });
