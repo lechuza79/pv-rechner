@@ -2,6 +2,34 @@ import {test,expect} from '@playwright/test';
 
 const preview='/embed/galerie/gemeinde-ranking?ags=12063080&list=on&theme=light&autoplay=on';
 
+for (const width of [713,390]) test(`ranking list action remains visible while the next category loads at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:844});
+  // Hold the next category's real response so the loading state cannot escape the assertion.
+  let release!:()=>void;
+  const pending=new Promise<void>(resolve=>{release=resolve;});
+  await page.route('**/api/atlas/nachbarn?**',async route=>{
+    await pending;
+    await route.continue();
+  });
+  await page.goto(preview.replace('autoplay=on','autoplay=off'));
+  const list=page.locator('.ranking-footer .ranking-open');
+  const tiles=page.locator('.ranking-choice');
+  await expect(tiles.first()).not.toHaveClass(/ranking-undiscovered/);
+  await expect(list).toBeEnabled();
+  if(width>600) await page.getByRole('button',{name:'Nächste Platzierung entdecken',exact:true}).click();
+  else await tiles.first().click();
+  await expect(tiles.nth(1)).toHaveAttribute('aria-pressed','true');
+  try {
+    await expect(list).toBeVisible();
+    await expect(list).toBeDisabled();
+    await expect(list).toHaveText('Vollständige Rangliste ansehen');
+  } finally { release(); }
+  await expect(list).toBeEnabled({timeout:20_000});
+  await list.click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog')).toContainText('Solarleistung');
+});
+
 test('shared ranking preserves discovery, celebration and list position',async({page})=>{
   test.slow();
   await page.setViewportSize({width:1280,height:900});
