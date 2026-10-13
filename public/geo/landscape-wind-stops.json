@@ -4591,5 +4591,217 @@
       "latitude": 51.81684,
       "longitude": 8.90853
     }
+  },
+  "05154008": {
+    "wind-1": {
+      "name": "Windanlagen bei Emmerich am Rhein",
+      "latitude": 51.83807,
+      "longitude": 6.30661
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Emmerich am Rhein",
+      "latitude": 51.86243,
+      "longitude": 6.25412
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Emmerich am Rhein",
+      "latitude": 51.83853,
+      "longitude": 6.33141
+    }
+  },
+  "05154012": {
+    "wind-1": {
+      "name": "Windanlagen bei Geldern",
+      "latitude": 51.52292,
+      "longitude": 6.215
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Geldern",
+      "latitude": 51.56133,
+      "longitude": 6.37832
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Geldern",
+      "latitude": 51.48907,
+      "longitude": 6.39037
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Geldern",
+      "latitude": 51.48412,
+      "longitude": 6.26927
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Geldern",
+      "latitude": 51.56281,
+      "longitude": 6.41585
+    }
+  },
+  "05154020": {
+    "wind-1": {
+      "name": "Windanlagen bei Issum",
+      "latitude": 51.48039,
+      "longitude": 6.44744
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Issum",
+      "latitude": 51.49149,
+      "longitude": 6.40061
+    }
+  },
+  "05154024": {
+    "wind-1": {
+      "name": "Windanlagen bei Kalkar",
+      "latitude": 51.72897,
+      "longitude": 6.37866
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kalkar",
+      "latitude": 51.74493,
+      "longitude": 6.32022
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kalkar",
+      "latitude": 51.76889,
+      "longitude": 6.27186
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Kalkar",
+      "latitude": 51.71763,
+      "longitude": 6.28275
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Kalkar",
+      "latitude": 51.75451,
+      "longitude": 6.34159
+    }
+  },
+  "05154028": {
+    "wind-1": {
+      "name": "Windanlagen bei Kerken",
+      "latitude": 51.46095,
+      "longitude": 6.40565
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kerken",
+      "latitude": 51.47551,
+      "longitude": 6.36565
+    }
+  },
+  "05154032": {
+    "wind-1": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.55953,
+      "longitude": 6.16625
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.58209,
+      "longitude": 6.20241
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.55166,
+      "longitude": 6.2598
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.55011,
+      "longitude": 6.22641
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.57172,
+      "longitude": 6.19115
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Kevelaer",
+      "latitude": 51.57607,
+      "longitude": 6.33423
+    }
+  },
+  "05154040": {
+    "wind-1": {
+      "name": "Windanlagen bei Kranenburg",
+      "latitude": 51.76544,
+      "longitude": 6.02723
+    }
+  },
+  "05154048": {
+    "wind-1": {
+      "name": "Windanlagen bei Rheurdt",
+      "latitude": 51.46376,
+      "longitude": 6.43782
+    }
+  },
+  "05154052": {
+    "wind-1": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.39882,
+      "longitude": 6.26421
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.47092,
+      "longitude": 6.26784
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.41801,
+      "longitude": 6.28671
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.48039,
+      "longitude": 6.3076
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.37815,
+      "longitude": 6.2307
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Straelen",
+      "latitude": 51.46728,
+      "longitude": 6.23095
+    }
+  },
+  "05154060": {
+    "wind-1": {
+      "name": "Windanlagen bei Wachtendonk",
+      "latitude": 51.39257,
+      "longitude": 6.37082
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Wachtendonk",
+      "latitude": 51.42684,
+      "longitude": 6.33247
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Wachtendonk",
+      "latitude": 51.41299,
+      "longitude": 6.29257
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Wachtendonk",
+      "latitude": 51.40837,
+      "longitude": 6.3146
+    }
+  },
+  "05154064": {
+    "wind-1": {
+      "name": "Windanlagen bei Weeze",
+      "latitude": 51.66013,
+      "longitude": 6.20484
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Weeze",
+      "latitude": 51.62632,
+      "longitude": 6.14095
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Weeze",
+      "latitude": 51.56824,
+      "longitude": 6.17574
+    }
   }
 }
