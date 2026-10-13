@@ -7,18 +7,34 @@ import {ExportOnly, ExportIgnore} from '../WidgetExport';
 import {WIDGETS} from '../../lib/widget-registry';
 import {fitPodiumPlot} from '../../lib/widget-plot-fit';
 import styles from './GemeindeRankingWidget.module.css';
+import Modal from '../Modal';
+import ContentTable from '../ContentTable';
+import ActionButton from '../ActionButton';
+import {chartDataDate} from '../../lib/chart-labels';
 import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 
 export type RankingPodiumData = {
   place: string; category: string; title: string; unit: string; scope: string; stand: string;
-  rows: {id: string; name: string; rank: number; value: number; formatted: string; href?: string; own: boolean}[];
+  rows: {id: string; name: string; rank: number; value: number; formatted: string; listFormatted?:string; change?:number|null; href?: string; own: boolean}[];
+  listUnit?:string; listTotal?:number;
   headingVariants?: {title: string; unit: string}[];
   shareParams?: Record<string, string>;
   missing?: string | null; animate?: boolean; onReveal?: () => void;
 };
 
-/** Pure visual: selection and rank calculations stay with the data adapter. */
+/** Standalone podium: no list, identical in existing story and municipality hosts. */
 export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
+  return <RankingWidget data={data}/>;
+}
+
+/** Podium with a full-table action; the complete category composition owns selection. */
+export function RankingPodiumWithList({data, listHost}: {data: RankingPodiumData; listHost?: HTMLElement | null}) {
+  return <RankingWidget data={data} showList listHost={listHost}/>;
+}
+
+/** Selection and rank calculations stay with the data adapter. */
+function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumData; showList?: boolean; listHost?: HTMLElement | null}) {
+  const [listOpen, setListOpen] = useState(false);
   const presentation = useWidgetPresentation();
   const animate=presentation.autoplay??data.animate;
   const allocated = presentation.layout === 'allocated';
@@ -142,7 +158,7 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
     const tick=(now:number)=>{if(reduced.matches){finish();return;}const time=now-start;setElapsed(time);if(time<duration)frame=requestAnimationFrame(tick);else data.onReveal?.();};
     reduced.addEventListener('change',stop);
     frame=requestAnimationFrame(tick);return()=>{cancelAnimationFrame(frame);reduced.removeEventListener('change',stop)};
-  },[data.category,data.scope,animate]);
+  },[data.category,data.scope,data.missing,animate]);
   const displayValue=(row:RankingPodiumData['rows'][number])=>{
     const final=data.unit === "Anlagen / 1.000 Einwohner" ? row.value.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}) : row.formatted;
     const progress=Math.min(1,Math.max(0,(elapsed-growthOrder.indexOf(row)*850)/850));
@@ -151,7 +167,7 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
     return {final,live:progress===1?final:(numeric*(1-Math.pow(1-progress,3))).toLocaleString("de-DE",{minimumFractionDigits:decimals,maximumFractionDigits:decimals})};
   };
   const max = Math.max(0, ...rows.map(row => row.value));
-  return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={data.shareParams}
+  return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={{...data.shareParams,...(showList ? {list:'on'} : {})}}
     stand={data.stand} exportScope={data.scope} exportUnit={data.unit} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
     imageFormats={[{label:"Querformat · 16:9",width:960,height:540},{label:"Quadrat · 1:1",width:720,height:720},{label:"Hochformat · 4:5",width:720,height:900}]}
     title={heading} eyebrow="Die Top 3" subtitle={subtitle} help={/speicherquote/i.test(data.category) ? 'Angemeldete private Batteriespeicher je 100 private Dachanlagen. Die Bestände werden getrennt gezählt; dies ist nicht der Anteil der Dächer mit Speicher. Werte über 100 sind möglich.' : /je Einwohner/i.test(data.title) ? 'Installierter Bestand geteilt durch die Einwohnerzahl der angezeigten Vergleichsgruppe. Leistung und Speicherkapazität sind keine Messung der Stromerzeugung.' : 'In Betrieb gemeldete Anlagen laut Marktstammdatenregister. Verglichen wird die angezeigte Kategorie innerhalb der gewählten Vergleichsgruppe.'} helpExportNote={false} exportNote={null} className={styles.widget} data-story-scheme="light">
@@ -168,6 +184,19 @@ export function RankingPodiumWidget({data}: {data: RankingPodiumData}) {
           </div>)}
         </div>}
     </div>
+    {showList && !data.missing && data.rows.length > 0 && <ExportIgnore>
+      {listHost === undefined ? <div className={styles.listAction}><ActionButton onClick={() => setListOpen(true)}>Alle {data.rows.length} Orte in dieser Kategorie ansehen</ActionButton></div> : listHost && createPortal(
+        <button type="button" className="ranking-open" onClick={() => setListOpen(true)}>{(data.listTotal??data.rows.length)>data.rows.length?'Rangliste ansehen · Top 100 und eigene Position':`Alle ${data.rows.length} Orte in dieser Rangliste ansehen`}</button>, listHost)}
+      <Modal open={listOpen} onClose={() => setListOpen(false)} title={heading} intro={`${data.scope} · ${data.rows.length} Orte · Stand ${chartDataDate(data.stand)}`}>
+        <ContentTable caption={`${heading} in ${data.scope}`} showCaption={false} compact>
+          <thead><tr><th scope="col">Platz</th><th scope="col">Ort</th><th scope="col">{data.listUnit??data.unit}</th>{listHost !== undefined && <th scope="col">Änderung</th>}</tr></thead>
+          <tbody>{data.rows.map(row => <tr key={row.id} className={row.own ? styles.ownRow : undefined} aria-current={row.own ? 'location' : undefined}>
+            <td>{row.rank}</td><th scope="row" className={styles.placeCell}>{row.href ? <a href={row.href}>{row.name}</a> : row.name}{row.own && <span className={styles.ownLabel}>Eigener Ort</span>}</th><td>{row.listFormatted??row.formatted}</td>{listHost !== undefined && <td aria-label={row.change?`${Math.abs(row.change)} Plätze ${row.change>0?'gestiegen':'gefallen'}`:undefined}>{row.change?`${row.change>0?'+':'−'}${Math.abs(row.change)}`:'–'}</td>}
+          </tr>)}</tbody>
+        </ContentTable>
+        <p className={styles.listSource}>Quelle: <a href="https://www.marktstammdatenregister.de/">Marktstammdatenregister</a>. Gleiche Werte erhalten denselben Rang.</p>
+      </Modal>
+    </ExportIgnore>}
   </ExportableWidgetFrame>;
 }
 
@@ -197,3 +226,5 @@ export default function GemeindeRankingWidget() {
   }, []);
   return selection ? createPortal(<RankingPodiumWidget key={`${selection.category}-${selection.scope}-${selection.missing ?? "ready"}`} data={selection}/>, selection.host) : null;
 }
+
+export {default as RankingWidgetCombination} from "./RankingWidgetCombination";

@@ -63,3 +63,12 @@
 
 /* Keep values clear of the overlapping badge, even for very short own bars. */
 .contender[data-own=true] .label{margin-bottom:max(12px,calc(60px - var(--bar-fraction) * var(--ranking-plot-height,160px)))}
+
+/* The optional list action leaves the existing podium and image exports intact. */
+.widget :global(.sc-widget-body){flex-direction:column;}
+.listAction{padding-top:16px;}
+.listAction button{white-space:normal;text-align:center;width:100%;}
+.ownRow{background:color-mix(in srgb,var(--color-cta,#d4ff24) 16%,transparent);}
+.placeCell.placeCell{text-align:left;white-space:normal;overflow-wrap:anywhere;}
+.ownLabel{display:block;font-size:12px;font-weight:400;}
+.listSource{font-size:13px;line-height:1.5;color:var(--color-text-secondary);}

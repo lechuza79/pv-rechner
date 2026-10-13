@@ -1,0 +1,25 @@
+.root{container:ranking-combination / inline-size;--color-cta:#d4ff24;--ranking-selected-surface:#e0e9e1;--ranking-display:var(--atlas-display);--atlas-ink:var(--atlas-text);--atlas-muted:var(--atlas-secondary);--atlas-line:var(--atlas-border);width:100%;min-width:0;background:var(--atlas-surface,#edf0ec);}
+.composition.composition{align-items:stretch;}
+.panel.panel{position:relative;}
+.choices.choices{position:absolute;top:30px;bottom:72px;left:0;right:0;padding-inline:4px;}
+.panel :global(.ranking-navigation){margin-top:auto;}
+.root :global(.ranking-choice-rank){font-family:var(--atlas-display);}
+.root :global(.atlas-kicker){text-transform:uppercase;letter-spacing:.08em;color:var(--atlas-secondary);}
+.root :global(.ranking-choice-caption){font-weight:700;}
+.root :global(.ranking-choice:focus-visible),.root :global(.ranking-navigation button:focus-visible){outline:2px solid currentColor;outline-offset:-2px;}
+@media(prefers-reduced-motion:reduce){.root :global(.ranking-choice:hover .ranking-choice-arrow){animation:none;}}
+@container ranking-combination (min-width:601px) and (max-width:900px){
+ .composition.composition{gap:18px;}
+ .root :global(.ranking-choice){grid-template-columns:64px minmax(0,1fr) 18px;gap:8px;padding-inline:4px;}
+ .root :global(.ranking-choice-position),.root :global(.ranking-list-badge){width:64px;height:64px;}
+ .root :global(.ranking-choice-title){font-size:14px;}
+}
+@container ranking-combination (max-width:600px){
+ .composition.composition{grid-template-columns:minmax(0,1fr);gap:22px;}
+ .panel.panel{height:auto;}
+ .choices.choices{position:relative;inset:auto;flex:none;flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:4px;scrollbar-width:none;scrollbar-gutter:auto;}
+ .choices :global(.ranking-choice){flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;}
+ .panel :global(.ranking-navigation){display:none;}
+}
+
+:global([data-widget-palette][data-story-scheme=dark]) > .root{--ranking-selected-surface:color-mix(in srgb,var(--atlas-text) 8%,var(--atlas-card));}

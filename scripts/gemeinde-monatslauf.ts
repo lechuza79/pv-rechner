@@ -143,6 +143,7 @@ async function main() {
     befehl("Pakete aller Orte", "npx", ["tsx", "--conditions=react-server", "scripts/gemeinde-paket.ts", "--alle", `--stand=${exp.datum}`, `--monat=${wetterMonat}`, "--neu"]);
   if (schritt("upload")) befehl("Pakete hochladen", "npx", ["tsx", "scripts/gemeinde-paket-upload.ts", `--stand=${exp.datum}`]);
   // Invalidation follows in "frisch" (full Atlas scope), so none here.
+  if (schritt("kreise")) befehl("Kreis-Platzierungen vorbereiten", "npx", ["tsx", "--conditions=react-server", "scripts/kreis-ranking-snapshot.ts", "--publish"]);
   if (schritt("kreise")) befehl("Kreispakete aller Landkreise", "npm", ["run", "kreise:pakete", "--", "--alle", "--ohne-invalidierung"]);
   if (schritt("frisch")) {
     // The same call the CI's MaStR import makes after its run.

@@ -369,7 +369,7 @@ export const WIDGETS = {
   // hier steht die Gattung, damit Galerie und Übersicht etwas Sinnvolles zeigen.
   gemeindeRanking: {
     id: "gemeinde-ranking", title: "Top 3 im Ortsvergleich", kind: "chart",
-    configuration: {presentations:{full:widgetVariant('ranked-bars',{label:'Vollständig',gridSizes:['portrait'],params:{},minWidth:320,preferredWidth:360,maxWidth:720,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:490,includes:['Title','Place','Three ranks','Values','Help and export'],omits:[]})},themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, data: "Anlagenzahl; drei führende Gemeinden im Landkreis", period: "Aktueller Registerstand"},
+    configuration: {presentations:{full:widgetVariant('ranked-bars',{label:'Vollständig',gridSizes:['portrait'],params:{},minWidth:320,preferredWidth:360,maxWidth:720,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:490,includes:['Title','Place','Three ranks','Values','Help and export'],omits:[]})},themes: ["light", "dark", "hero"], background: true, sharing: true, autoplay: true, dataSettings:[{key:'list',label:'Rangliste',defaultValue:'off',options:[{value:'off',label:'Nur Podest'},{value:'on',label:'Podest und Platzierungen'}]}], data: "Podest; optional mit Kategorieauswahl und Platzierungen", period: "Aktueller Registerstand"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Die Top 3 im Solar-Ranking – Solar Check",
     sources: [DATA_SOURCES.mastr, DATA_SOURCES.destatis],
     cta: { label: "Orte vergleichen", href: "/solar-atlas" },

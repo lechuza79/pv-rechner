@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {energieMwhTeile,anteilProzentTeile} from '../../lib/atlas-format';
 import {CompositionArc} from '../charts/CompositionArc';
 import OnsiteSearch from '../OnsiteSearch';
+import ActionButton from '../ActionButton';
 import {IconArrowRight,IconArrowLeft} from '../Icons';
 import type {RegionNavigationEnergy} from '../../lib/region-navigation-energy';
 import {checkedNavigationEnergy} from '../../lib/region-navigation-energy';
@@ -16,8 +17,9 @@ type Outline = {id:string;path:string;viewBox:string};
 const fold = (s:string) => s.toLocaleLowerCase('de').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/g,'ss');
 
 /** Direct geographic children, alphabetical and searchable; never a second ranking. */
-export default function RegionNavigation({places,title,parentName,locationPhrase,energy,outlines=[]}:{outlines?:Outline[];places:Place[];title:string;parentName:string;locationPhrase:string;energy?:RegionNavigationEnergy|null}) {
+export default function RegionNavigation({places,title,parentName,locationPhrase,energy,outlines=[],collapseDesktop=false}:{collapseDesktop?:boolean;outlines?:Outline[];places:Place[];title:string;parentName:string;locationPhrase:string;energy?:RegionNavigationEnergy|null}) {
   const [query,setQuery]=useState('');
+  const [expanded,setExpanded]=useState(false);
   const gridRef=useRef<HTMLUListElement>(null);
   useEffect(()=>{
     const grid=gridRef.current;
@@ -90,7 +92,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
   const searchItems=useMemo(()=>sorted.map(p=>({id:p.id,label:p.name})),[sorted]);
   const shown=sorted.filter(p=>fold(p.name).includes(fold(query.trim())));
   const month=data?new Intl.DateTimeFormat('de-DE',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(`${data.month}-01T12:00:00Z`)):null;
-  return <section id="atlas-places" className={`${shared.section} ${styles.overview}`} aria-label={title}>
+  return <section id="atlas-places" className={`${shared.section} ${styles.overview}`} data-desktop-collapse={collapseDesktop && !query.trim() || undefined} data-expanded={expanded} aria-label={title}>
     <div className={`${shared.sectionHeading} ${styles.heading}`}><div><h2>Energiedaten {locationPhrase}</h2>
       <p>{data?<>Modellierte Erzeugung im {month}. Entdecke Solaranlagen, Stromerzeugung und Ausbau {title==="Gemeindeübersicht"?"in deiner Gemeinde":title==="Kreisübersicht"?"in den Kreisen und kreisfreien Städten":"in deinem Bundesland"}.</>:<>Entdecke die Regionen im Detail. Die gemeinsame Monatsauswertung ist derzeit nicht verfügbar.</>}</p>
     </div>
@@ -125,6 +127,7 @@ export default function RegionNavigation({places,title,parentName,locationPhrase
       <button type="button" aria-label="Weitere Gebiete" aria-controls={resultsId} disabled={!bounds.next} onClick={()=>scrollPlaces(1)}><IconArrowRight size={24}/></button>
     </nav>}
     </div>
+    {collapseDesktop && !query.trim() && <div className={styles.expandControl}><ActionButton aria-expanded={expanded} aria-controls={resultsId} onClick={()=>setExpanded(value=>!value)}>{expanded?"Weniger anzeigen":"Alle anzeigen"}</ActionButton></div>}
     {!shown.length&&<p>Kein Gebiet gefunden. <button type="button" onClick={()=>setQuery('')}>Suche zurücksetzen</button></p>}
   </section>;
 }

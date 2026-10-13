@@ -12,7 +12,7 @@ import { anzeigeOrtsname, istStadtstaat, ortPraeposition } from "../../lib/atlas
 
 /** Unit labels of the ranking stage, as the approved prototype writes them
  *  (scripts/municipality-preview/rank-overview.ts, unitFor). */
-const EINHEIT: Record<string, string> = {
+export const RANKING_UNITS: Record<string, string> = {
   wattProKopf: "Wp / Einwohner",
   countPer1000: "Anlagen / 1.000 Einwohner",
   je100Dach: "je 100 Dächer",
@@ -112,7 +112,7 @@ export function ranglistenDaten(
     },
     discoveries: paket.rankings.map((r) => ({
       ...r,
-      unit: EINHEIT[r.format] ?? "",
+      unit: RANKING_UNITS[r.format] ?? "",
       // "im Landkreis Görlitz", "in der Region Hannover", "in Sachsen" — die
       // Regel steht in lib/atlas-orte.ts und kann im Browser-Skript nicht
       // importiert werden; dort stand deshalb hart "in " vor jedem Gebiet.
