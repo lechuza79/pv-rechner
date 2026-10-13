@@ -183,6 +183,10 @@ export const ROLLEN_WORTE = [
   "og",
   "mail",
   "email",
+  // Hildesheim publishes anfrage@stadt-hildesheim.de in its imprint as the
+  // office's contact; the send check took it for a surname and aborted the
+  // whole scheduled enquiry run (3 red runs on 12.10.2026).
+  "anfrage",
 ];
 
 /**

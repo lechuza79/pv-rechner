@@ -332,3 +332,10 @@ describe("platzhalterLoecher", () => {
     expect(platzhalterLoecher(brief, "Kempen bei Balkonkraftwerken unter den besten 5 % bundesweit")).toEqual([]);
   });
 });
+
+describe("anfrage@ is a function mailbox", () => {
+  it("accepts the city's published contact, still rejects a surname", () => {
+    expect(postfachBefund("anfrage@stadt-hildesheim.de", "Hildesheim").ok).toBe(true);
+    expect(postfachBefund("mueller@stadt-hildesheim.de", "Hildesheim").ok).toBe(false);
+  });
+});
