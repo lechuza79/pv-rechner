@@ -89,3 +89,24 @@ label their top-100 limit rather than claiming they contain every municipality.
 Browser checks: light and dark compositions, 390px mobile without page overflow,
 category changes, full-list modal with the own row, selection across responsive
 breakpoints, and the independent Meinersen podium. Local preview only; no release.
+
+### Discovery behavior parity (13 October 2026)
+
+The interaction reference is `public/gemeinde/rangliste.js`, not the older
+prototype controller. The shared combination preserves these contracts:
+
+- First discovery runs the original bar/count-up and badge reveal; revisiting a
+  discovered category shows its final values immediately, including autoplay hosts.
+- Next completes a running reveal before advancing on the following click.
+- Desktop selection scrolls only enough to remain visible, never to the top on
+  every selection. Mobile keeps the original horizontal snap behavior.
+- A first discovery of the current place in the top three invokes the original
+  confetti engine. Hosts share one listener; ranking-only embeds do not poll for
+  an absent municipality hero. Reduced motion suppresses the particles.
+- The original purple invitation appears on the next undiscovered visible tile
+  after discovery and dismisses on interaction. The complete-list invitation is
+  retained for own placements outside the podium.
+
+Number animation updates are isolated from the frame, controls and full table;
+this preserves timing and visuals without rerendering the whole widget on each
+animation frame. The standalone podium retains its presentation and export.

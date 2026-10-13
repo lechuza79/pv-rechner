@@ -1,3 +1,4 @@
+import {WidgetPresentationProvider} from '../../components/dashboard/WidgetPresentationContext';
 import {describe,it,expect} from 'vitest';
 import {municipalRankingCombination} from '../widget-ranking-combination';
 import type {GemeindePaket} from '../gemeinde-paket';
@@ -27,9 +28,15 @@ describe('Standalone podium and ranking combination',()=>{
   const other={...data,category:'power',title:'Solarleistung je Einwohner',unit:'Wp / Einwohner'};
   const html=renderToStaticMarkup(<RankingWidgetCombination categories={[{data},{data:other}]} initialCategory="power" label="Deltas Platzierungen"/>);
   expect(html).toContain('Optionen für Solarleistung');
-  expect(html.match(/class="ranking-choice"/g)).toHaveLength(2);
+  expect(html.match(/class="ranking-choice ranking-undiscovered"/g)).toHaveLength(2);
   expect(html.match(/aria-pressed="true"/g)).toHaveLength(1);
   expect(html).toContain('Vorherige Platzierung');
+ });
+ it('does not replay a discovered category even when the host enables autoplay',()=>{
+  const render=(revealed:boolean)=>renderToStaticMarkup(<WidgetPresentationProvider appearance={{autoplay:true}}><RankingPodiumWithList data={{...data,revealed}}/></WidgetPresentationProvider>);
+  expect(render(false)).toContain('data-animate="true"');
+  expect(render(true)).not.toContain('data-animate');
+  expect(render(true)).toContain('40');
  });
  it('does not offer an empty or unavailable ranking list',()=>{
   for(const missing of [{...data,rows:[]},{...data,missing:'No comparable data'}]){
