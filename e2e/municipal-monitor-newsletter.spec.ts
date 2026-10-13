@@ -8,6 +8,17 @@ for (const width of [1440, 390]) {
   test(`municipal newsletter chart and monitor fit at ${width}px`, async ({page}) => {
     test.setTimeout(120_000);
     await page.setViewportSize({width, height:900});
+    // These cases exercise the SVG monitor and its host dialog. Software WebGL
+    // rendering of the unrelated hero starves the two CI browser workers (even
+    // a DOM assertion takes 7-20 seconds). Use the supported no-WebGL fallback;
+    // the complete page with its 3D hero is checked in the live browser release.
+    await page.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function(this:HTMLCanvasElement, type:string, ...rest:unknown[]) {
+        if (/webgl/i.test(type)) return null;
+        return (original as (...args:unknown[]) => unknown).call(this, type, ...rest);
+      } as typeof original;
+    });
     await page.goto(`${pagePath}?${query}`, {waitUntil:'domcontentloaded'});
     const frame = page.frameLocator('iframe[title="Energiedaten für Meinersen"]');
     const dialog = frame.getByRole('dialog', {name:'Solarerzeugung im Tagesverlauf in Meinersen', exact:true});
