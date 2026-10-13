@@ -161,6 +161,7 @@ function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumD
   const displayValue=(row:RankingPodiumData['rows'][number])=>data.unit === "Anlagen / 1.000 Einwohner"
     ? row.value.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}) : row.formatted;
   const max = Math.max(0, ...rows.map(row => row.value));
+  const listReady = !data.missing && data.rows.length > 0;
   return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={{...data.shareParams,...(showList ? {list:'on'} : {})}}
     stand={data.stand} exportScope={data.scope} exportUnit={data.unit} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
     imageFormats={[{label:"Querformat · 16:9",width:960,height:540},{label:"Quadrat · 1:1",width:720,height:720},{label:"Hochformat · 4:5",width:720,height:900}]}
@@ -178,9 +179,9 @@ function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumD
           </div>)}
         </div>}
     </div>
-    {showList && !data.missing && data.rows.length > 0 && <ExportIgnore>
+    {showList && (listReady || listHost !== undefined) && <ExportIgnore>
       {listHost === undefined ? <div className={styles.listAction}><ActionButton onClick={() => setListOpen(true)}>Alle {data.rows.length} Orte in dieser Kategorie ansehen</ActionButton></div> : listHost && createPortal(
-        <button type="button" className="ranking-open" onClick={() => setListOpen(true)}>{(data.listTotal??data.rows.length)>data.rows.length?'Rangliste ansehen · Top 100 und eigene Position':`Alle ${data.rows.length} Orte in dieser Rangliste ansehen`}</button>, listHost)}
+        <button type="button" className="ranking-open" disabled={!listReady} onClick={() => setListOpen(true)}>{!listReady?'Vollständige Rangliste ansehen':(data.listTotal??data.rows.length)>data.rows.length?'Rangliste ansehen · Top 100 und eigene Position':`Alle ${data.rows.length} Orte in dieser Rangliste ansehen`}</button>, listHost)}
       <Modal open={listOpen} onClose={() => setListOpen(false)} title={heading} intro={`${data.scope} · ${data.rows.length} Orte · Stand ${chartDataDate(data.stand)}`}>
         <ContentTable caption={`${heading} in ${data.scope}`} showCaption={false} compact>
           <thead><tr><th scope="col">Platz</th><th scope="col">Ort</th><th scope="col">{data.listUnit??data.unit}</th>{listHost !== undefined && <th scope="col">Änderung</th>}</tr></thead>
