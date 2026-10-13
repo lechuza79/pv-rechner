@@ -5351,5 +5351,240 @@
       "latitude": 51.37799,
       "longitude": 7.93351
     }
+  },
+  "05974008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Sassendorf",
+      "latitude": 51.58448,
+      "longitude": 8.14254
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bad Sassendorf",
+      "latitude": 51.5331,
+      "longitude": 8.1755
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bad Sassendorf",
+      "latitude": 51.57484,
+      "longitude": 8.20168
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Bad Sassendorf",
+      "latitude": 51.6138,
+      "longitude": 8.20933
+    }
+  },
+  "05974012": {
+    "wind-1": {
+      "name": "Windanlagen bei Ense",
+      "latitude": 51.5069,
+      "longitude": 8.01199
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ense",
+      "latitude": 51.51266,
+      "longitude": 7.9396
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Ense",
+      "latitude": 51.49235,
+      "longitude": 7.94587
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Ense",
+      "latitude": 51.53323,
+      "longitude": 7.99731
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Ense",
+      "latitude": 51.50344,
+      "longitude": 7.9767
+    }
+  },
+  "05974016": {
+    "wind-1": {
+      "name": "Windanlagen bei Erwitte",
+      "latitude": 51.59498,
+      "longitude": 8.31925
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Erwitte",
+      "latitude": 51.61472,
+      "longitude": 8.27883
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Erwitte",
+      "latitude": 51.61089,
+      "longitude": 8.20946
+    }
+  },
+  "05974024": {
+    "wind-1": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.69197,
+      "longitude": 8.18
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.70621,
+      "longitude": 8.08571
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.71165,
+      "longitude": 8.11408
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.69322,
+      "longitude": 8.01561
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.67502,
+      "longitude": 8.1754
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Lippetal",
+      "latitude": 51.64338,
+      "longitude": 8.15053
+    }
+  },
+  "05974032": {
+    "wind-1": {
+      "name": "Windanlagen bei Möhnesee",
+      "latitude": 51.5134,
+      "longitude": 8.19061
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Möhnesee",
+      "latitude": 51.51053,
+      "longitude": 8.03263
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Möhnesee",
+      "latitude": 51.52149,
+      "longitude": 8.07468
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Möhnesee",
+      "latitude": 51.50394,
+      "longitude": 8.09025
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Möhnesee",
+      "latitude": 51.46793,
+      "longitude": 8.10027
+    }
+  },
+  "05974036": {
+    "wind-1": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.51151,
+      "longitude": 8.36614
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.53728,
+      "longitude": 8.47398
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.51753,
+      "longitude": 8.43741
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.493,
+      "longitude": 8.38839
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.49194,
+      "longitude": 8.47129
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.47494,
+      "longitude": 8.51309
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.54628,
+      "longitude": 8.43114
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.52592,
+      "longitude": 8.38878
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Rüthen",
+      "latitude": 51.51347,
+      "longitude": 8.41383
+    }
+  },
+  "05974040": {
+    "wind-1": {
+      "name": "Windanlagen bei Soest",
+      "latitude": 51.53334,
+      "longitude": 8.1507
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Soest",
+      "latitude": 51.56775,
+      "longitude": 8.14996
+    }
+  },
+  "05974048": {
+    "wind-1": {
+      "name": "Windanlagen bei Welver",
+      "latitude": 51.57133,
+      "longitude": 8.0005
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Welver",
+      "latitude": 51.59971,
+      "longitude": 7.9482
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Welver",
+      "latitude": 51.58854,
+      "longitude": 7.9781
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Welver",
+      "latitude": 51.65402,
+      "longitude": 7.97934
+    }
+  },
+  "05974052": {
+    "wind-1": {
+      "name": "Windanlagen bei Werl",
+      "latitude": 51.56872,
+      "longitude": 7.84744
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Werl",
+      "latitude": 51.53853,
+      "longitude": 7.9767
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Werl",
+      "latitude": 51.53637,
+      "longitude": 7.8639
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Werl",
+      "latitude": 51.57409,
+      "longitude": 7.97665
+    }
+  },
+  "05974056": {
+    "wind-1": {
+      "name": "Windanlagen bei Wickede (Ruhr)",
+      "latitude": 51.51359,
+      "longitude": 7.85512
+    }
   }
 }
