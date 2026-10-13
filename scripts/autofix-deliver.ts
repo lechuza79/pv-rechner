@@ -67,11 +67,18 @@ function main() {
         // remote refused (protection rule, stale ref, permission) is in stderr.
         const grund = String((e as { stderr?: unknown }).stderr ?? "").replace(/x-access-token:[^@]*@/g, "").trim().split("\n").filter(Boolean).slice(-3).join(" | ");
         if (runde === MAX_RUNDEN) return ende(`abgelehnt=main nahm ${sha.slice(0, 7)} nicht an: ${grund || String(e).split("\n")[0]}`);
-        continue; // main moved between check and push: set up again
+        // main moved between check and push: fall through and set up again.
+        // A bare `continue` retried the same commit: its gate check is already
+        // green, so all rounds pushed the same stale commit within seconds and
+        // were refused (12./13.10.2026, both times while main moved every ~10 min).
+        git("fetch", "-q", "origin", "main");
+        schritt = "neu_aufsetzen";
       }
-      try { git("push", "-q", "origin", "--delete", zweig); } catch { /* the branch is only a vehicle */ }
-      try { gh("workflow", "run", "health-check.yml", "--ref", "main"); } catch { /* next scheduled check measures anyway */ }
-      return ende(`geliefert=${sha}`);
+      if (schritt === "uebernehmen") {
+        try { git("push", "-q", "origin", "--delete", zweig); } catch { /* the branch is only a vehicle */ }
+        try { gh("workflow", "run", "health-check.yml", "--ref", "main"); } catch { /* next scheduled check measures anyway */ }
+        return ende(`geliefert=${sha}`);
+      }
     }
     // main moved on: put the fix on top and run the gate again.
     try {
