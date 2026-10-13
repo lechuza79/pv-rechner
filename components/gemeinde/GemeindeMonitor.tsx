@@ -270,10 +270,11 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
   const items = (charts?.charts ?? []).filter((item: Any) => item.template !== "verlauf" && (!single || !["anteilsdonut", "anlagenraster"].includes(single) || item.template === single));
-  const widgets = (section: string) => {
-    const selected = items.filter((item: Any) => item.section === section);
-    return selected.length ? selected.map((item: Any) => <MonitorWidget key={item.story.id} item={item} paket={paket} />) : null;
-  };
+  const stock = items.filter((item: Any) => item.section === "Anlagenbestand").map((item: Any) => ({
+    id: item.story.id,
+    widgetId: item.template === "anteilsdonut" ? WIDGETS.regionalComposition.id : WIDGETS.gemeindeAnlagenraster.id,
+    content: <MonitorWidget item={item} paket={paket} />,
+  }));
   const energy: MonitorEnergyWidgets = Object.fromEntries(items.filter((item: Any) => item.section === "Strom und Wert").map((item: Any) => [item.template, <MonitorWidget key={item.story.id} item={item} paket={paket} />]));
   const missing = (charts?.availability ?? []).some((item: Any) => item.status === "missing");
   return <EnergyMonitor
@@ -292,7 +293,8 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
       )}
     currentPower={installedKwp > 0 && <ExportableWidgetFrame widget={WIDGETS.regionalCurrentPower} place={paket.name} stand={formatDate(paket.registerStand)} filename={`solar-check-current-${paket.ags}`} exportUnit="MW" title="Solarleistung heute" kind="radial" data-story-scheme="dark" help={<p>Aus dem Wetter am Standort und der installierten Solarleistung simuliert. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={installedKwp} weatherSource={weatherSource} frameless /></ExportableWidgetFrame>}
     growth={years.length > 0 && <AnnualGrowth years={years} stand={paket.solarAnnualGrowth?.stand ?? paket.registerStand} name={paket.name} regionId={paket.ags} />}
-    stock={widgets("Anlagenbestand")}
+    density="compact"
+    stockItems={stock}
     energy={Object.keys(energy).length ? energy : undefined}
     energyNotice={missing && <p className="municipal-data-missing">
       Für die Monats- und Jahreserzeugung sowie Stromwert und Einspeisevergütung fehlen noch vollständige örtliche Wetterdaten. Diese

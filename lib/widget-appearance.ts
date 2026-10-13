@@ -46,12 +46,12 @@ export function widgetPresentationContract(id:string,variant:'full'|'compact'|'h
 }
 
 /** The host chooses arrangement, never repeats a chart's geometry contract. */
-export function widgetCompositionItem(widgetId:string, options:{id?:string;presentation?:'full'|'compact'|'hero';grow?:number;preferredHeight?:{fraction:number;max:number}}={}):CompositionItem {
+export function widgetCompositionItem(widgetId:string, options:{id?:string;presentation?:'full'|'compact'|'hero';sizing?:'content';grow?:number;preferredHeight?:{fraction:number;max:number}}={}):CompositionItem {
  const contract=widgetPresentationContract(widgetId,options.presentation??'full');
  if(!contract)throw new Error(`Missing presentation contract for ${widgetId}`);
  return {id:options.id??widgetId,kind:'chart',grow:options.grow,minWidth:contract.minWidth,
   minHeight:contract.minAllocatedHeight??0,heightBreakpoints:contract.allocatedHeightBreakpoints,
-  sizing:contract.supportsAllocation?'allocated':'content',preferredHeight:options.preferredHeight};
+  sizing:options.sizing??(contract.supportsAllocation?'allocated':'content'),preferredHeight:options.preferredHeight};
 }
 
 /** One eligibility rule for gallery, dashboard and linked hero hosts. */

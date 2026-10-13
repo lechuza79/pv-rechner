@@ -75,3 +75,11 @@
 .presentation[data-widget-host=dashboard][data-widget-layout=allocated]{height:100%;}
 
 .presentation[data-widget-layout=allocated] :global([data-landscape-widget]){flex:1;height:auto;min-height:440px;}
+
+/* Dense host layout changes plot space, never controls or widget identity.
+   Opt-in only: standalone embeds, stories and hero previews retain their sizes. */
+.presentation[data-widget-density=compact]{
+ --widget-radial-max:300px;
+ --widget-metric-min:200px;
+ --widget-metric-illustrated-min:200px;
+}
