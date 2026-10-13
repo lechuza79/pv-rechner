@@ -3211,5 +3211,38 @@
       "latitude": 52.53114,
       "longitude": 12.04651
     }
+  },
+  "05113000": {
+    "wind-1": {
+      "name": "Windanlagen bei Essen",
+      "latitude": 51.47257,
+      "longitude": 7.03133
+    }
+  },
+  "05114000": {
+    "wind-1": {
+      "name": "Windanlagen bei Krefeld",
+      "latitude": 51.35973,
+      "longitude": 6.49277
+    }
+  },
+  "05116000": {
+    "wind-1": {
+      "name": "Windanlagen bei Mönchengladbach",
+      "latitude": 51.09822,
+      "longitude": 6.42969
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Mönchengladbach",
+      "latitude": 51.21918,
+      "longitude": 6.33509
+    }
+  },
+  "05120000": {
+    "wind-1": {
+      "name": "Windanlagen bei Remscheid",
+      "latitude": 51.16566,
+      "longitude": 7.29579
+    }
   }
 }
