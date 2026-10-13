@@ -3,6 +3,7 @@
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {RankingPodiumWithList, type RankingPodiumData} from './GemeindeRankingWidget';
 import {useWidgetResource} from '../dashboard/WidgetData';
+import {useWidgetMinimumHeight} from '../dashboard/WidgetMinimumHeight';
 import {IconArrowLeft, IconArrowRight} from '../Icons';
 import {stufeFuer} from '../../lib/atlas-format';
 import '../../public/atlas-design-preview/ranking.css';
@@ -41,6 +42,19 @@ function CategoryPodium({category, onReveal, listHost, headingVariants}: {catego
 export default function RankingWidgetCombination({categories, initialCategory, label}: {
   categories:RankingCategory[];initialCategory?:string;label:string;
 }) {
+  const root = useRef<HTMLDivElement>(null);
+  const reportMinimumHeight = useWidgetMinimumHeight();
+  // This composition retains intrinsic height: category controls and the footer
+  // are additional content, not part of the standalone podium allocation.
+  useLayoutEffect(() => {
+    const node = root.current;
+    if (!node) return;
+    const measure = () => reportMinimumHeight(node.getBoundingClientRect().height);
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    measure();
+    return () => observer.disconnect();
+  }, [reportMinimumHeight]);
   const [selected,setSelected] = useState(initialCategory ?? categories[0]?.data.category);
   const [seen,setSeen] = useState<Set<string>>(()=>new Set());
   const active = Math.max(0,categories.findIndex(item=>item.data.category===selected));
@@ -72,7 +86,7 @@ export default function RankingWidgetCombination({categories, initialCategory, l
   },[selected]);
   if(!current)return <p>Für diesen Vergleich liegen noch keine Platzierungen vor.</p>;
   const select = (index:number) => { if(categories[index])setSelected(categories[index].data.category); };
-  return <div data-ranking-combination className={styles.root}>
+  return <div ref={root} data-ranking-combination className={styles.root}>
     <div className={`atlas-competition ${styles.composition}`}>
       <CategoryPodium key={current.data.category} category={current} onReveal={reveal} listHost={listHost} headingVariants={headingVariants}/>
       <aside className={`ranking-category-panel ${styles.panel}`} aria-label={label}>
