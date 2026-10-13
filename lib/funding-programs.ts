@@ -6117,7 +6117,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "rietheim-weilheim-pv", name: "Kommunales Förderprogramm Photovoltaik",
     traeger: "Gemeinde Rietheim-Weilheim", level: "kommune", region: "Rietheim-Weilheim",
     bundesland: "Baden-Württemberg", agsCode: "08327056",
-    url: "http://www.rietheim-weilheim.de/rathaus-service/aktuelles/kommunale-foerderprogramme",
+    url: "https://www.rietheim-weilheim.de/rathaus-service/aktuelles/kommunale-foerderprogramme",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp für die Dachanlage, Pauschale fürs Balkonkraftwerk",

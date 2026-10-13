@@ -92689,5 +92689,71 @@
         "evidenceUrl": "https://kirchsahr.de/hochwasser/foerderantrag"
       }
     ]
+  },
+  {
+    "regionId": "07131085",
+    "name": "Winnerath",
+    "checkedAt": "2026-10-13T08:20:00Z",
+    "recheckAt": "2027-01-11T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Winnerath gehört zur Verbandsgemeinde Adenau (Landkreis Ahrweiler). Weder VG noch Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Ortsgemeindeseite nennt nur Ortsbürgermeister, Rat, Satzungen und Geschichte; das Ortsrecht der OG (Haushalts-, Hebesatz-, Friedhofs-, Beitrags-, Hundesteuer- und Hauptsatzung) enthält keine Förderrichtlinie; die Haushaltssatzung 2025 erwähnt Förderung nur als Kreditermächtigung für Investitionsförderungsmaßnahmen. Auf VG-Ebene gilt der Befund vom 09.10.2026 (Klimaschutzseiten nur Solarkataster/Verbraucherzentrale, KIPKI kommunal, Wärmeplanung nur BEW). Das Batteriespeicher-Programm des Landkreises Ahrweiler (2022) ist beendet und katalogisiert. Keine laufende kommunale Förderung gefunden (Stand 13.10.2026).",
+    "searches": [
+      "13.10.2026 Sitemap adenau.de (1.321 Adressen) nach „winnerath“ gefiltert: Ortsgemeindeseite, 12 Satzungs-PDFs, Ortsgemeinderat, Heimatbroschüre, Radwegekarte",
+      "09.10.2026 adenau.de: Klimaschutz-Startseite, Photovoltaik oder Solarstrom, Wärmeerzeugung, Energie sparen, Energiemanagement, Klimapaket im Browser bzw. Server-HTML gelesen",
+      "09.10.2026 Sitemap adenau.de (1.318 Adressen) nach förder/zuschuss/balkon/solar/photovolt/speicher/wärme/klima/energie/richtlinie gefiltert und Treffer gesichtet: nur LEADER-, Jugendfonds-, Regionalbudget-, KIPKI-(kommunal), Städtebau- und Bescheidmeldungen",
+      "Volltextsuche adenau.de im Browser funktionslos (auch Gegenprobe „Klimaschutz“ 0 Treffer), deshalb Sitemap-Auswertung",
+      "Abschlussbericht Kommunale Wärmeplanung VG Adenau (Sweco, 10/2025) nach „Förder“ durchsucht: nur BEW Modul 1/2 und ELENA für Wärmenetze",
+      "Katalog: Landkreis Ahrweiler nur ahrweiler-batteriespeicher (eingestellt)",
+      "VG-Ebene: Befund der Prüfung vom 09.10.2026 (Wimbach u. a., gleiche VG) übernommen, nicht wiederholt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.adenau.de/ortsgemeinden/winnerath/",
+        "finding": "13.10.2026 gelesen: Ortsbürgermeister, Ortsgemeinderat, Satzungen, Daten & Fakten, Geschichte; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.adenau.de/ortsgemeinden/winnerath/satzungen-winnerath/2025-03-28-haushaltssatzung-der-ortsgemeinde-winnerath.pdf?cid=g1a",
+        "finding": "13.10.2026 gelesen: Haushaltssatzung 2025, „Förderung“ nur als Kreditermächtigung für Investitions- und Investitionsförderungsmaßnahmen; kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.adenau.de/klimaschutz/photovoltaik-oder-solarstrom/",
+        "finding": "09.10.2026 gelesen: Hinweis auf Solarkataster RLP und Broschüren der Verbraucherzentrale (PV, Strom vom Balkon); kein Zuschuss."
+      },
+      {
+        "url": "https://www.adenau.de/aktuelles/2025/kipki-foerderung/",
+        "finding": "09.10.2026 gelesen: 381.348,01 € KIPKI für die VG, eingesetzt für LED-Straßenbeleuchtung, öffentliche Gebäude und Spielplatzbegrünung — kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.adenau.de/verbandsgemeinde/ortsrecht-satzungen-und-richtlinien/",
+        "finding": "09.10.2026 gelesen: Richtlinien nur Geschäftsordnung, Ehrenordnung, Bürgerfonds 2014, Zuschüsse Jugendarbeit 2014; keine Klimaschutz-Förderrichtlinie."
+      },
+      {
+        "url": "https://kreis-ahrweiler.de/land_natur_umwelt/klimaschutz-im-kreis-ahrweiler/foerderprogramme-klimaschutz/",
+        "finding": "Laut Katalogprüfung (27.09.2026): Kreis-Batteriespeicherprogramm 2022 beendet, „Es stehen keine Fördermittel mehr zur Verfügung“."
+      },
+      {
+        "url": "https://www.adenau.de/adenau.de/klimaschutz/kommunale-waermeplanung-fuer-die-vgv-adenau/251001-abschlussbericht-kommunale-waermeplanung-vg-adenau.pdf?cid=gap",
+        "finding": "09.10.2026 gelesen (4.626 Zeilen Text): Förderung nur als BEW Modul 1/2 und ELENA für Wärmenetze, beantragt von VG oder Netzbetreiber; kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.adenau.de/adenau.de/verbandsgemeinde/abwasserwerk/wiederaufbau-klaeranlage/foerderbescheiduebergabe/",
+        "finding": "09.10.2026 gelesen: Förderbescheid des Landes über 20,2 Mio € für die Kläranlage Dümpelfeld (10.04.2025) — Förderung des Abwasserwerks, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "adenau.de/klimaschutz/kommunale-waermeplanung-fuer-die-vgv-adenau/251001-abschlussbericht-kommunale-waermeplanung-vg-adenau.pdf?cid=gap",
+        "disposition": "reviewed",
+        "reason": "09.10.2026 vollständig nach „Förder“ durchsucht: Abschlussbericht Kommunale Wärmeplanung (Sweco); Förderung nur BEW/ELENA für Wärmenetze von VG oder Netzbetreiber, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.adenau.de/adenau.de/klimaschutz/kommunale-waermeplanung-fuer-die-vgv-adenau/251001-abschlussbericht-kommunale-waermeplanung-vg-adenau.pdf?cid=gap"
+      },
+      {
+        "url": "adenau.de/verbandsgemeinde/abwasserwerk/wiederaufbau-klaeranlage/foerderbescheiduebergabe",
+        "disposition": "reviewed",
+        "reason": "09.10.2026 gelesen: Landesförderbescheid 20,2 Mio € für die Kläranlage Dümpelfeld, kommunale Infrastruktur; kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.adenau.de/adenau.de/verbandsgemeinde/abwasserwerk/wiederaufbau-klaeranlage/foerderbescheiduebergabe/"
+      }
+    ]
   }
 ]
