@@ -19,11 +19,13 @@ import storyStyles from './CompositionChart.story.module.css';
  */
 export type CompositionLayout = 'monitor' | 'story';
 
-export function CompositionChart({counts, powerShare, layout, compact = false}: {
+export function CompositionChart({counts, powerShare, layout, compact = false, maxCells}: {
   counts: {total: number; selected: number; label: string};
   powerShare: number;
   layout: CompositionLayout;
   compact?: boolean;
+  /** Optional host density; exact counts and partial cells are retained. */
+  maxCells?: number;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const [monitorColumns, setMonitorColumns] = useState(16);
@@ -36,7 +38,7 @@ export function CompositionChart({counts, powerShare, layout, compact = false}: 
   const gradientId = useId();
   const styles = layout === 'monitor' ? monitorStyles : storyStyles;
   const columns = layout === 'monitor' ? monitorColumns : 16;
-  const {cells, perCell} = storyCountGrid(counts.total, counts.selected);
+  const {cells, perCell} = storyCountGrid(counts.total, counts.selected, maxCells);
   const rows = Math.ceil(cells.length / columns);
   // One rounding rule for ring, label and aria text: a nonzero share never reads
   // as "0 %" (Stendal's balcony plants were 0,4 % and showed as 0).
@@ -89,7 +91,7 @@ export function compositionFromStory(story: {countComparison?: {total: number; s
 }
 
 /** Monitor host: renders nothing when the story carries no comparison. */
-export function MonitorCompositionChart({story}: {story: Parameters<typeof compositionFromStory>[0]}) {
+export function MonitorCompositionChart({story, maxCells}: {story: Parameters<typeof compositionFromStory>[0]; maxCells?: number}) {
   const input = compositionFromStory(story);
-  return input ? <CompositionChart {...input} layout="monitor" /> : null;
+  return input ? <CompositionChart {...input} layout="monitor" maxCells={maxCells} /> : null;
 }
