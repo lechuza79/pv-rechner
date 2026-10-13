@@ -5586,5 +5586,27 @@
       "latitude": 51.51359,
       "longitude": 7.85512
     }
+  },
+  "05158032": {
+    "wind-1": {
+      "name": "Windanlagen bei Velbert",
+      "latitude": 51.31265,
+      "longitude": 7.13361
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Velbert",
+      "latitude": 51.36337,
+      "longitude": 7.01972
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Velbert",
+      "latitude": 51.37357,
+      "longitude": 7.11068
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Velbert",
+      "latitude": 51.34454,
+      "longitude": 7.14731
+    }
   }
 }
