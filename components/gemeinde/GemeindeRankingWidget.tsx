@@ -19,7 +19,7 @@ export type RankingPodiumData = {
   listUnit?:string; listTotal?:number;
   headingVariants?: {title: string; unit: string}[];
   shareParams?: Record<string, string>;
-  missing?: string | null; animate?: boolean; onReveal?: () => void;
+  missing?: string | null; animate?: boolean; revealed?: boolean; onReveal?: () => void;
 };
 
 /** Standalone podium: no list, identical in existing story and municipality hosts. */
@@ -36,7 +36,7 @@ export function RankingPodiumWithList({data, listHost}: {data: RankingPodiumData
 function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumData; showList?: boolean; listHost?: HTMLElement | null}) {
   const [listOpen, setListOpen] = useState(false);
   const presentation = useWidgetPresentation();
-  const animate=presentation.autoplay??data.animate;
+  const animate=!data.revealed && (presentation.autoplay??data.animate);
   const allocated = presentation.layout === 'allocated';
   const visualRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -145,27 +145,21 @@ function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumD
   const rows = data.rows.slice(0,3);
   const podium = rows.length === 3 ? [rows[1], rows[0], rows[2]] : rows;
   const growthOrder = [...rows.filter(row=>!row.own).sort((a,b)=>b.rank-a.rank), ...rows.filter(row=>row.own)];
-  const [elapsed,setElapsed] = useState(animate ? 0 : Infinity);
+  const revealRef = useRef(data.onReveal);
+  revealRef.current = data.onReveal;
   useEffect(()=>{
-    if(data.missing)return;
+    if(data.missing || !data.rows.length)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-    if(!animate||reduced.matches){setElapsed(Infinity);data.onReveal?.();return;}
-    setElapsed(0);
-    let frame=0; const start=performance.now();
-    const duration=rows.length*850+400+rows.length*930;
-    const finish=()=>{cancelAnimationFrame(frame);setElapsed(Infinity);data.onReveal?.();};
-    const stop=()=>{if(reduced.matches)finish();};
-    const tick=(now:number)=>{if(reduced.matches){finish();return;}const time=now-start;setElapsed(time);if(time<duration)frame=requestAnimationFrame(tick);else data.onReveal?.();};
+    const finish=()=>revealRef.current?.();
+    if(!animate||reduced.matches){finish();return;}
+    // Number ticks belong to their small text nodes, not the whole frame/table.
+    const timer=setTimeout(finish,Math.min(3,data.rows.length)*850+400+Math.min(3,data.rows.length)*930);
+    const stop=()=>{if(reduced.matches){clearTimeout(timer);finish();}};
     reduced.addEventListener('change',stop);
-    frame=requestAnimationFrame(tick);return()=>{cancelAnimationFrame(frame);reduced.removeEventListener('change',stop)};
-  },[data.category,data.scope,data.missing,animate]);
-  const displayValue=(row:RankingPodiumData['rows'][number])=>{
-    const final=data.unit === "Anlagen / 1.000 Einwohner" ? row.value.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}) : row.formatted;
-    const progress=Math.min(1,Math.max(0,(elapsed-growthOrder.indexOf(row)*850)/850));
-    const numeric=Number(final.replaceAll('.','').replace(',','.'));
-    const decimals=final.includes(',')?final.split(',')[1].length:0;
-    return {final,live:progress===1?final:(numeric*(1-Math.pow(1-progress,3))).toLocaleString("de-DE",{minimumFractionDigits:decimals,maximumFractionDigits:decimals})};
-  };
+    return()=>{clearTimeout(timer);reduced.removeEventListener('change',stop);};
+  },[data.category,data.scope,data.missing,data.rows.length,animate]);
+  const displayValue=(row:RankingPodiumData['rows'][number])=>data.unit === "Anlagen / 1.000 Einwohner"
+    ? row.value.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}) : row.formatted;
   const max = Math.max(0, ...rows.map(row => row.value));
   return <ExportableWidgetFrame widget={WIDGETS.gemeindeRanking} place={data.place} shareParams={{...data.shareParams,...(showList ? {list:'on'} : {})}}
     stand={data.stand} exportScope={data.scope} exportUnit={data.unit} filename={`ranking-${data.place}-${data.category}`} kind="bar-comparison"
@@ -176,7 +170,7 @@ function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumD
       {data.missing || !rows.length ? <p data-export-ready="false">{data.missing ?? 'Für diese Auswahl liegt keine Rangliste vor.'}</p> :
         <div data-podium-layout className={styles.podium} key={`${data.category}-${data.scope}`}>
           {podium.map(row => <div key={row.id} className={styles.contender} data-own={row.own} style={{"--bar-fraction":max > 0 ? row.value / max : 0,"--grow-delay":`${growthOrder.indexOf(row)*850}ms`,"--reveal-delay":`${rows.length*850+400+growthOrder.indexOf(row)*930}ms`} as CSSProperties}>
-            <div data-podium-label className={styles.label}>{row.href ? <a href={row.href}>{row.name}</a> : <span>{row.name}</span>}<strong><ExportIgnore>{displayValue(row).live}</ExportIgnore><ExportOnly display="inline">{displayValue(row).final}</ExportOnly></strong></div>
+            <div data-podium-label className={styles.label}>{row.href ? <a href={row.href}>{row.name}</a> : <span>{row.name}</span>}<strong><ExportIgnore><RankingAnimatedValue key={`${data.category}-${row.id}`} value={displayValue(row)} delay={growthOrder.indexOf(row)*850} animate={Boolean(animate)}/></ExportIgnore><ExportOnly display="inline">{displayValue(row)}</ExportOnly></strong></div>
             <div className={styles.bar} data-ranking-celebration-origin={row.own && row.rank <= 3 ? true : undefined} style={{'--bar-fraction': max > 0 ? row.value / max : 0, '--bar-height': `${max > 0 ? 160 * row.value / max : 0}px`} as CSSProperties}>
               {row.own && row.rank <= 3 && <img className={styles.badge} src={`/atlas-design-preview/rank-badges/rank-${row.rank}.svg`} alt={`Platz ${row.rank}`} width={96} height={96}/>}
             </div>
@@ -198,6 +192,32 @@ function RankingWidget({data, showList = false, listHost}: {data: RankingPodiumD
       </Modal>
     </ExportIgnore>}
   </ExportableWidgetFrame>;
+}
+
+/** Isolate the original count-up animation from menus, layout and the full table. */
+function RankingAnimatedValue({value,delay,animate}:{value:string;delay:number;animate:boolean}) {
+  const [live,setLive]=useState(animate?'0':value);
+  useEffect(()=>{
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(!animate||reduced.matches){setLive(value);return;}
+    let frame=0;
+    const start=performance.now();
+    const numeric=Number(value.replaceAll('.','').replace(',','.'));
+    const decimals=value.includes(',')?value.split(',')[1].length:0;
+    const format=new Intl.NumberFormat('de-DE',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+    const finish=()=>{cancelAnimationFrame(frame);setLive(value);};
+    const tick=(now:number)=>{
+      const progress=Math.min(1,Math.max(0,(now-start-delay)/850));
+      if(progress===1||reduced.matches){finish();return;}
+      setLive(format.format(numeric*(1-Math.pow(1-progress,3))));
+      frame=requestAnimationFrame(tick);
+    };
+    const stop=()=>{if(reduced.matches)finish();};
+    frame=requestAnimationFrame(tick);
+    reduced.addEventListener('change',stop);
+    return()=>{cancelAnimationFrame(frame);reduced.removeEventListener('change',stop);};
+  },[value,delay,animate]);
+  return <>{live}</>;
 }
 
 /** Bridge only: legacy page filters publish their already computed selection. */
