@@ -16,7 +16,7 @@ export default function ResultOverview({ id, saving, years, scenarioLabel, onSce
     <div className="wp-overview-top"><div className="wp-result-column"><div ref={heroRef} className="wp-result-hero">
       {introduction}
       <div className="wp-overview-head"><div className="wp-result-label">
-        <span className="wp-result-label-copy"><strong>{saving >= 0 ? "Einsparungen" : "Mehrkosten"} über {years} Jahre</strong> mit {presentation ? scenarioLabel : <button type="button" className="wp-assumptions-trigger" onClick={onScenario}>{scenarioLabel}</button>}</span>
+        <span className="wp-result-label-copy"><strong>{saving >= 0 ? "Gewinn" : "Verlust"} nach {years} Jahren</strong> mit {presentation ? scenarioLabel : <button type="button" className="wp-assumptions-trigger" onClick={onScenario}>{scenarioLabel}</button>}</span>
         {!presentation && <div className="wp-result-tools"><button type="button" className="wp-result-details-link" onClick={onDetails}>Details</button><button type="button" className="wp-settings-trigger" aria-label="Rechnung einstellen" onClick={onSettings}><IconSettings size={iconSizes.xl} /></button></div>}
       </div></div>
       <div className="wp-profit-comparison"><span className="wp-profit-illustration" aria-hidden="true"><img src={RESULT_SAVINGS_IMAGE} alt="" width={640} height={640} loading="eager" fetchPriority="high" /></span><div className="wp-profit-content"><div className="wp-profit-row">

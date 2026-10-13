@@ -264,7 +264,7 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
       // Entscheidung des Betreibers am 25.08.2026: „das werkzeug muss immer
       // führend sein". Wo Text und Rechnung auseinandergehen, weicht der Text —
       // festgehalten von `lib/__tests__/faq-gegen-werkzeug.test.ts`.
-      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft gar nicht der Fall — dann rechnet sich die Anlage ohne Speicher besser. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
+      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft nur zum Teil der Fall — dann schlägt die Empfehlung keinen Speicher vor, weil er im Verhältnis zum Verbrauch zu groß wäre. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung schlägt eine zu deinem Verbrauch passende Kombination aus Anlagengröße und Speicher vor.",
       links: [{ phrase: "Die Empfehlung", href: "/photovoltaik-rechner" }],
       cta: { label: "Passende Größe finden", href: "/photovoltaik-rechner" },
     },

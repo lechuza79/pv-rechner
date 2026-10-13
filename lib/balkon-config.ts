@@ -237,8 +237,9 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   degradation: DEGRAD,
   // Bewusst 20 statt der 25 Jahre des PV-Rechners: Ein Fixpreis-Set mit
   // 800-W-Wechselrichter und Steckerelektronik ist eine andere Geräteklasse als
-  // eine Dachanlage; die Oberfläche trägt „Gewinn nach 20 J." durchgehend.
-  // (Council 05.09.2026: dokumentiert, keine Kopie.)
+  // eine Dachanlage. Hub, Ratgeber und FAQ rechnen mit diesen 20 Jahren; der
+  // Rechner startet seit 27.09.2026 mit 10 Jahren und bietet 20 als Wahl
+  // (open decision, Council 13.10.2026). (Council 05.09.2026: dokumentiert, keine Kopie.)
   gridCo2PerKwh: 0.38,
   stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
 

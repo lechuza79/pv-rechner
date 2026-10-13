@@ -811,7 +811,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                   </div>
                   <div style={{ fontSize: "var(--result-type-ui)", color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (
-                      <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer. Deshalb ist er bei deinem Verbrauch drin.</>
+                      <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer.{r.storagePayback > CFG.storageRecommendMaxPayback && <> Das ist knapp: Wir empfehlen einen Speicher erst, wenn er sich in höchstens {CFG.storageRecommendMaxPayback} Jahren bezahlt macht.</>}</>
                     ) : (
                       <>Der Speicher allein amortisiert sich {isFinite(r.storagePayback) ? <>erst nach <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong></> : "in dieser Konstellation praktisch nicht"} — meist länger, als ein Balkonspeicher typischerweise hält. Ehrlich: <strong style={{ color: v('--color-text-secondary') }}>hier lohnt er sich nicht.</strong></>
                     )}

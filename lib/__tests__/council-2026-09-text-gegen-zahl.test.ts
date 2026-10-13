@@ -6,10 +6,12 @@ import { DEFAULT_PRICES } from "../prices-config";
 import { DEFAULT_FEED_IN } from "../feedin-config";
 import { NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../constants";
 import { buildFundingExamples } from "../funding-examples";
-import { faqAmortisationSpanne, homeFaq } from "../faq";
+import { faqAmortisationSpanne, homeFaq, pvSpeicherFaq } from "../faq";
+const pvSpeicherFaqTexte = () => pvSpeicherFaq().map(e => (e as { a: string }).a).join("\n");
 import { greengasMusterVariants } from "../greengas-muster";
 import { klimaSchnellschaetzungKwh } from "../aircon";
 import { DEFAULT_AIRCON_CONFIG } from "../aircon-config";
+import { heatPumpScenarioAdj } from "../heatpump";
 
 const ROOT = join(__dirname, "..", "..");
 const lies = (p: string) => readFileSync(join(ROOT, p), "utf8");
@@ -80,6 +82,20 @@ describe("Wärmepumpen-Block im PV-Ergebnis: Gas folgt dem Szenario gegenläufig
     expect(lies("components/PvConsumerComparison.tsx")).toMatch(/gasSteigerung=\{inflation.gasInflation\}/);
     expect(lies("components/PvConsumerComparison.tsx")).toContain("heatPumpScenarioAdj(scenario)");
   });
+
+  // Council 13.10.2026: the heat-pump scenario ids mean the opposite for
+  // electricity ("pessimistic" = +4.4 %/a there, +0.4 %/a in the PV calculator).
+  // Passing the PV id through made the same result page price household
+  // electricity at +0.4 %/a and heat-pump electricity on the same meter at +4.4 %/a.
+  it("Heizstrom am Hauszähler steigt wie der Hausstrom des PV-Szenarios", () => {
+    const src = lies("components/PvConsumerComparison.tsx");
+    expect(src).not.toMatch(/stromSteigerung=\{inflation\.stromInflation\}/);
+    expect(src).toMatch(/SCENARIOS\.find\(s=>s\.id===scenario\)/);
+    expect(src).toMatch(/stromSteigerung=\{householdRate\}/);
+    // The opposition is real, so the guard is not vacuous.
+    expect(heatPumpScenarioAdj("pessimistic").stromInflation)
+      .toBeGreaterThan(SCENARIOS.find(s => s.id === "pessimistic")!.strom + 0.02);
+  });
 });
 
 describe("Förderseiten-Beispiele rechnen wie der Rechner", () => {
@@ -140,5 +156,32 @@ describe("Kleine Beschriftungen", () => {
     expect(klimaSchnellschaetzungKwh({ rooms: 2, cdh: DEFAULT_AIRCON_CONFIG.cdhNational, stromPrice: 0.3 })).toBe(kwh);
     expect(lies("lib/recommend.ts")).toMatch(/klimaSchnellschaetzungKwh/);
     expect(lies("app/(site)/photovoltaik-rechner/rechner.tsx")).toMatch(/klimaSchnellschaetzungKwh\(\{ rooms: klimaRooms/);
+  });
+});
+
+// Council 13.10.2026 — four labels that said something the number does not measure.
+describe("Council 13.10.2026: Beschriftung folgt der Rechnung", () => {
+  it("PV- und Balkon-Ergebnis nennen die Summe nach Abzug der Anschaffung Gewinn, nicht Einsparungen", () => {
+    const src = lies("components/calculator/ResultOverview.tsx");
+    expect(src).not.toMatch(/"Einsparungen"/);
+    expect(src).toMatch(/"Gewinn" : "Verlust"\} nach \{years\} Jahren/);
+  });
+  it("die FAQ behauptet nicht, ohne Speicher rechne sich die Anlage besser", () => {
+    // Measured: for small households every storage case yields MORE profit; the
+    // recommendation leaves it out by a sizing rule, not by a profit comparison.
+    const text = pvSpeicherFaqTexte();
+    expect(text).not.toMatch(/ohne Speicher besser/);
+    expect(text).not.toMatch(/wirtschaftlich sinnvolle Kombination/);
+  });
+  it("der Ratgeber sagt nicht „kaum“, wenn es kein Amortisationsjahr gibt, und nennt Minus nicht Gewinn", () => {
+    const src = lies("app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx");
+    expect(src).not.toMatch(/kaum im Zeitraum/);
+    expect(src).toMatch(/ohneRealGewinn >= 0 \?/);
+  });
+  it("das JAZ-Feld erlaubt keinen Wert, den die Rechnung still auf 4,8 deckelt", () => {
+    const calcCap = lies("lib/heatpump.ts").match(/const jaz = Math\.min\(([\d.]+),/)?.[1];
+    const fieldMax = lies("app/(site)/waermepumpe-rechner/waermepumpe.tsx").match(/onCommit=\{v => updateSettings\(\{ oJaz: v \}\)\}[^>]*max=\{([\d.]+)\}/)?.[1];
+    expect(calcCap).toBeDefined();
+    expect(fieldMax).toBe(calcCap);
   });
 });
