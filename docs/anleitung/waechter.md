@@ -1,0 +1,11 @@
+# Projektanleitung: waechter
+
+Verbindliches Fachkapitel zu [CLAUDE.md](../../CLAUDE.md). Nur die für den Auftrag relevanten Abschnitte laden. Codepfade in Backticks beziehen sich auf das Repository-Hauptverzeichnis; Verweise wie „oben“ und „siehe Abschnitt“ meinen die entsprechenden Fachabschnitte, die in der zentralen Anleitung verlinkt sind.
+
+## Wächter-Gate — BLOCKER für alle Wächter
+
+**`scripts/waechter-gate.md` ist die gemeinsame Prüfschwelle aller Wächter und hat Vorrang vor dem einzelnen Task-Prompt.** Die fachlichen Runbooks sagen, *was* geprüft wird; das Gate sagt, *wann ein Wächter selbst ändern darf.*
+
+**Warum:** Die Wächter meldeten Befunde an einen Menschen, der sie nicht prüft. Ein Vorschlag, den niemand liest, ist schlechter als eine automatische Korrektur — er täuscht ein Sicherheitsnetz vor. Die Bremse war nie „der Mensch prüft besser", sondern „hier gibt es mehrere vertretbare Antworten", und das trifft auf die wenigsten Werte zu. Rechtlich ist die Fallhöhe gering (kostenloser Informationsrechner, Stand-Datum + „ohne Gewähr"); die echte Gefahr ist Glaubwürdigkeit — ein Haftungsausschluss repariert keine falsche Zahl.
+
+Das Gate enthält neun Regeln gegen „Annahme als Tatsache", jede aus einem echten Fehlschlag: **Zustand vor Zahl** (Entwurf/beschlossen/verkündet/in Kraft/Studienannahme — Auto-Fix ändert den Wert, nie den Zustand), **Quelle = wer gemessen hat, nicht wer publiziert hat**, **Aussagen über unseren Code am Code prüfen**, **Kennzahl ≠ Zustand**, **kein Handfaktor**, **Fundstelle erst beschaffen, dann streichen**, **jede auto-gepflegte Zahl braucht einen Realitäts-Anker als Test**, **ein „gilt nicht für X" braucht eine eigene Fundstelle** (Verweisketten mitlesen — eine Vorschrift, die einen Fall nicht erwähnt, schließt ihn nicht aus), **das Prüfdatum wandert mit jedem erreichten Lauf — und nur mit ihm** (siehe „Aktualisierungsstand" unten). Dazu die fünf Gate-Bedingungen (Leitquelle vollständig · Council mit adversarialem Prüfer · bei Rechtsbezug zusätzlich **Legal-Judge** · Sprunggrenze 30 % · Tests grün), die **Selbstkontrolle im Folgelauf** (jeder `[auto]`-Fix wird beim nächsten Lauf gegen die Quelle nachgeprüft und sonst zurückgenommen), der **wöchentliche Bericht „was habe ich selbst geändert"** und die Befugnis-Tabelle je Wächter.

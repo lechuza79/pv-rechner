@@ -1,5 +1,5 @@
 /**
- * Haelt CLAUDE.md gegen den Code.
+ * Check the root instructions and their topic chapters against the code.
  *
  * Am 25.08.2026 standen ELF Stellen in CLAUDE.md, die dem Code widersprachen:
  * Kopfzeilenbreite (960 statt 1040), Umschaltpunkt (768 statt 1080), Framework-
@@ -10,10 +10,8 @@
  * Stellen die Unwahrheit sagt, faellt niemandem auf, weil niemand sie gegen den
  * Code liest. Sie fuehrt nur still zu falschen Entscheidungen.
  *
- * Gemessen wurde ausserdem (Pruefdurchgang 25.08.2026): Von 17 belegten
- * Regelbruechen waere KEINER durch eine kuerzere Datei verhindert worden.
- * Das Problem dieser Datei ist nicht ihre Laenge, sondern ihre Aktualitaet.
- * Deshalb dieser Lauf und nicht eine weitere Kuerzungsrunde.
+ * Topic chapters are loaded on demand by agents, but this audit always checks
+ * the entire instruction set. Smaller prompts must not reduce verification.
  *
  * Zwei Teile:
  *
@@ -28,12 +26,28 @@
  *
  * Exit 1 = Widerspruch gefunden. Der Lauf DARF rot werden; das ist sein Zweck.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
 const WURZEL = process.cwd();
-const claudeMd = readFileSync(join(WURZEL, "CLAUDE.md"), "utf8");
+// Keep the same checks over the root instructions and every extracted chapter.
+// Discover chapters from disk so a new chapter cannot silently escape the audit.
+const chapterDirectory = join(WURZEL, "docs/anleitung");
+const rootInstructions = readFileSync(join(WURZEL, "CLAUDE.md"), "utf8");
+const linkedChapters = [...rootInstructions.matchAll(/\]\((docs\/anleitung\/[^)#]+\.md)(?:#[^)]*)?\)/g)]
+  .map((match) => match[1]);
+const instructionFiles = [...new Set([
+  "CLAUDE.md",
+  ...linkedChapters,
+  ...readdirSync(chapterDirectory)
+    .filter((name) => name.endsWith(".md"))
+    .sort()
+    .map((name) => `docs/anleitung/${name}`),
+])];
+const claudeMd = instructionFiles
+  .map((name) => readFileSync(join(WURZEL, name), "utf8"))
+  .join("\n\n");
 
 type Befund = { was: string; sagt: string; stimmt: string; wo: string };
 const befunde: Befund[] = [];
@@ -95,7 +109,7 @@ for (const pfad of genanntePfade()) {
       was: "genannte Datei fehlt",
       sagt: pfad,
       stimmt: "weder im Baum noch in der Versionsverwaltung",
-      wo: "CLAUDE.md",
+      wo: "CLAUDE.md / docs/anleitung",
     });
   }
 }
@@ -111,7 +125,7 @@ for (const treffer of new Set(claudeMd.match(/npm run ([a-z0-9:-]+)/g) ?? [])) {
       was: "genannter Befehl fehlt",
       sagt: `npm run ${name}`,
       stimmt: "steht nicht in package.json",
-      wo: "CLAUDE.md",
+      wo: "CLAUDE.md / docs/anleitung",
     });
   }
 }
@@ -210,7 +224,7 @@ const AUSSAGEN: { was: string; steht: () => boolean; gilt: () => boolean; sonst:
 for (const a of AUSSAGEN) {
   if (!a.steht()) continue;
   geprueft++;
-  if (!a.gilt()) befunde.push({ was: a.was, sagt: "trifft zu", stimmt: a.sonst, wo: "CLAUDE.md" });
+  if (!a.gilt()) befunde.push({ was: a.was, sagt: "trifft zu", stimmt: a.sonst, wo: "CLAUDE.md / docs/anleitung" });
 }
 
 for (const p of ZAHLEN) {
@@ -244,7 +258,7 @@ for (const p of ZAHLEN) {
   if (behauptet === null) continue;
 
   if (behauptet !== wahr) {
-    befunde.push({ was: p.was, sagt: behauptet, stimmt: wahr, wo: "CLAUDE.md" });
+    befunde.push({ was: p.was, sagt: behauptet, stimmt: wahr, wo: "CLAUDE.md / docs/anleitung" });
   }
 }
 
