@@ -896,7 +896,7 @@ export function renderInfoDraft(c: InfoDraftContext): OutreachDraft {
 
   const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
 
-${einstiegGross ? "Wir" : "wir"} haben die Daten aus dem Marktstammdatenregister für ${c.name} aufbereitet. Die Übersicht zeigt zum Beispiel, wie viele Solaranlagen, Balkonkraftwerke und Speicher im Ort in Betrieb sind, was jedes Jahr hinzukommt und wie ${kurz} ${c.vergleichWo} dasteht.
+${einstiegGross ? "Wir" : "wir"} haben die Daten aus dem Marktstammdatenregister für ${c.name} aufbereitet. Die Übersicht zeigt zum Beispiel, wie viel Solarstrom im vergangenen Monat im Ort erzeugt wurde, was das rechnerisch an Einspeisevergütung bedeutet, wie viele Anlagen neu dazukommen und wie ${kurz} ${c.vergleichWo} dasteht.
 
 Die Daten werden monatlich aktualisiert: ${c.pageUrl}
 
