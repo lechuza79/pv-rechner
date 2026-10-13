@@ -2738,7 +2738,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Balkonkraftwerk — mit Bonn-Ausweis", value: "800 € je kWp Modulleistung, höchstens 90 % des Rechnungspreises", nur: ["balkon"] },
     ],
     conditions: [
-      "Mittel 2026 ausgeschöpft — die Stadt nennt keinen Termin, ab wann wieder beantragt werden kann, und informiert auf ihrer Programmseite darüber",
+      "Mittel 2026 ausgeschöpft, eine Antragstellung ist nicht mehr möglich — ob und in welcher Form es ab 2027 wieder ein städtisches Förderprogramm für Photovoltaik gibt, ist laut Stadt noch nicht absehbar",
+      "Bereits bewilligte Zuschüsse können weiterhin abgerufen werden",
       "Der Antrag darf vor oder nach dem Kauf gestellt werden, spätestens drei Monate nach der Schlussrechnung",
       "Bis zum Bewilligungsbescheid geht der Kauf auf eigenes Risiko; die Stadt empfiehlt deshalb, vorher zu beantragen",
       "Nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
@@ -2804,6 +2805,17 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Bonner Stadtseite und im Balkon-Rechner, Bonn fördere keine
     // Balkonkraftwerke — dieselbe Falschauskunft wie ein zu hoher Betrag, nur
     // andersherum.
+    // ── 13.10.2026, an der Programmseite gelesen ───────────────────────────────
+    // Die Stadt hat den Hinweis oben auf der Seite ergänzt: „Ob und in welcher
+    // Form ein städtisches Förderprogramm für Photovoltaikprojekte ab 2027
+    // angeboten werden kann, ist derzeit noch nicht absehbar.“ und „Der
+    // Fördermittelabruf für bereits bewilligte Anträge ist weiterhin möglich.“
+    // Unsere Bedingung sprach nur von einem fehlenden Termin; dass die Fortsetzung
+    // selbst offen ist, ist die stärkere Aussage und steht jetzt da. Status bleibt
+    // „ausgeschoepft“ — die Stadt beendet das Programm nicht, sie lässt es offen.
+    // Sätze, Deckel und Kumulierung an der Richtlinie (Fassung ab 01.08.2025,
+    // Nr. 4.2, 6, 8) unverändert bestätigt.
+    //
     // BEWUSST OHNE RECHENWERT: Der Satz hängt am Bonn-Ausweis, also am Einkommen,
     // und ist zusätzlich am Rechnungspreis gedeckelt. Beides kann das Modell nicht
     // ausdrücken, und „was das Modell nicht ausdrücken kann, bekommt keinen
