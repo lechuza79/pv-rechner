@@ -351,7 +351,10 @@ its example. Import it with the documented option; do not recreate its CSS.
 - Breadcrumb: `Breadcrumb variant="page"`. The municipality renderer
   `AtlasBreadcrumb framed` owns the 1px current-color rule at 10% opacity,
   17px vertical padding, separators and responsive typography. The page owns
-  placement and outer width only. Legacy `default` and `compact` remain for
+  placement and outer width only. On narrow screens the shared renderer keeps
+  the first destination and current page visible; intermediate links open from
+  the ellipsis in the existing account-menu surface. Outside pointer/focus and
+  Escape dismiss the flyout, with a 44px trigger target. Legacy `default` and `compact` remain for
   gradual migration; they are not the starting point for new pages.
 - Dropdown/menu: `Auswahl`, `pfeile={false}`. Form-value selection: `SelectField`.
 - Location autocomplete: `LocationSearch appearance="default"`; simulation hero:
