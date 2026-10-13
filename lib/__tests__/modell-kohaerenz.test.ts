@@ -8,6 +8,8 @@ import { fossilReplacementInvestment, greenGasApplies, kesselDerAblesung, refere
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../heat-consumption";
 import { INSULATION_BESTAND, WP_FUEL_OPTIONS, FUEL, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
+import { recommendBalkon, calcBalkon } from "../balkon";
+import { DEFAULT_BALKON_CONFIG } from "../balkon-config";
 import { calc, calcEigenverbrauch, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
 
@@ -747,5 +749,29 @@ describe('no rounded autonomy in financial self-consumption', () => {
       expect(current,`cooling ${cooling} kWh/year`).toBeGreaterThanOrEqual(previous-1e-10);
       previous=current;
     }
+  });
+});
+
+// Council 13.10.2026: the balcony recommendation said "ohne bleibt unterm Strich
+// mehr übrig" whenever it left out a storage with finite payback — false in all 61
+// measured cases, because a finite payback lies within the storage lifetime and the
+// profit WITH storage is then higher. The reason must name the threshold instead.
+describe("Balkon-Speicherbegründung behauptet keinen Gewinnvorteil, den die Zahl nicht trägt", () => {
+  it("wo ohne Speicher empfohlen wird, sagt der Satz nie, ohne bleibe mehr — außer es stimmt", () => {
+    let geprueft = 0;
+    for (const orientationId of DEFAULT_BALKON_CONFIG.orientations.map(o => o.id))
+      for (const presenceId of DEFAULT_BALKON_CONFIG.presence.map(p => p.id))
+        for (const haushaltKwh of [1000, 1800, 2800, 4000]) {
+          const rec = recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield: 1000, stromPrice: 0.3 });
+          if (rec.best.storageId !== "none") continue;
+          const base = { setId: rec.best.setId, orientationId, presenceId, haushaltKwh, specificYield: 1000, stromPrice: 0.3 };
+          const ohne = calcBalkon({ ...base, storageId: "none" }).lifetimeSaving;
+          const mitBest = Math.max(...DEFAULT_BALKON_CONFIG.storage.filter(s => s.id !== "none")
+            .map(s => calcBalkon({ ...base, storageId: s.id }).lifetimeSaving));
+          if (/mehr übrig/.test(rec.storageReason)) expect(ohne, `${orientationId}/${presenceId}/${haushaltKwh}`).toBeGreaterThanOrEqual(mitBest);
+          if (/bezahlt macht/.test(rec.storageReason)) { expect(mitBest).toBeGreaterThan(ohne); geprueft++; }
+        }
+    // The threshold case must actually occur, otherwise the guard is vacuous.
+    expect(geprueft).toBeGreaterThan(0);
   });
 });

@@ -6,7 +6,7 @@ import {CategoryBarChart} from "./charts/CategoryBarChart";
 import HeatPumpRunningComparison from "./HeatPumpRunningComparison";
 import type {PvConsumerValues,PvConsumerKind} from "./PvConsumerFields";
 import {calcWpAnnualElectricity,calcJAZ,flowTempForSystem,heatPumpScenarioAdj} from "../lib/heatpump";
-import {HAUSTYP_WP,PERSONEN,NUTZUNG} from "../lib/constants";
+import {HAUSTYP_WP,PERSONEN,NUTZUNG,SCENARIOS} from "../lib/constants";
 import {calcEaAnnual,EA_KWH_PER_KM,KLIMA_DEFAULT_M2} from "../lib/consumption";
 import {simulatePvYear} from "../lib/pv-sim";
 
@@ -38,8 +38,14 @@ export default function PvConsumerComparison({standalone=false,fuelType,setFuelT
       </OptionalDisclosure>      <CategoryBarChart orientation="horizontal" paired unit="€" label="Fahrenergiekosten pro Jahr" rows={[{id:"fuel",label:"Verbrenner",value:fuelCost},{id:"electric",label:"E-Auto mit PV",value:electricCost,highlighted:true}]}/>
     </ComparisonFrame>;
   }
+  // The heat pump runs on the PV calculation's shared household meter, so its grid
+  // electricity follows the PV scenario's household rate. The heat-pump calculator's
+  // scenario ids mean the opposite for electricity ("pessimistic" = electricity
+  // rises fast there, slowly here); only the gas path is taken from it, where
+  // "pessimistic" = gas barely rises is the cautious direction in both calculators.
   const inflation=heatPumpScenarioAdj(scenario);
+  const householdRate=(SCENARIOS.find(s=>s.id===scenario)??SCENARIOS[1]).strom;
   return <ComparisonFrame standalone={standalone} label="Mit Gasheizung vergleichen">
-    <HeatPumpRunningComparison strompreis={strompreis} fuelType={fuelType} setFuelType={setFuelType} wpKwh={heat} jaz={calcJAZ("lwwp",flowTempForSystem(v.wpHeizsystem))} wpAutarky={fullFeedIn?0:sim.wpAutarky} stromSteigerung={inflation.stromInflation} gasSteigerung={inflation.gasInflation}/>
+    <HeatPumpRunningComparison strompreis={strompreis} fuelType={fuelType} setFuelType={setFuelType} wpKwh={heat} jaz={calcJAZ("lwwp",flowTempForSystem(v.wpHeizsystem))} wpAutarky={fullFeedIn?0:sim.wpAutarky} stromSteigerung={householdRate} gasSteigerung={inflation.gasInflation}/>
   </ComparisonFrame>;
 }
