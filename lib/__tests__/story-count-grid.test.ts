@@ -13,3 +13,14 @@ it('preserves exact totals and selections including the partial cell',()=>{
  expect(trier.cells.at(-1)?.occupied).toBe(.6);
  expect(trier.cells[0].selected).toBe(1);
 });
+
+it('bounds a compact host without losing large or tiny selections',()=>{
+ for(const [total,selected] of [[4031,343],[4999,1],[920,817],[500,0],[500,500],[150001,1777]]){
+  const {cells,perCell}=storyCountGrid(total,selected,100);
+  expect(cells.length).toBeLessThanOrEqual(100);
+  expect(cells.reduce((n,c)=>n+c.occupied*perCell,0)).toBeCloseTo(total);
+  expect(cells.reduce((n,c)=>n+c.selected*perCell,0)).toBeCloseTo(selected);
+ }
+ expect(storyCountGrid(4031,343).cells).toHaveLength(404);
+ expect(storyCountGrid(4031,343,100).cells).toHaveLength(41);
+});

@@ -73,7 +73,7 @@ function LocalMap({ paket }: { paket: GemeindePaket }) {
 
 const widgetRole = (item: Any) => monitorWidgetRole(item.template, item.story);
 
-export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket }) {
+export function MonitorWidget({ item, paket, compact = false }: { item: Any; paket: GemeindePaket; compact?: boolean }) {
   const history = paket.monitorHistory as Any;
   const periods = paket.monitorPeriods as Any;
   const role = widgetRole(item);
@@ -204,7 +204,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         <ShareDonut values={values} />
       ) : isComposition ? (
         <div className="monitor-widget-body">
-          <MonitorCompositionChart story={compositionStory} />
+          <MonitorCompositionChart story={compositionStory} maxCells={compact ? 100 : undefined} />
         </div>
       ) : (
         <div className="monitor-widget-body">
@@ -273,7 +273,7 @@ export default function GemeindeMonitor({ paket, single }: { paket: GemeindePake
   const stock = items.filter((item: Any) => item.section === "Anlagenbestand").map((item: Any) => ({
     id: item.story.id,
     widgetId: item.template === "anteilsdonut" ? WIDGETS.regionalComposition.id : WIDGETS.gemeindeAnlagenraster.id,
-    content: <MonitorWidget item={item} paket={paket} />,
+    content: <MonitorWidget item={item} paket={paket} compact={!single} />,
   }));
   const energy: MonitorEnergyWidgets = Object.fromEntries(items.filter((item: Any) => item.section === "Strom und Wert").map((item: Any) => [item.template, <MonitorWidget key={item.story.id} item={item} paket={paket} />]));
   const missing = (charts?.availability ?? []).some((item: Any) => item.status === "missing");

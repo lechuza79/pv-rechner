@@ -53,5 +53,17 @@ for (const width of [1440, 390]) {
     // Revisit the exact published link after close; no generated instance ID.
     await page.goto(`${pagePath}?${query}`, {waitUntil:'domcontentloaded'});
     await expect(dialog).toBeVisible({timeout:60_000});
+
+    // A larger stock must not turn the same compact raster into a 900px card.
+    await page.goto('/solar-atlas/brandenburg/landkreis-havelland/falkensee#atlas-data', {waitUntil:'domcontentloaded'});
+    const largeFrame = page.frameLocator('iframe[title="Energiedaten für Falkensee"]');
+    const rasters = largeFrame.locator('[data-widget-density="compact"]').filter({has:largeFrame.locator('[data-visual="anlagenraster"]')});
+    await expect(rasters).toHaveCount(2, {timeout:60_000});
+    await expect(rasters.first()).toBeVisible();
+    const rasterGeometry = await rasters.evaluateAll(nodes => nodes.map(node => ({
+      height:node.getBoundingClientRect().height,
+      overflow:node.scrollWidth > node.clientWidth + 1,
+    })));
+    expect(rasterGeometry.every(card => card.height > 0 && card.height < 750 && !card.overflow)).toBe(true);
   });
 }
