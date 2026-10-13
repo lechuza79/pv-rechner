@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   const ags = (req.nextUrl.searchParams.get("ags") ?? "").trim();
   // Bundesland (2), Kreis (5) or Gemeinde (8) — all numeric AGS.
-  if (!/^\d{2}(\d{3}(\d{3})?)?$/.test(ags)) {
+  if (!/^(?:\d{2}|\d{5}|\d{8}|\d{9})$/.test(ags)) {
     return NextResponse.redirect(new URL("/solar-atlas", req.url));
   }
 
