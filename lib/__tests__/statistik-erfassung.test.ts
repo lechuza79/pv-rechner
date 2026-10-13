@@ -103,7 +103,15 @@ describe("Codex", () => {
   it("filtert über das Arbeitsverzeichnis, nicht über den Text", () => {
     // Eine Sitzung, in der das Projekt bloß erwähnt wurde, gehört nicht dazu.
     expect(QUELLE).toMatch(/^\s*if \(o\.type === "session_meta"\) cwd = p\.cwd \?\? null;/m);
-    expect(QUELLE).toMatch(/^\s*if \(!cwd \|\| !cwd\.includes\("pv-rechner"\)\) continue;/m);
+    expect(QUELLE).toMatch(/^\s*if \(!cwd \|\| !cwd\.includes\(`\/\$\{PROJEKT\}`\)\) continue;/m);
+  });
+
+  it("zählt getippte Nachrichten über den geteilten Filter, nicht über ein Ereignis, das es nicht gibt", () => {
+    // Bis 13.10.2026 zählte der Lauf `user_message`-Ereignisse; Codex schreibt
+    // keine, und jeder Codex-Tag stand mit null Nachrichten in der Ablage.
+    expect(QUELLE).not.toMatch(/user_message/);
+    expect(QUELLE).toMatch(/codexNutzertext\(o\)/);
+    expect(QUELLE).toMatch(/gesehen\.has\(g\.id\)/);
   });
 
   it("rechnet nur für Claude zurück", () => {

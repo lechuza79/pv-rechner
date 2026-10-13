@@ -364,3 +364,38 @@ export function ueberschneidung(von: number, bis: number, fremde: Block[]): numb
   }
   return ms;
 }
+
+/**
+ * The text a PERSON typed into a Codex session, or null for everything else.
+ *
+ * Codex has no dedicated event for a typed message (an earlier reader counted
+ * `user_message` events, which these logs never contain — every Codex day was
+ * stored with zero messages from 31.08. on, unnoticed). A typed message is a
+ * `response_item` with role "user"; the same shape also carries what Codex
+ * injects itself, so those are filtered out here: the project instructions,
+ * tagged context blocks (`<environment_context>` …), replayed history when a
+ * session is resumed, and the summary of a continued session.
+ * Measured 13.10.2026: without these filters 14,540 "messages" for this
+ * project, with them 3,670.
+ */
+export function codexNutzertext(zeile: unknown): { id: string; text: string } | null {
+  if (!zeile || typeof zeile !== "object") return null;
+  const o = zeile as { type?: string; timestamp?: string; payload?: any };
+  const p = o.payload;
+  if (o.type !== "response_item" || p?.type !== "message" || p?.role !== "user") return null;
+  const text = (Array.isArray(p.content) ? p.content : [])
+    .map((b: any) => (typeof b?.text === "string" ? b.text : ""))
+    .join("")
+    .trim();
+  if (!text) return null;
+  if (CODEX_EINGESPIELT.some((r) => r.test(text))) return null;
+  return { id: String(p.id ?? `${o.timestamp}:${text.slice(0, 80)}`), text };
+}
+
+const CODEX_EINGESPIELT: RegExp[] = [
+  /^#\s*AGENTS\.md/,
+  /^</,
+  /^The following is the Codex agent history/,
+  /^This session is being continued/,
+  /^# Response annotations/,
+];
