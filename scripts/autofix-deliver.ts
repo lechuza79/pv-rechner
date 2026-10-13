@@ -63,7 +63,10 @@ function main() {
     if (schritt === "abgelehnt") return ende(`abgelehnt=Der Fix ${sha.slice(0, 7)} fiel in der Pflichtprüfung durch (Zweig ${zweig}).`);
     if (schritt === "uebernehmen") {
       try { git("push", "origin", `${sha}:refs/heads/main`); } catch (e) {
-        if (runde === MAX_RUNDEN) return ende(`abgelehnt=main nahm ${sha.slice(0, 7)} nicht an: ${String(e).split("\n")[0]}`);
+        // The first line of the error is only the command; the reason the
+        // remote refused (protection rule, stale ref, permission) is in stderr.
+        const grund = String((e as { stderr?: unknown }).stderr ?? "").replace(/x-access-token:[^@]*@/g, "").trim().split("\n").filter(Boolean).slice(-3).join(" | ");
+        if (runde === MAX_RUNDEN) return ende(`abgelehnt=main nahm ${sha.slice(0, 7)} nicht an: ${grund || String(e).split("\n")[0]}`);
         continue; // main moved between check and push: set up again
       }
       try { git("push", "-q", "origin", "--delete", zweig); } catch { /* the branch is only a vehicle */ }
