@@ -1,3 +1,4 @@
+import {prepareNewsletterMail, type NewsletterMail} from "../lib/newsletter-mail";
 /**
  * Der eine Versandlauf für Aussendungen an jede Zielgruppe — jede Mail wird VOR
  * dem Senden in der Datenbank vermerkt (lib/aussendung.ts).
@@ -95,7 +96,14 @@ async function nachtragen(c: Db, zielgruppe: string, datei: string) {
 }
 
 async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
-  const mails = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; html?: string; anlass: string; bezug?: string[]; kreise?: string[] }[];
+  const input = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; html?: string; newsletter?: NewsletterMail; anlass: string; bezug?: string[]; kreise?: string[] }[];
+  // Validate and prepare the whole batch before recording or sending any mail.
+  const mails = input.map(m => {
+    if (!m.newsletter) return {...m, batch: schub};
+    if (!m.html) throw new Error("Newsletter requires HTML");
+    const prepared = prepareNewsletterMail(m.html, m.text, m.newsletter, zielgruppe === "test");
+    return {...m, ...prepared};
+  });
   const nur = arg("nur") ? new Set(arg("nur")!.split(",").map((s) => s.trim().toLowerCase())) : null;
   // Every mail is checked BEFORE the first one goes out: a batch with one
   // broken letter stops whole, instead of half sent.
@@ -139,7 +147,7 @@ async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
       erste = false;
       // FIRST the record, THEN the mail. A failed record means no mail.
       const id = await vermerkeVorVersand(c, {
-        zielgruppe, empfaenger: an, anlass: m.anlass, bezug: m.bezug ?? m.kreise ?? [], schub, betreff: m.betreff, text: m.text,
+        zielgruppe, empfaenger: an, anlass: m.anlass, bezug: m.bezug ?? m.kreise ?? [], schub: m.batch, betreff: m.betreff, text: m.text,
       });
       const nachricht = { from: k.konfig.from, to: an, replyTo: k.konfig.replyTo, subject: m.betreff, text: m.text, ...(m.html ? {html: m.html, attachDataUrls: true} : {}) };
       const info = await transport.sendMail(nachricht);

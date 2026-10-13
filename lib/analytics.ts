@@ -1,3 +1,4 @@
+import {newsletterEventName} from "./newsletter-metrics";
 import {widgetEventName, type WidgetAction, type WidgetScope} from "./widget-analytics";
 import { track } from "@vercel/analytics";
 
@@ -155,4 +156,10 @@ export function trackWidgetEvent(id:string,scope:WidgetScope,action:WidgetAction
   const name=widgetEventName(id,scope,action);
   if(!name)return;
   try {track(name);} catch {/* Measurement must never interrupt a widget. */}
+}
+
+/** Fixed edition, variant and action only; no recipient or visitor properties. */
+export function trackNewsletterEvent(campaign: string, variant: string, action: string) {
+  const name = newsletterEventName(campaign, variant, action);
+  if (name) { try { track(name); } catch { /* Measurement must never interrupt navigation. */ } }
 }

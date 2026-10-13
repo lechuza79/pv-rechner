@@ -12,6 +12,7 @@ import SiteHeaderFrame from "../../components/SiteHeaderFrame";
 import LocationChangeToast from "../../components/LocationChangeToast";
 import SiteFuss from "../../components/SiteFuss";
 import { WebAnalytics } from "../../components/WebAnalytics";
+import {NewsletterMeasurement} from "../../components/NewsletterMeasurement";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -151,6 +152,7 @@ export default async function RootLayout({
         {/* Zählt Aufrufe aus den Outreach-Briefen — eigenes Ereignis statt des
             kostenpflichtigen Kampagnen-Zusatzpakets. */}
         <HerkunftsMelder />
+        <NewsletterMeasurement />
         <WidgetVideoConfirmation />
       </body>
     </html>
