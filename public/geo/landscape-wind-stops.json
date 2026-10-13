@@ -4335,5 +4335,72 @@
       "latitude": 51.69861,
       "longitude": 7.64125
     }
+  },
+  "05966004": {
+    "wind-1": {
+      "name": "Windanlagen bei Attendorn",
+      "latitude": 51.12316,
+      "longitude": 7.8283
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Attendorn",
+      "latitude": 51.07897,
+      "longitude": 7.84486
+    }
+  },
+  "05966012": {
+    "wind-1": {
+      "name": "Windanlagen bei Finnentrop",
+      "latitude": 51.19695,
+      "longitude": 8.10759
+    }
+  },
+  "05966016": {
+    "wind-1": {
+      "name": "Windanlagen bei Kirchhundem",
+      "latitude": 51.05353,
+      "longitude": 7.97323
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kirchhundem",
+      "latitude": 51.02701,
+      "longitude": 8.11448
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kirchhundem",
+      "latitude": 51.06455,
+      "longitude": 8.17091
+    }
+  },
+  "05966020": {
+    "wind-1": {
+      "name": "Windanlagen bei Lennestadt",
+      "latitude": 51.13681,
+      "longitude": 8.11769
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lennestadt",
+      "latitude": 51.17512,
+      "longitude": 8.1463
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lennestadt",
+      "latitude": 51.13347,
+      "longitude": 8.06
+    }
+  },
+  "05966024": {
+    "wind-1": {
+      "name": "Windanlagen bei Olpe",
+      "latitude": 51.0311,
+      "longitude": 7.93212
+    }
+  },
+  "05966028": {
+    "wind-1": {
+      "name": "Windanlagen bei Wenden",
+      "latitude": 50.95825,
+      "longitude": 7.87148
+    }
   }
 }
