@@ -92557,5 +92557,137 @@
         "evidenceUrl": "https://www.gemeinde-grafschaft.de/lebenkultur/zuschuesse/foerder-und-zuschussrichtlinien-der-gemeinde-grafschaft-vom-28.05.2026-aenderung.pdf?cid=tvs"
       }
     ]
+  },
+  {
+    "regionId": "07131029",
+    "name": "Hönningen",
+    "checkedAt": "2026-10-13T06:15:00Z",
+    "recheckAt": "2027-01-11T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hönningen gehört zur Verbandsgemeinde Altenahr (Landkreis Ahrweiler). Weder VG noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite der VG verweist nur auf den gemeinsamen Klimaschutz mit Adenau und den Klimastammtisch Ahr, die einzige Förderseite betrifft Vereine und Veranstaltungen, das Ortsrecht enthält keine Förderrichtlinie. Die erfasste Quelle betrifft Fördermittelbescheide der Aufbauhilfe 2021 an die Ortsgemeinde für Sportplatz und Gemeindehaus. (Stand 13.10.2026).",
+    "searches": [
+      "VG-Website altenahr.de: Inhaltsverzeichnis (122 Seiten) nach Klima, Energie, Solar, Förder, Zuschuss durchsucht",
+      "Seiten Klimaschutz, Kommunale Wärmeplanung, Wiederaufbau und Fördermittel für Vereine gelesen",
+      "Satzungsübersicht der Ortsgemeinde und der Verbandsgemeinde Altenahr gelesen: keine Förderrichtlinie für Energietechnik"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.altenahr.de/vg-altenahr/klimaschutz",
+        "finding": "Klimaschutzseite verweist nur auf den gemeinsamen Klimaschutz mit der VG Adenau und den Klimastammtisch Ahr (Bürgerinitiative); kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.altenahr.de/rathaus/satzungen/ortsgemeinden",
+        "finding": "Ortsrecht der Ortsgemeinden: Hauptsatzung, Beitrags-, Friedhofs-, Steuer- und Haushaltssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.altenahr.de/leben-wohnen/foerdermittel-fuer-vereine-und-veranstaltungen",
+        "finding": "Einzige Förderseite der VG: Fördermittel für Vereine, Ehrenamt und überörtliche Veranstaltungen."
+      },
+      {
+        "url": "https://hoenningen-ahr.de/post/innenminister-michael-ebling-%C3%BCbergibt-f%C3%B6rdermittelbescheide-f%C3%BCr-den-wiederaufbau-in-h%C3%B6nningen",
+        "finding": "Meldung: Fördermittel der Aufbauhilfe 2021 an die Ortsgemeinde für Sportplatz und Gemeindehaus Liers; kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoenningen-ahr.de/post/innenminister-michael-ebling-%C3%BCbergibt-f%C3%B6rdermittelbescheide-f%C3%BCr-den-wiederaufbau-in-h%C3%B6nningen",
+        "disposition": "reviewed",
+        "reason": "Meldung über Wiederaufbau-Fördermittel an die Ortsgemeinde (Sportplatz, Gemeindehaus Liers); kein Zuschuss für Haushalte; gelesen 13.10.2026.",
+        "evidenceUrl": "https://hoenningen-ahr.de/post/innenminister-michael-ebling-%C3%BCbergibt-f%C3%B6rdermittelbescheide-f%C3%BCr-den-wiederaufbau-in-h%C3%B6nningen"
+      }
+    ]
+  },
+  {
+    "regionId": "07131039",
+    "name": "Kesseling",
+    "checkedAt": "2026-10-13T06:15:00Z",
+    "recheckAt": "2027-01-11T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kesseling gehört zur Verbandsgemeinde Altenahr (Landkreis Ahrweiler). Weder VG noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite der VG verweist nur auf den gemeinsamen Klimaschutz mit Adenau und den Klimastammtisch Ahr, die einzige Förderseite betrifft Vereine und Veranstaltungen, das Ortsrecht enthält keine Förderrichtlinie. Die erfasste Quelle ist eine automatisch erzeugte Suchadresse der Ortsgemeinde-Website; die Startseite führt nur Wiederaufbau- und Dorfentwicklungsmeldungen. (Stand 13.10.2026).",
+    "searches": [
+      "VG-Website altenahr.de: Inhaltsverzeichnis (122 Seiten) nach Klima, Energie, Solar, Förder, Zuschuss durchsucht",
+      "Seiten Klimaschutz, Kommunale Wärmeplanung, Wiederaufbau und Fördermittel für Vereine gelesen",
+      "Satzungsübersicht der Ortsgemeinde und der Verbandsgemeinde Altenahr gelesen: keine Förderrichtlinie für Energietechnik"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.altenahr.de/vg-altenahr/klimaschutz",
+        "finding": "Klimaschutzseite verweist nur auf den gemeinsamen Klimaschutz mit der VG Adenau und den Klimastammtisch Ahr (Bürgerinitiative); kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.altenahr.de/rathaus/satzungen/ortsgemeinden",
+        "finding": "Ortsrecht der Ortsgemeinden: Hauptsatzung, Beitrags-, Friedhofs-, Steuer- und Haushaltssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.altenahr.de/leben-wohnen/foerdermittel-fuer-vereine-und-veranstaltungen",
+        "finding": "Einzige Förderseite der VG: Fördermittel für Vereine, Ehrenamt und überörtliche Veranstaltungen."
+      },
+      {
+        "url": "https://www.ortsgemeinde-kesseling.de/",
+        "finding": "Startseite der Ortsgemeinde: nur Dorflohmarkt sowie Wiederaufbau- und Entwicklungskonzepte; keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ortsgemeinde-kesseling.de/component/finder/search?q=f%C3%B6rderprogramm&amp;format=feed&amp;type=rss&amp;Itemid=102",
+        "disposition": "reviewed",
+        "reason": "Suchvorlage der Website-Suche, keine Inhaltsseite; Website der Ortsgemeinde stattdessen gelesen (Wiederaufbau- und Entwicklungskonzepte, keine Energieförderung); 13.10.2026.",
+        "evidenceUrl": "https://www.ortsgemeinde-kesseling.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "07131040",
+    "name": "Kirchsahr",
+    "checkedAt": "2026-10-13T06:15:00Z",
+    "recheckAt": "2027-01-11T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kirchsahr gehört zur Verbandsgemeinde Altenahr (Landkreis Ahrweiler). Weder VG noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite der VG verweist nur auf den gemeinsamen Klimaschutz mit Adenau und den Klimastammtisch Ahr, die einzige Förderseite betrifft Vereine und Veranstaltungen, das Ortsrecht enthält keine Förderrichtlinie. Die erfassten Quellen betreffen Antragshilfen für die Fluthilfe (ISB-Wiederaufbauanträge). (Stand 13.10.2026).",
+    "searches": [
+      "VG-Website altenahr.de: Inhaltsverzeichnis (122 Seiten) nach Klima, Energie, Solar, Förder, Zuschuss durchsucht",
+      "Seiten Klimaschutz, Kommunale Wärmeplanung, Wiederaufbau und Fördermittel für Vereine gelesen",
+      "Satzungsübersicht der Ortsgemeinde und der Verbandsgemeinde Altenahr gelesen: keine Förderrichtlinie für Energietechnik"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.altenahr.de/vg-altenahr/klimaschutz",
+        "finding": "Klimaschutzseite verweist nur auf den gemeinsamen Klimaschutz mit der VG Adenau und den Klimastammtisch Ahr (Bürgerinitiative); kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.altenahr.de/rathaus/satzungen/ortsgemeinden",
+        "finding": "Ortsrecht der Ortsgemeinden: Hauptsatzung, Beitrags-, Friedhofs-, Steuer- und Haushaltssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.altenahr.de/leben-wohnen/foerdermittel-fuer-vereine-und-veranstaltungen",
+        "finding": "Einzige Förderseite der VG: Fördermittel für Vereine, Ehrenamt und überörtliche Veranstaltungen."
+      },
+      {
+        "url": "https://kirchsahr.de/hochwasser/foerderantrag",
+        "finding": "Antragsberatung Fluthilfe (ISB-Wiederaufbauantrag, Hausrat, Fristen); keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchsahr.de/blog/antragshilfen-zu-den-foerderantraegen",
+        "disposition": "reviewed",
+        "reason": "Antragsberatung Fluthilfe (ISB-Wiederaufbau, Hausrat); kein Zuschuss für Energietechnik; gelesen 13.10.2026.",
+        "evidenceUrl": "https://kirchsahr.de/hochwasser/foerderantrag"
+      },
+      {
+        "url": "kirchsahr.de/blog/category/hochwasser/foerderantrag",
+        "disposition": "reviewed",
+        "reason": "Antragsberatung Fluthilfe (ISB-Wiederaufbau, Hausrat); kein Zuschuss für Energietechnik; gelesen 13.10.2026.",
+        "evidenceUrl": "https://kirchsahr.de/hochwasser/foerderantrag"
+      },
+      {
+        "url": "kirchsahr.de/hochwasser/foerderantrag",
+        "disposition": "reviewed",
+        "reason": "Antragsberatung Fluthilfe (ISB-Wiederaufbau, Hausrat); kein Zuschuss für Energietechnik; gelesen 13.10.2026.",
+        "evidenceUrl": "https://kirchsahr.de/hochwasser/foerderantrag"
+      }
+    ]
   }
 ]
