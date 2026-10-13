@@ -299,20 +299,21 @@ export const SCHUEBE: Record<string, Schub> = {
   /**
    * The rest of NRW before the autumn holidays (17.10.2026): every open town in
    * the 17 districts already written to, scenes built overnight 13./14.10.
-   * Charges of 90 leave room for the nine letters held back from nrw-2026-10.
+   * One charge: the daily cap (MAX_JE_LAUF, 250) takes these and the nine
+   * letters held back from nrw-2026-10 on the same day.
    * Mülheim an der Ruhr is out: the state terrain tiles miss ~9 % of its heights.
    */
   "nrw-2026-10b": {
     kampagne: "nrw-2026-10b",
     bl: ["05"],
     kanal: "brief-empfaenger",
-    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 90 },
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 240 },
     briefarten: ["platzierung", "info"],
     kreise: ["05154", "05158", "05162", "05170", "05374", "05378", "05558", "05570", "05758", "05762", "05766", "05770", "05774", "05954", "05958", "05962", "05974"],
     abIso: "2026-10-14",
     grund:
       "Rest von NRW vor den Herbstferien ab 17.10.2026: die offenen Orte der 17 bereits angeschriebenen Kreise, " +
-      "verteilt auf Mittwoch und Donnerstag.",
+      "alle an einem Tag.",
   },
   "mail-luecken-okt": {
     kampagne: "mail-luecken-okt",
