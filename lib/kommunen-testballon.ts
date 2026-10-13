@@ -278,6 +278,24 @@ export const SCHUEBE: Record<string, Schub> = {
       "in NRW, Brandenburg und Sachsen-Anhalt, jede offene Gemeinde mit ihrem größten Aufhänger. " +
       "Ferien dort erst ab 17.10. (NRW) bzw. 19.10.2026.",
   },
+  /**
+   * Second whole-district batch (operator, 13.10.2026: "wir schicken auf jeden
+   * Fall heute was"): every kreisfreie Stadt of NRW plus seven untouched
+   * districts. Scenes are built the same morning, so the draw runs several
+   * times; it only takes towns whose stage is already published.
+   */
+  "nrw-2026-10": {
+    kampagne: "nrw-2026-10",
+    bl: ["05"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 100 },
+    briefarten: ["platzierung", "info"],
+    kreise: ["05112", "05113", "05114", "05116", "05117", "05119", "05120", "05122", "05124", "05314", "05315", "05316", "05512", "05513", "05515", "05711", "05911", "05913", "05914", "05915", "05916", "05358", "05362", "05370", "05562", "05966", "05970", "05978"],
+    abIso: "2026-10-13",
+    grund:
+      "Letztes Fenster in NRW vor den Herbstferien ab 17.10.2026: alle kreisfreien Städte und sieben noch " +
+      "unberührte Kreise (Düren, Rhein-Erft, Heinsberg, Recklinghausen, Olpe, Siegen-Wittgenstein, Unna).",
+  },
   "mail-luecken-okt": {
     kampagne: "mail-luecken-okt",
     bl: ["05", "12", "15"],
