@@ -3244,5 +3244,203 @@
       "latitude": 51.16566,
       "longitude": 7.29579
     }
+  },
+  "05124000": {
+    "wind-1": {
+      "name": "Windanlagen bei Wuppertal",
+      "latitude": 51.2235,
+      "longitude": 7.13757
+    }
+  },
+  "05358004": {
+    "wind-1": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.91164,
+      "longitude": 6.27632
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.88098,
+      "longitude": 6.31567
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.86792,
+      "longitude": 6.25319
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.93557,
+      "longitude": 6.26423
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.89845,
+      "longitude": 6.20745
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Aldenhoven",
+      "latitude": 50.86754,
+      "longitude": 6.23096
+    }
+  },
+  "05358008": {
+    "wind-1": {
+      "name": "Windanlagen bei Düren",
+      "latitude": 50.83062,
+      "longitude": 6.39475
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Düren",
+      "latitude": 50.80951,
+      "longitude": 6.53434
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Düren",
+      "latitude": 50.84901,
+      "longitude": 6.47661
+    }
+  },
+  "05358012": {
+    "wind-1": {
+      "name": "Windanlagen bei Heimbach",
+      "latitude": 50.64177,
+      "longitude": 6.56733
+    }
+  },
+  "05358016": {
+    "wind-1": {
+      "name": "Windanlagen bei Hürtgenwald",
+      "latitude": 50.66482,
+      "longitude": 6.32661
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hürtgenwald",
+      "latitude": 50.6858,
+      "longitude": 6.31573
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Hürtgenwald",
+      "latitude": 50.71007,
+      "longitude": 6.39812
+    }
+  },
+  "05512000": {
+    "wind-1": {
+      "name": "Windanlagen bei Bottrop",
+      "latitude": 51.6204,
+      "longitude": 6.94934
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bottrop",
+      "latitude": 51.63761,
+      "longitude": 6.92984
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bottrop",
+      "latitude": 51.50989,
+      "longitude": 6.98183
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Bottrop",
+      "latitude": 51.59054,
+      "longitude": 6.94525
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Bottrop",
+      "latitude": 51.61431,
+      "longitude": 6.90696
+    }
+  },
+  "05513000": {
+    "wind-1": {
+      "name": "Windanlagen bei Gelsenkirchen",
+      "latitude": 51.60568,
+      "longitude": 7.01332
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gelsenkirchen",
+      "latitude": 51.55246,
+      "longitude": 7.11314
+    }
+  },
+  "05515000": {
+    "wind-1": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 52.03603,
+      "longitude": 7.57319
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 52.0538,
+      "longitude": 7.6016
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.89686,
+      "longitude": 7.60505
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.96858,
+      "longitude": 7.54356
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.93786,
+      "longitude": 7.72818
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 52.01864,
+      "longitude": 7.60805
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 52.00997,
+      "longitude": 7.53425
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.86873,
+      "longitude": 7.58028
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.8975,
+      "longitude": 7.5672
+    },
+    "wind-10": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.88698,
+      "longitude": 7.63137
+    },
+    "wind-11": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 51.88336,
+      "longitude": 7.54402
+    },
+    "wind-12": {
+      "name": "Windanlagen bei Münster",
+      "latitude": 52.02271,
+      "longitude": 7.69275
+    }
+  },
+  "05711000": {
+    "wind-1": {
+      "name": "Windanlagen bei Bielefeld",
+      "latitude": 52.01318,
+      "longitude": 8.64415
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bielefeld",
+      "latitude": 51.92475,
+      "longitude": 8.53681
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bielefeld",
+      "latitude": 52.09999,
+      "longitude": 8.48331
+    }
   }
 }
