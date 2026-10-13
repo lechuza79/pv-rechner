@@ -4970,5 +4970,193 @@
       "latitude": 51.62806,
       "longitude": 6.55195
     }
+  },
+  "05570004": {
+    "wind-1": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.7969,
+      "longitude": 7.88304
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.80095,
+      "longitude": 7.81605
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.73106,
+      "longitude": 7.88868
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.72663,
+      "longitude": 7.95285
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.81304,
+      "longitude": 7.96149
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Ahlen",
+      "latitude": 51.7502,
+      "longitude": 7.8968
+    }
+  },
+  "05570012": {
+    "wind-1": {
+      "name": "Windanlagen bei Beelen",
+      "latitude": 51.93285,
+      "longitude": 8.09264
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Beelen",
+      "latitude": 51.95053,
+      "longitude": 8.09922
+    }
+  },
+  "05570020": {
+    "wind-1": {
+      "name": "Windanlagen bei Ennigerloh",
+      "latitude": 51.86173,
+      "longitude": 7.97589
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ennigerloh",
+      "latitude": 51.89205,
+      "longitude": 8.11044
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Ennigerloh",
+      "latitude": 51.88893,
+      "longitude": 8.00277
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Ennigerloh",
+      "latitude": 51.85043,
+      "longitude": 7.99413
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Ennigerloh",
+      "latitude": 51.85339,
+      "longitude": 7.9471
+    }
+  },
+  "05570024": {
+    "wind-1": {
+      "name": "Windanlagen bei Everswinkel",
+      "latitude": 51.94896,
+      "longitude": 7.86903
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Everswinkel",
+      "latitude": 51.89448,
+      "longitude": 7.86994
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Everswinkel",
+      "latitude": 51.93714,
+      "longitude": 7.83286
+    }
+  },
+  "05570028": {
+    "wind-1": {
+      "name": "Windanlagen bei Oelde",
+      "latitude": 51.78379,
+      "longitude": 8.13992
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Oelde",
+      "latitude": 51.7832,
+      "longitude": 8.17066
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Oelde",
+      "latitude": 51.85919,
+      "longitude": 8.1835
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Oelde",
+      "latitude": 51.82,
+      "longitude": 8.16
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Oelde",
+      "latitude": 51.83117,
+      "longitude": 8.20295
+    }
+  },
+  "05570036": {
+    "wind-1": {
+      "name": "Windanlagen bei Sassenberg",
+      "latitude": 52.01392,
+      "longitude": 8.01769
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Sassenberg",
+      "latitude": 52.06046,
+      "longitude": 8.07265
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Sassenberg",
+      "latitude": 51.96603,
+      "longitude": 8.04537
+    }
+  },
+  "05570040": {
+    "wind-1": {
+      "name": "Windanlagen bei Sendenhorst",
+      "latitude": 51.84688,
+      "longitude": 7.78069
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Sendenhorst",
+      "latitude": 51.85793,
+      "longitude": 7.80026
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Sendenhorst",
+      "latitude": 51.89726,
+      "longitude": 7.73703
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Sendenhorst",
+      "latitude": 51.83106,
+      "longitude": 7.7256
+    }
+  },
+  "05570044": {
+    "wind-1": {
+      "name": "Windanlagen bei Telgte",
+      "latitude": 52.04729,
+      "longitude": 7.78954
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Telgte",
+      "latitude": 51.95688,
+      "longitude": 7.83094
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Telgte",
+      "latitude": 52.00235,
+      "longitude": 7.83092
+    }
+  },
+  "05570048": {
+    "wind-1": {
+      "name": "Windanlagen bei Wadersloh",
+      "latitude": 51.72444,
+      "longitude": 8.1748
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Wadersloh",
+      "latitude": 51.74854,
+      "longitude": 8.18178
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Wadersloh",
+      "latitude": 51.71764,
+      "longitude": 8.28743
+    }
   }
 }
