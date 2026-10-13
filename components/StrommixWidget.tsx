@@ -17,6 +17,7 @@ import { STROMMIX_MILESTONES, milestonesForYear, strommixTimelineEvents } from "
 import { ExportableWidgetFrame } from "./dashboard/ExportableWidgetFrame";
 import { WIDGETS } from "../lib/widget-registry";
 import { Auswahl } from "./Auswahl";
+import {useWidgetPresentation} from "./dashboard/WidgetPresentationContext";
 
 import { LoadingDots as BouncingDots } from "./LoadingDots";
 // Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
@@ -172,6 +173,7 @@ function LoadingSpinner() {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function StrommixWidget({ initialData, initialNuclear = true, editorial = false, onsite = true, switchable = true, range, branding = true, embed = true }: { initialData?: GenerationData; initialNuclear?: boolean; editorial?: boolean; onsite?: boolean; switchable?: boolean; range?: string; branding?: boolean; embed?: boolean }) {
+  const allocated = useWidgetPresentation().layout === "allocated";
   const searchParams = useSearchParams();
   const [compactUnits,setCompactUnits] = useState(false);
   useEffect(()=>{
@@ -298,7 +300,7 @@ export default function StrommixWidget({ initialData, initialNuclear = true, edi
   }, [selected]);
 
   return (
-    <div style={{ width: "100%", margin: "0 auto", minWidth: 0 }}>
+    <div data-strommix-widget style={{ width: "100%", margin: "0 auto", minWidth: 0, ...(allocated ? {height:"100%", minHeight:0, display:"flex", flexDirection:"column"} as const : {}) }}>
       {/* The hero (h1 + intro) lives in page.tsx: this component reads the URL
           and renders only in the browser, so a heading here was missing from
           the server HTML (SEO audit 27.09.2026). */}
@@ -326,7 +328,7 @@ export default function StrommixWidget({ initialData, initialNuclear = true, edi
           ...availableYears.map(y=>({schluessel:String(y),name:String(y)})),
           {schluessel:'MAX',name:'Seit 2015'},
         ]}/> : undefined}>
-      <div className="sc-widget-inset" style={ENERGY_WIDGET_STYLE}>
+      <div className="sc-widget-inset" data-widget-loading={loading} style={ENERGY_WIDGET_STYLE}>
       {/* Summary Widgets — horizontal row (always visible) */}
       <div
         style={{

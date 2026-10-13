@@ -40,38 +40,44 @@ async function ersatzstand(page: Page) {
 }
 
 test("stored copy: data shown, outage and real time named, no 'gerade'", async ({ page }) => {
+  await page.emulateMedia({reducedMotion:"reduce"});
   await ersatzstand(page);
+  // Server-rendered observations remain fresh for five minutes. Exercise the next client refresh.
+  await page.clock.install({time: new Date(Date.now() + 10 * 60_000)});
   await page.goto("/strommix-deutschland");
 
   const hinweis = "Energy-Charts (Fraunhofer ISE) liefert gerade keine Daten. Gezeigt wird der letzte Stand vom 05.10., 11:45 Uhr.";
-  // Live block and history chart each carry the note.
-  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(2);
-  await expect(page.getByText(/Zu diesem Zeitpunkt deckten erneuerbare Energien/)).toBeVisible();
+  // Hero, radar and history each carry the source notice; reduced motion keeps the timestamp fixed.
+  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(3);
+  await expect(page.getByText(/Zuletzt stammten/)).toBeVisible();
   await expect(page.getByText(/Gerade decken erneuerbare/)).toHaveCount(0);
   await expect(page.getByText("Daten konnten nicht geladen werden")).toHaveCount(0);
 });
 
-test("no copy at all: the live block says so instead of an empty frame", async ({ page }) => {
+test("no copy at all: radar and history embeds show an explicit error", async ({ page }) => {
   await page.route("**/api/energy/**", (r) => r.fulfill({ status: 502, json: { data: [], source: "error" } }));
-  await page.goto("/strommix-deutschland");
-  // Client retries three times (3 s, 8 s) before giving up.
-  await expect(page.getByText("Die Erzeugungsdaten sind gerade nicht erreichbar.").first()).toBeVisible({ timeout: 30000 });
-  await expect(page.getByText("Daten konnten nicht geladen werden")).toBeVisible({ timeout: 30000 });
+  await page.goto("/embed/strommix?darstellung=radar");
+  await expect(page.getByText("Daten gerade nicht erreichbar.")).toBeVisible();
+  await page.goto("/embed/strommix");
+  await expect(page.getByText("Daten konnten nicht geladen werden")).toBeVisible();
 });
 
-test("SMARD live: numbers shown, SMARD named and credited, 'gerade' stays", async ({ page }) => {
+test("SMARD live: numbers shown, SMARD named and credited", async ({ page }) => {
+  await page.emulateMedia({reducedMotion:"reduce"});
   await page.route("**/api/energy/generation**", (r) =>
     r.fulfill({
       json: { data: reihe, source: "Bundesnetzagentur | SMARD.de", license: "CC BY 4.0", country: "de", resolution: "15min", fallback: "smard" },
     }),
   );
   await page.route("**/api/energy/nuclear-import**", (r) => r.fulfill({ status: 502, json: { data: [], source: "error" } }));
+  // Server-rendered observations remain fresh for five minutes. Exercise the next client refresh.
+  await page.clock.install({time: new Date(Date.now() + 10 * 60_000)});
   await page.goto("/strommix-deutschland");
 
   const hinweis =
     "Energy-Charts (Fraunhofer ISE) liefert gerade keine Daten. Gezeigt werden die Zahlen von Bundesnetzagentur | SMARD.de, Stand 05.10., 11:45 Uhr.";
-  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(2);
-  await expect(page.getByText(/Gerade decken erneuerbare Energien/)).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(3);
+  await expect(page.getByText(/Zuletzt stammten/)).toBeVisible();
   // The page credit names who supplied the numbers on screen.
-  await expect(page.getByText(/Datenquelle: Bundesnetzagentur \| SMARD\.de, CC BY 4\.0/)).toBeVisible();
+  await expect(page.getByText(/Bundesnetzagentur \| SMARD\.de.*CC BY 4\.0/).first()).toBeVisible();
 });
