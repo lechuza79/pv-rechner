@@ -5608,5 +5608,141 @@
       "latitude": 51.34454,
       "longitude": 7.14731
     }
+  },
+  "05558004": {
+    "wind-1": {
+      "name": "Windanlagen bei Ascheberg",
+      "latitude": 51.77489,
+      "longitude": 7.69716
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ascheberg",
+      "latitude": 51.72384,
+      "longitude": 7.70895
+    }
+  },
+  "05558016": {
+    "wind-1": {
+      "name": "Windanlagen bei Dülmen",
+      "latitude": 51.88246,
+      "longitude": 7.22928
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dülmen",
+      "latitude": 51.81868,
+      "longitude": 7.38559
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dülmen",
+      "latitude": 51.87572,
+      "longitude": 7.39193
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Dülmen",
+      "latitude": 51.83458,
+      "longitude": 7.23191
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Dülmen",
+      "latitude": 51.86334,
+      "longitude": 7.3994
+    }
+  },
+  "05558020": {
+    "wind-1": {
+      "name": "Windanlagen bei Havixbeck",
+      "latitude": 51.9856,
+      "longitude": 7.46234
+    }
+  },
+  "05558024": {
+    "wind-1": {
+      "name": "Windanlagen bei Lüdinghausen",
+      "latitude": 51.80316,
+      "longitude": 7.51776
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lüdinghausen",
+      "latitude": 51.80909,
+      "longitude": 7.43064
+    }
+  },
+  "05558032": {
+    "wind-1": {
+      "name": "Windanlagen bei Nottuln",
+      "latitude": 51.89747,
+      "longitude": 7.3698
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Nottuln",
+      "latitude": 51.94585,
+      "longitude": 7.2851
+    }
+  },
+  "05558036": {
+    "wind-1": {
+      "name": "Windanlagen bei Olfen",
+      "latitude": 51.72611,
+      "longitude": 7.39908
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Olfen",
+      "latitude": 51.7246,
+      "longitude": 7.32018
+    }
+  },
+  "05558040": {
+    "wind-1": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.0021,
+      "longitude": 7.15587
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.02238,
+      "longitude": 7.15638
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 51.9979,
+      "longitude": 7.0666
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.03634,
+      "longitude": 7.32413
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.01076,
+      "longitude": 7.28958
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.00098,
+      "longitude": 7.21175
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 52.04054,
+      "longitude": 7.18984
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Rosendahl",
+      "latitude": 51.99762,
+      "longitude": 7.18838
+    }
+  },
+  "05558044": {
+    "wind-1": {
+      "name": "Windanlagen bei Senden",
+      "latitude": 51.9367,
+      "longitude": 7.48121
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Senden",
+      "latitude": 51.80527,
+      "longitude": 7.5582
+    }
   }
 }
