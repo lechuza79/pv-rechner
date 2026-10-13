@@ -1,4 +1,5 @@
 'use client';
+import {quellenHinweis} from '../../lib/energy-ersatzstand';
 import {formatLiveDataTime} from '../../lib/live-data-time';
 import type {NuclearImportResponse} from '../../lib/nuclear-import';
 import {nuclearDaily,nuclearDailyEnergy} from '../../lib/nuclear-daily';
@@ -37,6 +38,8 @@ export default function NuclearDailyWidget({data,variant='teaser',metric='power'
  const lastSample=samples.reduce<string|undefined>((last,p)=>!last||Date.parse(p.ts)>Date.parse(last)?p.ts:last,undefined);
  const dataTime=timestampLabel(lastSample);
  const referenceDate=new Date(asOf??Date.now());
+ updatedAt=data?.fetchedAt??(data?.stale?undefined:updatedAt);
+ const fallbackNote=data?quellenHinweis(data,lastSample):null;
  const updateLabel=updatedAt?formatLiveDataTime(updatedAt,referenceDate):null;
  const retrieved=timestampLabel(updatedAt);
  const latestEnergy=energyResult?.days.at(-1);
@@ -52,6 +55,7 @@ export default function NuclearDailyWidget({data,variant='teaser',metric='power'
     <CategoryBarChart unit={unit} label={`Rechnerischer Atomstrom-Import: ${energy?'Tagesenergie':'Tagesmittel'}, ${period}`} rows={rows}/>
     <div className={styles.value}>{value===null?<span className={styles.unavailable}>– <small>{unit}</small></span>:<MetricValue value={value} unit={unit} maximumFractionDigits={energy?1:2}/>}{energy&&<small>{description}</small>}</div>
    </div>}
+   {fallbackNote&&<p className={styles.note} role="status">{fallbackNote}</p>}
    {variant==='full'&&<p className={styles.note}>Energy-Charts / Fraunhofer ISE · CC BY 4.0. Rechnerische Zuordnung, keine gemessene Herkunft des Stroms.</p>}
   </div>}
  </ExportableWidgetFrame>;
