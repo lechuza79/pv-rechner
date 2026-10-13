@@ -12,7 +12,7 @@ for (const width of [1440, 390]) {
     const frame = page.frameLocator('iframe[title="Energiedaten für Meinersen"]');
     const dialog = frame.getByRole('dialog', {name:'Solarerzeugung im Tagesverlauf in Meinersen', exact:true});
     await expect(dialog).toBeVisible({timeout:60_000});
-    await expect(dialog.locator('[data-chart-animation="month"] svg')).toBeVisible();
+    await expect(dialog.getByRole('group', {name:/Solarleistung in Meinersen, Sept\. 2026/})).toBeVisible();
     await expect(dialog.getByRole('button', {name:'Wiedergabe pausieren'})).toBeVisible();
     await dialog.getByRole('button', {name:'Wiedergabe pausieren'}).click();
     await expect(dialog.getByRole('button', {name:'Monat abspielen'})).toBeVisible();
