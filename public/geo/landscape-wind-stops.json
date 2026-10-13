@@ -3612,5 +3612,141 @@
       "latitude": 51.73556,
       "longitude": 7.74673
     }
+  },
+  "05358052": {
+    "wind-1": {
+      "name": "Windanlagen bei Nörvenich",
+      "latitude": 50.77503,
+      "longitude": 6.68168
+    }
+  },
+  "05358056": {
+    "wind-1": {
+      "name": "Windanlagen bei Titz",
+      "latitude": 50.97658,
+      "longitude": 6.48629
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Titz",
+      "latitude": 51.02653,
+      "longitude": 6.42271
+    }
+  },
+  "05358060": {
+    "wind-1": {
+      "name": "Windanlagen bei Vettweiß",
+      "latitude": 50.72246,
+      "longitude": 6.6088
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Vettweiß",
+      "latitude": 50.76453,
+      "longitude": 6.68028
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Vettweiß",
+      "latitude": 50.70349,
+      "longitude": 6.55428
+    }
+  },
+  "05362004": {
+    "wind-1": {
+      "name": "Windanlagen bei Bedburg",
+      "latitude": 51.03558,
+      "longitude": 6.51305
+    }
+  },
+  "05970004": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Berleburg",
+      "latitude": 50.99969,
+      "longitude": 8.38101
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bad Berleburg",
+      "latitude": 51.04041,
+      "longitude": 8.43643
+    }
+  },
+  "05970008": {
+    "wind-1": {
+      "name": "Windanlagen bei Burbach",
+      "latitude": 50.79226,
+      "longitude": 8.11633
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Burbach",
+      "latitude": 50.78656,
+      "longitude": 8.08949
+    }
+  },
+  "05970016": {
+    "wind-1": {
+      "name": "Windanlagen bei Freudenberg",
+      "latitude": 50.92211,
+      "longitude": 7.86007
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Freudenberg",
+      "latitude": 50.88771,
+      "longitude": 7.92747
+    }
+  },
+  "05970020": {
+    "wind-1": {
+      "name": "Windanlagen bei Hilchenbach",
+      "latitude": 51.01878,
+      "longitude": 8.12956
+    }
+  },
+  "05970024": {
+    "wind-1": {
+      "name": "Windanlagen bei Kreuztal",
+      "latitude": 51.0233,
+      "longitude": 7.95104
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kreuztal",
+      "latitude": 51.0,
+      "longitude": 8.0
+    }
+  },
+  "05970028": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Laasphe",
+      "latitude": 50.90161,
+      "longitude": 8.37964
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bad Laasphe",
+      "latitude": 50.9357,
+      "longitude": 8.25555
+    }
+  },
+  "05970032": {
+    "wind-1": {
+      "name": "Windanlagen bei Netphen",
+      "latitude": 50.86403,
+      "longitude": 8.15283
+    }
+  },
+  "05970040": {
+    "wind-1": {
+      "name": "Windanlagen bei Siegen",
+      "latitude": 50.9379,
+      "longitude": 7.9582
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Siegen",
+      "latitude": 50.89607,
+      "longitude": 8.087
+    }
+  },
+  "05970044": {
+    "wind-1": {
+      "name": "Windanlagen bei Wilnsdorf",
+      "latitude": 50.79558,
+      "longitude": 8.13833
+    }
   }
 }
