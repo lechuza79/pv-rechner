@@ -181,6 +181,7 @@ export async function GET(req: NextRequest) {
     ) as Adressherkunft | null;
     const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, {
       anPresse: ziel.anPresse,
+      anKlima: ziel.rolle === "klima",
       herkunft: herkunft ?? undefined,
     });
     if (istBriefFehler(gebaut)) {
