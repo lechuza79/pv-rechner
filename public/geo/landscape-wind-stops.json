@@ -4402,5 +4402,194 @@
       "latitude": 50.95825,
       "longitude": 7.87148
     }
+  },
+  "05766008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Salzuflen",
+      "latitude": 52.08745,
+      "longitude": 8.83159
+    }
+  },
+  "05766012": {
+    "wind-1": {
+      "name": "Windanlagen bei Barntrup",
+      "latitude": 52.01988,
+      "longitude": 9.14622
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Barntrup",
+      "latitude": 52.0172,
+      "longitude": 9.11615
+    }
+  },
+  "05766016": {
+    "wind-1": {
+      "name": "Windanlagen bei Blomberg",
+      "latitude": 51.97775,
+      "longitude": 9.03812
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Blomberg",
+      "latitude": 51.95916,
+      "longitude": 9.07552
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Blomberg",
+      "latitude": 51.97629,
+      "longitude": 9.00325
+    }
+  },
+  "05766020": {
+    "wind-1": {
+      "name": "Windanlagen bei Detmold",
+      "latitude": 51.9664,
+      "longitude": 8.82084
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Detmold",
+      "latitude": 51.97646,
+      "longitude": 8.91413
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Detmold",
+      "latitude": 51.95754,
+      "longitude": 8.97683
+    }
+  },
+  "05766028": {
+    "wind-1": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.08474,
+      "longitude": 9.13866
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.04698,
+      "longitude": 9.07962
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.1101,
+      "longitude": 9.10621
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.07947,
+      "longitude": 9.05377
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.05368,
+      "longitude": 9.14411
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.08675,
+      "longitude": 9.07667
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Extertal",
+      "latitude": 52.12629,
+      "longitude": 9.05505
+    }
+  },
+  "05766032": {
+    "wind-1": {
+      "name": "Windanlagen bei Horn-Bad Meinberg",
+      "latitude": 51.81899,
+      "longitude": 8.92362
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Horn-Bad Meinberg",
+      "latitude": 51.88399,
+      "longitude": 9.06798
+    }
+  },
+  "05766036": {
+    "wind-1": {
+      "name": "Windanlagen bei Kalletal",
+      "latitude": 52.11405,
+      "longitude": 8.98102
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kalletal",
+      "latitude": 52.08272,
+      "longitude": 8.96876
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kalletal",
+      "latitude": 52.1342,
+      "longitude": 8.93154
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Kalletal",
+      "latitude": 52.06527,
+      "longitude": 8.97499
+    }
+  },
+  "05766040": {
+    "wind-1": {
+      "name": "Windanlagen bei Lage",
+      "latitude": 52.01789,
+      "longitude": 8.81662
+    }
+  },
+  "05766044": {
+    "wind-1": {
+      "name": "Windanlagen bei Lemgo",
+      "latitude": 51.99191,
+      "longitude": 8.93077
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lemgo",
+      "latitude": 52.10108,
+      "longitude": 8.85352
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lemgo",
+      "latitude": 52.01277,
+      "longitude": 8.99414
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Lemgo",
+      "latitude": 52.01689,
+      "longitude": 8.8279
+    }
+  },
+  "05766052": {
+    "wind-1": {
+      "name": "Windanlagen bei Lügde",
+      "latitude": 51.93205,
+      "longitude": 9.25563
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lügde",
+      "latitude": 51.86767,
+      "longitude": 9.29528
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lügde",
+      "latitude": 51.92056,
+      "longitude": 9.30936
+    }
+  },
+  "05766060": {
+    "wind-1": {
+      "name": "Windanlagen bei Schieder-Schwalenberg",
+      "latitude": 51.89647,
+      "longitude": 9.14722
+    }
+  },
+  "05766064": {
+    "wind-1": {
+      "name": "Windanlagen bei Schlangen",
+      "latitude": 51.8105,
+      "longitude": 8.87773
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schlangen",
+      "latitude": 51.81684,
+      "longitude": 8.90853
+    }
   }
 }
