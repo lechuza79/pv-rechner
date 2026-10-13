@@ -3983,5 +3983,357 @@
       "latitude": 51.04395,
       "longitude": 6.01707
     }
+  },
+  "05370028": {
+    "wind-1": {
+      "name": "Windanlagen bei Übach-Palenberg",
+      "latitude": 50.93216,
+      "longitude": 6.14301
+    }
+  },
+  "05370036": {
+    "wind-1": {
+      "name": "Windanlagen bei Wassenberg",
+      "latitude": 51.1069,
+      "longitude": 6.1293
+    }
+  },
+  "05370040": {
+    "wind-1": {
+      "name": "Windanlagen bei Wegberg",
+      "latitude": 51.12457,
+      "longitude": 6.23169
+    }
+  },
+  "05562004": {
+    "wind-1": {
+      "name": "Windanlagen bei Castrop-Rauxel",
+      "latitude": 51.54626,
+      "longitude": 7.34647
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Castrop-Rauxel",
+      "latitude": 51.6193,
+      "longitude": 7.29699
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Castrop-Rauxel",
+      "latitude": 51.5765,
+      "longitude": 7.28571
+    }
+  },
+  "05562008": {
+    "wind-1": {
+      "name": "Windanlagen bei Datteln",
+      "latitude": 51.63473,
+      "longitude": 7.35428
+    }
+  },
+  "05562012": {
+    "wind-1": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.70481,
+      "longitude": 7.03808
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.7925,
+      "longitude": 6.97726
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.68696,
+      "longitude": 7.0339
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.79139,
+      "longitude": 7.00999
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.76567,
+      "longitude": 6.97414
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.76573,
+      "longitude": 6.91883
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.77087,
+      "longitude": 7.02968
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.6923,
+      "longitude": 6.92126
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.65431,
+      "longitude": 6.89547
+    },
+    "wind-10": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.775,
+      "longitude": 6.99417
+    },
+    "wind-11": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.67854,
+      "longitude": 6.91581
+    },
+    "wind-12": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.73909,
+      "longitude": 6.96312
+    },
+    "wind-13": {
+      "name": "Windanlagen bei Dorsten",
+      "latitude": 51.69138,
+      "longitude": 6.98425
+    }
+  },
+  "05562014": {
+    "wind-1": {
+      "name": "Windanlagen bei Gladbeck",
+      "latitude": 51.54667,
+      "longitude": 6.99306
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gladbeck",
+      "latitude": 51.56399,
+      "longitude": 6.94422
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Gladbeck",
+      "latitude": 51.57903,
+      "longitude": 6.94109
+    }
+  },
+  "05562016": {
+    "wind-1": {
+      "name": "Windanlagen bei Haltern am See",
+      "latitude": 51.77291,
+      "longitude": 7.1884
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Haltern am See",
+      "latitude": 51.74387,
+      "longitude": 7.09681
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Haltern am See",
+      "latitude": 51.73094,
+      "longitude": 7.13411
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Haltern am See",
+      "latitude": 51.73391,
+      "longitude": 7.26967
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Haltern am See",
+      "latitude": 51.76131,
+      "longitude": 7.12882
+    }
+  },
+  "05562020": {
+    "wind-1": {
+      "name": "Windanlagen bei Herten",
+      "latitude": 51.56184,
+      "longitude": 7.15391
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Herten",
+      "latitude": 51.6238,
+      "longitude": 7.12253
+    }
+  },
+  "05562024": {
+    "wind-1": {
+      "name": "Windanlagen bei Marl",
+      "latitude": 51.63956,
+      "longitude": 7.04656
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Marl",
+      "latitude": 51.67918,
+      "longitude": 7.14954
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Marl",
+      "latitude": 51.63482,
+      "longitude": 7.0733
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Marl",
+      "latitude": 51.67467,
+      "longitude": 7.19674
+    }
+  },
+  "05562028": {
+    "wind-1": {
+      "name": "Windanlagen bei Oer-Erkenschwick",
+      "latitude": 51.62539,
+      "longitude": 7.26931
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Oer-Erkenschwick",
+      "latitude": 51.64462,
+      "longitude": 7.21923
+    }
+  },
+  "05562032": {
+    "wind-1": {
+      "name": "Windanlagen bei Recklinghausen",
+      "latitude": 51.63641,
+      "longitude": 7.21548
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Recklinghausen",
+      "latitude": 51.62125,
+      "longitude": 7.26601
+    }
+  },
+  "05562036": {
+    "wind-1": {
+      "name": "Windanlagen bei Waltrop",
+      "latitude": 51.59552,
+      "longitude": 7.39025
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Waltrop",
+      "latitude": 51.64006,
+      "longitude": 7.40315
+    }
+  },
+  "05978004": {
+    "wind-1": {
+      "name": "Windanlagen bei Bergkamen",
+      "latitude": 51.631,
+      "longitude": 7.674
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bergkamen",
+      "latitude": 51.60936,
+      "longitude": 7.67153
+    }
+  },
+  "05978008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bönen",
+      "latitude": 51.6212,
+      "longitude": 7.75543
+    }
+  },
+  "05978012": {
+    "wind-1": {
+      "name": "Windanlagen bei Fröndenberg/Ruhr",
+      "latitude": 51.52237,
+      "longitude": 7.7629
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Fröndenberg/Ruhr",
+      "latitude": 51.4918,
+      "longitude": 7.79175
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Fröndenberg/Ruhr",
+      "latitude": 51.512,
+      "longitude": 7.81231
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Fröndenberg/Ruhr",
+      "latitude": 51.50782,
+      "longitude": 7.72966
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Fröndenberg/Ruhr",
+      "latitude": 51.50886,
+      "longitude": 7.7846
+    }
+  },
+  "05978024": {
+    "wind-1": {
+      "name": "Windanlagen bei Lünen",
+      "latitude": 51.59636,
+      "longitude": 7.49622
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lünen",
+      "latitude": 51.6382,
+      "longitude": 7.50625
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lünen",
+      "latitude": 51.58805,
+      "longitude": 7.42382
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Lünen",
+      "latitude": 51.64192,
+      "longitude": 7.47992
+    }
+  },
+  "05978020": {
+    "wind-1": {
+      "name": "Windanlagen bei Kamen",
+      "latitude": 51.6,
+      "longitude": 7.645
+    }
+  },
+  "05978032": {
+    "wind-1": {
+      "name": "Windanlagen bei Selm",
+      "latitude": 51.72386,
+      "longitude": 7.46977
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Selm",
+      "latitude": 51.66192,
+      "longitude": 7.44885
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Selm",
+      "latitude": 51.65257,
+      "longitude": 7.48048
+    }
+  },
+  "05978036": {
+    "wind-1": {
+      "name": "Windanlagen bei Unna",
+      "latitude": 51.53153,
+      "longitude": 7.76325
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Unna",
+      "latitude": 51.51232,
+      "longitude": 7.67987
+    }
+  },
+  "05978040": {
+    "wind-1": {
+      "name": "Windanlagen bei Werne",
+      "latitude": 51.68483,
+      "longitude": 7.67426
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Werne",
+      "latitude": 51.71247,
+      "longitude": 7.66734
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Werne",
+      "latitude": 51.6866,
+      "longitude": 7.55671
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Werne",
+      "latitude": 51.69861,
+      "longitude": 7.64125
+    }
   }
 }
