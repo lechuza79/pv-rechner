@@ -10,6 +10,8 @@ const singles = new Set(['regional-basic-stats','gemeinde-ranking','regional-cur
 const order = ['regional-map','gemeinde-ranking','regional-annual-growth','gemeinde-solar-monat','regional-race','regional-composition','gemeinde-anlagenraster','gemeinde-energie-jahr','regional-electricity-value','regional-feed-in-value','regional-current-power'];
 /** Gallery curation only: hidden entries remain registered and embeddable. */
 export const GALLERY_HIDDEN: Readonly<Record<string, string>> = {
+  'state-electricity-map': 'Page-owned national map; no standalone embed contract yet.',
+  'regional-hourly-mix': 'Editorial review variant; no standalone embed contract yet.',
   'simulation': 'Full application rather than a gallery chart.',
   'foerder-check': 'Interactive questionnaire rather than a gallery chart.',
 };
@@ -40,7 +42,7 @@ export function galleryMapContext(place: GalleryPlace) {
 }
 /** Compose existing renderers and variants; no independent chart or entitlement definitions. */
 export function galleryEntries(place:GalleryPlace):GalleryEntry[] {
-  return (Object.values(WIDGETS) as WidgetDef[]).filter(w=>w.id!=='rechner').map(w=>{
+  return (Object.values(WIDGETS) as WidgetDef[]).filter(w=>w.id!=='rechner' && !(w.embeddable===false && GALLERY_HIDDEN[w.id])).map(w=>{
     const group = w.id.startsWith('micro-')?'microcharts':['regional-map','gemeinde-ranking','regional-race'].includes(w.id)?'comparison':/gemeinde|regional|region-/.test(w.id)?'regional':/kosten|heiz|gruengas|rechner|simulation|foerder/.test(w.id)?'cost':'energy';
     let placeLabel:string|undefined;
     let variants:GalleryVariant[]=[];

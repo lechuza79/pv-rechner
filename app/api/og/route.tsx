@@ -1,3 +1,5 @@
+import {DATA_SOURCES} from '../../../lib/data-sources';
+import {EnergyOgFrame,loadEnergyOgBrand,energyOgPalette} from './energy-editorial';
 import MetricValue from "../../../components/MetricValue";
 import { municipalLogo } from "./kommunen-logo";
 import { ImageResponse } from "next/og";
@@ -112,22 +114,37 @@ export async function GET(req: NextRequest) {
     { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
   ];
 
-  // Snapshot values are supplied by the page from its shared annual dataset.
+  if(params.view==='strommix-live'){
+    const supplied=['share','gw','ts'].some(key=>params[key]!==undefined);
+    const share=Number(params.share),gw=Number(params.gw);
+    if(supplied&&(!params.ts||!Number.isFinite(Date.parse(params.ts))||!Number.isFinite(share)||share<0||share>100||!Number.isFinite(gw)||gw<=0||!['smard','energy-charts'].includes(params.source)))return new Response('Invalid generation snapshot',{status:400});
+    const brand=await loadEnergyOgBrand(),p=energyOgPalette;
+    const artwork=await fetch(new URL('./mix-renewables.png',import.meta.url)).then(r=>r.arrayBuffer());
+    const source=params.source==='smard'?DATA_SOURCES.smard:DATA_SOURCES.energyCharts;
+    const time=supplied?new Date(params.ts).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'}):null;
+    const radius=132,circumference=2*Math.PI*radius;
+    return new ImageResponse(<EnergyOgFrame logo={brand.logo} artwork={artwork} label="Strommix Deutschland live" source={supplied?`Daten: ${source.name} · ${source.license}`:'Stromerzeugung nach Energieträgern · solar-check.io'}>
+      <div style={{display:'flex',alignItems:'center',gap:48,flex:1}}>
+      {supplied&&<div style={{display:'flex',width:340,height:340,position:'relative',alignItems:'center',justifyContent:'center'}}>
+        <svg width="340" height="340" viewBox="0 0 340 340" style={{position:'absolute',top:0,left:0}}><circle cx="170" cy="170" r={radius} fill="none" stroke={p.track} strokeWidth="42"/><circle cx="170" cy="170" r={radius} fill="none" stroke={p.accent} strokeWidth="42" strokeDasharray={`${circumference*share/100} ${circumference}`} transform="rotate(-90 170 170)"/></svg>
+        <MetricValue value={share} unit="%" maximumFractionDigits={1} minimumFractionDigits={1} stacked image={{size:64,color:p.accent,unitColor:p.secondary,unitFont:'DM Sans'}}/>
+      </div>}
+      <div style={{display:'flex',flexDirection:'column',width:supplied?650:1000}}>
+        <span style={{fontSize:38,lineHeight:1.2}}>{supplied?'Erneuerbare im Strommix':'Wie wird Deutschlands Strom gerade erzeugt?'}</span>
+        {supplied&&<span style={{fontSize:24,fontFamily:'DM Sans',color:p.secondary,marginTop:24}}>Stand: {time} Uhr</span>}
+        {!supplied&&<span style={{fontSize:26,fontFamily:'DM Sans',color:p.secondary,marginTop:24}}>Wind, Solar, Kohle und Gas im Tagesverlauf.</span>}
+      </div></div>
+    </EnergyOgFrame>,{width:1200,height:630,fonts:brand.fonts});
+  }
+
   if (params.view === "atomstrom") {
     const share = Number(params.share), twh = Number(params.twh);
     const year = Number(params.year), weeks = Number(params.weeks);
     if (![share, twh, year, weeks].every(Number.isFinite) || share < 0 || share > 100 || twh < 0 || year < 2000 || year > 2100 || weeks < 1 || weeks > 53) {
       return new Response("Invalid annual snapshot", { status: 400 });
     }
-    // Match the current Atlas dark hero, including its bundled display font.
-    const displayFont = await fetch(new URL("../../../public/fonts/atlas-montserrat-bold.ttf", import.meta.url)).then(response => response.arrayBuffer());
-    // PNG/TTF derivatives of the shared nuclear illustration and DM Sans font;
-    // Satori cannot decode the original WebP/WOFF2 formats.
-    const bodyFont = await fetch(new URL("./DM-Sans-Regular.ttf", import.meta.url)).then(response => response.arrayBuffer());
-    const palette = { background: "#08191c", text: "#e8eee9", secondary: "#a7bcbb", track: "#405b5e", accent: tokens["--color-brand"] };
-    const logoSource = await fetch(new URL("../../../public/brand/logo-result.svg", import.meta.url)).then(response => response.text());
-    const logoColors: Record<string,string> = {"--color-accent":palette.text,"--color-text-faint":palette.secondary,"--color-brand":palette.text,"--color-brand-deep":palette.secondary};
-    const logo = `data:image/svg+xml;base64,${btoa(logoSource.replace(/var\((--[a-z-]+)\)/g, (_,name:string) => logoColors[name] ?? palette.text))}`;
+    const brand=await loadEnergyOgBrand();
+    const palette=energyOgPalette,logo=brand.logo;
     const plant = await fetch(new URL("./nuclear-mono.png", import.meta.url)).then(response => response.arrayBuffer());
     const radius = 132, circumference = 2 * Math.PI * radius;
     return new ImageResponse(<div style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",padding:"40px 52px",position:"relative",overflow:"hidden",background:palette.background,color:palette.text,fontFamily:"AtlasConcept"}}>
@@ -152,7 +169,7 @@ export async function GET(req: NextRequest) {
         <span>Andere Importe nicht enthalten. Daten: Energy-Charts.info (Fraunhofer ISE), CC BY 4.0</span>
         <span>Berechnung: Solar Check · solar-check.io/atomstrom-import</span>
       </div>
-    </div>, {width:1200,height:630,fonts:[{name:"AtlasConcept",data:displayFont,weight:700,style:"normal"},{name:"DM Sans",data:bodyFont,weight:400,style:"normal"}]});
+    </div>, {width:1200,height:630,fonts:brand.fonts});
   }
   // Municipal sharing card uses the same theme and bundled-font pipeline.
   if (params.view === "kommunen" || params.view === "atlas") {

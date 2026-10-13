@@ -105,7 +105,11 @@
         let svg=await window.SolarCheckIllustrations.load(this.getAttribute('motif')||'house');
         // Small card illustrations reuse the existing local image optimizer.
         // Rewrite before insertion so the browser never starts the full PNG downloads.
-        if(this.hasAttribute('thumbnail'))svg=svg.replace(/href="(\/illustrations-motion\/assets\/[^"?]+\.png)"/g,(_,url)=>`href="/_next/image?url=${encodeURIComponent(url)}&amp;w=384&amp;q=75"`);
+        if(this.hasAttribute('thumbnail'))svg=svg.replace(/href="([^"]+)"/g,(attribute,href)=>{
+          const url=new URL(href,base);
+          if(url.origin!==base.origin||!/^\/illustrations-motion\/(?:[^/]+\/)*assets\/[^/]+\.(?:png|webp)$/.test(url.pathname)||url.search)return attribute;
+          return `href="/_next/image?url=${encodeURIComponent(url.pathname)}&amp;w=384&amp;q=75"`;
+        });
         if(token!==this.token||!this.isConnected)return;
         this.shadowRoot.innerHTML=`<style>:host{display:block;width:100%;aspect-ratio:1;contain:layout style}svg{display:block;width:100%;height:auto;overflow:visible}svg [hidden]{display:none!important}.move-layer{transition:transform .22s ease-out;transform-origin:center;transform-box:view-box}[data-circle]{fill:var(--solar-circle,#e2e9df)}@media(prefers-reduced-motion:reduce){.move-layer{transition:none}}</style>${svg}`;
         // Wait on the actual SVG image elements, not a separate preload cache.

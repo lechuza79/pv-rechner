@@ -33,3 +33,14 @@
  .pending { position:absolute; right:6px; bottom:0; }
  .controls { flex:1 1 56%; margin:0; }
 }
+
+/* Compact navigation follows its content; contextual controls retain room to grow. */
+@media(max-width:1050px){
+ .navigation{width:fit-content;max-width:100%;margin-inline:auto}
+ .navigation[data-collapsed]:not([data-with-controls]){min-width:min(100%,220px)}
+ .navigation:not([data-with-controls]) .mobileMenu{flex:1 1 auto;width:max-content;max-width:100%}
+ .navigation:not([data-with-controls]) .mobileMenu>div{max-width:100%}
+ .navigation:not([data-with-controls]) .mobileMenu>div>button{gap:32px}
+ .navigation[data-with-controls]{width:100%;max-width:600px}
+ .links{grid-template-columns:repeat(2,minmax(0,max-content))}
+}

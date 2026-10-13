@@ -175,11 +175,11 @@ describe("Was das Bild allein tragen muss", () => {
   });
 
   it("sagt an der Kernenergie-Zahl, dass der Import darin steckt", () => {
-    const client = lies("components/energy/GenerationMixWidget.tsx");
+    const client = lies("components/StrommixWidget.tsx");
     // Die Zahl summiert heimische Erzeugung und rechnerischen Import; seit
     // April 2023 ist sie ausschließlich Import. „Kernenergie" allein liest sich
     // im weitergereichten Bild als deutsche Erzeugung.
-    expect(client).toMatch(/data-sc-export-only="block"[^>]*>Kernenergie inkl\. Import/);
+    expect(client).toContain("Kernenergie (inkl. Import)");
   });
 });
 

@@ -115,6 +115,17 @@ describe("generation route on an upstream outage", () => {
     expect(res.status).toBe(502);
   });
 
+  it("queries the rolling window through the current instant without relabelling UTC", async () => {
+    fetchPublicPower.mockResolvedValueOnce(rows);
+    const before = Date.now();
+    const route = await import("../../app/api/energy/generation/route");
+    await route.GET(req("/api/energy/generation?hours=24&trim=0"));
+    const [, start, end] = fetchPublicPower.mock.calls[0];
+    expect(Date.parse(end)).toBeGreaterThanOrEqual(before);
+    expect(Date.parse(end)).toBeLessThanOrEqual(Date.now());
+    expect(Date.parse(end) - Date.parse(start)).toBe(24 * 3600000);
+  });
+
   it("does not mark a fresh response stale", async () => {
     fetchPublicPower.mockResolvedValueOnce(rows);
     const r = await import("../../app/api/energy/generation/route");

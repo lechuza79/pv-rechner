@@ -55,6 +55,7 @@ export function Auswahl({
   aktiv,
   onWahl,
   breite = 160,
+  fluid = false,
   suchbar,
   suchPlatzhalter = "suchen",
   eckenLinks = true,
@@ -75,6 +76,8 @@ export function Auswahl({
   aktiv: string;
   onWahl: (schluessel: string) => void;
   breite?: number;
+  /** Fill the available toolbar column without imposing an intrinsic minimum. */
+  fluid?: boolean;
   /** Erzwingt oder unterdrückt die Suche; ohne Angabe entscheidet die Länge. */
   suchbar?: boolean;
   suchPlatzhalter?: string;
@@ -159,7 +162,7 @@ export function Auswahl({
   };
 
   return (
-    <div ref={ref} style={{ position: "relative", display: "flex" }}>
+    <div ref={ref} style={{ position: "relative", display: "flex", minWidth: 0, width: fluid ? "100%" : undefined }}>
       {mitPfeilen && (
         <button
           type="button"
@@ -189,7 +192,8 @@ export function Auswahl({
           alignItems: "center",
           justifyContent: "space-between",
           gap: space.xs,
-          minWidth: breite,
+          minWidth: fluid ? 0 : breite,
+          flex: fluid ? 1 : undefined,
           maxWidth: "100%",
           font: "inherit",
           minHeight: size === "comfortable" ? 48 : undefined,
@@ -253,7 +257,8 @@ export function Auswahl({
             padding: mitSuche ? 0 : `${space.xxs}px 0`,
             maxHeight: 300,
             overflowY: "auto",
-            minWidth: Math.max(breite + 24, 200),
+            minWidth: fluid ? undefined : Math.max(breite + 24, 200),
+            width: fluid ? "min(280px, calc(100vw - 48px))" : undefined,
           }}
         >
           {mitSuche && (
@@ -299,8 +304,8 @@ export function Auswahl({
                 minHeight: size === "comfortable" ? 44 : undefined,
                 padding: size === "comfortable" ? "12px 16px" : pad("xs", "md"),
                 border: "none",
-                background: e.schluessel === aktiv ? v("--color-bg-accent") : "transparent",
-                color: e.schluessel === aktiv ? v("--color-accent") : v("--color-text-primary"),
+                background: e.schluessel === aktiv ? "var(--widget-ink, var(--color-bg-accent))" : "transparent",
+                color: e.schluessel === aktiv ? "var(--widget-surface, var(--color-accent))" : v("--color-text-primary"),
                 fontSize: v("--font-size-small"),
                 fontWeight: e.schluessel === aktiv ? 600 : 400,
                 fontFamily: "inherit",

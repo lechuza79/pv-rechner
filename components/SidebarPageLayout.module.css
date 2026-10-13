@@ -1,4 +1,4 @@
-.surface { background:var(--color-bg); }
+.surface { background:var(--color-bg); overflow-anchor:none; }
 .surface[data-dark-hero] { background:linear-gradient(to bottom,#08191c 0 var(--dark-height,100svh),var(--color-bg) var(--dark-height,100svh) 100%); }
 .layout { display:grid;grid-template-columns:220px minmax(0,1fr);gap:var(--space-xl);max-width:1440px;margin:0 auto;padding:0 24px;align-items:start; }
 .sidebar { position:sticky;top:16px;z-index:50;margin-top:var(--sidebar-start,var(--space-xl)); }

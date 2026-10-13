@@ -59,3 +59,7 @@
 .sc-category-horizontal[data-country=true] .sc-category-horizontal-track{height:6px;border-radius:0 var(--radius-pill) var(--radius-pill) 0;background:transparent;}
 .sc-category-horizontal[data-country=true] .sc-category-horizontal-track>div{background:var(--widget-accent,var(--color-accent));border-radius:inherit;}
 .sc-category-bars[data-partial-style=solid] .sc-category-bar[data-partial=true]{background:var(--color-accent);}
+
+.sc-category-horizontal[data-compact=true]{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px 32px}
+.sc-category-horizontal[data-compact=true] .sc-category-horizontal-track{height:6px;border-radius:0 4px 4px 0}
+.sc-category-horizontal[data-compact=true] .sc-category-horizontal-track>div[data-highlighted=true]{background:var(--widget-accent,var(--color-accent))}

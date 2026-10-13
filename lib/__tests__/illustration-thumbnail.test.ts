@@ -17,12 +17,14 @@ it('optimizes only opted-in local raster layers before insertion and preserves t
   window,HTMLElement:Element,URL,document:{currentScript:{src:'https://solar-check.io/illustrations-motion/solar-illustrations.js'},querySelector:()=>null},
   customElements:{define:(_:string,ctor:any)=>{ElementClass=ctor;}},addEventListener:()=>{},requestAnimationFrame:()=>1,CustomEvent:class {},
  });
- const source='<svg><image href="/illustrations-motion/assets/test.png"/><image href="/other.png"/></svg>';
+ const source='<svg><image href="/illustrations-motion/assets/test.png"/><image href="/other.png"/><image href="https://solar-check.io/illustrations-motion/radar-v4/assets/coal.png"/><image href="https://external.test/illustrations-motion/assets/coal.png"/></svg>';
  window.SolarCheckIllustrations.register('house',source);
  const small=new ElementClass();small.small=true;small.settings=()=>{};await small.render();
  expect(small.shadowRoot.innerHTML).toContain('/_next/image?url=%2Fillustrations-motion%2Fassets%2Ftest.png&amp;w=384&amp;q=75');
  expect(small.shadowRoot.innerHTML).not.toContain('href="/illustrations-motion/assets/test.png"');
  expect(small.shadowRoot.innerHTML).toContain('href="/other.png"');
+ expect(small.shadowRoot.innerHTML).toContain('/_next/image?url=%2Fillustrations-motion%2Fradar-v4%2Fassets%2Fcoal.png&amp;w=384&amp;q=75');
+ expect(small.shadowRoot.innerHTML).toContain('href="https://external.test/illustrations-motion/assets/coal.png"');
  const full=new ElementClass();full.settings=()=>{};await full.render();
  expect(full.shadowRoot.innerHTML).toContain(source);
  expect(full.shadowRoot.innerHTML).not.toContain('/_next/image?');

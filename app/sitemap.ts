@@ -28,6 +28,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const strommixModifiedAt = await getPageContentModifiedAt('/strommix-deutschland');
   const atomstromModifiedAt = ATOMSTROM_RELEASE_READY ? await getPageContentModifiedAt('/atomstrom-import') : undefined;
   const programs = await getFundingPrograms();
   const {releasedAssociations,associationPath}=await import('../lib/verband-reference');
@@ -253,7 +254,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Datenstand liegt in der Zeitreihe (Energy-Charts), nicht hier — und die
     // Build-Zeit wäre das Deploy-Datum, nicht das Änderungsdatum. Deshalb ohne
     // lastmod: changeFrequency="daily" sagt dem Crawler dasselbe, ohne zu lügen.
-    { url: `${BASE_URL}/strommix-deutschland`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE_URL}/strommix-deutschland`, ...(strommixModifiedAt ? {lastModified:strommixModifiedAt} : {}), changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/atomstrom-import`, ...(atomstromModifiedAt ? { lastModified: atomstromModifiedAt } : {}), changeFrequency: "daily", priority: 0.7 },
     ...(ATOMSTROM_RELEASE_READY ? ATOMSTROM_ARCHIVE_YEARS.map(year => ({url: `${BASE_URL}/atomstrom-import/${year}`, lastModified: getAnnualVariant(year).annual.modifiedAt, changeFrequency: "yearly" as const, priority: 0.6})) : []),
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },

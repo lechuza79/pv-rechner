@@ -44,9 +44,13 @@ test.describe("Data-driven pages", () => {
     // Page must render without runtime errors
     await expect(page.getByRole("heading").first()).toBeVisible({ timeout: 10_000 });
 
-    // Time-range buttons should be present (at least one of "24h", "7d", "30d", "12M")
+    // The shared range selector replaces the former separate buttons.
+    const range = page.getByRole("button", {name:"Die letzten 24 Stunden",exact:true});
+    await expect(range).toBeVisible();
+    await range.click();
+    await page.getByRole("option", {name:"Letzte 7 Tage",exact:true}).click();
+    await expect(page.getByRole("button", {name:"Die letzten 7 Tage",exact:true})).toBeVisible();
     const bodyText = await page.locator("body").innerText();
-    expect(bodyText).toMatch(/24h|7\s*Tage|30\s*Tage|12\s*Monate/i);
 
     // Should mention strommix-related vocabulary
     expect(bodyText).toMatch(/Strom|Erzeug|Erneuerbar|Kohle|Solar|Wind/i);

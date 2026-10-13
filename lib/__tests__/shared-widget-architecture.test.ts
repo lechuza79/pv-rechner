@@ -7,6 +7,8 @@ const read = (path:string) => readFileSync(join(root,path),'utf8');
 // These dependencies are product contracts: changing a page must not fork an
 // accepted drawing, interaction, source footer, or export pipeline.
 const consumers: Record<string,string[]> = {
+  "components/energy/StrommixRadarWidget.tsx":["../charts/RadarChart","../dashboard/ExportableWidgetFrame","../charts/ChartTimePlayback"],
+  "app/(site)/strommix-deutschland/StrommixOverview.tsx":["../../../components/energy/StrommixRadarWidget"],
   "app/(site)/atomstrom-import/AtomstromPage.tsx":["../../../components/dashboard/EnergyMonitor","../../../components/DataSourcesSection","../../../components/MetricValue"],
   'components/FlowNav.tsx':['./calculator/usePageActionLayout','./Modal','./ActionButton'],
   'components/AffiliateActions.tsx':['./ActionButton'],
@@ -50,6 +52,7 @@ const consumers: Record<string,string[]> = {
   'components/social/AnnualEnergyChart.tsx':['../charts/EnergyYearRadial'],
   'components/social/ApprovedStoryVisual.tsx':['../charts/CompositionChart'],
   'components/landkreis/LandkreisSeite.tsx':['./RegionKarte'],
+  'components/StateElectricityMap.tsx':['./landkreis/RegionKarte','./dashboard/ExportableWidgetFrame','./Auswahl'],
 };
 function files(dir:string):string[] {
   return readdirSync(join(root,dir),{withFileTypes:true}).flatMap(item=>item.isDirectory()?files(`${dir}/${item.name}`):/\.[jt]sx?$/.test(item.name)?[`${dir}/${item.name}`]:[]);
@@ -71,4 +74,20 @@ describe('Shared widget architecture',()=>{
     );
     expect(violations,'Use ExportableWidgetFrame and its shared actions.').toEqual([]);
   });
+});
+
+// The state map must reuse established interaction and table presentation.
+describe('state electricity component reuse',()=>{
+ it('uses the shared selection and menu table rather than custom controls',()=>{
+  const source=read('components/StateElectricityMap.tsx');
+  expect(source).toContain('<Auswahl');
+  expect(source).toContain('dataTable={dataTable}');
+  expect(source).toContain('<ContentTable');
+  expect(source).not.toMatch(/<details\b|<summary\b/);
+ });
+});
+
+it('regional hourly mix reuses the central map, picker, frame and table',()=>{
+ const source=read('components/RegionalHourlyMap.tsx');
+ for(const dependency of ['./landkreis/RegionKarte','./Auswahl','./dashboard/ExportableWidgetFrame','./ContentTable'])expect(source).toContain(dependency);
 });

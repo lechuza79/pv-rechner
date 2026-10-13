@@ -1,0 +1,2 @@
+.sc-viewport-stage{--stage-available:max(0px,calc(100svh - var(--stage-top,0px)));min-block-size:var(--stage-available);display:grid;align-items:stretch}
+.sc-viewport-stage>section{display:grid;align-items:center;min-width:0}

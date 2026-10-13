@@ -29,10 +29,18 @@ import type { SceneTurbine } from "../../lib/wind-map";
 export type Season = "spring" | "summer" | "autumn" | "winter";
 const BASE_DEPTH = 26;
 const BAR_MAX = 155;
+const REGION_MOTION = { bars:220, land:260, stagger:10, zoomIn:640, zoomOut:720, detailOut:180 };
+// Fast departure with a soft arrival, without overshoot or overlapping phases.
+const regionEase = (progress:number) => {
+  const t=Math.max(0,Math.min(1,progress));
+  return 1-Math.pow(1-t,3)*(1+3*t);
+};
 
 /** One scene with shared tree geometry; intro rotation yields to interaction. */
 export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], events: {
   hover: (id: string | null) => void; select: (id: string, touch?: boolean) => void;
+  regionReady?:(id:string)=>void;
+  barHover?:(label:string|null)=>void;
   flight?:(moving:boolean,arrived?:boolean)=>void;
   locationFocus?:()=>string|undefined;
   locationSurface?:()=>{id:string;x:number;y:number;width:number;height:number}|null;
@@ -40,7 +48,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   locationClearance?:()=>number;
   locations?: (points:(SceneLocation & {screenX:number;screenY:number;signTransform?:string;strokeScale?:number;stemPixels?:number;blur:number})[])=>void;
   pin: (point: { x: number; y: number } | null) => void; failed: () => void;
-}, heightEnvelope: Record<string, number> = {}, turbines?: SceneTurbine[], terrain?:SceneTerrain, windScale=1, windConditions:WindConditions|null=null, buildings?:SceneBuilding[], solar?:SolarFootprint[], locations?:SceneLocation[],framingScale=1,exportable=false) {
+}, heightEnvelope: Record<string, number> = {}, turbines?: SceneTurbine[], terrain?:SceneTerrain, windScale=1, windConditions:WindConditions|null=null, buildings?:SceneBuilding[], solar?:SolarFootprint[], locations?:SceneLocation[],framingScale=1,exportable=false,sceneContext?:import("../../lib/wind-context").SceneContext) {
   const DEPTH=buildings?4:BASE_DEPTH;
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer:exportable || !!buildings, powerPreference: "low-power" });
   const quality=buildings?createSceneQuality():null;
@@ -149,6 +157,21 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   });
   const barMaterial = barFaces(false);
   const selectedBar = barFaces(true);
+  const groupedParentMaterial=new THREE.MeshBasicMaterial({visible:false});materials.add(groupedParentMaterial);
+  const groupedMaterials=new Map<string,THREE.MeshBasicMaterial>();
+  const colorCanvas=document.createElement("canvas");colorCanvas.width=colorCanvas.height=1;
+  const colorContext=colorCanvas.getContext("2d",{willReadFrequently:true})!;
+  function groupedMaterial(css:string){
+    let material=groupedMaterials.get(css);
+    if(!material){material=new THREE.MeshBasicMaterial({toneMapped:false});materials.add(material);groupedMaterials.set(css,material);}
+    const probe=document.createElement('span');probe.style.color=css;host.append(probe);// Canvas resolves modern CSS color-mix syntax into sRGB for Three.js.
+    colorContext.clearRect(0,0,1,1);colorContext.fillStyle=getComputedStyle(probe).color;
+    colorContext.fillRect(0,0,1,1);const [r,g,b]=colorContext.getImageData(0,0,1,1).data;
+    material.color.setRGB(r/255,g/255,b/255,THREE.SRGBColorSpace);probe.remove();
+    return material;
+  }
+  const barMaximum=(value:MapValue)=>value.bars?Math.max(0,...value.bars.map(bar=>bar.value)):value.value??0;
+
   const groundAt=(x:number,z:number)=>DEPTH+(terrain?terrainHeight(terrain,x,z):0);
   // Building coordinates and explicit sign elevations share the same base offset.
   const labelY=(p:SceneLocation)=>p.labelElevation===undefined?groundAt(p.labelX??p.x,p.labelZ??p.z):DEPTH+p.labelElevation;
@@ -159,7 +182,10 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const contours=terrain?.display==="contours"?addTerrainContours(scene,terrain,DEPTH,new THREE.Color(theme.getPropertyValue("--color-text-secondary").trim())):null;
   if(contours){canvas.dataset.terrain="contours";canvas.dataset.terrainBody="none";}
   const land=terrain&& !contours?addWindTerrain(scene,terrain,shapes,DEPTH,groundColor,side,4):null;
-  const context=terrain?.sceneContext?addWindContext(scene,terrain.sceneContext,groundAt,groundColor.clone().lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()),.7),new THREE.Color(theme.getPropertyValue("--color-map-water").trim()).lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()),.55),undefined,buildings?{widthMetres:3,liftMetres:.15}:undefined):null;
+  const landscape=sceneContext??terrain?.sceneContext;
+  const beforeContext=new Set(scene.children);
+  const context=landscape?addWindContext(scene,landscape,groundAt,groundColor.clone().lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()),.7),new THREE.Color(theme.getPropertyValue("--color-map-water").trim()||theme.getPropertyValue("--color-bg-muted").trim()).lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()),.55),undefined,buildings?{widthMetres:3,liftMetres:.15}:undefined):null;
+  const contextObjects=scene.children.filter(object=>!beforeContext.has(object));
   if(context)canvas.dataset.landscape="settlements-water";
   if(land){pickables.push(land.mesh);canvas.dataset.terrain="relief";canvas.dataset.terrainBody="solid";}
   const solarLayer=solar?.length&&terrain?addSolarLayer(scene,solar,groundAt,terrain.unitsPerMetre,groundColor.clone().lerp(new THREE.Color(theme.getPropertyValue("--color-bg-raised").trim()),.4),renderer):null;
@@ -202,7 +228,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
         const lineGeometry = new LineGeometry().setPositions(boundary);
         geometries.add(lineGeometry);
         const lineMaterial = new LineMaterial({ color: 0x789491, linewidth: 1.35, transparent: true, opacity: .42, toneMapped: false, depthWrite: false }); materials.add(lineMaterial);outlines.add(lineMaterial);
-        scene.add(new Line2(lineGeometry,lineMaterial));
+        const outline=new Line2(lineGeometry,lineMaterial);outline.userData.region=region.id;scene.add(outline);
       }
     }
     const bar = new THREE.Mesh(barGeometry, barMaterial);
@@ -353,6 +379,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     if (((autoplay && !manual) || quality) && !reducedMotion.matches && !pace.shouldDraw(now)) { invalidate(); return; }
     if(enteredAt===null){enteredAt=now;if(transition)transition.start=now+180;}
     const elapsed = now-enteredAt;
+    if(autoplay&&!reducedMotion.matches)context?.update(elapsed/1000);
     const opacity = reducedMotion.matches ? "1" : String(Math.min(1,elapsed/240));
     if (canvas.style.opacity !== opacity) canvas.style.opacity = opacity;
     const windDt=Math.min(.25,(now-lastFrame)/1000);
@@ -366,7 +393,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       camera.position.copy(controls.target).add(spinOffset);
       spinVelocity*=decay;
     } else if (!manual) spinVelocity=0;
-    controls.autoRotate = autoplay && (!!buildings || !turbines) && !flight && !journey && !manual && !spinVelocity && !reducedMotion.matches && elapsed>950 && now>=resumeRotationAt;
+    controls.autoRotate = !regionSequence && !regionFlight && autoplay && (!!buildings || !turbines) && !flight && !journey && !manual && !spinVelocity && !reducedMotion.matches && elapsed>950 && now>=resumeRotationAt;
     controls.enableDamping = !reducedMotion.matches && !(referencePlan && controls.autoRotate);
     if(flight){
       const t=Math.min(1,(now-flight.start)/2400),ease=t*t*t*(t*(t*6-15)+10);
@@ -398,6 +425,30 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       lightView.copy(camera.quaternion);
       renderer.shadowMap.needsUpdate=true;
     }
+    if(regionFade){
+      let complete=true;
+      for(const item of regionFade.items){
+        const t=reducedMotion.matches?1:Math.max(0,Math.min(1,(now-regionFade.start-item.delay)/REGION_MOTION.land));
+        const alpha=item.from+(item.to-item.from)*regionEase(t);
+        item.copies.forEach((material,index)=>{material.opacity=item.opacity[index]*alpha;});
+        if(t<1)complete=false;
+      }
+      if(complete)finishRegionFade();
+    }
+    if(regionFlight&&camera instanceof THREE.OrthographicCamera){
+      const t=reducedMotion.matches?1:Math.max(0,Math.min(1,(now-regionFlight.start)/regionFlight.duration)),ease=regionEase(t);
+      const [fl,fr,fb,ft]=regionFlight.from,[tl,tr,tb,tt]=regionFlight.to;
+      const halfW=Math.exp(Math.log((fr-fl)/2)*(1-ease)+Math.log((tr-tl)/2)*ease);
+      const halfH=Math.exp(Math.log((ft-fb)/2)*(1-ease)+Math.log((tt-tb)/2)*ease);
+      const cx=(fl+fr)/2*(1-ease)+(tl+tr)/2*ease,cy=(fb+ft)/2*(1-ease)+(tb+tt)/2*ease;
+      const bounds=[cx-halfW,cx+halfW,cy-halfH,cy+halfH];
+      [camera.left,camera.right,camera.bottom,camera.top]=bounds;camera.updateProjectionMatrix();
+      if(t===1){
+
+        centerRegionOrbit(regionFlight.id);
+        regionFlight=null;canvas.dataset.regionFlight='idle';
+      }
+    }
     canvas.dataset.orbit=controls.autoRotate?'active':'paused';
     if(buildings)canvas.dataset.cameraPosition=camera.position.toArray().map(v=>v.toFixed(3)).join(',');
     lastFrame=now;
@@ -413,6 +464,24 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       if(complete)transition=null;
     }
     if(turbines){canvas.dataset.windView="individual";canvas.dataset.windZoom=String(buildings?sceneZoom:camera.zoom);canvas.dataset.windScale=String(windScale);}
+    if(regionSequence){
+      renderer.shadowMap.needsUpdate=true;
+      const elapsed=now-regionSequence.start;
+      const downStart=regionSequence.out?REGION_MOTION.detailOut:0;
+      const zoomStart=downStart+REGION_MOTION.bars+(regionSequence.out?0:regionLandDuration);
+      const landStart=regionSequence.out?zoomStart+REGION_MOTION.zoomOut:downStart+REGION_MOTION.bars;
+      const upStart=regionSequence.out?landStart+regionLandDuration:zoomStart+REGION_MOTION.zoomIn;
+      for(const [id,bar] of bars){
+        const from=regionSequence.from.get(id)??0;
+        const target=!regionSequence.id||id===regionSequence.id?regionSequence.targets.get(id)??0:0;
+        const height=reducedMotion.matches?target:elapsed<upStart?from*(1-regionEase((elapsed-downStart)/REGION_MOTION.bars)):target*regionEase((elapsed-upStart)/REGION_MOTION.bars);
+        placeBar(bar,height);
+      }
+      canvas.dataset.regionPhase=elapsed<downStart?'donut-out':elapsed<downStart+REGION_MOTION.bars?'bars-out':elapsed<(regionSequence.out?landStart:zoomStart)?(regionSequence.out?'zoom-out':'land-out'):elapsed<upStart?(regionSequence.out?'land-in':'zoom-in'):'bars-in';
+      if(reducedMotion.matches||elapsed>=upStart+REGION_MOTION.bars){
+        const id=regionSequence.id;regionSequence=null;canvas.dataset.regionPhase='ready';events.regionReady?.(id);
+      }
+    }
     if(wind&&!reducedMotion.matches)wind.tick(windDt);
     // Compose the geographic focus in the available hero area without changing the route,
     // camera pose or orbit. Hold the framing during travel; ease into the next stop.
@@ -455,7 +524,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     contours?.update(camera);
     if(depthOfField){depthOfField.render(scene,focusDepth,dt);canvas.dataset.focusDepth=depthOfField.focusDistance().toFixed(3);}
     else renderer.render(scene,camera);
-    if (journey || flight || controls.autoRotate || transition || moving || locationPins?.isFading() || (autoplay && !manual && !reducedMotion.matches && (!turbines || buildings || wind?.isMoving())) || elapsed<240) invalidate();
+    if (regionSequence || regionFade || regionFlight || (context?.animated&&autoplay&&!reducedMotion.matches) || journey || flight || controls.autoRotate || transition || moving || locationPins?.isFading() || (autoplay && !manual && !reducedMotion.matches && (!turbines || buildings || wind?.isMoving())) || elapsed<240) invalidate();
     if(locations?.length&&events.locations) events.locations(locations.flatMap(p=>{
       if(visiblePins&&p.id!==focusId&&!visiblePins.has(p.id))return [];
       const anchor=signAnchor(p);
@@ -507,6 +576,101 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   let renderWidth=0,renderHeight=0;
   let windFocused=false;
   let framing: {cx:number;cy:number;halfW:number;halfH:number}|null=null;
+  const regionLandDuration=REGION_MOTION.land+Math.max(0,shapes.length-1)*REGION_MOTION.stagger;
+  let regionSequence:{start:number;id:string;out:boolean;from:Map<string,number>;targets:Map<string,number>}|null=null;
+  let regionFocus='';
+  let regionCompositionManaged=false;
+  let regionFade:{start:number;items:{object:THREE.Object3D;mesh:THREE.Mesh;original:THREE.Material|THREE.Material[];copies:THREE.Material[];opacity:number[];from:number;to:number;delay:number}[]} | null=null;
+  function finishRegionFade(){
+    if(!regionFade)return;
+    for(const item of regionFade.items){item.mesh.material=item.original;item.copies.forEach(material=>material.dispose());item.object.visible=item.to>0;}
+    regionFade=null;
+  }
+  function centerRegionOrbit(id:string){
+    if(!(camera instanceof THREE.OrthographicCamera))return;
+    const focused=shapes.filter(shape=>!id||shape.id===id);if(!focused.length)return;
+    const box=new THREE.Box3();for(const shape of focused)for(const polygon of shape.ground)for(const ring of polygon)for(const [x,z] of ring)box.expandByPoint(new THREE.Vector3(x,DEPTH+1,z));
+    const next=box.getCenter(new THREE.Vector3());
+    const shift=next.clone().sub(controls.target),viewShift=shift.clone().applyQuaternion(camera.quaternion.clone().invert());
+    camera.position.add(shift);controls.target.copy(next);
+    camera.left-=viewShift.x;camera.right-=viewShift.x;camera.top-=viewShift.y;camera.bottom-=viewShift.y;
+    camera.updateProjectionMatrix();camera.updateMatrixWorld();
+    canvas.dataset.orbitRegion=id||'all';
+    manual=false;resumeRotationAt=performance.now()+400;controls.autoRotateSpeed=.2;
+  }
+  let regionFlight:{start:number;from:number[];to:number[];id:string;duration:number}|null=null;
+  function focusRegion(id:string) {
+    if(!(camera instanceof THREE.OrthographicCamera))return;
+    stopFlight();spinVelocity=0;controls.autoRotate=false;controls.enableDamping=false;controls.update(0);
+    const sequenceNeeded=Boolean(id||regionFocus);
+    const now=performance.now(),maximum=Math.max(0,...(previousValues??[]).map(barMaximum));
+    if(sequenceNeeded){
+      regionSequence={start:now,id,out:!id,from:new Map([...bars].map(([key,bar])=>[key,bar.visible?bar.scale.y:0])),targets:new Map((previousValues??[]).map(value=>[value.id,maximum?barMaximum(value)/maximum*BAR_MAX:0]))};
+      transition=null;events.regionReady?.('');
+    }
+    regionCompositionManaged=true;regionFocus=id;resumeRotationAt=id?Infinity:0;
+    // Fade only the surroundings; retain the chosen region at its current position.
+    finishRegionFade();
+    const items:NonNullable<typeof regionFade>['items']=[];
+    for(const object of scene.children){
+      if(bars.get(object.userData.region)===object)continue;
+      if(!object.userData.region&&!contextObjects.includes(object))continue;
+      const keep=!id||object.userData.region===id;
+      const from=object.visible?1:0,to=keep?1:0;
+      if(from===to)continue;
+      object.visible=true;
+      const regionIndex=Math.max(0,shapes.findIndex(shape=>shape.id===object.userData.region));
+      const delay=(sequenceNeeded?(id?REGION_MOTION.bars:REGION_MOTION.detailOut+REGION_MOTION.bars+REGION_MOTION.zoomOut):0)+regionIndex*REGION_MOTION.stagger;
+      object.traverse(node=>{
+        const mesh=node as THREE.Mesh;if(!mesh.material)return;
+        const original=mesh.material,source=Array.isArray(original)?original:[original];
+        const copies=source.map(material=>{const copy=material.clone();copy.onBeforeCompile=material.onBeforeCompile;copy.customProgramCacheKey=material.customProgramCacheKey;copy.transparent=true;copy.opacity=material.opacity*from;copy.depthWrite=false;return copy;});
+        mesh.material=Array.isArray(original)?copies:copies[0];
+        items.push({object,mesh,original,copies,opacity:source.map(material=>material.opacity),from,to,delay});
+      });
+    }
+    if(items.length)regionFade={start:performance.now(),items};
+    renderer.shadowMap.needsUpdate=true;
+    canvas.dataset.visibleRegion=id||'all';
+    camera.updateMatrixWorld();
+    const box=new THREE.Box3();
+    const fit=(x:number,y:number,z:number)=>box.expandByPoint(new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse));
+    for(const shape of shapes.filter(shape=>!id||shape.id===id)){
+      for(const polygon of shape.ground)for(const ring of polygon)for(const [x,z] of ring){fit(x,0,z);fit(x,DEPTH,z);}
+      const bar=bars.get(shape.id)!;
+      fit(bar.position.x,DEPTH+BAR_MAX*(heightEnvelope[shape.id]??1),bar.position.z);
+    }
+    if(id){
+      // Reserve the complete orbit envelope so long states never rotate out of frame.
+      const shape=shapes.find(shape=>shape.id===id)!;
+      const groundBounds=new THREE.Box3();
+      for(const polygon of shape.ground)for(const ring of polygon)for(const [x,z] of ring)groundBounds.expandByPoint(new THREE.Vector3(x,0,z));
+      const pivot=groundBounds.getCenter(new THREE.Vector3());let radius=0;
+      for(const polygon of shape.ground)for(const ring of polygon)for(const [x,z] of ring)radius=Math.max(radius,Math.hypot(x-pivot.x,z-pivot.z));
+      const local=pivot.clone().applyMatrix4(camera.matrixWorldInverse);
+      const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion.clone().invert());
+      const verticalRadius=radius*Math.sqrt(Math.max(0,1-up.y*up.y));
+      box.expandByPoint(new THREE.Vector3(local.x-radius,local.y-verticalRadius,local.z));
+      box.expandByPoint(new THREE.Vector3(local.x+radius,local.y+verticalRadius+DEPTH*up.y,local.z));
+      const bar=bars.get(id)!;const barRadius=Math.hypot(bar.position.x-pivot.x,bar.position.z-pivot.z);
+      box.expandByPoint(new THREE.Vector3(local.x,local.y+barRadius*Math.sqrt(Math.max(0,1-up.y*up.y))+(DEPTH+BAR_MAX*(heightEnvelope[id]??1))*up.y,local.z));
+    }
+    if(box.isEmpty())return;
+    const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+    const style=getComputedStyle(host);
+    const columns=id?Number(style.getPropertyValue('--region-focus-columns'))||1:1;
+    const gap=columns>1?parseFloat(style.getPropertyValue('--region-focus-gap'))||0:0;
+    const plotWidth=(host.clientWidth-gap*(columns-1))/columns;
+    const aspect=host.clientWidth/host.clientHeight;
+    const halfH=Math.max(size.y,size.x*host.clientHeight/plotWidth)*.5*1.12/framingScale;
+    // Keep the canvas stable: fit into the left plot without resizing the scene
+    // when the adjacent detail chart appears.
+    center.x+=halfH/host.clientHeight*(host.clientWidth-plotWidth);
+    const from=[camera.left/camera.zoom,camera.right/camera.zoom,camera.bottom/camera.zoom,camera.top/camera.zoom];
+    camera.zoom=1;
+    regionFlight={start:performance.now()+(sequenceNeeded?(id?REGION_MOTION.bars+regionLandDuration:REGION_MOTION.detailOut+REGION_MOTION.bars):0),from,to:[center.x-halfH*aspect,center.x+halfH*aspect,center.y-halfH,center.y+halfH],id,duration:sequenceNeeded?(id?REGION_MOTION.zoomIn:REGION_MOTION.zoomOut):1};
+    canvas.dataset.regionFlight='moving';invalidate();
+  }
   function resize() {
     if (dead) return;
     const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
@@ -516,6 +680,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       renderer.setSize(w,h,false);depthOfField?.resize(w,h);signForeground?.setSize(w,h,false);renderWidth=w;renderHeight=h;
     }
     for(const material of outlines)material.resolution.set(w,h);
+    if(regionCompositionManaged){focusRegion(regionFocus);return;}
     // Fixed envelope across metrics: only bars move when the metric changes.
     if (!framing) {
       camera.updateMatrixWorld();
@@ -573,10 +738,12 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   // Orbiting changes the view, not the fixed composition or DOM dimensions.
   controls.addEventListener("change",invalidate);
   const ray = new THREE.Raycaster();
+  let hitCarrier:string|null=null;
   function hit(event: PointerEvent) {
     const rect=canvas.getBoundingClientRect();
     ray.setFromCamera(new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1),camera);
-    const hit=ray.intersectObjects(pickables.filter(object=>object.visible),false)[0];
+    const hit=ray.intersectObjects(pickables.filter(object=>object.visible),true).find(hit=>{const material=(hit.object as THREE.Mesh).material;return !material||(Array.isArray(material)?material.some(item=>item.visible):material.visible);});
+    hitCarrier=hit?.object.userData.carrier??null;
     return hit?.object.userData.windIds?.[hit.instanceId??0] ?? hit?.object.userData.region as string | undefined;
   }
   let down: {x:number;y:number;pointerId:number} | null = null;
@@ -590,8 +757,8 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
         swipe={x:e.clientX,at:now,velocity:swipe.velocity*.25+velocity*.75};
       }
     }
-    if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>=5)dragged=true; if (e.pointerType === "touch" || e.buttons) return; const id=hit(e)??null;events.hover(id);canvas.style.cursor=id?"pointer":"grab"; };
-  const leave = (e:PointerEvent) => {if(e.pointerType!=="touch")events.hover(null);};
+    if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>=5)dragged=true; if (e.pointerType === "touch" || e.buttons) return; const id=hit(e)??null;events.hover(id);events.barHover?.(hitCarrier);canvas.style.cursor=id?"pointer":"grab"; };
+  const leave = (e:PointerEvent) => {if(e.pointerType!=="touch"){events.hover(null);events.barHover?.(null);}};
   const startDrag = () => {stopFlight();manual=true;spinVelocity=0;resumeRotationAt=Infinity;controls.dampingFactor=.22;controls.autoRotate=false;events.hover(null);};
   const endDrag = () => {
     lastFrame=performance.now();
@@ -630,12 +797,24 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const cancel = (e:PointerEvent) => {pointers.delete(e.pointerId);swipe=null;spinVelocity=0;down=null;dragged=true;};
   const lost = (e:Event) => {e.preventDefault();events.failed();};
   canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerleave",leave);canvas.addEventListener("pointerdown",press);canvas.addEventListener("pointerup",release);canvas.addEventListener("pointercancel",cancel);canvas.addEventListener("webglcontextlost",lost);
+  let carrierColors:Record<string,string>={};
+  let highlightedCarriers:string[]=[];
+  const carrierHighlight=new THREE.MeshBasicMaterial({color:brand,toneMapped:false});materials.add(carrierHighlight);
+  const carrierMuted=new THREE.MeshBasicMaterial({color:0x46656b,toneMapped:false});materials.add(carrierMuted);
+  function highlightCarriers(){
+    for(const [id,parent] of bars)for(const child of parent.children){
+      const mesh=child as THREE.Mesh;
+      if(!mesh.userData.carrier)continue;
+      mesh.material=id===selected&&carrierColors[mesh.userData.carrier]?groupedMaterial(carrierColors[mesh.userData.carrier]):highlightedCarriers.length&&id===selected?(highlightedCarriers.includes(mesh.userData.carrier)?carrierHighlight:carrierMuted):mesh.userData.baseMaterial;
+    }
+    canvas.dataset.highlightedCarriers=highlightedCarriers.join(',');invalidate();
+  }
   function highlight() {
     wind?.highlight(hovered??selected);
     for (const region of shapes) {
       const active=region.id===hovered||region.id===selected;
       surfaces.get(region.id)!.color.copy(background).lerp(new THREE.Color(0x486665),active?.4:0);
-      bars.get(region.id)!.material=active?selectedBar:barMaterial;
+      const bar=bars.get(region.id)!;bar.material=bar.children.length?groupedParentMaterial:active?selectedBar:barMaterial;
     }
     invalidate();
   }
@@ -701,6 +880,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       background.set(currentTheme.getPropertyValue('--color-bg-page').trim()).lerp(new THREE.Color(currentTheme.getPropertyValue('--color-bg-raised').trim()),exportable ? 0 : .5);
       side.color.set(currentTheme.getPropertyValue('--color-bg-raised').trim()).multiplyScalar(1.65);
       brand.set(currentTheme.getPropertyValue('--color-brand').trim());
+      for(const css of groupedMaterials.keys())groupedMaterial(css);
       for(const [selected,faces] of [[false,barMaterial],[true,selectedBar]] as const){
         const shades=[selected ? .78 : .62,.88,1,.5,1,.72];
         faces.forEach((face,index)=>{face.color.copy(brand).multiplyScalar(exportable ? 1 : shades[index]);if(face instanceof THREE.MeshLambertMaterial)face.emissive.copy(brand);});
@@ -710,6 +890,9 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     setWind(value:WindConditions|null){windConditions=value;wind?.setWind(value);canvas.dataset.windMotion=value?"model":"unavailable";canvas.dataset.windSpeed=String(value?.speedMs??'');canvas.dataset.windAt=value?.validAt??'';invalidate();},
     setWindScale(factor:number){windScale=factor;wind?.setScale(factor);invalidate();},
     flyTo,
+    focusRegion,
+    setCarrierColors(colors:Record<string,string>){carrierColors=colors;highlightCarriers();},
+    highlightCarriers(labels:string[]){highlightedCarriers=labels;highlightCarriers();},
     previewReference,
     leaveReferencePark,
     showReferencePath(show:boolean){if(flightMetrics)flightMetrics.hidden=!show;if(referencePlan)referencePlan.style.display=show?'block':'none';invalidate();},
@@ -718,14 +901,26 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     reset() { if(buildings)flyTo({x:pivot.x,z:pivot.z,zoom:1});else {stopFlight();camera.position.copy(cameraOffset).add(pivot);controls.target.copy(pivot);camera.zoom=1;windFocused=false;resize();invalidate();} },
     update(values:MapValue[],chosen:string,over:string|null) {
       if (values !== previousValues) {
-        const maximum=Math.max(0,...values.map(v=>v.value??0));
-        const targets=new Map(values.map(v=>[v.id,v.value!==null&&v.value>0&&maximum>0?v.value/maximum*BAR_MAX:0]));
+        for(const [id,parent] of bars){
+          parent.clear();const value=values.find(item=>item.id===id);const maximum=value?barMaximum(value):0;
+          if(value?.bars&&maximum>0)value.bars.forEach((item,index)=>{
+            if(item.value<=0)return;
+            const height=item.value/maximum;
+            const bar=new THREE.Mesh(barGeometry,groupedMaterial(item.color));
+            const columns=Math.ceil(value.bars!.length/2);
+            bar.scale.set(.65,height,.65);bar.position.set((index%columns-(columns-1)/2)*7,-.5+height/2,(Math.floor(index/columns)-.5)*7);
+            bar.castShadow=true;bar.receiveShadow=true;bar.userData.region=id;bar.userData.carrier=item.label;bar.userData.baseMaterial=bar.material;parent.add(bar);
+          });
+          parent.castShadow=!parent.children.length;
+        }
+        const maximum=Math.max(0,...values.map(barMaximum));
+        const targets=new Map(values.map(value=>[value.id,maximum>0?barMaximum(value)/maximum*BAR_MAX:0]));
         // A short geographic wave gives the entrance rhythm without delaying metric changes.
         const north=Math.min(...shapes.map(s=>s.groundAnchor[1]));
         const south=Math.max(...shapes.map(s=>s.groundAnchor[1]));
         const heights=new Map([...bars].map(([id,bar])=>[id,{
           from:bar.visible?bar.scale.y:0,to:targets.get(id)??0,
-          delay:previousValues?0:180*(bar.position.z-north)/Math.max(1,south-north)+(Number(id)%4)*12,
+          delay:previousValues?0:180*(bar.position.z-north)/Math.max(1,south-north)+((Number(id)||0)%4)*12,
         }]));
         if (reducedMotion.matches) {
           transition=null;
@@ -734,7 +929,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
         renderer.shadowMap.needsUpdate=true;
         previousValues=values;
       }
-      selected=chosen;hovered=over;highlight();
+      selected=chosen;hovered=over;highlight();highlightCarriers();
     },
     async season(season:Season) {
       await planting;if(dead)return;
@@ -742,6 +937,6 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       renderer.shadowMap.needsUpdate=true;
       invalidate();
     },
-    dispose(){signShadow?.dispose();locationPins?.dispose();depthOfField?.dispose();signForeground?.domElement.remove();signForeground?.dispose();flightMetrics?.remove();referencePlan?.remove();disposeTrackpad();solarLayer?.dispose();contours?.dispose();architecture?.dispose();context?.dispose();land?.dispose();reducedMotion.removeEventListener("change",visibility);wind?.dispose();canvas.removeEventListener("touchstart",twoFingerTouch);canvas.removeEventListener("touchmove",twoFingerTouch);canvas.removeEventListener("wheel",wheel,{capture:true});dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
+    dispose(){finishRegionFade();signShadow?.dispose();locationPins?.dispose();depthOfField?.dispose();signForeground?.domElement.remove();signForeground?.dispose();flightMetrics?.remove();referencePlan?.remove();disposeTrackpad();solarLayer?.dispose();contours?.dispose();architecture?.dispose();context?.dispose();land?.dispose();reducedMotion.removeEventListener("change",visibility);wind?.dispose();canvas.removeEventListener("touchstart",twoFingerTouch);canvas.removeEventListener("touchmove",twoFingerTouch);canvas.removeEventListener("wheel",wheel,{capture:true});dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
   };
 }

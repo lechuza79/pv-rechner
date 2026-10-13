@@ -5,7 +5,7 @@ import ChartFlag from './ChartFlag';
 import MetricValue from '../MetricValue';
 export type CategoryBar = {id:string; label:string; axisLabel?:string; labelContent?:ReactNode; value:number; partial?:boolean; partialLabel?:string; missing?:boolean; highlighted?:boolean;flagSrc?:string;silhouetteSrc?:string};
 /** Numeric plotting only; period semantics come from the adapter. */
-export function CategoryBarChart({rows, unit, label, orientation="vertical",paired=false,responsiveLabels=false,compact=false,country=false,partialStyle="hatched",partialLabel="Laufendes Jahr · noch nicht vollständig."}:{responsiveLabels?:boolean;rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean;compact?:boolean;country?:boolean;partialStyle?:"hatched"|"solid";partialLabel?:string}) {
+export function CategoryBarChart({rows, unit, label, orientation="vertical",maximumFractionDigits=0,paired=false,responsiveLabels=false,compact=false,country=false,partialStyle="hatched",partialLabel="Laufendes Jahr · noch nicht vollständig."}:{maximumFractionDigits?:number;responsiveLabels?:boolean;rows:CategoryBar[];unit:string;label:string;orientation?:"vertical"|"horizontal";paired?:boolean;compact?:boolean;country?:boolean;partialStyle?:"hatched"|"solid";partialLabel?:string}) {
  const [active,setActive]=useState<string|null>(null);
  const barsRef=useRef<HTMLDivElement>(null);
  const [plotWidth,setPlotWidth]=useState(640);
@@ -24,7 +24,7 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
  },[paired,orientation]);
  const max=Math.max(0,...rows.map(row=>row.value));
  const getPartialLabel=(row:CategoryBar)=>row.partialLabel??partialLabel;
- const describe=(row:CategoryBar)=>`${row.label}: ${row.missing?'Keine Daten':`${row.value.toLocaleString('de-DE')} ${unit}`}${row.partial?` · ${getPartialLabel(row)}`:''}`;
+ const describe=(row:CategoryBar)=>`${row.label}: ${row.missing?'Keine Daten':`${row.value>0&&row.value<.0005?'weniger als 0,001':row.value.toLocaleString('de-DE')} ${unit}`}${row.partial?` · ${getPartialLabel(row)}`:''}`;
  if(orientation === "horizontal" && paired && rows.length===2) {
   const [reference,current]=rows;
   const difference=reference.value-current.value;
@@ -41,10 +41,10 @@ export function CategoryBarChart({rows, unit, label, orientation="vertical",pair
    <div className="sc-category-horizontal-label"><span>{current.labelContent??current.label}</span><strong>{Math.round(current.value).toLocaleString('de-DE')} <small>{unit}</small></strong></div>
   </div>;
  }
- if(orientation === "horizontal") return <div className="sc-category-horizontal" data-country={country||undefined} role="group" aria-label={label}>
+ if(orientation === "horizontal") return <div className="sc-category-horizontal" data-compact={compact||undefined} data-country={country||undefined} role="group" aria-label={label}>
   {rows.map(row=><div key={row.id} className="sc-category-horizontal-row" aria-label={describe(row)}>
    {country&&row.silhouetteSrc&&<img className="sc-category-country-silhouette" src={row.silhouetteSrc} alt="" aria-hidden="true"/>}
-   <div className="sc-category-horizontal-label"><span className={country?"sc-category-country-label":undefined}>{country&&row.flagSrc&&<img src={row.flagSrc} alt="" width={14} height={14}/>} {row.labelContent??row.label}</span><strong>{row.missing?"–":Math.round(row.value).toLocaleString('de-DE')} <small>{unit}</small></strong></div>
+   <div className="sc-category-horizontal-label"><span className={country?"sc-category-country-label":undefined}>{country&&row.flagSrc&&<img src={row.flagSrc} alt="" width={14} height={14}/>} {row.labelContent??row.label}</span><strong>{row.missing?"–":(row.value>0&&row.value<Math.pow(10,-maximumFractionDigits)/2?`< ${Math.pow(10,-maximumFractionDigits).toLocaleString('de-DE',{maximumFractionDigits})}`:row.value.toLocaleString('de-DE',{maximumFractionDigits}))} <small>{unit}</small></strong></div>
    <div className="sc-category-horizontal-track" aria-hidden="true"><div data-highlighted={row.highlighted} style={{width:`${max?Math.max(0,row.value)/max*100:0}%`}}/></div>
   </div>)}
  </div>;

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import SidebarNavigation from './SidebarNavigation';
 import styles from './SidebarPageLayout.module.css';
 
@@ -16,7 +16,7 @@ export default function SidebarPageLayout({ children, links, activeHref, label, 
 }) {
   const root = useRef<HTMLDivElement>(null);
   const sidebar = useRef<HTMLElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!enabled || !darkHero || !root.current || !sidebar.current) return;
     const container = root.current;
     const rail = sidebar.current;
@@ -46,12 +46,12 @@ export default function SidebarPageLayout({ children, links, activeHref, label, 
     window.addEventListener('resize', schedule);
     update();
     return () => { resize.disconnect(); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); cancelAnimationFrame(frame); };
-  }, [enabled, darkHero, alignWith]);
+  }, [enabled, darkHero, alignWith, activeHref]);
   if (!enabled) return <>{children}</>;
   return <div ref={root} className={styles.surface} data-dark-hero={darkHero || undefined}>
     <div className={styles.layout}>
-      <aside ref={sidebar} className={styles.sidebar}><SidebarNavigation links={links} activeHref={activeHref} label={label}>{navigationControls}</SidebarNavigation></aside>
-      <div className={styles.content}>{children}</div>
+      <aside data-page-transition-navigation ref={sidebar} className={styles.sidebar}><SidebarNavigation links={links} activeHref={activeHref} label={label}>{navigationControls}</SidebarNavigation></aside>
+      <div key={activeHref} className={styles.content}>{children}</div>
     </div>
   </div>;
 }
