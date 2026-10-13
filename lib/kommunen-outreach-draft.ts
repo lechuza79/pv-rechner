@@ -88,6 +88,8 @@ export type DraftContext = {
    * Pressepostfach; vorher waren es in 227 verschickten Briefen genau EINES.
    */
   anPresse?: boolean;
+  /** Letter goes to the climate-protection contact: they ARE who the forwarding note names. */
+  anKlima?: boolean;
   /**
    * Woher die Empfängeradresse stammt — für die Pflichtangabe nach Art. 14.
    *
@@ -752,12 +754,12 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Facebook-Seite der schnellere Weg als die Website, und das Mitteilungsblatt
   // ist dort verbreiteter als jede Pressestelle.
   const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
-  const weiterleitung = c.funktion || c.anPresse
+  const weiterleitung = c.funktion || c.anPresse || c.anKlima
     ? ""
     : grosseVerwaltung
-      ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
-      : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
-  const einstiegGross = !c.funktion && !c.anPresse;
+      ? `\n\nfalls Sie nicht zuständig sind: bitte an das Klimaschutzmanagement, die Pressestelle oder die Redaktion von Website und Social Media weiterleiten.`
+      : `\n\nfalls Sie nicht zuständig sind: bitte an das Klimaschutzmanagement oder an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
+  const einstiegGross = !c.funktion && !c.anPresse && !c.anKlima;
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
   // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
@@ -789,7 +791,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
   const szeneAbsatz =
     c.mitSzene && c.kommunenUrl
-      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurzOrtsname(c.name)} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurzOrtsname(c.name)}. Gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
       : "";
   const kommunenAbsatz = c.kommunenUrl && !szeneAbsatz
     ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
@@ -861,6 +863,8 @@ export type InfoDraftContext = {
   einwohner?: number | null;
   funktion?: string | null;
   anPresse?: boolean;
+  /** Letter goes to the climate-protection contact: they ARE who the forwarding note names. */
+  anKlima?: boolean;
   anrede?: string | null;
   empfaenger?: string | null;
   adressherkunft?: Adressherkunft;
@@ -873,32 +877,33 @@ export function renderInfoDraft(c: InfoDraftContext): OutreachDraft {
   const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
   // Same forwarding rule as the press letter: none when we already write to
   // the named role or the press mailbox.
-  const weiterleitung = c.funktion || c.anPresse
+  const weiterleitung = c.funktion || c.anPresse || c.anKlima
     ? ""
     : grosseVerwaltung
-      ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
-      : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
-  const einstiegGross = !c.funktion && !c.anPresse;
+      ? `\n\nfalls Sie nicht zuständig sind: bitte an das Klimaschutzmanagement, die Pressestelle oder die Redaktion von Website und Social Media weiterleiten.`
+      : `\n\nfalls Sie nicht zuständig sind: bitte an das Klimaschutzmanagement oder an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
+  const einstiegGross = !c.funktion && !c.anPresse && !c.anKlima;
 
   const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
   // "kostenfrei" exactly once, as in the press letter; the 3D sentence only for
   // a published scene (both rules settled 06.10.2026).
   const angebotAbsatz =
     c.mitSzene && c.kommunenUrl
-      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurz} – gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft rund um ${kurz}. Gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
       : c.kommunenUrl
         ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
         : "";
 
   const body = `${c.anrede?.trim() || "Sehr geehrte Damen und Herren"},${weiterleitung}
 
-${einstiegGross ? "Für" : "für"} ${c.name} gibt es auf solar-check.io eine eigene Seite. Sie zeigt aus dem Marktstammdatenregister der Bundesnetzagentur, wie viele Solaranlagen, Balkonkraftwerke und Speicher im Ort in Betrieb sind, was jedes Jahr hinzukommt und wie ${kurz} ${c.vergleichWo} dasteht. Die Seite aktualisiert sich jeden Monat von selbst:
-${c.pageUrl}
+${einstiegGross ? "Wir" : "wir"} haben die Daten aus dem Marktstammdatenregister für ${c.name} aufbereitet. Die Übersicht zeigt zum Beispiel, wie viele Solaranlagen, Balkonkraftwerke und Speicher im Ort in Betrieb sind, was jedes Jahr hinzukommt und wie ${kurz} ${c.vergleichWo} dasteht.
+
+Die Daten werden monatlich aktualisiert: ${c.pageUrl}
 
 Drei Dinge können Sie damit ohne Aufwand machen:
-– auf die Seite verlinken, etwa unter Klimaschutz oder Energie,
-– die Zahlen als Grafik auf Ihrer Website einbauen; Farben und Schrift lassen sich anpassen, den Code schicke ich Ihnen gern,
-– sich Bescheid geben lassen, sobald sich im Ort etwas Nennenswertes tut.
+• auf die Seite verlinken, etwa unter Klimaschutz oder Energie,
+• die Zahlen als Grafik auf Ihrer Website einbauen; Farben und Schrift lassen sich anpassen, den Code schicke ich Ihnen gern,
+• sich Bescheid geben lassen, sobald sich im Ort etwas Nennenswertes tut.
 
 Für Kommunen ist das kostenfrei, und anmelden muss sich niemand.${angebotAbsatz}
 

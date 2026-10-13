@@ -67,7 +67,7 @@ export async function briefFuerGemeinde(
    *  um Weiterleitung — wir schreiben bereits an die Stelle, die sie nennt.
    *  `herkunft` sagt, WO die Adresse stand; sie steht so in der Pflichtangabe
    *  nach Art. 14. */
-  opt?: { anPresse?: boolean; herkunft?: Adressherkunft },
+  opt?: { anPresse?: boolean; anKlima?: boolean; herkunft?: Adressherkunft },
 ): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
@@ -175,6 +175,7 @@ export async function briefFuerGemeinde(
       einwohner: reg.population ?? null,
       funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
       anPresse: !!opt?.anPresse,
+      anKlima: !!opt?.anKlima,
       anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
       empfaenger: empfaenger ?? null,
       adressherkunft: opt?.herkunft,
@@ -216,6 +217,7 @@ export async function briefFuerGemeinde(
     empfaenger: empfaenger ?? null,
     anrede: (anredeRow as { anrede?: string } | null)?.anrede ?? null,
     anPresse: !!opt?.anPresse,
+      anKlima: !!opt?.anKlima,
     adressherkunft: opt?.herkunft,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     rangProzent: hook?.bestenProzent ?? null,
