@@ -1,3 +1,4 @@
+import {directoryAssociation,associationDirectoryPath,searchAssociations} from './verband-directory';
 // Energie-Atlas data access: resolves /solar-atlas/<bundesland>/<kreis>/<gemeinde>
 // to a region and assembles what a page needs.
 //
@@ -226,6 +227,10 @@ export async function searchRegions(
       label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
       parent_region_id: (r.parent_region_id as string | null) ?? null,
     }));
+  // Associations belong in the broad geographic search, never municipality-only pickers.
+  if (levels.includes('bundesland') && levels.includes('landkreis') && levels.includes('gemeinde')) {
+    rows.unshift(...searchAssociations(term).map(group=>({region_id:group.id,name:group.name,label:'Verbandsgemeinde',parent_region_id:group.districtId})));
+  }
   // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
   rows.sort(
     (a, b) =>
@@ -335,6 +340,11 @@ export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> 
  * link into a Gemeinde by AGS without shipping a slug table to the browser.
  */
 export async function atlasPathForRegionId(regionId: string): Promise<string | null> {
+  const association = directoryAssociation(regionId);
+  if (association) {
+    const districtPath = await atlasPathForRegionId(association.districtId);
+    return districtPath ? associationDirectoryPath(districtPath,association.name) : null;
+  }
   const region = await getRegionById(regionId);
   if (!region?.slug) return null;
   const ancestors = await getAncestors(region);
