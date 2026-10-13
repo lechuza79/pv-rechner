@@ -227,7 +227,7 @@ ${fontSizeVars}
        ziehen (mehr Breite macht den Ring nicht größer). Zweispaltig bleibt sie
        spaltenbreit und damit bündig zu den Kacheln darunter. */
     .mastr-live{width:fit-content;margin-inline:auto}
-    .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+    .mastr-kpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
     /* Zusammengedrängte Kachel: der Wert schrumpft — und seine Einheit MUSS
        mitschrumpfen. Stünde sie weiter auf der Sekundär-Stufe, wäre sie fast

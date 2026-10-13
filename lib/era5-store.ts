@@ -6,7 +6,7 @@
  * temporary file and no manifest, so the next run redoes exactly that block and
  * nothing else.
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync, unlinkSync } from 'node:fs';
+import { closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, renameSync, writeFileSync, unlinkSync } from 'node:fs';
 import {
   ERA5_CHUNK_HOURS,
   ERA5_WINDOW,
@@ -38,6 +38,8 @@ export type Era5BlockManifest = {
   /** Last-Modified of the archive file, so a later revision is recognisable. */
   sourceLastModified: string | null;
   retrievedAt: string;
+  /** Whole days the archive lacked, filled from the Copernicus CDS (`lib/era5-cds.ts`). */
+  filled?: { source: string; days: string[]; referenceDay: string; maxDifference: number };
 };
 
 export function era5BlockPaths(variable: Era5Variable, chunk: number, root = ERA5_STORE_ROOT) {
@@ -76,6 +78,7 @@ export function era5WriteBlock(
   root = ERA5_STORE_ROOT,
   /** Where the values came from; a block before 2022 comes from year files. */
   sourceUrl = era5ChunkUrl(variable, chunk),
+  filled?: Era5BlockManifest['filled'],
 ) {
   const expected = ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS;
   if (values.length !== expected) {
@@ -105,6 +108,7 @@ export function era5WriteBlock(
     sourceUrl,
     sourceLastModified,
     retrievedAt: new Date().toISOString(),
+    ...(filled ? { filled } : {}),
   };
   writeFileSync(manifest + '.tmp', JSON.stringify(entry));
   renameSync(manifest + '.tmp', manifest);
@@ -132,9 +136,19 @@ export function era5ReadCellBlock(
 ) {
   const { data } = era5BlockPaths(variable, chunk, root);
   const offset = era5WindowIndex(row, column) * ERA5_CHUNK_HOURS * 4;
-  const buffer = readFileSync(data);
-  if (buffer.byteLength !== ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS * 4) {
-    throw new Error(`Block ${variable}/${chunk} hat eine unerwartete Größe.`);
+  // Read only this cell's 504 hours, not the whole 2.9 MB block: a package run
+  // reads one cell per town, and loading the full file each time was a quarter
+  // of its CPU time (measured 08.10.2026).
+  const fd = openSync(data, 'r');
+  try {
+    if (fstatSync(fd).size !== ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS * 4) {
+      throw new Error(`Block ${variable}/${chunk} hat eine unerwartete Größe.`);
+    }
+    const buffer = Buffer.alloc(ERA5_CHUNK_HOURS * 4);
+    const read = readSync(fd, buffer, 0, buffer.byteLength, offset);
+    if (read !== buffer.byteLength) throw new Error(`Block ${variable}/${chunk}: Zelle unvollständig gelesen.`);
+    return new Float32Array(buffer.buffer, buffer.byteOffset, ERA5_CHUNK_HOURS).slice();
+  } finally {
+    closeSync(fd);
   }
-  return new Float32Array(buffer.buffer, buffer.byteOffset + offset, ERA5_CHUNK_HOURS).slice();
 }

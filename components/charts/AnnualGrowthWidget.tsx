@@ -20,7 +20,7 @@ export function AnnualGrowth({ years, stand, name, regionId }: { name:string; re
   }, []);
   const end = Number(stand.slice(0, 4));
   return (
-    <ExportableWidgetFrame widget={WIDGETS.regionalAnnualGrowth} place={name} stand={dashboardDate(stand)} filename={`solar-check-growth-${regionId}`} data-story-scheme="dark" stateLabel={`${range === "all" ? 2014 : end - Number(range) + 1}–${end}`}
+    <ExportableWidgetFrame widget={WIDGETS.regionalAnnualGrowth} place={name} exportUnit="Anlagen" stand={dashboardDate(stand)} filename={`solar-check-growth-${regionId}`} data-story-scheme="dark" stateLabel={`${range === "all" ? 2014 : end - Number(range) + 1}–${end}`}
       sourcePlacement="plot" actions="primary" directActions
       shareParams={{range}}
       title="Zubau pro Jahr"

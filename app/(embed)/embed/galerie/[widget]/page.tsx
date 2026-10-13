@@ -1,3 +1,4 @@
+import RegionalSingleWidget from "../../../../../components/gemeinde/RegionalSingleWidget";
 import WidgetPresentation from '../../../../../components/dashboard/WidgetPresentation';
 import {parseWidgetAppearance} from '../../../../../lib/widget-appearance';
 import { Suspense } from "react";
@@ -15,17 +16,17 @@ import {widgetRankingRows} from '../../../../../lib/widget-ranking';
 import {getMastrDataAsOf} from '../../../../../lib/mastr-data';
 import {loadDistrictContent} from '../../../../../lib/district-monitor-server';
 import {isDistrictMember} from '../../../../../lib/district-package';
-import {RegionalMonthlySolarWidget} from '../../../../../components/landkreis/DistrictEnergyWidgets';
+import {RegionalMonthlySolarWidget} from '../../../../../components/landkreis/RegionalMonthlySolarWidget';
 
 import {MUNICIPAL_WIDGET_VIEWS as views} from '../../../../../lib/municipal-widget-views';
-export default async function Page({params, searchParams}: {params: Promise<{widget: string}>; searchParams: Promise<{ags?: string;theme?:string;background?:string;layout?:string;sharing?:string;autoplay?:string}>}) {
+export default async function Page({params, searchParams}: {params: Promise<{widget: string}>; searchParams: Promise<{ags?: string;theme?:string;background?:string;layout?:string;sharing?:string;autoplay?:string;presentation?:string}>}) {
   const {widget} = await params;
   if (widget === "solar-trend-monat") {
     const series = await getSolarMonthlySeries();
-    return series.length ? <Suspense fallback={<p>Wird geladen …</p>}><SolarTrendCard series={series}/></Suspense> : <p>Für den Monatsvergleich liegen noch keine Daten vor.</p>;
+    return series.length ? <Suspense fallback={<p>Wird geladen …</p>}><WidgetPresentation widgetId="solar-trend-monat"><SolarTrendCard series={series}/></WidgetPresentation></Suspense> : <p>Für den Monatsvergleich liegen noch keine Daten vor.</p>;
   }
   const single = views[widget as keyof typeof views];
-  if (!single && widget !== "gemeinde-ranking") notFound();
+  if (!single && widget !== "gemeinde-ranking" && widget !== "regional-basic-stats") notFound();
   const query=await searchParams;
   const appearance=parseWidgetAppearance(query);
   const {ags = "06440016"} = query;
@@ -38,7 +39,7 @@ export default async function Page({params, searchParams}: {params: Promise<{wid
     const members=new Set(children.filter(child=>region.level==='landkreis'?isDistrictMember(child,ags):child.bezeichnung!=='Gemeindefreies Gebiet').map(child=>child.region_id));
     const peers=foldSiblings(ranking.regions.filter(row=>members.has(row.region_id)),ranking.cells);
     if(!peers.length)return <p role="status">Für dieses Gebiet liegt noch kein Vergleich vor.</p>;
-    return <WidgetPresentation appearance={{...appearance,theme:appearance.theme??'light'}}><RankingPodiumWidget data={{place:region.name,category:'count',title:'Zahl der Solaranlagen',unit:'Anlagen',scope:region.name,stand,rows:widgetRankingRows(peers),animate:true,shareParams:{ags}}}/></WidgetPresentation>;
+    return <WidgetPresentation widgetId="gemeinde-ranking" appearance={{...appearance,theme:appearance.theme??'light'}}><RankingPodiumWidget data={{place:region.name,category:'count',title:'Zahl der Solaranlagen',unit:'Anlagen',scope:region.name,stand,rows:widgetRankingRows(peers),animate:true,shareParams:{ags}}}/></WidgetPresentation>;
   }
   if (/^\d{5}$/.test(ags) && widget === "gemeinde-solar-monat") {
     const region=await getRegionById(ags);
@@ -48,7 +49,7 @@ export default async function Page({params, searchParams}: {params: Promise<{wid
     const members=children.filter(child=>isDistrictMember(child,ags)).map(child=>child.region_id);
     const content=await loadDistrictContent(ags,members,stand);
     const data=content.monitor.energy;
-    return <WidgetPresentation appearance={appearance}>{data?.monthly.length
+    return <WidgetPresentation widgetId={widget} appearance={appearance}>{data?.monthly.length
       ? <RegionalMonthlySolarWidget data={data} name={region.name} regionId={ags}/>
       : <p role="status">Für die Solarerzeugung liegt noch kein vollständiger gemeinsamer Monat aller Gemeinden vor.</p>}
     </WidgetPresentation>;
@@ -58,7 +59,12 @@ export default async function Page({params, searchParams}: {params: Promise<{wid
   if (!paket) return <p>Für diesen Ort liegt dieses Widget noch nicht vor.</p>;
   if (widget === "gemeinde-ranking") {
     const rows = widgetRankingRows(paket.district.peers,paket.ags);
-    return <WidgetPresentation appearance={{...appearance,theme:appearance.theme??'light'}}><RankingPodiumWidget data={{place:paket.name,category:"count",title:"Zahl der Solaranlagen",unit:"Anlagen",scope:`${paket.kreis.name}`,stand:paket.registerStand,rows,animate:true,shareParams:{ags}}}/></WidgetPresentation>;
+    return <WidgetPresentation widgetId="gemeinde-ranking" appearance={{...appearance,theme:appearance.theme??'light'}}><RankingPodiumWidget data={{place:paket.name,category:"count",title:"Zahl der Solaranlagen",unit:"Anlagen",scope:`${paket.kreis.name}`,stand:paket.registerStand,rows,animate:true,shareParams:{ags}}}/></WidgetPresentation>;
   }
-  return <WidgetPresentation appearance={appearance}><GemeindeAnsicht ansicht="monitor" paket={paketFuer("monitor", paket)} single={single}/></WidgetPresentation>;
+  if (['regional-current-power','gemeinde-solar-monat','regional-basic-stats'].includes(widget)) {
+    const {ags,name,registerStand,register,monitorPeriods,monitorHistory,einwohnerStand}=paket;
+    const kind=widget==='regional-current-power'?'power':widget==='gemeinde-solar-monat'?'month':'stats';
+    return <WidgetPresentation widgetId={widget} variant='full' appearance={appearance}><RegionalSingleWidget kind={kind} data={{ags,name,registerStand,register:register?{own:register.own,chartMix:register.chartMix}:null,monitorPeriods:kind==='month'?monitorPeriods:null,monitorHistory:kind==='stats'?monitorHistory:null,einwohnerStand}}/></WidgetPresentation>;
+  }
+  return <WidgetPresentation widgetId={widget} appearance={appearance}><GemeindeAnsicht ansicht="monitor" paket={paketFuer("monitor", paket)} single={single as React.ComponentProps<typeof GemeindeAnsicht>["single"]}/></WidgetPresentation>;
 }

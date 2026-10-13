@@ -1,31 +1,24 @@
 "use client";
-import niddaSolarRegister from "../../public/geo/nidda-preview/solar-register.json";
+import {useWidgetResource} from '../dashboard/WidgetData';
+import {landscapeResourceUrl} from '../../lib/landscape-resource';
+import {projectNiddaLandscape,niddaLandscapeTour} from "../../lib/landscape-tour";
 import HeroLandscapeTour from "./HeroLandscapeTour";
 import {IconArrowRight} from "../Icons";
 import LocationMicroCard from "./LocationMicroCard";
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { projectBuildingPreview, type BuildingPreview } from '../../lib/building-scene';
-import {combineTerrain} from '../../lib/terrain-patches';
+import type { BuildingPreview } from '../../lib/building-scene';
 import {useWindConditions} from "../../lib/use-wind-conditions";
 import RegionScene,{type SceneControls} from './RegionScene';
 import GemeindeHeroStage from '../gemeinde/GemeindeHeroStage';
 import styles from './wind-map.module.css';
 
 export default function BuildingPreviewMap({ source,municipalHero=false,sceneOnly=false,onReady }: { source: string;municipalHero?:boolean;sceneOnly?:boolean;onReady?:(ready:boolean)=>void }) {
-  const [data, setData] = useState<BuildingPreview | null>(null);
-  const [overview, setOverview] = useState<Pick<BuildingPreview, 'terrain' | 'turbines'> | null>(null);
-  const [solar,setSolar]=useState<BuildingPreview|null>(null);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/geo/nidda-preview/solar.json',{signal:controller.signal}).then(r=>{if(!r.ok)throw new Error('Solar geometry unavailable');return r.json();}).then(setSolar).catch(()=>{if(!controller.signal.aborted){setError(true);onReady?.(false);}});
-    fetch('/geo/nidda-preview/wind-overview.json', {signal:controller.signal}).then(r=>{if(!r.ok)throw new Error('Wind overview unavailable');return r.json();}).then(setOverview).catch(()=>{if(!controller.signal.aborted){setError(true);onReady?.(false);}});
-    fetch(source, { signal: controller.signal }).then(response => {
-      if (!response.ok) throw new Error("Building scene unavailable");
-      return response.json();
-    }).then(setData).catch(() => { if (!controller.signal.aborted) {setError(true);onReady?.(false);} });
-    return () => controller.abort();
-  }, [source]);
+  const sceneResource=useWidgetResource<BuildingPreview|null>(landscapeResourceUrl(source),null,3600000);
+  const overviewResource=useWidgetResource<Pick<BuildingPreview,'terrain'|'turbines'>|null>(landscapeResourceUrl('/geo/nidda-preview/wind-overview.json'),null,3600000);
+  const solarResource=useWidgetResource<BuildingPreview|null>(landscapeResourceUrl('/geo/nidda-preview/solar.json'),null,3600000);
+  const data=sceneResource.data,overview=overviewResource.data,solar=solarResource.data;
+  const error=sceneResource.error||overviewResource.error||solarResource.error;
+  useEffect(()=>{if(error&&(!data||!overview||!solar))onReady?.(false);},[error,!!data,!!overview,!!solar]);
   if (!data || !overview || !solar) return <p className={styles.weather} role="status">{error ? "Die Ortsdaten sind gerade nicht verfügbar. Bitte lade die Vorschau erneut." : "Nidda lädt …"}</p>;
   return <LoadedBuildingMap data={data} overview={overview} solar={solar} municipalHero={municipalHero} sceneOnly={sceneOnly} onReady={onReady} />;
 }
@@ -42,21 +35,7 @@ function LoadedBuildingMap({ data, overview, solar,municipalHero,sceneOnly,onRea
   const pendingStop=useRef(currentStop);
   const onFlight=(moving:boolean,arrived?:boolean)=>{setFlying(moving);if(arrived)setCurrentStop(pendingStop.current);};
   const projected = useMemo(() => {
-    const [w,n,e,s]=overview.terrain.groundBounds;
-    const scale=700/Math.max(e-w,s-n), centre:[number,number]=[(w+e)/2,(n+s)/2];
-    const buildings=Array.from(new Map([...data.buildings,...solar.buildings].map(b=>[b.id,b])).values());
-    const result=projectBuildingPreview({...data,...overview,buildings,solar:solar.solar,locations:solar.locations},scale,centre);
-    // Keep the detailed local surfaces in the same world throughout every flight.
-    const patches=[data,solar].map(d=>projectBuildingPreview(d,scale,centre).terrain);
-    result.terrain=combineTerrain(result.terrain,patches);
-    if(contours)result.terrain.display='contours';
-    const destination=(d:BuildingPreview)=>{const [w,n,e,s]=d.terrain.groundBounds;return {x:((w+e)/2-centre[0])*scale,z:((n+s)/2-centre[1])*scale,zoom:12};};
-    const park=result.turbines.filter(t=>t.hub!==null);
-    const turbine={x:park.reduce((sum,t)=>sum+t.x,0)/park.length,z:park.reduce((sum,t)=>sum+t.z,0)/park.length};
-    const town=destination(data);
-    result.locations=[...(result.locations??[]),{id:'nidda-market',name:'Nidda',x:town.x,z:town.z},{id:'nidda-windpark',name:'Windpark Fauerbach',...turbine}];
-    if(!result.locations.some(p=>p.id==='nidda-sewage'))result.locations.push({id:'nidda-sewage',name:'Kläranlage Nidda',...destination(solar)});
-    return {...result,destinations:{town:destination(data),solar:destination(solar),park:{x:turbine.x,z:turbine.z,zoom:8,throughPark:true}}};
+    return projectNiddaLandscape(data,overview,solar,contours);
   }, [data,overview,solar,contours]);
   const [ready, setReady] = useState(false), [failed, setFailed] = useState(false);
   const values = useMemo(() => [], []);
@@ -79,11 +58,7 @@ function LoadedBuildingMap({ data, overview, solar,municipalHero,sceneOnly,onRea
   const visitPark=()=>{pendingStop.current='Windpark Fauerbach';setPark(true);setView('wind');controls.current?.flyTo(projected.destinations.park);};
   const nextStop=park?'solar':view==='solar'?'town':'park';
   const stopName=park?'Windpark Fauerbach':view==='solar'?'Kläranlage Nidda':view==='town'?'Nidda':'Nidda';
-  if(municipalHero)return <HeroLandscapeTour sceneOnly={sceneOnly} onReady={onReady} data={{...projected,municipality:'06440016',name:'Nidda',stops:[
-    {id:'nidda-market',name:'Nidda',kind:'town',...projected.destinations.town},
-    {id:'nidda-windpark',name:'Windpark Fauerbach',kind:'wind',capacityKw:projected.turbines.every(t=>t.ratedKw!=null)?projected.turbines.reduce((sum,t)=>sum+(t.ratedKw??0),0):null,...projected.destinations.park},
-    {id:'nidda-sewage',name:niddaSolarRegister.label,kind:'solar',capacityKw:niddaSolarRegister.capacityKw,...projected.destinations.solar}
-  ]}}/>;
+  if(municipalHero)return <HeroLandscapeTour sceneOnly={sceneOnly} onReady={onReady} data={niddaLandscapeTour(data,overview,solar)}/>;
   const sceneContent=<>
       <RegionScene cardBottomSpace={reference?180:90} locationCard={municipalHero?{visible:!flying,id:currentStop==='Windpark Fauerbach'?'nidda-windpark':currentStop==='Kläranlage Nidda'?'nidda-sewage':'nidda-market',content:<LocationMicroCard name={currentStop} weather={weather}/>} :undefined} windConditions={weather} onFlight={onFlight} {...projected} heightEnvelope={envelope} values={values} windScale={1}
         selected="" hovered={null} onHover={() => {}} onSelect={id => {

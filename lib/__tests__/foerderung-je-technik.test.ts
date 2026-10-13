@@ -120,12 +120,8 @@ const ROOT = join(__dirname, "..", "..");
  * Programme einer Ebene nebeneinander; der Leser sucht dort das Programm, nicht
  * seine eigene Anlage.
  */
-const OHNE_TECHNIK_MIT_GRUND: Record<string, string> = {
-  "app/(site)/photovoltaik-foerderung/page.tsx":
-    "Bundesweite Übersicht: zeigt jedes Programm als Ganzes, kein Anlagenbezug.",
-  "app/(site)/photovoltaik-foerderung/[bundesland]/page.tsx":
-    "Bundesland-Übersicht: dieselbe Rolle wie die bundesweite Liste.",
-};
+// Overview pages now open the shared, technology-filtered detail component.
+const OHNE_TECHNIK_MIT_GRUND: Record<string, string> = {};
 
 function dateienUnter(rel: string): string[] {
   const abs = join(ROOT, rel);

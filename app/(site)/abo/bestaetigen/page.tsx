@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import AboErgebnis, { ABO_KNOPF_STIL } from "../_ergebnis";
 import { pruefeBestaetigung } from "../../../../lib/abo-token";
 import { aboBestaetigen } from "../../../../lib/gemeinde-abo";
-import { atlasPathForRegionId } from "../../../../lib/atlas";
+import { aboRegionPath } from "../../../../lib/abo-region";
 import { ATLAS_CITIES, cityPath, isCityPublished } from "../../../../lib/atlas-cities";
 import { ABO_BESTAETIGT_PARAM } from "../../../../lib/abo-bestaetigt";
 
@@ -112,5 +112,5 @@ async function zielPfad(regionId: string, quelle: "gemeinde" | "foerderung"): Pr
     const stadt = ATLAS_CITIES.find((c) => c.ags === regionId);
     if (stadt && isCityPublished(stadt)) return cityPath(stadt);
   }
-  return atlasPathForRegionId(regionId);
+  return aboRegionPath(regionId);
 }

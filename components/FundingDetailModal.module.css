@@ -1,0 +1,144 @@
+/* Reapply the Atlas design at the portal boundary; the page cannot inherit here. */
+.dialog.dialog {
+  --color-bg: var(--atlas-surface);
+  --color-bg-muted: var(--atlas-card);
+  --color-text-primary: var(--atlas-text);
+  --color-text-secondary: var(--atlas-secondary);
+  --color-text-muted: var(--atlas-secondary);
+  --color-border: var(--atlas-border);
+  --color-accent: var(--atlas-text);
+  --color-cta: var(--atlas-action);
+  --color-cta-ink: var(--atlas-action-ink);
+  --color-text-on-accent: var(--atlas-action-ink);
+  --font-text: var(--atlas-body);
+  --font-heading: var(--atlas-display);
+  --font-mono: var(--atlas-body);
+}
+.title { font-family: var(--atlas-display); }
+.content { display: grid; gap: var(--space-xl); }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: var(--space-xl); color: var(--atlas-secondary); font-size: var(--font-size-small); line-height: 1.5; }
+.card.card {
+  --color-bg: var(--sc-surface-light, #e8ece3);
+  --color-bg-muted: var(--sc-surface-light-inset, #dce5db);
+  --color-accent: var(--atlas-text);
+  --color-accent-dim: var(--sc-surface-light-inset, #dce5db);
+  --font-text: var(--atlas-body);
+  --font-mono: var(--atlas-body);
+  background: var(--color-bg);
+  color: var(--atlas-text);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xxl);
+  font-size: var(--font-size-body);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.intro { display: grid; gap: 8px; margin-bottom: var(--space-xxl); }
+.card p, .card h2, .card h3 { margin: 0; }
+.card h3 { font-size: var(--font-size-lead); line-height: 1.35; }
+.provider, .audience { color: var(--atlas-secondary); font-size: var(--font-size-small); }
+.card .description { margin-bottom: var(--space-xxl); }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-xxl); }
+.rates { display: grid; gap: var(--space-xl); margin: 0 0 var(--space-xxl); }
+.rates > div { display: grid; gap: 4px; }
+.rates dt { font-weight: 700; }
+.rates dd { margin: 0; color: var(--atlas-text); text-align: left; }
+.details { display: grid; gap: var(--space-xl); }
+.sourceRow { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; font-size: var(--font-size-small); }
+.sourceRow a { color: var(--atlas-text); text-decoration: underline; text-underline-offset: .2em; }
+.sourceRow span { color: var(--atlas-secondary); }
+.actions { display: flex; justify-content: flex-end; }
+.actions > * { white-space: normal; text-align: center; }
+@media (max-width: 640px) {
+  .card.card { padding: var(--space-xl); }
+  .actions > * { width: 100%; }
+}
+
+.requirements, .scope { margin-top: var(--space-xxl); padding-top: var(--space-xl); border-top: 1px solid var(--atlas-border); }
+.scope { margin-bottom: var(--space-xxl); }
+.scope h3, .scope h4, .requirements h3, .requirements h4 { margin: 0 0 var(--space-xl); font-size: var(--font-size-body); }
+.requirements li { padding-bottom: 8px; }
+
+.presentation { --font-text: var(--atlas-body); --font-mono: var(--atlas-body); --color-cta: var(--color-brand); --color-cta-ink: var(--color-text-on-accent); }
+.presentation[data-story-scheme=light] .meta, .presentation[data-story-scheme=light] .programHeading, .presentation[data-story-scheme=light] .compactStatus { color: var(--atlas-secondary); --sc-profit-outline: var(--color-positive-text); --sc-profit-fill: var(--color-chart-positive-bg); }
+.presentation[data-story-scheme=light] { margin-bottom: var(--space-xxl); }
+.presentation[data-story-scheme=light] .actions { margin-top: var(--space-xl); }
+
+.overview { margin-bottom: var(--space-xxl); }
+.overviewMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: var(--space-xl); color: var(--atlas-secondary); font-size: var(--font-size-small); --sc-profit-outline: var(--color-positive-text); --sc-profit-fill: var(--color-chart-positive-bg); }
+.overviewActions { display: flex; flex-wrap: wrap; gap: var(--space-xl); align-items: center; }
+.overviewActions a:not([data-action-button]) { color: var(--atlas-text); text-underline-offset: .2em; font-size: var(--font-size-small); }
+.presentation[data-story-scheme=light] { --color-cta-ink: var(--atlas-text); }
+.presentation[data-story-scheme=dark] { --color-cta-ink: var(--atlas-action-ink); }
+
+.card[data-compact] { padding:var(--space-xxl); height:100%; box-sizing:border-box; }
+.card[data-compact] .intro h3 { font-size:var(--font-size-body); }
+.card[data-compact] .overviewActions { gap:calc(var(--space-xl)/2); }
+
+.overview .programName { color:var(--atlas-secondary); font:var(--font-size-body)/1.5 var(--font-text); }
+
+.fundingAmounts { margin-block: var(--space-xxl); }
+.fundingAmounts h3, .fundingAmounts h4 { margin: 0 0 var(--space-xl); font-size: var(--font-size-body); }
+
+.programFooter { border-top: 1px solid var(--atlas-border); padding-top: var(--space-xl); display: grid; gap: 8px; }
+.sourceUpdate { color: var(--atlas-secondary); font-size: var(--font-size-small); }
+.card .meta { padding-bottom: var(--space-xl); border-bottom: 1px solid var(--atlas-border); }
+
+.presentation[data-context=page] .intro { margin-bottom: var(--space-xl); }
+.scope[aria-label="Ergänzende Förderung"] ul { padding: 0; margin: 0; list-style: none; }
+.presentation[data-context=page] .programFooter { margin-top: var(--space-xxl); }
+
+
+.presentation[data-context=page] .programHeading{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.presentation[data-context=page] .programHeading h2{color:var(--atlas-text);font-size:var(--font-size-h2);line-height:var(--leading-heading);margin:0;flex:1 1 280px}
+
+.audiencePills{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--space-xl) / 2);font-size:var(--font-size-small)}
+
+.verification{font-size:var(--font-size-small);line-height:1.6;color:var(--atlas-secondary);margin-top:var(--space-sm)}
+.verification p{margin:4px 0 0}
+.applicationSteps { padding-left: var(--space-xl); display: grid; gap: var(--space-xl); }
+.scope > p, .scope > [data-action-button] { margin-top: var(--space-xl); }
+.applicationSteps p { margin-top: var(--space-sm); }
+
+.scope [data-action-button], .overviewActions [data-action-button] { max-width:100%; white-space:normal; text-align:left; }
+
+.card.card[data-story-scheme=dark] { --color-bg:var(--atlas-surface); --color-bg-muted:var(--atlas-card); --color-accent-dim:var(--atlas-card); }
+.presentation[data-context=page] { margin-bottom:var(--space-xxl); }
+
+.compactStatus { display:flex; flex-wrap:wrap; align-items:center; gap:calc(var(--space-xl) / 2); color:var(--atlas-secondary); font-size:var(--font-size-small); }
+.compactActions { display:flex; flex-wrap:wrap; align-items:center; gap:calc(var(--space-xl) / 2); margin-top:var(--space-xl); }
+
+.compactActions [data-action-button] { max-width:100%; white-space:normal; }
+
+.applicationNotice { padding:var(--space-xl); border:0; border-radius:var(--radius-md); background:var(--color-bg-muted); }
+.applicationNotice h2, .fundingAmounts h2, .requirements h2 { margin:0 0 var(--space-xl); font-size:var(--font-size-lead); }
+.programSource { font-size:var(--font-size-small); }
+.programSource a { color:inherit; text-underline-offset:.2em; }
+
+.headerUpdates { margin-left:auto; }
+.applicationNotice { display:grid; gap:var(--space-xl); color:var(--atlas-text); }
+.applicationNotice > h2, .applicationNotice > p, .applicationNotice > [data-action-button], .applicationNotice > ul, .applicationNotice > ol { margin:0; }
+.applicationNotice :is(h2,h3,h4,p,li,a) { color:inherit; }
+.applicationNotice > [data-action-button] { justify-self:start; text-align:left; }
+.applicationNotice > .sourceUpdate:last-child { padding-top:var(--space-xl); border-top:1px solid color-mix(in srgb, currentColor 20%, transparent); }
+
+.compactStatus { padding-bottom:var(--space-xl); margin-bottom:calc(var(--space-xl) / 2); border-bottom:1px solid var(--atlas-border); }
+.compactActions { justify-content:center; margin-block:var(--space-xxl); padding-block:calc(var(--space-xl) / 2); }
+.applicationNotice > .sourceUpdate:last-child { font-size:var(--font-size-caption); }
+
+.compactStatus > span { font-size:12px; }
+.headerUpdates svg { stroke-width:1.3; }
+
+.headerUpdates [data-action-button] { font-size:var(--font-size-small); font-weight:400; }
+.headerUpdates svg { opacity:.55; }
+
+.audiencePills { color:var(--atlas-secondary); }
+.audiencePills > span:not(:first-child) { --color-text-secondary:var(--atlas-text); }
+.headerUpdates svg { color:var(--atlas-action); opacity:1; }
+.compactRequirements { border-top:0; padding-top:0; padding-bottom:var(--space-xl); border-bottom:1px solid var(--atlas-border); }
+.related > ul { display:grid; gap:0; list-style:none; margin:12px 0 0; padding:0; }
+.related > ul > li { padding:0; }
+.related > ul > li + li { border-top:1px solid var(--atlas-border); }
+.related [data-action-button] { display:flex; width:100%; justify-content:space-between; padding:16px 0; font-weight:400; }
+.related > h2 { color:var(--atlas-secondary); font-size:var(--font-size-small); }
+
+.audiencePills > span:not(:first-child) svg { color:var(--atlas-secondary); }

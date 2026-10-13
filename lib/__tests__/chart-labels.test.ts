@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {chartQuantityLabel, chartDataDate} from '../chart-labels';
+import {chartQuantityLabel, chartDataDate, chartMetadataLabel} from '../chart-labels';
 
 describe('shared chart headings', () => {
   it.each([
@@ -8,7 +8,7 @@ describe('shared chart headings', () => {
     ['Anlagen / 1.000 Einwohner', 'Anzahl Anlagen je 1.000 Einwohner'],
     ['Mio. Anlagen', 'Anzahl Anlagen (in Mio.)'],
     ['Haushalte', 'Anzahl Haushalte'],
-    ['MW', 'in MW'], ['kWh je Einwohner', 'in kWh je Einwohner'],
+    ['MW', 'in MW'], ['Mrd. €', 'in Mrd. €'], ['MWp', 'in MWp'], ['kWh je Einwohner', 'in kWh je Einwohner'],
     ['%', 'in %'], ['Anzahl und installierte Leistung', 'Anzahl und installierte Leistung'],
     ['Installierte Leistung nach Technologie', 'Installierte Leistung nach Technologie'],
     ['Anlagenbestand', 'Anlagenbestand'], ['Speicherquote', 'Speicherquote'],
@@ -19,4 +19,11 @@ describe('shared chart headings', () => {
     expect(chartDataDate('2026-09')).toBe('2026-09');
     expect(chartDataDate()).toBe('nicht verfügbar');
   });
+});
+
+it('export metadata distinguishes data vintage, displayed period and quantity', () => {
+  expect(chartMetadataLabel({scope:'Meinersen',dataAsOf:'2026-10-01',unit:'MWp',period:'2025'}))
+    .toBe('Meinersen · Stand 01.10.2026 · in MWp · 2025');
+  expect(chartMetadataLabel({scope:'Meinersen',unit:'Tsd. €'}))
+    .toBe('Meinersen · Stand nicht verfügbar · in Tsd. €');
 });

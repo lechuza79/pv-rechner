@@ -1,0 +1,27 @@
+import {afterEach,expect,it,vi} from 'vitest';
+import WidgetAutoHeight from '../../components/WidgetAutoHeight';
+const effects=vi.hoisted(()=>({run:undefined as undefined|(()=>void|(()=>void))}));
+vi.mock('react',()=>({useEffect:(run:()=>void|(()=>void))=>{effects.run=run;}}));
+afterEach(()=>vi.unstubAllGlobals());
+it('keeps a data-loading frame unready and reports readiness even at the same height',()=>{
+ let loading=true;
+ let mutation=()=>{};
+ const messages:any[]=[];
+ const handlers:Record<string,Function>={};
+ const parent={postMessage:(message:unknown)=>messages.push(message)};
+ vi.stubGlobal('window',{parent,addEventListener:(name:string,fn:Function)=>handlers[name]=fn,removeEventListener:()=>{},setTimeout:()=>0});
+ vi.stubGlobal('document',{body:{getBoundingClientRect:()=>({height:300})},querySelector:()=>loading?{}:null});
+ vi.stubGlobal('MutationObserver',class{constructor(fn:()=>void){mutation=fn;}observe(){}disconnect(){}});
+ vi.stubGlobal('ResizeObserver',class{observe(){}disconnect(){}});
+ WidgetAutoHeight();
+ const cleanup=effects.run!();
+ expect(messages.at(-1)).toMatchObject({height:300,ready:false});
+ mutation();
+ expect(messages).toHaveLength(1);
+ loading=false;
+ mutation();
+ expect(messages.at(-1)).toMatchObject({height:300,ready:true});
+ handlers.message({source:parent,data:{type:'widget:measure'}});
+ expect(messages).toHaveLength(3);
+ if(typeof cleanup==='function')cleanup();
+});

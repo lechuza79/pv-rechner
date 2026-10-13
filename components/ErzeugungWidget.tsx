@@ -1,4 +1,7 @@
 "use client";
+import {useWidgetResource} from "./dashboard/WidgetData";
+
+import {ChartExportMetadata} from "./charts/ChartExportMetadata";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MastrLiveRadial } from "./MastrLiveRadial";
@@ -74,8 +77,10 @@ export default function ErzeugungWidget({
   nackt?: boolean;
 }) {
   const [traeger, setTraeger] = useState<Traeger>("gesamt");
-  const [installedKwp, setInstalledKwp] = useState<number | null>(null);
+  const {data:capacity}=useWidgetResource<{total_kwp?:number}>(`/api/mastr/summary?region=de&type=${traeger}&segment=alle`,{});
+  const installedKwp=capacity.total_kwp??null;
   const [showHelp, setShowHelp] = useState(false);
+  const [dataAsOf, setDataAsOf] = useState<string>();
   const [gw, setGw] = useState<number | null>(null);
   const [settings, setSettings] = useState<WidgetSettings>(
     onsite ? { ...WIDGET_SETTINGS_DEFAULTS, onsite: true } : WIDGET_SETTINGS_DEFAULTS,
@@ -125,24 +130,6 @@ export default function ErzeugungWidget({
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
-
-  // Fetch installed capacity for the selected traeger
-  useEffect(() => {
-    let cancelled = false;
-    setInstalledKwp(null);
-    fetch(`/api/mastr/summary?region=de&type=${traeger}&segment=alle`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (cancelled) return;
-        setInstalledKwp(typeof d?.total_kwp === "number" ? d.total_kwp : null);
-      })
-      .catch(() => {
-        if (!cancelled) setInstalledKwp(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [traeger]);
 
   const helpButton = (
     <button
@@ -236,6 +223,8 @@ export default function ErzeugungWidget({
   // Bild gibt es keinen. Ohne diese Legende sind blaue und grüne Striche dort
   // nicht auseinanderzuhalten.
   const exportFooter = (
+    <>
+    <ChartExportMetadata scope="Deutschland" dataAsOf={dataAsOf} unit="GW" period={`${TRAEGER_LABEL[traeger]} · Letzte 24 Stunden`}/>
     <WidgetExportFooter
       widget={widget}
       branding={settings.branding}
@@ -245,6 +234,7 @@ export default function ErzeugungWidget({
       ]}
       note={HELP_TEXT}
     />
+    </>
   );
 
   return (
@@ -304,6 +294,7 @@ export default function ErzeugungWidget({
         )}
         exportFooter={exportFooter}
         onValue={setGw}
+        onDataAsOf={setDataAsOf}
         helpOverlay={showHelp ? helpPanel : null}
         traegerNav={{
           label: TRAEGER_LABEL[traeger],
@@ -324,7 +315,7 @@ export default function ErzeugungWidget({
           Steht NACH der Karte: die Karte bringt für ihre Umklapp-Animation eine
           Transformation mit und damit einen eigenen Malkontext — davor gesetzt
           verschwände die Kante lautlos hinter dem weißen Kasten. */}
-      <WidgetSourceEdge widget={widget} visible={!settings.onsite} />
+      <WidgetSourceEdge widget={widget} visible={!settings.onsite} stand={dataAsOf} />
     </div>
     </ExportNotesProvider>
   );

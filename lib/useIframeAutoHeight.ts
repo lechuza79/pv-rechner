@@ -21,15 +21,25 @@ export function useIframeAutoHeight(fallback: number) {
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       if (!ref.current || e.source !== ref.current.contentWindow) return;
-      const d = e.data as { type?: string; height?: number } | null;
-      if (d && d.type === "widget:height" && typeof d.height === "number" && d.height > 0) {
+      const origin = new URL(ref.current.src, window.location.href).origin;
+      if (e.origin !== origin) return;
+      const d = e.data as { type?: string; height?: number; ready?: boolean } | null;
+      if (d && d.type === "widget:height" && typeof d.height === "number" && Number.isFinite(d.height) && d.height > 0) {
         setHeight(Math.ceil(d.height));
-        setBereit(true);
+        setBereit(d.ready !== false);
       }
     };
     window.addEventListener("message", onMsg);
-    return () => window.removeEventListener("message", onMsg);
-  }, []);
+    // A cached frame can hydrate before this listener mounts. Ask until it answers.
+    const request = () => {
+      const frame = ref.current;
+      if (frame) frame.contentWindow?.postMessage({type: 'widget:measure'}, new URL(frame.src, window.location.href).origin);
+    };
+    request();
+    const retry = bereit ? undefined : window.setInterval(request, 1000);
+    return () => { window.removeEventListener("message", onMsg); window.clearInterval(retry); };
+
+  }, [bereit]);
 
   return { ref, height, bereit };
 }

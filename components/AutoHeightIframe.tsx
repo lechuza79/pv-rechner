@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { LoadingDots } from "./LoadingDots";
 import { usePathname } from "next/navigation";
 import { useIframeAutoHeight } from "../lib/useIframeAutoHeight";
 import { v } from "../lib/theme";
@@ -26,15 +27,24 @@ export default function AutoHeightIframe({
   title,
   fallbackHeight,
   framed = true,
+  scheme,
+  startWhenVisible = false,
+  rounded = framed,
   onReady,
   onHeightChange,
   loading = "lazy",
   appearance,
+  allocated = false,
 }: {
+  allocated?: boolean;
   src: string;
   title: string;
   fallbackHeight: number;
   framed?: boolean;
+  scheme?: "light" | "dark";
+  /** Defer animation-bearing embeds until they actually enter the viewport. */
+  startWhenVisible?: boolean;
+  rounded?: boolean;
   onReady?: () => void;
   onHeightChange?: (height: number) => void;
   loading?: "lazy" | "eager";
@@ -42,6 +52,21 @@ export default function AutoHeightIframe({
 }) {
   const { ref, height, bereit } = useIframeAutoHeight(fallbackHeight);
   const pathname = usePathname();
+  const container = useRef<HTMLDivElement>(null);
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    if (!startWhenVisible || entered || !container.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setEntered(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.15 });
+    observer.observe(container.current);
+    return () => observer.disconnect();
+  }, [startWhenVisible, entered]);
+  const [loadedSource, setLoadedSource] = useState<string | null>(null);
+
   useEffect(() => { if (bereit) onHeightChange?.(height); }, [bereit, height, onHeightChange]);
   useEffect(() => { if (bereit) onReady?.(); }, [bereit, onReady]);
 
@@ -50,6 +75,8 @@ export default function AutoHeightIframe({
   const quelle = pathname ? `${src}${src.indexOf("?") === -1 ? "?" : "&"}hp=${encodeURIComponent(pathname)}` : src;
 
   useEffect(() => {
+    // Explicit embed themes must not be overwritten by the surrounding page theme.
+    if (scheme) return;
     const fenster = ref.current?.contentWindow;
     if (!fenster) return;
     const senden = () => {
@@ -74,7 +101,22 @@ export default function AutoHeightIframe({
     return () => beobachter.disconnect();
     // `bereit` als Auslöser: erst wenn das Widget seine Höhe gemeldet hat, hört
     // im iframe jemand zu.
-  }, [ref, bereit]);
+  }, [ref, bereit, scheme]);
+
+  const activeSource = !startWhenVisible || entered ? quelle : undefined;
+  const pending = !activeSource || (!bereit && loadedSource !== quelle);
+
+  useEffect(() => {
+    if (!appearance) return;
+    const origin = new URL(quelle, window.location.href).origin;
+    const send = () => ref.current?.contentWindow?.postMessage({type:"widget:appearance",appearance},origin);
+    const receive = (event: MessageEvent) => {
+      if(event.source===ref.current?.contentWindow && event.origin===origin && event.data?.type==='widget:appearance-request')send();
+    };
+    window.addEventListener('message',receive);
+    send();
+    return()=>window.removeEventListener('message',receive);
+  }, [appearance, bereit, quelle, ref]);
 
   useEffect(() => {
     if (!appearance) return;
@@ -89,19 +131,39 @@ export default function AutoHeightIframe({
   }, [appearance, bereit, quelle, ref]);
 
   return (
+    <div ref={container} style={{ position: "relative", width: "100%" }} aria-busy={pending}>
+      {pending && (
+        <div style={{
+          position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 16,
+          background: "var(--atlas-surface, var(--color-bg-raised))",
+          color: v("--color-text-muted"), borderRadius: v("--radius-md"),
+          border: `1px solid ${v("--color-border")}`, boxSizing: "border-box",
+          pointerEvents: "none",
+        }}>
+          <LoadingDots size={6} baseline={false} />
+          <span>Diagramm wird geladen …</span>
+        </div>
+      )}
     <iframe
       ref={ref}
-      src={quelle}
+      src={activeSource}
       title={title}
       loading={loading}
-      onLoad={() => ref.current?.contentWindow?.postMessage({type:"widget:measure"},new URL(quelle,window.location.href).origin)}
+      onLoad={() => { if (activeSource) setLoadedSource(activeSource); ref.current?.contentWindow?.postMessage({type:"widget:measure"},new URL(quelle,window.location.href).origin); }}
       style={{
+        opacity: pending ? 0 : 1,
         width: "100%",
-        height,
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        colorScheme: scheme,
+        background: scheme ? "var(--atlas-surface, var(--color-bg))" : undefined,
+        height: allocated ? "100%" : height,
         border: framed ? `1px solid ${v("--color-border")}` : 0,
-        borderRadius: framed ? v("--radius-md") : 0,
+        borderRadius: rounded ? v("--radius-md") : 0,
         display: "block",
       }}
     />
+    </div>
   );
 }

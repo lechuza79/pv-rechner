@@ -1,4 +1,5 @@
 import 'server-only';
+import {usesLivePreviewData,livePreviewJson} from './preview-data';
 import {gemeindeWetterpunkt} from './atlas-geo';
 import {loadIconD2Shard,loadSnapshotFile} from './icon-d2-store';
 import {PARK_WIND_PATH,parkWindDay} from './park-wind-snapshot';
@@ -14,6 +15,13 @@ import {districtCapacity} from './microchart-capacity';
 
 /** One location, model run and clock for the gallery and all microchart consumers. */
 export async function loadMicrocharts(ags:string,place:string,now=new Date(),districtId?:string,position?:{latitude:number;longitude:number;parkKey?:string}):Promise<MicrochartData>{
+ if(usesLivePreviewData()&&Math.abs(Date.now()-now.getTime())<120000){
+  const park=position?.parkKey?.split(':');
+  const endpoint='/api/windraeder-vorschau/microcharts?'+new URLSearchParams({gemeinde:ags,...(districtId?{kreis:districtId}:{}),...(park?.length===2?{tour:park[0],stop:park[1]}:{})});
+  const response=await livePreviewJson(endpoint);
+  if(!response.data||typeof response.data!=='object')throw new Error('Microchart observation unavailable');
+  return {...response.data as MicrochartData,place};
+ }
  const at=now.toISOString(),bounds=berlinTagesgrenzen(now);
  const result:MicrochartData={place,at,until:new Date(bounds[1]).toISOString(),modelRun:null,solar:null,wind:null,conditions:null};
  const park=position?.parkKey?parkWindDay(await loadSnapshotFile<IconD2Shard>(PARK_WIND_PATH),position.parkKey,now):null;

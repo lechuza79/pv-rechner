@@ -539,6 +539,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "rhein-hunsrueck-einkommensschwache-haushalte",
   // Added 27 Sep 2026 as a closed historical programme (no calculation fields).
   "niederzissen-photovoltaik",
+  // Added 10 Oct 2026 as closed historical programmes (no calculation fields).
+  "remagen-balkonkraftwerke",
+  "sinzig-kipki-stecker-pv",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",

@@ -917,7 +917,7 @@ export const globalStyles = `
        sie hier ihren Inhalt und steht mittig. Im zweispaltigen Layout bleibt sie
        spaltenbreit, damit sie mit den Kacheln darunter bündig ist. */
     .mastr-live{width:fit-content;margin-inline:auto}
-    .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+    .mastr-kpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
     /* Zusammengedrängte Kachel: der Wert schrumpft — und seine Einheit MUSS
        mitschrumpfen, sonst steht sie fast so groß da wie ihr Wert. Der

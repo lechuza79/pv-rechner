@@ -15,6 +15,7 @@
  */
 export const ATLAS_REVALIDATE_ROUTEN = [
   "/solar-atlas/[[...pfad]]",
+  "/solar-atlas/[bundesland]/[kreis]/verbandsgemeinden/[verband]",
   "/solar-atlas/[bundesland]/[kreis]/[gemeinde]",
   "/solar-atlas/ranking/[[...pfad]]",
 ] as const;

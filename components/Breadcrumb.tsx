@@ -30,7 +30,7 @@ export default function Breadcrumb({
   variant = "default",
 }: {
   items: Crumb[];
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "page";
   jsonLd?: boolean;
   /** Optionales Element rechts in der Zeile (z. B. die Atlas-Regionssuche). */
   rightSlot?: React.ReactNode;
@@ -54,8 +54,8 @@ export default function Breadcrumb({
           }}
         />
       )}
-      {variant === "compact" ? <div className={styles.compact}>
-        <AtlasBreadcrumb parents={crumbs.slice(0, -1).filter((item): item is Crumb & { href: string } => !!item.href).map(item => ({ name: item.label, href: item.href }))} name={crumbs.at(-1)?.label ?? ""} />
+      {(variant === "compact" || variant === "page") ? <div className={styles.compact}>
+        <AtlasBreadcrumb framed={variant === "page"} parents={crumbs.slice(0, -1).filter((item): item is Crumb & { href: string } => !!item.href).map(item => ({ name: item.label, href: item.href }))} name={crumbs.at(-1)?.label ?? ""} />
         {rightSlot}
       </div> : <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
         <span className="crumb-trail">

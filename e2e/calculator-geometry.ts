@@ -18,6 +18,13 @@ export async function assertTextInsideCard(card: Locator) {
       if (!parent || parent.closest('script,style,[inert],[aria-hidden="true"]')) continue;
       const style = getComputedStyle(parent);
       if (style.visibility === 'hidden' || style.display === 'none') continue;
+      // Invisible export-only content does not paint outside its card.
+      let invisible = false;
+      for (let el: HTMLElement | null = parent; el; el = el.parentElement) {
+        if (getComputedStyle(el).opacity === '0') { invisible = true; break; }
+        if (el === root) break;
+      }
+      if (invisible) continue;
       const range = document.createRange();
       range.selectNodeContents(node);
       for (const rect of range.getClientRects()) {

@@ -5,3 +5,10 @@
 .badge[data-pulse="true"]::before{animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.4;transform:scale(.85);box-shadow:0 0 0 0 transparent}50%{opacity:1;transform:scale(1.2);box-shadow:0 0 0 3px color-mix(in srgb,currentColor 20%,transparent)}}
 @media(prefers-reduced-motion:reduce){.badge[data-pulse="true"]::before{animation:none}}
+
+.badge[data-variant="inline"]{padding:0;border:0;border-radius:0;background:none;white-space:normal;font-weight:400;align-items:center}
+
+.badge[data-accent-dot="true"]::before{color:var(--color-accent);background:var(--color-accent)}
+.badge[data-accent-dot="true"][data-pulse="true"]::before{animation:accentPulse 1.6s ease-in-out infinite}
+@keyframes accentPulse{0%,100%{opacity:.4;transform:scale(.85);box-shadow:0 0 0 0 transparent}50%{opacity:1;transform:scale(1.2);box-shadow:0 0 0 3px color-mix(in srgb,var(--color-accent) 20%,transparent)}}
+@media(prefers-reduced-motion:reduce){.badge[data-accent-dot="true"][data-pulse="true"]::before{animation:none}}

@@ -5,6 +5,16 @@
  *   npx tsx scripts/gemeinde-monatslauf.ts            (plan only, changes nothing)
  *   npx tsx scripts/gemeinde-monatslauf.ts --los      (run everything)
  *   … --los --ab=pakete                               (resume from a step)
+ *   … --los --stufe=register                          (stage 1, see below)
+ *
+ * TWO STAGES (docs/monatsupdate.md). The register export is there on the 1st,
+ * the ERA5 weather of the month that just ended only about five days later.
+ * Stage 1 (`--stufe=register`, from the 1st) rebuilds every package from the
+ * new export with the weather month one step back — new additions, stock and
+ * rankings, monthly charts still ending with the month before. Stage 2 (no
+ * flag, from the 8th) rebuilds everything with the month that just ended.
+ * Each stage writes its own completion line, so the second never takes the
+ * first for itself.
  *
  * WHY ONE EXPORT. Rankings come live from the database, the stories and
  * charts from local caches built from a register zip. Built from two exports
@@ -40,6 +50,11 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 const los = process.argv.includes("--los");
 const ab = process.argv.find((a) => a.startsWith("--ab="))?.slice(5);
+const stufe = process.argv.find((a) => a.startsWith("--stufe="))?.slice(8);
+if (stufe !== undefined && stufe !== "register") throw new Error(`Unbekannte Stufe: ${stufe}`);
+const register = stufe === "register";
+/** What the stages print when done; the scheduled tasks look for exactly these. */
+const FERTIG = { register: "✓ Register-Stufe fertig.", voll: "✓ Monatslauf fertig." } as const;
 const SCHRITTE = ["export", "caches", "wetter", "pakete", "upload", "kreise", "frisch"] as const;
 const BNETZA = "scripts/.cache/bnetza";
 // Earlier raw exports are kept here, outside BNETZA (so the one-zip rule
@@ -70,11 +85,15 @@ async function datenbankExport(): Promise<{ url: string; datum: string; datei: s
   return { url: zeile!.source_url!, datum: `${m[2]}-${m[3]}-${m[4]}`, datei: m[1] };
 }
 
-/** Months the packages need: the 20 months up to the one before D, and the three years before D's year. */
-function wetterBedarf(datum: string) {
+/**
+ * Months the packages need: the 20 months up to the weather month, and the
+ * three years before D's year. The weather month is the one before D; in the
+ * register stage the one before that, whose ERA5 is complete by the 1st.
+ */
+function wetterBedarf(datum: string, zurueck = 1) {
   const [j, m] = datum.split("-").map(Number);
   const monate: string[] = [];
-  for (let i = 1; i <= 20; i++) {
+  for (let i = zurueck; i < zurueck + 20; i++) {
     const d = new Date(Date.UTC(j, m - 1 - i, 15));
     monate.push(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
   }
@@ -87,6 +106,9 @@ async function main() {
   const start = ab ? SCHRITTE.indexOf(ab as (typeof SCHRITTE)[number]) : 0;
   if (start < 0) throw new Error(`Unbekannter Schritt: ${ab}`);
   const schritt = (s: (typeof SCHRITTE)[number]) => SCHRITTE.indexOf(s) >= start;
+  const { monate, jahre } = wetterBedarf(exp.datum, register ? 2 : 1);
+  const wetterMonat = monate.at(-1)!;
+  console.log(`${register ? "Register-Stufe" : "Volle Stufe"}: Monatsdiagramme bis ${wetterMonat}`);
 
   if (schritt("export")) {
     const ziel = path.join(BNETZA, exp.datei);
@@ -112,14 +134,13 @@ async function main() {
       }
     }
   }
-  if (schritt("caches")) befehl("Story-Caches aus dem Export", "npm", ["run", "stories:refresh"], { STORY_WEATHER_PROVIDER: "era5-archive" });
+  if (schritt("caches")) befehl("Story-Caches aus dem Export", "npm", ["run", "stories:refresh"], { STORY_WEATHER_PROVIDER: "era5-archive", STORY_WETTER_MONAT: wetterMonat });
   if (schritt("wetter")) {
-    const { monate, jahre } = wetterBedarf(exp.datum);
     for (const y of jahre) befehl(`ERA5 Jahr ${y}`, "npm", ["run", "era5:sync", "--", `--year=${y}`]);
     for (const mo of monate) befehl(`ERA5 Monat ${mo}`, "npm", ["run", "era5:sync", "--", `--month=${mo}`]);
   }
   if (schritt("pakete"))
-    befehl("Pakete aller Orte", "npx", ["tsx", "--conditions=react-server", "scripts/gemeinde-paket.ts", "--alle", `--stand=${exp.datum}`, "--neu"]);
+    befehl("Pakete aller Orte", "npx", ["tsx", "--conditions=react-server", "scripts/gemeinde-paket.ts", "--alle", `--stand=${exp.datum}`, `--monat=${wetterMonat}`, "--neu"]);
   if (schritt("upload")) befehl("Pakete hochladen", "npx", ["tsx", "scripts/gemeinde-paket-upload.ts", `--stand=${exp.datum}`]);
   // Invalidation follows in "frisch" (full Atlas scope), so none here.
   if (schritt("kreise")) befehl("Kreispakete aller Landkreise", "npm", ["run", "kreise:pakete", "--", "--alle", "--ohne-invalidierung"]);
@@ -139,7 +160,7 @@ async function main() {
       }
     }
   }
-  console.log(los ? "\n✓ Monatslauf fertig." : "\nPlan ausgegeben. Ausführen mit --los.");
+  console.log(los ? `\n${register ? FERTIG.register : FERTIG.voll}` : "\nPlan ausgegeben. Ausführen mit --los.");
 }
 main().catch((e) => {
   console.error(e);

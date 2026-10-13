@@ -1,0 +1,7 @@
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4,16px)}
+.tile{position:relative;min-width:0;border-radius:var(--widget-radius,20px);overflow:hidden;display:flex}
+.chart{width:100%;pointer-events:none}
+.chart>article{height:100%;min-height:360px}
+.link{position:absolute;inset:0;border-radius:inherit}
+.link:focus-visible{outline:2px solid var(--widget-accent);outline-offset:-3px}
+@media(max-width:740px){.grid{grid-template-columns:1fr}}

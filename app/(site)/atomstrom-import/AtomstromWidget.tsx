@@ -5,10 +5,10 @@ import AutoHeightIframe from "../../../components/AutoHeightIframe";
  * Legende + Zeitraum-Umschalter + Share/Embed-Footer), via echtes
  * /embed/strommix iframe. Höhe passt sich automatisch an den Content an.
  */
-export default function AtomstromWidget() {
+export default function AtomstromWidget({ annual = false }: { annual?: boolean }) {
   return (
     <AutoHeightIframe
-      src="/embed/strommix?onsite=1"
+      src={annual ? "/embed/strommix?onsite=1&range=year" : "/embed/strommix?onsite=1"}
       title="Strommix Deutschland mit Atomstrom-Import"
       fallbackHeight={460}
     />

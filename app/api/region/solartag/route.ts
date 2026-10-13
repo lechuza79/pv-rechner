@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import {NextRequest,NextResponse} from 'next/server';
 import {loadSnapshotFile} from '../../../../lib/icon-d2-store';
 import {REGION_SOLAR_DAY_PATH,regionToday,type RegionSolarDayFile} from '../../../../lib/region-solar-day';
@@ -12,6 +13,8 @@ import {rateLimit} from '../../../../lib/rate-limit';
  * date is served — a curve of another day answers 503, not as today.
  */
 export async function GET(req:NextRequest){
+  const live = await livePreviewResponse(req);
+  if (live) return live;
  const limited=rateLimit(req,'region-solartag');if(limited)return limited;
  const id=req.nextUrl.searchParams.get('ags')??'';
  if(!/^(0[1-9]|1[0-6]|de)$/.test(id))return NextResponse.json({error:'Ungültige Region'},{status:400});

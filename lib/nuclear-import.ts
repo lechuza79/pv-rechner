@@ -70,6 +70,7 @@ export async function computeNuclearImport(
   startStr: string,
   endStr: string,
   rangeHours: number,
+  options: { preserveResolution?: boolean } = {},
 ): Promise<NuclearImportResponse> {
   // Yearly chunking for multi-year ranges (Energy-Charts caps a single query).
   const fetchChunked = async <T,>(
@@ -177,13 +178,13 @@ export async function computeNuclearImport(
   data.sort((a, b) => a.ts.localeCompare(b.ts));
 
   // Downsample for longer ranges to keep payloads small.
-  if (rangeHours > 17520) {
+  if (!options.preserveResolution && rangeHours > 17520) {
     data = downsample(data, 96); // >2 years: daily
-  } else if (rangeHours > 2160) {
+  } else if (!options.preserveResolution && rangeHours > 2160) {
     data = downsample(data, 24);
-  } else if (rangeHours > 720) {
+  } else if (!options.preserveResolution && rangeHours > 720) {
     data = downsample(data, 12);
-  } else if (rangeHours > 168) {
+  } else if (!options.preserveResolution && rangeHours > 168) {
     data = downsample(data, 4);
   }
 

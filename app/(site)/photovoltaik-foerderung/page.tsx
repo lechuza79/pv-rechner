@@ -5,9 +5,9 @@ import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES, cityPath, slugify, foerderBundeslaender, publishedBundeslaender, type AtlasCity } from "../../../lib/atlas-cities";
 import { ortPraeposition } from "../../../lib/atlas-orte";
-import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../lib/funding-programs";
+import { fundingZaehlt, fundingStandLabel, type FundingProgram } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
-import { FundingStatusBadge, FundingRates } from "../../../components/FundingProgramParts";
+import FundingOverviewCard from "../../../components/FundingOverviewCard";
 
 // ISR: SEO pages read the live dataset from Supabase but re-render at most
 // hourly, so admin/verification edits appear without a redeploy.
@@ -22,10 +22,6 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Bund, Länder & Kommunen — Beträge, Bedingungen, Status.",
 });
 
-const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
-  bund: "Bund", land: "Land", landkreis: "Landkreis", kommune: "Kommune",
-};
-
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
@@ -34,58 +30,12 @@ const S = {
   nav: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 } as React.CSSProperties,
   navLink: { fontSize: v("--font-size-small"), color: v("--color-accent"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: 999, padding: "4px 12px", textDecoration: "none" } as React.CSSProperties,
   h2: { margin: "28px 0 12px", scrollMarginTop: 16 } as React.CSSProperties,
-  card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10 } as React.CSSProperties,
-  label: { fontSize: v("--font-size-small"), color: v("--color-text-secondary") } as React.CSSProperties,
 };
 
 function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
-  const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
-  const inRechner = a.computable && a.active;
-  // Primary CTA = the program's own page: the regional city page where one
-  // exists, otherwise the official funding source.
-  const primaryHref = city ? cityPath(city) : p.url;
-  const primaryExternal = !city;
-  const primaryLabel = city ? `Förderung in ${city.name} ansehen` : "Zur offiziellen Förderseite";
-  return (
-    <div style={S.card}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-        <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>{p.name}</span>
-        <FundingStatusBadge status={p.status} />
-      </div>
-      <div style={{ ...S.label, marginBottom: 8 }}>{LEVEL_LABEL[p.level]} · {p.traeger}</div>
-      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>
-        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
-      </div>
-      <div style={{ marginBottom: 12 }}>
-        <FundingRates rates={p.rates} />
-      </div>
-
-      {/* Primary CTA → program page (or official source) */}
-      <Link
-        href={primaryHref}
-        {...(primaryExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        style={{
-          display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none",
-          background: v("--color-cta"), color: v("--color-text-on-accent"),
-          fontSize: v("--font-size-small"), fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-pill"),
-        }}
-      >
-        {primaryLabel} <IconArrowRight size={iconSizes.sm} color={v("--color-text-on-accent")} />
-      </Link>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: v("--font-size-small"), marginTop: 10 }}>
-        {city && (
-          <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
-        )}
-        {inRechner && (
-          <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={iconSizes.xs} /></span>
-          </Link>
-        )}
-        <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
-      </div>
-    </div>
-  );
+  return <FundingOverviewCard selected={{programm: p, standLabel: fundingStandLabel(p), zaehlt: fundingZaehlt(p),
+    geltungsbereich: p.level === "bund" ? "Bundesweit" : p.region || (p.level === "land" ? p.bundesland : p.traeger) || p.traeger}}
+    ort={city?.name ?? p.region ?? p.bundesland ?? "Deutschland"} detailHref={city ? cityPath(city) : undefined} />;
 }
 
 export default async function FoerderungPage() {

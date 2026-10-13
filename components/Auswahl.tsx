@@ -64,6 +64,10 @@ export function Auswahl({
   umlaufend = false,
   menuAlign = "start",
   variant = "default",
+  size = "compact",
+  transparent = false,
+  menuPlacement = "bottom",
+  disabled = false,
 }: {
   /** Was auf dem Knopf steht — der gewählte Wert, nicht der Name des Filters. */
   titel: string;
@@ -87,9 +91,15 @@ export function Auswahl({
   /** Wrap arrow navigation for cyclic selections. */
   umlaufend?: boolean;
   /** Align a menu with the trigger at either viewport edge. */
-  menuAlign?: "start" | "end";
+  menuAlign?: "start" | "end" | "center";
   /** Quiet trigger on a scene; the menu retains its readable surface. */
   variant?: "default" | "quiet";
+  /** Comfortable touch target for page filters; compact remains the widget default. */
+  size?: "compact" | "comfortable";
+  /** Floating stage controls keep the scene visible behind the trigger. */
+  transparent?: boolean;
+  menuPlacement?: "top" | "bottom";
+  disabled?: boolean;
 }) {
   const [offen, setOffen] = useState(false);
   const [suche, setSuche] = useState("");
@@ -154,7 +164,7 @@ export function Auswahl({
         <button
           type="button"
           onClick={() => schritt(-1)}
-          disabled={vorherGesperrt}
+          disabled={disabled || vorherGesperrt}
           aria-label="Vorheriger Eintrag"
           style={{
             ...kante,
@@ -171,6 +181,8 @@ export function Auswahl({
       <button
         type="button"
         onClick={() => setOffen((o) => !o)}
+        disabled={disabled}
+        aria-haspopup="listbox"
         aria-expanded={offen}
         style={{
           display: "flex",
@@ -178,12 +190,14 @@ export function Auswahl({
           justifyContent: "space-between",
           gap: space.xs,
           minWidth: breite,
+          maxWidth: "100%",
           font: "inherit",
-          fontSize: v("--font-size-small"),
-          padding: variant === "quiet" ? pad("md", "lg") : pad("xs", "sm"),
-          background: variant === "quiet" ? "transparent" : v("--color-bg"),
+          minHeight: size === "comfortable" ? 48 : undefined,
+          fontSize: v(size === "comfortable" ? "--font-size-body" : "--font-size-small"),
+          padding: size === "comfortable" ? "12px 16px" : variant === "quiet" ? pad("md", "lg") : pad("xs", "sm"),
+          background: transparent || variant === "quiet" ? "transparent" : v("--color-bg"),
           color: v("--color-text-primary"),
-          border: `1px solid ${v("--color-border")}`,
+          border: transparent ? "1px solid transparent" : `1px solid ${v("--color-border")}`,
           borderTopLeftRadius: eckenLinks && !mitPfeilen ? ecke : 0,
           borderBottomLeftRadius: eckenLinks && !mitPfeilen ? ecke : 0,
           borderTopRightRadius: eckenRechts && !mitPfeilen ? ecke : 0,
@@ -207,7 +221,7 @@ export function Auswahl({
         <button
           type="button"
           onClick={() => schritt(1)}
-          disabled={nachherGesperrt}
+          disabled={disabled || nachherGesperrt}
           aria-label="Nächster Eintrag"
           style={{
             ...kante,
@@ -222,14 +236,15 @@ export function Auswahl({
         </button>
       )}
 
-      {offen && (
+      {offen && !disabled && (
         <div
           role="listbox"
           style={{
             position: "absolute",
-            top: "calc(100% + 4px)",
-            left: menuAlign === "start" ? 0 : undefined,
+            ...(menuPlacement === "top" ? {bottom: "calc(100% + 4px)"} : {top: "calc(100% + 4px)"}),
+            left: menuAlign === "center" ? "50%" : menuAlign === "start" ? 0 : undefined,
             right: menuAlign === "end" ? 0 : undefined,
+            transform: menuAlign === "center" ? "translateX(-50%)" : undefined,
             background: v("--color-bg"),
             border: `1px solid ${v("--color-border")}`,
             borderRadius: ecke,
@@ -253,10 +268,11 @@ export function Auswahl({
                 boxSizing: "border-box",
                 font: "inherit",
                 fontSize: v("--font-size-small"),
-                padding: pad("xs", "sm"),
+                minHeight: size === "comfortable" ? 48 : undefined,
+                padding: size === "comfortable" ? "12px 16px" : pad("xs", "sm"),
                 border: "none",
                 borderBottom: `1px solid ${v("--color-border")}`,
-                background: "transparent",
+                background: v("--color-bg"),
                 color: v("--color-text-primary"),
                 position: "sticky",
                 top: 0,
@@ -279,7 +295,9 @@ export function Auswahl({
                 gap: space.sm,
                 width: "100%",
                 textAlign: "left",
-                padding: pad("xs", "md"),
+                alignItems: "center",
+                minHeight: size === "comfortable" ? 44 : undefined,
+                padding: size === "comfortable" ? "12px 16px" : pad("xs", "md"),
                 border: "none",
                 background: e.schluessel === aktiv ? v("--color-bg-accent") : "transparent",
                 color: e.schluessel === aktiv ? v("--color-accent") : v("--color-text-primary"),

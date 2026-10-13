@@ -1,11 +1,19 @@
-import { v } from "../lib/theme";
+import { createElement } from "react";
+import artwork from "./FundingProgramParts.module.css";
+import foundation from "./social/atlas-foundations.module.css";
+import ExampleCard, { ExampleAmount, ExampleSize } from "./ExampleCard";
+import MetricValue from "./MetricValue";
+import { ActionLink } from "./ActionButton";
+import Script from "next/script";
+import "../public/design-system/feature-card.css";
+import { v, stageDefaults } from "../lib/theme";
 import StatusBadge from "./StatusBadge";
 import InfoTooltip from "./InfoTooltip";
 import {
   FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, bedingungenFuer, saetzeFuer,
   type FundingProgram, type FundingStatus, type FundingCondition, type FundingTechnik,
 } from "../lib/funding-programs";
-import type { FundingExample } from "../lib/funding-examples";
+import type { FundingCaseExample, FundingExample } from "../lib/funding-examples";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -156,11 +164,17 @@ export function FundingRates({
   rates,
   bordered = false,
   columns = 1,
+  stacked = false,
+  tiles = false,
+  headerTiles = false,
   label,
   technik,
 }: {
   rates: FundingProgram["rates"];
   bordered?: boolean;
+  stacked?: boolean;
+  tiles?: boolean;
+  headerTiles?: boolean;
   /** Nur die Sätze dieser Technik zeigen — ohne Angabe alle. */
   technik?: FundingTechnik;
   /** Überschrift über der Liste — damit die Sätze neben den Bedingungen
@@ -175,31 +189,43 @@ export function FundingRates({
 }) {
   return (
     <div>
+      {headerTiles && <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" />}
       {label && (
         <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>{label}</div>
       )}
     <div
       style={
         columns === 2
-          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 8 : 4, columnGap: 20 }
+          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))", gap: headerTiles ? 20 : bordered ? 8 : 4, columnGap: 20 }
           : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
       }
     >
       {saetzeFuer(rates, technik).map((r) => {
         const { zahl, einheit, zusatz, kurzeEinheit } = zerlegeSatz(r.value);
+        const capacity = tiles ? r.label.match(/\s*\((bis [^)]*kWp)\)\s*$/) : null;
+        const rateTitle = capacity ? r.label.slice(0, capacity.index) : r.label;
+        const buildingMotif = /Mieterstrom|gemeinschaftlich/i.test(rateTitle) ? "tenant-solar" : /Fassade/i.test(rateTitle) ? "facade-pv" : null;
         return (
           <div
             key={r.label}
+            className={headerTiles ? foundation.foundation : undefined}
+            data-story-scheme={headerTiles ? "dark" : undefined}
             style={{
               // flexWrap: Passt der Wert nicht mehr neben die Beschriftung (schmale
               // Spalte, langes Label), rutscht er darunter statt über den Rand —
               // dritter Fund des Überlauf-Tests (05.09.2026, 14 px bei „120 €/kWp").
-              display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
+              display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: stacked ? 6 : 16, paddingTop: 4,
+              ...(stacked ? { flexDirection: "column" as const, alignItems: "flex-start" } : {}),
+              ...(tiles ? { background: headerTiles ? stageDefaults(0)["--color-bg-accent"] : v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 16, justifyContent: "flex-start", minWidth: 0 } : {}),
               fontSize: "var(--font-size-body)",
               ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 12 } : {}),
             }}
           >
-            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+            <div style={headerTiles ? {width:"calc(100% + 32px)",boxSizing:"border-box",margin:"-16px -16px 8px",padding:16,borderRadius:"var(--radius-md) var(--radius-md) 0 0",background:"var(--color-bg-muted)",minHeight:"10em",position:"relative",isolation:"isolate",overflow:"hidden"} : undefined}>{headerTiles && (buildingMotif || /Dach.PV/i.test(rateTitle)) && <span aria-hidden="true" className={artwork.background}>{buildingMotif ? <>
+              {/* Complete approved compositions include all three splash layers. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/illustrations-motion/funding-buildings-v2/${buildingMotif}-mono-dark.svg`} alt="" />
+            </> : createElement("img", {src:"/illustrations-motion/funding-buildings-v2/house.webp", alt:"", width:600, height:600, fetchPriority:"high", style:{position:"absolute",width:"100%",height:"auto",right:0,bottom:-28}})}</span>}<span style={{ color: tiles ? v("--color-text-primary") : v("--color-text-secondary"), fontWeight: tiles ? 700 : 400, ...(headerTiles ? {display:"block",lineHeight:1.2} : {}) }}>{rateTitle}</span>{capacity && <div style={{fontSize:v("--font-size-small"),color:v("--color-text-secondary"),marginTop:8,...(headerTiles ? {borderTop:"1px solid color-mix(in srgb, currentColor 20%, transparent)",paddingTop:8} : {})}}>{capacity[1]}</div>}</div>
             {/* Zahl und Einheit bleiben zusammen (nowrap) — ein SATZ als Wert
                 („Betrag nur in der Richtlinie, Jahrestopf 4.000 €") darf das
                 nicht erben: Er lief auf Telefonbreite 160 px über den Rand,
@@ -211,9 +237,9 @@ export function FundingRates({
                 wurde aber nie umgebrochen (zweiter Fund des Überlauf-Tests,
                 481 px). Zusammen bleiben nur Zahl und kurze Einheit, und die
                 schützt das nowrap darunter. */}
-            <span style={{ textAlign: "right", flexShrink: 1, minWidth: 0 }}>
+            <span style={{ textAlign: stacked ? "left" : "right", flexShrink: 1, minWidth: 0 }}>
               <span style={{ whiteSpace: einheit ? "nowrap" : "normal", overflowWrap: "anywhere" }}>
-                <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
+                <span style={{ fontFamily: v("--font-mono"), fontWeight: headerTiles ? 900 : 700, ...(tiles ? {fontSize:headerTiles ? "calc(var(--font-size-h1) * 1.15)" : v("--font-size-h1")} : {}), ...(headerTiles ? {color:"var(--atlas-action)"} : {}) }}>{zahl}</span>
                 {einheit && kurzeEinheit && (
                   <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>
                     {einheit}
@@ -221,7 +247,7 @@ export function FundingRates({
                 )}
               </span>
               {einheit && !kurzeEinheit && (
-                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                <span style={{ display: "block", fontSize: headerTiles ? "var(--font-size-small)" : "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
                   {einheit}
                   {/* Fester Platz für das „?": Der Knopf kommt erst mit der
                       Hydration dazu — ohne reservierte Breite schob er die
@@ -234,8 +260,8 @@ export function FundingRates({
                 </span>
               )}
               {zusatz && (
-                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
-                  {zusatz}
+                <span style={{ display: "block", fontSize: headerTiles ? "var(--font-size-small)" : "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                  {tiles && !headerTiles ? <strong>{zusatz}</strong> : zusatz}
                 </span>
               )}
             </span>
@@ -250,7 +276,50 @@ export function FundingRates({
 /** The three example-system cards (5 / 10 / 15 kWp) with Investition, optional
  *  Förderung, Amortisation and 25-year Rendite. Shared by the city and the
  *  Bundesland page so the lead block stays identical. */
-export function ExampleCards({ examples }: { examples: FundingExample[] }) {
+export function FundingCaseCards({ cases, calculatorHref }: { cases: FundingCaseExample[]; calculatorHref: string }) {
+  return <><div style={{display:"grid",gap:24}}>{cases.map(item => <ExampleCard key={item.motif}
+    title={item.title} motif={item.motif}
+    illustration={<span className={artwork.caseIllustration} aria-hidden="true">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/illustrations-motion/funding-buildings-v2/${item.motif}.${item.motif === "house" ? "webp" : "svg"}`} alt="" width={180} height={130} loading="lazy" decoding="async" />
+    </span>}
+    headerContent={<ExampleAmount amount={nf(item.grant)} period="einmaliger Zuschuss" />}>
+    <div className={artwork.exampleResult}>
+      <p>{item.description.split(/(\d+(?:[.,]\d+)*)/).map((part, index) => index % 2 ? <strong key={index}>{part}</strong> : part)}</p>
+      {item.result && <><div><p>Überschuss nach <strong>25</strong> Jahren</p><div className={artwork.resultAmount}><MetricValue value={item.result.total} /><InfoTooltip title="Überschuss nach 25 Jahren" ariaLabel="Wie wird der Überschuss berechnet?">Eingesparte Stromkosten und Einspeisevergütung abzüglich {nf(item.result.netto)} € Investition nach Zuschuss. Modellrechnung {item.result.spKwh ? `mit ${item.result.spKwh} kWh Speicher einschließlich Speicherersatz` : "ohne Speicher"}, keine Ertragsgarantie.</InfoTooltip></div></div><ActionLink href={calculatorHref}>Rechner starten</ActionLink></>}
+    </div>
+  </ExampleCard>)}</div><Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" /></>;
+}
+
+export function ExampleCards({ examples, illustrated = false, comparison = false }: { examples: FundingExample[]; illustrated?: boolean; comparison?: boolean }) {
+  if (illustrated && comparison) return <>
+    <div style={{display:"grid",gap:24}}>{examples.map((ex,index) => <ExampleCard key={ex.kwp}
+      title={<><ExampleSize value={ex.kwp} unit="kWp" /> {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}</>}
+      motif={`pv-modules-${["small","medium","large"][Math.min(index,2)]}`}
+      headerContent={ex.foerderung > 0 ? <ExampleAmount amount={nf(ex.foerderung)} period="einmaliger Zuschuss" /> : <p>Ohne angesetzten Zuschuss</p>}>
+      <div className={artwork.exampleResult}>
+        <MetricValue value={ex.total} />
+        <p>Modellierter Überschuss nach 25 Jahren: eingesparte Stromkosten und Einspeisevergütung abzüglich der Investition nach Zuschuss und gegebenenfalls Speicherersatz.</p>
+      </div>
+    </ExampleCard>)}</div>
+    <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" />
+    <Script src="/illustrations-neon/solar-neon.js" strategy="afterInteractive" />
+  </>;
+  if (illustrated) return <>
+    <div className="sc-feature-list" style={{ display: "grid", gap: 24 }}>{examples.map((ex, index) => <ExampleCard key={ex.kwp} title={<><ExampleSize value={ex.kwp} unit="kWp" /> {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}</>} motif={`pv-modules-${["small", "medium", "large"][Math.min(index, 2)]}`}>
+      {ex.foerderung > 0 && <p><strong>Zuschuss im Beispiel</strong><br /><MetricValue value={ex.foerderung} /></p>}
+      <p>Investition ohne Zuschuss: {nf(ex.brutto)} €<br />
+        {ex.foerderung > 0 && <><strong>Verbleibende Investition: {nf(ex.netto)} €</strong><br /></>}
+        Amortisation{ex.foerderung > 0 ? " mit Zuschuss" : ""}: {ex.amort !== null ? `${ex.amort} Jahre` : "über 25 Jahre"}
+        {ex.foerderung > 0 && <><br />Ohne Zuschuss: {ex.withoutFunding.amort !== null ? `${ex.withoutFunding.amort} Jahre` : "über 25 Jahre"}</>}
+      </p>
+      {ex.foerderung > 0 && <p>Gewinn ohne Zuschuss über 25 Jahre: {nf(ex.withoutFunding.total)} €</p>}
+      {ex.foerderung > 0 ? <p>Modelliertes Ergebnis mit Zuschuss über 25 Jahre: <strong>{nf(ex.total)} €</strong></p> : ex.total > 0 ? <ExampleAmount amount={nf(ex.total)} period="Modelliertes Ergebnis über 25 Jahre" /> : <p>{nf(ex.total)} € Ergebnis über 25 Jahre</p>}
+    </ExampleCard>)}</div>
+    <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive" />
+    <Script src="/illustrations-neon/solar-neon.js" strategy="afterInteractive" />
+  </>;
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
       {examples.map((ex) => (
@@ -270,6 +339,9 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
                 <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive-text"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
               </div>
             )}
+            {ex.foerderung > 0 && <p>Verbleibende Investition: {nf(ex.netto)} €<br />
+              Ohne Zuschuss: {ex.withoutFunding.amort !== null ? `${ex.withoutFunding.amort} Jahre` : "über 25 Jahre"} Amortisation; {nf(ex.withoutFunding.total)} € Gewinn über 25 Jahre.
+            </p>}
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
               <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
               <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
@@ -291,8 +363,10 @@ export function FundingConditions({
   eligibility,
   technik,
   zeigeErste,
+  label = "Bedingungen",
 }: {
   conditions: FundingCondition[];
+  label?: string;
   /** Wer antragsberechtigt ist — wird als ERSTE Bedingung in die Liste
    *  gesetzt, nicht als Abzeichen darüber. „Privat" und „Gewerblich" sind
    *  Bedingungen wie jede andere auch: Sie sagen, wer in Frage kommt. Als
@@ -332,7 +406,7 @@ export function FundingConditions({
   // die Überschrift links und die Bedingungen rechts daneben.
   return (
     <div>
-      <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>Bedingungen</div>
+      {label && <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>{label}</div>}
       {/* Die Kürzung läuft über CSS, nicht über eine kürzere Liste: Ein
           `<details>` hält den ganzen Inhalt im HTML, auch zugeklappt. Wer die
           Seite ohne JavaScript liest, druckt oder durchsucht, findet alles —

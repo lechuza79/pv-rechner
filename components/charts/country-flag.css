@@ -1,0 +1,2 @@
+/* One country flag treatment for racing and static comparisons. */
+.district-race-flag,.sc-category-country-label img{width:14px;height:14px;flex:0 0 14px;border-radius:50%;object-fit:cover;display:block;filter:saturate(.6);opacity:.85;}

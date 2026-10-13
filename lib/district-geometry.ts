@@ -4,11 +4,13 @@ import path from 'node:path';
 import {projectRegions, type RegionGeometry} from './region-perspektive';
 
 /** Use the same checked-in boundaries as the municipality maps. */
-export async function districtGeometry(id:string) {
+export async function districtGeometry(id:string,members?:readonly string[]) {
   if(!/^\d{5}$/.test(id))throw new Error('Invalid district identifier');
   try {
     const data=JSON.parse(await readFile(path.join(process.cwd(),'public','geo','gemeinden',`${id}.geo.json`),'utf8')) as {features:RegionGeometry[]};
-    return projectRegions(data.features);
+    const features=members ? data.features.filter(feature=>members.includes(feature.properties.id)) : data.features;
+    if(members && members.some(id=>!features.some(feature=>feature.properties.id===id)))throw new Error('Association boundary missing');
+    return projectRegions(features);
   } catch(error) {
     if((error as NodeJS.ErrnoException).code==='ENOENT')return [];
     throw error;

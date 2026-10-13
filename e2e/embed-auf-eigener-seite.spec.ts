@@ -1,97 +1,49 @@
 import { test, expect } from "@playwright/test";
 
-// Ein Widget, das WIR auf einer eigenen Seite einbetten, steckt in einem iframe
-// — und ein iframe erbt von der Seite nichts. Drei Dinge fehlten deshalb
-// gleichzeitig auf /atomstrom-import, alle drei nur im Browser zu sehen:
-// die Tagesfarben (weiße Kachel auf dunklem Grund), der „nächste Schritt", der
-// auf genau die Seite zeigte, die man gerade las, und ein Klick, der den
-// Artikel IM Chart-Rahmen öffnete.
-//
-// Geprüft wird an der Stelle, an der ein Mensch es sieht: auf der Seite, im
-// iframe, nach dem Laden.
+// On-site charts use the shared native widget. The remaining external strommix
+// frame must still navigate the parent page when following its next step.
+const growthChart = (page: import("@playwright/test").Page) =>
+  page.locator('article[data-widget-id="welt-zubaurennen"]');
 
 test.describe("Widget auf eigener Seite", () => {
-  test("trägt die Farben der Seite, nicht seine eigenen", async ({ page }) => {
+  test("uses the native dark widget without a separate iframe", async ({ page }) => {
     await page.goto("/atomstrom-import");
-
-    const seitenGrund = () =>
-      page.evaluate(() =>
-        getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim(),
-      );
-    expect(await seitenGrund()).not.toBe("");
-
-    const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
-    // Warten, bis das Widget steht — vorher gibt es nichts zu messen.
-    await expect(rahmen.getByText("Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
-
-    // BEIDE Seiten bei JEDEM Versuch neu lesen (07.09.2026). Vorher wurde der
-    // Grundton der Seite EINMAL gemerkt, bevor das Widget ueberhaupt geladen
-    // war — und die Tagesstufe steht zu diesem Zeitpunkt noch nicht fest: Sie
-    // haengt an der tatsaechlichen Einstrahlung, die erst nachgeladen wird.
-    // Wechselt die Seite danach ihre Stufe, vergleicht der Test gegen einen
-    // veralteten Wert und meldet einen Unterschied, den es nicht gibt.
-    //
-    // Genau so gesehen: Erwartet wurde #eaebee (die Stufe beim Seitenaufbau),
-    // gemessen #d4d8dd — der Wert, auf dem die Seite dann WIRKLICH stand und
-    // den das Widget korrekt uebernommen hatte. In der Produktion im Browser
-    // gegengeprueft: Seite und alle drei Widgets tragen denselben Ton.
-    await expect
-      .poll(
-        async () => {
-          const imWidget = await rahmen.locator("body").evaluate((b) =>
-            getComputedStyle(b.ownerDocument.documentElement)
-              .getPropertyValue("--widget-bg")
-              .trim(),
-          );
-          return imWidget === (await seitenGrund());
-        },
-        { message: "Das eingebettete Widget übernimmt den Grundton der Seite" },
-      )
-      .toBe(true);
+    const chart = growthChart(page);
+    await expect(chart).toBeVisible();
+    await expect(chart).toHaveAttribute("data-story-scheme", "dark");
+    await expect(page.locator('iframe[src*="zubau-erneuerbare-atom"]')).toHaveCount(0);
+    const channels = await chart.evaluate(node => getComputedStyle(node).backgroundColor.match(/\d+/g)?.slice(0,3).map(Number));
+    expect(channels).toHaveLength(3);
+    expect(Math.max(...channels!)).toBeLessThan(100);
   });
 
-  test("zeigt keinen Knopf auf die Seite, die man gerade liest", async ({ page }) => {
+  test("shows no next-step link back to the current page", async ({ page }) => {
     await page.goto("/atomstrom-import");
-
-    // Zwei der drei Widgets hier führen laut Register nach /atomstrom-import —
-    // eingebettet auf ebenjener Seite ist das kein nächster Schritt, sondern Lärm.
-    for (const muster of ["strommix-anteil", "zubau-erneuerbare-atom"]) {
-      const rahmen = page.frameLocator(`iframe[src*="${muster}"]`);
-      await expect(rahmen.locator('a[href="/atomstrom-import"]')).toHaveCount(0);
-    }
+    const chart = growthChart(page);
+    await expect(chart).toBeVisible();
+    await expect(chart.locator('a[href="/atomstrom-import"]')).toHaveCount(0);
   });
 
-  test("öffnet den nächsten Schritt im ganzen Fenster, nicht im Rahmen", async ({ page }) => {
+  test("opens the remaining embedded next step in the parent window", async ({ page }) => {
     await page.goto("/atomstrom-import");
-
-    // Das Strommix-Widget führt nach /strommix-deutschland — ein echter nächster
-    // Schritt, der auf dieser Seite stehen bleibt.
-    const rahmen = page.frameLocator('iframe[src*="embed/strommix?"]');
-    const knopf = rahmen.locator('a[href="/strommix-deutschland"]');
-    await expect(knopf).toHaveCount(1);
-    // Ohne Ziel navigiert der Klick nur das iframe — der Artikel erschien dann
-    // innerhalb des Charts.
-    await expect(knopf).toHaveAttribute("target", "_top");
+    const frame = page.frameLocator('iframe[src*="embed/strommix?"]');
+    const link = frame.locator('a[href="/strommix-deutschland"]');
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute("target", "_top");
   });
 
-  test("das Aktionsmenü bleibt vollständig in der Karte", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 760 });
+  test("keeps the native options menu inside the mobile viewport", async ({ page }) => {
+    await page.setViewportSize({ width:375, height:760 });
     await page.goto("/atomstrom-import");
-
-    const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
-    await expect(rahmen.getByText("Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
-    await rahmen.locator('button[title="Teilen"]').click();
-
-    const menu = rahmen.locator('[role="menu"]');
+    const chart = growthChart(page);
+    await expect(chart).toBeVisible();
+    await chart.getByRole("button", {name:/^Optionen für/}).click();
+    const menu = chart.getByRole("menu");
     await expect(menu).toBeVisible();
-    // Die Karte schneidet Überstehendes ab (overflow: hidden) — ein Menü, das
-    // über ihren Rand hinausragt, ist im Embed sichtbar abgeschnitten.
-    const passt = await menu.evaluate((m) => {
-      const karte = m.closest("[style*='overflow']") ?? m.ownerDocument.body;
-      const a = m.getBoundingClientRect();
-      const b = karte.getBoundingClientRect();
-      return a.left >= b.left - 1 && a.right <= b.right + 1;
-    });
-    expect(passt).toBe(true);
+    expect(await menu.evaluate(node => {
+      const rect=node.getBoundingClientRect();
+      return rect.left >= 0 && rect.right <= innerWidth && rect.top >= 0 && rect.bottom <= innerHeight;
+    })).toBe(true);
+    await expect(menu.getByRole("menuitem", {name:"Aktueller Stand als Bild",exact:true})).toBeVisible();
   });
 });

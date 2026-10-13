@@ -1,0 +1,9 @@
+.hero { min-width:0; }
+.stack { display:grid; }
+.slide { grid-area:1/1; min-width:0; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 260ms ease, visibility 260ms; }
+.slide[data-active=true] { opacity:1; visibility:visible; pointer-events:auto; }
+.controls { display:flex; justify-content:center; gap:0; margin-top:12px; }
+.controls button { display:grid; place-items:center; width:36px; height:36px; border:0; background:transparent; color:var(--atlas-text); cursor:pointer; padding:10px; }
+.controls button span { width:6px; height:6px; border-radius:50%; background:var(--atlas-secondary); opacity:.5; }
+.controls button[aria-pressed=true] span { background:var(--atlas-text); opacity:1; }
+@media(prefers-reduced-motion:reduce) { .slide { transition:none; } }

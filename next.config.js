@@ -19,6 +19,7 @@ const nextConfig = {
   // No "X-Powered-By: Next.js" — tells an attacker the framework for free.
   poweredByHeader: false,
   outputFileTracingIncludes: {
+    "/api/og/funding": ["./app/api/og/Montserrat-Bold.ttf", "./public/brand/funding-money.png", "./public/brand/logo-result.svg"],
     "/fuer-organisationen/kommunen": ["./public/kommunen/index.html"],
     "/api/windraeder-vorschau/*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
     "/embed/micro-*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
@@ -33,6 +34,8 @@ const nextConfig = {
     return config;
   },
   experimental: {
+    // Keep a multi-widget development gallery below the restart threshold.
+    webpackMemoryOptimizations: process.env.NODE_ENV === 'development',
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own
     // root layout, and a root not-found.tsx without one is refused by Next
@@ -129,6 +132,8 @@ const nextConfig = {
     // also entsteht keine Schleife mit der Umkehrung oben.
     return {
       beforeFiles: [
+        // Local energy widgets read the deployed app, including its shared caches.
+        ...(process.env.NODE_ENV === "development" ? [{ source: "/api/energy/:path*", destination: "https://solar-check.io/api/energy/:path*" }] : []),
         { source: "/solar-atlas/hamburg", destination: "/solar-atlas/hamburg/hamburg/hamburg" },
         { source: "/solar-atlas/berlin", destination: "/solar-atlas/berlin/berlin/berlin" },
         // Embed codes carry their subject in the query (`?ags=…`). A page

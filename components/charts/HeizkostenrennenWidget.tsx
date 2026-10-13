@@ -104,6 +104,7 @@ export default function HeizkostenrennenWidget({ onsite, branding, showEmbed, au
   return (
     <RaceChart
       widget={WIDGETS.heizkostenrennen}
+      titleSeries={[{text:"Wärmepumpe",runner:"camera"},{text:"Gasheizung",runner:"other"}]}
       kamera={{ key: "wp", label: rennen.wp.label, kurz: rennen.wp.kurz, farbe: "--color-accent", werte: rennen.wp.kosten }}
       anderer={{ key: "gas", label: rennen.gas.label, kurz: rennen.gas.kurz, farbe: "--color-text-primary", werte: rennen.gas.kosten }}
       startJahr={rennen.startJahr}

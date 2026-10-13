@@ -1,11 +1,12 @@
+import SiteApplicationSchema from "../../components/SiteApplicationSchema";
 import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono, Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap, SITE_THEME_STAGE } from "../../lib/theme";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
-import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
+import { organizationJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import SiteHeaderFrame from "../../components/SiteHeaderFrame";
 import LocationChangeToast from "../../components/LocationChangeToast";
@@ -23,25 +24,19 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 // removed light/dark switch used to store, so it cannot come back to life.
 const bootScript = `document.documentElement.classList.add('sc-js');try{localStorage.removeItem('sc-theme-pref')}catch(_){}`;
 
-// Self-hosted fonts (next/font downloads them at build time and serves them
-// from our own domain). No runtime request to Google -> DSGVO-konform und
-// schneller (kein render-blocking external CSS). Exposed as CSS variables so
-// the inline-style tokens in lib/theme.ts can reference them.
-const dmSans = DM_Sans({
-  subsets: ["latin"],
+// Versioned local fonts keep development and production builds independent of Google.
+const dmSans = localFont({src:"../../public/fonts/dm-sans-variable.woff2",weight:"100 900",
   display: "swap",
   variable: "--font-dm-sans",
 });
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetBrainsMono = localFont({src:"../../public/fonts/jetbrains-mono-variable.woff2",weight:"100 800",
   display: "swap",
   variable: "--font-jetbrains-mono",
 });
 // Überschriften. Nur das eine Schnittgewicht, das das Design benutzt — die
 // gemeinsame Fußzeile deklariert Montserrat 700 ohnehin auf jeder Seite.
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["700"],
+const montserrat = localFont({src:"../../public/fonts/atlas-montserrat-bold.woff2",
+  weight: "700",
   display: "swap",
   variable: "--font-montserrat",
 });
@@ -100,10 +95,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdHtml(organizationJsonLd) }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdHtml(softwareAppJsonLd) }}
-        />
+        <SiteApplicationSchema />
       </head>
       <body
         style={{

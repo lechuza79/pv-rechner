@@ -11,9 +11,20 @@ const typography = {
 } as CSSProperties;
 
 /** Shared illustration/content card used by municipal and editorial examples. */
-export default function ExampleCard({ title, titleLabel, motif, children, className = "" }: {
-  title: ReactNode; titleLabel?: string; motif: string; children: ReactNode; className?: string;
+export default function ExampleCard({ title, titleLabel, motif, children, headerContent, illustration, className = "" }: {
+  title: ReactNode; titleLabel?: string; motif: string; children: ReactNode; headerContent?: ReactNode; illustration?: ReactNode; className?: string;
 }) {
+  if (headerContent) return <article className={`${styles.splitCard} ${className}`} style={typography}>
+    <header className={styles.header}>
+      <h3>{title}</h3>
+      {illustration ?? <>
+        {/* @ts-expect-error — registered by solar-illustrations.js */}
+        <solar-illustration motif={motif} thumbnail="" label={titleLabel ?? "Photovoltaikanlage"} circle="" loading="lazy" loading-margin="1200" />
+      </>}
+      <div>{headerContent}</div>
+    </header>
+    <div className={styles.fullContent}>{children}</div>
+  </article>;
   return <article className={`sc-feature-card gemeinde-buerger-card ${styles.card} ${className}`} style={typography}>
     <h3 className="gemeinde-buerger-title">{title}</h3>
     {/* @ts-expect-error — registered by solar-illustrations.js */}

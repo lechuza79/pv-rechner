@@ -18,8 +18,8 @@ export function WidgetStepper({label,children,onPrevious,onNext,previousDisabled
 }
 
 /** Playback and reset use the same standalone control geometry. */
-export function WidgetIconButton({label,children,size='sm',...props}:Omit<ButtonHTMLAttributes<HTMLButtonElement>,'aria-label'|'className'|'children'> & {label:string;children:ReactNode;size?:'sm'|'md'}) {
- return <button {...props} type="button" aria-label={label} className={styles.iconButton} data-size={size}>{children}</button>;
+export function WidgetIconButton({label,children,size='sm',expandOnWide=false,...props}:Omit<ButtonHTMLAttributes<HTMLButtonElement>,'aria-label'|'className'|'children'> & {label:string;children:ReactNode;size?:'xs'|'sm'|'md';expandOnWide?:boolean}) {
+ return <button {...props} type="button" aria-label={label} className={styles.iconButton} data-size={size} data-expand-on-wide={expandOnWide||undefined}>{children}</button>;
 }
 
 /** Calendar labels never identify an arbitrary selected date as the peak day. */

@@ -1709,6 +1709,32 @@
       "longitude": 13.80383
     }
   },
+  "12064061": {
+    "wind-1": {
+      "name": "Windanlagen bei Bliesdorf",
+      "latitude": 52.70168,
+      "longitude": 14.18307
+    }
+  },
+  "12064084": {
+    "wind-1": {
+      "name": "Windanlagen bei Buckow (Märkische Schweiz)",
+      "latitude": 52.56578,
+      "longitude": 14.02448
+    }
+  },
+  "12064125": {
+    "wind-1": {
+      "name": "Windanlagen bei Falkenberg",
+      "latitude": 52.76289,
+      "longitude": 13.93779
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Falkenberg",
+      "latitude": 52.74438,
+      "longitude": 13.86484
+    }
+  },
   "12064130": {
     "wind-1": {
       "name": "Windanlagen bei Fichtenhöhe",
@@ -1728,6 +1754,27 @@
       "longitude": 14.33929
     }
   },
+  "12064205": {
+    "wind-1": {
+      "name": "Windanlagen bei Heckelberg-Brunow",
+      "latitude": 52.7499,
+      "longitude": 13.83714
+    }
+  },
+  "12064222": {
+    "wind-1": {
+      "name": "Windanlagen bei Höhenland",
+      "latitude": 52.75176,
+      "longitude": 13.93724
+    }
+  },
+  "12064266": {
+    "wind-1": {
+      "name": "Windanlagen bei Küstriner Vorland",
+      "latitude": 52.55923,
+      "longitude": 14.52422
+    }
+  },
   "12064268": {
     "wind-1": {
       "name": "Windanlagen bei Lebus",
@@ -1738,6 +1785,13 @@
       "name": "Windanlagen bei Lebus",
       "latitude": 52.40049,
       "longitude": 14.44214
+    }
+  },
+  "12064274": {
+    "wind-1": {
+      "name": "Windanlagen bei Letschin",
+      "latitude": 52.64186,
+      "longitude": 14.33338
     }
   },
   "12064290": {
@@ -1755,6 +1809,27 @@
       "name": "Windanlagen bei Lindendorf",
       "latitude": 52.46608,
       "longitude": 14.44097
+    }
+  },
+  "12064317": {
+    "wind-1": {
+      "name": "Windanlagen bei Müncheberg",
+      "latitude": 52.51845,
+      "longitude": 14.17702
+    }
+  },
+  "12064340": {
+    "wind-1": {
+      "name": "Windanlagen bei Neuhardenberg",
+      "latitude": 52.55233,
+      "longitude": 14.2281
+    }
+  },
+  "12064365": {
+    "wind-1": {
+      "name": "Windanlagen bei Neutrebbin",
+      "latitude": 52.70819,
+      "longitude": 14.20446
     }
   },
   "12064370": {
@@ -1776,6 +1851,27 @@
       "longitude": 14.2197
     }
   },
+  "12064388": {
+    "wind-1": {
+      "name": "Windanlagen bei Podelzig",
+      "latitude": 52.46019,
+      "longitude": 14.52392
+    }
+  },
+  "12064393": {
+    "wind-1": {
+      "name": "Windanlagen bei Prötzel",
+      "latitude": 52.64781,
+      "longitude": 14.00977
+    }
+  },
+  "12064417": {
+    "wind-1": {
+      "name": "Windanlagen bei Reichenow-Möglin",
+      "latitude": 52.64606,
+      "longitude": 14.03218
+    }
+  },
   "12064428": {
     "wind-1": {
       "name": "Windanlagen bei Rüdersdorf bei Berlin",
@@ -1783,11 +1879,65 @@
       "longitude": 13.86145
     }
   },
+  "12064448": {
+    "wind-1": {
+      "name": "Windanlagen bei Seelow",
+      "latitude": 52.54343,
+      "longitude": 14.35234
+    }
+  },
+  "12064480": {
+    "wind-1": {
+      "name": "Windanlagen bei Treplin",
+      "latitude": 52.39283,
+      "longitude": 14.42683
+    }
+  },
+  "12064482": {
+    "wind-1": {
+      "name": "Windanlagen bei Vierlinden",
+      "latitude": 52.54484,
+      "longitude": 14.32813
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Vierlinden",
+      "latitude": 52.5075,
+      "longitude": 14.36425
+    }
+  },
+  "12064512": {
+    "wind-1": {
+      "name": "Windanlagen bei Wriezen",
+      "latitude": 52.69009,
+      "longitude": 14.06595
+    }
+  },
   "12064539": {
     "wind-1": {
       "name": "Windanlagen bei Zeschdorf",
       "latitude": 52.40953,
       "longitude": 14.43775
+    }
+  },
+  "12069089": {
+    "wind-1": {
+      "name": "Windanlagen bei Buckautal",
+      "latitude": 52.20477,
+      "longitude": 12.2759
+    }
+  },
+  "12069224": {
+    "wind-1": {
+      "name": "Windanlagen bei Görzke",
+      "latitude": 52.18319,
+      "longitude": 12.3597
+    }
+  },
+  "12069232": {
+    "wind-1": {
+      "name": "Windanlagen bei Gräben",
+      "latitude": 52.19,
+      "longitude": 12.3642
     }
   },
   "12069306": {
@@ -1834,6 +1984,13 @@
       "longitude": 12.77998
     }
   },
+  "12069448": {
+    "wind-1": {
+      "name": "Windanlagen bei Niemegk",
+      "latitude": 52.07902,
+      "longitude": 12.72215
+    }
+  },
   "12069485": {
     "wind-1": {
       "name": "Windanlagen bei Rabenstein/Fläming",
@@ -1860,6 +2017,61 @@
       "longitude": 12.86571
     }
   },
+  "12069616": {
+    "wind-1": {
+      "name": "Windanlagen bei Teltow",
+      "latitude": 52.35532,
+      "longitude": 13.25522
+    }
+  },
+  "12069632": {
+    "wind-1": {
+      "name": "Windanlagen bei Treuenbrietzen",
+      "latitude": 52.007,
+      "longitude": 12.83685
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Treuenbrietzen",
+      "latitude": 52.09067,
+      "longitude": 12.79002
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Treuenbrietzen",
+      "latitude": 52.03178,
+      "longitude": 12.95985
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Treuenbrietzen",
+      "latitude": 52.01447,
+      "longitude": 12.76656
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Treuenbrietzen",
+      "latitude": 52.09686,
+      "longitude": 12.84264
+    }
+  },
+  "12069648": {
+    "wind-1": {
+      "name": "Windanlagen bei Wenzlow",
+      "latitude": 52.29946,
+      "longitude": 12.41403
+    }
+  },
+  "12069656": {
+    "wind-1": {
+      "name": "Windanlagen bei Werder (Havel)",
+      "latitude": 52.35944,
+      "longitude": 12.87552
+    }
+  },
+  "12069696": {
+    "wind-1": {
+      "name": "Windanlagen bei Ziesar",
+      "latitude": 52.252,
+      "longitude": 12.2791
+    }
+  },
   "12071052": {
     "wind-1": {
       "name": "Windanlagen bei Drachhausen",
@@ -1867,11 +2079,77 @@
       "longitude": 14.30691
     }
   },
+  "12071057": {
+    "wind-1": {
+      "name": "Windanlagen bei Drebkau",
+      "latitude": 51.65321,
+      "longitude": 14.28349
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Drebkau",
+      "latitude": 51.66821,
+      "longitude": 14.13894
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Drebkau",
+      "latitude": 51.67461,
+      "longitude": 14.27582
+    }
+  },
+  "12071060": {
+    "wind-1": {
+      "name": "Windanlagen bei Drehnow",
+      "latitude": 51.88044,
+      "longitude": 14.35979
+    }
+  },
+  "12071076": {
+    "wind-1": {
+      "name": "Windanlagen bei Forst (Lausitz)",
+      "latitude": 51.8023,
+      "longitude": 14.57123
+    }
+  },
+  "12071153": {
+    "wind-1": {
+      "name": "Windanlagen bei Groß Schacksdorf-Simmersdorf",
+      "latitude": 51.69992,
+      "longitude": 14.64266
+    }
+  },
+  "12071160": {
+    "wind-1": {
+      "name": "Windanlagen bei Guben",
+      "latitude": 52.00434,
+      "longitude": 14.6692
+    }
+  },
+  "12071176": {
+    "wind-1": {
+      "name": "Windanlagen bei Heinersbrück",
+      "latitude": 51.80819,
+      "longitude": 14.55749
+    }
+  },
+  "12071193": {
+    "wind-1": {
+      "name": "Windanlagen bei Jänschwalde",
+      "latitude": 51.81711,
+      "longitude": 14.56533
+    }
+  },
   "12071244": {
     "wind-1": {
       "name": "Windanlagen bei Kolkwitz",
       "latitude": 51.75377,
       "longitude": 14.11225
+    }
+  },
+  "12071294": {
+    "wind-1": {
+      "name": "Windanlagen bei Neiße-Malxetal",
+      "latitude": 51.64162,
+      "longitude": 14.73047
     }
   },
   "12071337": {
@@ -1884,6 +2162,25 @@
       "name": "Windanlagen bei Schenkendöbern",
       "latitude": 52.00668,
       "longitude": 14.65986
+    }
+  },
+  "12071372": {
+    "wind-1": {
+      "name": "Windanlagen bei Spremberg",
+      "latitude": 51.54963,
+      "longitude": 14.43058
+    }
+  },
+  "12071386": {
+    "wind-1": {
+      "name": "Windanlagen bei Teichland",
+      "latitude": 51.82873,
+      "longitude": 14.47442
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Teichland",
+      "latitude": 51.80686,
+      "longitude": 14.45552
     }
   },
   "12071401": {
@@ -2709,6 +3006,39 @@
       "longitude": 11.81774
     }
   },
+  "15089075": {
+    "wind-1": {
+      "name": "Windanlagen bei Egeln",
+      "latitude": 51.97692,
+      "longitude": 11.45426
+    }
+  },
+  "15089130": {
+    "wind-1": {
+      "name": "Windanlagen bei Giersleben",
+      "latitude": 51.80008,
+      "longitude": 11.50063
+    }
+  },
+  "15089165": {
+    "wind-1": {
+      "name": "Windanlagen bei Güsten",
+      "latitude": 51.76415,
+      "longitude": 11.60274
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Güsten",
+      "latitude": 51.77925,
+      "longitude": 11.64687
+    }
+  },
+  "15089185": {
+    "wind-1": {
+      "name": "Windanlagen bei Ilberstedt",
+      "latitude": 51.77873,
+      "longitude": 11.6543
+    }
+  },
   "15089195": {
     "wind-1": {
       "name": "Windanlagen bei Könnern",
@@ -2736,6 +3066,25 @@
       "name": "Windanlagen bei Nienburg (Saale)",
       "latitude": 51.87021,
       "longitude": 11.68148
+    }
+  },
+  "15089245": {
+    "wind-1": {
+      "name": "Windanlagen bei Plötzkau",
+      "latitude": 51.7323,
+      "longitude": 11.63382
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Plötzkau",
+      "latitude": 51.76505,
+      "longitude": 11.66242
+    }
+  },
+  "15090003": {
+    "wind-1": {
+      "name": "Windanlagen bei Aland",
+      "latitude": 52.95536,
+      "longitude": 11.61826
     }
   },
   "15090007": {
@@ -2789,6 +3138,13 @@
       "longitude": 11.6746
     }
   },
+  "15090135": {
+    "wind-1": {
+      "name": "Windanlagen bei Eichstedt (Altmark)",
+      "latitude": 52.70185,
+      "longitude": 11.90844
+    }
+  },
   "15090220": {
     "wind-1": {
       "name": "Windanlagen bei Hassel",
@@ -2828,6 +3184,13 @@
       "name": "Windanlagen bei Osterburg (Altmark)",
       "latitude": 52.77161,
       "longitude": 11.58742
+    }
+  },
+  "15090535": {
+    "wind-1": {
+      "name": "Windanlagen bei Stendal",
+      "latitude": 52.52639,
+      "longitude": 11.79385
     }
   },
   "15090546": {

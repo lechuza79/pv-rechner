@@ -95,7 +95,7 @@ async function nachtragen(c: Db, zielgruppe: string, datei: string) {
 }
 
 async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
-  const mails = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; anlass: string; bezug?: string[]; kreise?: string[] }[];
+  const mails = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; html?: string; anlass: string; bezug?: string[]; kreise?: string[] }[];
   const nur = arg("nur") ? new Set(arg("nur")!.split(",").map((s) => s.trim().toLowerCase())) : null;
   // Every mail is checked BEFORE the first one goes out: a batch with one
   // broken letter stops whole, instead of half sent.
@@ -141,7 +141,7 @@ async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
       const id = await vermerkeVorVersand(c, {
         zielgruppe, empfaenger: an, anlass: m.anlass, bezug: m.bezug ?? m.kreise ?? [], schub, betreff: m.betreff, text: m.text,
       });
-      const nachricht = { from: k.konfig.from, to: an, replyTo: k.konfig.replyTo, subject: m.betreff, text: m.text };
+      const nachricht = { from: k.konfig.from, to: an, replyTo: k.konfig.replyTo, subject: m.betreff, text: m.text, ...(m.html ? {html: m.html, attachDataUrls: true} : {}) };
       const info = await transport.sendMail(nachricht);
       await bestaetigeVersand(c, id, info.messageId);
       // A copy in "Gesendet" for the human reading the mailbox — the record is the table.

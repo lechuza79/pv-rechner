@@ -12,6 +12,7 @@
 // vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
 
 import { heuteInBerlin } from "./zeit";
+import type { FundingApplication } from "./funding-application";
 
 export type Eligibility = "privat" | "gewerblich";
 
@@ -145,6 +146,10 @@ export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
 };
 
 export interface FundingProgram {
+  /** Source-backed application instructions; absent means not yet reviewed. */
+  application?: FundingApplication;
+  /** Actual editorial content revision; never a crawl, deployment or unchanged verification date. */
+  contentUpdatedAt?: string;
   id: string;
   name: string;
   traeger: string;
@@ -279,6 +284,14 @@ export interface FundingProgram {
   conditions: FundingCondition[];
   /** Confirmed combinations; [] means prohibited, null means not established. */
   combinableWith: string[] | null;
+  /** Explicit eligible scenario for editorial examples only; never personal calculator defaults. */
+  exampleScenario?: {
+    assumption: string;
+    pvPerKwp: number;
+    pvCap: number;
+    pvMin?: number;
+    pvMax?: number;
+  };
   // Structured rates so example calculations can show a concrete amount.
   pvPerKwp?: number;
   /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
@@ -1724,8 +1737,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     "bundesland": "Nordrhein-Westfalen",
     "agsCode": "05562016",
     "url": "https://www.haltern-am-see.de/bso?seite=angebot&id=20144",
-    "stand": "September 2026",
-    "status": "aktiv",
+    "stand": "Oktober 2026",
+    "status": "pausiert",
     "verified": true,
     "capped": true,
     "foerdert": [
@@ -1745,7 +1758,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Volljährige Privatpersonen mit Hauptwohnsitz in Haltern am See.",
       "Nur Bewohner von Mehrfamilienhäusern mit mindestens 3 Wohneinheiten und Selbstnutzung.",
       "Vor Kauf Antrag stellen und Bewilligungsbescheid abwarten.",
-      "Antragsfrist 30.09.2026; Kauf und Nachweise spätestens 30.11.2026.",
+      "Antragsfrist 30.09.2026; Kauf und Nachweise spätestens 30.11.2026. Die Stadt meldet am 08.10.2026: Der Zeitraum für neue Förderanträge in 2026 ist abgelaufen.",
       "Rechnung und Marktstammdatenregister-Bestätigung vorlegen.",
       "Mindestens zwei Jahre nutzen; kein Weiterverkauf während der Bindungsfrist.",
       "Grundsätzlich ein Antrag je Haushalt und Jahr; bestimmte Sozialleistungsbeziehende dürfen zwei stellen.",
@@ -2908,6 +2921,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anlage muss mindestens 15 Jahre in Heidelberg betrieben werden; Zuschüsse unter 150 € werden nicht bewilligt",
       "Mittel begrenzt und mit dem Programm Starkregen- und Hochwasserschutz geteilt (250.000 € im Nachtragshaushalt 2026); kein Rechtsanspruch",
     ],
+    exampleScenario: {
+      assumption: "Dachanlage außerhalb der PV-Pflicht: Die gesamte Anlagenleistung ist förderfähig. Der Speicher erhält keinen Zuschuss. Antrag vor Beauftragung; Bewilligung und verfügbare Mittel vorausgesetzt.",
+      pvPerKwp: 100, pvCap: 10000, pvMin: 1.5, pvMax: 100,
+    },
     combinableWith: BUND,
   },
   "mannheim-solarbonus": {
@@ -10330,7 +10347,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "vg-bad-breisig-balkonkraftwerke", name: "Förderung von privaten Balkonkraftwerken",
     traeger: "Verbandsgemeinde Bad Breisig", level: "kommune", region: "Verbandsgemeinde Bad Breisig",
     bundesland: "Rheinland-Pfalz", agsCode: "07131006",
-    agsCodes: ["07131014", "07131081"],
+    agsCodes: ["07131014", "07131025", "07131081"],
     url: "https://www.bad-breisig.de/2026/07/02/foerderprogramm-fuer-balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beschlossenIso: "2026-06-23", beginntIso: "2026-07-01", endetIso: "2027-06-30",
@@ -10514,6 +10531,66 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // nicht durchsucht — ein Ratsbeschluss für 2026 ist damit nicht ausgeschlossen.
     // Das Budget (20.000 €) nannte nur die Programmseite, nicht die Richtlinie.
     // KEINE RECHENWERTE: beendet, darf nichts abziehen.
+  },
+
+  "remagen-balkonkraftwerke": {
+    id: "remagen-balkonkraftwerke", name: "Balkonkraftwerke für Remagener Bürger*innen",
+    traeger: "Stadt Remagen", level: "kommune", region: "Remagen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131070",
+    url: "https://web.archive.org/web/2025/https://www.remagen.de/images/KlimaMobilitaet/Richtlinie_Balkonkraftwerke.pdf",
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2025-07-14", beginntIso: "2025-01-01", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten, gedeckelt",
+    maxFoerderung: "300 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 % der Anschaffungskosten, höchstens 300 €" },
+    ],
+    conditions: [
+      "Das Programm lief für Anschaffungen vom 01.01.2025 bis zum 15.12.2025 und endete spätestens am 31.12.2025 oder mit Verausgabung der 10.000 € im Haushalt 2025; für 2026 ist keine Neuauflage veröffentlicht",
+      "Gefördert wurden Balkonkraftwerke mit höchstens 800 W Wechselrichterleistung, einmal je Haushalt; Dachanlagen, Batteriespeicher und Wärmepumpen waren ausgeschlossen",
+      "Antragsberechtigt waren natürliche Personen mit Erstwohnsitz in Remagen; vergeben wurde nach Eingang der Anträge",
+      "Finanziert aus dem Landesprogramm KIPKI; eine Gesamtförderung über 100 Prozent war unzulässig",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // AUFGENOMMEN 10.10.2026 als beendetes Programm. Richtlinie in der Fassung
+    // vom 14.07.2025 im Volltext gelesen (nur noch im Archiv der Amtsseite; die
+    // Originaladresse antwortet seit dem Relaunch der Stadtseite mit 404):
+    // Nr. 2 „Förderzeitraum … rückwirkend vom 01.01.2025 bis zum 15.12.2025 …
+    // endet … spätestens zum 31.12.2025"; Nr. 6 „maximaler Zuschuss von 300,00
+    // EUR, maximal jedoch 50,00 %". Die Fördermittel-Übersicht der Stadt
+    // (gelesen 10.10.2026) nennt keine Neuauflage; Ratsinfo nicht durchsucht.
+    // KEINE RECHENWERTE: beendet, darf nichts abziehen.
+  },
+
+  "sinzig-kipki-stecker-pv": {
+    id: "sinzig-kipki-stecker-pv", name: "KIPKI-Förderprogramm: Stecker-PV-Anlagen",
+    traeger: "Stadt Sinzig", level: "kommune", region: "Sinzig",
+    bundesland: "Rheinland-Pfalz", agsCode: "07131077",
+    url: "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm",
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2024-10-10", beginntIso: "2024-10-15", endetIso: "2026-03-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss zur Neuanschaffung",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk", value: "bis zu 150 € je Haushalt" },
+    ],
+    conditions: [
+      "Das Programm lief ab dem 15.10.2024 bis zur Verausgabung der Mittel, spätestens bis zum 31.03.2026; für die Zeit danach ist keine Neuauflage veröffentlicht",
+      "Gefördert wurden neue Balkonkraftwerke mit höchstens 800 VA Wechselrichter- und 2.000 W Modulleistung, ohne Einspeisevergütung",
+      "Antragsberechtigt waren Eigentümer, Mieter und Pächter mit Erstwohnsitz in Sinzig sowie ehrenamtliche Vereine mit Sitz in der Stadt; vergeben wurde nach Eingang",
+      "Die Anlage war fünf Jahre zu betreiben; Teil eines KIPKI-Gesamtbudgets von 109.000 € für mehrere Maßnahmen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // AUFGENOMMEN 10.10.2026 als beendetes Programm. Richtlinie (2. Novellierung,
+    // Stadtratsbeschluss 10.10.2024) im Volltext gelesen: Nr. 2 „endet nach
+    // Verausgabung … spätestens jedoch am 31.03.2026"; Nr. 4.4 „Die Förderhöhe
+    // beträgt maximal 150€ pro Haushalt oder Verein." Die Programmseite der
+    // Stadt steht noch im Präsens, nennt aber denselben Endtermin. Ratsinfo
+    // nicht durchsucht. KEINE RECHENWERTE: beendet, darf nichts abziehen.
   },
 
   "vg-alzey-land-balkon-speicher": {
@@ -12275,7 +12352,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Aachen", level: "kommune", region: "Aachen",
     bundesland: "Nordrhein-Westfalen", agsCode: "05334002",
     url: "https://www.aachen.de/solar",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Photovoltaik und Speicher an Mehrfamilienhäusern, Photovoltaik und Dachgutachten an Betriebsgebäuden kleiner und mittlerer Unternehmen",
     maxFoerderung: "max. 10.000 € je Photovoltaikanlage, 5.000 € je Speicher",
@@ -12290,11 +12367,17 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anlagen auf Ein- und Zweifamilienhäusern und Balkonkraftwerke werden nicht gefördert",
       "Der Antrag wird vor der Beauftragung gestellt; beauftragt werden darf erst nach dem Zuwendungsbescheid",
       "Die Arbeiten müssen innerhalb von 18 Monaten ausgeführt werden",
-      "Das Budget 2026 ist auf ein Drittel gekürzt; neue Anträge werden bearbeitet, solange Restmittel verfügbar sind",
+      "Die Haushaltsmittel für 2026 sind aufgebraucht; neue Anträge können nicht eingereicht werden, bereits eingegangene werden noch bearbeitet",
       "Gefördert werden nur Vorhaben im Aachener Stadtgebiet",
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
+    // AUSGESCHÖPFT seit Oktober 2026 (09.10.2026 live gelesen, zweimal
+    // unabhängig gegengeprüft): „Die Haushaltsmittel für das
+    // Solarförderprogramm für das Jahr 2026 sind aufgebraucht. Bereits
+    // eingegangene Anträge werden bearbeitet … Neue Anträge können nicht
+    // eingereicht werden." Gilt für alle Bausteine.
+    //
     // NEU AUFGENOMMEN 11.09.2026, www.aachen.de/solar im Rohtext gelesen:
     // „Die Haushaltsmittel für das Solarförderprogramm wurden für das Jahr 2026
     // freigegeben. Allerdings wurde das Gesamtbudget auf ein Drittel gekürzt. …

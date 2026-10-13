@@ -286,6 +286,9 @@ export async function GET(req: NextRequest) {
         WHERE a.energietraeger = 'solar'
           -- Unbewohnte Gebiete würden durch null teilen und jede Tabelle anführen.
           AND r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+          -- German municipalities only: Swiss rows share the table since
+          -- 07.10.2026 ("chg0261") and have no published page or ranking yet.
+          AND a.region_id ~ '^[0-9]{8}$'
         GROUP BY a.region_id, r.population;
       END;
       $fn$;

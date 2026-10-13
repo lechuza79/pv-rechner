@@ -1,5 +1,7 @@
 "use client";
 
+import {ChartExportMetadata} from "./ChartExportMetadata";
+
 /**
  * Der deutsche Solarbestand nach Anlagentyp — Stückzahl gegen Leistung.
  *
@@ -73,14 +75,15 @@ export default function AnlagenbestandWidget({
           style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
         >
           <div style={S.title}>{WIDGET.title}</div>
-          <div style={S.sub}>{subline}</div>
+          <div data-sc-export-ignore="" style={S.sub}>{subline}</div>
+          <ChartExportMetadata scope="Deutschland" dataAsOf={bestand.standIso.slice(0, 10)} unit="Anzahl Anlagen und installierte Leistung"/>
         </div>
 
         <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
           <WidgetSourceEdge
             widget={WIDGET}
             visible={isEmbed && !isOnsite}
-            stand={formatDataAsOf(bestand.standIso.slice(0, 10))}
+            stand={bestand.standIso.slice(0, 10)}
           />
           <ExportBox>
             {/* Die zwei Gesamtwerte. Zahl groß, Einheit klein daneben — und in

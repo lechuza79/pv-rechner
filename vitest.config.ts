@@ -4,6 +4,11 @@ import path from "path";
 export default defineConfig({
   test: {
     globals: true,
+    // Keep checks from starving concurrent local preview servers.
+    maxWorkers: 2,
+    // Local preview/build processes can delay module loading on shared machines.
+    // Keep every assertion; CI retains its normal timeout on isolated runners.
+    testTimeout: process.env.CI ? 5_000 : 30_000,
     environment: "node",
     // Vitest covers unit tests for pure functions in lib/.
     // Playwright covers browser end-to-end tests in e2e/ — exclude that dir

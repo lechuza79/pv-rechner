@@ -105,7 +105,7 @@ test.describe("Anlagenbestand-Widget", () => {
 test.describe("Stromkosten-Rennen", () => {
   test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
     await page.goto("/embed/pv-kostenrennen");
-    await expect(page.getByText("Stromkosten mit und ohne Solaranlage").first()).toBeVisible();
+    await expect(page.getByRole("heading", {name: /Stromkosten: Mit PV vs. Ohne PV/})).toBeVisible();
 
     // Der Abspielknopf ist Bedienung und fliegt aus dem Bild; der eingestellte
     // Zeitraum steht als Text im Kopf und bleibt.
@@ -116,16 +116,18 @@ test.describe("Stromkosten-Rennen", () => {
     await expect(exportOnly.first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
     // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
-    const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" });
-    await expect(footer).toContainText("Mit PV-Anlage");
-    await expect(footer).toContainText("Ohne PV-Anlage");
+    const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" }).last();
+    // The series legend is part of the exported heading in this variant.
+    await expect(page.getByRole("heading", {name: /Stromkosten:/})).toContainText("Mit PV");
+    await expect(page.getByRole("heading", {name: /Stromkosten:/})).toContainText("Ohne PV");
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("PVGIS");
     const downloadPromise = page.waitForEvent("download");
-    await page.getByTitle("Als Bild herunterladen").click();
+    await page.getByRole("button", {name: /^Optionen für/}).click();
+    await page.getByRole("menuitem", {name: "Aktueller Stand als Bild", exact:true}).click();
     const download = await downloadPromise;
     const buf = await readFile((await download.path())!);
     expect(buf.byteLength).toBeGreaterThan(30_000);
@@ -145,16 +147,17 @@ test.describe("Heizkosten-Rennen", () => {
     const exportOnly = page.locator("[data-sc-export-only]");
     await expect(exportOnly.first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
-    const footer = exportOnly.filter({ hasText: "Das Beispielhaus" });
+    const footer = exportOnly.filter({ hasText: "Das Beispielhaus" }).last();
     await expect(footer).toContainText("Wärmepumpe");
-    await expect(footer).toContainText("Neue Gasheizung");
+    await expect(footer).toContainText(/neue Gasheizung/i);
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("Wetterdienst");
     const downloadPromise = page.waitForEvent("download");
-    await page.getByTitle("Als Bild herunterladen").click();
+    await page.getByRole("button", {name: /^Optionen für/}).click();
+    await page.getByRole("menuitem", {name: "Aktueller Stand als Bild", exact:true}).click();
     const download = await downloadPromise;
     const buf = await readFile((await download.path())!);
     expect(buf.byteLength).toBeGreaterThan(30_000);
@@ -176,8 +179,8 @@ test.describe("Gemeinde-Monitor: Anlagenraster", () => {
     await expect(widget.locator("[data-sc-export-ignore]").first()).toBeAttached();
     const exportOnly = widget.locator("[data-sc-export-only]");
     await expect(exportOnly.filter({ hasText: "Anlagenbestand: Heute" })).toHaveCount(1);
-    // Nested export-only wrappers (padding frame + footer) both contain the note.
-    await expect(exportOnly.filter({ hasText: "Ort: Veitshöchheim" }).first()).toBeAttached();
+    // The designed metadata line carries the place once, alongside the data vintage.
+    await expect(exportOnly.filter({ hasText: /Veitshöchheim.*Stand/ }).first()).toBeAttached();
     await expect(exportOnly.first()).toBeHidden();
 
     // Full attribution at the edge: provider, licence, change note, data date.
@@ -252,9 +255,9 @@ test.describe("Gemeinde-Monitor: Optionsmenü", () => {
     const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Ein Rechteck steht für"]') }).first();
     await expect(widget).toBeVisible({ timeout: 60_000 });
     const button = widget.getByRole("button", { name: /^Optionen für/ });
-    // No footer action row any more; help sits in the headline.
+    // Help is available from the shared options menu without a duplicate trigger.
     await expect(widget.locator(".sc-widget-actions")).toHaveCount(0);
-    await expect(widget.locator("h4 .sc-widget-title-help")).toHaveCount(1);
+    await expect(widget.locator("h4 .sc-widget-title-help")).toHaveCount(0);
 
     await button.focus();
     await page.keyboard.press("Enter");

@@ -231,7 +231,7 @@ wie nah es am bisherigen Wert liegt — gemessen gegen die Schnittstelle am
 | Kühlgradstunden, 5 Sommer und letzter Sommer | einmal im Jahr aus ERA5 vorgerechnet, Datei im Repo | im Mittel rund +20 % gegen die alten Werte (die kamen aus ERA5-Land) |
 | Kühlgradstunden, Projektion 20 Jahre | nur noch gespeicherte Klimamodell-Werte, als Verhältnis auf die neue Basis übertragen; sonst der Landesfaktor | — |
 
-**Warum ERA5 und nicht ERA5-Land** (gemessen, `npm run klima:kuehlgrad-gegen-messung`): Kühlgradstunden gegen DWD-Stationen, Sommer 2025 (56 Stationen) ERA5 +13 %, ERA5-Land −14 %; Sommer 2024 (32 Stationen) ERA5 −2 %, ERA5-Land −19 %. ERA5-Land unterschätzt Sommerhitze an beiden Sommern; die alten Seitenwerte taten es mit.
+**Warum ERA5 und nicht ERA5-Land** (gemessen, `npm run klima:kuehlgrad-gegen-messung`): Kühlgradstunden gegen DWD-Stationen, Sommer 2025 (56 Stationen) ERA5 +13 %, ERA5-Land −14 %; Sommer 2024 (32 Stationen) ERA5 −2 %, ERA5-Land −19 %. ERA5-Land unterschätzt Sommerhitze an beiden Sommern; die alten Seitenwerte taten es mit. Sommer 2026 (39 Stationen, gemessen 09.10.2026): ERA5 +2 % (je Station p10 −13 % bis p90 +14 %), ERA5-Land −6 %.
 
 **Warum die Projektion übertragen wird:** Das Klimamodell hat seine eigene Basis. Auf die höhere ERA5-Basis gesetzt, läge seine Zukunft an 7 % der Orte unter heute. Neue Klimawerte werden nicht geholt — die Klima-Schnittstelle ist kommerziell nur im Professional-Abo erlaubt (offene Entscheidung).
 

@@ -98,14 +98,14 @@ export default function RegionScene(props:Props) {
           }
         },flight:(moving,arrived)=>current.current.onFlight?.(moving,arrived),
         failed:()=>{setFailed(true);current.current.onReady(false);},
-      }, current.current.heightEnvelope,current.current.turbines,current.current.terrain,current.current.windScale,current.current.windConditions,current.current.buildings,current.current.solar,current.current.locations,current.current.framingScale);
+      }, current.current.heightEnvelope,current.current.turbines,current.current.terrain,current.current.windScale,current.current.windConditions,current.current.buildings,current.current.solar,current.current.locations,current.current.framingScale,current.current.standalone);
       current.current.onControls?.(instance);
       scene.current=instance;
       instance.autoplay(presentationRef.current.autoplay??true);
       instance.update(current.current.values,current.current.selected,current.current.hovered);
       void instance.season(current.current.season??"summer");
       current.current.onReady(true);
-    }).catch(()=>{if(!disposed){setFailed(true);current.current.onReady(false);}});
+    }).catch(error=>{console.error("Region scene initialization failed",error);if(!disposed){setFailed(true);current.current.onReady(false);}});
     return()=>{disposed=true;scene.current?.dispose();scene.current=null;};
   },[props.shapes]);
   useEffect(()=>{scene.current?.autoplay(presentation.autoplay??true);},[presentation.autoplay]);

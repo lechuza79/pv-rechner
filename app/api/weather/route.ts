@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../lib/rate-limit";
 import { modelHours, modelWeatherAt, shardKey } from "../../../lib/icon-d2";
@@ -46,6 +47,8 @@ const EMPTY: WeatherResponse = {
 };
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "weather");
   if (limited) return limited;
 

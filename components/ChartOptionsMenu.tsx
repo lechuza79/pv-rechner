@@ -13,13 +13,13 @@ import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 
 type MenuRect = {top:number;bottom:number;left:number;right:number};
 
-/** Fit either menu presentation within the visible part of its widget. */
-export function widgetMenuPosition({host,trigger,widget,viewportWidth,viewportHeight,contentHeight,footer}:{host:MenuRect;trigger:MenuRect;widget?:MenuRect;viewportWidth:number;viewportHeight:number;contentHeight:number;footer:boolean}) {
+/** Fit the menu to the document viewport, independent of the card size. */
+export function widgetMenuPosition({host,trigger,viewportWidth,viewportHeight,contentHeight,footer}:{host:MenuRect;trigger:MenuRect;widget?:MenuRect;viewportWidth:number;viewportHeight:number;contentHeight:number;footer:boolean}) {
   const gutter=12;
-  const topBound=Math.max(gutter,(widget?.top??0)+gutter);
-  const bottomBound=Math.min(viewportHeight-gutter,(widget?.bottom??viewportHeight)-gutter);
-  const leftBound=Math.max(gutter,(widget?.left??0)+gutter);
-  const rightBound=Math.min(viewportWidth-gutter,(widget?.right??viewportWidth)-gutter);
+  const topBound=gutter;
+  const bottomBound=viewportHeight-gutter;
+  const leftBound=gutter;
+  const rightBound=viewportWidth-gutter;
   const maxHeight=Math.max(0,bottomBound-topBound);
   const height=Math.min(contentHeight,maxHeight);
   const width=Math.min(280,Math.max(0,rightBound-leftBound));
@@ -61,7 +61,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
   onForward?: () => void | 'copied' | Promise<void | 'copied'>;
   onRestart?: () => void | Promise<void>;
   embed: { onEmbed: () => void } | { unavailable: string };
-  animation?: {end:()=>Promise<void>;video:()=>Promise<void>};
+  animation?: {end:()=>Promise<void>;video?:()=>Promise<void>};
   busy?: boolean;
 }) {
   // Preserve the shared frame's widget, location, state and source context.
@@ -108,8 +108,9 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     const host=wrap.current,trigger=button.current;
     const update=()=>{
       const menu=document.getElementById(menuId);
+      if(menu&&!menu.matches(":popover-open"))menu.showPopover();
       const widget=host.closest<HTMLElement>('.sc-widget');
-      setMenuPosition(widgetMenuPosition({host:host.getBoundingClientRect(),trigger:trigger.getBoundingClientRect(),widget:widget?.getBoundingClientRect(),viewportWidth:window.innerWidth,viewportHeight:window.innerHeight,contentHeight:(menu?.scrollHeight??0)+2,footer:presentation==='footer'}));
+      setMenuPosition(widgetMenuPosition({host:{top:0,left:0,bottom:0,right:0},trigger:trigger.getBoundingClientRect(),widget:widget?.getBoundingClientRect(),viewportWidth:window.innerWidth,viewportHeight:window.innerHeight,contentHeight:(menu?.scrollHeight??0)+2,footer:presentation==='footer'}));
     };
     update();
     const observer=new ResizeObserver(update);
@@ -166,15 +167,15 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
     else if (e.key === "Home") { e.preventDefault(); list[0]?.focus(); }
     else if (e.key === "End") { e.preventDefault(); list[list.length - 1]?.focus(); }
   };
-  const onButtonKey = (e: React.KeyboardEvent) => { if (e.key === "ArrowDown") { e.preventDefault(); keyboardOpen.current=true; setOpen(true); } };
+  const onButtonKey = (e: React.KeyboardEvent) => { if(e.key === "Escape"){e.preventDefault();close();} else if (e.key === "ArrowDown") { e.preventDefault(); keyboardOpen.current=true; setOpen(true); } };
 
+  const unavailable = "unavailable" in embed ? embed.unavailable : null;
   const embedded = presentation === "embedded-footer";
   const footer = presentation === "footer";
   const leadingIcon: React.CSSProperties = {gridColumn:1,gridRow:1,order:-1,justifySelf:"start",flexShrink:0};
   const contactIcon = {...leadingIcon,alignSelf:"start",marginTop:3};
   const contactAction = <span className={styles.contactAction}>Anfragen <IconArrowRight size={14}/></span>;
   const separator = <div role="separator" className={styles.separator}/>;
-  const unavailable = "unavailable" in embed ? embed.unavailable : null;
 
   return (
     <div ref={wrap} className="sc-chart-options" data-presentation={presentation} style={{ position: "relative", display: footer||embedded ? "block" : "inline-flex", width: footer||embedded ? "100%" : undefined }} {...{ [EXPORT_IGNORE_ATTR]: "" }}>
@@ -195,7 +196,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
         <IconMore size={16} style={{ transform: "rotate(90deg)" }} />
       </button>}
       {open && (
-        <div className={styles.menu} id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
+        <div popover="manual" className={styles.menu} id={menuId} role="menu" aria-label={`Optionen für ${label}`} onKeyDown={onMenuKey}
           onMouseDown={event => {
             const item = (event.target as HTMLElement).closest<HTMLElement>('[role="menuitem"]');
             if (event.button !== 0 || !item || item.matches(":disabled")) return;
@@ -204,7 +205,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
             event.preventDefault();
             item.focus({ preventScroll: true });
           }}
-          style={{ position: "absolute", left:menuPosition?.left,top:menuPosition?.top??"calc(100% + 6px)",right:menuPosition?undefined:0,zIndex:20,width:menuPosition?.width??280,maxWidth:"calc(100vw - 24px)",maxHeight:menuPosition?.maxHeight,overflowY:"auto" }}>
+          style={{ position: "fixed", margin:0, inset:"auto", left:menuPosition?.left,top:menuPosition?.top??"calc(100% + 6px)",right:menuPosition?undefined:0,zIndex:20,width:menuPosition?.width??280,maxWidth:"calc(100vw - 24px)",maxHeight:menuPosition?.maxHeight,overflowY:"auto" }}>
           {menuPosition?.scrollable&&<div className={styles.scrollHint}>Weitere Optionen durch Scrollen ↕</div>}
           {help&&<><button type="button" role="menuitem" tabIndex={-1} className={styles.item} onClick={()=>{close();setHelpOpen(true);}}><IconHelpCircle size={16} style={leadingIcon}/><span>Informationen zum Diagramm</span></button>{separator}</>}
           {(!footer||group==="share")&&<>
@@ -216,7 +217,7 @@ export default function ChartOptionsMenu({ label, onShare, onDownload, onForward
           <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image" disabled={busy} className={styles.item} onClick={run(onDownload, "Bild wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>{animation?"Aktueller Stand als Bild":"Download"}</span></button>
           {animation&&<>
             <button type="button" role="menuitem" tabIndex={-1} data-widget-action="image_end" disabled={busy} className={styles.item} onClick={run(animation.end,"Endstand wird heruntergeladen.")}><IconDownload size={16} style={leadingIcon}/><span>Endstand als Bild</span></button>
-            {onVideoRequest ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" className={styles.item} onClick={()=>{close();setVideoOpen(true);}}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen<small className={styles.secondary}>MP4 · Downloadlink per E-Mail</small></span></button> : <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video_contact" className={styles.item} onClick={()=>openContact(videoContactHref)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></button>}
+            {onVideoRequest ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" className={styles.item} onClick={()=>{close();setVideoOpen(true);}}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen<small className={styles.secondary}>MP4 · Downloadlink per E-Mail</small></span></button> : animation.video ? <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video" disabled={busy} className={styles.item} onClick={run(animation.video)}><IconVideo size={16} style={leadingIcon}/><span>Video herunterladen</span></button> : <button type="button" role="menuitem" tabIndex={-1} data-widget-action="video_contact" className={styles.item} onClick={()=>openContact(videoContactHref)}><IconVideo size={16} style={leadingIcon}/><span>Animation als Video anfragen</span></button>}
           </>}
           {designContactHref&&<>{separator}<button type="button" role="menuitem" tabIndex={-1} data-widget-action="design_contact" className={`${styles.item} ${styles.contactItem}`} onClick={()=>openContact(designContactHref)}><IconMail size={16} style={contactIcon}/><span>In Ihrem Design<small className={styles.secondary}>Ihr Logo, Ihre Farben.</small>{contactAction}</span></button></>}
           </>}

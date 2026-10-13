@@ -22,7 +22,7 @@
 }
 
 span.sc-delta { cursor: default; }
-.sc-delta-sign, .sc-delta-suffix { color: color-mix(in srgb, currentColor 62%, transparent); }
+.sc-delta-sign, .sc-delta-suffix { color: color-mix(in srgb, currentColor 90%, transparent); }
 .sc-delta-suffix { margin-inline-start: .25em; }
 .sc-delta-value { display: inline-flex; align-items: baseline; }
 .sc-delta-alternative { display: none; position: absolute; bottom: 100%; left: 0; white-space: nowrap; padding: 8px 12px; border: 1px solid var(--widget-muted, var(--color-border)); border-radius: 8px; background: var(--widget-surface, var(--color-bg)); color: var(--widget-ink, var(--color-text-primary)); z-index: 2; box-shadow: 0 4px 16px #0003; }

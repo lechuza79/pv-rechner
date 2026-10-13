@@ -17,7 +17,7 @@
 // cached data would date the page younger than its own figures.
 
 import { unstable_cache } from "next/cache";
-import { computeNuclearImport } from "../../../lib/nuclear-import";
+import { type NuclearImportResponse, computeNuclearImport } from "../../../lib/nuclear-import";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -27,6 +27,22 @@ export const METHODIK_URL = `${BASE_URL}/atomstrom-import/methodik`;
 const WINDOW_HOURS = 168; // 7-day rolling average — smooths day/night & FR swings
 const CACHE_TTL_SECONDS = 3600; // matches `export const revalidate` on both pages
 
+// Keep both requests below the live API's downsampling threshold so daily
+// energy retains its original quarter-hour resolution.
+async function loadLiveImport(now: Date, start: Date): Promise<NuclearImportResponse> {
+  const olderEnd = new Date(now.getTime() - 7 * 86400000);
+  const queries = ["hours=168", new URLSearchParams({start: start.toISOString().slice(0, 10), end: olderEnd.toISOString().slice(0, 10)}).toString()];
+  const parts = await Promise.all(queries.map(async query => {
+    const response = await fetch(`https://solar-check.io/api/energy/nuclear-import?${query}`, {cache: "no-store", signal: AbortSignal.timeout(20000)});
+    if (!response.ok) throw new Error(`Live import data unavailable: ${response.status}`);
+    const payload: NuclearImportResponse = await response.json();
+    if (payload.source === "error" || !Array.isArray(payload.data) || !payload.data.length) throw new Error("Live import observations unavailable");
+    return payload;
+  }));
+  const points = new Map(parts.flatMap(part => part.data).map(point => [point.ts, point]));
+  return {...parts[0], data: [...points.values()].sort((a, b) => a.ts.localeCompare(b.ts))};
+}
+
 // Cached payload is plain JSON — unstable_cache serializes, so no Date here.
 // Errors are deliberately NOT caught inside the cache boundary: unstable_cache
 // stores nothing when the function throws, so a transient rate-limit is retried
@@ -34,23 +50,30 @@ const CACHE_TTL_SECONDS = 3600; // matches `export const revalidate` on both pag
 const loadNuclearImport = unstable_cache(
   async () => {
     const now = new Date();
-    const start = new Date(now.getTime() - WINDOW_HOURS * 60 * 60 * 1000);
-    const startStr = start.toISOString().slice(0, 19) + "+01:00";
-    const endStr = now.toISOString().slice(0, 19) + "+01:00";
-    const result = await computeNuclearImport(startStr, endStr, WINDOW_HOURS);
-    return { result, asOfIso: now.toISOString() };
+    // Extra calendar coverage supports seven complete Berlin days, including DST.
+    // Retain raw intervals for energy integration; the FAQ keeps its rolling window.
+    const chartStart = new Date(now.getTime() - 216 * 60 * 60 * 1000);
+    const chartResult = process.env.NODE_ENV === "development"
+      ? await loadLiveImport(now, chartStart)
+      : await computeNuclearImport(chartStart.toISOString(), now.toISOString(), 216, { preserveResolution: true });
+    const rollingStart = now.getTime() - WINDOW_HOURS * 60 * 60 * 1000;
+    const data = chartResult.data.filter(p => Date.parse(p.ts) >= rollingStart && Date.parse(p.ts) < now.getTime());
+    if (!data.length) throw new Error("No observations in the rolling import window");
+    const avg = data.reduce((sum, p) => sum + p.nuclear_gw, 0) / data.length;
+    const result = { ...chartResult, data, avg_gw: Math.round(avg * 100) / 100, avg_share_pct: Math.round(avg / 45 * 1000) / 10 };
+    return { result, chartResult, asOfIso: now.toISOString() };
   },
-  ["atomstrom-import-figure-v1"],
+  ["atomstrom-import-figure-v3-live-preview"],
   { revalidate: CACHE_TTL_SECONDS }
 );
 
 export async function getNuclearImport() {
   try {
-    const { result, asOfIso } = await loadNuclearImport();
-    return { result, asOf: new Date(asOfIso) };
+    const { result, chartResult, asOfIso } = await loadNuclearImport();
+    return { result, chartResult, asOf: new Date(asOfIso) };
   } catch {
     // Same shape as before: callers render the "no figure available" branch.
-    return { result: null, asOf: new Date() };
+    return { result: null, chartResult: null, asOf: new Date() };
   }
 }
 

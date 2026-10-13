@@ -14,6 +14,17 @@ describe("Shared municipality monitor composition", () => {
     expect(html).not.toContain("Anlagenbestand");
     expect(html).toContain("Strom und Wert");
     expect(html).toContain("Missing weather");
-    expect(html.match(/sc-widget-grid/g)).toHaveLength(1);
+    expect(html.match(/data-responsive-composition/g)).toHaveLength(1);
   });
+  it("supports light topic sections without inventing regional headings", () => {
+    const html = renderToStaticMarkup(<EnergyMonitor scheme="light" topics={[{id:"imports", title:"Atomstrom im Überblick", layout:"pair", description:<p>Seven days and year to date</p>, widgets:<><div>Import value</div><div>Share chart</div></>}]} />);
+    expect(html).toContain('data-story-scheme="light"');
+    expect(html).toContain('aria-labelledby="imports-title"');
+    expect(html).toContain('data-layout="pair"');
+    expect(html).toContain('Seven days and year to date');
+    expect(html.indexOf('Import value')).toBeLessThan(html.indexOf('Share chart'));
+    expect(html).not.toContain('Anlagenbestand');
+    expect(html).not.toContain('Strom und Wert');
+  });
+
 });

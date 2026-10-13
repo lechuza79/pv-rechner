@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Modal from "./Modal";
+import SelectField from "./SelectField";
+import {ControlPanel,ControlField} from "./ControlPanel";
 import { v, space, pad } from "../lib/theme";
 import { embedCode, type EmbedAttribution } from "../lib/embed-code";
 
@@ -43,7 +45,9 @@ export default function EinbettenDialog({
   siteUrl: string;
 }) {
   const [kopiert, setKopiert] = useState(false);
-  const code = embedCode({ src, params, width, height, titel, attribution, siteUrl });
+  const [resize,setResize]=useState<'auto'|'fixed'>('auto');
+  const [fixedHeight,setFixedHeight]=useState(height);
+  const code = embedCode({ src, params, width, height:resize==='fixed'?fixedHeight:height, resize, titel, attribution, siteUrl });
 
   const kopieren = async () => {
     try {
@@ -60,7 +64,7 @@ export default function EinbettenDialog({
     <Modal open={open} onClose={onClose} title={titel} maxWidth={620}>
       <p style={S.text}>
         Kopieren Sie diese Zeilen in Ihr Redaktionssystem. Die Zahlen
-        aktualisieren sich danach von selbst, sobald das Marktstammdatenregister
+        aktualisieren sich danach von selbst, sobald die jeweilige Quelle
         neue Daten veröffentlicht.
       </p>
       <p style={S.text}>
@@ -69,6 +73,10 @@ export default function EinbettenDialog({
         er ist Teil der Nutzungsbedingungen.
       </p>
 
+      <ControlPanel><ControlField label="Höhe der Einbettung"><SelectField ariaLabel="Höhe der Einbettung" value={resize} onChange={event=>{setResize(event.target.value as 'auto'|'fixed');setKopiert(false)}}><option value="auto">Automatisch an den Inhalt anpassen</option><option value="fixed">Feste Höhe – nur iframe</option></SelectField></ControlField>
+        {resize==='fixed'&&<ControlField label="Höhe in Pixeln"><input aria-label="Höhe in Pixeln" type="number" min={200} max={10000} value={fixedHeight} onChange={event=>{const value=Number(event.target.value);if(Number.isFinite(value))setFixedHeight(Math.max(200,Math.min(10000,value)));setKopiert(false)}}/></ControlField>}
+      </ControlPanel>
+      <p style={S.text}>{resize==='auto'?'Die Höhe passt sich auch bei schmalen Spalten und längeren Inhalten an. Dafür muss Ihr Redaktionssystem das mitgelieferte Skript zulassen.':'Ohne Skript bleibt die Höhe fest. Prüfen Sie die Einbettung auch auf dem Smartphone; längere Inhalte können einen Scrollbalken benötigen.'}</p>
       {/* Ein Textfeld statt eines Kastens: markieren und mit der Tastatur
           kopieren funktioniert dann auch, wo die Zwischenablage gesperrt ist —
           in einer Verwaltung ist das der Normalfall, nicht die Ausnahme. */}

@@ -6,11 +6,14 @@
 // page's charts: `import` sits under the nuclear-share donut, `strommix` under the
 // full mix widget, `zubau` under the build-out chart, `weitere` at the page end.
 
+import type { FaqEntry, FaqLink } from "../../../lib/faq";
+import { GLOSSARY } from "../../../lib/glossary";
+
 export interface FaqItem {
   /** Question — rendered as the accordion summary. */
   q: string;
-  /** Jargon-free one-to-two-sentence answer, shown bold. */
-  short: string;
+  /** Jargon-free one-to-two-sentence answer. Omitted for pure methodology items. */
+  short?: string;
   /** Erläuterung with numbers, sources, nuance. Glossary terms linked at render. */
   long: string;
 }
@@ -111,3 +114,52 @@ export const weitereFaqs: FaqItem[] = [
     long: `Der Atomausstieg war eine politische Entscheidung, bei der Sicherheitsbedenken, Kosten und gesellschaftliche Stimmung eine Rolle spielten, unter anderem nach der Reaktorkatastrophe in Fukushima 2011. Einzelne Argumente dafür lassen sich sachlich prüfen, etwa ob die Sicherheitsbedenken berechtigt waren oder wie teuer die Entscheidung war. Ob man die gesamte Entscheidung als "ideologisch" oder "faktenbasiert" bezeichnet, ist aber am Ende eine Wertung, keine Tatsache.`,
   },
 ];
+
+// Only these energy terms get linked to the glossary inside the Erläuterung.
+// Scoped tight on purpose: linking PV base terms (kWh, Eigenverbrauch, …) would
+// add noise in this atom/energy fact-check context. First occurrence only.
+const LINK_SLUGS = [
+  "arenh",
+  "blackout",
+  "dunkelflaute",
+  "grenzkosten",
+  "grundlastfaehig",
+  "kapazitaetsmechanismus",
+  "merit-order",
+  "redispatch",
+  "residuallast",
+  "saidi",
+];
+
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// term + aliases → slug, longest phrase first so specific matches win.
+const PHRASES = LINK_SLUGS.flatMap((slug) => {
+  const entry = GLOSSARY[slug];
+  return entry ? [entry.term, ...(entry.aliases ?? [])].map((phrase) => ({ phrase, slug })) : [];
+}).sort((a, b) => b.phrase.length - a.phrase.length);
+
+/** Glossary links for the first occurrence of each term, with the exact casing
+ *  found in the text — the shared FAQ links exact phrases only. */
+function glossaryLinks(text: string): FaqLink[] {
+  const links: FaqLink[] = [];
+  const seen = new Set<string>();
+  for (const { phrase, slug } of PHRASES) {
+    if (seen.has(slug)) continue;
+    const m = new RegExp(`\\b${escapeRe(phrase)}\\b`, "i").exec(text);
+    if (!m || links.some((l) => l.phrase.includes(m[0]) || m[0].includes(l.phrase))) continue;
+    seen.add(slug);
+    links.push({ phrase: m[0], href: `/glossar#${slug}` });
+  }
+  return links;
+}
+
+/** Shared FAQ entry: short answer and Erläuterung as two paragraphs, one text
+ *  for the visible answer and the FAQPage JSON-LD alike. */
+export function toFaqEntry(item: FaqItem): FaqEntry {
+  return {
+    q: item.q,
+    a: item.short ? `${item.short}\n\n${item.long}` : item.long,
+    links: glossaryLinks(item.long),
+  };
+}

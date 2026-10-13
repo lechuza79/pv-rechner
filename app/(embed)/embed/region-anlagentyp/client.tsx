@@ -1,4 +1,6 @@
 "use client";
+import type {ComponentProps} from "react";
+import WidgetPresentation from "../../../../components/dashboard/WidgetPresentation";
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -13,7 +15,7 @@ export type RegionAnlagentypEmbedProps = {
 };
 
 /** Themebare Hülle für das Bundesland-Anlagentyp-Widget im Embed-Kontext. */
-export default function RegionAnlagentypEmbed(props: RegionAnlagentypEmbedProps) {
+function RegionAnlagentypEmbedContent(props: RegionAnlagentypEmbedProps) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -39,3 +41,5 @@ export default function RegionAnlagentypEmbed(props: RegionAnlagentypEmbedProps)
     />
   );
 }
+
+export default function RegionAnlagentypEmbed(props:ComponentProps<typeof RegionAnlagentypEmbedContent>){return <WidgetPresentation widgetId="region-anlagentyp"><RegionAnlagentypEmbedContent {...props}/></WidgetPresentation>;}

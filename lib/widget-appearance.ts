@@ -1,12 +1,13 @@
 import type {WidgetBrand, WidgetHeaderMode, PartnerWidgetHeight} from './widget-brand';
+import {WIDGET_GRID_SIZES,gridExtent,type WidgetGridSize,type CompositionItem} from './widget-composition';
 import {allWidgets} from './widget-registry';
 /** Shared presentation options; data and permissions remain separate. */
 export type WidgetTheme = 'light' | 'dark' | 'hero';
 export type WidgetSharing = 'on' | 'off' | 'secondary' | 'primary';
-export type WidgetAppearance = {partner?: {brand: WidgetBrand; header: WidgetHeaderMode; widgetHeight?: PartnerWidgetHeight}; theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group'; autoplay?: boolean};
+export type WidgetAppearance = {partner?: {brand: WidgetBrand; header: WidgetHeaderMode; widgetHeight?: PartnerWidgetHeight}; theme?: WidgetTheme; background?: boolean; sharing?: WidgetSharing; layout?: 'group' | 'allocated'; autoplay?: boolean};
 export function parseWidgetAppearance(query: {theme?: string; background?: string; sharing?: string; layout?: string; autoplay?: string}): WidgetAppearance {
   return {theme: ['light','dark','hero'].includes(query.theme ?? '') ? query.theme as WidgetTheme : undefined,
-    ...(query.layout === 'group' ? {layout: 'group' as const} : {}),
+    ...(query.layout === 'group' || query.layout === 'allocated' ? {layout: query.layout} : {}),
     ...(query.autoplay==='on'||query.autoplay==='off'?{autoplay:query.autoplay==='on'}:{}),
     sharing: ['on','off','secondary','primary'].includes(query.sharing ?? '') ? query.sharing as WidgetSharing : undefined,
     background: query.background === 'off' ? false : query.background === 'on' ? true : undefined};
@@ -37,4 +38,84 @@ export function widgetPreviewSource(src: string): string {
   for(const key of ['theme','background','sharing','layout','autoplay'])params.delete(key);
   const remaining=params.toString();
   return path+(remaining?'?'+remaining:'');
+}
+
+export function widgetPresentationContract(id:string,variant:'full'|'compact'|'hero'='full') {
+ const presentations=widgetConfiguration(id)?.presentations;
+ return presentations?.[variant];
+}
+
+/** The host chooses arrangement, never repeats a chart's geometry contract. */
+export function widgetCompositionItem(widgetId:string, options:{id?:string;presentation?:'full'|'compact'|'hero';grow?:number;preferredHeight?:{fraction:number;max:number}}={}):CompositionItem {
+ const contract=widgetPresentationContract(widgetId,options.presentation??'full');
+ if(!contract)throw new Error(`Missing presentation contract for ${widgetId}`);
+ return {id:options.id??widgetId,kind:'chart',grow:options.grow,minWidth:contract.minWidth,
+  minHeight:contract.minAllocatedHeight??0,heightBreakpoints:contract.allocatedHeightBreakpoints,
+  sizing:contract.supportsAllocation?'allocated':'content',preferredHeight:options.preferredHeight};
+}
+
+/** One eligibility rule for gallery, dashboard and linked hero hosts. */
+export function supportsWidgetPresentation(id:string,query:URLSearchParams,presentation:'full'|'compact'|'hero'):boolean {
+ const contract=widgetPresentationContract(id,presentation);
+ return !!contract&&(!contract.when||contract.when.values.includes(query.get(contract.when.key)??''));
+}
+
+/** Match only registered representations; an absent match preserves the full widget. */
+export function widgetVariantFromQuery(id:string, query:URLSearchParams):'full'|'compact'|'hero' {
+ for(const variant of ['compact','hero'] as const){
+  const contract=widgetPresentationContract(id,variant);
+  if(!supportsWidgetPresentation(id,query,variant))continue;
+  const params=contract?.params;
+  if(params&&Object.keys(params).length&&Object.entries(params).every(([key,value])=>query.get(key)===value))return variant;
+ }
+ return 'full';
+}
+
+/** Switch presentation without replacing the selected place, period or story snapshot. */
+export function widgetPresentationSource(id:string,src:string,presentation:'full'|'compact'|'hero'):string {
+ const url=new URL(src,'https://solar-check.io');
+ const previous=widgetVariantFromQuery(id,url.searchParams);
+ if(previous===presentation)return url.pathname+url.search;
+ const target=widgetPresentationContract(id,presentation);
+ if(!target||!supportsWidgetPresentation(id,url.searchParams,presentation))throw new Error('Unsupported widget presentation');
+ for(const key of Object.keys(widgetPresentationContract(id,previous)?.params??{}))url.searchParams.delete(key);
+ for(const [key,value] of Object.entries(target.params))url.searchParams.set(key,value);
+ return url.pathname+url.search;
+}
+
+/** Onsite previews always use the onsite source policy, regardless of their host. */
+export function onsiteWidgetPreviewSource(src:string,appearance?:WidgetAppearance):string {
+ const url=new URL(src,'https://preview.local');
+ url.searchParams.set('onsite','1');
+ if(appearance?.theme)url.searchParams.set('theme',appearance.theme);
+ if(appearance?.sharing)url.searchParams.set('sharing',appearance.sharing);
+ if(appearance?.layout)url.searchParams.set('layout',appearance.layout);
+ if(appearance?.background!==undefined)url.searchParams.set('background',appearance.background?'on':'off');
+ if(appearance?.autoplay!==undefined)url.searchParams.set('autoplay',appearance.autoplay?'on':'off');
+ return url.pathname+url.search;
+}
+
+/** Only expose slot/renderer combinations that satisfy the declared height contract. */
+export function widgetGridOptions(id:string,compactAvailable=true) {
+ const variants:readonly ('full'|'compact')[]=compactAvailable?['full','compact']:['full'];
+ return variants.flatMap(presentation=>{
+  const contract=widgetPresentationContract(id,presentation);
+  if(!contract?.supportsAllocation||!contract.minAllocatedHeight)return [];
+  return (contract.gridSizes??[]).filter(size=>gridExtent(WIDGET_GRID_SIZES[size].rows)>=contract.minAllocatedHeight!).map(size=>({size,presentation,contract}));
+ });
+}
+export function selectWidgetGridOption(id:string,requested:WidgetGridSize,compactAvailable=true){
+ const options=widgetGridOptions(id,compactAvailable);
+ return options.find(option=>option.size===requested)??options.find(option=>option.presentation==='full')??options[0];
+}
+
+/** Compare renderer/data selection independently of presentation-only query options. */
+export function widgetDataSourceKey(id:string,src:string):string {
+ const url=new URL(widgetPreviewSource(src),'https://solar-check.io');
+ url.searchParams.delete('onsite');
+ for(const setting of widgetConfiguration(id)?.dataSettings??[]){
+  if(!url.searchParams.has(setting.key))url.searchParams.set(setting.key,setting.defaultValue);
+ }
+ url.searchParams.sort();
+ return url.pathname+url.search;
 }

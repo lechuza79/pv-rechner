@@ -1,3 +1,5 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
+import {parseWidgetAppearance} from '../../../../lib/widget-appearance';
 import type { Metadata } from "next";
 import StrommixWidget from "./client";
 
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function StrommixEmbedPage() {
-  return <StrommixWidget />;
+export default async function StrommixEmbedPage({searchParams}:{searchParams:Promise<Record<string,string>>}) {
+  const appearance = parseWidgetAppearance(await searchParams);
+  return <WidgetPresentation widgetId="strommix" appearance={{...appearance,theme:appearance.theme ?? 'light'}}><StrommixWidget /></WidgetPresentation>;
 }

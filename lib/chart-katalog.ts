@@ -29,17 +29,40 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
-  {datei:"charts/MetricShareCard",art:"baustein",wofuer:"Selected-place annotation showing the map metric and its share of the surrounding region."},
+  { datei: "charts/BarRaceHeading", art: "baustein", wofuer: "Gemeinsame Jahresanzeige mit Abspielsteuerung für animierte Ranglisten." },
+  { datei: "charts/ElectricityTradeRadial", art: "baustein", wofuer: "Tägliche Stromhandelssalden als Radial oder Balken mit gemeinsamer Mengenbewertung." },
+  { datei: "charts/MetricShareCard", art: "baustein", wofuer: "Kennzahlkachel für einen Anteil mit Bild, Einheit und Auswahlzustand." },
+  { datei: "charts/RadialChartLayout", art: "baustein", wofuer: "Gemeinsame Anordnung von radialem Plot, Zeitraum und Abspielsteuerung." },
+  { datei: "charts/SparklineMetric", art: "baustein", wofuer: "Kompakte Tagesbalken mit hervorgehobener Kennzahl für Hero-Vorschauen." },
+
+  { datei: "energy/NuclearYearWidget", art: "widget", wofuer: "Calendar-year import months, origin countries and generation totals using shared category bars and export frame." },
   {datei:"charts/WeatherMicroTile",art:"widget",wofuer:"Compact weather tile with modelled power, shared timestamp and optional wind day profile."},
   {datei:"charts/WindMicroCompass",art:"baustein",wofuer:"Wind flow particles scaled to speed, respecting the meteorological origin direction."},
   {datei:"landkreis/RegionMapWidget",art:"widget",wofuer:"Shared regional 3D map in a responsive widget frame for gallery, municipality and partner embeds."},
+  {datei:"social/EditorialStoryVisual",art:"baustein",wofuer:"Preserved editorial draft forms dispatched by the shared municipal visual, without changing publication eligibility."},
+  {datei:"energy/EeAmpelWidget",art:"widget",wofuer:"Existing renewable traffic light with the shared generation data, theme, sources and actions."},
+  {datei:"energy/MastrMetricWidget",art:"widget",wofuer:"Existing registry KPI tile with shared cache, presentation and sharing for pages and embeds."},
+  {datei:"energy/FundingCheckWidget",art:"widget",wofuer:"Existing funding questionnaire using the shared calculation engine, sources and widget actions."},
+  {datei:"energy/FeedInTimelineEmbed",art:"widget",wofuer:"Theme and settings adapter for the shared historical feed-in timeline, using retrieved reference data."},
+  {datei:"charts/FeedInTimelineWidget",art:"widget",wofuer:"Historical feed-in tariffs and milestones shared by the article, dashboard and embedding route."},
+  {datei:"energy/CountryElectricityMixRaceWidget",art:"widget",wofuer:"Full 100% generation mix for a fixed country cohort; uses the municipal horizontal racing engine, shared heading tokens and export/menu frame."},
+  {datei:"energy/WorldCapacityRaceWidget",art:"widget",wofuer:"Worldwide annual net capacity additions in GW using the shared RaceChart and milestone timing; retains static growth and generation variants."},
+  {datei:"charts/WeatherMicroGrid",art:"widget",wofuer:"Composition of the shared solar and wind micro tiles for previews and municipal consumers."},
+  {datei:"energy/ElectricityTradeWidget",art:"widget",wofuer:"SMARD-Handelsmengen und zeitgleicher Day-Ahead-Börsenwert mit gemeinsamer Import-/Export-Radialskala."},
   { datei: "charts/ChartFlag", art: "baustein", wofuer: "Shared value flag positioned above or below a chart segment." },
   { datei: "charts/AnnualGrowthWidget", art: "widget", wofuer: "Shared annual growth chart with period selection and export actions for municipality and regional monitors." },
   { datei: "charts/CurrentPowerWidget", art: "baustein", wofuer: "Shared weather adapter and current solar power dial for municipality, regional monitor and compact header." },
   { datei: "charts/CategoryBarChart", art: "baustein", wofuer: "Vertical or horizontal category bars with highlighted comparisons and accessible values." },
+  { datei: "charts/RadialChartLayout", art: "baustein", wofuer: "Round chart layout: period stays above; grouped playback moves below only in narrow containers." },
+  { datei: "energy/NuclearDailyWidget", art: "baustein", wofuer: "Calculated nuclear import: Berlin daily power means or seven completed calendar days of energy; total only with full temporal coverage, teaser and full variants." },
   { datei: "charts/ShareDonut", art: "baustein", wofuer: "Share donut with center total and category detail cards." },
   { datei: "charts/CompositionChart", art: "baustein", wofuer: "Anlagenraster mit Leistungsanteil (Vorlage anlagenraster): eine Grafik für Monitor, Geschichte, Redaktion und Bild, zwei ausdrückliche Layouts (monitor, story)." },
   { datei: "charts/EnergyYearRadial", art: "baustein", wofuer: "Jahresprofil Solar/Wind (Vorlage energy-year): ein Strahl je Tag; Monitor und Geschichte legen ihre Bedienung darum, zwei ausdrückliche Layouts (monitor, story)." },
+  { datei: "charts/BarRaceHeading", art: "baustein", wofuer: "Gemeinsame Überschrift und Zusatz eines animierten Balkenvergleichs." },
+  { datei: "charts/ChartExportMetadata", art: "baustein", wofuer: "Einheit, Bezugsgebiet, Zeitraum und Datenstand im gemeinsamen Bildexport." },
+  { datei: "charts/ChartViewport", art: "baustein", wofuer: "Misst die vom Widget-Rahmen zugewiesene Zeichenfläche für flexible Diagramme." },
+  { datei: "charts/MetricShareCard", art: "baustein", wofuer: "Kennzahl mit Anteilsring als gemeinsame Karte auf Diagrammen und Karten." },
+  { datei: "dashboard/MunicipalWidgetVisual", art: "baustein", wofuer: "Gemeinsamer Widget-Inhalt für Dashboard, Story und reduzierte Vorschau. Daten bleiben gleich; Detailgrad, Bedienung und Animation sind unabhängig." },
   { datei: "charts/MonthlySolarRadial", art: "baustein", wofuer: "Solar-Monatsrückblick (Vorlage radial): eine 24-Stunden-Linie je Tag; Monitor und Geschichte behalten Zustand und Bedienung, zwei ausdrückliche Layouts (monitor, story)." },
   { datei: "charts/CompositionArc", art: "baustein", wofuer: "Anteilsbogen der Zusammensetzungs-Grafik: flacher Anfang, rundes Ende; Monitor und Geschichten zeichnen ihn gleich." },
   // ─── Rohformen ────────────────────────────────────────────────────────────
@@ -56,6 +79,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },
   { datei: "charts/AnlagenbestandWidget", art: "widget", wofuer: "Deutscher Solarbestand nach Anlagentyp: Anteil an der Stückzahl gegen Anteil an der Leistung." },
   { datei: "charts/ZubauTimelineChart", art: "baustein", wofuer: "Der Chart-Teil der Zubau-Story: Balken je Jahr plus zwei Vergütungslinien." },
+  { datei: "energy/WorldElectricityRaceWidget", art: "widget", wofuer: "Weltweite jährliche Stromerzeugung aus Wind + Solar gegenüber Kernenergie. Ember-Jahreswerte, gemeinsamer RaceChart mit Meilensteinen; statischer Zubau-Vergleich bleibt eigenständig." },
   { datei: "charts/RaceChart", art: "baustein", wofuer: "Race-Chart: zwei Läufer über einen langen Zeitraum, Tag für Tag selbstzeichnend — mitlaufende Achsen (Kamera auf dem vorn startenden Läufer), anziehendes Tempo, Ereignis-Zeitleiste mit Erklärung, Bild und Video. Ein Rennen reicht nur seine zwei Reihen, Ereignisse und Texte herein." },
   { datei: "charts/KostenrennenMini", art: "widget", wofuer: "Kurzfassung des Stromkosten-Rennens für redaktionelle Seiten: nur das Chart, verlinkt auf den Ratgeber." },
   { datei: "charts/KostenrennenWidget", art: "widget", wofuer: "Stromkosten-Rennen: aufgelaufene Stromkosten mit und ohne Solaranlage, Tag für Tag mit echtem Wetter, animiert bis zur bezahlten Anschaffung." },
@@ -75,15 +99,4 @@ export const CHART_KATALOG: KatalogEintrag[] = [
 /** Einbett-Routen, deren Widget noch IN der Route liegt statt in components/.
  *  Die Liste ist eine Schuldenliste, keine Erlaubnis — sie darf nur kürzer
  *  werden. Wer eine dieser Routen ohnehin anfasst, zieht sie mit um. */
-export const NOCH_IN_DER_ROUTE = [
-  // Liegt in app/(site)/einspeiseverguetung-tabelle/ statt in components/ —
-  // derselbe Fehlertyp wie beim Erzeugungs-Widget, nur in einer Seiten- statt
-  // einer Einbett-Route. Vom Katalog-Test gefunden, nicht von Hand.
-  "einspeiseverguetung-verlauf",
-  "foerder-check",
-  "strommix",
-  "zubau-erneuerbare-atom",
-  "ee-ampel",
-  "strommix-anteil",
-  "kennzahl",
-];
+export const NOCH_IN_DER_ROUTE: string[] = [];

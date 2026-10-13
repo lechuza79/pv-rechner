@@ -168,7 +168,8 @@ export default function SimulationPanel({
     context: {
       title: `Tagesverlauf · ${selectedKwp} kWp`,
       kind: "tool",
-      subtitle: plz ? `PLZ ${plz}` : undefined,
+      scope: plz ? `PLZ ${plz}` : undefined,
+      unit: "kW",
       stats: hourlyPoints.length > 0 ? [
         { label: "Anlagengröße", value: `${selectedKwp}`, unit: "kWp" },
         { label: "Tagesertrag", value: `~${dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })}`, unit: "kWh" },

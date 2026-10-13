@@ -329,6 +329,44 @@
 .sceneLocationPin button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.sceneLocationMarker{transition:none}}
 
+/* Reserve the actual control width, not a guessed 250px beside long titles.
+   Keep the canvas in the same grid row so the existing scene framing is retained. */
+.heroBand .heroHeading h1{font-size:var(--sc-type-hero-size,clamp(34px,3.8vw,48px));overflow-wrap:anywhere}
+@media(min-width:601px){
+  .heroStage{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:32px}
+  .heroStage .map{display:contents}
+  .heroStage .heroHeading{position:relative;grid-area:1/1;align-self:start;min-width:0;max-width:none}
+  .heroStage .mapTools{position:relative;grid-area:1/2;align-self:start;top:auto;right:auto;left:auto;margin:0}
+  .heroStage .mapCanvas{grid-area:1/1/2/3;min-width:0}
+}
+@media(max-width:600px){.heroBand .heroHeading h1{font-size:32px}}
+
+/* Standalone maps size against their container, never the page viewport. */
+.map[data-presentation=widget]{container-type:inline-size}
+.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;padding-inline:var(--widget-padding);justify-content:flex-start;max-width:100%}
+.map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
+.map[data-presentation=widget] .sceneLayer{inset:0}
+.mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}
+.mapWidget .map{padding-top:0}
+.mapWidget .sceneHost::before{background:linear-gradient(0deg,var(--atlas-card),transparent 12%,transparent 92%,var(--atlas-card))}
+.mapWidgetSource{padding:16px var(--widget-padding);font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.mapWidgetSource p{margin:0 0 8px}
+
+.mapWidget :global(.sc-widget-head){padding-bottom:16px}
+.mapSelection{position:absolute;top:8px;left:var(--widget-padding);z-index:4;max-width:calc(100% - var(--widget-padding));pointer-events:none}
+
+.sceneLayer button.sceneLocation{position:absolute;transform:translate(-50%,calc(-100% - 16px));padding:6px 9px;border:0!important;box-shadow:none!important;border-radius:5px;background:var(--atlas-card);color:var(--atlas-text);font:400 12px/1.4 DMSans,var(--font-dm-sans,'DM Sans'),sans-serif!important;white-space:nowrap;cursor:pointer;pointer-events:auto}
+.sceneLocation::after{content:"";position:absolute;left:50%;top:100%;height:16px;border-left:1px solid currentColor}
+.sceneLocation{left:0;top:0}
+
+.sceneLocationMarker{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 16px));z-index:2;pointer-events:auto;font:400 12px/1.4 DMSans,sans-serif;transition:width .3s ease}
+.sceneLocationCard{width:250px;max-width:calc(100% - 24px);z-index:3}
+.sceneLocationPin{width:40px;height:44px}
+:is(.sceneLayer,.sceneLocationOverlay) .sceneLocationPin button{width:40px;height:44px;padding:7px!important;min-height:0;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;color:var(--color-text-primary)!important}
+.sceneLocationPin svg{width:26px;height:30px;display:block}
+.sceneLocationPin button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.sceneLocationMarker{transition:none}}
+
 /* A billboard has a fixed world size and a foot at its exact ground coordinate. */
 .sceneLocationCard{transform-origin:50% 100%;transform:translate(-50%,-100%) scale(var(--location-scale,1)) translateY(-18px)}
 .sceneLocationCard[data-scene-sign="true"]{transform-origin:0 0}
@@ -346,16 +384,4 @@
 .sceneLocationMarker[data-scene-pin="true"]{transform:translate(-50%,-100%)}
 .sceneLocationMarker[data-scene-pin="true"] svg{visibility:hidden}
 
-/* Standalone maps size against their container, never the page viewport. */
-.map[data-presentation=widget]{container-type:inline-size}
-.map[data-presentation=widget] .mapTools{position:static;margin:0 0 12px;padding-inline:var(--widget-padding);justify-content:flex-start;max-width:100%}
-.map[data-presentation=widget] .mapCanvas{width:100%;margin:0;height:clamp(300px,90cqi,560px)}
-.map[data-presentation=widget] .sceneLayer{inset:0}
-.mapWidget{--color-bg-page:var(--atlas-card);--color-bg-raised:var(--atlas-surface);--color-brand:var(--atlas-action);--color-brand-deep:var(--atlas-action);--color-accent-light:var(--atlas-secondary);--color-text-faint:var(--atlas-secondary);overflow:hidden}
-.mapWidget .map{padding-top:0}
-.mapWidget .sceneHost::before{background:linear-gradient(0deg,var(--atlas-card),transparent 12%,transparent 92%,var(--atlas-card))}
-.mapWidgetSource{padding:16px var(--widget-padding);font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
-.mapWidgetSource p{margin:0 0 8px}
-
-.mapWidget :global(.sc-widget-head){padding-bottom:16px}
-.mapSelection{position:absolute;top:8px;left:var(--widget-padding);z-index:4;max-width:calc(100% - var(--widget-padding));pointer-events:none}
+.mapWidget .sceneHost canvas{filter:drop-shadow(0 14px 18px rgb(0 0 0 / .35))}

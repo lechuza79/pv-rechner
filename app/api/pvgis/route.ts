@@ -1,3 +1,4 @@
+import {livePreviewResponse} from "../../../lib/preview-data";
 import { NextRequest, NextResponse } from "next/server";
 import { getPvgisYield } from "../../../lib/pvgis";
 import { rateLimit } from "../../../lib/rate-limit";
@@ -8,6 +9,8 @@ const CDN_CACHE_LONG = "public, s-maxage=2592000, stale-while-revalidate=2592000
 const CDN_CACHE_FALLBACK = "public, s-maxage=86400, stale-while-revalidate=604800"; // 1 day
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "pvgis");
   if (limited) return limited;
 
