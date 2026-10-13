@@ -78819,7 +78819,7 @@
   {
     "regionId": "01002000",
     "name": "Kiel",
-    "checkedAt": "2026-09-29T16:09:00Z",
+    "checkedAt": "2026-10-13T12:15:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -78831,7 +78831,7 @@
     "evidence": [
       {
         "url": "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php",
-        "finding": "29.09.2026: „Bitte beachten Sie: Die Förderung ist ausgesetzt! … die Förderung des Projekts „Solarstadt Kiel“ im Haushaltsjahr 2026 auszusetzen. Neue Förderanträge können nicht mehr eingereicht werden“."
+        "finding": "29.09.2026: „Bitte beachten Sie: Die Förderung ist ausgesetzt! … die Förderung des Projekts „Solarstadt Kiel“ im Haushaltsjahr 2026 auszusetzen. Neue Förderanträge können nicht mehr eingereicht werden“. 13.10.2026 erneut gelesen: „Bitte beachten Sie: Die Förderung ist ausgesetzt!“ und „Eine Antragstellung ist aktuell nicht möglich.“ — unverändert. Geänderte Suchseiten „Förderprogramm“ 2–4 erneut gelesen: einziger PV-Treffer ist die Landesleistung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ (Landesprogramm „Klimaschutz für Bürger*innen“, im Katalog)."
       },
       {
         "url": "https://www.kiel.de/de/politik_verwaltung/service/_leistung.php?id=290657788",
@@ -79124,7 +79124,7 @@
   {
     "regionId": "01051016",
     "name": "Burg (Dithm.)",
-    "checkedAt": "2026-09-30T06:14:00Z",
+    "checkedAt": "2026-10-13T12:15:00Z",
     "recheckAt": "2026-12-29T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -79133,7 +79133,8 @@
       "Gemeindeseite https://www.amt-burg-st-michaelisdonn.de/Unsere-Gemeinden/Burg-Dithm-/ am 30.09.2026 gelesen: keine Treffer zu Förderung, Zuschuss, Balkon, Photovoltaik oder Klima",
       "Startseite und vollständiges Menü des Amtes Burg-St. Michaelisdonn am 30.09.2026 gelesen: keine Klima-, Energie- oder Förderrubrik",
       "Websuche „Burg-St. Michaelisdonn Förderung Balkonkraftwerk/Photovoltaik/Klimaschutz Zuschuss Gemeinde“: nur der Zuständigkeitsfinder-Eintrag zum Landesprogramm",
-      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung"
+      "Websuche nach Averlak, Brickeln, Hochdonn, Quickborn, Burg (Dithm.) mit Zuschuss/Balkonkraftwerk/Photovoltaik: keine Gemeindeförderung",
+      "13.10.2026: geänderte Quelle (Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“) erneut gelesen: Adresse zeigt nur noch die allgemeine Leistungsliste „Was erledige ich wo?“, kein Programm von Gemeinde oder Amt"
     ],
     "evidence": [
       {
