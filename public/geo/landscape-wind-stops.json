@@ -3748,5 +3748,240 @@
       "latitude": 50.79558,
       "longitude": 8.13833
     }
+  },
+  "05362008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bergheim",
+      "latitude": 50.97997,
+      "longitude": 6.64014
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bergheim",
+      "latitude": 51.01127,
+      "longitude": 6.71149
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bergheim",
+      "latitude": 50.94139,
+      "longitude": 6.71788
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Bergheim",
+      "latitude": 50.95705,
+      "longitude": 6.58336
+    }
+  },
+  "05362016": {
+    "wind-1": {
+      "name": "Windanlagen bei Elsdorf",
+      "latitude": 50.97035,
+      "longitude": 6.51045
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Elsdorf",
+      "latitude": 50.95907,
+      "longitude": 6.55992
+    }
+  },
+  "05362020": {
+    "wind-1": {
+      "name": "Windanlagen bei Erftstadt",
+      "latitude": 50.78282,
+      "longitude": 6.70657
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Erftstadt",
+      "latitude": 50.74491,
+      "longitude": 6.7925
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Erftstadt",
+      "latitude": 50.818,
+      "longitude": 6.73873
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Erftstadt",
+      "latitude": 50.75872,
+      "longitude": 6.70006
+    }
+  },
+  "05362024": {
+    "wind-1": {
+      "name": "Windanlagen bei Frechen",
+      "latitude": 50.9031,
+      "longitude": 6.82808
+    }
+  },
+  "05362028": {
+    "wind-1": {
+      "name": "Windanlagen bei Hürth",
+      "latitude": 50.87423,
+      "longitude": 6.78468
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hürth",
+      "latitude": 50.84611,
+      "longitude": 6.83167
+    }
+  },
+  "05362032": {
+    "wind-1": {
+      "name": "Windanlagen bei Kerpen",
+      "latitude": 50.86378,
+      "longitude": 6.61149
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kerpen",
+      "latitude": 50.85237,
+      "longitude": 6.55573
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kerpen",
+      "latitude": 50.86352,
+      "longitude": 6.78159
+    }
+  },
+  "05362036": {
+    "wind-1": {
+      "name": "Windanlagen bei Pulheim",
+      "latitude": 51.01402,
+      "longitude": 6.71954
+    }
+  },
+  "05362040": {
+    "wind-1": {
+      "name": "Windanlagen bei Wesseling",
+      "latitude": 50.79661,
+      "longitude": 6.99587
+    }
+  },
+  "05370004": {
+    "wind-1": {
+      "name": "Windanlagen bei Erkelenz",
+      "latitude": 51.0429,
+      "longitude": 6.38448
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Erkelenz",
+      "latitude": 51.01649,
+      "longitude": 6.32189
+    }
+  },
+  "05370008": {
+    "wind-1": {
+      "name": "Windanlagen bei Gangelt",
+      "latitude": 51.0352,
+      "longitude": 6.01937
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gangelt",
+      "latitude": 50.99122,
+      "longitude": 6.06194
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Gangelt",
+      "latitude": 50.99851,
+      "longitude": 6.00462
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Gangelt",
+      "latitude": 51.03836,
+      "longitude": 5.98291
+    }
+  },
+  "05370012": {
+    "wind-1": {
+      "name": "Windanlagen bei Geilenkirchen",
+      "latitude": 50.97912,
+      "longitude": 6.21572
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Geilenkirchen",
+      "latitude": 51.00714,
+      "longitude": 6.12431
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Geilenkirchen",
+      "latitude": 50.98292,
+      "longitude": 6.13729
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Geilenkirchen",
+      "latitude": 50.96455,
+      "longitude": 6.14619
+    }
+  },
+  "05370016": {
+    "wind-1": {
+      "name": "Windanlagen bei Heinsberg",
+      "latitude": 51.01858,
+      "longitude": 6.15501
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Heinsberg",
+      "latitude": 51.01711,
+      "longitude": 6.10586
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Heinsberg",
+      "latitude": 51.02881,
+      "longitude": 6.04922
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Heinsberg",
+      "latitude": 51.00068,
+      "longitude": 6.09182
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Heinsberg",
+      "latitude": 51.03347,
+      "longitude": 6.09754
+    }
+  },
+  "05370020": {
+    "wind-1": {
+      "name": "Windanlagen bei Hückelhoven",
+      "latitude": 50.99097,
+      "longitude": 6.23661
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hückelhoven",
+      "latitude": 51.00857,
+      "longitude": 6.21864
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Hückelhoven",
+      "latitude": 51.06229,
+      "longitude": 6.25037
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hückelhoven",
+      "latitude": 51.01826,
+      "longitude": 6.284
+    }
+  },
+  "05370024": {
+    "wind-1": {
+      "name": "Windanlagen bei Selfkant",
+      "latitude": 51.04101,
+      "longitude": 5.97687
+    }
+  },
+  "05370032": {
+    "wind-1": {
+      "name": "Windanlagen bei Waldfeucht",
+      "latitude": 51.04801,
+      "longitude": 5.9799
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Waldfeucht",
+      "latitude": 51.06913,
+      "longitude": 6.04617
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Waldfeucht",
+      "latitude": 51.04395,
+      "longitude": 6.01707
+    }
   }
 }
