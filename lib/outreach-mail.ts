@@ -137,6 +137,7 @@ export const ROLLEN_WORTE = [
   "info",
   "rathaus",
   "poststelle",
+  "posteingang",
   "post",
   "gemeinde",
   "gemeindeverwaltung",
