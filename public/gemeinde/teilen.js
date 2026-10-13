@@ -54,6 +54,7 @@
     );
     if (!trigger) return;
     const pageShare = trigger.hasAttribute("data-page-share");
+    const publishingEntry = Boolean(trigger.closest("#atlas-publish"));
     let data;
     try {
       if (!pageShare)
@@ -85,10 +86,13 @@
     link.textContent = "Energie-Atlas " + G.name;
     link.insertAdjacentHTML("beforeend", solarLiveIcons.External);
     dialog.querySelector(".atlas-close").onclick = () => dialog.close();
-    async function copy(value, message) {
+    async function copy(value, message, fullMessage = false) {
       try {
         await navigator.clipboard.writeText(value);
         dialog.querySelector("[role=status]").textContent = message;
+        if (publishingEntry && fullMessage) {
+          window.dispatchEvent(new Event("municipal-message-copied"));
+        }
       } catch {
         dialog.querySelector("[role=status]").textContent =
           "Bitte den Text oder Link aus der Vorschau kopieren.";
@@ -100,8 +104,10 @@
       copy(
         headline + "\n\n" + text + "\n\n" + source,
         "Meldung mit Ortslink kopiert.",
+        true,
       );
     dialog.showModal();
+    if (publishingEntry) window.dispatchEvent(new Event("municipal-message-opened"));
   });
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();

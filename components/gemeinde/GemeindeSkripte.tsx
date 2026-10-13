@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { bindMunicipalShareAnalytics } from "../../lib/municipal-share-analytics";
 import GemeindeRankingWidget from "./GemeindeRankingWidget";
 import InfoTooltipBindings from "../InfoTooltipBindings";
 
@@ -32,6 +33,7 @@ const SKRIPTE = [
 let gestartet = false;
 
 export default function GemeindeSkripte({ daten, navigationOnly=false }: { daten: unknown; navigationOnly?:boolean }) {
+  useEffect(() => bindMunicipalShareAnalytics(window), []);
   useEffect(() => {
     if (gestartet) return;
     gestartet = true;

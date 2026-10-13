@@ -85,6 +85,9 @@ export const EVENTS = [
   // sich der Anmeldung zuordnen ließe. Welcher Ort es war, wird bewusst nicht
   // erfasst; das stünde sonst über den Seitenaufruf ohnehin schon zu viel dabei.
   "abo_anmeldung",
+  // Municipality publishing CTA: opening and successful full-message copy.
+  "gemeinde_meldung_geoeffnet",
+  "gemeinde_meldung_kopiert",
 ] as const;
 
 export type AnalyticsEvent = (typeof EVENTS)[number];
