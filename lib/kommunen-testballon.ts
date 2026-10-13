@@ -315,6 +315,22 @@ export const SCHUEBE: Record<string, Schub> = {
       "Rest von NRW vor den Herbstferien ab 17.10.2026: die offenen Orte der 17 bereits angeschriebenen Kreise, " +
       "alle an einem Tag.",
   },
+  /**
+   * Brandenburg and Saxony-Anhalt before their autumn holidays (19.10.2026):
+   * every open town of every district, scenes built ahead on 14.10.
+   */
+  "ost-2026-10": {
+    kampagne: "ost-2026-10",
+    bl: ["12", "15"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 250 },
+    briefarten: ["platzierung", "info"],
+    kreise: ["12051", "12052", "12053", "12054", "12061", "12062", "12065", "12066", "12067", "12068", "12070", "12072", "12073", "15001", "15002", "15003", "15082", "15084", "15086", "15087", "15088", "15091"],
+    abIso: "2026-10-15",
+    grund:
+      "Brandenburg und Sachsen-Anhalt vor den Herbstferien ab 19.10.2026: alle offenen Orte, ganze Kreise, " +
+      "Szenen am 14.10. vorab gebaut.",
+  },
   "mail-luecken-okt": {
     kampagne: "mail-luecken-okt",
     bl: ["05", "12", "15"],
