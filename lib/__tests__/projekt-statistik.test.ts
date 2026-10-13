@@ -21,6 +21,7 @@
 
 import { describe, it, expect } from "vitest";
 import {
+  codexNutzertext,
   tagVon,
   vereinigeBloecke,
   verteileZeit,
@@ -149,5 +150,34 @@ describe("Summe", () => {
     // Summieren doppelt heraus.
     const s = summiere([tag("a"), tag("b")]);
     expect(s).not.toHaveProperty("arbeitsstunden");
+  });
+});
+
+describe("codexNutzertext", () => {
+  const zeile = (text: string, extra: Record<string, unknown> = {}) => ({
+    type: "response_item",
+    timestamp: "2026-10-12T05:00:00Z",
+    payload: { type: "message", role: "user", id: "msg_1", content: [{ type: "input_text", text }], ...extra },
+  });
+
+  it("nimmt eine getippte Nachricht", () => {
+    expect(codexNutzertext(zeile("ok go"))).toEqual({ id: "msg_1", text: "ok go" });
+  });
+
+  it("verwirft, was Codex selbst einspielt", () => {
+    for (const t of [
+      "# AGENTS.md instructions for /Users/eule/projects/pv-rechner",
+      "<environment_context>cwd</environment_context>",
+      "The following is the Codex agent history added since …",
+      "This session is being continued from a previous conversation",
+      "# Response annotations: Each item contains …",
+      "   ",
+    ]) expect(codexNutzertext(zeile(t))).toBeNull();
+  });
+
+  it("verwirft Antworten und andere Zeilentypen", () => {
+    expect(codexNutzertext(zeile("hallo", { role: "assistant" }))).toBeNull();
+    expect(codexNutzertext({ type: "event_msg", payload: { type: "message", role: "user", content: [{ text: "x" }] } })).toBeNull();
+    expect(codexNutzertext(null)).toBeNull();
   });
 });

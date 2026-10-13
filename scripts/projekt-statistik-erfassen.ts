@@ -12,11 +12,18 @@
  *   npm run stats:erfassen -- --schreiben
  *   npm run stats:erfassen -- --schreiben --rueckrechnen
  *
+ *   npm run stats:erfassen -- --projekt life-is-a-binge --schreiben
+ *
+ * EIN ANDERES PROJEKT landet NICHT in der Datenbank — die Tabellen gehören zu
+ * Solar Check, und eine zweite Herkunft darin würde jede Bilanz verfälschen,
+ * die nicht daran denkt zu filtern. Es landet in einer Datei außerhalb des
+ * Repos (`ARCHIV`), in die jeder Lauf gemessene Tage einfügt und keinen löscht.
+ *
  * DIE RÜCKRECHNUNG IST EINE EIGENE ANSAGE. Sie erfindet Tage, für die es keine
  * Protokolle gibt, und darf deshalb nicht beiläufig mitlaufen.
  */
 
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
@@ -30,6 +37,7 @@ import {
   tagVon,
   type Block,
   type Arbeitstag,
+  codexNutzertext,
 } from "../lib/projekt-statistik";
 import { heuteInBerlin } from "../lib/zeit";
 import { zaehlstand } from "./lib/zaehlstand";
@@ -38,8 +46,19 @@ import { zaehlstand } from "./lib/zaehlstand";
 const SCHREIBEN = process.argv.includes("--schreiben");
 const RUECKRECHNEN = process.argv.includes("--rueckrechnen");
 
+const PROJEKT = (() => {
+  const i = process.argv.indexOf("--projekt");
+  return i >= 0 ? process.argv[i + 1] : "pv-rechner";
+})();
+if (!PROJEKT || !/^[a-z0-9-]+$/.test(PROJEKT)) throw new Error("--projekt braucht einen Ordnernamen unter ~/projects");
+const EIGENES = PROJEKT === "pv-rechner";
+// The repo whose history and files are counted. For Solar Check the current
+// checkout, for any other project its folder under ~/projects.
+const REPO = EIGENES ? process.cwd() : join(homedir(), "projects", PROJEKT);
+const ARCHIV = join(homedir(), "Documents", "projekt-statistik", `${PROJEKT}.json`);
+
 const PROTOKOLLE = join(homedir(), ".claude", "projects");
-const PRAEFIX = "-Users-eule-projects-pv-rechner";
+const PRAEFIX = `-Users-eule-projects-${PROJEKT}`;
 
 // Codex legt seine Sitzungen nach Datum ab und nennt das Arbeitsverzeichnis im
 // Kopf der Datei. Danach wird gefiltert, NICHT nach dem Vorkommen des
@@ -249,6 +268,20 @@ function codexDateien(): string[] {
 function leseCodex(): Roh {
   const tage = new Map<string, Statistiktag>();
   const bloecke: Block[] = [];
+  const gesehen = new Set<string>();
+  const hol = (tag: string): Statistiktag => {
+    let t = tage.get(tag);
+    if (!t) {
+      t = {
+        tag, werkzeug: "codex", herkunft: "gemessen", tokensGelesen: 0,
+        tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0, sitzungen: 0,
+        nachrichtenGetippt: 0, nachrichtenLang: 0, antworten: 0,
+        werkzeugschritte: 0, commits: 0,
+      };
+      tage.set(tag, t);
+    }
+    return t;
+  };
 
   for (const datei of codexDateien()) {
     let inhalt: string;
@@ -256,7 +289,7 @@ function leseCodex(): Roh {
 
     let cwd: string | null = null;
     let letzte: Record<string, number> | null = null;
-    let nachrichten = 0;
+    const getippt: { id: string; tag: string; lang: boolean }[] = [];
     let antworten = 0;
     const zeitpunkte: number[] = [];
     let ersterTag: string | null = null;
@@ -271,7 +304,8 @@ function leseCodex(): Roh {
         const u = p.info?.total_token_usage;
         if (u) letzte = u;
       }
-      if (p.type === "user_message") nachrichten++;
+      const n = codexNutzertext(o);
+      if (n && o.timestamp) getippt.push({ id: n.id, tag: tagVon(Date.parse(o.timestamp)), lang: n.text.length > GETIPPT_MAX });
       if (p.type === "agent_message") antworten++;
       const ts: string | undefined = o.timestamp;
       if (ts) {
@@ -280,23 +314,22 @@ function leseCodex(): Roh {
       }
     }
 
-    if (!cwd || !cwd.includes("pv-rechner")) continue;
+    if (!cwd || !cwd.includes(`/${PROJEKT}`)) continue;
 
     const tag = ersterTag;
     if (!tag) continue;
-    let t = tage.get(tag);
-    if (!t) {
-      t = {
-        tag, werkzeug: "codex", herkunft: "gemessen", tokensGelesen: 0,
-        tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0, sitzungen: 0,
-        nachrichtenGetippt: 0, nachrichtenLang: 0, antworten: 0,
-        werkzeugschritte: 0, commits: 0,
-      };
-      tage.set(tag, t);
-    }
+    const t = hol(tag);
     t.sitzungen++;
-    t.nachrichtenGetippt += nachrichten;
     t.antworten += antworten;
+    // A message belongs to the day it was typed, not to the session's first
+    // day. A forked or resumed session copies earlier messages with their
+    // ids, so each id is counted once across all files.
+    for (const g of getippt) {
+      if (gesehen.has(g.id)) continue;
+      gesehen.add(g.id);
+      if (g.lang) hol(g.tag).nachrichtenLang++;
+      else hol(g.tag).nachrichtenGetippt++;
+    }
     if (letzte) {
       // Der zwischengespeicherte Anteil wird herausgerechnet, damit die
       // Eingabe-Spalte dasselbe meint wie bei Claude: frisch verarbeitet.
@@ -321,7 +354,7 @@ function leseCodex(): Roh {
 }
 
 function git(...args: string[]): string {
-  return execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  return execFileSync("git", args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 }
 
 /** Commits je Kalendertag, über die gesamte Projektgeschichte. */
@@ -338,20 +371,26 @@ function zahl(...pathspec: string[]): number {
   const dateien = git("ls-files", ...pathspec).trim().split("\n").filter(Boolean);
   let n = 0;
   for (const f of dateien) {
-    try { n += readFileSync(f, "utf8").split("\n").length; } catch { /* weg seit dem Index */ }
+    try { n += readFileSync(join(REPO, f), "utf8").split("\n").length; } catch { /* weg seit dem Index */ }
   }
   return n;
 }
 
+// Where tests live. Solar Check keeps them in two folders; other projects are
+// counted by the usual file-name convention.
+const TESTPFADE = EIGENES
+  ? ["lib/__tests__/*", "e2e/*.spec.ts"]
+  : ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"];
+
 function bestandHeute(): Bestandstag {
   const dateien = git("ls-files").trim().split("\n").filter(Boolean).length;
-  const testdateien = git("ls-files", "lib/__tests__/*", "e2e/*.spec.ts").trim().split("\n").filter(Boolean).length;
+  const testdateien = git("ls-files", ...TESTPFADE).trim().split("\n").filter(Boolean).length;
   const alleTs = zahl("*.ts", "*.tsx");
-  const testzeilen = zahl("lib/__tests__/*", "e2e/*.spec.ts");
+  const testzeilen = zahl(...TESTPFADE);
   let testfaelle = 0;
-  for (const f of git("ls-files", "lib/__tests__/*", "e2e/*.spec.ts").trim().split("\n").filter(Boolean)) {
+  for (const f of git("ls-files", ...TESTPFADE).trim().split("\n").filter(Boolean)) {
     try {
-      const t = readFileSync(f, "utf8");
+      const t = readFileSync(join(REPO, f), "utf8");
       testfaelle += (t.match(/^\s*(it|test)\s*\(/gm) ?? []).length;
     } catch { /* weg seit dem Index */ }
   }
@@ -408,6 +447,28 @@ function zeile(t: Statistiktag) {
   };
 }
 
+/**
+ * Merge into the file archive of another project. Rows are keyed by tool and
+ * day; a measurement replaces whatever was there, an estimate never replaces a
+ * measurement, and nothing is ever removed — logs disappear after a while,
+ * the archive must not.
+ */
+function archiviere(tage: Statistiktag[], zeit: Arbeitstag[], bestand: Bestandstag): void {
+  type Archiv = { projekt: string; tage: Record<string, Statistiktag>; arbeitszeit: Record<string, Arbeitstag>; bestand: Record<string, Bestandstag> };
+  let a: Archiv = { projekt: PROJEKT, tage: {}, arbeitszeit: {}, bestand: {} };
+  if (existsSync(ARCHIV)) a = JSON.parse(readFileSync(ARCHIV, "utf8"));
+  for (const t of tage) {
+    const k = `${t.werkzeug}:${t.tag}`;
+    if (t.herkunft === "geschaetzt" && a.tage[k]?.herkunft === "gemessen") continue;
+    a.tage[k] = t;
+  }
+  for (const z of zeit) a.arbeitszeit[z.tag] = z;
+  a.bestand[bestand.tag] = bestand;
+  mkdirSync(join(ARCHIV, ".."), { recursive: true });
+  writeFileSync(ARCHIV, JSON.stringify(a, null, 1));
+  console.log(`\nAbgelegt in ${ARCHIV} (${Object.keys(a.tage).length} Tageszeilen).`);
+}
+
 async function main() {
   const heute = heuteInBerlin();
   const claude = leseProtokolle();
@@ -421,6 +482,8 @@ async function main() {
 
   const commits = commitsJeTag();
   for (const t of claude.tage.values()) t.commits = commits.get(t.tag) ?? 0;
+  // Codex days get no commit count: commits are attributed once, to Claude,
+  // so the daily rows of both tools can be added without counting a commit twice.
 
   // Der laufende Tag ist unvollständig und wird NICHT abgelegt — sonst steht in
   // der Reihe ein schwacher Tag, der bloß noch nicht zu Ende ist.
@@ -480,6 +543,11 @@ async function main() {
 
   if (!SCHREIBEN) {
     console.log("\nProbelauf — nichts geschrieben. Mit --schreiben ablegen.");
+    return;
+  }
+
+  if (!EIGENES) {
+    archiviere([...geschaetzt, ...gemessen, ...gemessenCodex], [...arbeitszeit.values()], bestand);
     return;
   }
 
