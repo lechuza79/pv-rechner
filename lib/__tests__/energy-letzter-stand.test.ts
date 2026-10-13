@@ -189,6 +189,20 @@ describe("nuclear-import route on an upstream outage", () => {
   });
 });
 
+it('shares the API durable week with server-rendered nuclear widgets during an outage', async () => {
+  const data = [{ts: '2026-10-12T09:00:00.000Z', nuclear_gw: 1.2}];
+  computeNuclearImport.mockResolvedValueOnce({data, avg_gw: 1.2, avg_share_pct: 2, source: 'x', license: 'CC BY 4.0'});
+  const route = await import('../../app/api/energy/nuclear-import/route');
+  const saved = await (await route.GET(req('/api/energy/nuclear-import?hours=168'))).json();
+  vi.resetModules();
+  computeNuclearImport.mockRejectedValue(new Error('HTTP 503'));
+  const {nuclearEnergyPreviewData} = await import('../nuclear-preview-server');
+  const result = await nuclearEnergyPreviewData(new Date('2026-10-13T12:00:00Z'));
+  expect(result?.data).toEqual(data);
+  expect(result?.stale).toBe(true);
+  expect(result?.fetchedAt).toBe(saved.fetchedAt);
+});
+
 describe("outage note", () => {
   it("names the source and the real time of the newest point, in German time", () => {
     const ts = letzterZeitpunkt([{ ts: "2026-10-05T09:30:00.000Z" }, { ts: "2026-10-05T09:45:00.000Z" }]);

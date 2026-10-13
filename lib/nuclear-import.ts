@@ -19,6 +19,8 @@ export interface NuclearDataPoint {
 }
 
 export interface NuclearImportResponse {
+  stale?: boolean;
+  fetchedAt?: string;
   data: NuclearDataPoint[];
   avg_gw: number;
   avg_share_pct: number;
@@ -28,7 +30,7 @@ export interface NuclearImportResponse {
 
 /** Thrown when upstream data is missing — callers decide whether to serve stale or fail. */
 export class NuclearImportDataError extends Error {
-  constructor(public reason: "no-cbpf" | "no-neighbour-mix") {
+  constructor(public reason: "no-cbpf" | "no-neighbour-mix" | "no-observations") {
     super(reason);
     this.name = "NuclearImportDataError";
   }

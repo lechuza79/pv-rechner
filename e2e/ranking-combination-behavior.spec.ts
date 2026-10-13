@@ -62,7 +62,13 @@ test('shared ranking retains mobile category navigation and the own table row',a
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:/Alle .* Orte in dieser Rangliste ansehen/}).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page.locator('tr[aria-current="location"]')).toContainText('Falkensee');
+  const ownRow=page.locator('tr[aria-current="location"]');
+  await expect(ownRow).toContainText('Falkensee');
+  const place=ownRow.locator('th[scope="row"]');
+  expect(await place.evaluate(node=>node.getBoundingClientRect().width)).toBeGreaterThanOrEqual(160);
+  const tableScroll=page.getByRole('dialog').getByRole('region');
+  expect(await tableScroll.evaluate(node=>node.scrollWidth>node.clientWidth)).toBe(true);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Schließen',exact:true}).click();
   await tiles.nth(1).press('ArrowLeft');
   await expect(tiles.first()).toHaveAttribute('aria-pressed','true');
