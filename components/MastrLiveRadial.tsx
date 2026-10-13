@@ -445,7 +445,7 @@ export function MastrLiveRadial({
     ? "var(--widget-muted, var(--color-text-secondary))"
     : v("--color-accent");
   const accentLatest = secondaryBars
-    ? "var(--widget-accent, var(--color-highlight))"
+    ? "var(--widget-accent, var(--color-accent))"
     : v("--color-highlight");
   // Muted text token instead of fixed black so the unit label stays legible on
   // a dark widget background (where it resolves to a light tone).

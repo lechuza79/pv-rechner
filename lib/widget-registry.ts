@@ -503,6 +503,18 @@ export const WIDGETS = {
     shareUrl: `${SITE}/solar-atlas`, shareText: "Solarleistung nach Anlagentyp – Solar Check",
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
+  regionalHourlyMix: {
+    id:'regional-hourly-mix',title:'Regionaler Strommix im Stundenvergleich',kind:'chart',
+    configuration:{themes:['dark'],background:false,sharing:true,data:'Modellierte Erzeugung in 13 Regionen',period:'Stündlich'},
+    shareUrl:`${SITE}/strommix-deutschland?variante=regional#bundeslaender`,shareText:'Regionaler Strommix im Stundenvergleich – Solar Check',
+    sources:[DATA_SOURCES.co2map,DATA_SOURCES.bkg],embeddable:false,
+  },
+  stateElectricityMap: {
+    id: "state-electricity-map", title: "Strommix der Bundesländer", kind: "chart",
+    configuration: {themes:["dark"],background:false,sharing:true,data:"Nettostromerzeugung je Bundesland",period:"Kalenderjahr oder seit Jahresbeginn"},
+    shareUrl: `${SITE}/strommix-deutschland#bundeslaender`, shareText:"Strommix der Bundesländer – Solar Check",
+    sources:[DATA_SOURCES.energyCharts,DATA_SOURCES.bkg],embeddable:false,
+  },
   regionalMap: {
     id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",
     configuration: {presentations:{full:widgetVariant('map',{label:'Vollständig',gridSizes:['medium','stage'],params:{},minWidth:320,preferredWidth:560,maxWidth:1200,height:'content',plot:'fixed-responsive',supportsAllocation:true,minAllocatedHeight:480,includes:['Title','Plot','Controls','Help and export'],omits:[]})},themes: ["light", "dark", "hero"], background: false, sharing: true, autoplay: true, data: "Gemeinden im Landkreis; Kennzahl im Chart wählbar", period: "Aktueller Registerstand"},
@@ -668,8 +680,8 @@ export function widgetForPlace(widget: WidgetDef, ort: string, liveUrl?: string)
   const fill = (s: string) => s.split("{ort}").join(ort);
   return {
     ...widget,
-    title: widget.place ? fill(widget.place.title) : `${widget.title} — ${ort}`,
-    shareText: widget.place ? fill(widget.place.shareText) : `${widget.title} — ${ort}`,
+    title: widget.place ? fill(widget.place.title) : ort ? `${widget.title} — ${ort}` : widget.title,
+    shareText: widget.place ? fill(widget.place.shareText) : ort ? `${widget.title} — ${ort}` : widget.shareText,
     shareUrl: liveUrl || widget.shareUrl,
   };
 }

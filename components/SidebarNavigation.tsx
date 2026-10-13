@@ -19,7 +19,7 @@ export default function SidebarNavigation({links,activeHref,children,label}:{
   const [pending, startTransition] = useTransition();
   const collapsed = Boolean(children) || links.length > 2;
   const activeLabel = links.find(link => link.href === activeHref)?.label ?? label;
-  return <nav className={styles.navigation} aria-label={label} data-collapsed={collapsed || undefined}>
+  return <nav className={styles.navigation} aria-label={label} data-collapsed={collapsed || undefined} data-with-controls={Boolean(children) || undefined}>
     <div className={styles.links}>{links.map(link=><Link key={link.href} href={link.href} scroll={false} prefetch={true}
       aria-current={activeHref===link.href ? "page" : undefined}><NavigationLabel label={link.label}/></Link>)}</div>
     {collapsed && <div className={styles.mobileMenu} aria-busy={pending}>

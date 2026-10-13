@@ -96,3 +96,14 @@ export async function speichereLetztenStand(
     console.error(`${LETZTER_STAND_TABELLE} upsert failed:`, e instanceof Error ? e.message : e);
   }
 }
+
+/** Read the persisted retrieval time separately from the measurement time. */
+export async function ladeLetztenStandMitAbruf<T>(scope: "generation" | "nuclear-import", key: string): Promise<{payload:T;retrievedAt:string}|null> {
+  if (!supabase || !darfDauerhaftSpeichern(scope,key)) return null;
+  try {
+    const {data,error}=await withDbTimeout(supabase.from(LETZTER_STAND_TABELLE).select("payload,gespeichert_am").eq("key",zeile(scope,key)).maybeSingle(),`letzter Stand ${scope}`,DB_SOFT_READ_TIMEOUT_MS);
+    if(error || !data) return null;
+    const row=data as {payload:T;gespeichert_am:string};
+    return {payload:row.payload,retrievedAt:row.gespeichert_am};
+  } catch {return null;}
+}

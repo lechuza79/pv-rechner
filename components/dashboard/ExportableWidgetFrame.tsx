@@ -49,8 +49,10 @@ import {chartMetadataLabel, chartQuantityLabel} from '../../lib/chart-labels';
 const EDGE_INSET = 28;
 const EDGE_GAP = 14;
 
-export function ExportableWidgetFrame({widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({dataTable, widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, exportBranding = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
+  dataTable?: ReactNode;
+  exportBranding?: boolean;
   sourceVisible?: boolean;
   sourcePlacement?: 'frame' | 'plot';
   directActions?: boolean;
@@ -242,7 +244,7 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
     if (!node) return null;
     return captureNodeToBlob(node, Math.min(1, 160 / node.getBoundingClientRect().width));
   }, [chartExport.chartRef]);
-  const widgetActions = <ChartOptionsMenu help={frame.help} showDownload={def.exportable!==false} presentation={partner || directActions ? "embedded-footer" : effectiveActions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
+  const widgetActions = <ChartOptionsMenu dataTable={dataTable} help={frame.help} showDownload={def.exportable!==false} presentation={partner || directActions ? "embedded-footer" : effectiveActions === "primary" ? "footer" : "menu"} label={frame.title} onVideoRequest={onVideoRequest ?? (videoParams ? (email, options) => requestWidgetVideo({...videoParams,email,...options}) : undefined)} videoParams={videoParams} videoPeriod={videoPeriod ?? stateLabel} videoPlace={place} loadVideoThumbnail={loadVideoThumbnail} contactHref={contactHref} designContactHref={designContactHref} busy={chartExport.isExporting||videoProgress!==null}
         onRestart={animated&&restartAction?async()=>{
           const node=chartExport.chartRef.current;
           if(node)await controlChartAnimation(node,{mode:'restart'});
@@ -354,8 +356,8 @@ export function ExportableWidgetFrame({widget, place, stand, exportScope, export
           <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible&&!host} spalten={edgeColumns} />
         </div>}
         {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
-          width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: def.shareUrl.replace("https://solar-check.io", ""), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
-        {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} legend={exportLegend} includeHelpNotes={false} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}
+          width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: (()=>{const url=new URL(def.shareUrl,"https://solar-check.io");return `${url.pathname}${url.search}${url.hash}`;})(), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
+        {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} branding={exportBranding} legend={exportLegend} includeHelpNotes={false} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}
       </>}
     >{children}</WidgetFrame>
   </ExportNotesProvider>;

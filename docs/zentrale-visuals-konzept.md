@@ -1004,3 +1004,35 @@ and hosted database migration remain separate rollout gates.
 ## Verbindlicher Abschlussnachweis — 12. Oktober 2026
 
 Der tatsächliche Bestand und die getrennten Nachweise für Umsetzung, Browserprüfung und Veröffentlichung stehen in [widget-system-completion.md](widget-system-completion.md). Frühere Teilprüfungen in diesem Dokument sind kein vollständiger Abnahmenachweis. Der Bestand wird aus dem bestehenden Katalog abgeleitet; es gibt keine zusätzliche Widget-Registry.
+## Strommix radar composition (13 October 2026)
+
+`charts/RadarChart` is a shared numeric renderer with fixed category order, an
+explicit common maximum and the existing donut accent/neutral palette.
+`strommix-radar` adapts the latest generation snapshot into seven stable axes;
+wind and coal subtypes are combined, while every generation value except pumped-storage discharge enters the
+denominator exactly once. Pumped-storage charging/discharging and physical border
+flows are separate plain widgets in the shared EnergyMonitor hero composition.
+Each shows its own measurement timestamp; missing battery data stays unavailable.
+Border totals require all eleven connections at one common timestamp. The `spiderhero` review variant consumes the renderer
+inside the existing WidgetFrame and presentation provider. The map remains below
+the live hero. The canonical page uses the split radar hero. The shared playback interpolates
+values on a fixed scale and autoplays when visible; standalone radar embeds use
+the same renderer and export menu.
+
+The preview now uses shared `SegmentedPowerBars` for charge/discharge, with a
+labelled common GW scale (not capacity), a gently pulsing last lit segment and
+reduced-motion support. `import-attribution` supplies the generation denominator
+to both the existing nuclear calculation and the complete import-mix adapter.
+The latter uses the latest complete border timestamp and exact simultaneous
+supplier observations; missing supplier mixes remain unassigned, never zero.
+Imported storage discharge stays explicit. Import attribution is modelled,
+not flow tracing through third countries. The import chart uses the central
+CategoryBarChart compact layout and preserves nonzero values below display precision.
+
+Import/export review now uses shared `DivergingBarChart`: category rows, import
+left and export right of zero, with one symmetric GW scale. Categories are
+renewables, fossil, nuclear, other and storage discharge. Export attribution uses
+the simultaneous pool of domestic generation plus gross imports; domestic MW are
+converted to GW before weighting. Unknown imports remain in the denominator and
+produce an explicit unassigned export share. Missing domestic observations leave
+export composition unassigned. This is a proportional estimate, not flow tracing.

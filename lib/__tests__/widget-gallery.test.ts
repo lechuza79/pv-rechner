@@ -28,7 +28,9 @@ describe('gallery curation',()=>{
     const full=galleryEntries(place);
     const visible=curatedGalleryEntries(place);
     for(const id of Object.keys(GALLERY_HIDDEN)) {
-      expect(full.some(entry=>entry.id===id)).toBe(true);
+      const registered=allWidgets().find(widget=>widget.id===id);
+      expect(registered).toBeDefined();
+      expect(full.some(entry=>entry.id===id)).toBe(registered?.embeddable!==false);
       expect(visible.some(entry=>entry.id===id)).toBe(false);
     }
     expect(visible.filter(entry=>entry.group!=='microcharts').every(entry=>GALLERY_CATEGORIES.some(category=>category.id===entry.group))).toBe(true);

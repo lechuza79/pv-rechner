@@ -23,6 +23,7 @@ import {
   anteilZahl,
 } from "../../lib/chart-utils";
 
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface DataPoint {
@@ -521,6 +522,12 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   const colorScale = useCallback((key: string) => ENERGY_COLORS_HEX[key] || CATEGORY_COLORS.other, []);
 
   const [tooltip, setTooltip] = useState<{ data: WeekBucket; left: number } | null>(null);
+  const selectPoint=(index:number)=>{
+    const row=buckets[Math.max(0,Math.min(buckets.length-1,index))];
+    if(row)setTooltip({data:row,left:(xScale(row.weekKey) ?? 0) + xScale.bandwidth()/2 + margin.left});
+  };
+  const selectedIndex=tooltip ? buckets.findIndex(row=>row.weekKey===tooltip.data.weekKey) : buckets.length-1;
+
 
   // Tick labels
   const tickValues = useMemo(() => {
@@ -559,7 +566,16 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
   return (
     <div style={{ position: "relative" }}>
-      <svg width={width} height={height}>
+      <svg width={width} height={height} tabIndex={0} role="slider" aria-label="Zeitpunkt im Strommix auswählen"
+        aria-valuemin={0} aria-valuemax={Math.max(0,buckets.length-1)} aria-valuenow={Math.max(0,selectedIndex)}
+        aria-valuetext={(()=>{const row=buckets[Math.max(0,selectedIndex)];return row ? `${row.weekKey}: ${activeKeys.reduce((sum,key)=>sum+(typeof row[key]==='number'?Number(row[key]):0),0).toLocaleString('de-DE',{maximumFractionDigits:0})} GWh` : 'Keine Daten';})()}
+        onFocus={()=>selectPoint(buckets.length-1)} onBlur={()=>setTooltip(null)}
+        onKeyDown={event=>{
+          if(event.key==='Escape'){setTooltip(null);return;}
+          if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+          event.preventDefault();
+          selectPoint(event.key==='Home'?0:event.key==='End'?buckets.length-1:selectedIndex+(event.key==='ArrowRight'?1:-1));
+        }}>
         <Group left={margin.left} top={margin.top}>
           <GridRows
             scale={yScale}

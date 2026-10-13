@@ -1,122 +1,100 @@
-import type { Metadata } from "next";
+import {loadStrommixPage} from './snapshot';
+import {jsonLdHtml} from '../../../lib/json-ld';
 import { Suspense } from "react";
-import { v, space } from "../../../lib/theme";
-import { pageMetadata } from "../../../lib/seo";
 import { strommixFaq } from "../../../lib/faq";
+import EditorialPage from "../../../components/EditorialPage";
+import content from "../../../components/EditorialContent.module.css";
 import Faq from "../../../components/Faq";
-import RelatedLinks from "../../../components/RelatedLinks";
+import ArticleTeasers from "../../../components/ArticleTeasers";
+import { LoadingDots } from "../../../components/LoadingDots";
+import StrommixOverview from './StrommixOverview';
+import SharedSiteHeader from '../../../components/SharedSiteHeader';
+import Breadcrumb from '../../../components/Breadcrumb';
+import DataSourcesSection from '../../../components/DataSourcesSection';
+import DataSourceList from '../../../components/DataSourceList';
+import SiteFuss from '../../../components/SiteFuss';
+import stage from '../../../components/EnergyEditorialStage.module.css';
+import foundation from '../../../components/social/atlas-foundations.module.css';
+import SidebarPageLayout from '../../../components/SidebarPageLayout';
+import {strommixClusterLinks} from '../../../public/shared-nav/nav-content.js';
+import StateElectricitySection from '../../../components/StateElectricitySection';
 import EnergieClient from "./client";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/strommix-deutschland",
-  title: "Strommix Deutschland aktuell – Live: Solar, Wind, Kohle | Solar Check",
-  description:
-    "Der deutsche Strommix live und aktuell: wie viel Solar, Wind, Kohle und Gas gerade im Netz sind — heute, im Monat und im Jahresvergleich. Daten: Fraunhofer ISE.",
-  ogImageTitle: "Deutschlands Strommix — live",
-  ogImageSubtitle: "Solar, Wind, Gas, Kohle — stündlich aktuell. Quelle: Fraunhofer ISE.",
-  keywords: [
-    "Strommix Deutschland",
-    "Strommix Deutschland aktuell",
-    "Strommix Deutschland live",
-    "Stromerzeugung Deutschland aktuell",
-    "Erneuerbare Energien Anteil",
-  ],
-});
-
-// Reading-flow styles for the explainer below the interactive chart.
-const S = {
-  h2: {
-    fontSize: v("--font-size-lead"),
-    fontWeight: 800 as const,
-    letterSpacing: "-0.01em",
-    margin: `${space.xxl}px 0 ${space.md}px`,
-  },
-  p: {
-    fontSize: v("--font-size-body"),
-    lineHeight: 1.7,
-    color: v("--color-text-secondary"),
-    margin: `0 0 ${space.md}px`,
-  },
-};
-
-export default function EnergiePage() {
-  return (
-    <div
-      style={{
-        background: v("--color-bg"),
-        fontFamily: v("--font-text"),
-        color: v("--color-text-primary"),
-        minHeight: "100vh",
-        padding: "0 16px 20px",
-      }}
-    >
-      {/* Hero on the server: the client below reads the URL and renders only
-          in the browser, so a heading there never reached the served HTML. */}
-      <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", marginBottom: 28 }}>
-        <h1>Strommix Deutschland – live</h1>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
-          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
-        </p>
-      </div>
-      <Suspense fallback={null}>
-        <EnergieClient />
-      </Suspense>
-
-      {/* Server-rendered explainer + FAQ: the SEO substance under the live tool. */}
-      <div style={{ maxWidth: 640, margin: "0 auto" }}>
-        <section>
-          <h2 style={S.h2}>So liest du den Strommix</h2>
-          <p style={S.p}>
-            Die Grafik zeigt die öffentliche Nettostromerzeugung in Deutschland —
-            also allen Strom, der ins öffentliche Netz eingespeist wird —
-            aufgeschlüsselt nach Energieträgern und in 15-Minuten-Schritten
-            aktualisiert. Grün ist erneuerbar (Wind, Solar, Wasser, Biomasse),
-            Grau ist fossil (Kohle, Gas, Öl).
-          </p>
-          <p style={S.p}>
-            Der Tagesrhythmus ist gut erkennbar: Solarstrom baut sich am Vormittag
-            auf, erreicht mittags seine Spitze und fällt zum Abend wieder auf
-            null. Wind kennt dagegen keinen festen Rhythmus — er liefert mal
-            tagelang viel, mal fast nichts. Nachts und bei Flaute schließen
-            steuerbare Kraftwerke, Importe und zunehmend große Batteriespeicher
-            die Lücke.
-          </p>
-          <p style={S.p}>
-            Übers Jahr gesehen ergänzen sich Sonne und Wind: Solar liefert den
-            Großteil seines Ertrags im Sommerhalbjahr, Wind ist in den
-            Wintermonaten am stärksten. Genau deshalb lohnt der Blick auf ganze
-            Jahre über die Zeitraum-Auswahl oben — einzelne Tage sagen wenig
-            über das System.
-          </p>
-        </section>
-
-        <Faq
-          items={strommixFaq()}
-          title="Häufige Fragen zum Strommix"
-          currentPath="/strommix-deutschland"
-        />
-
-        <RelatedLinks
-          currentPath="/strommix-deutschland"
-          links={[
-            {
-              href: "/atomstrom-import",
-              label: "Wie viel Atomstrom importiert Deutschland?",
-              desc: "Die Auswertung zeigt, welcher Teil der Stromimporte rechnerisch aus Kernkraft stammt.",
-            },
-            {
-              href: "/photovoltaik-zubau-deutschland",
-              label: "PV-Zubau in Deutschland",
-              desc: "Wie schnell die installierte Solarleistung wächst — und was das für den Strommix bedeutet.",
-            },
-            {
-              href: "/pv-simulation",
-              label: "PV-Live-Simulation",
-              desc: "Was eine eigene Solaranlage an deinem Standort gerade jetzt erzeugen würde.",
-            },
-          ]}
-        />
-      </div>
-    </div>
-  );
+export const dynamic = "force-dynamic";
+type PageProps={searchParams:Promise<{variante?:string}>};
+export async function generateMetadata({searchParams}:PageProps){const variant=(await searchParams).variante;const review=variant==='regional';const metadata=(await loadStrommixPage(review)).metadata;return (review||variant==='kartenhero'||variant==='spiderhero'||variant==='radarhero')?{...metadata,robots:{index:false,follow:true}}:metadata;}
+export default async function EnergiePage({searchParams}:PageProps) {
+  const variant=(await searchParams).variante;
+  const review=variant==='regional',mapHero=variant==='kartenhero',spiderHero=!variant||variant==='spiderhero'||variant==='radarhero',splitHero=!variant||variant==='radarhero';
+  const {initialData,renderedAt,jsonLd}=await loadStrommixPage(review);
+  return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLdHtml(jsonLd)}}/>
+    <div className={`${stage.header} ${stage.standaloneHeader} ${foundation.foundation}`} data-story-scheme="dark"><SharedSiteHeader aktiv="energie" /></div>
+    <div className={`${stage.breadcrumbBand} ${foundation.foundation}`} data-story-scheme="dark"><div className={stage.breadcrumb}><Breadcrumb variant="compact" items={[{label:'Start',href:'/'},{label:'Strommix Deutschland live'}]} jsonLd /></div></div>
+    {splitHero&&<StrommixOverview initialData={initialData} renderedAt={renderedAt} spider splitHero/>}
+    <SidebarPageLayout links={strommixClusterLinks} activeHref="/strommix-deutschland" label="Strommix & Stromhandel" darkHero alignWith={splitHero?"#speicher-stromhandel":(mapHero||spiderHero)?"#strommix-title":".strommix-hero-tiles"}>
+    {mapHero?<>
+      <StrommixOverview initialData={initialData} renderedAt={renderedAt} scrollTarget="#bundeslaender" visual={<Suspense fallback={<LoadingDots/>}><StateElectricitySection hero/></Suspense>}/>
+      <StrommixOverview initialData={initialData} renderedAt={renderedAt} secondary scrollTarget="#tagesverlauf"/>
+    </>:<>
+      <StrommixOverview initialData={initialData} renderedAt={renderedAt} review={review} spider={spiderHero} section={splitHero?"flows":"hero"}/>
+      <Suspense fallback={<div className={`${stage.stage} ${foundation.foundation}`} data-story-scheme="dark" style={{minHeight:560,padding:24}} role="status"><LoadingDots/> Bundesländerkarte wird geladen.</div>}><StateElectricitySection nested={splitHero} review={review}/></Suspense>
+    </>}
+    <div data-sidebar-light-start className={stage.readingSections}><EditorialPage wide>
+    <StrommixOverview initialData={initialData} section="day" splitHero={splitHero}/>
+    <section className={stage.context} id="zeitvergleich">
+    <Suspense fallback={<div className={content.card} role="status"><LoadingDots /> Stromverlauf wird geladen.</div>}>
+      <EnergieClient initialData={initialData} review={review} />
+    </Suspense>
+    </section>
+    <section className={stage.context}>
+      <h2 className={content.h2}>Was die Strommix-Zahlen bedeuten</h2>
+      <div className={stage.raceInsights}>
+      <article className={content.hero}>
+      <h3 className={content.h3}>Erzeugung ist eine Momentaufnahme</h3>
+      <p className={content.p}>
+        Der Strommix zeigt die Anteile der Energieträger an der öffentlichen Nettostromerzeugung
+        in Deutschland. Der Eigenverbrauch der Kraftwerke ist bereits abgezogen.
+        Die aktuelle Leistung steht in GW. Für einen ganzen Zeitraum wird daraus eine
+        Strommenge in GWh oder TWh. Ein hoher Anteil in einer einzelnen Viertelstunde
+        bedeutet deshalb noch keinen ebenso hohen Anteil am ganzen Tag oder Jahr.
+      </p>
+      </article><article className={content.hero}><h3 className={content.h3}>Wind und Solar verändern den Anteil</h3>
+      <p className={content.p}>
+        Solarstrom hängt von Tageslicht und Bewölkung ab, Windstrom von den Windverhältnissen.
+        Gleichzeitig verändern sich Stromnachfrage und die Erzeugung anderer Kraftwerke.
+        Der Anteil erneuerbarer Energien kann deshalb steigen, weil mehr erneuerbarer Strom
+        erzeugt wird oder weil die übrige Erzeugung sinkt. Ein Anteil allein erklärt die Ursache nicht.
+      </p>
+      </article><article className={content.hero}><h3 className={content.h3}>Erzeugung ist nicht Verbrauch</h3>
+      <p className={content.p}>
+        Deutschland handelt Strom mit seinen Nachbarländern. Die inländische Erzeugung
+        beschreibt deshalb nicht vollständig den Strom, der hier verbraucht wird.
+        Der zusätzlich einblendbare Atomstrom-Import ist eine rechnerische Herkunftszuordnung.
+        Er gehört nicht zur deutschen Erzeugung und bildet nicht sämtliche Stromimporte ab.
+      </p>
+      </article><article className={content.hero}><h3 className={content.h3}>Datenstand statt Echtzeitversprechen</h3>
+      <p className={content.p}>
+        Die kurzfristigen Daten liegen in Viertelstunden vor. Veröffentlichungen können
+        verzögert eintreffen und nachträglich korrigiert werden. „Update“ im Hero nennt den letzten Abruf; „Stand“ den zugehörigen Messzeitpunkt. Weitere Angaben stehen in der Diagrammhilfe. Im sichtbaren Tab prüfen wir alle
+        fünf Minuten auf neue Daten. Für abgeschlossene historische Zeiträume entfällt diese Prüfung.
+      </p>
+      </article></div>
+    </section>
+    <Faq items={review?[...strommixFaq(),{q:'Warum unterscheiden sich die Live-Zahlen und die Bundesländerkarte?',a:'Die Live-Zahlen zeigen die öffentliche Nettostromerzeugung Deutschlands. Die stündliche Regionalansicht von CO2Map.de ist modelliert und fasst drei Stadtstaaten mit ihren Nachbarländern zusammen. Die Jahresansicht von Energy-Charts zeigt die gesamte Nettostromerzeugung einschließlich industrieller Kraftwerke für 16 Bundesländer; Offshore wird separat ausgewiesen. Zeiträume, Gebiete und Datenbasis unterscheiden sich. Die Summen sind deshalb nicht unmittelbar vergleichbar.'}]:strommixFaq()} title="Häufige Fragen zum Strommix" currentPath="/strommix-deutschland" />
+    <ArticleTeasers title="Weiterlesen" currentPath="/strommix-deutschland" items={[
+      {href:"/langzeit-strommix",title:"Wie hat sich Deutschlands Strommix entwickelt?",teaser:"Stromerzeugung seit 1990, CO₂-Emissionen und Strompreise im Jahresvergleich."},
+      { href: "/atomstrom-import", title: "Wie viel Atomstrom importiert Deutschland?", teaser: "Importmengen, Herkunftsländer und die Berechnung des Kernenergie-Anteils." },
+      { href: "/photovoltaik-zubau-deutschland", title: "Wie schnell wächst die Solarenergie?", teaser: "Neu installierte Solarleistung und Entwicklung des Anlagenbestands." },
+      { href: "/pv-simulation", title: "Was erzeugt dein Dach gerade?", teaser: "Solarstrom an deinem Standort und im Tagesverlauf simulieren." },
+    ]} />
+  </EditorialPage></div></SidebarPageLayout>
+  <div data-page-footer><SiteFuss zwischen={<DataSourcesSection id="quellen">
+    <DataSourceList tone="inherit" only={review?["energyCharts", "co2map", "mastr", "smard", "bkg"]:["energyCharts", "mastr", "smard", "bkg"]} purposes={{co2map:'Modellierte stündliche Stromerzeugung in 13 Regionen',smard:"Ersatzquelle für die öffentliche Nettostromerzeugung bei Ausfällen",mastr:"Installierte Leistung für die Auslastung im Tageswidget",energyCharts:'Öffentliche Nettostromerzeugung, Pumpspeicherleistung sowie regionalisierte gesamte Nettostromerzeugung je Bundesland'}}/>
+    <p>Bei einem Ausfall kann <a href="https://www.smard.de/">Bundesnetzagentur | SMARD.de</a> als Ersatzquelle einspringen. Sind beide Quellen nicht erreichbar, wird der letzte gespeicherte Stand gekennzeichnet. Daten können nachträglich korrigiert werden.</p>
+    {review&&<p>Die stündliche Regionalansicht verwendet modellierte Erzeugungsdaten von <a href="https://co2map.de/methodology.html">CO2Map.de (Universität Freiburg)</a>. Drei Stadtstaaten sind mit ihren Nachbarländern zusammengefasst. Stundenwerte und Jahresmengen haben unterschiedliche Daten- und Gebietsgrundlagen und dürfen nicht unmittelbar verrechnet werden.</p>}
+    <p>Die Bundesländerkarte nutzt regionalisierte Jahresdaten des Fraunhofer ISE. Wind und Solar werden mit Anlagen- und Wetterdaten modelliert; andere Energieträger beruhen auf Kraftwerksmeldungen und regionaler Aufteilung. Offshore-Wind wird separat geführt. <a href="https://www.dbu.de/projektdatenbank/38462-01/">Methodik EC-regional</a>.</p>
+    <p>Stromimporte sind nicht Teil der inländischen Erzeugung. Der optional eingeblendete Atomstrom-Import wird aus Grenzflüssen und nationalen Strommixen geschätzt. <a href="/atomstrom-import/methodik">Methodik der Atomstrom-Berechnung</a>.</p>
+    {spiderHero&&<p>Physikalische Import- und Exportleistungen: <a href="https://energy-charts.info">Energy-Charts (Fraunhofer ISE)</a> auf Basis von <a href="https://transparency.entsoe.eu/">ENTSO-E</a>. Die Aufteilung nach Energieträgern ist rechnerisch: Importe anhand zeitgleicher Nachbarland-Strommixe, Exporte anhand deutscher Erzeugung einschließlich Importen. Quellen können verzögert liefern; der jeweilige Datenstand steht in der Diagrammhilfe.</p>}
+  </DataSourcesSection>}/></div></>;
 }
