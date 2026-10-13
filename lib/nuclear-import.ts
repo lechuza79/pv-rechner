@@ -1,3 +1,4 @@
+import {generationContributions} from "./import-attribution";
 import { fetchCrossBorderFlows, fetchPublicPower } from "./energy-api";
 
 // Countries with active nuclear power plants that border / feed into Germany.
@@ -110,18 +111,7 @@ export async function computeNuclearImport(
     const tsMap = new Map<string, { nuclear: number; total: number }>();
     for (const row of rows) {
       const nuclear = (row.data.nuclear as number) ?? 0;
-      let total = 0;
-      for (const [key, val] of Object.entries(row.data)) {
-        if (
-          typeof val === "number" && val > 0 &&
-          !key.includes("load") &&
-          !key.includes("share") &&
-          !key.includes("cross_border") &&
-          !key.includes("consumption")
-        ) {
-          total += val;
-        }
-      }
+      const total = generationContributions(row.data).reduce((sum, [, value]) => sum + value, 0);
       tsMap.set(row.ts, { nuclear, total });
     }
     countryGenRows.set(code, tsMap);

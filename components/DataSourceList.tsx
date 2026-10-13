@@ -16,6 +16,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
   smardTrade: "Kommerzieller Stromhandel und Day-Ahead-Börsenwert",
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
+  co2map: "Modellierte stündliche Stromerzeugung in deutschen Regionen",
   worldBankPopulation: "Einwohnerzahlen für den internationalen Stromvergleich",
   smard: "Ersatzquelle für Strommix und Stromerzeugung in Deutschland, wenn Energy-Charts ausfällt",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
@@ -87,7 +88,8 @@ const S: Record<string, React.CSSProperties> = {
     borderLeft: `2px solid ${v("--color-border")}`,
   },
   itemInherit: {
-    paddingLeft: space.lg,
-    borderLeft: "2px solid color-mix(in srgb, currentColor 30%, transparent)",
+    fontSize: "inherit",
+    lineHeight: "inherit",
+    color: "inherit",
   },
 };

@@ -382,3 +382,19 @@ Follow “Shared chart units — operator rule, 2 October 2026” in
 `docs/zentrale-visuals-konzept.md` for every comparable chart and data layer.
 Choose units for the whole comparison, never independently per item. The same
 unit decision and precision must reach the page, image export and backend video.
+## Strommix live release (13 October 2026)
+
+The canonical Strommix page uses the reviewed radar hero. Its page and metadata
+share one server observation through the protected generation handler, including
+its five-minute cache and durable outage fallback. No HTTP self-request and no
+additional upstream pipeline are used. The OG image URL includes the observation
+values and timestamp, so a new observation produces a distinct image address.
+The radar share link also carries the newest available observation timestamp,
+independently of the currently animated historical frame. The image title stays date-neutral; its smaller label names the actual measurement
+time. Existing social-platform caches of already shared URLs remain external.
+
+The new composition uses `StrommixRadarWidget`, `ChartTimePlayback`,
+`ViewportStage` and the shared export menu. Preserve the current shared
+`WidgetData` refresh and palette mechanisms. On narrow displays the navigation
+follows its content unless contextual controls require more room. Page-owned
+source footers retain the shared 64px separation.

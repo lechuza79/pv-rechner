@@ -9,6 +9,7 @@ import {CHART_ANIMATION_EVENT, type ChartAnimationCommand} from '../../lib/chart
 import {raceCurveValue} from '../../lib/race-curve';
 import {raceTimeline, racePositionAt, milestoneRaceTimeline} from '../../lib/race-timeline';
 import frameStyles from '../energy/EnergyWidgetFrame.module.css';
+import {ChartTimeRange} from './ChartTimeRange';
 import styles from './RaceChart.module.css';
 import {
   ExportBox,
@@ -747,8 +748,7 @@ function RaceCard({
         >
           {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
         </button>
-        <input
-          type="range"
+        <ChartTimeRange
           min={0}
           max={T}
           step={1}
@@ -756,7 +756,6 @@ function RaceCard({
           onChange={(e) => { cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null; setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
           aria-label={annualYears ? "Jahr wählen" : "Tag wählen"}
           aria-valuetext={stand}
-          className="kr-regler"
           style={{ flex: 1, minWidth: 0 }}
         />
       </div>

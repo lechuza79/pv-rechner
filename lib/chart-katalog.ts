@@ -29,6 +29,13 @@ export interface KatalogEintrag {
 }
 
 export const CHART_KATALOG: KatalogEintrag[] = [
+  {datei:"charts/DivergingBarChart",art:"baustein",wofuer:"Paired category bars extending left and right from zero on one symmetric magnitude scale."},
+  {datei:"charts/SegmentedPowerBars",art:"baustein",wofuer:"Power segments with a shared GW scale, pulsing final active segment and reduced-motion support; never storage state of charge."},
+  {datei:"energy/ElectricityFlowSummary",art:"baustein",wofuer:"Separate storage charge/discharge and physical import/export metrics with independent timestamps."},
+  {datei:"charts/ChartDetailHeading",art:"baustein",wofuer:"Shared chart detail heading with back action or removable breadcrumb selection."},
+  {datei:"charts/ChartTimeRange",art:"baustein",wofuer:"Shared slim time slider for race charts and observation playback."},
+  {datei:"charts/ChartTimePlayback",art:"baustein",wofuer:"Manual observation playback with an accessible time slider and return to the latest sample."},
+  {datei:"charts/RadarChart",art:"baustein",wofuer:"Spiderweb with stable category axes, shared percentage scale and central accent/neutral palette."},
   { datei: "charts/BarRaceHeading", art: "baustein", wofuer: "Gemeinsame Jahresanzeige mit Abspielsteuerung für animierte Ranglisten." },
   { datei: "charts/ElectricityTradeRadial", art: "baustein", wofuer: "Tägliche Stromhandelssalden als Radial oder Balken mit gemeinsamer Mengenbewertung." },
   { datei: "charts/MetricShareCard", art: "baustein", wofuer: "Kennzahlkachel für einen Anteil mit Bild, Einheit und Auswahlzustand." },
@@ -75,6 +82,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
 
   // ─── Fertige Widgets ──────────────────────────────────────────────────────
   { datei: "ErzeugungWidget", art: "widget", wofuer: "Erneuerbaren-Erzeugung als Radial, wechselt auf Wunsch selbst durch die Träger (autoswitchMs)." },
+  { datei: "StrommixWidget", art: "widget", wofuer: "Gemeinsamer Strommix-Verlauf mit Zeitraumwahl, Import-Overlay und zentralem Export fuer Seite und Embed." },
   { datei: "charts/JetztDonut", art: "widget", wofuer: "Strommix-Momentaufnahme aus dem letzten Punkt einer Erzeugungsreihe." },
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },
   { datei: "charts/AnlagenbestandWidget", art: "widget", wofuer: "Deutscher Solarbestand nach Anlagentyp: Anteil an der Stückzahl gegen Anteil an der Leistung." },

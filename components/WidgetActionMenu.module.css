@@ -99,3 +99,8 @@
 .menu::-webkit-scrollbar-thumb{background:var(--widget-muted,#61727a);border:2px solid var(--widget-surface,#163338);border-radius:8px;}
 
 .scrollHint{position:sticky;top:-6px;z-index:1;padding:6px 14px;background:var(--widget-surface,var(--color-bg-raised));color:var(--widget-muted);font:400 12px/1.4 var(--atlas-body,sans-serif);border-bottom:1px solid color-mix(in srgb,currentColor 25%,transparent);}
+
+.infoDialog{font-size:16px;line-height:1.6}
+.infoDialog h2{font-size:22px!important;line-height:1.25!important}
+.infoDialog p{margin:0 0 16px}
+.infoDialog p:last-child{margin-bottom:0}

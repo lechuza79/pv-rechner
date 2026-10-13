@@ -31,6 +31,9 @@ type Props = {
   single?: "currentPower" | "growth" | "stock" | keyof MonitorEnergyWidgets;
   className?: string;
   kpis?: ReactNode;
+  heroChart?: ReactNode;
+  heroAside?: ReactNode;
+  heroFooter?: ReactNode;
   currentPower?: ReactNode;
   growth?: ReactNode;
   stock?: ReactNode;
@@ -76,7 +79,7 @@ function MonitorComposition({ items, label, compact = false }: {
 /** The accepted municipality composition, shared by every regional level and embed.
  * Adapters supply widgets and data availability; section geometry lives only here.
  */
-export function EnergyMonitor({ single, rootRef, className = "", kpis, currentPower, growth, stock, stockItems, density, energy, energyNotice, map, scheme = "dark", topics, sectionStyle = "plain" }: Props) {
+export function EnergyMonitor({ single, rootRef, className = "", kpis, heroChart, heroAside, heroFooter, currentPower, growth, stock, stockItems, density, energy, energyNotice, map, scheme = "dark", topics, sectionStyle = "plain" }: Props) {
   if (single) {
     const content = single === "currentPower" ? currentPower : single === "growth" ? growth : single === "stock" ? (stockItems?.length ? stockItems.map(item => <Fragment key={item.id}>{item.content}</Fragment>) : stock) : energy?.[single];
     return <div ref={rootRef} className={`${foundation.foundation} municipal-data sc-dashboard ${className}`} data-story-scheme="dark" data-energy-monitor data-embed-layout-root>{content || <p>Für diesen Ort liegen noch keine Daten vor.</p>}</div>;
@@ -90,6 +93,7 @@ export function EnergyMonitor({ single, rootRef, className = "", kpis, currentPo
         </div>
         <div className="sc-monitor-topic-widgets" data-layout={topic.layout}>{topic.widgets}</div>
       </section>)}
+      {heroChart&&<div className="sc-monitor-hero-composition"><div>{heroChart}</div>{heroAside&&<aside aria-label="Speicher und Grenzflüsse">{heroAside}</aside>}{heroFooter&&<div className="sc-monitor-hero-footer">{heroFooter}</div>}</div>}
       {kpis}
       {(currentPower || growth) && <section aria-label="Aktuelle Solarleistung und Ausbau">
         <MonitorComposition compact={density === 'compact'} label="Aktuelle Solarleistung und Ausbau" items={[{id:'regional-current-power',content:currentPower},{id:'regional-annual-growth',content:growth}]}/>

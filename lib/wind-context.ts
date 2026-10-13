@@ -2,7 +2,7 @@ import {insidePolygon,polygons,regionProjection,type RegionGeometry} from './reg
 export type Point=[number,number];
 export type ContextGeometry={type:'Polygon';coordinates:Point[][]}|{type:'MultiPolygon';coordinates:Point[][][]}|{type:'LineString';coordinates:Point[]}|{type:'MultiLineString';coordinates:Point[][]};
 export type WindContext={id:string;retrievedAt:string;waterContinuationMetres?:number;features:{id:string;kind:'water'|'stream'|'settlement';name:string;geometry:ContextGeometry}[];places:{name:string;point:Point}[]};
-export type SceneContext={waterContinuation?:{outline:Point[][][];distance:number};unitsPerMetre:number;areas:{kind:'water'|'settlement';rings:Point[][]}[];streams:Point[][];places:{name:string;point:Point}[]};
+export type SceneContext={waterStyle?:"ripples";waterLand?:Point[][][];waterContinuation?:{outline:Point[][][];distance:number};unitsPerMetre:number;areas:{kind:'water'|'settlement';rings:Point[][]}[];streams:Point[][];places:{name:string;point:Point}[]};
 export function projectWindContext(feature:RegionGeometry,context:WindContext):SceneContext{
   const projection=regionProjection([feature]),point=(p:Point)=>projection.groundPoint(p) as Point;
   const areas:SceneContext['areas']=[],streams:Point[][]=[];

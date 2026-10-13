@@ -1,5 +1,13 @@
 import {BUNDESLAENDER_DATEN} from './bundeslaender.js';
 
+/** Cluster links are shared by the global menu and the page sidebar. */
+export const strommixClusterLinks = [
+ {href:'/strommix-deutschland',label:'Strommix live'},
+ {href:'/langzeit-strommix',label:'Strommix im Zeitverlauf'},
+ {href:'/atomstrom-import',label:'Atomstrom-Import aktuell'},
+ {href:'/atomstrom-import/2025',label:'Atomstrom-Import 2025',archive:true},
+];
+
 /** Shared markup for server-rendered pages and the standalone homepage. */
 export function navigationContent({atlasHref='/solar-atlas',calculatorsHref='/#hs-rechner',artBase='/shared-nav/illustrations',showOrganisations=true,idPrefix='sc-local',staticImages=false}={}) {
  const base='';
@@ -13,7 +21,7 @@ export function navigationContent({atlasHref='/solar-atlas',calculatorsHref='/#h
  const funding=`<p class="sc-nav-funding-note"><span class="sc-nav-notice-icon" aria-hidden="true">!</span><span>Förderungen werden in unseren Rechnern automatisch berücksichtigt, sobald du deinen Standort angibst.</span></p><div class="sc-nav-tools">${tool('house','Photovoltaik','Finde Zuschüsse und Förderprogramme für Photovoltaik an deinem Standort.',link('PV-Förderung finden','/photovoltaik-foerderung'))}${tool('balcony-modern','Balkonkraftwerk','Entdecke regionale Zuschüsse für Steckersolar und die Bedingungen dafür.',link('Balkon-Förderung finden','/balkonkraftwerk/foerderung'))}${tool('heatpump-modern','Wärmepumpe','Erfahre, welche Zuschüsse beim Heizungstausch möglich sind und was du vor dem Antrag beachten solltest.',link('Wärmepumpen-Förderung ansehen','/ratgeber/waermepumpe-foerderung'))}</div>`;
  const tools=`<div class="sc-nav-calculator-block"><p class="sc-nav-section-title sc-hd" role="heading" aria-level="2">Rechner</p>${calculators}</div><div class="sc-nav-tool-more"><p class="sc-nav-section-title sc-hd" role="heading" aria-level="2">Weitere Energie-Checks</p><div class="sc-nav-tools sc-nav-tools-pair">${tool('house','PV-Simulation','Erlebe deinen Solarertrag im Tagesverlauf.',link('Simulation öffnen','/pv-simulation'))}${tool('/homepage-study/illustrations/offer-check-v20.webp','Angebotscheck <span class="sc-nav-badge">Demnächst</span>','PV- und Wärmepumpenangebote einordnen.',link('Mehr Info','/angebot-pruefen'))}${tool('/homepage-study/bev-v1/bev.webp','Elektroauto-Check <span class="sc-nav-badge">Demnächst</span>','Passt ein Elektroauto zu deinem Alltag?',link('Mehr Info','/elektroauto-check'))}</div></div>`;
  const knowledge=columns(column('Solarstrom',link('Photovoltaik & Speicher','/ratgeber/lohnt-sich-pv-mit-speicher','Wirtschaftlichkeit und Planung')+link('Balkonkraftwerk','/balkonkraftwerk','Einstieg, Anmeldung und Speicher')),column('Wärme',link('Gasheizung oder Wärmepumpe?','/ratgeber/gasheizung-oder-waermepumpe','Heizkosten und Möglichkeiten vergleichen')),column('Nachschlagen',link('Alle Ratgeber','/ratgeber')+link('Glossar','/glossar')+link('So rechnen wir','/methodik')));
- const monitor=columns(column('Strom in Deutschland',link('Strommix Deutschland','/strommix-deutschland','Erzeugung und Anteile im Verlauf')+link('Atomstrom-Import','/atomstrom-import','Wie viel Kernstrom kommt aus dem Ausland?')+link('Strommix im Zeitverlauf','/langzeit-strommix')),column('Ausbau verfolgen',link('Solar-Zubau','/photovoltaik-zubau-deutschland','Wie schnell wächst die Solarenergie?')+link('Solaranlagenbestand','/photovoltaik-bestand-deutschland','Anlagen und installierte Leistung')),column('Regional entdecken',link('Energiedaten für deinen Ort',atlasHref,'Lokale Zahlen in der Ortsübersicht')+link('Datenstand & Quellen','/datenstand')));
+ const monitor=columns(column('Strommix & Stromhandel',strommixClusterLinks.filter(item=>!item.archive).map(item=>link(item.label,item.href)).join('')),column('Ausbau verfolgen',link('Solar-Zubau','/photovoltaik-zubau-deutschland','Wie schnell wächst die Solarenergie?')+link('Solaranlagenbestand','/photovoltaik-bestand-deutschland','Anlagen und installierte Leistung')),column('Regional entdecken',link('Energiedaten für deinen Ort',atlasHref,'Lokale Zahlen in der Ortsübersicht')+link('Datenstand & Quellen','/datenstand')));
  // "Vor Ort" leads with one field: postcode or town name finds the town page
  // directly. The levels below it are the same atlas, entered one step higher.
  // The fields fill live in nav.js; without it, they submit to the search page.

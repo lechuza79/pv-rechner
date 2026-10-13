@@ -22,7 +22,7 @@
  */
 
 import { useMemo } from "react";
-import { useGenerationMix } from "../../lib/energy";
+import { useGenerationMix, type GenerationData } from "../../lib/energy";
 import { anteilZahl, calcPeriodStats, formatMWIn, powerUnit } from "../../lib/chart-utils";
 import { v, space, pad } from "../../lib/theme";
 import { LoadingDots } from "../LoadingDots";
@@ -30,12 +30,13 @@ import JetztDonut, { jetztAusReihe } from "./JetztDonut";
 import ErzeugungWidget from "../ErzeugungWidget";
 import { quellenHinweis } from "../../lib/energy-ersatzstand";
 
-export default function JetztImNetz() {
-  const { data, loading, error } = useGenerationMix("de", 24);
+export default function JetztImNetz({ initialData }: { initialData?: GenerationData }) {
+  const { data, loading, error, isStale } = useGenerationMix("de", 24, undefined, initialData);
   // Energy-Charts down: the route serves our last stored copy. Every sentence
   // below then speaks in the past tense — "gerade" about a moment hours ago
   // would be exactly the claim this block must not make.
-  const ersatz = data.stale === true;
+  const lastTime = data.data.at(-1)?.ts;
+  const ersatz = data.stale === true || isStale || (!!lastTime && Date.now() - Date.parse(lastTime) > 2 * 60 * 60 * 1000);
   const werte = jetztAusReihe(data.data);
   const hinweis = quellenHinweis(data, werte?.ts);
   const stats = useMemo(() => calcPeriodStats(data.data, data.resolution), [data.data, data.resolution]);
@@ -85,7 +86,7 @@ export default function JetztImNetz() {
           Seite, nicht Zubehör des Verlaufs-Charts. Ohne sie beginnt der Bereich
           mit einem Fließsatz und hat in der Gliederung keinen Namen. */}
       <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, letterSpacing: "-0.01em", margin: `0 0 ${space.xs}px`, padding: "0 8px" }}>
-        Der Strommix gerade jetzt
+        Aktueller Strommix in Deutschland
       </h2>
 
       {/* Energy-Charts down: either SMARD's live numbers or our stored copy. */}
@@ -102,7 +103,7 @@ export default function JetztImNetz() {
           <strong style={{ color: v("--color-text-primary"), fontFamily: v("--font-mono") }}>
             {anteilZahl(werte.eeSharePct)} %
           </strong>{" "}
-          der deutschen Stromerzeugung. Größter Einzelträger {ersatz ? "war" : "ist"}{" "}
+          der öffentlichen Nettostromerzeugung. Größter Einzelträger {ersatz ? "war" : "ist"}{" "}
           <strong style={{ color: v("--color-text-primary") }}>{groesster.label}</strong> mit{" "}
           <span style={{ fontFamily: v("--font-mono") }}>
             {anteilZahl((groesster.value / werte.totalMw) * 100)} %
@@ -171,12 +172,12 @@ export default function JetztImNetz() {
       {abweichung != null && mittel != null && (
         <p style={{ ...satz, margin: `${space.md}px 0 0` }}>
           {ersatz ? "Über die 24 Stunden davor" : "Über die letzten 24 Stunden"} gemittelt waren es{" "}
-          <span style={{ fontFamily: v("--font-mono") }}>{anteilZahl(mittel)} %</span> —{" "}
+          <span style={{ fontFamily: v("--font-mono") }}>{anteilZahl(mittel)} %</span>.{" "}
           {Math.abs(abweichung) < 3
-            ? "der Moment entspricht also ungefähr dem Tagesschnitt."
+            ? "Der zuletzt gemeldete Anteil entspricht ungefähr dem Mittel der dargestellten 24 Stunden."
             : abweichung > 0
-              ? `${ersatz ? "zu diesem Zeitpunkt lag" : "gerade liegt"} der Anteil also höher als im Tagesschnitt, typisch für die Mittagsstunden mit voller Solarleistung.`
-              : `${ersatz ? "zu diesem Zeitpunkt lag" : "gerade liegt"} der Anteil also niedriger als im Tagesschnitt — nachts und bei Flaute übernehmen steuerbare Kraftwerke.`}
+              ? `Der zuletzt gemeldete Anteil liegt ${anteilZahl(Math.abs(abweichung))} Prozentpunkte über diesem Mittel.`
+              : `Der zuletzt gemeldete Anteil liegt ${anteilZahl(Math.abs(abweichung))} Prozentpunkte unter diesem Mittel.`}
         </p>
       )}
     </div>

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {createPortal} from 'react-dom';
 import {useRouter} from 'next/navigation';
-import RegionScene from "./RegionScene";
+import RegionScene, {type SceneControls} from "./RegionScene";
 import MetricShareCard from "../charts/MetricShareCard";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import "../dashboard/dashboard.css";
@@ -11,7 +11,7 @@ import { barHeight, sidePathFromPath, type ProjectedRegion } from "../../lib/reg
 import type { Messwert } from "../../lib/atlas-format";
 import styles from "./landkreis.module.css";
 
-export type MapValue = { id: string; name: string; value: number | null; formatted: Messwert; href: string | null };
+export type MapValue = { id: string; name: string; value: number | null; formatted: Messwert; href: string | null; bars?: {label:string;value:number;color:string;formatted:Messwert}[] };
 
 /** Brief touch guidance, shared across regional pages for this tab session. */
 function MapGestureGuide({ready,showReplay=true}:{ready:boolean;showReplay?:boolean}) {
@@ -50,10 +50,11 @@ function MapGestureGuide({ready,showReplay=true}:{ready:boolean;showReplay?:bool
 /** Geography and a single, consistently scaled metric arrive as props.
  * A state map can pass districts through the same interface.
  */
-export default function RegionKarte({ shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "", onMetricChange }: {
+export default function RegionKarte({ carrierColors,onRegionReady,highlightedBars,onBarHover,sceneContext, shapes, metrics, member = "Gemeinde", overview = "Gemeindeübersicht", framingScale = 1, presentation = "hero", selectedPlace = "", onMetricChange, showSelectionSummary = true, onSelectionChange, focusSelection = false }: {
+  sceneContext?: import("../../lib/wind-context").SceneContext;
   shapes: ProjectedRegion[]; metrics: { id: string; label: string; values: MapValue[] }[];
   /** Singular of the mapped unit (link hint) and the name of the table below. */
-  member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string; onMetricChange?: (label:string,unit:string)=>void;
+  carrierColors?:Record<string,string>;onRegionReady?:(id:string)=>void;highlightedBars?:string[];onBarHover?:(label:string|null)=>void;onSelectionChange?: (id:string)=>void; focusSelection?:boolean; showSelectionSummary?: boolean; member?: string; overview?: string; framingScale?: number; presentation?: "hero" | "widget"; selectedPlace?: string; onMetricChange?: (label:string,unit:string)=>void;
 }) {
   const router=useRouter();
   useEffect(()=>{
@@ -85,6 +86,12 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const sidePaths = useMemo(() => sceneFailed ? new Map(shapes.map(s => [s.id, sidePathFromPath(s.path)])) : null, [shapes, sceneFailed]);
   const [sceneReady,setSceneReady]=useState(false);
   const [selected, setSelected] = useState(selectedPlace);
+  const [sceneControls,setSceneControls]=useState<SceneControls|null>(null);
+  useEffect(()=>{
+    if(!focusSelection||!sceneControls)return;
+    const shape=shapes.find(item=>item.id===selected);
+    sceneControls.focusRegion(shape?.id??'');
+  },[selected,focusSelection,sceneControls,shapes]);
   useEffect(()=>setSelected(selectedPlace),[selectedPlace]);
   const [touchInfo,setTouchInfo]=useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -104,6 +111,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
     return()=>document.removeEventListener("pointerdown",outside,true);
   },[touchInfo,hovered]);
   const openPlace=(id:string,touch=false)=>{
+    if(onSelectionChange){setSelected(id);setHovered(null);setTouchInfo(false);onSelectionChange(id);return;}
     if(touch){setTouchInfo(true);setHovered(id);return;}
     const place=values.find(v=>v.id===id);
     if(!place?.href){setHovered(id);return;}
@@ -140,9 +148,9 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
   const top = Math.min(...shapes.map(s => Math.min(s.bounds[1], s.anchor[1] - barHeight(byId.get(s.id)?.value ?? null, maximum)))) - 32;
   const bottom = Math.max(...shapes.map(s => s.bounds[3])) + 32;
   return <div className={styles.map} data-presentation={presentation} data-navigating={navigating}>
-    <div className={`${styles.mapTools} sc-dashboard`} data-sc-export-ignore="" role="group" aria-label="Kennzahl der Karte">
+    {metrics.length>1&&<div className={`${styles.mapTools} sc-dashboard`} data-sc-export-ignore="" role="group" aria-label="Kennzahl der Karte">
       <WidgetSetting label="Kennzahl der Karte" hideLabel variant={presentation==="hero"?"hero":"widget"} size={presentation==="hero"?"md":"sm"} stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
-    </div>
+    </div>}
     <div className={styles.mapCanvas} data-map-canvas onPointerDown={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerMove={event=>{if(!touchInfo||!hovered)setPointer({x:event.clientX,y:event.clientY});}} onPointerLeave={event => {if(event.pointerType!=="touch"&&!touchInfo)setHovered(null);}}>
     {/* Drawn only when the 3D scene fails. It used to be server-rendered and
         hidden on every page: 0.9 MB of duplicated boundary paths for the
@@ -164,9 +172,9 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
           const [x, y] = s.anchor, h = barHeight(v.value, maximum), r = 5;
           return <g key={s.id} className={styles.bar} data-selected={selected === s.id} data-hovered={hovered === s.id} data-bar={s.id} onPointerLeave={() => setHovered(null)} onPointerEnter={e => { if (e.pointerType !== "touch") setHovered(s.id); }} onClick={e => openPlace(s.id,(e.nativeEvent as PointerEvent).pointerType === "touch")}>
             <title>{`${v.name}: ${v.formatted.value} ${v.formatted.unit}`}</title>
-            <path d={`M${x-r},${y}L${x-r},${y-h}L${x},${y-h-3}L${x+r},${y-h}L${x+r},${y}L${x},${y+3}Z`} />
-            <path className={styles.barLight} d={`M${x-r},${y-h}L${x},${y-h+3}L${x+r},${y-h}L${x},${y-h-3}Z`} />
-            <path className={styles.barSide} d={`M${x},${y-h+3}L${x+r},${y-h}L${x+r},${y}L${x},${y+3}Z`} />
+            {v.bars ? v.bars.map((item,index)=>{const top=Math.max(0,...values.flatMap(value=>value.bars?.map(bar=>bar.value)??[]));const height=barHeight(item.value,top);return <rect key={item.label} x={x+(index%Math.ceil(v.bars!.length/2)-(Math.ceil(v.bars!.length/2)-1)/2)*6+Math.floor(index/Math.ceil(v.bars!.length/2))*3-2} y={y-height+Math.floor(index/Math.ceil(v.bars!.length/2))*5} width={4} height={height} style={{fill:item.color}}/>;}) : <path d={`M${x-r},${y}L${x-r},${y-h}L${x},${y-h-3}L${x+r},${y-h}L${x+r},${y}L${x},${y+3}Z`} />}
+            <path style={v.bars?{display:"none"}:undefined} className={styles.barLight} d={`M${x-r},${y-h}L${x},${y-h+3}L${x+r},${y-h}L${x},${y-h-3}Z`} />
+            <path style={v.bars?{display:"none"}:undefined} className={styles.barSide} d={`M${x},${y-h+3}L${x+r},${y-h}L${x+r},${y}L${x},${y+3}Z`} />
           </g>;
         })}
       </g>
@@ -184,8 +192,8 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       </g>
     </svg>
     </div>}
-    <RegionScene standalone={presentation==="widget"} framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
-    {presentation==="widget" && selectedValue && <div className={styles.mapSelection}><MetricShareCard name={selectedValue.name} value={selectedValue.formatted.value} unit={selectedValue.formatted.unit} share={selectedValue.value!==null&&total>0?selectedValue.value/total*100:null} context={member==="Gemeinde"?"vom Landkreis":"vom Gesamtwert"}/></div>}
+    <RegionScene carrierColors={carrierColors} onRegionReady={onRegionReady} highlightedBars={highlightedBars} onBarHover={onBarHover} onControls={setSceneControls} sceneContext={sceneContext} standalone={presentation==="widget"} framingScale={framingScale} heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={id=>{if(!touchInfo||id!==null)setHovered(id);}} onSelect={openPlace} onReady={ready=>{setSceneFailed(!ready);setSceneReady(ready);}} />
+    {presentation==="widget" && showSelectionSummary && selectedValue && <div className={styles.mapSelection}><MetricShareCard name={selectedValue.name} value={selectedValue.formatted.value} unit={selectedValue.formatted.unit} share={selectedValue.value!==null&&total>0?selectedValue.value/total*100:null} context={member==="Gemeinde"?"vom Landkreis":"vom Gesamtwert"}/></div>}
     <MapGestureGuide ready={sceneReady&&!sceneFailed} showReplay={presentation!=="widget"}/>
     {hoverShape && createPortal(<div ref={tooltip} role={touchInfo?"dialog":"tooltip"} aria-label={touchInfo?hoverShape.name:undefined} className={styles.mapTooltip} style={{...flagPosition,pointerEvents:touchInfo?"auto":"none"}}
       // Portal events still bubble through the React map parent. Keep the card
@@ -194,6 +202,7 @@ export default function RegionKarte({ shapes, metrics, member = "Gemeinde", over
       onPointerUp={event=>event.stopPropagation()} onClick={event=>event.stopPropagation()}>
       <strong>{hoverShape.name}</strong>
       <span>{hoverValue ? `${hoverValue.formatted.value} ${hoverValue.formatted.unit} · ${metric}` : contextDescription(hoverShape)}</span>
+      {hoverValue?.bars?.map(bar=><span key={bar.label}>{bar.label}: {bar.formatted.value} {bar.formatted.unit}</span>)}
       {touchInfo ? <>
         {hoverValue?.href&&<a href={hoverValue.href} style={{color:"inherit"}}>{member} öffnen ↗</a>}
         <button type="button" onClick={()=>{setHovered(null);setTouchInfo(false);}} style={{border:0,background:"transparent",color:"inherit",textAlign:"left",padding:"8px 0"}}>Schließen</button>
