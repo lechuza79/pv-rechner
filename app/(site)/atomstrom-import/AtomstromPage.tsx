@@ -215,7 +215,7 @@ export default async function AtomstromImportPage({ hero = true, seoVariant = fa
           <div className={stage.heroBackdrop}>
           <div className={stage.heroBody}>
             <div className={stage.intro}>
-              {!annual && <p className={stage.dataDate}><LiveDataStatus observedAt={latestObservation} retrievedAt={result ? asOf.toISOString() : undefined} renderedAt={new Date().toISOString()} /></p>}
+              {!annual && <p className={stage.dataDate}><LiveDataStatus observedAt={latestObservation} retrievedAt={result?.fetchedAt ?? (result && !result.stale ? asOf.toISOString() : undefined)} renderedAt={new Date().toISOString()} /></p>}
               <h1 id="atom-hero-title">{year ? `Wie viel Atomstrom importierte Deutschland ${year}?` : "Wie viel Atomstrom importiert Deutschland?"}</h1>
               <p>{seo ? <>{seo.yearAnswer} {seo.dayAnswer}</> : ytd ? <>Rechnerisch importierter Atomstrom macht {ytd.year} bislang {nf1(ytd.nuclearShare)} % der deutschen Stromerzeugung plus Atomstrom-Import aus. Andere Importe sind in dieser Bezugsgröße nicht enthalten.</> : <>Deutschland importiert über das europäische Netz auch Strom aus Kernenergie. Wie viel das ist, hängt von den Stromflüssen und dem Strommix der Nachbarländer ab.</>}</p>
 
@@ -224,7 +224,7 @@ export default async function AtomstromImportPage({ hero = true, seoVariant = fa
             </div>
             <EnergyMonitor scheme="dark" className={`${stage.teasers} atom-hero-tiles`} kpis={
               annual ? <WidgetPresentationProvider appearance={{theme:'dark'}}><StorySlider variant="hero" ariaLabel={`Atomstrom ${year} im Überblick`} labels={[`Atomstrom-Anteil ${year}`, `Monatsmengen ${year}`, `Zukauf und Verkauf ${year}`]}><NuclearShareWidget ytd={ytd} variant="teaser" /><NuclearYearWidget data={annual} teaser /><ElectricityTradeWidget presentation="hero" today={`${year}-12-31`} year={String(year)} period="year" onsite variant="radial" initialData={historicalTrade} /></StorySlider></WidgetPresentationProvider> : <AtomHeroCarousel ytd={ytd} nuclear={chartResult} trade={trade}
-                asOf={asOf.toISOString()} updatedAt={{ daily: result ? asOf.toISOString() : undefined }}
+                asOf={asOf.toISOString()} updatedAt={{ daily: result?.fetchedAt ?? (result && !result.stale ? asOf.toISOString() : undefined) }}
                 targets={{ share: '#einordnung', daily: '#tagesmengen', trade: '#stromhandel' }} />
             } />
           </div>
@@ -301,7 +301,7 @@ export default async function AtomstromImportPage({ hero = true, seoVariant = fa
             widgets:<NuclearShareWidget ytd={ytd} variant={annual ? "teaser" : "full"} /> },
           { id:"tagesmengen", title: annual ? "Wie verlief der Atomstrom-Import im Jahresverlauf?" : "Der Atomstrom-Import schwankt täglich", chartSide:"left",
             description:<>{annual ? <><p>{highestMonth && lowestMonth && <>Unter den vollständig auswertbaren Monaten lag {monthName(highestMonth.month)} mit <strong>{nf1(highestMonth.nuclearGwh)} GWh</strong> am höchsten, {monthName(lowestMonth.month)} mit {nf1(lowestMonth.nuclearGwh)} GWh am niedrigsten.</>}</p></> : seo && <p>{seo.dayAnswer} {seo.dayComparison}</p>}<p>Wie viel Kernenergie rechnerisch nach Deutschland gelangt, hängt von den Stromflüssen und dem zeitgleichen Erzeugungsmix der Nachbarländer ab. </p></>,
-            widgets:annual ? <NuclearYearWidget data={annual} /> : <NuclearDailyWidget data={chartResult} metric="energy" asOf={asOf.toISOString()} updatedAt={result ? asOf.toISOString() : undefined} variant="full" /> },
+            widgets:annual ? <NuclearYearWidget data={annual} /> : <NuclearDailyWidget data={chartResult} metric="energy" asOf={asOf.toISOString()} updatedAt={result?.fetchedAt ?? (result && !result.stale ? asOf.toISOString() : undefined)} variant="full" /> },
           ...(annual ? [{ id: 'herkunft', title: `Aus welchen Ländern kam der Atomstrom ${year}?`, chartSide: 'right' as const,
             description: <><p>{topOrigin && <>Der größte rechnerische Beitrag kam aus {IMPORT_COUNTRIES[topOrigin[0] as keyof typeof IMPORT_COUNTRIES]}: <strong>{nf1(topOrigin[1] / 1000)} TWh</strong> beziehungsweise {nf1(topOrigin[1] / annual.nuclearGwh * 100)} % der erfassten Atomstrom-Importmenge.</>}</p><p>Die Zuordnung beruht auf dem Strommix des jeweiligen Nachbarlandes und seinen Stromflüssen nach Deutschland. Sie weist keine Lieferung eines bestimmten Kraftwerks nach.</p></>,
             widgets: <NuclearYearWidget data={annual} view="countries" /> }] : []),
