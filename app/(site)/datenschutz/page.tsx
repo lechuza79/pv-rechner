@@ -209,6 +209,16 @@ export default function DatenschutzPage() {
           deiner Berechnung, keine Freitexte und keinen Bezug zu deiner Person.
         </p>
         <p style={S.p}>
+          Bei unseren abonnierten Ortsmeldungen unterscheiden diese Zähler die
+          Aussendung, die Mailvariante und den verwendeten Link (Bild oder Ortsseite)
+          sowie den Start der verlinkten Widget-Wiedergabe. Alle Empfänger derselben
+          Variante erhalten dieselben Zusätze. Wir verwenden dafür keine
+          Empfängerkennung, keinen Öffnungspixel und keinen Weiterleitungsdienst.
+          Gezählt wird erst auf unserer Website; die Zähler werden nicht mit
+          E-Mail-Adressen oder Abonnements verbunden. Wiederholte Aufrufe können
+          mehrfach zählen; die Summen sind keine Anzahl eindeutiger Personen.
+        </p>
+        <p style={S.p}>
           Aufrufe desselben Besuchs fasst der Dienst über eine kurzlebige
           Kennung zusammen, die aus der eingehenden Anfrage berechnet und nach
           24 Stunden verworfen wird — anders ließen sich Besuche nicht von

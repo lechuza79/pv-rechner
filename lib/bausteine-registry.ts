@@ -1039,6 +1039,16 @@ export const BAUSTEINE: Baustein[] = [
       "Zählt Aufrufe und stellt nichts dar. Ein Beispiel davon wäre eine leere Fläche mit einer Nebenwirkung.",
   },
   {
+    datei: "components/NewsletterMeasurement.tsx",
+    name: "NewsletterMeasurement",
+    zweck: "Zählt Newsletter-Ankünfte und gestartete Widget-Wiedergaben je fester Aussendung und Variante, ohne Empfängerkennung.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+    keinBeispielWeil: "Unsichtbare Messung; Browserprobe prüft die Zähler ohne Produktionsdaten zu erzeugen.",
+  },
+  {
     datei: "components/HerkunftsMelder.tsx",
     name: "HerkunftsMelder",
     zweck:

@@ -1,4 +1,6 @@
 'use client';
+import {useInModal} from "../Modal";
+import {reportNewsletterPlayback} from "../../lib/newsletter-playback";
 import {useEffect,useState,useRef} from 'react';
 import {IconPause,IconPlay,IconRefresh} from '../Icons';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
@@ -14,6 +16,8 @@ import {RadialChartLayout} from '../charts/RadialChartLayout';
 
 function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}) {
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
+ const inModal=useInModal();
+ useEffect(()=>{if(playing&&!paused&&!compact&&inModal)reportNewsletterPlayback(data.month);},[playing,paused,compact,inModal,data.month]);
  const [exportTime,setExportTime]=useState<number|null>(null);
  const exportHost=useRef<HTMLDivElement>(null);
  const savedExport=useRef<{selected:string;focused:boolean;hovered:string|null;playing:boolean;frame:number|null}|null>(null);
