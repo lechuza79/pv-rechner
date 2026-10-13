@@ -4803,5 +4803,74 @@
       "latitude": 51.56824,
       "longitude": 6.17574
     }
+  },
+  "05962012": {
+    "wind-1": {
+      "name": "Windanlagen bei Halver",
+      "latitude": 51.22441,
+      "longitude": 7.45747
+    }
+  },
+  "05962016": {
+    "wind-1": {
+      "name": "Windanlagen bei Hemer",
+      "latitude": 51.40491,
+      "longitude": 7.76845
+    }
+  },
+  "05962024": {
+    "wind-1": {
+      "name": "Windanlagen bei Iserlohn",
+      "latitude": 51.40191,
+      "longitude": 7.65453
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Iserlohn",
+      "latitude": 51.44307,
+      "longitude": 7.67643
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Iserlohn",
+      "latitude": 51.39095,
+      "longitude": 7.60074
+    }
+  },
+  "05962032": {
+    "wind-1": {
+      "name": "Windanlagen bei Lüdenscheid",
+      "latitude": 51.18662,
+      "longitude": 7.67502
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lüdenscheid",
+      "latitude": 51.23979,
+      "longitude": 7.63972
+    }
+  },
+  "05962044": {
+    "wind-1": {
+      "name": "Windanlagen bei Nachrodt-Wiblingwerde",
+      "latitude": 51.32984,
+      "longitude": 7.58609
+    }
+  },
+  "05962048": {
+    "wind-1": {
+      "name": "Windanlagen bei Neuenrade",
+      "latitude": 51.30451,
+      "longitude": 7.77275
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Neuenrade",
+      "latitude": 51.27841,
+      "longitude": 7.89393
+    }
+  },
+  "05962056": {
+    "wind-1": {
+      "name": "Windanlagen bei Schalksmühle",
+      "latitude": 51.28752,
+      "longitude": 7.57832
+    }
   }
 }
