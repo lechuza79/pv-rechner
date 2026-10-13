@@ -164,6 +164,15 @@ for (const [name, viewport] of [
      */
     test("keine Zahl läuft aus ihrer eigenen Spalte heraus", async ({ page }) => {
       test.setTimeout(90_000); // Includes a cold district render with over 200 municipalities.
+      // Measure the full table without software-rendering the unrelated 3D map.
+      // On CI that renderer can starve even DOM reads until the test times out.
+      await page.addInitScript(() => {
+        const original = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function(this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+          if (/webgl/i.test(type)) return null;
+          return (original as (...args: unknown[]) => unknown).call(this, type, ...rest);
+        } as typeof original;
+      });
       // Der Eifelkreis führt die beiden extremsten Pro-Kopf-Werte des Landes
       // (Herbstmühle 1.395.922 Wp, Scheitenkorb 876.886 Wp) in EINER Liste.
       // The district table is now a disclosure below the animated ranking.
