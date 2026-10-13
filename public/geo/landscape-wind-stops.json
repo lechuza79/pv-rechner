@@ -3442,5 +3442,175 @@
       "latitude": 52.09999,
       "longitude": 8.48331
     }
+  },
+  "05358024": {
+    "wind-1": {
+      "name": "Windanlagen bei Jülich",
+      "latitude": 50.9308,
+      "longitude": 6.27667
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Jülich",
+      "latitude": 50.96961,
+      "longitude": 6.42557
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Jülich",
+      "latitude": 50.95878,
+      "longitude": 6.3518
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Jülich",
+      "latitude": 50.89141,
+      "longitude": 6.3242
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Jülich",
+      "latitude": 50.97385,
+      "longitude": 6.3789
+    }
+  },
+  "05358028": {
+    "wind-1": {
+      "name": "Windanlagen bei Kreuzau",
+      "latitude": 50.69934,
+      "longitude": 6.50663
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kreuzau",
+      "latitude": 50.70081,
+      "longitude": 6.53914
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kreuzau",
+      "latitude": 50.7763,
+      "longitude": 6.53102
+    }
+  },
+  "05358032": {
+    "wind-1": {
+      "name": "Windanlagen bei Langerwehe",
+      "latitude": 50.81174,
+      "longitude": 6.34062
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Langerwehe",
+      "latitude": 50.82511,
+      "longitude": 6.38413
+    }
+  },
+  "05358036": {
+    "wind-1": {
+      "name": "Windanlagen bei Linnich",
+      "latitude": 51.0139,
+      "longitude": 6.29787
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Linnich",
+      "latitude": 50.97817,
+      "longitude": 6.23293
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Linnich",
+      "latitude": 50.96455,
+      "longitude": 6.35068
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Linnich",
+      "latitude": 51.01296,
+      "longitude": 6.3457
+    }
+  },
+  "05358040": {
+    "wind-1": {
+      "name": "Windanlagen bei Merzenich",
+      "latitude": 50.82602,
+      "longitude": 6.562
+    }
+  },
+  "05358044": {
+    "wind-1": {
+      "name": "Windanlagen bei Nideggen",
+      "latitude": 50.65611,
+      "longitude": 6.38567
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Nideggen",
+      "latitude": 50.67144,
+      "longitude": 6.50366
+    }
+  },
+  "05358048": {
+    "wind-1": {
+      "name": "Windanlagen bei Niederzier",
+      "latitude": 50.94368,
+      "longitude": 6.49076
+    }
+  },
+  "05913000": {
+    "wind-1": {
+      "name": "Windanlagen bei Dortmund",
+      "latitude": 51.56841,
+      "longitude": 7.41947
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dortmund",
+      "latitude": 51.46504,
+      "longitude": 7.39176
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dortmund",
+      "latitude": 51.48278,
+      "longitude": 7.3931
+    }
+  },
+  "05914000": {
+    "wind-1": {
+      "name": "Windanlagen bei Hagen",
+      "latitude": 51.293,
+      "longitude": 7.56823
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hagen",
+      "latitude": 51.32632,
+      "longitude": 7.55587
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Hagen",
+      "latitude": 51.32029,
+      "longitude": 7.4672
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hagen",
+      "latitude": 51.29342,
+      "longitude": 7.48615
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Hagen",
+      "latitude": 51.32112,
+      "longitude": 7.53392
+    }
+  },
+  "05915000": {
+    "wind-1": {
+      "name": "Windanlagen bei Hamm",
+      "latitude": 51.72023,
+      "longitude": 7.87182
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hamm",
+      "latitude": 51.71882,
+      "longitude": 7.72048
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Hamm",
+      "latitude": 51.62372,
+      "longitude": 7.81508
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Hamm",
+      "latitude": 51.73556,
+      "longitude": 7.74673
+    }
   }
 }
