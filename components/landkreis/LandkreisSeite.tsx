@@ -1,3 +1,4 @@
+import LandkreisRanking from "./LandkreisRanking";
 import {readAssociationReference} from '../../lib/verband-reference-server';
 import {associationPath,RELEASED_ASSOCIATIONS,type AssociationSlug} from '../../lib/verband-reference';
 import {kaiserslauternRaceSettings} from "../../lib/race-settings";
@@ -144,7 +145,8 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       {region.region_id === "07335" ? featuredRace ? <DistrictRaceWidget regionId="07" name={featuredRace.region.name} stand={featuredRace.stand} rows={featuredRace.rows} history={featuredRace.history} settings={kaiserslauternRaceSettings} wording={{title:"Solarleistung auf privaten Dächern je Einwohner",members:"Alle Landkreise",leaders:"Die zehn führenden Landkreise",unit:"Landkreise"}}/> : <p role="status">Der Landkreisvergleich ist gerade nicht verfügbar.</p> : <DistrictRaceWidget regionId={association?undefined:region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
     </section>
     </>}
-    <Suspense fallback={<RegionNavigation places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>
+    <Suspense fallback={<RegionNavigation collapseDesktop={isDistrict} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection collapseDesktop={isDistrict} content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>
+    {isDistrict && !association && <Suspense fallback={<p role="status">Platzierungen werden geladen …</p>}><LandkreisRanking className={styles.section} id={region.region_id} stateName={state.name}/></Suspense>}
 
     <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><RegionMonitorSection content={content} videoSupported={!association} weatherEndpoint={association?`/api/verband/solartag?verband=${region.slug}`:undefined} regionId={region.region_id} name={region.name} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
     {comparable&&<LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary={text.table}

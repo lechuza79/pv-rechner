@@ -83,3 +83,5 @@
  --widget-metric-min:200px;
  --widget-metric-illustrated-min:200px;
 }
+
+.presentation.presentation:has(>[data-ranking-combination]){max-width:1200px;background:var(--atlas-surface);}

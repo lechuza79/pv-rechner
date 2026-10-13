@@ -126,3 +126,14 @@
   .scrollControls button svg{transition:transform 180ms ease}
   .scrollControls button:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
 }
+
+/* Three desktop rows; display:none also removes collapsed links from keyboard navigation. */
+.expandControl{display:none}
+@media(min-width:1001px){
+ .overview[data-desktop-collapse=true][data-expanded=false] .grid>li:nth-child(n+10){display:none}
+ .overview[data-desktop-collapse=true]:has(.grid>li:nth-child(10)) .expandControl{display:flex;justify-content:center;margin-top:24px}
+}
+@media(min-width:761px) and (max-width:1000px){
+ .overview[data-desktop-collapse=true][data-expanded=false] .grid>li:nth-child(n+7){display:none}
+ .overview[data-desktop-collapse=true]:has(.grid>li:nth-child(7)) .expandControl{display:flex;justify-content:center;margin-top:24px}
+}

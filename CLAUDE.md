@@ -2816,3 +2816,7 @@ update scheduling is independent. See `docs/verbandsgemeinde-referenz.md`.
 ### Municipal district map and image downloads (10.10.2026)
 
 The municipal monitor embeds the shared regional 3D map with the current municipality selected. The existing near-viewport boundary defers loading. Image downloads preserve the current theme and WebGL camera while retaining the designed title, metric, data vintage, source rail and branding; interactive controls and general help stay outside the image. Ranking exports retain their explicit formats plus the current dimensions. Regression coverage: `e2e/municipal-map-release.spec.ts` (opt in with `ATLAS_DATA_E2E=1`; requires the populated municipal database).
+
+### District ranking composition (13 October 2026)
+
+District pages show the shared ranking composition below the municipality directory. Desktop directories initially show three rows; mobile keeps the swipe row. District comparisons use one prepared monthly snapshot, never a rollup scan during page rendering. See `docs/kreis-ranking-daten.md` for preparation and release checks.

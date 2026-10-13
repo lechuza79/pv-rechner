@@ -70,6 +70,7 @@ export function galleryEntries(place:GalleryPlace):GalleryEntry[] {
         return {label:placeLabel??v.label,src:v.src+(query?`?${query}`:''),height:v.height,supportsGrid:v.supportsGrid};
       });
     }
+    if(w.id==='gemeinde-ranking')variants.push({label:'Kombination: Podest und Platzierungen',src:`/embed/galerie/gemeinde-ranking?ags=${place.ags}&list=on`,height:600});
     // All hosts derive supported representations from the parent widget.
     variants=variants.map(variant=>{
       const query=new URL(variant.src,'https://preview.local').searchParams;

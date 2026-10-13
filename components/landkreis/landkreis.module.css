@@ -385,3 +385,7 @@
 .sceneLocationMarker[data-scene-pin="true"] svg{visibility:hidden}
 
 .mapWidget .sceneHost canvas{filter:drop-shadow(0 14px 18px rgb(0 0 0 / .35))}
+
+/* Match the municipality ranking panel, including its light comparison surface. */
+.rankingPanel{background:var(--atlas-surface);padding:clamp(28px,5vw,64px);border-radius:28px}
+@media(max-width:600px){.rankingPanel{padding:28px 20px;border-radius:24px}}
