@@ -629,7 +629,7 @@ export function MastrLiveRadial({
         </div>
       ))}
 
-      <div style={{ position: "relative", width: SIZE, maxWidth: "100%", flexShrink: 0, margin: isCompact ? "0 auto" : "0 auto 20px" }}>
+      <div style={{ position: "relative", width: `min(${SIZE}px, var(--widget-radial-max, ${SIZE}px))`, maxWidth: "100%", flexShrink: 0, margin: isCompact ? "0 auto" : "0 auto 20px" }}>
         {/* Breite/Höhe als CSS, nicht als SVG-Attribut: `height="auto"` ist als
             Attribut ungültig (dort sind nur Längen erlaubt) und wurde vom
             Browser als Fehler verworfen. Über `style` skaliert das Bild

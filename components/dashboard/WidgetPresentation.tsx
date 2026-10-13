@@ -11,7 +11,7 @@ import styles from './WidgetPresentation.module.css';
 import './dashboard.css';
 
 /** Embed presentation adapter: chart data and chart rendering remain unchanged. */
-export default function WidgetPresentation({appearance,children,widgetId,variant}:{appearance?:WidgetAppearance;children:ReactNode;widgetId?:string;variant?:'full'|'compact'|'hero'}) {
+export default function WidgetPresentation({appearance,children,widgetId,variant,density}:{density?:'compact';appearance?:WidgetAppearance;children:ReactNode;widgetId?:string;variant?:'full'|'compact'|'hero'}) {
   const host=useWidgetHost();
   const [queryVariant,setQueryVariant]=useState<'full'|'compact'|'hero'>('full');
   // Controlled hosts may switch a mounted instance without remounting it.
@@ -39,5 +39,5 @@ export default function WidgetPresentation({appearance,children,widgetId,variant
   const themes=widgetId?widgetConfiguration(widgetId)?.themes:undefined;
   const supported={...configured,...(configured.theme&&themes&&!themes.includes(configured.theme)?{theme:themes[0]}:{})};
   const effective=supported.layout==='allocated'&&contract&&!contract.supportsAllocation?{...supported,layout:undefined}:supported;
-  return <div style={contract?{'--widget-max-width':`${contract.maxWidth}px`,'--widget-compact-max-width':`${contract.maxWidth}px`} as CSSProperties:undefined} data-widget-host={host?'dashboard':'embed'} data-widget-palette={effective.theme?'shared':'legacy'} data-widget-family={contract?.family} data-widget-variant={selectedVariant} data-widget-height={contract?.height} className={`${foundation.foundation} sc-dashboard ${styles.presentation}`} data-story-scheme={effective.theme==='hero'?'highlight':effective.theme??'light'} data-widget-partner={effective.partner?.brand.id} data-widget-layout={effective.layout} data-widget-background={effective.background===false?'off':'on'}><WidgetPresentationProvider appearance={effective}><WidgetReferenceDataBoundary widgetId={widgetId}>{children}</WidgetReferenceDataBoundary></WidgetPresentationProvider></div>;
+  return <div style={contract?{'--widget-max-width':`${contract.maxWidth}px`,'--widget-compact-max-width':`${contract.maxWidth}px`} as CSSProperties:undefined} data-widget-density={density} data-widget-host={host?'dashboard':'embed'} data-widget-palette={effective.theme?'shared':'legacy'} data-widget-family={contract?.family} data-widget-variant={selectedVariant} data-widget-height={contract?.height} className={`${foundation.foundation} sc-dashboard ${styles.presentation}`} data-story-scheme={effective.theme==='hero'?'highlight':effective.theme??'light'} data-widget-partner={effective.partner?.brand.id} data-widget-layout={effective.layout} data-widget-background={effective.background===false?'off':'on'}><WidgetPresentationProvider appearance={effective}><WidgetReferenceDataBoundary widgetId={widgetId}>{children}</WidgetReferenceDataBoundary></WidgetPresentationProvider></div>;
 }
