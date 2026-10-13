@@ -5158,5 +5158,198 @@
       "latitude": 51.71764,
       "longitude": 8.28743
     }
+  },
+  "05570032": {
+    "wind-1": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.0201,
+      "longitude": 7.88969
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.07071,
+      "longitude": 7.88895
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.04447,
+      "longitude": 7.80199
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.01118,
+      "longitude": 7.80572
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.0374,
+      "longitude": 7.821
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Ostbevern",
+      "latitude": 52.08106,
+      "longitude": 7.86193
+    }
+  },
+  "05958004": {
+    "wind-1": {
+      "name": "Windanlagen bei Arnsberg",
+      "latitude": 51.38379,
+      "longitude": 7.92515
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Arnsberg",
+      "latitude": 51.4089,
+      "longitude": 7.91644
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Arnsberg",
+      "latitude": 51.40246,
+      "longitude": 8.02019
+    }
+  },
+  "05958008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bestwig",
+      "latitude": 51.31856,
+      "longitude": 8.37065
+    }
+  },
+  "05958012": {
+    "wind-1": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.43898,
+      "longitude": 8.68735
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.40608,
+      "longitude": 8.52763
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.43061,
+      "longitude": 8.60506
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.43906,
+      "longitude": 8.53292
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.40457,
+      "longitude": 8.63326
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.42052,
+      "longitude": 8.63286
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.442,
+      "longitude": 8.5522
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Brilon",
+      "latitude": 51.42242,
+      "longitude": 8.49792
+    }
+  },
+  "05958020": {
+    "wind-1": {
+      "name": "Windanlagen bei Hallenberg",
+      "latitude": 51.10998,
+      "longitude": 8.64564
+    }
+  },
+  "05958024": {
+    "wind-1": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.52278,
+      "longitude": 8.82793
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.45582,
+      "longitude": 8.91236
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.46506,
+      "longitude": 8.88095
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.43295,
+      "longitude": 8.90575
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.49381,
+      "longitude": 8.86055
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.42758,
+      "longitude": 8.92683
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.48538,
+      "longitude": 8.82627
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Marsberg",
+      "latitude": 51.398,
+      "longitude": 8.818
+    }
+  },
+  "05958036": {
+    "wind-1": {
+      "name": "Windanlagen bei Olsberg",
+      "latitude": 51.30013,
+      "longitude": 8.50868
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Olsberg",
+      "latitude": 51.29999,
+      "longitude": 8.46951
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Olsberg",
+      "latitude": 51.38789,
+      "longitude": 8.46315
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Olsberg",
+      "latitude": 51.33285,
+      "longitude": 8.4623
+    }
+  },
+  "05958040": {
+    "wind-1": {
+      "name": "Windanlagen bei Schmallenberg",
+      "latitude": 51.17372,
+      "longitude": 8.25256
+    }
+  },
+  "05958044": {
+    "wind-1": {
+      "name": "Windanlagen bei Sundern (Sauerland)",
+      "latitude": 51.28322,
+      "longitude": 7.92104
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Sundern (Sauerland)",
+      "latitude": 51.24405,
+      "longitude": 7.97596
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Sundern (Sauerland)",
+      "latitude": 51.37799,
+      "longitude": 7.93351
+    }
   }
 }
