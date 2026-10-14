@@ -4,7 +4,7 @@ import {test, expect} from '@playwright/test';
 for (const width of [375, 1440]) {
  test(`product landscape navigation retains usable controls at ${width}px`, async ({page}) => {
   await page.setViewportSize({width,height:900});
-  await page.goto('/fuer-organisationen/kommunen?gemeinde=05370020');
+  await page.goto('/fuer-organisationen/kommunen?gemeinde=03458009');
   const scene=page.locator('[data-place-phase="ready"]');
   const nav=scene.getByRole('group',{name:'Navigation in der Landschaft'});
   await expect(nav).toBeVisible({timeout:60000});
@@ -20,17 +20,17 @@ for (const width of [375, 1440]) {
   expect(await next.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(await previous.evaluate(el=>getComputedStyle(el).backgroundColor));
   await expect(next).toHaveText('Zum Windpark');
   await next.click();
-  await expect(scene.getByRole('heading',{name:'Windanlagen bei Hückelhoven',exact:true})).toBeVisible({timeout:20000});
+  await expect(scene.getByRole('heading',{name:'Windanlagen Hatten',exact:true})).toBeVisible({timeout:20000});
   await expect(next).toBeEnabled({timeout:20000});
   await previous.click();
-  await expect(scene.getByRole('heading',{name:'Hückelhoven',exact:true})).toBeVisible({timeout:20000});
+  await expect(scene.getByRole('heading',{name:'Hatten',exact:true})).toBeVisible({timeout:20000});
   expect(await nav.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
  });
 }
 
 test('embedded landscape retains its compact navigation and header destination',async({page})=>{
  await page.setViewportSize({width:375,height:812});
- await page.goto('/embed/kommunen-landschaft?ags=05370020&theme=dark');
+ await page.goto('/embed/kommunen-landschaft?ags=03458009&theme=dark');
  const scene=page.locator('[data-navigation="widget"][data-ready="true"]');
  await expect(scene).toBeVisible({timeout:60000});
  await expect(scene.locator('[data-tour] [data-action-button]')).toHaveCount(0);
