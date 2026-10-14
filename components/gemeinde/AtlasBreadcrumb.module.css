@@ -1,4 +1,4 @@
-.breadcrumb{position:relative;display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;line-height:1.6;min-width:0}
+.breadcrumb:global(.atlas-breadcrumb){position:relative;display:flex;align-items:center;gap:9px;flex-wrap:nowrap;font-size:12px;line-height:1.6;min-width:0}
 .breadcrumb a{color:inherit;text-decoration:none}
 .breadcrumb a:hover{text-decoration:underline}
 .breadcrumb [aria-current]{opacity:.7}
@@ -13,13 +13,16 @@
 .placement:global(.atlas-hero-local-nav)::before{display:none}
 
 /* Native disclosure also works in server-rendered municipality documents. */
-.parent,.desktopParent{display:contents}
+.parent,.desktopParent{display:flex;align-items:center;gap:inherit;min-width:0;flex:0 0 auto}
+.flexibleParent{flex:0 1 auto}
+.parent{flex-shrink:0}
+.desktopParent a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .collapsedParents,.breadcrumb .mobileSeparator{display:none}
-.current{overflow-wrap:anywhere;min-width:0}
+.current{min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:700px){
   .desktopParent{display:none}
   .breadcrumb .mobileSeparator{display:block}
-  .collapsedParents{display:block;min-width:0}
+  .collapsedParents{display:block;min-width:0;flex-shrink:0}
   .collapsedParents summary{display:flex;align-items:center;justify-content:center;width:44px;min-height:44px;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
   .collapsedParents summary::-webkit-details-marker{display:none}
   .collapsedParents summary:focus-visible{outline:2px solid currentColor;outline-offset:2px}

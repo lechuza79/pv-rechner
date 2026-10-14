@@ -28,8 +28,8 @@ export default function AtlasBreadcrumb({ parents, name, framed = false }: { par
     };
   }, []);
   return <nav aria-label="Brotkrümel" className={`atlas-breadcrumb ${styles.breadcrumb} ${framed ? styles.framed : ""}`}>
-    {parents.map((parent, index) => <span key={parent.href} className={index > 0 ? styles.desktopParent : styles.parent}>
-      <a href={parent.href}>{parent.name}</a>
+    {parents.map((parent, index) => <span key={parent.href} className={index > 0 ? `${styles.desktopParent} ${index === parents.length - 1 ? styles.flexibleParent : ""}` : styles.parent}>
+      <a href={parent.href} title={parent.name}>{parent.name}</a>
       <svg className="sc-live-icon" aria-hidden="true" focusable="false" height="16" viewBox="0 0 28 14" fill="none">
         <path d="M1 7h25m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
@@ -45,6 +45,6 @@ export default function AtlasBreadcrumb({ parents, name, framed = false }: { par
         <path d="M1 7h25m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </>}
-    <span className={styles.current} aria-current="page">{name}</span>
+    <span className={styles.current} aria-current="page" title={name}>{name}</span>
   </nav>;
 }
