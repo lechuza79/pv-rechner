@@ -65,3 +65,17 @@ Domain, Gewicht = was der Link im Index an uns weitergibt.
 | rheinpfalz.de, nidda.de, radio901.de, herzogtum-direkt.de, heringen.de, suedhessen.app, homburg1.de, nachrichten-kl.de, gude.news | 203–522 | 0 | im Index, ohne Gewicht |
 | ln-online.de, trier.de, lokalo.de, kalkar.de, riedstadt.de, niedere-boerde.de | 233–434 | – | nicht im Index |
 | github.com, beacons.ai, Teams | – | – | nur Besucher, kein Outreach |
+
+### Zwei Quellen für Links (14.10.2026)
+
+- **DataForSEO** hat einen eigenen Crawler (DataForSeoBot) und eine eigene
+  Backlink-Datenbank; er übernimmt nichts von Google. Kennt am 14.10. 48 Domains,
+  davon ~35 Spam. Die Seiten, die er nicht kennt (Trier, Kalkar, Riedstadt,
+  LN, Lokalo), sperren seinen Crawler nicht — er war schlicht noch nicht dort.
+- **Google Search Console** (Eigenschaft `https://solar-check.io/`, nicht die
+  Domain-Eigenschaft; Bericht „Links", nur in der Weboberfläche): kennt am 14.10.
+  vier verweisende Websites — reddit.com (48), gude.news, wetterau.news,
+  sebastianschaeder.de. Der Bericht hinkt Wochen hinterher; keiner der
+  Gemeinde-Links steht dort bisher.
+- Bei jeder Auswertung beide nebeneinander halten; DataForSEO ist schneller und
+  breiter, Google ist die Sicht, die zählt.
