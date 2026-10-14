@@ -40,5 +40,16 @@ describe('durable local versions',()=>{
   expect(await reader.loadWidgetDashboard(id)).toEqual(original);expect(await reader.loadWidgetDashboard(second)).toEqual(next);
   expect(await loadWidgetDashboard('../secret')).toBeNull();
  });
+ it('persists county comparison settings and independent view overrides',async()=>{
+  const before=configuration();
+  before.sections[0].root={id:'race',label:'Regionalvergleich',widgetId:'regional-race',presentation:'full'};
+  before.sources={race:'/embed/regional-race/12063'};
+  const src='/embed/regional-race/12063?comparison=district&toggle=off&view=municipalities&metric=count&segment=all&municipalitiesMetric=per-capita&municipalitiesSegment=balcony';
+  const next=applyDashboardSelection(before,'race',{src,presentation:'full'});
+  const id=await saveWidgetDashboard(next);
+  expect((await loadWidgetDashboard(id))?.sources.race).toBe(src);
+  expect(before.sources.race).toBe('/embed/regional-race/12063');
+  expect(applyDashboardSelection(before,'race',{src:'/embed/regional-race/de?metric=kwp',presentation:'full'}).sources.race).toContain('/de?');
+ });
  it('fails closed in production when the database is unavailable',async()=>{vi.stubEnv('NODE_ENV','production');await expect(saveWidgetDashboard(configuration())).rejects.toThrow('storage unavailable');});
 });

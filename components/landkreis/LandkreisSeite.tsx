@@ -1,7 +1,7 @@
 import LandkreisRanking from "./LandkreisRanking";
 import {districtAssociations} from '../../lib/verband-directory';
-import {kaiserslauternRaceSettings} from "../../lib/race-settings";
-import {loadRegionalRace} from "../../lib/regional-race-server";
+import {defaultDistrictRaceConfig,districtRaceSelection,regionalRaceWording} from '../../lib/district-race-config';
+import DistrictRaceComparisonServer from './DistrictRaceComparison.server';
 import {regionMapMetrics} from '../../lib/region-map-metrics';
 import {regionalRaceData} from "../../lib/regional-race";
 import RegionNavigation from "./RegionNavigation";
@@ -74,10 +74,9 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   // had arrived, one wait after the other. Guarded by
   // lib/__tests__/atlas-seite-parallel.test.ts.
   const content=monitorContentForPreview(association?.content ?? (isDistrict?loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand):loadRegionContent(region.region_id,children.map(c=>c.region_id),stand)));
-  const [shapes, allPrograms, featuredRace] = await Promise.all([
+  const [shapes, allPrograms] = await Promise.all([
     isDistrict ? districtGeometry(association?.districtId??region.region_id,association?.members) : childGeometry(level as "bundesland" | "de", region.region_id),
     level === "de" ? Promise.resolve([] as Awaited<ReturnType<typeof getFundingPrograms>>) : getFundingPrograms(),
-    region.region_id === "07335" ? loadRegionalRace("07",kaiserslauternRaceSettings) : Promise.resolve(null),
   ]);
   // Reuse the map's geographic boundaries for the footer-style navigation cards.
   const outlines = shapes.map(shape => {
@@ -100,7 +99,9 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   }
   const foerderProgramme=[...programs.values()].map(programm=>({programm,standLabel:fundingStandLabel(programm),zaehlt:fundingZaehlt(programm),geltungsbereich:districtPrograms.some(p=>p.id===programm.id)?(isDistrict?"Gilt im gesamten Landkreis":"Gilt im gesamten Bundesland"):"Gilt in: "+coverage.get(programm.id)?.join(", ")}));
   const naechstesUpdate=naechsteAktualisierung(IMPORT_TAGE,stand,new Date());
-  const raceData = regionalRaceData(towns,ranking,stand,memberBasePath);
+  const raceConfig=defaultDistrictRaceConfig(region.region_id);
+  const municipalSettings=districtRaceSelection(region.region_id,raceConfig,'municipalities').settings;
+  const raceData = regionalRaceData(towns,ranking,stand,memberBasePath,isDistrict&&!association?municipalSettings:undefined);
   const townIds = new Set(towns.map(t => t.region_id));
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
   const comparable=towns.length>1;
@@ -139,7 +140,8 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     </div>
     {missingGeometry.length > 0 && <p>Für {missingGeometry.map(p => p.name).join(", ")} fehlt der Kartenumriss. Die Werte stehen in der Übersicht.</p>}
     {comparable&&<><section id="atlas-ranking" data-widget-ranking className={`${styles.section} ${styles.raceSection}`} aria-label="Ranking">
-      {region.region_id === "07335" ? featuredRace ? <DistrictRaceWidget regionId="07" name={featuredRace.region.name} stand={featuredRace.stand} rows={featuredRace.rows} history={featuredRace.history} settings={kaiserslauternRaceSettings} wording={{title:"Solarleistung auf privaten Dächern je Einwohner",members:"Alle Landkreise",leaders:"Die zehn führenden Landkreise",unit:"Landkreise"}}/> : <p role="status">Der Landkreisvergleich ist gerade nicht verfügbar.</p> : <DistrictRaceWidget regionId={association?undefined:region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
+      {isDistrict&&!association?<Suspense fallback={<p role="status">Regionalvergleich wird geladen …</p>}><DistrictRaceComparisonServer districtId={region.region_id} config={raceConfig} municipal={{regionId:region.region_id,name:region.name,stand,wording:regionalRaceWording('landkreis',municipalSettings),settings:municipalSettings,...raceData}}/></Suspense>:<DistrictRaceWidget regionId={association?undefined:region.region_id} name={region.name} stand={stand} wording={text.race} {...raceData}/>}
+
     </section>
     </>}
     <Suspense fallback={<RegionNavigation groups={groups} directoryPath={basePath} collapseDesktop={isDistrict} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/>}><RegionNavigationSection groups={groups} directoryPath={basePath} collapseDesktop={isDistrict} content={content} places={places} outlines={outlines} title={text.overview} parentName={region.name} locationPhrase={ortPhrase(region)}/></Suspense>

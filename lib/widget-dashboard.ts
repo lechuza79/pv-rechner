@@ -37,7 +37,7 @@ export function parseDashboardConfiguration(raw:string):DashboardConfiguration {
    const source=input.sources[node.id];
    if(typeof source!=='string'||source.length>1500||!source.startsWith('/embed/'))throw new Error('Invalid widget source');
    const url=new URL(source,'https://solar-check.io');
-   const expected=url.pathname===`/embed/${node.widgetId}`||url.pathname===`/embed/galerie/${node.widgetId}`||(node.widgetId==='regional-race'&&/^\/embed\/regional-race\/(\d{2}|\d{5})$/.test(url.pathname))||(node.widgetId==='erzeugung'&&url.pathname==='/embed/erzeugung-mini');
+   const expected=url.pathname===`/embed/${node.widgetId}`||url.pathname===`/embed/galerie/${node.widgetId}`||(node.widgetId==='regional-race'&&/^\/embed\/regional-race\/(de|\d{2}|\d{5})$/.test(url.pathname))||(node.widgetId==='erzeugung'&&url.pathname==='/embed/erzeugung-mini');
    if(widgetVariantFromQuery(node.widgetId,url.searchParams)!==(node.presentation??'full'))throw new Error('Mismatched widget presentation');
    if(url.origin!=='https://solar-check.io'||url.hash||!expected)throw new Error('Mismatched widget source');
   }

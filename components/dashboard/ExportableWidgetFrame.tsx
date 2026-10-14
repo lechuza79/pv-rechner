@@ -49,7 +49,7 @@ import {chartMetadataLabel, chartQuantityLabel} from '../../lib/chart-labels';
 const EDGE_INSET = 28;
 const EDGE_GAP = 14;
 
-export function ExportableWidgetFrame({dataTable, widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, exportBranding = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({dataTable, widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, exportBranding = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, sharePath, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
   dataTable?: ReactNode;
   exportBranding?: boolean;
@@ -60,6 +60,8 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
   widget: WidgetDef;
   /** Selection needed to reconstruct this widget when following a shared link. */
   shareParams?: Record<string, string>;
+  /** Standalone route for a parameterized widget whose selection changes on a page. */
+  sharePath?: string;
   imageFormats?: {label: string; width: number; height: number}[];
   animated?: boolean;
   /** Explicit fallback for widgets that already supported local video downloads. */
@@ -150,7 +152,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
     } catch { /* External embeds keep their own directly accessible URL. */ }
     if (partner) { for (const [key,value] of Object.entries(shareParams ?? {})) url.searchParams.set(key,value); url.hash=''; }
     else {
-    url = widgetShareUrl(url.toString(), detailId, shareParams, embedPath(widget), host?.query);
+    url = widgetShareUrl(url.toString(), detailId, shareParams, sharePath ?? embedPath(widget), sharePath ? host?.query ?? {} : host?.query);
     }
     if (navigator.clipboard && window.isSecureContext) {
       try {
@@ -178,7 +180,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
     catch { setLiveUrl(undefined); }
   }, []);
   const def = widgetForPlace(widget, place, liveUrl);
-  const contactPage = widgetShareUrl(new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io').toString(), detailId, shareParams, embedPath(widget), host?.query);
+  const contactPage = widgetShareUrl(new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io').toString(), detailId, shareParams, sharePath ?? embedPath(widget), sharePath ? host?.query ?? {} : host?.query);
   const contactHref = `/kontakt?${new URLSearchParams({
     topic: 'Widget einbetten',
     message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,

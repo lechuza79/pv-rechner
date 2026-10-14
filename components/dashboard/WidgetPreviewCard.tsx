@@ -1,4 +1,5 @@
 "use client";
+import RaceDataControls from './RaceDataControls';
 import {useEffect,useState,type ReactNode} from 'react';
 import SecondaryButton from '../SecondaryButton';
 import type {DashboardWidgetSelection} from '../../lib/widget-dashboard';
@@ -29,6 +30,7 @@ export default function WidgetPreviewCard({entry,defaults,anchorId,settings,noti
   const [teaser,setTeaser]=useState(initialPresentation==='hero');
   const [gridSize,setGridSize]=useState<WidgetGridSize>(initialGridSize??(initialCompact?'small':'medium'));
   const [compact,setCompact]=useState(initialCompact&&!!entry.variants[0]?.compactSrc);
+  const [raceSource,setRaceSource]=useState<string|undefined>();
   const [dataSettings,setDataSettings]=useState<Record<string,string>>(initialDataSettings);
   const [theme,setTheme]=useState<WidgetTheme|undefined>(undefined);
   const [background,setBackground]=useState<boolean|undefined>(undefined);
@@ -53,7 +55,7 @@ export default function WidgetPreviewCard({entry,defaults,anchorId,settings,noti
   const configurable=!!configuration;
   if(!variant)return null;
   // Appearance travels over the shared channel; only data/variant changes navigate.
-  const variantSource=initialSource&&selected===initialSelected?widgetPresentationSource(entry.id,initialSource,presentation):isTeaser?variant.heroSrc!:presentation==='compact'&&variant.compactSrc?variant.compactSrc:variant.src;
+  const variantSource=entry.id==='regional-race'&&raceSource?raceSource:initialSource&&selected===initialSelected?widgetPresentationSource(entry.id,initialSource,presentation):isTeaser?variant.heroSrc!:presentation==='compact'&&variant.compactSrc?variant.compactSrc:variant.src;
   const previewSource=configurable?widgetPreviewSource(variantSource):variantSource;
   const previewUrl=new URL(previewSource,'https://preview.local');
   const switchedPresentation=presentation!==(initialPresentation??'full');
@@ -68,6 +70,7 @@ export default function WidgetPreviewCard({entry,defaults,anchorId,settings,noti
   const src=previewUrl.pathname+previewUrl.search;
   const appearance=configurable?{theme:effectiveTheme,background:effectiveBackground,sharing:effectiveSharing,...(slot?{layout:'allocated' as const}:{}),...(configuration?.autoplay?{autoplay:effectiveAutoplay}:{}),}:undefined;
   const controls=(configurable&&<ControlPanel>
+    {entry.id==='regional-race'&&<RaceDataControls src={src} onChange={setRaceSource}/>}
     {configuration?.dataSettings?.filter(field=>!isTeaser||!(field.key in (contract?.params??{}))).map(field=>!field.when||field.when.values.includes(dataSettings[field.when.key]??previewUrl.searchParams.get(field.when.key)??configuration.dataSettings?.find(other=>other.key===field.when!.key)?.defaultValue??'')?<ControlField key={field.key} label={field.label}><SelectField disabled={!interactive} ariaLabel={`${field.label} für ${entry.title}`} value={dataSettings[field.key]??previewUrl.searchParams.get(field.key)??field.defaultValue} onChange={event=>setDataSettings(current=>({...current,[field.key]:event.target.value}))}>{field.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</SelectField></ControlField>:null)}
     <ControlField label="Theme" onReset={theme!==undefined?()=>setTheme(undefined):undefined}><SelectField disabled={!interactive} ariaLabel={`Theme für ${entry.title}`} value={effectiveTheme} onChange={e=>setTheme(e.target.value as WidgetTheme)}>{configuration?.themes.map(value=><option key={value} value={value}>{{light:'Hell',dark:'Dunkel',hero:'Hero'}[value]}</option>)}</SelectField></ControlField>
     {configuration?.autoplay&&<ControlField label="Automatisch abspielen" onReset={autoplay!==undefined?()=>setAutoplay(undefined):undefined} toggle={{enabled:effectiveAutoplay,onChange:setAutoplay}}/>}
