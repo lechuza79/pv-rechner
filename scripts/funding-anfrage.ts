@@ -85,6 +85,16 @@ function abbruch(grund: string): never {
   process.exit(1);
 }
 
+/**
+ * A single case that fails its own checks (mailbox not attributable, missing
+ * mandatory details). In the --auto run it is skipped and named, so it cannot
+ * hold back the other due cases; a single-case call still ends with exit 1.
+ */
+class Abgelehnt extends Error {}
+function abgelehnt(grund: string): never {
+  throw new Abgelehnt(grund);
+}
+
 // ─── Datenbank ───────────────────────────────────────────────────────────────
 
 type Db = { url: string; kopf: Record<string, string> };
@@ -147,15 +157,15 @@ async function baueAnfrage(d: Db, id: string): Promise<Fertig> {
     const { renderMunicipalInquiry } = await import("../lib/funding-inquiry-draft");
     const q = review.enquiry;
     const mailbox = postfachBefund(q.recipient, review.name, q.website);
-    if (!mailbox.ok) abbruch(`Postfach abgewiesen: ${mailbox.grund}`);
-    if (new URL(q.recipientSource).hostname.replace(/^www\./, "") !== new URL(q.website).hostname.replace(/^www\./, "")) abbruch("Kontaktquelle gehört nicht zur geprüften Amtswebsite.");
+    if (!mailbox.ok) abgelehnt(`Postfach abgewiesen: ${mailbox.grund}`);
+    if (new URL(q.recipientSource).hostname.replace(/^www\./, "") !== new URL(q.website).hostname.replace(/^www\./, "")) abgelehnt("Kontaktquelle gehört nicht zur geprüften Amtswebsite.");
     const draft = renderMunicipalInquiry(review.name, q.question, review.evidence.map(e => e.url), q.recipientSource);
     const missing = fehlendePflichtangaben(draft.body);
-    if (missing.length) abbruch(`Pflichtangaben fehlen: ${missing.join(", ")}`);
+    if (missing.length) abgelehnt(`Pflichtangaben fehlen: ${missing.join(", ")}`);
     return { id, traeger: review.name, an: q.recipient, anlass: "klaerung", subject: draft.subject, body: draft.body };
   }
   const p = FUNDING_PROGRAMS[id];
-  if (!p) abbruch(`Unbekanntes Programm: ${id}`);
+  if (!p) abgelehnt(`Unbekanntes Programm: ${id}`);
 
   // Was die Stelle bestätigen soll, kommt aus dem Katalog — nicht aus einer
   // zweiten Aufzählung, die beim nächsten Satz vergessen würde.
@@ -195,16 +205,16 @@ async function baueAnfrage(d: Db, id: string): Promise<Fertig> {
   });
 
   const fehlt = fehlendePflichtangaben(entwurf.body);
-  if (fehlt.length) abbruch(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
+  if (fehlt.length) abgelehnt(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
 
   const an = await empfaengerFuer(d, id);
-  if (!an) abbruch(`Kein Rollen-Postfach für ${p.traeger} (${p.agsCode}) hinterlegt.`);
+  if (!an) abgelehnt(`Kein Rollen-Postfach für ${p.traeger} (${p.agsCode}) hinterlegt.`);
   const zeilen = await hole<{ website: string | null }>(
     d,
     `kommunen_kontakt?region_id=eq.${p.agsCode}&select=website`,
   );
   const befund = postfachBefund(an, p.region, zeilen[0]?.website ?? undefined);
-  if (!befund.ok) abbruch(`Postfach abgewiesen: ${befund.grund}`);
+  if (!befund.ok) abgelehnt(`Postfach abgewiesen: ${befund.grund}`);
 
   return {
     id,
@@ -513,7 +523,18 @@ async function autoLauf(d: Db, senden: boolean) {
   console.log(`Fällig: ${zuSenden.join(", ")}`);
 
   const fertige = [];
-  for (const id of zuSenden) fertige.push(await baueAnfrage(d, id));
+  for (const id of zuSenden) {
+    try {
+      fertige.push(await baueAnfrage(d, id));
+    } catch (e) {
+      if (!(e instanceof Abgelehnt)) throw e;
+      console.log(`  übersprungen: ${id} — ${e.message}`);
+    }
+  }
+  if (!fertige.length) {
+    console.log("Kein Fall hat die eigenen Prüfungen bestanden — nichts verschickt.");
+    return;
+  }
 
   if (!senden) {
     for (const f of fertige) console.log(`\n--- ${f.id} → ${f.an}\n${f.subject}\n\n${f.body}`);
