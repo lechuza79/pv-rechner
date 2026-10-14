@@ -21,4 +21,12 @@ describe("landscape stages draw complete turbines", () => {
     const scene: CheckedScene = { turbines: [{ id: "T1", x: 4, z: 4, hub: null, rotor: 120 }], buildings: [tower] };
     expect(sceneDefekte(scene)).toEqual(["turbine T1 without dimensions", "tower building B1"]);
   });
+
+  it("rejects a surveyed wind turbine body far from the register position", () => {
+    // Hückelhoven: the surveyed tower stood 42 m from the register position.
+    const far = { id: "W1", function: "51002_1220", surfaces: [{ points: [[40, 0, 0], [45, 155, 5]] as [number, number, number][] }] };
+    const chimney = { id: "C1", function: "51002_1251", surfaces: [{ points: [[40, 0, 0], [45, 80, 5]] as [number, number, number][] }] };
+    const scene: CheckedScene = { turbines: [{ id: "T1", x: 0, z: 0, hub: 149, rotor: 136 }], buildings: [far, chimney] };
+    expect(sceneDefekte(scene)).toEqual(["surveyed wind turbine building W1"]);
+  });
 });

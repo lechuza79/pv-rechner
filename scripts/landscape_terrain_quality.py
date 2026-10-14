@@ -85,6 +85,50 @@ def normalise_bw_crs(path, source_url):
                     referenceEvidence='https://owsproxy.lgl-bw.de/owsproxy/wcs/WCS_INSP_BW_Hoehe_Coverage_DGM1?SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=2.0.1&COVERAGEID=EL.ElevationGridCoverage')
 
 
+ST_DGM_PAGE = 'https://www.lvermgeo.sachsen-anhalt.de/de/gdp-dgm5.html'
+
+
+def normalise_st_crs(path, source_url, source_member):
+    """Sachsen-Anhalt DGM5 tiles partly ship without any CRS metadata.
+
+    The series is ETRS89/UTM32: the download page labels every tile '32' + east km + north km,
+    and sibling tiles of the same series carry EPSG:25832 on the identical 2 km / 5 m grid.
+    Only a tile without CRS that sits exactly on that grid gets the reference, as metadata in a
+    VRT; pixels and affine transform stay untouched. Any other CRS is left to fail downstream.
+    """
+    import hashlib
+    from pathlib import Path
+    from urllib.parse import urlparse
+    import rasterio
+    from rasterio.shutil import copy as raster_copy
+    parsed = urlparse(source_url)
+    if parsed.hostname != 'www.lvermgeo.sachsen-anhalt.de' or '/ajax/1/prepare/' not in parsed.path:
+        raise ValueError('Trusted Sachsen-Anhalt download required for CRS metadata correction')
+    with rasterio.open(path) as source:
+        if source.crs is not None:
+            return path, None
+        t = source.transform
+        if (t.a, t.b, t.d, t.e) != (5.0, 0.0, 0.0, -5.0) or (source.width, source.height) != (400, 400):
+            raise ValueError('Sachsen-Anhalt tile without CRS is not on the 5 m / 2 km DGM5 grid')
+        if t.c % 2000 or t.f % 2000 or not (500000 <= t.c <= 900000) or not (5600000 <= t.f <= 5900000):
+            raise ValueError('Sachsen-Anhalt tile without CRS lies outside the UTM32 tile grid of the state')
+        # The archive member names the zone and the lower-left corner: dgm5_32_<east km>_<north km>_2_st.tif
+        expected = 'dgm5_32_%d_%d_2_st.tif' % (round(source.bounds.left / 1000), round(source.bounds.bottom / 1000))
+        if Path(str(source_member)).name != expected:
+            raise ValueError('Sachsen-Anhalt tile name %s does not match its UTM32 position %s' % (source_member, expected))
+    vrt = path.with_suffix('.vrt'); temporary = path.with_suffix('.next.vrt')
+    raster_copy(path, temporary, driver='VRT')
+    with rasterio.open(temporary, 'r+') as dataset:
+        dataset.crs = 'EPSG:25832'
+    temporary.replace(vrt)
+    sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+    return vrt, dict(sourceFile=path.name, sourceUrl=source_url, originalSha256=sha(path), originalCRS=None,
+                     normalisedFile=vrt.name, normalisedSha256=sha(vrt), normalisedCRS='EPSG:25832',
+                     method='VRT metadata correction only; original pixel array and affine transform unchanged',
+                     sourceMember=source_member,
+                     referenceEvidence=ST_DGM_PAGE+' (tile labels 32+east km+north km; sibling tiles carry EPSG:25832 on the same grid)')
+
+
 def clip_context_to_measured_surface(scene, metric_boundary):
     """Clip optional water vectors; no unknown ground height enters their geometry."""
     from shapely.geometry import box, LineString, Polygon

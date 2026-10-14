@@ -10,7 +10,7 @@ from datetime import datetime,timezone
 import numpy as np
 import rasterio
 from rasterio.merge import merge
-from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs
+from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs, normalise_st_crs
 from pyproj import Transformer
 from shapely.geometry import shape,Polygon,Point,LineString,GeometryCollection
 from shapely.ops import transform
@@ -50,7 +50,11 @@ def buildings(files,boundary,windows,origin):
    pts=[p for s in surfaces for p in s['points']]
    if pts:
     x=sum(p[0]+origin[0] for p in pts)/len(pts);y=sum(origin[1]-p[2] for p in pts)/len(pts)
-    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):result[identifier]=dict(id=identifier,surfaces=surfaces)
+    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):
+     result[identifier]=dict(id=identifier,surfaces=surfaces)
+     # Keep the surveyed function of structures that are not ordinary buildings (e.g. 51002_1220 wind turbine).
+     function=(el.findtext('b:function',namespaces=ns) or '').strip()
+     if function and not function.startswith('31001_'):result[identifier]['function']=function
    el.clear()
  for file in files:
   if file.suffix=='.zip':
@@ -119,6 +123,9 @@ def main(id):
  for index,path in enumerate(rasters):
   if '-dgm-bw-' in path.name:
    rasters[index],correction=normalise_bw_crs(path,source_entries[path.name]['url'])
+   if correction:crs_normalisations.append(correction)
+  elif path.name.startswith('st-') and '-dgm-nb' not in path.name:
+   rasters[index],correction=normalise_st_crs(path,source_entries[path.name]['url'],source_entries[path.name].get('sourceMember'))
    if correction:crs_normalisations.append(correction)
  extent=coords+[(east,north)]+[(east+p['x'],north-p['z']) for p in stops]
  for field in solar:extent.extend((east+x,north-z) for x,z in field['ring'])

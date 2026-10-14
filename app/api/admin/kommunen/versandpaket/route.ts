@@ -11,6 +11,8 @@ import { postfachBefund, MAX_JE_LAUF } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
 import { darfInDenVersand } from "../../../../../lib/outreach-wiedervorlage";
+import { renderSammelDraft } from "../../../../../lib/kommunen-outreach-draft";
+import { hatSzene, kommunenSeiteUrl } from "../../../../../lib/kommunen-seite";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -99,10 +101,12 @@ export async function GET(req: NextRequest) {
     body: string;
     body_html: string;
     variante: string;
-    briefart: "platzierung" | "info";
+    briefart: "platzierung" | "info" | "sammel";
     verwaltung_domain: string | null;
     seite_url: string | null;
     rangliste_url: string | null;
+    /** A shared-mailbox letter covers several towns; all of them count as sent. */
+    region_ids?: string[];
     stand: string;
   }[] = [];
 
@@ -218,13 +222,53 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  // ONE LETTER PER SHARED MAILBOX (operator, 14.10.2026). An Amt that runs six
+  // member towns got six near-identical mails on one day; it now gets one that
+  // lists every town with its page and placement.
+  const jePostfach = new Map<string, typeof paket>();
+  for (const b of paket) {
+    const k = b.empfaenger.trim().toLowerCase();
+    jePostfach.set(k, [...(jePostfach.get(k) ?? []), b]);
+  }
+  const gebuendelt: typeof paket = [];
+  for (const gruppe of jePostfach.values()) {
+    if (gruppe.length === 1) {
+      gebuendelt.push(gruppe[0]);
+      continue;
+    }
+    const erster = gruppe[0];
+    const mitSzene = gruppe.find((b) => hatSzene(b.region_id)) ?? null;
+    const draft = renderSammelDraft({
+      orte: gruppe.map((b) => ({
+        name: b.name,
+        pageUrl: b.seite_url ?? "",
+        platzierung: b.briefart === "platzierung" ? b.subject : null,
+      })),
+      anPresse: erster.an_presse,
+      anKlima: erster.empfaenger_rolle === "klima",
+      empfaenger: erster.empfaenger,
+      kommunenUrl: kommunenSeiteUrl("https://solar-check.io", (mitSzene ?? erster).region_id),
+      szeneOrt: mitSzene?.name ?? null,
+    });
+    gebuendelt.push({
+      ...erster,
+      name: gruppe.map((b) => b.name).join(" · "),
+      region_ids: gruppe.map((b) => b.region_id),
+      subject: draft.subject,
+      body: draft.body,
+      body_html: draft.bodyHtml,
+      briefart: "sammel",
+      rangliste_url: null,
+    });
+  }
+
   return NextResponse.json({
     schub: schluessel,
     kampagne: schub.kampagne,
     charge,
     heute,
     inCharge: zeilen.length,
-    paket,
+    paket: gebuendelt,
     uebersprungen,
   });
 }
