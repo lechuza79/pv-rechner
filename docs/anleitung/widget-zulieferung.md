@@ -81,6 +81,72 @@ for the relevant boundary. Do not add another handwritten list of all widgets.
 - Keep each instance independent. Changing one widget must not change its neighbor;
   shared controls affect only their declared group. Export/share reproduce that selection.
 
+## Sizes: presentation, grid slot and plot are different decisions
+
+The actual values are read from the following code, not copied into this document:
+
+1. `lib/widget-registry.ts` selects the widget's `configuration.presentations`.
+   Read its `full` contract and only its existing optional `compact` / `hero` contracts.
+   `includes` / `omits` describe content; these names do not mean fixed pixel dimensions.
+   A story's reduced detail is likewise explicit; do not invent a universal story size.
+2. `lib/widget-presentation-contract.ts` defines `minWidth`, `preferredWidth`, `maxWidth`,
+   `height`, `supportsAllocation`, `minAllocatedHeight`, `allocatedHeightBreakpoints`
+   and allowed `gridSizes`. Use `widgetPresentationContract` in `lib/widget-appearance.ts`
+   to resolve the selected presentation. Do not silently enable all grid sizes.
+3. `WIDGET_GRID_SIZES` in `lib/widget-composition.ts` defines the current named presets:
+   Flach, Klein, Mittel, Hoch, Groß, Liste, Breit, Bühne and Großflächig. These are layout
+   offers, not different charts. `widgetGridOptions` filters eligible presentation/slot
+   pairs; `selectWidgetGridOption` supplies the existing fallback. Reuse both functions.
+4. `COMPOSITION_ROW`, `COMPOSITION_GAP` and `gridExtent` define the shared vertical grid
+   arithmetic: rows × row unit + intervening gaps. Width comes from the actual host and
+   column allocation. `widgetCompositionItem` / `resolveComposition` apply the renderer's
+   minima and narrow-layout requirements; a preset's row count is not an absolute height
+   promise when the content needs more space. Nested groups use the same solver.
+5. `components/charts/ChartViewport.tsx` measures Cartesian plot space;
+   `components/charts/RadialChartLayout.tsx` fits a round plot into both dimensions.
+   Standalone content height and dashboard allocation must each work. Do not shrink text
+   to make a large presentation fit into a small slot.
+
+Example: a wide race can put its explanation beside the plot. Its narrow form stacks
+them using the existing contract; this does not authorize changing buttons or typography.
+For a new widget, show which existing size offers are usable and why. For an existing
+widget, change its contract only when the requested behavior requires it.
+
+## Styles and typography: choose a role, reuse its owner
+
+The binding procedures are the **Design-System**, **Reuse before implementation** and
+**Schriftgrößen-Single-Source** sections of [visuals](visuals.md). The authoritative
+component inventory remains `lib/bausteine-registry.ts` and `/admin/komponenten`; the table
+below is a task-oriented lookup, not a second registry or a declaration of new variants.
+
+| Need | Use / read |
+| --- | --- |
+| Widget title, eyebrow, subtitle, update/context and padding | `components/dashboard/WidgetFrame.tsx` slots and `components/dashboard/dashboard.css`; retain the existing title/subtitle hierarchy rather than restyling a heading in a host. |
+| Theme, surface, text, accent, border, radius and spacing | `lib/theme.ts`, `lib/widget-theme.ts`, then the active `components/social/atlas-foundations.module.css` and widget-frame mapping. Preserve semantic series colors separately from theme accent. |
+| Body/copy and explanatory text | Existing component role; `--font-size-body`, `--font-size-lead`, or the already used `--font-size-editorial-body` / intro / note / label roles from `lib/theme.ts`. Do not switch roles just because the host is wider. |
+| Dense labels / axis text | Existing chart role, `--font-size-small`, `--font-size-caption`, `--font-size-micro`; preserve geometry-bound export calculations and their paired layout constants. |
+| Prominent number and quieter unit/sign | Existing chart number owner or `components/MetricValue.tsx`; choose the supported display role from `lib/theme.ts`, retain value/unit proportions and formatting. Never replace a complete existing number component merely to reuse a token. |
+| Primary, secondary, text or icon-only action | `components/ActionButton.tsx` and its CSS module; use existing `variant`, `size` and `iconOnly` options. Labels and forward/back behavior follow the accepted consumer. |
+| Widget period / year / other selection | `components/dashboard/WidgetSetting.tsx`; its `size`, `stepper` and `variant` options preserve the existing control geometry. |
+| Previous/next, playback, reset, quick ranges | `components/dashboard/WidgetControls.tsx`: `WidgetStepper`, `WidgetIconButton`, `WidgetPresetButtons`. Use registered size options rather than new icon dimensions. |
+| Text selection such as Landkreise / Gemeinden | `ChoiceButtons` with `segmented` in `components/AccordionField.tsx`. An on/off `Switch` is a different interaction. Preserve the scoped active-state styling. |
+| Menu-style dropdown / form select / place search | `components/Auswahl.tsx` / `components/SelectField.tsx` / `components/OnsiteSearch.tsx`; use the existing domain adapter for place data. Do not rebuild triggers or menus. |
+| Explanation, modal, options, share/download | `components/InfoTooltip.tsx`, `components/Modal.tsx`, and `components/dashboard/ExportableWidgetFrame.tsx`; the frame owns existing shared actions and export metadata. |
+| Icons | `components/Icons.tsx` inside the appropriate control. Reuse its compact icon geometry; do not introduce enlarged chevrons or a local SVG copy. |
+
+Font family, weight, line height, color and size are one role, not size alone. In CSS,
+reference the owning tokens; SVG presentation attributes use the existing `fsPx` helper
+from `lib/theme.ts`; CSS-less outputs use the existing export token resolver. Tokens and
+frame/foundation mappings can override each other: inspect the accepted consumer's
+computed style before claiming a value applies to every widget. Existing legacy numeric
+declarations are not permission to add more, nor a mandate to restyle unrelated variants.
+
+For a typography/spacing change, the handoff identifies the actual role/component and
+the affected presentation, plus the narrow/wide result. Existing safeguards include
+`lib/__tests__/schriftgroessen-waechter.test.ts`,
+`lib/__tests__/bausteine-registry.test.ts` and the contrast/overflow suites referenced
+in [visuals](visuals.md). Keep their exceptions explicit; do not weaken them for a copy.
+
 ## Focused acceptance — complete the boundary, not every test again
 
 Choose from existing suites rather than inventing another audit runner:
