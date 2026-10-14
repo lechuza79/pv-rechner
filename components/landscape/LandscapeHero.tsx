@@ -52,7 +52,7 @@ export default function LandscapeHero({placeId:id,showPlacePicker=false,sourcesH
  },[phase,requestKey]);
  const name=landscapePlaces[id]??'Ort';
  const scene=<div className={styles.placeScene} data-place-phase={phase} inert={phase!=='ready'} aria-busy={phase==='loading'}>
-      {shown&&<MunicipalityHeroPreview key={shown.key} municipality={shown.id} name={landscapePlaces[shown.id]??'Ort'} sceneOnly onReady={ok=>ready(shown.key,ok)} initialStop={initialStop} onStopChange={onStopChange} destinationTarget={destinationTarget}/>}
+      {shown&&<MunicipalityHeroPreview key={shown.key} municipality={shown.id} name={landscapePlaces[shown.id]??'Ort'} sceneOnly onReady={ok=>ready(shown.key,ok)} initialStop={initialStop} onStopChange={onStopChange} destinationTarget={destinationTarget} navigation={presentation}/>}
      </div>;
  const notice=<>
      {(phase==='loading'||phase==='error')&&<div className={styles.placeLoading} role={phase==='error'?'alert':'status'} aria-live="polite">
