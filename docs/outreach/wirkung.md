@@ -49,3 +49,19 @@ Aussendung" und die Zeilen „Verweise" und „Autorität" kommen von dort.
 - Die Antwortquote der Kreisschübe ist bisher deutlich niedriger als im August.
   Ungeprüft, ob das am Kurzbrief, an der Jahreszeit oder an der fehlenden Zeit
   (erst 1–8 Tage alt) liegt; Vergleich nach 28 Tagen.
+
+### Alle belegten Links, 14.10.2026 abends
+
+23 belegt (neu: Kalkar, Website der Stadt, am Versandtag selbst). Stärke = Rang der
+Domain, Gewicht = was der Link im Index an uns weitergibt.
+
+| Domain | Stärke | Gewicht | Art |
+|---|---|---|---|
+| app.meindorfnet.de (Wallertheim) | 239 | 96 | Dorf-App |
+| berkenthin.de | 217 | 95 | Gemeinde, Startseite |
+| lebendiges-neuwied.de | 393 | 10 | Presse |
+| radiomk.de | 393 | 7 | Presse |
+| wetterau.news | 423 | 3 | Presse |
+| rheinpfalz.de, nidda.de, radio901.de, herzogtum-direkt.de, heringen.de, suedhessen.app, homburg1.de, nachrichten-kl.de, gude.news | 203–522 | 0 | im Index, ohne Gewicht |
+| ln-online.de, trier.de, lokalo.de, kalkar.de, riedstadt.de, niedere-boerde.de | 233–434 | – | nicht im Index |
+| github.com, beacons.ai, Teams | – | – | nur Besucher, kein Outreach |
