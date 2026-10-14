@@ -8070,5 +8070,92 @@
       "latitude": 52.96403,
       "longitude": 13.22052
     }
+  },
+  "15086015": {
+    "wind-1": {
+      "name": "Windanlagen bei Burg",
+      "latitude": 52.27676,
+      "longitude": 11.95878
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Burg",
+      "latitude": 52.26296,
+      "longitude": 11.90392
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Burg",
+      "latitude": 52.26914,
+      "longitude": 11.92614
+    }
+  },
+  "15086035": {
+    "wind-1": {
+      "name": "Windanlagen bei Elbe-Parey",
+      "latitude": 52.43165,
+      "longitude": 12.03211
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Elbe-Parey",
+      "latitude": 52.37931,
+      "longitude": 12.02103
+    }
+  },
+  "15086040": {
+    "wind-1": {
+      "name": "Windanlagen bei Genthin",
+      "latitude": 52.43336,
+      "longitude": 12.15499
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Genthin",
+      "latitude": 52.25385,
+      "longitude": 12.22802
+    }
+  },
+  "15086055": {
+    "wind-1": {
+      "name": "Windanlagen bei Gommern",
+      "latitude": 52.11864,
+      "longitude": 11.8647
+    }
+  },
+  "15086080": {
+    "wind-1": {
+      "name": "Windanlagen bei Jerichow",
+      "latitude": 52.52942,
+      "longitude": 12.069
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Jerichow",
+      "latitude": 52.47666,
+      "longitude": 12.09872
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Jerichow",
+      "latitude": 52.43168,
+      "longitude": 12.04844
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Jerichow",
+      "latitude": 52.49586,
+      "longitude": 12.22129
+    }
+  },
+  "15086140": {
+    "wind-1": {
+      "name": "Windanlagen bei Möckern",
+      "latitude": 52.17341,
+      "longitude": 11.88578
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Möckern",
+      "latitude": 52.16322,
+      "longitude": 11.79941
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Möckern",
+      "latitude": 52.27054,
+      "longitude": 11.95709
+    }
   }
 }
