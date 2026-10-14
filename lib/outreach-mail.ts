@@ -187,6 +187,9 @@ export const ROLLEN_WORTE = [
   // office's contact; the send check took it for a surname and aborted the
   // whole scheduled enquiry run (3 red runs on 12.10.2026).
   "anfrage",
+  // Lübeck publishes klimafonds@luebeck.de as the contact of its climate fund
+  // (luebeck.de, Klimafonds page); rejected as a surname on 14.10.2026.
+  "klimafonds",
 ];
 
 /**

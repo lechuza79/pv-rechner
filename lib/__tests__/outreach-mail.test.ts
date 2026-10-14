@@ -339,3 +339,10 @@ describe("anfrage@ is a function mailbox", () => {
     expect(postfachBefund("mueller@stadt-hildesheim.de", "Hildesheim").ok).toBe(false);
   });
 });
+
+describe("klimafonds@ is a function mailbox", () => {
+  it("accepts Lübeck's climate fund contact, still rejects a surname", () => {
+    expect(postfachBefund("klimafonds@luebeck.de", "Lübeck", "https://www.luebeck.de/de/stadtentwicklung/klima/klimafonds/klimafonds").ok).toBe(true);
+    expect(postfachBefund("schulze@luebeck.de", "Lübeck").ok).toBe(false);
+  });
+});
