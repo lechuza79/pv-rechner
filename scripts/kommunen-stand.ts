@@ -264,6 +264,39 @@ async function main(): Promise<void> {
       (g) => raus.find((z) => domainAus(z.website) === g.domain)?.outreach_status !== "veroeffentlicht",
     );
     if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((g) => g.gemeinde).join(", ")}`, "warn");
+
+    // WHAT THE LINKS ARE WORTH (operator, 14.10.2026: "was hat das an Domain
+    // Authority gebracht"). The backlink index's own domain rank (0–1000, not
+    // Google's), by month, and which linking domains carry it. Measured that
+    // day: rank 0 → 99 → 110 → 137 from July to mid-October, carried almost
+    // entirely by two outreach links (meindorfnet.de/Wallertheim, berkenthin.de);
+    // the ~35 spam domains rank 0 and add nothing.
+    if (indexGelesen) {
+      try {
+        const auth = "Basic " + Buffer.from(`${login}:${pass}`).toString("base64");
+        const frag = async (pfad: string, body: unknown) => {
+          const r = await fetch(`https://api.dataforseo.com/v3/backlinks/${pfad}/live`, {
+            method: "POST",
+            headers: { Authorization: auth, "Content-Type": "application/json" },
+            body: JSON.stringify([body]),
+          });
+          const t = ((await r.json()) as any).tasks?.[0];
+          if (t?.status_code !== 20000) throw new Error(t?.status_message ?? String(r.status));
+          return t.result?.[0];
+        };
+        const [summe, verlauf, quellen] = await Promise.all([
+          frag("summary", { target: "solar-check.io", backlinks_status_type: "live", internal_list_limit: 0 }),
+          frag("history", { target: "solar-check.io", date_from: "2026-07-01" }),
+          frag("referring_domains", { target: "solar-check.io", backlinks_status_type: "live", limit: 10, order_by: ["rank,desc"] }),
+        ]);
+        const monate = ((verlauf?.items ?? []) as any[]).map((i) => `${i.date.slice(0, 7)}: ${i.rank}`).join(" · ");
+        log(`    Autorität (Rang im Backlink-Index, 0–1000, nicht Googles Wert): heute ${summe.rank} · Monatsende ${monate}`);
+        const traeger = ((quellen?.items ?? []) as any[]).filter((i) => i.rank > 0).map((i) => `${i.domain} (${i.rank})`);
+        log(`      getragen von: ${traeger.join(", ") || "keiner Domain mit Rang über 0"}`);
+      } catch (e) {
+        log(`Autorität NICHT gelesen: ${(e as Error).message}`, "warn");
+      }
+    }
   }
 
   // Die Abos sind der eigentliche Ertrag: Wer sich einträgt, hat eingewilligt —

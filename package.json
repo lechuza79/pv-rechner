@@ -130,6 +130,7 @@
     "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts",
     "video:db": "tsx scripts/video-export-db.ts",
     "video:worker": "tsx --conditions react-server scripts/video-export-worker.ts",
+    "kommunen:kontakte-vorab": "tsx scripts/kommunen-kontakte-vorab.ts",
     "kommunen:luecken": "tsx --conditions=react-server scripts/kommunen-luecken.ts",
     "kommunen:build": "tsx scripts/kommunen-build.ts",
     "szenen:hochladen": "tsx scripts/landscape-szenen-hochladen.ts",

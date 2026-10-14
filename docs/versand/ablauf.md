@@ -45,6 +45,23 @@ für Orte ohne Platzierung am 05./06.10.2026 beim Zusammenfassen verloren).
 - **Vor einer Rückfrage an den Betreiber:** Code, Schub-Definition und frühere
   Sitzungen durchsuchen. Das ist die Notbremse, nicht das System.
 
+## Vorbereitung am Vortag (seit 14.10.2026)
+
+Am Versandtag wird nur noch gezogen, geprüft und gesendet. Alles, was dauert,
+liegt davor:
+
+1. **Szenen auf Vorrat.** Die Szenen-Sitzung baut die nächsten Schübe im Voraus,
+   ganze Kreise, und meldet jeden fertigen Kreis. Gezogen wird nur, was eine
+   veröffentlichte Szene hat; Orte ohne Szene (Geländelücken, eingemeindete Orte)
+   fallen von selbst heraus.
+2. **Adressen vorab prüfen:** `npm run kommunen:kontakte-vorab -- <schub>` läuft die
+   Kontaktprüfung des Versands für jeden offenen Ort, mit oder ohne Szene. Was
+   durchfällt, wird belegt (Impressum, Amtsseite mit Mitgliederliste) und mit
+   `scripts/kommunen-handbelege-eintragen.ts` eingetragen. Amtspostfächer brauchen
+   den Beleg, dass der Ort zum Amt gehört (verwaltung_domain).
+3. **Tageslimit ist `MAX_JE_LAUF` (250), nicht 100.** Ein Schub, der darunter
+   bleibt, geht an einem Tag raus.
+
 ## Reihenfolge am Versandtag
 
 1. Szenen-Sitzung hat die Szenen der Charge bestätigt; Brieftext ist live.
@@ -55,7 +72,25 @@ für Orte ohne Platzierung am 05./06.10.2026 beim Zusammenfassen verloren).
 5. Zurückgehaltene Orte (z. B. Szene fehlerhaft) in eine Warte-Charge (9)
    verschieben, nicht im Kopf behalten. Zurück in die Charge, sobald behoben.
 
+## Briefarten
+
+- Pressebrief (mit Platzierung), Kurzbrief (ohne Platzierung) und **Sammelbrief**:
+  Teilen sich mehrere Orte eines Schubs ein Postfach (Amt, Verbandsgemeinde),
+  bildet das Versandpaket daraus EINEN Brief mit allen Orten, ihrer Seite und
+  ihrer Platzierung (Betreiber, 14.10.2026). Der Versand markiert alle Orte.
+- Ein Ranglisten-Link führt auf die Seite, auf der der Ort steht (ab Platz 201
+  Seite 2 usw.).
+
 ## Fallen, die schon passiert sind
+
+- **Freigabeliste für Google über 1.000 Orte** (14.10.2026): Die Liste las mit
+  einer festen Obergrenze; ab dem 1.001. angeschriebenen Ort blieben zufällige
+  Ortsseiten auf noindex. Jetzt seitenweise. Der Versand prüft danach jede
+  verlinkte Seite einzeln und meldet, was gesperrt bleibt.
+- **Szenen-Sitzung über Nacht stehengeblieben** (13./14.10.2026): Prozessende
+  beendete ihre Hintergrundläufe, der Speicher auf dem Server lief voll. Morgens
+  zuerst messen, wie viele Orte des Schubs eine Szene haben, nicht der Zusage
+  glauben.
 
 - **DKIM-Selektor wird von All-Inkl rotiert** (20.09.2026: `kas202603240809` →
   `kas202609200150`). Der alte Eintrag verschwindet, ein Wildcard-Eintrag antwortet
