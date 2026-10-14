@@ -7501,7 +7501,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "herbrechtingen-balkonkraftwerke", name: "Zuschussprogramm Balkonkraftwerke",
     traeger: "Stadt Herbrechtingen", level: "kommune", region: "Herbrechtingen",
     bundesland: "Baden-Württemberg", agsCode: "08135020",
-    url: "http://www.herbrechtingen.de/Startseite/stadt+_+buerger/foerderprogramm+balkonkraftwerke.html",
+    url: "https://www.herbrechtingen.de/Startseite/stadt+_+buerger/foerderprogramm+balkonkraftwerke.html",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     // Amtsseite: „Der Gemeinderat der Stadt Herbrechtingen hat in seiner Sitzung
     // am 14.12.2023 … das stadteigene [Zuschussprogramm beschlossen]" und „Das

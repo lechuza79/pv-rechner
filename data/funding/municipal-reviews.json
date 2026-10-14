@@ -95399,5 +95399,701 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "01056051",
+    "name": "Westerhorn",
+    "checkedAt": "2026-10-14T22:40:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Westerhorn (Amt Hörnerkirchen, Verwaltungsgemeinschaft mit der Stadt Barmstedt, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Gemeinde enthält nur Abgaben-, Haupt-, Feuerwehr- und Straßenreinigungssatzungen, das des Amtes nur Jugend- und Kulturzuschüsse. Die erfasste Quelle ist das Klimaschutzkonzept der Nachbarstadt Barmstedt — ein Planungsbericht, kein Programm. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Ortsrecht der Gemeinde Westerhorn (/amt-hoernerkirchen/gemeinde-westerhorn/ortsrecht) vollständig durchgesehen: 30 Satzungen, keine Förderrichtlinie",
+      "15.10.2026 Ortsrecht des Amtes Hörnerkirchen: nur Richtlinie für Jugendförderung und kulturelle Weiterbildung",
+      "15.10.2026 Gemeindeseite und Ortsrecht der Verwaltungsgemeinschaft Stadt Barmstedt / Amt Hörnerkirchen gelesen (vg-barmstedt-hoernerkirchen.de)",
+      "Volltextsuche der Verwaltungsgemeinschaft vom 14.10.2026 (Bokel-Prüfung: Balkonkraftwerk 0 Treffer, Photovoltaik/Förderprogramm nur Klimaschutzseite, Zuschuss nur Sport-/Jugendförderung) gilt für dieselbe Website",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/amt-hoernerkirchen/gemeinde-westerhorn/ortsrecht",
+        "finding": "15.10.2026 gelesen: Abwasser-, Hebesatz-, Hundesteuer-, Niederschlagswasser-, Haupt-, Entschädigungs-, Straßenreinigungs- und Feuerwehrsatzungen — keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/amt-hoernerkirchen/gemeinde-westerhorn",
+        "finding": "15.10.2026 gelesen: Ortsbeschreibung (Dauenhof, Bahnstation), keine Förderangebote."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/klimaschutz",
+        "finding": "15.10.2026 gelesen: Klimaschutzkonzept (NKI-gefördert, 2023–2025), Quartierskonzepte Nord/Süd (KfW 432/IB.SH) und Hinweis auf das Solarpotenzialkataster des Kreises — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf",
+        "finding": "Am 14.10.2026 gelesen: integriertes Klimaschutzkonzept der Stadt Barmstedt (184 Seiten), Planungsbericht ohne Zuschussprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: integriertes Klimaschutzkonzept der Stadt Barmstedt (184 Seiten), Planungsbericht ohne Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01056002",
+    "name": "Barmstedt",
+    "checkedAt": "2026-10-14T22:45:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Barmstedt zahlt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Klimaschutzseite nennt nur bundesgeförderte Konzepte (Klimaschutzkonzept, Quartierskonzepte), das Ortsrecht nur Zuschussrichtlinien für Jugendpflege und Altenhilfe. Die Stadtwerke Barmstedt schreiben auf ihrer Photovoltaik-Seite selbst, dass es keinen Landeszuschuss gibt, und verweisen auf EEG-Vergütung, Förderkredite und den Nullsteuersatz — ein eigenes Programm bieten sie nicht an. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Ortsrecht der Stadt Barmstedt (/stadt-barmstedt/satzungen-ortsrecht) durchgesehen: Richtlinien nur zu Ehrungen, Jugendpflege, Altenhilfe",
+      "15.10.2026 Stadtwerke Barmstedt: Startseite, Navigation (Energie & Wasser, Service) und Photovoltaik-Seiten gelesen; kein Förderprogramm, nur Wärmepumpenstrom-Tarif",
+      "15.10.2026 Gemeindeseite und Ortsrecht der Verwaltungsgemeinschaft Stadt Barmstedt / Amt Hörnerkirchen gelesen (vg-barmstedt-hoernerkirchen.de)",
+      "Volltextsuche der Verwaltungsgemeinschaft vom 14.10.2026 (Bokel-Prüfung: Balkonkraftwerk 0 Treffer, Photovoltaik/Förderprogramm nur Klimaschutzseite, Zuschuss nur Sport-/Jugendförderung) gilt für dieselbe Website",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/klimaschutz",
+        "finding": "15.10.2026 gelesen: Klimaschutzkonzept (NKI-gefördert, 2023–2025), Quartierskonzepte Nord/Süd (KfW 432/IB.SH) und Hinweis auf das Solarpotenzialkataster des Kreises — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.stadtwerke-barmstedt.de/energie-wasser/photovoltaik/finanzen-und-rechte/",
+        "finding": "15.10.2026 gelesen: „Aktuell gibt es in Schleswig-Holstein keine landesweite Zuschussförderung für private Photovoltaikanlagen“; Verweis auf EEG, KfW/IB.SH-Kredite und Nullsteuersatz, kein eigenes Programm."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/satzungen-ortsrecht",
+        "finding": "15.10.2026 gelesen: Zuschussrichtlinien nur für Jugendgemeinschaften und offene Altenhilfe."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01058011",
+    "name": "Bargstedt",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bargstedt (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.bargstedt-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058021",
+    "name": "Bokel",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bokel (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.bokel.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058023",
+    "name": "Borgdorf-Seedorf",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Borgdorf-Seedorf (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.borgdorf-seedorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058038",
+    "name": "Dätgen",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dätgen (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.daetgen.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058045",
+    "name": "Eisendorf",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eisendorf (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.eisendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058046",
+    "name": "Ellerdorf",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ellerdorf (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.ellerdorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058049",
+    "name": "Emkendorf",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Emkendorf (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.emkendorf.de/fileadmin/Gemeinde_Emkendorf/Dateien/Bebauungsplaene/B-Plan_Nr._8/20220912/Begruendung_VEP8_Solarpark-Kamerun_PV_Begr_Voarbzug.pdf",
+        "finding": "Am 15.10.2026 gelesen: Kurzbegründung zum Bebauungsplan Nr. 8 „PV Kamerun“ (Freiflächenanlage, Vorabzug August 2022) — Bauleitplanung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.emkendorf.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      },
+      {
+        "url": "emkendorf.de/fileadmin/Gemeinde_Emkendorf/Dateien/Bebauungsplaene/B-Plan_Nr._8/20220912/Begruendung_VEP8_Solarpark-Kamerun_PV_Begr_Voarbzug.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Kurzbegründung zum Bebauungsplan Nr. 8 „PV Kamerun“ (Freiflächenanlage, Vorabzug August 2022) — Bauleitplanung, kein Zuschuss.",
+        "evidenceUrl": "https://www.emkendorf.de/fileadmin/Gemeinde_Emkendorf/Dateien/Bebauungsplaene/B-Plan_Nr._8/20220912/Begruendung_VEP8_Solarpark-Kamerun_PV_Begr_Voarbzug.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058059",
+    "name": "Gnutz",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gnutz (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.gnutz.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058065",
+    "name": "Groß Vollstedt",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Vollstedt (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.gross-vollstedt.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058094",
+    "name": "Langwedel",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langwedel (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.langwedel-sh.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058120",
+    "name": "Oldenhütten",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt Nortorfer Land, Stadtwerke Nortorf und Kreis Rendsburg-Eckernförde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oldenhütten (Amt Nortorfer Land, Kreis Rendsburg-Eckernförde) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfassten Quellen sind allgemeine Texte des Zuständigkeitsfinders, die auf allen Gemeindeseiten des Amtes gleich stehen. Die Suche des Amtes findet zu Photovoltaik nur Bebauungspläne für Freiflächenanlagen, zu Zuschuss nur Jugend- und Sportförderung; das Ortsrecht kennt keine Rubrik zu Umwelt oder Förderung. Auch Kreis und Stadtwerke Nortorf bieten nichts für Haushalte an. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Volltextsuche amt-nortorfer-land.de: „Balkonkraftwerk“, „Förderrichtlinie“, „Stecker“ keine Ergebnisse; „Photovoltaik“ nur Solardachkataster des Kreises und Amtsblätter 2020/2022 zu Freiflächen-Bebauungsplänen (Emkendorf, Dätgen, Bokel, Krogaspe, Warder) — alle acht Amtsblätter im Original gelesen; „Zuschuss“ nur Formulare für Schulwanderfahrten/Jugendpflege und ein Amtsblatt 2019 (Freibad, Sportheim); „Wärmepumpe“ nur die kommunale Wärmeplanung",
+      "15.10.2026 Amtsseiten „Ausschreibung – Vergabe – Förderung“ und „Geförderte Projekte“ gelesen: Förderungen des Amtes und der Gemeinden selbst, kein Bürgerzuschuss",
+      "15.10.2026 Ortsrecht-Verzeichnis des Amtes mit allen 18 Orten abgerufen; Rubriken je Ort: Verfassung, Finanzen, Feuerwehr, Bauverwaltung, öffentliche Einrichtungen, Kindergarten, Abwasser/Wasser, Friedhof — keine Rubrik zu Umwelt, Klima oder Förderung",
+      "15.10.2026 Stadtwerke Nortorf (Startseite und Navigation): kein Förderprogramm",
+      "15.10.2026 Kreis Rendsburg-Eckernförde: Klimaschutzseite, Klimaschutzagentur, Energieleitstelle gelesen — kein Zuschuss für Haushalte; Katalog ohne Programm mit Schlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nortorfer-land.de/suche?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "15.10.2026: Treffer nur Solardachkataster und Amtsblätter 2020/2022 mit Freiflächen-Bebauungsplänen; „Balkonkraftwerk“ und „Förderrichtlinie“ ohne Ergebnis."
+      },
+      {
+        "url": "https://www.amt-nortorfer-land.de/buergerservice-politik/rathaus/ortsrecht",
+        "finding": "15.10.2026: Ortsrecht-Verzeichnis für Amt und 18 Orte; Rubriken ohne Umwelt-, Klima- oder Förderteil."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz",
+        "finding": "15.10.2026 gelesen samt Klimaschutzagentur und Energieleitstelle: Beratung der Kommunen und eigene Liegenschaften, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "finding": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text."
+      },
+      {
+        "url": "https://www.oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "finding": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: allgemeiner Zuständigkeitsfinder-Text „Infrastruktur-, Bau- und Wohnförderung“ (sozialer Wohnungsbau, Breitband, energetische Sanierung) ohne Programm, auf allen elf Amtsgemeinde-Domains derselbe Text.",
+        "evidenceUrl": "https://www.oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-1440"
+      },
+      {
+        "url": "oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Lebenslagen-Text „Weitere Förderangebote … für Unternehmen und Organisationen“, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.oldenhuetten.de/unsere-gemeinde/ihre-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-1444"
+      }
+    ]
+  },
+  {
+    "regionId": "01058",
+    "name": "Kreis Rendsburg-Eckernförde",
+    "checkedAt": "2026-10-14T23:30:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Kreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Rendsburg-Eckernförde zahlt Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Seine Klimaschutzseite führt die Klimaschutzagentur (berät Kommunen und beantragt für sie Fördermittel), die Energieleitstelle (kreiseigene Gebäude) und eine Richtlinie für Vereine mit Partnerschaften in Entwicklungsländern. Die zweite erfasste Quelle betrifft Zuschüsse aus dem Überschuss der Förde Sparkasse für gemeinnützige Projekte. Stand 15.10.2026.",
+    "searches": [
+      "15.10.2026 Klimaschutzseite des Kreises mit allen Unterseiten (Energieleitstelle, Klimaschutzagentur, Entwicklungsländer-Richtlinie) gelesen",
+      "Katalog: kein Programm mit Kreisschlüssel 01058"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz/klimaschutzagentur",
+        "finding": "15.10.2026: Agentur von Kreis und 123 Kommunen, berät Kommunen zu Fördermitteln — kein eigenes Bürgerprogramm."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/politik-verwaltung/politik-und-verwaltung-des-kreises/antrag-auf-bezuschussung-aus-mitteln-des-jahresueberschusses-der-foerde-sparkasse",
+        "finding": "Am 15.10.2026 gelesen: Zuschüsse für Vereine und Verbände mit gemeinnützigem Projektzweck, nächste Runde ab IV. Quartal 2026 — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz/richtlinie-zur-foerderung-in-entwicklungs-und-schwellenlaendern",
+        "finding": "Am 15.10.2026 gelesen: Zuwendung bis 5.000 € jährlich an ehrenamtliche Organisationen mit Partnerschaften in Entwicklungs- oder Schwellenländern — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-rendsburg-eckernfoerde.de/politik-verwaltung/politik-und-verwaltung-des-kreises/antrag-auf-bezuschussung-aus-mitteln-des-jahresueberschusses-der-foerde-sparkasse",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Zuschüsse für Vereine und Verbände mit gemeinnützigem Projektzweck, nächste Runde ab IV. Quartal 2026 — kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.kreis-rendsburg-eckernfoerde.de/politik-verwaltung/politik-und-verwaltung-des-kreises/antrag-auf-bezuschussung-aus-mitteln-des-jahresueberschusses-der-foerde-sparkasse"
+      },
+      {
+        "url": "kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz/richtlinie-zur-foerderung-in-entwicklungs-und-schwellenlaendern",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Zuwendung bis 5.000 € jährlich an ehrenamtliche Organisationen mit Partnerschaften in Entwicklungs- oder Schwellenländern — kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz/richtlinie-zur-foerderung-in-entwicklungs-und-schwellenlaendern"
+      }
+    ]
   }
 ]
