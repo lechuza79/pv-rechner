@@ -268,9 +268,10 @@ async function main(): Promise<void> {
     // WHAT THE LINKS ARE WORTH (operator, 14.10.2026: "was hat das an Domain
     // Authority gebracht"). The backlink index's own domain rank (0–1000, not
     // Google's), by month, and which linking domains carry it. Measured that
-    // day: rank 0 → 99 → 110 → 137 from July to mid-October, carried almost
-    // entirely by two outreach links (meindorfnet.de/Wallertheim, berkenthin.de);
-    // the ~35 spam domains rank 0 and add nothing.
+    // day: rank 0 → 99 → 110 → 137 from July to mid-October. The per-domain
+    // "rank" of the referring-domains list is the weight the LINK passes, not
+    // the linking domain's authority — reading it as authority made Berkenthin
+    // (217) look stronger than Trier (422). Both are printed, labelled.
     if (indexGelesen) {
       try {
         const auth = "Basic " + Buffer.from(`${login}:${pass}`).toString("base64");
@@ -287,12 +288,25 @@ async function main(): Promise<void> {
         const [summe, verlauf, quellen] = await Promise.all([
           frag("summary", { target: "solar-check.io", backlinks_status_type: "live", internal_list_limit: 0 }),
           frag("history", { target: "solar-check.io", date_from: "2026-07-01" }),
-          frag("referring_domains", { target: "solar-check.io", backlinks_status_type: "live", limit: 10, order_by: ["rank,desc"] }),
+          frag("referring_domains", { target: "solar-check.io", backlinks_status_type: "live", limit: 1000 }),
         ]);
         const monate = ((verlauf?.items ?? []) as any[]).map((i) => `${i.date.slice(0, 7)}: ${i.rank}`).join(" · ");
         log(`    Autorität (Rang im Backlink-Index, 0–1000, nicht Googles Wert): heute ${summe.rank} · Monatsende ${monate}`);
-        const traeger = ((quellen?.items ?? []) as any[]).filter((i) => i.rank > 0).map((i) => `${i.domain} (${i.rank})`);
-        log(`      getragen von: ${traeger.join(", ") || "keiner Domain mit Rang über 0"}`);
+        // EVERY proven link, not a top list (operator, 14.10.2026: "alle unsere
+        // Backlinks"): the domain's own strength next to the weight its link
+        // passes. Weight 0 or "not in index" means the link exists but counts
+        // for nothing in this index yet.
+        const gewicht = new Map(((quellen?.items ?? []) as any[]).map((i) => [i.domain, i.rank as number]));
+        const belegte = [...h.gemeinden.map((g) => ({ domain: g.domain, wer: g.gemeinde })), ...h.beitraege.map((b) => ({ domain: b.domain, wer: "Beitrag" })), ...h.besucher.map((b) => ({ domain: b.domain, wer: "nur Besucher" }))];
+        const staerke = belegte.length ? await frag("bulk_ranks", { targets: belegte.map((b) => b.domain) }) : { items: [] };
+        const domainRang = new Map(((staerke?.items ?? []) as any[]).map((i) => [i.target, i.rank]));
+        const zeilen = belegte
+          .map((b) => ({ ...b, rang: (domainRang.get(b.domain) as number) ?? 0, gew: gewicht.get(b.domain) ?? gewicht.get(b.domain.split(".").slice(-2).join(".")) }))
+          .sort((a, b) => (b.gew ?? -1) - (a.gew ?? -1) || b.rang - a.rang);
+        log(`      Alle belegten Links — Domain · Stärke der Domain · Gewicht des Links:`);
+        for (const z of zeilen) {
+          log(`        ${z.domain.padEnd(26)} ${String(z.rang).padStart(4)}   ${z.gew === undefined ? "nicht im Index" : String(z.gew).padStart(4)}   ${z.wer}`);
+        }
       } catch (e) {
         log(`Autorität NICHT gelesen: ${(e as Error).message}`, "warn");
       }
