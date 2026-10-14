@@ -6336,5 +6336,78 @@
       "latitude": 52.35388,
       "longitude": 8.48128
     }
+  },
+  "05770004": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Oeynhausen",
+      "latitude": 52.1674,
+      "longitude": 8.79378
+    }
+  },
+  "05770008": {
+    "wind-1": {
+      "name": "Windanlagen bei Espelkamp",
+      "latitude": 52.36286,
+      "longitude": 8.69337
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Espelkamp",
+      "latitude": 52.36002,
+      "longitude": 8.65906
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Espelkamp",
+      "latitude": 52.33798,
+      "longitude": 8.62959
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Espelkamp",
+      "latitude": 52.35603,
+      "longitude": 8.59049
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Espelkamp",
+      "latitude": 52.36018,
+      "longitude": 8.52505
+    }
+  },
+  "05770016": {
+    "wind-1": {
+      "name": "Windanlagen bei Hüllhorst",
+      "latitude": 52.24181,
+      "longitude": 8.67257
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hüllhorst",
+      "latitude": 52.26046,
+      "longitude": 8.64722
+    }
+  },
+  "05770044": {
+    "wind-1": {
+      "name": "Windanlagen bei Stemwede",
+      "latitude": 52.45037,
+      "longitude": 8.51561
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Stemwede",
+      "latitude": 52.40115,
+      "longitude": 8.34804
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Stemwede",
+      "latitude": 52.41649,
+      "longitude": 8.39023
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Stemwede",
+      "latitude": 52.39742,
+      "longitude": 8.476
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Stemwede",
+      "latitude": 52.42869,
+      "longitude": 8.4406
+    }
   }
 }
