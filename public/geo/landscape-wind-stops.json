@@ -8157,5 +8157,215 @@
       "latitude": 52.27054,
       "longitude": 11.95709
     }
+  },
+  "15084012": {
+    "wind-1": {
+      "name": "Windanlagen bei An der Poststraße",
+      "latitude": 51.13741,
+      "longitude": 11.49436
+    }
+  },
+  "15084013": {
+    "wind-1": {
+      "name": "Windanlagen bei Meineweh",
+      "latitude": 51.05168,
+      "longitude": 11.99924
+    }
+  },
+  "15084015": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Bibra",
+      "latitude": 51.2308,
+      "longitude": 11.6182
+    }
+  },
+  "15084115": {
+    "wind-1": {
+      "name": "Windanlagen bei Droyßig",
+      "latitude": 51.05322,
+      "longitude": 12.01216
+    }
+  },
+  "15084130": {
+    "wind-1": {
+      "name": "Windanlagen bei Elsteraue",
+      "latitude": 51.09555,
+      "longitude": 12.26359
+    }
+  },
+  "15084132": {
+    "wind-1": {
+      "name": "Windanlagen bei Finne",
+      "latitude": 51.21342,
+      "longitude": 11.39807
+    }
+  },
+  "15084135": {
+    "wind-1": {
+      "name": "Windanlagen bei Freyburg (Unstrut)",
+      "latitude": 51.21352,
+      "longitude": 11.84051
+    }
+  },
+  "15084170": {
+    "wind-1": {
+      "name": "Windanlagen bei Goseck",
+      "latitude": 51.22884,
+      "longitude": 11.86567
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Goseck",
+      "latitude": 51.22509,
+      "longitude": 11.84278
+    }
+  },
+  "15084235": {
+    "wind-1": {
+      "name": "Windanlagen bei Hohenmölsen",
+      "latitude": 51.15133,
+      "longitude": 12.06718
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hohenmölsen",
+      "latitude": 51.14193,
+      "longitude": 12.16413
+    }
+  },
+  "15084246": {
+    "wind-1": {
+      "name": "Windanlagen bei Kaiserpfalz",
+      "latitude": 51.24833,
+      "longitude": 11.51178
+    }
+  },
+  "15084275": {
+    "wind-1": {
+      "name": "Windanlagen bei Kretzschau",
+      "latitude": 51.04948,
+      "longitude": 12.09407
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kretzschau",
+      "latitude": 51.04015,
+      "longitude": 12.05528
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kretzschau",
+      "latitude": 51.06002,
+      "longitude": 12.02789
+    }
+  },
+  "15084315": {
+    "wind-1": {
+      "name": "Windanlagen bei Lützen",
+      "latitude": 51.17151,
+      "longitude": 12.01852
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lützen",
+      "latitude": 51.23458,
+      "longitude": 12.14668
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Lützen",
+      "latitude": 51.23889,
+      "longitude": 12.07111
+    }
+  },
+  "15084335": {
+    "wind-1": {
+      "name": "Windanlagen bei Mertendorf",
+      "latitude": 51.09922,
+      "longitude": 11.90806
+    }
+  },
+  "15084341": {
+    "wind-1": {
+      "name": "Windanlagen bei Molauer Land",
+      "latitude": 51.07491,
+      "longitude": 11.79281
+    }
+  },
+  "15084355": {
+    "wind-1": {
+      "name": "Windanlagen bei Naumburg (Saale)",
+      "latitude": 51.08642,
+      "longitude": 11.79606
+    }
+  },
+  "15084375": {
+    "wind-1": {
+      "name": "Windanlagen bei Osterfeld",
+      "latitude": 51.09423,
+      "longitude": 11.92288
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Osterfeld",
+      "latitude": 51.03241,
+      "longitude": 11.95234
+    }
+  },
+  "15084442": {
+    "wind-1": {
+      "name": "Windanlagen bei Schnaudertal",
+      "latitude": 50.95926,
+      "longitude": 12.23416
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schnaudertal",
+      "latitude": 50.9945,
+      "longitude": 12.15813
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Schnaudertal",
+      "latitude": 51.00804,
+      "longitude": 12.16592
+    }
+  },
+  "15084470": {
+    "wind-1": {
+      "name": "Windanlagen bei Stößen",
+      "latitude": 51.11386,
+      "longitude": 11.9424
+    }
+  },
+  "15084550": {
+    "wind-1": {
+      "name": "Windanlagen bei Weißenfels",
+      "latitude": 51.25468,
+      "longitude": 11.98249
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Weißenfels",
+      "latitude": 51.24337,
+      "longitude": 12.06687
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Weißenfels",
+      "latitude": 51.27082,
+      "longitude": 12.00489
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Weißenfels",
+      "latitude": 51.168,
+      "longitude": 12.009
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Weißenfels",
+      "latitude": 51.15811,
+      "longitude": 11.95958
+    }
+  },
+  "15084590": {
+    "wind-1": {
+      "name": "Windanlagen bei Zeitz",
+      "latitude": 50.98483,
+      "longitude": 12.24372
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Zeitz",
+      "latitude": 51.02269,
+      "longitude": 12.17938
+    }
   }
 }
