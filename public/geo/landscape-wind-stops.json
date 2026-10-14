@@ -7782,5 +7782,216 @@
       "latitude": 52.89357,
       "longitude": 12.37823
     }
+  },
+  "12072002": {
+    "wind-1": {
+      "name": "Windanlagen bei Am Mellensee",
+      "latitude": 52.2009,
+      "longitude": 13.30797
+    }
+  },
+  "12072014": {
+    "wind-1": {
+      "name": "Windanlagen bei Baruth/Mark",
+      "latitude": 51.97179,
+      "longitude": 13.35183
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Baruth/Mark",
+      "latitude": 51.9788,
+      "longitude": 13.46271
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Baruth/Mark",
+      "latitude": 51.98173,
+      "longitude": 13.29044
+    }
+  },
+  "12072053": {
+    "wind-1": {
+      "name": "Windanlagen bei Dahme/Mark",
+      "latitude": 51.87091,
+      "longitude": 13.50024
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dahme/Mark",
+      "latitude": 51.97089,
+      "longitude": 13.32272
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dahme/Mark",
+      "latitude": 51.8863,
+      "longitude": 13.4346
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Dahme/Mark",
+      "latitude": 51.8816,
+      "longitude": 13.4154
+    }
+  },
+  "12072055": {
+    "wind-1": {
+      "name": "Windanlagen bei Dahmetal",
+      "latitude": 51.88181,
+      "longitude": 13.51978
+    }
+  },
+  "12072120": {
+    "wind-1": {
+      "name": "Windanlagen bei Großbeeren",
+      "latitude": 52.34129,
+      "longitude": 13.25745
+    }
+  },
+  "12072157": {
+    "wind-1": {
+      "name": "Windanlagen bei Ihlow",
+      "latitude": 51.91067,
+      "longitude": 13.38539
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Ihlow",
+      "latitude": 51.89274,
+      "longitude": 13.33342
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Ihlow",
+      "latitude": 51.90809,
+      "longitude": 13.34184
+    }
+  },
+  "12072169": {
+    "wind-1": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 52.01707,
+      "longitude": 13.18297
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 52.03475,
+      "longitude": 12.97406
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 51.96786,
+      "longitude": 13.13204
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 51.9858,
+      "longitude": 13.18234
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 51.97225,
+      "longitude": 13.18234
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Jüterbog",
+      "latitude": 51.95833,
+      "longitude": 13.17417
+    }
+  },
+  "12072232": {
+    "wind-1": {
+      "name": "Windanlagen bei Luckenwalde",
+      "latitude": 52.11016,
+      "longitude": 13.12974
+    }
+  },
+  "12072240": {
+    "wind-1": {
+      "name": "Windanlagen bei Ludwigsfelde",
+      "latitude": 52.33042,
+      "longitude": 13.26668
+    }
+  },
+  "12072297": {
+    "wind-1": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 52.01119,
+      "longitude": 12.885
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 51.98923,
+      "longitude": 12.81614
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 51.90871,
+      "longitude": 13.09887
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 51.95684,
+      "longitude": 12.96585
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 52.0,
+      "longitude": 13.0
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Niedergörsdorf",
+      "latitude": 51.98078,
+      "longitude": 12.93721
+    }
+  },
+  "12072298": {
+    "wind-1": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.90095,
+      "longitude": 13.31513
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.95046,
+      "longitude": 13.16821
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.97158,
+      "longitude": 13.29087
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.92666,
+      "longitude": 13.2096
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.90683,
+      "longitude": 13.10204
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Niederer Fläming",
+      "latitude": 51.90949,
+      "longitude": 13.13797
+    }
+  },
+  "12072426": {
+    "wind-1": {
+      "name": "Windanlagen bei Trebbin",
+      "latitude": 52.20274,
+      "longitude": 13.29531
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Trebbin",
+      "latitude": 52.22238,
+      "longitude": 13.21303
+    }
+  },
+  "12072477": {
+    "wind-1": {
+      "name": "Windanlagen bei Zossen",
+      "latitude": 52.21122,
+      "longitude": 13.4921
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Zossen",
+      "latitude": 52.22116,
+      "longitude": 13.35841
+    }
   }
 }
