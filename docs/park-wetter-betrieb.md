@@ -1,6 +1,6 @@
 # Prepared park weather on Hetzner
 
-The existing Hetzner host runs `solar-check-park-weather.timer` hourly (minute 12 plus up to 90 seconds jitter). No model calls or new paid infrastructure are involved. The service runs with a dynamic unprivileged user, 1 GB memory ceiling, one CPU quota, and a ten-minute timeout. It keeps the previous database snapshot on failure.
+The existing Hetzner host runs `solar-check-park-weather.timer` hourly (minute 12 plus up to 90 seconds jitter). No model calls or new paid infrastructure are involved. The service runs with a dynamic unprivileged user, 1 GB memory ceiling, one CPU quota, and a 25-minute timeout (a run read ~150 tiles in 7–8 minutes on 14.10.2026; ten minutes proved too tight once a slow source was involved). It keeps the previous database snapshot on failure.
 
 Runtime directory: `/opt/solar-check-park-weather`. The minimal deployment consists of `scripts/park-wind-snapshot.ts`, `scripts/open-data-window.ts`, `lib/park-wind-snapshot.ts`, `lib/icon-d2.ts`, `lib/regular-grid.ts`, `lib/zeit.ts`, and `public/geo/landscape-wind-stops.json`. Node 22 ARM64 and the file-reader/tsx packages are installed there. Unit definitions live in `scripts/systemd/`.
 
