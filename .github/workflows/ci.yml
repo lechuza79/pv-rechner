@@ -87,13 +87,46 @@ jobs:
   # Auskunft über zwei Drittel der Oberfläche durch „abgebrochen" — und das
   # liest sich als „egal".
   #
-  # JE SCHERBE EIN EIGENER BUILD, und das ist der Preis der Aufteilung:
-  # gemessen 57 s Übersetzung plus rund 100 s Vorwärmen, also dreimal statt
-  # einmal. Dagegen steht, dass jede Scherbe nur noch rund 146 Tests fährt.
-  # Actions-Minuten kosten in einem öffentlichen Repo nichts; teuer ist hier
-  # allein die Wanduhr, und die sinkt.
+  # Build once, then let every browser group consume the same runtime artifact.
+  # This avoids six concurrent prerenders against the shared database.
+  build:
+    name: Gemeinsamer Produktionsbuild
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build production application
+        timeout-minutes: 10
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-ci
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      - name: Package runtime and generated public assets
+        timeout-minutes: 2
+        run: |
+          printf '%s' "$GITHUB_SHA" > .next/ci-commit
+          tar --exclude='.next/cache' -czf /tmp/browser-build.tgz .next public/kommunen public/location-search
+      - name: Upload shared production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-build-${{ github.sha }}
+          path: /tmp/browser-build.tgz
+          if-no-files-found: error
+          retention-days: 1
+
   smoke:
     name: Smoke-Tests ${{ matrix.scherbe }}/3
+    needs: build
+    env:
+      E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
     # Über der Summe der Schritt-Limits (22 + 10 + 5) plus Grundlast — sonst
     # reißt wieder der Job zuerst, der Ausgang heißt „cancelled", und das
@@ -115,6 +148,17 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Download shared production build
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-build-${{ github.sha }}
+          path: /tmp/browser-build
+      - name: Restore exact tested runtime
+        run: |
+          tar -xzf /tmp/browser-build/browser-build.tgz
+          test -s .next/BUILD_ID
+          test "$(cat .next/ci-commit)" = "$GITHUB_SHA"
 
       # Cache Playwright browsers — saves ~30s on every run.
       # Cache key is tied to package-lock so a Playwright version bump invalidates it.
@@ -217,8 +261,8 @@ jobs:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
           # er wird in den Tests nicht benutzt (kein Login, keine Schreibpfade).
-          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-smoke-tests
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-ci
           # Serverseitig braucht es echte Leserechte: Fast jede Seite mit Zahlen
           # liest Supabase — Atlas, Förderseiten, Ratgeber, Datenstand, Zubau und
           # die Erzeugungs-Widgets. Mit Platzhaltern prüft der Rundgang genau die
@@ -272,7 +316,7 @@ jobs:
     name: Type check + unit tests + e2e smoke
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [unit, smoke]
+    needs: [unit, build, smoke]
     if: always()
 
     steps:
@@ -280,7 +324,9 @@ jobs:
         run: |
           echo "Typprüfung + Unit-Tests: ${{ needs.unit.result }}"
           echo "Smoke-Tests (3 Scherben):      ${{ needs.smoke.result }}"
+          echo "Produktionsbuild: ${{ needs.build.result }}"
           fehler=0
+          [ "${{ needs.build.result }}" = "success" ] || fehler=1
           [ "${{ needs.unit.result }}" = "success" ] || fehler=1
           [ "${{ needs.smoke.result }}" = "success" ] || fehler=1
           if [ "$fehler" -ne 0 ]; then
@@ -308,6 +354,9 @@ jobs:
   # „nicht erreichbar" ab, was wie ein Testfehler aussieht, aber keiner ist.
   flows:
     name: Flow-Läufer (jede Option, jeder Zweig)
+    needs: build
+    env:
+      E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
@@ -322,6 +371,17 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Download shared production build
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-build-${{ github.sha }}
+          path: /tmp/browser-build
+      - name: Restore exact tested runtime
+        run: |
+          tar -xzf /tmp/browser-build/browser-build.tgz
+          test -s .next/BUILD_ID
+          test "$(cat .next/ci-commit)" = "$GITHUB_SHA"
 
       - name: Cache Playwright browsers
         id: playwright-cache
@@ -362,7 +422,7 @@ jobs:
         run: npm run test:flows
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-ci
           # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
           # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
           # der Build ab (Atlas, Förderseiten, Ratgeber).
@@ -400,6 +460,9 @@ jobs:
   # der die Abnahme von Layout-Details durch den Betreiber ersetzt.
   telefon:
     name: Telefonbreite (keine Seite läuft seitlich über) + Menü unverdeckt
+    needs: build
+    env:
+      E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -414,6 +477,17 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Download shared production build
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-build-${{ github.sha }}
+          path: /tmp/browser-build
+      - name: Restore exact tested runtime
+        run: |
+          tar -xzf /tmp/browser-build/browser-build.tgz
+          test -s .next/BUILD_ID
+          test "$(cat .next/ci-commit)" = "$GITHUB_SHA"
 
       - name: Cache Playwright browsers
         id: playwright-cache
@@ -457,7 +531,7 @@ jobs:
         run: npm run test:telefon
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-ci
           # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
           # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
           # der Build ab (Atlas, Förderseiten, Ratgeber).
@@ -502,6 +576,9 @@ jobs:
   # hat es der Betreiber durch Zufall an einer Tabellenzeile.
   kontrast:
     name: Kontrast (kein Text verschwindet auf seinem Grund)
+    needs: build
+    env:
+      E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -516,6 +593,17 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Download shared production build
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-build-${{ github.sha }}
+          path: /tmp/browser-build
+      - name: Restore exact tested runtime
+        run: |
+          tar -xzf /tmp/browser-build/browser-build.tgz
+          test -s .next/BUILD_ID
+          test "$(cat .next/ci-commit)" = "$GITHUB_SHA"
 
       - name: Cache Playwright browsers
         id: playwright-cache
@@ -542,7 +630,7 @@ jobs:
         run: npm run test:kontrast
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-contrast-run
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-ci
           # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
           # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
           # der Build ab (Atlas, Förderseiten, Ratgeber).

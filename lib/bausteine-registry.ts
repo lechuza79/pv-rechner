@@ -634,7 +634,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["ControlPanel", "SelectField", "Modal"],
+    bestehtAus: ["ControlPanel", "SelectField", "Modal", "AutoHeightIframe", "ActionButton"],
   },
   {
     datei: "components/StorySlider.tsx",

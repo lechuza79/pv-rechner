@@ -1,0 +1,5 @@
+/* Strong selection contrast for the public geography comparison. */
+.controls {
+  --choice-selected-bg: var(--color-cta-ink);
+  --choice-selected-color: var(--color-page-canvas);
+}

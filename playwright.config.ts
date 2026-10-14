@@ -100,7 +100,10 @@ export default defineConfig({
     // beim ersten Aufruf neu und ging dabei nach ~15 Minuten in die Knie — der
     // Lauf brach dann mit „nicht erreichbar" ab, was wie ein Testfehler aussah,
     // aber keiner war. Gegen den Build entfällt das Übersetzen komplett.
-    command: process.env.E2E_BUILD
+    // CI restores the exact shared build; never rebuild silently in a consumer.
+    command: process.env.E2E_PREBUILT === "1"
+      ? `next start -p ${E2E_PORT}`
+      : process.env.E2E_BUILD
       ? `npm run build && next start -p ${E2E_PORT}`
       : `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,

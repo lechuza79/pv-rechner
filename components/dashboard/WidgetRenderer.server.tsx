@@ -59,7 +59,7 @@ export const renderWidgetSource = cache(async (src:string):Promise<ReactNode> =>
   const {default:Page}=await import('../../app/(embed)/embed/kennzahl/[metric]/[traeger]/page');
   return Page({params:Promise.resolve({metric:query.metric??'leistung',traeger:query.traeger??'gesamt'})});
  }
- const race=url.pathname.match(/^\/embed\/regional-race\/(\d{2}|\d{5})$/);
+ const race=url.pathname.match(/^\/embed\/regional-race\/(de|\d{2}|\d{5})$/);
  if(race){
   const {default:Page}=await import('../../app/(embed)/embed/regional-race/[region]/page');
   return Page({params:Promise.resolve({region:race[1]}),searchParams:Promise.resolve(query)});

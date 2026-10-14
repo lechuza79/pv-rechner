@@ -57,7 +57,8 @@ async function render(job: Job, localOutput = false): Promise<{ bytes: Buffer; i
   const dir = await mkdtemp(path.join(tmpdir(), "sc-video-"));
   const browser = await chromium.launch({ headless: true });
   // Closing the browser cancels both rendering and download on timeout.
-  const deadline = setTimeout(() => { void browser.close().catch(() => {}); }, (localOutput ? 3600 : VIDEO_TTL.renderTimeoutSeconds) * 1000);
+  let timedOut = false;
+  const deadline = setTimeout(() => { timedOut = true; void browser.close().catch(() => {}); }, VIDEO_TTL.renderTimeoutSeconds * 1000);
   try {
     const context = await browser.newContext({
       viewport: VIEWPORT, deviceScaleFactor: 1.5, acceptDownloads: true,
@@ -92,6 +93,7 @@ async function render(job: Job, localOutput = false): Promise<{ bytes: Buffer; i
     const fps=30;
     const meta=await page.evaluate(widgetId=>window.__scVideoFrame!({widgetId,timeMs:0}),job.widget);
     const frames=Math.ceil(meta.durationMs/1000*fps);
+    console.log(`capture: ${frames} frames, ${Math.ceil(meta.width*1.5)}x${Math.ceil(meta.height*1.5)}, ${meta.durationMs} ms`);
     const file=path.join(dir,"out.mp4");
     const encoder=spawn("ffmpeg",["-y","-loglevel","error","-f","image2pipe","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","veryfast","-crf","18","-pix_fmt","yuv420p","-vf","scale=trunc(iw/2)*2:trunc(ih/2)*2","-movflags","+faststart",file],{stdio:["pipe","ignore","pipe"]});
     let encoderError="";
@@ -108,15 +110,18 @@ async function render(job: Job, localOutput = false): Promise<{ bytes: Buffer; i
         if(frame) await page.evaluate(({widgetId,timeMs})=>window.__scVideoFrame!({widgetId,timeMs}),{widgetId:job.widget,timeMs:frame*1000/fps});
         // The timeline is already settled by __scVideoFrame. Playwright's
         // screenshot adds per-frame waits and expensive PNG compression.
-        // Capture the same pixels losslessly through Chromium, with fast PNG
-        // compression; FFmpeg still encodes the unchanged 30 fps output.
+        // Use the same high-quality intermediate frames for local and queued
+        // exports. Avoid lossless PNG compression for every intermediate frame.
+        // CDP clip scaling determines the output size independently of the
+        // context pixel ratio. Preserve the existing 1.5x export and 30 fps.
         const screenshot=await captureSession.send("Page.captureScreenshot",{
-          ...(localOutput?{format:"jpeg",quality:95}:{format:"png",optimizeForSpeed:true}),fromSurface:true,
+          format:"jpeg",quality:95,fromSurface:true,
           clip:{x:0,y:0,width:Math.ceil(meta.width),height:Math.ceil(meta.height),scale:1.5},
         });
-        const png=Buffer.from(screenshot.data,"base64");
-        await new Promise<void>((resolve,reject)=>encoder.stdin.write(png,error=>error?reject(error):resolve()));
-        const progress=Math.min(99,Math.round((frame+1)/frames*100));
+        const image=Buffer.from(screenshot.data,"base64");
+        await new Promise<void>((resolve,reject)=>encoder.stdin.write(image,error=>error?reject(error):resolve()));
+        // Report in five-percent steps so network latency cannot dominate capture.
+        const progress=Math.min(99,Math.floor((frame+1)/frames*20)*5);
         if(progress!==lastProgress) {if(localOutput){if(progress%5===0)console.log(`Render ${progress}%`);}else await callVideoFn("video_job_progress",{id:job.id,worker:WORKER,progress});lastProgress=progress;}
       }
       encoder.stdin.end();
@@ -127,6 +132,9 @@ async function render(job: Job, localOutput = false): Promise<{ bytes: Buffer; i
     const probed = await probe(file);
     if (probed && (probed.codec !== "h264" || !(probed.duration > 1))) throw new Error(`bad_stream_${probed.codec}`);
     return { bytes, info: { encodeMs: Date.now() - started, card: meta, probe: probed } };
+  } catch(error) {
+    if(timedOut) throw new Error(`render_timeout_${VIDEO_TTL.renderTimeoutSeconds}s`);
+    throw error;
   } finally {
     clearTimeout(deadline);
     await browser.close().catch(() => {});

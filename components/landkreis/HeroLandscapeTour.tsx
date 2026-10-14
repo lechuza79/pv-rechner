@@ -6,8 +6,9 @@ import {safeWindSignAnchor} from './location-sign';
 import RegionScene,{type SceneControls} from './RegionScene';
 import GemeindeHeroStage from '../gemeinde/GemeindeHeroStage';
 import LocationMicroCard from './LocationMicroCard';
-import {IconArrowRight,IconChevronLeft,IconChevronRight} from '../Icons';
+import {IconArrowLeft,IconArrowRight,IconChevronLeft,IconChevronRight} from '../Icons';
 import {WidgetIconButton} from '../dashboard/WidgetControls';
+import ActionButton from '../ActionButton';
 import {Auswahl} from '../Auswahl';
 import type {ProjectedRegion} from '../../lib/region-perspektive';
 import type {SceneTerrain} from '../../lib/wind-terrain';
@@ -20,7 +21,7 @@ export type LandscapeTourData={municipality:string;name:string;weatherMunicipali
 const values:never[]=[];
 const envelope={};
 /** One hero, camera and flight controller for every prepared municipality. */
-export default function HeroLandscapeTour({data,sceneOnly=false,onReady,initialStop,onStopChange,destinationTarget}:{data:LandscapeTourData;sceneOnly?:boolean;onReady?:(ready:boolean)=>void;initialStop?:string;onStopChange?:(stop:string)=>void;destinationTarget?:HTMLElement|null}){
+export default function HeroLandscapeTour({data,sceneOnly=false,onReady,initialStop,onStopChange,destinationTarget,navigation="widget"}:{data:LandscapeTourData;sceneOnly?:boolean;onReady?:(ready:boolean)=>void;initialStop?:string;onStopChange?:(stop:string)=>void;destinationTarget?:HTMLElement|null;navigation?:'product'|'widget'}){
  const start=Math.max(0,data.stops.findIndex(stop=>stop.id===initialStop));
  const controls=useRef<SceneControls|null>(null),pending=useRef(start),departed=useRef(false);
  const [current,setCurrent]=useState(start),[flying,setFlying]=useState(false),[ready,setReady]=useState(false),[failed,setFailed]=useState(false),[guide,setGuide]=useState(false);
@@ -46,14 +47,19 @@ export default function HeroLandscapeTour({data,sceneOnly=false,onReady,initialS
  };
  const destinationPicker=<Auswahl titel={flying?`Unterwegs: ${destinations[pending.current].name}`:destinations[current].name} eintraege={destinations} aktiv={stop.id} onWahl={id=>fly(data.stops.findIndex(item=>item.id===id))} breite={0} pfeile={false} transparent menuPlacement={destinationTarget?"bottom":"top"} menuAlign={destinationTarget?"start":"center"} disabled={flying}/>;
  const scene=
-   <div data-map-hero-stage className={styles.municipalScene} data-flying={flying} data-building-map data-ready={ready}>
+   <div data-map-hero-stage className={styles.municipalScene} data-navigation={navigation} data-flying={flying} data-building-map data-ready={ready}>
     <RegionScene {...data} locations={locations} locationCard={{id:stop.id,visible:true,content:<LocationMicroCard name={stop.name} municipality={weatherId} placeName={stop.kind==='town'?stop.name:data.name} kind={stop.kind} weather={weather} microcharts={microcharts} loading={weatherLoading} capacityKw={stop.capacityKw}/>}}
      values={values} heightEnvelope={envelope} selected="" hovered={null} windScale={1} windConditions={weather}
      onHover={()=>{}} onSelect={id=>{const i=data.stops.findIndex(p=>p.id===id);if(i>=0)fly(i);}}
      onFlight={(moving,arrived)=>{setFlying(moving);if(arrived){setCurrent(pending.current);onStopChange?.(data.stops[pending.current].id);}}}
      onControls={api=>{controls.current=api;}} onReady={ok=>{setReady(ok);setFailed(!ok);onReady?.(ok);if(ok){controls.current?.flyTo({...data.stops[start],zoom:data.stops[start].kind==='town'?20:data.stops[start].zoom},false);};}}/>
-    {ready&&sceneOnly&&destinationTarget&&createPortal(destinationPicker,destinationTarget)}
-    {ready&&sceneOnly&&<div className={styles.widgetTourControls} data-tour data-sc-export-ignore aria-label="Navigation in der Landschaft" aria-busy={flying}>
+    {ready&&sceneOnly&&navigation==='widget'&&destinationTarget&&createPortal(destinationPicker,destinationTarget)}
+    {ready&&sceneOnly&&navigation==='product'&&<div className={styles.productTourControls} data-tour data-sc-export-ignore role="group" aria-label="Navigation in der Landschaft" aria-busy={flying}>
+     <ActionButton variant="secondary" iconOnly aria-label="Vorheriges Ziel" disabled={flying||data.stops.length<2} onClick={()=>fly((current-1+data.stops.length)%data.stops.length)}><IconArrowLeft size={16}/></ActionButton>
+     <ActionButton variant="primary" aria-label="Nächstes Ziel" disabled={flying||data.stops.length<2} onClick={()=>fly(next)}>{flying?'Unterwegs':(data.stops[next].cta??(data.stops[next].kind==='wind'?'Zum Windpark':data.stops[next].kind==='solar'?'Zum Solarpark':`Nach ${data.stops[next].name}`))}<IconArrowRight size={16}/></ActionButton>
+     <span className={styles.tourStatus} role="status">{flying?`Flug nach ${data.stops[pending.current].name}`:''}</span>
+    </div>}
+    {ready&&sceneOnly&&navigation==='widget'&&<div className={styles.widgetTourControls} data-tour data-sc-export-ignore aria-label="Navigation in der Landschaft" aria-busy={flying}>
      <WidgetIconButton label="Vorheriges Ziel" disabled={flying} onClick={()=>fly((current-1+data.stops.length)%data.stops.length)}><IconChevronLeft size={16}/></WidgetIconButton>
    {destinationTarget?<span aria-hidden="true"/>:destinationPicker}
    <WidgetIconButton label="Nächstes Ziel" disabled={flying} onClick={()=>fly((current+1)%data.stops.length)}><IconChevronRight size={16}/></WidgetIconButton>

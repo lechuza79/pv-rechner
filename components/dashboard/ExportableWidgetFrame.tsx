@@ -49,17 +49,21 @@ import {chartMetadataLabel, chartQuantityLabel} from '../../lib/chart-labels';
 const EDGE_INSET = 28;
 const EDGE_GAP = 14;
 
-export function ExportableWidgetFrame({dataTable, widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, exportBranding = true, sourceVisible = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
+export function ExportableWidgetFrame({dataTable, widget, place, stand, exportScope, exportUnit, exportDescription, stateLabel, exportNote, exportLegend, settings, children, className = '', filename, actions = 'menu', einbetten, onVideoRequest, videoParams, videoPeriod, animated = false, clientVideo = false, restartAction = true, exportBranding = true, sourceVisible = false, sourceBranding = false, sourcePlacement = 'frame', directActions = false, imageFormats, shareParams, sharePath, ...frame}: Omit<ComponentProps<typeof WidgetFrame>, 'footer' | 'ref' | 'menu' | 'helpPlacement'> & {
   /** External embeds show attribution; page hosts credit sources centrally. Exports always retain it. */
   dataTable?: ReactNode;
   exportBranding?: boolean;
   sourceVisible?: boolean;
+  /** Include the shared Solar Check credit in an external source rail. */
+  sourceBranding?: boolean;
   sourcePlacement?: 'frame' | 'plot';
   directActions?: boolean;
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
   /** Selection needed to reconstruct this widget when following a shared link. */
   shareParams?: Record<string, string>;
+  /** Standalone route for a parameterized widget whose selection changes on a page. */
+  sharePath?: string;
   imageFormats?: {label: string; width: number; height: number}[];
   animated?: boolean;
   /** Explicit fallback for widgets that already supported local video downloads. */
@@ -89,7 +93,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
   /** Presentation of the same actions: a compact options menu (monitor charts) or the prominent footer row. */
   actions?: 'menu' | 'bar' | 'primary';
   /** Parameters of the supported embed route; without it, embedding is shown as unavailable. */
-  einbetten?: {params: Record<string, string>; height: number};
+  einbetten?: {params: Record<string, string>; height: number; preview?: boolean};
 }) {
   const presentation=useWidgetPresentation();
   const partner = presentation.partner;
@@ -150,7 +154,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
     } catch { /* External embeds keep their own directly accessible URL. */ }
     if (partner) { for (const [key,value] of Object.entries(shareParams ?? {})) url.searchParams.set(key,value); url.hash=''; }
     else {
-    url = widgetShareUrl(url.toString(), detailId, shareParams, embedPath(widget), host?.query);
+    url = widgetShareUrl(url.toString(), detailId, shareParams, sharePath ?? embedPath(widget), sharePath ? host?.query ?? {} : host?.query);
     }
     if (navigator.clipboard && window.isSecureContext) {
       try {
@@ -178,7 +182,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
     catch { setLiveUrl(undefined); }
   }, []);
   const def = widgetForPlace(widget, place, liveUrl);
-  const contactPage = widgetShareUrl(new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io').toString(), detailId, shareParams, embedPath(widget), host?.query);
+  const contactPage = widgetShareUrl(new URL(liveUrl ?? def.shareUrl, 'https://solar-check.io').toString(), detailId, shareParams, sharePath ?? embedPath(widget), sharePath ? host?.query ?? {} : host?.query);
   const contactHref = `/kontakt?${new URLSearchParams({
     topic: 'Widget einbetten',
     message: `Ich habe eine Frage zum Einbetten dieses Widgets:\n\nWidget: ${frame.title}\nKennung: ${widget.id}\nOrt: ${place}\n${stateLabel ? `Ansicht: ${stateLabel}\n` : ''}Seite: ${contactPage.toString()}\n\nMeine Frage:\n`,
@@ -292,8 +296,8 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
             }
           } : undefined,
         }:undefined}
-        // Only a supported embed route yields a code; the monitor charts have none yet (registry: embeddable false).
-        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true)} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} />;
+        // Only a registered embed route can produce usable embed code.
+        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true),direct:einbetten.preview} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} />;
   const exportCaption = exportDescription ?? frame.subtitle;
   const redundantCaption = typeof exportCaption === 'string' && exportUnit && chartQuantityLabel(exportCaption) === chartQuantityLabel(exportUnit);
   const content = <ExportNotesProvider>
@@ -306,7 +310,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
         ? <div data-partner-header-measure="" data-sc-export-ignore="" aria-hidden="true" inert style={{position:"absolute",insetInline:0,top:0,visibility:"hidden",opacity:0,pointerEvents:"none"}}><WidgetBrandHeader brand={partner.brand} mode="full"/></div>
         : <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
       context={frame.context ?? (partner ? `Stand: ${stand}` : undefined)}
-      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner} minFontSize={partner ? 10 : undefined}/></div> : frame.bodyAside}
+      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner || sourceBranding} minFontSize={partner ? 10 : undefined}/></div> : frame.bodyAside}
       exportSubtitle={<>
         {chartMetadataLabel({scope:exportScope ?? (typeof frame.title === 'string' && place && frame.title.includes(place) ? undefined : place), dataAsOf:stand, unit:exportUnit, period:stateLabel})}
         {exportCaption && !redundantCaption && <> · {typeof exportCaption === 'string' ? chartQuantityLabel(exportCaption) : exportCaption}</>}
@@ -355,8 +359,8 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
         {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
           <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible&&!host} spalten={edgeColumns} />
         </div>}
-        {einbetten && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={`/embed/${def.id}`} params={einbetten.params}
-          width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: (()=>{const url=new URL(def.shareUrl,"https://solar-check.io");return `${url.pathname}${url.search}${url.hash}`;})(), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
+        {einbetten && embeddable(def) && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={embedPath(def)!} params={einbetten.params} preview={einbetten.preview}
+          width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: einbetten.preview ? `${embedPath(def)}?${new URLSearchParams(einbetten.params).toString()}` : (()=>{const url=new URL(def.shareUrl,"https://solar-check.io");return `${url.pathname}${url.search}${url.hash}`;})(), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
         {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} branding={exportBranding} legend={exportLegend} includeHelpNotes={false} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}
       </>}
     >{children}</WidgetFrame>

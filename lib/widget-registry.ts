@@ -98,6 +98,8 @@ export interface WidgetDef {
    * the register is here to prevent.
    */
   embeddable?: boolean;
+  /** Existing canonical route when it differs from /embed/<id>. */
+  embedRoute?: string;
 }
 
 const landscapePlaceSetting={key:'ags',label:'Ort',defaultValue:'03458009',options:Object.entries(landscapePlaces).map(([value,label])=>({value,label})).sort((a,b)=>a.label.localeCompare(b.label,'de'))};
@@ -491,9 +493,9 @@ export const WIDGETS = {
     id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
     configuration: {presentations:{full:widgetVariant('cartesian',{supportsAllocation:true,minAllocatedHeight:640,gridSizes:['list','stage'],plot:'fixed-responsive'})},themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Jährlicher Zubau an Solaranlagen", period: "Verfügbare Registerjahre"},
     place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
-    exampleParams: {ags: "09679"},
+    exampleParams: {ags: "05370020"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",
-    sources: [DATA_SOURCES.mastr], embeddable: false,
+    sources: [DATA_SOURCES.mastr], embedRoute: "/embed/galerie/regional-annual-growth",
   },
   regionalComposition: {
     id: "regional-composition", title: "Solarleistung nach Anlagentyp", kind: "chart",
@@ -721,7 +723,7 @@ export function widgetFuerMeldung(
 
 /** Embed path of a widget, or null where there is no iframe route for it. */
 export function embedPath(w: WidgetDef): string | null {
-  return w.embeddable === false ? null : `/embed/${w.id}`;
+  return w.embeddable === false ? null : w.embedRoute ?? `/embed/${w.id}`;
 }
 
 /**

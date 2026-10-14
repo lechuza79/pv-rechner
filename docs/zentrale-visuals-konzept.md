@@ -1036,3 +1036,22 @@ the simultaneous pool of domestic generation plus gross imports; domestic MW are
 converted to GW before weighting. Unknown imports remain in the denominator and
 produce an explicit unassigned export share. Missing domestic observations leave
 export composition unassigned. This is a proportional estimate, not flow tracing.
+
+### District racing comparison — 14 October 2026 (local preview)
+
+County pages now compose the existing race renderer with two data selections:
+counties within their state (excluding independent cities), and municipalities
+within the county. `district-race-config.ts` owns the initial preset, optional
+public toggle and shared metric/plant category with explicit per-view overrides.
+Kaiserslautern retains its private-roof per-capita county comparison; other county
+pages retain their municipality/count default. State, national, association and
+municipal page races retain their existing single-view integration.
+
+The same `RaceDataControls` editor is used by the gallery and dashboard settings.
+The existing dashboard source URL persists the configuration; no second storage
+or public settings action is introduced. `comparison=district` enables the
+composition on `/embed/regional-race/[county]`; `toggle=off` fixes its configured
+view. Only county context offers this composition. The county determines its
+state, the selected metric determines title/unit, and the active selection is
+used by share links and the existing video request. Only one chart animation is
+mounted at a time; switching between the preloaded views needs no new request.
