@@ -11113,14 +11113,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
 
   "recklinghausen-stecker-solar": {
     "id": "recklinghausen-stecker-solar",
-    "name": "Förderung von Stecker-Solargeräten und Batteriespeichern",
+    "name": "Förderung von Stecker-Solargeräten",
     "traeger": "Stadt Recklinghausen",
     "level": "kommune",
     "region": "Recklinghausen",
     "bundesland": "Nordrhein-Westfalen",
     "agsCode": "05562032",
     "url": "https://www.recklinghausen.de/inhalte/startseite/klima_mobilitaet/foerderprogramme/index.asp",
-    "stand": "September 2026",
+    "stand": "Oktober 2026",
     "status": "aktiv",
     "capped": true,
     "verified": true,
@@ -11128,8 +11128,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     "eligibility": [
       "privat"
     ],
-    "coveredCosts": "Balkonkraftwerke und stationäre Speicher mit gleichzeitig neuer Dachanlage",
-    "maxFoerderung": "Balkon 100 €; stationärer Speicher mit neuer PV-Anlage 300 €",
+    "coveredCosts": "Nur Balkonkraftwerke; Batteriespeicher werden nicht gefördert",
+    "maxFoerderung": "100 € je Wohneinheit",
     "rates": [
       {
         "label": "Balkonkraftwerk",
@@ -11137,36 +11137,22 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
         "nur": [
           "balkon"
         ]
-      },
-      {
-        "label": "Stationärer Speicher mit neuer PV-Anlage",
-        "value": "300 € pauschal (seit Sept. 2026 nicht mehr auf der Seite der Stadt)",
-        "nur": [
-          "pv"
-        ]
       }
     ],
-    // SPEICHERTEIL VON DER AMTSSEITE VERSCHWUNDEN (29.09.2026, zweimal
-    // unabhängig gelesen, beide Adressvarianten): Unter „Förderprogramme" steht
-    // nur noch „Förderung von Stecker-Solar … Der Zuschuss für die
-    // Stecker-Solargeräte beträgt 100 Euro." Speicher/Batterie kommen im
-    // Dokument nicht mehr vor, verlinkt sind nur Stecker-Richtlinie, FAQ und
-    // Denkmalliste. KEIN „ausgeschöpft"/„beendet" — ob das Programm endete oder
-    // umzog, ist offen. Deshalb bleibt der letzte belegte Stand (16.09.2026)
-    // stehen, mit dem offenen Befund sichtbar daneben; ein Ende ist nicht
-    // belegt, und am Dach-Anteil hängt die Förderseite der Stadt. Geld bewegt
-    // der Teil nicht — er trägt keinen strukturierten Satz.
+    // STORAGE PART REMOVED (14 Oct 2026). The city page has not mentioned the
+    // storage grant since 29 Sep 2026 (only "Der Zuschuss für die
+    // Stecker-Solargeräte beträgt 100 Euro", linked documents: plug-in
+    // guideline, FAQ, monument list — re-read 14 Oct 2026, unchanged). On
+    // 14 Oct 2026 the city's climate office wrote in via the change form: the
+    // grant covers balcony power plants only and explicitly NOT storage. With
+    // the official page and the provider's own statement agreeing, the former
+    // storage conditions (3 kWh, new roof system, deadline 31 Dec 2026) are
+    // gone and the programme no longer covers roof PV.
     "conditions": [
       {
-        "text": "Seit September 2026 nennt die Stadt die Speicherförderung nicht mehr auf ihrer Förderseite — ob sie noch läuft, bitte vor dem Kauf bei der Stadt erfragen",
+        "text": "Gefördert werden nur Balkonkraftwerke — Batteriespeicher sind ausdrücklich nicht förderfähig",
         "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Die Speicherförderung läuft seit dem 7. Juli 2026",
-        "nur": [
-          "pv"
+          "balkon"
         ]
       },
       {
@@ -11198,87 +11184,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
         "nur": [
           "balkon"
         ]
-      },
-      {
-        "text": "Das getrennte Speicherprogramm der Stadt nimmt Balkonspeicher ausdrücklich aus",
-        "nur": [
-          "balkon"
-        ]
-      },
-      {
-        "text": "Antragsberechtigt sind private Eigentümer von Einfamilienhäusern in Recklinghausen.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Der Speicher muss gleichzeitig mit einer neuen netzgekoppelten PV-Anlage installiert werden.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Der Speicher muss mindestens 3 kWh fassen und die PV-Modulfläche mindestens 10 m² betragen.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Der Antrag muss vor Abschluss von Liefer- und Leistungsverträgen gestellt werden.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Ein Fachunternehmen muss Speicher und PV-Anlage installieren.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Je Antragsteller und Einfamilienhaus wird ein Speicher gefördert.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Anträge müssen spätestens am 31. Dezember 2026 eingehen.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Anlage und Speicher müssen binnen sechs Monaten nach Bewilligung in Betrieb sein.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Die Anlage muss mindestens zehn Jahre genutzt werden.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Balkonspeicher, mobile Speicher und Erweiterungen bestehender Anlagen sind ausgeschlossen.",
-        "nur": [
-          "pv"
-        ]
-      },
-      {
-        "text": "Zusammen mit anderen Zuschüssen dürfen höchstens 50 % der Gesamtkosten gefördert werden.",
-        "nur": [
-          "pv"
-        ]
       }
     ],
     "combinableWith": [
-      "bund-nullsteuer",
-      "bund-kfw270"
+      "bund-nullsteuer"
     ],
     "foerdert": [
-      "balkon",
-      "pv"
+      "balkon"
     ],
     "balkonPauschale": 100
   },
