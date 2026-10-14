@@ -102,5 +102,33 @@ class StateSourceTests(unittest.TestCase):
         self.assertEqual(states.grid_member(buffer.getvalue(), 'dgm'), ('a.tif', b'x'))
 
 
+    def test_brandenburg_neighbour_terrain_is_one_coverage_request(self):
+        # Jessen (Elster): the scene reaches across the state border into Brandenburg.
+        from shapely.geometry import box
+        urls = states.neighbour_terrain_urls('12', box(760000, 5740000, 762000, 5742000))
+        self.assertEqual(len(urls), 1)
+        self.assertEqual(len(urls[0]), 1)
+        self.assertTrue(urls[0][0].startswith(states.BB_WCS + '?SERVICE=WCS'))
+        spec = states.NEIGHBOUR_TERRAIN['12']
+        self.assertEqual((spec['native'], spec['tag']), (25833, 'nbbb'))
+        self.assertIn('LGB', spec['credit'])
+
+
+    def test_sachsen_anhalt_neighbour_terrain_reads_the_tile_index(self):
+        # Schönewalde (Brandenburg): its scene reaches into Sachsen-Anhalt.
+        from shapely.geometry import box
+        page = ("MapDownloadSelector( 'mapdownloader_content', '{\"features\":[{\"properties\":{\"label\":\"323505730\",\"id\":\"577001\"}},"
+                "{\"properties\":{\"label\":\"323525730\",\"id\":\"577002\"}}]}', 'EPSG:4647'"
+                " https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1970,501/ajax/1/prepare/?")
+        original = states._get
+        states._get = lambda url: Response(page)
+        try:
+            urls = states.neighbour_terrain_urls('15', box(350100, 5730100, 351900, 5731900))
+        finally:
+            states._get = original
+        self.assertEqual(urls, [['https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1970,501/ajax/1/prepare/?items=577001&format=zip']])
+        self.assertTrue(states.NEIGHBOUR_TERRAIN['15']['st'])
+
+
 if __name__ == '__main__':
     unittest.main()

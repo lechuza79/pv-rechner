@@ -224,3 +224,36 @@ describe("Zeitlimits der Browser-Test-Workflows", () => {
     },
   );
 });
+
+// Each browser group must test the same successful build, including generated assets.
+describe("Shared CI production runtime", () => {
+  const ci = jobs("ci.yml");
+  const producer = ci.find((job) => job.name === "build")!;
+
+  it("produces one artifact for this commit without bundling credentials or build caches", () => {
+    expect(ci.filter((job) => /^\s*run: npm run build$/m.test(job.text))).toHaveLength(1);
+    expect(producer.text).toContain(".next public/kommunen public/location-search");
+    expect(producer.text).toContain("--exclude='.next/cache'");
+    expect(producer.text).toContain("if-no-files-found: error");
+    expect(producer.text).toContain("browser-build-${{ github.sha }}");
+    const archive = producer.text.split("\n").find((line) => line.trim().startsWith("tar "))!;
+    expect(archive).not.toMatch(/\.env|node_modules/);
+  });
+
+  it.each(["smoke", "flows", "telefon", "kontrast"])("%s requires and validates the shared artifact", (name) => {
+    const consumer = ci.find((job) => job.name === name)!;
+    expect(consumer.text).toMatch(/^    needs: build$/m);
+    expect(consumer.text).toContain('E2E_PREBUILT: "1"');
+    expect(consumer.text).toContain("actions/download-artifact@v4");
+    expect(consumer.text).toContain("browser-build-${{ github.sha }}");
+    expect(consumer.text).toContain("test -s .next/BUILD_ID");
+    expect(consumer.text).toContain('test "$(cat .next/ci-commit)" = "$GITHUB_SHA"');
+  });
+
+  it("fails the protected gate when the build fails or is skipped", () => {
+    const gate = ci.find((job) => job.name === "test")!;
+    expect(gate.text).toContain("needs: [unit, build, smoke]");
+    expect(gate.text).toContain("if: always()");
+    expect(gate.text).toContain('[ "${{ needs.build.result }}" = "success" ] || fehler=1');
+  });
+});

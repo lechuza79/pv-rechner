@@ -41,6 +41,8 @@ import { matchFundingForAgs, fundingStandLabel, fundingZaehlt } from "../../lib/
 import { IMPORT_TAGE, naechsteAktualisierung } from "../../lib/mastr-import-plan";
 import { ABO_SOFORT_SKRIPT } from "../../lib/abo-sofort";
 import styles from "./landkreis.module.css";
+import editorial from "../EditorialContent.module.css";
+import typography from "../EditorialPage.module.css";
 
 /** What the page calls its members, per level. The district texts are the accepted originals. */
 const LEVEL_TEXT: Record<"landkreis" | "bundesland" | "de", {noun: string; member: string; overview: string; table: string; tableHeading: string; race: RaceWording}> = {
@@ -129,9 +131,9 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},{href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
     ].filter(link=>(!association?.overviewOnly||!["#atlas-stories","#atlas-data"].includes(link.href))).filter(link=>isDistrict||(link.href==="#atlas-ranking"?comparable:link.href==="#atlas-foerderung"?level==="bundesland":link.href!=="#atlas-stories"))}/></div>
     <div className={`${styles.storyBand} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
-      <section className={styles.districtIntro}>
-        <div><p>Stand {dashboardDate(stand)}</p><h2>So steht es um Solar<br/>{ortPhrase(region)}.</h2></div>
-        <div><p>{intro}</p>{einordnung&&<p>{einordnung}</p>}</div>
+      <section className={`${styles.districtIntro} ${typography.typography}`}>
+        <div><p className={editorial.p}>Stand {dashboardDate(stand)}</p><h2>So steht es um Solar<br/>{ortPhrase(region)}.</h2></div>
+        <div><p className={editorial.p}>{intro}</p>{einordnung&&<p className={editorial.p}>{einordnung}</p>}</div>
       </section>
       {isDistrict&&!association?.overviewOnly&&<section id="atlas-stories" className={styles.districtStories} aria-label={association?"Geschichten aus der Verbandsgemeinde":"Geschichten aus dem Landkreis"}>
         <h2>Insights {ortPhrase(region)}</h2>

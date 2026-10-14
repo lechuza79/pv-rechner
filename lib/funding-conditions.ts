@@ -793,6 +793,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // deduct nothing.
   "hockenheim-stadtwerke-balkon",
   "hockenheim-stadtwerke-hauswaerme",
+  // Added 14 Oct 2026: Klimaschutzfonds Elmshorn (exhausted until 2027) and
+  // the Stadtwerke Elmshorn CO2 programme (tied to being a gas and green-power
+  // customer); both deduct nothing.
+  "elmshorn-klimaschutzfonds",
+  "elmshorn-stadtwerke-co2",
 ];
 
 /**

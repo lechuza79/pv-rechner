@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { existsSync } from "node:fs";
+import {MUNICIPAL_WIDGET_VIEWS} from "../municipal-widget-views";
 import { join } from "node:path";
 import { allWidgets, brandLabel, embedPath, sharePath, widgetForPlace, WIDGETS } from "../widget-registry";
 
@@ -53,7 +54,11 @@ describe("Widget-Register", () => {
     const fehlend = allWidgets()
       .map((w) => embedPath(w))
       .filter((pfad): pfad is string => !!pfad)
-      .filter((pfad) => !existsSync(join(__dirname, "..", "..", "app/(embed)", pfad, "page.tsx")));
+      .filter((pfad) => {
+        const route = pfad.startsWith('/embed/galerie/') && pfad.split('/').at(-1)! in MUNICIPAL_WIDGET_VIEWS
+          ? '/embed/galerie/[widget]' : pfad;
+        return !existsSync(join(__dirname, "..", "..", "app/(embed)", route, "page.tsx"));
+      });
     expect(fehlend, `Einbett-Route fehlt:\n${fehlend.join("\n")}`).toEqual([]);
   });
 

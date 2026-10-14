@@ -338,7 +338,7 @@ def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
         for candidates in states.neighbour_terrain_urls(code, part):
             for url in candidates:
                 stem = hashlib.sha256(url.encode()).hexdigest()[:24]
-                kept = inputs/(prefix+('-nbsn-' if spec['native']!=25832 else '-dgm-nbth-')+stem+'.tif')
+                kept = inputs/(prefix+('-'+spec['tag']+'-' if spec['native']!=25832 else '-dgm-'+spec.get('tag','nbth')+'-')+stem+'.tif')
                 known = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
                 if known:
                     if not kept.exists():os.link(inputs/known['file'],kept)
@@ -347,26 +347,43 @@ def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
                     response = None
                     for number in range(4):
                         try:
-                            response = requests.get(url,timeout=(20,300),headers=states.UA)
+                            if spec.get('st'):
+                                # The prepare link answers with a one-off archive address.
+                                link = requests.get(url,timeout=(20,120),headers=states.UA);link.raise_for_status()
+                                archive = link.text.strip()
+                                if not archive.startswith('https://www.lvermgeo.sachsen-anhalt.de/') or '/download/?file=' not in archive:
+                                    raise ValueError('Unexpected Sachsen-Anhalt download link')
+                                response = requests.get(archive,timeout=(20,300),headers=states.UA)
+                                response.raise_for_status()
+                            else:
+                                response = requests.get(url,timeout=(20,300),headers=states.UA)
                             break
                         except requests.RequestException as error:
                             if number==3:raise
                             print('Retry',url,error,flush=True)
                     if response.status_code==404:continue
                     response.raise_for_status()
-                    member, data = states.neighbour_member(response.content)
-                    temporary = kept.with_suffix('.tif.part');temporary.write_bytes(data);temporary.replace(kept)
+                    temporary = kept.with_suffix('.tif.part')
+                    if spec.get('wcs'):
+                        # The coverage answers a bare GeoTIFF without CRS; tag it as served (UTM33).
+                        member, raw = None, kept.with_suffix('.wcs.part')
+                        try:raw.write_bytes(response.content);states.bb_wcs_terrain(raw,temporary)
+                        finally:raw.unlink(missing_ok=True)
+                    else:
+                        member, data = (states.st_member(response.content,'dgm') if spec.get('st') else states.neighbour_member(response.content))
+                        temporary.write_bytes(data)
+                    temporary.replace(kept)
                     entry = dict(file=kept.name,url=url,sha256=shared.digest(kept),sourceMember=member,
                                  sourceSha256=hashlib.sha256(response.content).hexdigest())
                 (native if spec['native']!=25832 else entries).append(entry)
                 break
         if native:
-            mosaic = inputs/(prefix+'-dgm-nbsn-mosaic-utm32.tif')
+            mosaic = inputs/(prefix+'-dgm-'+spec['tag']+'-mosaic-utm32.tif')
             partial = mosaic.with_suffix('.tif.part')
             try:states.convert_dgm_mosaic([inputs/e['file'] for e in native],partial);partial.replace(mosaic)
             finally:partial.unlink(missing_ok=True)
-            entries.append(dict(file=mosaic.name,url=states.SN_DGM,sha256=shared.digest(mosaic),
-                derivation='Official GeoSN DGM1 (UTM33), mosaicked and reprojected once to UTM32 at 5 m (bilinear), heights unchanged',
+            entries.append(dict(file=mosaic.name,url=spec['source'],sha256=shared.digest(mosaic),
+                derivation='Official %s (UTM33), mosaicked and reprojected once to UTM32 at 5 m (bilinear), heights unchanged' % spec['label'],
                 derivedFrom=[dict(url=e['url'],sha256=e['sha256'],sourceSha256=e.get('sourceSha256')) for e in native]))
         if len(entries)>before:
             credits.append(spec['credit'])

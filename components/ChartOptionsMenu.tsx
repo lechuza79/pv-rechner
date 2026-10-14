@@ -63,7 +63,7 @@ export default function ChartOptionsMenu({ dataTable, label, onShare, onDownload
   onDownload?: () => void | Promise<void>;
   onForward?: () => void | 'copied' | Promise<void | 'copied'>;
   onRestart?: () => void | Promise<void>;
-  embed?: { onEmbed: () => void } | { unavailable: string };
+  embed?: { onEmbed: () => void; direct?: boolean } | { unavailable: string };
   animation?: {end:()=>Promise<void>;video?:()=>Promise<void>};
   busy?: boolean;
 }) {
@@ -189,6 +189,7 @@ export default function ChartOptionsMenu({ dataTable, label, onShare, onDownload
         {showDownload&&onDownload&&<button type="button" data-widget-action="image" disabled={busy} onClick={run(onDownload)}><IconDownload size={16}/><span>{busy ? 'Wird erstellt …' : 'Herunterladen'}</span></button>}
         {onShare&&<button type="button" data-widget-action="copy_link" disabled={busy||copying} onClick={copyLink}>{copied?<IconCheck size={16}/>:<IconCopy size={16}/>}<span aria-live="polite">{copied?'Link kopiert':'Link kopieren'}</span></button>}
         {onForward&&<button type="button" data-widget-action="forward" disabled={busy||forwarding} onClick={forwardLink}>{forwarded?<IconCheck size={16}/>:<IconShare size={16}/>}<span aria-live="polite">{forwarded?(forwarded==='shared'?'Weitergeleitet':'Link kopiert'):'Weiterleiten'}</span></button>}
+        {embed && 'onEmbed' in embed && embed.direct && <button type="button" data-widget-action="embed" disabled={busy} onClick={run(embed.onEmbed)}><IconCode size={16}/><span>Einbetten</span></button>}
       </div>}
       {footer&&<div role="group" aria-label={`Aktionen für ${label}`} className={styles.actions}>
         {onRestart&&<button type="button" className={`${styles.action} ${styles.restart}`} aria-label="Animation neu starten" title="Neu starten" data-widget-action="restart" disabled={busy} onClick={run(onRestart)}><IconRefresh size={16}/></button>}
