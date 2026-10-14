@@ -8648,5 +8648,17 @@
       "latitude": 52.0959,
       "longitude": 11.63719
     }
+  },
+  "15084490": {
+    "wind-1": {
+      "name": "Windanlagen bei Teuchern",
+      "latitude": 51.13936,
+      "longitude": 11.96426
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Teuchern",
+      "latitude": 51.16192,
+      "longitude": 12.00445
+    }
   }
 }
