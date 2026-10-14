@@ -7993,5 +7993,82 @@
       "latitude": 52.22116,
       "longitude": 13.35841
     }
+  },
+  "12051000": {
+    "wind-1": {
+      "name": "Windanlagen bei Brandenburg an der Havel",
+      "latitude": 52.35459,
+      "longitude": 12.55805
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Brandenburg an der Havel",
+      "latitude": 52.35,
+      "longitude": 12.48
+    }
+  },
+  "12052000": {
+    "wind-1": {
+      "name": "Windanlagen bei Cottbus",
+      "latitude": 51.78353,
+      "longitude": 14.46291
+    }
+  },
+  "12053000": {
+    "wind-1": {
+      "name": "Windanlagen bei Frankfurt (Oder)",
+      "latitude": 52.29767,
+      "longitude": 14.43687
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Frankfurt (Oder)",
+      "latitude": 52.27807,
+      "longitude": 14.40645
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Frankfurt (Oder)",
+      "latitude": 52.37686,
+      "longitude": 14.46292
+    }
+  },
+  "12065100": {
+    "wind-1": {
+      "name": "Windanlagen bei Gransee",
+      "latitude": 52.97139,
+      "longitude": 13.21812
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gransee",
+      "latitude": 53.04182,
+      "longitude": 13.21886
+    }
+  },
+  "12065198": {
+    "wind-1": {
+      "name": "Windanlagen bei Löwenberger Land",
+      "latitude": 52.92053,
+      "longitude": 13.29055
+    }
+  },
+  "12065356": {
+    "wind-1": {
+      "name": "Windanlagen bei Zehdenick",
+      "latitude": 52.99617,
+      "longitude": 13.28376
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Zehdenick",
+      "latitude": 52.96222,
+      "longitude": 13.25682
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Zehdenick",
+      "latitude": 53.03939,
+      "longitude": 13.23281
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Zehdenick",
+      "latitude": 52.96403,
+      "longitude": 13.22052
+    }
   }
 }
