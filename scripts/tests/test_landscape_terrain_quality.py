@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 from affine import Affine
 sys.path.insert(0,str(Path(__file__).parents[1]))
-from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, clip_context_to_measured_surface
+from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, clip_context_to_measured_surface, normalise_st_crs
 from shapely.geometry import box
 
 class TerrainQualityTest(unittest.TestCase):
@@ -52,5 +52,52 @@ class TerrainQualityTest(unittest.TestCase):
         self.assertEqual(context['streams'],[[[1.0,2.0],[2.0,2.0],[3.0,2.0]]])
         self.assertEqual(report['omittedUnmeasuredComponents'],0)
         self.assertIsNone(scene['terrain']['elevations'][0])
+
+
+ST_URL = 'https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1970,501/ajax/1/prepare/?items=575899&format=zip'
+
+
+def st_tile(directory, crs, left=696000, top=5676000, size=400, step=5.0):
+    import rasterio
+    path = Path(directory)/'st-15084170-dgm-x.tif'
+    with rasterio.open(path, 'w', driver='GTiff', width=size, height=size, count=1, dtype='float32',
+                       transform=Affine(step, 0, left, 0, -step, top), crs=crs) as tile:
+        tile.write(np.full((1, size, size), 100.0, dtype='float32'))
+    return path
+
+
+class SachsenAnhaltReferenceTests(unittest.TestCase):
+    def test_tile_without_crs_on_named_grid_gets_utm32_as_metadata_only(self):
+        import tempfile, rasterio
+        with tempfile.TemporaryDirectory() as directory:
+            path = st_tile(directory, None)
+            vrt, correction = normalise_st_crs(path, ST_URL, 'dgm5_32_696_5674_2_st.tif')
+            with rasterio.open(vrt) as fixed, rasterio.open(path) as original:
+                self.assertEqual(fixed.crs.to_epsg(), 25832)
+                self.assertEqual(fixed.transform, original.transform)
+                self.assertTrue((fixed.read() == original.read()).all())
+            self.assertIsNone(correction['originalCRS'])
+
+    def test_tile_with_crs_is_untouched(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            path = st_tile(directory, 'EPSG:25832')
+            self.assertEqual(normalise_st_crs(path, ST_URL, 'dgm5_32_696_5674_2_st.tif'), (path, None))
+
+    def test_name_must_match_the_tile_position(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            path = st_tile(directory, None)
+            with self.assertRaises(ValueError):normalise_st_crs(path, ST_URL, 'dgm5_32_698_5674_2_st.tif')
+            with self.assertRaises(ValueError):normalise_st_crs(path, ST_URL, None)
+
+    def test_off_grid_or_foreign_source_fails(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            path = st_tile(directory, None, left=696500)
+            with self.assertRaises(ValueError):normalise_st_crs(path, ST_URL, 'dgm5_32_696_5674_2_st.tif')
+        with tempfile.TemporaryDirectory() as directory:
+            path = st_tile(directory, None)
+            with self.assertRaises(ValueError):normalise_st_crs(path, 'https://example.test/ajax/1/prepare/?items=1', 'dgm5_32_696_5674_2_st.tif')
 
 if __name__=='__main__':unittest.main()

@@ -10,7 +10,7 @@ from datetime import datetime,timezone
 import numpy as np
 import rasterio
 from rasterio.merge import merge
-from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs
+from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs, normalise_st_crs
 from pyproj import Transformer
 from shapely.geometry import shape,Polygon,Point,LineString,GeometryCollection
 from shapely.ops import transform
@@ -119,6 +119,9 @@ def main(id):
  for index,path in enumerate(rasters):
   if '-dgm-bw-' in path.name:
    rasters[index],correction=normalise_bw_crs(path,source_entries[path.name]['url'])
+   if correction:crs_normalisations.append(correction)
+  elif path.name.startswith('st-') and '-dgm-nb' not in path.name:
+   rasters[index],correction=normalise_st_crs(path,source_entries[path.name]['url'],source_entries[path.name].get('sourceMember'))
    if correction:crs_normalisations.append(correction)
  extent=coords+[(east,north)]+[(east+p['x'],north-p['z']) for p in stops]
  for field in solar:extent.extend((east+x,north-z) for x,z in field['ring'])
