@@ -151,7 +151,7 @@ export async function briefFuerGemeinde(
     // MIT ANKER: Der Link belegt eine Platzierung, er lädt nicht zum Stöbern
     // ein. Ohne ihn beginnt der Leser über drei Reihen Umschaltern und sucht
     // die Tabelle, die die Adresse längst richtig ausgewählt hat.
-    const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet, true);
+    const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet, true, hook?.rank);
     return pfad ? mitHerkunft(`${SITE_URL}${pfad}`) : null;
   })();
 

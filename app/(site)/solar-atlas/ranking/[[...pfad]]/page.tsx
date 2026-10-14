@@ -23,6 +23,7 @@ import {
   rankingTitel,
   traegtRangliste,
   RANGLISTE_ANKER,
+  RANGLISTE_PRO_SEITE,
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 import { GROESSENKLASSEN_WARUM } from "../../../../../lib/gemeindegroesse";
@@ -70,7 +71,7 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 /** Zeilen je Seite. Deutschland hat über 10.000 Kommunen — alle auf einmal
  *  wären rund sechs Megabyte Markup. Statt sie abzuschneiden wird geblättert:
  *  Jede Kommune ist erreichbar, nur nicht alle gleichzeitig. */
-const PRO_SEITE = 200;
+const PRO_SEITE = RANGLISTE_PRO_SEITE;
 
 type Params = { pfad?: string[] };
 
