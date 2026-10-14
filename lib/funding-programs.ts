@@ -16013,6 +16013,49 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // No structured rate: the
     // customer tie-in cannot be modelled (same as hockenheim-stadtwerke-*).
   },
+  "schenefeld-klimafonds": {
+    id: "schenefeld-klimafonds", name: "Klimafonds der Stadt Schenefeld",
+    traeger: "Stadt Schenefeld (Fachdienst Planen und Umwelt)", level: "kommune", region: "Schenefeld",
+    bundesland: "Schleswig-Holstein", agsCode: "01056044",
+    url: "https://www.stadt-schenefeld.de/buergerservice/leistungen/SH:entry:712930-VLR/klimafonds/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-11",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss von 10 % der förderfähigen Kosten einer Photovoltaik-Anlage (auch mit Speicher) oder eines nachgerüsteten Stromspeichers, nach Einzelentscheidung eines Gremiums",
+    maxFoerderung: "höchstens 5.000 € je Antrag und Maßnahme",
+    rates: [
+      { label: "PV-Anlage mit Speicher und vorbereitenden Arbeiten", value: "10 % der förderfähigen Kosten, höchstens 5.000 €; mindestens 200 € Zuschuss, die Anlage muss also mindestens 2.000 € kosten" },
+      { label: "Nachrüstung eines Stromspeichers", value: "10 % der förderfähigen Kosten, höchstens 5.000 €; mindestens 200 € Zuschuss" },
+    ],
+    conditions: [
+      "Antrag vor Beginn: Schon die Auftragsvergabe gilt als Beginn; ein vorzeitiger Beginn lässt sich im Antragsformular beantragen, ein Anspruch auf den Zuschuss folgt daraus nicht",
+      "Gefördert wird nur, was nicht mit Mitteln anderer einschlägiger Förderprogramme finanziert werden kann und wozu keine Rechtspflicht besteht",
+      "Nur Anlagen, die ausschließlich Strom erzeugen, nicht in Kombination mit einem Wärmeerzeuger",
+      "Einbau durch zertifiziertes Fachpersonal; Eigenleistungen werden nicht gefördert — Balkonkraftwerke sind zwar genannt, ein selbst montiertes Gerät unter 2.000 € fällt aber heraus",
+      "Antragsberechtigt sind Privatpersonen mit Wohnort Schenefeld, Unternehmen mit Hauptsitz dort sowie Vereine und andere juristische Personen; wer nicht Eigentümer ist, braucht dessen schriftliches Einverständnis",
+      "Dieselbe Art Maßnahme am selben Objekt wird innerhalb von zehn Jahren nur einmal gefördert",
+      "Ein dreiköpfiges Gremium aus Verwaltung und Bürgermeisterin entscheidet, im Zweifel das Los; ein Rechtsanspruch besteht nicht, beantragt werden kann das ganze Jahr, solange Mittel da sind",
+      "Umsetzung binnen zwei Jahren nach Bewilligung, Zweckbindung fünf Jahre; ausgezahlt wird nach Abschluss gegen Rechnung",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // Read 14.10.2026 in the original: service page ("Die Förderquote beträgt
+    // 50 % der förderfähigen Kosten für Maßnahmen aus den Maßnahmenbereichen 1
+    // und 5 sowie 10 % für Maßnahmen, die nicht diesen beiden Bereichen
+    // zuzuordnen sind. Die maximale Fördersumme beträgt 5.000,00 €"), guideline
+    // 2nd version (sh.egovernor.de/api/datei/buxud772qSli82eQaVcsZ; no. 3 adds
+    // "Der Mindestförderbetrag beträgt 200,00 €", no. 9 in force 01.01.2026,
+    // council decision 11.12.2025), annex (…/hWan1iYjcU0Vqw1HY6VR4) area 3
+    // "Photovoltaikanlagen (auch für Balkone, inkl. … Speicher …), die
+    // ausschließlich der Stromerzeugung dienen (nicht in Kombination mit
+    // Wärmeerzeugern)" and "Nachrüstung von Stromspeichern", form Stand 12.2025,
+    // news 2026 (application windows lifted, year-round). Heat pumps are not on
+    // the list (area 4 only after a refusal elsewhere), so foerdert stays pv.
+    // Council 3/3 incl. adversarial reviewer; its corrections (heat-generator
+    // exclusion, no own labour, ten-year repeat ban, budget reservation) taken
+    // over. No structured rate: committee discretion, budget reservation and
+    // the other-programmes exclusion make any deduction a guess.
+  },
 
   // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
   "celle-klimaschutzfonds": {

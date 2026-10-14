@@ -94792,5 +94792,170 @@
         "evidenceUrl": "https://www.pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "01056044",
+    "name": "Schenefeld",
+    "checkedAt": "2026-10-14T18:11:37Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Schenefeld hat seit 01.01.2026 den Klimafonds der Stadt (Richtlinie 2. Fassung, Ratsbeschluss 11.12.2025), am 14.10.2026 als schenefeld-klimafonds aufgenommen: Photovoltaik (auch Balkon, mit Speicher) und nachgerüstete Stromspeicher 10 % der förderfähigen Kosten, höchstens 5.000 €, mindestens 200 € Zuschuss (also ab 2.000 € Kosten); nur reine Stromerzeugung, nur Fachbetrieb, nur was nicht anderweitig förderbar ist; Gremium entscheidet, kein Rechtsanspruch, ganzjährig solange Mittel. Ohne Rechenwert (Ermessen, Mittelvorbehalt). Wärmepumpen stehen nicht auf der Liste. Gegengeprüft 3/3 mit widersprechendem Prüfer. Die beiden erfassten Quellen sind Rechen-Handouts ohne Förderaussage. Kreisweit gilt der katalogisierte Gründach-Zuschuss.",
+    "searches": [
+      "Klimaschutzseiten der Stadt (ist umweltfreundlich, Klimaschutzaktionen, PV-Seite, Energiemesse 2026) am 14.10.2026 gelesen",
+      "Verzeichnis Verordnungen & Richtlinien im echten Browser gelesen (Klimafonds dort nicht gelistet)",
+      "Leistungsseite Klimafonds, Richtlinie 2. Fassung, Anlage Positivliste, Antragsformular, Zahlungsanforderung und Datenblatt im Original gelesen",
+      "Meldung 2026 „Schenefelder Klimafonds – weiterhin Anträge möglich“ gelesen",
+      "Gegenprüfung durch drei unabhängige Prüfer, einer widersprechend",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056044 im Melderegister geprüft (nicht 01061097 Schenefeld/Steinburg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-schenefeld.de/buergerservice/leistungen/SH:entry:712930-VLR/klimafonds/",
+        "finding": "Am 14.10.2026 gelesen: „Die Förderquote beträgt 50 % der förderfähigen Kosten für Maßnahmen aus den Maßnahmenbereichen 1 und 5 sowie 10 % für Maßnahmen, die nicht diesen beiden Bereichen zuzuordnen sind. Die maximale Fördersumme beträgt 5.000,00 € je Antrag und Maßnahme.“ Antrag ganzjährig; kein Hinweis auf erschöpfte Mittel."
+      },
+      {
+        "url": "https://sh.egovernor.de/api/datei/buxud772qSli82eQaVcsZ",
+        "finding": "Richtlinie 2. Fassung gelesen: Nr. 3 „Der Mindestförderbetrag beträgt 200,00 €“, Nr. 2 Ausschluss anderweitig finanzierbarer Maßnahmen, Nr. 5 „Nicht förderfähig sind Eigenleistungen“, Nr. 8 Gremium und Los, Nr. 9 „tritt am 01.01.2026 in Kraft. Beschlossen … am 11.12.2025“."
+      },
+      {
+        "url": "https://sh.egovernor.de/api/datei/hWan1iYjcU0Vqw1HY6VR4",
+        "finding": "Anlage Positivliste gelesen: Bereich 3 „Anschaffung und Errichtung von Photovoltaikanlagen (auch für Balkone, inkl. … Speicher …), die ausschließlich der Stromerzeugung dienen (nicht in Kombination mit Wärmeerzeugern)“, „Nachrüstung von Stromspeichern“; keine Wärmepumpe."
+      },
+      {
+        "url": "https://www.stadt-schenefeld.de/schenefeld/ist-umweltfreundlich/klimaschutzaktionen/photovoltaik-der-weg-zur-eigenen-anlage/",
+        "finding": "PV-Seite (8. Oktober 2025) gelesen: verlinkt nur zwei Handouts (Praxistipps, Berechnung) — keine Förderaussage."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-schenefeld.de/schenefeld/ist-umweltfreundlich/klimaschutzaktionen/photovoltaik-der-weg-zur-eigenen-anlage/handout-berechnungen2.pdf?cid=nxd",
+        "disposition": "reviewed",
+        "reason": "Rechen-Handout der Infoveranstaltung, keine Förderung; die Förderung der Stadt steht im Klimafonds.",
+        "evidenceUrl": "https://www.stadt-schenefeld.de/schenefeld/ist-umweltfreundlich/klimaschutzaktionen/photovoltaik-der-weg-zur-eigenen-anlage/"
+      },
+      {
+        "url": "stadt-schenefeld.de/schenefeld/ist-umweltfreundlich/klimaschutzaktionen/photovoltaik-der-weg-zur-eigenen-anlage/handout-praxistipps.pdf?cid=nwd",
+        "disposition": "reviewed",
+        "reason": "Praxistipps-Handout, keine Förderung; die Förderung der Stadt steht im Klimafonds.",
+        "evidenceUrl": "https://www.stadt-schenefeld.de/schenefeld/ist-umweltfreundlich/klimaschutzaktionen/photovoltaik-der-weg-zur-eigenen-anlage/"
+      }
+    ]
+  },
+  {
+    "regionId": "01056041",
+    "name": "Quickborn",
+    "checkedAt": "2026-10-14T18:11:37Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Quickborn zahlt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Seite Fördermöglichkeiten verweist nur auf die Förderdatenbank des Bundes und die Programme des Kreises (Gründach), die Seite „Solar auf meinem Dach?“ auf dieselbe Übersicht. Die Stadtwerke Quickborn bieten nur Vergünstigungen bei Kauf über ihren Kooperationspartner in Verbindung mit ihrem Stromtarif, ohne veröffentlichte Beträge — kein Förderprogramm. Die Suche nennt nur einen Ratsantrag von 2022 zu PV auf Schulen. Stand 14.10.2026.",
+    "searches": [
+      "Seite Fördermöglichkeiten der Stadt am 14.10.2026 im Original gelesen",
+      "Seite „Solar auf meinem Dach?“ gelesen",
+      "Stadtwerke Quickborn: Startseite und „Wärmepumpen & Co“ im echten Browser gelesen",
+      "Websuche site:quickborn.de nach Photovoltaik, Balkonkraftwerk, Wärmepumpe, Stromspeicher: nur Vorlage 2022 (PV auf Schulen)",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.quickborn.de/Klima+_+Umwelt/F%C3%B6rderm%C3%B6glichkeiten.html",
+        "finding": "Am 14.10.2026 gelesen: „Das Klimaschutzmanagement vom Kreis Pinneberg hat die verschiedenen Fördermöglichkeiten zur Energieeinsparung und Energieerzeugung HIER zusammengestellt“, dazu Förderdatenbank des Bundes und Dachbegrünung des Kreises — kein städtisches Programm."
+      },
+      {
+        "url": "https://www.stadtwerke-quickborn.de/de/Energie-Wasser/Waermepumpen-Co/",
+        "finding": "Am 14.10.2026 im Browser gelesen: Vergünstigungen für Kunden, die eine Anlage beim Kooperationspartner EKON erwerben und mit dem Stromtarif kombinieren; „wir informieren Sie über die aktuellen Konditionen“ — keine veröffentlichte Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "quickborn.de/Klima+_+Umwelt/F%C3%B6rderm%C3%B6glichkeiten.html",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Bund und Kreis, kein städtischer Zuschuss.",
+        "evidenceUrl": "https://www.quickborn.de/Klima+_+Umwelt/F%C3%B6rderm%C3%B6glichkeiten.html"
+      },
+      {
+        "url": "quickborn.de/Klima+_+Umwelt/F%C3%B6rderm%C3%B6glichkeiten.print",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Verweisseite.",
+        "evidenceUrl": "https://www.quickborn.de/Klima+_+Umwelt/F%C3%B6rderm%C3%B6glichkeiten.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01056048",
+    "name": "Tornesch",
+    "checkedAt": "2026-10-14T18:11:37Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Tornesch zahlt heute keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Ortssuche findet zu Photovoltaik, Balkonkraftwerk und Ökofonds nichts, zu Zuschuss nur Satzungen für Sportanlagen und Reetdächer, zu Wärmepumpe nur die Wärmeplanung. Hinweis: Ratsunterlagen von 2007/2008 (laut Suchmaschine) beschrieben einen städtischen Ökofonds mit PV-Zuschuss seit 2001; diese Dokumente liefern heute 404 (auch im echten Browser), im Webarchiv fehlen sie — ein historisches Programm lässt sich ohne Original nicht aufnehmen. Die Seite „Geförderte Projekte“ nennt keine Inanspruchnahme. Stand 14.10.2026.",
+    "searches": [
+      "Seite „Geförderte Projekte“ und Energieberatung am 14.10.2026 gelesen",
+      "Ortssuche tornesch.de: Ökofonds, Förderprogramm, Photovoltaik, Balkonkraftwerk, Zuschuss, Wärmepumpe",
+      "Ratsdokumente zum Ökofonds (doc3741, doc30572) direkt und im echten Browser: 404; Webarchiv ohne Kopie",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tornesch.de/rathaus-und-buergerservice/digitaler-service/gefoerderte-projekte",
+        "finding": "Am 14.10.2026 gelesen: „Derzeit werden keine Förderprogramme in Anspruch genommen.“ — Fördermittel der Stadt, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.tornesch.de/suche?tx_kesearch_pi1%5Bsword%5D=Zuschuss",
+        "finding": "Suche am 14.10.2026: 13 Treffer, darunter Zuschussrichtlinien für Sport- und Freizeitanlagen und Reetdächer — keine Energieförderung; Photovoltaik, Balkonkraftwerk und Ökofonds jeweils „Keine Ergebnisse gefunden“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tornesch.de/rathaus-und-buergerservice/digitaler-service/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Pflichtveröffentlichung geförderter städtischer Projekte, derzeit keine; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.tornesch.de/rathaus-und-buergerservice/digitaler-service/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "01056049",
+    "name": "Uetersen",
+    "checkedAt": "2026-10-14T18:11:37Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Uetersen zahlt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Rubrik Förderung ist Wirtschaftsförderung, „Geförderte Projekte“ listet nur Bundesmittel der Stadt (Kommunalrichtlinie). Die Klimaschutzseite nennt Klimaschutzkonzept, Wärmeplan und kostenlose Energieberatung; die Linkseite zu Balkon-PV verweist nur auf Verbraucherzentrale und Fachmagazin. Websuche ohne Uetersener Programm. Stand 14.10.2026.",
+    "searches": [
+      "Seiten Förderung, Geförderte Projekte, Klimaschutz, Energieberatung und Links am 14.10.2026 gelesen",
+      "Websuche site:uetersen.de nach Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss: kein Treffer der Stadt",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.uetersen.de/foerderung.html",
+        "finding": "Am 14.10.2026 gelesen: „Die Wirtschaftsförderung stellt auf dieser Seite Finanzierungsinformationen zur Verfügung“ — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.uetersen.de/gefoerderte-projekte.html",
+        "finding": "Am 14.10.2026 gelesen: „Die Stadt Uetersen hat für diese Maßnahme Fördermittel nach der Kommunalrichtlinie beantragt und bewilligt bekommen“ — Bundesmittel für die Stadt."
+      },
+      {
+        "url": "https://www.uetersen.de/klimaschutz.html",
+        "finding": "Am 14.10.2026 gelesen: Klimaschutzbeauftragter, Klimaschutzkonzept, Wärmeplan, Energieberatung — kein eigenes Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "uetersen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Wirtschaftsförderung, kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.uetersen.de/foerderung.html"
+      },
+      {
+        "url": "uetersen.de/gefoerderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung der Stadt selbst, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.uetersen.de/gefoerderte-projekte.html"
+      }
+    ]
   }
 ]
