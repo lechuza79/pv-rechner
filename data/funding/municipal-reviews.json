@@ -61850,16 +61850,17 @@
   {
     "regionId": "03459007",
     "name": "Badbergen",
-    "checkedAt": "2026-10-13T20:20:54Z",
-    "recheckAt": "2026-12-23T08:00:00Z",
+    "checkedAt": "2026-10-14T18:30:00Z",
+    "recheckAt": "2026-11-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "programme-geprueft",
-    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Badberger Klimafonds“ (badbergen-klimafonds) — Dachanlage ab 4 kWp und Speicher je 50 %, höchstens 250 €; keine Balkonkraftwerke. Status unsicher: Die Seite nennt nur Mittel für 2025, die Richtlinie (3. Fassung 23.06.2025) erneuert sich zum 1. Januar, ausgezahlt wird aber nur aus dem Haushalt des Jahres.",
+    "outcome": "klaerung",
+    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Badberger Klimafonds“ (badbergen-klimafonds) — Dachanlage ab 4 kWp und Speicher je 50 %, höchstens 250 €; keine Balkonkraftwerke. Status unsicher: Die Seite nennt nur Mittel für 2025, die Richtlinie (3. Fassung 23.06.2025) erneuert sich zum 1. Januar, ausgezahlt wird aber nur aus dem Haushalt des Jahres. 14.10.2026 erneut gelesen: Für Quakenbrück und Menslage meldet die Seite Mittel 2026, für Badbergen weiterhin nur 2025. Rückfrage an die Gemeinde vorgemerkt, statt bis Dezember zu warten.",
     "searches": [
       "Klimafonds-Seite der Samtgemeinde Artland mit allen Reitern gelesen",
       "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
       "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
-      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden"
+      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden",
+      "Seite der Samtgemeinde am 14.10.2026 erneut vollständig gelesen: Badbergen-Abschnitt nennt nur Haushaltsmittel 2025"
     ],
     "evidence": [
       {
@@ -61889,6 +61890,10 @@
       {
         "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
         "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Kommunale Förderungen | Samtgemeinde Artland; Förderprogramme: Medizinische Versorgung | Samtgemeinde Artland; Klimafonds in der Samtgemeinde Artland | Samtgemeinde Artland. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "14.10.2026: Badbergen-Abschnitt: „Auch in 2025 wurden erneut Haushaltsmittel bereitgestellt“; Quakenbrück und Menslage: „Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt“."
       }
     ],
     "sources": [
@@ -61928,7 +61933,19 @@
         "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
         "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
       }
-    ]
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-15T08:00:00Z",
+      "detail": "Bei der Gemeinde Badbergen erfragen, ob für den Badberger Klimafonds 2026 Haushaltsmittel bereitstehen und Anträge möglich sind."
+    },
+    "enquiry": {
+      "id": "klaerung-03459007",
+      "recipient": "badbergen@artland.de",
+      "recipientSource": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+      "website": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+      "question": "Auf der Seite der Samtgemeinde Artland steht für den Badberger Klimafonds, dass für 2025 Haushaltsmittel bereitgestellt wurden; für Quakenbrück und Menslage ist 2026 bereits genannt. Stehen für den Badberger Klimafonds auch 2026 Mittel bereit, sodass Anträge für Photovoltaik-Dachanlagen und Speicher möglich sind?"
+    }
   },
   {
     "regionId": "03459028",
@@ -94957,5 +94974,88 @@
         "evidenceUrl": "https://www.uetersen.de/gefoerderte-projekte.html"
       }
     ]
+  },
+  {
+    "regionId": "09679136",
+    "name": "Gerbrunn",
+    "checkedAt": "2026-10-14T18:30:00Z",
+    "recheckAt": "2026-11-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Förderung von Stecker-Solargeräten (gerbrunn-stecker-solar): Antrag und Richtlinie sind seit 13.10.2026 nicht mehr auf der Antragsseite der Gemeinde, am 09.09.2026 standen sie dort noch. Nach der Regel für verschwundene Programme (14.10.2026) als eingestellt geführt; Rückfrage, ob das Programm beendet ist.",
+    "searches": [
+      "Antragsseite am 14.10.2026 zweimal vollständig gelesen: andere Anträge und Gebührenblätter vorhanden, kein Eintrag zu Stecker-Solar, Balkonkraftwerk oder Photovoltaik",
+      "Seitensuche gerbrunn.de nach Stecker und Balkonkraftwerk: nur die Meldungen vom 25.01.2023 und 23.03.2024",
+      "WordPress-Beitragssuche nach Solar: keine neuere Meldung",
+      "Richtlinie 2024 liegt noch auf dem Server, ist aber nirgends mehr verlinkt"
+    ],
+    "evidence": [
+      {
+        "url": "https://gerbrunn.de/rathaus-und-politik/info-antragswesen/",
+        "finding": "14.10.2026: Antragsseite führt Stecker-Solar-Antrag und Richtlinie nicht mehr; am 09.09.2026 zitiert: „Balkonkraftwerk: 25 % der Bruttoanschaffungskosten, max. 200 €“."
+      },
+      {
+        "url": "https://gerbrunn.de/foerderung-von-stecker-solargeraeten-2/",
+        "finding": "Meldung vom 23.03.2024, keine neuere Meldung zum Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gerbrunn.de/rathaus-und-politik/info-antragswesen",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 zweimal gelesen: Programm nicht mehr aufgeführt.",
+        "evidenceUrl": "https://gerbrunn.de/rathaus-und-politik/info-antragswesen/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-15T08:00:00Z",
+      "detail": "Bei der Gemeinde Gerbrunn erfragen, ob die Förderung von Stecker-Solargeräten beendet ist."
+    },
+    "enquiry": {
+      "id": "klaerung-09679136",
+      "recipient": "info@gerbrunn.de",
+      "recipientSource": "https://gerbrunn.de/impressum/",
+      "website": "https://gerbrunn.de/rathaus-und-politik/info-antragswesen/",
+      "question": "Auf Ihrer Antragsseite waren bis vor Kurzem Antrag und Richtlinie zur Förderung von Stecker-Solargeräten (25 % der Anschaffungskosten, höchstens 200 €) verlinkt; seit Mitte Oktober 2026 sind sie dort nicht mehr zu finden. Ist das Förderprogramm beendet, oder können Haushalte weiterhin Anträge stellen?"
+    }
+  },
+  {
+    "regionId": "03457014",
+    "name": "Moormerland",
+    "checkedAt": "2026-10-14T18:30:00Z",
+    "recheckAt": "2026-11-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Förderung Balkonkraftwerke (moormerland-balkonkraftwerke): Die Seite dokumentiert nur zwei Antragsfenster von 2023 (28.08.–04.09. und 18.–25.10.2023) und kein späteres, aber auch kein Ende. Status unsicher seit August 2026 ohne nächsten Schritt; Rückfrage, ob es weitere Förderrunden gibt.",
+    "searches": [
+      "Programmseite am 14.10.2026 vollständig gelesen: unverändert zwei Förderrunden von 2023, Richtlinie und Infoblatt verlinkt, keine neue Runde, kein Ende"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke",
+        "finding": "14.10.2026: „in der Zeit vom 18.10.2023 ab 10 Uhr bis zum 25.10.2023 bis 10 Uhr einen Antrag einreichen“ ist das letzte genannte Antragsfenster."
+      }
+    ],
+    "sources": [
+      {
+        "url": "moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: nur Förderrunden von 2023.",
+        "evidenceUrl": "https://www.moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-15T08:00:00Z",
+      "detail": "Bei der Gemeinde Moormerland erfragen, ob nach 2023 weitere Förderrunden für Balkonkraftwerke geplant sind oder das Programm beendet ist."
+    },
+    "enquiry": {
+      "id": "klaerung-03457014",
+      "recipient": "info@moormerland.de",
+      "recipientSource": "https://www.moormerland.de/impressum",
+      "website": "https://www.moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke",
+      "question": "Auf Ihrer Seite zur Förderung von Balkonkraftwerken sind zwei Förderrunden aus dem Jahr 2023 beschrieben, eine spätere Runde ist nicht genannt. Ist das Förderprogramm beendet, oder ist eine weitere Förderrunde geplant – und wenn ja, wann?"
+    }
   }
 ]
