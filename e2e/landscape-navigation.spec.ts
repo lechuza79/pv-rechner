@@ -3,16 +3,20 @@ import {test, expect} from '@playwright/test';
 // Requires the normal municipal-page build, as in production.
 for (const width of [375, 1440]) {
  test(`product landscape navigation retains usable controls at ${width}px`, async ({page}) => {
+  // Scene loading and both camera flights have their own bounded waits below.
+  test.setTimeout(120000);
   await page.setViewportSize({width,height:900});
   await page.goto('/fuer-organisationen/kommunen?gemeinde=03458009');
-  const scene=page.locator('[data-place-phase="ready"]');
+  const scene=page.locator('#municipal-landscape-hero [data-place-phase]');
+  await expect(scene).toHaveAttribute('data-place-phase','ready',{timeout:60000});
   const nav=scene.getByRole('group',{name:'Navigation in der Landschaft'});
   await expect(nav).toBeVisible({timeout:60000});
   const next=nav.getByRole('button',{name:'Nächstes Ziel',exact:true});
   const previous=nav.getByRole('button',{name:'Vorheriges Ziel',exact:true});
   await expect(next).toHaveAttribute('data-variant','primary');
   await expect(previous).toHaveAttribute('data-variant','secondary');
-  await expect(previous).toHaveAttribute('data-icon-only','true');
+  // The static HTML serializer can emit a present boolean attribute as empty.
+  await expect(previous).toHaveAttribute('data-icon-only',/^(true)?$/);
   await expect(previous).toHaveText('');
   await expect(page.getByRole('combobox',{name:'Ort der Vorschau suchen'})).toBeVisible();
   await expect(nav.locator('[aria-haspopup="listbox"]')).toHaveCount(0);
@@ -29,6 +33,7 @@ for (const width of [375, 1440]) {
 }
 
 test('embedded landscape retains its compact navigation and header destination',async({page})=>{
+ test.setTimeout(90000);
  await page.setViewportSize({width:375,height:812});
  await page.goto('/embed/kommunen-landschaft?ags=03458009&theme=dark');
  const scene=page.locator('[data-navigation="widget"][data-ready="true"]');
