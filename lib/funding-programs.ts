@@ -10674,7 +10674,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Gerbrunn", level: "kommune", region: "Gerbrunn",
     bundesland: "Bayern", agsCode: "09679136",
     url: "https://gerbrunn.de/rathaus-und-politik/info-antragswesen/",
-    stand: "Oktober 2026", status: "unsicher", capped: true, verified: true,
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
     beschlossenIso: "2022-12-12", beginntIso: "2023-01-01",
     eligibility: ["privat"],
     coveredCosts: "Anteil der Bruttoanschaffungskosten",
@@ -10689,16 +10689,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anträge nach dem 15. Dezember eines Jahres werden nicht mehr gefördert; in Betrieb sein muss das Gerät bis zum 30. Dezember des Jahres der Antragstellung",
       "Andere Fördermittel sind vorrangig auszuschöpfen; zusammen höchstens 50 % der Gesamtkosten",
       "Wird das Gerät innerhalb von drei Jahren nach der Anbringung abgebaut oder stillgelegt, kann die Gemeinde den Zuschuss zurückfordern; das ist ihr unverzüglich mitzuteilen",
-      "Die Antragsseite der Gemeinde führt Förderantrag und Richtlinie seit Oktober 2026 nicht mehr; ein Ende des Programms ist aber nirgends bekanntgegeben",
+      "Die Gemeinde führt Förderantrag und Richtlinie seit Oktober 2026 nicht mehr auf ihrer Antragsseite; wir führen das Programm deshalb als beendet und haben bei der Gemeinde nachgefragt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPercentOfCost: 0.25, balkonCap: 200,
-    // Status „unsicher" seit 14.10.2026 (Eskalation nach drei Läufen ohne
-    // Amtsbeleg): Die Antragsseite (zuletzt geändert 13.10.2026) listet Antrag
-    // und Richtlinie nicht mehr, obwohl § 8 der Richtlinie genau dorthin
-    // verweist. Nur zwei Meldungen von 2023/2024 nennen noch „bis zu 200 Euro".
-    // Wiedereinschalten nur mit aktuellem Träger-Beleg.
+    // Status "eingestellt" since 14 Oct 2026 under the rule for grants that
+    // vanished from the official page (funding-daily-review.md, section 3).
+    // All five checks held: the application page (changed 13 Oct 2026) was
+    // read twice in full, with its other forms present and no plug-in solar
+    // entry; the site search finds only the 2023/2024 news posts; no newer
+    // post mentions it; on 9 Sep 2026 the same page was quoted with the grant.
+    // The 2024 guideline PDF is still on the server but linked from nowhere.
+    // Enquiry queued (klaerung-09679136). Reactivate only with a current
+    // provider statement; the calculation fields stay so a confirmed
+    // reopening needs no re-entry.
   },
 
   "holzmaden-balkonkraftwerke": {
