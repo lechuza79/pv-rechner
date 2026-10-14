@@ -6944,5 +6944,268 @@
       "latitude": 53.47334,
       "longitude": 13.76097
     }
+  },
+  "12062024": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Liebenwerda",
+      "latitude": 51.52566,
+      "longitude": 13.33305
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bad Liebenwerda",
+      "latitude": 51.47366,
+      "longitude": 13.33472
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Bad Liebenwerda",
+      "latitude": 51.47233,
+      "longitude": 13.25726
+    }
+  },
+  "12062092": {
+    "wind-1": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.65705,
+      "longitude": 13.36849
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.61836,
+      "longitude": 13.59803
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.66971,
+      "longitude": 13.45358
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.68984,
+      "longitude": 13.49838
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.66531,
+      "longitude": 13.47907
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Doberlug-Kirchhain",
+      "latitude": 51.66204,
+      "longitude": 13.49714
+    }
+  },
+  "12062124": {
+    "wind-1": {
+      "name": "Windanlagen bei Elsterwerda",
+      "latitude": 51.44799,
+      "longitude": 13.48214
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Elsterwerda",
+      "latitude": 51.48198,
+      "longitude": 13.49688
+    }
+  },
+  "12062128": {
+    "wind-1": {
+      "name": "Windanlagen bei Falkenberg/Elster",
+      "latitude": 51.56357,
+      "longitude": 13.18164
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Falkenberg/Elster",
+      "latitude": 51.63157,
+      "longitude": 13.21647
+    }
+  },
+  "12062134": {
+    "wind-1": {
+      "name": "Windanlagen bei Fichtwald",
+      "latitude": 51.70697,
+      "longitude": 13.50547
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Fichtwald",
+      "latitude": 51.7354,
+      "longitude": 13.4146
+    }
+  },
+  "12062224": {
+    "wind-1": {
+      "name": "Windanlagen bei Herzberg (Elster)",
+      "latitude": 51.63725,
+      "longitude": 13.20619
+    }
+  },
+  "12062237": {
+    "wind-1": {
+      "name": "Windanlagen bei Hohenbucko",
+      "latitude": 51.72628,
+      "longitude": 13.49798
+    }
+  },
+  "12062240": {
+    "wind-1": {
+      "name": "Windanlagen bei Hohenleipisch",
+      "latitude": 51.48482,
+      "longitude": 13.55654
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Hohenleipisch",
+      "latitude": 51.49702,
+      "longitude": 13.55999
+    }
+  },
+  "12062293": {
+    "wind-1": {
+      "name": "Windanlagen bei Lichterfeld-Schacksdorf",
+      "latitude": 51.63427,
+      "longitude": 13.80753
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lichterfeld-Schacksdorf",
+      "latitude": 51.55721,
+      "longitude": 13.8244
+    }
+  },
+  "12062333": {
+    "wind-1": {
+      "name": "Windanlagen bei Massen-Niederlausitz",
+      "latitude": 51.63616,
+      "longitude": 13.77175
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Massen-Niederlausitz",
+      "latitude": 51.64603,
+      "longitude": 13.81578
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Massen-Niederlausitz",
+      "latitude": 51.6513,
+      "longitude": 13.72743
+    }
+  },
+  "12062341": {
+    "wind-1": {
+      "name": "Windanlagen bei Mühlberg/Elbe",
+      "latitude": 51.51999,
+      "longitude": 13.22494
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Mühlberg/Elbe",
+      "latitude": 51.47225,
+      "longitude": 13.24769
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Mühlberg/Elbe",
+      "latitude": 51.40783,
+      "longitude": 13.28557
+    }
+  },
+  "12062372": {
+    "wind-1": {
+      "name": "Windanlagen bei Plessa",
+      "latitude": 51.4919,
+      "longitude": 13.5733
+    }
+  },
+  "12062410": {
+    "wind-1": {
+      "name": "Windanlagen bei Röderland",
+      "latitude": 51.44981,
+      "longitude": 13.47565
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Röderland",
+      "latitude": 51.41831,
+      "longitude": 13.50801
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Röderland",
+      "latitude": 51.48414,
+      "longitude": 13.48251
+    }
+  },
+  "12062417": {
+    "wind-1": {
+      "name": "Windanlagen bei Rückersdorf",
+      "latitude": 51.58116,
+      "longitude": 13.57977
+    }
+  },
+  "12062425": {
+    "wind-1": {
+      "name": "Windanlagen bei Sallgast",
+      "latitude": 51.63701,
+      "longitude": 13.82976
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Sallgast",
+      "latitude": 51.6457,
+      "longitude": 13.87835
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Sallgast",
+      "latitude": 51.60294,
+      "longitude": 13.87376
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Sallgast",
+      "latitude": 51.5589,
+      "longitude": 13.83407
+    }
+  },
+  "12062445": {
+    "wind-1": {
+      "name": "Windanlagen bei Schlieben",
+      "latitude": 51.66926,
+      "longitude": 13.37412
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schlieben",
+      "latitude": 51.73107,
+      "longitude": 13.41002
+    }
+  },
+  "12062453": {
+    "wind-1": {
+      "name": "Windanlagen bei Schönborn",
+      "latitude": 51.59997,
+      "longitude": 13.51467
+    }
+  },
+  "12062469": {
+    "wind-1": {
+      "name": "Windanlagen bei Sonnewalde",
+      "latitude": 51.72119,
+      "longitude": 13.6756
+    }
+  },
+  "12062500": {
+    "wind-1": {
+      "name": "Windanlagen bei Uebigau-Wahrenbrück",
+      "latitude": 51.57309,
+      "longitude": 13.29799
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Uebigau-Wahrenbrück",
+      "latitude": 51.52141,
+      "longitude": 13.3201
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Uebigau-Wahrenbrück",
+      "latitude": 51.54446,
+      "longitude": 13.31055
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Uebigau-Wahrenbrück",
+      "latitude": 51.52873,
+      "longitude": 13.24817
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Uebigau-Wahrenbrück",
+      "latitude": 51.62639,
+      "longitude": 13.34221
+    }
   }
 }
