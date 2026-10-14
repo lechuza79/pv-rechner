@@ -24,8 +24,13 @@ export function reviewSourceHash(bytes: Uint8Array, contentType: string): string
   }
   if (!/text\/html|application\/xhtml/i.test(contentType)) throw new Error("Unsupported source format");
   const html = body.toString("utf8");
-  if (!fingerprintOf(html) || /captcha|verify you are human|access denied|just a moment/i.test(html)) throw new Error("Source is not readable");
   const $ = load(html);
+  // Challenge words count only in what a reader sees (title + text): a CMS config
+  // key like "captchaInvisibleRecaptchaSitekey" inside a <script> is not a block
+  // (Kreis Bergstraße, 14.10.2026).
+  const visible = $.root().clone();
+  visible.find("script, style, noscript, template").remove();
+  if (!fingerprintOf(html) || /captcha|verify you are human|access denied|just a moment/i.test(visible.text())) throw new Error("Source is not readable");
   const main = $("main, [role=main]").first();
   const content = main.length ? main.clone() : $("body").clone();
   content.find("script, style, nav, aside").remove();

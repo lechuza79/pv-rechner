@@ -27,6 +27,9 @@ describe("reviewed funding baseline", () => {
     const pdf = Buffer.from('%PDF-1.7\n'+ 'data'.repeat(200)+'\n%%EOF');
     expect(reviewSourceHash(pdf, 'application/pdf')).not.toBe(reviewSourceHash(Buffer.from(pdf.toString().replace('data','edit')), 'application/pdf'));
     expect(()=>reviewSourceHash(Buffer.from('Unavailable'), 'text/html')).toThrow();
+    expect(()=>reviewSourceHash(Buffer.from(`<title>Just a moment...</title>${html('x').toString()}`), 'text/html')).toThrow();
+    expect(()=>reviewSourceHash(html('Please solve the captcha to continue'), 'text/html')).toThrow();
+    expect(reviewSourceHash(Buffer.from(`<script>{"captchaInvisibleRecaptchaSitekey":"k"}</script>${html('x').toString()}`), 'text/html')).toMatch(/^html-v3:/);
     expect(()=>reviewSourceHash(Buffer.from('%PDF-1.7 truncated'), 'application/pdf')).toThrow();
   });
   it("ignores page navigation but preserves notices inside semantic main content", () => {

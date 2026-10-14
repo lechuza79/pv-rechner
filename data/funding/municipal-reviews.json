@@ -93455,5 +93455,171 @@
         "evidenceUrl": "https://www.groemitz.eu/fileadmin/Dateien/Groemitz/Bauen___Wohnen/Potentialanalyse_fuer_Photovoltaik-Freiflaechenanlagen/221025_PV_Potentialanalyse_Groemitz_BeschlussGV.PDF"
       }
     ]
+  },
+  {
+    "regionId": "01056006",
+    "name": "Bokel",
+    "checkedAt": "2026-10-14T08:45:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bokel (Amt Hörnerkirchen, Verwaltungsgemeinschaft mit der Stadt Barmstedt, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist das Energetische Quartierskonzept Nord der Stadt Barmstedt — ein Planungsbericht einer Nachbarkommune, kein Förderprogramm für Haushalte in Bokel. Die Gemeindeseite, das Ortsrecht von Gemeinde und Amt und die Volltextsuche der Verwaltungsgemeinschaft nennen keinen Energie-Zuschuss; die Klimaschutzseite listet nur bundesgeförderte Konzepte der Stadt. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg mit PV-Aufschlag (pinneberg-gruendach-pv); die Anlage selbst wird dort nicht bezuschusst. Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche vg-barmstedt-hoernerkirchen.de: „Balkonkraftwerk“ (0 Treffer), „Photovoltaik“ und „Förderprogramm“ (nur Klimaschutzseite der Stadt Barmstedt), „Solar“ (Klimaschutz, Bauleitplanung, Bekanntmachungen), „Wärmepumpe“ (nur Baugenossenschafts-Meldung), „Zuschuss“ (nur Ortsrecht: Sport-/Jugendförderung) — Treffer gesichtet",
+      "14.10.2026 Ortsrecht des Amtes Hörnerkirchen und der Gemeinden Bokel und Brande-Hörnerkirchen durchgesehen: nur Zuschussrichtlinien für Sport-, Jugend- und Kulturförderung",
+      "Katalog: für Amt Hörnerkirchen, Stadt Barmstedt und Gemeinde kein Programm; Kreis Pinneberg nur Gründach-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf",
+        "finding": "14.10.2026 im Original gelesen: das Energetische Quartierskonzept Nord der Stadt Barmstedt (Planungsbericht, gefördert über NKI bzw. KfW 432); kein Zuschussprogramm, Bokel wird darin nicht als Fördergebiet behandelt."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/amt-hoernerkirchen/gemeinde-bokel",
+        "finding": "14.10.2026 gelesen: Ortsbeschreibung, Gemeindevertretung, Bürgermeister — keine Förderangebote."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/klimaschutz",
+        "finding": "14.10.2026 gelesen: Klimaschutzkonzept und Quartierskonzepte Nord/Süd der Stadt Barmstedt, nur Bundesförderung der Konzepterstellung; kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf",
+        "disposition": "reviewed",
+        "reason": "das Energetische Quartierskonzept Nord der Stadt Barmstedt, kein Förderprogramm für Haushalte.",
+        "evidenceUrl": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01056010",
+    "name": "Brande-Hörnerkirchen",
+    "checkedAt": "2026-10-14T08:45:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brande-Hörnerkirchen (Amt Hörnerkirchen, Verwaltungsgemeinschaft mit der Stadt Barmstedt, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist das Integrierte Klimaschutzkonzept der Stadt Barmstedt — ein Planungsbericht einer Nachbarkommune, kein Förderprogramm für Haushalte in Brande-Hörnerkirchen. Die Gemeindeseite, das Ortsrecht von Gemeinde und Amt und die Volltextsuche der Verwaltungsgemeinschaft nennen keinen Energie-Zuschuss; die Klimaschutzseite listet nur bundesgeförderte Konzepte der Stadt. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg mit PV-Aufschlag (pinneberg-gruendach-pv); die Anlage selbst wird dort nicht bezuschusst. Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche vg-barmstedt-hoernerkirchen.de: „Balkonkraftwerk“ (0 Treffer), „Photovoltaik“ und „Förderprogramm“ (nur Klimaschutzseite der Stadt Barmstedt), „Solar“ (Klimaschutz, Bauleitplanung, Bekanntmachungen), „Wärmepumpe“ (nur Baugenossenschafts-Meldung), „Zuschuss“ (nur Ortsrecht: Sport-/Jugendförderung) — Treffer gesichtet",
+      "14.10.2026 Ortsrecht des Amtes Hörnerkirchen und der Gemeinden Bokel und Brande-Hörnerkirchen durchgesehen: nur Zuschussrichtlinien für Sport-, Jugend- und Kulturförderung",
+      "Katalog: für Amt Hörnerkirchen, Stadt Barmstedt und Gemeinde kein Programm; Kreis Pinneberg nur Gründach-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf",
+        "finding": "14.10.2026 im Original gelesen: das Integrierte Klimaschutzkonzept der Stadt Barmstedt (Planungsbericht, gefördert über NKI bzw. KfW 432); kein Zuschussprogramm, Brande-Hörnerkirchen wird darin nicht als Fördergebiet behandelt."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/amt-hoernerkirchen/gemeinde-brande-hoernerkirchen",
+        "finding": "14.10.2026 gelesen: Ortsbeschreibung, Gemeindevertretung, Bürgermeister — keine Förderangebote."
+      },
+      {
+        "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/klimaschutz",
+        "finding": "14.10.2026 gelesen: Klimaschutzkonzept und Quartierskonzepte Nord/Süd der Stadt Barmstedt, nur Bundesförderung der Konzepterstellung; kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf",
+        "disposition": "reviewed",
+        "reason": "das Integrierte Klimaschutzkonzept der Stadt Barmstedt, kein Förderprogramm für Haushalte.",
+        "evidenceUrl": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01056011",
+    "name": "Bullenkuhlen",
+    "checkedAt": "2026-10-14T08:45:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bullenkuhlen (Amt Rantzau, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist das Webseitenförderprogramm „Amt Rantzau vernetzt“ (kostenlose Webseiten für Vereine und Einrichtungen), kein Energie-Zuschuss. Die Volltextsuche des Amtes findet unter Förderung, Zuschuss, Photovoltaik, Balkonkraftwerk, Solar und Wärmepumpe nur Förderung für die Gemeinden selbst (AktivRegion, EU, Breitband, Digitalpakt) und Verwaltungsmeldungen. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg mit PV-Aufschlag (pinneberg-gruendach-pv); die Anlage selbst wird dort nicht bezuschusst. Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche amt-rantzau.de: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ (keine Treffer außer Stammtisch-Meldung 2024), „Solar“ (nur Branchenverzeichnis Heizung/Solartechnik), „Zuschuss“, „Förderung“ (41 Meldungen, 3 Seiten, Dienstleistungen, Bekanntmachungen) — Treffer gesichtet: AktivRegion-/EU-Förderung FÜR Gemeinden, Breitband, Digitalpakt, Webseitenprogramm, Wahlbekanntmachungen",
+      "Katalog: für Amt Rantzau und Gemeinde kein Programm; Kreis Pinneberg nur Gründach-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html",
+        "finding": "14.10.2026 im Original gelesen: „Projektpartner für kostenfreie Webseitengestaltung gesucht“ — Kooperationsprojekt mit dem Förderverein für regionale Entwicklung für Vereine, Schulen, Kitas, Feuerwehren und Unternehmen, kein Zuschuss für Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-rantzau.de/suche/index.php?suchbegriff=F%C3%B6rderung&qs=1&modul=news",
+        "finding": "14.10.2026: 41 Meldungen gesichtet — Förderung der Gemeinden (AktivRegion Holsteiner Auenland, EU, Breitband, Digitalpakt), Webseitenprogramm, Kommunale Wärmeplanung; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.amt-rantzau.de/suche/index.php?suchbegriff=Balkonkraftwerk&qs=1",
+        "finding": "14.10.2026: „Leider keine Treffer gefunden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm für Vereine und Einrichtungen, kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      },
+      {
+        "url": "amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite; mit dem Original gelesen.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      },
+      {
+        "url": "amt-rantzau.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link (Weiterempfehlen), kein Inhalt; bereits als entfernte Quelle markiert.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01056017",
+    "name": "Groß Offenseth-Aspern",
+    "checkedAt": "2026-10-14T08:45:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Offenseth-Aspern (Amt Rantzau, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Quelle ist das Webseitenförderprogramm „Amt Rantzau vernetzt“ (kostenlose Webseiten für Vereine und Einrichtungen), kein Energie-Zuschuss. Die Volltextsuche des Amtes findet unter Förderung, Zuschuss, Photovoltaik, Balkonkraftwerk, Solar und Wärmepumpe nur Förderung für die Gemeinden selbst (AktivRegion, EU, Breitband, Digitalpakt) und Verwaltungsmeldungen. Kreisweit gilt nur der katalogisierte Gründach-Zuschuss des Kreises Pinneberg mit PV-Aufschlag (pinneberg-gruendach-pv); die Anlage selbst wird dort nicht bezuschusst. Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche amt-rantzau.de: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ (keine Treffer außer Stammtisch-Meldung 2024), „Solar“ (nur Branchenverzeichnis Heizung/Solartechnik), „Zuschuss“, „Förderung“ (41 Meldungen, 3 Seiten, Dienstleistungen, Bekanntmachungen) — Treffer gesichtet: AktivRegion-/EU-Förderung FÜR Gemeinden, Breitband, Digitalpakt, Webseitenprogramm, Wahlbekanntmachungen",
+      "Katalog: für Amt Rantzau und Gemeinde kein Programm; Kreis Pinneberg nur Gründach-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html",
+        "finding": "14.10.2026 im Original gelesen: „Projektpartner für kostenfreie Webseitengestaltung gesucht“ — Kooperationsprojekt mit dem Förderverein für regionale Entwicklung für Vereine, Schulen, Kitas, Feuerwehren und Unternehmen, kein Zuschuss für Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-rantzau.de/suche/index.php?suchbegriff=F%C3%B6rderung&qs=1&modul=news",
+        "finding": "14.10.2026: 41 Meldungen gesichtet — Förderung der Gemeinden (AktivRegion Holsteiner Auenland, EU, Breitband, Digitalpakt), Webseitenprogramm, Kommunale Wärmeplanung; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.amt-rantzau.de/suche/index.php?suchbegriff=Balkonkraftwerk&qs=1",
+        "finding": "14.10.2026: „Leider keine Treffer gefunden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html",
+        "disposition": "reviewed",
+        "reason": "Webseitenförderprogramm für Vereine und Einrichtungen, kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      },
+      {
+        "url": "amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite; mit dem Original gelesen.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      },
+      {
+        "url": "amt-rantzau.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link (Weiterempfehlen), kein Inhalt; bereits als entfernte Quelle markiert.",
+        "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      }
+    ]
   }
 ]
