@@ -82,6 +82,18 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual((inputs/result['file']).read_bytes(),b'checked')
             self.assertEqual((inputs/result['file']).stat().st_ino,cached.stat().st_ino)
 
+
+    def test_reused_building_zip_keeps_its_file_type(self):
+        # Alb-Donau-Kreis: a neighbour kept the tile as zip; linking it as .gml broke the XML reader.
+        with tempfile.TemporaryDirectory() as directory:
+            inputs = Path(directory);cached = inputs/'bw-08425020-lod-abc.zip';cached.write_bytes(b'PK\x03\x04 zip body')
+            url = 'https://opengeodata.lgl-bw.de/data/lod2/LoD2_32_570_5360_2_bw.zip'
+            reuse = {url:[dict(file=cached.name,url=url,sha256=worker.shared.digest(cached))]}
+            with patch.object(worker.requests,'get',side_effect=AssertionError('network forbidden')):
+                result = worker.grid_download(inputs,'bw-08425022','lod',url,reuse)
+            self.assertTrue(result['file'].endswith('.zip'))
+            self.assertEqual((inputs/result['file']).read_bytes(),cached.read_bytes())
+
     def test_solar_extends_flight_rectangle(self):
         rows = [dict(lon=8,lat=53)]
         town = node(1,'A')

@@ -267,6 +267,8 @@ def grid_download(inputs, prefix, kind, url, reuse, native=25832):
         path = inputs/(prefix+middle+stem+('.tif' if kind=='dgm' else '.gml'))
         known = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
         if known:
+            # A building tile may have been kept as its zip; the link keeps that file type.
+            path = path.with_suffix(Path(known['file']).suffix)
             if not path.exists():os.link(inputs/known['file'],path)
             return dict(known,file=path.name)
         if candidate.startswith('zipmember:'):
