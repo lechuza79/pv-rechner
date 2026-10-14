@@ -8585,5 +8585,39 @@
       "latitude": 51.94588,
       "longitude": 12.80289
     }
+  },
+  "15088030": {
+    "wind-1": {
+      "name": "Windanlagen bei Barnstädt",
+      "latitude": 51.32503,
+      "longitude": 11.62473
+    }
+  },
+  "15088235": {
+    "wind-1": {
+      "name": "Windanlagen bei Mücheln (Geiseltal)",
+      "latitude": 51.30652,
+      "longitude": 11.74217
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Mücheln (Geiseltal)",
+      "latitude": 51.33387,
+      "longitude": 11.74423
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Mücheln (Geiseltal)",
+      "latitude": 51.36324,
+      "longitude": 11.77969
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Mücheln (Geiseltal)",
+      "latitude": 51.31784,
+      "longitude": 11.72754
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Mücheln (Geiseltal)",
+      "latitude": 51.36289,
+      "longitude": 11.714
+    }
   }
 }
