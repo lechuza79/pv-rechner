@@ -3610,13 +3610,14 @@
   {
     "regionId": "01056016",
     "name": "Groß Nordende",
-    "checkedAt": "2026-09-23T20:30:00Z",
+    "checkedAt": "2026-10-14T10:38:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort acht Fundstellen auf amt-geest-und-marsch-suedholstein.de und gross-nordende.de.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Sechs der acht Fundstellen gehören dem Fördermittelmanagement des Amtes und listen Projektumsetzungen in den Mitgliedsgemeinden samt Ansprechpartner — Förderung FÜR die Kommunen. Eine Fundstelle war eine tote Adresse (HTTP 404, geprüft am 20.09.2026). Die letzte, heute am 23.09.2026 gelesen, ist ein Flyer des Kreises Pinneberg: Der Kreis bezuschusst Dachbegrünungen mit 20 bis 30 Euro je Quadratmeter und kleinkronige Hausbäume mit höchstens 100 Euro — Begrünung, keine Energieerzeugung, und damit keine Technik dieses Katalogs.",
     "searches": [
-      "Flyer „Mehr Grün für den Kreis Pinneberg\" (Baumpflanzungen und Dachbegrünungen) am 23.09.2026 im Volltext gelesen"
+      "Flyer „Mehr Grün für den Kreis Pinneberg\" (Baumpflanzungen und Dachbegrünungen) am 23.09.2026 im Volltext gelesen",
+      "14.10.2026: Fördermittelmanagement-Seiten des Amtes nach Änderung erneut gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -3630,6 +3631,10 @@
       {
         "url": "https://www.gross-nordende.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
         "finding": "Am 20.09.2026 in allen geprüften Schreibweisen HTTP 404 — die Adresse liefert keine Seite mehr."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "finding": "Nach Seitenänderung am 14.10.2026 erneut gelesen: Förderprojekte der Gemeinde Haselau (Spielplatz, Kita); weiterhin nur Vorhaben der Kommunen. Am selben Tag auch die Amtsübersicht, Appen, Groß Nordende, Haseldorf und Ansprechpartner gelesen — unverändert, kein Programm für Haushalte."
       }
     ],
     "sources": [
@@ -93713,7 +93718,7 @@
   {
     "regionId": "01056001",
     "name": "Appen",
-    "checkedAt": "2026-10-14T10:20:00Z",
+    "checkedAt": "2026-10-14T10:38:00Z",
     "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -93753,6 +93758,14 @@
       {
         "url": "https://web.archive.org/web/20241208175927/https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/externe-foerderprogramme",
         "finding": "Archivfassung 08.12.2024 (live heute HTTP 404) der Amtsseite „Externe Förderprogramme“: verlinkte KfW-Programme, den Kreis-Zuschuss MEHR GRÜN und die Landesrichtlinien „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlagen, nicht-fossile Heizsysteme; „Das Land gewährt Zuwendungen“). Das Landesprogramm ist seit 16.11.2023 eingestellt und als sh-balkon-/sh-waermepumpe-klimaschutz-bub im Katalog; die Amtssuche findet den alten Seitentext noch."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "finding": "Am 14.10.2026 gelesen: Ansprechpartnerinnen der Stabsstelle Fördermittelmanagement des Amtes (Fördermittel für die Kommunen), kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "finding": "Am 14.10.2026 gelesen: Flyer „Mehr Grün für den Kreis Pinneberg“ (Dachbegrünung, Hausbäume); der PV-Aufschlag auf den Gründach-Zuschuss steht bereits als pinneberg-gruendach-pv im Katalog, die Anlage selbst wird nicht bezuschusst."
       }
     ],
     "sources": [
@@ -93785,13 +93798,61 @@
         "disposition": "reviewed",
         "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haseldorf (Feuerwehr, Kita, E-Ladesäule, Hafen) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
         "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Ansprechpartnerinnen der Stabsstelle Fördermittelmanagement des Amtes (Fördermittel für die Kommunen), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Flyer „Mehr Grün für den Kreis Pinneberg“ (Dachbegrünung, Hausbäume); der PV-Aufschlag auf den Gründach-Zuschuss steht bereits als pinneberg-gruendach-pv im Katalog, die Anlage selbst wird nicht bezuschusst.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau"
+      },
+      {
+        "url": "appen.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "disposition": "replaced",
+        "reason": "Alte Adresse auf appen.de, am 14.10.2026 HTTP 404 (appen.de leitet auf die Amtsseite um). Derselbe Inhalt steht unter https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf und wurde dort am 14.10.2026 gelesen.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf"
       }
     ]
   },
   {
     "regionId": "01056024",
     "name": "Heist",
-    "checkedAt": "2026-10-14T10:20:00Z",
+    "checkedAt": "2026-10-14T10:38:00Z",
     "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -93835,6 +93896,10 @@
       {
         "url": "https://web.archive.org/web/20241208175927/https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/externe-foerderprogramme",
         "finding": "Archivfassung 08.12.2024 (live heute HTTP 404) der Amtsseite „Externe Förderprogramme“: verlinkte KfW-Programme, den Kreis-Zuschuss MEHR GRÜN und die Landesrichtlinien „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlagen, nicht-fossile Heizsysteme; „Das Land gewährt Zuwendungen“). Das Landesprogramm ist seit 16.11.2023 eingestellt und als sh-balkon-/sh-waermepumpe-klimaschutz-bub im Katalog; die Amtssuche findet den alten Seitentext noch."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "finding": "Am 14.10.2026 gelesen: Ansprechpartnerinnen der Stabsstelle Fördermittelmanagement des Amtes (Fördermittel für die Kommunen), kein Programm für Haushalte."
       }
     ],
     "sources": [
@@ -93873,6 +93938,12 @@
         "disposition": "reviewed",
         "reason": "Am 14.10.2026 gelesen: Flyer „Mehr Grün für den Kreis Pinneberg“ (Dachbegrünung, Hausbäume); der PV-Aufschlag auf den Gründach-Zuschuss steht bereits als pinneberg-gruendach-pv im Katalog, die Anlage selbst wird nicht bezuschusst.",
         "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Ansprechpartnerinnen der Stabsstelle Fördermittelmanagement des Amtes (Fördermittel für die Kommunen), kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner"
       }
     ]
   }
