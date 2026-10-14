@@ -102,7 +102,9 @@ type Brief = {
   body_html: string;
   variante: string;
   /** Press letter (with placement) or short info letter (without). */
-  briefart?: "platzierung" | "info";
+  briefart?: "platzierung" | "info" | "sammel";
+  /** One letter to a shared mailbox for several towns; every one counts as sent. */
+  region_ids?: string[];
   /** Belegte Domain der gemeinsamen Verwaltung, für die Empfängerprüfung. */
   verwaltung_domain: string | null;
   seite_url: string | null;
@@ -146,7 +148,7 @@ function bremsen(b: Brief, heute: string, kontakt?: V2Urteil): string[] {
   // Auch hier, obwohl das Paket es schon geprüft hat: Es ist die einzige
   // Bremse, die entscheidet, ob eine natürliche Person angeschrieben wird, und
   // die einzige, die bis eben nur an einer Stelle stand.
-  const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain, { belegteRolle: kontakt?.ok === true && kontakt.belegteRolle });
+  const postfach = postfachBefund(b.empfaenger, b.name.split(" · ")[0], b.verwaltung_domain, { belegteRolle: kontakt?.ok === true && kontakt.belegteRolle });
   if (!postfach.ok) gruende.push(postfach.grund);
   // Verlinkt der Brief auf eine Seite, die für Suchmaschinen gesperrt BLEIBT?
   //
@@ -376,21 +378,21 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
     const { data: jetzt, error: statusFehler } = await db
       .from("kommunen_kontakt")
       .select("outreach_status, contacted_at")
-      .eq("region_id", b.region_id)
-      .maybeSingle();
+      .in("region_id", b.region_ids ?? [b.region_id]);
     // EIN LESEFEHLER IST KEIN GRÜNES LICHT. Vorher wurde der Fehler verworfen;
     // bei einem Netz-Aussetzer war `jetzt` undefined, beide Prüfungen fielen
     // durch, und die Mail ging hinaus — im schlimmsten Fall an eine Gemeinde,
     // die inzwischen widersprochen hatte, und der Status danach von „gesperrt"
     // auf „kontaktiert" überschrieben. Der Lauf dauert eine halbe Stunde, ein
     // Aussetzer darin ist nicht unwahrscheinlich.
-    if (statusFehler || !jetzt) {
+    if (statusFehler || !jetzt?.length) {
       log(`${b.name}: übersprungen — Status nicht lesbar (${statusFehler?.message ?? "keine Zeile"})`, "err");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: ["Status nicht lesbar"] });
       continue;
     }
-    if (jetzt.outreach_status === "gesperrt" || jetzt.contacted_at) {
-      log(`${b.name}: übersprungen — Status inzwischen „${jetzt.outreach_status}"`, "warn");
+    const geaendert = jetzt.find((z) => z.outreach_status === "gesperrt" || z.contacted_at);
+    if (geaendert) {
+      log(`${b.name}: übersprungen — Status inzwischen „${geaendert.outreach_status}"`, "warn");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: ["Status geändert"] });
       continue;
     }
@@ -442,7 +444,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           draft_manuell: true,
           updated_at: new Date().toISOString(),
         })
-        .eq("region_id", b.region_id);
+        .in("region_id", b.region_ids ?? [b.region_id]);
       raus++;
       log(`${String(i + 1).padStart(2)}/${zuSenden.length}  ${b.name} → ${b.empfaenger}`, error ? "warn" : "ok");
       protokoll.push({
@@ -670,7 +672,7 @@ async function vorflug(p: Paket, limit: number): Promise<boolean> {
   const proArt = new Map<string, number>();
   for (const b of briefe) proArt.set(b.briefart ?? "platzierung", (proArt.get(b.briefart ?? "platzierung") ?? 0) + 1);
   log(
-    `Briefarten: ${[...proArt].map(([a, n]) => `${n} ${a === "info" ? "Kurzbrief ohne Platzierung" : "Pressebrief mit Platzierung"}`).join(", ")}`,
+    `Briefarten: ${[...proArt].map(([a, n]) => `${n} ${a === "info" ? "Kurzbrief ohne Platzierung" : a === "sammel" ? "Sammelbrief an ein Amtspostfach" : "Pressebrief mit Platzierung"}`).join(", ")}`,
     "ok",
   );
   const ohneBrief = p.uebersprungen.filter((u) => /nicht vorgesehen/.test(u.grund));

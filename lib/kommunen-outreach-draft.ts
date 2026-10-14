@@ -923,3 +923,68 @@ ${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
     meldung: "",
   };
 }
+
+/**
+ * One letter to a shared administration mailbox (Amt, Verbandsgemeinde) for all
+ * its member towns in a batch (operator, 14.10.2026): six near-identical mails
+ * to one mailbox on one day read as mass mail. Each town keeps its own page
+ * link, and its placement where it has one.
+ */
+export type SammelDraftContext = {
+  orte: { name: string; pageUrl: string; platzierung: string | null }[];
+  anPresse?: boolean;
+  anKlima?: boolean;
+  empfaenger: string;
+  adressherkunft?: Adressherkunft;
+  /** Municipal page link for one town with a published scene. */
+  kommunenUrl: string | null;
+  szeneOrt: string | null;
+};
+
+export function renderSammelDraft(c: SammelDraftContext): OutreachDraft {
+  const namen = c.orte.map((o) => kurzOrtsname(o.name));
+  const weiterleitung = c.anPresse || c.anKlima
+    ? ""
+    : `\n\nfalls Sie nicht zuständig sind: bitte an das Klimaschutzmanagement oder an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
+  const liste = c.orte
+    .map((o) => `• ${o.name}: ${o.pageUrl}${o.platzierung ? `\n  ${o.platzierung}.` : ""}`)
+    .join("\n");
+  const anbieten = "vom Energiemonitor über Rechner bis zu fertigen Datenstories";
+  const angebotAbsatz =
+    c.szeneOrt && c.kommunenUrl
+      ? `\n\nAuf unserer Seite für Kommunen sehen Sie oben eine interaktive 3D-Ansicht der Energielandschaft, zum Beispiel rund um ${kurzOrtsname(c.szeneOrt)}. Gerne einmal ausprobieren: ${c.kommunenUrl} Dort steht auch, was wir Kommunen darüber hinaus anbieten, ${anbieten}.`
+      : c.kommunenUrl
+        ? `\n\nWas wir Kommunen darüber hinaus anbieten, ${anbieten}, steht hier: ${c.kommunenUrl}`
+        : "";
+  const body = `Sehr geehrte Damen und Herren,${weiterleitung}
+
+wir haben die Daten aus dem Marktstammdatenregister für die ${c.orte.length} Gemeinden aufbereitet, die Sie verwalten, jede mit einer eigenen Übersicht. Sie zeigt zum Beispiel, wie viel Solarstrom im vergangenen Monat im Ort erzeugt wurde, was das rechnerisch an Einspeisevergütung bedeutet, wie viele Anlagen neu dazukommen und wie der Ort im Landkreis dasteht. Die Daten werden monatlich aktualisiert:
+
+${liste}
+
+Drei Dinge können Sie damit ohne Aufwand machen:
+• auf die Seiten verlinken, etwa unter Klimaschutz oder Energie,
+• die Zahlen als Grafik auf Ihrer Website einbauen; Farben und Schrift lassen sich anpassen, den Code schicke ich Ihnen gern,
+• sich Bescheid geben lassen, sobald sich in einem der Orte etwas Nennenswertes tut.
+
+Für Kommunen ist das kostenfrei, und anmelden muss sich niemand.${angebotAbsatz}
+
+Mit freundlichen Grüßen
+${SIGNATURE}
+
+${FUSS_TRENNER}
+Impressum: https://solar-check.io/impressum
+Datenschutz: https://solar-check.io/datenschutz
+
+${dsgvoHinweis(herkunftsangabe(c.orte[0].name, c.empfaenger, "verwaltung"))}`;
+  const betreffOrte =
+    namen.length <= 3
+      ? `${namen.slice(0, -1).join(", ")} und ${namen[namen.length - 1]}`
+      : `${namen.slice(0, 2).join(", ")} und ${namen.length - 2} weiteren Gemeinden`;
+  return {
+    subject: `Solarstrom in ${betreffOrte}: Übersichten für Ihre Gemeinden`,
+    body,
+    bodyHtml: briefAlsHtml(body),
+    meldung: "",
+  };
+}
