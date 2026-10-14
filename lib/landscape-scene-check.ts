@@ -12,6 +12,7 @@ export type CheckedScene = {
 
 const TOWER_RADIUS = 15, TOWER_MAX_FOOTPRINT = 16, TOWER_MIN_HEIGHT = 20;
 const WIND_TURBINE_FUNCTION = "51002_1220"; // ALKIS Bauwerksfunktion "Windrad"
+const HUB_MATCH_RADIUS = 50, HUB_MATCH_TOLERANCE = 0.05; // unlabelled data (Bavaria): height equals the hub
 
 export function sceneDefekte(scene: CheckedScene): string[] {
   const broken: string[] = [];
@@ -25,8 +26,11 @@ export function sceneDefekte(scene: CheckedScene): string[] {
     const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), zs = pts.map(p => p[2]);
     const x = (Math.max(...xs) + Math.min(...xs)) / 2, z = (Math.max(...zs) + Math.min(...zs)) / 2;
     const footprint = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...zs) - Math.min(...zs));
+    const height = Math.max(...ys) - Math.min(...ys);
     const near = turbines.some(t => Math.hypot(x - t.x, z - t.z) <= TOWER_RADIUS);
-    if (near && footprint <= TOWER_MAX_FOOTPRINT && Math.max(...ys) - Math.min(...ys) >= TOWER_MIN_HEIGHT) broken.push(`tower building ${b.id}`);
+    const hubMatch = turbines.some(t => Number(t.hub) > 0 && Math.hypot(x - t.x, z - t.z) <= HUB_MATCH_RADIUS
+      && Math.abs(height - Number(t.hub)) <= HUB_MATCH_TOLERANCE * Number(t.hub));
+    if ((near || hubMatch) && footprint <= TOWER_MAX_FOOTPRINT && height >= TOWER_MIN_HEIGHT) broken.push(`tower building ${b.id}`);
   }
   return broken;
 }

@@ -74,5 +74,16 @@ class WindDimensions(unittest.TestCase):
         self.assertEqual(scene['buildings'], [])
 
 
+    def test_unlabelled_tower_matching_the_hub_height_is_removed(self):
+        # Würzburg: Bavaria files towers as commercial buildings; 140.1 m body 24 m from a 138.2 m hub.
+        def box(id, x, size, height):
+            h = size / 2
+            return dict(id=id, surfaces=[dict(points=[[x-h, 0, -h], [x+h, height, h]])])
+        scene = dict(turbines=[turbine('t', hub=138.18, rotor=138) | dict(x=0, z=0)],
+                     buildings=[box('tower', 24, 13.2, 140.1), box('chimney', 30, 5, 90), box('far', 70, 4, 138), box('wide', 30, 40, 138)])
+        removed = dims.remove_towers(scene)
+        self.assertEqual([(r['buildingId'], r['rule']) for r in removed], [('tower', 'body-height-matches-hub')])
+
+
 if __name__ == '__main__':
     unittest.main()

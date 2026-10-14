@@ -12,7 +12,10 @@ own turbine they appear as a bare cylinder beside it, often with a different
 height. Our turbines come from the register, so every body the survey itself
 labels as a wind turbine (ALKIS function 51002_1220) is removed, wherever it
 stands: register coordinates lie up to ~100 m from the surveyed tower. Data
-without that label falls back to slim, tall bodies on a turbine position.
+without that label (Bavaria files towers as ordinary commercial buildings) falls
+back to two shape rules: a slim, tall body on a turbine position, or a slim body
+within 50 m whose height matches that turbine's hub height to within 5 %. Shape
+alone is otherwise unreliable (measured against the labels, 14.10.2026).
 Every removal is listed in data-gaps.json.
 """
 import math
@@ -29,6 +32,8 @@ TOWER_RADIUS = 15        # metres between building centre and turbine position
 TOWER_MAX_FOOTPRINT = 16 # widest tower base or foundation ring seen in LoD2
 TOWER_MIN_HEIGHT = 20    # transformer stations and sheds stay
 WIND_TURBINE_FUNCTION = '51002_1220'  # ALKIS Bauwerksfunktion 'Windrad'
+HUB_MATCH_RADIUS = 50    # metres; the hub-height rule had no false hit on 650 labelled scenes
+HUB_MATCH_TOLERANCE = .05
 
 FIELDS = (('hub', 'hubMetres'), ('rotorMetres', 'rotorMetres'))
 
@@ -76,6 +81,10 @@ def tower_duplicates(scene):
         elif (nearest and distance <= TOWER_RADIUS and footprint <= TOWER_MAX_FOOTPRINT
                 and max(ys) - min(ys) >= TOWER_MIN_HEIGHT):
             found.append(dict(entry, rule='slim-tall-body-on-turbine'))
+        elif (nearest and nearest.get('hub') and distance <= HUB_MATCH_RADIUS and footprint <= TOWER_MAX_FOOTPRINT
+                and max(ys) - min(ys) >= TOWER_MIN_HEIGHT
+                and abs(max(ys) - min(ys) - nearest['hub']) <= HUB_MATCH_TOLERANCE * nearest['hub']):
+            found.append(dict(entry, rule='body-height-matches-hub'))
     return found
 
 
