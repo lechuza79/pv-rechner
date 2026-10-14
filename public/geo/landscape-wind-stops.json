@@ -8367,5 +8367,114 @@
       "latitude": 51.02269,
       "longitude": 12.17938
     }
+  },
+  "15082015": {
+    "wind-1": {
+      "name": "Windanlagen bei Bitterfeld-Wolfen",
+      "latitude": 51.69979,
+      "longitude": 12.23297
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Bitterfeld-Wolfen",
+      "latitude": 51.64876,
+      "longitude": 12.21053
+    }
+  },
+  "15082256": {
+    "wind-1": {
+      "name": "Windanlagen bei Osternienburger Land",
+      "latitude": 51.81809,
+      "longitude": 11.87708
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Osternienburger Land",
+      "latitude": 51.78248,
+      "longitude": 12.1192
+    }
+  },
+  "15082301": {
+    "wind-1": {
+      "name": "Windanlagen bei Raguhn-Jeßnitz",
+      "latitude": 51.70898,
+      "longitude": 12.24035
+    }
+  },
+  "15082340": {
+    "wind-1": {
+      "name": "Windanlagen bei Sandersdorf-Brehna",
+      "latitude": 51.57686,
+      "longitude": 12.23031
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Sandersdorf-Brehna",
+      "latitude": 51.58459,
+      "longitude": 12.18535
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Sandersdorf-Brehna",
+      "latitude": 51.60413,
+      "longitude": 12.16015
+    }
+  },
+  "15082377": {
+    "wind-1": {
+      "name": "Windanlagen bei Südliches Anhalt",
+      "latitude": 51.66165,
+      "longitude": 11.95677
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Südliches Anhalt",
+      "latitude": 51.67131,
+      "longitude": 12.04469
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Südliches Anhalt",
+      "latitude": 51.7105,
+      "longitude": 11.91224
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Südliches Anhalt",
+      "latitude": 51.76778,
+      "longitude": 12.13411
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Südliches Anhalt",
+      "latitude": 51.66651,
+      "longitude": 12.08449
+    }
+  },
+  "15082430": {
+    "wind-1": {
+      "name": "Windanlagen bei Zerbst/Anhalt",
+      "latitude": 51.99613,
+      "longitude": 12.1271
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Zerbst/Anhalt",
+      "latitude": 52.02525,
+      "longitude": 12.18287
+    }
+  },
+  "15082440": {
+    "wind-1": {
+      "name": "Windanlagen bei Zörbig",
+      "latitude": 51.63784,
+      "longitude": 12.16589
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Zörbig",
+      "latitude": 51.65857,
+      "longitude": 12.04542
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Zörbig",
+      "latitude": 51.70341,
+      "longitude": 12.21752
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Zörbig",
+      "latitude": 51.60206,
+      "longitude": 12.15077
+    }
   }
 }
