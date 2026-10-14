@@ -95057,5 +95057,347 @@
       "website": "https://www.moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke",
       "question": "Auf Ihrer Seite zur Förderung von Balkonkraftwerken sind zwei Förderrunden aus dem Jahr 2023 beschrieben, eine spätere Runde ist nicht genannt. Ist das Förderprogramm beendet, oder ist eine weitere Förderrunde geplant – und wenn ja, wann?"
     }
+  },
+  {
+    "regionId": "01056029",
+    "name": "Klein Nordende",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Klein Nordende (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056029 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056030",
+    "name": "Klein Offenseth-Sparrieshoop",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Klein Offenseth-Sparrieshoop (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056030 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056031",
+    "name": "Kölln-Reisiek",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kölln-Reisiek (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056031 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056042",
+    "name": "Raa-Besenbek",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Raa-Besenbek (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056042 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056033",
+    "name": "Seester",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Seester (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056033 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056045",
+    "name": "Seestermühe",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Seestermühe (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056045 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056046",
+    "name": "Seeth-Ekholt",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Seeth-Ekholt (Amt Elmshorn-Land) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Bürgerportal des Amtes Elmshorn-Land, Rubrik Umwelt, Tiere & Abfall am 14.10.2026 im echten Browser gelesen: einziger Energie-Eintrag „Fördermittel beim Klimaschutzfond“ mit Verweis auf den Elmshorner Fonds",
+      "Seite Quartierskonzept des Amtes gelesen: nur Konzeptberichte der sieben amtsangehörigen Gemeinden, kein Zuschussprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der sieben Amtsgemeinden: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv), Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01056046 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn-land.de/seite/848057/umwelt-tiere-abfall.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: Online-Dienste-Liste nennt „Fördermittel beim Klimaschutzfond“ mit Link auf elmshorn.de/…/Klimaschutzfonds-Elmshorn; sonst nur Baumschutz-Zuwendung."
+      },
+      {
+        "url": "https://www.elmshorn-land.de/seite/537151/quartierskonzept.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Quartierskonzept der amtsangehörigen Gemeinden Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Seester, Raa-Besenbek, Seestermühe, Seeth-Ekholt“ — Konzeptberichte, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01061004",
+    "name": "Altenmoor",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Altenmoor (Amt Horst-Herzhorn) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Für den Kreis Steinburg ist kein Haushaltsprogramm bekannt (Websuche, nicht abschließend). Stand 14.10.2026.",
+    "searches": [
+      "Seite „Geförderte Projekte“ der Gemeinde auf amt-horst-herzhorn.de am 14.10.2026 gelesen: nur Förderprojekte der Gemeinde selbst",
+      "Seite Förderungen/Projekte des Amtes Horst-Herzhorn gelesen: nur eigene Vorhaben (Energiemanagement, Unterkünfte), kein Zuschuss für Haushalte",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der Gemeinde, des Amtes und des Kreises Steinburg: kein Programm gefunden",
+      "Katalog nach Programmen des Kreises Steinburg (01061) und des Landes durchsucht: keins, Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01061004 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 14.10.2026 gelesen: Tabelle der von der Gemeinde eingeworbenen Fördermittel (z. B. Quartierskonzept über KfW 432, Photovoltaik an gemeindeeigenen Gebäuden über ELER) — Förderung an die Gemeinde, keine an Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte des Amtes (Energiemanagementsystem 2019–2023, Unterkünfte) — kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01061044",
+    "name": "Horst (Holstein)",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Horst (Holstein) (Amt Horst-Herzhorn) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Für den Kreis Steinburg ist kein Haushaltsprogramm bekannt (Websuche, nicht abschließend). Stand 14.10.2026.",
+    "searches": [
+      "Seite „Geförderte Projekte“ der Gemeinde auf amt-horst-herzhorn.de am 14.10.2026 gelesen: nur Förderprojekte der Gemeinde selbst",
+      "Seite Förderungen/Projekte des Amtes Horst-Herzhorn gelesen: nur eigene Vorhaben (Energiemanagement, Unterkünfte), kein Zuschuss für Haushalte",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der Gemeinde, des Amtes und des Kreises Steinburg: kein Programm gefunden",
+      "Katalog nach Programmen des Kreises Steinburg (01061) und des Landes durchsucht: keins, Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01061044 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "finding": "Am 14.10.2026 gelesen: Tabelle der von der Gemeinde eingeworbenen Fördermittel (z. B. Quartierskonzept über KfW 432, Photovoltaik an gemeindeeigenen Gebäuden über ELER) — Förderung an die Gemeinde, keine an Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte des Amtes (Energiemanagementsystem 2019–2023, Unterkünfte) — kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01061050",
+    "name": "Kiebitzreihe",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kiebitzreihe (Amt Horst-Herzhorn) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Für den Kreis Steinburg ist kein Haushaltsprogramm bekannt (Websuche, nicht abschließend). Stand 14.10.2026.",
+    "searches": [
+      "Seite „Geförderte Projekte“ der Gemeinde auf amt-horst-herzhorn.de am 14.10.2026 gelesen: nur Förderprojekte der Gemeinde selbst",
+      "Seite Förderungen/Projekte des Amtes Horst-Herzhorn gelesen: nur eigene Vorhaben (Energiemanagement, Unterkünfte), kein Zuschuss für Haushalte",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen der Gemeinde, des Amtes und des Kreises Steinburg: kein Programm gefunden",
+      "Katalog nach Programmen des Kreises Steinburg (01061) und des Landes durchsucht: keins, Landesprogramm 2023 beendet",
+      "Gemeindeschlüssel 01061050 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/kiebitzreihe/gefoerderte-projekte",
+        "finding": "Am 14.10.2026 gelesen: Tabelle der von der Gemeinde eingeworbenen Fördermittel (z. B. Quartierskonzept über KfW 432, Photovoltaik an gemeindeeigenen Gebäuden über ELER) — Förderung an die Gemeinde, keine an Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte des Amtes (Energiemanagementsystem 2019–2023, Unterkünfte) — kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01056008",
+    "name": "Bokholt-Hanredder",
+    "checkedAt": "2026-10-14T20:10:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Amt und Kreisebene.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bokholt-Hanredder (Amt Rantzau) hat kein eigenes Programm; für Haushalte gilt der Klimaschutzfonds Elmshorn, an dem die Gemeinde beteiligt ist (Katalog elmshorn-klimaschutzfonds, am 14.10.2026 an der Amtsquelle geprüft): PV bis 100 € plus 100 € je kWp für höchstens 6 kWp, Stromspeicher bis 500 €, nur wenn die Gemeinde ihren Jahresbeitrag gezahlt hat. Die Mittel der Runde ab 1. Oktober 2026 sind ausgeschöpft, nächste Runde 2027 — deshalb Wiederprüfung im Januar 2027. Wärmepumpen und Stecker-Solargeräte bis 800 W fördert der Fonds nicht. Kreisweit gilt der katalogisierte Gründach-Zuschuss des Kreises Pinneberg. Stand 14.10.2026.",
+    "searches": [
+      "Startseite der Gemeinde am 14.10.2026 im echten Browser gelesen: einziger Energiebezug ist die Seite Klimaschutzfonds",
+      "Seite Klimaschutzfonds der Gemeinde gelesen",
+      "Startseite des Amtes Rantzau gelesen: kein Energie-Förderprogramm",
+      "Websuche nach Photovoltaik-, Balkonkraftwerk- und Wärmepumpen-Zuschüssen in Bokholt-Hanredder und im Amt Rantzau: kein eigenes Programm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv)",
+      "Gemeindeschlüssel 01056008 im Melderegister geprüft (Liste im Katalogeintrag elmshorn-klimaschutzfonds)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bokholt-hanredder.de/seite/564150/klimaschutzfonds.html",
+        "finding": "Am 14.10.2026 im Browser gelesen: „Die Gemeinde Bokholt-Hanredder ist seit 2022 Mitglied im Klimaschutzfonds der Stadt Elmshorn und den 11 Umlandgemeinden … zahlen jeweils 1 Euro pro Einwohner*in und Jahr ein“; Verweis auf die Fondsseite der Stadt Elmshorn."
+      },
+      {
+        "url": "https://www.amt-rantzau.de/",
+        "finding": "Am 14.10.2026 gelesen: Startseite verlinkt kein Energie-Förderprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Programmseite am 14.10.2026 gelesen (Katalog elmshorn-klimaschutzfonds): Fonds der Stadt Elmshorn und elf Nachbargemeinden; PV bis 100 € pauschal plus 100 € je kWp (höchstens 6 kWp), Stromspeicher bis 500 €; „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft“, nächste Runde 2027. Am 14.10.2026 20Z Stadtseite erneut abgerufen, Eintrag unverändert."
+      }
+    ],
+    "sources": []
   }
 ]
