@@ -8619,5 +8619,34 @@
       "latitude": 51.36289,
       "longitude": 11.714
     }
+  },
+  "15001000": {
+    "wind-1": {
+      "name": "Windanlagen bei Dessau-Roßlau",
+      "latitude": 51.78302,
+      "longitude": 12.12744
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dessau-Roßlau",
+      "latitude": 51.93108,
+      "longitude": 12.24767
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Dessau-Roßlau",
+      "latitude": 51.89057,
+      "longitude": 12.1798
+    }
+  },
+  "15003000": {
+    "wind-1": {
+      "name": "Windanlagen bei Magdeburg",
+      "latitude": 52.19882,
+      "longitude": 11.67804
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Magdeburg",
+      "latitude": 52.0959,
+      "longitude": 11.63719
+    }
   }
 }
