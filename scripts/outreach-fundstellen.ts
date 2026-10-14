@@ -16,6 +16,7 @@
  * Erledigt ist ein Fund, sobald seine Adresse eingetragen ist
  * (kommunen:veroeffentlichungen -- --eintragen) oder in einer Notiz steht.
  */
+import { lookup } from "node:dns/promises";
 import { envLaden } from "./env-laden";
 envLaden();
 import { createClient } from "@supabase/supabase-js";
@@ -33,7 +34,12 @@ import {
   type Fund,
 } from "../lib/outreach-fundstellen";
 
-const PARALLEL = 4; // different sites; many small towns share one host, so stay low
+// Sites are grouped by the server they resolve to: many small towns share one
+// municipal hosting provider. Groups run in parallel, the sites of one group one
+// after another — so no server sees more than one reader at a time. With four
+// sites in parallel and no grouping, ~1,000 sites took over 45 minutes and the
+// evaluation stopped incomplete (14.10.2026).
+const PARALLEL = 16;
 // Gentle by design (07.10.2026): 40 pages per site with no pause got this
 // machine blocked by a municipal hosting provider serving ~45 towns ("Zugriff
 // verweigert" for any user agent) — the same towns whose contact pages the
@@ -44,7 +50,7 @@ const MAX_SEITEN_JE_WEBSITE = 12;
 type Ziel = { name: string; url: string };
 
 let zeitlimitMs = 15_000;
-/** Pause zwischen zwei Seiten derselben Website (nur im zweiten Durchgang). */
+/** Pause zwischen zwei Seiten derselben Website. */
 let pauseMs = 1_000;
 const warte = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -166,16 +172,31 @@ async function main() {
   }
 
   const funde: Fund[] = [...(verweise ?? [])];
+  const server = async (z: Ziel): Promise<string> => {
+    try {
+      return (await lookup(new URL(z.url).hostname)).address;
+    } catch {
+      return new URL(z.url).hostname;
+    }
+  };
   const durchgang = async (liste: Ziel[], parallel: number): Promise<Ziel[]> => {
     const fehlt: Ziel[] = [];
+    const gruppen = new Map<string, Ziel[]>();
+    for (const z of liste) {
+      const k = await server(z);
+      gruppen.set(k, [...(gruppen.get(k) ?? []), z]);
+    }
+    // Largest groups first: they set the total duration.
+    const reihe = [...gruppen.values()].sort((a, b) => b.length - a.length);
     let i = 0;
     await Promise.all(
       Array.from({ length: parallel }, async () => {
-        while (i < liste.length) {
-          const z = liste[i++];
-          const r = await lies(z);
-          if (!r.erreichbar) fehlt.push(z);
-          funde.push(...r.funde);
+        while (i < reihe.length) {
+          for (const z of reihe[i++]) {
+            const r = await lies(z);
+            if (!r.erreichbar) fehlt.push(z);
+            funde.push(...r.funde);
+          }
         }
       }),
     );
