@@ -185,8 +185,14 @@ async function main(): Promise<void> {
     const d = domainAus(z.website);
     if (d) gemeindeDomains.set(d, z.mastr_regions.name);
   }
+  // Articles recorded for a press mailing count as well (radio901.de,
+  // lebendiges-neuwied.de): without them, recorded articles came back as
+  // "please look at this yourself" (14.10.2026).
+  const { data: presseBeitraege } = await db.from("aussendung_veroeffentlichung").select("url");
   const beitragsDomains = new Set(
-    ((pubs ?? []) as Veroeffentlichung[]).map((v) => domainAus(v.url)).filter((d): d is string => !!d),
+    [...((pubs ?? []) as Veroeffentlichung[]), ...((presseBeitraege ?? []) as { url: string }[])]
+      .map((v) => domainAus(v.url))
+      .filter((d): d is string => !!d),
   );
 
   // Zweite Quelle: Wer uns Besucher schickt, verlinkt uns — und zwar
