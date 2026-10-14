@@ -181,6 +181,19 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.energyCharts],
     cta: { label: "Alle Energiedaten ansehen", href: "/strommix-deutschland" },
   },
+  strommixRadar: {
+    id: "strommix-radar",
+    title: "Stromerzeugung nach Energieträger",
+    kind: "chart",
+    configuration: {presentations:{
+      full:widgetVariant('radial',{maxWidth:760,contentSizing:'The existing radar preserves its proportions; heading, playback and source determine card height.'}),
+      hero:widgetVariant('radial',{label:'Hero / Story',params:{presentation:'hero'},maxWidth:760,contentSizing:'The same radar and playback without the duplicate heading.',includes:['Radar with carrier illustrations','Fixed daily scale','Playback and source/export menu'],omits:['Duplicate widget heading']})
+    },themes:['light','dark','hero'],background:false,sharing:true,autoplay:true,data:'Öffentliche Stromerzeugung in Deutschland; optional datierter Stand',period:'Letzte 24 Stunden bis zum neuesten oder ausdrücklich gewählten Stand'},
+    shareUrl: `${SITE}/strommix-deutschland`,
+    shareText: "Strommix Deutschland – live bei Solar Check",
+    sources: [DATA_SOURCES.energyCharts],
+    cta: {label:"Strommix im Detail",href:"/strommix-deutschland"},
+  },
   atomstromJahr: {
     id: "atomstrom-jahr",
     title: "Atomstrom-Import im Jahresverlauf",

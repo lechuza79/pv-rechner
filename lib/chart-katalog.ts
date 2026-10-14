@@ -82,6 +82,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
 
   // ─── Fertige Widgets ──────────────────────────────────────────────────────
   { datei: "ErzeugungWidget", art: "widget", wofuer: "Erneuerbaren-Erzeugung als Radial, wechselt auf Wunsch selbst durch die Träger (autoswitchMs)." },
+  {datei:"energy/StrommixRadarWidget",art:"widget",wofuer:"Shared Strommix radar for editorial hero, gallery, dashboard, story preview and standalone embed, with fixed daily scale and common playback/export."},
   { datei: "StrommixWidget", art: "widget", wofuer: "Gemeinsamer Strommix-Verlauf mit Zeitraumwahl, Import-Overlay und zentralem Export fuer Seite und Embed." },
   { datei: "charts/JetztDonut", art: "widget", wofuer: "Strommix-Momentaufnahme aus dem letzten Punkt einer Erzeugungsreihe." },
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },

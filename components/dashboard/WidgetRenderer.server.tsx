@@ -12,6 +12,7 @@ const routes = {
   '/embed/pv-kostenrennen': () => import('../../app/(embed)/embed/pv-kostenrennen/page'),
   '/embed/heizkostenrennen': () => import('../../app/(embed)/embed/heizkostenrennen/page'),
   '/embed/gruengas-heizkosten': () => import('../../app/(embed)/embed/gruengas-heizkosten/page'),
+  '/embed/strommix-radar': () => import('../../app/(embed)/embed/strommix-radar/page'),
   '/embed/strommix': () => import('../../app/(embed)/embed/strommix/page'),
   '/embed/strommix-anteil': () => import('../../app/(embed)/embed/strommix-anteil/page'),
   '/embed/atomstrom-tage': () => import('../../app/(embed)/embed/atomstrom-tage/page'),

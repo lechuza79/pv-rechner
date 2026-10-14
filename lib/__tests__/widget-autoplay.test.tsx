@@ -25,7 +25,7 @@ describe('Widget autoplay appearance',()=>{
   expect(widgetPreviewSource('/embed/regional-race/06440?metric=kwp&autoplay=off')).toBe('/embed/regional-race/06440?metric=kwp');
  });
  it('offers autoplay only for wired animated widgets',()=>{
-  expect(allWidgets().filter(w=>w.configuration?.autoplay).map(w=>w.id).sort()).toEqual(['gemeinde-ranking','gemeinde-solar-monat','heizkostenrennen','kommunen-landschaft','laender-strommix-pro-kopf','laender-strommixrennen','micro-wind','pv-kostenrennen','regional-map','regional-race','welt-stromrennen','welt-zubaurennen']);
+  expect(allWidgets().filter(w=>w.configuration?.autoplay).map(w=>w.id).sort()).toEqual(['gemeinde-ranking','gemeinde-solar-monat','heizkostenrennen','kommunen-landschaft','laender-strommix-pro-kopf','laender-strommixrennen','micro-wind','pv-kostenrennen','regional-map','regional-race','strommix-radar','welt-stromrennen','welt-zubaurennen']);
  });
  it('stops wind particles while retaining actual speed and direction',()=>{
   const render=(autoplay?:boolean)=>renderToStaticMarkup(<WidgetPresentationProvider appearance={{autoplay}}><WindMicroCompass speedMs={8} directionDeg={90}/></WidgetPresentationProvider>);

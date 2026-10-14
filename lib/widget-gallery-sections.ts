@@ -63,6 +63,14 @@ export const SECTIONS: WidgetSection[] = [
     variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
   },
   {
+    id: "strommix-radar",
+    label: "Strommix · Radar",
+    intro: "Die Anteile der Energieträger im Tagesverlauf: mit gemeinsamer Skala, Stunden-Navigation und abspielbaren Viertelstundenwerten.",
+    attribution: {path:"/strommix-deutschland",text:"Strommix Deutschland – Solar Check"},
+    showFrameWidth: true,
+    variants: [{id:"strommix-radar",label:"Radar",src:"/embed/strommix-radar",height:720}],
+  },
+  {
     id: "ee-ampel",
     label: "EE-Ampel (Strommix live)",
     intro:

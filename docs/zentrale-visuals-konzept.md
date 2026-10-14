@@ -1055,3 +1055,27 @@ view. Only county context offers this composition. The county determines its
 state, the selected metric determines title/unit, and the active selection is
 used by share links and the existing video request. Only one chart animation is
 mounted at a time; switching between the preloaded views needs no new request.
+
+## Strommix radar registration (14 October 2026)
+
+`strommix-radar` is the registered identity of the existing seven-axis chart,
+separate from the stacked `strommix` history. `/embed/strommix-radar` supplies
+full and `presentation=hero` views to the gallery and common server/dashboard
+renderer. The hero/story view omits only the duplicate heading; playback,
+illustrations, sources and export stay shared with the editorial page.
+`/embed/strommix?darstellung=radar` is a compatibility adapter to that same route.
+
+Both presentations are content-sized. They do not advertise fixed grid slots:
+heading, seven labels, playback and attribution must fit without clipping.
+`autoplay=on|off` uses the common appearance contract; hero defaults to playback
+on visibility, respecting reduced motion. Explicit `at=<ISO timestamp>` selects
+the trailing 24 hours ending at an available observation and defaults to paused.
+Missing observations show unavailable data rather than another day. This pins
+the requested observation time, not an immutable archive of provider revisions.
+The common data boundary loads the same generation endpoint as the client.
+Live sharing still uses `stand` as a refresh key and selects the latest available
+data; it never freezes the currently scrubbed frame. A dated embed shares `at`.
+
+The contribution guide needs no new rule: registry, common renderer, scoped data,
+content sizing and compatibility adapters follow its existing delivery contract.
+Pumped storage, physical trade and the state map are outside this package.

@@ -1,3 +1,4 @@
+import StrommixRadarPage from '../strommix-radar/page';
 import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import {parseWidgetAppearance} from '../../../../lib/widget-appearance';
 import { Suspense } from "react";
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function StrommixEmbedPage({searchParams}:{searchParams:Promise<Record<string,string>>}) {
-  const appearance = parseWidgetAppearance(await searchParams);
+  const query=await searchParams;
+  if(query.darstellung==='radar')return StrommixRadarPage({searchParams:Promise.resolve(query)});
+  const appearance = parseWidgetAppearance(query);
   return <WidgetPresentation widgetId="strommix" appearance={{...appearance,theme:appearance.theme ?? 'light'}}><Suspense fallback={<LoadingDots />}><StrommixWidget /></Suspense></WidgetPresentation>;
 }
