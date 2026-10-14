@@ -193,15 +193,13 @@
 .darkVariant>.storyBand{padding-top:1px}
 .page .subnavRail>:global(.v3-section-nav){z-index:20;margin-top:-24px;margin-bottom:0;--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-line:#b0c8c325}
 .districtIntro{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:80px 0 96px}
-.districtIntro p{margin:0;color:var(--atlas-secondary);font-size:18px;line-height:1.6}
-.districtIntro h2{font-size:var(--font-size-h2);line-height:1.15;margin:24px 0 0}
-.districtIntro strong{font-weight:inherit}
+.districtIntro h2{margin:24px 0 0}
 .districtStories>h2{border-top:1px solid var(--atlas-border);padding-top:32px;margin:0 0 24px;font-size:var(--font-size-h2)}
 .fundingSection{padding:48px 0;--atlas-ink:var(--atlas-text);--atlas-bg:var(--atlas-surface);--atlas-paper:var(--atlas-card);--atlas-muted:var(--atlas-secondary);--atlas-line:var(--atlas-border)}
 .fundingSection :global(.v3-examples-foerderung)>h3{font-size:var(--font-size-h2);margin-bottom:24px}
 .page>:global(.atlas-dialog){--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-line:#b0c8c325}
 .page :global(#atlas-stories),.page :global(#atlas-ranking),.page :global(#atlas-foerderung){scroll-margin-top:88px}
-@media(max-width:700px){.districtIntro{grid-template-columns:1fr;gap:28px;padding:56px 0}.districtIntro p{font-size:16px}.districtIntro h2{margin-top:16px}}
+@media(max-width:700px){.districtIntro{grid-template-columns:1fr;gap:28px;padding:56px 0}.districtIntro h2{margin-top:16px}}
 .page{--theme-font:var(--font-body);--theme-action:var(--color-brand);--theme-action-ink:#132527;--atlas-radius:12px}
 .page :global(.atlas-dialog) button{font:inherit;border:0;background:none;color:inherit}
 .page :global(.atlas-dialog .atlas-roles) button{border:1px solid var(--atlas-line)}
