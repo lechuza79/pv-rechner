@@ -8672,5 +8672,27 @@
       "latitude": 51.86302,
       "longitude": 13.13048
     }
+  },
+  "12062461": {
+    "wind-1": {
+      "name": "Windanlagen bei Schönewalde",
+      "latitude": 51.85476,
+      "longitude": 13.13879
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schönewalde",
+      "latitude": 51.8265,
+      "longitude": 13.1512
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Schönewalde",
+      "latitude": 51.8463,
+      "longitude": 13.20277
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Schönewalde",
+      "latitude": 51.85799,
+      "longitude": 13.18234
+    }
   }
 }

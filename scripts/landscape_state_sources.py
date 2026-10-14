@@ -368,6 +368,8 @@ NEIGHBOUR_TERRAIN = {
     # Brandenburg: one WCS request over the border part (the same coverage its own scenes use).
     '12': dict(key='brandenburg', native=25833, wcs=True, credit='© GeoBasis-DE/LGB, dl-de/by-2-0',
                tag='nbbb', label='LGB DGM1 (WCS, 5 m)', source=BB_WCS),
+    # Sachsen-Anhalt: DGM5 tiles from the map downloader (prepare link per 2 km tile, UTM32).
+    '15': dict(key='sachsen-anhalt', native=25832, st=True, tag='nbst', credit='© GeoBasis-DE / LVermGeo ST, dl-de/by-2-0'),
 }
 
 
@@ -376,6 +378,9 @@ def neighbour_terrain_urls(code, area):
     spec = NEIGHBOUR_TERRAIN[code]
     if spec.get('wcs'):
         return [[bb_terrain_url(area)]]
+    if spec.get('st'):
+        tiles, prepare = st_index(ST_PAGES['dgm'], _get)
+        return [[prepare+'items='+tiles[(e*2, n*2)]+'&format=zip'] for e, n in grid_cells(area, size=2000) if (e*2, n*2) in tiles]
     cells = grid_cells(area, 25832, spec['native'], spec['size'])
     if code == '14':
         return [[SN_DGM+'dgm1_33%03d_%d_2_sn_tiff.zip' % (e*2, n*2)] for e, n in cells]

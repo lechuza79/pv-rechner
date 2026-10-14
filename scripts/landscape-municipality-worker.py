@@ -338,7 +338,7 @@ def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
         for candidates in states.neighbour_terrain_urls(code, part):
             for url in candidates:
                 stem = hashlib.sha256(url.encode()).hexdigest()[:24]
-                kept = inputs/(prefix+('-'+spec['tag']+'-' if spec['native']!=25832 else '-dgm-nbth-')+stem+'.tif')
+                kept = inputs/(prefix+('-'+spec['tag']+'-' if spec['native']!=25832 else '-dgm-'+spec.get('tag','nbth')+'-')+stem+'.tif')
                 known = next((e for e in reuse.get(url,[]) if (inputs/e['file']).is_file() and shared.digest(inputs/e['file'])==e['sha256']),None)
                 if known:
                     if not kept.exists():os.link(inputs/known['file'],kept)
@@ -347,7 +347,16 @@ def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
                     response = None
                     for number in range(4):
                         try:
-                            response = requests.get(url,timeout=(20,300),headers=states.UA)
+                            if spec.get('st'):
+                                # The prepare link answers with a one-off archive address.
+                                link = requests.get(url,timeout=(20,120),headers=states.UA);link.raise_for_status()
+                                archive = link.text.strip()
+                                if not archive.startswith('https://www.lvermgeo.sachsen-anhalt.de/') or '/download/?file=' not in archive:
+                                    raise ValueError('Unexpected Sachsen-Anhalt download link')
+                                response = requests.get(archive,timeout=(20,300),headers=states.UA)
+                                response.raise_for_status()
+                            else:
+                                response = requests.get(url,timeout=(20,300),headers=states.UA)
                             break
                         except requests.RequestException as error:
                             if number==3:raise
@@ -361,7 +370,7 @@ def neighbour_terrain(root, inputs, prefix, ags, terrain, reuse):
                         try:raw.write_bytes(response.content);states.bb_wcs_terrain(raw,temporary)
                         finally:raw.unlink(missing_ok=True)
                     else:
-                        member, data = states.neighbour_member(response.content)
+                        member, data = (states.st_member(response.content,'dgm') if spec.get('st') else states.neighbour_member(response.content))
                         temporary.write_bytes(data)
                     temporary.replace(kept)
                     entry = dict(file=kept.name,url=url,sha256=shared.digest(kept),sourceMember=member,

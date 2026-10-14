@@ -114,5 +114,21 @@ class StateSourceTests(unittest.TestCase):
         self.assertIn('LGB', spec['credit'])
 
 
+    def test_sachsen_anhalt_neighbour_terrain_reads_the_tile_index(self):
+        # Schönewalde (Brandenburg): its scene reaches into Sachsen-Anhalt.
+        from shapely.geometry import box
+        page = ("MapDownloadSelector( 'mapdownloader_content', '{\"features\":[{\"properties\":{\"label\":\"323505730\",\"id\":\"577001\"}},"
+                "{\"properties\":{\"label\":\"323525730\",\"id\":\"577002\"}}]}', 'EPSG:4647'"
+                " https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1970,501/ajax/1/prepare/?")
+        original = states._get
+        states._get = lambda url: Response(page)
+        try:
+            urls = states.neighbour_terrain_urls('15', box(350100, 5730100, 351900, 5731900))
+        finally:
+            states._get = original
+        self.assertEqual(urls, [['https://www.lvermgeo.sachsen-anhalt.de/de/mod/4,1970,501/ajax/1/prepare/?items=577001&format=zip']])
+        self.assertTrue(states.NEIGHBOUR_TERRAIN['15']['st'])
+
+
 if __name__ == '__main__':
     unittest.main()

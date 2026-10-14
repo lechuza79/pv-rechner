@@ -124,7 +124,8 @@ def main(id):
   if '-dgm-bw-' in path.name:
    rasters[index],correction=normalise_bw_crs(path,source_entries[path.name]['url'])
    if correction:crs_normalisations.append(correction)
-  elif path.name.startswith('st-') and '-dgm-nb' not in path.name:
+  # Sachsen-Anhalt DGM5 tiles, the state's own or a neighbour's: decided by their source, not their name.
+  elif 'www.lvermgeo.sachsen-anhalt.de' in source_entries.get(path.name,{}).get('url',''):
    rasters[index],correction=normalise_st_crs(path,source_entries[path.name]['url'],source_entries[path.name].get('sourceMember'))
    if correction:crs_normalisations.append(correction)
  extent=coords+[(east,north)]+[(east+p['x'],north-p['z']) for p in stops]
