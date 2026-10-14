@@ -8,6 +8,8 @@ Diese Datei zuerst vollständig lesen. Sie enthält den gemeinsamen Arbeits- und
 
 ## Charts: gemeinsame Grundlage und Ausprägungen — Betreiberregel, 08.10.2026
 
+Bei jeder Widget-, Chart-, Storyvisual-, Hero- oder Exportarbeit zuerst den [verbindlichen Zulieferungsablauf](docs/anleitung/widget-zulieferung.md) lesen. Er definiert Zuständigkeit, vollständige Integration, Variantenschutz und den kompakten Übergabenachweis für alle Sessions. Bereits laufende Sessions lesen ihn vor ihrem nächsten Widget-Arbeitspaket aus dem aktuellen Hauptstand; alte Worktrees erhalten neue Regeln nicht automatisch.
+
 Bei Arbeiten an diesem Bereich: [verbindliches Fachkapitel](docs/anleitung/visuals.md), Abschnitt „Charts: gemeinsame Grundlage und Ausprägungen — Betreiberregel, 08.10.2026“.
 
 ## Deine Rolle
