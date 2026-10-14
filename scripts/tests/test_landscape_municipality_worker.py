@@ -29,6 +29,26 @@ class WorkerTests(unittest.TestCase):
         self.assertEqual(worker.choose_town([node(1,'Centre')],'Municipality',{1})['id'],1)
         with self.assertRaises(ValueError):worker.choose_town([node(1,'Centre')],'Municipality')
 
+    def test_admin_centre_counts_whatever_its_place_class(self):
+        # Glienicke/Nordbahn: the mapped admin centre is tagged place=suburb.
+        seat = node(1,'Glienicke/Nordbahn');seat['tags']['place'] = 'suburb'
+        self.assertEqual(worker.choose_town([seat,node(2,'Other')],'Glienicke/Nordbahn',{1})['id'],1)
+        # Without the source's admin centre a suburb is never a start town.
+        with self.assertRaises(ValueError):worker.choose_town([seat],'Somewhere')
+
+    def test_exact_name_may_be_classed_as_municipality(self):
+        # Leegebruch: the only node of that name carries place=municipality.
+        own = node(1,'Leegebruch');own['tags']['place'] = 'municipality'
+        self.assertEqual(worker.choose_town([own],'Leegebruch')['id'],1)
+        other = node(2,'Elsewhere');other['tags']['place'] = 'municipality'
+        with self.assertRaises(ValueError):worker.choose_town([other],'Leegebruch')
+
+    def test_town_classes_keep_precedence_over_wider_classes(self):
+        village,suburb = node(1,'A'),node(2,'B');suburb['tags']['place'] = 'suburb'
+        self.assertEqual(worker.choose_town([village,suburb],'X',{1,2})['id'],1)
+        own = node(3,'A');own['tags']['place'] = 'municipality'
+        self.assertEqual(worker.choose_town([village,own],'A')['id'],1)
+
     def test_village_municipality_uses_unique_most_populous_place_only(self):
         a,b = node(1,'Tuchen'),node(2,'Klobbicke')
         a['tags']['population'],b['tags']['population'] = '450','300'

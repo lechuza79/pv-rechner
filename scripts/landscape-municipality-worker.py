@@ -59,9 +59,17 @@ def read_boundary(root, ags):
 
 
 def choose_town(elements, name, admin_ids=()):
-    nodes = [e for e in elements if e['type']=='node' and e.get('tags', {}).get('place') in ('city','town','village')]
+    placed = [e for e in elements if e['type']=='node' and e.get('tags', {}).get('place')]
+    nodes = [e for e in placed if e['tags']['place'] in ('city','town','village')]
     exact = [e for e in nodes if e['tags'].get('name')==name]
     seat = [e for e in nodes if e['id'] in admin_ids]
+    # Wider classes only where the town classes yield nothing, so earlier results stay unchanged.
+    # A mapped admin centre is the source's own answer whatever its class (Glienicke/Nordbahn: suburb);
+    # a node carrying the municipality's exact name may be classed as the municipality itself (Leegebruch).
+    if not seat:
+        seat = [e for e in placed if e['id'] in admin_ids]
+    if not exact:
+        exact = [e for e in placed if e['tags'].get('name')==name and e['tags']['place']=='municipality']
     # The mapped seat wins: merged municipalities often carry a same-named node
     # at an abstract centre in open land (Steinfurt: 85 buildings around it).
     choices = seat if len(seat)==1 else exact if exact else seat
