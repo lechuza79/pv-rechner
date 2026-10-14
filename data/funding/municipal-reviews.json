@@ -94691,6 +94691,14 @@
       {
         "url": "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/",
         "finding": "Förderseite der Stadtwerke am 14.10.2026 im echten Browser gelesen: „Wir fördern Maßnahmen zur CO2-Reduzierung in Gebäuden“, Downloads Richtlinie und Förderantrag 2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://www.elmshorn.de/Rathaus-Politik/Land-Schleswig-Holstein-F%C3%B6rderprogramm-Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger.php",
+        "finding": "Am 14.10.2026 abgerufen: liefert nur noch die Rathaus-Übersicht ohne Programmtext; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist seit 16.11.2023 gestoppt und im Katalog als beendet geführt."
+      },
+      {
+        "url": "https://www.elmshorn.de/Rathaus-Politik/B%C3%BCrgerservice/Adressensuche/Amt-f%C3%BCr-Stadtentwicklung-und-Umwelt-Umwelt-Klimaschutz-und-Nachhaltigkeit-.php?ModID=9&FID=1981.96.1",
+        "finding": "Objektadresse leitet am 14.10.2026 auf die Kontaktseite des Amts für Stadtentwicklung und Umwelt weiter — kein Förderinhalt."
       }
     ],
     "sources": [
@@ -94717,6 +94725,18 @@
         "disposition": "reviewed",
         "reason": "Gelesen: Landesprogramm (2023 beendet, im Katalog), BAFA, KfW und das CO2-Minderungsprogramm der Stadtwerke; letzteres aufgenommen (elmshorn-stadtwerke-co2).",
         "evidenceUrl": "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/"
+      },
+      {
+        "url": "elmshorn.de/Rathaus-Politik/Land-Schleswig-Holstein-F%C3%B6rderprogramm-Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger.php",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm, 2023 beendet und im Katalog; Seite ohne Programmtext.",
+        "evidenceUrl": "https://www.elmshorn.de/Rathaus-Politik/Land-Schleswig-Holstein-F%C3%B6rderprogramm-Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger.php"
+      },
+      {
+        "url": "elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/index.php?object=tx,4197.1.1&amp;ModID=9&amp;FID=1981.96.1&amp;NavID=3302.39",
+        "disposition": "reviewed",
+        "reason": "Kontaktseite des Umweltamts (Weiterleitung), kein Förderinhalt.",
+        "evidenceUrl": "https://www.elmshorn.de/Rathaus-Politik/B%C3%BCrgerservice/Adressensuche/Amt-f%C3%BCr-Stadtentwicklung-und-Umwelt-Umwelt-Klimaschutz-und-Nachhaltigkeit-.php?ModID=9&FID=1981.96.1"
       }
     ]
   },
