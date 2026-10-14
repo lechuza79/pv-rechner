@@ -40,10 +40,12 @@ describe("Municipal grants from the outreach source review", () => {
     expect(fundingForAgs("05758020").map(p => p.id)).toContain("kirchlengern-pv-kleinanlagen");
     expect(fundingForAgs("05758036").map(p => p.id)).not.toContain("kirchlengern-pv-kleinanlagen");
   });
-  it("keeps Recklinghausen's existing page unambiguous after adding storage", () => {
+  it("keeps Recklinghausen balcony-only after the city confirmed storage is not funded", () => {
     const p = fundingFor(ATLAS_CITIES.find(c => c.slug === "recklinghausen")!)!;
     expect(p.id).toBe("recklinghausen-stecker-solar");
-    expect(p.foerdert).toEqual(expect.arrayContaining(["pv", "balkon"]));
+    expect(p.foerdert).toEqual(["balkon"]);
+    expect(p.rates.map(r => r.label)).toEqual(["Balkonkraftwerk"]);
+    expect(JSON.stringify(p.conditions)).not.toMatch(/3 kWh|neue[nr]? (netzgekoppelten )?PV-Anlage/);
   });
   it("never reactivates closed rounds or interprets purchase prices as watts", () => {
     for (const id of ["meschede-balkon-speicher", "bergkamen-balkon", "pfaffenhofen-balkon", "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "delmenhorst-balkon-solar"]) expect(stackFunding([verified(id)], balcony, today).total, id).toBe(0);
