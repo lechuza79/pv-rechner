@@ -78,3 +78,10 @@ test('both rendering hosts measure after paint and can wake a paused scene',()=>
  assert.match(samplerSource,/version!==revision/);
  assert.match(samplerSource,/Incomplete background capture/);
 });
+
+ test('a previously white header changes ink when the morning sky brightens',()=>{
+  for(let value=0;value<=255;value++){
+   const samples=Array.from({length:100},()=>[value,value,value]);
+   assert.ok(chooseTone(samples,'light').ratio>=4.5,`previously white on gray ${value}`);
+  }
+ });

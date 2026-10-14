@@ -53,9 +53,9 @@ export function chooseTone(samples, previous) {
   if(worst.dark>=4.5)tone='dark';
   // On a mid-dark sky white and black reach about the same ratio (measured
   // 4.6 against 4.5 at dusk), but black reads far worse there and the headline
-  // above is white. So white wins whenever the typical background carries it;
-  // a white button stays white down to 4.2 so it does not flicker at the edge.
-  else if(typical.light>=(previous==='light'?4.2:4.5))tone='light';
+  // above is white. Keep white only while the whole measured band supports
+  // it; a previous white tone must not lower the readability threshold.
+  else if(worst.light>=4.5)tone='light';
   else tone=typical.light>=typical['strong-dark']?'light':'strong-dark';
   return {tone,ratio:worst[tone],low,high};
 }

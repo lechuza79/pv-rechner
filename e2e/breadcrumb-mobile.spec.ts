@@ -31,3 +31,22 @@ for (const width of [320, 390]) {
     await expect(nav.getByRole("link", { name: "Verbandsgemeinde Bruchmühlbach-Miesau", exact: true }).filter({ visible: true })).toBeVisible();
   });
 }
+
+test('breadcrumb retains its hierarchy on intermediate desktop widths', async ({ page }) => {
+  await page.goto('/solar-atlas/rheinland-pfalz/landkreis-kaiserslautern/gerhardsbrunn');
+  const nav = page.getByRole('navigation', { name: 'Brotkrümel', exact: true });
+  for (const width of [701, 744, 870, 1024, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(nav.locator('summary')).not.toBeVisible();
+    const geometry = await nav.evaluate(element => {
+      const current = element.querySelector('[aria-current]')!;
+      const root = element.querySelector('a')!;
+      return { overflow: element.scrollWidth - element.clientWidth, rootY: root.getBoundingClientRect().y,
+        currentY: current.getBoundingClientRect().y, labels: [...element.querySelectorAll(':scope > span > a')].map(a => ({ width: a.getBoundingClientRect().width, height: a.getBoundingClientRect().height })) };
+    });
+    expect(geometry.overflow).toBeLessThanOrEqual(1);
+    expect(Math.abs(geometry.rootY - geometry.currentY)).toBeLessThanOrEqual(1);
+    expect(geometry.labels).toHaveLength(4);
+    for (const label of geometry.labels) expect(label.width).toBeGreaterThan(20);
+  }
+});
