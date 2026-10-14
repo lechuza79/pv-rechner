@@ -6,12 +6,16 @@ import {ladeLetztenStandMitAbruf} from '../../../lib/energy-letzter-stand';
 import type {GenerationData} from '../../../lib/energy';
 import {recordPageContent} from '../../../lib/page-content-state';
 import {strommixLiveSeo,STROMMIX_LIVE_PATH} from '../../../lib/strommix-live-seo';
+/** A visitor waits this long for Energy-Charts; then the stored copy (minutes old) is served. */
+const LIVE_BUDGET_MS=4000;
 /** Share crawls and HTML use one observation and the existing protected reader. */
 export const loadStrommixPage=cache(async(review=false)=>{
  let initialData:GenerationData|undefined;
  try {
-  const response=await generationHandler(new NextRequest('https://solar-check.io/api/energy/generation?country=de&hours=24',{headers:await headers()}));
-  if(response.ok){
+  const live=generationHandler(new NextRequest('https://solar-check.io/api/energy/generation?country=de&hours=24',{headers:await headers()}));
+  live.catch(()=>{});
+  const response=await Promise.race([live,new Promise<null>(r=>setTimeout(()=>r(null),LIVE_BUDGET_MS))]);
+  if(response?.ok){
    const fresh=await response.json() as GenerationData;
    if(Array.isArray(fresh.data)&&fresh.data.length)initialData=fresh;
   }
