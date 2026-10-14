@@ -102,5 +102,17 @@ class StateSourceTests(unittest.TestCase):
         self.assertEqual(states.grid_member(buffer.getvalue(), 'dgm'), ('a.tif', b'x'))
 
 
+    def test_brandenburg_neighbour_terrain_is_one_coverage_request(self):
+        # Jessen (Elster): the scene reaches across the state border into Brandenburg.
+        from shapely.geometry import box
+        urls = states.neighbour_terrain_urls('12', box(760000, 5740000, 762000, 5742000))
+        self.assertEqual(len(urls), 1)
+        self.assertEqual(len(urls[0]), 1)
+        self.assertTrue(urls[0][0].startswith(states.BB_WCS + '?SERVICE=WCS'))
+        spec = states.NEIGHBOUR_TERRAIN['12']
+        self.assertEqual((spec['native'], spec['tag']), (25833, 'nbbb'))
+        self.assertIn('LGB', spec['credit'])
+
+
 if __name__ == '__main__':
     unittest.main()

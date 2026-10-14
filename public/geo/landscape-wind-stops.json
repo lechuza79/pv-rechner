@@ -8660,5 +8660,17 @@
       "latitude": 51.16192,
       "longitude": 12.00445
     }
+  },
+  "15091145": {
+    "wind-1": {
+      "name": "Windanlagen bei Jessen (Elster)",
+      "latitude": 51.83262,
+      "longitude": 12.8837
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Jessen (Elster)",
+      "latitude": 51.86302,
+      "longitude": 13.13048
+    }
   }
 }
