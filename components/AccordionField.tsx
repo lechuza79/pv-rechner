@@ -5,6 +5,7 @@
 // zu einer kompakten Zusammenfassungs-Zeile ein (Label + Wert + Edit), die nächste
 // Frage öffnet. Ein Klick auf die Edit-Zeile öffnet die Frage wieder.
 import Collapse from "./Collapse";
+import "./choice-buttons.css";
 import OptionCard from "./OptionCard";
 import { ReactNode, createContext, useContext } from "react";
 import { v, iconSizes } from "../lib/theme";
