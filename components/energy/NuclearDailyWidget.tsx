@@ -1,4 +1,5 @@
 'use client';
+import EnergyDataNotice from './EnergyDataNotice';
 import {quellenHinweis} from '../../lib/energy-ersatzstand';
 import {formatLiveDataTime} from '../../lib/live-data-time';
 import type {NuclearImportResponse} from '../../lib/nuclear-import';
@@ -55,7 +56,7 @@ export default function NuclearDailyWidget({data,variant='teaser',metric='power'
     <CategoryBarChart unit={unit} label={`Rechnerischer Atomstrom-Import: ${energy?'Tagesenergie':'Tagesmittel'}, ${period}`} rows={rows}/>
     <div className={styles.value}>{value===null?<span className={styles.unavailable}>– <small>{unit}</small></span>:<MetricValue value={value} unit={unit} maximumFractionDigits={energy?1:2}/>}{energy&&<small>{description}</small>}</div>
    </div>}
-   {fallbackNote&&<p className={styles.note} role="status">{fallbackNote}</p>}
+   {fallbackNote&&<EnergyDataNotice details={fallbackNote}/>}
    {variant==='full'&&<p className={styles.note}>Energy-Charts / Fraunhofer ISE · CC BY 4.0. Rechnerische Zuordnung, keine gemessene Herkunft des Stroms.</p>}
   </div>}
  </ExportableWidgetFrame>;

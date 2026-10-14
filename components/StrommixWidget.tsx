@@ -5,6 +5,7 @@ import stage from "./EnergyEditorialStage.module.css";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGenerationMix, useNuclearImport, type GenerationData } from "../lib/energy";
+import EnergyDataNotice from "./energy/EnergyDataNotice";
 import { energieQuelle, quellenHinweis, letzterZeitpunkt } from "../lib/energy-ersatzstand";
 import StackedAreaChart from "./charts/StackedAreaChart";
 import EventTimeline from "./charts/EventTimeline";
@@ -423,9 +424,7 @@ export default function StrommixWidget({ initialData, initialNuclear = true, edi
         {/* Energy-Charts down, the route serves our last stored copy: say why
             the curve ends early and when, instead of an empty box. */}
         {quellenNotiz && !loading && (
-          <div role="status" style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8 }}>
-            {quellenNotiz}
-          </div>
+          <EnergyDataNotice details={quellenNotiz}/>
         )}
         {isStale && !genData.stale && (
           <div style={{

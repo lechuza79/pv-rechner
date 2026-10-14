@@ -12,6 +12,9 @@ Explorative Einzelentwicklung ist erlaubt. Sie ist erst abgeschlossen, wenn sie 
 
 ## Embed-Widgets (Energie-Widgets)
 
+**Datenverfügbarkeit:** Bei verzögerten oder ersatzweise gelieferten Daten nur einen kurzen Hinweis zeigen (z. B. „Daten gerade nur verzögert verfügbar.“), in der zentralen violetten Hinweisbox (`FormError`, `tone="awareness"`) mit Schließen-×. Details zu Ursache, Ersatzquelle und tatsächlichem Datenstand gehören hinter den bestehenden `InfoTooltip` (?). Für Energie-Widgets `EnergyDataNotice` verwenden. Schließen gilt lokal für die angezeigte Meldung, nicht als dauerhafte Unterdrückung; ein Zeitregler darf sie nicht erneut öffnen. Quellen und Datenstand bleiben im Export erhalten. Ohne verfügbare Werte ausdrücklich „Daten gerade nicht verfügbar“ statt eine bloße Verzögerung suggerieren. Keine langen Ausfalltexte im Chart.
+
+
 Partner embeds: `/embed/partner/[partner]/[widget]/[full|title|none]` reuse the municipal widget adapter and shared export frame. Trusted presets live in `lib/widget-brand.ts`; header mode never suppresses chart titles or attribution. Generate responsive customer HTML through `partnerEmbedCode`. See `docs/partner-widgets.md`.
 
 
