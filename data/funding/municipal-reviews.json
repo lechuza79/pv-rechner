@@ -65637,8 +65637,8 @@
   {
     "regionId": "03357006",
     "name": "Bothel",
-    "checkedAt": "2026-09-25T16:05:00Z",
-    "recheckAt": "2026-12-24T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Bothel wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Weder Bothel noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
@@ -65646,7 +65646,8 @@
       "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
       "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
       "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
-      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -65664,6 +65665,10 @@
       {
         "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
         "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html?cid=6008&file=files%2Fcontent%2Fsamtgemeinde%2Fstichwortverzeichnis%2FIKSK_Samtgemeinde_Bothel.pdf",
+        "finding": "Am 14.10.2026 durchsucht: Integriertes Klimaschutzkonzept der Samtgemeinde Bothel (Abschlussbericht); Balkonkraftwerke nur als Infoveranstaltung der Klimaschutzpaten (28.05.2024), Fördermittel nur für die Kommune (Kommunalrichtlinie); kein Zuschussprogramm für Haushalte."
       }
     ],
     "sources": [
@@ -65672,6 +65677,12 @@
         "disposition": "reviewed",
         "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
         "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      },
+      {
+        "url": "bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html?cid=6008&file=files%2Fcontent%2Fsamtgemeinde%2Fstichwortverzeichnis%2FIKSK_Samtgemeinde_Bothel.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 durchsucht: Integriertes Klimaschutzkonzept der Samtgemeinde Bothel (Abschlussbericht); Balkonkraftwerke nur als Infoveranstaltung der Klimaschutzpaten (28.05.2024), Fördermittel nur für die Kommune (Kommunalrichtlinie); kein Zuschussprogramm für Haushalte.",
+        "evidenceUrl": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html?cid=6008&file=files%2Fcontent%2Fsamtgemeinde%2Fstichwortverzeichnis%2FIKSK_Samtgemeinde_Bothel.pdf"
       }
     ]
   },
@@ -68385,8 +68396,8 @@
   {
     "regionId": "03359036",
     "name": "Oldendorf",
-    "checkedAt": "2026-10-05T12:55:42Z",
-    "recheckAt": "2026-12-26T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Oldendorf gehört zur Samtgemeinde Oldendorf-Himmelpforten (Landkreis Stade). Weder Gemeinde noch Samtgemeinde führen einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Seite „Förderprojekte“ listet nur Vorhaben, für die die Kommunen selbst Fördermittel erhalten haben (EFRE-Sanierungen von Rathaus und Kitas, LEADER, KSI-Beleuchtung); die Klimaschutzseite beschreibt Konzept, Wärmeplanung und eigene Liegenschaften und verweist Private auf Beratungsangebote der Klimaschutz- und Energieagentur. Die Volltextsuche findet zu Photovoltaik und Solar nur Bauleitplanung für Solarparks, zu Balkonkraftwerk nichts. Der Klimafonds des Landkreises fördert nur Heizungsoptimierung (Kreisprüfung 21.09.2026).",
@@ -68396,7 +68407,8 @@
       "Volltextsuche oldendorf-himmelpforten.de am 26.09.2026 nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Solar, Solaranlage",
       "Gemeindeseite Oldendorf auf dem Samtgemeindeportal am 26.09.2026",
       "Websuche „Oldendorf-Himmelpforten Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 26.09.2026 — nur Presse zu Freiflächen und Programme des (anderen) Landkreises Oldenburg",
-      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -68422,6 +68434,10 @@
       {
         "url": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1",
         "finding": "Am 05.10.2026 gelesen: Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "finding": "Am 14.10.2026 gelesen: Umweltbericht zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ (Urschrift 21.03.2025), Bauleitplanung; kein Förderprogramm."
       }
     ],
     "sources": [
@@ -68436,6 +68452,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss.",
         "evidenceUrl": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1"
+      },
+      {
+        "url": "oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Umweltbericht zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ (Urschrift 21.03.2025), Bauleitplanung; kein Förderprogramm.",
+        "evidenceUrl": "https://www.oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ"
       }
     ]
   },
@@ -72989,8 +73011,8 @@
   {
     "regionId": "07334011",
     "name": "Hördt",
-    "checkedAt": "2026-09-27T16:50:00Z",
-    "recheckAt": "2026-12-26T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Hördt (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
@@ -72998,7 +73020,8 @@
       "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
       "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
       "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
-      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -73016,6 +73039,10 @@
       {
         "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
         "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "finding": "Am 14.10.2026 vollständig gelesen: „Solarnutzung in Neubaugebieten der Verbandsgemeinde Rülzheim“ (September 2022), Planungspapier zu Solarnutzung in Bebauungsplänen; erwähnt nur eine damals geplante Bundesförderung, kein kommunaler Zuschuss für Haushalte."
       }
     ],
     "sources": [
@@ -73030,6 +73057,12 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
         "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 vollständig gelesen: „Solarnutzung in Neubaugebieten der Verbandsgemeinde Rülzheim“ (September 2022), Planungspapier zu Solarnutzung in Bebauungsplänen; erwähnt nur eine damals geplante Bundesförderung, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf"
       }
     ]
   },
@@ -73083,8 +73116,8 @@
   {
     "regionId": "07334016",
     "name": "Leimersheim",
-    "checkedAt": "2026-09-27T16:50:00Z",
-    "recheckAt": "2026-12-26T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Leimersheim (VG Rülzheim, Landkreis Germersheim): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Weder die Verbandsgemeinde noch eine ihrer vier Ortsgemeinden führt auf ruelzheim.de ein Förderprogramm; die Klimaschutz-Seiten nennen nur Bundesmittel für die Verwaltung selbst, die Pressebereiche der Ortsgemeinden kein Energieprogramm. Der Landkreis Germersheim hat kein Kreisprogramm (einziges Programm im Kreis ist das der Stadt Germersheim, das nur dort gilt). Ein adversarialer Prüfer fand am selben Tag ebenfalls nichts, auch nicht bei den Gemeindewerken (heute Gemeindewerke Südpfalz); deren frühere Unterseite „Energiesparprojekte“ war nicht erreichbar.",
@@ -73092,7 +73125,8 @@
       "Seiten „Gründungen & Fördermittel“, „Klima- und Hochwasserschutz“ mit allen Unterseiten und die Bauherren-Handreichung der VG Rülzheim am 27.09.2026 live gelesen",
       "Pressebereiche der VG und der Ortsgemeinden Hördt, Kuhardt, Leimersheim und Rülzheim auf Förderthemen durchgesehen",
       "Websuche nach Förderprogrammen für Photovoltaik/Balkonkraftwerke in Rülzheim, Hördt, Kuhardt, Leimersheim und im Landkreis Germersheim sowie site:ruelzheim.de",
-      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm"
+      "Adversarialer Prüfer (27.09.2026): Ratsinformationssystem, Kreis Germersheim, Klimaschutzportal, Gemeindewerke Südpfalz — kein Programm",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -73110,6 +73144,10 @@
       {
         "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
         "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "finding": "Am 14.10.2026 vollständig gelesen: „Solarnutzung in Neubaugebieten der Verbandsgemeinde Rülzheim“ (September 2022), Planungspapier zu Solarnutzung in Bebauungsplänen; erwähnt nur eine damals geplante Bundesförderung, kein kommunaler Zuschuss für Haushalte."
       }
     ],
     "sources": [
@@ -73124,6 +73162,12 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
         "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 vollständig gelesen: „Solarnutzung in Neubaugebieten der Verbandsgemeinde Rülzheim“ (September 2022), Planungspapier zu Solarnutzung in Bebauungsplänen; erwähnt nur eine damals geplante Bundesförderung, kein kommunaler Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf"
       }
     ]
   },
@@ -73293,14 +73337,15 @@
   {
     "regionId": "07338021",
     "name": "Otterstadt",
-    "checkedAt": "2026-10-13T20:20:54Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
     "conclusion": "Otterstadt fördert nach seiner Umweltförderrichtlinie Photovoltaik und Balkonkraftwerke (10 %, höchstens 500 €), Batteriespeicher (10 %, höchstens 250 €) und den Umstieg einer 10–30 Jahre alten Öl- oder Gasheizung auf erneuerbare Wärme (10 %, höchstens 500 €); der Antrag kommt bis drei Monate NACH Auftragserteilung. Aufgenommen als otterstadt-umweltfoerderung. Mittel werden jährlich im Haushalt bereitgestellt; eine Mittelzahl für 2026 nennt keine Seite.",
     "searches": [
       "Förderseite der VG Rheinauen am 27.09.2026 live gelesen",
-      "Richtlinie (Scan, Seite für Seite) und Maßnahmenübersicht am 27.09.2026 vollständig gelesen"
+      "Richtlinie (Scan, Seite für Seite) und Maßnahmenübersicht am 27.09.2026 vollständig gelesen",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -73322,6 +73367,10 @@
       {
         "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
         "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Zuschussseite Otterstadt: Umweltförderrichtlinien (bereits im Katalog). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "finding": "Am 14.10.2026 geladen: byte-identisch (gleiche Prüfsumme) mit der Maßnahmenübersicht ?cid=kjy (Stand 04.12.2024, PV/Balkonkraftwerk 10 %, max. 500 €; Speicher 10 %, max. 250 €); bereits als otterstadt-umweltfoerderung im Katalog, Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -73336,6 +73385,12 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Zuschussseite der Ortsgemeinde Otterstadt (dieselbe Umweltförderrichtlinie).",
         "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      },
+      {
+        "url": "vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 geladen: byte-identisch (gleiche Prüfsumme) mit der Maßnahmenübersicht ?cid=kjy (Stand 04.12.2024, PV/Balkonkraftwerk 10 %, max. 500 €; Speicher 10 %, max. 250 €); bereits als otterstadt-umweltfoerderung im Katalog, Ergebnis unverändert.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv"
       }
     ]
   },
@@ -75035,8 +75090,8 @@
   {
     "regionId": "07335026",
     "name": "Mehlingen",
-    "checkedAt": "2026-09-27T22:05:00Z",
-    "recheckAt": "2026-12-26T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Mehlingen (VG Enkenbach-Alsenborn, Landkreis Kaiserslautern): keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 27.09.2026). Die Adresse mehlingen.de leitet auf die Website der Verbandsgemeinde um; deren Förderseite nennt nur Programme für Kommunen, in der Sitemap stehen zu Mehlingen nur Bebauungspläne eines Freiflächen-Solarparks. Der Landkreis Kaiserslautern hat kein Privatprogramm.",
@@ -75044,7 +75099,8 @@
       "Förderseite, Photovoltaik- und Gebäudeeffizienzseite der VG Enkenbach-Alsenborn am 27.09.2026 im Browser gelesen",
       "Sitemap enkenbach-alsenborn.de (956 Adressen) nach Förder-/Solar-/Energiebegriffen durchsucht (27.09.2026)",
       "Websuche nach Zuschuss Balkonkraftwerk/Photovoltaik je Ortsgemeinde (28.09.2026, ohne Treffer)",
-      "http://www.mehlingen.de/ am 27.09.2026 abgerufen: Weiterleitung auf www.enkenbach-alsenborn.de"
+      "http://www.mehlingen.de/ am 27.09.2026 abgerufen: Weiterleitung auf www.enkenbach-alsenborn.de",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -75062,6 +75118,10 @@
       {
         "url": "https://www.kaiserslautern-kreis.de/",
         "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben",
+        "finding": "Am 14.10.2026 gelesen: Meldung vom 01.10.2026, Verbandsgemeindewerke warnen vor Smart-Meter-Werbebriefen eines privaten Anbieters; kein Förderprogramm."
       }
     ],
     "sources": [
@@ -75070,6 +75130,12 @@
         "disposition": "reviewed",
         "reason": "Nationale Klimaschutzinitiative — Förderung für Kommunen, nicht für private Haushalte.",
         "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      },
+      {
+        "url": "enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Meldung vom 01.10.2026, Verbandsgemeindewerke warnen vor Smart-Meter-Werbebriefen eines privaten Anbieters; kein Förderprogramm.",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben"
       }
     ]
   },
@@ -77570,8 +77636,8 @@
   {
     "regionId": "03254013",
     "name": "Eime",
-    "checkedAt": "2026-09-28T06:18:00Z",
-    "recheckAt": "2026-12-27T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Eime (Samtgemeinde Leinebergland, Landkreis Hildesheim): keine laufende Förderung der Gemeinde, der Samtgemeinde oder des Kreises für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 28.09.2026). Die Fundstelle betrifft Städtebauförderung für die Innenstadt Gronau; die Samtgemeinde bietet nur Beratung (Wärmepumpeninitiative, Solarkataster). Das Balkonkraftwerk-Programm des Landkreises Hildesheim lief vom 04.07. bis 31.12.2023 und ist beendet.",
@@ -77579,7 +77645,8 @@
       "Sofortprogramm-Seite und Klimaschutz-Rubrik der Samtgemeinde am 28.09.2026 gelesen",
       "Volltextsuche sg-leinebergland.de nach Balkonkraftwerk, Photovoltaik, Zuschuss, Wärmepumpe, Förderprogramm (Gegenprobe Kita)",
       "Balkonkraftwerk-Förderung Landkreis Hildesheim bei der Klimaschutzagentur live gelesen",
-      "Gemeindeschlüssel gegen das Melderegister geprüft"
+      "Gemeindeschlüssel gegen das Melderegister geprüft",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -77597,6 +77664,10 @@
       {
         "url": "https://klimaschutzagentur-hildesheim.de/balkonkraftwerke/",
         "finding": "28.09.2026 live gelesen: Förderung von Balkonkraftwerken im Landkreis Hildesheim, Zeitraum 04.07.2023 bis 31.12.2023, 150.000 €, max. 200 € je Haushalt; „Eine Antragstellung ist aufgrund der Beendigung des Förderprogramms zum 31.12.2023 nicht mehr möglich.“ Beendet, nicht im Katalog — als historischer Kandidat vorgemerkt."
+      },
+      {
+        "url": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien",
+        "finding": "Am 14.10.2026 im Browser gelesen: Die Seite zeigt das Freiflächen-PV-Konzept der Samtgemeinde (Ratsbeschluss 22.08.2024, Steuerung von Solarparks, Eime bis 2 % der Fläche); kein Zuschuss für Haushalte."
       }
     ],
     "sources": [
@@ -77611,6 +77682,12 @@
         "disposition": "reviewed",
         "reason": "Am 28.09.2026 geprüft: Formular „Barriere melden“ zur selben Seite, liefert nur die Wahl-Vorschaltseite; keine eigene Förderseite, erledigt durch die gelesene Seite zum Sofortprogramm.",
         "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/foerderprojekte/sofortprogramm-perspektive-innenstadt/"
+      },
+      {
+        "url": "sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 im Browser gelesen: Die Seite zeigt das Freiflächen-PV-Konzept der Samtgemeinde (Ratsbeschluss 22.08.2024, Steuerung von Solarparks, Eime bis 2 % der Fläche); kein Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.sg-leinebergland.de/umwelt-bauen/klimaschutz-und-erneuerbare-energien"
       }
     ]
   },
@@ -85962,13 +86039,14 @@
   {
     "regionId": "14625490",
     "name": "Radibor",
-    "checkedAt": "2026-10-05T12:55:42Z",
-    "recheckAt": "2026-12-30T08:00:00Z",
+    "checkedAt": "2026-10-14T10:09:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
     "conclusion": "Die Gemeinde Radibor führt kein Förderprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; ihre Energieseite betrifft Wärmeplanung und kommunale Projekte.",
     "searches": [
-      "radibor.de vollständiges Seitenverzeichnis (92 Adressen) nach Energie-/Förderbegriffen durchsucht"
+      "radibor.de vollständiges Seitenverzeichnis (92 Adressen) nach Energie-/Förderbegriffen durchsucht",
+      "14.10.2026: neu erfasste Quelle(n) im Original gelesen, Ergebnis unverändert"
     ],
     "evidence": [
       {
@@ -85990,6 +86068,10 @@
       {
         "url": "https://radibor.de/files/media/gemeinde/2025-03-24_Kurzzusammenfassung.pdf",
         "finding": "Am 05.10.2026 gelesen: Klimaschutzkonzept 2025 mit geplanter Solar-Dach-Kampagne; kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.radibor.de/files/media/gemeinde/IKK-Radibor_Finale%20Fassung.pdf",
+        "finding": "Am 14.10.2026 durchsucht: Integriertes Klimaschutzkonzept der Gemeinde Radibor (Langfassung); nennt Landes-/Bundesförderung und kommunale Vorhaben (u. a. Großspeicher), keinen Zuschuss der Gemeinde für Haushalte."
       }
     ],
     "sources": [
@@ -86010,6 +86092,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Klimaschutzkonzept 2025 mit geplanter Solar-Dach-Kampagne; kein Zuschussprogramm.",
         "evidenceUrl": "https://radibor.de/files/media/gemeinde/2025-03-24_Kurzzusammenfassung.pdf"
+      },
+      {
+        "url": "radibor.de/files/media/gemeinde/IKK-Radibor_Finale%20Fassung.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 durchsucht: Integriertes Klimaschutzkonzept der Gemeinde Radibor (Langfassung); nennt Landes-/Bundesförderung und kommunale Vorhaben (u. a. Großspeicher), keinen Zuschuss der Gemeinde für Haushalte.",
+        "evidenceUrl": "https://www.radibor.de/files/media/gemeinde/IKK-Radibor_Finale%20Fassung.pdf"
       }
     ]
   },
@@ -93619,6 +93707,172 @@
         "disposition": "reviewed",
         "reason": "Kontaktformular-Link (Weiterempfehlen), kein Inhalt; bereits als entfernte Quelle markiert.",
         "evidenceUrl": "https://www.amt-rantzau.de/seite/731897/webseitenf%C3%B6rderprogramm-amt-rantzau-vernetzt.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01056001",
+    "name": "Appen",
+    "checkedAt": "2026-10-14T10:20:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Appen (Amt Geest und Marsch Südholstein, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. appen.de leitet auf die Amtsseite um; das Fördermittelmanagement des Amtes listet nur Vorhaben, für die die Gemeinden selbst Geld erhalten. Der einzige Treffer der Amtssuche zu Balkonanlagen ist der Text einer gelöschten Seite, die auf das 2023 beendete Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ verwies (im Katalog als eingestellt). Kreisweit gilt nur der katalogisierte Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv). Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche amt-geest-und-marsch-suedholstein.de: „Balkonkraftwerk“ (0), „Balkonanlagen“ (1: gelöschte Seite Externe Förderprogramme), „Photovoltaik“ (17: Infoabend 2023, Wärmeplanungen, gelöschte Seite), „Speicher“ und „Zuschuss“ (Wärmeplanung, Schule, Kita, Hochwasserschutz) — Treffer gesichtet",
+      "Klimaschutzseite und EnergiesparChecks des Amtes gelesen",
+      "Archiv (Wayback-Verzeichnis) der Amtsseite nach Förder-/Klimaseiten durchsucht; Landesrichtlinien Balkonanlagen und nicht-fossile Heizsysteme gelesen",
+      "appen.de aufgerufen: Weiterleitung auf die Amtsseite",
+      "Katalog: Kreis Pinneberg nur Gründach-Zuschuss; Landesprogramm Schleswig-Holstein eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Amtsverwaltung (Unterkünfte für Geflüchtete) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Appen (Bauerngarten, Mensa, Kita, Spielplatz, Sportplatz, Radservice) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Groß Nordende (Spielplatz, Ortsentwicklungskonzept) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haselau (Spielplatz, Kita) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haseldorf (Feuerwehr, Kita, E-Ladesäule, Hafen) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/unser-amt/umwelt-klima/energie-klimaschutzmanagement/energisparchecks",
+        "finding": "Am 14.10.2026 gelesen: Stabsstelle Klimaschutz des Amtes bietet kostenlose Online-Rechner (HeizCheck, PhotovoltaikCheck, WärmepumpenCheck, FördermittelCheck) und Energieberatung, keinen Zuschuss."
+      },
+      {
+        "url": "https://web.archive.org/web/20241208175927/https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/externe-foerderprogramme",
+        "finding": "Archivfassung 08.12.2024 (live heute HTTP 404) der Amtsseite „Externe Förderprogramme“: verlinkte KfW-Programme, den Kreis-Zuschuss MEHR GRÜN und die Landesrichtlinien „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlagen, nicht-fossile Heizsysteme; „Das Land gewährt Zuwendungen“). Das Landesprogramm ist seit 16.11.2023 eingestellt und als sh-balkon-/sh-waermepumpe-klimaschutz-bub im Katalog; die Amtssuche findet den alten Seitentext noch."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Amtsverwaltung (Unterkünfte für Geflüchtete) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Appen (Bauerngarten, Mensa, Kita, Spielplatz, Sportplatz, Radservice) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Groß Nordende (Spielplatz, Ortsentwicklungskonzept) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haselau (Spielplatz, Kita) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haseldorf (Feuerwehr, Kita, E-Ladesäule, Hafen) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf"
+      }
+    ]
+  },
+  {
+    "regionId": "01056024",
+    "name": "Heist",
+    "checkedAt": "2026-10-14T10:20:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heist (Amt Geest und Marsch Südholstein, Kreis Pinneberg) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. gemeinde-heist.de leitet auf die Amtsseite um; das Fördermittelmanagement des Amtes listet nur Vorhaben, für die die Gemeinden selbst Geld erhalten. Der einzige Treffer der Amtssuche zu Balkonanlagen ist der Text einer gelöschten Seite, die auf das 2023 beendete Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ verwies (im Katalog als eingestellt). Kreisweit gilt nur der katalogisierte Gründach-Zuschuss mit PV-Aufschlag (pinneberg-gruendach-pv). Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche amt-geest-und-marsch-suedholstein.de: „Balkonkraftwerk“ (0), „Balkonanlagen“ (1: gelöschte Seite Externe Förderprogramme), „Photovoltaik“ (17: Infoabend 2023, Wärmeplanungen, gelöschte Seite), „Speicher“ und „Zuschuss“ (Wärmeplanung, Schule, Kita, Hochwasserschutz) — Treffer gesichtet",
+      "Klimaschutzseite und EnergiesparChecks des Amtes gelesen",
+      "Archiv (Wayback-Verzeichnis) der Amtsseite nach Förder-/Klimaseiten durchsucht; Landesrichtlinien Balkonanlagen und nicht-fossile Heizsysteme gelesen",
+      "gemeinde-heist.de (heist-online.de ist eine Privatseite) aufgerufen: Weiterleitung auf die Amtsseite",
+      "Katalog: Kreis Pinneberg nur Gründach-Zuschuss; Landesprogramm Schleswig-Holstein eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Amtsverwaltung (Unterkünfte für Geflüchtete) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Appen (Bauerngarten, Mensa, Kita, Spielplatz, Sportplatz, Radservice) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Groß Nordende (Spielplatz, Ortsentwicklungskonzept) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haselau (Spielplatz, Kita) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "finding": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haseldorf (Feuerwehr, Kita, E-Ladesäule, Hafen) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "finding": "Am 14.10.2026 gelesen: Flyer „Mehr Grün für den Kreis Pinneberg“ (Dachbegrünung, Hausbäume); der PV-Aufschlag auf den Gründach-Zuschuss steht bereits als pinneberg-gruendach-pv im Katalog, die Anlage selbst wird nicht bezuschusst."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/unser-amt/umwelt-klima/energie-klimaschutzmanagement/energisparchecks",
+        "finding": "Am 14.10.2026 gelesen: Stabsstelle Klimaschutz des Amtes bietet kostenlose Online-Rechner (HeizCheck, PhotovoltaikCheck, WärmepumpenCheck, FördermittelCheck) und Energieberatung, keinen Zuschuss."
+      },
+      {
+        "url": "https://web.archive.org/web/20241208175927/https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/externe-foerderprogramme",
+        "finding": "Archivfassung 08.12.2024 (live heute HTTP 404) der Amtsseite „Externe Förderprogramme“: verlinkte KfW-Programme, den Kreis-Zuschuss MEHR GRÜN und die Landesrichtlinien „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlagen, nicht-fossile Heizsysteme; „Das Land gewährt Zuwendungen“). Das Landesprogramm ist seit 16.11.2023 eingestellt und als sh-balkon-/sh-waermepumpe-klimaschutz-bub im Katalog; die Amtssuche findet den alten Seitentext noch."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Amtsverwaltung (Unterkünfte für Geflüchtete) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Appen (Bauerngarten, Mensa, Kita, Spielplatz, Sportplatz, Radservice) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Groß Nordende (Spielplatz, Ortsentwicklungskonzept) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haselau (Spielplatz, Kita) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Förderprojekte der Gemeinde Haseldorf (Feuerwehr, Kita, E-Ladesäule, Hafen) — Projekte, für die die Kommunen selbst Fördermittel erhalten; kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 14.10.2026 gelesen: Flyer „Mehr Grün für den Kreis Pinneberg“ (Dachbegrünung, Hausbäume); der PV-Aufschlag auf den Gründach-Zuschuss steht bereits als pinneberg-gruendach-pv im Katalog, die Anlage selbst wird nicht bezuschusst.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf"
       }
     ]
   }
