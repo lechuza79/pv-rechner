@@ -681,7 +681,11 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Stellungnahme Bundesrat/Gegenäußerung). Kein Beschluss. Zustand unverändert.
   // 10.10.2026: DIP-Suche zu 21/7867 im Original gelesen: Beratungsstand
   //   „Überwiesen", letzter Schritt weiter 30.09.2026. Zustand unverändert.
-  geprueftIso: "2026-10-10",
+  // 14.10.2026: DIP-Suche zu 21/7867 im Original gelesen: Beratungsstand
+  //   „Überwiesen", letzter Schritt weiter 30.09.2026, keine Beschlussempfehlung.
+  //   Fachpresse (pv magazine, 07.10.) erwartet die 2./3. Lesung in dieser
+  //   Sitzungswoche — nur Anlass zum Nachsehen, kein Zustand.
+  geprueftIso: "2026-10-14",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

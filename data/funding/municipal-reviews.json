@@ -5070,7 +5070,7 @@
   {
     "regionId": "01059045",
     "name": "Kappeln",
-    "checkedAt": "2026-09-20T04:20:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-09-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
     "outcome": "keine-passende-foerderung",
@@ -5090,6 +5090,14 @@
       {
         "url": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1",
         "finding": "„Dieser Link ist zur Zeit nicht erreichbar. Eine Meldung an den Administratior wurde versendet.“"
+      },
+      {
+        "url": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869=",
+        "finding": "Im Original gelesen (13.10.2026): Vorlage für den Bauausschuss (2023) über das Landesprogramm Schleswig-Holstein für Balkonanlagen (bis 200 €, Antrag im Serviceportal des Landes); kein Programm der Stadt Kappeln. Beleg: „Ziel: Ab 16. Januar können Privathaushalte Zuschüsse für Photovoltaik-Balkonanlagen online beantragen“."
+      },
+      {
+        "url": "https://www.kappeln.de/media/custom/2989_967_1.PDF?1676982946=",
+        "finding": "Im Original gelesen (13.10.2026): Vorlage für den Bauausschuss (2023) über das Landesprogramm Schleswig-Holstein für nicht-fossile Heizungen; kein Programm der Stadt Kappeln, das Landesprogramm ist längst beendet. Beleg: „Für Wärmepumpen ist eine Förderung von bis zu 2000 Euro möglich“."
       }
     ],
     "sources": [
@@ -5110,6 +5118,18 @@
         "disposition": "reviewed",
         "reason": "Weiterleitung mit totem Ziel.",
         "evidenceUrl": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1"
+      },
+      {
+        "url": "kappeln.de/media/custom/2989_966_1.PDF?1676982869=",
+        "disposition": "reviewed",
+        "reason": "Vorlage für den Bauausschuss (2023) über das Landesprogramm Schleswig-Holstein für Balkonanlagen (bis 200 €, Antrag im Serviceportal des Landes); kein Programm der Stadt Kappeln.",
+        "evidenceUrl": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869="
+      },
+      {
+        "url": "kappeln.de/media/custom/2989_967_1.PDF?1676982946=",
+        "disposition": "reviewed",
+        "reason": "Vorlage für den Bauausschuss (2023) über das Landesprogramm Schleswig-Holstein für nicht-fossile Heizungen; kein Programm der Stadt Kappeln, das Landesprogramm ist längst beendet.",
+        "evidenceUrl": "https://www.kappeln.de/media/custom/2989_967_1.PDF?1676982946="
       }
     ]
   },
@@ -5182,7 +5202,7 @@
   {
     "regionId": "01059053",
     "name": "Kropp",
-    "checkedAt": "2026-09-19T20:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -5210,6 +5230,10 @@
       {
         "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
         "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      },
+      {
+        "url": "https://www.kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderung des Kindergartens Erfde e.V. – Gemeinde Kropp. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -5298,7 +5322,7 @@
   {
     "regionId": "01059058",
     "name": "Meggerdorf",
-    "checkedAt": "2026-09-19T20:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -5326,6 +5350,10 @@
       {
         "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
         "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      },
+      {
+        "url": "https://www.kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderung des Kindergartens Erfde e.V. – Gemeinde Kropp. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -6919,7 +6947,7 @@
   {
     "regionId": "01059178",
     "name": "Westerholz",
-    "checkedAt": "2026-09-19T20:18:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
     "searches": [
@@ -6951,6 +6979,10 @@
       {
         "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
         "finding": "Kreisseite gibt nur das am 16.11.2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Langballig: Detail. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -9103,7 +9135,7 @@
   {
     "regionId": "01061110",
     "name": "Wewelsfleth",
-    "checkedAt": "2026-09-18T14:09:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -9133,6 +9165,10 @@
       {
         "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
         "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Wilstermarsch: Detail. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -10976,7 +11012,7 @@
   {
     "regionId": "03251037",
     "name": "Stuhr",
-    "checkedAt": "2026-10-09T14:07:06Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf stuhr.de — dieselbe Programmseite unter zwei Adressen.",
     "outcome": "programme-geprueft",
@@ -11000,6 +11036,10 @@
       {
         "url": "https://www.stuhr.de/portal/seiten/klimaschutzfoerderung-2026-900001215-21780.html?naviID=900000569&brotID=900000569&rubrik=4000016",
         "finding": "Am 09.10.2026 gelesen: „Die im Jahre 2026 … zur Verfügung gestellten Fördergelder für individuelle Klimaschutzmaßnahmen sind vollständig aufgebraucht.“ Deckt sich mit stuhr-klimaschutz-speicher (ausgeschöpft). Die neu erfasste Adresse ist dieselbe Portalseite mit maskiertem Und-Zeichen."
+      },
+      {
+        "url": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Klimaschutzförderung 2026 (Seite meldet unverändert: Mittel aufgebraucht, Fortsetzung 2027 entscheidet der Rat — deckungsgleich mit stuhr-klimaschutz-speicher). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -11506,7 +11546,7 @@
   {
     "regionId": "03255023",
     "name": "Holzminden",
-    "checkedAt": "2026-09-29T14:05:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -11530,6 +11570,10 @@
       {
         "url": "https://www.holzminden.de/portal/seiten/solarfair-900000490-25610.html?brotID=900000333&naviID=900000333&rubrik=900000006",
         "finding": "29.09.2026: Alte Portal-Adresse derselben SolarFair-Seite, identischer Inhalt."
+      },
+      {
+        "url": "https://www.holzminden.de/bauen-wirtschaft/umwelt",
+        "finding": "Im Original gelesen (13.10.2026): Umweltseite der Stadt verweist auf das bekannte SolarFair-Programm (200 € für Balkonkraftwerke, nur Wohngeld-/Bürgergeld-Beziehende); deckungsgleich mit dem Katalogeintrag. Beleg: „Dann können Sie 200 Euro für ein Balkonkraftwerk bekommen“."
       }
     ],
     "sources": [
@@ -11550,6 +11594,12 @@
         "disposition": "reviewed",
         "reason": "Alte Portal-Adresse derselben SolarFair-Seite, identischer Inhalt.",
         "evidenceUrl": "https://www.holzminden.de/portal/seiten/solarfair-900000490-25610.html?brotID=900000333&naviID=900000333&rubrik=900000006"
+      },
+      {
+        "url": "holzminden.de/bauen-wirtschaft/umwelt",
+        "disposition": "reviewed",
+        "reason": "Umweltseite der Stadt verweist auf das bekannte SolarFair-Programm (200 € für Balkonkraftwerke, nur Wohngeld-/Bürgergeld-Beziehende); deckungsgleich mit dem Katalogeintrag.",
+        "evidenceUrl": "https://www.holzminden.de/bauen-wirtschaft/umwelt"
       }
     ],
     "outcome": "programme-geprueft",
@@ -11897,7 +11947,7 @@
   {
     "regionId": "03256014",
     "name": "Hoya",
-    "checkedAt": "2026-09-24T04:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Hoya 5 Fundstellen, alle auf dem gemeinsamen Auftritt der Samtgemeinde Grafschaft Hoya.",
     "outcome": "keine-passende-foerderung",
@@ -11926,6 +11976,10 @@
       {
         "url": "https://www.grafschaft-hoya.de/portal/seiten/zuschuesse-905000040-21520.html",
         "finding": "Am 24.09.2026 gelesen: „Es gibt diverse Zuschüsse für vielfältige Projekte. Bitte schauen Sie diesbezüglich auf den nachfolgenden Seiten … Weiter unten finden Sie weitere Ansprechpartner, die eigene Förderprogramme anbieten“ — verwiesen wird auf NBank, KfW und BAFA, also Land und Bund."
+      },
+      {
+        "url": "https://www.grafschaft-hoya.de/portal/seiten/foerderung-von-existenzgruendungen-und-reduzierung-von-gewerbeleerstand-905000454-21520.html?rubrik=905000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 4 Seite(n)): Förderung von Existenzgründungen und Reduzierung von Gewerbeleerstand | Samtgemeinde Grafs; Förderung von Dachbegrünungen | Samtgemeinde Grafschaft Hoya; Stärkung der ärztlichen Versorgung durch Förderung von Niederlassungen | Samtgemeinde Graf; Pflanzenzuschuss | Samtgemeinde Grafschaft Hoya. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12314,7 +12368,7 @@
   {
     "regionId": "03353019",
     "name": "Drestedt",
-    "checkedAt": "2026-09-23T08:00:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -12330,6 +12384,10 @@
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
         "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Förderung der Metropolregion Bremen-Oldenburg im Nordwesten beantragen | Samtgemeinde Holl; Förderung der Energieberatung für Wohngebäude beantragen | Samtgemeinde Hollenstedt. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12350,7 +12408,7 @@
   {
     "regionId": "03353028",
     "name": "Halvesbostel",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -12370,6 +12428,10 @@
       {
         "url": "https://hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&auswahl=0",
         "finding": "Am 05.10.2026 gelesen: Zuständigkeitsfinder: Bundesförderung Energieberatung; kein kommunales Programm."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderung der Metropolregion Bremen-Oldenburg im Nordwesten beantragen | Samtgemeinde Holl. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12390,7 +12452,7 @@
   {
     "regionId": "03353039",
     "name": "Moisburg",
-    "checkedAt": "2026-09-23T08:00:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -12406,6 +12468,10 @@
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
         "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Förderung der Energieberatung für Wohngebäude beantragen | Samtgemeinde Hollenstedt; Förderung der Metropolregion Bremen-Oldenburg im Nordwesten beantragen | Samtgemeinde Holl. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12457,7 +12523,7 @@
   {
     "regionId": "03354004",
     "name": "Dannenberg (Elbe)",
-    "checkedAt": "2026-09-21T14:40:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12497,6 +12563,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Förderschwerpunkte & Bedingungen - Häufige Fragen | Samtgemeinde Elbtalaue; Entwicklungsplanung & Fördermaßnahmen | Samtgemeinde Elbtalaue; Regionalentwicklung | Samtgemeinde Elbtalaue; Datei nicht gefunden | Samtgemeinde Elbtalaue (HTTP 404); Von der Idee zur Förderung | Samtgemeinde Elbtalaue. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12541,7 +12611,7 @@
   {
     "regionId": "03354006",
     "name": "Göhrde",
-    "checkedAt": "2026-10-05T11:34:38Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12582,6 +12652,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Datei nicht gefunden | Samtgemeinde Elbtalaue (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12626,7 +12700,7 @@
   {
     "regionId": "03354008",
     "name": "Gusborn",
-    "checkedAt": "2026-09-21T14:40:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12666,6 +12740,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 6 Seite(n)): Von der Idee zur Förderung | Samtgemeinde Elbtalaue; Entwicklungsplanung & Fördermaßnahmen | Samtgemeinde Elbtalaue; Förderschwerpunkte & Bedingungen - Häufige Fragen | Samtgemeinde Elbtalaue; Regionalentwicklung | Samtgemeinde Elbtalaue; Barriere melden | Samtgemeinde Elbtalaue; Datei nicht gefunden | Samtgemeinde Elbtalaue (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12710,7 +12788,7 @@
   {
     "regionId": "03354009",
     "name": "Hitzacker (Elbe)",
-    "checkedAt": "2026-09-21T14:40:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12750,6 +12828,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Regionalentwicklung | Samtgemeinde Elbtalaue; Entwicklungsplanung & Fördermaßnahmen | Samtgemeinde Elbtalaue; Förderschwerpunkte & Bedingungen - Häufige Fragen | Samtgemeinde Elbtalaue; Von der Idee zur Förderung | Samtgemeinde Elbtalaue; Datei nicht gefunden | Samtgemeinde Elbtalaue (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12794,7 +12876,7 @@
   {
     "regionId": "03354011",
     "name": "Jameln",
-    "checkedAt": "2026-10-09T14:07:06Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -12839,6 +12921,10 @@
       {
         "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
         "finding": "Geänderte LEADER-Seite am 09.10.2026 gelesen: Projektförderung 48–65 % bis 150.000 € mit Vorfinanzierung und öffentlicher Kofinanzierung — kein Haushaltszuschuss für PV, Speicher, Balkon oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Entwicklungsplanung & Fördermaßnahmen | Samtgemeinde Elbtalaue. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -12972,7 +13058,7 @@
   {
     "regionId": "03354014",
     "name": "Langendorf",
-    "checkedAt": "2026-10-05T11:34:38Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -13013,6 +13099,10 @@
       {
         "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
         "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Datei nicht gefunden | Samtgemeinde Elbtalaue (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -13460,7 +13550,7 @@
   {
     "regionId": "03355014",
     "name": "Deutsch Evern",
-    "checkedAt": "2026-09-21T02:15:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -13478,6 +13568,10 @@
       {
         "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
         "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      },
+      {
+        "url": "https://www.ilmenau.de/de/buergerservice/planen-und-bauen/stadtplanung-stadtentwicklung-und-stadtsanierung/foerderprojekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprojekte / Ilmenau - Goethe- und Universitätsstadt. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -13538,7 +13632,7 @@
   {
     "regionId": "03355016",
     "name": "Embsen",
-    "checkedAt": "2026-09-21T02:15:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -13556,6 +13650,10 @@
       {
         "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
         "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/themenseite/home/themenseite/gemeinde-embsen/gemeinde-embsen-sichert-hausaerztliche-versorgung.aspx",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Samtgemeinde Ilmenau - 404-Fehlerseite (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -13756,7 +13854,7 @@
   {
     "regionId": "03355024",
     "name": "Melbeck",
-    "checkedAt": "2026-10-09T14:07:06Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -13778,6 +13876,10 @@
       {
         "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/ResourceImage.aspx?raid=26660",
         "finding": "Am 09.10.2026 erneut abgerufen: weiterhin HTTP 404 (falsch aufgelöster Pfad); die Richtlinie liegt unter der Wurzel der Domain, bisheriges Urteil unverändert."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Förderungen der Samtgemeinde Ilmenau (nur Stecker-Solar-Richtlinie, bereits im Katalog). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -15464,7 +15566,7 @@
   {
     "regionId": "05154040",
     "name": "Kranenburg",
-    "checkedAt": "2026-09-23T14:25:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich die Förderrichtlinie auf kranenburg.de.",
     "outcome": "programme-geprueft",
@@ -15489,6 +15591,10 @@
       {
         "url": "https://www.kranenburg.de/planen-bauen-umwelt/denkmalschutz-und-denkmalpflege/foerderprogramme",
         "finding": "„Förderprogramme“ der Unteren Denkmalbehörde Kranenburg, am 23.09.2026 gelesen: pauschale und projektbezogene Denkmalförderung von Land und Gemeinde für Instandsetzung und Sanierung von Baudenkmälern. Kein Bezug zu Photovoltaik, Speicher oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kranenburg.de/planen-bauen-umwelt/bauen-und-wohnen/foerderangebote",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderangebote Kranenburg (Balkonkraftwerk 50 %/max. 200 €; Katalog trägt bereits die Mittel 2026). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -15521,7 +15627,7 @@
   {
     "regionId": "05162016",
     "name": "Kaarst",
-    "checkedAt": "2026-09-21T20:28:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -15551,6 +15657,10 @@
       {
         "url": "https://www.kaarst.de/suche?tx_solr%5Bq%5D=W%C3%A4rmepumpe",
         "finding": "Suche Wärmepumpe/Batteriespeicher/Photovoltaik: Infoabende und Seminare, kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderübersicht Kaarst (Stecker-PV, Begrünung; unverändert). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -15767,7 +15877,7 @@
   {
     "regionId": "05316000",
     "name": "Leverkusen",
-    "checkedAt": "2026-09-20T22:15:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -15790,6 +15900,10 @@
       {
         "url": "https://www.leverkusen.de/stadt-entwickeln/umwelt/foerderprojekte-klimaschutz",
         "finding": "„Mithilfe verschiedener Förderprogramme der Europäischen Union, des Bundes und des Landes werden in der Stadt Leverkusen auch Projekte in Sachen Klimaschutz finanziert“; genannt werden Baumpflanzungen aus dem Aktionsprogramm Natürlicher Klimaschutz. Kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.leverkusen.de/stadt-entwickeln/planen-bauen/foerderprojekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprojekte | Stadt Leverkusen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -15909,7 +16023,7 @@
   {
     "regionId": "05382060",
     "name": "Siegburg",
-    "checkedAt": "2026-09-18T00:27:29Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -15922,6 +16036,10 @@
       {
         "url": "https://www.siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag",
         "finding": "„Balkonbegrünungen oder Gartenbegrünungen mit Pflanzen bzw. Kriterien aus der von der Stadt veröffentlichten Liste“ — die Förderung betrifft Begrünung, nicht Energieerzeugung; im Erfolgsfall gibt es einen SiegburgGutschein."
+      },
+      {
+        "url": "https://www.siegburg.de/feedback",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Feedback | Kreisstadt Siegburg. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -16287,7 +16405,7 @@
   {
     "regionId": "06634005",
     "name": "Fritzlar",
-    "checkedAt": "2026-09-20T22:15:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -16319,6 +16437,10 @@
       {
         "url": "https://www.fritzlar.de/rathaus-politik/veroeffentlichungen/pressemitteilungen/balkonkraftwerke/",
         "finding": "„… werden mit 100 Euro Zuschuss für Eigentümer oder Mieter durch die Stadt Fritzlar gefördert.“ Dieselbe Leistung wie auf der Programmseite, ohne abweichende Angabe."
+      },
+      {
+        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Balkonkraftwerk mit Speicher 100 €, Laufzeit 2026–2027 (deckungsgleich mit fritzlar-balkonkraftwerke-speicher); Calisthenics-Anlage | Stadt Fritzlar. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -16369,7 +16491,7 @@
   {
     "regionId": "06635001",
     "name": "Allendorf (Eder)",
-    "checkedAt": "2026-10-06T14:15:38Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-03-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -16394,6 +16516,14 @@
       {
         "url": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger",
         "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: listet unverändert „Förderprogramm Erneuerbare Energien und Wärmedämmung in Wohngebäuden“ und „Förderprogramm Regenwasserzisternen“; die Änderung betrifft die eingebettete Öffnungszeiten-Anzeige."
+      },
+      {
+        "url": "https://www.allendorf-eder.de/dokumente/antraege-formulare/foerderantraege/erneuerbare-energien-und-waermedaemmung-antragsformular/erneuerbare-energien-antragsformular-stand-01.2025.pdf?cid=9wt",
+        "finding": "Im Original gelesen (13.10.2026): Antragsformular (Stand 01/2025) zur bekannten Richtlinie vom 13.12.2024; deckungsgleich mit dem Katalogeintrag. Beleg: „Förderung Erneuerbare Energie“."
+      },
+      {
+        "url": "https://www.allendorf-eder.de/dokumente/satzung/energien-und-waermedaemmung-richtlinie-erneuerbare-energien-und-waermedaemmung-von-bestandsgebaeuden-v-01-03-22/erneuerbare-energien-foerderung-erneuerbare-energien-stand-01.01.2025.pdf?cid=9h0",
+        "finding": "Im Original gelesen (13.10.2026): Dieselbe Richtlinie vom 13.12.2024 unter neuer Adresse (Stand 12/2024); bereits im Katalog. Beleg: „Die Gemeindevertretung der Gemeinde Allendorf (Eder) hat in ihrer Sitzung am 13. Dezember 2024 diese Richtlinie“."
       }
     ],
     "sources": [
@@ -16438,6 +16568,18 @@
         "disposition": "reviewed",
         "reason": "Abschlussbericht des integrierten Klimaschutzkonzepts Ederbergland; Planungsdokument, kein Zuschuss.",
         "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
+      },
+      {
+        "url": "allendorf-eder.de/dokumente/antraege-formulare/foerderantraege/erneuerbare-energien-und-waermedaemmung-antragsformular/erneuerbare-energien-antragsformular-stand-01.2025.pdf?cid=9wt",
+        "disposition": "reviewed",
+        "reason": "Antragsformular (Stand 01/2025) zur bekannten Richtlinie vom 13.12.2024; deckungsgleich mit dem Katalogeintrag.",
+        "evidenceUrl": "https://www.allendorf-eder.de/dokumente/antraege-formulare/foerderantraege/erneuerbare-energien-und-waermedaemmung-antragsformular/erneuerbare-energien-antragsformular-stand-01.2025.pdf?cid=9wt"
+      },
+      {
+        "url": "allendorf-eder.de/dokumente/satzung/energien-und-waermedaemmung-richtlinie-erneuerbare-energien-und-waermedaemmung-von-bestandsgebaeuden-v-01-03-22/erneuerbare-energien-foerderung-erneuerbare-energien-stand-01.01.2025.pdf?cid=9h0",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Richtlinie vom 13.12.2024 unter neuer Adresse (Stand 12/2024); bereits im Katalog.",
+        "evidenceUrl": "https://www.allendorf-eder.de/dokumente/satzung/energien-und-waermedaemmung-richtlinie-erneuerbare-energien-und-waermedaemmung-von-bestandsgebaeuden-v-01-03-22/erneuerbare-energien-foerderung-erneuerbare-energien-stand-01.01.2025.pdf?cid=9h0"
       }
     ]
   },
@@ -16671,7 +16813,7 @@
   {
     "regionId": "07132008",
     "name": "Birken-Honigsessen",
-    "checkedAt": "2026-09-19T12:08:29Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -16694,6 +16836,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      },
+      {
+        "url": "https://www.wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Mitteilungsblatt 51. Kalenderwoche 2020 / Verbandsgemeinde Wissen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -16804,7 +16950,7 @@
   {
     "regionId": "07132011",
     "name": "Mittelhof",
-    "checkedAt": "2026-09-19T12:08:29Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -16827,6 +16973,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      },
+      {
+        "url": "https://www.wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Mitteilungsblatt 51. Kalenderwoche 2020 / Verbandsgemeinde Wissen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -18709,7 +18859,7 @@
   {
     "regionId": "07132050",
     "name": "Herdorf",
-    "checkedAt": "2026-09-19T12:08:29Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -18740,6 +18890,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      },
+      {
+        "url": "https://www.herdorf.de/foerdergeruest-auf-dem-kreisel-am-huettenhaus-installiert",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Fördergerüst auf dem Kreisel \"Am Hüttenhaus\" installiert - herdorf.de. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -19818,7 +19972,7 @@
   {
     "regionId": "07132066",
     "name": "Malberg",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -19847,6 +20001,10 @@
       {
         "url": "https://vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/handreichung-bauherren-betzd-gebhardsh-web.pdf?cid=ssj",
         "finding": "Am 05.10.2026 gelesen: Handreichung für Bauherren (VG Betzdorf-Gebhardshain); Hinweise, kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): VG Betzdorf-Gebhardshain: eigenes Speicherprogramm beendet, Verweis auf Kreisprogramm Altenkirchen (unverändert). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -20526,7 +20684,7 @@
   {
     "regionId": "07132080",
     "name": "Katzwinkel (Sieg)",
-    "checkedAt": "2026-09-19T12:08:29Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -20549,6 +20707,10 @@
       {
         "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
         "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      },
+      {
+        "url": "https://www.wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Mitteilungsblatt 51. Kalenderwoche 2020 / Verbandsgemeinde Wissen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -22543,7 +22705,7 @@
   {
     "regionId": "07132117",
     "name": "Wissen",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -22570,6 +22732,10 @@
       {
         "url": "https://stadt-wissen.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
         "finding": "Am 09.10.2026 im Original gelesen: Statistik-Weiterleitung der Volltextsuche; liefert die Startseite der Stadt Wissen — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Mitteilungsblatt 51. Kalenderwoche 2020 / Verbandsgemeinde Wissen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -26812,7 +26978,7 @@
   {
     "regionId": "07140145",
     "name": "Sohren",
-    "checkedAt": "2026-09-18T20:09:20Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -26851,6 +27017,10 @@
       {
         "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
         "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): GAK-Förderung der Dorfentwicklung beantragen | Verbandsgemeinde Kirchberg (Hunsrück); Dorferneuerung: kommunale Förderung | Verbandsgemeinde Kirchberg (Hunsrück). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -26930,7 +27100,7 @@
   {
     "regionId": "07141006",
     "name": "Bad Ems",
-    "checkedAt": "2026-09-23T12:10:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
     "outcome": "keine-passende-foerderung",
@@ -26947,6 +27117,10 @@
       {
         "url": "https://www.vgben.de/energie-klima",
         "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv",
+        "finding": "Im Original gelesen (13.10.2026): Energiebericht der Verbandsgemeinde über eigene Liegenschaften (73 S.); kein Förderprogramm für Privathaushalte. Beleg: „Energiebericht 2024“."
       }
     ],
     "sources": [
@@ -26955,6 +27129,12 @@
         "disposition": "reviewed",
         "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
         "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      },
+      {
+        "url": "vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv",
+        "disposition": "reviewed",
+        "reason": "Energiebericht der Verbandsgemeinde über eigene Liegenschaften (73 S.); kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv"
       }
     ]
   },
@@ -29067,7 +29247,7 @@
   {
     "regionId": "07143206",
     "name": "Bad Marienberg (Westerwald)",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -29132,6 +29312,10 @@
       {
         "url": "https://bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-programmuebersicht.pdf?cid=2xf7",
         "finding": "Am 05.10.2026 gelesen: Programmübersicht 26.01.2026 des VG-Förderprogramms; im Katalog als bad-marienberg-erneuerbare-energien (ausgeschöpft) geführt."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Geförderte Projekte | Verbandsgemeinde Bad Marienberg. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -33436,7 +33620,7 @@
   {
     "regionId": "07143283",
     "name": "Oberroßbach",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
@@ -33469,6 +33653,10 @@
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+      },
+      {
+        "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprogramme-Übersicht der VG Rennerod (unverändert). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -40508,7 +40696,7 @@
   {
     "regionId": "09185168",
     "name": "Weichering",
-    "checkedAt": "2026-09-20T14:55:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -40532,6 +40720,10 @@
       {
         "finding": "Das vollständige Ortsrecht der Gemeinde führt 33 Dokumente (Entwässerung, Friedhof, Hunde, Stellplätze, Geschäftsordnung u. a.) und darunter keine Förderrichtlinie zur Solarenergie.",
         "url": "https://www.weichering.de/rathaus/ortsrecht"
+      },
+      {
+        "url": "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Solarberatungs-Zuschuss 400 € (unverändert). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -40898,7 +41090,7 @@
   {
     "regionId": "09279132",
     "name": "Pilsting",
-    "checkedAt": "2026-09-23T21:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf markt-pilsting.de.",
     "outcome": "keine-passende-foerderung",
@@ -40910,6 +41102,10 @@
       {
         "url": "https://www.markt-pilsting.de/buergerservice/rathaus/lebenslagen/detail/finanzielle-hilfen-und-foerderprogramme-2990",
         "finding": "Fester Text des BayernPortals: „Unternehmen können für den Bau, Kauf oder die Anmietung von Immobilien finanzielle Hilfen und Förderungen erhalten.\" Aufgeführte Leistungen betreffen nicht die Energietechnik privater Haushalte."
+      },
+      {
+        "url": "https://www.markt-pilsting.de/buergerservice/rathaus/lebenslagen/detail/finanzielle-hilfen-und-foerderprogramme-2990",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Pilsting: Detail. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -40924,7 +41120,7 @@
   {
     "regionId": "09471150",
     "name": "Kemmern",
-    "checkedAt": "2026-09-23T21:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf kemmern.de.",
     "outcome": "keine-passende-foerderung",
@@ -40936,6 +41132,10 @@
       {
         "url": "https://www.kemmern.de/buergerservice-politik/rathaus/lebenslagen/detail/finanzielle-hilfen-und-foerderprogramme-2990",
         "finding": "Fester Text des BayernPortals: „Unternehmen können für den Bau, Kauf oder die Anmietung von Immobilien finanzielle Hilfen und Förderungen erhalten.\" Aufgeführte Leistungen betreffen nicht die Energietechnik privater Haushalte."
+      },
+      {
+        "url": "https://www.kemmern.de/buergerservice-politik/rathaus/lebenslagen/detail/finanzielle-hilfen-und-foerderprogramme-2990",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Kemmern: Detail. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -41383,7 +41583,7 @@
   {
     "regionId": "09572142",
     "name": "Möhrendorf",
-    "checkedAt": "2026-09-20T00:25:05Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-19T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -41398,6 +41598,10 @@
       {
         "url": "https://www.erlangen-hoechstadt.de/leben-in-erh/klima-und-energie/angebote/fuer-buergerinnen-und-buerger/foerderprogramme-in-den-gemeinden/",
         "finding": "Auch die Übersicht des Landkreises führt für Möhrendorf allein die Bezuschussung für die Errichtung von Zisternen. Die dort hinterlegte Adresse (moehrendorf.de/leben-wohnen/bauen-umwelt-und-natur/foerderung) antwortet inzwischen mit 404."
+      },
+      {
+        "url": "https://www.moehrendorf.de/bauen-verkehr-soziales-kinder/umwelt-natur-klima-ver-/entsorgung/foerderprogramme-zuschuesse",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Möhrendorf: Förderprogramme - Zuschüsse. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "outcome": "keine-passende-foerderung",
@@ -41420,7 +41624,7 @@
   {
     "regionId": "09572149",
     "name": "Röttenbach",
-    "checkedAt": "2026-10-09T16:08:02Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-19T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -41444,6 +41648,10 @@
       {
         "url": "https://roettenbach-erh.de/gemeinde/foerderungen/foerderungen.php",
         "finding": "Am 09.10.2026 im Original gelesen: Seite „Förderungen“: Musikschul-Fördermodell, Vereinsförderung, Schultüten-/Sozialprojekt, Zisternen-Zuschuss — der PV-/Speicher-Zuschuss steht auf der Klimaseite (katalogisiert); hier nichts Neues."
+      },
+      {
+        "url": "https://www.roettenbach-erh.de/klima/dokumente/01_Antrag_PV_und_Speicher_ges.pdf?m=1782314971",
+        "finding": "Im Original gelesen (13.10.2026): Richtlinie samt Antrag (PV und Speicher, 25-kWp-Deckel, Montage erst nach Förderzusage); deckungsgleich mit dem Katalogeintrag. Beleg: „Die Gemeinde Röttenbach fördert seit dem 01.06.2022 die Errichtung von PV-Anlagen und/oder Stromspeichereinheiten“."
       }
     ],
     "outcome": "programme-geprueft",
@@ -41472,6 +41680,12 @@
         "disposition": "reviewed",
         "reason": "Die Klimaseite und die beiden dort verlinkten Förderdokumente wurden am 20.09.2026 im Volltext gelesen. Die Seite gemeinde/foerderungen führt soziale Förderungen (Musikunterricht), die Seite kanal-wasser-hochwasserschutz Zisternen und Rückstausicherungen — beides außerhalb dieses Katalogs.",
         "evidenceUrl": "https://www.roettenbach-erh.de/klima/dokumente/01_Antrag_PV_und_Speicher_ges.pdf"
+      },
+      {
+        "url": "roettenbach-erh.de/klima/dokumente/01_Antrag_PV_und_Speicher_ges.pdf?m=1782314971",
+        "disposition": "reviewed",
+        "reason": "Richtlinie samt Antrag (PV und Speicher, 25-kWp-Deckel, Montage erst nach Förderzusage); deckungsgleich mit dem Katalogeintrag.",
+        "evidenceUrl": "https://www.roettenbach-erh.de/klima/dokumente/01_Antrag_PV_und_Speicher_ges.pdf?m=1782314971"
       }
     ]
   },
@@ -42196,7 +42410,7 @@
   {
     "regionId": "12064393",
     "name": "Prötzel",
-    "checkedAt": "2026-09-23T23:05:09Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-24T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Prötzel eine Fundstelle auf barnim-oderbruch.de.",
     "outcome": "keine-passende-foerderung",
@@ -42208,6 +42422,10 @@
       {
         "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
         "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      },
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Barnim-Oderbruch: Verwendung von Fördermitteln. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -42222,7 +42440,7 @@
   {
     "regionId": "12064417",
     "name": "Reichenow-Möglin",
-    "checkedAt": "2026-09-23T23:05:09Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-24T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Reichenow-Möglin eine Fundstelle auf barnim-oderbruch.de.",
     "outcome": "keine-passende-foerderung",
@@ -42234,6 +42452,10 @@
       {
         "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
         "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      },
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Barnim-Oderbruch: Verwendung von Fördermitteln. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -42582,7 +42804,7 @@
   {
     "regionId": "12071294",
     "name": "Neiße-Malxetal",
-    "checkedAt": "2026-09-22T06:32:58Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42614,6 +42836,10 @@
       {
         "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
         "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 4 Seite(n)): Amt Döbern-Land - Fördervorhaben; Amt Döbern-Land - Bau von touristischer Infrastruktur an der Alte Ziegelei Klein Kölzig; Amt Döbern-Land - Förderinstitutionen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -45607,7 +45833,7 @@
   {
     "regionId": "13071122",
     "name": "Rechlin",
-    "checkedAt": "2026-09-18T06:31:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45640,6 +45866,10 @@
       {
         "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
         "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderungen durch die Europäische Union - Amt Röbel-Müritz. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -48436,7 +48666,7 @@
   {
     "regionId": "13074017",
     "name": "Dassow",
-    "checkedAt": "2026-10-05T11:34:38Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -48458,6 +48688,10 @@
       {
         "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
         "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/media/custom/2618_1073_1.PDF?1562741376=",
+        "finding": "Im Original gelesen (13.10.2026): Förderhinweis zum Hortneubau in Herrnburg (ILERL M-V); Zuwendung an die Gemeinde, kein Programm für Haushalte. Beleg: „Die Gemeinde Lüdersdorf erhält eine Zuwendung in Höhe von“."
       }
     ],
     "sources": [
@@ -48490,6 +48724,12 @@
         "disposition": "reviewed",
         "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
         "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/media/custom/2618_1073_1.PDF?1562741376=",
+        "disposition": "reviewed",
+        "reason": "Förderhinweis zum Hortneubau in Herrnburg (ILERL M-V); Zuwendung an die Gemeinde, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.schoenberger-land.de/media/custom/2618_1073_1.PDF?1562741376="
       }
     ],
     "outcome": "keine-passende-foerderung",
@@ -49444,7 +49684,7 @@
   {
     "regionId": "13074065",
     "name": "Rehna",
-    "checkedAt": "2026-09-24T04:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Rehna 4 Fundstellen auf dem gemeinsamen Auftritt des Amtes Rehna.",
     "outcome": "keine-passende-foerderung",
@@ -49465,6 +49705,10 @@
       {
         "url": "https://www.rehna.de/verwaltung/vergaben/eu-gefoerderte-projekte",
         "finding": "Am 24.09.2026 gelesen: Rubrik „Vergaben“ des Amtes mit EU-geförderten Vorhaben der Verwaltung. Kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.rehna.de/verwaltung/vergaben/eu-gefoerderte-projekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): EU-geförderte Projekte | Amt Rehna. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -49781,7 +50025,7 @@
   {
     "regionId": "13074074",
     "name": "Schönberg",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -49810,6 +50054,10 @@
       {
         "url": "https://schoenberger-land.de/media/custom/2618_1073_1.PDF?1562741376=",
         "finding": "Am 05.10.2026 gelesen: Infotafel zu kommunalem Hortbau 2019; kein Privatzuschuss."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Projekte mit Frdermittel / Amt Schnberger Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -50929,7 +51177,7 @@
   {
     "regionId": "13076009",
     "name": "Bengerstorf",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -50954,6 +51202,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -50980,7 +51232,7 @@
   {
     "regionId": "13076010",
     "name": "Besitz",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -51005,6 +51257,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -51206,7 +51462,7 @@
   {
     "regionId": "13076016",
     "name": "Brahlstorf",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -51231,6 +51487,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -51909,7 +52169,7 @@
   {
     "regionId": "13076030",
     "name": "Dersenow",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -51934,6 +52194,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -52773,7 +53037,7 @@
   {
     "regionId": "13076054",
     "name": "Gresse",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -52798,6 +53062,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -52824,7 +53092,7 @@
   {
     "regionId": "13076055",
     "name": "Greven",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -52849,6 +53117,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -53059,7 +53331,7 @@
   {
     "regionId": "13076063",
     "name": "Holthusen",
-    "checkedAt": "2026-09-22T06:43:30Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -53088,6 +53360,10 @@
       {
         "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
         "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Stralendorf. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -54117,7 +54393,7 @@
   {
     "regionId": "13076090",
     "name": "Ludwigslust",
-    "checkedAt": "2026-09-22T02:37:54Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -54147,6 +54423,10 @@
       {
         "url": "https://www.ludwigslust.de/output/download.php?fid=3634.4235.1.PDF",
         "finding": "Klimaschutzkonzept Teil 2 (Maßnahmenkatalog) gelesen: Förderhinweise nennen nur Bundes-, Landes- und EU-Programme für kommunale Anlagen; kein beschlossener städtischer Zuschuss für Photovoltaik, Balkonkraftwerk, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.ludwigslust.de/PDF/Klimaschutzkonzept.PDF?ObjSvrID=3634&ObjID=4234&ObjLa=1&Ext=PDF&WTR=1&_ts=1768384179",
+        "finding": "Im Original gelesen (13.10.2026): Klimaschutzkonzept Teil 1 (72 S.); kein beschlossener Bürgerzuschuss, wie bereits für Teil 2 festgestellt. Beleg: „Klimaschutzkonzept“."
       }
     ],
     "sources": [
@@ -54191,6 +54471,12 @@
         "disposition": "reviewed",
         "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
         "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/PDF/Klimaschutzkonzept.PDF?ObjSvrID=3634&ObjID=4234&ObjLa=1&Ext=PDF&WTR=1&_ts=1768384179",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept Teil 1 (72 S.); kein beschlossener Bürgerzuschuss, wie bereits für Teil 2 festgestellt.",
+        "evidenceUrl": "https://www.ludwigslust.de/PDF/Klimaschutzkonzept.PDF?ObjSvrID=3634&ObjID=4234&ObjLa=1&Ext=PDF&WTR=1&_ts=1768384179"
       }
     ]
   },
@@ -54658,7 +54944,7 @@
   {
     "regionId": "13076102",
     "name": "Neu Gülze",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -54683,6 +54969,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -54758,7 +55048,7 @@
   {
     "regionId": "13076106",
     "name": "Nostorf",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -54783,6 +55073,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -54809,7 +55103,7 @@
   {
     "regionId": "13076107",
     "name": "Pampow",
-    "checkedAt": "2026-09-22T06:43:30Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -54838,6 +55132,10 @@
       {
         "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
         "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Amt Stralendorf. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -55438,7 +55736,7 @@
   {
     "regionId": "13076122",
     "name": "Schwanheide",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -55463,6 +55761,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -55806,7 +56108,7 @@
   {
     "regionId": "13076136",
     "name": "Teldau",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -55831,6 +56133,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -55857,7 +56163,7 @@
   {
     "regionId": "13076138",
     "name": "Tessin b. Boizenburg",
-    "checkedAt": "2026-09-18T06:43:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -55882,6 +56188,10 @@
       {
         "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
         "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): EU-Förderprojekte | Amt Boizenburg-Land. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -59578,7 +59888,7 @@
   {
     "regionId": "03360002",
     "name": "Bad Bevensen",
-    "checkedAt": "2026-10-06T16:23:38Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59626,6 +59936,10 @@
       {
         "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
         "finding": "06.10.2026: gespeicherte Adresse leitet jetzt per 302 auf die Startseite der Samtgemeinde um (vorher 404). Der Beitrag unter www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx ist unverändert: REACT-EU-Landesprogramm für die Samtgemeinde (793.500 €, Förderquote 90 %), kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): PDF. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -59894,7 +60208,7 @@
   {
     "regionId": "03158009",
     "name": "Dettum",
-    "checkedAt": "2026-09-24T06:14:24Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -59930,6 +60244,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Ansprechpartnerinnen und Ansprechpartner / Samtgemeinde Sickte. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -60062,7 +60380,7 @@
   {
     "regionId": "03158030",
     "name": "Sickte",
-    "checkedAt": "2026-09-24T06:14:24Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60098,6 +60416,10 @@
       {
         "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
         "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Ansprechpartnerinnen und Ansprechpartner / Samtgemeinde Sickte. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -61323,7 +61645,7 @@
   {
     "regionId": "03459030",
     "name": "Quakenbrück",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -61358,6 +61680,10 @@
       {
         "url": "https://artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
         "finding": "Am 09.10.2026 im Original gelesen: Bundesprogramm „Demokratie leben!“ der Samtgemeinde Artland — nicht im Umfang."
+      },
+      {
+        "url": "https://www.artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Klimafonds in der Samtgemeinde Artland | Samtgemeinde Artland; Kommunale Förderungen | Samtgemeinde Artland; Förderprogramme: Medizinische Versorgung | Samtgemeinde Artland. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -61402,7 +61728,7 @@
   {
     "regionId": "03459025",
     "name": "Menslage",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -61441,6 +61767,10 @@
       {
         "url": "https://artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
         "finding": "Am 05.10.2026 gelesen: Bundesprogramm Demokratie leben!; fachfremd."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Klimafonds Samtgemeinde Artland (Haushaltsmittel 2026 bereitgestellt; deckungsgleich mit dem Katalog). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -61485,7 +61815,7 @@
   {
     "regionId": "03459007",
     "name": "Badbergen",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -61520,6 +61850,10 @@
       {
         "url": "https://artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
         "finding": "Am 05.10.2026 gelesen: Bundesprogramm Demokratie leben!; fachfremd."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Kommunale Förderungen | Samtgemeinde Artland; Förderprogramme: Medizinische Versorgung | Samtgemeinde Artland; Klimafonds in der Samtgemeinde Artland | Samtgemeinde Artland. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -61564,7 +61898,7 @@
   {
     "regionId": "03459028",
     "name": "Nortrup",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -61599,6 +61933,10 @@
       {
         "url": "https://artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
         "finding": "Am 05.10.2026 gelesen: Bundesprogramm Demokratie leben!; fachfremd."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Kommunale Förderungen | Samtgemeinde Artland; Klimafonds in der Samtgemeinde Artland | Samtgemeinde Artland; Förderprogramme: Medizinische Versorgung | Samtgemeinde Artland. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -63006,7 +63344,7 @@
   {
     "regionId": "16070057",
     "name": "Geratal",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -63048,6 +63386,10 @@
       {
         "url": "https://gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
         "finding": "Am 09.10.2026 im Original gelesen: Meldung zum Engagement-Wettbewerb „machen!“ — nicht im Umfang."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-projekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): geförderte Projekte – Gemeinde Geratal; Projektaufruf Regionalbudget 2024: Jetzt Kleinprojekte mit bis zu 80% fördern lassen! – Ge; Förderprogramm Landmusik – Gemeinde Geratal; Geförderte Maßnahmen – Gemeinde Geratal; Informationen des LRA Ilm-Kreis zum geförderten Breitbandausbau im Ilm-Kreis – Gemeinde Ge. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -63282,7 +63624,7 @@
   {
     "regionId": "09779188",
     "name": "Munningen",
-    "checkedAt": "2026-09-24T16:13:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -63308,6 +63650,10 @@
       {
         "url": "https://munningen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
         "finding": "Am 24.09.2026 gegengelesen: HTTP 404 — fehlerhaft gebildete Adresse, keine Quelle."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Verwaltungsgemeinschaft Oettingen: Förderprogramme. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -63328,7 +63674,7 @@
   {
     "regionId": "09779115",
     "name": "Asbach-Bäumenheim",
-    "checkedAt": "2026-10-09T16:08:02Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -63374,6 +63720,10 @@
       {
         "url": "https://asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/regenerative-energien",
         "finding": "Am 09.10.2026 im Original gelesen: Adresse liefert die Startseite der Gemeinde; das katalogisierte Formular ab 01.08.2026 ist weiter live."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme-1/fassadenprogramm",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Gemeinde Asbach-Bäumenheim | Fassadenprogramm |. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -63424,7 +63774,7 @@
   {
     "regionId": "09779131",
     "name": "Donauwörth",
-    "checkedAt": "2026-09-29T14:05:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -63455,6 +63805,10 @@
       {
         "url": "https://www.donauwoerth.de/umwelt-energie/",
         "finding": "29.09.2026: Umwelt-/Energieseite: städtische Förderprogramme nur Lastenräder und Gründach/Fassadenbegrünung; Balkonkraftwerk nur als Information."
+      },
+      {
+        "url": "https://www.donauwoerth.de/stadtbibliothek/lesefoerderung",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 4 Seite(n)): Leseförderung - Stadt Donauwörth; Umwelt & Energie - Stadt Donauwörth; Förderung Kleinstphotovoltaik - Antrag - Stadt Donauwörth; Förderungen & Patenprojekt - Stadt Donauwörth. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -63785,7 +64139,7 @@
   {
     "regionId": "09779218",
     "name": "Tapfheim",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -63803,6 +64157,10 @@
       {
         "url": "https://tapfheim.de/seite/491386/f%C3%B6rderprogramme.html",
         "finding": "Am 05.10.2026 gelesen: Förderprogramme-Seite der Gemeinde Tapfheim; kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.tapfheim.de/seite/508709/breitband-f%C3%B6rderverfahren-nach-der-baygibitr.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Breitband-Förderverfahren nach der BayGibitR - Gemeinde Tapfheim; Kommunales Förderprogramm und Gestaltungshandbuch für private Fassadensanierungen - Gemein. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -64521,7 +64879,7 @@
   {
     "regionId": "03360025",
     "name": "Uelzen",
-    "checkedAt": "2026-09-25T12:24:49Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -64547,6 +64905,10 @@
       {
         "url": "https://www.hansestadt-uelzen.de/home/uelzen-aktuell/pressemitteilungen/elektro-tankstelle-fuer-zuhause-jetzt-zuschuss-beantragen.aspx",
         "finding": "Pressemitteilung 26.11.2020 am 25.09.2026 gelesen: 900 € je Ladepunkt sind der KfW-Zuschuss 440 des Bundes, kein städtisches Programm."
+      },
+      {
+        "url": "https://www.hansestadt-uelzen.de/home/buerger-service/desktopdefault.aspx/tabid-497/723_read-17383",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 6 Seite(n)): Hansestadt Uelzen - 404-Fehlerseite (HTTP 404). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -64591,7 +64953,7 @@
   {
     "regionId": "16076003",
     "name": "Bad Köstritz",
-    "checkedAt": "2026-09-25T12:28:41Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -64611,6 +64973,10 @@
       {
         "url": "https://stadtbadkoestritz.de/?s=Photovoltaik",
         "finding": "Am 25.09.2026: Suchtreffer Photovoltaikanlage auf Freibaddächern (08.06.2021) und Huamantla-Projekte; Suche Balkonkraftwerk ohne Treffer; Zuschuss und Förderprogramm nur Vereins-, Senioren-, Breitband- und Freibadthemen."
+      },
+      {
+        "url": "https://www.stadtbadkoestritz.de/eler-foerderinitiative-laendliche-entwicklung-in-thueringen",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): ELER – Förderinitiative Ländliche Entwicklung in Thüringen – Offizielle Homepage der Stadt. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -64679,7 +65045,7 @@
   {
     "regionId": "16076087",
     "name": "Zeulenroda-Triebes",
-    "checkedAt": "2026-09-25T12:28:41Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -64695,6 +65061,10 @@
       {
         "url": "https://www.zeulenroda-triebes.de/suche/index.php?suchbegriff=Photovoltaik",
         "finding": "Am 25.09.2026: „Leider keine Treffer gefunden“ für Photovoltaik, Balkonkraftwerk und Wärmepumpe; Zuschuss nur Wohngeld, Förderprogramm nur Verwaltungs-IT und Breitband."
+      },
+      {
+        "url": "https://www.zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): EFRE-Fördermaßnahmen - Stadt Zeulenroda-Triebes. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -66586,7 +66956,7 @@
   {
     "regionId": "03151009",
     "name": "Gifhorn",
-    "checkedAt": "2026-10-09T14:07:06Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-24T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen der Stadt Gifhorn.",
     "outcome": "keine-passende-foerderung",
@@ -66618,6 +66988,10 @@
       {
         "url": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/foerderung-von-klimaschutzmassnahmen",
         "finding": "Geänderte Seite am 09.10.2026 gelesen: geförderte Klimaschutzprojekte der Stadt selbst (LED-Flutlicht, Lüftung Boxmühle, Klimaschutzmanagement über die Kommunalrichtlinie) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/energieeffizienter-neubau",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Energieeffizienter Neubau: Stadt Gifhorn; LEADER: Stadt Gifhorn; Förderprojekte: Stadt Gifhorn; Anpassung urbaner Räume an den Klimawandel: Stadt Gifhorn; Sofortprogramm \"Perspektive Innenstadt\": Stadt Gifhorn. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -66742,7 +67116,7 @@
   {
     "regionId": "03151027",
     "name": "Schwülper",
-    "checkedAt": "2026-09-25T22:10:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-24T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen der Gemeinde Schwülper (Einheitsgemeinde).",
     "outcome": "keine-passende-foerderung",
@@ -66768,6 +67142,10 @@
       {
         "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
         "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.gemeinde-schwuelper.de/foerderprojekte?rCH=-2",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Förderprojekte - Gemeinde Schwülper. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -67205,7 +67583,7 @@
   {
     "regionId": "03257030",
     "name": "Pollhagen",
-    "checkedAt": "2026-09-26T00:09:37Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
     "outcome": "programme-geprueft",
@@ -67228,6 +67606,10 @@
       {
         "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
         "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      },
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): EU-Förderung | Samtgemeinde Niedernwöhren. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -67547,7 +67929,7 @@
   {
     "regionId": "03257009",
     "name": "Bückeburg",
-    "checkedAt": "2026-09-26T02:08:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
     "outcome": "programme-geprueft",
@@ -67573,6 +67955,10 @@
       {
         "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
         "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://www.bueckeburg.de/de/Leben-in-Bueckeburg/Planung-Entwicklung/Foerdermoeglichkeit-von-privat-Bauvorhaben-im-R",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Fördermöglichkeit von privat Bauvorhaben | Stadt Bückeburg. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -67745,7 +68131,7 @@
   {
     "regionId": "03257035",
     "name": "Stadthagen",
-    "checkedAt": "2026-09-26T02:08:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
     "outcome": "programme-geprueft",
@@ -67780,6 +68166,10 @@
       {
         "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
         "finding": "Programmseite am 26.09.2026 erneut gelesen: „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ — Kreisprogramm (Energieagentur Schaumburg, Kreismittel) für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, seit 01.09.2026, im Katalog als schaumburg-solarfair; kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://www.stadthagen.de/Dateien/Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html; Lesefoerderung.html. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -68390,7 +68780,7 @@
   {
     "regionId": "03351003",
     "name": "Beedenbostel",
-    "checkedAt": "2026-09-26T11:30:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68413,6 +68803,10 @@
       {
         "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
         "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Geförderte Projekte / Samtgemeinde Lachendorf; Dorferneuerungen / Samtgemeinde Lachendorf; Förderungen / Samtgemeinde Lachendorf. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -68463,7 +68857,7 @@
   {
     "regionId": "03351008",
     "name": "Eldingen",
-    "checkedAt": "2026-09-26T11:30:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68486,6 +68880,10 @@
       {
         "url": "https://www.lachendorf.de/loadDocument.phtml?FID=4036.260.1&Ext=PDF",
         "finding": "Am 26.09.2026 gelesen: Förderung des Erwerbs von Altbauten durch junge Familien, kein Energieprogramm."
+      },
+      {
+        "url": "https://www.lachendorf.de/F%C3%B6rderungen/Gef%C3%B6rderte-Projekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Geförderte Projekte / Samtgemeinde Lachendorf; Förderungen / Samtgemeinde Lachendorf; Dorferneuerungen / Samtgemeinde Lachendorf. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -68758,7 +69156,7 @@
   {
     "regionId": "03351023",
     "name": "Wietze",
-    "checkedAt": "2026-10-01T12:10:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68783,6 +69181,10 @@
       {
         "url": "https://www.wietze.de/rathaus-politik/amtliche-bekanntmachungen/bebauungsplan-jeversen-nr-15-solarpark-jeversen-hier-aufstellungsbeschluss-gem-2-abs-1-baugesetzbuch-baugb-fruehzeitige-beteiligung-der-oeffentlichkeit-gemaess-3-abs-1-baugb/vorentwurf-bebauungsplan-jeversen-nr.-11-solarpark-jeversen.pdf?cid=ixd",
         "finding": "Im Original gelesen (01.10.2026, Lauf 20261001T1203Z): Vorentwurf Bebauungsplan Solarpark Jeversen (Bauleitplanung für eine Freiflächenanlage) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.wietze.de/umwelt-klima-energie/klimaschutzkonzept/integriertes-klimaschutzkonzept-gemeinde-wietze.pdf?cid=bkj",
+        "finding": "Im Original gelesen (13.10.2026): Integriertes Klimaschutzkonzept (166 S.): nennt mögliche künftige Fördermaßnahmen als Ideen (Zisternen, Fahrräder, Wallboxen); kein beschlossenes Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Beleg: „Fördermaßnahmen für klimafreundliche Projekte, zum Beispiel für Regenwasserzisternen in Privatgärten“."
       }
     ],
     "sources": [
@@ -68803,6 +69205,12 @@
         "disposition": "reviewed",
         "reason": "Vorentwurf Bebauungsplan Solarpark Jeversen (Bauleitplanung für eine Freiflächenanlage) — kein Zuschuss für Privathaushalte",
         "evidenceUrl": "https://www.wietze.de/rathaus-politik/amtliche-bekanntmachungen/bebauungsplan-jeversen-nr-15-solarpark-jeversen-hier-aufstellungsbeschluss-gem-2-abs-1-baugesetzbuch-baugb-fruehzeitige-beteiligung-der-oeffentlichkeit-gemaess-3-abs-1-baugb/vorentwurf-bebauungsplan-jeversen-nr.-11-solarpark-jeversen.pdf?cid=ixd"
+      },
+      {
+        "url": "wietze.de/umwelt-klima-energie/klimaschutzkonzept/integriertes-klimaschutzkonzept-gemeinde-wietze.pdf?cid=bkj",
+        "disposition": "reviewed",
+        "reason": "Integriertes Klimaschutzkonzept (166 S.): nennt mögliche künftige Fördermaßnahmen als Ideen (Zisternen, Fahrräder, Wallboxen); kein beschlossenes Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wietze.de/umwelt-klima-energie/klimaschutzkonzept/integriertes-klimaschutzkonzept-gemeinde-wietze.pdf?cid=bkj"
       }
     ]
   },
@@ -70924,7 +71332,7 @@
   {
     "regionId": "07140112",
     "name": "Oberwesel",
-    "checkedAt": "2026-09-27T10:05:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -70956,6 +71364,10 @@
       {
         "url": "https://www.hunsrueckmittelrhein.de/rathaus/ortsrecht-satzungen/oberwesel/haushalt-oberwesel-2026-hp.pdf?cid=oga",
         "finding": "Haushaltsplan 2026 durchsucht: Städtebauförderung, Kita-Bau, Vereins- und Partnerschaftszuschüsse, eigene Energiekosten — keine Zuschüsse an Privathaushalte für Energieanlagen."
+      },
+      {
+        "url": "https://www.oberwesel.de/?s=f%C3%B6rderprogramm",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): förderprogramm - Oberwesel. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -72718,7 +73130,7 @@
   {
     "regionId": "07334025",
     "name": "Rülzheim",
-    "checkedAt": "2026-09-27T16:50:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -72745,6 +73157,10 @@
       {
         "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
         "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "finding": "Im Original gelesen (13.10.2026): Solarpapier 2022 zur Flächen- und Dachnutzung (28 S.); keine Zuschussregelung für Bürger. Beleg: „Solarnutzung in der Verbandsgemeinde Rülzheim“."
       }
     ],
     "sources": [
@@ -72759,13 +73175,19 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
         "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "disposition": "reviewed",
+        "reason": "Solarpapier 2022 zur Flächen- und Dachnutzung (28 S.); keine Zuschussregelung für Bürger.",
+        "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf"
       }
     ]
   },
   {
     "regionId": "07338001",
     "name": "Altrip",
-    "checkedAt": "2026-09-27T16:50:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-11-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -72783,6 +73205,10 @@
       {
         "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/",
         "finding": "Am 27.09.2026 gelesen: „Finanzielle Zuschüsse der Ortsgemeinde Otterstadt“ — Zuschussrichtlinien für barrierefreies Bauen und für Verbesserungen in Heim und Garten zugunsten der Natur und Umwelt (dieselbe Umweltförderrichtlinie)."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "finding": "Im Original gelesen (13.10.2026): Übersicht der Ortsgemeinde Otterstadt (bereits im Katalog); gilt nicht für Altrip. Beleg: „Übersicht Förderrichtlinie/Maßnahmen der Ortsgemeinde Otterstadt (Stand 04.12.2024)“."
       }
     ],
     "sources": [
@@ -72797,13 +73223,19 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Zuschüsse der Ortsgemeinde Otterstadt, gelten nur für Otterstadt.",
         "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/"
+      },
+      {
+        "url": "vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Ortsgemeinde Otterstadt (bereits im Katalog); gilt nicht für Altrip.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv"
       }
     ]
   },
   {
     "regionId": "07338020",
     "name": "Neuhofen",
-    "checkedAt": "2026-10-01T12:10:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-11-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -72825,6 +73257,10 @@
       {
         "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
         "finding": "Im Original gelesen (01.10.2026, Lauf 20261001T1203Z): Übersicht Förderrichtlinie/Maßnahmen der Ortsgemeinde Otterstadt (Stand 04.12.2024) — Programm der Nachbargemeinde Otterstadt, gilt nicht für Neuhofen."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy",
+        "finding": "Im Original gelesen (13.10.2026): Alte Otterstädter Übersicht von 2023, durch die Fassung vom 04.12.2024 ersetzt; gilt nicht für Neuhofen. Beleg: „Übersicht Förderrichtlinien/Programme der Ortsgemeinde Otterstadt (Stand 05.07.2023)“."
       }
     ],
     "sources": [
@@ -72845,13 +73281,19 @@
         "disposition": "reviewed",
         "reason": "Übersicht Förderrichtlinie/Maßnahmen der Ortsgemeinde Otterstadt (Stand 04.12.2024) — Programm der Nachbargemeinde Otterstadt, gilt nicht für Neuhofen",
         "evidenceUrl": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy",
+        "disposition": "reviewed",
+        "reason": "Alte Otterstädter Übersicht von 2023, durch die Fassung vom 04.12.2024 ersetzt; gilt nicht für Neuhofen.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy"
       }
     ]
   },
   {
     "regionId": "07338021",
     "name": "Otterstadt",
-    "checkedAt": "2026-09-27T16:50:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -72876,6 +73318,10 @@
       {
         "url": "https://www.vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=kjy",
         "finding": "Übersicht Stand 04.12.2024: 2.1 „Installation von PV-Anlagen/ Solaranlagen/ Balkonkraftwerke 10 %, max. 500 €“; 2.2 Batteriespeicher „10 %, max. 250 €“; 1.3 Umstellung Öl-/Gasheizung auf regenerative Quellen „10 %, max. 500 €“ (Heizung 10–30 Jahre alt)."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Zuschussseite Otterstadt: Umweltförderrichtlinien (bereits im Katalog). Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -72896,7 +73342,7 @@
   {
     "regionId": "07338026",
     "name": "Waldsee",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -72925,6 +73371,10 @@
       {
         "url": "https://vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv",
         "finding": "Am 05.10.2026 gelesen: Übersicht der Umweltförderrichtlinie der Nachbargemeinde Otterstadt (gilt nur dort, als otterstadt-umweltfoerderung katalogisiert); Waldsees eigenes Programm ist gesondert katalogisiert."
+      },
+      {
+        "url": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy",
+        "finding": "Im Original gelesen (13.10.2026): Alte Otterstädter Übersicht von 2023 (ersetzt durch Stand 04.12.2024); Waldsee hat eine eigene, bereits geprüfte Richtlinie. Beleg: „Übersicht Förderrichtlinien/Programme der Ortsgemeinde Otterstadt (Stand 05.07.2023)“."
       }
     ],
     "sources": [
@@ -72945,6 +73395,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Übersicht der Umweltförderrichtlinie der Nachbargemeinde Otterstadt (gilt nur dort, als otterstadt-umweltfoerderung katalogisiert); Waldsees eigenes Programm ist gesondert katalogisiert.",
         "evidenceUrl": "https://vg-rheinauen.de/verwaltung-politik/formulare/umweltfoerderrichtlinie-og-otterstadt-uebersicht-massnahmen-2024.pdf?cid=nlv"
+      },
+      {
+        "url": "vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy",
+        "disposition": "reviewed",
+        "reason": "Alte Otterstädter Übersicht von 2023 (ersetzt durch Stand 04.12.2024); Waldsee hat eine eigene, bereits geprüfte Richtlinie.",
+        "evidenceUrl": "https://www.vg-rheinauen.de/ortsgemeinden/otterstadt/zuschuesse/uebersicht-foerderrichtlinien-05.07.2023.pdf?cid=kjy"
       }
     ]
   },
@@ -74523,7 +74979,7 @@
   {
     "regionId": "07335004",
     "name": "Enkenbach-Alsenborn",
-    "checkedAt": "2026-09-27T22:05:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -74549,6 +75005,10 @@
       {
         "url": "https://www.kaiserslautern-kreis.de/",
         "finding": "Landkreis Kaiserslautern führt kein Förderprogramm für private PV, Speicher oder Wärmepumpen (Sitemap mit 1.784 Adressen am 27.09.2026 durchsucht, siehe Prüfung Weilerbach)."
+      },
+      {
+        "url": "https://www.enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben",
+        "finding": "Im Original gelesen (13.10.2026): Warnung der Gemeindewerke vor Smart-Meter-Werbeschreiben; kein Förderprogramm. Beleg: „„Kostenlos“ heißt nicht kostenfrei“."
       }
     ],
     "sources": [
@@ -74563,6 +75023,12 @@
         "disposition": "reviewed",
         "reason": "Nationale Klimaschutzinitiative — Förderung für Kommunen, nicht für private Haushalte.",
         "evidenceUrl": "https://www.enkenbach-alsenborn.de/oekologisch/foerderprogramme/foerdermoeglichkeiten-in-den-kommunen/"
+      },
+      {
+        "url": "enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben",
+        "disposition": "reviewed",
+        "reason": "Warnung der Gemeindewerke vor Smart-Meter-Werbeschreiben; kein Förderprogramm.",
+        "evidenceUrl": "https://www.enkenbach-alsenborn.de/aktuelles/2026/verbandsgemeindewerke-und-gemeindewerke-enkenbach-alsenborn-warnen-vor-irrefuehrenden-werbeschreiben"
       }
     ]
   },
@@ -75372,7 +75838,7 @@
   {
     "regionId": "03353024",
     "name": "Marxen",
-    "checkedAt": "2026-09-28T02:30:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -75407,6 +75873,10 @@
       {
         "url": "https://www.landkreis-harburg.de/portal/suche.html",
         "finding": "28.09.2026 Seitensuche des Landkreises („Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Wärmepumpe“): Beratung, KMU-Förderprogramm und ein Solarthermie-Zuschuss der Gemeinde Rosengarten; nichts für die Samtgemeinde Hanstedt."
+      },
+      {
+        "url": "https://www.hanstedt.de/tourismus-wirtschaft/wirtschaft/foerderung-energieeffizienz",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderrichtlinien zur Steigerung der Energie- und Ressourceneffizienz für KMU | Samtgemein. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -75427,7 +75897,7 @@
   {
     "regionId": "03358001",
     "name": "Ahlden (Aller)",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -75459,6 +75929,10 @@
       {
         "url": "https://ahlden.info/de/gemeinde-hodenhagen/projekte/klimaschutz-projekte/beratungsangebote-2018-energie.pdf?cid=da",
         "finding": "Am 05.10.2026 gelesen: Beratungsangebote 2018 der Verbraucherzentrale mit Entgelt; kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprogramme | Samtgemeinde Ahlden. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -75629,6 +76103,10 @@
       {
         "url": "https://www.energieagentur-heidekreis.de/privatpersonen/foerderprogramme.html",
         "finding": "28.09.2026: Energieagentur Heidekreis verweist Privatpersonen nur auf BEG, KfW, BAFA-Förderwegweiser und co2online — kein Programm des Landkreises."
+      },
+      {
+        "url": "https://www.ahlden.info/de/impressum/",
+        "finding": "Impressum der Samtgemeinde Ahlden (13.10.2026 gelesen) nennt neben samtgemeinde@ahlden.eu das Gemeinde-Postfach gemeinde@grethem.eu (Mailserver vorhanden). Die Rückfrage geht an das Postfach der Gemeinde Grethem, deren Programm gefragt ist; samtgemeinde@ahlden.eu wies die Versandprüfung ab, weil die Domain weder den Ortsnamen noch die belegte Amtswebsite trägt."
       }
     ],
     "sources": [
@@ -75652,7 +76130,7 @@
     },
     "enquiry": {
       "id": "klaerung-03358011",
-      "recipient": "samtgemeinde@ahlden.eu",
+      "recipient": "gemeinde@grethem.eu",
       "recipientSource": "https://www.ahlden.info/de/impressum/",
       "website": "https://www.ahlden.info/de/gemeinde-grethem/leben-wohnen/foerderprogramme/",
       "question": "Auf der Seite Förderprogramme der Gemeinde Grethem ist das CO2-Minderungsprogramm mit Förderrichtlinie und Antrag (beide Stand 21.10.2006) weiterhin veröffentlicht; es fördert unter anderem Photovoltaikanlagen mit 35 € je volle 0,25 kWp und Wärmepumpen mit 35 € je kW. Wird dieses Programm 2026 noch gewährt, stehen dafür Haushaltsmittel bereit, und gilt der Höchstbetrag von 350 € je Maßnahme (so die Richtlinie) oder je Gebäude und Grundeigentümer (so das Antragsformular)?"
@@ -75661,7 +76139,7 @@
   {
     "regionId": "13073005",
     "name": "Altenpleen",
-    "checkedAt": "2026-09-28T04:07:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -75689,6 +76167,10 @@
       {
         "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
         "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Kommunale Förderprojekte - Altenpleen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -75823,7 +76305,7 @@
   {
     "regionId": "13073066",
     "name": "Preetz",
-    "checkedAt": "2026-09-28T04:07:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -75851,6 +76333,10 @@
       {
         "url": "https://www.lk-vr.de/index.php?ModID=7&FID=3034.19603.1&object=tx%7C3034.19603.1",
         "finding": "28.09.2026: Der Landkreis Vorpommern-Rügen verweist für Mini-Solaranlagen auf das Landesprogramm MV (bereits als mv-mini-solaranlagen im Katalog); kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.amt-altenpleen.de/seite/662994/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Kommunale Förderprojekte - Altenpleen. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -75877,7 +76363,7 @@
   {
     "regionId": "12069076",
     "name": "Brück",
-    "checkedAt": "2026-09-28T04:07:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -75913,6 +76399,10 @@
       {
         "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
         "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      },
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Webseitenfoerderprogramm des Amtes Brück - Amt Brück. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -76005,7 +76495,7 @@
   {
     "regionId": "12069345",
     "name": "Linthe",
-    "checkedAt": "2026-09-28T04:07:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -76041,6 +76531,10 @@
       {
         "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
         "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      },
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Webseitenfoerderprogramm des Amtes Brück - Amt Brück. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -76067,7 +76561,7 @@
   {
     "regionId": "12069470",
     "name": "Planebruch",
-    "checkedAt": "2026-09-28T04:07:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -76103,6 +76597,10 @@
       {
         "url": "https://www.potsdam-mittelmark.de/en/living-in-the-district/living-housing/climate-action-nature-conservation",
         "finding": "28.09.2026 Kreisseite Klimaschutz: Förderung „within the scope of the available budget and based on the district’s climate protection guidelines“ für Kommunen, Landwirtschaft, Unternehmen, Verbände und Privatinitiativen; Haushalte nur Energieberatung über die Energieagentur Brandenburg."
+      },
+      {
+        "url": "https://www.amt-brueck.de/seite/188535/webseitenfoerderprogramm-des-amtes-brueck.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Webseitenfoerderprogramm des Amtes Brück - Amt Brück. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -76349,7 +76847,7 @@
   {
     "regionId": "12063088",
     "name": "Friesack",
-    "checkedAt": "2026-09-28T04:18:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-27T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -76376,6 +76874,10 @@
       {
         "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
         "finding": "28.09.2026 live: Kreisprogramm Stecker-Solargeräte des Landkreises Havelland (havelland-stecker-solar, im Katalog, zuletzt 20.09.2026 geprüft) trägt weiter „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — Status pausiert, kein Rechenwert."
+      },
+      {
+        "url": "https://www.amt-friesack.de/seite/587261/gef%C3%B6rderte-projekte-im-amtsbereich-friesack.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): geförderte Projekte im Amtsbereich Friesack - Amt Friesack. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -78255,7 +78757,7 @@
   {
     "regionId": "09376147",
     "name": "Neunburg vorm Wald",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -78289,6 +78791,10 @@
       {
         "url": "https://neunburgvormwald.de/index.php?id=240&L=0",
         "finding": "Am 05.10.2026 gelesen: Sammlung allgemeiner Förderungen (Vereine, Vergünstigungen); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.neunburgvormwald.de/index.php?id=183&amp;L=0",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Kommunales Förder- und Geschäftsflächenprogramm; Breitband Förderverfahren; Fördermöglichkeiten. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -78469,7 +78975,7 @@
   {
     "regionId": "09376169",
     "name": "Stulln",
-    "checkedAt": "2026-09-29T09:50:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -78485,6 +78991,10 @@
       {
         "url": "https://www.stulln.de/rathaus-buergerservice/information/lebenslagen/lebenslage/finanzielle-hilfen-und-foerderprogramme-179",
         "finding": "29.09.2026: Lebenslagen-Seite „Finanzielle Hilfen und Förderprogramme“ ist ein allgemeiner Behördenwegweiser ohne gemeindliches Energieprogramm."
+      },
+      {
+        "url": "https://www.stulln.de/rathaus-buergerservice/information/lebenslagen/lebenslage/finanzielle-hilfen-und-foerderprogramme-179",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Gemeinde Stulln: Finanzielle Hilfen und Förderprogramme. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -81426,7 +81936,7 @@
   {
     "regionId": "13075136",
     "name": "Ueckermünde",
-    "checkedAt": "2026-10-01T06:02:36Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -81443,6 +81953,14 @@
       {
         "url": "https://www.ueckermuende.de/politik-verwaltung/gefoerderte-massnahmen/",
         "finding": "01.10.2026: geförderte Vorhaben der Stadt (Fahrradladeinfrastruktur, Ladesäule u. a.) — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.ueckermuende.de/bauen-wirtschaft/gefoerderte-massnahmen",
+        "finding": "Im Original gelesen (13.10.2026): Liste der für die Stadt geförderten Projekte (Fördermittelhinweise); kein Programm für Haushalte. Beleg: „Geförderte Maßnahmen“."
+      },
+      {
+        "url": "https://www.ueckermuende.de/portal/seiten/foerderung-altstadtsanierung-900000226-34850.html?brotID=900000203&naviID=900000203&rubrik=900000001",
+        "finding": "Im Original gelesen (13.10.2026): Übersicht für Altstadt-Eigentümer: Bundes- und Landesprogramme (BEG, KfW, LFI, Denkmalpflege) plus Städtebaumittel nur für Notsicherungen; keine städtische Förderung für PV, Speicher, Balkon oder Wärmepumpe. Beleg: „Aufgrund des sehr begrenzt verfügbaren Budgets werden i. d. R. nur Notsicherungen gefördert.“."
       }
     ],
     "sources": [
@@ -81469,6 +81987,18 @@
         "disposition": "reviewed",
         "reason": "Gelesen: Fördervorhaben der Stadt, kein Haushaltszuschuss.",
         "evidenceUrl": "https://www.ueckermuende.de/politik-verwaltung/gefoerderte-massnahmen/"
+      },
+      {
+        "url": "ueckermuende.de/bauen-wirtschaft/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Liste der für die Stadt geförderten Projekte (Fördermittelhinweise); kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.ueckermuende.de/bauen-wirtschaft/gefoerderte-massnahmen"
+      },
+      {
+        "url": "ueckermuende.de/portal/seiten/foerderung-altstadtsanierung-900000226-34850.html?brotID=900000203&naviID=900000203&rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Übersicht für Altstadt-Eigentümer: Bundes- und Landesprogramme (BEG, KfW, LFI, Denkmalpflege) plus Städtebaumittel nur für Notsicherungen; keine städtische Förderung für PV, Speicher, Balkon oder Wärmepumpe.",
+        "evidenceUrl": "https://www.ueckermuende.de/portal/seiten/foerderung-altstadtsanierung-900000226-34850.html?brotID=900000203&naviID=900000203&rubrik=900000001"
       }
     ]
   },
@@ -81873,7 +82403,7 @@
   {
     "regionId": "13075060",
     "name": "Kemnitz",
-    "checkedAt": "2026-10-01T06:49:03Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -81890,6 +82420,10 @@
       {
         "url": "https://www.amtlubmin.de/",
         "finding": "01.10.2026: Das Menü des Amts (39 Einträge) hat außer „Förderprojekte“ keinen Förder-, Klima- oder Energiebereich; die Seite hat keine Volltextsuche."
+      },
+      {
+        "url": "https://www.amtlubmin.de/seite/386991/f%C3%B6rderprojekte.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprojekte im Amt Lubmin - Amt Lubmin. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -82250,7 +82784,7 @@
   {
     "regionId": "13075105",
     "name": "Pasewalk",
-    "checkedAt": "2026-10-01T06:49:03Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -82268,6 +82802,10 @@
       {
         "url": "https://www.pasewalk.de/?s=Solar",
         "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): sandfoerderschlauchturm e. V. – Stadt Pasewalk; Freunde und Förderer des Gymnasiums Pasewalk 1908 e. V. – Stadt Pasewalk. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -82415,7 +82953,7 @@
   {
     "regionId": "13075138",
     "name": "Viereck",
-    "checkedAt": "2026-10-01T06:49:03Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -82433,6 +82971,10 @@
       {
         "url": "https://www.pasewalk.de/?s=Solar",
         "finding": "01.10.2026: Die Volltextsuche (auch „Balkon“, „Photovoltaik“, „Waermepumpe“, „Zuschuss“, „Klima“) liefert nur Bebauungspläne für Solarparks, Vergabebekanntmachungen sowie Lasten-/Mietzuschuss (Wohngeld); kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.pasewalk.de/orte/sandfoerderschlauchturm-e-v",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): sandfoerderschlauchturm e. V. – Stadt Pasewalk. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -82965,7 +83507,7 @@
   {
     "regionId": "13074021",
     "name": "Gadebusch",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -83019,6 +83561,10 @@
       {
         "url": "https://gadebusch.de/barrierefreiheit/barriere_melden.html?url=https%3A%2F%2Fwww.gadebusch.de%2Fstadt-gadebusch%2Fklimaschutz%2Fenergie-und-foerdermittelberatung-fuer-privathaushalte%2F",
         "finding": "Am 09.10.2026 im Original gelesen: Formular „Barriere melden“ (nur der Rücksprung zeigt auf die Seite Energie- und Fördermittelberatung) — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Förderprojekte | Amt Gadebusch. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -83809,7 +84355,7 @@
   {
     "regionId": "13074054",
     "name": "Mühlen Eichsen",
-    "checkedAt": "2026-10-01T08:20:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -83859,6 +84405,10 @@
       {
         "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
         "finding": "EU-Publizität kommunaler Förderprojekte (EFRE/ESF), keine Förderung für Privathaushalte"
+      },
+      {
+        "url": "https://www.gadebusch.de/verwaltung/foerderprojekte/eu-foerderprojekte",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 2 Seite(n)): Förderprojekte | Amt Gadebusch; Barriere melden | Amt Gadebusch. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -84919,7 +85469,7 @@
   {
     "regionId": "14625240",
     "name": "Hoyerswerda",
-    "checkedAt": "2026-10-06T14:15:38Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -84968,6 +85518,10 @@
       {
         "url": "https://www.hoyerswerda.de/stadtleben/stadtentwicklung/efre-foerderung",
         "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks live neu gelesen: EFRE-Projekte der Stadt im Programm NiSE 2021–2027 (Stadtentwicklung), kein Zuschuss an Privathaushalte für PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Ergebnis unverändert."
+      },
+      {
+        "url": "https://www.hoyerswerda.de/kategorie/foerderprogramme",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Förderprogramme › Hoyerswerda; förderprogramm › Hoyerswerda. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -85152,7 +85706,7 @@
   {
     "regionId": "14625310",
     "name": "Lauta",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -85176,6 +85730,10 @@
       {
         "url": "https://lauta.de/foerderprogramme.html",
         "finding": "Am 09.10.2026 im Original gelesen: LEADER „Lausitzer Seenland“ und Landkreis-Investitionsprogramm „Barrierefreies Bauen“ — keine Energieförderung für Haushalte."
+      },
+      {
+        "url": "https://www.lauta.de/files/inhalte/pdf/Sonstiges-tempor%C3%A4r/Energetisches%20Quartierskonzept/Foerderung-von-elektrisch-betriebenen-Waermepumpen.pdf",
+        "finding": "Im Original gelesen (13.10.2026): Infoblatt aus dem Quartierskonzept (2023) über die Bundesförderung; Kontakt Energieagentur Landkreis Bautzen; keine Förderung der Stadt Lauta. Beleg: „kann einen vergleichsweise hohen Zuschuss vom Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) erhalten“."
       }
     ],
     "sources": [
@@ -85184,6 +85742,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen (01.10.2026): „Foerderprogramme / Ideenwettbewerbe - Stadt Lauta und seine Ortsteile“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte.",
         "evidenceUrl": "https://lauta.de/foerderprogramme.html"
+      },
+      {
+        "url": "lauta.de/files/inhalte/pdf/Sonstiges-tempor%C3%A4r/Energetisches%20Quartierskonzept/Foerderung-von-elektrisch-betriebenen-Waermepumpen.pdf",
+        "disposition": "reviewed",
+        "reason": "Infoblatt aus dem Quartierskonzept (2023) über die Bundesförderung; Kontakt Energieagentur Landkreis Bautzen; keine Förderung der Stadt Lauta.",
+        "evidenceUrl": "https://www.lauta.de/files/inhalte/pdf/Sonstiges-tempor%C3%A4r/Energetisches%20Quartierskonzept/Foerderung-von-elektrisch-betriebenen-Waermepumpen.pdf"
       }
     ]
   },
@@ -85621,7 +86185,7 @@
   {
     "regionId": "14625590",
     "name": "Steinigtwolmsdorf",
-    "checkedAt": "2026-10-01T14:05:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -85650,6 +86214,10 @@
       {
         "url": "https://steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html?modus=drucken",
         "finding": "Im Original gelesen (01.10.2026): „Fördermittel - Gemeinde Steinigtwolmsdorf“ – Seite zu kommunalen bzw. LEADER-/EU-/Städtebauprojekten; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.steinigtwolmsdorf.de/seite/644904/f%C3%B6rdermittel.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Fördermittel - Gemeinde Steinigtwolmsdorf. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -85965,7 +86533,7 @@
   {
     "regionId": "14625170",
     "name": "Großharthau",
-    "checkedAt": "2026-10-01T17:30:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -86002,6 +86570,10 @@
       {
         "url": "https://grossharthau.de/gefoerderte-baumassnahmen-und-projekte-2023-old",
         "finding": "Am 01.10.2026 gelesen: kommunale Bau-, Städtebau-, Wirtschafts-, Ehrenamts- oder Projektförderung; kein Begriff Photovoltaik, Balkonkraftwerk, Steckersolar, Speicher oder Wärmepumpe als Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.grossharthau.de/gefoerderte-baumassnahmen-und-projekte-2-old",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 3 Seite(n)): Geförderte Projekte – Grossharthau; 2022 – Grossharthau; 2023 – Grossharthau. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -86180,7 +86752,7 @@
   {
     "regionId": "14625530",
     "name": "Schmölln-Putzkau",
-    "checkedAt": "2026-10-09T16:07:36Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -86224,6 +86796,10 @@
       {
         "url": "https://schmoelln-putzkau.de/neuauflage-des-foerderprogramms-regionales-wachstum",
         "finding": "Am 09.10.2026 im Original gelesen: Landesprogramm „Regionales Wachstum“ für Unternehmen (Zuschuss bis 30/40/50 %, max. 200.000 €) — nicht für Privathaushalte."
+      },
+      {
+        "url": "https://www.schmoelln-putzkau.de/foerderung-der-energieberatung-fuer-wohngebaeude",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 5 Seite(n)): Förderung der Energieberatung für Wohngebäude | Schmölln-Putzkau in der Oberlausitz; Leader - Fördermittel für den ländlichen Raum | Schmölln-Putzkau in der Oberlausitz; Fördermittelanträge nach RL SWW/2009 (Ortsteil Putzkau) | Schmölln-Putzkau in der Oberlaus; Fördermittel für den ländlichen Raum LEADER Region Bautzener Oberland | Schmölln-Putzkau i; Fördermittel für den ländlichen Raum – Neuer Projektaufruf der LEADER-Region Bautzener Obe. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -86517,7 +87093,7 @@
   {
     "regionId": "08226018",
     "name": "Eppelheim",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2026-12-31T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -86538,6 +87114,10 @@
       {
         "url": "https://eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpeneignungscheck",
         "finding": "Am 05.10.2026 gelesen: Beratungsangebot (Eignungs-Check der KLiBA), kein Gerätezuschuss; das Balkonkraftwerk-Programm Eppelheims ist gesondert katalogisiert."
+      },
+      {
+        "url": "https://www.eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpen-Eignungs-Check",
+        "finding": "Im Original gelesen (13.10.2026): Bezuschusster Wärmepumpen-Eignungs-Check (Beratung vor Ort); kein Zuschuss zur Anschaffung — nicht rechenbar, Balkon-Programm bleibt unverändert. Beleg: „Ihre Eigenbeteiligung beträgt 71 Euro. Die restlichen Kosten (250 Euro) übernimmt die Stadt.“."
       }
     ],
     "sources": [
@@ -86558,6 +87138,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Beratungsangebot (Eignungs-Check der KLiBA), kein Gerätezuschuss; das Balkonkraftwerk-Programm Eppelheims ist gesondert katalogisiert.",
         "evidenceUrl": "https://eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpeneignungscheck"
+      },
+      {
+        "url": "eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpen-Eignungs-Check",
+        "disposition": "reviewed",
+        "reason": "Bezuschusster Wärmepumpen-Eignungs-Check (Beratung vor Ort); kein Zuschuss zur Anschaffung — nicht rechenbar, Balkon-Programm bleibt unverändert.",
+        "evidenceUrl": "https://www.eppelheim.de/Leben-Wohnen/Energie-Klima/Waermepumpen-Eignungs-Check"
       }
     ]
   },
@@ -86778,7 +87364,7 @@
   {
     "regionId": "08226095",
     "name": "Walldorf",
-    "checkedAt": "2026-10-09T18:15:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-01-04T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -86836,6 +87422,10 @@
       {
         "url": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/stecker-solaranlage",
         "finding": "Am 06.10.2026 nach Änderung des Seitenabdrucks (vier Walldorfer Förderseiten) live neu gelesen: Stecker-Solar-Seite verlinkt unverändert die Richtlinie 17._RL_Balkonkraftwerk_2026 („50 % der anrechenbaren Kosten, höchstens jedoch 300 EUR je Wohneinheit“, in Kraft 01.01.2026 bis 31.12.2027); Parkplatzüberdachungen, Solarthermie und Gewerbe-Seite unverändert ohne Bezug zu privater PV/Speicher/Balkon/Wärmepumpe. Katalog walldorf-klimaschutz bleibt."
+      },
+      {
+        "url": "https://www.walldorf.de/nachhaltigkeit/erneuerbare-energien/photovoltaik",
+        "finding": "Im Original gelesen (13.10.2026): PV-Seite für Gewerbetreibende: pauschal bis 10.000 € (100 €/kWp) für Unternehmen und Asbestsanierung an Nichtwohngebäuden; Privathaushalte deckt der bestehende Eintrag walldorf-klimaschutz ab. Beleg: „Die Stadt Walldorf fördert auf kommunaler Ebene die Errichtung von PV-Anlagen – auch für Unternehmen.“."
       }
     ],
     "sources": [
@@ -86880,6 +87470,12 @@
         "disposition": "reviewed",
         "reason": "Gewerbeförderung, nicht privater Haushalt.",
         "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/spalte-3/foerderprogramme/alle-foerderprogramme/"
+      },
+      {
+        "url": "walldorf.de/nachhaltigkeit/erneuerbare-energien/photovoltaik",
+        "disposition": "reviewed",
+        "reason": "PV-Seite für Gewerbetreibende: pauschal bis 10.000 € (100 €/kWp) für Unternehmen und Asbestsanierung an Nichtwohngebäuden; Privathaushalte deckt der bestehende Eintrag walldorf-klimaschutz ab.",
+        "evidenceUrl": "https://www.walldorf.de/nachhaltigkeit/erneuerbare-energien/photovoltaik"
       }
     ]
   },
@@ -88335,7 +88931,7 @@
   {
     "regionId": "08226055",
     "name": "Neckarbischofsheim",
-    "checkedAt": "2026-10-05T18:30:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-01-03T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -88353,6 +88949,10 @@
       {
         "url": "https://www.neckarbischofsheim.de/rathaus-service/dienstleistungen-a-z/landesprogramm-staerke-informationen-und-foerderung-erhalten/",
         "finding": "service-bw-Text zum Landesprogramm STÄRKE (Familienbildung), kein Energieprogramm."
+      },
+      {
+        "url": "https://www.neckarbischofsheim.de/rathaus-service/dienstleistungen-a-z/landesprogramm-staerke-informationen-und-foerderung-erhalten",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Landesprogramm STÄRKE - Informationen für Eltern erhalten. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -88544,7 +89144,7 @@
   {
     "regionId": "08226048",
     "name": "Mauer",
-    "checkedAt": "2026-10-06T06:05:00Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-01-05T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -88557,6 +89157,14 @@
       {
         "url": "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html",
         "finding": "Am 06.10.2026 gelesen: „Der Gemeinderat hat eine Förderung in Höhe von 10 % der Anschaffungskosten/Anlage (max. 100 €) beschlossen.“ Weitere Abschnitte nur Solarkataster und Hinweise, keine weitere Förderung."
+      },
+      {
+        "url": "https://www.gemeinde-mauer.de/texte/seite.php?id=662274",
+        "finding": "Im Original gelesen (13.10.2026): Klimaschutzseite der Gemeinde mit dem bekannten Balkonkraftwerk-Zuschuss; deckungsgleich mit mauer-balkonkraftwerke. Beleg: „Förderung in Höhe von 10 % der Anschaffungskosten/Anlage (max. 100 €)“."
+      },
+      {
+        "url": "https://www.gemeinde-mauer.de/veranstaltungen/2793416/2026/10/05/kliba-energiespartipp.html",
+        "finding": "Im Original gelesen (13.10.2026): Veranstaltungshinweis der Klimaschutz- und Energieberatungsagentur; kein Förderprogramm. Beleg: „KliBA-Energiespartipp“."
       }
     ],
     "sources": [
@@ -88565,6 +89173,18 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzseite am 06.10.2026 gelesen; Programm wie im Katalog.",
         "evidenceUrl": "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html"
+      },
+      {
+        "url": "gemeinde-mauer.de/texte/seite.php?id=662274",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzseite der Gemeinde mit dem bekannten Balkonkraftwerk-Zuschuss; deckungsgleich mit mauer-balkonkraftwerke.",
+        "evidenceUrl": "https://www.gemeinde-mauer.de/texte/seite.php?id=662274"
+      },
+      {
+        "url": "gemeinde-mauer.de/veranstaltungen/2793416/2026/10/05/kliba-energiespartipp.html",
+        "disposition": "reviewed",
+        "reason": "Veranstaltungshinweis der Klimaschutz- und Energieberatungsagentur; kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-mauer.de/veranstaltungen/2793416/2026/10/05/kliba-energiespartipp.html"
       }
     ]
   },
@@ -88598,7 +89218,7 @@
   {
     "regionId": "08226085",
     "name": "Sinsheim",
-    "checkedAt": "2026-10-06T06:05:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-01-05T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -88623,6 +89243,10 @@
       {
         "url": "https://www.sinsheim.de/wirtschaft-bauen-umwelt/wirtschaft/wirtschaftsfoerderung/foerderprogramm",
         "finding": "Am 06.10.2026 gelesen: Wirtschaftsförderungsprogramm „Gründe. Belebe. Sinsheim.“ für Gewerbemieten in der Innenstadt — keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://www.sinsheim.de/wirtschaft-bauen-umwelt/wirtschaft/wirtschaftsfoerderung/foerderprogramm",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Förderprogramm: Stadt Sinsheim. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -88861,7 +89485,7 @@
   {
     "regionId": "07315000",
     "name": "Mainz",
-    "checkedAt": "2026-10-07T06:04:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-01-05T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -88883,6 +89507,10 @@
       {
         "url": "https://www.mainzer-stiftung.de/foerderprogramme/photovoltaik-batteriespeicher/",
         "finding": "Katalogeintrag mainz-kipki-speicher (Mainzer Stiftung, Speicher 2025) steht auf ausgeschöpft ohne Abzug; Programmseite seit 12.09.2026 auf „Über uns“ umgeleitet, unverändert seit den Prüfungen vom 17./20.09.2026."
+      },
+      {
+        "url": "https://www.mainz.de/vv/medien/internet/ganztagsfoerderungsgesetz",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Informationen zum Ganztagsförderungsgesetz (GaFöG) | Landeshauptstadt Mainz. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -91508,7 +92136,7 @@
   {
     "regionId": "16074094",
     "name": "Stadtroda",
-    "checkedAt": "2026-10-10T00:19:00Z",
+    "checkedAt": "2026-10-13T20:20:54Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -91540,6 +92168,10 @@
       {
         "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
         "finding": "Druckfassung derselben Seite; die Normalfassung (Webseitenförderprogramm „Stadtroda vernetzt“, kostenlose Webseiten für Vereine, keine Energieförderung) wurde am 10.10.2026 gelesen."
+      },
+      {
+        "url": "https://www.stadtroda.de/seite/204179/webseitenfoerderprogramm-der-stadt-stadtroda.html",
+        "finding": "Nach Seitenänderung erneut gelesen (13.10.2026, 1 Seite(n)): Stadtverwaltung Stadtroda - Webseitenfoerderprogramm der Stadt Stadtroda. Keine neue oder geänderte Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ergebnis unverändert."
       }
     ],
     "sources": [
@@ -92450,7 +93082,7 @@
   {
     "regionId": "07131077",
     "name": "Sinzig",
-    "checkedAt": "2026-10-10T08:18:30Z",
+    "checkedAt": "2026-10-13T20:10:00Z",
     "recheckAt": "2027-01-08T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -92464,6 +93096,14 @@
       {
         "url": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm",
         "finding": "Nr. 2 „endet nach Verausgabung … spätestens jedoch am 31.03.2026“; Nr. 4.4 „Die Förderhöhe beträgt maximal 150€ pro Haushalt oder Verein.“"
+      },
+      {
+        "url": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm",
+        "finding": "Im Original gelesen (13.10.2026): KIPKI-Richtlinie, 2. Novellierung; bereits als beendetes Programm sinzig-kipki im Katalog (Ende spätestens 31.03.2026). Beleg: „gemäß Stadtratsbeschluss vom: 10.10.2024“."
+      },
+      {
+        "url": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm&sds=1",
+        "finding": "Im Original gelesen (13.10.2026): Gleiche Datei wie ohne &sds=1; KIPKI-Programm beendet, im Katalog als beendet. Beleg: „gemäß Stadtratsbeschluss vom: 10.10.2024“."
       }
     ],
     "sources": [
@@ -92478,6 +93118,18 @@
         "disposition": "reviewed",
         "reason": "KIPKI-Bürgerprogramm mit Balkon-Teil (bis 150 €), beendet spätestens 31.03.2026; Richtlinie gelesen 10.10.2026.",
         "evidenceUrl": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm"
+      },
+      {
+        "url": "sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm",
+        "disposition": "reviewed",
+        "reason": "KIPKI-Richtlinie, 2. Novellierung; bereits als beendetes Programm sinzig-kipki im Katalog (Ende spätestens 31.03.2026).",
+        "evidenceUrl": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm"
+      },
+      {
+        "url": "sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm&sds=1",
+        "disposition": "reviewed",
+        "reason": "Gleiche Datei wie ohne &sds=1; KIPKI-Programm beendet, im Katalog als beendet.",
+        "evidenceUrl": "https://www.sinzig.de/pdf-dokumente/dokumente-leben-in-sinzig/klima-hochwasserschutz-stadtwald/klimaschutz-und-klimaanpassung/foerderrichtlinie-kipki-novellierung-2.pdf?cid=2lm&sds=1"
       }
     ]
   },
@@ -92766,6 +93418,41 @@
         "disposition": "reviewed",
         "reason": "09.10.2026 gelesen: Landesförderbescheid 20,2 Mio € für die Kläranlage Dümpelfeld, kommunale Infrastruktur; kein Haushaltszuschuss.",
         "evidenceUrl": "https://www.adenau.de/adenau.de/verbandsgemeinde/abwasserwerk/wiederaufbau-klaeranlage/foerderbescheiduebergabe/"
+      }
+    ]
+  },
+  {
+    "regionId": "01055016",
+    "name": "Grömitz",
+    "checkedAt": "2026-10-14T06:20:00Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grömitz (Kreis Ostholstein, Verwaltungsgemeinschaft mit Dahme, Grube, Kellenhusen) führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die einzige erfasste Quelle ist eine Potentialanalyse für Photovoltaik-Freiflächenanlagen (Bauleitplanung, 2022), kein Förderprogramm für Haushalte. Die Volltextsuche der Gemeindewebsite findet unter Förderung, Zuschuss, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe und Klimaschutz nur Kita-, Wohngeld-, Satzungs- und Bauleitplanungstreffer. Für den Kreis Ostholstein ist kein Haushaltsprogramm katalogisiert. Keine laufende kommunale Förderung gefunden (Stand 14.10.2026).",
+    "searches": [
+      "14.10.2026 Volltextsuche groemitz.eu: „Förderung“ (2 Seiten), „Zuschuss“, „Balkonkraftwerk“ (0 Treffer), „Photovoltaik“, „Solar“, „Wärmepumpe“ (0 Treffer), „Klimaschutz“ — Treffer gesichtet",
+      "Katalog: kein Programm für den Kreis Ostholstein oder die Gemeinde Grömitz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.groemitz.eu/fileadmin/Dateien/Groemitz/Bauen___Wohnen/Potentialanalyse_fuer_Photovoltaik-Freiflaechenanlagen/221025_PV_Potentialanalyse_Groemitz_BeschlussGV.PDF",
+        "finding": "14.10.2026 im Original gelesen: „Gemeindeweite Potentialanalyse zur Eignung für Photovoltaik-Freiflächenanlagen“ (Planungsbüro Ostholstein, Stand 25.10.2022) — Flächensuche für Solarparks, kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.groemitz.eu/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "14.10.2026: keine Treffer."
+      },
+      {
+        "url": "https://www.groemitz.eu/suche?tx_kesearch_pi1%5Bsword%5D=Zuschuss",
+        "finding": "14.10.2026: nur Kita-Beitragsermäßigung, Wohngeld (Miet-/Lastenzuschuss), Haushaltsmeldung 2025, Satzungen — kein Energie-Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "groemitz.eu/fileadmin/Dateien/Groemitz/Bauen___Wohnen/Potentialanalyse_fuer_Photovoltaik-Freiflaechenanlagen/221025_PV_Potentialanalyse_Groemitz_BeschlussGV.PDF",
+        "disposition": "reviewed",
+        "reason": "Potentialanalyse für Photovoltaik-Freiflächenanlagen (Bauleitplanung 2022), kein Förderprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.groemitz.eu/fileadmin/Dateien/Groemitz/Bauen___Wohnen/Potentialanalyse_fuer_Photovoltaik-Freiflaechenanlagen/221025_PV_Potentialanalyse_Groemitz_BeschlussGV.PDF"
       }
     ]
   }
