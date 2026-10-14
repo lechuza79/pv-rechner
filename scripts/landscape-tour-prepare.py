@@ -66,6 +66,8 @@ def main(id):
  configuration=json.loads((out/'preparation.json').read_text()) if (out/'preparation.json').exists() else {}
  town_name=configuration.get('townName','Kirchhatten' if id=='03458009' else name)
  towns=[e for e in elements if e['type']=='node' and e.get('tags',{}).get('name')==town_name and e['tags'].get('place') in ['town','city','village','hamlet']]
+ # The worker may choose a mapped seat of another place class (suburb, municipality); take exactly that node.
+ if not towns and configuration.get('townId') is not None:towns=[e for e in elements if e['type']=='node' and str(e['id'])==str(configuration['townId']) and e.get('tags',{}).get('name')==town_name]
  if not towns:raise ValueError('No sourced town point: '+name)
  town=towns[0];east,north=tr.transform(town['lon'],town['lat']);stops=[dict(id='town',name=configuration.get('townLabel',name),kind='town',x=0,z=0,zoom=12,cta='Nach '+configuration.get('townLabel',name))]
  rows=register['turbines'];remaining=set(range(len(rows)));groups=[]

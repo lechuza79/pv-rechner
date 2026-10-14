@@ -469,7 +469,7 @@ def main():
         osm_source = states.osm_page(adapter,args.osm_file)
         osm_hash = shared.digest(args.osm_file)
         shared.save(out/'solar-enrichment.geo.json',dict(type='FeatureCollection',features=features,researchLeads=leads,checkedAt=solar['checkedAt'],sourceUrl=osm_source,sourceSha256=osm_hash))
-        shared.save(out/'preparation.json',dict(prefix=prefix,townName=town['tags']['name'],townLabel=town['tags']['name'],weatherMunicipality=ags,
+        shared.save(out/'preparation.json',dict(prefix=prefix,townName=town['tags']['name'],townId=town['id'],townLabel=town['tags']['name'],weatherMunicipality=ags,
             solarFootprints={},solarRegisterCache='inputs/national-register/solar.json',buildingLicense=adapter['buildingLicense'],terrainLicense=adapter['terrainLicense'],
             stateAdapter=adapter['key'],sourceReference='EPSG:%d'%adapter['native']))
         document = dict(elements=context,sourceUrl=osm_source,sourceSha256=osm_hash,sourceFile=args.osm_file.name)
