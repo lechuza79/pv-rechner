@@ -27,20 +27,55 @@ Aussendung" und die Zeilen „Verweise" und „Autorität" kommen von dort.
   Briefe), 23 Beiträge, 20 mit Link.
 - **22 belegte Links**: 5 Gemeinde-Websites (Berkenthin, Heringen, Nidda, Riedstadt,
   Trier), 12 Presse- und andere Beiträge, 3 Seiten, die nur Besucher schicken.
-- **Autorität: Rang 0 (Juli) → 99 (Aug.) → 110 (Sep.) → 137 (Mitte Okt.).** Getragen
-  fast allein von zwei Links aus dem Gemeinde-Outreach: meindorfnet.de (96,
-  Wallertheims Dorf-App) und berkenthin.de (95). Presse-Links tragen wenig
-  (lebendiges-neuwied.de 10, radiomk.de 7, wetterau.news 3), die übrigen Domains
-  haben Rang 0.
+- **Autorität: Rang 0 (Juli) → 99 (Aug.) → 110 (Sep.) → 137 (Mitte Okt.).**
+  Linkgewicht (was der einzelne Link weitergibt) kommt fast nur von zwei Links:
+  berkenthin.de (Startseite, Gewicht 95, Domain 217) und meindorfnet.de
+  (Wallertheims Dorf-App, 96, Domain 261). Stärkere Domains geben bisher wenig oder
+  nichts: rheinpfalz.de (Domain 522) und nachrichten-kl.de stehen mit tiefen
+  Artikelseiten im Index, Gewicht 0; trier.de (422) und kaiserslautern.de (390)
+  stehen gar nicht im Index — Trier ist nur über Besucher belegt.
+- Vorsicht beim Lesen: Der „Rang" in der Liste der verweisenden Domains ist das
+  Linkgewicht, NICHT die Stärke der Domain (14.10. verwechselt, korrigiert).
 - Wirkung je Kanal: Der erste Gemeindeschub (Hessen/RLP/Saarland, August) brachte
   mit 78 Briefen 12 Links; die großen Kreisschübe ab Oktober (411 Briefe) bisher 1.
   Die Pressemitteilung (134 Mails) brachte 6 Links, alle mit geringem Rang.
 
 ### Was wir daraus lernen
 
-- Ein Link einer Gemeinde oder ihrer Dorf-/App-Plattform wiegt mehr als ein Dutzend
-  Lokalmedien-Links. Der Brief zielt richtig, wenn er die Gemeinde zur
-  Veröffentlichung auf der EIGENEN Seite bringt.
+- Entscheidend ist, WO der Link steht: Berkenthins Startseiten-Link wiegt bisher
+  mehr als Artikel tief in deutlich stärkeren Domains. Ob Trier und Kaiserslautern
+  nachziehen, wenn der Index ihre Seiten erfasst, ist offen; beim nächsten Stand
+  nachsehen.
 - Die Antwortquote der Kreisschübe ist bisher deutlich niedriger als im August.
   Ungeprüft, ob das am Kurzbrief, an der Jahreszeit oder an der fehlenden Zeit
   (erst 1–8 Tage alt) liegt; Vergleich nach 28 Tagen.
+
+### Alle belegten Links, 14.10.2026 abends
+
+23 belegt (neu: Kalkar, Website der Stadt, am Versandtag selbst). Stärke = Rang der
+Domain, Gewicht = was der Link im Index an uns weitergibt.
+
+| Domain | Stärke | Gewicht | Art |
+|---|---|---|---|
+| app.meindorfnet.de (Wallertheim) | 239 | 96 | Dorf-App |
+| berkenthin.de | 217 | 95 | Gemeinde, Startseite |
+| lebendiges-neuwied.de | 393 | 10 | Presse |
+| radiomk.de | 393 | 7 | Presse |
+| wetterau.news | 423 | 3 | Presse |
+| rheinpfalz.de, nidda.de, radio901.de, herzogtum-direkt.de, heringen.de, suedhessen.app, homburg1.de, nachrichten-kl.de, gude.news | 203–522 | 0 | im Index, ohne Gewicht |
+| ln-online.de, trier.de, lokalo.de, kalkar.de, riedstadt.de, niedere-boerde.de | 233–434 | – | nicht im Index |
+| github.com, beacons.ai, Teams | – | – | nur Besucher, kein Outreach |
+
+### Zwei Quellen für Links (14.10.2026)
+
+- **DataForSEO** hat einen eigenen Crawler (DataForSeoBot) und eine eigene
+  Backlink-Datenbank; er übernimmt nichts von Google. Kennt am 14.10. 48 Domains,
+  davon ~35 Spam. Die Seiten, die er nicht kennt (Trier, Kalkar, Riedstadt,
+  LN, Lokalo), sperren seinen Crawler nicht — er war schlicht noch nicht dort.
+- **Google Search Console** (Eigenschaft `https://solar-check.io/`, nicht die
+  Domain-Eigenschaft; Bericht „Links", nur in der Weboberfläche): kennt am 14.10.
+  vier verweisende Websites — reddit.com (48), gude.news, wetterau.news,
+  sebastianschaeder.de. Der Bericht hinkt Wochen hinterher; keiner der
+  Gemeinde-Links steht dort bisher.
+- Bei jeder Auswertung beide nebeneinander halten; DataForSEO ist schneller und
+  breiter, Google ist die Sicht, die zählt.
