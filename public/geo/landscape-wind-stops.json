@@ -7595,5 +7595,192 @@
       "latitude": 51.71,
       "longitude": 14.05
     }
+  },
+  "12068052": {
+    "wind-1": {
+      "name": "Windanlagen bei Breddin",
+      "latitude": 52.89126,
+      "longitude": 12.24374
+    }
+  },
+  "12068072": {
+    "wind-1": {
+      "name": "Windanlagen bei Dabergotz",
+      "latitude": 52.90626,
+      "longitude": 12.70548
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Dabergotz",
+      "latitude": 52.91384,
+      "longitude": 12.73573
+    }
+  },
+  "12068181": {
+    "wind-1": {
+      "name": "Windanlagen bei Heiligengrabe",
+      "latitude": 53.14818,
+      "longitude": 12.42867
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Heiligengrabe",
+      "latitude": 53.21635,
+      "longitude": 12.44042
+    }
+  },
+  "12068188": {
+    "wind-1": {
+      "name": "Windanlagen bei Herzberg (Mark)",
+      "latitude": 52.9028,
+      "longitude": 13.00487
+    }
+  },
+  "12068264": {
+    "wind-1": {
+      "name": "Windanlagen bei Kyritz",
+      "latitude": 52.97542,
+      "longitude": 12.32969
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Kyritz",
+      "latitude": 52.90938,
+      "longitude": 12.25268
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Kyritz",
+      "latitude": 52.90426,
+      "longitude": 12.3753
+    }
+  },
+  "12068280": {
+    "wind-1": {
+      "name": "Windanlagen bei Lindow (Mark)",
+      "latitude": 53.04057,
+      "longitude": 13.01899
+    }
+  },
+  "12068306": {
+    "wind-1": {
+      "name": "Windanlagen bei Märkisch Linden",
+      "latitude": 52.9277,
+      "longitude": 12.71092
+    }
+  },
+  "12068320": {
+    "wind-1": {
+      "name": "Windanlagen bei Neuruppin",
+      "latitude": 52.91168,
+      "longitude": 12.74471
+    }
+  },
+  "12068324": {
+    "wind-1": {
+      "name": "Windanlagen bei Neustadt (Dosse)",
+      "latitude": 52.84986,
+      "longitude": 12.47582
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Neustadt (Dosse)",
+      "latitude": 52.89216,
+      "longitude": 12.38836
+    }
+  },
+  "12068372": {
+    "wind-1": {
+      "name": "Windanlagen bei Rüthnick",
+      "latitude": 52.90227,
+      "longitude": 13.01221
+    }
+  },
+  "12068417": {
+    "wind-1": {
+      "name": "Windanlagen bei Stüdenitz-Schönermark",
+      "latitude": 52.8978,
+      "longitude": 12.26923
+    }
+  },
+  "12068426": {
+    "wind-1": {
+      "name": "Windanlagen bei Temnitztal",
+      "latitude": 52.87971,
+      "longitude": 12.59938
+    }
+  },
+  "12068452": {
+    "wind-1": {
+      "name": "Windanlagen bei Walsleben",
+      "latitude": 52.94003,
+      "longitude": 12.68933
+    }
+  },
+  "12068468": {
+    "wind-1": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.14203,
+      "longitude": 12.4515
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.08878,
+      "longitude": 12.52114
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.2975,
+      "longitude": 12.33184
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.23591,
+      "longitude": 12.4141
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.22184,
+      "longitude": 12.746
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.21934,
+      "longitude": 12.44744
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.19832,
+      "longitude": 12.46904
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Wittstock/Dosse",
+      "latitude": 53.18143,
+      "longitude": 12.53872
+    }
+  },
+  "12068477": {
+    "wind-1": {
+      "name": "Windanlagen bei Wusterhausen/Dosse",
+      "latitude": 52.85394,
+      "longitude": 12.48802
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Wusterhausen/Dosse",
+      "latitude": 52.93331,
+      "longitude": 12.59959
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Wusterhausen/Dosse",
+      "latitude": 52.88229,
+      "longitude": 12.58436
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Wusterhausen/Dosse",
+      "latitude": 52.83672,
+      "longitude": 12.55592
+    }
+  },
+  "12068501": {
+    "wind-1": {
+      "name": "Windanlagen bei Zernitz-Lohm",
+      "latitude": 52.89357,
+      "longitude": 12.37823
+    }
   }
 }
