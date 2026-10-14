@@ -798,6 +798,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // customer); both deduct nothing.
   "elmshorn-klimaschutzfonds",
   "elmshorn-stadtwerke-co2",
+  // Added 14 Oct 2026: Klimafonds der Stadt Schenefeld (committee discretion,
+  // budget reservation, other-programmes exclusion); deducts nothing.
+  "schenefeld-klimafonds",
 ];
 
 /**
