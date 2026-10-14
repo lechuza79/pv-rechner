@@ -7452,5 +7452,148 @@
       "latitude": 53.25108,
       "longitude": 12.13262
     }
+  },
+  "12066008": {
+    "wind-1": {
+      "name": "Windanlagen bei Altdöbern",
+      "latitude": 51.62402,
+      "longitude": 13.98985
+    }
+  },
+  "12066052": {
+    "wind-1": {
+      "name": "Windanlagen bei Calau",
+      "latitude": 51.74195,
+      "longitude": 13.8805
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Calau",
+      "latitude": 51.73838,
+      "longitude": 14.00053
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Calau",
+      "latitude": 51.74164,
+      "longitude": 13.92907
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Calau",
+      "latitude": 51.6799,
+      "longitude": 13.87431
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Calau",
+      "latitude": 51.68931,
+      "longitude": 13.89224
+    }
+  },
+  "12066112": {
+    "wind-1": {
+      "name": "Windanlagen bei Großräschen",
+      "latitude": 51.60418,
+      "longitude": 14.06518
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Großräschen",
+      "latitude": 51.61153,
+      "longitude": 13.96792
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Großräschen",
+      "latitude": 51.60061,
+      "longitude": 13.88565
+    }
+  },
+  "12066176": {
+    "wind-1": {
+      "name": "Windanlagen bei Lauchhammer",
+      "latitude": 51.52485,
+      "longitude": 13.86115
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Lauchhammer",
+      "latitude": 51.47803,
+      "longitude": 13.77698
+    }
+  },
+  "12066196": {
+    "wind-1": {
+      "name": "Windanlagen bei Lübbenau/Spreewald",
+      "latitude": 51.81734,
+      "longitude": 13.9429
+    }
+  },
+  "12066226": {
+    "wind-1": {
+      "name": "Windanlagen bei Neu-Seeland",
+      "latitude": 51.60676,
+      "longitude": 14.07462
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Neu-Seeland",
+      "latitude": 51.54799,
+      "longitude": 14.16127
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Neu-Seeland",
+      "latitude": 51.62905,
+      "longitude": 14.12667
+    }
+  },
+  "12066285": {
+    "wind-1": {
+      "name": "Windanlagen bei Schipkau",
+      "latitude": 51.53627,
+      "longitude": 13.8615
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Schipkau",
+      "latitude": 51.53633,
+      "longitude": 13.92361
+    }
+  },
+  "12066304": {
+    "wind-1": {
+      "name": "Windanlagen bei Senftenberg",
+      "latitude": 51.48182,
+      "longitude": 13.92853
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Senftenberg",
+      "latitude": 51.5645,
+      "longitude": 14.0536
+    }
+  },
+  "12066320": {
+    "wind-1": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.75686,
+      "longitude": 14.09262
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.79779,
+      "longitude": 13.99542
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.73789,
+      "longitude": 14.01046
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.7209,
+      "longitude": 14.1068
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.72,
+      "longitude": 14.06
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Vetschau/Spreewald",
+      "latitude": 51.71,
+      "longitude": 14.05
+    }
   }
 }
