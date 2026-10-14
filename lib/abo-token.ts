@@ -201,3 +201,11 @@ export function abmeldeLink(basisUrl: string, aboId: string): string {
 export function einstellungenLink(basisUrl: string, aboId: string): string {
   return `${basisUrl}/abo/einstellungen?t=${encodeURIComponent(einstellungenToken(aboId))}`;
 }
+
+/** Deliberately unusable links for shareable previews; never sign a real subscriber into a preview. */
+export function aboVorschauLinks(basisUrl: string) {
+  return {
+    abmeldeUrl: `${basisUrl}/abo/abmelden?t=ungueltige-vorschau`,
+    einstellungenUrl: `${basisUrl}/abo/einstellungen?t=ungueltige-vorschau`,
+  };
+}

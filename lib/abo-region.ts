@@ -21,6 +21,7 @@ export async function aboRegion(regionId:string): Promise<{name: string; distric
 }
 
 export async function aboRegionPath(regionId:string):Promise<string|null> {
+  if (regionId === "de") return await aboRegion(regionId) ? "/solar-atlas" : null;
   if (regionId.startsWith('funding:')) {
     if (!await aboRegion(regionId)) return null;
     if (regionId.startsWith('funding:region:')) {
