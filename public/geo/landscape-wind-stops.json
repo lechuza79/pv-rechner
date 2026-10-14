@@ -7207,5 +7207,250 @@
       "latitude": 51.62639,
       "longitude": 13.34221
     }
+  },
+  "12070008": {
+    "wind-1": {
+      "name": "Windanlagen bei Bad Wilsnack",
+      "latitude": 53.0,
+      "longitude": 12.0
+    }
+  },
+  "12070028": {
+    "wind-1": {
+      "name": "Windanlagen bei Berge",
+      "latitude": 53.22845,
+      "longitude": 11.88305
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Berge",
+      "latitude": 53.24966,
+      "longitude": 11.80955
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Berge",
+      "latitude": 53.25,
+      "longitude": 11.89
+    }
+  },
+  "12070096": {
+    "wind-1": {
+      "name": "Windanlagen bei Gerdshagen",
+      "latitude": 53.23462,
+      "longitude": 12.21855
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gerdshagen",
+      "latitude": 53.21234,
+      "longitude": 12.24049
+    }
+  },
+  "12070125": {
+    "wind-1": {
+      "name": "Windanlagen bei Groß Pankow (Prignitz)",
+      "latitude": 53.13529,
+      "longitude": 12.10477
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Groß Pankow (Prignitz)",
+      "latitude": 53.06873,
+      "longitude": 12.06014
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Groß Pankow (Prignitz)",
+      "latitude": 53.07752,
+      "longitude": 12.20785
+    }
+  },
+  "12070149": {
+    "wind-1": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 52.99915,
+      "longitude": 12.10002
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 52.94306,
+      "longitude": 12.18247
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 52.9783,
+      "longitude": 12.31303
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 53.00944,
+      "longitude": 12.36604
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 52.91642,
+      "longitude": 12.24329
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Gumtow",
+      "latitude": 53.07548,
+      "longitude": 12.21678
+    }
+  },
+  "12070153": {
+    "wind-1": {
+      "name": "Windanlagen bei Halenbeck-Rohlsdorf",
+      "latitude": 53.26253,
+      "longitude": 12.30199
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Halenbeck-Rohlsdorf",
+      "latitude": 53.23569,
+      "longitude": 12.27486
+    }
+  },
+  "12070173": {
+    "wind-1": {
+      "name": "Windanlagen bei Karstädt",
+      "latitude": 53.14466,
+      "longitude": 11.801
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Karstädt",
+      "latitude": 53.21352,
+      "longitude": 11.80994
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Karstädt",
+      "latitude": 53.19891,
+      "longitude": 11.56592
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Karstädt",
+      "latitude": 53.23588,
+      "longitude": 11.63594
+    }
+  },
+  "12070266": {
+    "wind-1": {
+      "name": "Windanlagen bei Marienfließ",
+      "latitude": 53.30133,
+      "longitude": 12.18139
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Marienfließ",
+      "latitude": 53.33172,
+      "longitude": 12.02995
+    }
+  },
+  "12070280": {
+    "wind-1": {
+      "name": "Windanlagen bei Meyenburg",
+      "latitude": 53.29677,
+      "longitude": 12.21483
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Meyenburg",
+      "latitude": 53.27818,
+      "longitude": 12.30318
+    }
+  },
+  "12070296": {
+    "wind-1": {
+      "name": "Windanlagen bei Perleberg",
+      "latitude": 53.10137,
+      "longitude": 11.7961
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Perleberg",
+      "latitude": 53.13545,
+      "longitude": 11.82768
+    }
+  },
+  "12070300": {
+    "wind-1": {
+      "name": "Windanlagen bei Pirow",
+      "latitude": 53.2242,
+      "longitude": 11.89172
+    }
+  },
+  "12070302": {
+    "wind-1": {
+      "name": "Windanlagen bei Plattenburg",
+      "latitude": 53.0685,
+      "longitude": 12.04408
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Plattenburg",
+      "latitude": 52.94637,
+      "longitude": 12.17253
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Plattenburg",
+      "latitude": 53.04363,
+      "longitude": 11.97184
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Plattenburg",
+      "latitude": 52.98516,
+      "longitude": 12.07988
+    }
+  },
+  "12070316": {
+    "wind-1": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.13243,
+      "longitude": 12.1281
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.17863,
+      "longitude": 12.27962
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.13315,
+      "longitude": 12.2219
+    },
+    "wind-4": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.17914,
+      "longitude": 12.12184
+    },
+    "wind-5": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.22363,
+      "longitude": 12.20755
+    },
+    "wind-6": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.11182,
+      "longitude": 12.28246
+    },
+    "wind-7": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.12062,
+      "longitude": 12.20292
+    },
+    "wind-8": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.21204,
+      "longitude": 12.23064
+    },
+    "wind-9": {
+      "name": "Windanlagen bei Pritzwalk",
+      "latitude": 53.1245,
+      "longitude": 12.2734
+    }
+  },
+  "12070325": {
+    "wind-1": {
+      "name": "Windanlagen bei Putlitz",
+      "latitude": 53.30868,
+      "longitude": 12.02387
+    }
+  },
+  "12070393": {
+    "wind-1": {
+      "name": "Windanlagen bei Triglitz",
+      "latitude": 53.25108,
+      "longitude": 12.13262
+    }
   }
 }
