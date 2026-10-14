@@ -6319,5 +6319,22 @@
       "latitude": 51.37944,
       "longitude": 7.3275
     }
+  },
+  "05770036": {
+    "wind-1": {
+      "name": "Windanlagen bei Preußisch Oldendorf",
+      "latitude": 52.35973,
+      "longitude": 8.45712
+    },
+    "wind-2": {
+      "name": "Windanlagen bei Preußisch Oldendorf",
+      "latitude": 52.31076,
+      "longitude": 8.46931
+    },
+    "wind-3": {
+      "name": "Windanlagen bei Preußisch Oldendorf",
+      "latitude": 52.35388,
+      "longitude": 8.48128
+    }
   }
 }
