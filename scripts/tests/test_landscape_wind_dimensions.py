@@ -51,5 +51,28 @@ class WindDimensions(unittest.TestCase):
         self.assertEqual([b['id'] for b in scene['buildings']], ['station', 'far-tower', 'barn'])
 
 
+    def test_surveyed_wind_turbine_is_removed_wherever_it_stands(self):
+        # Hückelhoven: the surveyed towers stood 32 and 42 m from the register position.
+        def box(id, x, z, size, height, function=None):
+            h = size / 2
+            ring = [[x-h, 0, z-h], [x+h, 0, z-h], [x+h, height, z+h], [x-h, height, z+h]]
+            return dict(id=id, surfaces=[dict(points=ring)], **({'function': function} if function else {}))
+        scene = dict(turbines=[turbine('t', hub=149, rotor=136) | dict(x=0, z=0)],
+                     buildings=[box('surveyed', 42, 0, 4.9, 155.6, '51002_1220'),
+                                box('lone-surveyed', 900, 0, 4.9, 100, '51002_1220'),
+                                box('chimney', 40, 0, 4.9, 80, '51002_1251'),
+                                box('church', 60, 0, 8, 50)])
+        removed = dims.remove_towers(scene)
+        self.assertEqual([(r['buildingId'], r['rule']) for r in removed],
+                         [('surveyed', 'surveyed-wind-turbine'), ('lone-surveyed', 'surveyed-wind-turbine')])
+        self.assertEqual([b['id'] for b in scene['buildings']], ['chimney', 'church'])
+
+    def test_surveyed_wind_turbine_goes_even_without_register_turbines(self):
+        ring = [[0, 0, 0], [5, 0, 0], [5, 90, 5], [0, 90, 5]]
+        scene = dict(turbines=[], buildings=[dict(id='w', surfaces=[dict(points=ring)], function='51002_1220')])
+        self.assertEqual([r['buildingId'] for r in dims.remove_towers(scene)], ['w'])
+        self.assertEqual(scene['buildings'], [])
+
+
 if __name__ == '__main__':
     unittest.main()

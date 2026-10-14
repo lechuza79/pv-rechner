@@ -9,8 +9,11 @@ the scene and in data-gaps.json.
 
 LoD2 building data also models turbine towers as buildings. Drawn next to our
 own turbine they appear as a bare cylinder beside it, often with a different
-height. Slim, tall building bodies standing on a turbine position are removed
-and listed in data-gaps.json.
+height. Our turbines come from the register, so every body the survey itself
+labels as a wind turbine (ALKIS function 51002_1220) is removed, wherever it
+stands: register coordinates lie up to ~100 m from the surveyed tower. Data
+without that label falls back to slim, tall bodies on a turbine position.
+Every removal is listed in data-gaps.json.
 """
 import math
 import argparse
@@ -25,6 +28,7 @@ CAPACITY_TOLERANCE = .10
 TOWER_RADIUS = 15        # metres between building centre and turbine position
 TOWER_MAX_FOOTPRINT = 16 # widest tower base or foundation ring seen in LoD2
 TOWER_MIN_HEIGHT = 20    # transformer stations and sheds stay
+WIND_TURBINE_FUNCTION = '51002_1220'  # ALKIS Bauwerksfunktion 'Windrad'
 
 FIELDS = (('hub', 'hubMetres'), ('rotorMetres', 'rotorMetres'))
 
@@ -57,18 +61,21 @@ def estimate(turbine, pool):
 
 def tower_duplicates(scene):
     turbines = scene.get('turbines') or []
-    if not turbines:
-        return []
     found = []
     for building in scene.get('buildings') or []:
         points = [p for surface in building['surfaces'] for p in surface['points']]
         xs, ys, zs = [p[0] for p in points], [p[1] for p in points], [p[2] for p in points]
         x, z = (max(xs) + min(xs)) / 2, (max(zs) + min(zs)) / 2
         footprint = max(max(xs) - min(xs), max(zs) - min(zs))
-        nearest = min(turbines, key=lambda t: math.hypot(x - t['x'], z - t['z']))
-        if (math.hypot(x - nearest['x'], z - nearest['z']) <= TOWER_RADIUS and footprint <= TOWER_MAX_FOOTPRINT
+        nearest = min(turbines, key=lambda t: math.hypot(x - t['x'], z - t['z'])) if turbines else None
+        distance = math.hypot(x - nearest['x'], z - nearest['z']) if nearest else None
+        entry = dict(buildingId=building['id'], unitId=nearest['id'] if nearest else None, heightMetres=round(max(ys) - min(ys), 1),
+                     distanceMetres=round(distance, 1) if nearest else None)
+        if building.get('function') == WIND_TURBINE_FUNCTION:
+            found.append(dict(entry, rule='surveyed-wind-turbine'))
+        elif (nearest and distance <= TOWER_RADIUS and footprint <= TOWER_MAX_FOOTPRINT
                 and max(ys) - min(ys) >= TOWER_MIN_HEIGHT):
-            found.append(dict(buildingId=building['id'], unitId=nearest['id'], heightMetres=round(max(ys) - min(ys), 1)))
+            found.append(dict(entry, rule='slim-tall-body-on-turbine'))
     return found
 
 

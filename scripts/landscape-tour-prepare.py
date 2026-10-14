@@ -50,7 +50,11 @@ def buildings(files,boundary,windows,origin):
    pts=[p for s in surfaces for p in s['points']]
    if pts:
     x=sum(p[0]+origin[0] for p in pts)/len(pts);y=sum(origin[1]-p[2] for p in pts)/len(pts)
-    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):result[identifier]=dict(id=identifier,surfaces=surfaces)
+    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):
+     result[identifier]=dict(id=identifier,surfaces=surfaces)
+     # Keep the surveyed function of structures that are not ordinary buildings (e.g. 51002_1220 wind turbine).
+     function=(el.findtext('b:function',namespaces=ns) or '').strip()
+     if function and not function.startswith('31001_'):result[identifier]['function']=function
    el.clear()
  for file in files:
   if file.suffix=='.zip':
