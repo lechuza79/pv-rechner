@@ -13,22 +13,31 @@ for (const width of [375, 1440]) {
   await expect(nav).toBeVisible({timeout:60000});
   const next=nav.getByRole('button',{name:'Nächstes Ziel',exact:true});
   const previous=nav.getByRole('button',{name:'Vorheriges Ziel',exact:true});
-  await expect(next).toHaveAttribute('data-variant','primary');
-  await expect(previous).toHaveAttribute('data-variant','secondary');
-  // The static HTML serializer can emit a present boolean attribute as empty.
-  await expect(previous).toHaveAttribute('data-icon-only',/^(true)?$/);
-  await expect(previous).toHaveText('');
-  await expect(page.getByRole('combobox',{name:'Ort der Vorschau suchen'})).toBeVisible();
-  await expect(nav.locator('[aria-haspopup="listbox"]')).toHaveCount(0);
-  expect(await next.locator('svg').evaluate(el=>el.getBoundingClientRect().width)).toBe(16);
-  expect(await next.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(await previous.evaluate(el=>getComputedStyle(el).backgroundColor));
-  await expect(next).toHaveText('Zum Windpark');
+  // Keep the same assertions in one browser round trip. CI software rendering
+  // takes several seconds per call while the full-width terrain is animating.
+  const snapshot=await nav.evaluate(el=>{
+   const previous=el.querySelector<HTMLButtonElement>('[aria-label="Vorheriges Ziel"]')!;
+   const next=el.querySelector<HTMLButtonElement>('[aria-label="Nächstes Ziel"]')!;
+   const place=document.querySelector<HTMLElement>('[aria-label="Ort der Vorschau suchen"]')!;
+   return {
+    nextVariant:next.dataset.variant,previousVariant:previous.dataset.variant,
+    iconOnly:previous.hasAttribute('data-icon-only')&&previous.dataset.iconOnly!=='false',
+    previousText:previous.textContent,nextText:next.textContent,
+    nextIconWidth:next.querySelector('svg')!.getBoundingClientRect().width,
+    differentBackgrounds:getComputedStyle(next).backgroundColor!==getComputedStyle(previous).backgroundColor,
+    placeVisible:place.getClientRects().length>0&&getComputedStyle(place).visibility==='visible',
+    destinationPickers:el.querySelectorAll('[aria-haspopup="listbox"]').length,
+    overflow:el.scrollWidth-el.clientWidth,
+   };
+  });
+  expect(snapshot).toMatchObject({nextVariant:'primary',previousVariant:'secondary',iconOnly:true,
+   previousText:'',nextText:'Zum Windpark',nextIconWidth:16,differentBackgrounds:true,placeVisible:true,destinationPickers:0});
+  expect(snapshot.overflow).toBeLessThanOrEqual(1);
   await next.click();
   await expect(scene.getByRole('heading',{name:'Windanlagen Hatten',exact:true})).toBeVisible({timeout:20000});
   await expect(next).toBeEnabled({timeout:20000});
   await previous.click();
   await expect(scene.getByRole('heading',{name:'Hatten',exact:true})).toBeVisible({timeout:20000});
-  expect(await nav.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
  });
 }
 
