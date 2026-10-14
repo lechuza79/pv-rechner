@@ -22,7 +22,7 @@ export function newsletterContext(search: string): NewsletterContext | null {
 export function newsletterLink(raw: string, context: NewsletterContext, test = false): string {
   if (!newsletterEventName(context.campaign, context.variant, context.placement) || context.placement === ("start" as string)) throw new Error("Unknown newsletter link");
   const url = new URL(raw);
-  if (url.origin !== "https://solar-check.io" || !url.pathname.startsWith("/solar-atlas/")) throw new Error("Newsletter links must lead directly to the Atlas");
+  if (url.origin !== "https://solar-check.io" || !(url.pathname === "/solar-atlas" || url.pathname.startsWith("/solar-atlas/"))) throw new Error("Newsletter links must lead directly to the Atlas");
   url.searchParams.set("nl", context.campaign);
   url.searchParams.set("nlv", context.variant);
   url.searchParams.set("nll", context.placement);

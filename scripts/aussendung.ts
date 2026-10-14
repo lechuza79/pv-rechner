@@ -96,7 +96,14 @@ async function nachtragen(c: Db, zielgruppe: string, datei: string) {
 }
 
 async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
-  const input = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; html?: string; newsletter?: NewsletterMail; anlass: string; bezug?: string[]; kreise?: string[] }[];
+  const input = JSON.parse(readFileSync(datei, "utf8")) as { an: string; betreff: string; text: string; html?: string; newsletter?: NewsletterMail; abo?: {id: string; regionId: string}; anlass: string; bezug?: string[]; kreise?: string[] }[];
+  const subscriberBatch = zielgruppe === "gemeinde-abos";
+  if (subscriberBatch && input.some(m => !m.abo || !m.newsletter || !m.html)) throw new Error("Subscriber mails require subscription, newsletter and HTML");
+  if (!subscriberBatch && input.some(m => m.abo)) throw new Error("Subscription metadata requires gemeinde-abos target");
+  const subscriber = subscriberBatch ? await import("../lib/newsletter-subscriber") : null;
+  const subscribers = subscriberBatch ? await import("../lib/gemeinde-abo") : null;
+  const links = new Map<string, import("../lib/newsletter-subscriber").SubscriberLinks>();
+  if (subscriber) for (const m of input) links.set(m.abo!.id, await subscriber.resolveSubscriberLinks(m.abo!));
   // Validate and prepare the whole batch before recording or sending any mail.
   const mails = input.map(m => {
     if (!m.newsletter) return {...m, batch: schub};
@@ -109,12 +116,16 @@ async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
   // broken letter stops whole, instead of half sent.
   const kaputt = mails
     .filter((m) => !nur || nur.has(m.an.trim().toLowerCase()))
-    .map((m) => ({ an: m.an, maengel: aussendungsMaengel(m.betreff, m.text) }))
+    .map((m) => ({ an: m.an, maengel: subscriber ? subscriber.subscriberMailProblems(m, links.get(m.abo!.id)!) : aussendungsMaengel(m.betreff, m.text) }))
     .filter((x) => x.maengel.length);
   if (kaputt.length) {
     for (const x of kaputt.slice(0, 10)) console.error(`✗ ${x.an}: ${x.maengel.join(", ")}`);
     throw new Error(`${kaputt.length} Mails mit fehlenden Pflichtangaben oder Lücken — nichts verschickt`);
   }
+  if (subscriber && subscribers) {
+    for (const m of mails) subscriber.assertSubscriber(m, await subscribers.empfaengerFuerOrt(m.abo!.regionId));
+  }
+  if (process.argv.includes("--trocken")) { console.log(JSON.stringify({prepared: mails.length, subscriberBatch, sent: 0})); return; }
   const vorher = await schonAngeschrieben(c, zielgruppe);
   const k = leseSmtpKonfig(process.env);
   if (!k.ok) throw new Error(k.fehler.join("; "));
@@ -141,15 +152,24 @@ async function senden(c: Db, zielgruppe: string, datei: string, schub: string) {
       // Wer schon DIESELBE Mail hat, überspringt der Vermerk ohnehin; hier wird
       // zusätzlich gemeldet, wer in dieser Zielgruppe überhaupt schon etwas bekam.
       const bisher = vorher.get(an.split("@")[1]);
-      if (hatWidersprochen(bisher)) { console.log(`– ${an}: diese Redaktion hat widersprochen`); continue; }
-      if (bisher?.some((b) => b.betreff === m.betreff)) { console.log(`– ${an}: schon verschickt`); continue; }
-      if (!erste) await new Promise((r) => setTimeout(r, 60_000 + Math.floor(Math.random() * 90_000))); // uneven gaps, 1–2.5 min
+      if (!subscriber && hatWidersprochen(bisher)) { console.log(`– ${an}: diese Redaktion hat widersprochen`); continue; }
+      if (bisher?.some((b) => b.betreff === m.betreff && (!subscriber || b.empfaenger.toLowerCase() === an))) { console.log(`– ${an}: schon verschickt`); continue; }
+      if (!subscriber && !erste) await new Promise((r) => setTimeout(r, 60_000 + Math.floor(Math.random() * 90_000))); // uneven gaps, 1–2.5 min
       erste = false;
+      let headers: Record<string, string> | undefined;
+      if (subscriber && subscribers) {
+        subscriber.assertSubscriber(m, await subscribers.empfaengerFuerOrt(m.abo!.regionId));
+        const {data: existing, error} = await c.from("aussendungen").select("id").eq("zielgruppe", zielgruppe).eq("empfaenger", an).eq("schub", m.batch).contains("bezug", [m.abo!.regionId]).limit(1);
+        if (error) throw new Error(error.message);
+        if (existing?.length) { console.log(`– subscription ${m.abo!.regionId}: already recorded`); continue; }
+        headers = subscriber.subscriberHeaders(links.get(m.abo!.id)!);
+      }
       // FIRST the record, THEN the mail. A failed record means no mail.
       const id = await vermerkeVorVersand(c, {
         zielgruppe, empfaenger: an, anlass: m.anlass, bezug: m.bezug ?? m.kreise ?? [], schub: m.batch, betreff: m.betreff, text: m.text,
       });
-      const nachricht = { from: k.konfig.from, to: an, replyTo: k.konfig.replyTo, subject: m.betreff, text: m.text, ...(m.html ? {html: m.html, attachDataUrls: true} : {}) };
+      if (subscribers && m.abo) await subscribers.versandVermerken(m.abo.id, new Date().toISOString());
+      const nachricht = { headers, from: k.konfig.from, to: an, replyTo: k.konfig.replyTo, subject: m.betreff, text: m.text, ...(m.html ? {html: m.html, attachDataUrls: true} : {}) };
       const info = await transport.sendMail(nachricht);
       await bestaetigeVersand(c, id, info.messageId);
       // A copy in "Gesendet" for the human reading the mailbox — the record is the table.
